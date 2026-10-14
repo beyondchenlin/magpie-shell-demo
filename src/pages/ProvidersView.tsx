@@ -59,11 +59,34 @@ const IMPORT_APPS = [
   },
 ] as const;
 
+/** Magpie tile titles: host(s) on hover (shots 29, 31). */
+const VENDOR_HOST: Record<string, string> = {
+  anthropic: "api.anthropic.com",
+  openai: "api.openai.com",
+  google: "generativelanguage.googleapis.com",
+  vertex: "aiplatform.googleapis.com",
+  deepseek: "api.deepseek.com",
+  xai: "api.x.ai",
+  moonshot: "Global api.moonshot.ai\nChina api.moonshot.cn",
+  "kimi-code": "Global api.moonshot.ai\nChina api.moonshot.cn",
+  zhipu: "open.bigmodel.cn",
+  zai: "api.z.ai",
+  minimax: "api.minimax.io",
+  stepfun: "api.stepfun.com",
+  "xiaomi-mimo": "api.xiaomimimo.com",
+  qianfan: "qianfan.baidubce.com",
+  tencent: "api.lkeap.cloud.tencent.com",
+  huawei: "api.modelarts.huaweicloud.com",
+};
+
+const REGION_VENDORS = new Set(["moonshot", "moonshot-cn", "kimi-code", "kimi-code-cn"]);
+
 type EditorForm =
   | "anthropic"
   | "openrouter"
   | "ollama"
   | "remote"
+  | "vertex"
   | "custom"
   | "generic";
 
@@ -87,19 +110,21 @@ function Tile({
   icon,
   onPick,
   on,
+  tip,
 }: {
   id: string;
   name: string;
   icon: string;
   onPick: (id: string) => void;
   on?: boolean;
+  tip?: string;
 }) {
   return (
     <button
       type="button"
       className={`tile${on ? " on" : ""}`}
       data-pick={id}
-      title={name}
+      title={tip || name}
       onClick={() => onPick(id)}
     >
       <img
@@ -147,7 +172,7 @@ function Segs({
   onChange,
 }: {
   value: string;
-  options: { v: string; label: string }[];
+  options: { v: string; label: string; title?: string }[];
   onChange: (v: string) => void;
 }) {
   return (
@@ -157,6 +182,7 @@ function Segs({
           key={o.v}
           type="button"
           className={`opt${value === o.v ? " on" : ""}`}
+          title={o.title}
           onClick={() => onChange(o.v)}
         >
           {o.label}
@@ -386,18 +412,62 @@ function ProviderEditorModal({ state, onClose, onAdd }: EditorProps) {
   const [extra, setExtra] = useState(EXTRA_BODY_DEFAULT);
   const [addrOpen, setAddrOpen] = useState(false);
 
+  const [proxyUrl, setProxyUrl] = useState("http://127.0.0.1:7890");
+  const [region, setRegion] = useState(
+    state.id.endsWith("-cn") ? "china" : "global",
+  );
+  const [vxProject, setVxProject] = useState("");
+  const [vxLoc, setVxLoc] = useState("global");
+  const [vxCred, setVxCred] = useState("");
+  const [vxImp, setVxImp] = useState("");
   const dirty =
-    !!(name.trim() || baseUrl.trim() || key.trim() || tryModel.trim() || extra !== EXTRA_BODY_DEFAULT || hdrs.some((h) => h.name || h.value));
+    !!(
+      name.trim() ||
+      baseUrl.trim() ||
+      key.trim() ||
+      tryModel.trim() ||
+      endpoint.trim() ||
+      vxProject.trim() ||
+      vxCred.trim() ||
+      vxImp.trim() ||
+      proxy === "custom" ||
+      region === "china" ||
+      extra !== EXTRA_BODY_DEFAULT ||
+      hdrs.some((h) => h.name || h.value)
+    );
   const requestClose = () => {
-    if (kind === "custom" && dirty) setDiscardOpen(true);
+    /* Magpie: Cancel on dirty editor → Discard (shot 28 Gemini) */
+    if (dirty) setDiscardOpen(true);
     else close();
   };
 
+  const regionTitle =
+    REGION_VENDORS.has(state.id) && region === "china"
+      ? state.name.replace(/ \(China\)$/, "") + " (China)"
+      : REGION_VENDORS.has(state.id)
+        ? state.name.replace(/ \(China\)$/, "")
+        : state.name;
+  const regionSite =
+    REGION_VENDORS.has(state.id) && region === "china"
+      ? "platform.moonshot.cn"
+      : REGION_VENDORS.has(state.id)
+        ? "platform.moonshot.ai"
+        : state.site || "";
   const meta = {
-    title: state.name,
+    title: kind === "vertex" ? "Google Vertex AI" : regionTitle,
     icon: state.icon,
-    site: state.site || "",
-    note: state.note || "",
+    site:
+      kind === "vertex"
+        ? "docs.cloud.google.com"
+        : kind === "remote"
+          ? ""
+          : regionSite || state.site || "",
+    note:
+      kind === "vertex"
+        ? t("your Google Cloud project, with gcloud's sign-in")
+        : kind === "remote"
+          ? t("another computer's magpie, shared on its network")
+          : state.note || (state.id === "google" ? "Gemini Developer API" : ""),
     keyPh:
       kind === "ollama" || state.id === "ollama" ? ZH.optionalLocal : ZH.pasteKey,
   };
@@ -440,6 +510,89 @@ function ProviderEditorModal({ state, onClose, onAdd }: EditorProps) {
             ) : null}
           </div>
           <div className="ebody">
+            {REGION_VENDORS.has(state.id) ? (
+              <Field
+                label={t("Region")}
+                hint={t("which endpoint {p} is reached through", {
+                  p: state.name.replace(/ \(China\)$/, ""),
+                })}
+              >
+                <Segs
+                  value={region}
+                  onChange={setRegion}
+                  options={[
+                    {
+                      v: "global",
+                      label: t("Global"),
+                      title: "api.moonshot.ai",
+                    },
+                    {
+                      v: "china",
+                      label: t("China"),
+                      title: "api.moonshot.cn",
+                    },
+                  ]}
+                />
+              </Field>
+            ) : null}
+
+            {kind === "vertex" ? (
+              <>
+                <Field
+                  label={t("Project ID")}
+                  hint={t(
+                    "Your Google Cloud project, with the Agent Platform API (aiplatform.googleapis.com) enabled: requests are made, and billed, there",
+                  )}
+                >
+                  <input
+                    type="text"
+                    placeholder="my-project-123"
+                    value={vxProject}
+                    onChange={(e) => setVxProject(e.target.value)}
+                  />
+                </Field>
+                <Field
+                  label={t("Location")}
+                  hint={t(
+                    "global, us, eu or a region such as us-central1. Each location serves its own models; global serves them all.",
+                  )}
+                >
+                  <input
+                    type="text"
+                    placeholder="global"
+                    value={vxLoc}
+                    onChange={(e) => setVxLoc(e.target.value)}
+                  />
+                </Field>
+                <Field
+                  label={t("Credentials file")}
+                  hint={t(
+                    "Optional. Left empty, gcloud's Application Default Credentials are used (gcloud auth application-default login), or the file GOOGLE_APPLICATION_CREDENTIALS names. A service account's key file works too.",
+                  )}
+                >
+                  <input
+                    type="text"
+                    placeholder="~/.config/gcloud/application_default_credentials.json"
+                    value={vxCred}
+                    onChange={(e) => setVxCred(e.target.value)}
+                  />
+                </Field>
+                <Field
+                  label={t("Service account")}
+                  hint={t(
+                    "Requests are then made as this service account, impersonated with the credentials above: their account needs roles/iam.serviceAccountTokenCreator on it.",
+                  )}
+                >
+                  <input
+                    type="text"
+                    placeholder={t("optional · a service account's email")}
+                    value={vxImp}
+                    onChange={(e) => setVxImp(e.target.value)}
+                  />
+                </Field>
+              </>
+            ) : null}
+
             {kind === "custom" ? (
               <Field label={ZH.name}>
                 <input
@@ -560,7 +713,12 @@ function ProviderEditorModal({ state, onClose, onAdd }: EditorProps) {
             ) : null}
 
             {kind === "remote" ? (
-              <Field label={ZH.endpoint} hint={ZH.remoteHint}>
+              <Field
+                label={t("Endpoint")}
+                hint={t(
+                  "The address and API key shown on the other computer under Settings → Share on the network. Its models and routing groups are listed here; requests are forwarded as the agent's own API.",
+                )}
+              >
                 <input
                   type="url"
                   placeholder="http://192.168.1.20:3425"
@@ -570,31 +728,33 @@ function ProviderEditorModal({ state, onClose, onAdd }: EditorProps) {
               </Field>
             ) : null}
 
-            <Field label={ZH.apiKey} hint={ZH.keyKept}>
-              <div className="pair">
-                <input
-                  type={showKey ? "text" : "password"}
-                  placeholder={meta.keyPh}
-                  value={key}
-                  onChange={(e) => setKey(e.target.value)}
-                  autoComplete="off"
-                />
-                <div className="side">
-                  <button
-                    type="button"
-                    className="text"
-                    onClick={() => setShowKey((s) => !s)}
-                  >
-                    {showKey ? ZH.hide : ZH.show}
-                  </button>
-                  {kind === "anthropic" ? (
-                    <button type="button" className="link" tabIndex={-1}>
-                      {ZH.getKey}
+            {kind !== "vertex" ? (
+              <Field label={ZH.apiKey} hint={ZH.keyKept}>
+                <div className="pair">
+                  <input
+                    type={showKey ? "text" : "password"}
+                    placeholder={meta.keyPh}
+                    value={key}
+                    onChange={(e) => setKey(e.target.value)}
+                    autoComplete="off"
+                  />
+                  <div className="side">
+                    <button
+                      type="button"
+                      className="text"
+                      onClick={() => setShowKey((s) => !s)}
+                    >
+                      {showKey ? ZH.hide : ZH.show}
                     </button>
-                  ) : null}
+                    {kind !== "remote" && kind !== "ollama" ? (
+                      <button type="button" className="link" tabIndex={-1}>
+                        {ZH.getKey}
+                      </button>
+                    ) : null}
+                  </div>
                 </div>
-              </div>
-            </Field>
+              </Field>
+            ) : null}
 
             {kind === "ollama" ? (
               <details
@@ -733,9 +893,42 @@ function ProviderEditorModal({ state, onClose, onAdd }: EditorProps) {
                   </button>
                 </div>
               ) : (
-                <button type="button" className="link">
-                  {ZH.addHeader}
-                </button>
+                <div className="stack" style={{ gap: 4 }}>
+                  <button type="button" className="link">
+                    {ZH.addHeader}
+                  </button>
+                  {state.id === "vertex" ? (
+                    <>
+                      <button
+                        type="button"
+                        className="link"
+                        onClick={() =>
+                          setHdrs((rows) => [
+                            ...rows.filter((r) => r.name || r.value),
+                            { name: "X-Vertex-AI-LLM-Request-Type", value: "" },
+                          ])
+                        }
+                      >
+                        + X-Vertex-AI-LLM-Request-Type
+                      </button>
+                      <button
+                        type="button"
+                        className="link"
+                        onClick={() =>
+                          setHdrs((rows) => [
+                            ...rows.filter((r) => r.name || r.value),
+                            {
+                              name: "X-Vertex-AI-LLM-Shared-Request-Type",
+                              value: "",
+                            },
+                          ])
+                        }
+                      >
+                        + X-Vertex-AI-LLM-Shared-Request-Type
+                      </button>
+                    </>
+                  ) : null}
+                </div>
               )}
             </Field>
 
@@ -751,16 +944,38 @@ function ProviderEditorModal({ state, onClose, onAdd }: EditorProps) {
               </div>
             </Field>
 
-            <Field label={t("Proxy")} hint={t("Follows the proxy in Settings")}>
-              <Segs
-                value={proxy}
-                onChange={setProxy}
-                options={[
-                  { v: "", label: t("Global proxy") },
-                  { v: "direct", label: t("Direct") },
-                  { v: "custom", label: t("Custom") },
-                ]}
-              />
+            <Field
+              label={t("Proxy")}
+              hint={
+                proxy === "custom"
+                  ? t(
+                      "Requests to it go through this proxy: http://, https:// or socks5://",
+                    )
+                  : proxy === "direct"
+                    ? t("Off · go direct")
+                    : t("Follows the proxy in Settings")
+              }
+            >
+              <div className="pair" style={{ gap: 8, flexWrap: "wrap", alignItems: "center" }}>
+                <Segs
+                  value={proxy}
+                  onChange={setProxy}
+                  options={[
+                    { v: "", label: t("Global proxy") },
+                    { v: "direct", label: t("Direct") },
+                    { v: "custom", label: t("Custom") },
+                  ]}
+                />
+                {proxy === "custom" ? (
+                  <input
+                    type="url"
+                    placeholder="http://127.0.0.1:7890"
+                    value={proxyUrl}
+                    onChange={(e) => setProxyUrl(e.target.value)}
+                    style={{ flex: 1, minWidth: 160 }}
+                  />
+                ) : null}
+              </div>
             </Field>
 
             <Field
@@ -1019,12 +1234,39 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
         icon: "magpie",
         note: ZH.remoteNote,
       });
+    else if (id === "vertex")
+      setEditor({
+        form: "vertex",
+        id,
+        name: "Vertex AI",
+        icon: "vertexai-color",
+        site: "docs.cloud.google.com",
+        note: t("your Google Cloud project, with gcloud's sign-in"),
+      });
+    else if (id === "google")
+      setEditor({
+        form: "generic",
+        id,
+        name: "Google Gemini",
+        icon: "gemini-color",
+        site: "aistudio.google.com",
+        note: "Gemini Developer API",
+      });
+    else if (id === "moonshot" || id === "moonshot-cn" || id === "kimi-code" || id === "kimi-code-cn")
+      setEditor({
+        form: "generic",
+        id,
+        name: name.replace(/ \(China\)$/, ""),
+        icon,
+        site: id.endsWith("-cn") ? "platform.moonshot.cn" : "platform.moonshot.ai",
+      });
     else
       setEditor({
         form: "generic",
         id,
         name,
         icon,
+        site: VENDOR_HOST[id]?.split("\n")[0]?.replace(/^Global |^China /, "") || undefined,
       });
   };
 
@@ -1416,8 +1658,9 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
                   <Tile
                     key={p.id}
                     id={p.id}
-                    name={p.name}
+                    name={p.name.replace(/ \(China\)$/, "")}
                     icon={p.icon}
+                    tip={VENDOR_HOST[p.id] || p.name}
                     onPick={pickTile}
                   />
                 ))}

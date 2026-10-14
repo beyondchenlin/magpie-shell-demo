@@ -1,25 +1,22 @@
 # Acceptance — magpie-shell-demo
 
-**Status: `PROVIDERS_CLAUDE_PARTIAL`** — **v0.1.24**
+**Status: `PROVIDERS_CLAUDE_PARTIAL`** — **v0.1.25**
 
 ## 本批
 
 | 区 | 内容 |
 |----|------|
-| Providers Claude 22–24 | risk `.signing` 文案 1:1；Import instead → `.signing.import`（非 ImportApps）；Choose files mock；Import→importing→imported |
-| Agents Arrange | Magpie `dragRows` 同胞 `translateY` 滑动 + `#agents.sorting` 0.22s spring |
-| Privacy 63–70 | redact-kind fade-in；Masking rules 默认 `API_KEY` / `oc_sk_`；nested kinds 对齐 |
-| Plugins Install | `pm-act.busy` + `.spin` + Installing…（mock 后端仍 OK） |
+| Providers 25–34 | Gemini Proxy Custom / Discard；vendor host tip；Vertex 编辑器；Kimi Region+China；Relays/Local/Remote；Remote magpie |
+| (承 v0.1.24) | Claude risk/import 22–24；Arrange sibling slide；Privacy/Plugins Install spin |
 
 ## 链接
 
-- [Release v0.1.24](https://github.com/beyondchenlin/magpie-shell-demo/releases/tag/v0.1.24)
-- [Portable 0.1.24](https://github.com/beyondchenlin/magpie-shell-demo/releases/download/v0.1.24/Magpie-Shell-Demo-0.1.24-portable.exe)
-- 在线：https://magpie-shell-demo.vercel.app
+- [Release v0.1.25](https://github.com/beyondchenlin/magpie-shell-demo/releases/tag/v0.1.25)
+- [Portable 0.1.25](https://github.com/beyondchenlin/magpie-shell-demo/releases/download/v0.1.25/Magpie-Shell-Demo-0.1.25-portable.exe)
+- 在线：https://magpie-shell-demo.vercel.app （今日免费部署额度可能已满）
 
 ## 仍缺
 
-- Providers 真 Claude OAuth / 真文件导入；ImportApps 与 Claude import 分流已齐，其它 sub risk 面板未点录
-- Plugins Install 真 npm/Bun 流；Installed 行手柄若上游新增再对齐
-- Routing 真 gateway hist / 真 replay
-- Privacy 字级再对 67–70 实机截图像素差（规则行宽）
+- Providers 真 OAuth / 真 Vertex ADC；Kimi 真双 preset 成对磁贴与 Magpie pairTile 完全同构再抠
+- Plugins 真 npm 安装流
+- Routing 真 gateway hist
