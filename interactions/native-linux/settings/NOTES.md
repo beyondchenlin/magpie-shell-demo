@@ -144,3 +144,30 @@ Demo v0.1.14: LAN demo IPs match 172.30.0.2 / 172.17.0.1; protocol suffix; menu;
 | 60 | bottom | Stop looping On; Ask again = All; Disable…; Saved toast |
 
 Demo v0.1.14: Disable… → #pop; Search APIs vendor list matches; Add/Show/Copy/Remove local.
+
+## PRIVACY deep pass (shots 63–70)
+
+| shot | control | seen |
+|---|---|---|
+| 63 | Privacy top | Mask secrets, Mask personal data, Hide accounts all Off. Masked words placeholder `names, codenames, hosts`. Masking rules: name `API_KEY`, Prefix selected, value `oc_sk_`, Add. |
+| 64 | Mask secrets On + Mask personal data On | Nested rows appear under personal data (page grows). |
+| 65–66 | nested rows, all Off | Social Security numbers; Passport numbers (after the word passport, 护照 or パスポート); IBANs; Birthdays; MAC addresses; Serial numbers (after S/N, Serial or 序列号); User name in home folders; User and computer names; Public IP addresses; Cloud storage buckets. |
+| 67–68 | Masking rules | Prefix (value `oc_sk_`) / Regex. Regex swaps the sample to `oc_sk_[A-Za-z0-9]{20,}`. Add not clicked. Prefix restored. |
+| 69 | lower rows | Count me as a user Off. Share the agents, providers and models I use Off. AGENTS' SIGN-INS: Subscription accounts (read Claude Code, Codex, Copilot, Cursor…) — On is the selected pill by default; not changed. |
+| 70 | masks Off | Nested rows collapse. Hide accounts still Off. |
+
+Not typed: masked words, rule name, Add. No key saved. Green Saved toast on toggle.
+
+## Left state after this pass
+
+Proxy Auto. Share on local network Off. Menu-bar allowances Off. Allowance display Used, reads Automatic, currency USD, alerts Off, reset Off, task-done Off. Mask secrets and personal data Off. theme system, textSize 110. Gateway still on port 3425.
+
+## MODELS / PRIVACY follow-up (shots 61–70)
+
+| shot | note |
+|---|---|
+| 61 | Replies toggled (Name member / Stop looping / Ask again) |
+| 62 | Disable… #pop open — "Filter, or type any model id…" / No matches (empty catalog on this machine) |
+| 63–70 | Privacy: masks on/nested, rules Prefix/Regex, sign-ins, restored |
+
+Demo Disable #pop already matches 62 placeholder; Privacy deep sync can continue next cycle.
