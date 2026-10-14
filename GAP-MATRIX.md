@@ -25,7 +25,7 @@
 
 1. 无真实 provider 添加 / agent 接线 / gateway  
 2. 飞鸟仅为 Demo 开关 mock  
-3. Usage/Plugins/Agents nested = **AGENTS_USAGE_PARTIAL**（v0.1.16 演示填充）（Requests 空态藏 chart；Sessions/Context DOM；middleware hooks 文案）；Privacy **PRIVACY_NESTED_PARTIAL**；Gateway 空态+演示填充  
+3. Usage/Plugins/Agents nested = **HEATMAP_ROUTING_PARTIAL**（v0.1.17 heatmap+Sessions detail+movable+routing live+providers LS）（Requests 空态藏 chart；Sessions/Context DOM；middleware hooks 文案）；Privacy **PRIVACY_NESTED_PARTIAL**；Gateway 空态+演示填充  
 4. 未做原生 Tauri；Electron 系统标题栏（Windows 上游亦然）
 
 *Sessions / Library 不是顶栏缺口：官方默认不展示。*

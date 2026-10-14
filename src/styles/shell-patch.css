@@ -436,3 +436,85 @@ body.web.side-nav {
 .provider .fold svg { transition: transform .15s ease-out; display: inline-block; vertical-align: -1px; margin-right: 4px; }
 .provider .fold.open svg, .provider .fold[aria-expanded="true"] svg { transform: rotate(90deg); }
 .provider .who .fold { margin-top: 6px; }
+
+/* ---- v0.1.17 heatmap / sess detail / plugins movable / routing live ---- */
+.heat-tip {
+  position: absolute;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 6px 9px;
+  background: var(--pop-bg, var(--card));
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  font-size: 11.5px;
+  white-space: nowrap;
+  pointer-events: none;
+  font-variant-numeric: tabular-nums;
+}
+.heat-tip[hidden] { display: none; }
+.heat-tip b { font-weight: 600; }
+.heat-tip span { color: var(--muted); }
+.heat-grid i { transition: background .18s var(--ease), outline-color .12s; cursor: default; }
+
+.sess-item.open { background: color-mix(in srgb, var(--pill) 45%, transparent); }
+.sess-item .sess-detail {
+  animation: fade-in .18s var(--ease);
+}
+.sess-list .sess-go.open svg { transform: rotate(90deg); }
+.sess-list .sess-go svg { transition: transform .15s var(--ease); }
+.sess-show-more { transition: color .12s var(--ease), background .12s var(--ease); }
+
+.pm-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 20px;
+  padding: 0 7px;
+  border-radius: 999px;
+  font-size: 10.5px;
+  font-weight: 500;
+  background: var(--pill);
+  color: var(--fg-2);
+}
+.pm-chip.moved { background: color-mix(in srgb, var(--accent) 16%, var(--pill)); color: var(--fg); }
+.pm-chip .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+.sub.ask { color: var(--fg-2); font-size: 12px; line-height: 1.45; }
+
+.rt-accts li.on .bar,
+.rt-accts li .bar {
+  display: block;
+  height: 3px;
+  margin-top: 4px;
+  border-radius: 2px;
+  background: color-mix(in srgb, var(--agent, var(--accent)) 55%, var(--pill));
+  transition: width .35s var(--ease);
+}
+.rt-livedot.on {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--green, #2fb087);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--green, #2fb087) 25%, transparent);
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.ag-relocate input.words,
+.pv-add-steps input.words {
+  height: 26px;
+  padding: 0 9px;
+  border-radius: 7px;
+  border: 1px solid var(--line);
+  background: var(--card);
+  color: var(--fg);
+  font: inherit;
+  font-size: 12.5px;
+}
+.pv-step-body { animation: fade-in .16s var(--ease); }

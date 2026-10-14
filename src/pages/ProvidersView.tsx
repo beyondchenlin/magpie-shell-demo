@@ -8,7 +8,7 @@ import {
 } from "react";
 import presets from "../data/presets.json";
 import { SUB_TILES, iconSrc } from "../data/mock";
-import { ZH } from "../i18n";
+import { ZH, t } from "../i18n";
 
 type Preset = { id: string; name: string; icon: string; kind: string };
 const PRESETS = presets as Preset[];
@@ -627,20 +627,39 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
     accounts: { id: string; label: string }[];
     models: string[];
   };
-  const [demoProvs, setDemoProvs] = useState<DemoProv[]>([
-    {
-      id: "anthropic",
-      name: "Anthropic",
-      icon: "claude-color",
-      accountsOpen: true,
-      modelsOpen: false,
-      accounts: [
-        { id: "acct-1", label: "work@example.com" },
-        { id: "acct-2", label: "api-key · sk-…demo" },
-      ],
-      models: ["claude-sonnet-4-5", "claude-haiku-4-5", "claude-opus-4"],
-    },
-  ]);
+  const [demoProvs, setDemoProvs] = useState<DemoProv[]>(() => {
+    try {
+      const raw = localStorage.getItem("magpie.demoProviders");
+      if (raw) {
+        const parsed = JSON.parse(raw) as DemoProv[];
+        if (Array.isArray(parsed) && parsed.length) return parsed;
+      }
+    } catch {
+      /* ignore */
+    }
+    return [
+      {
+        id: "anthropic",
+        name: "Anthropic",
+        icon: "claude-color",
+        accountsOpen: true,
+        modelsOpen: false,
+        accounts: [
+          { id: "acct-1", label: "work@example.com" },
+          { id: "acct-2", label: "api-key · sk-…demo" },
+        ],
+        models: ["claude-sonnet-4-5", "claude-haiku-4-5", "claude-opus-4"],
+      },
+    ];
+  });
+  const [addStep, setAddStep] = useState(0); // nested add-provider wizard on sheet foot
+  useEffect(() => {
+    try {
+      localStorage.setItem("magpie.demoProviders", JSON.stringify(demoProvs));
+    } catch {
+      /* ignore */
+    }
+  }, [demoProvs]);
   const findRef = useRef<HTMLInputElement>(null);
   const f = q.trim().toLowerCase();
 
@@ -1022,6 +1041,80 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
                 <span className="hint">{ZH.anyCompatible}</span>
               </div>
             )}
+            <div className="pv-add-steps card" style={{ marginTop: 12, padding: "12px 14px", borderRadius: 12, border: "1px solid var(--line)", background: "var(--card)" }}>
+              <div className="row-head" style={{ margin: 0 }}>
+                <span className="label">{t("Add account step")}</span>
+                <span className="grow" />
+                <span style={{ fontSize: 11.5, color: "var(--muted)" }}>
+                  {addStep + 1} / 3
+                </span>
+              </div>
+              <div className="pv-step-body" style={{ marginTop: 8, minHeight: 52 }}>
+                {addStep === 0 ? (
+                  <div className="row pref" style={{ padding: "6px 0" }}>
+                    <div className="who">
+                      <div className="name">{t("API key")}</div>
+                      <div className="sub">sk-… · demo nested step 1</div>
+                    </div>
+                    <input className="words" placeholder="sk-…" style={{ minWidth: 140 }} />
+                  </div>
+                ) : null}
+                {addStep === 1 ? (
+                  <div className="row pref" style={{ padding: "6px 0" }}>
+                    <div className="who">
+                      <div className="name">{t("Base URL")}</div>
+                      <div className="sub">https://api.example.com/v1</div>
+                    </div>
+                    <input className="words" defaultValue="https://api.anthropic.com" style={{ minWidth: 160 }} />
+                  </div>
+                ) : null}
+                {addStep === 2 ? (
+                  <div className="row pref" style={{ padding: "6px 0" }}>
+                    <div className="who">
+                      <div className="name">{t("Confirm models")}</div>
+                      <div className="sub">claude-sonnet-4-5 · claude-haiku-4-5</div>
+                    </div>
+                  </div>
+                ) : null}
+              </div>
+              <div className="bar" style={{ display: "flex", gap: 8, marginTop: 8 }}>
+                <button type="button" className="text" disabled={addStep <= 0} onClick={() => setAddStep((s) => Math.max(0, s - 1))}>
+                  {t("Back")}
+                </button>
+                <span className="grow" />
+                {addStep < 2 ? (
+                  <button type="button" className="text primary" onClick={() => setAddStep((s) => s + 1)}>
+                    {t("Next step")}
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    className="text primary"
+                    onClick={() => {
+                      setDemoProvs((list) => {
+                        if (list.some((x) => x.id === "demo-nested")) return list;
+                        return [
+                          ...list,
+                          {
+                            id: "demo-nested",
+                            name: "Nested demo",
+                            icon: "generic",
+                            accountsOpen: true,
+                            modelsOpen: true,
+                            accounts: [{ id: "n1", label: "sk-…nested" }],
+                            models: ["claude-sonnet-4-5", "claude-haiku-4-5"],
+                          },
+                        ];
+                      });
+                      setAddStep(0);
+                      onStatus(ZH.providerAddedDemo, "ok");
+                    }}
+                  >
+                    {t("Save provider")}
+                  </button>
+                )}
+              </div>
+            </div>
           </div>
         </section>
       </main>

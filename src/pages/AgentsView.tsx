@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import installsData from "../data/installs.json";
 import { VIA_LABEL, iconSrc } from "../data/mock";
-import { ZH, t } from "../i18n";
+import { ZH, demoCopy, t } from "../i18n";
 
 type InstallCmd = { via: string; command: string; node?: string };
 type Install = {
@@ -14,11 +14,11 @@ type Install = {
 const INSTALLS = installsData as Install[];
 
 const ALL_AGENTS = [
-  { id: "cursor", name: "Cursor", icon: "cursor", connected: false },
-  { id: "claude", name: "Claude Code", icon: "claude-color", connected: false },
-  { id: "codex", name: "Codex", icon: "codex-color", connected: false },
-  { id: "opencode", name: "OpenCode", icon: "openai", connected: false },
-  { id: "pi", name: "Pi", icon: "openai", connected: false },
+  { id: "cursor", name: "Cursor", icon: "cursor", connectable: false },
+  { id: "claude", name: "Claude Code", icon: "claude-color", connectable: true },
+  { id: "codex", name: "Codex", icon: "codex-color", connectable: true },
+  { id: "opencode", name: "OpenCode", icon: "openai", connectable: true },
+  { id: "pi", name: "Pi", icon: "openai", connectable: true },
 ] as const;
 
 const SPRING = (() => {
@@ -295,7 +295,7 @@ function ManageAgentsModal({
                   // Magpie: clear then add matching !onMagpie
                   setSelected(
                     new Set(
-                      matching.filter((a) => !a.connected).map((a) => a.id),
+                      matching.filter((a) => a.connectable).map((a) => a.id),
                     ),
                   );
                 }}
@@ -526,7 +526,28 @@ export function AgentsView({
   const [profileName, setProfileName] = useState("");
   const [hiddenIds, setHiddenIds] = useState<Set<string>>(() => new Set());
   const [showHiddenFold, setShowHiddenFold] = useState(false);
+  const [wired, setWired] = useState<Record<string, boolean>>(() => {
+    try {
+      const raw = localStorage.getItem("magpie.demoAgentWired");
+      if (raw) return JSON.parse(raw) as Record<string, boolean>;
+    } catch {
+      /* ignore */
+    }
+    return {};
+  });
+  const [relocateFor, setRelocateFor] = useState<string | null>(null);
+  const [relFrom, setRelFrom] = useState("~/.claude/projects/old");
+  const [relTo, setRelTo] = useState("~/.claude/projects/new");
+  const [relBusy, setRelBusy] = useState(false);
   const nameRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem("magpie.demoAgentWired", JSON.stringify(wired));
+    } catch {
+      /* ignore */
+    }
+  }, [wired]);
 
   useEffect(() => {
     // Magpie renderProfiles drops open chip-input on refresh
@@ -568,7 +589,12 @@ export function AgentsView({
             <section className="guide" aria-label={ZH.getStarted}>
               <div className="guide-head">
                 <b className="guide-h">{ZH.getStarted}</b>
-                <span className="guide-n">{ZH.ofDone}</span>
+                <span className="guide-n">
+                  {demoCopy(
+                    `已完成 ${1 + (Object.values(wired).some(Boolean) ? 1 : 0)}/2`,
+                    `${1 + (Object.values(wired).some(Boolean) ? 1 : 0)} of 2 done`,
+                  )}
+                </span>
                 <button
                   type="button"
                   className="guide-x"
@@ -621,6 +647,18 @@ export function AgentsView({
                   <div className="guide-body">
                     <b className="guide-title">{ZH.connectAgent}</b>
                     <span className="guide-say">{ZH.connectAgentSay}</span>
+                    <div className="guide-acts" style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 8 }}>
+                      {ALL_AGENTS.filter((a) => a.connectable).map((a) => (
+                        <button
+                          key={a.id}
+                          type="button"
+                          className={`text${wired[a.id] ? "" : " primary"} guide-go`}
+                          onClick={() => setWired((w) => ({ ...w, [a.id]: true }))}
+                        >
+                          {wired[a.id] ? t("Connected · new sessions take it") : t("Connect {agent}", { agent: a.name })}
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 </li>
               </ol>
@@ -655,13 +693,86 @@ export function AgentsView({
               </button>
               <div className="who">
                 <div className="name">{a.name}</div>
-                <div className="ag-native-note">
-                  <span className="sq" aria-hidden />
-                  <span className="sq" aria-hidden />
-                  <span>{ZH.onlyCursorOwn}</span>
-                </div>
+                {a.id === "cursor" ? (
+                  <div className="ag-native-note">
+                    <span className="sq" aria-hidden />
+                    <span className="sq" aria-hidden />
+                    <span>{ZH.onlyCursorOwn}</span>
+                  </div>
+                ) : wired[a.id] ? (
+                  <div className="sub" style={{ fontSize: 12, color: "var(--muted)" }}>
+                    {t("Connected · new sessions take it")}
+                  </div>
+                ) : (
+                  <div className="sub" style={{ fontSize: 12, color: "var(--faint)" }}>
+                    {demoCopy("演示：可接入 Magpie 模型列表", "Demo: can connect Magpie models")}
+                  </div>
+                )}
+                {relocateFor === a.id ? (
+                  <div className="ag-relocate" style={{ marginTop: 8, padding: "10px 12px", borderRadius: 10, border: "1px solid var(--line)", background: "var(--pill)", display: "flex", flexDirection: "column", gap: 8, animation: "fade-in .18s var(--ease)" }}>
+                    <b style={{ fontSize: 12.5 }}>{t("Relocate Claude Code project")}</b>
+                    <label style={{ display: "grid", gridTemplateColumns: "72px 1fr", gap: 8, alignItems: "center", fontSize: 12 }}>
+                      <span style={{ color: "var(--muted)" }}>{t("From folder")}</span>
+                      <input className="words" value={relFrom} onChange={(e) => setRelFrom(e.target.value)} />
+                    </label>
+                    <label style={{ display: "grid", gridTemplateColumns: "72px 1fr", gap: 8, alignItems: "center", fontSize: 12 }}>
+                      <span style={{ color: "var(--muted)" }}>{t("To folder")}</span>
+                      <input className="words" value={relTo} onChange={(e) => setRelTo(e.target.value)} />
+                    </label>
+                    <div style={{ display: "flex", gap: 8 }}>
+                      <button type="button" className="text" onClick={() => setRelocateFor(null)}>{t("Cancel")}</button>
+                      <span className="grow" />
+                      <button
+                        type="button"
+                        className="text primary"
+                        disabled={relBusy}
+                        onClick={() => {
+                          setRelBusy(true);
+                          window.setTimeout(() => {
+                            setRelBusy(false);
+                            setRelocateFor(null);
+                            onStatus(demoCopy("演示：会话路径已迁移（本地）", "Demo: sessions relocated (local)"), "ok");
+                          }, 480);
+                        }}
+                      >
+                        {relBusy ? "…" : t("Relocate")}
+                      </button>
+                    </div>
+                  </div>
+                ) : null}
               </div>
-              <span className="ag-cant">{ZH.cantConnect}</span>
+              {a.id === "cursor" || !a.connectable ? (
+                <span className="ag-cant">{ZH.cantConnect}</span>
+              ) : (
+                <div className="val" style={{ display: "flex", gap: 6, flexWrap: "wrap", alignItems: "center" }}>
+                  {a.id === "claude" ? (
+                    <button
+                      type="button"
+                      className="text"
+                      aria-expanded={relocateFor === a.id}
+                      onClick={() => setRelocateFor((cur) => (cur === a.id ? null : a.id))}
+                    >
+                      {t("Relocate")}
+                    </button>
+                  ) : null}
+                  <button
+                    type="button"
+                    className={`text${wired[a.id] ? "" : " primary"}`}
+                    aria-pressed={!!wired[a.id]}
+                    aria-label={t("Connect {agent}", { agent: a.name })}
+                    title={
+                      wired[a.id]
+                        ? t("Connected · new sessions take it")
+                        : t("Connect {agent}", { agent: a.name })
+                    }
+                    onClick={() =>
+                      setWired((w) => ({ ...w, [a.id]: !w[a.id] }))
+                    }
+                  >
+                    {wired[a.id] ? t("Disconnect") : demoCopy("接入", "Connect")}
+                  </button>
+                </div>
+              )}
             </div>
           ))}
 

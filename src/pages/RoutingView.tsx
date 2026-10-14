@@ -30,6 +30,7 @@ export function RoutingView() {
   const [wires, setWires] = useState<Wire[]>([]);
   /** Explicit demo-only control (not Magpie Live UI on empty). */
   const [demoLive, setDemoLive] = useState(false);
+  const [demoTurn, setDemoTurn] = useState(0);
   const [flier, setFlier] = useState<{ x: number; y: number; rot: number } | null>(
     null,
   );
@@ -146,7 +147,13 @@ export function RoutingView() {
           type="button"
           aria-pressed={demoLive}
           title={ZH.demoFlierTitle}
-          onClick={() => setDemoLive((v) => !v)}
+          onClick={() => {
+            setDemoLive((v) => {
+              const next = !v;
+              if (next) setDemoTurn((n) => n + 1);
+              return next;
+            });
+          }}
         >
           {demoLive ? ZH.demoFlierOn : ZH.demoFlierOff}
         </button>
@@ -177,9 +184,22 @@ export function RoutingView() {
         <div className="rt-main">
           <div className="rt-top">
             <div className="rt-what">
-              <b>{ZH.waitingRequest}</b>
+              <b>{demoLive ? t("Demo request · affinity kept") : ZH.waitingRequest}</b>
+              {demoLive ? <span className="rt-livedot on" aria-hidden="true" style={{ marginLeft: 8 }} /> : null}
             </div>
-            <p className="rt-mode">{ZH.waitingSay}</p>
+            <p className="rt-mode">
+              {demoLive
+                ? t("Tried Anthropic first · then OpenAI") +
+                  (demoTurn ? ` · turn ${demoTurn}` : "")
+                : ZH.waitingSay}
+            </p>
+            {demoLive ? (
+              <p className="rt-req-head note" style={{ margin: "4px 0 0", fontSize: 11.5, color: "var(--muted)" }}>
+                {t("A live request would fly here")}
+                {" · "}
+                claude-sonnet-4-5 → Anthropic
+              </p>
+            ) : null}
           </div>
 
           <div className="rt-stage" ref={stageRef}>
@@ -220,9 +240,24 @@ export function RoutingView() {
             </div>
 
             <ol className="rt-accts">
-              <li className="idle" ref={idleRef}>
-                {ZH.noRequestYet}
-              </li>
+              {demoLive ? (
+                <>
+                  <li className="on" ref={idleRef} style={{ ["--agent" as string]: "#d97706" }}>
+                    <span className="dot" />
+                    <span className="nm">Anthropic · work@…</span>
+                    <span className="bar" style={{ width: "72%" }} />
+                  </li>
+                  <li style={{ ["--agent" as string]: "#10a37f" }}>
+                    <span className="dot" />
+                    <span className="nm">OpenAI · sk-…demo</span>
+                    <span className="bar" style={{ width: "28%" }} />
+                  </li>
+                </>
+              ) : (
+                <li className="idle" ref={idleRef}>
+                  {ZH.noRequestYet}
+                </li>
+              )}
             </ol>
 
             <svg className="rt-sky" aria-hidden="true">
@@ -243,16 +278,16 @@ export function RoutingView() {
             <p className="rt-cap">{ZH.everyRequest}</p>
             <div className="rt-stats">
               <span>
-                <b>0</b>
+                <b>{demoLive ? String(Math.max(1, demoTurn)) : "0"}</b>
                 <span>{ZH.requests}</span>
               </span>
               <span>
-                <b>0</b>
+                <b>{demoLive ? "1" : "0"}</b>
                 <span>{ZH.rerouted}</span>
               </span>
               <span
                 className="rt-errs"
-                aria-disabled="true"
+                aria-disabled={!demoLive}
                 title={ZH.noFailedRequest}
               >
                 <b>0</b>

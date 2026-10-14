@@ -1,12 +1,15 @@
 import { Fragment, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { LedHeat } from "../components/LedHeat";
 import { Segs } from "../components/Segs";
 import { iconSrc } from "../data/mock";
 import {
   DEMO_CTX_AGENTS,
   DEMO_LEDGER,
   DEMO_SESSIONS,
+  DEMO_SESSIONS_MORE,
   DEMO_SESS_KPIS,
   ago,
+  demoSessDetail,
   fmtCost,
   fmtN,
   ledTime,
@@ -383,6 +386,9 @@ export function UsageView() {
   const [demoFilled, setDemoFilled] = useState(true);
   const [ledOpen, setLedOpen] = useState<Set<string>>(() => new Set());
   const [ledPage, setLedPage] = useState(0);
+  const [sessOpen, setSessOpen] = useState<string | null>(null);
+  const [sessMore, setSessMore] = useState(false);
+  const [heatMetricRemember] = useState(true); // heatmap mounts with Magpie localStorage metric
 
 
   const everyLabel = USAGE_EVERY.find(([n]) => n === every)?.[1] || "5 s";
@@ -453,7 +459,7 @@ export function UsageView() {
 
   const sessRows = useMemo(() => {
     if (!demoFilled) return [];
-    let rows = DEMO_SESSIONS;
+    let rows = sessMore ? [...DEMO_SESSIONS, ...DEMO_SESSIONS_MORE] : [...DEMO_SESSIONS];
     if (sessAgent !== "all") rows = rows.filter((s) => s.agent === sessAgent);
     const q = sessQ.trim().toLowerCase();
     if (q) {
@@ -462,7 +468,8 @@ export function UsageView() {
       );
     }
     return rows;
-  }, [demoFilled, sessAgent, sessQ]);
+  }, [demoFilled, sessAgent, sessQ, sessMore]);
+  const sessHidden = demoFilled && !sessMore ? DEMO_SESSIONS_MORE.length : 0;
 
   const ctxAgents = demoFilled ? DEMO_CTX_AGENTS : [];
 
@@ -781,6 +788,7 @@ export function UsageView() {
                 </div>
               </section>
             </div>
+            {heatMetricRemember ? <LedHeat show={demoFilled && ledRows.length > 0} /> : null}
             <div className="led-head" style={{ display: "flex", alignItems: "baseline", gap: 8, marginTop: 10 }}>
               <p className="led-sum" id="ledSum" style={{ margin: 0, fontSize: 12, color: "var(--muted)" }}>
                 {t(ledTotals.calls === 1 ? "{n} request" : "{n} requests", { n: String(ledTotals.calls) })}
@@ -1033,9 +1041,24 @@ export function UsageView() {
             <div className="list sess-list" id="sessList">
               {sessRows.map((s) => {
                 const tokens = s.input + s.output + s.cache_read;
+                const open = sessOpen === s.id;
+                const detail = open ? demoSessDetail(s) : null;
                 return (
-                  <div className="sess-item" key={s.id}>
-                    <div className="row sess sess-link" tabIndex={0} role="link" title={t("Open in Sessions")}>
+                  <div className={`sess-item${open ? " open" : ""}`} key={s.id}>
+                    <div
+                      className="row sess sess-top"
+                      tabIndex={0}
+                      role="button"
+                      aria-expanded={open}
+                      title={t("Session details")}
+                      onClick={() => setSessOpen(open ? null : s.id)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          setSessOpen(open ? null : s.id);
+                        }
+                      }}
+                    >
                       <span className="ic">
                         <img
                           src={iconSrc(
@@ -1060,15 +1083,116 @@ export function UsageView() {
                         ) : null}
                       </div>
                       <div className={`cost${s.cost ? "" : " none"}`}>{fmtCost(s.cost)}</div>
-                      <span className="sess-go" aria-hidden>
+                      <span className={`sess-go${open ? " open" : ""}`} aria-hidden>
                         <svg viewBox="0 0 12 12" width={12} height={12}>
                           <path d="M4.5 2.5 8 6l-3.5 3.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
                         </svg>
                       </span>
                     </div>
+                    {detail ? (
+                      <div className="sess-detail">
+                        <div className="sess-line">
+                          <span className="k">{t("Time")}</span>
+                          <span className="v">
+                            {new Date(detail.start).toLocaleString()} – {new Date(detail.last).toLocaleString()}
+                          </span>
+                        </div>
+                        <div className="sess-line">
+                          <span className="k">{t("Folder")}</span>
+                          <span className="v">{detail.cwd}</span>
+                        </div>
+                        <div className="sess-line">
+                          <span className="k">{t("Session ID")}</span>
+                          <span className="v">{detail.id}</span>
+                          <button
+                            type="button"
+                            className="copy"
+                            title={t("Session id")}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              void navigator.clipboard?.writeText(detail.id);
+                            }}
+                          >
+                            <svg viewBox="0 0 16 16" width={12} height={12} aria-hidden>
+                              <rect x="5.5" y="5.5" width="7" height="7" rx="1.2" fill="none" stroke="currentColor" strokeWidth="1.5" />
+                              <path d="M3.5 10.5v-7A1.5 1.5 0 0 1 5 2h7" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                            </svg>
+                          </button>
+                        </div>
+                        <div className="sess-line">
+                          <span className="k">{t("Resume")}</span>
+                          <code>{detail.resume}</code>
+                          <button
+                            type="button"
+                            className="copy"
+                            title={t("Resume command")}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              void navigator.clipboard?.writeText(detail.resume);
+                            }}
+                          >
+                            <svg viewBox="0 0 16 16" width={12} height={12} aria-hidden>
+                              <rect x="5.5" y="5.5" width="7" height="7" rx="1.2" fill="none" stroke="currentColor" strokeWidth="1.5" />
+                              <path d="M3.5 10.5v-7A1.5 1.5 0 0 1 5 2h7" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                            </svg>
+                          </button>
+                        </div>
+                        <div className="sess-models">
+                          {detail.models.map((m) => (
+                            <Fragment key={m.model}>
+                              <span className="model">{m.model}</span>
+                              <span className="n">
+                                {t("{a} in · {b} out", { a: fmtN(m.input), b: fmtN(m.output) })}
+                                {m.cache_read ? ` · ${t("{n} cached", { n: fmtN(m.cache_read) })}` : ""}
+                              </span>
+                              <span className={`c${m.priced ? "" : " none"}`}>{m.priced ? fmtCost(m.cost) : "—"}</span>
+                            </Fragment>
+                          ))}
+                        </div>
+                        {detail.via.map((v, i) => (
+                          <div className="sess-line" key={i}>
+                            <span className="k">{i ? "" : t("Routed")}</span>
+                            <span className="v">
+                              {`${v.provider}/${v.model}`}
+                              {v.effort ? ` · ${v.effort}` : ""}
+                              {" · "}
+                              {t("{n} calls", { n: String(v.calls) })}
+                              {" · "}
+                              {t("{n} tokens", { n: fmtN(v.tokens) })}
+                            </span>
+                          </div>
+                        ))}
+                        <div className="sess-line">
+                          <span className="k">{t("File")}</span>
+                          <span className="v">{detail.path}</span>
+                        </div>
+                      </div>
+                    ) : null}
                   </div>
                 );
               })}
+              {sessHidden > 0 ? (
+                <button
+                  type="button"
+                  className="text sess-show-more"
+                  style={{ margin: "8px 12px 4px", alignSelf: "flex-start" }}
+                  onClick={() => setSessMore(true)}
+                >
+                  {t("Show more · {n} left", { n: String(sessHidden) })}
+                </button>
+              ) : sessMore && DEMO_SESSIONS_MORE.length ? (
+                <button
+                  type="button"
+                  className="text sess-show-more"
+                  style={{ margin: "8px 12px 4px", alignSelf: "flex-start" }}
+                  onClick={() => {
+                    setSessMore(false);
+                    setSessOpen(null);
+                  }}
+                >
+                  {t("Show less")}
+                </button>
+              ) : null}
             </div>
           </>
         ) : (
@@ -1316,9 +1440,32 @@ export function PluginsView() {
   const [query, setQuery] = useState("");
   const [mirror, setMirror] = useState(false);
   const [builtins, setBuiltins] = useState(BUILTINS_DEFAULT);
-  const [installed, setInstalled] = useState<{ pkg: string; name: string; off?: boolean; optsOpen?: boolean; opts?: string; optsErr?: string; optsSaved?: boolean }[]>([]);
+  const [installed, setInstalled] = useState<
+    {
+      pkg: string;
+      name: string;
+      off?: boolean;
+      optsOpen?: boolean;
+      opts?: string;
+      optsErr?: string;
+      optsSaved?: boolean;
+      /** Magpie movable: built-in subscription names this plugin can/does serve */
+      movable?: string[];
+      moved?: string[];
+    }[]
+  >([
+    // Demo seed: installed subscription with movable long-confirm (Magpie plugins.js)
+    {
+      pkg: "@magpie/demo-kimi",
+      name: "Kimi Code (demo)",
+      opts: "",
+      optsOpen: false,
+      movable: ["Kimi Code"],
+      moved: ["Kimi Code"],
+    },
+  ]);
   const [busy, setBusy] = useState<string | null>(null);
-  const [asking, setAsking] = useState<{ pkg: string; op: "remove" | "off" } | null>(null);
+  const [asking, setAsking] = useState<{ pkg: string; op: "remove" | "off" | "move" } | null>(null);
 
   useEffect(() => {
     try {
@@ -1534,10 +1681,19 @@ export function PluginsView() {
                 {installed.map((e) => (
                   <div className="row pref" key={e.pkg}>
                     <div className="who">
-                      <div className="name">{e.name}</div>
-                      <div className="sub">
-                        {e.pkg}
-                        {e.off ? ` · ${t("Off")}` : ""}
+                      <div className="name" style={{ display: "inline-flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
+                        <span>{e.name}</span>
+                        {e.moved?.length && !e.off ? (
+                          <span className="pm-chip moved" title={t("{names} runs on this plugin in place of the built-in", { names: e.moved.join(t(", ")) })}>
+                            <span className="dot" />
+                            <span>{t("Serves {names}", { names: e.moved.join(t(", ")) })}</span>
+                          </span>
+                        ) : null}
+                      </div>
+                      <div className={`sub${asking?.pkg === e.pkg ? " ask" : ""}`}>
+                        {asking?.pkg === e.pkg
+                          ? null
+                          : `${e.pkg}${e.off ? ` · ${t("Off")}` : ""}`}
                       </div>
                       {e.optsOpen ? (
                         <div className="pm-opts">
@@ -1618,22 +1774,48 @@ export function PluginsView() {
                         </div>
                       ) : null}
                       {asking?.pkg === e.pkg ? (
-                        <div className="pm-ask" role="group" aria-label={asking.op === "remove" ? t("Remove this plugin?") : t("Switch this plugin off?")}>
+                        <div
+                          className="pm-ask"
+                          role="group"
+                          aria-label={
+                            asking.op === "remove"
+                              ? t("Remove this plugin?")
+                              : asking.op === "move"
+                                ? t("Move {name} here", { name: (e.movable || e.moved || ["…"])[0] })
+                                : t("Switch this plugin off?")
+                          }
+                        >
                           <p className="pm-ask-say">
                             {asking.op === "remove"
                               ? t("Remove this plugin?")
-                              : t("Switch this plugin off?")}
+                              : asking.op === "move"
+                                ? t("Move {name} here", { name: (e.movable || ["Kimi Code"])[0] })
+                                : t("Switch this plugin off?")}
                           </p>
                           <p className="pm-ask-sub">
-                            {asking.op === "remove"
-                              ? demoCopy(
-                                  "演示：移除只从本页列表删掉，不碰磁盘。",
-                                  "Demo: remove only clears this page list — nothing on disk.",
-                                )
-                              : demoCopy(
-                                  "关掉后订阅账户会回到内置；演示仅本地标记 Off。",
-                                  "Off sends subscription accounts back to built-ins; demo only marks Off locally.",
-                                )}
+                            {asking.op === "move"
+                              ? t("{names} can run on it again, with the same accounts.", {
+                                  names: (e.movable || ["Kimi Code"]).join(t(", ")),
+                                })
+                              : asking.op === "remove"
+                                ? e.moved?.length
+                                  ? t(
+                                      "{names} goes back to the built-in, with its accounts, before the plugin is removed.",
+                                      { names: e.moved.join(t(", ")) },
+                                    )
+                                  : demoCopy(
+                                      "演示：移除只从本页列表删掉，不碰磁盘。",
+                                      "Demo: remove only clears this page list — nothing on disk.",
+                                    )
+                                : e.moved?.length
+                                  ? t(
+                                      "{names} goes back to the built-in, with its accounts, before the plugin is switched off.",
+                                      { names: e.moved.join(t(", ")) },
+                                    )
+                                  : demoCopy(
+                                      "关掉后订阅账户会回到内置；演示仅本地标记 Off。",
+                                      "Off sends subscription accounts back to built-ins; demo only marks Off locally.",
+                                    )}
                           </p>
                           <div className="pm-ask-acts">
                             <button
@@ -1641,20 +1823,41 @@ export function PluginsView() {
                               className="text primary"
                               onClick={() => {
                                 if (asking.op === "remove") setInstalled((list) => list.filter((x) => x.pkg !== e.pkg));
-                                else setInstalled((list) => list.map((x) => (x.pkg === e.pkg ? { ...x, off: true } : x)));
+                                else if (asking.op === "move")
+                                  setInstalled((list) =>
+                                    list.map((x) =>
+                                      x.pkg === e.pkg
+                                        ? { ...x, moved: x.movable || x.moved || ["Kimi Code"], off: false }
+                                        : x,
+                                    ),
+                                  );
+                                else setInstalled((list) => list.map((x) => (x.pkg === e.pkg ? { ...x, off: true, moved: [] } : x)));
                                 setAsking(null);
                               }}
                             >
-                              {t("Yes")}
+                              {asking.op === "move" ? t("Move") : t("Yes")}
                             </button>
                             <button type="button" className="text" onClick={() => setAsking(null)}>
-                              {t("Cancel")}
+                              {asking.op === "move" ? t("Not now") : t("Cancel")}
                             </button>
                           </div>
                         </div>
                       ) : null}
                     </div>
                     <div className="val" style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+                      {e.movable?.length && !e.off && !(e.moved && e.moved.length) && asking?.pkg !== e.pkg ? (
+                        <button
+                          type="button"
+                          className="text primary"
+                          title={t(
+                            "Runs {name} on this plugin in place of the built-in, with the same accounts; nothing changes if one doesn't work through it",
+                            { name: e.movable[0] },
+                          )}
+                          onClick={() => setAsking({ pkg: e.pkg, op: "move" })}
+                        >
+                          {busy === e.pkg ? t("Moving…") : t("Move {name} here", { name: e.movable[0] })}
+                        </button>
+                      ) : null}
                       <button
                         type="button"
                         className="text"
@@ -1674,7 +1877,11 @@ export function PluginsView() {
                             setInstalled((list) =>
                               list.map((x) => (x.pkg === e.pkg ? { ...x, off: false } : x)),
                             );
-                            setAsking(null);
+                            // Magpie again(): offer movable after switch-on
+                            if (e.movable?.length) setAsking({ pkg: e.pkg, op: "move" });
+                            else setAsking(null);
+                          } else if (e.moved?.length) {
+                            setAsking({ pkg: e.pkg, op: "off" });
                           } else {
                             setAsking({ pkg: e.pkg, op: "off" });
                           }
@@ -1682,7 +1889,18 @@ export function PluginsView() {
                       >
                         {e.off ? t("Enable") : t("Disable")}
                       </button>
-                      <button type="button" className="text" onClick={() => setAsking({ pkg: e.pkg, op: "remove" })}>
+                      <button
+                        type="button"
+                        className="text quiet"
+                        title={
+                          e.moved?.length
+                            ? t("{names} goes back to the built-in first, then the plugin is removed", {
+                                names: e.moved.join(t(", ")),
+                              })
+                            : undefined
+                        }
+                        onClick={() => setAsking({ pkg: e.pkg, op: "remove" })}
+                      >
                         {t("Remove")}
                       </button>
                     </div>

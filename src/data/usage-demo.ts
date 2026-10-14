@@ -313,3 +313,157 @@ export function ago(t: number): string {
 export function ledTime(t: number): string {
   return new Date(t).toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit", second: "2-digit" });
 }
+
+/** Heat day — Magpie /api/usage/heatmap shape (demo). */
+export type HeatDay = { date: string; calls: number; tokens: number; cost: number };
+
+/** ISO date local YYYY-MM-DD */
+export function isoDay(d: Date): string {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
+
+/** Last 53 weeks Mon→Sun grid ending this week (Magpie #1369). */
+export function buildDemoHeat(): { from: string; to: string; days: HeatDay[] } {
+  const today = new Date();
+  today.setHours(12, 0, 0, 0);
+  // end = end of current week (Sunday), Magpie uses gateway TZ; demo local
+  const dow = (today.getDay() + 6) % 7; // Mon=0
+  const end = new Date(today);
+  end.setDate(today.getDate() + (6 - dow));
+  const start = new Date(end);
+  start.setDate(end.getDate() - 53 * 7 + 1); // 53 weeks inclusive of end week
+  // align start to Monday
+  const sd = (start.getDay() + 6) % 7;
+  start.setDate(start.getDate() - sd);
+
+  const days: HeatDay[] = [];
+  for (const d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+    const date = isoDay(d);
+    // deterministic pseudo activity — denser recent weeks
+    const age = Math.floor((end.getTime() - d.getTime()) / 86400000);
+    const seed = (d.getFullYear() * 372 + d.getMonth() * 31 + d.getDate()) % 97;
+    const active = seed % 5 !== 0 && (age < 40 || seed % 3 === 0);
+    if (!active) {
+      days.push({ date, calls: 0, tokens: 0, cost: 0 });
+      continue;
+    }
+    const calls = 1 + (seed % 12) + (age < 14 ? seed % 8 : 0);
+    const tokens = calls * (800 + (seed % 40) * 120);
+    const cost = Math.round(tokens * 0.0000032 * 10000) / 10000;
+    days.push({ date, calls, tokens, cost });
+  }
+  return { from: isoDay(start), to: isoDay(end), days };
+}
+
+/** Quartile / share levels — Magpie sessLevels */
+export function heatLevels(values: number[]): (v: number) => number {
+  const nz = values.filter((v) => v > 0).sort((a, b) => a - b);
+  if (!nz.length) return () => 0;
+  if (nz.length < 8) {
+    const most = nz[nz.length - 1];
+    return (v) => (v <= 0 ? 0 : Math.min(4, Math.max(1, Math.ceil((4 * v) / most - 1e-9))));
+  }
+  const q = (p: number) => nz[Math.min(nz.length - 1, Math.floor(p * nz.length))];
+  const [a, b, c, top] = [q(0.25), q(0.5), q(0.75), nz[nz.length - 1]];
+  return (v) => (v <= 0 ? 0 : v >= top ? 4 : v <= a ? 1 : v <= b ? 2 : v <= c ? 3 : 4);
+}
+
+export type SessDetail = {
+  id: string;
+  start: number;
+  last: number;
+  cwd: string;
+  resume: string;
+  path: string;
+  models: { model: string; input: number; output: number; cache_read: number; cost: number; priced: boolean }[];
+  via: { provider: string; model: string; effort?: string; calls: number; tokens: number }[];
+};
+
+export function demoSessDetail(s: (typeof DEMO_SESSIONS)[number]): SessDetail {
+  return {
+    id: `sess_${s.id}_demo`,
+    start: s.last - 45 * 60_000,
+    last: s.last,
+    cwd: s.cwd.startsWith("~") ? s.cwd : `/home/demo/${s.cwd}`,
+    resume: s.agent === "claude" ? `claude --resume ${s.id}` : `codex resume ${s.id}`,
+    path: `~/.${s.agent === "claude" ? "claude" : s.agent}/projects/${s.id}.jsonl`,
+    models: [
+      {
+        model: s.models.split("→")[0].trim(),
+        input: s.input,
+        output: s.output,
+        cache_read: s.cache_read,
+        cost: s.cost,
+        priced: true,
+      },
+    ],
+    via: [
+      {
+        provider: s.agent === "codex" ? "openai" : "anthropic",
+        model: s.models.split("→").pop()!.trim(),
+        effort: s.agent === "claude" ? "high" : undefined,
+        calls: 3 + (s.id.charCodeAt(1) % 5),
+        tokens: s.input + s.output,
+      },
+    ],
+  };
+}
+
+/** Extra sessions for Show more paging demo */
+export const DEMO_SESSIONS_MORE: typeof DEMO_SESSIONS = [
+  {
+    id: "s5",
+    title: "Heatmap scroll keep-end",
+    agent: "claude",
+    icon: "claude",
+    cwd: "internal/usage",
+    models: "claude-sonnet-4-5",
+    last: Date.now() - 5 * 86400_000,
+    input: 33_000,
+    output: 7_100,
+    cache_read: 4_000,
+    cost: 0.08,
+  },
+  {
+    id: "s6",
+    title: "Routing stage wire",
+    agent: "codex",
+    icon: "codex",
+    cwd: "assets",
+    models: "gpt-5",
+    last: Date.now() - 8 * 86400_000,
+    input: 21_000,
+    output: 4_400,
+    cache_read: 0,
+    cost: 0.05,
+  },
+  {
+    id: "s7",
+    title: "Providers fold persist",
+    agent: "claude",
+    icon: "claude",
+    cwd: "src/pages",
+    models: "claude-haiku-4-5",
+    last: Date.now() - 11 * 86400_000,
+    input: 15_000,
+    output: 3_200,
+    cache_read: 2_100,
+    cost: 0.03,
+  },
+  {
+    id: "s8",
+    title: "(no prompt)",
+    agent: "pi",
+    icon: "generic",
+    cwd: "~",
+    models: "llama3.2",
+    last: Date.now() - 14 * 86400_000,
+    input: 8_000,
+    output: 1_100,
+    cache_read: 0,
+    cost: 0,
+  },
+];

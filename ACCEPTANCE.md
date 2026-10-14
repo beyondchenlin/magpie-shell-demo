@@ -1,28 +1,28 @@
 # Acceptance — magpie-shell-demo
 
-**Status: `AGENTS_USAGE_PARTIAL`** — **v0.1.16** (53e8361)
+**Status: `HEATMAP_ROUTING_PARTIAL`** — **v0.1.17**
 
 ## 本批
 
 | 区 | 内容 |
 |----|------|
-| Usage Requests | ledger KPI + `table.led` 行展开 + pager（演示数据可关） |
-| Usage Sessions | `.stats.six` 6 KPI + sess-list 行 |
-| Usage Context | `context.css` agent cards（ring/scores/tags/facts/mix） |
-| Plugins | Disable → `.pm-ask` 确认；Install busy |
-| Agents | Manage 多 agent（Cursor/Claude/Codex/OpenCode/Pi） |
-| Providers | Accounts/Models fold |
-| Routing | groups + ModelPop + Conditions |
+| Usage heatmap | Magpie `#ledHeat` 53 周网格 · Tokens/Requests/Cost segs · tip · Less/More · scroll keep-end |
+| Sessions | 行展开 `sess-detail`（Time/Folder/ID/Resume/models/via/File）· Show more / Show less 分页 |
+| Plugins movable | Serves chip · Move here 长确认文案 · Disable/Remove 带回内置长文案（演示） |
+| Routing | demo live 请求舞台文案 · 账号行 + bar · stats 随 turn |
+| Providers | `localStorage` 持久 folds/账号 · 嵌套 Add account 三步向导 |
+| Agents | Get started Connect 嵌套 · Connect/Disconnect · Claude Relocate 嵌套 |
 
 ## 链接
 
-- [Release v0.1.16](https://github.com/beyondchenlin/magpie-shell-demo/releases/tag/v0.1.16)
-- [Portable 0.1.16](https://github.com/beyondchenlin/magpie-shell-demo/releases/download/v0.1.16/Magpie-Shell-Demo-0.1.16-portable.exe)
-- 在线预览：Vercel **402**（免费部署日额度满）；本地 `npm run preview`
+- [Release v0.1.17](https://github.com/beyondchenlin/magpie-shell-demo/releases/tag/v0.1.17)（打包后填）
+- [Portable 0.1.17](https://github.com/beyondchenlin/magpie-shell-demo/releases/download/v0.1.17/Magpie-Shell-Demo-0.1.17-portable.exe)
+- 在线预览：尝试 Vercel；若 402 则用 portable / `npm run preview`
 
 ## 仍缺
 
-- Usage heatmap / 真 ledger API / Sessions 详情页跳转
-- Plugins 真 npm 安装与 movable 订阅长文案
-- Routing 真请求舞台 / Providers 真保存
-- Setup.exe 本机 wine 异常（请用 portable）；Privacy 等见 PRIVACY_NESTED_PARTIAL
+- 真 ledger/heatmap API；Sessions 跳转 Sessions 插件页
+- Plugins 真 npm / Bun 安装；movable 真 provider/move API
+- Routing 真 gateway trace / 飞鸟 timing 全对齐
+- Providers 真保存；Agents 真接线 / relocate-claude API
+- Setup.exe wine；Privacy 等见既有 PARTIAL
