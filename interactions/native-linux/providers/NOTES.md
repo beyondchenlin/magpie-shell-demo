@@ -38,3 +38,5 @@ System One 空模型 Detect：橙字「A decision API is asked with one model…
 | 17 | favicon need URL | From the website · 红字 type base URL first |
 | 18 | Discard | Discard unsaved changes? · Cancel / 红 Discard |
 | 19 | search→Plugins | miss 链 look for a plugin → Plugins Discover 搜同词 |
+
+| 20–21 | Import Alma/Codex | Import… 应用列表嵌套 |
