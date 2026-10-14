@@ -1,3 +1,7 @@
+## v0.1.49 PLUGINS_OFF_DONE
+- Native `plugins/41–54` consumed: Switch off → Off/Switch on; Sign in + not-signed-in (mock); Remove tip/confirm (Cancel focused)/Cancel keep; Check tip → Checking… → Up to date chip + toast; Removing… → removed toast → empty Installed (no Check footer).
+- Still mock: true npm off/remove/update, plugin OAuth. Allowances quota **N/A**. Skip Vercel 402.
+
 ## v0.1.48 PLUGINS_OFF_DONE
 - Native `plugins/41–46`: Switch off (no confirm when no moved) → sub **Off** + Switch on; Switch on restores **{name}: not signed in** + purple Sign in; Provider chip stays while Off; Remove tip + `confirmRemoval` Cancel (45–46).
 - Check for updates nest shot still pending recorder — busy **Checking…** + toast `Every plugin is up to date` already from Magpie source (v0.1.46).

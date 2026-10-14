@@ -67,10 +67,32 @@ Clicking its Install does not open a confirm or cancel dialog, and no second win
 | 39 | Toast gone by itself. Card stays check + Installed. Search still `opencode`. |
 | 40 | Installed tab (white pill **Installed · 1**). One row, no sort header. Left to right: icon, **OpenCode Zen Free**, `v0.1.1`, fork mark **Provider**, then **Switch off** and **Remove**. Footer, left **Plugins run on Bun 1.4.2**, right **Check for updates**. Switch off, Remove, and Check for updates were not clicked. Search still shows `opencode` on this tab. Mirror still **Off**. |
 
+## Installed row (shots 41–54)
+
+OpenCode Zen Free v0.1.1 was still the only Installed row (shot 40). Controls, left to right then the footer: **Switch off**, **Remove**, then **Check for updates**. **Check for updates** was used after Cancel and before the confirming Remove: the footer is only there while a plugin is installed, and the empty state has no such button. **Sign in** was not clicked. No key or account was entered.
+
+Switch off does not ask. The row goes Off at once (name dims, subtitle **Off**, the same control now reads **Switch on**). Clicking **Switch on** turns it back on. That is when a blue **Sign in** pill appears, with **OpenCode Zen Free: not signed in** under the name. It was not on the row before the off/on cycle. Sign in was left alone.
+
+| shot | what |
+|---|---|
+| 41 | Pointer on **Switch off**. Hover fills a pale pill behind the words. No tooltip. |
+| 42 | After the click. Subtitle **Off**, name dimmed. Control reads **Switch on** (pale pill, pointer still on it). No confirm. |
+| 43 | **Switch on** clicked. Name is dark again, control reads **Switch off**. New blue **Sign in** and the line **OpenCode Zen Free: not signed in**. Not clicked. |
+| 44 | Pointer on **Remove** (pale pill). Dark tooltip, clipped by the window's right edge. The tooltip window continues: **Removes the plugin and what it installed; its sign-ins are kept until you sign out**. |
+| 45 | Click opens an in-window confirm (page dimmed, not a second window). Title **Remove OpenCode Zen Free?** Body is the same sentence as the tooltip. **Cancel** (focus ring) and a red **Remove**. |
+| 46 | **Cancel**. Dialog gone. Plugin still installed. **Remove** keeps a blue focus ring. |
+| 47 | Pointer on **Check for updates** (pale pill). Tooltip clipped at the right edge. Full line: **Ask npm now for each plugin's newest version**. |
+| 48 | Click. The control swaps to a spinner and **Checking…**. No dialog. Row unchanged (still no Up to date chip). |
+| 49 | Spinner gone, label back to **Check for updates**. Pale chip **Up to date** sits after `v0.1.1`. Green toast, lower left, no buttons: **Every plugin is up to date**. |
+| 50 | Toast gone by itself. Chip **Up to date** stays. |
+| 51 | Remove opened again. Pointer on the red **Remove**. **Cancel** still has the focus ring. Same title and body. |
+| 52 | Confirm. Dialog closes. The row control reads **Removing…** (Sign in and Switch off stay). Tab still **Installed · 1**. |
+| 53 | Row gone. Tab is **Installed** with no count. Empty state: tray icon, **No plugins yet**, **Install a subscription or a middleware from Discover; a subscription signs in from here.**, pill **Discover plugins** (not clicked). Green toast **OpenCode Zen Free removed**. Search still `opencode`. Mirror still **Off**. |
+| 54 | Toast gone. Empty state remains. **Check for updates** is not on this empty page. |
+
 ## Left state
 
-Plugins, **Installed · 1**, OpenCode Zen Free v0.1.1 on the Installed row. Search still `opencode`. Mirror **Off**. Switch off / Remove / Check for updates not used. Magpie left running (front window 752×652 at +610+300, pid 560329). Close was not used.
-
+Plugins, **Installed** with no count. Empty: No plugins yet / Discover plugins. Search still `opencode`. Mirror **Off**. OpenCode Zen Free was removed (demo plugin). Sign in was never used. Magpie left running (front window 752×652 at +610+300, pid 560329). Close was not used.
 
 Demo v0.1.22: Suggested only when hits; On npm standing + Mirror set; folder dialog Cancel leaves field (shots 20–34).
 
@@ -80,17 +102,19 @@ Demo v0.1.38: per-card Install — 35–40 Suggested hover, Getting Bun…, toas
 
 Demo v0.1.45: PLUGINS_INSTALL — 35–40 Getting Bun… / toast / Installed row Bun 1.4.2.
 
-## Switch off / Remove nest (shots 41–44)
+Native Installed row — 41–54 Switch off/on (Sign in appears, not used), Remove Cancel then confirm (Removing…, removed toast, empty), Check for updates (Checking…, Up to date chip + toast).
 
-Installed · 1, OpenCode Zen Free (no moved accounts). Search still `opencode`. Mirror Off.
+## Check for updates + Remove commit (shots 47–54)
 
 | shot | what |
 |---|---|
-| 41 | Hover on **Switch off** (pale → pressed look). No tooltip on Switch off. Remove + Check for updates still idle. |
-| 42 | Click Switch off. No confirm (no moved). Sub line becomes **Off**. Button becomes **Switch on**. Provider chip stays. No toast. |
-| 43 | Switch on restored. Sub: dot + **OpenCode Zen Free: not signed in**. Purple **Sign in** + Switch off + Remove. |
-| 44 | Hover **Remove**: host tooltip "Removes the plugin and what it installed; its sign-ins are kept until you sign out". Sign in still shown. |
-| 45 | Click Remove → Magpie `confirmRemoval` dialog: **Remove OpenCode Zen Free?** + consequence + Cancel / red **Remove**. Backdrop blur. |
-| 46 | Cancel. Dialog gone. Row unchanged (Sign in · Switch off · Remove). Check for updates still not clicked (source-aligned Checking… toast in demo since v0.1.46). |
+| 47 | Hover **Check for updates**: tip "Ask npm now for each plugin's newest version". |
+| 48 | Click → spinner + **Checking…** (button busy). |
+| 49 | Done: soft chip **Up to date** on the row; green toast **Every plugin is up to date**; Check label restored. |
+| 50 | Toast dismissed; Up to date chip remains. |
+| 51 | Remove confirm again (red Remove click path). |
+| 52 | Confirm → row **Removing…** (brief). |
+| 53 | Toast **{name} removed**; Installed empties. |
+| 54 | Empty: logo · **No plugins yet** · Discover copy · **Discover plugins**. No Bun/Check footer while empty. Search may still hold `opencode`. |
 
-Demo v0.1.48: PLUGINS_OFF_DONE — 41–46 Switch off / Off / Sign in / Remove tip+confirm+Cancel.
+Demo v0.1.49: PLUGINS_OFF_DONE — 41–54 full Switch/Remove/Check nest.

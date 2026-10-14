@@ -1960,6 +1960,8 @@ export function PluginsView({
       off?: boolean;
       /** Magpie subsOf: provider plugin not signed in → Sign in (shots 43–44) */
       signedIn?: boolean;
+      /** Magpie checked.by after Check for updates (shots 49–50) */
+      checkStatus?: "current" | "update" | "unknown";
       optsOpen?: boolean;
       opts?: string;
       optsErr?: string;
@@ -2586,6 +2588,14 @@ export function PluginsView({
                       <div className="name" style={{ display: "inline-flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
                         <span>{e.name}</span>
                         {e.ver ? <span className="pm-ver">{e.ver.startsWith("v") ? e.ver : `v${e.ver}`}</span> : null}
+                        {e.checkStatus === "current" && e.ver ? (
+                          <span
+                            className="pm-chip soft"
+                            title={t("v{v} is the newest on npm", { v: e.ver.replace(/^v/, "") }) + "\n" + t("Last checked {time}", { time: new Date().toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" }) })}
+                          >
+                            {t("Up to date")}
+                          </span>
+                        ) : null}
                         {e.kind ? (
                           <span
                             className={`pm-chip kind${e.kind === "Provider" ? " pv" : e.kind === "Middleware" ? " mw" : e.kind === "Agent" ? " ag" : ""}`}
@@ -2852,6 +2862,7 @@ export function PluginsView({
                       <button
                         type="button"
                         className="text quiet"
+                        disabled={busy === "remove:" + e.pkg || busy === e.pkg}
                         title={
                           e.moved?.length
                             ? t("{names} goes back to the built-in first, then the plugin is removed", {
@@ -2864,7 +2875,7 @@ export function PluginsView({
                           else setRemoveConfirm({ pkg: e.pkg, name: e.name });
                         }}
                       >
-                        {t("Remove")}
+                        {busy === "remove:" + e.pkg ? t("Removing…") : t("Remove")}
                       </button>
                     </div>
                   </div>
@@ -2883,6 +2894,7 @@ export function PluginsView({
                     setCheckingUpdates(true);
                     window.setTimeout(() => {
                       setCheckingUpdates(false);
+                      setInstalled((list) => list.map((x) => ({ ...x, checkStatus: "current" as const })));
                       onStatus?.(t("Every plugin is up to date"), "ok", 2500);
                     }, 900);
                   }}
@@ -2910,6 +2922,13 @@ export function PluginsView({
           aria-labelledby="pluginRemoveTitle"
           aria-describedby="pluginRemoveMsg"
           style={{ zIndex: 50 }}
+          ref={(el) => {
+            /* Magpie confirmAction: Cancel focused (shot 45) */
+            if (el) {
+              const c = el.querySelector<HTMLButtonElement>("button.text:not(.primary)");
+              requestAnimationFrame(() => c?.focus({ preventScroll: true }));
+            }
+          }}
           onCancel={(e) => {
             e.preventDefault();
             setRemoveConfirm(null);
@@ -2924,18 +2943,24 @@ export function PluginsView({
           </p>
           <div className="bar">
             <span className="grow" />
-            <button type="button" className="text" onClick={() => setRemoveConfirm(null)}>
+            <button type="button" className="text" autoFocus onClick={() => setRemoveConfirm(null)}>
               {t("Cancel")}
             </button>
             <button
               type="button"
               className="text primary danger-fill"
+              disabled={!!busy}
               onClick={() => {
                 const pkg = removeConfirm.pkg;
                 const name = removeConfirm.name;
-                setInstalled((list) => list.filter((x) => x.pkg !== pkg));
                 setRemoveConfirm(null);
-                onStatus?.(t("{name} removed", { name }), "ok", 2500);
+                setBusy("remove:" + pkg);
+                // Magpie act remove → Removing… then toast (shots 52–53)
+                window.setTimeout(() => {
+                  setInstalled((list) => list.filter((x) => x.pkg !== pkg));
+                  setBusy(null);
+                  onStatus?.(t("{name} removed", { name }), "ok", 2500);
+                }, 420);
               }}
             >
               {t("Remove")}
