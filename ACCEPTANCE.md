@@ -1,3 +1,9 @@
+## v0.1.53 DETECT_APIS_DONE
+
+- Native providers **44–53** Detect APIs nest consumed (amber tip, Asking…, no-model / dial refused rows, Discard).
+- Custom More endpoints + Web search; vendor Endpoints Test shell.
+- Still mock: true HTTP probe / OAuth. Allowances N/A.
+
 ## v0.1.52 DETECT_FETCH_DONE
 
 - Custom Detect APIs / Each / Fetch models UI states aligned to Magpie (NOTES 06–07 + `app.js`); no real probe/list.

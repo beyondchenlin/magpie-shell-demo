@@ -150,3 +150,36 @@ Opened from the catalog foot (33). Add was never clicked. No key typed.
 - Detect APIs：空 URL warn / System One Each / Asking… / keyless None answered / mock ep+Use these（无真探测）
 - Custom Models + Fetch models：Asking the vendor… / chip Pick all·none（无真 list）
 - Gateway `?gw=off|older` 未运行 / 接管文案
+
+## demo 对齐（v0.1.53）
+- DETECT_APIS_DONE：原生 44–53 全消费；More endpoints + Web search；厂商 Endpoints Test 壳
+
+## Custom provider Detect APIs (44–53)
+
+Opened from **+ Custom provider** at the catalog foot (the Ollama editor that was still up closed with Escape; it was clean, no Discard). Default protocol is **OpenAI compatible**, URL placeholder `https://…/v1`. No API key was typed. Add was not clicked. Nothing was saved: `providers.json` was not created.
+
+06 quoted a hover tooltip "Type the base URL first". On this build that string is not the hover title. Hover (44) is the button title, clipped at the left of the window the same way 06 was: "…smallest request to each API (OpenAI chat completions, Responses, Anthropic messages, Gemini generateContent) at this URL, to see which answer". A click with an empty URL paints the amber line under the buttons (45).
+
+| shot | what |
+|---|---|
+| 44 | Hover Detect APIs, URL empty. Native title tooltip, left edge cut off by the window. |
+| 45 | Click Detect APIs, URL empty. Amber **Type the base URL first** under the button. API key still the placeholder. |
+| 46 | Base URL typed `http://127.0.0.1:9`. The amber line stays; typing does not clear it. |
+| 47 | Detect with that URL and no model. One frame of **Asking each API…** (the line replaces the amber tip). Port 9 refuses at once, so loading is a single frame. |
+| 48 | Fail, no model. Rows OpenAI, Responses, Anthropic, Gemini, each `http://127.0.0…` and **no model to try: type one the vendor serves**. Under them: **None answered, and no API key is typed: paste the key under API key and detect again**. No Use these. |
+| 49 | Model field `demo` (not a key), Detect again. **Asking each API…** and the previous rows are gone while it asks. |
+| 50 | Fail, model `demo`. Same four rows, each **dial tcp 127.0.0.1:9: connect: connection refu…** (ellipsis in the row). Same no-key line. No Use these. |
+| 51 | Hover a refused row. Title shows the full `dial tcp 127.0.0.1:9: connect: connection refused`. |
+| 52 | Cancel on the dirty draft. **Discard** / "Discard unsaved changes? Your changes will be lost." Dialog Cancel stays (it had focus). Red Discard was clicked. |
+| 53 | Catalog foot again. Custom provider is only the add row (focus ring). No provider added. |
+
+Each picked model was not clicked (07 is that empty-list warning, on System One). The key field was not filled, so the "paste the key" line was left as the hint. Get a key was not clicked.
+
+## demo 对齐（Detect nest · v0.1.53 DETECT_APIS_DONE）
+- 空 URL：hover 长 title（左缘裁切，同 06）；点击后行下琥珀色 Type the base URL first，输入 URL 不清除
+- `http://127.0.0.1:9`：Asking each API… → 无模型四行 no model to try；填 demo 后四行 dial connection refused；无 key 提示；无 Use these
+- 脏草稿 Cancel → Discard；未 Add；providers.json 未创建
+
+## Left state (after 53)
+
+Providers tab, add sheet, foot of the catalog (relays, On this machine, Remote magpie, + Custom provider focused). Search empty. No provider added, no key stored, no file chosen. Magpie still running: window 752×652 at +610+300 (id 27262991). Not quit.

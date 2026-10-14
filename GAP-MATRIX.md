@@ -1,3 +1,8 @@
+## v0.1.53 DETECT_APIS_DONE
+- Native `providers/44–53` consumed: Detect hover long title (44); empty click amber **Type the base URL first** under button (45); URL type keeps amber (46); Asking each API… (47/49); no-model four rows + keyless none (48); model `demo` → dial tcp refused truncated + hover full (50–51); dirty Discard (52); catalog foot Custom only (53).
+- Also: Custom More endpoints + Web search; vendor Endpoints Test shell (from Magpie source).
+- No Use these when none answer. Still mock: true HTTP probe / Add persist / OAuth. Allowances **N/A**. Skip Vercel 402.
+
 ## v0.1.52 DETECT_FETCH_DONE
 - Custom **Detect APIs** shell states from Magpie `detectAPIs` + NOTES 06/07: empty URL → `detect-say warn` "Type the base URL first"; System One Each → decision warn; no picks → Pick models first; busy "Asking each API…"; keyless → None answered (paste key); with key → mock `.ep` rows + **Use these** → Taken · save to keep (no real probe).
 - Custom **Models** + **Fetch models** (`addFormModels`): no URL → err; busy "Asking the vendor…"; mock chip list + Pick all/none / `{n} of {all}` (nothing saved).

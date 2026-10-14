@@ -478,13 +478,21 @@ function ProviderEditorModal({ state, onClose, onAdd }: EditorProps) {
   const [detectHint, setDetectHint] = useState("");
   const [detectBusy, setDetectBusy] = useState(false);
   /** Magpie detect-out: say / asking / none / results (shell only — no real probe). */
-  type DetectRow = { protocol: string; label: string; base: string; ok: boolean; ms?: number; error?: string };
+  type DetectRow = {
+    protocol: string;
+    label: string;
+    base: string;
+    ok: boolean;
+    ms?: number;
+    error?: string;
+    errorTitle?: string;
+  };
   type DetectView =
     | null
     | { mode: "say"; text: string; tone: "warn" | "err" }
     | { mode: "asking" }
     | { mode: "none"; keyless: boolean }
-    | { mode: "results"; rows: DetectRow[]; taken: boolean };
+    | { mode: "results"; rows: DetectRow[]; taken: boolean; keyless?: boolean };
   const [detectView, setDetectView] = useState<DetectView>(null);
   const [modelIds, setModelIds] = useState("");
   const [fetchBusy, setFetchBusy] = useState(false);
@@ -495,6 +503,19 @@ function ProviderEditorModal({ state, onClose, onAdd }: EditorProps) {
     | { mode: "err"; text: string }
     | { mode: "list"; models: { id: string; name?: string }[]; filter: string; picked: string[] };
   const [fetchView, setFetchView] = useState<FetchView>(null);
+  const [moreOpen, setMoreOpen] = useState(false);
+  const [epChat, setEpChat] = useState("");
+  const [epAnthropic, setEpAnthropic] = useState("");
+  const [epResponses, setEpResponses] = useState("");
+  const [epGemini, setEpGemini] = useState("");
+  const [modelsURL, setModelsURL] = useState("");
+  const [catalog, setCatalog] = useState("");
+  const [balanceURL, setBalanceURL] = useState("");
+  const [balancePath, setBalancePath] = useState("");
+  const [webSearch, setWebSearch] = useState(false);
+  type EpTest = { protocol: string; label: string; url: string; status: "idle" | "wait" | "ok" | "bad"; text: string };
+  const [epTests, setEpTests] = useState<EpTest[]>([]);
+  const [epTestBusy, setEpTestBusy] = useState(false);
   const [iconsOpen, setIconsOpen] = useState(false);
   const [iconQ, setIconQ] = useState("");
   const [pickedIcon, setPickedIcon] = useState(state.icon || "aside");
@@ -765,6 +786,7 @@ function ProviderEditorModal({ state, onClose, onAdd }: EditorProps) {
                         onClick={() => {
                           const base = baseUrl.trim();
                           if (!base) {
+                            // 45: amber under buttons — Magpie detect-say warn
                             setDetectView({
                               mode: "say",
                               text: t("Type the base URL first"),
@@ -773,54 +795,58 @@ function ProviderEditorModal({ state, onClose, onAdd }: EditorProps) {
                             setDetectHint("");
                             return;
                           }
+                          // 47/49: Asking replaces prior tip/rows
                           setDetectBusy(true);
                           setDetectHint("");
                           setDetectView({ mode: "asking" });
+                          const model = tryModel.trim();
                           window.setTimeout(() => {
                             setDetectBusy(false);
-                            // Shell only: no real probe. Keyless → Magpie noneAnswered copy.
-                            if (!key.trim()) {
-                              setDetectView({ mode: "none", keyless: true });
-                              return;
-                            }
                             const root = base.replace(/\/+$/, "");
+                            const hostPort = (() => {
+                              try {
+                                const u = new URL(root);
+                                return u.host || root;
+                              } catch {
+                                return root.replace(/^https?:\/\//, "");
+                              }
+                            })();
+                            // Magpie DetectBase per proto from typed URL (demo: same root shown truncated)
+                            const bases = {
+                              openai: root,
+                              responses: root,
+                              anthropic: root,
+                              gemini: root,
+                            };
+                            const labels: { protocol: string; label: string }[] = [
+                              { protocol: "openai", label: "OpenAI" },
+                              { protocol: "responses", label: "Responses" },
+                              { protocol: "anthropic", label: "Anthropic" },
+                              { protocol: "gemini", label: "Gemini" },
+                            ];
+                            // 48: no model → each row "no model to try…"; 50: model set → dial tcp refused
+                            const refusedFull = `dial tcp ${hostPort}: connect: connection refused`;
+                            // native truncates mid-word: "connection refu…"
+                            const refusedNative = `dial tcp ${hostPort}: connect: connection refu…`;
+                            const errText = model
+                              ? refusedNative
+                              : t("no model to try: type one the vendor serves");
+                            const errTitle = model ? refusedFull : errText;
+                            const rows = labels.map((x) => ({
+                              protocol: x.protocol,
+                              label: x.label,
+                              base: bases[x.protocol as keyof typeof bases],
+                              ok: false,
+                              error: errText,
+                              errorTitle: errTitle,
+                            }));
                             setDetectView({
                               mode: "results",
                               taken: false,
-                              rows: [
-                                {
-                                  protocol: "openai",
-                                  label: "OpenAI",
-                                  base: root.includes("/v1") ? root : root + "/v1",
-                                  ok: true,
-                                  ms: 42,
-                                },
-                                {
-                                  protocol: "responses",
-                                  label: "Responses",
-                                  base: root.includes("/v1") ? root : root + "/v1",
-                                  ok: true,
-                                  ms: 51,
-                                },
-                                {
-                                  protocol: "anthropic",
-                                  label: "Anthropic",
-                                  base: root.replace(/\/v1(beta)?$/, "") || root,
-                                  ok: false,
-                                  error: "404",
-                                },
-                                {
-                                  protocol: "gemini",
-                                  label: "Gemini",
-                                  base: root.includes("v1beta")
-                                    ? root
-                                    : root.replace(/\/v1$/, "/v1beta") || root + "/v1beta",
-                                  ok: false,
-                                  error: "404",
-                                },
-                              ],
+                              rows,
+                              keyless: !key.trim(),
                             });
-                          }, 480);
+                          }, model ? 280 : 160);
                         }}
                       >
                         {detectBusy ? "…" : t("Detect APIs")}
@@ -942,7 +968,16 @@ function ProviderEditorModal({ state, onClose, onAdd }: EditorProps) {
                                   {r.label}
                                 </span>
                                 <code>{r.base || "—"}</code>
-                                <span className={`res ${r.ok ? "ok" : "bad"}`}>
+                                <span
+                                  className={`res ${r.ok ? "ok" : "bad"}`}
+                                  title={
+                                    r.ok
+                                      ? r.ms != null
+                                        ? `${r.ms} ms`
+                                        : "ok"
+                                      : r.errorTitle || r.error || ""
+                                  }
+                                >
                                   <svg viewBox="0 0 12 12" width={10} height={10} aria-hidden>
                                     {r.ok ? (
                                       <path
@@ -997,9 +1032,13 @@ function ProviderEditorModal({ state, onClose, onAdd }: EditorProps) {
                                 </button>
                               ) : (
                                 <span className="hint">
-                                  {t(
-                                    "None answered: check the URL and the key, or type a model the vendor serves",
-                                  )}
+                                  {detectView.keyless || !key.trim()
+                                    ? t(
+                                        "None answered, and no API key is typed: paste the key under API key and detect again",
+                                      )
+                                    : t(
+                                        "None answered: check the URL and the key, or type a model the vendor serves",
+                                      )}
                                 </span>
                               )}
                             </div>
@@ -1671,7 +1710,234 @@ function ProviderEditorModal({ state, onClose, onAdd }: EditorProps) {
               </>
             ) : null}
           </div>
-          <div className="bar">
+            {kind === "custom" ? (
+              <Field
+                label={t("Web search")}
+                hint={t(
+                  "For a relay in front of Anthropic's or OpenAI's own API: Claude Code's WebSearch and Codex's web_search go to it as they were sent, not through magpie's search. magpie doesn't automatically search with it for other models, but you can name it as the searcher.",
+                )}
+              >
+                <label className="tick" style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13 }}>
+                  <input
+                    type="checkbox"
+                    checked={webSearch}
+                    onChange={(e) => setWebSearch(e.target.checked)}
+                  />
+                  <span>{t("Searches the web by itself")}</span>
+                </label>
+              </Field>
+            ) : null}
+
+            {kind === "custom" ? (
+              <details
+                className="more"
+                open={moreOpen}
+                onToggle={(e) => setMoreOpen(e.currentTarget.open)}
+              >
+                <summary>{t("More endpoints")}</summary>
+                <div className="inner" style={{ display: "flex", flexDirection: "column", gap: 10, paddingTop: 8 }}>
+                  {api !== "openai" ? (
+                    <Field
+                      label={t("OpenAI URL")}
+                      hint={t("if the vendor also serves chat completions")}
+                    >
+                      <input
+                        type="url"
+                        placeholder="https://…/v1"
+                        value={epChat}
+                        onChange={(e) => setEpChat(e.target.value)}
+                      />
+                    </Field>
+                  ) : null}
+                  {api !== "anthropic" ? (
+                    <Field
+                      label={t("Anthropic URL")}
+                      hint={t("if the vendor also serves Anthropic messages")}
+                    >
+                      <input
+                        type="url"
+                        placeholder="https://…"
+                        value={epAnthropic}
+                        onChange={(e) => setEpAnthropic(e.target.value)}
+                      />
+                    </Field>
+                  ) : null}
+                  {api !== "responses" ? (
+                    <Field
+                      label={t("Responses URL")}
+                      hint={t(
+                        "if the vendor serves the OpenAI Responses API (Codex uses it natively)",
+                      )}
+                    >
+                      <input
+                        type="url"
+                        placeholder="https://…/v1"
+                        value={epResponses}
+                        onChange={(e) => setEpResponses(e.target.value)}
+                      />
+                    </Field>
+                  ) : null}
+                  {api !== "gemini" ? (
+                    <Field
+                      label={t("Gemini URL")}
+                      hint={t(
+                        "if the vendor serves Google's Gemini API (generateContent)",
+                      )}
+                    >
+                      <input
+                        type="url"
+                        placeholder="https://…/v1beta"
+                        value={epGemini}
+                        onChange={(e) => setEpGemini(e.target.value)}
+                      />
+                    </Field>
+                  ) : null}
+                  <Field
+                    label={t("Models URL")}
+                    hint={t(
+                      "Where the vendor lists its models, when that isn't under the base URL; asked with the key",
+                    )}
+                  >
+                    <input
+                      type="url"
+                      placeholder="https://…/v1/models"
+                      value={modelsURL}
+                      onChange={(e) => setModelsURL(e.target.value)}
+                    />
+                  </Field>
+                  <Field
+                    label={t("Catalog")}
+                    hint={t(
+                      "Display names, reasoning levels and list prices for the models; for a gateway that serves several vendors, list them all, first match wins",
+                    )}
+                  >
+                    <input
+                      type="text"
+                      placeholder={t("models.dev ids, e.g. openai, deepseek")}
+                      value={catalog}
+                      onChange={(e) => setCatalog(e.target.value)}
+                    />
+                  </Field>
+                  <Field
+                    label={t("Balance URL")}
+                    hint={t(
+                      "Where the vendor tells what is left on the key, asked with it like a chat request; {key} in it or in a header is each key's own, for a vendor that takes the key in the URL (…?key={key}); shown on the Usage page",
+                    )}
+                  >
+                    <input
+                      type="url"
+                      placeholder="https://…/api/usage/token"
+                      value={balanceURL}
+                      onChange={(e) => setBalanceURL(e.target.value)}
+                    />
+                  </Field>
+                  <Field label={t("Balance path")}>
+                    <input
+                      type="text"
+                      placeholder={balanceURL.trim() ? "data.balance" : "data.quota_left"}
+                      value={balancePath}
+                      onChange={(e) => setBalancePath(e.target.value)}
+                    />
+                  </Field>
+                </div>
+              </details>
+            ) : null}
+
+            {!isLocal && kind !== "custom" && kind !== "vertex" ? (
+              <Field label={t("Endpoints")}>
+                <div className="eps">
+                  {(epTests.length
+                    ? epTests
+                    : [
+                        {
+                          protocol: "openai",
+                          label: "OpenAI",
+                          url: state.site
+                            ? `https://${state.site.replace(/^https?:\/\//, "").split("/")[0]}/v1`
+                            : "https://…/v1",
+                          status: "idle" as const,
+                          text: "",
+                        },
+                      ]
+                  ).map((r) => (
+                    <div className="ep" key={r.protocol}>
+                      <span className="pl">{r.label}</span>
+                      <code>{r.url}</code>
+                      {r.status !== "idle" ? (
+                        <span
+                          className={`res ${r.status === "wait" ? "wait" : r.status === "ok" ? "ok" : "bad"}`}
+                        >
+                          {r.status === "wait" ? "…" : r.text}
+                        </span>
+                      ) : null}
+                    </div>
+                  ))}
+                  <button
+                    type="button"
+                    className={`text action${epTestBusy ? " busy" : ""}`}
+                    title={t("Send a tiny request through each endpoint")}
+                    disabled={epTestBusy}
+                    onClick={() => {
+                      const host =
+                        (VENDOR_HOST[state.id] || "").split("\n")[0].replace(/^Global |^China /, "") ||
+                        state.site ||
+                        "api.example.com";
+                      const rows: EpTest[] = [
+                        {
+                          protocol: "openai",
+                          label: "OpenAI",
+                          url: `https://${host.replace(/^https?:\/\//, "")}/v1`,
+                          status: "wait",
+                          text: "…",
+                        },
+                      ];
+                      if (state.id === "openai" || state.id === "xai" || state.id === "deepseek") {
+                        rows.push({
+                          protocol: "responses",
+                          label: "Responses",
+                          url: `https://${host.replace(/^https?:\/\//, "")}/v1`,
+                          status: "wait",
+                          text: "…",
+                        });
+                      }
+                      if (state.id === "anthropic") {
+                        rows[0] = {
+                          protocol: "anthropic",
+                          label: "Anthropic",
+                          url: `https://${host.replace(/^https?:\/\//, "")}`,
+                          status: "wait",
+                          text: "…",
+                        };
+                      }
+                      setEpTests(rows);
+                      setEpTestBusy(true);
+                      window.setTimeout(() => {
+                        setEpTestBusy(false);
+                        setEpTests(
+                          rows.map((r) =>
+                            !key.trim()
+                              ? {
+                                  ...r,
+                                  status: "bad" as const,
+                                  text: demoCopy("演示：无密钥 · 未发请求", "Demo: no key · not sent"),
+                                }
+                              : {
+                                  ...r,
+                                  status: "ok" as const,
+                                  text: "42 ms",
+                                },
+                          ),
+                        );
+                      }, 520);
+                    }}
+                  >
+                    {epTestBusy ? "…" : t("Test")}
+                  </button>
+                </div>
+              </Field>
+            ) : null}
+
+                    <div className="bar">
             <span className="grow" />
             <button type="button" className="text" onClick={requestClose}>
               {ZH.cancel}
