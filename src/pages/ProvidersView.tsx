@@ -39,25 +39,29 @@ const IMPORT_APPS = [
     id: "alma",
     name: "Alma",
     icon: "app-alma.png",
+    /** Magpie importapps.go almaPath + NOTES 20 */
     path: "~/.config/alma/chat_threads.db",
   },
   {
     id: "cc-switch",
     name: "CC Switch",
     icon: "app-cc-switch.png",
-    path: "~/.cc-switch",
+    /** Magpie ccSwitchPath default when missing */
+    path: "~/.cc-switch/cc-switch.db",
   },
   {
     id: "claude-code",
     name: "Claude Code",
     icon: "claudecode-color.svg",
-    path: "~/.claude",
+    /** Magpie claudeSettingsPath */
+    path: "~/.claude/settings.json",
   },
   {
     id: "codex",
     name: "Codex",
     icon: "codex-color.svg",
-    path: "~/.codex",
+    /** Magpie codexConfigPath + NOTES 21 */
+    path: "~/.codex/config.toml",
   },
 ] as const;
 
@@ -395,6 +399,8 @@ function ImportAppsModal({ onClose }: { onClose: () => void }) {
   const [tab, setTab] = useState<string>(IMPORT_APPS[0].id);
   const { modalRef, dialogRef, close } = useModalAnim(true, onClose);
   const cur = IMPORT_APPS.find((a) => a.id === tab) || IMPORT_APPS[0];
+  /** Magpie renderImportApps: every tab Not found · count – · Import disabled (NOTES 20–21). */
+  const miss = t("Not found on this computer");
 
   return (
     <div
@@ -415,10 +421,14 @@ function ImportAppsModal({ onClose }: { onClose: () => void }) {
       >
         <div className="editor new importapps framed">
           <div className="ehead">
-            <b id="modalTitle">{ZH.importApps}</b>
+            <b id="modalTitle">{t("Import from other apps")}</b>
           </div>
           <div className="ebody">
-            <div className="appnote">{ZH.importAppsNote}</div>
+            <div className="appnote">
+              {t(
+                "magpie reads these apps' settings and changes nothing in them. Pick the providers to bring over.",
+              )}
+            </div>
             <div className="apptabs" role="tablist">
               {IMPORT_APPS.map((a) => (
                 <button
@@ -427,7 +437,7 @@ function ImportAppsModal({ onClose }: { onClose: () => void }) {
                   role="tab"
                   className={`apptab missing${tab === a.id ? " on" : ""}`}
                   aria-selected={tab === a.id}
-                  title={ZH.notFound}
+                  title={miss}
                   onClick={() => setTab(a.id)}
                 >
                   <img className="applogo" src={iconSrc(a.icon)} alt="" />
@@ -443,17 +453,17 @@ function ImportAppsModal({ onClose }: { onClose: () => void }) {
                   <b>{cur.name}</b>
                   <code>{cur.path}</code>
                 </div>
-                <div className="appempty">{ZH.notFound}</div>
+                <div className="appempty">{miss}</div>
               </div>
             </div>
           </div>
           <div className="bar">
             <span className="note grow" />
             <button type="button" className="text" onClick={close}>
-              {ZH.cancel}
+              {t("Cancel")}
             </button>
             <button type="button" className="text primary" disabled>
-              {ZH.importAction}
+              {t("Import")}
             </button>
           </div>
         </div>
@@ -2005,7 +2015,7 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
     | { state: "imported"; results: { user: string; status: string; error?: string }[] };
   const [claudeSign, setClaudeSign] = useState<ClaudeSign>(null);
   const [claudeFilePick, setClaudeFilePick] = useState(false);
-  const [claudeFileLoc, setClaudeFileLoc] = useState<"home" | "desktop" | "settings" | "other">("home");
+  const [claudeFileLoc, setClaudeFileLoc] = useState<"recent" | "home" | "desktop" | "settings" | "other">("recent");
   /** Magpie Antigravity: independent risk card (risk:true, importable) — Google riskNote + Cockpit/Manager/CLIProxyAPI import. Mock only. */
   type AgySign =
     | null
@@ -2021,6 +2031,34 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
     | { state: "imported"; results: { user: string; status: string; error?: string }[] };
   const [agySign, setAgySign] = useState<AgySign>(null);
   const [filePickFor, setFilePickFor] = useState<"claude" | "antigravity" | null>(null);
+  useEffect(() => {
+    if (!claudeFilePick) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== "Escape") return;
+      e.preventDefault();
+      e.stopPropagation();
+      setClaudeFilePick(false);
+      setFilePickFor(null);
+    };
+    document.addEventListener("keydown", onKey, true);
+    return () => document.removeEventListener("keydown", onKey, true);
+  }, [claudeFilePick]);
+  /** NOTES 23–24: Escape does not dismiss Claude/Antigravity import sheet — only Cancel. */
+  useEffect(() => {
+    const importing =
+      claudeSign?.state === "import" ||
+      claudeSign?.state === "importing" ||
+      agySign?.state === "import" ||
+      agySign?.state === "importing";
+    if (!importing || claudeFilePick) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== "Escape") return;
+      e.preventDefault();
+      e.stopPropagation();
+    };
+    document.addEventListener("keydown", onKey, true);
+    return () => document.removeEventListener("keydown", onKey, true);
+  }, [claudeSign, agySign, claudeFilePick]);
   /** Magpie Copilot device-code (NOTES): mock only — no real GitHub OAuth. */
   type CopilotSign =
     | null
@@ -2473,9 +2511,10 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
             <button
               type="button"
               className="text"
+              title={t("Bring over providers set up in other apps")}
               onClick={() => setImportOpen(true)}
             >
-              {ZH.import}
+              {t("Import…")}
             </button>
           </div>
           <div className="tiles">
@@ -2637,7 +2676,7 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
                               type="button"
                               className="link"
                               onClick={() => {
-                                setClaudeFileLoc("home");
+                                setClaudeFileLoc("recent");
                                 setFilePickFor("claude");
                                 setClaudeFilePick(true);
                               }}
@@ -2881,7 +2920,7 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
                               type="button"
                               className="link"
                               onClick={() => {
-                                setClaudeFileLoc("home");
+                                setClaudeFileLoc("recent");
                                 setFilePickFor("antigravity");
                                 setClaudeFilePick(true);
                               }}
@@ -3502,7 +3541,7 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
           className="modal open"
           role="dialog"
           aria-modal="true"
-          aria-label={t("Choose files…")}
+          aria-label={t("Select Files")}
           onClick={(e) => {
             if (e.target === e.currentTarget) {
               setClaudeFilePick(false);
@@ -3510,8 +3549,9 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
             }
           }}
         >
+          {/* Magpie uses OS file input; NOTES 24 = GTK Select Files (Recent). Demo sheet mirrors that chrome. */}
           <div
-            className="dialog"
+            className="dialog gtk-select-files"
             style={{
               width: "min(560px, 92vw)",
               maxHeight: "min(480px, 82vh)",
@@ -3520,6 +3560,17 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
               animation: "pop-in .42s cubic-bezier(.16,1,.3,1)",
             }}
           >
+            <div
+              className="ehead"
+              style={{
+                padding: "10px 14px",
+                borderBottom: "1px solid var(--line)",
+                fontWeight: 600,
+                fontSize: 13,
+              }}
+            >
+              {t("Select Files")}
+            </div>
             <div
               className="ebody"
               style={{
@@ -3542,6 +3593,7 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
               >
                 {(
                   [
+                    ["recent", t("Recent")],
                     ["home", t("Home")],
                     ["desktop", t("Desktop")],
                     ["settings", "settings"],
@@ -3563,7 +3615,7 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
                     }}
                     onClick={() => setClaudeFileLoc(id)}
                   >
-                    {label}
+                    {id === "other" ? `+ ${label}` : label}
                   </button>
                 ))}
               </nav>
@@ -3571,10 +3623,10 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
                 style={{
                   padding: 12,
                   overflow: "auto",
-                  border: "1px dashed color-mix(in srgb, var(--line) 80%, transparent)",
                   margin: 10,
                   borderRadius: 8,
                   minHeight: 220,
+                  background: "var(--card)",
                 }}
               >
                 <p
@@ -3587,6 +3639,41 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
                   }}
                 >
                   {demoCopy("此文件夹为空", "This folder is empty")}
+                </p>
+                <p style={{ textAlign: "center", margin: "0 0 8px" }}>
+                  <button
+                    type="button"
+                    className="link"
+                    onClick={() => {
+                      if (filePickFor === "antigravity" && agySign?.state === "import") {
+                        setAgySign({
+                          state: "import",
+                          text: agySign.text,
+                          files: [
+                            {
+                              name: "antigravity-export.json",
+                              text: '{"demo":true,"refresh_tokens":[]}',
+                            },
+                          ],
+                        });
+                      } else if (claudeSign?.state === "import") {
+                        setClaudeSign({
+                          state: "import",
+                          text: claudeSign.text,
+                          files: [
+                            {
+                              name: ".credentials.json",
+                              text: '{"demo":true}',
+                            },
+                          ],
+                        });
+                      }
+                      setClaudeFilePick(false);
+                      setFilePickFor(null);
+                    }}
+                  >
+                    {demoCopy("演示选用示例文件", "Demo: pick a sample file")}
+                  </button>
                 </p>
               </div>
             </div>
@@ -3613,43 +3700,9 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
                 type="button"
                 className="text primary"
                 disabled
-                title={demoCopy("演示：未选文件时 Open 禁用", "Demo: Open disabled with no selection")}
+                title={demoCopy("未选文件时 Open 禁用", "Open disabled with no selection")}
               >
                 {t("Open")}
-              </button>
-              <button
-                type="button"
-                className="text"
-                onClick={() => {
-                  /* mock pick a credentials/export file for demo import ready */
-                  if (filePickFor === "antigravity" && agySign?.state === "import") {
-                    setAgySign({
-                      state: "import",
-                      text: agySign.text,
-                      files: [
-                        {
-                          name: "antigravity-export.json",
-                          text: '{"demo":true,"refresh_tokens":[]}',
-                        },
-                      ],
-                    });
-                  } else if (claudeSign?.state === "import") {
-                    setClaudeSign({
-                      state: "import",
-                      text: claudeSign.text,
-                      files: [
-                        {
-                          name: ".credentials.json",
-                          text: '{"demo":true}',
-                        },
-                      ],
-                    });
-                  }
-                  setClaudeFilePick(false);
-                  setFilePickFor(null);
-                }}
-              >
-                {demoCopy("演示选用示例", "Demo pick sample")}
               </button>
             </div>
           </div>

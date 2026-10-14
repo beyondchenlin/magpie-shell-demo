@@ -183,3 +183,9 @@ Each picked model was not clicked (07 is that empty-list warning, on System One)
 ## Left state (after 53)
 
 Providers tab, add sheet, foot of the catalog (relays, On this machine, Remote magpie, + Custom provider focused). Search empty. No provider added, no key stored, no file chosen. Magpie still running: window 752×652 at +610+300 (id 27262991). Not quit.
+
+
+## demo 对齐（Import Claude / apps · v0.1.54 IMPORT_CLAUDE_DONE）
+- Import from other apps：四路径与 NOTES 20–21 / Magpie `importapps.go` 一致；全 Not found；Import 禁用；Import… title tip。
+- Claude 22–24：risk / Import sheet / GTK Select Files（Recent 侧栏）；Escape 不关 Import（仅 Cancel）；无真选文件。
+- Fetch models 54+：尚未落盘 — 等点录。

@@ -4307,5 +4307,8 @@
   "Install 0 skills": "安装 0 个技能",
   "Find an event": "查找事件",
   "every agent, in its own name for it": "每个 Agent，用它自己的事件名",
-  "{agent}'s own event": "{agent} 自己的事件"
+  "{agent}'s own event": "{agent} 自己的事件",
+  "Select Files": "选择文件",
+  "Desktop": "桌面",
+  "This folder is empty": "此文件夹为空"
 }

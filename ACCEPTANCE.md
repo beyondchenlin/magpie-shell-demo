@@ -1,3 +1,9 @@
+## v0.1.54 IMPORT_CLAUDE_DONE
+
+- Import apps paths + empty Not found (NOTES 20–21); Import… tooltip; Claude Escape-safe import; GTK Select Files mock (NOTES 24).
+- Fetch models nest **54+** not landed — PARTIAL.
+- Still mock: true import/OAuth. Allowances N/A.
+
 ## v0.1.53 DETECT_APIS_DONE
 
 - Native providers **44–53** Detect APIs nest consumed (amber tip, Asking…, no-model / dial refused rows, Discard).

@@ -1,3 +1,10 @@
+## v0.1.54 IMPORT_CLAUDE_DONE
+- Chip Import Claude / file sheets from Magpie source + native NOTES **20–24** (Fetch models 54+ not on disk yet → PARTIAL wait).
+- **Import from other apps (20–21):** paths `~/.config/alma/chat_threads.db` · `~/.cc-switch/cc-switch.db` · `~/.claude/settings.json` · `~/.codex/config.toml`; tabs all **Not found on this computer** / count `–` / Import disabled; copy via `t()`; Import… tooltip **Bring over providers set up in other apps**.
+- **Claude risk → Import (22–23):** already Magpie `importSay` + risk note; Escape does **not** dismiss import sheet (Cancel only).
+- **Choose files GTK (24):** Select Files title; sidebar Recent · Home · Desktop · settings · + Other Locations; empty folder; Cancel / Open disabled; demo sample link only (no real file). Magpie itself uses OS `<input type=file>`.
+- Still mock: true file read / Import persist / OAuth. Allowances quota **N/A**. Skip Vercel 402. **FETCH_MODELS:** waiting native providers/54+.
+
 ## v0.1.53 DETECT_APIS_DONE
 - Native `providers/44–53` consumed: Detect hover long title (44); empty click amber **Type the base URL first** under button (45); URL type keeps amber (46); Asking each API… (47/49); no-model four rows + keyless none (48); model `demo` → dial tcp refused truncated + hover full (50–51); dirty Discard (52); catalog foot Custom only (53).
 - Also: Custom More endpoints + Web search; vendor Endpoints Test shell (from Magpie source).
