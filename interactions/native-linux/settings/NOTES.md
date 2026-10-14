@@ -46,6 +46,19 @@ Not on this Linux window (present in HTML, hidden): Gateway mode, Bar icon, Show
 
 Lower rows from the HTML (menu bar refresh, logos, magpie icon, pace, warm-up, daily check-in) were **below this scroll** and not captured as their own shot. Scroll file shows through Task done alert.
 
+### Deep allowances pass (shots 19–39)
+
+Exercised and left restored where noted:
+
+- Menu bar pill **Off ▾** → menu: Off / Tokens and cost today / Tokens and cost, last 7 days (hover 7d) → set **Today** → closed showing Today → restored Off.
+- Menu bar refresh → **1 min** (when shown).
+- Pace **On**; Allowance display **Left**; Reads **When I ask**; Currency **¥ CNY**; Allowance alert **On** then **81%** style threshold; Low balance **On** / amount **6** / back **Off**.
+- Reset reminder **12 h before**; Task done **1 min**.
+- Scrolled to warm-up / bottom; restored lower rows (38–39).
+- Network top re-checked (`40-network-top.png`).
+
+Demo v0.1.13 aligns: TrayUsagePick Off/Today/7d; Used/Left; Automatic/When I ask; $ USD / ¥ CNY; reset 12/24/48 h; task done 1/3/10 min; refresh 1/3/5/15 min.
+
 ## NETWORK AND SHARING
 
 - Proxy: **Auto** / Off / Custom. Sub: no system proxy found.

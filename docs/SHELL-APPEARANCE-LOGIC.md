@@ -167,3 +167,31 @@ footer.foot                 ← #status toast 胶囊
 - **从 Gateway：** `#openLanSettings` → `sessionStorage magpie.setTab=network` 再进 Settings。
 
 *文档版本：Settings nested + #pop v0.1.12*
+
+
+---
+
+## 12. Usage / Plugins（v0.1.13）
+
+### Usage
+
+- DOM：`#usageTab` + `#period`（含 Custom/`range-opt`）+ `#usageRefresh`（reload + `#usageEvery` sess-pick）+ `#usageCost`。
+- Tab 切换藏/显 `#usagePane` / `#ledgerPane` / `#sessionsPane` / `#contextPane`（与 index.html 同构）。
+- Period 预设：`today|7d|30d|all`；Custom 打开 `range-menu`（快捷区间；日历可后接）。
+- Refresh every：`USAGE_EVERY` = Off/5s/10s/30s/1min；busy 时 reload 图标 `spin .8s`。
+- Requests：`ledStatus` segs + search + Export；`ledMetric`/`ledSplit`；KPI 条。
+- Sessions：`SESS_RANGES` + agent segs + 6 KPI 空态。
+
+### Plugins
+
+- Tabs：`builtin|discover|installed`（`magpie.pluginTab`）。
+- Built-in：`renderBuiltins` 式 Off/On（Sessions / Library / Gateway keys / Observability）。
+- Discover：`pm-intro` + `pm-grid`/`pm-card`；Install → 本地 Installed；`pm-mirror` 国内镜像开关。
+- Installed：空态 `pm-none`；行内 Options 折叠 textarea、Disable、Remove 确认；`Check for updates` 壳。
+
+### Settings Models `#pop`
+
+- Image recognition / Image generation / Searches for other models：**`SideModelPick` → `#pop`**（Automatic · note / Off / DEMO_MODELS），与 Codex titles 同套 `ModelPop` 动效。
+- Replies：**不是**模型 pick — `Name the member` / `Stop looping` / `Ask again after a refusal` 三段 segs。
+- About：**Download source** = `GitHub` + `Use a mirror…` 行内编辑（`UpdateMirrorRow`）。
+- Allowances menu bar：`TrayUsagePick` Off ▾ / Today / 7 days（对齐 native NOTES）。

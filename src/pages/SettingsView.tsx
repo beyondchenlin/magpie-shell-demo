@@ -13,7 +13,10 @@ import {
   ProxyBlock,
   RedactRulesBlock,
   RestoreModal,
+  SideModelPick,
   SyncForms,
+  TrayUsagePick,
+  UpdateMirrorRow,
   WhatsNewModal,
   type AutoResetMap,
   type OtelConfig,
@@ -65,8 +68,8 @@ type DemoPrefs = {
   chineseUnits: boolean;
   usageAlert: "off" | "80" | "90" | "100";
   balanceAlert: "off" | "on";
-  resetReminder: "off" | "1h" | "6h" | "1d";
-  turnDone: "off" | "on";
+  resetReminder: "off" | "12h" | "24h" | "48h";
+  turnDone: "off" | "1" | "3" | "10";
   codexWarmup: "off" | "week" | "all";
   claudeWarmup: "off" | "week" | "all";
   proxy: "auto" | "off" | "custom";
@@ -90,14 +93,18 @@ type DemoPrefs = {
   syncOn: boolean;
   syncAuto: number;
   trayUsage: boolean;
+  trayUsageMode: string; // "" | usage:today | usage:7d
   trayEvery: "1" | "3" | "5" | "15";
   trayLogos: boolean;
   trayBird: boolean;
   trayPace: boolean;
-  vision: "auto" | "off";
-  imageGen: "auto" | "off";
-  webSearch: "auto" | "off";
-  replies: "auto" | "off";
+  vision: string; // "" auto | "off" | model id
+  imageGen: string;
+  webSearch: string; // searcher
+  memberModel: boolean;
+  noLoopGuard: boolean;
+  refusalRetries: string; // "" = All
+  updateMirror: string;
   codexTitles: string;
   codexDescriptions: string;
   codexPredictions: string;
@@ -165,14 +172,18 @@ const DEFAULTS: DemoPrefs = {
   syncOn: false,
   syncAuto: 3,
   trayUsage: false,
+  trayUsageMode: "",
   trayEvery: "3",
   trayLogos: true,
   trayBird: true,
   trayPace: false,
-  vision: "auto",
-  imageGen: "auto",
-  webSearch: "auto",
-  replies: "auto",
+  vision: "",
+  imageGen: "",
+  webSearch: "",
+  memberModel: false,
+  noLoopGuard: false,
+  refusalRetries: "",
+  updateMirror: "",
   codexTitles: "",
   codexDescriptions: "",
   codexPredictions: "",
@@ -210,7 +221,15 @@ function loadPrefs(): DemoPrefs {
   try {
     const raw = localStorage.getItem(PREFS_LS);
     if (!raw) return { ...DEFAULTS };
-    return { ...DEFAULTS, ...JSON.parse(raw) };
+    const parsed = JSON.parse(raw) as Partial<DemoPrefs> & { replies?: string };
+    const next: DemoPrefs = { ...DEFAULTS, ...parsed };
+    // migrate old Segs values ("auto") → Magpie empty-string Automatic
+    if (next.vision === "auto") next.vision = "";
+    if (next.imageGen === "auto") next.imageGen = "";
+    if (next.webSearch === "auto") next.webSearch = "";
+    if (parsed.trayUsage && !parsed.trayUsageMode) next.trayUsageMode = "usage:today";
+    if ((parsed as { turnDone?: string }).turnDone === "on") next.turnDone = "1";
+    return next;
   } catch {
     return { ...DEFAULTS };
   }
@@ -451,8 +470,8 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus }: Setti
   const mAny =
     matchQ("Images") ||
     matchQ("Image recognition") ||
-    matchQ("Web search") ||
-    matchQ("Replies") ||
+    matchQ("Searches for other") || matchQ("Search APIs") || matchQ("Web search") ||
+    matchQ("Name the member") || matchQ("Stop looping") || matchQ("Ask again") || matchQ("Replies") ||
     matchQ("Disabled models");
   const pAny = matchQ("Privacy") || matchQ("Agents' sign-ins") || matchQ("Redact");
   const oAny = matchQ("Observability") || matchQ("OpenTelemetry");
@@ -750,17 +769,13 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus }: Setti
               sub={t("Show your subscriptions' allowances, or the tokens and cost of today or the last 7 days, when pointing at magpie's tray icon, refreshed every few minutes")}
               id="trayUsageRow"
             >
-              <Segs
-                value={prefs.trayUsage ? "on" : "off"}
-                onChange={(v) => setPrefs({ trayUsage: v === "on" })}
-                items={[
-                  { id: "off", label: t("Off") },
-                  { id: "on", label: t("On") },
-                ]}
+              <TrayUsagePick
+                value={prefs.trayUsageMode}
+                onChange={(trayUsageMode) => setPrefs({ trayUsageMode, trayUsage: !!trayUsageMode })}
               />
             </PrefRow>
           )}
-          {uRows.trayEvery && prefs.trayUsage && (
+          {uRows.trayEvery && !!prefs.trayUsageMode && (
             <PrefRow name={t("Menu bar refresh")} sub={t("How often the allowances beside the icon are asked for again")} id="trayEveryRow">
               <Segs
                 value={prefs.trayEvery}
@@ -774,7 +789,7 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus }: Setti
               />
             </PrefRow>
           )}
-          {uRows.trayLogos && prefs.trayUsage && (
+          {uRows.trayLogos && !!prefs.trayUsageMode && (
             <PrefRow
               name={t("Menu bar logos")}
               sub={t("Each subscription's logo before its numbers; off, the numbers alone with a thin line between subscriptions")}
@@ -790,7 +805,7 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus }: Setti
               />
             </PrefRow>
           )}
-          {uRows.trayBird && prefs.trayUsage && (
+          {uRows.trayBird && !!prefs.trayUsageMode && (
             <PrefRow
               name={t("Menu bar magpie icon")}
               sub={t("magpie's icon before the allowances; off, the allowances alone, and a click on one still opens the panel")}
@@ -806,7 +821,7 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus }: Setti
               />
             </PrefRow>
           )}
-          {uRows.trayPace && prefs.trayUsage && (
+          {uRows.trayPace && !!prefs.trayUsageMode && (
             <PrefRow
               name={t("Menu bar pace")}
               sub={t("Each window's Pace number beside its figure, as on the Usage page: +12% is 12% more of the window used than an even pace would have used by now, −8% that much less")}
@@ -862,8 +877,8 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus }: Setti
                 value={prefs.currency}
                 onChange={(v) => setPrefs({ currency: v as DemoPrefs["currency"] })}
                 items={[
-                  { id: "usd", label: "USD" },
-                  { id: "cny", label: "CNY" },
+                  { id: "usd", label: "$ USD" },
+                  { id: "cny", label: "¥ CNY" },
                 ]}
               />
             </PrefRow>
@@ -919,21 +934,23 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus }: Setti
                 onChange={(v) => setPrefs({ resetReminder: v as DemoPrefs["resetReminder"] })}
                 items={[
                   { id: "off", label: t("Off") },
-                  { id: "1h", label: t("{n} h", { n: 1 }) },
-                  { id: "6h", label: t("{n} h", { n: 6 }) },
-                  { id: "1d", label: t("{n} d", { n: 1 }) },
+                  { id: "12h", label: t("{n} h before", { n: 12 }) },
+                  { id: "24h", label: t("{n} h before", { n: 24 }) },
+                  { id: "48h", label: t("{n} h before", { n: 48 }) },
                 ]}
               />
             </PrefRow>
           )}
           {uRows.turn && (
-            <PrefRow name={t("Task done alert")} sub={t("Notify when an agent finishes a long-running turn")} id="turnDoneRow">
+            <PrefRow name={t("Task done alert")} sub={t("Notify when Claude Code, Codex or OpenCode finishes a long-running turn")} id="turnDoneRow">
               <Segs
                 value={prefs.turnDone}
                 onChange={(v) => setPrefs({ turnDone: v as DemoPrefs["turnDone"] })}
                 items={[
                   { id: "off", label: t("Off") },
-                  { id: "on", label: t("On") },
+                  { id: "1", label: t("{n} min", { n: 1 }) },
+                  { id: "3", label: t("{n} min", { n: 3 }) },
+                  { id: "10", label: t("{n} min", { n: 10 }) },
                 ]}
               />
             </PrefRow>
@@ -1256,25 +1273,40 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus }: Setti
                 : t("When the model in use can't see images, this one describes them to it, once for each image")
             }
           >
-            <Segs
+            <SideModelPick
               value={prefs.vision}
-              onChange={(v) => setPrefs({ vision: v as DemoPrefs["vision"] })}
-              items={[
-                { id: "auto", label: t("Automatic") },
-                { id: "off", label: t("Off") },
-              ]}
+              onChange={(vision) => setPrefs({ vision })}
+              autoNote={t("no model that sees")}
+              offNote={t("images turned away")}
             />
           </PrefRow>
-          <PrefRow name={t("Image generation")} sub={demoCopy("演示：生成图模型选择器壳", "Demo: image-gen picker shell")}>
-            <Segs
+          <PrefRow
+            name={t("Image generation")}
+            sub={
+              prefs.imageGen === "off"
+                ? t("Agents given Magpie Image can't generate images or videos: the tool says it is off")
+                : t("The model Magpie Image draws with. Agents get the Magpie Image tool from the Library; images are saved in their project")
+            }
+          >
+            <SideModelPick
               value={prefs.imageGen}
-              onChange={(v) => setPrefs({ imageGen: v as DemoPrefs["imageGen"] })}
-              items={[
-                { id: "auto", label: t("Automatic") },
-                { id: "off", label: t("Off") },
-              ]}
+              onChange={(imageGen) => setPrefs({ imageGen })}
+              autoNote={t("no model that draws")}
+              offNote={t("tool says it is off")}
             />
           </PrefRow>
+          {prefs.imageGen !== "off" ? (
+            <div className="row pref">
+              <div className="who">
+                <div className="sub image-gen-how">
+                  <button type="button" className="link image-gen-tool" onClick={() => onStatus?.(demoCopy("演示：打开 Plugins › Built-in › Library", "Demo: open Plugins › Built-in › Library"), "ok")}>
+                    {t("Turn on the Library")}
+                  </button>
+                </div>
+              </div>
+              <div className="val" />
+            </div>
+          ) : null}
           <PrefRow name={t("Image recognition MCP server")} sub={t("Agents can add image recognition as an MCP server (Streamable HTTP) with one analyze_image tool, which reads an image with the Image recognition model from a file path, a URL or a data URL. From another computer, send a gateway key as Authorization: Bearer <key> and the image as a URL or data URL.")}>
             <code>{`http://${GATEWAY_ADDR}/mcp/magpie/vision`}</code>
             <CopyBtn text={`http://${GATEWAY_ADDR}/mcp/magpie/vision`} what={t("Address")} onStatus={onStatus} />
@@ -1282,32 +1314,90 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus }: Setti
         </div>
         <Label en="Web search" />
         <div className="list prefs" id="searchList">
-          <PrefRow name={t("Web search")} sub={demoCopy("演示：联网搜索模型", "Demo: web-search model")}>
-            <Segs
+          <PrefRow
+            name={t("Searches for other models")}
+            sub={
+              prefs.webSearch === "off"
+                ? t("When provider search is off, only configured Search APIs are used. Without a Search API, magpie does not add a search tool. Providers' native web search is unchanged.")
+                : t("When a model can't search the web directly, the selected provider searches for it and returns the results.")
+            }
+          >
+            <SideModelPick
               value={prefs.webSearch}
-              onChange={(v) => setPrefs({ webSearch: v as DemoPrefs["webSearch"] })}
-              items={[
-                { id: "auto", label: t("Automatic") },
-                { id: "off", label: t("Off") },
-              ]}
+              onChange={(webSearch) => setPrefs({ webSearch })}
+              autoNote={t("no provider that searches")}
+              offNote={t("Search APIs")}
             />
+          </PrefRow>
+          <PrefRow name={t("Search APIs")} sub={t("When a model can't search the web, magpie searches for it with these, in this order, and gives it what they found") + " · " + t("No provider can search, so these are asked")}>
+            <button type="button" className="proto pick search-vendor" disabled>
+              <span>Tavily</span>
+            </button>
+            <input className="words search-key" type="password" placeholder={t("API key")} disabled />
+            <button type="button" className="link" disabled>{t("Get a key ↗")}</button>
+            <button type="button" className="text" disabled>{t("Add")}</button>
+          </PrefRow>
+          <PrefRow name={t("MCP server")} sub={t("Cursor, Claude Desktop and other agents can add this search as an MCP server (Streamable HTTP) with one web_search tool. From another computer, send a gateway key as Authorization: Bearer <key>.")}>
+            <code>{`http://${GATEWAY_ADDR}/mcp/magpie/web-search`}</code>
+            <CopyBtn text={`http://${GATEWAY_ADDR}/mcp/magpie/web-search`} what={t("Address")} onStatus={onStatus} />
           </PrefRow>
         </div>
         <Label en="Replies" />
         <div className="list prefs" id="replyList">
-          <PrefRow name={t("Replies")} sub={demoCopy("演示：回复模型", "Demo: replies model")}>
+          <PrefRow
+            name={t("Name the member in replies")}
+            sub={t("A reply's model says magpie's provider/model that answered (workbuddy/glm-5.3-flash), not the vendor's own name, for agents that count usage by it. Claude Code, Claude Desktop and Codex keep the vendor's; the X-Magpie-Model header says it to every agent")}
+            id="memberModelRow"
+          >
             <Segs
-              value={prefs.replies}
-              onChange={(v) => setPrefs({ replies: v as DemoPrefs["replies"] })}
+              value={prefs.memberModel ? "on" : "off"}
+              onChange={(v) => setPrefs({ memberModel: v === "on" })}
+              items={[{ id: "off", label: t("Off") }, { id: "on", label: t("On") }]}
+            />
+          </PrefRow>
+          <PrefRow
+            name={t("Stop looping replies")}
+            sub={t("A reply whose reasoning or text goes round the same few lines is ended with an error the agent can retry, not left to run to its output limit")}
+            id="loopGuardRow"
+            className="wraps"
+          >
+            <Segs
+              value={prefs.noLoopGuard ? "off" : "on"}
+              onChange={(v) => setPrefs({ noLoopGuard: v === "off" })}
+              items={[{ id: "off", label: t("Off") }, { id: "on", label: t("On") }]}
+            />
+          </PrefRow>
+          <PrefRow
+            name={t("Ask again after a refusal")}
+            sub={t("When a vendor's safety filter refuses a request before anything is said, how many more accounts or routing group members are asked. Never ask again hands the refusal straight back: Claude Code then switches to its own fallback model, as it does on Anthropic's API")}
+            id="refusalRetriesRow"
+            className="wraps"
+          >
+            <Segs
+              value={prefs.refusalRetries}
+              onChange={(v) => setPrefs({ refusalRetries: v })}
               items={[
-                { id: "auto", label: t("Automatic") },
-                { id: "off", label: t("Off") },
+                { id: "0", label: t("Never ask again") },
+                { id: "1", label: "1" },
+                { id: "2", label: "2" },
+                { id: "3", label: "3" },
+                { id: "", label: t("All") },
               ]}
             />
           </PrefRow>
         </div>
         <Label en="Disabled models" />
         <div className="list prefs" id="disabledModelsList">
+          <PrefRow
+            name={t("Disable a model")}
+            sub={t("A disabled model is refused on every route through magpie (a request, a session, a routing group, a fallback, a sub-agent, a decision model) and left out of magpie's lists and agents' pickers. Only requests through magpie are covered. Type a pattern such as *fable* to disable every model it matches")}
+            id="disabledAddRow"
+            className="wraps"
+          >
+            <button type="button" className="text action" id="disabledAdd" onClick={() => onStatus?.(demoCopy("演示：禁用模型 #pop", "Demo: disable-model #pop"), "ok")}>
+              {t("Disable…")}
+            </button>
+          </PrefRow>
           <div className="empty-state" style={{ padding: "18px 12px" }}>
             {t("No disabled models")}
           </div>
@@ -1446,7 +1536,7 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus }: Setti
       >
         <div className="list prefs" id="about">
           <PrefRow name={t("Version")}>
-            <code>0.1.12-demo</code>
+            <code>0.1.13-demo</code>
             <button type="button" className="text" onClick={() => onStatus?.(demoCopy("演示：已是最新", "Demo: up to date"), "ok")}>
               {t("Check")}
             </button>
@@ -1485,6 +1575,7 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus }: Setti
               value={prefs.updateEvery}
               onChange={(m) => setPrefs({ updateEvery: Number(m) })}
               items={[
+                { id: 30, label: t("{n} min", { n: 30 }) },
                 { id: 60, label: t("{n} h", { n: 1 }) },
                 { id: 360, label: t("{n} h", { n: 6 }) },
                 { id: 1440, label: t("{n} h", { n: 24 }) },
@@ -1509,9 +1600,14 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus }: Setti
               ]}
             />
           </PrefRow>
+          <UpdateMirrorRow
+            mirror={prefs.updateMirror}
+            onChange={(updateMirror) => setPrefs({ updateMirror })}
+            onStatus={onStatus}
+          />
           <PrefRow name={t("Config folder")} sub={t("providers, profiles and these settings")}>
-            <code>~/.magpie</code>
-            <CopyBtn text="~/.magpie" what={t("Path")} onStatus={onStatus} />
+            <code>~/.config/magpie</code>
+            <CopyBtn text="~/.config/magpie" what={t("Path")} onStatus={onStatus} />
             <button type="button" className="text" onClick={() => onStatus?.(demoCopy("演示：无法打开目录", "Demo: cannot reveal folder"), "warn")}>
               {t("Open")}
             </button>

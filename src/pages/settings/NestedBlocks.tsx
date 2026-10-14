@@ -815,3 +815,288 @@ export function CliRow() {
     </div>
   );
 }
+
+/** Settings › Models: Image / Search #pop chips (Magpie openPicker / #pop). */
+export function SideModelPick({
+  value,
+  onChange,
+  autoNote,
+  offNote,
+  options = DEMO_MODELS,
+  placeholder,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  autoNote: string;
+  offNote: string;
+  options?: PopOption[];
+  placeholder?: string;
+}) {
+  const [open, setOpen] = useState(false);
+  const [anchor, setAnchor] = useState<HTMLElement | null>(null);
+  const chipRef = useRef<HTMLButtonElement | null>(null);
+
+  const popOptions: PopOption[] = [
+    { value: "", label: t("Automatic"), note: autoNote, reset: true },
+    { value: "off", label: t("Off"), note: offNote, reset: true },
+    ...options,
+  ];
+
+  let display: ReactNode;
+  if (value === "off") display = <span>{t("Off")}</span>;
+  else if (value) {
+    const m = options.find((x) => x.value === value);
+    display = (
+      <>
+        <OpenAIIcon />
+        <span>{m ? `${m.label} · ${m.note}` : value}</span>
+      </>
+    );
+  } else {
+    display = (
+      <span>
+        {t("Automatic")} · {autoNote}
+      </span>
+    );
+  }
+
+  return (
+    <>
+      <PrefPickChip
+        label={t("Model")}
+        display={display}
+        open={open}
+        chipRef={(el) => {
+          chipRef.current = el;
+        }}
+        onToggle={(el) => {
+          if (open) setOpen(false);
+          else {
+            setAnchor(el);
+            setOpen(true);
+          }
+        }}
+      />
+      <ModelPop
+        open={open}
+        anchor={anchor || chipRef.current}
+        options={popOptions}
+        value={value}
+        modelPicker
+        placeholder={placeholder}
+        onPick={(v) => {
+          onChange(v);
+          setOpen(false);
+        }}
+        onClose={() => setOpen(false)}
+      />
+    </>
+  );
+}
+
+/** Settings › About › Download source (GitHub / mirror). */
+export function UpdateMirrorRow({
+  mirror,
+  onChange,
+  onStatus,
+}: {
+  mirror: string;
+  onChange: (v: string) => void;
+  onStatus?: (msg: string, kind?: string) => void;
+}) {
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState("");
+  const [err, setErr] = useState("");
+
+  const sub = err
+    ? err
+    : mirror
+      ? t("Updates are downloaded through this mirror, each checked against usemagpie.ai's checksum")
+      : t("Updates are downloaded from GitHub; a mirror can be used where GitHub is slow");
+
+  return (
+    <div className="row pref update-mirror-row">
+      <div className="who">
+        <div className="name">{t("Download source")}</div>
+        <div className={`sub${err ? " err" : ""}`} title={t("The update and its checksum always come from usemagpie.ai; a file from the mirror that doesn't match it is not installed.")}>
+          {sub}
+        </div>
+      </div>
+      <div className="val" style={{ display: "flex", gap: 6, alignItems: "center", flexWrap: "wrap" }}>
+        {!editing ? (
+          mirror ? (
+            <>
+              <code>{mirror}</code>
+              <button
+                type="button"
+                className="text"
+                onClick={() => {
+                  setEditing(true);
+                  setDraft(mirror);
+                  setErr("");
+                }}
+              >
+                {t("Change")}
+              </button>
+              <button
+                type="button"
+                className="text"
+                onClick={() => {
+                  onChange("");
+                  onStatus?.(t("Saved"), "ok");
+                }}
+              >
+                {t("Use GitHub")}
+              </button>
+            </>
+          ) : (
+            <>
+              <code>GitHub</code>
+              <button
+                type="button"
+                className="text"
+                onClick={() => {
+                  setEditing(true);
+                  setDraft("");
+                  setErr("");
+                }}
+              >
+                {t("Use a mirror…")}
+              </button>
+            </>
+          )
+        ) : (
+          <>
+            <input
+              className="words update-mirror-input"
+              value={draft}
+              placeholder="https://mirror.example/"
+              aria-label={t("Mirror address")}
+              autoFocus
+              onChange={(e) => setDraft(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  const v = draft.trim();
+                  if (!v) return;
+                  if (!/^https?:\/\//i.test(v)) {
+                    setErr(t("Mirror address must start with http:// or https://"));
+                    return;
+                  }
+                  onChange(v);
+                  setEditing(false);
+                  setErr("");
+                  onStatus?.(t("Saved"), "ok");
+                } else if (e.key === "Escape") {
+                  setEditing(false);
+                  setErr("");
+                }
+              }}
+            />
+            <button
+              type="button"
+              className="text"
+              onClick={() => {
+                setEditing(false);
+                setErr("");
+              }}
+            >
+              {t("Cancel")}
+            </button>
+            <button
+              type="button"
+              className="text"
+              onClick={() => {
+                const v = draft.trim();
+                if (!v) return;
+                if (!/^https?:\/\//i.test(v)) {
+                  setErr(t("Mirror address must start with http:// or https://"));
+                  return;
+                }
+                onChange(v);
+                setEditing(false);
+                setErr("");
+                onStatus?.(t("Saved"), "ok");
+              }}
+            >
+              {t("Save")}
+            </button>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/** Allowances › menu bar: Off ▾ / Today / 7 days (NOTES 20–23). */
+export function TrayUsagePick({
+  value,
+  onChange,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLButtonElement | null>(null);
+  const menuRef = useRef<HTMLDivElement | null>(null);
+  const opts = [
+    { v: "", name: "Off" },
+    { v: "usage:today", name: "Tokens and cost today" },
+    { v: "usage:7d", name: "Tokens and cost, last 7 days" },
+  ];
+  const label =
+    opts.find((o) => o.v === value)?.name ||
+    (value ? value : "Off");
+
+  useEffect(() => {
+    if (!open) return;
+    const onDown = (e: MouseEvent) => {
+      if (ref.current?.contains(e.target as Node) || menuRef.current?.contains(e.target as Node)) return;
+      setOpen(false);
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    document.addEventListener("mousedown", onDown, true);
+    document.addEventListener("keydown", onKey, true);
+    return () => {
+      document.removeEventListener("mousedown", onDown, true);
+      document.removeEventListener("keydown", onKey, true);
+    };
+  }, [open]);
+
+  return (
+    <div style={{ position: "relative" }} id="trayUsagePick">
+      <button
+        type="button"
+        ref={ref}
+        className={`sess-pick proto pick${value ? " set" : ""}${open ? " open" : ""}`}
+        aria-haspopup="menu"
+        aria-expanded={open}
+        onClick={() => setOpen((o) => !o)}
+      >
+        <span>{t(label)}</span>
+        <svg viewBox="0 0 12 12" width={11} height={11} aria-hidden>
+          <path d="M3 4.5 6 7.5 9 4.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+        </svg>
+      </button>
+      {open ? (
+        <div className="pop proto-menu sess-menu" ref={menuRef} role="menu" style={{ position: "absolute", right: 0, top: "100%", zIndex: 40, minWidth: 220 }}>
+          {opts.map((o) => (
+            <button
+              type="button"
+              key={o.v || "off"}
+              className={o.v === value ? "on" : ""}
+              role="menuitem"
+              onClick={() => {
+                onChange(o.v);
+                setOpen(false);
+              }}
+            >
+              {t(o.name)}
+            </button>
+          ))}
+        </div>
+      ) : null}
+    </div>
+  );
+}

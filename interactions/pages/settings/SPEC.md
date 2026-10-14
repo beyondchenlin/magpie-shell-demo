@@ -1,7 +1,7 @@
 # Settings — Interaction Spec（深页）
 
 > 对照：`index.html` `#view-settings` + `app.js` `renderSettings` / `renderPort` / `renderLAN` / `renderCORS` / `renderProxy` / `renderSync` / About 行。  
-> Demo **v0.1.10**：8 个 tab 全量壳 + 主要 segs/输入/复制/搜索；状态存 `magpie.demoPrefs`（无真后端）。
+> Demo **v0.1.13**：8 tab + Models `#pop`（Image / Search）+ Download source 镜像 + Allowances menu-bar pill；状态存 `magpie.demoPrefs`。
 
 ## Tabs（与官方同序）
 
@@ -10,11 +10,11 @@
 | general | General | Appearance / Colorblind / Language pick / Text size / Tray / Plain names / Codex subagents / Long conversations / Login / Lightweight / Prevent sleep |
 | usage | Allowances | Menu bar 系列 / Used·Left / Reads / Currency / Units(zh) / Alerts / Warm tabs Codex·Claude |
 | network | Network and sharing | Proxy Auto·Off·Custom / GitHub token / Port+Apply / Bare ids / LAN share+address copy / CORS add·remove |
-| models | Models | Images / Image gen / Vision MCP copy / Web search / Replies / Disabled empty |
+| models | Models | Image recognition `#pop` / Image gen `#pop`+Library link / Vision MCP / Searches `#pop` / Search APIs 壳 / Replies 真三行 / Disable… |
 | privacy | Privacy | Redact toggles / Agents' sign-ins Ask·Allow·Deny |
 | otel | Observability | OTel on/off + endpoint |
 | sync | Sync and backup | WebDAV setup fold / Sync now / Auto interval / Export·Import |
-| about | About | Version·Check / What's new / Update pill·auto·every·restart / Config·Gateway URL copy / Community |
+| about | About | Version·Check / What's new / Update pill·auto·every(含30min)·restart / **Download source** GitHub·mirror / Config·CLI·Gateway / Community |
 
 ## 动效（须有）
 
@@ -30,14 +30,12 @@
 
 ## 嵌套未做 / 部分
 
-- Codex titles… **真模型 `#pop` picker**（现为 Automatic/Off/选模型 segs 壳）
-- Warm-up 具体时刻 chips、账号级 auto-reset / check-in 行
-- Proxy SOCKS 认证字段、GitHub 完整表单
-- LAN 多网卡 pick + OpenAI/Anthropic 地址 segs
-- Sync 真 WebDAV/S3/GitHub 字段全集、Restore 确认 modal
-- About CLI / Download source / What's new 真 notes modal
-- Observability 完整 OTel 字段集；Privacy 自定义 redact 规则行
+- Image/Search `#pop` **已接**（demo 模型列表）；真 visionModels / searchChoices 未接后端
+- Search APIs 添加表单仅壳（vendor pick / key / Add 禁用）
+- Disable… 尚未打开真 `#pop` 列表
+- Warm-up 账号级 check-in；Proxy/LAN/Sync 深层已大部分接线
+- What's new 为演示 modal；无真 release notes
 
 ## 判定
 
-**`SETTINGS_DEEP_PARTIAL`** — 8 tab + Codex 行 segs + allowIPs + CORS + 搜索已接线；真 picker/modal/账号级仍缺。
+**`SETTINGS_NESTED_PARTIAL` → Models/About 加深** — Image/Search `#pop` + Download mirror + Allowances tray pill 对齐 NOTES。

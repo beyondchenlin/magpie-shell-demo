@@ -292,3 +292,66 @@ body.web.side-nav {
 @media (prefers-reduced-motion: reduce) {
   .lib-switch i, .pref-pick svg, .copy.done { transition: none !important; animation: none !important; }
 }
+
+/* —— Usage deep shell —— */
+.usage-head { display: flex; align-items: center; gap: 10px; min-height: 34px; margin: 4px 0 6px; flex-wrap: wrap; }
+.usage-head > .grow { flex: 1; }
+.usage-refresh { display: inline-flex; align-items: center; gap: 2px; margin-right: 10px; position: relative; }
+.usage-refresh .icon { width: 24px; height: 24px; display: inline-grid; place-items: center; border: 0; background: none; color: var(--muted); border-radius: 7px; cursor: pointer; transition: background .12s var(--ease), color .12s var(--ease); }
+.usage-refresh .icon:hover { background: var(--pill); color: var(--fg); }
+.usage-cost { display: inline-flex; align-items: baseline; gap: 6px; font-variant-numeric: tabular-nums; color: var(--muted); font-size: 12px; }
+.usage-cost b { font-size: 15px; font-weight: 600; color: var(--fg); }
+.usage-note { margin: 6px 2px 10px; font-size: 12px; color: var(--muted); line-height: 1.45; }
+.sess-pick { flex: none; display: inline-flex; align-items: center; gap: 4px; max-width: 180px; height: 26px; padding: 0 7px 0 9px; border-radius: 7px; border: 1px solid var(--line); background: var(--card); color: var(--muted); font: inherit; font-size: 12px; cursor: default; transition: background .12s var(--ease), color .12s var(--ease), border-color .12s var(--ease); }
+.sess-pick span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sess-pick svg { flex: none; opacity: .7; transition: transform .15s var(--ease); }
+.sess-pick:hover { background: var(--pill); }
+.sess-pick.set { color: var(--fg); border-color: var(--line-2); background: var(--pill); }
+.sess-pick.open svg { transform: rotate(180deg); }
+.sess-filter { height: 26px; padding: 0 10px; border-radius: 7px; border: 1px solid var(--line); background: var(--card); color: var(--fg); font: inherit; font-size: 12.5px; min-width: 160px; transition: border-color .12s var(--ease), box-shadow .12s var(--ease); }
+.sess-filter:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent); }
+.rm-span { font-size: 12px !important; }
+.range-menu { box-shadow: 0 8px 28px rgba(20,22,30,.12), 0 0 0 1px var(--line); border-radius: 12px; background: var(--card); }
+
+/* —— Plugins deep shell —— */
+.pm-head { gap: 10px; }
+.pm-mirror { display: inline-flex; align-items: center; gap: 7px; padding: 2px 0; background: none; border: 0; font: inherit; font-size: 12px; color: var(--muted); cursor: pointer; white-space: nowrap; transition: color .12s var(--ease); }
+.pm-mirror:hover, .pm-mirror.on { color: var(--fg); }
+.pm-mirror .lib-switch { width: 28px; height: 16px; }
+.pm-mirror .lib-switch i { width: 12px; height: 12px; }
+.pm-mirror .lib-switch.on i { transform: translateX(12px); }
+.pm-find { display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 10px; border-radius: 8px; background: var(--pill); min-width: 180px; max-width: 260px; transition: background .12s var(--ease), box-shadow .12s var(--ease); }
+.pm-find:focus-within { background: var(--card); box-shadow: inset 0 0 0 1px var(--accent), 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent); }
+.pm-find input { flex: 1; min-width: 0; border: 0; outline: none; background: none; color: var(--fg); font: inherit; font-size: 12.5px; }
+.pm-body { display: flex; flex-direction: column; gap: 18px; padding: 10px 0 18px; }
+.pm-body.enter { animation: view-in .24s var(--ease); }
+.pm-intro { display: flex; gap: 14px; align-items: flex-start; padding: 4px 2px 2px; }
+.pm-introtext { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 5px; }
+.pm-intro h2 { margin: 0; font-size: 15px; font-weight: 650; letter-spacing: -.01em; }
+.pm-intro p { margin: 0; font-size: 12px; line-height: 1.55; color: var(--fg-2); max-width: 560px; }
+.pm-intro .pm-trust { display: flex; align-items: center; gap: 6px; margin-top: 3px; font-size: 11.5px; color: var(--muted); }
+.pm-intro .pm-trust svg { flex: none; color: var(--green); }
+.pm-sec { display: flex; flex-direction: column; gap: 9px; }
+.pm-sechead { display: flex; align-items: baseline; gap: 8px; padding: 0 2px; flex-wrap: wrap; }
+.pm-sechead h3 { margin: 0; font-size: 12.5px; font-weight: 650; }
+.pm-sechead span { font-size: 11.5px; color: var(--muted); }
+.pm-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(262px, 1fr)); gap: 10px; }
+.pm-card { display: flex; gap: 10px; align-items: flex-start; padding: 12px; border-radius: 12px; border: 1px solid var(--line); background: var(--card); transition: border-color .16s var(--ease), box-shadow .16s var(--ease), transform .16s var(--ease); }
+.pm-card:hover { border-color: color-mix(in srgb, var(--fg) 16%, var(--line)); box-shadow: 0 4px 14px rgba(20, 22, 30, .07); }
+.pm-card:active { transform: scale(.98); }
+.pm-logo { flex: none; width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center; background: var(--pill); color: var(--fg-2); font-size: 14px; }
+.pm-logo.big { width: 44px; height: 44px; border-radius: 12px; }
+.pm-act { flex: none; height: 28px; padding: 0 12px; border-radius: 8px; border: 1px solid var(--line); background: var(--fg); color: var(--card); font: inherit; font-size: 12px; font-weight: 600; cursor: pointer; transition: background .12s var(--ease), opacity .12s var(--ease), transform .12s var(--ease); }
+.pm-act:hover { filter: brightness(1.05); }
+.pm-act:active { transform: scale(.96); }
+.pm-act:disabled { opacity: .55; cursor: default; }
+.pm-act.get { background: var(--card); color: var(--fg); }
+.pm-none { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 36px 16px; text-align: center; color: var(--muted); }
+.pm-none b { color: var(--fg); font-size: 14px; }
+.pm-none p { margin: 0; font-size: 12.5px; max-width: 360px; line-height: 1.5; }
+.pm-ghnone { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 22px 12px; border-radius: 12px; border: 1px dashed var(--line); font-size: 12px; color: var(--muted); text-align: center; }
+.pm-foot { font-size: 12px; }
+.link { background: none; border: 0; color: var(--accent); font: inherit; font-size: 12px; cursor: pointer; padding: 0; text-decoration: underline; text-underline-offset: 2px; }
+.link:hover { filter: brightness(1.1); }
+.update-mirror-input { min-width: 180px; }
+@keyframes spin { to { transform: rotate(360deg); } }
