@@ -17,6 +17,8 @@ Plugin page. When On (Plugins › Built-in › Library) it sits in top nav betwe
 | 31-skills-discover-more.png | Discover scroll: agent-browser / improve-codebase / tdd / hyperframes |
 | 32-hooks-empty.png | Hooks empty dashed + ＋ Add a hook (no Discover in head) |
 | 33-hook-new.png | New hook modal: Name/Description/When/Command/Timeout/Agents |
+| 34-hook-events.png | When it runs menu: common events + Find an event + notes |
+| 35-hook-events-cursor.png | Cursor · beforeShellExecution… own events |
 
 Header: Discover (MCP + Skills) · Library folder · Backups. Tabs: Instructions / MCP servers / Skills / Hooks / RTK.
 
@@ -24,5 +26,5 @@ Header: Discover (MCP + Skills) · Library folder · Backups. Tabs: Instructions
 
 - Skills probe mock (DEMO_PROBE_SKILLS) + Filter when >8 + Install 0 when none picked
 - Skills Discover expanded (8 cards from 27–31)
-- Hooks empty + New hook (aligned 32–33)
+- Hooks empty + New hook (32–33) + When-it-runs Find an event + Cursor own events (34–35)
 - MCP / RTK as 0.1.32; no true GitHub probe / OAuth / RTK binary

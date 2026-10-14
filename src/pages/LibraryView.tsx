@@ -47,6 +47,17 @@ const HOOK_EVENTS = [
   ["prompt", "When a prompt is sent"],
   ["session-start", "When a session starts"],
 ] as const;
+/** Magpie hookAgentOf("cursor").events — agent-own events in When-it-runs menu */
+const CURSOR_HOOK_EVENTS = [
+  "beforeShellExecution",
+  "afterShellExecution",
+  "beforeMCPExecution",
+  "afterMCPExecution",
+  "beforeReadFile",
+  "afterFileEdit",
+  "beforeSubmitPrompt",
+  "afterAgentResponse",
+] as const;
 const HOOK_TOOLS = [
   ["", "Any tool"],
   ["shell", "Shell commands"],
@@ -235,6 +246,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
   const [hookEditor, setHookEditor] = useState<HookDraft | null>(null);
   const [hookSnap, setHookSnap] = useState("");
   const [eventMenu, setEventMenu] = useState(false);
+  const [eventFilter, setEventFilter] = useState("");
   const [toolMenu, setToolMenu] = useState(false);
   const [rtkOn, setRtkOn] = useState<Record<string, boolean>>({ cursor: false });
   const [rtkBusy, setRtkBusy] = useState(false);
@@ -283,6 +295,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
     setHookEditor(d);
     setHookSnap(JSON.stringify(d));
     setEventMenu(false);
+    setEventFilter("");
     setToolMenu(false);
   };
   const tryCloseHook = () => {
@@ -1254,19 +1267,69 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
             <span style={{ fontSize: 12, fontWeight: 500, display: "block", marginBottom: 4 }}>{t("When it runs")}</span>
             <button type="button" className="sess-pick" aria-haspopup="menu" aria-expanded={eventMenu} onClick={() => { setEventMenu((v) => !v); setToolMenu(false); }}
               style={{ display: "inline-flex", alignItems: "center", gap: 6, height: 30, padding: "0 10px", borderRadius: 8, border: "1px solid var(--line)", background: "var(--card)", font: "inherit", fontSize: 12.5, cursor: "pointer" }}>
-              {t(HOOK_EVENTS.find(([v]) => v === hookEditor.event)?.[1] || hookEditor.event)}
+              {hookEditor.event.includes(":")
+                ? `Cursor · ${hookEditor.event.split(":")[1]}`
+                : t(HOOK_EVENTS.find(([v]) => v === hookEditor.event)?.[1] || hookEditor.event)}
               <svg viewBox="0 0 12 12" width={11} height={11} aria-hidden style={{ transform: eventMenu ? "rotate(180deg)" : undefined, transition: "transform .15s var(--ease)" }}>
                 <path d="M3 4.5 6 7.5 9 4.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
               </svg>
             </button>
             {eventMenu ? (
-              <div role="menu" style={{ position: "absolute", zIndex: 2, top: "100%", left: 0, marginTop: 4, minWidth: 220, background: "var(--card)", border: "1px solid var(--line)", borderRadius: 10, boxShadow: "0 10px 28px rgba(20,22,30,.16)", padding: 4, animation: "pop-in .28s var(--ease)" }}>
-                {HOOK_EVENTS.map(([v, n]) => (
-                  <button key={v} type="button" role="menuitem" className="text" style={{ display: "block", width: "100%", textAlign: "left", padding: "7px 10px", borderRadius: 7 }}
-                    onClick={() => { setHookEditor({ ...hookEditor, event: v, matcher: toolEvent(v) ? hookEditor.matcher : "" }); setEventMenu(false); }}>
-                    {t(n)}
+              <div role="menu" style={{ position: "absolute", zIndex: 2, top: "100%", left: 0, marginTop: 4, minWidth: 280, maxHeight: 320, overflow: "auto", background: "var(--card)", border: "1px solid var(--line)", borderRadius: 10, boxShadow: "0 10px 28px rgba(20,22,30,.16)", padding: 4, animation: "pop-in .28s var(--ease)" }}>
+                <input
+                  type="search"
+                  value={eventFilter}
+                  placeholder={t("Find an event")}
+                  onChange={(e) => setEventFilter(e.target.value)}
+                  onKeyDown={(e) => e.stopPropagation()}
+                  style={{ width: "100%", marginBottom: 4, height: 28, fontSize: 12.5 }}
+                  autoFocus
+                />
+                {HOOK_EVENTS.filter(([, n]) => {
+                  const q = eventFilter.trim().toLowerCase();
+                  if (!q) return true;
+                  return n.toLowerCase().includes(q);
+                }).map(([v, n]) => (
+                  <button
+                    key={v}
+                    type="button"
+                    role="menuitem"
+                    className="text"
+                    style={{ display: "block", width: "100%", textAlign: "left", padding: "7px 10px", borderRadius: 7 }}
+                    onClick={() => {
+                      setHookEditor({ ...hookEditor, event: v, matcher: toolEvent(v) ? hookEditor.matcher : "", agents: DEMO_AGENTS.map((a) => a.id) });
+                      setEventMenu(false);
+                      setEventFilter("");
+                    }}
+                  >
+                    <span style={{ display: "block", fontSize: 12.5 }}>{t(n)}{hookEditor.event === v ? " ✓" : ""}</span>
+                    <small style={{ color: "var(--muted)", fontSize: 11 }}>{t("every agent, in its own name for it")}</small>
                   </button>
                 ))}
+                {CURSOR_HOOK_EVENTS.filter((ev) => {
+                  const q = eventFilter.trim().toLowerCase();
+                  if (!q) return true;
+                  return (`cursor ${ev}`).toLowerCase().includes(q);
+                }).map((ev) => {
+                  const v = `cursor:${ev}`;
+                  return (
+                    <button
+                      key={v}
+                      type="button"
+                      role="menuitem"
+                      className="text"
+                      style={{ display: "block", width: "100%", textAlign: "left", padding: "7px 10px", borderRadius: 7 }}
+                      onClick={() => {
+                        setHookEditor({ ...hookEditor, event: v, matcher: "", agents: ["cursor"] });
+                        setEventMenu(false);
+                        setEventFilter("");
+                      }}
+                    >
+                      <span style={{ display: "block", fontSize: 12.5 }}>Cursor · {ev}{hookEditor.event === v ? " ✓" : ""}</span>
+                      <small style={{ color: "var(--muted)", fontSize: 11 }}>{t("{agent}'s own event", { agent: "Cursor" })}</small>
+                    </button>
+                  );
+                })}
               </div>
             ) : null}
           </div>

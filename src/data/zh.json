@@ -4304,5 +4304,8 @@
   "Popular on skills.sh": "skills.sh 上的热门",
   "DISCOVER": "发现",
   "1 skill in {src}": "{src} 中有 1 个技能",
-  "Install 0 skills": "安装 0 个技能"
+  "Install 0 skills": "安装 0 个技能",
+  "Find an event": "查找事件",
+  "every agent, in its own name for it": "每个 Agent，用它自己的事件名",
+  "{agent}'s own event": "{agent} 自己的事件"
 }
