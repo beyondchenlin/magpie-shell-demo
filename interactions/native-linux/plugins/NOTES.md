@@ -55,3 +55,6 @@ Per-card Install was not clicked. No plugin was installed. Sort handle on Instal
 ## Left state
 
 Plugins, Discover, scrolled to the manual row. Search empty. Manual field empty. Mirror **Off** (restored). Built-ins not touched this pass. No plugin installed. Magpie left running (front window 752×652 at +610+300, pid 270034). Close was not used.
+
+
+Demo v0.1.22: Suggested only when hits; On npm standing + Mirror set; folder dialog Cancel leaves field (shots 20–34).

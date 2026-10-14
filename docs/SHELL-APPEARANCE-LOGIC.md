@@ -300,3 +300,20 @@ Same as §4; added: `.pm-opts textarea` focus .12s; `.range-menu .rm-day` backgr
 | Manage 四钮 | Select search / Invert / Select unconnected agents / Clear | `t()` 对齐 Magpie 英文源键 |
 
 *文档版本：v0.1.21*
+
+
+## v0.1.22 Plugins search / Agents guide (native shots)
+
+| 控件 | Magpie | demo |
+|------|--------|------|
+| Search debounce | askNPM **350ms**, min 2 chars | 同 |
+| Suggested | listings match only | npmHits；无匹配则不渲染该节 |
+| On npm | 搜索时始终有；副文案固定 | DEMO_ON_NPM；Mirror On → DEMO_ON_NPM_MIRROR |
+| Folder choose | `plugins/choose`；Cancel 不改字段 | 演示对话框 Cancel/Open；Cancel 保持 manualSpec |
+| Mirror tip | hover title + tip | `.pm-mirror-tip` fade-in **.12s** |
+| Get started | `{n} of {total} done`；无 connectable → 无芯片 | 同；Cursor Can't connect 非按钮 |
+| Manage hide result | `{n} agent(s) hidden/unhidden` | `t()` |
+| Install chevron | **.3s** cubic-bezier(.22,1,.36,1) | app.css 已有 |
+| Profile Escape | 关 naming | 已有 |
+
+*文档版本：v0.1.22*

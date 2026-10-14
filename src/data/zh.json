@@ -1,4 +1,5 @@
 {
+  "{n} of {total} done": "已完成 {n}/{total}",
   "Check again": "重新检测",
   "Manage": "管理",
   "Manage agents": "批量管理",
@@ -4217,5 +4218,10 @@
   "Skills, MCP servers and Magpie Image for agents": "给 agent 用的 Skills、MCP 与 Magpie Image",
   "OpenTelemetry export in Settings": "设置里的 OpenTelemetry 导出",
   "Agents' session files on Usage › Sessions and the Sessions page": "用量 › 会话与会话页上的 agent 会话文件",
-  "Codex / Claude warm-ups and WorkBuddy check-in in Settings": "设置里的 Codex/Claude 预热与 WorkBuddy 签到"
+  "Codex / Claude warm-ups and WorkBuddy check-in in Settings": "设置里的 Codex/Claude 预热与 WorkBuddy 签到",
+  "Choose a plugin folder": "选择插件文件夹",
+  "Other Locations": "其他位置",
+  "On This Computer": "此电脑",
+  "Recent": "最近",
+  "Home": "主目录"
 }

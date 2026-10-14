@@ -370,7 +370,10 @@ export default function App() {
 
       {view === "agents" && (
         <AgentsView
-          onAddProvider={() => go("providers")}
+          onAddProvider={() => {
+            try { sessionStorage.setItem("magpie-demo-providerAdded", "1"); } catch { /* */ }
+            go("providers");
+          }}
           refreshNonce={refreshNonce}
           onStatus={showStatus}
         />

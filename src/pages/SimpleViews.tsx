@@ -1793,6 +1793,22 @@ const DEMO_NPM = [
   { pkg: "@brendonovich/vite-annotate", name: "@brendonovich/vite…", summary: "Select UI elements in a Vite app and send contextual feedback to OpenCode.", downloads: "8.8k/week", ver: "v0.1.4", kind: "Provider", q: "opencode vite" },
 ];
 
+/** Magpie On npm standing hits when Suggested is empty (shot 24 zzzzqq) */
+const DEMO_ON_NPM = [
+  { pkg: "ai-sdk-provider-opencode", name: "ai-sdk-provider-opencode", summary: "Vercel AI SDK provider bridge for OpenCode models.", downloads: "1.2k/week", ver: "v0.3.0" },
+  { pkg: "opencode-poe-auth", name: "opencode-poe-auth", summary: "Poe auth helper for OpenCode plugin hosts.", downloads: "840/week", ver: "v0.1.4" },
+  { pkg: "opencode-models-discovery", name: "opencode-models-discovery", summary: "Discover model ids from an OpenCode host.", downloads: "2.1k/week", ver: "v0.2.0" },
+];
+
+/** Extra On npm cards when Mirrors in China is On (shot 25) */
+const DEMO_ON_NPM_MIRROR = [
+  { pkg: "plannotator", name: "Plannotator", summary: "Plan annotator middleware for gateway traces.", downloads: "320/week", ver: "v0.0.8" },
+  { pkg: "@brendonovich/vite-annotate", name: "@brendonovich/vite…", summary: "Select UI elements in a Vite app and send contextual feedback to OpenCode.", downloads: "8.8k/week", ver: "v0.1.4" },
+  { pkg: "opencode-pty", name: "opencode-pty", summary: "OpenCode plugin for interactive PTY management.", downloads: "4.3k/week", ver: "v0.4.0" },
+  { pkg: "@mastra/opencode", name: "@mastra/opencode", summary: "OpenCode plugin for Mastra Observational Memory", downloads: "6.3k/week", ver: "v0.1.36" },
+];
+
+
 export function PluginsView() {
   const [tab, setTab] = useState<string>(() => {
     try {
@@ -1806,6 +1822,8 @@ export function PluginsView() {
   const [searchBusy, setSearchBusy] = useState(false);
   const [manualSpec, setManualSpec] = useState("");
   const [folderHint, setFolderHint] = useState("");
+  const [folderPicker, setFolderPicker] = useState(false);
+  const [folderLoc, setFolderLoc] = useState<"recent" | "home" | "other">("recent");
   const [mirror, setMirror] = useState(false);
   const [mirrorTip, setMirrorTip] = useState(false);
   const [builtins, setBuiltins] = useState(BUILTINS_DEFAULT);
@@ -2045,12 +2063,10 @@ export function PluginsView() {
                 </div>
               </div>
             ) : null}
-            {DEMO_MARKET.map((sec) => {
-              const cards = sec.cards.filter(
-                (c) =>
-                  !query.trim() ||
-                  `${c.name} ${c.pkg} ${c.summary}`.toLowerCase().includes(query.trim().toLowerCase()),
-              );
+            {/* Magpie: market sections only when search empty; search → Suggested + On npm */}
+            {!query.trim()
+              ? DEMO_MARKET.map((sec) => {
+              const cards = sec.cards;
               if (!cards.length) return null;
               return (
                 <div className="pm-sec" key={sec.kind}>
@@ -2103,50 +2119,92 @@ export function PluginsView() {
                   </div>
                 </div>
               );
-            })}
-            {debouncedQ ? (
+            })
+              : null}
+            {/* Magpie: Suggested only when listings match; On npm always while searching (shots 20–25) */}
+            {debouncedQ && npmHits.length ? (
               <div className="pm-sec" style={{ animation: "fade-in .2s var(--ease)" }}>
                 <div className="pm-sechead">
                   <h3>{t("Suggested")}</h3>
                   <span>{searchBusy ? t("Searching…") : mirror ? t("via China mirrors") : ""}</span>
                 </div>
-                {npmHits.length ? (
-                  <div className="pm-grid">
-                    {npmHits.map((c) => {
-                      const has = installed.some((x) => x.pkg === c.pkg);
-                      return (
-                        <div className={`pm-card${busy === c.pkg ? " installing" : ""}${has ? " has" : ""}`} key={c.pkg} tabIndex={0} role="button">
-                          <div className="pm-logo" aria-hidden>◆</div>
-                          <div className="pm-words" style={{ flex: 1, minWidth: 0 }}>
-                            <b style={{ fontSize: 13 }}>{c.name}</b>
-                            {c.builtin ? <span className="pm-chip" style={{ marginLeft: 6, fontSize: 10.5 }}>{t("Also built in")}</span> : null}
-                            <p style={{ margin: "4px 0 0", fontSize: 12, color: "var(--muted)", lineHeight: 1.45 }}>{c.summary}</p>
-                            <div style={{ marginTop: 6, fontSize: 11, color: "var(--faint)" }}>
-                              {c.kind} · {c.downloads} · {c.ver}
-                              {mirror ? ` · ${t("via China mirrors")}` : ""}
-                            </div>
+                <div className="pm-grid">
+                  {npmHits.map((c) => {
+                    const has = installed.some((x) => x.pkg === c.pkg);
+                    return (
+                      <div className={`pm-card${busy === c.pkg ? " installing" : ""}${has ? " has" : ""}`} key={c.pkg} tabIndex={0} role="button">
+                        <div className="pm-logo" aria-hidden>◆</div>
+                        <div className="pm-words" style={{ flex: 1, minWidth: 0 }}>
+                          <b style={{ fontSize: 13 }}>{c.name}</b>
+                          {c.builtin ? <span className="pm-chip" style={{ marginLeft: 6, fontSize: 10.5 }}>{t("Also built in")}</span> : null}
+                          <p style={{ margin: "4px 0 0", fontSize: 12, color: "var(--muted)", lineHeight: 1.45 }}>{c.summary}</p>
+                          <div style={{ marginTop: 6, fontSize: 11, color: "var(--faint)" }}>
+                            {c.kind} · {c.downloads} · {c.ver}
+                            {mirror ? ` · ${t("via China mirrors")}` : ""}
                           </div>
-                          <button
-                            type="button"
-                            className={`pm-act${has ? " get" : ""}`}
-                            disabled={busy === c.pkg || has}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              install(c.pkg, c.name);
-                            }}
-                          >
-                            {busy === c.pkg ? t("Installing…") : has ? t("Installed") : t("Install")}
-                          </button>
                         </div>
-                      );
-                    })}
-                  </div>
-                ) : (
-                  <div className="pm-ghnone">
-                    <b>{demoCopy(`npm 演示无结果：「${debouncedQ}」`, `No demo npm hits for “${debouncedQ}”`)}</b>
-                    <p>{demoCopy("真站会查 npm；此处演示 Suggested（350ms）。", "Real Magpie queries npm; demo Suggested after 350ms.")}</p>
-                  </div>
-                )}
+                        <button
+                          type="button"
+                          className={`pm-act${has ? " get" : ""}`}
+                          disabled={busy === c.pkg || has}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            install(c.pkg, c.name);
+                          }}
+                        >
+                          {busy === c.pkg ? t("Installing…") : has ? t("Installed") : t("Install")}
+                        </button>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            ) : null}
+            {debouncedQ ? (
+              <div className="pm-sec" style={{ animation: "fade-in .2s var(--ease)", marginTop: 10 }}>
+                <div className="pm-sechead">
+                  <h3>{t("On npm")}</h3>
+                  <span>{t("OpenCode plugins and pi packages anyone published — read what one does before you install it")}</span>
+                </div>
+                {(() => {
+                  const known = new Set(npmHits.map((c) => c.pkg));
+                  const base = mirror ? DEMO_ON_NPM_MIRROR : DEMO_ON_NPM;
+                  const list = base.filter((x) => !known.has(x.pkg));
+                  if (!list.length) {
+                    return <p className="pm-note">{npmHits.length ? t("Nothing else on npm") : t("No plugin called “{q}”", { q: query.trim() })}</p>;
+                  }
+                  return (
+                    <div className="pm-grid">
+                      {list.map((c) => {
+                        const has = installed.some((x) => x.pkg === c.pkg);
+                        return (
+                          <div className={`pm-card${busy === c.pkg ? " installing" : ""}${has ? " has" : ""}`} key={c.pkg} tabIndex={0} role="button">
+                            <div className="pm-logo" aria-hidden>◆</div>
+                            <div className="pm-words" style={{ flex: 1, minWidth: 0 }}>
+                              <b style={{ fontSize: 13 }}>{c.name}</b>
+                              <p style={{ margin: "4px 0 0", fontSize: 12, color: "var(--muted)", lineHeight: 1.45 }}>{c.summary}</p>
+                              <div style={{ marginTop: 6, fontSize: 11, color: "var(--faint)" }}>
+                                {c.pkg} · {c.downloads} · {c.ver}
+                                {mirror ? ` · ${t("via China mirrors")}` : ""}
+                              </div>
+                            </div>
+                            <button
+                              type="button"
+                              className={`pm-act${has ? " get" : ""}`}
+                              disabled={busy === c.pkg || has}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                install(c.pkg, c.name);
+                              }}
+                            >
+                              {busy === c.pkg ? t("Installing…") : has ? t("Installed") : t("Install")}
+                            </button>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  );
+                })()}
               </div>
             ) : null}
             {query.trim() &&
@@ -2157,15 +2215,7 @@ export function PluginsView() {
                 <b>{t("Searching…")}</b>
               </div>
             ) : null}
-            {!debouncedQ &&
-            query.trim() &&
-            !DEMO_MARKET.some((s) =>
-              s.cards.some((c) => `${c.name} ${c.pkg}`.toLowerCase().includes(query.trim().toLowerCase())),
-            ) ? (
-              <div className="pm-ghnone">
-                <b>{demoCopy(`市场卡片无匹配：「${query.trim()}」`, `No market cards for “${query.trim()}”`)}</b>
-              </div>
-            ) : null}
+
             <div className="pm-sec" style={{ marginTop: 8 }}>
               <div className="pm-manual" style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center", padding: "8px 2px" }}>
                 <span className="pm-mlabel" style={{ fontSize: 12.5, fontWeight: 600 }}>{t("Have one in mind?")}</span>
@@ -2183,10 +2233,8 @@ export function PluginsView() {
                   title={demoCopy("选择文件夹（演示）", "Choose folder (demo)")}
                   aria-label={t("Choose a folder")}
                   onClick={() => {
-                    const p = "/home/demo/plugins/my-middleware";
-                    setManualSpec(p);
-                    setFolderHint(demoCopy("已填入演示路径（无真对话框）", "Filled demo path (no native dialog)"));
-                    window.setTimeout(() => setFolderHint(""), 2200);
+                    setFolderLoc("recent");
+                    setFolderPicker(true);
                   }}
                 >
                   <svg viewBox="0 0 16 16" width={14} height={14} aria-hidden>
@@ -2475,6 +2523,149 @@ export function PluginsView() {
           )
         ) : null}
       </div>
+
+      {folderPicker ? (
+        <div
+          className="modal open"
+          role="dialog"
+          aria-modal="true"
+          aria-label={t("Choose a plugin folder")}
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setFolderPicker(false);
+          }}
+        >
+          <div
+            className="dialog"
+            style={{
+              width: "min(640px, 92vw)",
+              maxHeight: "min(520px, 85vh)",
+              display: "flex",
+              flexDirection: "column",
+              animation: "pop-in .42s cubic-bezier(.16,1,.3,1)",
+            }}
+          >
+            <div className="ehead" style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <b id="folderTitle">{t("Choose a plugin folder")}</b>
+            </div>
+            <div className="ebody" style={{ display: "grid", gridTemplateColumns: "140px 1fr", gap: 0, minHeight: 280, padding: 0 }}>
+              <nav style={{ borderRight: "1px solid var(--line)", padding: "8px 6px", display: "flex", flexDirection: "column", gap: 2 }}>
+                {(
+                  [
+                    ["recent", t("Recent")],
+                    ["home", t("Home")],
+                    ["other", t("Other Locations")],
+                  ] as const
+                ).map(([id, label]) => (
+                  <button
+                    key={id}
+                    type="button"
+                    className={`text${folderLoc === id ? " on" : ""}`}
+                    style={{
+                      justifyContent: "flex-start",
+                      padding: "6px 8px",
+                      borderRadius: 6,
+                      background: folderLoc === id ? "var(--pill)" : "transparent",
+                      color: folderLoc === id ? "var(--fg)" : "var(--muted)",
+                    }}
+                    onClick={() => setFolderLoc(id)}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </nav>
+              <div style={{ padding: "10px 12px", overflow: "auto" }}>
+                {folderLoc === "recent" ? (
+                  <p style={{ color: "var(--muted)", fontSize: 12.5, padding: "24px 8px", textAlign: "center" }}>
+                    {demoCopy("最近为空", "Recent is empty")}
+                  </p>
+                ) : null}
+                {folderLoc === "home" ? (
+                  <ul style={{ listStyle: "none", margin: 0, padding: 0, fontSize: 12.5 }}>
+                    {["agent-data", "chrome-profile", "cli-config", "reference", "sand-data", "plugins"].map((name) => (
+                      <li
+                        key={name}
+                        style={{
+                          display: "grid",
+                          gridTemplateColumns: "1fr 80px",
+                          gap: 8,
+                          padding: "6px 8px",
+                          borderRadius: 6,
+                          cursor: "pointer",
+                        }}
+                        className="pm-folder-row"
+                        onDoubleClick={() => {
+                          setManualSpec(`/home/box/${name}`);
+                          setFolderPicker(false);
+                          setFolderHint("");
+                        }}
+                      >
+                        <span>📁 {name}</span>
+                        <span style={{ color: "var(--muted)", textAlign: "right" }}>—</span>
+                      </li>
+                    ))}
+                  </ul>
+                ) : null}
+                {folderLoc === "other" ? (
+                  <div style={{ padding: 8 }}>
+                    <b style={{ fontSize: 12.5 }}>{t("On This Computer")}</b>
+                    <div
+                      style={{
+                        marginTop: 8,
+                        padding: "8px 10px",
+                        border: "1px solid var(--line)",
+                        borderRadius: 8,
+                        fontSize: 12.5,
+                        cursor: "pointer",
+                      }}
+                      onDoubleClick={() => {
+                        setManualSpec("/");
+                        setFolderPicker(false);
+                      }}
+                    >
+                      <div>Computer</div>
+                      <div style={{ color: "var(--muted)", fontSize: 11.5, marginTop: 2 }}>
+                        107.4 GB / 134.2 GB available · /
+                      </div>
+                    </div>
+                  </div>
+                ) : null}
+              </div>
+            </div>
+            <div className="bar" style={{ display: "flex", gap: 8, justifyContent: "flex-end", padding: "10px 12px" }}>
+              <button
+                type="button"
+                className="text"
+                onClick={() => {
+                  /* Magpie Cancel: field unchanged (shot 33) */
+                  setFolderPicker(false);
+                  setFolderHint("");
+                }}
+              >
+                {t("Cancel")}
+              </button>
+              <button
+                type="button"
+                className="text primary"
+                disabled={folderLoc === "recent"}
+                onClick={() => {
+                  const path =
+                    folderLoc === "home"
+                      ? "/home/box/plugins"
+                      : folderLoc === "other"
+                        ? "/"
+                        : "";
+                  if (!path) return;
+                  setManualSpec(path);
+                  setFolderPicker(false);
+                  setFolderHint("");
+                }}
+              >
+                {t("Open")}
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
 
       {pluginDetail ? (
         <div className="modal open" role="dialog" aria-modal="true" aria-label={pluginDetail.name}>

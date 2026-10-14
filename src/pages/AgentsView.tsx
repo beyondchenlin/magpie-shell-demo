@@ -303,8 +303,8 @@ function ManageAgentsModal({
     setSelected(new Set());
     setResult(
       hide
-        ? ZH.agentHiddenN.replace("{n}", String(ids.length))
-        : ZH.agentUnhiddenN.replace("{n}", String(ids.length)),
+        ? t(ids.length === 1 ? "{n} agent hidden" : "{n} agents hidden", { n: ids.length })
+        : t(ids.length === 1 ? "{n} agent unhidden" : "{n} agents unhidden", { n: ids.length }),
     );
   };
 
@@ -691,10 +691,12 @@ export function AgentsView({
               <div className="guide-head">
                 <b className="guide-h">{ZH.getStarted}</b>
                 <span className="guide-n">
-                  {demoCopy(
-                    `已完成 ${1 + (Object.values(wired).some(Boolean) ? 1 : 0)}/2`,
-                    `${1 + (Object.values(wired).some(Boolean) ? 1 : 0)} of 2 done`,
-                  )}
+                  {(() => {
+                    const done =
+                      (typeof window !== "undefined" && sessionStorage.getItem("magpie-demo-providerAdded") === "1" ? 1 : 0) +
+                      (Object.values(wired).some(Boolean) ? 1 : 0);
+                    return t("{n} of {total} done", { n: done, total: 2 });
+                  })()}
                 </span>
                 <button
                   type="button"
@@ -755,34 +757,8 @@ export function AgentsView({
                   <div className="guide-body">
                     <b className="guide-title">{ZH.connectAgent}</b>
                     <span className="guide-say">{ZH.connectAgentSay}</span>
-                    <div className="guide-acts" style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 8 }}>
-                      {ALL_AGENTS.filter((a) => a.connectable).map((a) => (
-                        <button
-                          key={a.id}
-                          type="button"
-                          className={`text${wired[a.id] ? "" : " primary"} guide-go`}
-                          onClick={() => {
-                            if (wired[a.id]) {
-                              setExpandOpen(a.id);
-                              return;
-                            }
-                            setConnectBusy(a.id);
-                            window.setTimeout(() => {
-                              setWired((w) => ({ ...w, [a.id]: true }));
-                              setExpandOpen(a.id);
-                              setConnectBusy(null);
-                              onStatus(t("Connected · new sessions take it"), "ok");
-                            }, 380);
-                          }}
-                        >
-                          {connectBusy === a.id
-                            ? "…"
-                            : wired[a.id]
-                              ? t("Connected · new sessions take it")
-                              : t("Connect {agent}", { agent: a.name })}
-                        </button>
-                      ))}
-                    </div>
+                    {/* Native: no connectable agents detected → no chips (Cursor can't connect) */}
+                    <div className="guide-acts" />
                   </div>
                 </li>
               </ol>
