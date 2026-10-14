@@ -1,9 +1,11 @@
 /**
- * Magpie tray / menu-bar panel (body.panel) — Agents tab from native-linux/tray/01-agents.png.
- * Open with ?panel=1 or #panel. Allowances hidden when no quotas; Usage empty = tray/02.
+ * Magpie tray / quick panel (body.panel) — native-linux/tray/01–14.
+ * Open: ?panel=1 | #panel | localStorage magpie.demoPanel=1
+ * Allowances tab: Magpie hides entire [data-ptab=usage] when no subscription/balance — N/A here (not a missing UI).
  */
-import { useCallback, useEffect, useRef, useState } from "react";
-import { Bird } from "../components/Bird";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { Bird, useLogoWag } from "../components/Bird";
+import { ModelPop, type PopOption } from "../components/ModelPop";
 import { useSegThumb } from "../components/SegThumb";
 import { iconSrc } from "../data/mock";
 import { t } from "../i18n";
@@ -21,6 +23,22 @@ const CHEV = (
     />
   </svg>
 );
+
+const CURSOR_MODELS: PopOption[] = [
+  {
+    value: "default",
+    label: "Default",
+    note: "what Cursor ships with",
+    icon: "cursor",
+    reset: true,
+  },
+  {
+    value: "auto",
+    label: "auto",
+    note: "let Cursor pick",
+    icon: "cursor",
+  },
+];
 
 type Props = {
   onOpenMain: () => void;
@@ -41,11 +59,21 @@ export function TrayPanel({ onOpenMain, onQuit, onPrefs, onStatus }: Props) {
   });
   const [openId, setOpenId] = useState<string | null>(null);
   const [spinning, setSpinning] = useState(false);
+  const [model, setModel] = useState("default");
+  const [modelPop, setModelPop] = useState(false);
+  const [profilesOpen, setProfilesOpen] = useState(false);
   const syncRef = useRef<HTMLButtonElement>(null);
-  const hasAllowances = false; // demo: no quotas → Allowances tab hidden (shot 01)
+  const brandRef = useRef<HTMLDivElement>(null);
+  const modelFieldRef = useRef<HTMLButtonElement>(null);
+  const profBtnRef = useRef<HTMLButtonElement>(null);
+  const profBoxRef = useRef<HTMLElement | null>(null);
+  /** Native: no subscription/balance → Allowances tab omitted from DOM (tray NOTES). */
+  const hasAllowances = false;
   const setTabs = useSegThumb(tab);
   const [usePeriod, setUsePeriod] = useState<"today" | "7d" | "30d" | "all">("today");
   const setPeriodThumb = useSegThumb(usePeriod);
+
+  useLogoWag(brandRef);
 
   useEffect(() => {
     document.body.classList.add("panel", "linux", "window");
@@ -62,11 +90,40 @@ export function TrayPanel({ onOpenMain, onQuit, onPrefs, onStatus }: Props) {
     };
   }, [tab]);
 
+  useEffect(() => {
+    if (!profilesOpen) return;
+    const away = (e: MouseEvent) => {
+      const n = e.target as Node;
+      if (profBoxRef.current?.contains(n) || profBtnRef.current?.contains(n)) return;
+      setProfilesOpen(false);
+    };
+    document.addEventListener("mousedown", away, true);
+    return () => document.removeEventListener("mousedown", away, true);
+  }, [profilesOpen]);
+
+  // Magpie placeProfiles: float above Profiles btn, under ptabs
+  useLayoutEffect(() => {
+    const box = profBoxRef.current;
+    const btn = profBtnRef.current;
+    if (!box || !profilesOpen || !btn) return;
+    const place = () => {
+      const r = btn.getBoundingClientRect();
+      const top = document.getElementById("ptabs")?.getBoundingClientRect().bottom ?? 0;
+      box.style.bottom = Math.round(window.innerHeight - r.top + 6) + "px";
+      box.style.maxHeight = Math.max(120, Math.round(r.top - 6 - top - 4)) + "px";
+    };
+    place();
+    window.addEventListener("resize", place);
+    return () => window.removeEventListener("resize", place);
+  }, [profilesOpen]);
+
   const goTab = useCallback(
     (next: PTab) => {
       if (next === "usage" && !hasAllowances) return;
       setTab(next);
       setOpenId(null);
+      setModelPop(false);
+      setProfilesOpen(false);
     },
     [hasAllowances],
   );
@@ -83,11 +140,15 @@ export function TrayPanel({ onOpenMain, onQuit, onPrefs, onStatus }: Props) {
   };
 
   const agentOpen = openId === "cursor";
+  const modelLabel = model === "default" ? "default" : model;
+
+  const emptyUsageTitle =
+    usePeriod === "today" ? t("No requests today") : t("No requests here");
 
   return (
     <>
       <header className="top inrow tight">
-        <div className="brand">
+        <div className="brand" ref={brandRef}>
           <span className="logo" aria-hidden>
             <Bird size={18} />
           </span>
@@ -100,7 +161,9 @@ export function TrayPanel({ onOpenMain, onQuit, onPrefs, onStatus }: Props) {
             id="sync"
             type="button"
             ref={syncRef}
-            title={t("Look for agents on this computer again: one just installed or removed, or its settings changed")}
+            title={t(
+              "Look for agents on this computer again: one just installed or removed, or its settings changed",
+            )}
             onClick={() => void onSync()}
           >
             <svg viewBox="0 0 16 16" width={14} height={14}>
@@ -136,7 +199,7 @@ export function TrayPanel({ onOpenMain, onQuit, onPrefs, onStatus }: Props) {
             className="icon"
             id="prefs"
             type="button"
-            title={t("Settings")}
+            title={`${t("Settings")} (Ctrl+,)`}
             onClick={onPrefs}
           >
             <svg viewBox="0 0 24 24" width={14} height={14}>
@@ -195,9 +258,18 @@ export function TrayPanel({ onOpenMain, onQuit, onPrefs, onStatus }: Props) {
           <div
             className={`row agent${agentOpen ? " open" : ""}`}
             data-id="cursor"
-            onClick={() => setOpenId(agentOpen ? null : "cursor")}
+            aria-expanded={agentOpen}
+            onClick={(ev) => {
+              if ((ev.target as HTMLElement).closest(".ag-open, .ag-handle")) return;
+              setOpenId(agentOpen ? null : "cursor");
+              setModelPop(false);
+            }}
           >
-            <span className="ag-handle" aria-hidden>
+            <span
+              className="ag-handle"
+              aria-hidden
+              title="~/.cursor/cli-config.json"
+            >
               <img className="ic" src={iconSrc("cursor")} alt="" />
             </span>
             <div className="who">
@@ -205,7 +277,7 @@ export function TrayPanel({ onOpenMain, onQuit, onPrefs, onStatus }: Props) {
             </div>
             <div className="ag-sum">
               <div className="v">
-                <span className="vt">default</span>
+                <span className="vt">{modelLabel}</span>
               </div>
               <span className="eff" data-l="3" title={t("Effort")} aria-hidden>
                 <i />
@@ -217,14 +289,15 @@ export function TrayPanel({ onOpenMain, onQuit, onPrefs, onStatus }: Props) {
             <div className="ag-open" onClick={(e) => e.stopPropagation()}>
               <div className="ag-in">
                 <div className="ag-body">
-                  <button type="button" className="field solo">
+                  <button
+                    type="button"
+                    className={`field solo${modelPop ? " open" : ""}`}
+                    ref={modelFieldRef}
+                    onClick={() => setModelPop((v) => !v)}
+                  >
                     <span className="k">{t("Model")}</span>
-                    <span className="v">default</span>
-                    <span className="chev">{CHEV}</span>
-                  </button>
-                  <button type="button" className="field solo">
-                    <span className="k">{t("Effort")}</span>
-                    <span className="v">{t("Follow the model")}</span>
+                    <span className="v">{modelLabel}</span>
+                    <img className="ic" src={iconSrc("cursor")} alt="" />
                     <span className="chev">{CHEV}</span>
                   </button>
                 </div>
@@ -233,11 +306,8 @@ export function TrayPanel({ onOpenMain, onQuit, onPrefs, onStatus }: Props) {
           </div>
         </div>
 
-        <section className="panel-quota" id="panelQuota" hidden={tab !== "usage" || !hasAllowances}>
-          <p className="pq-anote" style={{ padding: "8px 4px", color: "var(--muted)", fontSize: 12 }}>
-            {t("No allowances to show")}
-          </p>
-        </section>
+        {/* Allowances: hidden when hasAllowances=false — Magpie N/A, not a gap */}
+        <section className="panel-quota" id="panelQuota" hidden={tab !== "usage" || !hasAllowances} />
 
         <section className="panel-usage" id="panelUsage" hidden={tab !== "stats"}>
           <div className="pu-bar">
@@ -303,20 +373,60 @@ export function TrayPanel({ onOpenMain, onQuit, onPrefs, onStatus }: Props) {
             {t("Gateway and session-log calls; local rejections excluded from totals.")}
           </p>
           <div className="pu-none">
-            <b>{usePeriod === "today" ? t("No requests today") : t("No requests here")}</b>
+            <b>{emptyUsageTitle}</b>
             {t(
               "Every request an agent sends to magpie, and every call the agents' own session files record, is counted here.",
             )}
           </div>
         </section>
 
+        {/* 07-routing: green today 0 · Open Routing · gateway-not-running */}
         <section className="panel-routing" id="panelRouting" hidden={tab !== "routing"}>
-          <div className="rt-panel-idle" style={{ padding: "16px 8px", textAlign: "center" }}>
-            <p style={{ margin: 0, color: "var(--muted)", fontSize: 12.5 }}>{t("Waiting for a request")}</p>
-            <p style={{ margin: "6px 0 0", color: "var(--faint)", fontSize: 11.5 }}>
-              {t("Send one through the gateway to see it here")}
-            </p>
+          <div className="pr-head">
+            <span className="rt-livedot on" aria-hidden="true" />
+            <span className="pr-today">
+              <span>{t("today")}</span> <b>0</b> {t("calls")} · <b>0</b> {t("tokens")}
+            </span>
+            <span className="grow" />
+            <button
+              type="button"
+              className="text"
+              onClick={() => {
+                onOpenMain();
+                try {
+                  location.hash = "#/routing";
+                } catch {
+                  /* */
+                }
+              }}
+            >
+              {t("Open Routing")}
+            </button>
           </div>
+          <p className="pr-none">{t("The gateway isn't running, so nothing is routed.")}</p>
+        </section>
+
+        {/* 10-profiles empty popover */}
+        <section
+          className={`profiles${profilesOpen ? " open" : ""}`}
+          ref={profBoxRef}
+          aria-hidden={!profilesOpen}
+        >
+          <span className="label">{t("Profiles")}</span>
+          <div id="profiles" className="chips">
+            <span className="hint">{t("none yet · save the setup to switch back in one click")}</span>
+          </div>
+          <button
+            className="text"
+            id="save"
+            type="button"
+            onClick={() => {
+              /* Magpie opens name field; demo mock — no save */
+              onStatus(t("＋ Save current"), "ok");
+            }}
+          >
+            {t("＋ Save current")}
+          </button>
         </section>
       </main>
 
@@ -325,9 +435,10 @@ export function TrayPanel({ onOpenMain, onQuit, onPrefs, onStatus }: Props) {
           type="button"
           className="text prof-btn"
           id="profBtn"
+          ref={profBtnRef}
           aria-haspopup="dialog"
-          aria-expanded="false"
-          onClick={() => onStatus(t("No profiles yet"), "ok")}
+          aria-expanded={profilesOpen}
+          onClick={() => setProfilesOpen((v) => !v)}
         >
           <span>{t("Profiles")}</span>
         </button>
@@ -339,6 +450,21 @@ export function TrayPanel({ onOpenMain, onQuit, onPrefs, onStatus }: Props) {
           {t("Quit")}
         </button>
       </footer>
+
+      {/* 09-model-menu */}
+      <ModelPop
+        open={modelPop}
+        anchor={modelFieldRef.current}
+        options={CURSOR_MODELS}
+        value={model}
+        modelPicker
+        placeholder={t("Filter, or type any model id…")}
+        onPick={(v) => {
+          setModel(v);
+          setModelPop(false);
+        }}
+        onClose={() => setModelPop(false)}
+      />
     </>
   );
 }

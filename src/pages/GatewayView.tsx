@@ -27,11 +27,11 @@ const DEMO_CALLS: DemoCall[] = [
 function readDemoPrefs(): { lan: boolean; showGwDemo: boolean; port: string } {
   try {
     const raw = localStorage.getItem("magpie.demoPrefs");
-    if (!raw) return { lan: false, showGwDemo: true, port: "3425" };
+    if (!raw) return { lan: false, showGwDemo: false, port: "3425" };
     const j = JSON.parse(raw);
     return { lan: !!j.lan, showGwDemo: j.showGwDemo !== false, port: String(j.port || "3425") };
   } catch {
-    return { lan: false, showGwDemo: true, port: "3425" };
+    return { lan: false, showGwDemo: false, port: "3425" };
   }
 }
 
@@ -293,7 +293,7 @@ export function GatewayView({ onStatus, onGoNetwork }: Props) {
   const calls = showFilled ? DEMO_CALLS : [];
   const f = FLAVORS.find((x) => x.id === flavor) || FLAVORS[0];
   const base = f.base(GW_URL);
-  const modelPlaceholder = f.decide ? "provider/jev-latest" : (exampleModel || "provider/model");
+  const modelPlaceholder = f.decide ? "provider/jev_latest" : (exampleModel || "provider/model");
   const secret = lanOn && gwKeys.length ? gwKeys[0].key.replace("••••••••", "x7k9m2p4") : "magpie";
   const win = snipOS === "windows";
 

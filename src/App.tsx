@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Bird } from "./components/Bird";
+import { Bird, useLogoWag } from "./components/Bird";
 import { NavIcon } from "./components/NavIcons";
 import { useSegThumb } from "./components/SegThumb";
 import { GATEWAY_ADDR, NAV, type ViewId } from "./data/mock";
@@ -15,6 +15,21 @@ import { TrayPanel, wantPanelMode } from "./pages/TrayPanel";
 
 const SIDE_AT = 1024;
 const NAV_LS = "magpie.navLayout";
+const SIDE_W_LS = "magpie.sideWidth";
+const SIDE_MIN = 168;
+const SIDE_MAX = 320;
+
+function sideFit(w: number) {
+  return Math.round(Math.max(SIDE_MIN, Math.min(w, SIDE_MAX, window.innerWidth * 0.36)));
+}
+
+function readSideW(): number {
+  try {
+    return Math.round(+localStorage.getItem(SIDE_W_LS)!) || 0;
+  } catch {
+    return 0;
+  }
+}
 
 function libraryOn(): boolean {
   try {
@@ -80,6 +95,9 @@ export default function App() {
   const [libFeat, setLibFeat] = useState(libraryOn);
   const statusTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const syncRef = useRef<HTMLButtonElement>(null);
+  const brandRef = useRef<HTMLDivElement>(null);
+  const sideEdgeRef = useRef<HTMLDivElement>(null);
+  useLogoWag(brandRef);
   const setNavBox = useSegThumb(sideOn || view === "settings" ? null : view);
 
   const showStatus = (msg: string, kind = "ok", ms = 3500) => {
@@ -149,6 +167,95 @@ export default function App() {
       return next;
     });
   }, []);
+
+  // Magpie sideDrag (#sideEdge): persist magpie.sideWidth; fold past SIDE_MIN-64
+  useEffect(() => {
+    if (!sideOn) {
+      document.body.style.removeProperty("--side-w");
+      return;
+    }
+    const w = readSideW();
+    if (w) document.body.style.setProperty("--side-w", sideFit(w) + "px");
+    else document.body.style.removeProperty("--side-w");
+  }, [sideOn]);
+
+  useEffect(() => {
+    const edge = sideEdgeRef.current;
+    if (!edge || !sideOn) return;
+    const onDown = (e: PointerEvent) => {
+      if (e.button !== 0) return;
+      e.preventDefault();
+      edge.setPointerCapture(e.pointerId);
+      const side = document.getElementById("side");
+      if (!side) return;
+      const from = side.getBoundingClientRect().width - e.clientX;
+      document.body.classList.add("side-drag");
+      let w = 0;
+      const move = (m: PointerEvent) => {
+        const want = from + m.clientX;
+        if (want < SIDE_MIN - 64) {
+          w = 0;
+          end();
+          document.body.style.removeProperty("--side-w");
+          toggleSideNav();
+          return;
+        }
+        w = sideFit(want);
+        document.body.style.setProperty("--side-w", w + "px");
+      };
+      const end = () => {
+        edge.removeEventListener("pointermove", move);
+        edge.removeEventListener("pointerup", end);
+        edge.removeEventListener("pointercancel", end);
+        if (edge.hasPointerCapture(e.pointerId)) edge.releasePointerCapture(e.pointerId);
+        document.body.classList.remove("side-drag");
+        if (w) {
+          try {
+            localStorage.setItem(SIDE_W_LS, String(w));
+          } catch {
+            /* */
+          }
+        }
+      };
+      edge.addEventListener("pointermove", move);
+      edge.addEventListener("pointerup", end);
+      edge.addEventListener("pointercancel", end);
+    };
+    const onKey = (e: KeyboardEvent) => {
+      const step = e.shiftKey ? 32 : 8;
+      const d = ({ ArrowLeft: -step, ArrowRight: step } as Record<string, number>)[e.key];
+      if (!d) return;
+      e.preventDefault();
+      const side = document.getElementById("side");
+      if (!side) return;
+      const next = sideFit(side.getBoundingClientRect().width + d);
+      document.body.style.setProperty("--side-w", next + "px");
+      try {
+        localStorage.setItem(SIDE_W_LS, String(next));
+      } catch {
+        /* */
+      }
+      edge.setAttribute("aria-valuenow", String(next));
+    };
+    const syncAria = () => {
+      const side = document.getElementById("side");
+      if (!side) return;
+      const w = Math.round(side.getBoundingClientRect().width);
+      edge.setAttribute("aria-valuenow", String(w));
+      edge.setAttribute("aria-valuemin", String(SIDE_MIN));
+      edge.setAttribute("aria-valuemax", String(sideFit(SIDE_MAX)));
+      edge.setAttribute("aria-label", t("Sidebar width"));
+    };
+    syncAria();
+    edge.addEventListener("pointerdown", onDown);
+    edge.addEventListener("keydown", onKey);
+    window.addEventListener("resize", syncAria);
+    return () => {
+      edge.removeEventListener("pointerdown", onDown);
+      edge.removeEventListener("keydown", onKey);
+      window.removeEventListener("resize", syncAria);
+    };
+  }, [sideOn, toggleSideNav]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -223,7 +330,7 @@ export default function App() {
   }
 
   const brand = (
-    <div className="brand">
+    <div className="brand" ref={brandRef}>
       <span className="logo" aria-hidden>
         <Bird size={18} />
       </span>
@@ -363,8 +470,11 @@ export default function App() {
         <div
           className="side-edge"
           id="sideEdge"
+          ref={sideEdgeRef}
           role="separator"
           aria-orientation="vertical"
+          aria-valuemin={SIDE_MIN}
+          aria-valuemax={SIDE_MAX}
           tabIndex={0}
         />
       </aside>

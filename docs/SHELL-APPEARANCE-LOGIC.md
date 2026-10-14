@@ -13,7 +13,7 @@
 | 默认桌面窗像 Win/Mac 安装包 | 默认 **660×600**；`SIDE_AT = 1024` | 窄窗 = **顶栏 tabs**（金标）；宽窗才侧栏 |
 | 侧栏开关可记忆 | `localStorage magpie.navLayout` = `side` \| `top` \| 空 | 空 = 跟媒体查询；有值则强制 |
 | 布局类 | `body.window` + 可选 `body.side-nav` / `body.web` / `body.linux` / `body.mac` | Win exe：**系统标题栏** + 藏页内 brand；勿把 Linux 页内关闭钮当金标 |
-| 侧栏宽 | `--side-w: 212px`（≤859px → 184px）；`padding-left: var(--side-w)` | 拖宽 `#sideEdge` 可后做 |
+| 侧栏宽 | `--side-w: 212px`（≤859px → 184px）；`padding-left: var(--side-w)` | **v0.1.36** `#sideEdge` sideDrag：168–320px，`magpie.sideWidth`；拖过 `SIDE_MIN-64` 收起侧栏 |
 
 **判定金标：** Win/Mac 默认 = 顶栏；web 宽屏截图的侧栏 ≠ 桌面默认。
 
@@ -434,3 +434,19 @@ Full nested capture consumed. Hook When-it-runs includes shared events + Cursor 
 | `.pu-none` | No requests today | 同文案 |
 
 *文档版本：v0.1.35*
+
+
+---
+
+## Tray / 快速面板（body.panel）· v0.1.36
+
+| 目的 | 机制 | 二开注意 |
+|------|------|----------|
+| 托盘快开窗 | `?panel=1` / `#panel` → `body.panel` + ptabs | 不是主窗 card；Profiles 仅 Agents 脚 |
+| Allowances tab | 无订阅/余额时 **整 tab hidden**（`data-ptab=usage`） | **N/A**，不是漏做；有配额再录 rings/Arrange |
+| Usage（stats） | Today/7d/30d/All + Refresh now + Open Usage；空态 today vs here | 无请求无图 |
+| Routing | `pr-head` 绿点 + today 0 calls · 0 tokens + Open Routing；网关未监听 → gateway-not-running | 面板进程未占 3425 时官方也是这句 |
+| Agents 嵌套 | 行 spring `.48s`；model field → `#pop` ModelPop（Default/auto）；handle tip 配置路径 | 别点真改模型落盘 |
+| Logo 拍翅 | `.logo.wag` 拆 parts；wing-flap/tail-flick/bird-bob **.9s**；开窗 250ms + hover | clipPath `#bird-body/tail/wing` |
+| rt-sky 飞鸟 | Magpie `FLIER` paths；`.rt-flier .wing` **rtflap .42s** cubic-bezier(.45,0,.3,1) | Demo hop mock；真飞依赖 gateway trace |
+

@@ -1,3 +1,9 @@
+
+## Consumed in demo v0.1.36+ (GATEWAY_NATIVE)
+Default demo now matches native **empty** catalog (`showGwDemo` default false): status running · 0 models · Connect API tabs · Models empty card stays when folded · Recent empty · Restart busy label · copy pills · Network and sharing link.
+Filled models/calls remain opt-in via `localStorage magpie.demoPrefs.showGwDemo=true` (or Settings demo toggle if present).
+Shots **01–26** drive the empty-path interactions; true LAN keys / restart API still mock.
+
 # Gateway — native Linux (magpie 0.1.1233)
 
 Window: frameless card, class `magpie`, **712×652 at +630+300** on 1920×1200. Shots are native window pixels (shadow included), not the 1280×800 desktop scale. Chrome for these shots is **top tabs** (Agents, Providers, Routing, Gateway, Usage, Plugins). The process had `localStorage magpie.navLayout=side` (left sidebar). Side-toggle (`#sideToggle`, tooltip `Hide sidebar (Ctrl+Shift+S)`) switched it to top tabs. CSS wants a 0.5s view-transition (`cubic-bezier(.32,.72,0,1)`): sidebar slides, each tab flies. On this WebKit the X11 grab showed a **single-frame snap** (≤16ms at 60fps); do not assume painted intermediates.

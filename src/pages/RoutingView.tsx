@@ -514,11 +514,26 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
             <svg className="rt-sky" aria-hidden="true">
               {flier && (
                 <g
-                  className="rt-flier rt-flier-demo"
+                  className="rt-flier rt-flier-demo req"
                   transform={`translate(${flier.x} ${flier.y}) rotate(${flier.rot})`}
                 >
-                  <g className="rt-flap">
-                    <use href="#bird" width="18" height="18" x="-9" y="-9" />
+                  {/* Magpie FLIER (routing.js): wings beat rtflap .42s from shoulder */}
+                  <g className="rt-lift">
+                    <g transform="scale(1.2) translate(-6.5 3.2)">
+                      <path
+                        className="wing far"
+                        d="M-14.5 -3.4C-16.5 -9.5 -14.2 -15 -8.6 -18.6C-9.4 -12.6 -9.6 -7.4 -9.2 -3.2Z"
+                      />
+                      <path className="tail" d="M-31.5 3.1L-18.6 -1.8L-17.4 1.2L-30.8 4.6Z" />
+                      <ellipse className="body" cx="-12.2" cy="-1.4" rx="7.6" ry="3.9" />
+                      <ellipse className="belly" cx="-12.8" cy="0.4" rx="4.3" ry="1.6" />
+                      <circle className="body" cx="-4.9" cy="-3.7" r="3.1" />
+                      <path className="body" d="M-2.3 -4.8L1.4 -3.3L-2.3 -2.2Z" />
+                      <g className="wing near">
+                        <path d="M-15.6 -3.2C-17.8 -10.2 -15.2 -16.4 -8.4 -20.4C-9.3 -13.6 -9.4 -7.8 -8.8 -2.8Z" />
+                        <path className="bar" d="M-14.6 -5.6C-15.4 -10.4 -13.8 -14.4 -10.4 -17.2" />
+                      </g>
+                    </g>
                   </g>
                 </g>
               )}

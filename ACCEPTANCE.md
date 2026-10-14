@@ -1,3 +1,11 @@
+## v0.1.36 TRAY_CONSUME + GATEWAY_NATIVE
+
+- Tray panel consumes native `interactions/native-linux/tray/01–14` (Agents / Usage periods / Routing gateway-off / model menu / Profiles empty / tips / handle tip).
+- Allowances tab: **N/A** without quotas (Magpie hides it) — not scored as a gap.
+- Bird logo wag + Routing demo FLIER wing `rtflap .42s`; `#sideEdge` width drag.
+- Open: `?panel=1` or `#panel`.
+- Gateway native **01–26** empty path: default `showGwDemo=false` (0 models); Connect/Models/Recent/Restart/copy aligned; filled demo opt-in.
+
 ## v0.1.35 TRAY_USAGE_EMPTY
 
 - Tray Usage tab empty state from native `02-usage-today.png` (Today/7d/30d/All · refresh · Open Usage · pu-none).

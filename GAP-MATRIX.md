@@ -1,3 +1,18 @@
+## v0.1.36 also GATEWAY_NATIVE (01–26 empty path)
+- Native `interactions/native-linux/gateway/01–26` consumed against `GatewayView`: default empty catalog matches shots; System One `provider/jev_latest`; Restart busy copy; folds/copy/API segs already from earlier passes.
+- Still mock: real `POST gateway/restart`, LAN key mint, non-running / take-over states.
+
+## v0.1.36 TRAY_CONSUME
+- Consumed **all** native tray frames **01–14** into `TrayPanel` (`?panel=1`).
+- Routing **07**: green `rt-livedot` + today 0 calls · 0 tokens + Open Routing + gateway-not-running empty copy.
+- Agents nested **08–10, 14**: row-spring open · ModelPop Default/auto · Profiles empty popover · handle tip path.
+- Usage **02–06**: period empty copy (today vs here) + Refresh now tip title.
+- Tips **11–13**: sync / open-as-window / Settings (Ctrl+,) titles.
+- **Allowances:** documented **N/A** (Magpie hides entire tab with no subscription/balance) — not a missing control.
+- Bird: logo wag parts + `.9s` flap; Routing demo flier uses Magpie FLIER paths + `rtflap .42s` (still mock hops, not live gateway).
+- `#sideEdge` drag width (SIDE_MIN 168 · SIDE_MAX 320 · `magpie.sideWidth`) — GAP #11 closed for demo.
+- Still open: true gateway bird / OAuth / Allowances body when quotas exist (needs signed-in native capture).
+
 ## v0.1.35 TRAY_USAGE_EMPTY
 - Consumed tray/02-usage-today: panel Usage (stats) empty — period segs + Open Usage + pu-none
 - Still PARTIAL: tray Routing nested; Allowances with quotas; Bird gateway (P1)
@@ -60,12 +75,12 @@
 | 4 | Routing 空态：等待请求三列舞台 | **已改**：idle 舞台 + 0 统计 | — | 对齐 `03-routing.png` |
 | 5 | Brand 在 `.side-top`；无 DEMO 徽章 | **已改** | — | |
 | 6 | Web 预览 660×600（非 1100×760） | **已改**；侧栏 absolute 于 `#root` | — | |
-| 7 | `.rt-sky` 飞鸟依赖 gateway trace | mock「演示飞鸟」可选 | P1 | 默认空态无飞；非官方拍翅 timing |
+| 7 | `.rt-sky` 飞鸟依赖 gateway trace | mock「演示飞鸟」+ FLIER/`rtflap .42s` | P1 | 默认空态无飞； hop 仍 mock |
 | 8 | 账号行 `.dot`/`.bar` 在有请求时 | 空态为 `li.idle` | — | 空态正确 |
 | 9 | Provider 完整行控件 | **v0.1.34** 有账号列表行+accts 编辑器 | P1 | 真 key/OAuth/arrange 落盘仍 mock |
 | 10 | Gateway 空态壳+主交互 | **v0.1.9**；filled demo **v0.1.12** | P1 | Gateway 仍可再抠 |
 | 14 | Settings 全 tab 深页 | **v0.1.21** Privacy 63–70 字符串/嵌套齐；Disable 左轨 + Models `#pop` | P1 | Usage/Plugins 继续抠；Privacy 基本对齐 |
-| 11 | `#sideEdge` 拖宽 | 仅视觉 | P2 | |
+| 11 | `#sideEdge` 拖宽 | **v0.1.36** sideDrag | — | localStorage `magpie.sideWidth` |
 | 12 | 业务后端 / 真网关 | 无 | P2 | 范围外 |
 | 13 | 先前 PASS_WITH_GAPS | **已撤销**；现以截图空态对齐为准 | — | |
 | 15 | Antigravity risk/import | **v0.1.27** 独立卡（非 Claude 共用） | — | Sign in anyway = mock waiting；无真 Google OAuth |
@@ -74,8 +89,8 @@
 ## 仍开放的有意差距
 
 1. 无真实 provider 添加 / agent 接线 / gateway / OAuth  
-2. 飞鸟仅为 Demo 开关 mock（非官方拍翅 timing · GAP #7 P1）  
-3. Tray 仅 Agents 空配额态（01）；Allowances/Usage/Routing 托盘嵌套待点录  
+2. 飞鸟仍为 Demo 开关 mock（FLIER+rtflap .42s 已对齐；非真 gateway · GAP #7 仍 P1）  
+3. Tray **01–14 已消费**；Allowances 无配额时整 tab 隐藏 = **N/A**（有配额体需另录）  
 4. Provider 列表已有账号态壳；真 key 轮转 / arrange drag 落盘仍 mock  
 5. 未做原生 Tauri；Electron 系统标题栏（Windows 上游亦然）
 
