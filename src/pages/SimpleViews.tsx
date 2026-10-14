@@ -2,73 +2,90 @@ import { useState } from "react";
 import { useSegThumb } from "../components/SegThumb";
 import { demoCopy, t, type Lang } from "../i18n";
 
-export function GatewayView() {
-  return (
-    <main className="view" id="view-gateway">
-      <div className="row-head">
-        <span className="label">{t("Gateway")}</span>
-      </div>
-      <div className="list">
-        <div className="row pref">
-          <div className="who">
-            <div className="name">
-              {demoCopy("网关运行中", "Gateway running")}
-            </div>
-            <div className="sub">
-              {demoCopy(
-                `0 个模型 · ${t("no agent routed through it yet")} · ${t("five APIs, one URL")}`,
-                `0 models · ${t("no agent routed through it yet")} · ${t("five APIs, one URL")}`,
-              )}
-            </div>
-          </div>
-          <div className="val">
-            <code>http://127.0.0.1:3425</code>
-          </div>
-        </div>
-        <div className="row pref">
-          <div className="who">
-            <div className="name">{t("Restart gateway")}</div>
-            <div className="sub">
-              {demoCopy("演示壳 · 无真实网关进程", "Demo shell · no real gateway process")}
-            </div>
-          </div>
-          <div className="val">
-            <button type="button" className="text" disabled>
-              {t("Restart")}
-            </button>
-          </div>
-        </div>
-      </div>
-    </main>
-  );
-}
-
 const USAGE_TABS = [
-  ["Overview", "Overview"],
-  ["Requests", "Requests"],
-  ["Sessions", "Sessions"],
-  ["Context", "Context"],
+  "Overview",
+  "Requests",
+  "Sessions",
+  "Context",
 ] as const;
 
+const USAGE_PERIODS = [
+  ["today", "Today"],
+  ["7d", "7 days"],
+  ["30d", "30 days"],
+  ["all", "All"],
+  ["custom", "Custom"],
+] as const;
+
+/** Empty Overview shell (official 05-usage). Tabs/period segs only — no ledger. */
 export function UsageView() {
+  const [tab, setTab] = useState<(typeof USAGE_TABS)[number]>("Overview");
+  const [period, setPeriod] = useState<string>("today");
+  const periodBox = useSegThumb(period);
+
   return (
     <main className="view" id="view-usage">
-      <div className="usage-head">
+      <div className="usage-head" style={{ display: "flex", flexWrap: "wrap", gap: 10, alignItems: "center" }}>
+        <div className="segs" ref={periodBox} data-kind="usage-period">
+          {USAGE_PERIODS.map(([id, en]) => (
+            <button
+              key={id}
+              type="button"
+              className={`opt${period === id ? " on" : ""}`}
+              aria-pressed={period === id}
+              onClick={() => setPeriod(id)}
+            >
+              {t(en)}
+            </button>
+          ))}
+        </div>
+        <span className="grow" />
+        <span style={{ fontWeight: 600, fontVariantNumeric: "tabular-nums" }}>
+          ≈$0.000{" "}
+          <span style={{ fontWeight: 500, color: "var(--muted)", fontSize: 12 }}>
+            {t("effective prices")}
+          </span>
+        </span>
+      </div>
+      <p className="usage-note" id="usageScope">
+        {t(
+          "Gateway calls only; session-log calls are in Requests. Local rejections are excluded from totals.",
+        )}
+      </p>
+      {/* Magpie put Overview/Requests/… in side-nav under Usage; demo keeps a compact segs for web/top */}
+      <div className="row-head" style={{ marginTop: 4 }}>
         <div className="segs">
-          {USAGE_TABS.map(([en], i) => (
-            <button key={en} type="button" className={i === 0 ? "on" : ""}>
+          {USAGE_TABS.map((en) => (
+            <button
+              key={en}
+              type="button"
+              className={`opt${tab === en ? " on" : ""}`}
+              aria-pressed={tab === en}
+              onClick={() => setTab(en)}
+            >
               {t(en)}
             </button>
           ))}
         </div>
       </div>
-      <div className="usage-pane">
-        <p className="note" style={{ padding: "12px 4px", color: "var(--muted)" }}>
-          {t("No calls today.")}{" "}
-          {t(
-            "Point an agent at a catalog model and use it; every call through the gateway is counted here.",
-          )}
-        </p>
+      <div className="list">
+        <div className="empty-state" style={{ padding: "28px 18px" }}>
+          {tab === "Overview"
+            ? (
+              <>
+                {t("No calls today.")}{" "}
+                {t(
+                  "Point an agent at a catalog model and use it; every call through the gateway is counted here.",
+                )}
+              </>
+            )
+            : (
+              demoCopy(
+                `${t(tab)} — 分区壳层（尚未接线）`,
+                `${t(tab)} — section shell only (not wired yet)`,
+              )
+            )}
+        </div>
       </div>
     </main>
   );

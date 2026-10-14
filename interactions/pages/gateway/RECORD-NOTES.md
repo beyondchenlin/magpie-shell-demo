@@ -1,25 +1,18 @@
-# Gateway — recording notes (parent / next pass)
+# Gateway — recording notes
 
-Executor could not drive the official Magpie browser for this page in this turn.
-Parent (or a follow-up) should click through Magpie Gateway and fill `shots/CLICK-LOG.md` before implementing.
+## Demo status（v0.1.9）
 
-## Suggested click script (mirror Routing R-*)
+空态 1:1 结构 + 主交互/动效已实现（见 `SPEC.md`）。  
+判定：`GATEWAY_SHELL_LOGIC_PARTIAL`。
 
-1. **G-00** Open Gateway from sidebar (and from side-foot `#sideGw`). Capture empty/default card.
-2. **G-01** Every header / toolbar button (Start / Stop / Restart / Copy address / Open / … — whatever Magpie shows).
-3. **G-02** Address / port / bind fields: focus, edit, blur, Save if present.
-4. **G-03** Status indicators / pills / logs: click each; note whether panels open.
-5. **G-04** Any nested tabs or accordions on the page.
-6. **G-05** Top-bar `#sync` while on Gateway — toast kind + copy (likely models: “Model lists refreshed”).
-7. **G-06** Esc / Cancel / outside-click for any dialogs.
+## 仍缺（需真机 / 有数据）
 
-## Capture rules
+1. Share on LAN → Gateway keys 列表 / Add key / limit 编辑  
+2. 有模型时的行选中写入 snippet、`Copy all ids`、Find  
+3. Recent calls 展开 body、SSE、archive  
+4. 真实 `gateway/restart` / take-over  
+5. computerUse 对官方窗再跑一遍 G-* 对照片（可选）
 
-- Before/after PNG per control under `interactions/pages/gateway/shots/`
-- Log: selector, aria, title, toast text (zh + en), CSS duration if animated
-- Source anchors: `app.js` gateway render + related CSS
-- Do **not** invent Start/Stop if Magpie’s empty state differs — record first
+## 源码
 
-## Demo status
-
-Not started. Keep GatewayView as skeleton until CLICK-LOG exists.
+`/workspace/magpie-src/internal/gui/assets/plugins/gateway/client.js`

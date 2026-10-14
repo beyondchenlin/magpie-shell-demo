@@ -15,7 +15,7 @@
 | 7 | `.rt-sky` 飞鸟依赖 gateway trace | mock「演示飞鸟」可选 | P1 | 默认空态无飞；非官方拍翅 timing |
 | 8 | 账号行 `.dot`/`.bar` 在有请求时 | 空态为 `li.idle` | — | 空态正确 |
 | 9 | Provider 完整行控件 | 仅空态添加表 | P1 | 添加后无列表态 |
-| 10 | Gateway/Usage/Plugins 完整页 | 骨架 | P1 | |
+| 10 | Gateway 空态壳+主交互 | **v0.1.9 已做**；Usage/Plugins 仍骨架 | P1 | LAN keys/调用行未做 |
 | 11 | `#sideEdge` 拖宽 | 仅视觉 | P2 | |
 | 12 | 业务后端 / 真网关 | 无 | P2 | 范围外 |
 | 13 | 先前 PASS_WITH_GAPS | **已撤销**；现以截图空态对齐为准 | — | |

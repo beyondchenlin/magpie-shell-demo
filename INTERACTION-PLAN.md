@@ -95,4 +95,5 @@ Sessions / Library：仅在 Plugins → Built-in 打开后出现时再录。
 
 - Agents / Providers：部分已实现（v0.1.4）
 - Routing 空态 R-00…R-09：已录 + demo v0.1.5（`ROUTING_EMPTY_PARTIAL`）
-- Gateway / Usage / Plugins / Settings：未录；Gateway 见 `interactions/pages/gateway/RECORD-NOTES.md`
+- Gateway 空态 G-00…G-08：源码+既有 shots 已录；demo **v0.1.9**（`GATEWAY_SHELL_LOGIC_PARTIAL`）
+- Usage / Plugins / Settings 深交互：未齐；外观逻辑见 `docs/SHELL-APPEARANCE-LOGIC.md`

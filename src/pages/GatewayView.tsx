@@ -1,0 +1,590 @@
+import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
+import { useSegThumb } from "../components/SegThumb";
+import { GATEWAY_ADDR } from "../data/mock";
+import { demoCopy, t, useLang } from "../i18n";
+
+/** Magpie flashCopied: 1200ms; copy-pop .36s --ease */
+const COPY_FLASH_MS = 1200;
+
+const GW_URL = `http://${GATEWAY_ADDR}`;
+
+type FlavorId = "openai" | "responses" | "anthropic" | "gemini" | "systemone";
+type SnipLang = "shell" | "curl" | "python" | "node";
+type SnipOS = "windows" | "unix";
+
+type Flavor = {
+  id: FlavorId;
+  name: string;
+  note: string;
+  base: (u: string) => string;
+  baseEnv?: string;
+  keyEnv?: string;
+  decide?: boolean;
+};
+
+const FLAVORS: Flavor[] = [
+  {
+    id: "openai",
+    name: "OpenAI",
+    note: "Chat Completions, the API most tools speak. Anything with an OpenAI base-URL setting works.",
+    base: (u) => u + "/v1",
+    baseEnv: "OPENAI_BASE_URL",
+    keyEnv: "OPENAI_API_KEY",
+  },
+  {
+    id: "responses",
+    name: "Responses",
+    note: "OpenAI's newer API: reasoning, built-in tool items, encrypted reasoning. Codex speaks this.",
+    base: (u) => u + "/v1",
+    baseEnv: "OPENAI_BASE_URL",
+    keyEnv: "OPENAI_API_KEY",
+  },
+  {
+    id: "anthropic",
+    name: "Anthropic",
+    note: "Messages API. Claude Code reads ANTHROPIC_AUTH_TOKEN instead of the key; the Agents tab sets that for you.",
+    base: (u) => u,
+    baseEnv: "ANTHROPIC_BASE_URL",
+    keyEnv: "ANTHROPIC_API_KEY",
+  },
+  {
+    id: "gemini",
+    name: "Gemini",
+    note: "Google's generateContent API, v1beta. Gemini CLI and the google-genai SDKs speak this.",
+    base: (u) => u,
+    baseEnv: "GOOGLE_GEMINI_BASE_URL",
+    keyEnv: "GEMINI_API_KEY",
+  },
+  {
+    id: "systemone",
+    name: "System One",
+    note: 'TypeSafe\'s decision API: a Jev or Clef model answers typed questions (choice, noul, score) about a state, with how sure it is. Clef also reads images: add "images": ["data:image/png;base64,…"].',
+    base: (u) => u + "/v1",
+    decide: true,
+  },
+];
+
+function lsGet(k: string, fallback: string) {
+  try {
+    return localStorage.getItem(k) || fallback;
+  } catch {
+    return fallback;
+  }
+}
+function lsSet(k: string, v: string) {
+  try {
+    localStorage.setItem(k, v);
+  } catch {
+    /* ignore */
+  }
+}
+
+function readFlavor(): FlavorId {
+  const v = lsGet("magpie.flavor", "openai");
+  return FLAVORS.some((f) => f.id === v) ? (v as FlavorId) : "openai";
+}
+
+/** Magpie stores snippet dialect in magpie.lang; demo uses magpie.snipLang so UI locale (magpie.lang=zh|en) is not clobbered. */
+function readSnipLang(): SnipLang {
+  const v = lsGet("magpie.snipLang", "") || lsGet("magpie.gwSnipLang", "shell");
+  return (["shell", "curl", "python", "node"] as const).includes(v as SnipLang)
+    ? (v as SnipLang)
+    : "shell";
+}
+
+function readSnipOS(): SnipOS {
+  const v = lsGet("magpie.snipOS", "");
+  if (v === "windows" || v === "unix") return v;
+  return /^Win/i.test(navigator.platform || "") ? "windows" : "unix";
+}
+
+function CopyIcon({ check }: { check?: boolean }) {
+  if (check) {
+    return (
+      <svg viewBox="0 0 16 16" width={12} height={12} aria-hidden>
+        <path
+          d="m3.5 8.5 3 3 6-7"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.7"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    );
+  }
+  return (
+    <svg viewBox="0 0 16 16" width={12} height={12} aria-hidden>
+      <path
+        d="M5.5 5.5V3.5h7v7h-2M3.5 5.5h7v7h-7z"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function FoldChev() {
+  return (
+    <svg viewBox="0 0 16 16" width={11} height={11} aria-hidden>
+      <path
+        d="M6 3.5 10.5 8 6 12.5"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function CopyBtn({
+  text,
+  what,
+  onStatus,
+  className = "copy",
+}: {
+  text: string;
+  what: string;
+  onStatus: (msg: string, kind?: string) => void;
+  className?: string;
+}) {
+  const [done, setDone] = useState(false);
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const flash = useCallback(() => {
+    setDone(false);
+    // restart copy-pop: force reflow then add .done (Magpie void b.offsetWidth)
+    requestAnimationFrame(() => {
+      setDone(true);
+      if (timer.current) clearTimeout(timer.current);
+      timer.current = setTimeout(() => setDone(false), COPY_FLASH_MS);
+    });
+  }, []);
+
+  useEffect(
+    () => () => {
+      if (timer.current) clearTimeout(timer.current);
+    },
+    [],
+  );
+
+  return (
+    <button
+      type="button"
+      className={`${className}${done ? " done" : ""}`}
+      title={done ? t("Copied") : t("Copy")}
+      aria-label={t("Copy")}
+      onClick={(e) => {
+        e.stopPropagation();
+        void navigator.clipboard?.writeText(text).catch(() => {});
+        flash();
+        onStatus(t("{what} copied", { what }), "ok");
+      }}
+    >
+      <CopyIcon check={done} />
+    </button>
+  );
+}
+
+function highlightShell(code: string): ReactNode[] {
+  // Magpie highlight(): env vars before =, keywords export; strings after =
+  const lines = code.split("\n");
+  return lines.map((line, i) => {
+    const m = /^(export\s+|\$env:)?([A-Z][A-Z0-9_]*)(=)(.*)$/.exec(line);
+    if (!m) {
+      return (
+        <span key={i}>
+          {line}
+          {i < lines.length - 1 ? "\n" : ""}
+        </span>
+      );
+    }
+    const [, prefix, env, eq, val] = m;
+    return (
+      <span key={i}>
+        {prefix?.startsWith("export") ? (
+          <span className="tk-k">export</span>
+        ) : prefix ? (
+          <span className="tk-v">{prefix}</span>
+        ) : null}
+        {prefix?.startsWith("export") ? " " : null}
+        <span className="tk-v">{env}</span>
+        <span>{eq}</span>
+        <span className="tk-s">{val}</span>
+        {i < lines.length - 1 ? "\n" : ""}
+      </span>
+    );
+  });
+}
+
+function envSnippet(baseEnv: string, base: string, keyEnv: string, secret: string, win: boolean) {
+  if (win) {
+    return `$env:${baseEnv}="${base}"\n$env:${keyEnv}="${secret}"`;
+  }
+  return `export ${baseEnv}=${base}\nexport ${keyEnv}=${secret}`;
+}
+
+type Props = {
+  onStatus: (msg: string, kind?: string) => void;
+  onGoNetwork: () => void;
+};
+
+export function GatewayView({ onStatus, onGoNetwork }: Props) {
+  useLang(); // re-render on locale change
+  const [flavor, setFlavor] = useState<FlavorId>(readFlavor);
+  const [snipLang, setSnipLang] = useState<SnipLang>(readSnipLang);
+  const [snipOS, setSnipOS] = useState<SnipOS>(readSnipOS);
+  const [connectFolded, setConnectFolded] = useState(
+    () => lsGet("magpie.gwConnectFolded", "") === "1",
+  );
+  const [modelsFolded, setModelsFolded] = useState(
+    () => lsGet("magpie.gwModelsFolded", "") === "1",
+  );
+  const [restartBusy, setRestartBusy] = useState(false);
+  /** Demo always "running · mine" empty catalog — matches official empty shots. */
+  const running = true;
+  const models = 0;
+  const f = FLAVORS.find((x) => x.id === flavor) || FLAVORS[0];
+  const base = f.base(GW_URL);
+  const modelPlaceholder = f.decide ? "provider/jev-latest" : "provider/model";
+  const secret = "magpie";
+  const win = snipOS === "windows";
+
+  const flavorSeg = useSegThumb(flavor);
+  const snipSeg = useSegThumb(snipLang);
+  const osSeg = useSegThumb(snipOS);
+
+  const langs: [SnipLang, string][] = f.baseEnv
+    ? [
+        ["shell", win ? "PowerShell" : "Shell"],
+        ["curl", "curl"],
+        ["python", "Python"],
+        ["node", "Node"],
+      ]
+    : [
+        ["curl", "curl"],
+        ["python", "Python"],
+        ["node", "Node"],
+      ];
+  const activeSnip: SnipLang = langs.some(([id]) => id === snipLang)
+    ? snipLang
+    : langs[0][0];
+
+  let snippet = "";
+  if (f.baseEnv && f.keyEnv && activeSnip === "shell") {
+    snippet = envSnippet(f.baseEnv, base, f.keyEnv, secret, win);
+  } else if (activeSnip === "curl" && f.id === "openai") {
+    snippet = win
+      ? `@'\n{"model": "${modelPlaceholder}",\n "messages": [{"role": "user", "content": "hi"}]}\n'@ | curl.exe ${base}/chat/completions \`\n  -H "Authorization: Bearer ${secret}" \`\n  -H "Content-Type: application/json" \`\n  --data-binary "@-"`
+      : `curl ${base}/chat/completions \\\n  -H "Authorization: Bearer ${secret}" \\\n  -H "Content-Type: application/json" \\\n  -d '{"model": "${modelPlaceholder}",\n "messages": [{"role": "user", "content": "hi"}]}'`;
+  } else if (activeSnip === "python" && f.baseEnv) {
+    snippet =
+      f.id === "anthropic"
+        ? `import anthropic\n\nclient = anthropic.Anthropic(\n    base_url="${base}", api_key="${secret}",\n)\nm = client.messages.create(\n    model="${modelPlaceholder}",\n    max_tokens=1024,\n    messages=[{"role": "user", "content": "hi"}],\n)\nprint(m.content[0].text)`
+        : f.id === "gemini"
+          ? `from google import genai\n\nclient = genai.Client(api_key="${secret}", http_options={"base_url": "${base}"})\nr = client.models.generate_content(model="${modelPlaceholder}", contents="hi")\nprint(r.text)`
+          : `from openai import OpenAI\n\nclient = OpenAI(base_url="${base}", api_key="${secret}")\nr = client.chat.completions.create(\n    model="${modelPlaceholder}",\n    messages=[{"role": "user", "content": "hi"}],\n)\nprint(r.choices[0].message.content)`;
+  } else if (activeSnip === "node" && f.baseEnv) {
+    snippet = `import OpenAI from "openai";\n\nconst client = new OpenAI({ baseURL: "${base}", apiKey: "${secret}" });\nconst r = await client.chat.completions.create({\n  model: "${modelPlaceholder}",\n  messages: [{ role: "user", content: "hi" }],\n});\nconsole.log(r.choices[0].message.content);`;
+  } else if (f.decide) {
+    snippet = `curl ${base}/systemone \\\n  -H "Authorization: Bearer ${secret}" \\\n  -H "Content-Type: application/json" \\\n  -d '{"model": "${modelPlaceholder}", "state": {}, "questions": {}}'`;
+  }
+
+  const sub = [
+    t("{n} models", { n: models }),
+    t("no agent routed through it yet"),
+    t("five APIs, one URL"),
+  ].join(" · ");
+
+  const onRestart = () => {
+    if (restartBusy) return;
+    setRestartBusy(true);
+    // Magpie awaits gateway/restart; demo: brief busy then toast (no process)
+    window.setTimeout(() => {
+      setRestartBusy(false);
+      onStatus(
+        demoCopy("演示壳 · 无真实网关进程", "Demo shell · no real gateway process"),
+        "ok",
+      );
+    }, 700);
+  };
+
+  const pickFlavor = (id: FlavorId) => {
+    setFlavor(id);
+    lsSet("magpie.flavor", id);
+  };
+  const pickSnip = (id: SnipLang) => {
+    setSnipLang(id);
+    lsSet("magpie.snipLang", id);
+  };
+  const pickOS = (id: SnipOS) => {
+    setSnipOS(id);
+    lsSet("magpie.snipOS", id);
+  };
+
+  return (
+    <main className="view" id="view-gateway">
+      <div className="list gwcard">
+        <div className="row gw" id="gateway">
+          <span className={`dot${running ? " on" : ""}`} aria-hidden />
+          <div className="who">
+            <div className="name">
+              {t("Gateway")}
+              <span className="state">{t(running ? "running" : "not running")}</span>
+            </div>
+            <div className="sub">{sub}</div>
+            <button
+              type="button"
+              className="text action gw-fix"
+              disabled={restartBusy}
+              onClick={onRestart}
+            >
+              {restartBusy
+                ? t(running ? "Restarting the gateway…" : "Starting the gateway…")
+                : t(running ? "Restart gateway" : "Start gateway")}
+            </button>
+          </div>
+          <button
+            type="button"
+            className="url"
+            title={t("Copy the gateway URL")}
+            onClick={() => {
+              void navigator.clipboard?.writeText(GW_URL).catch(() => {});
+              onStatus(t("{what} copied", { what: t("Gateway URL") }), "ok");
+            }}
+          >
+            <code>{GW_URL}</code>
+          </button>
+        </div>
+      </div>
+
+      <p className="usage-note gw-keys-off" id="gatewayKeysOff">
+        <span>
+          {t(
+            "Gateway keys are for other computers, and for a tunnel to this one such as Cloudflare Tunnel: they are added here once Share on local network is on. Agents on this computer need none.",
+          )}
+        </span>{" "}
+        <button type="button" className="text" id="openLanSettings" onClick={onGoNetwork}>
+          {t("Network and sharing")}
+        </button>
+      </p>
+
+      <div className="row-head">
+        <button
+          type="button"
+          className="fold"
+          id="foldConnect"
+          aria-expanded={!connectFolded}
+          aria-controls="connect"
+          title={t(connectFolded ? "Show how to connect" : "Fold Connect away")}
+          onClick={() => {
+            const next = !connectFolded;
+            setConnectFolded(next);
+            lsSet("magpie.gwConnectFolded", next ? "1" : "0");
+          }}
+        >
+          <FoldChev />
+          <span className="label">{t("Connect")}</span>
+        </button>
+        <span className="grow" />
+        <span className={`note${connectFolded ? " brief" : ""}`} id="connectNote">
+          {connectFolded ? (
+            <>
+              <code>{base}</code>
+              <CopyBtn text={base} what={t("Base URL")} onStatus={onStatus} />
+            </>
+          ) : (
+            t("Loopback only · the key can be anything")
+          )}
+        </span>
+      </div>
+
+      <section className="list connect" id="connect" hidden={connectFolded}>
+          <label>API</label>
+          <div>
+            <div className="segs" ref={flavorSeg} data-kind="flavor">
+              {FLAVORS.map((x) => (
+                <button
+                  key={x.id}
+                  type="button"
+                  className={`opt${flavor === x.id ? " on" : ""}`}
+                  aria-pressed={flavor === x.id}
+                  onClick={() => pickFlavor(x.id)}
+                >
+                  {x.name}
+                </button>
+              ))}
+            </div>
+            <div className="hint">{t(f.note)}</div>
+          </div>
+
+          <label>{t("Base URL")}</label>
+          <div>
+            <div className="val">
+              <code>{base}</code>
+              <CopyBtn text={base} what={t("Base URL")} onStatus={onStatus} />
+            </div>
+            <div className="hint">
+              {f.baseEnv
+                ? t("What {env} takes.", { env: f.baseEnv })
+                : t("Requests go to POST {url}.", { url: base + "/systemone" })}
+            </div>
+          </div>
+
+          <label>{t(f.baseEnv ? "API key" : "API key")}</label>
+          <div>
+            <div className="val">
+              <code>{secret}</code>
+              <CopyBtn text={secret} what={t("Key")} onStatus={onStatus} />
+            </div>
+            <div className="hint">
+              {f.keyEnv
+                ? t(
+                    "{env}=magpie. The gateway trusts everything on loopback, so any value works.",
+                    { env: f.keyEnv },
+                  )
+                : t(
+                    "Sent as Authorization: Bearer. The gateway trusts everything on loopback, so any value works.",
+                  )}
+            </div>
+          </div>
+
+          <label>{t("Model")}</label>
+          <div>
+            <div className="val">
+              <code>{modelPlaceholder}</code>
+              <CopyBtn
+                text={modelPlaceholder}
+                what={t("Model id")}
+                onStatus={onStatus}
+              />
+            </div>
+            <div className="hint">
+              {t(
+                f.decide
+                  ? "No decision models yet. Add a System One, Jev or Workers AI provider."
+                  : "No models yet. Add a provider, or sign in to Codex or Copilot.",
+              )}
+            </div>
+          </div>
+
+          <label>{t("Example")}</label>
+          <div>
+            <div className="stack">
+              <div className="snip-tabs">
+                <div className="segs" ref={snipSeg} data-kind="snip">
+                  {langs.map(([id, name]) => (
+                    <button
+                      key={id}
+                      type="button"
+                      className={`opt${activeSnip === id ? " on" : ""}`}
+                      aria-pressed={activeSnip === id}
+                      onClick={() => pickSnip(id)}
+                    >
+                      {name}
+                    </button>
+                  ))}
+                </div>
+                {(activeSnip === "shell" || activeSnip === "curl") && (
+                  <div
+                    className="segs snip-os"
+                    ref={osSeg}
+                    role="group"
+                    aria-label={t("Where the snippet runs")}
+                    title={t("Where the snippet runs")}
+                    data-kind="os"
+                  >
+                    {(
+                      [
+                        ["windows", "Windows"],
+                        ["unix", "macOS · Linux"],
+                      ] as const
+                    ).map(([id, name]) => (
+                      <button
+                        key={id}
+                        type="button"
+                        className={`opt${snipOS === id ? " on" : ""}`}
+                        aria-pressed={snipOS === id}
+                        onClick={() => pickOS(id)}
+                      >
+                        {t(name)}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+              <div className="snip-wrap">
+                <pre className="snip">
+                  <code>
+                    {activeSnip === "shell"
+                      ? highlightShell(snippet)
+                      : snippet}
+                  </code>
+                </pre>
+                {snippet ? (
+                  <CopyBtn text={snippet} what={t("Snippet")} onStatus={onStatus} />
+                ) : null}
+              </div>
+            </div>
+            {activeSnip === "shell" ? (
+              <div className="hint">
+                {t(
+                  "Put these in the shell (or the tool's settings) and the tool talks to magpie instead of the vendor.",
+                )}
+              </div>
+            ) : null}
+          </div>
+        </section>
+
+      <div className="row-head">
+        <button
+          type="button"
+          className="fold"
+          id="foldModels"
+          aria-expanded={!modelsFolded}
+          aria-controls="gwModels"
+          title={t(modelsFolded ? "Show the models" : "Fold the models away")}
+          onClick={() => {
+            const next = !modelsFolded;
+            setModelsFolded(next);
+            lsSet("magpie.gwModelsFolded", next ? "1" : "0");
+          }}
+        >
+          <FoldChev />
+          <span className="label">{t("Models")}</span>
+          <span className="note" id="modelsCount" />
+        </button>
+        <span className="grow" />
+        <button type="button" className="text" id="copyModels" hidden>
+          {t("Copy all ids")}
+        </button>
+      </div>
+      {/* empty catalog: Magpie keeps list visible even when fold remembered */}
+      <div className="list" id="gwModels" hidden={false}>
+        <div className="empty-state">
+          <b>{t("No models exposed yet")}</b>
+          {t(
+            "Add a provider, or sign in to Codex or Copilot; their models show up here for every agent.",
+          )}
+        </div>
+      </div>
+
+      <div className="row-head">
+        <span className="label">{t("Recent calls")}</span>
+        <span className="grow" />
+        <span className="note" id="callsNote" />
+      </div>
+      <div className="list activity" id="activity">
+        <div className="none">
+          {t(
+            "No requests yet. Point an agent at a model, or run the example above; every call shows up here as it happens.",
+          )}
+        </div>
+      </div>
+    </main>
+  );
+}

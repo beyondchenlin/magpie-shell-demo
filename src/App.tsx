@@ -7,8 +7,8 @@ import { ZH, setLang, t, useLang, type Lang } from "./i18n";
 import { AgentsView } from "./pages/AgentsView";
 import { ProvidersView } from "./pages/ProvidersView";
 import { RoutingView } from "./pages/RoutingView";
+import { GatewayView } from "./pages/GatewayView";
 import {
-  GatewayView,
   PluginsView,
   SettingsView,
   UsageView,
@@ -385,7 +385,12 @@ export default function App() {
         />
       )}
       {view === "routing" && <RoutingView />}
-      {view === "gateway" && <GatewayView />}
+      {view === "gateway" && (
+        <GatewayView
+          onStatus={showStatus}
+          onGoNetwork={() => go("settings")}
+        />
+      )}
       {view === "usage" && <UsageView />}
       {view === "plugins" && <PluginsView />}
       {view === "settings" && (
