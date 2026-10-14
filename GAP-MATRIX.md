@@ -1,3 +1,8 @@
+## v0.1.33 LIBRARY_DONE
+- Native library **01–13, 15–38** fully captured & consumed (no 14)
+- Instructions / MCP New+Discover+Image / Skills probe+Discover / Hooks events+Cursor own / RTK off+install.sh
+- Remaining intentional mocks: true probe API, OAuth, RTK binary, agent file writes
+
 ## v0.1.33
 - Library native **29–33** consumed: probe list/Filter/Install 0; Discover 8 cards; Hooks 32–33
 - Still mock: true `library/skills/probe`, skills.sh API, RTK binary, hook write-to-agent
