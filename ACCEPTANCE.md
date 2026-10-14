@@ -1,3 +1,10 @@
+## v0.1.41 FONTS_MENU + MOTION
+
+- Interface/Code font menus (family + style + Search/Refresh) + preview; Appearance theming class.
+- Still mock: OS font list API.
+
+## v0.1.40 SETTINGS_NEST
+
 ## v0.1.40 SETTINGS_NEST
 
 - Consumed native `interactions/native-linux/settings/10–70` + NOTES (disk has no 71–85).

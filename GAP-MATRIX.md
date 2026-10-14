@@ -1,3 +1,10 @@
+## v0.1.41 FONTS_MENU + MOTION
+- Interface / Code font: Magpie `renderFonts` menus — System default · demo catalogue · Search fonts… · Refresh fonts; style pick disabled until family chosen; preview `Aa 0123 · 中文`; `applyDemoFonts` → `--ui-*` / `--code-*` + `data-fonts`.
+- Appearance: Magpie `html.theming` crossfade **.35s** / clear **450ms** (NOTES 30fps missed it; Magpie source keeps theming).
+- Still mock: true desktop font enumeration (OS API); catalogue is demo list.
+- Allowances quota body still **N/A**.
+
+## v0.1.40 SETTINGS_NEST
 ## v0.1.40 SETTINGS_NEST
 - Native `settings/10–70` + NOTES consumed into `SettingsView` / NestedBlocks (frames stop at 70; no 71–85 on disk).
 - **Allowances:** TrayUsage pick Off/Today/7d; Menu bar refresh **1/3/5/10/30** (was wrong 15); pace nested when tray on; Linux hides Menu bar logos/bird (Mac-only in Magpie); Allowance display Used/Left; reads Automatic/When I ask; Currency USD/CNY; **Allowance alert** = number field % + Off/On (shots 29–30, editable e.g. 81); **Low balance** = amount field + Off/On (shots 32–33); reset 12/24/48 h; task done 1/3/10 min; warm-up / auto-reset structure. **Quota body cards still N/A** — not invented.
@@ -104,7 +111,7 @@
 | 8 | 账号行 `.dot`/`.bar` 在有请求时 | 空态为 `li.idle` | — | 空态正确 |
 | 9 | Provider 完整行控件 | **v0.1.34** 有账号列表行+accts 编辑器 | P1 | 真 key/OAuth/arrange 落盘仍 mock |
 | 10 | Gateway 空态壳+主交互 | **v0.1.9**；filled demo **v0.1.12** | P1 | Gateway 仍可再抠 |
-| 14 | Settings 全 tab 深页 | Settings **v0.1.40** NEST（10–70）；General fonts menus 仍 mock | P1 | 字体菜单/真 Apply/OTel feature/有配额 Allowances body 仍 mock |
+| 14 | Settings 全 tab 深页 | Settings **v0.1.41** fonts menus + nest 10–70 | P1 | 真 OS 字体枚举/真 Apply/OTel/有配额 Allowances 仍 mock |
 | 11 | `#sideEdge` 拖宽 | **v0.1.36** sideDrag | — | localStorage `magpie.sideWidth` |
 | 12 | 业务后端 / 真网关 | 无 | P2 | 范围外 |
 | 13 | 先前 PASS_WITH_GAPS | **已撤销**；现以截图空态对齐为准 | — | |

@@ -48,6 +48,13 @@ footer.foot                 ← #status toast 胶囊
 
 ---
 
+### Font menus (v0.1.41)
+
+- `.font-row` + `.font-controls` grid (family | style, preview full width).
+- Family menu: System default + catalogue + Refresh; `Search fonts…` (`sc-q`); style disabled when System default.
+- Apply: `--ui-font/weight/style/stretch` and `--code-*`; `html[data-fonts]`.
+- Appearance theme: `html.theming` **.35s** then clear at **450ms**.
+
 ## 3b. Settings nest (v0.1.40)
 
 - Section tabs wrap under chrome; **no Observability** unless feature `otel` on (`magpie.feature.otel=1`) — Magpie `data-feature="otel"`.

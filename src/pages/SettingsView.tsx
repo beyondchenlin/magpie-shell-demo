@@ -6,6 +6,9 @@ import { demoCopy, t, type Lang } from "../i18n";
 import {
   AlertNumField,
   AboutVersionRow,
+  FontRow,
+  applyDemoFonts,
+  type FontFace,
   AutoResetOwn,
   CliRow,
   CodexModelPick,
@@ -48,7 +51,8 @@ function otelFeatureOn(): boolean {
   }
 }
 
-const DEMO_APP_VERSION = "0.1.40";
+const DEMO_APP_VERSION = "0.1.41";
+const applyThemeFlash: { t?: number } = {};
 const IS_MAC = /\bMac\b|Macintosh/i.test(navigator.platform || navigator.userAgent);
 
 /** Magpie REDACT_KINDS — nested under Mask personal data (shots 64–66). */
@@ -162,6 +166,8 @@ type DemoPrefs = {
   showGwDemo: boolean;
   disabledModels: string[];
   searchAPIs: SearchApiEntry[];
+  uiFont: FontFace | null;
+  codeFont: FontFace | null;
 };
 
 const DEFAULTS: DemoPrefs = {
@@ -252,6 +258,8 @@ const DEFAULTS: DemoPrefs = {
   showGwDemo: true,
   disabledModels: [],
   searchAPIs: [],
+  uiFont: null,
+  codeFont: null,
 };
 
 function loadPrefs(): DemoPrefs {
@@ -426,6 +434,9 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus }: Setti
   useEffect(() => {
     if (tab === "otel" && !otelFeatureOn()) setTab("general");
   }, [tab]);
+  useEffect(() => {
+    applyDemoFonts(prefs.uiFont, prefs.codeFont);
+  }, [prefs.uiFont, prefs.codeFont]);
   const setTabsBox = useSegThumb(tab);
   const warmBox = useSegThumb(warmTab);
   const langBtn = useRef<HTMLButtonElement>(null);
@@ -617,7 +628,11 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus }: Setti
               <Segs
                 value={theme}
                 onChange={(v) => {
-                  setTheme(v);
+                  const root = document.documentElement;
+                  root.classList.add("theming");
+                  window.clearTimeout((applyThemeFlash as { t?: number }).t);
+                  (applyThemeFlash as { t?: number }).t = window.setTimeout(() => root.classList.remove("theming"), 450);
+                  setTheme(v as Theme);
                   onStatus?.(t("Saved"), "ok", 1500);
                 }}
                 items={[
@@ -695,34 +710,20 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus }: Setti
             </PrefRow>
           )}
           {gRows.uiFont && (
-              <PrefRow name={t("Interface font")} id="uiFontRow" sub={demoCopy("演示：系统默认字体；真字体列表需桌面壳", "Demo: System default; real font list needs desktop shell")}>
-                <div className="font-picks" style={{ display: "inline-flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
-                  <button type="button" className="sess-pick pref-pick font-family" title={t("System default")}>
-                    <span>{t("System default")}</span>
-                    {CHEV}
-                  </button>
-                  <button type="button" className="sess-pick pref-pick font-style" title={t("System default")}>
-                    <span>{t("System default")}</span>
-                    {CHEV}
-                  </button>
-                  <span className="font-preview" style={{ fontSize: 13, color: "var(--muted)", marginLeft: 4 }}>{t("Aa 0123 · 中文")}</span>
-                </div>
-              </PrefRow>
+            <FontRow
+              kind="ui"
+              value={prefs.uiFont}
+              onChange={(uiFont) => setPrefs({ uiFont })}
+              onStatus={onStatus}
+            />
           )}
           {gRows.codeFont && (
-              <PrefRow name={t("Code font")} id="codeFontRow" sub={demoCopy("演示：系统默认等宽；真字体列表需桌面壳", "Demo: System default mono; real font list needs desktop shell")}>
-                <div className="font-picks" style={{ display: "inline-flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
-                  <button type="button" className="sess-pick pref-pick font-family" title={t("System default")}>
-                    <span>{t("System default")}</span>
-                    {CHEV}
-                  </button>
-                  <button type="button" className="sess-pick pref-pick font-style" title={t("System default")}>
-                    <span>{t("System default")}</span>
-                    {CHEV}
-                  </button>
-                  <span className="font-preview" style={{ fontSize: 13, fontFamily: "var(--code, ui-monospace, monospace)", color: "var(--muted)", marginLeft: 4 }}>{t("Aa 0123 · 中文")}</span>
-                </div>
-              </PrefRow>
+            <FontRow
+              kind="code"
+              value={prefs.codeFont}
+              onChange={(codeFont) => setPrefs({ codeFont })}
+              onStatus={onStatus}
+            />
           )}
           {gRows.tray && (
             <PrefRow name={t("Click the tray icon to")}>

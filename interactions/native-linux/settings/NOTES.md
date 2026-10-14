@@ -175,3 +175,5 @@ Demo v0.1.15: Disable #pop left rail (grid/star) +「No matches.」; Privacy nes
 Demo v0.1.39: SETTINGS_NEST_PARTIAL — General Provider names / Text size / fonts shell.
 
 Demo v0.1.40: SETTINGS_NEST — frames 10–70 consumed (Allowances alert num+%/balance amount, TRAY_EVERY 1/3/5/10/30, Linux no logos/bird, Network GitHub Create one↗, Models/Privacy/Sync/About; Observability tab hidden unless magpie.feature.otel=1). Allowances quota body still N/A.
+
+Demo v0.1.41: FONTS_MENU + Appearance theming .35s — Interface/Code font family+style menus (Search fonts… / Refresh / System default), CSS vars via applyDemoFonts; style pick disabled on System default.

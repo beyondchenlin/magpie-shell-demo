@@ -1551,3 +1551,272 @@ export function AboutVersionRow({
     </div>
   );
 }
+
+export type FontFace = {
+  family: string;
+  name: string;
+  weight: number;
+  style: "normal" | "italic" | "oblique";
+  stretch: number;
+};
+
+type FontFamily = { name: string; styles: FontFace[] };
+
+/** Demo catalogue — Magpie reads desktop fonts; web/demo uses a fixed list. */
+export const DEMO_FONT_LIST: FontFamily[] = [
+  {
+    name: "Inter",
+    styles: [
+      { family: "Inter", name: "Regular", weight: 400, style: "normal", stretch: 100 },
+      { family: "Inter", name: "Medium", weight: 500, style: "normal", stretch: 100 },
+      { family: "Inter", name: "Bold", weight: 700, style: "normal", stretch: 100 },
+    ],
+  },
+  {
+    name: "Noto Sans CJK SC",
+    styles: [
+      { family: "Noto Sans CJK SC", name: "Regular", weight: 400, style: "normal", stretch: 100 },
+      { family: "Noto Sans CJK SC", name: "Medium", weight: 500, style: "normal", stretch: 100 },
+    ],
+  },
+  {
+    name: "JetBrains Mono",
+    styles: [
+      { family: "JetBrains Mono", name: "Regular", weight: 400, style: "normal", stretch: 100 },
+      { family: "JetBrains Mono", name: "Bold", weight: 700, style: "normal", stretch: 100 },
+    ],
+  },
+  {
+    name: "Fira Code",
+    styles: [
+      { family: "Fira Code", name: "Regular", weight: 400, style: "normal", stretch: 100 },
+      { family: "Fira Code", name: "Medium", weight: 500, style: "normal", stretch: 100 },
+    ],
+  },
+  {
+    name: "Source Code Pro",
+    styles: [{ family: "Source Code Pro", name: "Regular", weight: 400, style: "normal", stretch: 100 }],
+  },
+];
+
+function sameFace(a: FontFace | null | undefined, b: FontFace | null | undefined) {
+  if (!a || !b) return false;
+  return (["family", "name", "weight", "style", "stretch"] as const).every((k) => a[k] === b[k]);
+}
+
+function closestFont(styles: FontFace[], prev: FontFace | null): FontFace {
+  if (!prev) return styles[0];
+  return styles.find((s) => s.name === prev.name) || styles.find((s) => s.weight === prev.weight) || styles[0];
+}
+
+const CHEV_PATH = (
+  <svg viewBox="0 0 12 12" width={11} height={11} aria-hidden>
+    <path d="M3 4.5 6 7.5 9 4.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+  </svg>
+);
+
+/** Apply Magpie desktopFonts CSS vars (fonts.js). */
+export function applyDemoFonts(ui: FontFace | null, code: FontFace | null) {
+  const root = document.documentElement;
+  let active = false;
+  for (const [face, prefix, fallback] of [
+    [ui, "ui", "font"],
+    [code, "code", "code"],
+  ] as const) {
+    const valid =
+      face &&
+      typeof face.family === "string" &&
+      face.family &&
+      ["normal", "italic", "oblique"].includes(face.style) &&
+      Number.isFinite(face.weight) &&
+      face.weight >= 1 &&
+      face.weight <= 1000;
+    const quoted = face?.family ? `"${face.family.replace(/\\/g, "\\\\").replace(/"/g, '\\"')}"` : "";
+    const values = valid
+      ? {
+          font: `${quoted}, var(--${fallback})`,
+          weight: String(face!.weight),
+          style: face!.style,
+          stretch: `${face!.stretch}%`,
+        }
+      : null;
+    if (values) active = true;
+    for (const part of ["font", "weight", "style", "stretch"] as const) {
+      const name = `--${prefix}-${part}`;
+      if (values?.[part] !== undefined) root.style.setProperty(name, values[part]);
+      else root.style.removeProperty(name);
+    }
+  }
+  if (active) root.setAttribute("data-fonts", "");
+  else root.removeAttribute("data-fonts");
+}
+
+/** Settings › General › Interface/Code font — Magpie renderFonts (shots 01/08). */
+export function FontRow({
+  kind,
+  value,
+  onChange,
+  onStatus,
+}: {
+  kind: "ui" | "code";
+  value: FontFace | null;
+  onChange: (next: FontFace | null) => void;
+  onStatus?: (m: string, k?: string) => void;
+}) {
+  const [open, setOpen] = useState<"" | "family" | "style">("");
+  const [q, setQ] = useState("");
+  const [list, setList] = useState(DEMO_FONT_LIST);
+  const [loading, setLoading] = useState(false);
+  const famRef = useRef<HTMLButtonElement | null>(null);
+  const styleRef = useRef<HTMLButtonElement | null>(null);
+  const menuRef = useRef<HTMLDivElement | null>(null);
+  const label = kind === "ui" ? "Interface font" : "Code font";
+  const family = list.find((f) => f.name === value?.family);
+  const note = loading ? t("Loading…") : list.length === 0 ? t("No installed fonts found") : "";
+
+  useEffect(() => {
+    if (!open) return;
+    const onDown = (e: MouseEvent) => {
+      const n = e.target as Node;
+      if (famRef.current?.contains(n) || styleRef.current?.contains(n) || menuRef.current?.contains(n)) return;
+      setOpen("");
+      setQ("");
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setOpen("");
+        setQ("");
+      }
+    };
+    document.addEventListener("mousedown", onDown, true);
+    document.addEventListener("keydown", onKey, true);
+    return () => {
+      document.removeEventListener("mousedown", onDown, true);
+      document.removeEventListener("keydown", onKey, true);
+    };
+  }, [open]);
+
+  const filtered = list.filter((f) => !q.trim() || f.name.toLowerCase().includes(q.trim().toLowerCase()));
+
+  const refresh = () => {
+    setLoading(true);
+    setOpen("");
+    window.setTimeout(() => {
+      setList([...DEMO_FONT_LIST]);
+      setLoading(false);
+      onStatus?.(demoCopy("演示：已刷新字体列表", "Demo: font list refreshed"), "ok");
+    }, 420);
+  };
+
+  return (
+    <div className="row pref font-row" id={`${kind}FontRow`}>
+      <div className="who">
+        <div className="name">{t(label)}</div>
+        <div className={`sub font-note${note ? "" : ""}`} hidden={!note}>
+          {note}
+        </div>
+      </div>
+      <div className="font-controls" style={{ position: "relative" }}>
+        <button
+          type="button"
+          ref={famRef}
+          className={`proto pick sess-pick pref-pick font-family${open === "family" ? " open" : ""}`}
+          aria-haspopup="menu"
+          aria-expanded={open === "family"}
+          aria-label={`${t(label)}: ${t("Font family")}`}
+          title={value?.family || t("System default")}
+          onClick={(e) => {
+            e.stopPropagation();
+            setOpen((o) => (o === "family" ? "" : "family"));
+            setQ("");
+          }}
+        >
+          <span>{value?.family || t("System default")}</span>
+          {CHEV_PATH}
+        </button>
+        <button
+          type="button"
+          ref={styleRef}
+          className={`proto pick sess-pick pref-pick font-style${open === "style" ? " open" : ""}`}
+          aria-haspopup="menu"
+          aria-expanded={open === "style"}
+          aria-label={`${t(label)}: ${t("Font style")}`}
+          title={value?.name || t("System default")}
+          disabled={!family?.styles.length}
+          onClick={(e) => {
+            e.stopPropagation();
+            if (!family?.styles.length) return;
+            setOpen((o) => (o === "style" ? "" : "style"));
+          }}
+        >
+          <span>{value?.name || t("System default")}</span>
+          {CHEV_PATH}
+        </button>
+        <div className="font-preview">{t("Aa 0123 · 中文")}</div>
+        {open === "family" ? (
+          <div className="pop proto-menu sess-menu font-menu" ref={menuRef} role="menu" style={{ position: "absolute", right: 0, top: "100%", zIndex: 50 }}>
+            <div className="sc-top" style={{ padding: "6px 8px" }}>
+              <input
+                className="sc-q"
+                type="search"
+                placeholder={t("Search fonts…")}
+                value={q}
+                autoFocus
+                aria-label={t("Search fonts…")}
+                onChange={(e) => setQ(e.target.value)}
+                onKeyDown={(e) => e.stopPropagation()}
+              />
+            </div>
+            <button
+              type="button"
+              role="menuitem"
+              className={!value ? "on" : ""}
+              onClick={() => {
+                onChange(null);
+                setOpen("");
+              }}
+            >
+              {t("System default")}
+            </button>
+            {filtered.map((f) => (
+              <button
+                type="button"
+                key={f.name}
+                role="menuitem"
+                className={value?.family === f.name ? "on" : ""}
+                style={{ fontFamily: `"${f.name}", var(--font)` }}
+                onClick={() => {
+                  onChange(closestFont(f.styles, value));
+                  setOpen("");
+                }}
+              >
+                {f.name}
+              </button>
+            ))}
+            <button type="button" role="menuitem" className="always" onClick={refresh}>
+              {t("Refresh fonts")}
+            </button>
+          </div>
+        ) : null}
+        {open === "style" && family ? (
+          <div className="pop proto-menu sess-menu font-menu" ref={menuRef} role="menu" style={{ position: "absolute", right: 0, top: "100%", zIndex: 50 }}>
+            {family.styles.map((s, i) => (
+              <button
+                type="button"
+                key={s.name + i}
+                role="menuitem"
+                className={sameFace(s, value) ? "on" : ""}
+                onClick={() => {
+                  onChange(s);
+                  setOpen("");
+                }}
+              >
+                {s.name}
+              </button>
+            ))}
+          </div>
+        ) : null}
+      </div>
+    </div>
+  );
+}
