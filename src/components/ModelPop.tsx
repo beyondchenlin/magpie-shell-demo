@@ -20,6 +20,8 @@ type Props = {
   placeholder?: string;
   onPick: (value: string) => void;
   onClose: () => void;
+  /** Magpie multi member picker: stay open after pick */
+  keepOpen?: boolean;
 };
 
 const FAV_KEY = "magpie.modelFavorites";
@@ -47,6 +49,7 @@ export function ModelPop({
   placeholder,
   onPick,
   onClose,
+  keepOpen = false,
 }: Props) {
   const popRef = useRef<HTMLDivElement>(null);
   const railRef = useRef<HTMLElement>(null);
@@ -207,7 +210,8 @@ export function ModelPop({
           onKeyDown={(e) => {
             if (e.key === "Enter" && q.trim() && !filtered.some((o) => o.value === q.trim())) {
               onPick(q.trim());
-              dismiss();
+              if (!keepOpen) dismiss();
+              else setQ("");
             }
           }}
         />
@@ -273,7 +277,8 @@ export function ModelPop({
                   aria-selected={o.value === value}
                   onClick={() => {
                     onPick(o.value);
-                    dismiss();
+                    if (!keepOpen) dismiss();
+                    else setQ("");
                   }}
                 >
                   <span className="ic" aria-hidden>
@@ -323,7 +328,8 @@ export function ModelPop({
                 title={t("use as typed")}
                 onClick={() => {
                   onPick(q.trim());
-                  dismiss();
+                  if (!keepOpen) dismiss();
+                  else setQ("");
                 }}
               >
                 <span className="ic" aria-hidden>✦</span>

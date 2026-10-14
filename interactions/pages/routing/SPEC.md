@@ -60,3 +60,14 @@ R-00…R-09 录制=已录 · demo=空态交互已实现（web/exe **v0.1.5**）�
 | R-18 | Pools | demoLive | **mock** |
 
 判定：**ROUTING_EDITOR_PARTIAL**（Rules 深层 / classifier / weight 拖拽 / 真 Save 仍缺）。
+
+## v0.1.30 — templates / Import / Accounts (23–30)
+
+| id | 控件 | demo |
+|----|------|------|
+| R-19 | Templates 三卡 disabled | **已实现** |
+| R-20 | Import paste box | **已实现**（无真 import） |
+| R-21 | Accounts tip/show/hide | **已对齐** tip 文案 |
+| R-22 | Waiting empty copy | **已对齐** |
+
+判定：**ROUTING_EDITOR_PARTIAL**（Rules 深层 / 真 Save / 真 Import / template Add 仍缺）。

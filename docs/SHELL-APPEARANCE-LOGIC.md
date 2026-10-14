@@ -353,3 +353,16 @@ Same as §4; added: `.pm-opts textarea` focus .12s; `.range-menu .rm-day` backgr
 | Pools `renderPools` | Several accounts or keys | demoLive Anthropic mock |
 
 *文档版本：v0.1.29*
+
+## v0.1.30 Routing templates / Import / Accounts (native 23–30)
+
+| 控件 | Magpie | demo |
+|------|--------|------|
+| Empty stage | Waiting for a request · Send one… · Every request… | `t()` 英文源键（zh 表已有） |
+| `#rtMask` | Accounts hidden / Hide accounts · tip 两句 | 同 NOTES 28–30 |
+| `.rt-gtpl` | 三卡 + Add a provider first（无 provider 时 off） | 无 own group 时显示；无真 Add |
+| Import box | Paste… never a key · placeholder Copy to share · Import disabled 空 | `.rt-gimport` / `.rt-gimport-text` |
+| Discard → 23 | 关编辑器 · templates 仍在 | GroupEditor discard |
+| ModelPop multi | pick 后保持打开 · use as typed | `keepOpen` |
+
+*文档版本：v0.1.30*

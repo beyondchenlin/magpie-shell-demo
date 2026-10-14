@@ -84,6 +84,22 @@ function loadMetrics(): string[] {
   return METRIC_OPTS.map(([k]) => k);
 }
 
+
+const GROUP_TEMPLATES: { title: string; desc: string }[] = [
+  {
+    title: "Hard to strong, easy to cheap",
+    desc: "A hard task goes to the strongest model, an easy one and compaction to a cheap one.",
+  },
+  {
+    title: "Cheap first",
+    desc: "A cheap model first; the strongest for high reasoning, or when the cheap ones fail.",
+  },
+  {
+    title: "Never stuck",
+    desc: "The strongest model of each provider, each behind the other: one down doesn't stop the agent.",
+  },
+];
+
 const CHEV = "M3 4.5 6 7.5 9 4.5";
 const CROSS = "M3.5 3.5 8.5 8.5M8.5 3.5 3.5 8.5";
 
@@ -120,6 +136,7 @@ export function RoutingView() {
   const [groupEditorOpen, setGroupEditorOpen] = useState(false);
   const [savedGroups, setSavedGroups] = useState<{ name: string }[]>([]);
   const [gImportOpen, setGImportOpen] = useState(false);
+  const [importPaste, setImportPaste] = useState("");
 
   const [groupModel, setGroupModel] = useState("claude-sonnet-4-5");
   const [popOpen, setPopOpen] = useState(false);
@@ -329,7 +346,9 @@ export function RoutingView() {
           id="rtMask"
           type="button"
           aria-pressed={masked}
-          title={masked ? ZH.unmaskAccountsTitle : ZH.maskAccountsTitle}
+          title={masked
+            ? t("Accounts are masked for a screenshot — click to show them")
+            : t("Mask the accounts on this page — email addresses and account names — for a screenshot to share")}
           onClick={toggleMask}
         >
           <svg
@@ -343,7 +362,7 @@ export function RoutingView() {
           >
             <path d={masked ? EYE_OFF : EYE} />
           </svg>
-          <span data-t>{masked ? ZH.accountsHidden : ZH.hideAccounts}</span>
+          <span data-t>{masked ? t("Accounts hidden") : t("Hide accounts")}</span>
         </button>
       </div>
 
@@ -351,14 +370,16 @@ export function RoutingView() {
         <div className="rt-main">
           <div className="rt-top">
             <div className="rt-what">
-              <b>{demoLive ? t("Demo request · affinity kept") : ZH.waitingRequest}</b>
+              <b>{demoLive ? t("Demo request · affinity kept") : t("Waiting for a request")}</b>
               {demoLive ? <span className="rt-livedot on" aria-hidden="true" style={{ marginLeft: 8 }} /> : null}
             </div>
             <p className="rt-mode">
               {demoLive
                 ? t("Tried Anthropic first · then OpenAI") +
                   (demoTurn ? ` · turn ${demoTurn}` : "")
-                : ZH.waitingSay}
+                : t(
+                  "Send one from any agent routed through magpie and it plays here as it happens: who routing put first and why, each try, and what each answered.",
+                )}
             </p>
             {demoLive ? (
               <p className="rt-req-head note" style={{ margin: "4px 0 0", fontSize: 11.5, color: "var(--muted)" }}>
@@ -503,7 +524,7 @@ export function RoutingView() {
           </div>
 
           <div className="rt-foot">
-            <p className="rt-cap">{ZH.everyRequest}</p>
+            <p className="rt-cap">{t("Every request an agent sends to magpie shows up here, routed for real.")}</p>
             <div className="rt-stats">
               <span>
                 <b>{demoLive ? String(Math.max(1, demoTurn)) : "0"}</b>
@@ -1177,7 +1198,13 @@ export function RoutingView() {
               className="text rt-gimportbtn"
               title={t("Add a routing group someone shared from their magpie")}
               aria-expanded={gImportOpen}
-              onClick={() => setGImportOpen((o) => !o)}
+              onClick={() => {
+                setGImportOpen((o) => {
+                  const next = !o;
+                  if (next) setImportPaste("");
+                  return next;
+                });
+              }}
             >
               {t("Import")}
             </button>
@@ -1195,30 +1222,6 @@ export function RoutingView() {
               <span>{t("New group")}</span>
             </button>
           </div>
-          {gImportOpen ? (
-            <div className="rt-gimport card" style={{ margin: "8px 0", padding: 12, animation: "fade-in .18s var(--ease)" }}>
-              <p className="note" style={{ margin: "0 0 8px" }}>
-                {t("Add a routing group someone shared from their magpie")}
-              </p>
-              <textarea
-                rows={3}
-                placeholder={t("Paste a shared group…")}
-                style={{ width: "100%", font: "inherit", borderRadius: 8, border: "1px solid var(--line)", padding: 8 }}
-              />
-              <div style={{ display: "flex", gap: 8, marginTop: 8, justifyContent: "flex-end" }}>
-                <button type="button" className="text" onClick={() => setGImportOpen(false)}>
-                  {t("Cancel")}
-                </button>
-                <button
-                  type="button"
-                  className="text primary"
-                  onClick={() => setGImportOpen(false)}
-                >
-                  {t("Import")}
-                </button>
-              </div>
-            </div>
-          ) : null}
           <div className="rt-gfound row pref" style={{ alignItems: "flex-start", gap: 12, padding: "10px 4px" }}>
             <div className="txt" style={{ flex: 1, minWidth: 0 }}>
               <b style={{ display: "block", fontSize: 13 }}>{t("Find groups on their own")}</b>
@@ -1273,6 +1276,68 @@ export function RoutingView() {
               ))}
             </div>
           </div>
+          {/* Magpie templateCards — only while user has no own group (shots 23–24) */}
+          {!savedGroups.length ? (
+            <div className="rt-gtpl" style={{ animation: "fade-in .18s var(--ease)" }}>
+              <div className="rt-gtpl-head">
+                {t("Start from a template: made of your own models, added in a click")}
+              </div>
+              <div className="rt-gtpl-cards">
+                {GROUP_TEMPLATES.map((tp) => (
+                  <div key={tp.title} className="rt-gtpl-card off">
+                    <div className="hd">
+                      <b>{t(tp.title)}</b>
+                    </div>
+                    <div className="desc">{t(tp.desc)}</div>
+                    <div className="acts">
+                      <span className="mem why">{t("Add a provider first")}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : null}
+          {gImportOpen ? (
+            <div className="rt-gimport">
+              <div className="rt-gtpl-head">
+                {t(
+                  "Paste a routing group someone shared from their magpie: its models, routing and rules come with it, never a key",
+                )}
+              </div>
+              <textarea
+                className="rt-gimport-text"
+                rows={3}
+                value={importPaste}
+                placeholder={t("Paste a group copied with Copy to share")}
+                onChange={(e) => setImportPaste(e.target.value)}
+                onKeyDown={(e) => e.stopPropagation()}
+              />
+              <div className="acts">
+                <button
+                  type="button"
+                  className="text"
+                  onClick={() => {
+                    setGImportOpen(false);
+                    setImportPaste("");
+                  }}
+                >
+                  {t("Cancel")}
+                </button>
+                <button
+                  type="button"
+                  className="text primary"
+                  disabled={!importPaste.trim()}
+                  onClick={() => {
+                    if (!importPaste.trim()) return;
+                    setGImportOpen(false);
+                    setImportPaste("");
+                  }}
+                >
+                  {t("Import")}
+                </button>
+              </div>
+            </div>
+          ) : null}
           <GroupEditor
             open={groupEditorOpen}
             nameSuffixOn={nameSuffix === "on"}
@@ -1282,7 +1347,7 @@ export function RoutingView() {
               setDemoGroups(true);
             }}
           />
-          {!groupEditorOpen && !savedGroups.length ? (
+          {false ? (
             <div className="none rt-gnone" style={{ padding: "16px 4px", color: "var(--muted)", fontSize: 13 }}>
               {foundOn
                 ? t(

@@ -248,7 +248,7 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved }: Props) {
         members: [...d.members, { id: value, name, on: true, fixed: "" }],
       };
     });
-    setAddOpen(false);
+    /* Magpie multi: pop stays open for another */
   };
 
   const setMemberFixed = (i: number, fixed: string) => {
@@ -453,6 +453,7 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved }: Props) {
               anchor={addBtnRef.current}
               value=""
               modelPicker
+              keepOpen
               options={DEMO_MODELS}
               onPick={addMember}
               onClose={() => setAddOpen(false)}
