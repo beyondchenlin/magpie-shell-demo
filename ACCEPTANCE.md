@@ -1,212 +1,187 @@
-# Magpie 壳 1:1 视觉验收标准（ACCEPTANCE）
+# Magpie 壳验收清单（ACCEPTANCE）
 
-对照上游：[yetone/magpie](https://github.com/yetone/magpie) `internal/gui/assets/`（`index.html` / `app.css` / `routing.css` / `routing.js` / `i18n.js`）与 `internal/gui/window_rule.go`、`textsize.go`、`lightweight.go`。
+> 每条必须能指回 Magpie **源文件 + 选择器/token**。  
+> 状态只允许：`[ ]` 未做 / `[~]` 部分且写明差距 / `[x]` 已对照源事实通过。  
+> **禁止无源事实的 PASS。** 拆解见 `MAGPIE-TEARDOWN.md`，差距见 `GAP-MATRIX.md`。
 
-**规则：** 交付前每一项必须勾选 `[x]`，或标 `[~]` 并写明差距与原因。禁止无清单交差。本仓库 Demo 只复刻 **桌面主窗口外观与关键交互**（假数据），不复刻网关/真实 Agent 探测。
-
-**自检日期：** 2026-10-14  
-**自检人：** Grok Bot（executor）  
-**交付物：** Web 预览 + Windows NSIS/portable `.exe` + Linux AppImage
-
----
-
-## 0. 方法与证据
-
-- [ ] 样式以 Magpie `app.css` + `routing.css` 为基准（MIT，保留版权说明），React 输出 **同名 class**，禁止另起一套 Tailwind「看起来像」的皮肤。
-- [ ] 中文文案对照 `i18n.js` 的 `zh` 表（见 §6），不得随意意译导航名。
-- [ ] 验收时并排：本 Demo 与 Magpie 截图/实机（或 README 内嵌对照），分辨率与字号接近。
+**对照树：** [yetone/magpie](https://github.com/yetone/magpie) → 本地 `/workspace/magpie-src/internal/gui/`  
+**Demo：** `/workspace/magpie-shell-demo/`  
+**自检日期：** 2026-10-14（源码拆解后重写；**撤销**此前虚假 `[x]` / `PASS_WITH_GAPS`）  
+**总判定：** `FAIL_NOT_1TO1`（用户反馈 + 矩阵 P0 未清）
 
 ---
 
-## 1. Design tokens（`app.css` `:root`）
+## 0. 方法
 
-| Token | Magpie 值 | 验收 |
-|-------|-----------|------|
-| `--bg` | `#f4f4f6` | [ ] |
-| `--card` | `#ffffff` | [ ] |
-| `--card-2` | `#f9f9fb` | [ ] |
-| `--pill` | `#f1f1f4` | [ ] |
-| `--line` | `#e3e3e8` | [ ] |
-| `--fg` | `#1c1c21` | [ ] |
-| `--fg-2` | `#4b4b53` | [ ] |
-| `--muted` | `#85858d` | [ ] |
-| `--accent` | `#4f46e5` | [ ] |
-| `--accent-soft` | `#eeedfd` | [ ] |
-| 正文字号/行高 | `13px/1.4`，系统字体栈 | [ ] |
-| 暗色主题 | `data-theme="dark"` 或 `prefers-color-scheme` 与 Magpie 同色板 | [ ] |
+- [x] 先读 Magpie 源再改验收（本轮产出 `MAGPIE-TEARDOWN.md` / `GAP-MATRIX.md`）
+- [ ] 并排对照：本 Demo 与 Magpie 实机/截图，同字号同窗宽（660）
+- [ ] 样式以 `app.css` + `routing.css` 同名 class 为准；`shell-patch.css` 仅允许 React 根布局修补，**不得**改写选中色/舞台比例冒充 1:1
+
+---
+
+## 1. Design tokens — `assets/app.css` `:root`
+
+| 检查项 | Magpie 事实 | Demo 状态 |
+|--------|-------------|-----------|
+| `--bg` `#f4f4f6` | `app.css` L3 | [x] 已拷贝 `src/styles/app.css` |
+| `--card` `#ffffff` | L4 | [x] |
+| `--card-2` `#f9f9fb` | L5 | [x] |
+| `--pill` `#f1f1f4` | L6 | [x] |
+| `--line` `#e3e3e8` | L16 | [x] |
+| `--fg` `#1c1c21` | L18 | [x] |
+| `--fg-2` `#4b4b53` | L19 | [x] |
+| `--muted` `#85858d` | L20 | [x] |
+| `--accent` `#4f46e5` | L22 | [x] |
+| `--accent-soft` `#eeedfd` | L23 | [x] |
+| `--seg-edge` 双层阴影 | L12 | [x] |
+| 正文 `13px/1.4` + `--font` | L115–116 | [x] |
+| 暗色 `--bg #1a1a1e` / `--accent #a5b4fc` | L80–84 | [x] 设置页可切 `data-theme` |
+| `theme.js` 只设 dataset/zoom，不定义色 | `theme.js` | [x] Demo 用 React 设 `data-theme`（等价） |
 
 ---
 
 ## 2. 窗口与总布局
 
-来源：`window_rule.go` `windowW,windowH = 660,600`；`textsize.go` `windowMinW,windowMinH = 560,420`；`app.css` `body.side-nav { --side-w: 212px }`；`.top { height: 46px }`。
-
-- [ ] 默认打开尺寸约 **660×600**（桌面壳）；Web 预览可用同比例画布或 `min-width` 模拟。
-- [ ] 最小约 **560×420**（桌面壳 MinWidth/MinHeight）。
-- [ ] `body`：`flex` 纵向、`overflow: hidden`、背景 `--bg`。
-- [ ] 常开侧栏模式：`body.side-nav`，左侧 `--side-w: 212px`（窄屏 ≤859px 可 184px）。
-- [ ] 顶栏 `.top` 高度 **46px**，含 brand / 面包屑或标题 / 右侧 actions。
-- [ ] 主区 `.view`：可滚动，padding 与 Magpie 一致量级（约 `0 12px`）。
-
----
-
-## 3. 侧栏（Sidebar）
-
-来源：`index.html` `#side` / `#nav`；`app.css` `.sidebar`、`body.side-nav …`。
-
-- [ ] 固定左侧：`position: fixed; left:0; top:0; bottom:0`，背景 `--bg`，右边框 `.5px solid var(--line)`。
-- [ ] 分组标签 `.nav-gl`（字号 ~11px、字距、颜色 `--muted`）：**使用 / 模型 / 观测 / 扩展**（en: Work / Models / Insights / Extend）。
-- [ ] 导航项（图标 + 中文标签），当前项 `.on`：白卡片底 + 轻阴影 `seg-edge`，**非**靛紫高亮（Magpie graphite 侧栏）。
-- [ ] 项列表与顺序：
-  - 使用：Agent、会话、资源库
-  - 模型：供应商、路由、网关
-  - 观测：用量
-  - 扩展：插件
-- [ ] 底部 **设置**（`#prefs` / Settings）。
-- [ ] 可选：侧栏底「网关」状态条 `.side-gw`（可 mock）。
-- [ ] 侧栏可拖宽边 `.side-edge`（可 `[~]` 若仅视觉保留分隔）。
+| 检查项 | Magpie 事实 | Demo 状态 |
+|--------|-------------|-----------|
+| 默认 **660×600** | `window_rule.go` `windowW,windowH` | [~] Electron `main.cjs` 已 660×600；**Web `shell-patch` 改为 max 1100×760** → 非 1:1 |
+| 最小 **560×420** | `textsize.go` `windowMinW/H` | [x] Electron min 已设 |
+| `body` flex 列 + `overflow:hidden` + `--bg` | `app.css` L115–121 | [x] `#root` 模拟 |
+| `body.side-nav` `--side-w: 212px`（≤859→184） | `app.css` L326–327 | [x] class 已加 |
+| `.top` height **46px** | `app.css` L179 | [x] |
+| Brand 在侧栏态于 **`.side-top`** | `app.js` `layoutNav` ≈L24697 | [ ] Brand 在 `.side-scroll` + DEMO 徽章（P0） |
+| Windows 主窗系统标题栏、页内 brand 隐藏 | `app.css` L184；`titlebar_other.go` | [~] Electron 有系统栏；Web 仍显示 brand（可接受） |
+| 托盘 panel 圆角 12 / glide | `app.go` / `glide.go` | [ ] 划出 Demo 范围（P2） |
 
 ---
 
-## 4. 顶栏（Header）
+## 3. 侧栏 IA — `index.html` `#nav` + `i18n.js` zh
 
-- [ ] 左侧 brand：magpie 鸟 SVG + 文案 `magpie`（或 Demo 注明「Magpie 壳 Demo」但不破坏布局）。
-- [ ] 侧栏模式下顶栏导航收进侧栏；顶栏保留刷新/设置/关闭等 icon 按钮风格（圆角、hover `--pill`）。
-- [ ] 无巨大色块标题；整体安静灰底。
-
----
-
-## 5. Agent 页（`#view-agents`）
-
-来源：`app.js` `renderAgents` → `.row.agent`；`app.css` `.row` / `.fields` / `.field`。
-
-- [ ] 列表为白底圆角卡片行（`.row`），非大色块卡片墙。
-- [ ] 行结构：左侧 logo handle（`.ag-handle`）+ 名称 `.name` + 右侧 `.fields` 控件格。
-- [ ] 模型选择控件外观为 `.field` pill（非 Ant Design Select）。
-- [ ] 底部 **方案** 区：`.profiles` + `＋ 保存当前`。
-- [ ] Mock ≥3 个常见 Agent（如 Claude Code、Codex、Cursor），带真实感图标。
-- [ ] 空态文案可用中文：「没有找到 Agent」类（若列表非空可跳过）。
+| 检查项 | Magpie 事实 | Demo 状态 |
+|--------|-------------|-----------|
+| 分组：使用/模型/观测/扩展 | Work/Models/Insights/Extend → zh | [x] `src/data/mock.ts` |
+| 顺序：Agent→会话→资源库→供应商→路由→网关→用量→插件 | `index.html` L48–59 | [x] |
+| 标签 zh：Agent/会话/资源库/供应商/路由/网关/用量/插件/设置 | `i18n.js` zh | [x] |
+| 选中：`background: var(--card); box-shadow: var(--seg-edge)` **非 accent** | `app.css` L372 | [~] CSS 已有；`shell-patch` 有加固，需目视确认无 accent 泄漏 |
+| 行高 30px / radius 7px / `.nav-gl` 11px | `app.css` L363–370 | [x] 吃上游 CSS |
+| `#prefs` + `.side-l`「设置」在 `.side-foot` | `index.html` / layoutNav | [x] |
+| `#sideGw.side-gw` | `index.html` L30 | [ ] 未做（P1） |
+| `#sideEdge` 可拖宽 | `app.js` sideDrag | [~] 仅视觉（P1） |
+| 图标为 Magpie 同款 stroke SVG | `index.html` nav-ic | [~] `NavIcons.tsx` 近似，未逐 path 比对 |
 
 ---
 
-## 6. 中文文案（`i18n.js` zh）
+## 4. 顶栏 — `header.top`
 
-必须与上游一致（节选）：
-
-| EN | ZH | 验收 |
-|----|-----|------|
-| Agents | Agent | [ ] |
-| Sessions | 会话 | [ ] |
-| Library | 资源库 | [ ] |
-| Providers | 供应商 | [ ] |
-| Routing | 路由 | [ ] |
-| Gateway | 网关 | [ ] |
-| Usage | 用量 | [ ] |
-| Plugins | 插件 | [ ] |
-| Settings | 设置 | [ ] |
-| Work | 使用 | [ ] |
-| Models | 模型 | [ ] |
-| Insights | 观测 | [ ] |
-| Extend | 扩展 | [ ] |
-| Profiles | 方案 | [ ] |
-| ＋ Add provider | ＋ 添加供应商 | [ ] |
-| ＋ Save current | ＋ 保存当前 | [ ] |
-| Turned off | 已关闭的供应商 | [ ] |
-| Hide accounts | 账号打码 | [ ] |
-| New group | 新建组 | [ ] |
-| live, as the gateway decides | 实时 · 网关正在做的决定 | [ ] |
-| Find a provider | 查找供应商 | [ ] |
-| requests / rerouted | 请求 / 改道 | [ ] |
+| 检查项 | Magpie 事实 | Demo 状态 |
+|--------|-------------|-----------|
+| 侧栏态导航在侧栏，顶栏保留 actions | layoutNav | [~] 有 sync；缺 update/open/winclose |
+| `#crumb` 默认 hidden，由 JS 控制 | `index.html` L41 附近 | [ ] `shell-patch` 强制 `display:flex !important`（P1） |
+| 无巨大色块标题 | 整体 `--bg` | [x] |
 
 ---
 
-## 7. 供应商页（`#view-providers`）
+## 5. Agents — `#view-agents`
 
-- [ ] 搜索框风格 `.sess-filter` / `.pv-q`（「查找供应商」）。
-- [ ] Provider 列表行与 Agent 行同族视觉（白卡、细线、13px）。
-- [ ] `＋ 添加供应商` 文本按钮。
-- [ ] 「已关闭的供应商」可折叠区（可 mock 空/有数）。
-- [ ] 启用态与关闭态区分清晰（opacity / 分区），无大红大绿按钮墙。
-
----
-
-## 8. 路由舞台（`#view-routing` + `routing.css` / `routing.js`）
-
-**硬性 1:1 重点。**
-
-- [ ] 页头：`路由` + 绿点 `.rt-livedot` + 注记「实时 · 网关正在做的决定」+「新建组」「账号打码」。
-- [ ] 舞台容器 `.rt`：白卡、`border-radius: 14px`、内边距约 14–16px。
-- [ ] `.rt-stage` grid：**`124px 124px minmax(0,1fr)`**，`column-gap: 56px`。
-- [ ] 三列语义：**Agent 源（`.rt-srcs`）→ Hub（`.rt-node.rt-hub`）→ 账号/供应商列表（`.rt-accts`）**。
-- [ ] Hub：鸟标 + `magpie` + 状态 chip；边框用 `--fg`，外圈 `box-shadow: 0 0 0 4px var(--card-2)`。
-- [ ] SVG 连线层 `.rt-wires`（Agent→Hub→Accounts）；至少静态线，优先虚线流动 `.live`。
-- [ ] 账号行：`li` 网格，含 logo、名称、状态 pill。
-- [ ] 底部统计：请求 / 改道 / Agent 收到的错误（数字 mock）。
-- [ ] 舞台下方可有请求历史列表区（可简化，但 class/层级不跑偏）。
-- [ ] **策略/模式说明** `.rt-what` / `.rt-mode` 有可读中文（mock 策略切换可点则加分）。
+| 检查项 | Magpie 事实 | Demo 状态 |
+|--------|-------------|-----------|
+| `.row.agent` + `.ag-handle` + `.fields` `.field` | `app.css` / `app.js` | [~] 结构有；无真实 pop |
+| `.profiles` +「方案」+「＋ 保存当前」 | i18n Profiles / ＋ Save current | [x] 文案对 |
+| Mock ≥3 Agent | — | [x] |
 
 ---
 
-## 9. 网关 / 用量 / 插件 / 设置（可简化但不可缺席）
+## 6. Providers — `#view-providers`
 
-- [ ] 网关页：本地 OpenAI 兼容入口说明、端口/状态 mock，视觉同 tokens。
-- [ ] 用量页：有分段控件 `.segs` 与列表骨架，不为空白 404。
-- [ ] 插件页：占位列表即可。
-- [ ] 设置页：主题（浅/深/跟随）、语言固定中文说明即可。
-
----
-
-## 10. 关键交互（外观层）
-
-- [ ] 侧栏点击切换 view，当前项 `.on`，其余隐藏（`hidden` 或等价）。
-- [ ] Agent 行 hover：左侧 grip 点阵显现（若复用 Magpie CSS `#agents > .row .ag-handle::before`）。
-- [ ] Provider 行 hover 显示操作区（或菜单入口），不永久堆满按钮。
-- [ ] 路由：点击某一 Agent 源或账号行，高亮对应连线 / 行（`.on`）。
-- [ ] 「账号打码」切换：账号文字模糊/掩码（`aria-pressed`）。
-- [ ] 键盘：侧栏/按钮 `:focus-visible` 为 accent 描边（吃 Magpie CSS）。
-- [ ] 无页面级路由花活导致整页白闪；切换用 Magpie 式 fade 即可。
+| 检查项 | Magpie 事实 | Demo 状态 |
+|--------|-------------|-----------|
+| 搜索 placeholder「查找供应商」 | i18n `Find a provider` | [x] |
+| 「＋ 添加供应商」 | i18n | [~] 需确认按钮在页内 |
+| 「已关闭的供应商」折叠 | i18n `Turned off` | [~] 有折叠逻辑 |
+| 行 DOM = Magpie provider 行 | `app.js` 渲染 | [ ] `shell-patch` 自造 flex 行（P1） |
 
 ---
 
-## 11. 明确不在本 Demo 范围（标差距用）
+## 7. Routing 舞台 — **1:1 硬核**
 
-以下 **不要求** 1:1 功能，但若 UI 占位需注明「Demo」：
+源：`routing.css` + `routing.js` + `index.html` `#view-routing`。
 
-- 真实本机 Agent 扫描 / 写回配置
-- 真实网关 trace / 飞鸟动画完整时序
-- Sessions / Library 插件内核
-- Wails 托盘 / macOS traffic lights 嵌入
-- Go 后端、installer 与 Magpie 安装器一致
+| 检查项 | Magpie 事实 | Demo 状态 |
+|--------|-------------|-----------|
+| 页头：路由 + `.rt-livedot` +「实时 · 网关正在做的决定」 | i18n `live, as the gateway decides` | [x] 文案 |
+| 「新建组」「账号打码」 | i18n New group / Hide accounts | [x] 按钮在；新建无实操可 `[~]` |
+| `.rt` radius **14px**，padding 14/16 | `routing.css` L6 | [x] 吃 CSS |
+| `.rt-stage` **`124px 124px minmax(0,1fr)`** gap **56px** | L11 | [x] class；但 Web 画布过宽导致观感≠660 窗 |
+| 三列：`.rt-srcs` → `.rt-hub` → `.rt-accts` | `routing.js` L34–47 | [~] 有三列；缺 sky |
+| Hub：鸟 + `magpie` + small(URL\|\|「网关」) + chip | `hubText`；i18n `gateway` | [ ] small=「本地网关」；chip=`live`（P0） |
+| `svg.rt-wires` + `.live` 虚线流动 | `routing.css` L12–15 | [~] 有 wires/live；曲线自拟 |
+| **`svg.rt-sky` + `.rt-flier` 飞鸟** | L19–38；`routing.js` FLIER | [ ] **未实现（P0）** |
+| 账号行 `.dot` / `.bar` / `.on`→`border-color: var(--fg)` | `routing.css` L54–91 | [ ] inline 圆点 + patch 改 on 色（P0） |
+| `.rt-foot` 统计：请求 / 改道 / Agent 收到的错误 | i18n requests / rerouted / errors your agent saw | [x] 文案 |
+| `.rt-log` / `#rtMore` | `routing.js` / `index.html` | [ ] 缺失（P0） |
+| 策略：智能 / **按顺序** / 按权重 | i18n Smart / In order / By weight | [ ] UI 写「顺序」（P0） |
 
 ---
 
-## 12. 交付物
+## 8. 其他页（可简化，不可假 PASS）
 
-- [ ] 源码仓库：`beyondchenlin/magpie-shell-demo`（或约定名），含本 `ACCEPTANCE.md`。
-- [ ] Web 预览 URL（Vercel 或静态托管）。
-- [ ] 可安装产物路径写在 README（AppImage / `.deb` / 平台包）；若 box 缺 `webkit2gtk` 导致 Tauri 失败，必须写明 blocker，并提供次优安装方式（如 Electron 包或仅 Web）。
-- [ ] `/workspace` 下有可拷贝安装包或 `dist/`。
-- [ ] README 写清：如何在用户机器安装/打开；注明「视觉壳 Demo，非官方 Magpie」。
+| 页 | Magpie 锚点 | Demo 状态 |
+|----|-------------|-----------|
+| Gateway `#view-gateway` | `index.html` 大块设置+状态 | [~] 占位卡，非上游 DOM |
+| Usage `#view-usage` | segs + lists | [~] 骨架占位 |
+| Plugins | `plugins.js` | [~] 占位 |
+| Sessions / Library | 各 view | [~] 占位 |
+| Settings | `#view-settings` tabs | [~] 仅主题切换 |
 
 ---
 
-## 13. 交付前自检汇总（2026-10-14）
+## 9. 关键交互
 
-| 区块 | 状态 | 差距说明 |
-|------|------|----------|
-| Tokens | [x] | 直接复用 Magpie `app.css` `:root` |
-| 窗口/布局 | [x] | Electron 默认 660×600、最小 560×420；Web 预览为圆角画布模拟 |
-| 侧栏 | [x] | 分组/顺序/中文与 Magpie 一致；选中为 graphite 白卡 |
-| Agent 页 | [x] | `.row.agent` + `.field` + 方案区；effort 侧栏在宽屏同行、窄屏换行依 Magpie media |
-| 供应商页 | [x] | 搜索/开启关闭/已关闭折叠/添加；行布局有少量 shell-patch（非 100% Magpie provider DOM） |
-| 路由舞台 | [x] | `.rt-stage` 124/124/1fr、Hub、SVG wires、live 虚线、统计中文；飞鸟 sky 动画未做 |
-| 中文文案 | [x] | 导航与关键句对照 i18n.js zh |
-| 关键交互 | [x] | 切页、策略、打码、点选高亮连线；侧栏拖宽仅视觉 edge |
-| 安装包 | [~] | **AppImage 已交付**；`.deb` 因 builder 元数据未再打；**Tauri 因 box 缺 webkit2gtk+无 sudo 未编** |
+| 检查项 | Magpie 事实 | Demo 状态 |
+|--------|-------------|-----------|
+| 侧栏切 view，`.on` graphite | `app.css` L372 | [x] |
+| 点 Agent/账号高亮对应 wire | routing 交互 | [~] 有；无飞鸟联动 |
+| 账号打码 `aria-pressed` | Routing 页头 | [x] |
+| `:focus-visible` accent 描边 | `app.css` L147 | [x] 吃 CSS |
+| 页切换 fade-in | `body.side-nav .view` | [~] React 换挂载，非 Magpie hidden 切换 |
 
-截图：`acceptance-shots/02-*.png`
+---
 
-**总判定：** `PASS_WITH_GAPS`
+## 10. 明确不在本 Demo 功能范围（仍须在 UI 标 Demo）
 
-关键项（Tokens + 侧栏 + 路由舞台 + 中文导航）已过；差距：无 Tauri 包、无完整飞鸟动画、Sessions/Library/Usage 为占位、供应商行 DOM 未逐像素对齐 Magpie `app.js`。
+- 真实 Agent 扫描 / 写配置  
+- 真实 gateway trace（**可用 mock 轨迹做飞鸟**）  
+- Sessions/Library/Plugins 内核  
+- Wails 托盘 / Mac traffic lights 嵌入 / `glide.go` 托盘高度  
+- 与官方安装器一致  
 
+---
+
+## 11. 交付物
+
+| 项 | 状态 |
+|----|------|
+| 仓库含本清单 + `MAGPIE-TEARDOWN.md` + `GAP-MATRIX.md` | [x] 本轮 |
+| Web 预览 | [~] 有；比例未按 660×600 |
+| Windows `.exe` | [x] Release v0.1.0（壳版本；**视觉未 1:1**） |
+| Linux AppImage | [x] 有；同视觉差距 |
+| README 注明非官方 / 非 1:1 完成 | [ ] 应改为诚实表述 |
+
+---
+
+## 12. 汇总（诚实）
+
+| 区块 | 状态 | 说明 |
+|------|------|------|
+| Tokens | [x] | 文件级拷贝上游 |
+| 窗口 660×600 | [~] | Electron OK；Web patch 破坏比例 |
+| 侧栏 IA/文案 | [x] | 顺序与 zh 正确；brand 位置错 |
+| Agents | [~] | 形似 |
+| Providers | [~]/[ ] | patch 行 ≠ Magpie DOM |
+| **Routing 舞台** | **[ ]** | **缺飞鸟/sky/log；Hub/策略/账号行文案与 DOM 偏离** |
+| 其他页 | [~] | 占位 |
+| 安装包 | [x] | 有 exe；不代表视觉 PASS |
+
+**总判定：`FAIL_NOT_1TO1`**
+
+闭环前勿再写 `PASS` / `PASS_WITH_GAPS`。优先执行 `GAP-MATRIX.md` Top 5 P0。
