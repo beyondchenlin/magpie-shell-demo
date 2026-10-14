@@ -1,3 +1,8 @@
+## v0.1.32
+- **LIBRARY_SKILLS_PARTIAL**: MCP New server 15–21 + Magpie Image sheet; Skills Find/Install mock; Hooks empty+editor; RTK install mock + switches
+- Rules members dragRows (shared `src/lib/dragRows.ts`) — sibling slide .22s cubic-bezier(.22,1,.36,1)
+- Chip: Agents Arrange already had dragRows; members now match
+
 ## v0.1.31
 - **RULES_EFFORT**: GroupEditor Rules deep conditions + Effort classifier + By-weight in-place (no weight-drag in Magpie) + mock Save/Import/template Add
 - Library native 01–03 → LibraryView (Plugins › Library feature)

@@ -13,11 +13,21 @@ Plugin page. When On (Plugins › Built-in › Library) it sits in top nav betwe
 | 05-new-set-file.png | Keep in a file path field |
 | 06-mcp-empty.png | MCP empty dashed box + Discover grid (Magpie Image, Context7…) |
 | 07–13 | Discover scroll: Playwright, Chrome DevTools, GitHub, DeepWiki, Exa, Fetch, Sentry, Stripe, Neon, Brave |
+| 15-mcp-new-stdio.png | New MCP server modal · Runs as Command · Name/Command/Environment/Agents |
+| 16-mcp-new-http.png | Runs as HTTP · URL/Headers/OAuth app link/Save and sign in |
+| 17-mcp-oauth-app.png | OAuth app fields: Client ID / secret / Callback port |
+| 18-mcp-new-sse.png | Runs as SSE |
+| 19-mcp-header-row.png | Headers + Add row |
+| 20-mcp-discard-confirm.png | Discard unsaved changes? Cancel / Discard (red) |
+| 21-mcp-magpie-image-sheet.png | Magpie Image Discover sheet · Agents · Add to the library |
 
 Header: Discover (MCP only) · Library folder · Backups. Tabs: Instructions / MCP servers / Skills / Hooks / RTK.
 
-## Demo (v0.1.31)
+## Demo (v0.1.32)
 
 - Instructions + New set (+ Keep in a file…) + Ctrl/Cmd+S mock save
-- MCP empty + paste JSON Add + Discover cards (mock Add)
-- Skills / Hooks / RTK still placeholders
+- MCP empty + New server modal (Command/HTTP/SSE, OAuth, Discard) + Discover + Magpie Image sheet
+- Skills: Find skills install card (mock probe) + empty / list
+- Hooks: empty + New hook editor (events/tools menus)
+- RTK: not-installed card + Install mock + agent lib-switch
+- No true OAuth / npm / RTK binary / skill GitHub probe

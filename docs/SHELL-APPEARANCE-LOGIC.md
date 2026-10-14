@@ -366,3 +366,21 @@ Same as §4; added: `.pm-opts textarea` focus .12s; `.range-menu .rm-day` backgr
 | ModelPop multi | pick 后保持打开 · use as typed | `keepOpen` |
 
 *文档版本：v0.1.30*
+
+## v0.1.32 Library Skills/Hooks/RTK + Rules dragRows
+
+| 控件 | Magpie | demo |
+|------|--------|------|
+| New MCP server modal | `editServer` · segs Command/HTTP/SSE · paste JSON | `LibModal` pop-in **.42s**；Runs as segs **.18s** |
+| OAuth app / Sign-in | `drawApp` + `signInBox` | 字段齐；Save and sign in = mock toast |
+| Discard | `confirmDiscard` | pop-in **.28s**；红 Discard |
+| Magpie Image sheet | market `optIn` · Add to the library | Discover Add… → sheet |
+| Skills installCard | probe `library/skills/probe` | mock 480ms Looking… + pick/Install |
+| Hooks empty + editHook | HOOK_EVENTS / HOOK_TOOLS menus | 同；无真写入 agent 文件 |
+| RTK card | `renderRTK` not installed | Install mock 900ms；agent `.lib-switch` |
+| Rules members drag | `dragRows` in routing.js | `src/lib/dragRows.ts` + `.fbl.sorting` **.22s** |
+| Members Alt+↑/↓ | Magpie | 同；已去掉 Up/Down 钮 |
+
+动效：`.lib-switch` thumb **.18s**；Discover card fade-in **.18s**；modal fade-in **.18s** + pop-in。
+
+*文档版本：v0.1.32*

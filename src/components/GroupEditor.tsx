@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { ModelPop, type PopOption } from "./ModelPop";
 import { Segs } from "./Segs";
 import { t } from "../i18n";
+import { dragRows } from "../lib/dragRows";
 
 /** Magpie routing.js GROUP_ROUTE_OPTS / LIST_OPTS / SINK / FIRST / PATIENCE / CTX / AFF / EFFORT / LEVELS */
 
@@ -554,7 +555,40 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onStatus, te
                   >
                     <i />
                   </button>
-                  <button type="button" className="i ag-handle rt-mhandle" data-at={i} title={t("Drag to reorder · Alt+↑/↓ to move")} aria-label={t("Move {name}", { name: m.name })}>
+                  <button
+                    type="button"
+                    className="i ag-handle rt-mhandle"
+                    data-at={i}
+                    title={t("Drag to reorder · Alt+↑/↓ to move")}
+                    aria-label={t("Move {name}", { name: m.name })}
+                    onPointerDown={(e) => {
+                      if (e.button !== 0 || e.isPrimary === false || draft.members.length < 2) return;
+                      const handle = e.currentTarget;
+                      const row = handle.closest(".fbrow") as HTMLElement | null;
+                      const list = handle.closest(".fbl") as HTMLElement | null;
+                      if (!row || !list) return;
+                      const rows = [...list.querySelectorAll<HTMLElement>(":scope > .fbrow")];
+                      dragRows(e, {
+                        handle,
+                        row,
+                        list,
+                        rows,
+                        pointerId: e.pointerId,
+                        clientY: e.clientY,
+                        onCommit: (to) => moveMember(i, to),
+                      });
+                    }}
+                    onKeyDown={(e) => {
+                      if (!e.altKey) return;
+                      if (e.key === "ArrowUp") {
+                        e.preventDefault();
+                        moveMember(i, i - 1);
+                      } else if (e.key === "ArrowDown") {
+                        e.preventDefault();
+                        moveMember(i, i + 1);
+                      }
+                    }}
+                  >
                     {i + 1}
                   </button>
                   <svg className="ic" viewBox="0 0 16 16" width={14} height={14} aria-hidden>
@@ -644,16 +678,6 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onStatus, te
                         })()}
                       </button>
                     )
-                  ) : null}
-                  {i > 0 ? (
-                    <button type="button" className="text" onClick={() => moveMember(i, i - 1)}>
-                      {t("Up")}
-                    </button>
-                  ) : null}
-                  {i < draft.members.length - 1 ? (
-                    <button type="button" className="text" onClick={() => moveMember(i, i + 1)}>
-                      {t("Down")}
-                    </button>
                   ) : null}
                   <button
                     type="button"

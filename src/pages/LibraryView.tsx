@@ -1,10 +1,10 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { t } from "../i18n";
 
 /**
- * Magpie Library plugin (native-linux/library 01–13).
+ * Magpie Library plugin (native-linux/library 01–21 + Skills/Hooks/RTK from source).
  * Feature-gated: Plugins › Built-in › Library.
- * Motion: view-in .24s; set chevron .15s; lib-switch; Discover cards fade-in.
+ * Motion: view-in .24s; modal pop-in .42s; Discard .28s; segs .18s; lib-switch.
  */
 
 const LIB_TABS = [
@@ -16,6 +16,139 @@ const LIB_TABS = [
 ] as const;
 
 type InstSet = { id: string; name: string; body: string; inUse: boolean; file?: string };
+type Transport = "stdio" | "http" | "sse";
+type McpDraft = {
+  name: string;
+  transport: Transport;
+  command: string;
+  url: string;
+  envRows: [string, string][];
+  headerRows: [string, string][];
+  oauthOpen: boolean;
+  clientId: string;
+  clientSecret: string;
+  callbackPort: string;
+  agents: string[];
+};
+type HookDraft = {
+  name: string;
+  description: string;
+  event: string;
+  matcher: string;
+  command: string;
+  timeout: string;
+  agents: string[];
+};
+
+const HOOK_EVENTS = [
+  ["turn-end", "When a turn ends"],
+  ["after-tool", "After a tool runs"],
+  ["before-tool", "Before a tool runs"],
+  ["prompt", "When a prompt is sent"],
+  ["session-start", "When a session starts"],
+] as const;
+const HOOK_TOOLS = [
+  ["", "Any tool"],
+  ["shell", "Shell commands"],
+  ["edit", "File edits"],
+] as const;
+const DEMO_AGENTS = [{ id: "cursor", name: "Cursor" }];
+const CMD_PATH = "M3 4.5 6.5 8 3 11.5 M8 12h5";
+const WEB_PATH = "M8 2.5a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11z M2.5 8h11";
+
+const emptyMcp = (): McpDraft => ({
+  name: "",
+  transport: "stdio",
+  command: "",
+  url: "",
+  envRows: [],
+  headerRows: [],
+  oauthOpen: false,
+  clientId: "",
+  clientSecret: "",
+  callbackPort: "",
+  agents: DEMO_AGENTS.map((a) => a.id),
+});
+const emptyHook = (): HookDraft => ({
+  name: "",
+  description: "",
+  event: "turn-end",
+  matcher: "",
+  command: "",
+  timeout: "",
+  agents: DEMO_AGENTS.map((a) => a.id),
+});
+
+function LibChip({ on, label, onClick }: { on: boolean; label: string; onClick: () => void }) {
+  return (
+    <button
+      type="button"
+      className={`lib-ag${on ? " on" : ""}`}
+      aria-pressed={on}
+      onClick={onClick}
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        gap: 5,
+        height: 26,
+        padding: "0 10px 0 8px",
+        borderRadius: 999,
+        border: `1px solid ${on ? "var(--line)" : "transparent"}`,
+        background: on ? "var(--card)" : "transparent",
+        color: on ? "var(--fg)" : "var(--muted)",
+        font: "inherit",
+        fontSize: 12,
+        cursor: "pointer",
+        transition: "background .14s, border-color .14s, color .14s",
+      }}
+    >
+      {label}
+    </button>
+  );
+}
+
+function LibModal({ onBg, children, sm }: { onBg: () => void; children: ReactNode; sm?: boolean }) {
+  return (
+    <div
+      className="modal"
+      role="presentation"
+      onMouseDown={(e) => {
+        if (e.target === e.currentTarget) onBg();
+      }}
+      style={{
+        position: "fixed",
+        inset: 0,
+        zIndex: 80,
+        display: "grid",
+        placeItems: "center",
+        background: "rgba(20,22,30,.42)",
+        backdropFilter: "blur(2px)",
+        animation: "fade-in .18s var(--ease)",
+      }}
+    >
+      <div
+        className={`dialog${sm ? " sm" : ""} lib-editor`}
+        role="dialog"
+        aria-modal
+        style={{
+          animation: sm ? "pop-in .28s var(--ease)" : "pop-in .42s cubic-bezier(.16,1,.3,1)",
+          maxWidth: sm ? 360 : 520,
+          width: "min(520px, calc(100vw - 32px))",
+          maxHeight: "min(90vh, 720px)",
+          overflow: "auto",
+          background: "var(--card)",
+          borderRadius: 14,
+          border: "1px solid var(--line)",
+          boxShadow: "0 18px 48px rgba(20,22,30,.22)",
+          padding: "16px 18px 14px",
+        }}
+        onMouseDown={(e) => e.stopPropagation()}
+      >
+        {children}
+      </div>
+    </div>
+  );
+}
 
 const DOC = "M4 2.5h5.5L12 5v8.5H4z M9.5 2.5V5H12";
 const FOLDER = "M2.5 4.5h4l1.2 1.3h5.8v6.7h-11z";
@@ -23,7 +156,7 @@ const BACKUP = "M3.2 8a4.8 4.8 0 1 0 1.4-3.4 M2.8 2.6v2.4h2.4 M8 5.3V8l1.9 1.2";
 const SEARCH = "M7 3a4 4 0 1 0 0 8 4 4 0 0 0 0-8z M10 10l3 3";
 
 const DEMO_MCP = [
-  { id: "magpie-image", name: "Magpie Image", by: "Magpie", tag: "magpie", desc: "Generate and edit images with the image model set in Magpie (Settings → Images)…", addDots: true },
+  { id: "magpie-image", name: "Magpie Image", by: "Magpie", tag: "magpie", desc: "Generate and edit images with the image model set in Magpie (Settings → Images), and make short videos with a video model set up in Magpie (Grok Imagine, Seedance), saved in the project.", addDots: true, sheet: true as const },
   { id: "context7", name: "Context7", by: "Upstash", tag: "Remote", desc: "Up-to-date documentation and code examples for any library, straight into the…" },
   { id: "playwright", name: "Playwright", by: "Microsoft", tag: "npx", desc: "Drive a real browser: open pages, click, type and read them through the accessibility tree." },
   { id: "chrome-devtools", name: "Chrome DevTools", by: "Google", tag: "npx", desc: "Control and inspect a live Chrome: console, network, performance traces…" },
@@ -54,9 +187,31 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
   const [filePath, setFilePath] = useState("~/.agents/AGENTS.md");
   const [mcpServers, setMcpServers] = useState<{ id: string; name: string }[]>([]);
   const [mcpQ, setMcpQ] = useState("");
-  const [addingServer, setAddingServer] = useState(false);
-  const [serverJson, setServerJson] = useState("");
+  const [mcpEditor, setMcpEditor] = useState<McpDraft | null>(null);
+  const [mcpSnap, setMcpSnap] = useState("");
+  const [discardOpen, setDiscardOpen] = useState(false);
+  const [imageSheet, setImageSheet] = useState(false);
+  const [imageAgents, setImageAgents] = useState<string[]>(["cursor"]);
+  const [skillSource, setSkillSource] = useState("");
+  const [skillLooking, setSkillLooking] = useState(false);
+  const [skillProbe, setSkillProbe] = useState<{
+    source: string;
+    empty?: boolean;
+    mock?: { path: string; name: string; desc: string }[];
+  } | null>(null);
+  const [skillPick, setSkillPick] = useState<Set<string>>(new Set());
+  const [skills, setSkills] = useState<{ id: string; name: string; desc: string }[]>([]);
+  const [hooks, setHooks] = useState<
+    { id: string; name: string; description: string; event: string; matcher: string; command: string; agents: string[] }[]
+  >([]);
+  const [hookEditor, setHookEditor] = useState<HookDraft | null>(null);
+  const [hookSnap, setHookSnap] = useState("");
+  const [eventMenu, setEventMenu] = useState(false);
+  const [toolMenu, setToolMenu] = useState(false);
+  const [rtkOn, setRtkOn] = useState<Record<string, boolean>>({ cursor: false });
+  const [rtkBusy, setRtkBusy] = useState(false);
   const newNameRef = useRef<HTMLInputElement>(null);
+  const mcpNameRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     try {
@@ -69,6 +224,95 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
   useEffect(() => {
     if (addingSet) newNameRef.current?.focus({ preventScroll: true });
   }, [addingSet]);
+
+  useEffect(() => {
+    if (mcpEditor) mcpNameRef.current?.focus({ preventScroll: true });
+  }, [mcpEditor]);
+
+  const mcpDirty = mcpEditor != null && JSON.stringify(mcpEditor) !== mcpSnap;
+  const hookDirty = hookEditor != null && JSON.stringify(hookEditor) !== hookSnap;
+  const toolEvent = (ev: string) => ev === "after-tool" || ev === "before-tool";
+
+  const openMcpEditor = () => {
+    const d = emptyMcp();
+    setMcpEditor(d);
+    setMcpSnap(JSON.stringify(d));
+    setDiscardOpen(false);
+  };
+  const tryCloseMcp = () => {
+    if (mcpDirty) setDiscardOpen(true);
+    else setMcpEditor(null);
+  };
+  const saveMcp = () => {
+    if (!mcpEditor) return;
+    const name = mcpEditor.name.trim() || "custom-server";
+    setMcpServers((s) => [...s, { id: `mcp-${Date.now()}`, name }]);
+    setMcpEditor(null);
+    onStatus?.(t("{name} added", { name }), "ok");
+  };
+  const openHookEditor = () => {
+    const d = emptyHook();
+    setHookEditor(d);
+    setHookSnap(JSON.stringify(d));
+    setEventMenu(false);
+    setToolMenu(false);
+  };
+  const tryCloseHook = () => {
+    if (hookDirty) setDiscardOpen(true);
+    else setHookEditor(null);
+  };
+  const saveHook = () => {
+    if (!hookEditor) return;
+    const name = hookEditor.name.trim() || "notify";
+    setHooks((list) => [
+      ...list,
+      {
+        id: `hk-${Date.now()}`,
+        name,
+        description: hookEditor.description.trim(),
+        event: hookEditor.event,
+        matcher: hookEditor.matcher,
+        command: hookEditor.command,
+        agents: [...hookEditor.agents],
+      },
+    ]);
+    setHookEditor(null);
+    onStatus?.(t("{name} added", { name }), "ok");
+  };
+  const findSkills = () => {
+    const src = skillSource.trim();
+    if (!src || skillLooking) return;
+    setSkillLooking(true);
+    setSkillProbe({ source: src });
+    window.setTimeout(() => {
+      setSkillLooking(false);
+      if (/github|owner\/|skills\.sh|\//i.test(src)) {
+        const mock = [
+          { path: "skills/demo-a", name: "demo-a", desc: "Demo skill A (mock probe)" },
+          { path: "skills/demo-b", name: "demo-b", desc: "Demo skill B (mock probe)" },
+        ];
+        setSkillProbe({ source: src, mock });
+        setSkillPick(new Set(mock.map((m) => m.path)));
+      } else {
+        setSkillProbe({ source: src, empty: true });
+        setSkillPick(new Set());
+        onStatus?.(t("No SKILL.md found there"), "warn");
+      }
+    }, 480);
+  };
+  const installSkills = () => {
+    if (!skillProbe?.mock?.length || !skillPick.size) return;
+    const picked = skillProbe.mock.filter((m) => skillPick.has(m.path));
+    setSkills((list) => [
+      ...list,
+      ...picked.map((m) => ({ id: `sk-${Date.now()}-${m.path}`, name: m.name, desc: m.desc })),
+    ]);
+    const n = picked.length;
+    onStatus?.(n === 1 ? t("1 skill installed") : t("{n} skills installed", { n }), "ok");
+    setSkillProbe(null);
+    setSkillPick(new Set());
+    setSkillSource("");
+  };
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -353,7 +597,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
           </>
         ) : tab === "mcp" ? (
           <>
-            {mcpServers.length === 0 && !addingServer ? (
+            {mcpServers.length === 0 ? (
               <div
                 style={{
                   border: "1px dashed var(--line)",
@@ -366,47 +610,14 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                 }}
               >
                 <p style={{ margin: "0 0 12px" }}>{t("No servers in the library yet. Paste a server's JSON from its README, or fill it in.")}</p>
-                <button type="button" className="rt-gadd" style={{ margin: "0 auto" }} onClick={() => setAddingServer(true)}>
+                <button type="button" className="rt-gadd" style={{ margin: "0 auto" }} onClick={openMcpEditor}>
                   <svg viewBox="0 0 16 16" width={11} height={11} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden>
                     <path d="M8 3.5v9M3.5 8h9" />
                   </svg>
-                  <span>{t("Add a server")}</span>
+                  <span>{t("＋ Add a server")}</span>
                 </button>
               </div>
-            ) : null}
-            {addingServer ? (
-              <div className="card" style={{ padding: 14, border: "1px solid var(--line)", borderRadius: 12, marginBottom: 16, animation: "pop-in .28s var(--ease)" }}>
-                <textarea
-                  rows={5}
-                  value={serverJson}
-                  placeholder={t('Paste a server\'s JSON, e.g. { "mcpServers": { … } }')}
-                  onChange={(e) => setServerJson(e.target.value)}
-                  onKeyDown={(e) => e.stopPropagation()}
-                  style={{ width: "100%", font: "inherit", fontSize: 12.5, padding: 10, borderRadius: 8, border: "1px solid var(--line)" }}
-                />
-                <div className="bar" style={{ display: "flex", gap: 8, marginTop: 8 }}>
-                  <span className="grow" />
-                  <button type="button" className="text" onClick={() => { setAddingServer(false); setServerJson(""); }}>
-                    {t("Cancel")}
-                  </button>
-                  <button
-                    type="button"
-                    className="text primary"
-                    disabled={!serverJson.trim()}
-                    onClick={() => {
-                      const name = "custom-server";
-                      setMcpServers((s) => [...s, { id: `mcp-${Date.now()}`, name }]);
-                      setAddingServer(false);
-                      setServerJson("");
-                      onStatus?.(t("{name} added", { name }), "ok");
-                    }}
-                  >
-                    {t("Add")}
-                  </button>
-                </div>
-              </div>
-            ) : null}
-            {mcpServers.length > 0 ? (
+            ) : (
               <div style={{ marginBottom: 16 }}>
                 {mcpServers.map((s) => (
                   <div key={s.id} className="row" style={{ display: "flex", alignItems: "center", gap: 8, padding: "8px 4px", borderBottom: "1px solid var(--line)" }}>
@@ -417,11 +628,11 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                     </button>
                   </div>
                 ))}
-                <button type="button" className="rt-gadd" style={{ marginTop: 8 }} onClick={() => setAddingServer(true)}>
-                  <span>{t("Add a server")}</span>
+                <button type="button" className="rt-gadd" style={{ marginTop: 8 }} onClick={openMcpEditor}>
+                  <span>{t("＋ Add server")}</span>
                 </button>
               </div>
-            ) : null}
+            )}
 
             <div id="libDiscover" style={{ marginTop: 18 }}>
               <div className="row-head" style={{ marginBottom: 8 }}>
@@ -452,6 +663,10 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                         className="text primary"
                         style={{ height: 26, fontSize: 12 }}
                         onClick={() => {
+                          if ((c as { sheet?: boolean }).sheet) {
+                            setImageSheet(true);
+                            return;
+                          }
                           if (mcpServers.some((s) => s.id === c.id)) {
                             onStatus?.(t("Already in the library"), "warn");
                             return;
@@ -468,12 +683,479 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
               </div>
             </div>
           </>
-        ) : (
-          <div className="none" style={{ padding: "28px 8px", color: "var(--muted)", fontSize: 13 }}>
-            {t("Demo: {tab} — nested capture continues", { tab: t(LIB_TABS.find(([id]) => id === tab)?.[1] || tab) })}
-          </div>
-        )}
+
+        ) : tab === "skills" ? (
+          <>
+            <p style={{ margin: "0 0 12px", fontSize: 12.5, color: "var(--muted)", lineHeight: 1.45 }}>
+              {t("A skill is a folder with a SKILL.md an agent loads when it's needed. The library keeps each one once and links it into the agents you pick.")}
+            </p>
+            <div className="card lib-install" style={{ padding: "12px 14px", border: "1px solid var(--line)", borderRadius: 12, marginBottom: 16 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <svg viewBox="0 0 16 16" width={14} height={14} fill="none" stroke="currentColor" strokeWidth="1.3" aria-hidden>
+                  <path d={SEARCH} />
+                </svg>
+                <input
+                  type="text"
+                  value={skillSource}
+                  placeholder={t("owner/repo, a GitHub link, or a folder on this computer")}
+                  onChange={(e) => setSkillSource(e.target.value)}
+                  onKeyDown={(e) => {
+                    e.stopPropagation();
+                    if (e.key === "Enter") findSkills();
+                    if (e.key === "Escape" && skillProbe) {
+                      setSkillProbe(null);
+                      setSkillPick(new Set());
+                    }
+                  }}
+                  style={{ flex: 1, minWidth: 0 }}
+                />
+                <button type="button" className="text action" disabled={skillLooking || !skillSource.trim()} onClick={findSkills}>
+                  {skillLooking ? t("Looking…") : t("Find skills")}
+                </button>
+              </div>
+              {skillProbe?.empty ? (
+                <div style={{ marginTop: 10, fontSize: 12.5, color: "var(--muted)" }}>
+                  {t("No skills there — a skill is a folder with a SKILL.md in it.")}
+                </div>
+              ) : null}
+              {skillProbe?.mock ? (
+                <div style={{ marginTop: 12, animation: "fade-in .18s var(--ease)" }}>
+                  <div className="row-head" style={{ marginBottom: 8, fontSize: 12, color: "var(--muted)", display: "flex", alignItems: "center", gap: 8 }}>
+                    <span>{t("{n} skills in {src}", { n: skillProbe.mock.length, src: skillProbe.source })}</span>
+                    <span className="grow" />
+                    <button
+                      type="button"
+                      className="text"
+                      onClick={() => {
+                        const all = skillProbe.mock!.every((m) => skillPick.has(m.path));
+                        setSkillPick(all ? new Set() : new Set(skillProbe.mock!.map((m) => m.path)));
+                      }}
+                    >
+                      {skillProbe.mock.every((m) => skillPick.has(m.path)) ? t("Select none") : t("Select all")}
+                    </button>
+                  </div>
+                  {skillProbe.mock.map((m) => (
+                    <label key={m.path} style={{ display: "flex", gap: 8, alignItems: "flex-start", padding: "6px 0", borderTop: "1px solid var(--line)", cursor: "pointer" }}>
+                      <input
+                        type="checkbox"
+                        checked={skillPick.has(m.path)}
+                        onChange={(e) => {
+                          setSkillPick((prev) => {
+                            const next = new Set(prev);
+                            if (e.target.checked) next.add(m.path);
+                            else next.delete(m.path);
+                            return next;
+                          });
+                        }}
+                      />
+                      <span>
+                        <b style={{ display: "block", fontSize: 13 }}>{m.name}</b>
+                        <small style={{ color: "var(--muted)" }}>{m.desc}</small>
+                      </span>
+                    </label>
+                  ))}
+                  <div className="bar" style={{ display: "flex", gap: 8, marginTop: 10, alignItems: "center" }}>
+                    <span style={{ fontSize: 12, color: "var(--muted)" }}>{t("for")}</span>
+                    <LibChip on label="Cursor" onClick={() => {}} />
+                    <span className="grow" />
+                    <button type="button" className="text" onClick={() => { setSkillProbe(null); setSkillPick(new Set()); }}>{t("Cancel")}</button>
+                    <button type="button" className="text primary" disabled={!skillPick.size} onClick={installSkills}>
+                      {skillPick.size === 1 ? t("Install 1 skill") : t("Install {n} skills", { n: skillPick.size })}
+                    </button>
+                  </div>
+                </div>
+              ) : null}
+            </div>
+            {skills.length === 0 ? (
+              <div style={{ padding: "8px 2px", color: "var(--muted)", fontSize: 13 }}>{t("No skills in the library yet — find some above.")}</div>
+            ) : (
+              <div>
+                <div className="row-head" style={{ marginBottom: 6 }}>
+                  <span className="label" style={{ letterSpacing: ".04em", fontSize: 11, color: "var(--muted)", fontWeight: 600 }}>{t("In the library")}</span>
+                </div>
+                {skills.map((s) => (
+                  <div key={s.id} className="row" style={{ display: "flex", gap: 8, padding: "10px 4px", borderBottom: "1px solid var(--line)" }}>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <b style={{ fontSize: 13 }}>{s.name}</b>
+                      <div style={{ fontSize: 12, color: "var(--muted)" }}>{s.desc}</div>
+                    </div>
+                    <LibChip on label="Cursor" onClick={() => {}} />
+                    <button type="button" className="text" onClick={() => setSkills((list) => list.filter((x) => x.id !== s.id))}>{t("Remove")}</button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </>
+        ) : tab === "hooks" ? (
+          <>
+            <p style={{ margin: "0 0 12px", fontSize: 12.5, color: "var(--muted)", lineHeight: 1.45 }}>
+              {t("A hook is a command an agent runs at a point of its turn — a notification when it ends, a formatter after it edits a file. Add it once and magpie writes it into each agent you pick, in the shape that agent reads.")}
+            </p>
+            {hooks.length === 0 ? (
+              <div style={{ border: "1px dashed var(--line)", borderRadius: 12, padding: "28px 16px", textAlign: "center", color: "var(--muted)", fontSize: 13, lineHeight: 1.45 }}>
+                <b style={{ display: "block", color: "var(--fg)", fontWeight: 500, marginBottom: 4 }}>{t("No hooks in the library yet")}</b>
+                <p style={{ margin: "0 0 12px" }}>{t("Add one, and pick the agents that run it.")}</p>
+                <button type="button" className="rt-gadd" style={{ margin: "0 auto" }} onClick={openHookEditor}><span>{t("＋ Add a hook")}</span></button>
+              </div>
+            ) : (
+              <div>
+                {hooks.map((h) => (
+                  <div key={h.id} className="row" style={{ display: "flex", gap: 8, padding: "10px 4px", borderBottom: "1px solid var(--line)" }}>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <b className="mono" style={{ fontSize: 13 }}>{h.name}</b>
+                      {h.description ? <div style={{ fontSize: 12, color: "var(--muted)" }}>{h.description}</div> : null}
+                      <div style={{ fontSize: 12, color: "var(--muted)" }}>
+                        {t(HOOK_EVENTS.find(([v]) => v === h.event)?.[1] || h.event)}
+                        {h.matcher ? ` · ${HOOK_TOOLS.find(([v]) => v === h.matcher)?.[1] || h.matcher}` : ""}
+                      </div>
+                      <code style={{ fontSize: 11.5 }}>{h.command}</code>
+                    </div>
+                    <LibChip on label="Cursor" onClick={() => {}} />
+                    <button type="button" className="text" onClick={() => setHooks((list) => list.filter((x) => x.id !== h.id))}>{t("Remove")}</button>
+                  </div>
+                ))}
+                <button type="button" className="rt-gadd" style={{ marginTop: 10 }} onClick={openHookEditor}><span>{t("＋ Add hook")}</span></button>
+              </div>
+            )}
+          </>
+        ) : tab === "rtk" ? (
+          <>
+            <p style={{ margin: "0 0 12px", fontSize: 12.5, color: "var(--muted)", lineHeight: 1.45 }}>
+              {t("RTK rewrites the shell commands an agent runs — git status, cargo test, ls… — to print only what the model needs, so they cost fewer tokens. Switch it on for an agent and magpie runs RTK's own installer for it.")}
+            </p>
+            <div className="card" style={{ padding: "12px 14px", border: "1px solid var(--line)", borderRadius: 12, marginBottom: 16 }}>
+              <div className="row-head" style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+                <b style={{ fontSize: 14 }}>RTK</b>
+                <span className="grow" />
+              </div>
+              <p style={{ margin: "0 0 10px", fontSize: 12.5, color: "var(--muted)", lineHeight: 1.5 }}>
+                {rtkBusy ? t("Installing RTK… this can take a minute.") : t("RTK isn't installed. magpie can install it for you, or get it from its site.")}
+              </p>
+              <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                <button
+                  type="button"
+                  className="text action"
+                  disabled={rtkBusy}
+                  onClick={() => {
+                    setRtkBusy(true);
+                    window.setTimeout(() => {
+                      setRtkBusy(false);
+                      onStatus?.(t("RTK is installed — switch it on for your agents below"), "ok");
+                    }, 900);
+                  }}
+                >
+                  {rtkBusy ? t("Installing…") : t("Install RTK")}
+                </button>
+                <button type="button" className="text" onClick={() => window.open("https://rtk-ai.app", "_blank", "noopener,noreferrer")}>{t("Get RTK")}</button>
+                <button type="button" className="text" onClick={() => onStatus?.(t("Demo: checked again"), "ok")}>{t("Check again")}</button>
+              </div>
+            </div>
+            <div className="row-head" style={{ marginBottom: 6, display: "flex", alignItems: "center", gap: 8 }}>
+              <span className="label" style={{ letterSpacing: ".04em", fontSize: 11, color: "var(--muted)", fontWeight: 600 }}>{t("Agents")}</span>
+              <span className="grow" />
+              <span style={{ fontSize: 11.5, color: "var(--muted)" }}>{t("restart an agent after switching it")}</span>
+            </div>
+            <div className="list">
+              {DEMO_AGENTS.map((a) => (
+                <div key={a.id} className="row" style={{ display: "flex", alignItems: "center", gap: 8, padding: "10px 4px", borderBottom: "1px solid var(--line)" }}>
+                  <b style={{ fontSize: 13 }}>{a.name}</b>
+                  <span className="grow" />
+                  <button
+                    type="button"
+                    className={`lib-switch${rtkOn[a.id] ? " on" : ""}`}
+                    role="switch"
+                    aria-checked={!!rtkOn[a.id]}
+                    aria-label={t("{agent} runs its commands through RTK", { agent: a.name })}
+                    disabled={rtkBusy}
+                    onClick={() => {
+                      const on = !rtkOn[a.id];
+                      setRtkOn((m) => ({ ...m, [a.id]: on }));
+                      onStatus?.(
+                        on ? t("RTK is on for {agent} — restart it to use it", { agent: a.name }) : t("RTK is off for {agent} — restart it to see it", { agent: a.name }),
+                        "ok",
+                      );
+                    }}
+                  >
+                    <i />
+                  </button>
+                </div>
+              ))}
+            </div>
+          </>
+        ) : null}
       </div>
+
+      {mcpEditor ? (
+        <LibModal onBg={tryCloseMcp}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
+            <svg viewBox="0 0 16 16" width={16} height={16} fill="none" stroke="currentColor" strokeWidth="1.3" aria-hidden>
+              <path d={mcpEditor.transport === "stdio" ? CMD_PATH : WEB_PATH} />
+            </svg>
+            <b style={{ fontSize: 14 }}>{t("New MCP server")}</b>
+            <span className="grow" />
+            <span style={{ fontSize: 12, color: "var(--muted)" }}>{t("or paste its JSON anywhere here")}</span>
+          </div>
+          <label style={{ display: "grid", gap: 4, marginBottom: 12 }}>
+            <span style={{ fontSize: 12, fontWeight: 500 }}>{t("Name")}</span>
+            <input ref={mcpNameRef} type="text" value={mcpEditor.name} placeholder={t("e.g. github")} onChange={(e) => setMcpEditor({ ...mcpEditor, name: e.target.value })} onKeyDown={(e) => e.stopPropagation()} />
+            <small style={{ color: "var(--muted)", fontSize: 11.5 }}>{t("Letters, digits, - and _ — what the agents call it")}</small>
+          </label>
+          <div style={{ marginBottom: 12 }}>
+            <span style={{ fontSize: 12, fontWeight: 500, display: "block", marginBottom: 6 }}>{t("Runs as")}</span>
+            <div className="segs" style={{ display: "inline-flex", gap: 2, padding: 2, borderRadius: 9, background: "var(--bg)", border: "1px solid var(--line)" }}>
+              {([["stdio", t("Command")], ["http", "HTTP"], ["sse", "SSE"]] as const).map(([id, label]) => (
+                <button
+                  key={id}
+                  type="button"
+                  className={`opt${mcpEditor.transport === id ? " on" : ""}`}
+                  onClick={() => setMcpEditor({ ...mcpEditor, transport: id })}
+                  style={{
+                    height: 28, padding: "0 12px", borderRadius: 7,
+                    border: mcpEditor.transport === id ? "1px solid var(--line)" : "1px solid transparent",
+                    background: mcpEditor.transport === id ? "var(--card)" : "transparent",
+                    font: "inherit", fontSize: 12.5, cursor: "pointer",
+                    transition: "color .18s, background .18s, border-color .18s",
+                  }}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+          </div>
+          {mcpEditor.transport === "stdio" ? (
+            <>
+              <label style={{ display: "grid", gap: 4, marginBottom: 12 }}>
+                <span style={{ fontSize: 12, fontWeight: 500 }}>{t("Command")}</span>
+                <input className="mono" type="text" value={mcpEditor.command} placeholder="npx -y @modelcontextprotocol/server-github" onChange={(e) => setMcpEditor({ ...mcpEditor, command: e.target.value })} onKeyDown={(e) => e.stopPropagation()} />
+                <small style={{ color: "var(--muted)", fontSize: 11.5 }}>{t("The command and its arguments, as you'd type them")}</small>
+              </label>
+              <div style={{ marginBottom: 12 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
+                  <span style={{ fontSize: 12, fontWeight: 500 }}>{t("Environment")}</span>
+                  <button type="button" className="text" onClick={() => setMcpEditor({ ...mcpEditor, envRows: [...mcpEditor.envRows, ["", ""]] })}>{t("＋ Add")}</button>
+                </div>
+                {mcpEditor.envRows.map((row, i) => (
+                  <div key={i} style={{ display: "flex", gap: 6, marginBottom: 6 }}>
+                    <input placeholder="GITHUB_TOKEN" value={row[0]} onChange={(e) => { const envRows = mcpEditor.envRows.map((r, j) => (j === i ? [e.target.value, r[1]] as [string, string] : r)); setMcpEditor({ ...mcpEditor, envRows }); }} onKeyDown={(e) => e.stopPropagation()} />
+                    <input placeholder={t("value")} value={row[1]} onChange={(e) => { const envRows = mcpEditor.envRows.map((r, j) => (j === i ? [r[0], e.target.value] as [string, string] : r)); setMcpEditor({ ...mcpEditor, envRows }); }} onKeyDown={(e) => e.stopPropagation()} />
+                  </div>
+                ))}
+                <small style={{ color: "var(--muted)", fontSize: 11.5 }}>{t("A value can name a variable, as ${NAME}: each agent is given it in its own way, so the token stays out of its settings")}</small>
+              </div>
+            </>
+          ) : (
+            <>
+              <label style={{ display: "grid", gap: 4, marginBottom: 12 }}>
+                <span style={{ fontSize: 12, fontWeight: 500 }}>URL</span>
+                <input className="mono" type="text" value={mcpEditor.url} placeholder="https://example.com/mcp" onChange={(e) => setMcpEditor({ ...mcpEditor, url: e.target.value })} onKeyDown={(e) => e.stopPropagation()} />
+              </label>
+              <div style={{ marginBottom: 12 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
+                  <span style={{ fontSize: 12, fontWeight: 500 }}>{t("Headers")}</span>
+                  <button type="button" className="text" onClick={() => setMcpEditor({ ...mcpEditor, headerRows: [...mcpEditor.headerRows, ["", ""]] })}>{t("＋ Add")}</button>
+                </div>
+                {mcpEditor.headerRows.map((row, i) => (
+                  <div key={i} style={{ display: "flex", gap: 6, marginBottom: 6 }}>
+                    <input placeholder="Authorization" value={row[0]} onChange={(e) => { const headerRows = mcpEditor.headerRows.map((r, j) => (j === i ? [e.target.value, r[1]] as [string, string] : r)); setMcpEditor({ ...mcpEditor, headerRows }); }} onKeyDown={(e) => e.stopPropagation()} />
+                    <input placeholder="Bearer …" value={row[1]} onChange={(e) => { const headerRows = mcpEditor.headerRows.map((r, j) => (j === i ? [r[0], e.target.value] as [string, string] : r)); setMcpEditor({ ...mcpEditor, headerRows }); }} onKeyDown={(e) => e.stopPropagation()} />
+                  </div>
+                ))}
+                <small style={{ color: "var(--muted)", fontSize: 11.5 }}>{t("A value can name a variable, as ${NAME}: each agent is given it in its own way, so the token stays out of its settings")}</small>
+              </div>
+              {mcpEditor.transport === "http" ? (
+                <>
+                  <div style={{ marginBottom: 12 }}>
+                    <span style={{ fontSize: 12, fontWeight: 500, display: "block", marginBottom: 6 }}>{t("OAuth app")}</span>
+                    {!mcpEditor.oauthOpen ? (
+                      <>
+                        <button type="button" className="text" onClick={() => setMcpEditor({ ...mcpEditor, oauthOpen: true })}>{t("Use your own OAuth app")}</button>
+                        <small style={{ display: "block", marginTop: 4, color: "var(--muted)", fontSize: 11.5 }}>{t("For a server whose sign-in doesn't let magpie register itself, as GitHub's")}</small>
+                      </>
+                    ) : (
+                      <>
+                        <div style={{ display: "flex", gap: 6, flexWrap: "wrap", alignItems: "center" }}>
+                          <input placeholder={t("Client ID")} aria-label={t("Client ID")} value={mcpEditor.clientId} onChange={(e) => setMcpEditor({ ...mcpEditor, clientId: e.target.value })} onKeyDown={(e) => e.stopPropagation()} style={{ flex: "1 1 120px" }} />
+                          <input type="password" placeholder={t("Client secret")} aria-label={t("Client secret")} value={mcpEditor.clientSecret} onChange={(e) => setMcpEditor({ ...mcpEditor, clientSecret: e.target.value })} onKeyDown={(e) => e.stopPropagation()} style={{ flex: "1 1 120px" }} />
+                          <input placeholder={t("Callback port")} aria-label={t("Callback port")} inputMode="numeric" value={mcpEditor.callbackPort} onChange={(e) => setMcpEditor({ ...mcpEditor, callbackPort: e.target.value.replace(/\D/g, "").slice(0, 5) })} onKeyDown={(e) => e.stopPropagation()} style={{ width: 110 }} />
+                          <button type="button" className="text" title={t("Remove")} onClick={() => setMcpEditor({ ...mcpEditor, oauthOpen: false, clientId: "", clientSecret: "", callbackPort: "" })}>×</button>
+                        </div>
+                        <small style={{ display: "block", marginTop: 4, color: "var(--muted)", fontSize: 11.5 }}>
+                          {t("Made with its vendor (GitHub's under Settings › Developer settings › OAuth Apps), with {url} as its callback URL", {
+                            url: `http://localhost${mcpEditor.callbackPort ? ":" + mcpEditor.callbackPort : ""}/callback`,
+                          })}
+                        </small>
+                      </>
+                    )}
+                  </div>
+                  <div style={{ marginBottom: 12 }}>
+                    <span style={{ fontSize: 12, fontWeight: 500, display: "block", marginBottom: 6 }}>{t("Sign-in")}</span>
+                    <button type="button" className="text action" onClick={() => onStatus?.(t("Demo: sign-in was not started"), "ok")}>{t("Save and sign in")}</button>
+                    <small style={{ display: "block", marginTop: 4, color: "var(--muted)", fontSize: 11.5 }}>{t("For a server that asks you to sign in (OAuth): magpie signs in once, and every agent given it uses that sign-in")}</small>
+                  </div>
+                </>
+              ) : null}
+            </>
+          )}
+          <div style={{ marginBottom: 14 }}>
+            <span style={{ fontSize: 12, fontWeight: 500, display: "block", marginBottom: 6 }}>{t("Agents")}</span>
+            <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+              {DEMO_AGENTS.map((a) => (
+                <LibChip
+                  key={a.id}
+                  on={mcpEditor.agents.includes(a.id)}
+                  label={a.name}
+                  onClick={() => {
+                    const agents = mcpEditor.agents.includes(a.id) ? mcpEditor.agents.filter((x) => x !== a.id) : [...mcpEditor.agents, a.id];
+                    setMcpEditor({ ...mcpEditor, agents });
+                  }}
+                />
+              ))}
+            </div>
+          </div>
+          <div className="bar" style={{ display: "flex", gap: 8 }}>
+            <span className="grow" />
+            <button type="button" className="text" onClick={tryCloseMcp}>{t("Cancel")}</button>
+            <button type="button" className="text primary" onClick={saveMcp}>{t("Add")}</button>
+          </div>
+        </LibModal>
+      ) : null}
+
+      {imageSheet ? (
+        <LibModal onBg={() => setImageSheet(false)}>
+          <div style={{ display: "flex", alignItems: "flex-start", gap: 10, marginBottom: 10 }}>
+            <span aria-hidden style={{ width: 36, height: 36, borderRadius: "50%", background: "var(--bg)", border: "1px solid var(--line)", display: "grid", placeItems: "center", flex: "none" }}>🐦</span>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <b style={{ display: "block", fontSize: 15 }}>Magpie Image</b>
+              <span style={{ fontSize: 12.5, color: "var(--muted)" }}>Magpie <code style={{ fontSize: 11.5 }}>magpie</code></span>
+            </div>
+            <button type="button" className="text" onClick={() => window.open("https://github.com/beyondchenlin/magpie-shell-demo", "_blank", "noopener,noreferrer")}>{t("Homepage")} ↗</button>
+          </div>
+          <p style={{ margin: "0 0 8px", fontSize: 13, lineHeight: 1.45 }}>
+            {t("Generate and edit images with the image model set in Magpie (Settings → Images), and make short videos with a video model set up in Magpie (Grok Imagine, Seedance), saved in the project.")}
+          </p>
+          <p style={{ margin: "0 0 12px", fontSize: 12.5, color: "var(--muted)", lineHeight: 1.45 }}>
+            {t("Pick the agents that may generate images: each image costs what the model set in Settings → Images charges.")}
+          </p>
+          <div style={{ marginBottom: 14 }}>
+            <span style={{ fontSize: 12, fontWeight: 500, display: "block", marginBottom: 6 }}>{t("Agents")}</span>
+            <LibChip on={imageAgents.includes("cursor")} label="Cursor" onClick={() => setImageAgents((list) => (list.includes("cursor") ? list.filter((x) => x !== "cursor") : [...list, "cursor"]))} />
+          </div>
+          <div className="bar" style={{ display: "flex", gap: 8, alignItems: "center" }}>
+            <span style={{ fontSize: 12, color: "var(--muted)" }}>magpie-image</span>
+            <span className="grow" />
+            <button type="button" className="text" onClick={() => setImageSheet(false)}>{t("Cancel")}</button>
+            <button
+              type="button"
+              className="text primary"
+              onClick={() => {
+                if (!mcpServers.some((s) => s.id === "magpie-image")) setMcpServers((s) => [...s, { id: "magpie-image", name: "Magpie Image" }]);
+                setImageSheet(false);
+                onStatus?.(t("{name} added", { name: "Magpie Image" }), "ok");
+              }}
+            >
+              {t("Add to the library")}
+            </button>
+          </div>
+        </LibModal>
+      ) : null}
+
+      {hookEditor ? (
+        <LibModal onBg={tryCloseHook}>
+          <div style={{ marginBottom: 12 }}><b style={{ fontSize: 14 }}>{t("New hook")}</b></div>
+          <label style={{ display: "grid", gap: 4, marginBottom: 10 }}>
+            <span style={{ fontSize: 12, fontWeight: 500 }}>{t("Name")}</span>
+            <input type="text" value={hookEditor.name} placeholder={t("e.g. notify")} onChange={(e) => setHookEditor({ ...hookEditor, name: e.target.value })} onKeyDown={(e) => e.stopPropagation()} />
+            <small style={{ color: "var(--muted)", fontSize: 11.5 }}>{t("Letters, digits, - and _")}</small>
+          </label>
+          <label style={{ display: "grid", gap: 4, marginBottom: 10 }}>
+            <span style={{ fontSize: 12, fontWeight: 500 }}>{t("Description")}</span>
+            <textarea rows={3} maxLength={200} value={hookEditor.description} placeholder={t("e.g. Tell me when a turn ends")} onChange={(e) => setHookEditor({ ...hookEditor, description: e.target.value })} onKeyDown={(e) => e.stopPropagation()} style={{ resize: "vertical", minHeight: 64 }} />
+            <small style={{ color: "var(--muted)", fontSize: 11.5 }}>{t("Optional: what it's for, in any language. Only the library keeps it")}</small>
+          </label>
+          <div style={{ marginBottom: 10, position: "relative" }}>
+            <span style={{ fontSize: 12, fontWeight: 500, display: "block", marginBottom: 4 }}>{t("When it runs")}</span>
+            <button type="button" className="sess-pick" aria-haspopup="menu" aria-expanded={eventMenu} onClick={() => { setEventMenu((v) => !v); setToolMenu(false); }}
+              style={{ display: "inline-flex", alignItems: "center", gap: 6, height: 30, padding: "0 10px", borderRadius: 8, border: "1px solid var(--line)", background: "var(--card)", font: "inherit", fontSize: 12.5, cursor: "pointer" }}>
+              {t(HOOK_EVENTS.find(([v]) => v === hookEditor.event)?.[1] || hookEditor.event)}
+              <svg viewBox="0 0 12 12" width={11} height={11} aria-hidden style={{ transform: eventMenu ? "rotate(180deg)" : undefined, transition: "transform .15s var(--ease)" }}>
+                <path d="M3 4.5 6 7.5 9 4.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+              </svg>
+            </button>
+            {eventMenu ? (
+              <div role="menu" style={{ position: "absolute", zIndex: 2, top: "100%", left: 0, marginTop: 4, minWidth: 220, background: "var(--card)", border: "1px solid var(--line)", borderRadius: 10, boxShadow: "0 10px 28px rgba(20,22,30,.16)", padding: 4, animation: "pop-in .28s var(--ease)" }}>
+                {HOOK_EVENTS.map(([v, n]) => (
+                  <button key={v} type="button" role="menuitem" className="text" style={{ display: "block", width: "100%", textAlign: "left", padding: "7px 10px", borderRadius: 7 }}
+                    onClick={() => { setHookEditor({ ...hookEditor, event: v, matcher: toolEvent(v) ? hookEditor.matcher : "" }); setEventMenu(false); }}>
+                    {t(n)}
+                  </button>
+                ))}
+              </div>
+            ) : null}
+          </div>
+          {toolEvent(hookEditor.event) ? (
+            <div style={{ marginBottom: 10, position: "relative" }}>
+              <span style={{ fontSize: 12, fontWeight: 500, display: "block", marginBottom: 4 }}>{t("For which tools")}</span>
+              <button type="button" className="sess-pick" onClick={() => { setToolMenu((v) => !v); setEventMenu(false); }}
+                style={{ display: "inline-flex", alignItems: "center", gap: 6, height: 30, padding: "0 10px", borderRadius: 8, border: "1px solid var(--line)", background: "var(--card)", font: "inherit", fontSize: 12.5, cursor: "pointer" }}>
+                {t(HOOK_TOOLS.find(([v]) => v === hookEditor.matcher)?.[1] || "Any tool")}
+              </button>
+              {toolMenu ? (
+                <div role="menu" style={{ position: "absolute", zIndex: 2, top: "100%", left: 0, marginTop: 4, minWidth: 180, background: "var(--card)", border: "1px solid var(--line)", borderRadius: 10, boxShadow: "0 10px 28px rgba(20,22,30,.16)", padding: 4, animation: "pop-in .28s var(--ease)" }}>
+                  {HOOK_TOOLS.map(([v, n]) => (
+                    <button key={v || "any"} type="button" role="menuitem" className="text" style={{ display: "block", width: "100%", textAlign: "left", padding: "7px 10px", borderRadius: 7 }}
+                      onClick={() => { setHookEditor({ ...hookEditor, matcher: v }); setToolMenu(false); }}>
+                      {t(n)}
+                    </button>
+                  ))}
+                </div>
+              ) : null}
+              <small style={{ display: "block", marginTop: 4, color: "var(--muted)", fontSize: 11.5 }}>{t("Each agent's own names for them")}</small>
+            </div>
+          ) : null}
+          <label style={{ display: "grid", gap: 4, marginBottom: 10 }}>
+            <span style={{ fontSize: 12, fontWeight: 500 }}>{t("Command")}</span>
+            <input className="mono" type="text" value={hookEditor.command} placeholder="curl -s https://api.day.app/KEY/done" onChange={(e) => setHookEditor({ ...hookEditor, command: e.target.value })} onKeyDown={(e) => e.stopPropagation()} />
+            <small style={{ color: "var(--muted)", fontSize: 11.5 }}>{t("Run by the agent's shell, in the session's folder; the agent passes what happened as JSON on its input")}</small>
+          </label>
+          <label style={{ display: "grid", gap: 4, marginBottom: 10 }}>
+            <span style={{ fontSize: 12, fontWeight: 500 }}>{t("Timeout (seconds)")}</span>
+            <input type="text" inputMode="numeric" value={hookEditor.timeout} placeholder={t("the agent's own")} onChange={(e) => setHookEditor({ ...hookEditor, timeout: e.target.value.replace(/\D/g, "") })} onKeyDown={(e) => e.stopPropagation()} style={{ maxWidth: 160 }} />
+          </label>
+          <div style={{ marginBottom: 14 }}>
+            <span style={{ fontSize: 12, fontWeight: 500, display: "block", marginBottom: 6 }}>{t("Agents")}</span>
+            <LibChip on={hookEditor.agents.includes("cursor")} label="Cursor" onClick={() => setHookEditor({ ...hookEditor, agents: hookEditor.agents.includes("cursor") ? hookEditor.agents.filter((x) => x !== "cursor") : [...hookEditor.agents, "cursor"] })} />
+          </div>
+          <div className="bar" style={{ display: "flex", gap: 8 }}>
+            <span className="grow" />
+            <button type="button" className="text" onClick={tryCloseHook}>{t("Cancel")}</button>
+            <button type="button" className="text primary" onClick={saveHook}>{t("Add")}</button>
+          </div>
+        </LibModal>
+      ) : null}
+
+      {discardOpen ? (
+        <LibModal onBg={() => setDiscardOpen(false)} sm>
+          <b style={{ display: "block", fontSize: 15, marginBottom: 8 }}>{t("Discard")}</b>
+          <p style={{ margin: "0 0 14px", fontSize: 13, color: "var(--fg-2)", lineHeight: 1.45 }}>{t("Discard unsaved changes? Your changes will be lost.")}</p>
+          <div className="bar" style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
+            <button type="button" className="text" onClick={() => setDiscardOpen(false)}>{t("Cancel")}</button>
+            <button
+              type="button"
+              className="text"
+              style={{ background: "var(--red)", color: "#fff", borderColor: "transparent" }}
+              onClick={() => {
+                setDiscardOpen(false);
+                if (mcpEditor) setMcpEditor(null);
+                if (hookEditor) setHookEditor(null);
+              }}
+            >
+              {t("Discard")}
+            </button>
+          </div>
+        </LibModal>
+      ) : null}
+
     </main>
   );
 }
+
