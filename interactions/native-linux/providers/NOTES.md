@@ -126,3 +126,22 @@ Providers tab, add sheet, scrolled to the foot (33: relays, On this machine, Rem
 ## demo 对齐（v0.1.50）
 - Custom：协议 segs title tooltip；urlHint anthropic/`v1beta`/`v1`；Extra body 空+placeholder；Headers Edit as JSON / Collapse；自定义 Headers hint；custom+Anthropic 出 Key header
 - On this machine 编辑器仍等 35+ 点录（源码对齐见 v0.1.47）
+
+## On this machine editors (35–43)
+
+Opened from the catalog foot (33). Add was never clicked. No key typed.
+
+| shot | what |
+|---|---|
+| 35 | Ollama editor. Note "your local models", site ollama.com. API key optional for local servers + Show. Server address folded. Headers empty row + { } / × / + Add header. Extra body placeholder `prompt_cache_key`. Proxy Global. Concurrency No limit. Cancel / Add. |
+| 36 | Server address opened: Address `http://localhost:11434`, hint "Where the server listens…". |
+| 37 | Scrolled: Extra body, Proxy, Concurrency, Requests per minute, Queue size, Queue wait. |
+| 38 | Further: Queue wait, Price rate, **Key header** Both / x-api-key / Authorization: Bearer (Ollama has Anthropic URL → third-party both-headers), User-Agent tick. |
+| 39 | Redaction · Send requests unmasked; Context window chips 128K–1M; Max output 8K–128K; Compact at 128K–1M. |
+| 40 | Cancel returned to catalog foot (On this machine / Remote / Custom). No provider added. |
+| 41 | oMLX editor. Note "local server, port 8000 by default", site omlx.ai. Headers only + Add header (clean). Same local shape. |
+| 42 | LM Studio editor. Note port 1234, site lmstudio.ai. |
+| 43 | MLX-Serve editor. Note port 11234, site github.com (host of Website URL). |
+
+## demo 对齐（v0.1.51）
+- KindLocal 四编辑器：Server address / optional key / Redaction / Key header / User-Agent / Context·Max·Compact chips；MLX-Serve site `github.com`

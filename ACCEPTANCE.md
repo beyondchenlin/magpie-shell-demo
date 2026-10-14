@@ -1,3 +1,9 @@
+## v0.1.51 PROVIDERS_LOCAL_DONE
+
+- Consumed native providers **35–43** On-this-machine editors (Ollama nest + oMLX / LM Studio / MLX-Serve).
+- Local form: Server address, optional key, Redaction, Key header, User-Agent, Context/Max/Compact.
+- Still mock: true detect/Add/OAuth. Allowances N/A.
+
 ## v0.1.50 PROVIDERS_CUSTOM_DONE
 
 - Custom 03–18 fidelity: proto tooltips + urlHint, Extra body placeholder, Edit-as-JSON headers, custom headers hint, Key header on custom Anthropic.

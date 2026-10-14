@@ -106,7 +106,7 @@ const LOCAL_PRESETS: Record<
   "mlx-serve": {
     address: "http://localhost:11234",
     note: "local server, port 11234 by default",
-    site: "github.com/ddalcu/mlx-serve",
+    site: "github.com",
   },
 };
 
@@ -883,24 +883,6 @@ function ProviderEditorModal({ state, onClose, onAdd }: EditorProps) {
               </details>
             ) : null}
 
-            {isLocal ? (
-              <Field
-                label={t("Redaction")}
-                hint={t(
-                  "For a model running on this computer or your local network: secrets, personal data and your masked words go to it as written. Leave it off for a local relay or proxy that passes requests on to a vendor.",
-                )}
-              >
-                <label className="tick" style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13 }}>
-                  <input
-                    type="checkbox"
-                    checked={unmasked}
-                    onChange={(e) => setUnmasked(e.target.checked)}
-                  />
-                  <span>{t("Send requests unmasked")}</span>
-                </label>
-              </Field>
-            ) : null}
-
             {kind === "custom" ? (
               <Field label={t("Icon")}>
                 <div className="stack" style={{ gap: 8 }}>
@@ -1218,10 +1200,46 @@ function ProviderEditorModal({ state, onClose, onAdd }: EditorProps) {
             {kind === "anthropic" ||
             kind === "remote" ||
             kind === "custom" ||
-            kind === "generic" ? (
+            kind === "generic" ||
+            isLocal ? (
               <>
-                <Field label={ZH.contextWindow}>
-                  <input type="text" placeholder="e.g. 128k" />
+                {isLocal || kind === "custom" || kind === "generic" || kind === "anthropic" || kind === "remote" ? (
+                  <Field
+                    label={t("User-Agent")}
+                    hint={t(
+                      "For a plan that serves only the coding agents it names: each request goes with the User-Agent the agent sent (pi, OpenCode, Claude Code…), not magpie's. Requests magpie makes itself, and ones the agent sent without one, still go as magpie. A User-Agent set in Headers above always wins.",
+                    )}
+                  >
+                    <label className="tick" style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13 }}>
+                      <input type="checkbox" />
+                      <span>{t("Send the agent's own User-Agent")}</span>
+                    </label>
+                  </Field>
+                ) : null}
+                {isLocal ? (
+                  <Field
+                    label={t("Redaction")}
+                    hint={t(
+                      "For a model running on this computer or your local network: secrets, personal data and your masked words go to it as written. Leave it off for a local relay or proxy that passes requests on to a vendor.",
+                    )}
+                  >
+                    <label className="tick" style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13 }}>
+                      <input
+                        type="checkbox"
+                        checked={unmasked}
+                        onChange={(e) => setUnmasked(e.target.checked)}
+                      />
+                      <span>{t("Send requests unmasked")}</span>
+                    </label>
+                  </Field>
+                ) : null}
+                <Field
+                  label={ZH.contextWindow}
+                  hint={t(
+                    "How long a request the models take, told to the agents; empty leaves it to the vendor and models.dev",
+                  )}
+                >
+                  <input type="text" placeholder={t("e.g. 128k · or gpt-6=1m, comma separated")} />
                   <div className="chips" style={{ marginTop: 6 }}>
                     {CTX_CHIPS.map((c) => (
                       <button key={c} type="button" className="chip">
@@ -1230,10 +1248,30 @@ function ProviderEditorModal({ state, onClose, onAdd }: EditorProps) {
                     ))}
                   </div>
                 </Field>
-                <Field label={ZH.maxOutput}>
-                  <input type="text" placeholder="" />
+                <Field
+                  label={ZH.maxOutput}
+                  hint={t(
+                    "How long a reply the models may write, told to the agents; empty leaves it to them. On Anthropic's API it is also sent as max_tokens when the agent named none.",
+                  )}
+                >
+                  <input type="text" placeholder={t("e.g. 32k · or gpt-6=128k, comma separated")} />
                   <div className="chips" style={{ marginTop: 6 }}>
                     {OUT_CHIPS.map((c) => (
+                      <button key={c} type="button" className="chip">
+                        {c}
+                      </button>
+                    ))}
+                  </div>
+                </Field>
+                <Field
+                  label={t("Compact at")}
+                  hint={t(
+                    "Where Codex and Claude Code compact a long conversation on these models; empty follows Settings → Long conversations, and a size at or above a model's window runs it to its whole window",
+                  )}
+                >
+                  <input type="text" placeholder={t("e.g. 500k · or deepseek-v4-flash=272k, comma separated")} />
+                  <div className="chips" style={{ marginTop: 6 }}>
+                    {["128K", "200K", "272K", "500K", "1M"].map((c) => (
                       <button key={c} type="button" className="chip">
                         {c}
                       </button>
