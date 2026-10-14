@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type ClipboardEvent, type ReactNode } from "react";
+import { useSegThumb } from "../components/SegThumb";
 import { t } from "../i18n";
 
 /**
@@ -315,7 +316,7 @@ const DEMO_PROBE_SKILLS = [
   { path: "grill-me", name: "grill-me", desc: "A relentless interview to sharpen a plan or design." },
 ];
 
-export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: string) => void }) {
+export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: string, ms?: number) => void }) {
   const [tab, setTab] = useState<string>(() => {
     try {
       return localStorage.getItem("magpie.libTab") || "instructions";
@@ -375,6 +376,9 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
   const [skillInstalling, setSkillInstalling] = useState(false);
   /** Magpie skillHowBar: link | copy */
   const [skillHow, setSkillHow] = useState<"link" | "copy">("link");
+  /** Magpie change() saving on pressed seg (CU 76) */
+  const [skillHowBusy, setSkillHowBusy] = useState<"link" | "copy" | null>(null);
+  const setSkillHowSeg = useSegThumb(skillHowBusy ? `busy-${skillHowBusy}` : skillHow);
   const [skillChecking, setSkillChecking] = useState(false);
   const newNameRef = useRef<HTMLInputElement>(null);
   const mcpNameRef = useRef<HTMLInputElement>(null);
@@ -1112,7 +1116,15 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                           <button
                             type="button"
                             className="lib-icon text"
-                            title={t("Update from GitHub")}
+                            title={
+                              t("Update from GitHub") +
+                              "\n" +
+                              t("Up to date with GitHub") +
+                              "\n" +
+                              "ask-matt: read a skill's SKILL.md before asserting or skipping its steps" +
+                              "\n" +
+                              "10/7/2026 · 954ee7f"
+                            }
                             aria-label={t("Update from GitHub")}
                             onClick={() => onStatus?.(t("{name} is up to date", { name: s.name }), "ok")}
                             style={{ width: 28, height: 28, padding: 0, fontSize: 14, lineHeight: 1 }}
@@ -1163,40 +1175,67 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                     </div>
                   ))}
                 </div>
-                {/* Magpie skillHowBar — under the list */}
+                {/* Magpie skillHowBar — CU 75–78 Links↔Copies + Saving… */}
                 <div className="lib-skillhow" style={{ marginTop: 14, display: "flex", flexWrap: "wrap", alignItems: "center", gap: 8 }}>
                   <span className="label" style={{ letterSpacing: ".04em", fontSize: 11, color: "var(--muted)", fontWeight: 600 }}>{t("Give skills as")}</span>
-                  <div className="segs" style={{ display: "inline-flex", gap: 2, padding: 2, borderRadius: 999, border: "1px solid var(--line)", background: "var(--bg)" }}>
-                    {([["link", "Links"], ["copy", "Copies"]] as const).map(([id, lab]) => (
-                      <button
-                        key={id}
-                        type="button"
-                        className={`opt${skillHow === id ? " on" : ""}`}
-                        onClick={() => {
-                          if (skillHow === id) return;
-                          setSkillHow(id);
-                          onStatus?.(
-                            id === "copy" ? t("The agents get copies of their skills now") : t("The agents get links to their skills now"),
-                            "ok",
-                          );
-                        }}
-                        style={{
-                          height: 26,
-                          padding: "0 10px",
-                          borderRadius: 999,
-                          border: 0,
-                          background: skillHow === id ? "var(--card)" : "transparent",
-                          color: skillHow === id ? "var(--fg)" : "var(--muted)",
-                          font: "inherit",
-                          fontSize: 12,
-                          cursor: "pointer",
-                        }}
-                      >
-                        {t(lab)}
-                      </button>
-                    ))}
+                  <div
+                    className="segs"
+                    ref={setSkillHowSeg}
+                    style={{ display: "inline-flex", gap: 2, padding: 2, borderRadius: 999, border: "1px solid var(--line)", background: "var(--bg)", position: "relative" }}
+                  >
+                    {([["link", "Links"], ["copy", "Copies"]] as const).map(([id, lab]) => {
+                      const saving = skillHowBusy === id;
+                      const on = !skillHowBusy && skillHow === id;
+                      return (
+                        <button
+                          key={id}
+                          type="button"
+                          className={`opt${on ? " on" : ""}${saving ? " busy saving" : ""}`}
+                          disabled={!!skillHowBusy}
+                          aria-busy={saving || undefined}
+                          onClick={() => {
+                            if (skillHow === id || skillHowBusy) return;
+                            // Magpie change(): pressed opt → Saving… + footer Saving… then toast
+                            setSkillHowBusy(id);
+                            onStatus?.(t("Saving…"), "", 120000);
+                            window.setTimeout(() => {
+                              setSkillHow(id);
+                              setSkillHowBusy(null);
+                              onStatus?.(
+                                id === "copy" ? t("The agents get copies of their skills now") : t("The agents get links to their skills now"),
+                                "ok",
+                              );
+                            }, 450);
+                          }}
+                          style={{
+                            height: 26,
+                            padding: "0 10px",
+                            borderRadius: 999,
+                            border: 0,
+                            background: on || saving ? "var(--card)" : "transparent",
+                            color: on || saving ? "var(--fg)" : "var(--muted)",
+                            font: "inherit",
+                            fontSize: 12,
+                            cursor: skillHowBusy ? "default" : "pointer",
+                            display: "inline-flex",
+                            alignItems: "center",
+                            gap: 5,
+                            zIndex: 1,
+                          }}
+                        >
+                          {saving ? (
+                            <>
+                              <span className="spin" aria-hidden style={{ width: 11, height: 11, display: "inline-block" }} />
+                              {t("Saving…")}
+                            </>
+                          ) : (
+                            t(lab)
+                          )}
+                        </button>
+                      );
+                    })}
                   </div>
-                  <button type="button" className="text action lib-updall lib-howagent" title={t("Give an agent its skills its own way")} onClick={() => { setAgentHow(""); setSkillHowOpen(true); }}>
+                  <button type="button" className="text action lib-updall lib-howagent" title={t("Give an agent its skills its own way")} disabled={!!skillHowBusy} onClick={() => { setAgentHow(""); setSkillHowOpen(true); }}>
                     {t("By agent")}
                   </button>
                   <span style={{ fontSize: 12, color: "var(--muted)", flex: "1 1 220px" }}>
@@ -1932,7 +1971,9 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                     type="button"
                     className={`opt${agentHow === id ? " on" : ""}`}
                     onClick={() => {
+                      if (agentHow === id) return;
                       setAgentHow(id);
+                      // Magpie report after skills/how (CU 81–83)
                       onStatus?.(
                         id === "copy" || (id === "" && skillHow === "copy")
                           ? t("{agent} gets copies of its skills now", { agent: "Cursor" })

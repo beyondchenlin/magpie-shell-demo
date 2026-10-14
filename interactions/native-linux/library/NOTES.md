@@ -219,3 +219,38 @@ Same window, 752×652 at +610+300, Library still On, Skills tab. The live librar
 - Give skills as → By agent 表：Cursor · Library's way / Links / Copies · Done（未改 how）
 - In projects：Add a project 空卡 + Cancel；未点 Choose…
 - 行 Remove 确认后 Cancel；芯片 off → toast **Removed from Cursor**；技能仍在库
+
+
+## Skills chip on + how (shots 72–87)
+
+Window was partly outside a 1280×800 box at +610+300 (right 1362, bottom 952). Moved fully on-screen to **752×652 at +200+40** (id 27262991, DISPLAY=:6). Not resized. Shots are ffmpeg x11grab of that rect, except **86** which is **860×652** from the same origin so the update tip is not cut off at the window's right edge. Close was not clicked. Choose… was not opened. Remove was not submitted. Still one skill (**ask-matt**), so Group again, Update all, and the head Turn all on/off are not on the page.
+
+Cursor chip started off (shot 71). Give skills as started on **Links**.
+
+| shot | what |
+|---|---|
+| 72-skills-chip-off-tip | Pointer on the off Cursor chip. Tip **Give it to Cursor**. Row hover also shows the update arrow and trash. |
+| 73-skills-written-toast | Click. Chip draws on (icon full color). Green toast **Written to Cursor**. No Saving… on a chip (it paints on at once). |
+| 74-skills-chip-on | Toast gone. Chip stays on. |
+| 75-skills-how-copies-hover | **Give skills as** is a segment, not a menu: **Links** (on) / **Copies** / **By agent**. Pointer on Copies. Library's way is not on this bar. Note: links follow the library. |
+| 76-skills-how-saving | Click Copies. The segment label becomes **Saving…** (spinner). |
+| 77-skills-how-copies-toast | Copies is the selected pill. Note switches to each agent getting its own folder, remade when the library skill changes. Toast **The agents get copies of their skills now**. No confirm dialog. |
+| 78-skills-how-links-toast | Click Links. Selected pill back on Links. Note back to links follow the library. Toast **The agents get links to their skills now**. Saving… on the way back did not last a frame. |
+| 79-skills-how-sheet-tip | Give skills as › **By agent** opens **How each agent gets its skills**. Tip from the button, under the sheet: **Give an agent its skills its own way**. |
+| 80-skills-how-sheet-libway | Same sheet, tip gone. Cursor · **Gets links** · **Library's way** on, Links and Copies beside it. Done. |
+| 81-skills-cursor-links-toast | Click the Cursor row's **Links** (not Library's way). Links pill on. Sub still Gets links. Toast **Cursor gets links to its skills now**. |
+| 82-skills-cursor-copies-toast | Click **Copies**. Sub **Gets copies**. Copies pill on. Body still says the others get links (library how is Links). Toast **Cursor gets copies of its skills now**. |
+| 83-skills-cursor-libway-restored | Click **Library's way** again so Cursor is not left on its own how. Sub **Gets links**. Toast **Cursor gets links to its skills now**. |
+| 84-skills-rowhead-byagent-tip | The other By agent, on the **In the library** head (not the how bar). Tip **Turn every skill on or off for one agent**. |
+| 85-skills-byagent-sheet | Opens **Skills by agent**. Cursor · **1 of 1 skills** · **Turn all on** / **Turn all off**. Not clicked (one skill; Turn all off would take ask-matt out of Cursor). Done. |
+| 86-skills-update-tip | Pointer on the row update arrow. Tip, four lines: **Update from GitHub** / **Up to date with GitHub** / **ask-matt: read a skill's SKILL.md before asserting or skipping its steps** / **10/7/2026 · 954ee7f**. Not clicked (would fetch GitHub). Frame is 860px wide; a 752px grab clips "skipping its steps". |
+| 87-skills-remove-tip | Pointer on the row trash. It turns red. Tip **Remove** (shot 68 hovered it but the tip did not stay). Not clicked. |
+
+No project added. Give skills as left on **Links**. Cursor chip left **on** (ask-matt given to Cursor). By agent is not "By agent (1)" — Cursor's own how was put back to Library's way before Done. Header Group again / Update all / Turn all were not invented. Library still On. Window 752×652 at +200+40. Magpie pid 560329 still running.
+
+## demo 对齐（72–87）· v0.1.67 SKILLS_HOW_DONE
+- 芯片 off 提示 **Give it to Cursor** → 点亮 toast **Written to Cursor**（无 Saving…）
+- Give skills as 是分段不是菜单：Links / Copies；Copies 有 **Saving…** 与 toast **The agents get copies of their skills now**；回到 Links toast **The agents get links to their skills now**（回程 Saving… 未定格）
+- How each agent：Cursor 段 Links ↔ Copies（不是只停在 Library's way）；toast **Cursor gets links/copies of its skills now**；录完拨回 Library's way 再 Done
+- 行首 By agent 是另一张 **Skills by agent**（Turn all on/off，1 of 1，未点）
+- 行内更新箭头 tip 四行（Up to date + check 行）；未点更新。Remove tip 定格，未提交

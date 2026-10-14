@@ -1,13 +1,14 @@
-# last-cycle · 06:35 CST
+# last-cycle · 06:50 CST
 
-**Tag:** MANUAL_INSTALL_DONE → **v0.1.66** (CU plugins/66–70)
+**Tag:** SKILLS_HOW_DONE → **v0.1.67** (library/72–87)
 
-## v0.1.66 (CU-aligned)
-- Native `plugins/66–70`: Installing… purple pill **no spinner**; field cleared on busy; bun exit-1 red toast; settled
-- Folder browse kept (native picker); Installed · 1 Think Tags (sort N/A)
-- Also: MCP paste JSON fill + In projects Choose (!web) / skills toast copy
+## v0.1.67
+- Chip re-on: Give it to Cursor → Written to Cursor (no chip Saving…)
+- Give skills as Links/Copies + Saving… on Copies; toasts both ways
+- How-each-agent Library's way/Links/Copies toasts; row-head By agent → Skills by agent
+- Update-arrow 4-line tip; trash tip Remove
+- Not invented: chip Saving…; By-agent seg Saving…; Group/Update all (1 skill)
 
 ## Remaining
 - P1: live gateway bird, true OAuth/key persist, Allowances **N/A**
 - Skip Vercel 402
-- Waiting CU Skills 72+ (chip re-on + Give skills as Links/Copies)

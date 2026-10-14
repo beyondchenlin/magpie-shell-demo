@@ -1,3 +1,9 @@
+## v0.1.67 SKILLS_HOW_DONE
+- Native `library/72–87` consumed: chip off tip → **Written to Cursor** (no chip Saving…); Give skills as Links/Copies + **Saving…** on Copies; toasts both ways; How-each-agent Library's way/Links/Copies toasts; row-head By agent tip + Skills by agent 1 of 1; update-arrow 4-line tip; trash tip Remove.
+- Not invented: chip Saving…; back-to-Links Saving…; By-agent seg Saving…; Group/Update all/head Turn all (1 skill).
+- Allowances **N/A**. Skip Vercel 402. P1: live gateway bird, true OAuth/key persist.
+
+
 ## v0.1.66 MANUAL_INSTALL_DONE (CU 66–70)
 - Native `plugins/66–70`: empty+folder+Install → typed `github:magpie/example` → **Installing…** purple pill **no spinner** (Bun on disk; field cleared) → red clipped bun exit-1 toast (~8s) → settled; Installed · 1 Think Tags only.
 - Demo: clear field on busy; no spin; fail path for github:magpie/example; toast title=full.

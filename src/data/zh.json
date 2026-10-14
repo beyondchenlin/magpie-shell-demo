@@ -4335,5 +4335,12 @@
   "Filled in from what you pasted": "已根据粘贴内容填写",
   "{name} added — pick the skills it gets": "已添加 {name} — 选择它要用的技能",
   "{name} added — pick the servers it gets": "已添加 {name} — 选择它要用的服务器",
-  "Added {n} servers": "已添加 {n} 个服务器"
+  "Added {n} servers": "已添加 {n} 个服务器",
+  "{agent} gets copies of its skills now": "{agent} 现在以副本方式使用技能",
+  "{agent} gets links to its skills now": "{agent} 现在以链接方式使用技能",
+  "Give it to {agent}": "交给 {agent}",
+  "Written to {agent}": "已写入 {agent}",
+  "Up to date with GitHub": "已与 GitHub 同步",
+  "Update from GitHub": "从 GitHub 更新",
+  "Turn every skill on or off for one agent": "为某个代理开关全部技能"
 }
