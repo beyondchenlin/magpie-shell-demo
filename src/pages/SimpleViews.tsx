@@ -1866,6 +1866,7 @@ const DEMO_MARKET = [
     section: "Gateway middleware",
     note: "runs in magpie's gateway on what every agent sends and gets back, whichever provider serves it",
     cards: [
+      { pkg: "@magpie-community/middleware-think-tags", name: "Think Tags", summary: "Take a model's <think>...</think> out of its reply's text, or put a Chat reply's reasoning into it.", downloads: "159/week", ver: "v0.1.0", community: true, kind: "Middleware", updated: "Oct 6, 2026", readme: "Magpie gateway middleware for <think> tags.\n\n## Install\n```\nmagpie plugin add @magpie-community/middleware-think-tags\n```\n\n## Options\n```\n{ \"mode\": \"strip\" }\n```" },
       { pkg: "@magpie-community/demo-request-log", name: "Request logger", summary: "Logs each gateway call's request and reply — demo fold for options JSON.", downloads: "1.4k/week", ver: "v0.1.0", community: true, kind: "Middleware" },
     ],
   },

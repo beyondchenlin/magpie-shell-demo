@@ -139,3 +139,41 @@ Recorded against live Magpie web (top-nav, same `plugins.js`; Bun already presen
 | 60-after-detail-close | Close → back on Discover Suggested; plugin remains installed until Remove. |
 
 Demo v0.1.58: DETAIL_INSTALL_DONE — 55–60 consumed; Provider toast + Sign in in detail/card; Signs in to fact; Escape swallow on detail.
+
+
+## Detail modal Install — native window (shots 61–65)
+
+Shots 55–60 above were the web demo (`live Magpie web`), not this native window. The native detail Install is 61–65.
+
+Discover, search `think` (replaced the leftover `opencode` query). **Think Tags** is the small free middleware card (magpie community, v0.1.0, 159/week). The card body was clicked, not its Install pill. OpenCode Zen Free was not used: after a list refresh its card showed Install again, and a middleware ends on **Installed** rather than Sign in.
+
+Detail (`.editor` over the dimmed page, not a second window): icon, **Think Tags**, magpie community, pale **Install**, summary, Version v0.1.0 / Downloads 159/week / License MIT / Updated Oct 6, 2026, npm and Source, README, Options `{ "mode": "strip" }`, footer "Plugins are other people's code…", **Close**.
+
+The cached Bun binary was not at hand, so the busy control is **Getting Bun…** while Magpie downloaded Bun again (back at `~/.cache/magpie/bun/1.4.2/magpie-bun`), then the plugin. No confirm dialog. No second window. Escape was not pressed. Close was not pressed. Nothing was typed into Options.
+
+| shot | what |
+|---|---|
+| 61 | Detail open, pointer off the links (no tooltip). Install is a pale pill, purple label. |
+| 62 | Pointer on that Install. Hover fills the pill solid indigo and the label turns white. No tooltip. |
+| 63 | Click. The control goes pale gray and disabled: spinner, then **Getting Bun…**. No dialog. Modal stays open. |
+| 64 | Spinner gone. Green check and **Installed** (no pill). Green toast, no buttons, over the footer: **Think Tags is installed**. Not a sign-in line. |
+| 65 | Toast gone by itself. Check + Installed stays. Modal still open. Search underneath still `think`. Mirror still **Off**. |
+
+## Left state
+
+Plugins, Discover, Think Tags detail still open, action **Installed**. Search `think`. Mirror **Off**. Think Tags is installed (middleware, not signed in — it has no sign-in). Magpie left running (window 752×652 at +610+300, pid 560329). Close was not used. No credential folder was opened.
+
+
+## Detail Install middleware (shots 61–65) — Think Tags
+
+Second detail Install path (non-Provider). Confirms Magpie `actionFor` / toast split:
+
+| shot | what |
+|---|---|
+| 61 | Think Tags detail open: Install get; Version v0.1.0 · 159/week · MIT · Updated Oct 6, 2026; **no** Signs in to; npm · Source; README Options `{ "mode": "strip" }`. |
+| 62 | Install hover solid. |
+| 63 | Busy **Getting Bun…** (spinner) on pm-dact — Bun not cached for this package path / first busy freeze. |
+| 64 | Green check **Installed** + toast **Think Tags is installed** (no "sign in to use it" — middleware has no subs). |
+| 65 | Settled Installed in detail. |
+
+Demo v0.1.60: DETAIL_INSTALL_MW — middleware → Installed toast/check; Provider path remains Sign in (55–60).

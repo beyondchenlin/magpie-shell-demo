@@ -1,3 +1,8 @@
+## v0.1.60 DETAIL_INSTALL_MW
+- Native/web `plugins/61–65` Think Tags middleware detail Install: **Getting Bun…** busy visible → toast `{name} is installed` (no sign-in) → green **Installed** (not Sign in).
+- Confirms dual path vs Provider 55–60. Think Tags card added to Gateway middleware market.
+- Allowances **N/A**. Skip Vercel 402.
+
 ## v0.1.59 SKILLS_PROBE_PICK
 - Native/web `library/47–51`: Skills Find → probe → **one checked** (ask-matt) → Cancel (Install not clicked).
 - Demo already had `Install 1 skill` / `Install {n} skills` when `skillPick.size`; NOTES nest closed.
