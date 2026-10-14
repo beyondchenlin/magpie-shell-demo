@@ -384,3 +384,16 @@ Same as §4; added: `.pm-opts textarea` focus .12s; `.range-menu .rm-day` backgr
 动效：`.lib-switch` thumb **.18s**；Discover card fade-in **.18s**；modal fade-in **.18s** + pop-in。
 
 *文档版本：v0.1.32*
+
+## v0.1.33 Library Skills probe / Hooks (native 29–33)
+
+| 控件 | Magpie | demo |
+|------|--------|------|
+| Skills probe | `installCard` + `probeResult` | Find skills 480ms mock → DEMO_PROBE_SKILLS |
+| Probe head | `{n} skills in github.com/…` · Select all | 同；>8 显示 Filter… |
+| Probe foot | for · agent chips · Cancel · Install {n} | Install 0 when pick empty (disabled) |
+| Discover skills | Popular on skills.sh · market cards | 8 DEMO cards；sheet for grill-me 等 |
+| Hooks empty | dashed + ＋ Add a hook | 同；头无 Discover |
+| New hook | Name/Description/When/Command/Timeout/Agents | LibModal pop-in **.42s** |
+
+*文档版本：v0.1.33*

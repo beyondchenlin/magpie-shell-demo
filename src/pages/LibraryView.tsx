@@ -174,7 +174,25 @@ const DEMO_SKILLS_MARKET = [
   { id: "magpie-quota", name: "magpie-quota", by: "magpie-community/plugins", installs: "", desc: "Check how much is left of the user's AI subscriptions, coding plans and API key…", verified: true },
   { id: "find-skills", name: "find-skills", by: "vercel-labs/skills", installs: "3.9M", desc: "Helps users discover and install agent skills when they ask questions like 'how do I do X…", verified: true },
   { id: "grill-me", name: "grill-me", by: "mattpocock/skills", installs: "1.4M", desc: "A relentless interview to sharpen a plan or design.", sheet: true },
-  { id: "grill-with-docs", name: "grill-with-docs", by: "mattpocock/skills", installs: "", desc: "Grill a design with the docs open beside you.", sheet: true },
+  { id: "grill-with-docs", name: "grill-with-docs", by: "mattpocock/skills", installs: "1.2M", desc: "Grill a design with the docs open beside you.", sheet: true },
+  { id: "agent-browser", name: "agent-browser", by: "vercel-labs/agent-browser", installs: "1.1M", desc: "Browser automation CLI for AI agents. Use when the user needs to interact with…" },
+  { id: "improve-codebase-architecture", name: "improve-codebase-architecture", by: "mattpocock/skills", installs: "1.1M", desc: "Scan a codebase for deepening opportunities, present them as a visual HTML report, then…", sheet: true },
+  { id: "tdd", name: "tdd", by: "mattpocock/skills", installs: "1.1M", desc: "Test-driven development. Use when the user wants to build features or fix bugs test-first,…", sheet: true },
+  { id: "hyperframes-cli", name: "hyperframes-cli", by: "heygen-com/hyperframes", installs: "1M", desc: "Use the HyperFrames CLI development loop: init, add, catalog, capture, lint, check,…" },
+];
+
+/** Native probe list sample (mattpocock/skills) — Magpie library/skills/probe mock */
+const DEMO_PROBE_SKILLS = [
+  { path: "ask-matt", name: "ask-matt", desc: "Ask which skill or flow fits your situation. A router over the skills in this repo." },
+  { path: "chief-of-staff", name: "chief-of-staff", desc: "Pursue a long-running goal in a single session by co-ordinating subagents." },
+  { path: "claude-handoff", name: "claude-handoff", desc: "Hand the current conversation off to a fresh background agent that picks up the work immediately." },
+  { path: "code-review", name: "code-review", desc: "Review the changes since a fixed point (commit, branch, tag, or merge-base) along two axes: Standards and Spec…" },
+  { path: "domain-map", name: "domain-map", desc: "Map a domain and its bounded contexts before you code." },
+  { path: "git-worktree", name: "git-worktree", desc: "Isolate work in a git worktree so experiments stay out of main." },
+  { path: "migrate-to-effect", name: "migrate-to-effect", desc: "Migrate a codebase toward Effect with a clear plan." },
+  { path: "mock-types", name: "mock-types", desc: "Use when someone mentions shoehorn, wants to replace `as` in tests, or needs partial test data." },
+  { path: "pr", name: "pr", desc: "Use when writing a PR body." },
+  { path: "grill-me", name: "grill-me", desc: "A relentless interview to sharpen a plan or design." },
 ];
 
 export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: string) => void }) {
@@ -209,6 +227,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
     mock?: { path: string; name: string; desc: string }[];
   } | null>(null);
   const [skillPick, setSkillPick] = useState<Set<string>>(new Set());
+  const [probeFilter, setProbeFilter] = useState("");
   const [skills, setSkills] = useState<{ id: string; name: string; desc: string }[]>([]);
   const [hooks, setHooks] = useState<
     { id: string; name: string; description: string; event: string; matcher: string; command: string; agents: string[] }[]
@@ -293,15 +312,17 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
     if (!src || skillLooking) return;
     setSkillLooking(true);
     setSkillProbe({ source: src });
+    setProbeFilter("");
     window.setTimeout(() => {
       setSkillLooking(false);
-      if (/github|owner\/|skills\.sh|\//i.test(src)) {
-        const mock = [
-          { path: "skills/demo-a", name: "demo-a", desc: "Demo skill A (mock probe)" },
-          { path: "skills/demo-b", name: "demo-b", desc: "Demo skill B (mock probe)" },
-        ];
-        setSkillProbe({ source: src, mock });
-        setSkillPick(new Set(mock.map((m) => m.path)));
+      if (/mattpocock|github\.com\/|owner\/|skills\.sh|\//i.test(src)) {
+        const mock = DEMO_PROBE_SKILLS.map((x) => ({ ...x }));
+        const displaySrc = /mattpocock/i.test(src)
+          ? "github.com/mattpocock/skills"
+          : src.replace(/^https?:\/\//, "");
+        setSkillProbe({ source: displaySrc, mock });
+        // Magpie: auto-pick when few; many → none selected (Install 0)
+        setSkillPick(mock.length <= 3 ? new Set(mock.map((x) => x.path)) : new Set());
       } else {
         setSkillProbe({ source: src, empty: true });
         setSkillPick(new Set());
@@ -734,46 +755,101 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
               {skillProbe?.mock ? (
                 <div style={{ marginTop: 12, animation: "fade-in .18s var(--ease)" }}>
                   <div className="row-head" style={{ marginBottom: 8, fontSize: 12, color: "var(--muted)", display: "flex", alignItems: "center", gap: 8 }}>
-                    <span>{t("{n} skills in {src}", { n: skillProbe.mock.length, src: skillProbe.source })}</span>
+                    <span>
+                      {skillProbe.mock.length === 1
+                        ? t("1 skill in {src}", { src: skillProbe.source })
+                        : t("{n} skills in {src}", { n: skillProbe.mock.length, src: skillProbe.source })}
+                    </span>
+                    <span className="grow" />
+                    {skillProbe.mock.length > 1 ? (
+                      <button
+                        type="button"
+                        className="text"
+                        onClick={() => {
+                          const vis = skillProbe.mock!.filter((m) => {
+                            const q = probeFilter.trim().toLowerCase();
+                            if (!q) return true;
+                            return `${m.name} ${m.desc}`.toLowerCase().includes(q);
+                          });
+                          const all = vis.length > 0 && vis.every((m) => skillPick.has(m.path));
+                          setSkillPick((prev) => {
+                            const next = new Set(prev);
+                            if (all) vis.forEach((m) => next.delete(m.path));
+                            else vis.forEach((m) => next.add(m.path));
+                            return next;
+                          });
+                        }}
+                      >
+                        {(() => {
+                          const vis = skillProbe.mock!.filter((m) => {
+                            const q = probeFilter.trim().toLowerCase();
+                            if (!q) return true;
+                            return `${m.name} ${m.desc}`.toLowerCase().includes(q);
+                          });
+                          return vis.length > 0 && vis.every((m) => skillPick.has(m.path)) ? t("Select none") : t("Select all");
+                        })()}
+                      </button>
+                    ) : null}
+                  </div>
+                  {skillProbe.mock.length > 8 ? (
+                    <input
+                      type="search"
+                      value={probeFilter}
+                      placeholder={t("Filter…")}
+                      onChange={(e) => setProbeFilter(e.target.value)}
+                      onKeyDown={(e) => e.stopPropagation()}
+                      style={{ width: "100%", maxWidth: 320, marginBottom: 8 }}
+                    />
+                  ) : null}
+                  <div style={{ maxHeight: 220, overflow: "auto" }}>
+                    {skillProbe.mock
+                      .filter((m) => {
+                        const q = probeFilter.trim().toLowerCase();
+                        if (!q) return true;
+                        return `${m.name} ${m.desc}`.toLowerCase().includes(q);
+                      })
+                      .map((m) => (
+                        <label key={m.path} style={{ display: "flex", gap: 8, alignItems: "flex-start", padding: "6px 0", borderTop: "1px solid var(--line)", cursor: "pointer" }}>
+                          <input
+                            type="checkbox"
+                            checked={skillPick.has(m.path)}
+                            onChange={(e) => {
+                              setSkillPick((prev) => {
+                                const next = new Set(prev);
+                                if (e.target.checked) next.add(m.path);
+                                else next.delete(m.path);
+                                return next;
+                              });
+                            }}
+                          />
+                          <span>
+                            <b style={{ display: "block", fontSize: 13 }}>{m.name}</b>
+                            <small style={{ color: "var(--muted)" }}>{m.desc}</small>
+                          </span>
+                        </label>
+                      ))}
+                  </div>
+                  <div className="bar" style={{ display: "flex", gap: 8, marginTop: 10, alignItems: "center" }}>
+                    <span style={{ fontSize: 12, color: "var(--muted)" }}>{t("for")}</span>
+                    <LibChip on label="Cursor" onClick={() => {}} />
                     <span className="grow" />
                     <button
                       type="button"
                       className="text"
                       onClick={() => {
-                        const all = skillProbe.mock!.every((m) => skillPick.has(m.path));
-                        setSkillPick(all ? new Set() : new Set(skillProbe.mock!.map((m) => m.path)));
+                        setSkillProbe(null);
+                        setSkillPick(new Set());
+                        setProbeFilter("");
                       }}
                     >
-                      {skillProbe.mock.every((m) => skillPick.has(m.path)) ? t("Select none") : t("Select all")}
+                      {t("Cancel")}
                     </button>
-                  </div>
-                  {skillProbe.mock.map((m) => (
-                    <label key={m.path} style={{ display: "flex", gap: 8, alignItems: "flex-start", padding: "6px 0", borderTop: "1px solid var(--line)", cursor: "pointer" }}>
-                      <input
-                        type="checkbox"
-                        checked={skillPick.has(m.path)}
-                        onChange={(e) => {
-                          setSkillPick((prev) => {
-                            const next = new Set(prev);
-                            if (e.target.checked) next.add(m.path);
-                            else next.delete(m.path);
-                            return next;
-                          });
-                        }}
-                      />
-                      <span>
-                        <b style={{ display: "block", fontSize: 13 }}>{m.name}</b>
-                        <small style={{ color: "var(--muted)" }}>{m.desc}</small>
-                      </span>
-                    </label>
-                  ))}
-                  <div className="bar" style={{ display: "flex", gap: 8, marginTop: 10, alignItems: "center" }}>
-                    <span style={{ fontSize: 12, color: "var(--muted)" }}>{t("for")}</span>
-                    <LibChip on label="Cursor" onClick={() => {}} />
-                    <span className="grow" />
-                    <button type="button" className="text" onClick={() => { setSkillProbe(null); setSkillPick(new Set()); }}>{t("Cancel")}</button>
                     <button type="button" className="text primary" disabled={!skillPick.size} onClick={installSkills}>
-                      {skillPick.size === 1 ? t("Install 1 skill") : t("Install {n} skills", { n: skillPick.size })}
+                      {skillPick.size === 0
+                        ? t("Install 0 skills")
+                        : skillPick.size === 1
+                          ? t("Install 1 skill")
+                          : t("Install {n} skills", { n: skillPick.size })}
                     </button>
                   </div>
                 </div>

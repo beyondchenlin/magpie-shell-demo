@@ -1,3 +1,7 @@
+## v0.1.33
+- Library native **29–33** consumed: probe list/Filter/Install 0; Discover 8 cards; Hooks 32–33
+- Still mock: true `library/skills/probe`, skills.sh API, RTK binary, hook write-to-agent
+
 ## v0.1.32
 - **LIBRARY_SKILLS_PARTIAL**: MCP New server 15–21 + Magpie Image sheet; Skills Find/Install mock; Hooks empty+editor; RTK install mock + switches
 - Rules members dragRows (shared `src/lib/dragRows.ts`) — sibling slide .22s cubic-bezier(.22,1,.36,1)

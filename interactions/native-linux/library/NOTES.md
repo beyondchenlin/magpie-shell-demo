@@ -6,32 +6,23 @@ Plugin page. When On (Plugins › Built-in › Library) it sits in top nav betwe
 
 | File | What |
 |------|------|
-| 01-instructions.png | Instructions empty: Default In use, + New set, AGENTS none |
-| 02-default-set-open.png | Default expanded: name + Markdown textarea |
-| 03-instructions-agents.png | Agents section focus |
-| 04-new-set.png | New set row: Name e.g. Work + Keep in a file… / Cancel / Add |
-| 05-new-set-file.png | Keep in a file path field |
-| 06-mcp-empty.png | MCP empty dashed box + Discover grid (Magpie Image, Context7…) |
-| 07–13 | Discover scroll: Playwright, Chrome DevTools, GitHub, DeepWiki, Exa, Fetch, Sentry, Stripe, Neon, Brave |
-| 15-mcp-new-stdio.png | New MCP server modal · Runs as Command · Name/Command/Environment/Agents |
-| 16-mcp-new-http.png | Runs as HTTP · URL/Headers/OAuth app link/Save and sign in |
-| 17-mcp-oauth-app.png | OAuth app fields: Client ID / secret / Callback port |
-| 18-mcp-new-sse.png | Runs as SSE |
-| 19-mcp-header-row.png | Headers + Add row |
-| 20-mcp-discard-confirm.png | Discard unsaved changes? Cancel / Discard (red) |
-| 21-mcp-magpie-image-sheet.png | Magpie Image Discover sheet · Agents · Add to the library |
+| 01–13 | Instructions + MCP Discover (see earlier) |
+| 15–21 | New MCP server Command/HTTP/SSE · OAuth · Discard · Magpie Image sheet |
 | 22–23 | Magpie Image agent chip tip / on |
 | 24–26 | MCP Discover search Figma / more / empty |
-| 27-skills-empty.png | Skills tab: Find skills + Discover Popular on skills.sh |
+| 27-skills-empty.png | Skills: Find skills + Discover Popular on skills.sh |
 | 28-skill-grill-me-sheet.png | grill-me Add to the library sheet |
+| 29-skills-probe.png | Probe mattpocock/skills: 38 skills + Select all + Filter… |
+| 30-skills-probe-foot.png | Probe foot: for · agent chip · Cancel · Install 0 skills |
+| 31-skills-discover-more.png | Discover scroll: agent-browser / improve-codebase / tdd / hyperframes |
+| 32-hooks-empty.png | Hooks empty dashed + ＋ Add a hook (no Discover in head) |
+| 33-hook-new.png | New hook modal: Name/Description/When/Command/Timeout/Agents |
 
-Header: Discover (MCP only) · Library folder · Backups. Tabs: Instructions / MCP servers / Skills / Hooks / RTK.
+Header: Discover (MCP + Skills) · Library folder · Backups. Tabs: Instructions / MCP servers / Skills / Hooks / RTK.
 
-## Demo (v0.1.32)
+## Demo (v0.1.33)
 
-- Instructions + New set (+ Keep in a file…) + Ctrl/Cmd+S mock save
-- MCP empty + New server modal (Command/HTTP/SSE, OAuth, Discard) + Discover + Magpie Image sheet
-- Skills: Find skills install card (mock probe) + Discover skills.sh + grill-me sheet
-- Hooks: empty + New hook editor (events/tools menus)
-- RTK: not-installed card + Install mock + agent lib-switch
-- No true OAuth / npm / RTK binary / skill GitHub probe
+- Skills probe mock (DEMO_PROBE_SKILLS) + Filter when >8 + Install 0 when none picked
+- Skills Discover expanded (8 cards from 27–31)
+- Hooks empty + New hook (aligned 32–33)
+- MCP / RTK as 0.1.32; no true GitHub probe / OAuth / RTK binary
