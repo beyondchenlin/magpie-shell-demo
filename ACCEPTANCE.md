@@ -1,11 +1,5 @@
-# Acceptance
+## v0.1.31 RULES_EFFORT_PARTIAL
+- Rules deep conditions + Effort classifier + By-weight in-place (no Magpie weight-drag)
+- Library Instructions+MCP Discover (01–13); Skills/Hooks/RTK TBD
+- Portable + Setup on GitHub release; Vercel daily deploy quota exhausted (preview may lag)
 
-## v0.1.28
-- Routing native `01-empty-live.png` → header New group + groups foot (Import / Find groups / Names segs)
-
-## v0.1.27
-- Antigravity independent risk/import (mock; no Google OAuth)
-- Copilot Proxy Magpie-style proto-menu + Custom form
-
-## Prior
-See GAP-MATRIX.md changelog.
