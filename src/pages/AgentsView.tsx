@@ -361,12 +361,158 @@ function ManageAgentsModal({
   );
 }
 
+
+const GUIDE_KEY = "magpie-demo-guideHidden";
+const MOVE_UP = "M8 12.5v-9M4 7.25l4-3.75 4 3.75";
+const MOVE_DOWN = "M8 3.5v9M4 8.75l4 3.75 4-3.75";
+const EYE_OFF =
+  "M6.6 3.7A6.9 6.9 0 0 1 8 3.5c3.75 0 6.25 4.5 6.25 4.5a11 11 0 0 1-1.5 2M4.4 4.4C2.7 5.55 1.75 8 1.75 8S4.25 12.5 8 12.5c1.2 0 2.25-.45 3.1-1.05M6.75 6.75a1.75 1.75 0 0 0 2.5 2.5M2 2l12 12";
+const ALT = typeof navigator !== "undefined" && /^Mac/.test(navigator.platform) ? "⌥" : "Alt+";
+
+type ArrangeProps = {
+  anchor: HTMLElement;
+  canMove: boolean; // more than one visible agent
+  index: number;
+  count: number;
+  onHide: () => void;
+  onClose: () => void;
+};
+
+function ArrangeMenu({
+  anchor,
+  canMove,
+  index,
+  count,
+  onHide,
+  onClose,
+}: ArrangeProps) {
+  const boxRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const box = boxRef.current;
+    if (!box) return;
+    const r = anchor.getBoundingClientRect();
+    const pad = 8;
+    const w = box.offsetWidth || 176;
+    const h = box.offsetHeight || 100;
+    let y = r.bottom + 5;
+    if (y + h > window.innerHeight - pad && r.top - 5 - h >= pad) {
+      y = r.top - 5 - h;
+      box.classList.add("up");
+    }
+    const left = Math.max(pad, Math.min(r.left - 4, window.innerWidth - w - pad));
+    box.style.left = `${left}px`;
+    box.style.top = `${Math.max(pad, y)}px`;
+    anchor.classList.add("open");
+    const outside = (e: MouseEvent) => {
+      if (!box.contains(e.target as Node) && !anchor.contains(e.target as Node))
+        onClose();
+    };
+    const keys = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        e.stopPropagation();
+        onClose();
+        anchor.focus({ preventScroll: true });
+      } else if (e.key === "Tab") onClose();
+    };
+    document.addEventListener("mousedown", outside, true);
+    document.addEventListener("keydown", keys, true);
+    const first = box.querySelector<HTMLButtonElement>(
+      "button.rm-item:not(:disabled)",
+    );
+    first?.focus({ preventScroll: true });
+    return () => {
+      anchor.classList.remove("open");
+      document.removeEventListener("mousedown", outside, true);
+      document.removeEventListener("keydown", keys, true);
+    };
+  }, [anchor, onClose]);
+
+  const items: {
+    name: string;
+    icon: string;
+    key?: string;
+    off?: boolean;
+    sep?: boolean;
+    run: () => void;
+  }[] = [
+    {
+      name: ZH.moveUp,
+      icon: MOVE_UP,
+      key: ALT + "↑",
+      off: !canMove || index <= 0,
+      run: () => {},
+    },
+    {
+      name: ZH.moveDown,
+      icon: MOVE_DOWN,
+      key: ALT + "↓",
+      off: !canMove || index < 0 || index >= count - 1,
+      run: () => {},
+    },
+    {
+      name: ZH.hide,
+      icon: EYE_OFF,
+      sep: true,
+      run: () => {
+        onHide();
+      },
+    },
+  ];
+
+  return (
+    <div className="pop row-menu" role="menu" ref={boxRef}>
+      {items.map((o) => (
+        <span key={o.name} style={{ display: "contents" }}>
+          {o.sep ? <div className="rm-sep" /> : null}
+          <button
+            type="button"
+            className="rm-item"
+            role="menuitem"
+            disabled={!!o.off}
+            onClick={(e) => {
+              e.stopPropagation();
+              onClose();
+              o.run();
+            }}
+          >
+            <svg viewBox="0 0 16 16" width={13} height={13} aria-hidden>
+              <path
+                d={o.icon}
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+            <span className="rm-name">{o.name}</span>
+            {o.key ? <span className="rm-key">{o.key}</span> : null}
+          </button>
+        </span>
+      ))}
+    </div>
+  );
+}
+
+
 export function AgentsView({
   onAddProvider,
   refreshNonce,
   onStatus,
 }: Props) {
-  const [guideHidden, setGuideHidden] = useState(false);
+  const [guideHidden, setGuideHidden] = useState(() => {
+    try {
+      return localStorage.getItem(GUIDE_KEY) === "1";
+    } catch {
+      return false;
+    }
+  });
+  const [arrangeFor, setArrangeFor] = useState<{
+    id: string;
+    el: HTMLElement;
+  } | null>(null);
   const [installsOpen, setInstallsOpen] = useState(false);
   const [manageOpen, setManageOpen] = useState(false);
   const [naming, setNaming] = useState(false);
@@ -423,8 +569,12 @@ export function AgentsView({
                   aria-label={ZH.hideGetStarted}
                   onClick={(e) => {
                     e.stopPropagation();
-                    // Not recorded this pass — stub only (CLICK-LOG NOTE)
                     setGuideHidden(true);
+                    try {
+                      localStorage.setItem(GUIDE_KEY, "1");
+                    } catch {
+                      /* ignore */
+                    }
                   }}
                 >
                   <svg viewBox="0 0 16 16" width={12} height={12} aria-hidden>
@@ -479,7 +629,19 @@ export function AgentsView({
               data-id={a.id}
               title={a.name}
             >
-              <button type="button" className="ag-handle" aria-label={a.name}>
+              <button
+                type="button"
+                className="ag-handle"
+                aria-label={ZH.arrangeAria.replace("{agent}", a.name)}
+                aria-haspopup="menu"
+                title={ZH.arrangeTitle}
+                onClick={(e) => {
+                  const el = e.currentTarget;
+                  setArrangeFor((cur) =>
+                    cur?.id === a.id ? null : { id: a.id, el },
+                  );
+                }}
+              >
                 <span className="ic">
                   <img src={iconSrc(a.icon)} alt="" />
                 </span>
@@ -682,6 +844,22 @@ export function AgentsView({
           hiddenIds={hiddenIds}
           onHiddenChange={setHiddenIds}
           onClose={() => setManageOpen(false)}
+        />
+      ) : null}
+
+      {arrangeFor ? (
+        <ArrangeMenu
+          anchor={arrangeFor.el}
+          canMove={visible.length > 1}
+          index={visible.findIndex((x) => x.id === arrangeFor.id)}
+          count={visible.length}
+          onHide={() => {
+            const next = new Set(hiddenIds);
+            next.add(arrangeFor.id);
+            setHiddenIds(next);
+            setArrangeFor(null);
+          }}
+          onClose={() => setArrangeFor(null)}
         />
       ) : null}
     </>

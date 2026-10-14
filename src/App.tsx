@@ -206,7 +206,12 @@ export default function App() {
           onStatus={showStatus}
         />
       )}
-      {view === "providers" && <ProvidersView />}
+      {view === "providers" && (
+        <ProvidersView
+          onStatus={showStatus}
+          onGoPlugins={() => go("plugins")}
+        />
+      )}
       {view === "routing" && <RoutingView />}
       {view === "gateway" && <GatewayView />}
       {view === "usage" && <UsageView />}

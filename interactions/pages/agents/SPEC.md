@@ -1,7 +1,7 @@
 # Agents — Interaction Spec
 
 > P2：优先批次 **A-01 / A-02 / A-05 / A-06 / A-08 / A-09** 已对齐；  
-> Manage 内页 **A-M01…A-M09** 与安装 Copy **A-I01…A-I18** 已按 [`shots/CLICK-LOG.md`](./shots/CLICK-LOG.md) 录制并对齐 demo（v0.1.3）。  
+> Manage 内页 **A-M01…A-M09** 与安装 Copy **A-I01…A-I18** 已按 [`shots/CLICK-LOG.md`](./shots/CLICK-LOG.md) 录制并对齐 demo（v0.1.4）。  
 > ID 以 CLICK-LOG 为准。全应用仍非 PASS。
 
 ## 总表（优先批次）
@@ -56,4 +56,14 @@ Toast：`{agent}'s install command copied` → zh **`已复制{agent} 的安装�
 - Profiles 真保存、多 Agent、接入开关、拖拽等 A-25…A-52 条件态  
 - Providers / Routing / … 其它页
 
-**本文件状态：A-01…09 + A-M* + A-I* 录制=已录 · demo=已实现（web v0.1.3）· 全应用仍非 PASS · 判定 AGENTS_MANAGE_INSTALL_PARTIAL。**
+**本文件状态：A-01…09 + A-M* + A-I* 录制=已录 · demo=已实现（web v0.1.4）· 全应用仍非 PASS · 判定 AGENTS_MANAGE_INSTALL_PARTIAL。**
+
+
+---
+
+## Agents leftovers（A-GS01 / A-AR01）
+
+| id | 控件 | 操作 | 后态 | 录制 | demo 状态 |
+|----|------|------|------|------|-----------|
+| A-GS01 | `.guide-x` Hide Get started | 点击 | 快速上手卡消失 | 已录 | **已实现**（`localStorage` `magpie-demo-guideHidden`） |
+| A-AR01 | `.ag-handle` Arrange Cursor | 点击开菜单 | Move up/down **disabled**（仅 1 agent）；Hide；Esc 关；**非**拖拽 | 已录 | **已实现**（Hide → 同 Manage 隐藏） |

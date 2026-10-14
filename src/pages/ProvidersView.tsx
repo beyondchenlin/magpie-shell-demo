@@ -1,32 +1,118 @@
-import type { ReactNode } from "react";
-import { useMemo, useState } from "react";
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type FormEvent,
+  type ReactNode,
+} from "react";
 import presets from "../data/presets.json";
 import { SUB_TILES, ZH, iconSrc } from "../data/mock";
 
 type Preset = { id: string; name: string; icon: string; kind: string };
-
 const PRESETS = presets as Preset[];
+
+const SPRING = (() => {
+  try {
+    return CSS.supports("animation-timing-function", "linear(0, 1)")
+      ? "linear(0, 0.0203, 0.0723, 0.1448, 0.2292, 0.3188, 0.4086, 0.4951, 0.576, 0.6498, 0.7157, 0.7735, 0.8232, 0.8654, 0.9005, 0.9293, 0.9525, 0.9708, 0.9849, 0.9956, 1.0033, 1.0087, 1.0122, 1.0142, 1.015, 1.0151, 1.0146, 1.0136, 1.0124, 1.0111, 1.0097, 1.0084, 1.0071, 1.0059, 1.0049, 1.0039, 1.0031, 1.0024, 1.0018, 1.0013, 1)"
+      : "cubic-bezier(.2, .9, .25, 1.02)";
+  } catch {
+    return "cubic-bezier(.2, .9, .25, 1.02)";
+  }
+})();
+const IOS_EASE = "cubic-bezier(.32, .72, 0, 1)";
+const calm = () =>
+  typeof matchMedia === "function" &&
+  matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+const EXTRA_BODY_DEFAULT = '{\n  "prompt_cache_key": "${sessionId}"\n}';
+
+const CTX_CHIPS = ["128K", "200K", "256K", "400K", "512K", "1M"];
+const OUT_CHIPS = ["8K", "16K", "32K", "64K", "128K"];
+
+const IMPORT_APPS = [
+  {
+    id: "alma",
+    name: "Alma",
+    icon: "app-alma.png",
+    path: "~/.config/alma/chat_threads.db",
+  },
+  {
+    id: "cc-switch",
+    name: "CC Switch",
+    icon: "app-cc-switch.png",
+    path: "~/.cc-switch",
+  },
+  {
+    id: "claude-code",
+    name: "Claude Code",
+    icon: "claudecode-color.svg",
+    path: "~/.claude",
+  },
+  {
+    id: "codex",
+    name: "Codex",
+    icon: "codex-color.svg",
+    path: "~/.codex",
+  },
+] as const;
+
+type EditorForm =
+  | "anthropic"
+  | "openrouter"
+  | "ollama"
+  | "remote"
+  | "custom"
+  | "generic";
+
+type EditorState = {
+  form: EditorForm;
+  id: string;
+  name: string;
+  icon: string;
+  site?: string;
+  note?: string;
+} | null;
+
+type Props = {
+  onStatus: (msg: string, kind?: string) => void;
+  onGoPlugins?: () => void;
+};
 
 function Tile({
   id,
   name,
   icon,
+  onPick,
+  on,
 }: {
   id: string;
   name: string;
   icon: string;
+  onPick: (id: string) => void;
+  on?: boolean;
 }) {
   return (
-    <button type="button" className="tile" data-pick={id} title={name}>
-      <img className="ic-img ic" src={iconSrc(icon)} alt="" onError={(e) => {
-        const el = e.currentTarget;
-        if (!el.dataset.fallback) {
-          el.dataset.fallback = "1";
-          el.src = iconSrc(icon.replace(/-color$/, "") + ".png").replace(".svg.png", ".png");
-          // try png path
-          el.src = `/icons/${icon}.png`;
-        }
-      }} />
+    <button
+      type="button"
+      className={`tile${on ? " on" : ""}`}
+      data-pick={id}
+      title={name}
+      onClick={() => onPick(id)}
+    >
+      <img
+        className="ic-img ic"
+        src={iconSrc(icon)}
+        alt=""
+        onError={(e) => {
+          const el = e.currentTarget;
+          if (!el.dataset.fallback) {
+            el.dataset.fallback = "1";
+            el.src = `/icons/${icon}.png`;
+          }
+        }}
+      />
       <span className="nm">
         <span className="n">{name}</span>
       </span>
@@ -54,8 +140,484 @@ function Section({
   );
 }
 
-export function ProvidersView() {
+function Segs({
+  value,
+  options,
+  onChange,
+}: {
+  value: string;
+  options: { v: string; label: string }[];
+  onChange: (v: string) => void;
+}) {
+  return (
+    <div className="segs">
+      {options.map((o) => (
+        <button
+          key={o.v}
+          type="button"
+          className={`opt${value === o.v ? " on" : ""}`}
+          onClick={() => onChange(o.v)}
+        >
+          {o.label}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function Field({
+  label,
+  children,
+  hint,
+}: {
+  label: string;
+  children: ReactNode;
+  hint?: string;
+}) {
+  return (
+    <>
+      <label>{label}</label>
+      <div>
+        {children}
+        {hint ? <div className="hint">{hint}</div> : null}
+      </div>
+    </>
+  );
+}
+
+function useModalAnim(open: boolean, onGone: () => void) {
+  const modalRef = useRef<HTMLDivElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const closing = useRef(false);
+
+  const close = () => {
+    if (closing.current) return;
+    closing.current = true;
+    const m = modalRef.current;
+    const d = dialogRef.current;
+    if (!m || !d) {
+      onGone();
+      return;
+    }
+    m.classList.add("out");
+    for (const a of [...m.getAnimations(), ...d.getAnimations()]) {
+      a.commitStyles?.();
+      a.cancel();
+    }
+    const shape = { duration: 260, easing: IOS_EASE, fill: "forwards" as const };
+    const moves = [
+      m.animate([{ opacity: 0 }], { ...shape, easing: "ease-out" }),
+      calm()
+        ? d.animate([{ opacity: 0 }], { duration: 140, fill: "forwards" })
+        : d.animate([{ transform: "translateY(14px) scale(.95)" }], shape),
+    ];
+    if (!calm()) {
+      moves.push(
+        d.animate(
+          [
+            { offset: 0.2, opacity: getComputedStyle(d).opacity },
+            { opacity: 0 },
+          ],
+          shape,
+        ),
+      );
+    }
+    Promise.all(moves.map((a) => a.finished)).then(onGone, onGone);
+  };
+
+  useEffect(() => {
+    if (!open) return;
+    closing.current = false;
+    const m = modalRef.current;
+    const d = dialogRef.current;
+    if (!m || !d) return;
+    for (const a of [...m.getAnimations(), ...d.getAnimations()]) a.cancel();
+    d.style.opacity = d.style.transform = m.style.opacity = "";
+    m.animate([{ opacity: 0 }, { opacity: 1 }], {
+      duration: 280,
+      easing: "ease-out",
+    });
+    if (calm()) {
+      d.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 160 });
+    } else {
+      d.animate(
+        [
+          { transform: "translateY(24px) scale(.94)" },
+          { transform: "none" },
+        ],
+        { duration: 570, easing: SPRING },
+      );
+      d.animate([{ opacity: 0 }, { opacity: 1 }], {
+        duration: 240,
+        easing: "ease-out",
+      });
+    }
+    const first = d.querySelector<HTMLElement>(
+      "input:not([disabled]), textarea, button:not([disabled])",
+    );
+    first?.focus({ preventScroll: true });
+  }, [open]);
+
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        e.stopPropagation();
+        close();
+      }
+    };
+    document.addEventListener("keydown", onKey, true);
+    return () => document.removeEventListener("keydown", onKey, true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open]);
+
+  return { modalRef, dialogRef, close };
+}
+
+function ImportAppsModal({ onClose }: { onClose: () => void }) {
+  const [tab, setTab] = useState<string>(IMPORT_APPS[0].id);
+  const { modalRef, dialogRef, close } = useModalAnim(true, onClose);
+  const cur = IMPORT_APPS.find((a) => a.id === tab) || IMPORT_APPS[0];
+
+  return (
+    <div
+      className="modal"
+      id="modal"
+      ref={modalRef}
+      onClick={(e) => {
+        if (e.target === e.currentTarget) close();
+      }}
+    >
+      <div
+        className="dialog"
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modalTitle"
+        tabIndex={-1}
+      >
+        <div className="editor new importapps framed">
+          <div className="ehead">
+            <b id="modalTitle">{ZH.importApps}</b>
+          </div>
+          <div className="ebody">
+            <div className="appnote">{ZH.importAppsNote}</div>
+            <div className="apptabs" role="tablist">
+              {IMPORT_APPS.map((a) => (
+                <button
+                  key={a.id}
+                  type="button"
+                  role="tab"
+                  className={`apptab missing${tab === a.id ? " on" : ""}`}
+                  aria-selected={tab === a.id}
+                  title={ZH.notFound}
+                  onClick={() => setTab(a.id)}
+                >
+                  <img className="applogo" src={iconSrc(a.icon)} alt="" />
+                  <span>{a.name}</span>
+                  <span className="count">–</span>
+                </button>
+              ))}
+            </div>
+            <div className="applist">
+              <div className="appsrc">
+                <div className="apphead">
+                  <img className="applogo" src={iconSrc(cur.icon)} alt="" />
+                  <b>{cur.name}</b>
+                  <code>{cur.path}</code>
+                </div>
+                <div className="appempty">{ZH.notFound}</div>
+              </div>
+            </div>
+          </div>
+          <div className="bar">
+            <span className="note grow" />
+            <button type="button" className="text" onClick={close}>
+              {ZH.cancel}
+            </button>
+            <button type="button" className="text primary" disabled>
+              {ZH.importAction}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+type EditorProps = {
+  state: NonNullable<EditorState>;
+  onClose: () => void;
+  onAdd: () => void;
+};
+
+function ProviderEditorModal({ state, onClose, onAdd }: EditorProps) {
+  const kind = state.form;
+  const { modalRef, dialogRef, close } = useModalAnim(true, onClose);
+  const [showKey, setShowKey] = useState(false);
+  const [key, setKey] = useState("");
+  const [proxy, setProxy] = useState("");
+  const [authHdr, setAuthHdr] = useState(""); // openrouter: "" both
+  const [api, setApi] = useState("openai");
+  const [name, setName] = useState("");
+  const [baseUrl, setBaseUrl] = useState("");
+  const [endpoint, setEndpoint] = useState("");
+  const [extra, setExtra] = useState(EXTRA_BODY_DEFAULT);
+  const [addrOpen, setAddrOpen] = useState(false);
+
+  const meta = {
+    title: state.name,
+    icon: state.icon,
+    site: state.site || "",
+    note: state.note || "",
+    keyPh:
+      kind === "ollama" || state.id === "ollama" ? ZH.optionalLocal : ZH.pasteKey,
+  };
+
+  const onSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    onAdd();
+    close();
+  };
+
+  return (
+    <div
+      className="modal"
+      id="modal"
+      ref={modalRef}
+      onClick={(e) => {
+        if (e.target === e.currentTarget) close();
+      }}
+    >
+      <div
+        className="dialog"
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modalTitle"
+        tabIndex={-1}
+      >
+        <form className="editor new framed" onSubmit={onSubmit}>
+          <div className="ehead">
+            <span className="ic">
+              <img src={iconSrc(meta.icon)} alt="" />
+            </span>
+            <b id="modalTitle">{meta.title}</b>
+            {meta.note ? <span className="note">{meta.note}</span> : null}
+            <span className="grow" />
+            {meta.site ? (
+              <button type="button" className="link site" tabIndex={-1}>
+                {meta.site} ↗
+              </button>
+            ) : null}
+          </div>
+          <div className="ebody">
+            {kind === "custom" ? (
+              <Field label={ZH.name}>
+                <input
+                  type="text"
+                  placeholder={ZH.egRelay}
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                />
+              </Field>
+            ) : null}
+
+            {kind === "custom" ? (
+              <Field label={ZH.baseUrl}>
+                <div className="stack">
+                  <Segs
+                    value={api}
+                    onChange={setApi}
+                    options={[
+                      { v: "openai", label: ZH.openaiCompat },
+                      { v: "responses", label: ZH.openaiResponses },
+                      { v: "anthropic", label: ZH.anthropicCompat },
+                      { v: "gemini", label: ZH.geminiCompat },
+                      { v: "decide", label: ZH.systemOne },
+                    ]}
+                  />
+                  <input
+                    className="base-url"
+                    type="url"
+                    placeholder="https://…/v1"
+                    value={baseUrl}
+                    onChange={(e) => setBaseUrl(e.target.value)}
+                  />
+                </div>
+              </Field>
+            ) : null}
+
+            {kind === "remote" ? (
+              <Field label={ZH.endpoint} hint={ZH.remoteHint}>
+                <input
+                  type="url"
+                  placeholder="http://192.168.1.20:3425"
+                  value={endpoint}
+                  onChange={(e) => setEndpoint(e.target.value)}
+                />
+              </Field>
+            ) : null}
+
+            <Field label={ZH.apiKey} hint={ZH.keyKept}>
+              <div className="pair">
+                <input
+                  type={showKey ? "text" : "password"}
+                  placeholder={meta.keyPh}
+                  value={key}
+                  onChange={(e) => setKey(e.target.value)}
+                  autoComplete="off"
+                />
+                <div className="side">
+                  <button
+                    type="button"
+                    className="text"
+                    onClick={() => setShowKey((s) => !s)}
+                  >
+                    {showKey ? ZH.hide : ZH.show}
+                  </button>
+                  {kind === "anthropic" ? (
+                    <button type="button" className="link" tabIndex={-1}>
+                      {ZH.getKey}
+                    </button>
+                  ) : null}
+                </div>
+              </div>
+            </Field>
+
+            {kind === "ollama" ? (
+              <details
+                className="more"
+                open={addrOpen}
+                onToggle={(e) => setAddrOpen(e.currentTarget.open)}
+              >
+                <summary>{ZH.serverAddress}</summary>
+                <div className="inner">
+                  <Field label={ZH.address}>
+                    <input
+                      className="address"
+                      type="url"
+                      inputMode="url"
+                      placeholder="http://localhost:11434"
+                    />
+                  </Field>
+                </div>
+              </details>
+            ) : null}
+
+            <Field label={ZH.headers}>
+              <button type="button" className="link">
+                {ZH.addHeader}
+              </button>
+            </Field>
+
+            <Field label={ZH.extraBody}>
+              <div className="extra-body">
+                <textarea
+                  className="json"
+                  rows={3}
+                  value={extra}
+                  onChange={(e) => setExtra(e.target.value)}
+                  spellCheck={false}
+                />
+              </div>
+            </Field>
+
+            <Field label={ZH.proxy} hint={ZH.followsProxy}>
+              <Segs
+                value={proxy}
+                onChange={setProxy}
+                options={[
+                  { v: "", label: ZH.globalProxy },
+                  { v: "direct", label: ZH.direct },
+                  { v: "custom", label: ZH.custom },
+                ]}
+              />
+            </Field>
+
+            <Field label={ZH.concurrency}>
+              <input type="text" placeholder={ZH.noLimit} />
+            </Field>
+            <Field label={ZH.rpm}>
+              <input type="text" placeholder={ZH.noLimit} />
+            </Field>
+            <Field label={ZH.queueSize}>
+              <input type="text" placeholder={ZH.noBound} />
+            </Field>
+            <Field label={ZH.queueWait}>
+              <input type="text" placeholder={ZH.asLong} />
+            </Field>
+            <Field label={ZH.priceRate}>
+              <input type="text" placeholder={ZH.priceOne} />
+            </Field>
+
+            {kind === "openrouter" || kind === "ollama" ? (
+              <Field label={ZH.keyHeader}>
+                <Segs
+                  value={authHdr}
+                  onChange={setAuthHdr}
+                  options={[
+                    { v: "", label: ZH.both },
+                    { v: "x-api-key", label: "x-api-key" },
+                    {
+                      v: "bearer",
+                      label: "Authorization: Bearer",
+                    },
+                  ]}
+                />
+              </Field>
+            ) : null}
+
+            {kind === "anthropic" ||
+            kind === "remote" ||
+            kind === "custom" ||
+            kind === "generic" ? (
+              <>
+                <Field label={ZH.contextWindow}>
+                  <input type="text" placeholder="e.g. 128k" />
+                  <div className="chips" style={{ marginTop: 6 }}>
+                    {CTX_CHIPS.map((c) => (
+                      <button key={c} type="button" className="chip">
+                        {c}
+                      </button>
+                    ))}
+                  </div>
+                </Field>
+                <Field label={ZH.maxOutput}>
+                  <input type="text" placeholder="" />
+                  <div className="chips" style={{ marginTop: 6 }}>
+                    {OUT_CHIPS.map((c) => (
+                      <button key={c} type="button" className="chip">
+                        {c}
+                      </button>
+                    ))}
+                  </div>
+                </Field>
+              </>
+            ) : null}
+          </div>
+          <div className="bar">
+            <span className="grow" />
+            <button type="button" className="text" onClick={close}>
+              {ZH.cancel}
+            </button>
+            <button type="submit" className="text primary">
+              {ZH.add}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+export function ProvidersView({ onStatus, onGoPlugins }: Props) {
   const [q, setQ] = useState("");
+  const [importOpen, setImportOpen] = useState(false);
+  const [editor, setEditor] = useState<EditorState>(null);
+  const [riskClaude, setRiskClaude] = useState(false);
+  const findRef = useRef<HTMLInputElement>(null);
   const f = q.trim().toLowerCase();
 
   const hit = (name: string, id: string) =>
@@ -63,116 +625,311 @@ export function ProvidersView() {
 
   const subs = useMemo(
     () => SUB_TILES.filter((s) => hit(s.name, s.id)),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [f],
   );
   const byKind = (kind: string) =>
     PRESETS.filter((p) => p.kind === kind && hit(p.name, p.id));
 
-  // Hide *-cn duplicates under the same display name when searching empty
-  // Magpie pairs China endpoints; demo list already has short names.
   const vendors = byKind("vendor").filter((p) => !p.id.endsWith("-cn") || f);
   const relays = byKind("relay");
   const locals = byKind("local");
   const remotes = byKind("remote");
 
+  const pickTile = (id: string) => {
+    if (id === "plugins") {
+      onGoPlugins?.();
+      return;
+    }
+    if (id === "claude") {
+      setRiskClaude(true);
+      setEditor(null);
+      return;
+    }
+    setRiskClaude(false);
+    if (id === "custom") {
+      setEditor({
+        form: "custom",
+        id: "custom",
+        name: ZH.customProvider,
+        icon: "generic",
+      });
+      return;
+    }
+    const sub = SUB_TILES.find((s) => s.id === id);
+    const pr = PRESETS.find((p) => p.id === id);
+    const name = pr?.name || sub?.name || id;
+    const icon = pr?.icon || sub?.icon || "generic";
+    if (id === "anthropic")
+      setEditor({
+        form: "anthropic",
+        id,
+        name: "Anthropic",
+        icon: "claude-color",
+        site: "console.anthropic.com",
+      });
+    else if (id === "openrouter")
+      setEditor({
+        form: "openrouter",
+        id,
+        name: "OpenRouter",
+        icon: "openrouter",
+        site: "openrouter.ai",
+      });
+    else if (id === "ollama")
+      setEditor({
+        form: "ollama",
+        id,
+        name: "Ollama",
+        icon: "ollama",
+        site: "ollama.com",
+        note: ZH.ollamaNote,
+      });
+    else if (id === "remote")
+      setEditor({
+        form: "remote",
+        id,
+        name: "Remote magpie",
+        icon: "magpie",
+        note: ZH.remoteNote,
+      });
+    else
+      setEditor({
+        form: "generic",
+        id,
+        name,
+        icon,
+      });
+  };
+
+  const anySection =
+    subs.length > 0 ||
+    vendors.length > 0 ||
+    relays.length > 0 ||
+    locals.length > 0 ||
+    remotes.length > 0;
+
   return (
-    <main className="view" id="view-providers">
-      <div className="list" id="providers" hidden />
-      <section className="sheet" id="addSheet">
-        <div className="row-head">
-          <span className="label">{ZH.addFirstProvider}</span>
-          <span className="grow" />
-          <input
-            className="find"
-            type="search"
-            spellCheck={false}
-            autoComplete="off"
-            placeholder={ZH.findVendor}
-            aria-label={ZH.findVendor}
-            value={q}
-            onChange={(e) => setQ(e.target.value)}
-          />
-          <button type="button" className="text">
-            {ZH.import}
-          </button>
-        </div>
-        <div className="tiles">
-          {subs.length > 0 && (
-            <Section title={ZH.subscriptions} hint={ZH.signInNoKey}>
-              {subs.map((s) => (
-                <Tile key={s.id} id={s.id} name={s.name} icon={s.icon} />
-              ))}
-              <button type="button" className="tile more-plugins" data-pick="plugins">
-                <span className="puzzle" aria-hidden>
-                  <svg viewBox="0 0 20 20" width={15} height={15}>
+    <>
+      <main className="view" id="view-providers">
+        <div className="list" id="providers" hidden />
+        <section className="sheet" id="addSheet">
+          <div className="row-head">
+            <span className="label">{ZH.addFirstProvider}</span>
+            <span className="grow" />
+            <input
+              ref={findRef}
+              className="find"
+              type="search"
+              spellCheck={false}
+              autoComplete="off"
+              placeholder={ZH.findVendor}
+              aria-label={ZH.findVendor}
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key !== "Escape") return;
+                e.preventDefault();
+                e.stopPropagation();
+                if (q) setQ("");
+              }}
+            />
+            <button
+              type="button"
+              className="text"
+              onClick={() => setImportOpen(true)}
+            >
+              {ZH.import}
+            </button>
+          </div>
+          <div className="tiles">
+            {subs.length > 0 && (
+              <>
+                <Section title={ZH.subscriptions} hint={ZH.signInNoKey}>
+                  {subs.map((s) => (
+                    <Tile
+                      key={s.id}
+                      id={s.id}
+                      name={s.name}
+                      icon={s.icon}
+                      on={riskClaude && s.id === "claude"}
+                      onPick={pickTile}
+                    />
+                  ))}
+                  <button
+                    type="button"
+                    className="tile more-plugins"
+                    data-pick="plugins"
+                    onClick={() => pickTile("plugins")}
+                  >
+                    <span className="puzzle" aria-hidden>
+                      <svg viewBox="0 0 20 20" width={15} height={15}>
+                        <path
+                          d="M8 3.5h4v2.5a1.5 1.5 0 0 0 3 0V3.5h1.5v13H4v-4h2.5a1.5 1.5 0 0 0 0-3H4v-6z"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="1.4"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </span>
+                    <span className="nm">
+                      <span className="n">{ZH.moreInPlugins}</span>
+                    </span>
+                  </button>
+                </Section>
+                {riskClaude ? (
+                  <div className="signing">
+                    <span className="mark">!</span>
+                    <span className="tt">
+                      <span className="n">{ZH.claudeRiskTitle}</span>
+                      <span className="s">{ZH.claudeRiskNote}</span>
+                    </span>
+                    <button
+                      type="button"
+                      className="text"
+                      onClick={() => setRiskClaude(false)}
+                    >
+                      {ZH.cancel}
+                    </button>
+                    <button
+                      type="button"
+                      className="text"
+                      onClick={() => {
+                        setRiskClaude(false);
+                        setImportOpen(true);
+                      }}
+                    >
+                      {ZH.importInstead}
+                    </button>
+                    <button
+                      type="button"
+                      className="text primary"
+                      onClick={() => {
+                        setRiskClaude(false);
+                        onStatus(ZH.signInSkipped, "ok");
+                      }}
+                    >
+                      {ZH.signInAnyway}
+                    </button>
+                  </div>
+                ) : null}
+              </>
+            )}
+
+            {vendors.length > 0 && (
+              <Section title={ZH.vendors} hint={ZH.makersApis}>
+                {vendors.map((p) => (
+                  <Tile
+                    key={p.id}
+                    id={p.id}
+                    name={p.name}
+                    icon={p.icon}
+                    onPick={pickTile}
+                  />
+                ))}
+              </Section>
+            )}
+
+            {relays.length > 0 && (
+              <Section title={ZH.relays} hint={ZH.oneKeyMany}>
+                {relays.map((p) => (
+                  <Tile
+                    key={p.id}
+                    id={p.id}
+                    name={p.name}
+                    icon={p.icon}
+                    onPick={pickTile}
+                  />
+                ))}
+              </Section>
+            )}
+
+            {locals.length > 0 && (
+              <Section title={ZH.onThisMachine}>
+                {locals.map((p) => (
+                  <Tile
+                    key={p.id}
+                    id={p.id}
+                    name={p.name}
+                    icon={p.icon}
+                    onPick={pickTile}
+                  />
+                ))}
+              </Section>
+            )}
+
+            {remotes.length > 0 && (
+              <Section title={ZH.anotherComputer} hint={ZH.sharedNetwork}>
+                {remotes.map((p) => (
+                  <Tile
+                    key={p.id}
+                    id={p.id}
+                    name={p.name}
+                    icon={p.icon}
+                    onPick={pickTile}
+                  />
+                ))}
+              </Section>
+            )}
+
+            {!anySection && f ? (
+              <div className="none">
+                Nothing called “{q.trim()}”.{" "}
+                <button
+                  type="button"
+                  className="link"
+                  onClick={() =>
+                    setEditor({
+                      form: "custom",
+                      id: "custom",
+                      name: ZH.customProvider,
+                      icon: "generic",
+                    })
+                  }
+                >
+                  Add it as a custom provider
+                </button>
+              </div>
+            ) : null}
+
+            {!f && (
+              <div className="custom-foot">
+                <button
+                  type="button"
+                  className={`custom${editor?.form === "custom" ? " on" : ""}`}
+                  data-pick="custom"
+                  onClick={() => pickTile("custom")}
+                >
+                  <svg viewBox="0 0 16 16" width={13} height={13} aria-hidden>
                     <path
-                      d="M8 3.5h4v2.5a1.5 1.5 0 0 0 3 0V3.5h1.5v13H4v-4h2.5a1.5 1.5 0 0 0 0-3H4v-6z"
+                      d="M8 3.5v9M3.5 8h9"
                       fill="none"
                       stroke="currentColor"
-                      strokeWidth="1.4"
+                      strokeWidth="1.8"
                       strokeLinecap="round"
-                      strokeLinejoin="round"
                     />
                   </svg>
-                </span>
-                <span className="nm">
-                  <span className="n">{ZH.moreInPlugins}</span>
-                </span>
-              </button>
-            </Section>
-          )}
+                  <span>{ZH.customProvider}</span>
+                </button>
+                <span className="hint">{ZH.anyCompatible}</span>
+              </div>
+            )}
+          </div>
+        </section>
+      </main>
 
-          {vendors.length > 0 && (
-            <Section title={ZH.vendors} hint={ZH.makersApis}>
-              {vendors.map((p) => (
-                <Tile key={p.id} id={p.id} name={p.name} icon={p.icon} />
-              ))}
-            </Section>
-          )}
-
-          {relays.length > 0 && (
-            <Section title={ZH.relays} hint={ZH.oneKeyMany}>
-              {relays.map((p) => (
-                <Tile key={p.id} id={p.id} name={p.name} icon={p.icon} />
-              ))}
-            </Section>
-          )}
-
-          {locals.length > 0 && (
-            <Section title={ZH.onThisMachine}>
-              {locals.map((p) => (
-                <Tile key={p.id} id={p.id} name={p.name} icon={p.icon} />
-              ))}
-            </Section>
-          )}
-
-          {remotes.length > 0 && (
-            <Section title={ZH.anotherComputer} hint={ZH.sharedNetwork}>
-              {remotes.map((p) => (
-                <Tile key={p.id} id={p.id} name={p.name} icon={p.icon} />
-              ))}
-            </Section>
-          )}
-
-          {!f && (
-            <div className="custom-foot">
-              <button type="button" className="custom" data-pick="custom">
-                <svg viewBox="0 0 16 16" width={13} height={13} aria-hidden>
-                  <path
-                    d="M8 3.5v9M3.5 8h9"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.8"
-                    strokeLinecap="round"
-                  />
-                </svg>
-                <span>{ZH.customProvider}</span>
-              </button>
-              <span className="hint">{ZH.anyCompatible}</span>
-            </div>
-          )}
-        </div>
-      </section>
-    </main>
+      {importOpen ? (
+        <ImportAppsModal onClose={() => setImportOpen(false)} />
+      ) : null}
+      {editor ? (
+        <ProviderEditorModal
+          state={editor}
+          onClose={() => setEditor(null)}
+          onAdd={() => onStatus(ZH.providerAddedDemo, "ok")}
+        />
+      ) : null}
+    </>
   );
 }
