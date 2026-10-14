@@ -1,3 +1,7 @@
+## v0.1.62 LIB_FOLDER_TIPS
+- Library folder `title=~/.config/magpie/library`; Backups Magpie tip + `~/.config/magpie/library/backups`.
+- Click still demo toast (NOTES: do not open parent config — credentials). Skip Vercel 402.
+
 ## v0.1.61 RTK_NEST_DONE
 - Native `library/52–56` consumed: not-installed page; Install/Get/Check **hover**; Check again **click** → still not-installed (skeleton too brief on native).
 - Demo: Magpie `renderRTK` Install→Installing… (no auto-click / no binary); Get→rtk-ai.app; Check→brief skeleton→missing; Cursor switch disabled when missing; logo.

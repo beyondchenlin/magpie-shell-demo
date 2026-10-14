@@ -1,13 +1,14 @@
-# last-cycle · 05:56 CST
+# last-cycle · 06:00 CST
 
-**Tag:** RTK_NEST_DONE → **v0.1.61**
+**Tag:** RTK_NEST_DONE → **v0.1.61**; LIB_TIPS → **v0.1.62**
 
-## Consumed
-- Native `library/52–56` RTK nest DONE: page · Install/Get/Check hover · Check again click → still not-installed (skeleton too brief).
-- **Do not** auto-click Install (runs installer). Get RTK → external browser (doc). Cursor switch not toggled.
-- Magpie shell: Installing… / Check skeleton / switch disabled when missing; no fake binary path·version·gain.
-- Skills probe Install → Installing… path. plugins 61–65 already in v0.1.60.
+## v0.1.61
+- Native `library/52–56` RTK nest DONE (hover + Check again click; Install **not** clicked).
+- Magpie shell Install/Get/Check; Skills Installing…; no fake RTK binary.
+
+## v0.1.62
+- Library folder tip `~/.config/magpie/library`; Backups tip Magpie copy + backups path (click still demo toast — **no** Thunar on credential parent).
 
 ## Remaining
-- P1: live gateway bird, true OAuth/key persist, Allowances quota **N/A**
+- P1: live gateway bird, true OAuth/key persist, Allowances **N/A**
 - Skip Vercel 402

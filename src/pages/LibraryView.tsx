@@ -454,13 +454,13 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
             {t("Discover")}
           </button>
         ) : null}
-        <button type="button" className="text" onClick={() => onStatus?.(t("Demo: open library folder"), "ok")}>
+        <button type="button" className="text" title="~/.config/magpie/library" onClick={() => onStatus?.(t("Demo: open library folder"), "ok")}>
           <svg viewBox="0 0 16 16" width={14} height={14} fill="none" stroke="currentColor" strokeWidth="1.3" aria-hidden style={{ marginRight: 4, verticalAlign: -2 }}>
             <path d={FOLDER} />
           </svg>
           {t("Library folder")}
         </button>
-        <button type="button" className="text" onClick={() => onStatus?.(t("Demo: library backups"), "ok")}>
+        <button type="button" className="text" title={t("magpie keeps a copy of every file before it writes it.") + "\n~/.config/magpie/library/backups"} onClick={() => onStatus?.(t("Demo: library backups"), "ok")}>
           <svg viewBox="0 0 16 16" width={14} height={14} fill="none" stroke="currentColor" strokeWidth="1.3" aria-hidden style={{ marginRight: 4, verticalAlign: -2 }}>
             <path d={BACKUP} />
           </svg>
