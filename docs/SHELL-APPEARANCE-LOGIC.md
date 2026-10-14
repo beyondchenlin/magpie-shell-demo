@@ -76,7 +76,7 @@ footer.foot                 ← #status toast 胶囊
 | `lan-address-row` height | **.28s** `--ease` | Network LAN 地址行展开 |
 | `#pop` `pop-fade` + `pop-in` | **.18s** ease-out + **.42s** cubic-bezier(.16,1,.3,1) | 模型选择器打开 |
 | `#pop.leaving` `pop-out` | **.22s** cubic-bezier(.4,0,.7,.2) | 模型选择器关闭 |
-| `.rail-thumb` | transform **260ms** cubic-bezier(.22,1,.36,1) | model-picker 左侧 rail（二开可后续） |
+| `.rail-thumb` | transform **260ms** cubic-bezier(.22,1,.36,1) | model-picker 左侧 rail（All/Favorites grid·star；Disable `#pop` 已接） |
 | `.warm-at input.at` | border/box-shadow **.12s** | Daily warm-up 时间片 |
 | `.proxy-segs input` | border/box-shadow **.12s** | Proxy / SOCKS 字段 |
 | `.modal` / `.dialog` | fade **280ms** + spring **570ms**（Providers 已有 `useModalAnim`） | Restore / What's new |
@@ -226,3 +226,21 @@ footer.foot                 ← #status toast 胶囊
 Same as §4; added: `.pm-opts textarea` focus .12s; `.range-menu .rm-day` background .12s; `.search-vendor.open` chevron .15s; led-chart bar height .28s.
 
 *文档版本：v0.1.14*
+
+
+---
+
+## Privacy 嵌套（Settings › Privacy，shots 63–70）
+
+| 控件 | Magpie | demo |
+|------|--------|------|
+| Mask personal data On | 展开 `REDACT_KINDS` 10 行（`.redact-kind` 左缩进） | 同；`redactKinds` 存 prefs |
+| Prefix / Regex | 切换只改 placeholder；录屏里样本 `oc_sk_` ↔ `oc_sk_[A-Za-z0-9]{20,}` | 空或仍为上一模式样本时交换 value |
+| Agents' sign-ins | **Subscription accounts** Off/On（非 Ask/Allow/Deny） | 同；关时确认框二开可后做 |
+| Disable… `#pop` | 左轨 grid=All / star=Favorites；空 catalog **No matches.** | ModelPop `pickerRail` + `.none` |
+
+## Usage 空态
+
+- Requests：`#ledDash` 无数据时 **hidden**（官方）；demo 提供「显示演示图」开关。
+- Sessions：`#sessStats.stats.empty` + `.none` 文案；`#sessChart` / `#sessGrid` hidden。
+- Context：`context.js` — 「No prompts read yet」+ Through magpie 头。

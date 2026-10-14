@@ -402,7 +402,12 @@ export function RedactRulesBlock({
           <input className="words rule-kind" value={kind} placeholder="API_KEY" onChange={(e) => setKind(e.target.value)} />
           <Segs
             value={by}
-            onChange={(v) => setBy(v as "prefix" | "regex")}
+            onChange={(v) => {
+              const next = v as "prefix" | "regex";
+              const samples = { prefix: "oc_sk_", regex: "oc_sk_[A-Za-z0-9]{20,}" } as const;
+              if (!match.trim() || match === samples[by]) setMatch(samples[next]);
+              setBy(next);
+            }}
             items={[
               { id: "prefix", label: t("Prefix") },
               { id: "regex", label: t("Regex") },
@@ -427,7 +432,12 @@ export function RedactRulesBlock({
             </div>
             <div className="val rule-add">
               <input className="words rule-kind editing" value={ekind} onChange={(e) => setEkind(e.target.value)} aria-label={t("Name")} />
-              <Segs value={eby} onChange={(v) => setEby(v as "prefix" | "regex")} items={[{ id: "prefix", label: t("Prefix") }, { id: "regex", label: t("Regex") }]} />
+              <Segs value={eby} onChange={(v) => {
+                const next = v as "prefix" | "regex";
+                const samples = { prefix: "oc_sk_", regex: "oc_sk_[A-Za-z0-9]{20,}" } as const;
+                if (!ematch.trim() || ematch === samples[eby]) setEmatch(samples[next]);
+                setEby(next);
+              }} items={[{ id: "prefix", label: t("Prefix") }, { id: "regex", label: t("Regex") }]} />
               <div className="rule-tail">
                 <input className="words rule-match editing" value={ematch} onChange={(e) => setEmatch(e.target.value)} />
                 <button type="button" className="text rule-save" onClick={() => {

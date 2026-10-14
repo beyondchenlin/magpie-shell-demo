@@ -24,3 +24,7 @@
 ## 判定
 
 **`USAGE_PLUGINS_PARTIAL`** — 安装/启用/配置折叠演示接线；无 npm/git 真安装。
+
+## v0.1.15
+
+- Installed middleware 行文案对齐 `plugins.js` `mwLine`：`Gateway middleware: {hooks}` + `{n} calls, {us} µs each`；Options JSON 示例含 `hooks` / `onEvent`。

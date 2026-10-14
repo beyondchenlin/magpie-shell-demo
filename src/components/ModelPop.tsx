@@ -8,6 +8,7 @@ export type PopOption = {
   icon?: string;
   reset?: boolean;
   group?: string;
+  ref?: string;
 };
 
 type Props = {
@@ -21,7 +22,22 @@ type Props = {
   onClose: () => void;
 };
 
-/** Magpie #pop: pop-fade .18s + pop-in .42s; leaving pop-out .22s */
+const FAV_KEY = "magpie.modelFavorites";
+
+function loadFavs(): Set<string> {
+  try {
+    const raw = JSON.parse(localStorage.getItem(FAV_KEY) || "[]");
+    return new Set(Array.isArray(raw) ? raw.map(String) : []);
+  } catch {
+    return new Set();
+  }
+}
+
+function favKey(o: PopOption) {
+  return o.ref || o.value;
+}
+
+/** Magpie #pop: pop-fade .18s + pop-in .42s; leaving pop-out .22s; model-picker left rail. */
 export function ModelPop({
   open,
   anchor,
@@ -33,8 +49,12 @@ export function ModelPop({
   onClose,
 }: Props) {
   const popRef = useRef<HTMLDivElement>(null);
+  const railRef = useRef<HTMLElement>(null);
+  const thumbRef = useRef<HTMLSpanElement>(null);
   const [q, setQ] = useState("");
   const [leaving, setLeaving] = useState(false);
+  const [groupFilter, setGroupFilter] = useState<"all" | "favorites" | string>("all");
+  const [favs, setFavs] = useState<Set<string>>(() => loadFavs());
   const [pos, setPos] = useState<{ top: number; left: number; ox: number; up: boolean; w: number; h: number } | null>(null);
   const shown = open || leaving;
 
@@ -42,6 +62,8 @@ export function ModelPop({
     if (open) {
       setLeaving(false);
       setQ("");
+      setGroupFilter("all");
+      setFavs(loadFavs());
     }
   }, [open]);
 
@@ -60,6 +82,20 @@ export function ModelPop({
     const ox = Math.min(Math.max(16, r.left + r.width / 2 - left), w - 16);
     setPos({ top: up ? top - h : top, left, ox, up, w, h });
   }, [open, anchor, modelPicker, options.length]);
+
+  useLayoutEffect(() => {
+    if (!shown || !modelPicker || !railRef.current || !thumbRef.current) return;
+    const rail = railRef.current;
+    const active = rail.querySelector(`.rail-item[data-group="${CSS.escape(groupFilter)}"]`) as HTMLElement | null;
+    const thumb = thumbRef.current;
+    if (!active) {
+      thumb.style.opacity = "0";
+      return;
+    }
+    const top = active.offsetTop;
+    thumb.style.transform = `translateY(${top}px)`;
+    thumb.style.opacity = "1";
+  }, [shown, modelPicker, groupFilter, options.length]);
 
   useEffect(() => {
     if (!shown) return;
@@ -93,10 +129,35 @@ export function ModelPop({
     }, 220);
   };
 
+  const toggleFav = (o: PopOption) => {
+    const key = favKey(o);
+    const next = new Set(favs);
+    if (next.has(key) || next.has(o.value)) {
+      next.delete(key);
+      next.delete(o.value);
+    } else {
+      next.add(key);
+    }
+    setFavs(next);
+    try {
+      localStorage.setItem(FAV_KEY, JSON.stringify([...next]));
+    } catch {
+      /* ignore */
+    }
+  };
+
+  const isFav = (o: PopOption) => favs.has(favKey(o)) || favs.has(o.value);
+
   if (!shown || !pos) return null;
 
   const words = q.trim().toLowerCase().split(/\s+/).filter(Boolean);
-  const filtered = options.filter((o) => {
+  let source = options;
+  if (modelPicker && groupFilter === "favorites") {
+    source = source.filter((o) => isFav(o));
+  } else if (modelPicker && groupFilter !== "all") {
+    source = source.filter((o) => (o.group || "") === groupFilter);
+  }
+  const filtered = source.filter((o) => {
     if (!words.length) return true;
     const hay = `${o.label} ${o.note || ""} ${o.value} ${o.group || ""}`.toLowerCase();
     return words.every((w) => hay.includes(w));
@@ -105,13 +166,15 @@ export function ModelPop({
   const groups: { title?: string; items: PopOption[] }[] = [];
   let cur: { title?: string; items: PopOption[] } | null = null;
   for (const o of filtered) {
-    const g = o.reset ? undefined : o.group;
+    const g = o.reset || words.length ? undefined : o.group;
     if (!cur || cur.title !== g) {
       cur = { title: g, items: [] };
       groups.push(cur);
     }
     cur.items.push(o);
   }
+
+  const railGroups = [...new Set(options.map((o) => o.group).filter(Boolean))] as string[];
 
   return (
     <div
@@ -150,6 +213,54 @@ export function ModelPop({
         />
       </div>
       <div className="picker-body">
+        {modelPicker ? (
+          <nav id="pickerRail" ref={railRef} aria-label={t("Model providers")}>
+            <span className="rail-thumb" ref={thumbRef} aria-hidden />
+            <button
+              type="button"
+              className={`rail-item${groupFilter === "all" ? " on" : ""}`}
+              data-group="all"
+              aria-label={t("All models")}
+              onClick={() => setGroupFilter("all")}
+            >
+              <svg className="ic" viewBox="0 0 15 15" width={15} height={15} aria-hidden>
+                <path d="M3 3h4v4H3zM9 3h4v4H9zM3 9h4v4H3zM9 9h4v4H9z" fill="none" stroke="currentColor" strokeWidth="1.4" />
+              </svg>
+            </button>
+            <button
+              type="button"
+              className={`rail-item${groupFilter === "favorites" ? " on" : ""}`}
+              data-group="favorites"
+              aria-label={t("Favorites")}
+              onClick={() => setGroupFilter("favorites")}
+            >
+              <svg className="ic" viewBox="0 0 16 16" width={16} height={16} aria-hidden>
+                <path
+                  d="m8 2 1.8 3.7 4.1.6-3 2.9.7 4.1L8 11.4l-3.6 1.9.7-4.1-3-2.9 4.1-.6z"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.4"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </button>
+            {railGroups.length ? <span className="rail-sep" aria-hidden /> : null}
+            {railGroups.map((g) => (
+              <button
+                type="button"
+                key={g}
+                className={`rail-item${groupFilter === g ? " on" : ""}`}
+                data-group={g}
+                aria-label={g}
+                onClick={() => setGroupFilter(g)}
+              >
+                <span className="ic" aria-hidden style={{ fontSize: 11, lineHeight: 1 }}>
+                  ◆
+                </span>
+              </button>
+            ))}
+          </nav>
+        ) : null}
         <ul id="list">
           {groups.map((g, gi) => (
             <span key={gi}>
@@ -172,6 +283,28 @@ export function ModelPop({
                     <span className="v">{o.label}</span>
                     {o.note ? <span className="n">{o.note}</span> : null}
                   </span>
+                  {modelPicker && o.value && !o.reset ? (
+                    <button
+                      type="button"
+                      className={`favorite${isFav(o) ? " on" : ""}`}
+                      title={isFav(o) ? t("Remove from favorites") : t("Add to favorites")}
+                      aria-pressed={isFav(o)}
+                      onClick={(ev) => {
+                        ev.stopPropagation();
+                        toggleFav(o);
+                      }}
+                    >
+                      <svg viewBox="0 0 16 16" width={14} height={14} aria-hidden>
+                        <path
+                          d="m8 2 1.8 3.7 4.1.6-3 2.9.7 4.1L8 11.4l-3.6 1.9.7-4.1-3-2.9 4.1-.6z"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="1.4"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </button>
+                  ) : null}
                   {o.value === value ? (
                     <span className="check" aria-hidden>
                       ✓
@@ -182,9 +315,7 @@ export function ModelPop({
             </span>
           ))}
           {!filtered.length ? (
-            <li className="group" style={{ pointerEvents: "none" }}>
-              {t("No models match “{q}”", { q: q.trim() })}
-            </li>
+            <div className="none">{t("No matches.")}</div>
           ) : null}
         </ul>
       </div>

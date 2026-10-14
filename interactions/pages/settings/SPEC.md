@@ -1,7 +1,7 @@
 # Settings — Interaction Spec（深页）
 
 > 对照：`index.html` `#view-settings` + `app.js` `renderSettings` / `renderPort` / `renderLAN` / `renderCORS` / `renderProxy` / `renderSync` / About 行。  
-> Demo **v0.1.13**：8 tab + Models `#pop`（Image / Search）+ Download source 镜像 + Allowances menu-bar pill；状态存 `magpie.demoPrefs`。
+> Demo **v0.1.15**：8 tab + Models `#pop`（含 Disable 左轨 grid/star +「No matches.」）+ Privacy 个人数据嵌套 / Regex 样本 / Subscription accounts；状态存 `magpie.demoPrefs`。
 
 ## Tabs（与官方同序）
 
@@ -11,7 +11,7 @@
 | usage | Allowances | Menu bar 系列 / Used·Left / Reads / Currency / Units(zh) / Alerts / Warm tabs Codex·Claude |
 | network | Network and sharing | Proxy Auto·Off·Custom / GitHub token / Port+Apply / Bare ids / LAN share+address copy / CORS add·remove |
 | models | Models | Image recognition `#pop` / Image gen `#pop`+Library link / Vision MCP / Searches `#pop` / Search APIs 壳 / Replies 真三行 / Disable… |
-| privacy | Privacy | Redact toggles / Agents' sign-ins Ask·Allow·Deny |
+| privacy | Privacy | Mask secrets·personal（嵌套 REDACT_KINDS）/ Hide accounts / Masked words / Prefix·Regex rules / Count·Share / Subscription accounts Off·On |
 | otel | Observability | OTel on/off + endpoint |
 | sync | Sync and backup | WebDAV setup fold / Sync now / Auto interval / Export·Import |
 | about | About | Version·Check / What's new / Update pill·auto·every(含30min)·restart / **Download source** GitHub·mirror / Config·CLI·Gateway / Community |
@@ -31,11 +31,11 @@
 ## 嵌套未做 / 部分
 
 - Image/Search `#pop` **已接**（demo 模型列表）；真 visionModels / searchChoices 未接后端
-- Search APIs 添加表单仅壳（vendor pick / key / Add 禁用）
-- Disable… 尚未打开真 `#pop` 列表
+- Search APIs 本地 Add/Show/Copy/Remove 已接；真 vendor 后端未接
+- Disable… `#pop` 已接左轨（All models / Favorites）+ 空态「No matches.」；真 catalog 未接后端
 - Warm-up 账号级 check-in；Proxy/LAN/Sync 深层已大部分接线
 - What's new 为演示 modal；无真 release notes
 
 ## 判定
 
-**`SETTINGS_NESTED_PARTIAL` → Models/About 加深** — Image/Search `#pop` + Download mirror + Allowances tray pill 对齐 NOTES。
+**`PRIVACY_NESTED_PARTIAL` → Privacy 63–70 + Disable 左轨** — REDACT_KINDS 嵌套 / Regex 样本交换 / Subscription accounts；Disable `#pop` grid·star +「No matches.」。

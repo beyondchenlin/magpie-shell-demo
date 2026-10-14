@@ -1,16 +1,16 @@
 # Usage — Interaction Spec（深页）
 
 > 对照：`index.html` `#view-usage` + `app.js` `renderUsageTab` / `renderPeriod` / `renderUsageEvery` / ledger / sessions。  
-> Demo **v0.1.13**：四 tab + period/Custom 快捷 + refresh every 菜单 + 空态 Overview/Requests/Sessions/Context。
+> Demo **v0.1.15**：四 tab；Requests 空态藏 ledDash（可切演示图）；Sessions 对齐 `#sessionsPane` DOM；Context 对齐 context.js 空态。
 
 ## Tabs
 
 | id | 英文 | 壳层 |
 |----|------|------|
 | usage | Overview | Scope note · Agents/Models 空态 · cost ≈$0 · refresh |
-| requests | Requests | Status segs · Search · Export CSV · KPI · Metric/Split · 空列表 |
-| sessions | Sessions | Range segs · Agent segs · 6 KPI · Latest sessions 空 · Search |
-| context | Context | 空态说明壳 |
+| requests | Requests | Status segs · Search · Export CSV · 空态（ledDash hidden）· 演示图开关 |
+| sessions | Sessions | Range segs · Agent segs · stats.empty「No sessions yet…」· sessChart/Grid hidden · Search |
+| context | Context | ctxRange 天数 segs · Through magpie ·「No prompts read yet」 |
 
 ## 动效
 

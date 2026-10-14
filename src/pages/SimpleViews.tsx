@@ -364,6 +364,9 @@ export function UsageView() {
   const [sessQ, setSessQ] = useState("");
   const [mask, setMask] = useState(false);
   const [hidOpen, setHidOpen] = useState(false);
+  /** Magpie ledDash stays hidden with no ledger; demo can show a chart shell. */
+  const [demoChart, setDemoChart] = useState(false);
+  const [ctxDays, setCtxDays] = useState("7");
 
   const everyLabel = USAGE_EVERY.find(([n]) => n === every)?.[1] || "5 s";
 
@@ -450,8 +453,17 @@ export function UsageView() {
           />
         ) : null}
         {tab === "context" ? (
-          <span className="ctx-range" style={{ fontSize: 12, color: "var(--muted)" }}>
-            {demoCopy("上下文窗口 · 演示壳", "Context window · demo shell")}
+          <span className="ctx-range" id="ctxRange">
+            <Segs
+              value={ctxDays}
+              onChange={setCtxDays}
+              items={[
+                { id: "1", label: t("Today") },
+                { id: "7", label: t("7 days") },
+                { id: "30", label: t("30 days") },
+                { id: "90", label: t("90 days") },
+              ]}
+            />
           </span>
         ) : null}
         <span className="grow" />
@@ -572,7 +584,18 @@ export function UsageView() {
         <p className="usage-note" id="ledScope">
           {t("Gateway and session-log calls; local rejections excluded from totals.")}
         </p>
-        <div className="led-dash" id="ledDash">
+        <div className="led-tools-extra" style={{ display: "flex", justifyContent: "flex-end", marginBottom: 6 }}>
+          <button
+            type="button"
+            className="text"
+            aria-pressed={demoChart}
+            onClick={() => setDemoChart((d) => !d)}
+            title={demoCopy("官方空态隐藏 ledDash；点此预览演示柱图壳", "Magpie hides ledDash when empty; preview demo chart shell")}
+          >
+            {demoChart ? demoCopy("隐藏演示图", "Hide demo chart") : demoCopy("显示演示图", "Show demo chart")}
+          </button>
+        </div>
+        <div className="led-dash" id="ledDash" hidden={!demoChart}>
           <div className="led-strip" id="ledKpi">
             {[
               ["Calls", "0", ""],
@@ -599,72 +622,105 @@ export function UsageView() {
                 <Segs value={ledSplit} onChange={setLedSplit} items={LED_SPLIT.map(([id, en]) => ({ id, label: t(en) }))} />
               </span>
             </div>
-            <div className="led-chart" id="ledChart" aria-hidden style={{ height: 120, borderRadius: 12, border: "1px solid var(--line)", background: "var(--card)", display: "flex", alignItems: "flex-end", gap: 3, padding: "12px 10px 8px" }}>
-              {[18, 34, 22, 48, 30, 12, 40, 26, 36, 20, 44, 28].map((h, i) => (
-                <div
-                  key={i}
-                  title={`${ledMetric} · ${ledSplit}`}
-                  style={{
-                    flex: 1,
-                    height: `${h}%`,
-                    borderRadius: "4px 4px 2px 2px",
-                    background: "color-mix(in srgb, var(--accent) 55%, var(--pill))",
-                    opacity: 0.55 + (i % 3) * 0.1,
-                    transition: "height .28s var(--ease), opacity .12s",
-                  }}
-                />
-              ))}
-            </div>
-            <div className="led-rank empty-state" style={{ padding: "14px 12px", marginTop: 8, borderRadius: 10, border: "1px dashed var(--line)", fontSize: 12, color: "var(--muted)" }}>
-              {demoCopy(
-                `演示柱图 · 指标 ${ledMetric} · 拆分 ${ledSplit}（无真实请求数据）`,
-                `Demo columns · metric ${ledMetric} · split ${ledSplit} (no real request data)`,
-              )}
+            <div className="led-body">
+              <div className="led-chart" id="ledChart" aria-hidden style={{ height: 120, borderRadius: 12, border: "1px solid var(--line)", background: "var(--card)", display: "flex", alignItems: "flex-end", gap: 3, padding: "12px 10px 8px" }}>
+                {[18, 34, 22, 48, 30, 12, 40, 26, 36, 20, 44, 28].map((h, i) => (
+                  <div
+                    key={i}
+                    title={`${ledMetric} · ${ledSplit}`}
+                    style={{
+                      flex: 1,
+                      height: `${h}%`,
+                      borderRadius: "4px 4px 2px 2px",
+                      background: "color-mix(in srgb, var(--accent) 55%, var(--pill))",
+                      opacity: 0.55 + (i % 3) * 0.1,
+                      transition: "height .28s var(--ease), opacity .12s",
+                    }}
+                  />
+                ))}
+              </div>
+              <div className="led-rank" id="ledRank" />
+              <div className="led-rail" id="ledRail" hidden>
+                <i />
+              </div>
             </div>
           </section>
         </div>
         <div className="led-head" style={{ display: "flex", alignItems: "baseline", gap: 8, marginTop: 10 }}>
           <p className="led-sum" id="ledSum" style={{ margin: 0, fontSize: 12, color: "var(--muted)" }}>
-            {ledQ.trim()
-              ? demoCopy(`无匹配「${ledQ.trim()}」的请求`, `No requests match “${ledQ.trim()}”`)
+            {ledQ.trim() || ledStatus
+              ? t("No requests match these filters.")
               : noCallsIn(periodValue)}
           </p>
+          <span className="grow" />
+          <span className="led-arch" id="ledArchive" />
         </div>
-        <div className="led-wrap" id="ledWrap" />
+        <div className={`led-wrap${!demoChart ? " none" : ""}`} id="ledWrap">
+          {!demoChart ? (
+            <div className="led-none" style={{ padding: "22px 16px", textAlign: "center", color: "var(--muted)", lineHeight: 1.5 }}>
+              {ledQ.trim() || ledStatus
+                ? t("No requests match these filters.")
+                : t(periodValue === "today" || period === "today" ? "No requests today" : "No requests here")}
+              <div style={{ marginTop: 6, fontSize: 12 }}>
+                {t("Every request an agent sends to magpie, and every call the agents' own session files record, is counted here.")}
+              </div>
+            </div>
+          ) : null}
+        </div>
         <p className="usage-note" id="ledNote" />
       </div>
 
-      {/* Sessions */}
+      {/* Sessions — Magpie index.html #sessionsPane DOM */}
       <div className="usage-pane sess-pane" id="sessionsPane" hidden={tab !== "sessions"}>
-        <div className="sess-tools" style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 8 }}>
-          <Segs
-            value={sessAgent}
-            onChange={setSessAgent}
-            items={[
-              { id: "all", label: t("All agents") },
-              { id: "codex", label: "Codex" },
-              { id: "claude", label: "Claude Code" },
-            ]}
-          />
+        <div className="sess-tools">
+          <div className="segs" id="sessAgent">
+            <Segs
+              value={sessAgent}
+              onChange={setSessAgent}
+              items={[
+                { id: "all", label: t("All agents") },
+                { id: "codex", label: "Codex" },
+                { id: "claude", label: "Claude Code" },
+              ]}
+            />
+          </div>
+          <button className="sess-pick" id="sessModel" type="button" hidden />
+          <button className="sess-pick" id="sessFolder" type="button" hidden />
         </div>
-        <section className="stats six" id="sessStats" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8 }}>
-          {[
-            ["Sessions", "0"],
-            ["Tokens", "0"],
-            ["Cost", "≈$0"],
-            ["Messages", "0"],
-            ["Active", "0"],
-            ["Median", "—"],
-          ].map(([k, v]) => (
-            <div key={k} className="kpi" style={{ padding: "10px 12px", borderRadius: 10, background: "var(--card)", border: "1px solid var(--line)" }}>
-              <span style={{ fontWeight: 650, fontVariantNumeric: "tabular-nums", display: "block" }}>{v}</span>
-              <span style={{ fontSize: 11, color: "var(--muted)" }}>{t(k)}</span>
-            </div>
-          ))}
+        <section className="stats empty" id="sessStats">
+          <div className="none">
+            {sessAgent !== "all" || sessQ.trim()
+              ? t("No session matches.")
+              : t("No sessions yet. Claude Code's, Codex's, OpenCode's and Pi's sessions on this computer show up here, with what each cost and the command that resumes it.")}
+            {sessRange !== "all" && sessAgent === "all" && !sessQ.trim() ? (
+              <div style={{ marginTop: 8 }}>
+                <button
+                  type="button"
+                  className="text sess-show-history"
+                  onClick={() => setSessRange("all")}
+                >
+                  {t("All sessions")}
+                </button>
+              </div>
+            ) : null}
+          </div>
         </section>
-        <div className="row-head" id="sessListHead" style={{ marginTop: 12 }}>
+        <section className="chart sess-chart" id="sessChart" hidden />
+        <div className="sess-grid" id="sessGrid" hidden>
+          <section className="sess-card" id="sessProjects" />
+          <section className="sess-card" id="sessModels" />
+          <section className="sess-card" id="sessHours" />
+          <section className="sess-card" id="sessTop" />
+          <section className="sess-card" id="sessShape" />
+          <section className="sess-card" id="sessSkills" />
+          <section className="sess-card wide" id="sessTools" />
+        </div>
+        <div className="row-head" id="sessListHead" hidden={!sessQ.trim()}>
           <span className="label">{t("Latest sessions")}</span>
           <span className="grow" />
+          <button className="text sess-all" id="sessAll" type="button" data-feature="sessions">
+            {t("All sessions")}
+          </button>
           <input
             className="sess-filter"
             id="sessQ"
@@ -676,24 +732,37 @@ export function UsageView() {
             onChange={(e) => setSessQ(e.target.value)}
           />
         </div>
-        <div className="list sess-list" id="sessList">
-          <div className="empty-state" style={{ padding: "22px 16px" }}>
-            {demoCopy(
-              `此区间（${sessRange}）尚无会话文件。${sessAgent !== "all" ? `筛选：${sessAgent}。` : ""}`,
-              `No session files in this range (${sessRange}).${sessAgent !== "all" ? ` Filter: ${sessAgent}.` : ""}`,
-            )}
+        {/* Keep search reachable when head hidden */}
+        {!sessQ.trim() ? (
+          <div className="sess-tools" style={{ justifyContent: "flex-end", marginTop: 4 }}>
+            <input
+              className="sess-filter"
+              type="search"
+              spellCheck={false}
+              autoComplete="off"
+              placeholder={t("Search sessions")}
+              value={sessQ}
+              onChange={(e) => setSessQ(e.target.value)}
+              aria-label={t("Search sessions")}
+            />
           </div>
-        </div>
+        ) : null}
+        <div className="list sess-list" id="sessList" hidden />
         <p className="usage-note" id="sessNote" />
       </div>
 
-      {/* Context */}
+      {/* Context — Magpie context.js empty: No prompts read yet */}
       <div className="usage-pane ctx-pane" id="contextPane" hidden={tab !== "context"}>
-        <div className="empty-state" style={{ padding: "28px 16px" }}>
-          {demoCopy(
-            "Context 页：对照官方 plugins/sessions 上下文表；演示空态壳，分段与刷新已接线。",
-            "Context tab: aligns with Magpie context pane; empty demo shell — tabs and refresh wired.",
-          )}
+        <div className="row-head ctx-sess-head">
+          <span className="label">{t("Through magpie")}</span>
+          <span className="grow" />
+        </div>
+        <p className="usage-note">
+          {t("What each agent's prompts hold, as magpie's gateway read them: the score and tags are worked out from the requests of the range.")}
+        </p>
+        <div className="ctx-none">
+          <b>{t("No prompts read yet")}</b>
+          <span>{t("Requests your agents send through magpie show here.")}</span>
         </div>
       </div>
     </main>
@@ -983,8 +1052,8 @@ export function PluginsView() {
                           <textarea
                             aria-label={t("Options")}
                             rows={Math.min(10, Math.max(4, (e.opts || "").split("\n").length + 1))}
-                            placeholder='{\n  "hooks": ["request", "response"],\n  "sample": 0.1\n}'
-                            value={e.opts || '{\n  "hooks": ["request", "response"],\n  "logBodies": false\n}'}
+                            placeholder='{\n  "hooks": ["request", "response"],\n  "onEvent": ["error"]\n}'
+                            value={e.opts || '{\n  "hooks": ["request", "response"],\n  "onEvent": ["error"]\n}'}
                             onChange={(ev) =>
                               setInstalled((list) =>
                                 list.map((x) => (x.pkg === e.pkg ? { ...x, opts: ev.target.value, optsErr: "" } : x)),
@@ -1050,7 +1119,9 @@ export function PluginsView() {
                             </button>
                           </div>
                           <div className="sub pm-mw" style={{ marginTop: 2 }}>
-                            {demoCopy("网关中间件 · hooks: request, response（演示字段）", "Gateway middleware · hooks: request, response (demo fields)")}
+                            {t("Gateway middleware: {hooks}", { hooks: "request, response" })}
+                            {" · "}
+                            {t("{n} calls, {us} µs each", { n: "0", us: "0" })}
                           </div>
                         </div>
                       ) : null}

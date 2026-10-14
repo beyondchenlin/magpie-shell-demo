@@ -170,4 +170,4 @@ Proxy Auto. Share on local network Off. Menu-bar allowances Off. Allowance displ
 | 62 | Disable… #pop open — "Filter, or type any model id…" / No matches (empty catalog on this machine) |
 | 63–70 | Privacy: masks on/nested, rules Prefix/Regex, sign-ins, restored |
 
-Demo Disable #pop already matches 62 placeholder; Privacy deep sync can continue next cycle.
+Demo v0.1.15: Disable #pop left rail (grid/star) +「No matches.」; Privacy nested REDACT_KINDS / Regex sample / Subscription accounts Off·On (shots 63–70).

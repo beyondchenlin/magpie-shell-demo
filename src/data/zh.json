@@ -4187,5 +4187,9 @@
   "Notify when an allowance window crosses a threshold": "额度窗口越过阈值时通知",
   "Notify when a prepaid balance is low": "预付余额偏低时通知",
   "Remind before an allowance window resets": "额度窗口重置前提醒",
-  "Notify when an agent finishes a long-running turn": "代理完成长任务回合时通知"
+  "Notify when an agent finishes a long-running turn": "代理完成长任务回合时通知",
+  "No sessions yet. Claude Code's, Codex's, OpenCode's and Pi's sessions on this computer show up here, with what each cost and the command that resumes it.": "还没有会话。本机 Claude Code、Codex、OpenCode 和 Pi 的会话会显示在这里，附费用和继续会话的命令。",
+  "No context yet": "还没有上下文",
+  "Agents' open context windows show up here once sessions are recorded on this computer.": "本机记录会话后，Agent 打开的上下文窗口会显示在这里。",
+  "Model providers": "模型供应商"
 }

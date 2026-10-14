@@ -37,6 +37,20 @@ const SET_TABS = [
   { id: "about", en: "About" },
 ] as const;
 
+/** Magpie REDACT_KINDS — nested under Mask personal data (shots 64–66). */
+const REDACT_KINDS: [string, string, string, boolean][] = [
+  ["ssn", "Social Security numbers", "US SSNs, in the ranges that are given out", true],
+  ["passport", "Passport numbers", "After the word passport, 护照 or パスポート", true],
+  ["iban", "IBANs", "Bank account numbers whose checksum adds up", true],
+  ["birthday", "Birthdays", "A date after birthday, DOB, born or 生日; a date alone stays", true],
+  ["mac", "MAC addresses", "A network card's hardware address", true],
+  ["serial", "Serial numbers", "After S/N, Serial or 序列号", true],
+  ["home", "User name in home folders", "The name in /Users/name, /home/name and C:\\Users\\name. Off by default: agents send their folder with every request", false],
+  ["userhost", "User and computer names", "user@host in a shell prompt or an ssh command, and hostname or user lines", false],
+  ["ip", "Public IP addresses", "Private, local and documentation addresses stay. Off by default: logs and configs are full of them", false],
+  ["bucket", "Cloud storage buckets", "The bucket in s3://, gs://, oss://, cos:// and storage URLs; the path in it stays", false],
+];
+
 type SetTabId = (typeof SET_TABS)[number]["id"];
 
 const LOCALES = [
@@ -85,7 +99,8 @@ type DemoPrefs = {
   githubToken: string;
   redactKeys: boolean;
   redactBodies: boolean;
-  discovery: "ask" | "allow" | "deny";
+  discovery: "on" | "off";
+  redactKinds: Record<string, boolean>;
   otel: boolean;
   otelEndpoint: string;
   noUpdatePill: boolean;
@@ -166,7 +181,8 @@ const DEFAULTS: DemoPrefs = {
   githubToken: "",
   redactKeys: true,
   redactBodies: false,
-  discovery: "ask",
+  discovery: "on",
+  redactKinds: {},
   otel: false,
   otelEndpoint: "",
   noUpdatePill: false,
@@ -236,6 +252,10 @@ function loadPrefs(): DemoPrefs {
     if (next.webSearch === "auto") next.webSearch = "";
     if (parsed.trayUsage && !parsed.trayUsageMode) next.trayUsageMode = "usage:today";
     if ((parsed as { turnDone?: string }).turnDone === "on") next.turnDone = "1";
+    const oldDisc = (parsed as { discovery?: string }).discovery;
+    if (oldDisc === "ask" || oldDisc === "allow") next.discovery = "on";
+    if (oldDisc === "deny") next.discovery = "off";
+    if (!next.redactKinds || typeof next.redactKinds !== "object") next.redactKinds = {};
     return next;
   } catch {
     return { ...DEFAULTS };
@@ -1413,8 +1433,41 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus }: Setti
             <Segs value={prefs.redactKeys ? "on" : "off"} onChange={(v) => setPrefs({ redactKeys: v === "on" })} items={[{ id: "off", label: t("Off") }, { id: "on", label: t("On") }]} />
           </PrefRow>
           <PrefRow name={t("Mask personal data")} sub={t("Emails, phone numbers, ID and bank card numbers too")}>
-            <Segs value={prefs.redactPersonal ? "on" : "off"} onChange={(v) => setPrefs({ redactPersonal: v === "on", hideAccounts: v === "on" ? true : prefs.hideAccounts })} items={[{ id: "off", label: t("Off") }, { id: "on", label: t("On") }]} />
+            <Segs
+              value={prefs.redactPersonal ? "on" : "off"}
+              onChange={(v) =>
+                setPrefs({
+                  redactPersonal: v === "on",
+                  hideAccounts: v === "on" ? true : prefs.hideAccounts,
+                })
+              }
+              items={[{ id: "off", label: t("Off") }, { id: "on", label: t("On") }]}
+            />
           </PrefRow>
+          {prefs.redactPersonal
+            ? REDACT_KINDS.map(([id, name, sub, defOn]) => {
+                const on = prefs.redactKinds[id] ?? defOn;
+                return (
+                  <div className="row pref redact-kind" key={id} data-redact={id}>
+                    <div className="who">
+                      <div className="name">{t(name)}</div>
+                      <div className="sub">{t(sub)}</div>
+                    </div>
+                    <div className="val">
+                      <Segs
+                        value={on ? "on" : "off"}
+                        onChange={(v) =>
+                          setPrefs({
+                            redactKinds: { ...prefs.redactKinds, [id]: v === "on" },
+                          })
+                        }
+                        items={[{ id: "off", label: t("Off") }, { id: "on", label: t("On") }]}
+                      />
+                    </div>
+                  </div>
+                );
+              })
+            : null}
           <PrefRow name={t("Hide accounts")} sub={t("Email addresses and account names on Usage and Routing are blurred, for a screenshot to share")}>
             <Segs value={prefs.hideAccounts ? "on" : "off"} onChange={(v) => setPrefs({ hideAccounts: v === "on" })} items={[{ id: "off", label: t("Off") }, { id: "on", label: t("On") }]} />
           </PrefRow>
@@ -1433,8 +1486,15 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus }: Setti
         </div>
         <Label en="Agents' sign-ins" />
         <div className="list prefs" id="discoveryList">
-          <PrefRow name={t("Discover agent sign-ins")} sub={demoCopy("演示：代理登录发现", "Demo: agent sign-in discovery")}>
-            <Segs value={prefs.discovery} onChange={(v) => setPrefs({ discovery: v as DemoPrefs["discovery"] })} items={[{ id: "ask", label: t("Ask") }, { id: "allow", label: t("Allow") }, { id: "deny", label: t("Deny") }]} />
+          <PrefRow
+            name={t("Subscription accounts")}
+            sub={t("Read the accounts your agents are signed in to (Claude Code, Codex, Copilot, Cursor and others: their files and the Keychain) and serve them. Off, magpie reads none of them; API-key providers work as before")}
+          >
+            <Segs
+              value={prefs.discovery === "off" ? "off" : "on"}
+              onChange={(v) => setPrefs({ discovery: v as DemoPrefs["discovery"] })}
+              items={[{ id: "off", label: t("Off") }, { id: "on", label: t("On") }]}
+            />
           </PrefRow>
         </div>
       </section>
