@@ -1,3 +1,8 @@
+## v0.1.59 SKILLS_PROBE_PICK
+- Native/web `library/47–51`: Skills Find → probe → **one checked** (ask-matt) → Cancel (Install not clicked).
+- Demo already had `Install 1 skill` / `Install {n} skills` when `skillPick.size`; NOTES nest closed.
+- Allowances **N/A**. Skip Vercel 402.
+
 ## v0.1.58 DETAIL_INSTALL_DONE + GAP_REFRESH
 - **GAP honesty refresh:** retired stale «Still PARTIAL tray Routing / sideEdge» under v0.1.34–0.1.35 (closed since **v0.1.36**).
 - Native/web `plugins/55–60` Detail Install consumed: open → Install hover → toast **{name} is installed — sign in to use it** → detail **Sign in** (`.pm-act.go`) not Installed check; **Signs in to** fact; Escape does not close.

@@ -100,3 +100,17 @@ Plugins → Built-in, Library **Off** (restored after 39–46). Top chrome is Ag
 ## demo 对齐（v0.1.57 HOOKS_NEST_DONE）
 - 原生 library/39–46 全消费：When menu Find + always 共享事件；After/Before → For which tools（Any/Shell/File）；Cursor · afterShellExecution → Matcher `every tool`
 - 未 Add；Discard；Library Off 已由点录恢复
+
+
+## Skills probe pick (shots 47–51)
+
+Web top-nav Magpie (same library.js). Built-in Library On → Library → Skills → Find `mattpocock/skills`.
+
+| shot | what |
+|---|---|
+| 47-skills-tab | Skills tab: intro + Find field + Discover. |
+| 48-skills-probe-open | Probe: **38 skills in github.com/mattpocock/skills**, Select all, Filter…, unchecked list (ask-matt…). Foot **for** Cursor · Cancel · **Install 0 skills** may sit below fold on 652 web. |
+| 49-skills-probe-one-checked | First box **ask-matt** checked. Magpie enables **Install 1 skill** (demo already: `Install 1 skill` / `Install {n} skills`). Install not clicked. |
+| 51-skills-probe-cancelled | Cancel → probe closed; no skills written. Library Off restored after session. |
+
+Demo v0.1.59: SKILLS_PROBE_PICK — 47–51 consumed (checked → Install 1 skill already in LibraryView since earlier; NOTES nest closed).
