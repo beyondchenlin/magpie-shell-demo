@@ -1,6 +1,7 @@
 ## v0.1.28
 - Routing native **01-empty-live** consumed: header New group, Routing groups foot (Import / found switch / names segs / empty copy)
 - Continues ANTIGRAVITY_ROUTING_PARTIAL → closer on Routing empty
+- Native routing shots **02–18** landed (New group editor nested); next consume
 
 ## v0.1.27
 - Providers **Antigravity** independent risk card (Google riskNote) → Sign in anyway (mock waiting) / Import instead… (Cockpit·Manager·CLIProxyAPI copy + Google check) — from Magpie `SUBS`/`renderSigning`/`importSay`
