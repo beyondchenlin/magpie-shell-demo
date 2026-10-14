@@ -83,7 +83,7 @@ Web 预览先验 Manage 隐藏/取消隐藏/Done 与安装 Copy toast；Windows 
 
 | # | 项 | 状态 |
 |---|----|------|
-| F1 | Windows Setup `.exe` Release | [~] | v0.1.2 已有；**v0.1.3** 待 GHA（含 Manage/Copy） |
+| F1 | Windows Setup `.exe` Release | [x] | https://github.com/beyondchenlin/magpie-shell-demo/releases/download/v0.1.3/Magpie-Shell-Demo-Setup-0.1.3.exe |
 | F2 | Vercel Web 预览 | [x] | https://magpie-shell-demo.vercel.app （验 A-01…A-09） |
 
 ---
