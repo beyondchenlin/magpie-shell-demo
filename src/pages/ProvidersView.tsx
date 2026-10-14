@@ -74,7 +74,7 @@ const VENDOR_HOST: Record<string, string> = {
   minimax: "api.minimax.io",
   stepfun: "api.stepfun.com",
   "xiaomi-mimo": "api.xiaomimimo.com",
-  qianfan: "qianfan.baidubce.com",
+  qianfan: "Token Plan · pay as you go\nqianfan.baidubce.com",
   tencent: "api.lkeap.cloud.tencent.com",
   huawei: "api.modelarts.huaweicloud.com",
 };
@@ -430,11 +430,12 @@ function ProviderEditorModal({ state, onClose, onAdd }: EditorProps) {
       vxProject.trim() ||
       vxCred.trim() ||
       vxImp.trim() ||
+      proxy === "direct" ||
       proxy === "custom" ||
-      region === "china" ||
       extra !== EXTRA_BODY_DEFAULT ||
       hdrs.some((h) => h.name || h.value)
     );
+  /* Region switch alone is NOT dirty (native NOTES shot 32). */
   const requestClose = () => {
     /* Magpie: Cancel on dirty editor → Discard (shot 28 Gemini) */
     if (dirty) setDiscardOpen(true);
@@ -839,7 +840,7 @@ function ProviderEditorModal({ state, onClose, onAdd }: EditorProps) {
               </Field>
             ) : null}
 
-            <Field label={ZH.headers} hint={kind === "custom" ? t("Extra HTTP headers sent to the vendor, applied after auth. For gateways that need a private scheme.") : undefined}>
+            <Field label={ZH.headers} hint={t("Optional headers sent with every request to {p}, applied after auth.", { p: meta.title })}>
               {kind === "custom" ? (
                 <div className="stack" style={{ gap: 6 }}>
                   {hdrs.map((h, i) => (
@@ -932,7 +933,7 @@ function ProviderEditorModal({ state, onClose, onAdd }: EditorProps) {
               )}
             </Field>
 
-            <Field label={ZH.extraBody}>
+            <Field label={ZH.extraBody} hint={t("JSON fields added to the body of every request to the vendor. A field the request has already is kept; write '!name' to replace it. ${sessionId} is the conversation's id.")}>
               <div className="extra-body">
                 <textarea
                   className="json"
@@ -952,7 +953,7 @@ function ProviderEditorModal({ state, onClose, onAdd }: EditorProps) {
                       "Requests to it go through this proxy: http://, https:// or socks5://",
                     )
                   : proxy === "direct"
-                    ? t("Off · go direct")
+                    ? t("Requests to it go direct, whatever the proxy in Settings")
                     : t("Follows the proxy in Settings")
               }
             >
@@ -972,7 +973,7 @@ function ProviderEditorModal({ state, onClose, onAdd }: EditorProps) {
                     placeholder="http://127.0.0.1:7890"
                     value={proxyUrl}
                     onChange={(e) => setProxyUrl(e.target.value)}
-                    style={{ flex: 1, minWidth: 160 }}
+                    style={{ flex: 1, minWidth: 160, animation: "fade-in .2s var(--ease)" }}
                   />
                 ) : null}
               </div>
