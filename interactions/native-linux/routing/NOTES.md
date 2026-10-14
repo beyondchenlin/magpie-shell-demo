@@ -16,7 +16,8 @@ Shots are ffmpeg/x11grab of the frameless Magpie window. Found/names toggles wer
 
 ## demo 对齐
 - **v0.1.28**: 01 empty + groups foot (Import / found / names / none). Header `rt-newgroup`. Editor still stub.
-- **Next**: 03–18 New group editor 全层 segs + model pop + members → demo.
+- **v0.1.29**: New group editor 1:1 from shots 02–22 — Name / Models+#pop / Patterns / Model lists / Routing Smart…Manual / Rate limited / Slow to start / Every member busy / Context / Stays / Rules / Effort / Levels / Cancel discard / Add. Motion: segs 280ms, #pop .18+.42s, discard .28s, member sort .22s. Bird hop **1400ms** (Magpie fly outbound). ModelPop **use as typed**. Pools mock when demoLive.
+- **Left**: Rules deep editor (Add a rule conditions), classifier when Effort=auto, real Save API, weight inline edit, drag reorder.
 
 ## Left state
 Routing tab, New group editor may still be open on the native window; Save not used. Magpie still running.

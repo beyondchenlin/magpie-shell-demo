@@ -315,7 +315,24 @@ export function ModelPop({
             </span>
           ))}
           {!filtered.length ? (
-            <div className="none">{t("No matches.")}</div>
+            q.trim() ? (
+              <li
+                className="custom"
+                role="option"
+                aria-selected={false}
+                title={t("use as typed")}
+                onClick={() => {
+                  onPick(q.trim());
+                  dismiss();
+                }}
+              >
+                <span className="ic" aria-hidden>✦</span>
+                <span className="name">{q.trim()}</span>
+                <span className="note">{t("use as typed")}</span>
+              </li>
+            ) : (
+              <div className="none">{t("No matches.")}</div>
+            )
           ) : null}
         </ul>
       </div>

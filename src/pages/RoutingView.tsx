@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
+import { GroupEditor } from "../components/GroupEditor";
 import { ModelPop } from "../components/ModelPop";
+import { Segs } from "../components/Segs";
 import { ProtoMultiMenu } from "../components/ProtoMultiMenu";
 import { GATEWAY_ADDR } from "../data/mock";
 import { ZH, t } from "../i18n";
@@ -116,6 +118,7 @@ export function RoutingView() {
   /** Magpie suffixSegs: Off | Not on names I set | On */
   const [nameSuffix, setNameSuffix] = useState<"off" | "skip" | "on">("on");
   const [groupEditorOpen, setGroupEditorOpen] = useState(false);
+  const [savedGroups, setSavedGroups] = useState<{ name: string }[]>([]);
   const [gImportOpen, setGImportOpen] = useState(false);
 
   const [groupModel, setGroupModel] = useState("claude-sonnet-4-5");
@@ -203,7 +206,7 @@ export function RoutingView() {
     let t0 = performance.now();
     let raf = 0;
     const tick = (now: number) => {
-      const u = ((now - t0) / 2200) % 1;
+      const u = ((now - t0) / 1400) % 1; // Magpie fly() outbound hop ~1400ms
       const pt = path.getPointAtLength(u * len);
       const pt2 = path.getPointAtLength(Math.min(len, u * len + 2));
       const rot = (Math.atan2(pt2.y - pt.y, pt2.x - pt.x) * 180) / Math.PI;
@@ -1113,6 +1116,55 @@ export function RoutingView() {
         </div>
       </div>
 
+      {/* Magpie renderPools — Several accounts or keys (when pools exist) */}
+      {demoLive ? (
+        <div className="rt-pools" style={{ margin: "8px 0 4px" }}>
+          <div className="row-head" style={{ padding: "4px 4px 8px" }}>
+            <span className="label">{t("Several accounts or keys")}</span>
+            <span className="grow" />
+            <span className="note">{t("each provider routes over its own")}</span>
+          </div>
+          <div className="rt-pool card">
+            <div className="nm">
+              <b>Anthropic</b>
+              <span>{t("{n} accounts", { n: 2 })}</span>
+            </div>
+            <div className="ctl">
+              <span className="lab">
+                <small>{t("Routing")}</small>
+                <Segs
+                  value={""}
+                  items={[
+                    { id: "", label: t("Smart") },
+                    { id: "order", label: t("In order") },
+                    { id: "rotate", label: t("In turn") },
+                    { id: "usage", label: t("Least used") },
+                    { id: "pace", label: t("Weekly pace") },
+                  ]}
+                  onChange={() => {}}
+                  aria-label={t("Routing")}
+                />
+              </span>
+              <span className="lab">
+                <small>{t("Stays")}</small>
+                <Segs
+                  value={""}
+                  items={[
+                    { id: "", label: t("Auto") },
+                    { id: "session", label: t("Session") },
+                    { id: "turn", label: t("Within a turn") },
+                    { id: "off", label: t("Off") },
+                    { id: "strict", label: t("Strict") },
+                  ]}
+                  onChange={() => {}}
+                  aria-label={t("Stays")}
+                />
+              </span>
+            </div>
+          </div>
+        </div>
+      ) : null}
+
       {/* Magpie #rtMore — Routing groups empty (native 01-empty-live) */}
       <div className="rt-more" id="rtMore">
         <div className="rt-gsec">
@@ -1221,30 +1273,16 @@ export function RoutingView() {
               ))}
             </div>
           </div>
-          {groupEditorOpen ? (
-            <div className="rt-group card" style={{ marginTop: 8, padding: 12, animation: "pop-in .42s cubic-bezier(.16,1,.3,1)" }}>
-              <div className="rt-ghead" style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                <b>{t("New group")}</b>
-                <span className="grow" />
-                <button type="button" className="text" onClick={() => setGroupEditorOpen(false)}>
-                  {t("Cancel")}
-                </button>
-                <button
-                  type="button"
-                  className="text primary"
-                  onClick={() => {
-                    setGroupEditorOpen(false);
-                    setDemoGroups(true);
-                  }}
-                >
-                  {t("Save")}
-                </button>
-              </div>
-              <p className="note" style={{ margin: "8px 0 0" }}>
-                {t("No group yet. A model two of your providers serve becomes one on its own; New group makes one of any models you like.")}
-              </p>
-            </div>
-          ) : (
+          <GroupEditor
+            open={groupEditorOpen}
+            nameSuffixOn={nameSuffix === "on"}
+            onClose={() => setGroupEditorOpen(false)}
+            onSaved={(name: string) => {
+              setSavedGroups((gs) => [...gs, { name }]);
+              setDemoGroups(true);
+            }}
+          />
+          {!groupEditorOpen && !savedGroups.length ? (
             <div className="none rt-gnone" style={{ padding: "16px 4px", color: "var(--muted)", fontSize: 13 }}>
               {foundOn
                 ? t(
@@ -1252,7 +1290,20 @@ export function RoutingView() {
                   )
                 : t("No group yet. New group makes one of any models you like.")}
             </div>
-          )}
+          ) : null}
+          {savedGroups.length ? (
+            <div className="rt-groups" style={{ marginTop: 8 }}>
+              {savedGroups.map((g) => (
+                <div key={g.name} className="rt-group card" style={{ animation: "fade-in .18s var(--ease)" }}>
+                  <div className="rt-ghead" style={{ display: "flex", alignItems: "center", gap: 8, padding: "10px 12px" }}>
+                    <b>{g.name}</b>
+                    <span className="grow" />
+                    <span className="note">{t("routing group")}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : null}
           {demoGroups ? (
             <div className="rt-groups" style={{ marginTop: 8 }}>
               <div className="rt-group card">

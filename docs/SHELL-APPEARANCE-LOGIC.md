@@ -334,3 +334,22 @@ Same as §4; added: `.pm-opts textarea` focus .12s; `.range-menu .rm-day` backgr
 动效：`.signing` **fade-in .2s**；`.spinner` **spin .8s**；`.copy.done` **1.2s**（同 §4）。
 
 *文档版本：v0.1.26*
+
+## v0.1.29 Routing New group editor (native 02–22)
+
+| 控件 | Magpie | demo |
+|------|--------|------|
+| `.editor.rt-gedit` open | `newGroup()` → `renderGroups` | `GroupEditor` pop-in **.42s** cubic-bezier(.16,1,.3,1) |
+| Name / In agents' lists | idHint `group/{slug}` · suffixMode | 同；suffix 跟 Names On |
+| Models `#pop` | multi picker · typed id | ModelPop；**use as typed**；DEMO_MODELS |
+| Reasoning `.rt-fixed` | Follow/low…max | ModelPop `modelPicker=false` |
+| Patterns | `rt-patadd` * / re: | 同 |
+| Model lists / Routing segs | LIST + Smart…Manual | Segs + hints；sinkable→Rate limited |
+| Rate limited / Slow / Busy | SINK / FIRST / PATIENCE | 同 |
+| Context / Stays / Effort / Levels | Magpie opts | 同 |
+| Cancel dirty | `confirmDiscard` | Discard modal；pop-in **.28s** |
+| Add | `groupAction("save")` | mock `savedGroups`；无真 API |
+| Bird hop | `fly()` 620/900/**1400**/1350 | demo flier **1400ms**（原 2200） |
+| Pools `renderPools` | Several accounts or keys | demoLive Anthropic mock |
+
+*文档版本：v0.1.29*

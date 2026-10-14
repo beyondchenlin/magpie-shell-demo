@@ -44,3 +44,19 @@ R-00…R-09 录制=已录 · demo=空态交互已实现（web/exe **v0.1.5**）�
 - `#rtMore` filters：`Live` + day pills + `Earlier days` menu；`Replay them all`
 - `.rt-replay` 重放条（时钟 / 倍速 / Stop / track）
 - `.rt-log` / `.rt-steps` 网关轨迹故事（点选请求）
+
+## v0.1.29 — New group editor (native 02–22)
+
+| id | 控件 | 操作 | 后态 | demo |
+|----|------|------|------|------|
+| R-10 | `+ New group` | 点击 | `.rt-gedit` 打开；Name 聚焦 | **已实现** |
+| R-11 | `+ Add a model` | 点击 | `#pop`；No matches / use as typed | **已实现** |
+| R-12 | `Group's reasoning` | 点击 | Follow…max | **已实现** |
+| R-13 | segs 全层 | 切换 | hints 随选 | **已实现** |
+| R-14 | Cancel dirty | Discard modal | **已实现** |
+| R-15 | Add | mock 组卡 | **已实现**（无 API） |
+| R-16 | Rules 深条件 | — | **PARTIAL** |
+| R-17 | Bird hop | ~1400ms | **已对齐** |
+| R-18 | Pools | demoLive | **mock** |
+
+判定：**ROUTING_EDITOR_PARTIAL**（Rules 深层 / classifier / weight 拖拽 / 真 Save 仍缺）。
