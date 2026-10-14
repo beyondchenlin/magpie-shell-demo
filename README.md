@@ -4,6 +4,13 @@
 
 对照上游：[yetone/magpie](https://github.com/yetone/magpie)（MIT）。验收清单见 [`ACCEPTANCE.md`](./ACCEPTANCE.md)。
 
+## 链接
+
+- **Web 预览：** https://magpie-shell-demo.vercel.app （`#routing` `#agents` …）
+- **源码：** https://github.com/beyondchenlin/magpie-shell-demo
+- **Linux AppImage：** https://github.com/beyondchenlin/magpie-shell-demo/releases/tag/v0.1.0
+- **本机副本：** `/workspace/Magpie-Shell-Demo-0.1.0.AppImage`
+
 ## 快速打开（Web）
 
 ```bash
