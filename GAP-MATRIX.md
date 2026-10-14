@@ -1,3 +1,11 @@
+## v0.1.40 SETTINGS_NEST
+- Native `settings/10–70` + NOTES consumed into `SettingsView` / NestedBlocks (frames stop at 70; no 71–85 on disk).
+- **Allowances:** TrayUsage pick Off/Today/7d; Menu bar refresh **1/3/5/10/30** (was wrong 15); pace nested when tray on; Linux hides Menu bar logos/bird (Mac-only in Magpie); Allowance display Used/Left; reads Automatic/When I ask; Currency USD/CNY; **Allowance alert** = number field % + Off/On (shots 29–30, editable e.g. 81); **Low balance** = amount field + Off/On (shots 32–33); reset 12/24/48 h; task done 1/3/10 min; warm-up / auto-reset structure. **Quota body cards still N/A** — not invented.
+- **Network:** Proxy Auto/Off/Custom + Test; GitHub token Create one ↗ + Save (placeholder ghp_/github_pat_); Gateway port Apply; bare ids; LAN Share + Address OpenAI/Anthropic + Allowed + Web pages (stays when Share Off).
+- **Models / Privacy / Sync / About:** deep controls from prior + About Version Check/ready mock; Sync Set up / Export / Import copy includes agents' models + library.
+- **Observability (OTel):** tab **hidden** by default (`magpie.feature.otel=1` to show) — matches native tab row.
+- Still mock: true OAuth / github-token API / port Apply restart / sync bytes / update install / Allowances with live quotas.
+
 ## v0.1.39 SETTINGS_NEST_PARTIAL
 - Native settings General (NOTES + shots 01–09 path): Provider in model names = Off / Not on names I set / On; Text size Magpie tip + status; Interface font / Code font System-default shell (font menus still mock); Lightweight / Prevent sleep copy.
 - Remaining settings 10–85 (Allowances deep, Network, Models, Privacy nest already partial, Sync, About): continue next bumps.
@@ -96,7 +104,7 @@
 | 8 | 账号行 `.dot`/`.bar` 在有请求时 | 空态为 `li.idle` | — | 空态正确 |
 | 9 | Provider 完整行控件 | **v0.1.34** 有账号列表行+accts 编辑器 | P1 | 真 key/OAuth/arrange 落盘仍 mock |
 | 10 | Gateway 空态壳+主交互 | **v0.1.9**；filled demo **v0.1.12** | P1 | Gateway 仍可再抠 |
-| 14 | Settings 全 tab 深页 | Privacy **v0.1.21**；Plugins **v0.1.38**；General **v0.1.39** PARTIAL | P1 | Settings 10–85 继续；字体菜单/真 Apply 仍 mock |
+| 14 | Settings 全 tab 深页 | Settings **v0.1.40** NEST（10–70）；General fonts menus 仍 mock | P1 | 字体菜单/真 Apply/OTel feature/有配额 Allowances body 仍 mock |
 | 11 | `#sideEdge` 拖宽 | **v0.1.36** sideDrag | — | localStorage `magpie.sideWidth` |
 | 12 | 业务后端 / 真网关 | 无 | P2 | 范围外 |
 | 13 | 先前 PASS_WITH_GAPS | **已撤销**；现以截图空态对齐为准 | — | |
@@ -107,7 +115,7 @@
 
 1. 无真实 provider 添加 / agent 接线 / gateway / OAuth  
 2. 飞鸟仍为 Demo 开关 mock（FLIER+rtflap .42s 已对齐；非真 gateway · GAP #7 仍 P1）  
-3. Tray **01–14** · Usage **01–50** · Plugins **01–34** 已消费；Settings General **PARTIAL (v0.1.39)**，10–85 待继续；Allowances 无配额 = **N/A**  
+3. Tray **01–14** · Usage **01–50** · Plugins **01–34** · Settings **10–70** 已消费（v0.1.40）；Allowances 无配额 = **N/A**；OTel tab 默认隐藏  
 4. Provider 列表已有账号态壳；真 key 轮转 / arrange drag 落盘仍 mock  
 5. 未做原生 Tauri；Electron 系统标题栏（Windows 上游亦然）  
 6. Usage filled（KPI/heatmap/ledger rows）仍为演示开关 mock，非原生有数据截图

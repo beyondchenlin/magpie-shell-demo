@@ -4,6 +4,8 @@ import { useSegThumb } from "../components/SegThumb";
 import { GATEWAY_ADDR } from "../data/mock";
 import { demoCopy, t, type Lang } from "../i18n";
 import {
+  AlertNumField,
+  AboutVersionRow,
   AutoResetOwn,
   CliRow,
   CodexModelPick,
@@ -36,6 +38,18 @@ const SET_TABS = [
   { id: "sync", en: "Sync and backup" },
   { id: "about", en: "About" },
 ] as const;
+
+/** Magpie data-feature=otel — off by default (native Linux tab row has no Observability). */
+function otelFeatureOn(): boolean {
+  try {
+    return localStorage.getItem("magpie.feature.otel") === "1";
+  } catch {
+    return false;
+  }
+}
+
+const DEMO_APP_VERSION = "0.1.40";
+const IS_MAC = /\bMac\b|Macintosh/i.test(navigator.platform || navigator.userAgent);
 
 /** Magpie REDACT_KINDS — nested under Mask personal data (shots 64–66). */
 const REDACT_KINDS: [string, string, string, boolean][] = [
@@ -83,8 +97,8 @@ type DemoPrefs = {
   quotaReads: "" | "asked";
   currency: "usd" | "cny";
   chineseUnits: boolean;
-  usageAlert: "off" | "80" | "90" | "100";
-  balanceAlert: "off" | "on";
+  usageAlert: number; // 0 = off, else 1–100 share used
+  balanceAlert: number; // 0 = off, else amount in vendor currency
   resetReminder: "off" | "12h" | "24h" | "48h";
   turnDone: "off" | "1" | "3" | "10";
   codexWarmup: "off" | "week" | "all";
@@ -112,7 +126,7 @@ type DemoPrefs = {
   syncAuto: number;
   trayUsage: boolean;
   trayUsageMode: string; // "" | usage:today | usage:7d
-  trayEvery: "1" | "3" | "5" | "15";
+  trayEvery: "1" | "3" | "5" | "10" | "30";
   trayLogos: boolean;
   trayBird: boolean;
   trayPace: boolean;
@@ -165,8 +179,8 @@ const DEFAULTS: DemoPrefs = {
   quotaReads: "",
   currency: "usd",
   chineseUnits: true,
-  usageAlert: "off",
-  balanceAlert: "off",
+  usageAlert: 0,
+  balanceAlert: 0,
   resetReminder: "off",
   turnDone: "off",
   codexWarmup: "off",
@@ -258,6 +272,28 @@ function loadPrefs(): DemoPrefs {
     if (oldDisc === "ask" || oldDisc === "allow") next.discovery = "on";
     if (oldDisc === "deny") next.discovery = "off";
     if (!next.redactKinds || typeof next.redactKinds !== "object") next.redactKinds = {};
+    // v0.1.40: Magpie alert fields are numbers (0=off), not segs Off/80/90/100
+    const ua = (parsed as { usageAlert?: unknown }).usageAlert;
+    if (typeof ua === "string") {
+      if (ua === "off" || ua === "") next.usageAlert = 0;
+      else if (ua === "on") next.usageAlert = 80;
+      else {
+        const n = Number(ua);
+        next.usageAlert = Number.isFinite(n) && n > 0 ? n : 0;
+      }
+    } else if (typeof ua !== "number") next.usageAlert = 0;
+    const ba = (parsed as { balanceAlert?: unknown }).balanceAlert;
+    if (typeof ba === "string") {
+      if (ba === "off" || ba === "") next.balanceAlert = 0;
+      else if (ba === "on") next.balanceAlert = 5;
+      else {
+        const n = Number(ba);
+        next.balanceAlert = Number.isFinite(n) && n > 0 ? n : 0;
+      }
+    } else if (typeof ba !== "number") next.balanceAlert = 0;
+    const te = String((parsed as { trayEvery?: string }).trayEvery || "");
+    if (te === "15") next.trayEvery = "10";
+    else if (!["1", "3", "5", "10", "30"].includes(te)) next.trayEvery = "3";
     return next;
   } catch {
     return { ...DEFAULTS };
@@ -387,6 +423,9 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus }: Setti
   const [restoreOpen, setRestoreOpen] = useState(false);
   const [whatsNewOpen, setWhatsNewOpen] = useState(false);
   const [proxyTest, setProxyTest] = useState("");
+  useEffect(() => {
+    if (tab === "otel" && !otelFeatureOn()) setTab("general");
+  }, [tab]);
   const setTabsBox = useSegThumb(tab);
   const warmBox = useSegThumb(warmTab);
   const langBtn = useRef<HTMLButtonElement>(null);
@@ -528,13 +567,14 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus }: Setti
           ref={setTabsBox}
           hidden={searching}
         >
-          {SET_TABS.map((x) => (
+          {SET_TABS.filter((x) => x.id !== "otel" || otelFeatureOn()).map((x) => (
             <button
               key={x.id}
               type="button"
               role="tab"
               id={`setTab-${x.id}`}
               data-set={x.id}
+              data-feature={x.id === "otel" ? "otel" : undefined}
               className={tab === x.id ? "on" : ""}
               aria-selected={tab === x.id}
               onClick={() => setTab(x.id)}
@@ -854,12 +894,13 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus }: Setti
                   { id: "1", label: t("{n} min", { n: 1 }) },
                   { id: "3", label: t("{n} min", { n: 3 }) },
                   { id: "5", label: t("{n} min", { n: 5 }) },
-                  { id: "15", label: t("{n} min", { n: 15 }) },
+                  { id: "10", label: t("{n} min", { n: 10 }) },
+                  { id: "30", label: t("{n} min", { n: 30 }) },
                 ]}
               />
             </PrefRow>
           )}
-          {uRows.trayLogos && !!prefs.trayUsageMode && (
+          {uRows.trayLogos && !!prefs.trayUsageMode && IS_MAC && (
             <PrefRow
               name={t("Menu bar logos")}
               sub={t("Each subscription's logo before its numbers; off, the numbers alone with a thin line between subscriptions")}
@@ -875,7 +916,7 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus }: Setti
               />
             </PrefRow>
           )}
-          {uRows.trayBird && !!prefs.trayUsageMode && (
+          {uRows.trayBird && !!prefs.trayUsageMode && IS_MAC && (
             <PrefRow
               name={t("Menu bar magpie icon")}
               sub={t("magpie's icon before the allowances; off, the allowances alone, and a click on one still opens the panel")}
@@ -970,35 +1011,42 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus }: Setti
             </PrefRow>
           )}
           {uRows.alert && (
-            <PrefRow name={t("Allowance alert")} sub={t("Notify when an allowance window crosses a threshold")} id="usageAlertRow">
-              <Segs
-                className="warm-at"
+            <PrefRow
+              name={t("Allowance alert")}
+              sub={t("A notification when a 5-hour, weekly or monthly window reaches this share used, once each time it runs")}
+              id="usageAlertRow"
+            >
+              <AlertNumField
                 value={prefs.usageAlert}
-                onChange={(v) => setPrefs({ usageAlert: v as DemoPrefs["usageAlert"] })}
-                items={[
-                  { id: "off", label: t("Off") },
-                  { id: "80", label: "80%" },
-                  { id: "90", label: "90%" },
-                  { id: "100", label: "100%" },
-                ]}
+                unit="%"
+                ariaLabel={t("Share used")}
+                defaultOn={80}
+                ok={(n) => Number.isInteger(n) && n >= 1 && n <= 100}
+                onChange={(usageAlert) => setPrefs({ usageAlert })}
               />
             </PrefRow>
           )}
           {uRows.bal && (
-            <PrefRow name={t("Low balance alert")} sub={t("Notify when a prepaid balance is low")} id="balanceAlertRow">
-              <Segs
-                className="warm-at"
+            <PrefRow
+              name={t("Low balance alert")}
+              sub={t("A notification when a balance falls to this amount, in its own currency or credits, once until it is topped up")}
+              id="balanceAlertRow"
+            >
+              <AlertNumField
                 value={prefs.balanceAlert}
-                onChange={(v) => setPrefs({ balanceAlert: v as DemoPrefs["balanceAlert"] })}
-                items={[
-                  { id: "off", label: t("Off") },
-                  { id: "on", label: t("On") },
-                ]}
+                ariaLabel={t("Amount")}
+                defaultOn={5}
+                ok={(n) => Number.isFinite(n) && n > 0}
+                onChange={(balanceAlert) => setPrefs({ balanceAlert })}
               />
             </PrefRow>
           )}
           {uRows.reset && (
-            <PrefRow name={t("Reset reminder")} sub={t("Remind before an allowance window resets")} id="resetReminderRow">
+            <PrefRow
+              name={t("Reset reminder")}
+              sub={t("A notification this long before a weekly or monthly window renews with under 85% of it used, or before unused resets expire")}
+              id="resetReminderRow"
+            >
               <Segs
                 value={prefs.resetReminder}
                 onChange={(v) => setPrefs({ resetReminder: v as DemoPrefs["resetReminder"] })}
@@ -1012,7 +1060,7 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus }: Setti
             </PrefRow>
           )}
           {uRows.turn && (
-            <PrefRow name={t("Task done alert")} sub={t("Notify when Claude Code, Codex or OpenCode finishes a long-running turn")} id="turnDoneRow">
+            <PrefRow name={t("Task done alert")} sub={t("A notification when Claude Code, Codex, OpenCode or another agent going through magpie finishes a task that ran at least this long")} id="turnDoneRow">
               <Segs
                 value={prefs.turnDone}
                 onChange={(v) => setPrefs({ turnDone: v as DemoPrefs["turnDone"] })}
@@ -1130,17 +1178,42 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus }: Setti
           <>
             <Label en="GitHub" />
             <div className="list prefs" id="githubList">
-              <PrefRow name={t("Token")} sub={demoCopy("演示：未接线真 token", "Demo: token not wired")}>
+              <PrefRow
+                name={t("GitHub token")}
+                sub={t("The library checks skills for updates with it: GitHub allows 5,000 requests an hour with a token, 60 without. It also installs skills from private repositories it can read; for public ones it needs no scopes.")}
+                className="github-token"
+              >
                 <input
-                  className="words"
+                  className="words github-token-input"
                   type="password"
                   value={prefs.githubToken}
-                  placeholder="ghp_…"
-                  aria-label={t("Token")}
+                  placeholder="ghp_… / github_pat_…"
+                  aria-label={t("GitHub token")}
                   onChange={(e) => setPrefsState((p) => ({ ...p, githubToken: e.target.value }))}
-                  onBlur={() => setPrefs({ githubToken: prefs.githubToken })}
+                  onKeyDown={(e) => {
+                    e.stopPropagation();
+                    if (e.key === "Enter") setPrefs({ githubToken: prefs.githubToken.trim() });
+                  }}
                   style={{ width: 160 }}
                 />
+                <button
+                  type="button"
+                  className="link"
+                  onClick={() => window.open("https://github.com/settings/tokens/new?description=magpie", "_blank", "noopener")}
+                >
+                  {t("Create one ↗")}
+                </button>
+                <button
+                  type="button"
+                  className="text"
+                  onClick={() => {
+                    const v = prefs.githubToken.trim();
+                    if (!v) return;
+                    setPrefs({ githubToken: v }, t("Saved"));
+                  }}
+                >
+                  {t("Save")}
+                </button>
               </PrefRow>
             </div>
           </>
@@ -1591,7 +1664,7 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus }: Setti
         aria-labelledby="setTab-otel"
         data-part={t("Observability")}
         data-feature="otel"
-        hidden={pageHidden("otel", oAny)}
+        hidden={!otelFeatureOn() || pageHidden("otel", oAny)}
       >
         <OtelFull
           config={{ ...prefs.otelCfg, enabled: prefs.otel || prefs.otelCfg.enabled, endpoint: prefs.otelEndpoint || prefs.otelCfg.endpoint }}
@@ -1615,7 +1688,16 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus }: Setti
               prefs.syncOn
                 ? t("Not synced yet · {host}", { host: "demo.example.com" })
                 : t("Keeps {parts} the same on every computer", {
-                    parts: t("providers with their API keys") + t(", ") + t("settings") + t(", ") + t("profiles"),
+                    parts:
+                      t("providers with their API keys") +
+                      t(", ") +
+                      t("settings") +
+                      t(", ") +
+                      t("profiles") +
+                      t(", ") +
+                      t("agents' models") +
+                      t(", ") +
+                      t("library"),
                   })
             }
           >
@@ -1674,12 +1756,7 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus }: Setti
         hidden={pageHidden("about", aAny)}
       >
         <div className="list prefs" id="about">
-          <PrefRow name={t("Version")}>
-            <code>0.1.13-demo</code>
-            <button type="button" className="text" onClick={() => onStatus?.(demoCopy("演示：已是最新", "Demo: up to date"), "ok")}>
-              {t("Check")}
-            </button>
-          </PrefRow>
+          <AboutVersionRow current={DEMO_APP_VERSION} onStatus={onStatus} />
           <PrefRow name={t("What's new")} sub={t("The release notes since the last update")} className="whatsnew-row">
             <button type="button" className="text" onClick={() => setWhatsNewOpen(true)}>
               {t("Open")}

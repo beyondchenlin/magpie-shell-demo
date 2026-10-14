@@ -173,3 +173,5 @@ Proxy Auto. Share on local network Off. Menu-bar allowances Off. Allowance displ
 Demo v0.1.15: Disable #pop left rail (grid/star) +「No matches.」; Privacy nested REDACT_KINDS / Regex sample / Subscription accounts Off·On (shots 63–70).
 
 Demo v0.1.39: SETTINGS_NEST_PARTIAL — General Provider names / Text size / fonts shell.
+
+Demo v0.1.40: SETTINGS_NEST — frames 10–70 consumed (Allowances alert num+%/balance amount, TRAY_EVERY 1/3/5/10/30, Linux no logos/bird, Network GitHub Create one↗, Models/Privacy/Sync/About; Observability tab hidden unless magpie.feature.otel=1). Allowances quota body still N/A.

@@ -1408,3 +1408,146 @@ export function SearchApisBlock({
     </>
   );
 }
+
+/** Magpie Settings › Allowances alert: number field (when On) + Off/On segs. Shots 29–33. */
+export function AlertNumField({
+  value,
+  unit,
+  ariaLabel,
+  defaultOn,
+  ok,
+  onChange,
+}: {
+  value: number;
+  unit?: string;
+  ariaLabel: string;
+  defaultOn: number;
+  ok: (n: number) => boolean;
+  onChange: (n: number) => void;
+}) {
+  const on = value > 0;
+  const [draft, setDraft] = useState(String(on ? value : defaultOn));
+  useEffect(() => {
+    if (on) setDraft(String(value));
+  }, [on, value]);
+  return (
+    <div className="warm-at" id={unit === "%" ? "usageAlertSegs" : "balanceAlertSegs"}>
+      {on ? (
+        <>
+          <input
+            className="at num"
+            type="number"
+            inputMode="decimal"
+            aria-label={ariaLabel}
+            value={draft}
+            onChange={(e) => setDraft(e.target.value)}
+            onKeyDown={(e) => {
+              e.stopPropagation();
+              if (e.key === "Enter") (e.target as HTMLInputElement).blur();
+            }}
+            onBlur={() => {
+              const n = Number(draft);
+              if (!ok(n)) {
+                setDraft(String(value || defaultOn));
+                return;
+              }
+              if (n !== value) onChange(n);
+            }}
+          />
+          {unit ? <span className="unit">{unit}</span> : null}
+        </>
+      ) : null}
+      <Segs
+        value={on ? "on" : "off"}
+        onChange={(v) => onChange(v === "on" ? value || defaultOn : 0)}
+        items={[
+          { id: "off", label: t("Off") },
+          { id: "on", label: t("On") },
+        ]}
+      />
+    </div>
+  );
+}
+
+/** About › Version — Magpie update states (shots 15). Demo only; no real install. */
+export function AboutVersionRow({
+  current,
+  onStatus,
+}: {
+  current: string;
+  onStatus?: (m: string, k?: string) => void;
+}) {
+  type St = "latest" | "checking" | "ready" | "available";
+  const [st, setSt] = useState<St>("latest");
+  const demoNext = (() => {
+    const parts = current.split(".");
+    const patch = Number(parts[2] || 0) + 1;
+    return `${parts[0]}.${parts[1]}.${patch}`;
+  })();
+
+  useEffect(() => {
+    if (st !== "checking") return;
+    const tmr = window.setTimeout(() => setSt("latest"), 900);
+    return () => clearTimeout(tmr);
+  }, [st]);
+
+  const sub =
+    st === "checking"
+      ? t("Checking for updates…")
+      : st === "ready"
+        ? t("{v} is downloaded", { v: demoNext })
+        : st === "available"
+          ? t("{v} is out", { v: demoNext })
+          : t("Up to date");
+
+  return (
+    <div className="row pref" id="aboutVersionRow">
+      <div className="who">
+        <div className="name">{t("Version")}</div>
+        <div className="sub">
+          <code style={{ marginRight: 6 }}>{current}</code>
+          {sub}
+        </div>
+      </div>
+      <div className="val">
+        {st === "ready" ? (
+          <button
+            type="button"
+            className="text"
+            onClick={() => {
+              onStatus?.(demoCopy("演示：重启以更新（未接线真安装）", "Demo: Restart to update (no real install)"), "ok");
+              setSt("latest");
+            }}
+          >
+            {t("Restart to update")}
+          </button>
+        ) : st === "available" ? (
+          <button
+            type="button"
+            className="text"
+            onClick={() => {
+              onStatus?.(demoCopy("演示：已标为已下载", "Demo: marked downloaded"), "ok");
+              setSt("ready");
+            }}
+          >
+            {t("Download")}
+          </button>
+        ) : (
+          <button
+            type="button"
+            className={`text${st === "checking" ? " busy" : ""}`}
+            disabled={st === "checking"}
+            onClick={() => setSt("checking")}
+            onContextMenu={(e) => {
+              e.preventDefault();
+              setSt("ready");
+            }}
+            title={demoCopy("右键：演示「已下载」态", "Right-click: demo downloaded state")}
+          >
+            {t("Check")}
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}

@@ -1,3 +1,12 @@
+## v0.1.40 SETTINGS_NEST
+
+- Consumed native `interactions/native-linux/settings/10–70` + NOTES (disk has no 71–85).
+- Allowances controls 1:1 structure (alert % field, balance amount, TRAY_EVERY 1/3/5/10/30, Linux no logos/bird). **No quota body invented.**
+- Network GitHub Create one ↗; Models/Privacy/Sync/About nest; Observability tab off unless `magpie.feature.otel=1`.
+- Still mock: live quotas, true token/port/sync/update APIs, Interface/Code font menus.
+
+## v0.1.39 SETTINGS_NEST_PARTIAL
+
 ## v0.1.39 SETTINGS_NEST_PARTIAL
 
 - General: Magpie `suffixSegs` Off / Not on names I set / On; Text size tip `Everything in magpie's windows…`; Interface/Code font System default + Aa preview (menus mock).

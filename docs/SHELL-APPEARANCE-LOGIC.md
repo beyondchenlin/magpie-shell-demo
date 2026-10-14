@@ -48,6 +48,13 @@ footer.foot                 ← #status toast 胶囊
 
 ---
 
+## 3b. Settings nest (v0.1.40)
+
+- Section tabs wrap under chrome; **no Observability** unless feature `otel` on (`magpie.feature.otel=1`) — Magpie `data-feature="otel"`.
+- Allowances: control rows only without subscription quotas; Magpie hides quota cards (and tray Allowances tab) when empty — demo must **not** invent balances.
+- Alert rows use Magpie `field` pattern: number + unit (for %) beside Off/On segs (`.warm-at input.at.num`); Menu bar refresh = TRAY_EVERY `[1,3,5,10,30]`; logos/bird Mac-only.
+- Motion: segs thumb **280ms**; LAN Share Off collapses Address/Allowed (~.28s height); Export/Import inline expand (no scrim).
+
 ## 4. Motion tokens（必须 1:1，禁止“静止壳”）
 
 `--ease: cubic-bezier(.2, .8, .2, 1)`（app.css `:root`）。
