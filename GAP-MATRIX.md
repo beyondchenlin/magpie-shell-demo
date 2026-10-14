@@ -1,3 +1,10 @@
+## v0.1.44 MOTION_GAP
+- Diff Magpie CSS/JS transition tokens vs demo: Magpie-only keyframes were `pm-pulse`, `lib-bob`, `lib-rise`, `lib-skel-in`/`lib-skel-shift`, `mk-spin`, `lib-health-pulse` — now ported into `shell-patch.css`.
+- Wired: Plugins askNPM **ghost** cards (6 pre-debounce · 2 On-npm while `hits.loading`) + detail **pm-rskel** README pulse; Library Find skills **lib-bob** + probe **lib-probe** / content-in.
+- Shared control motions already matched (view-in, segs 280ms, folds, menus pop-in, toasts `.status`, modal, rtflap, agent-fold, theming) — no invent UI.
+- Plugins Install still **not** auto-clicked (NOTES: leave for recorder).
+- **GAP honesty:** tray Routing nested + `#sideEdge` closed since **v0.1.36** (stale PARTIAL lines retired). True remaining **P1**: live gateway bird (#7), true OAuth/provider persist (#9), Allowances quota body (N/A until signed-in capture).
+
 ## v0.1.43 AGENTS_MOTION
 - Native Agents **01–18** empty path: default list **Cursor only** (Can't connect); Manage Select unconnected = Magpie `!onMagpie` (checks Cursor); guide `{n} of {m} done`.
 - Connect / stale / ModelPop / Not set up fold: gated `?demoAgents=1` or `localStorage magpie.demoAgents=1` — Show more · agent-fold spring · Connect from fold.
@@ -118,24 +125,27 @@
 | 4 | Routing 空态：等待请求三列舞台 | **已改**：idle 舞台 + 0 统计 | — | 对齐 `03-routing.png` |
 | 5 | Brand 在 `.side-top`；无 DEMO 徽章 | **已改** | — | |
 | 6 | Web 预览 660×600（非 1100×760） | **已改**；侧栏 absolute 于 `#root` | — | |
-| 7 | `.rt-sky` 飞鸟依赖 gateway trace | mock「演示飞鸟」+ FLIER/`rtflap .42s` | P1 | 默认空态无飞； hop 仍 mock |
+| 7 | `.rt-sky` 飞鸟依赖 gateway trace | mock「演示飞鸟」+ FLIER/`rtflap .42s` | **P1** | 动效对齐；真 gateway hop 仍缺 |
 | 8 | 账号行 `.dot`/`.bar` 在有请求时 | 空态为 `li.idle` | — | 空态正确 |
-| 9 | Provider 完整行控件 | **v0.1.34** 有账号列表行+accts 编辑器 | P1 | 真 key/OAuth/arrange 落盘仍 mock |
+| 9 | Provider 完整行控件 | **v0.1.34** 有账号列表行+accts 编辑器 | **P1** | 真 key/OAuth/arrange 落盘仍 mock（NOTES 未点） |
 | 10 | Gateway 空态壳+主交互 | **v0.1.9**；filled demo **v0.1.12** | P1 | Gateway 仍可再抠 |
 | 14 | Settings 全 tab 深页 | Settings **v0.1.41** fonts menus + nest 10–70 | P1 | 真 OS 字体枚举/真 Apply/OTel/有配额 Allowances 仍 mock |
-| 11 | `#sideEdge` 拖宽 | **v0.1.36** sideDrag | — | localStorage `magpie.sideWidth` |
+| 11 | `#sideEdge` 拖宽 | **v0.1.36** sideDrag · **CLOSED** | — | localStorage `magpie.sideWidth` |
 | 12 | 业务后端 / 真网关 | 无 | P2 | 范围外 |
 | 13 | 先前 PASS_WITH_GAPS | **已撤销**；现以截图空态对齐为准 | — | |
 | 15 | Antigravity risk/import | **v0.1.27** 独立卡（非 Claude 共用） | — | Sign in anyway = mock waiting；无真 Google OAuth |
 | 16 | Copilot Proxy proto-menu | **v0.1.27** ProtoMultiMenu + Custom… form | — | 对齐 `signInProxyLink`/`signInProxyChoices` |
 
-## 仍开放的有意差距
+## 仍开放的有意差距（诚实 P1 only）
 
-1. 无真实 provider 添加 / agent 接线 / gateway / OAuth  
-2. 飞鸟仍为 Demo 开关 mock（FLIER+rtflap .42s 已对齐；非真 gateway · GAP #7 仍 P1）  
-3. Tray **01–14** · Usage **01–50** · Plugins **01–34** · Settings **10–70** 已消费（v0.1.40）；Allowances 无配额 = **N/A**；OTel tab 默认隐藏  
-4. Provider 列表已有账号态壳；真 key 轮转 / arrange drag 落盘仍 mock  
-5. 未做原生 Tauri；Electron 系统标题栏（Windows 上游亦然）  
-6. Usage filled（KPI/heatmap/ledger rows）仍为演示开关 mock，非原生有数据截图
+| # | 项 | 等级 | 说明 |
+|---|-----|------|------|
+| 7 | 真网关飞鸟 | **P1** | FLIER/`rtflap .42s` 已对齐；hop 仍 mock，非 live gateway trace |
+| 9 | 真 OAuth / key 落盘 / arrange persist | **P1** | 列表+accts 壳已在；NOTES 未点 Sign-in/key |
+| — | Allowances 配额正文 | **P1 / N/A** | 无订阅时整段隐藏属原生；有配额 UI 需 signed-in 点录，**不编造** |
+
+**已关闭（勿再标 PARTIAL）：** Tray Routing 嵌套（v0.1.36）· `#sideEdge` 拖宽（v0.1.36）· Tray 01–14 · Usage 01–50 · Plugins 01–34 · Settings 10–70 · Agents empty motion（v0.1.43）· 控件动效 token 对齐（v0.1.44，Install 点击仍留给 recorder）。
+
+有意 Demo 简化（非 P1）：无真后端；Electron 标题栏；Usage filled 演示开关；OS 字体枚举 mock；OTel 默认隐藏。
 
 *Sessions / Library 不是顶栏缺口：官方默认不展示。*

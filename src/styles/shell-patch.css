@@ -610,3 +610,46 @@ body.web.side-nav {
   #providers.sorting > .row,
   #agents.sorting > .row { transition: none !important; }
 }
+
+/* ---- v0.1.44 MOTION_GAP — Magpie-only keyframes / control motions ---- */
+/* plugins: askNPM ghost cards + README skeleton (plugins.css) */
+.pm-card.ghost { gap: 10px; pointer-events: none; min-height: 72px; flex-direction: column; justify-content: center; }
+.pm-card.ghost > div { border-radius: 6px; background: var(--pill); animation: pm-pulse 1.3s ease-in-out infinite; }
+.pm-card.ghost .g1 { height: 36px; width: 60%; }
+.pm-card.ghost .g2 { height: 11px; width: 88%; }
+.pm-card.ghost .g3 { height: 11px; width: 40%; }
+@keyframes pm-pulse { 50% { opacity: .5; } }
+.pm-rskel { height: 11px; margin: 8px 0; border-radius: 5px; background: var(--pill); animation: pm-pulse 1.3s ease-in-out infinite; }
+.pm-rskel.short { width: 55%; }
+.pm-act .spin { width: 10px; height: 10px; border-radius: 50%; border: 1.5px solid currentColor; border-right-color: transparent; display: inline-block; vertical-align: -1px; margin-right: 6px; animation: spin .7s linear infinite; }
+
+/* library plugin motions (library.css) */
+.lib-savebar {
+  position: sticky; bottom: 8px; z-index: 3; margin-top: 12px; display: flex; align-items: center; gap: 6px;
+  padding: 7px 8px 7px 14px; border-radius: 11px; background: var(--pop-bg, var(--card)); box-shadow: var(--shadow, 0 8px 24px rgba(0,0,0,.12));
+  animation: lib-rise .22s var(--ease);
+}
+.lib-savebar[hidden] { display: none; }
+@keyframes lib-rise { from { opacity: 0; transform: translateY(8px); } }
+.lib-icon { width: 26px; height: 26px; padding: 0; display: inline-grid; place-items: center; }
+.lib-icon.busy svg { animation: lib-bob .8s var(--ease) infinite alternate; }
+@keyframes lib-bob { to { transform: translateY(-2px); } }
+.lib-probe { animation: content-in .22s var(--ease); }
+.lib-skel { animation: lib-skel-in .3s var(--ease) .18s backwards; }
+@keyframes lib-skel-in { from { opacity: 0; } }
+.lib-skel .skeleton {
+  background-color: var(--skel, var(--pill)); background-attachment: fixed; background-size: 200vw 100%;
+  background-repeat: no-repeat; background-position: 20vw 0; animation-name: lib-skel-shift; animation-duration: 1.8s;
+}
+@keyframes lib-skel-shift { from { background-position: 20vw 0; } to { background-position: -100vw 0; } }
+.mk-spin { flex: none; width: 12px; height: 12px; border-radius: 50%; border: 1.5px solid var(--line); border-top-color: var(--fg-2); opacity: 0; transition: opacity .15s; }
+.mk.loading .mk-spin { opacity: 1; animation: mk-spin .7s linear infinite; }
+@keyframes mk-spin { to { transform: rotate(360deg); } }
+.mk.loading .mk-grid { opacity: .55; transition: opacity .2s var(--ease); }
+.lib-health.checking::before { animation: lib-health-pulse 1s ease-in-out infinite alternate; }
+@keyframes lib-health-pulse { to { opacity: .25; } }
+@media (prefers-reduced-motion: reduce) {
+  .pm-card.ghost > div, .pm-rskel { animation: none; }
+  .lib-icon.busy svg, .lib-skel, .lib-skel .skeleton, .lib-health.checking::before, .mk.loading .mk-spin { animation: none !important; }
+  .lib-savebar, .lib-probe { animation: none; }
+}

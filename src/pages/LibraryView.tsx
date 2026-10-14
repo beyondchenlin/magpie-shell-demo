@@ -4,7 +4,7 @@ import { t } from "../i18n";
 /**
  * Magpie Library plugin (native-linux/library 01–21 + Skills/Hooks/RTK from source).
  * Feature-gated: Plugins › Built-in › Library.
- * Motion: view-in .24s; modal pop-in .42s; Discard .28s; segs .18s; lib-switch.
+ * Motion: view-in .24s; modal pop-in .42s; Discard .28s; segs .18s; lib-switch; lib-bob/lib-probe/mk-spin (v0.1.44).
  */
 
 const LIB_TABS = [
@@ -746,10 +746,12 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
               {t("A skill is a folder with a SKILL.md an agent loads when it's needed. The library keeps each one once and links it into the agents you pick.")}
             </p>
             <div className="card lib-install" style={{ padding: "12px 14px", border: "1px solid var(--line)", borderRadius: 12, marginBottom: 16 }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                <svg viewBox="0 0 16 16" width={14} height={14} fill="none" stroke="currentColor" strokeWidth="1.3" aria-hidden>
-                  <path d={SEARCH} />
-                </svg>
+              <div className="lib-find" style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <span className={`lib-icon${skillLooking ? " busy" : ""}`} aria-hidden>
+                  <svg viewBox="0 0 16 16" width={14} height={14} fill="none" stroke="currentColor" strokeWidth="1.3">
+                    <path d={SEARCH} />
+                  </svg>
+                </span>
                 <input
                   type="text"
                   value={skillSource}
@@ -765,7 +767,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                   }}
                   style={{ flex: 1, minWidth: 0 }}
                 />
-                <button type="button" className="text action" disabled={skillLooking || !skillSource.trim()} onClick={findSkills}>
+                <button type="button" className={`text action${skillLooking ? " busy" : ""}`} disabled={skillLooking || !skillSource.trim()} onClick={findSkills}>
                   {skillLooking ? t("Looking…") : t("Find skills")}
                 </button>
               </div>
@@ -775,7 +777,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                 </div>
               ) : null}
               {skillProbe?.mock ? (
-                <div style={{ marginTop: 12, animation: "fade-in .18s var(--ease)" }}>
+                <div className="lib-probe" style={{ marginTop: 12 }}>
                   <div className="row-head" style={{ marginBottom: 8, fontSize: 12, color: "var(--muted)", display: "flex", alignItems: "center", gap: 8 }}>
                     <span>
                       {skillProbe.mock.length === 1

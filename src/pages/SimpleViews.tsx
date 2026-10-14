@@ -1972,6 +1972,8 @@ export function PluginsView() {
   });
     const [asking, setAsking] = useState<{ pkg: string; op: "remove" | "off" | "move" } | null>(null);
   const [pluginDetail, setPluginDetail] = useState<(typeof DEMO_MARKET)[number]["cards"][number] | null>(null);
+  /** Magpie detail: pm-rskel until README resolves */
+  const [detailReadmeReady, setDetailReadmeReady] = useState(false);
   const [gwCallsOpen, setGwCallsOpen] = useState(false);
 
   useEffect(() => {
@@ -1982,7 +1984,17 @@ export function PluginsView() {
     }
   }, [tab]);
 
-  // Magpie askNPM: 350ms debounce, min 2 chars
+  useEffect(() => {
+    if (!pluginDetail) {
+      setDetailReadmeReady(false);
+      return;
+    }
+    setDetailReadmeReady(false);
+    const id = window.setTimeout(() => setDetailReadmeReady(true), 180);
+    return () => clearTimeout(id);
+  }, [pluginDetail]);
+
+  // Magpie askNPM: 350ms debounce, then brief plugins/search loading (hits.loading → skeleton)
   useEffect(() => {
     const q = query.trim();
     if (q.length < 2) {
@@ -1991,11 +2003,16 @@ export function PluginsView() {
       return;
     }
     setSearchBusy(true);
+    let round: number | undefined;
     const id = window.setTimeout(() => {
       setDebouncedQ(q.toLowerCase());
-      setSearchBusy(false);
+      // Magpie On npm stays on skeleton while searchNPM resolves
+      round = window.setTimeout(() => setSearchBusy(false), 220);
     }, 350);
-    return () => clearTimeout(id);
+    return () => {
+      clearTimeout(id);
+      if (round !== undefined) clearTimeout(round);
+    };
   }, [query]);
 
   const npmHits = useMemo(() => {
@@ -2352,7 +2369,17 @@ export function PluginsView() {
                   <h3>{t("On npm")}</h3>
                   <span>{t("OpenCode plugins and pi packages anyone published — read what one does before you install it")}</span>
                 </div>
-                {(() => {
+                {searchBusy ? (
+                  <div className="pm-grid" aria-busy="true" aria-label={t("Searching…")}>
+                    {Array.from({ length: 2 }, (_, i) => (
+                      <div className="pm-card ghost" key={i} aria-hidden>
+                        <div className="g1" />
+                        <div className="g2" />
+                        <div className="g3" />
+                      </div>
+                    ))}
+                  </div>
+                ) : (() => {
                   const known = new Set(npmHits.map((c) => c.pkg));
                   const base = mirror ? DEMO_ON_NPM_MIRROR : DEMO_ON_NPM;
                   const list = base.filter((x) => !known.has(x.pkg));
@@ -2402,12 +2429,17 @@ export function PluginsView() {
                 })()}
               </div>
             ) : null}
-            {query.trim() &&
-            query.trim().length >= 2 &&
-            !debouncedQ &&
-            searchBusy ? (
-              <div className="pm-ghnone" style={{ opacity: 0.7 }}>
-                <b>{t("Searching…")}</b>
+            {query.trim().length >= 2 && !debouncedQ && searchBusy ? (
+              <div className="pm-sec" style={{ animation: "fade-in .16s var(--ease)" }} aria-busy="true" aria-label={t("Searching…")}>
+                <div className="pm-grid">
+                  {Array.from({ length: 6 }, (_, i) => (
+                    <div className="pm-card ghost" key={i} aria-hidden>
+                      <div className="g1" />
+                      <div className="g2" />
+                      <div className="g3" />
+                    </div>
+                  ))}
+                </div>
               </div>
             ) : null}
 
@@ -2947,7 +2979,13 @@ export function PluginsView() {
               </p>
             ) : null}
             <div className="pm-readme" style={{ marginTop: 12, paddingTop: 12, borderTop: "1px solid var(--line)", fontSize: 12.5, lineHeight: 1.5, color: "var(--fg-2)" }}>
-              {"readme" in pluginDetail && (pluginDetail as { readme?: string }).readme ? (
+              {!detailReadmeReady ? (
+                <>
+                  <div className="pm-rskel" aria-hidden />
+                  <div className="pm-rskel short" aria-hidden />
+                  <div className="pm-rskel" aria-hidden />
+                </>
+              ) : "readme" in pluginDetail && (pluginDetail as { readme?: string }).readme ? (
                 <div className="pm-md"><h3>{(pluginDetail as { readme: string }).readme.split("\n")[0]}</h3><p>{(pluginDetail as { readme: string }).readme}</p></div>
               ) : (
                 <p>

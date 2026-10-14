@@ -1,3 +1,10 @@
+## v0.1.44 MOTION_GAP
+
+- Ported Magpie-only motion keyframes (`pm-pulse` / lib-* / `mk-spin`) into demo.
+- Plugins: ghost search skeletons + detail README `pm-rskel`; Install still recorder-only (NOTES).
+- Library: `lib-bob` on Find skills · `lib-probe` enter.
+- GAP: tray Routing + sideEdge marked **closed** (done in 0.1.36). Remaining P1 = bird / OAuth / Allowances quota N/A.
+
 ## v0.1.43 AGENTS_MOTION
 
 - Default Agents = native empty (Cursor only · Manage Select unconnected · Install 14 · Profiles none).
