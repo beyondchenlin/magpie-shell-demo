@@ -1,0 +1,75 @@
+name: Build Windows
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "package.json"
+      - "electron/**"
+      - "src/**"
+      - "index.html"
+      - "vite.config.ts"
+      - ".github/workflows/build-windows.yml"
+  workflow_dispatch:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Windows installers
+        run: npm run dist:win
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: List release artifacts
+        shell: bash
+        run: |
+          ls -la release/
+          file release/*.{exe,yml} 2>/dev/null || true
+
+      - name: Upload workflow artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: magpie-shell-demo-windows
+          path: |
+            release/*.exe
+            release/latest.yml
+          if-no-files-found: error
+
+      - name: Attach to GitHub Release
+        if: github.event_name == 'release' || github.event_name == 'workflow_dispatch'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${{ github.event.release.tag_name }}"
+          if [ -z "$TAG" ]; then
+            TAG=$(gh release list --limit 5 --json tagName,isLatest --jq '[.[]|select(.isLatest==true)][0].tagName // empty')
+            if [ -z "$TAG" ]; then
+              TAG=$(gh release list --limit 1 --json tagName --jq '.[0].tagName')
+            fi
+          fi
+          echo "Attaching to release tag: $TAG"
+          shopt -s nullglob
+          EXES=(release/*.exe)
+          if [ ${#EXES[@]} -eq 0 ]; then
+            echo "No exe found"
+            exit 1
+          fi
+          gh release upload "$TAG" "${EXES[@]}" --clobber
+          ls -la "${EXES[@]}"
