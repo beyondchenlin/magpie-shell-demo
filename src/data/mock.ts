@@ -136,6 +136,14 @@ export const ZH = {
   viaHomebrew: "Homebrew",
   viaNpm: "npm",
   copy: "复制",
+  noMatchingAgents: "没有匹配的 Agent",
+  agentHiddenN: "已隐藏 {n} 个 Agent",
+  agentUnhiddenN: "已取消隐藏 {n} 个 Agent",
+  installCmdCopied: "已复制{agent} 的安装命令",
+  hiddenFold: "已隐藏（{n}）",
+  showHidden: "你隐藏的 Agent · 点击查看",
+  showAgain: "显示",
+  showAgainTitle: "你隐藏了它 · 点击放回列表",
 } as const;
 
 export const VIA_LABEL: Record<string, string> = {

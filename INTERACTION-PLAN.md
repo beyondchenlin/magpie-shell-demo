@@ -67,3 +67,9 @@ Sessions / Library：仅在 Plugins → Built-in 打开后出现时再录。
 - 进程：`magpie web --addr 127.0.0.1:17890` 在跑  
 - 首次访问 303 + Set-Cookie 属鉴权跳转，带 `?k=` 后可用  
 - 空态基准图：`/workspace/magpie-official/shots/01-agents.png`
+
+## 进度（2026-10-14）
+
+- Agents：A-01/02/05/06/08/09 + **A-M01…A-M09** + **A-I01…A-I18** 已录已实现（web）。
+- 总判定：`AGENTS_MANAGE_INSTALL_PARTIAL`（非全应用 PASS）。
+- 未录：Hide Get started、Arrange Cursor；Providers 起未开录。

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type FormEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import installsData from "../data/installs.json";
 import { VIA_LABEL, ZH, iconSrc } from "../data/mock";
 
@@ -11,6 +11,8 @@ type Install = {
 };
 
 const INSTALLS = installsData as Install[];
+
+const ALL_AGENTS = [{ id: "cursor", name: "Cursor", icon: "cursor", connected: false }] as const;
 
 const SPRING = (() => {
   try {
@@ -30,9 +32,18 @@ type Props = {
   onAddProvider: () => void;
   /** Incremented by App on #sync — closes naming like Magpie renderProfiles. */
   refreshNonce: number;
+  onStatus: (msg: string, kind?: string) => void;
 };
 
-function CopyBtn({ text }: { text: string }) {
+function CopyBtn({
+  text,
+  agentName,
+  onStatus,
+}: {
+  text: string;
+  agentName: string;
+  onStatus: (msg: string, kind?: string) => void;
+}) {
   const [done, setDone] = useState(false);
   return (
     <button
@@ -45,6 +56,8 @@ function CopyBtn({ text }: { text: string }) {
         void navigator.clipboard?.writeText(text).catch(() => {});
         setDone(true);
         setTimeout(() => setDone(false), 900);
+        // Magpie: status(t("{what} copied", { what: t("{agent}'s install command", …) }))
+        onStatus(ZH.installCmdCopied.replace("{agent}", agentName), "ok");
       }}
     >
       <svg viewBox="0 0 16 16" width={12} height={12} aria-hidden>
@@ -70,19 +83,37 @@ function CopyBtn({ text }: { text: string }) {
   );
 }
 
-function ManageAgentsModal({ onClose }: { onClose: () => void }) {
+type ManageProps = {
+  hiddenIds: Set<string>;
+  onHiddenChange: (next: Set<string>) => void;
+  onClose: () => void;
+};
+
+function ManageAgentsModal({
+  hiddenIds,
+  onHiddenChange,
+  onClose,
+}: ManageProps) {
   const modalRef = useRef<HTMLDivElement>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
   const [q, setQ] = useState("");
   const [selected, setSelected] = useState<Set<string>>(() => new Set());
+  const [result, setResult] = useState("");
   const closing = useRef(false);
 
-  const agents = [{ id: "cursor", name: "Cursor", icon: "cursor" }];
-  const matching = agents.filter((a) =>
-    (a.name + " " + a.id)
-      .toLocaleLowerCase()
-      .includes(q.trim().toLocaleLowerCase()),
+  const agents = ALL_AGENTS;
+  const matching = useMemo(
+    () =>
+      agents.filter((a) =>
+        (a.name + " " + a.id)
+          .toLocaleLowerCase()
+          .includes(q.trim().toLocaleLowerCase()),
+      ),
+    [agents, q],
   );
+
+  const canHide = [...selected].some((id) => !hiddenIds.has(id));
+  const canUnhide = [...selected].some((id) => hiddenIds.has(id));
 
   const close = () => {
     if (closing.current) return;
@@ -175,6 +206,24 @@ function ManageAgentsModal({ onClose }: { onClose: () => void }) {
     });
   };
 
+  /** Magpie save(true|false): only ids whose visibility actually changes. */
+  const applyVisibility = (hide: boolean) => {
+    const ids = [...selected].filter((id) => hiddenIds.has(id) !== hide);
+    if (!ids.length) return;
+    const next = new Set(hiddenIds);
+    for (const id of ids) {
+      if (hide) next.add(id);
+      else next.delete(id);
+    }
+    onHiddenChange(next);
+    setSelected(new Set());
+    setResult(
+      hide
+        ? ZH.agentHiddenN.replace("{n}", String(ids.length))
+        : ZH.agentUnhiddenN.replace("{n}", String(ids.length)),
+    );
+  };
+
   return (
     <div
       className="modal lib"
@@ -235,9 +284,14 @@ function ManageAgentsModal({ onClose }: { onClose: () => void }) {
               <button
                 type="button"
                 className="text"
-                onClick={() =>
-                  setSelected(new Set(matching.map((a) => a.id)))
-                }
+                onClick={() => {
+                  // Magpie: clear then add matching !onMagpie
+                  setSelected(
+                    new Set(
+                      matching.filter((a) => !a.connected).map((a) => a.id),
+                    ),
+                  );
+                }}
               >
                 {ZH.selectUnconnected}
               </button>
@@ -254,7 +308,7 @@ function ManageAgentsModal({ onClose }: { onClose: () => void }) {
             </span>
             <div className="ag-manage-rows">
               {matching.length === 0 ? (
-                <p className="lib-confirm">无匹配的 Agent</p>
+                <p className="lib-confirm">{ZH.noMatchingAgents}</p>
               ) : (
                 matching.map((a) => (
                   <label key={a.id} className="ag-manage-row" data-id={a.id}>
@@ -268,18 +322,32 @@ function ManageAgentsModal({ onClose }: { onClose: () => void }) {
                       <img src={iconSrc(a.icon)} alt="" />
                     </span>
                     <span className="ag-manage-name">{a.name}</span>
-                    <span className="ag-manage-state">{ZH.notHidden}</span>
+                    <span className="ag-manage-state">
+                      {hiddenIds.has(a.id) ? ZH.hidden : ZH.notHidden}
+                    </span>
                   </label>
                 ))
               )}
             </div>
-            <p className="ag-manage-result" role="status" />
+            <p className="ag-manage-result" role="status">
+              {result}
+            </p>
           </div>
           <div className="bar">
-            <button type="button" className="text" disabled={selected.size === 0}>
+            <button
+              type="button"
+              className="text"
+              disabled={!canHide}
+              onClick={() => applyVisibility(true)}
+            >
               {ZH.hideSelected}
             </button>
-            <button type="button" className="text" disabled>
+            <button
+              type="button"
+              className="text"
+              disabled={!canUnhide}
+              onClick={() => applyVisibility(false)}
+            >
               {ZH.unhideSelected}
             </button>
             <span className="grow" />
@@ -293,12 +361,18 @@ function ManageAgentsModal({ onClose }: { onClose: () => void }) {
   );
 }
 
-export function AgentsView({ onAddProvider, refreshNonce }: Props) {
+export function AgentsView({
+  onAddProvider,
+  refreshNonce,
+  onStatus,
+}: Props) {
   const [guideHidden, setGuideHidden] = useState(false);
   const [installsOpen, setInstallsOpen] = useState(false);
   const [manageOpen, setManageOpen] = useState(false);
   const [naming, setNaming] = useState(false);
   const [profileName, setProfileName] = useState("");
+  const [hiddenIds, setHiddenIds] = useState<Set<string>>(() => new Set());
+  const [showHiddenFold, setShowHiddenFold] = useState(false);
   const nameRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -330,6 +404,9 @@ export function AgentsView({ onAddProvider, refreshNonce }: Props) {
     closeSave();
   };
 
+  const visible = ALL_AGENTS.filter((a) => !hiddenIds.has(a.id));
+  const hidden = ALL_AGENTS.filter((a) => hiddenIds.has(a.id));
+
   return (
     <>
       <main className="view" id="view-agents">
@@ -346,6 +423,7 @@ export function AgentsView({ onAddProvider, refreshNonce }: Props) {
                   aria-label={ZH.hideGetStarted}
                   onClick={(e) => {
                     e.stopPropagation();
+                    // Not recorded this pass — stub only (CLICK-LOG NOTE)
                     setGuideHidden(true);
                   }}
                 >
@@ -369,7 +447,6 @@ export function AgentsView({ onAddProvider, refreshNonce }: Props) {
                     <b className="guide-title">{ZH.addModelSource}</b>
                     <span className="guide-say">{ZH.addModelSourceSay}</span>
                     <div className="guide-acts">
-                      {/* A-01: navigate to Providers — no leave animation */}
                       <button
                         type="button"
                         className="text primary guide-go"
@@ -387,7 +464,6 @@ export function AgentsView({ onAddProvider, refreshNonce }: Props) {
                   <div className="guide-body">
                     <b className="guide-title">{ZH.connectAgent}</b>
                     <span className="guide-say">{ZH.connectAgentSay}</span>
-                    {/* A-02: no clickable control on this step */}
                   </div>
                 </li>
               </ol>
@@ -396,22 +472,80 @@ export function AgentsView({ onAddProvider, refreshNonce }: Props) {
         ) : null}
 
         <div className="list" id="agents">
-          <div className="row agent conn" data-id="cursor" title="Cursor">
-            <button type="button" className="ag-handle" aria-label="Cursor">
-              <span className="ic">
-                <img src={iconSrc("cursor")} alt="" />
-              </span>
-            </button>
-            <div className="who">
-              <div className="name">Cursor</div>
-              <div className="ag-native-note">
-                <span className="sq" aria-hidden />
-                <span className="sq" aria-hidden />
-                <span>{ZH.onlyCursorOwn}</span>
+          {visible.map((a) => (
+            <div
+              key={a.id}
+              className="row agent conn"
+              data-id={a.id}
+              title={a.name}
+            >
+              <button type="button" className="ag-handle" aria-label={a.name}>
+                <span className="ic">
+                  <img src={iconSrc(a.icon)} alt="" />
+                </span>
+              </button>
+              <div className="who">
+                <div className="name">{a.name}</div>
+                <div className="ag-native-note">
+                  <span className="sq" aria-hidden />
+                  <span className="sq" aria-hidden />
+                  <span>{ZH.onlyCursorOwn}</span>
+                </div>
               </div>
+              <span className="ag-cant">{ZH.cantConnect}</span>
             </div>
-            <span className="ag-cant">{ZH.cantConnect}</span>
-          </div>
+          ))}
+
+          {hidden.length > 0 ? (
+            <>
+              <button
+                type="button"
+                className="agent-fold-cap agent-hid-line"
+                aria-expanded={showHiddenFold}
+                title={ZH.showHidden}
+                onClick={() => setShowHiddenFold((o) => !o)}
+              >
+                <span>
+                  {ZH.hiddenFold.replace("{n}", String(hidden.length))}
+                </span>
+              </button>
+              {showHiddenFold
+                ? hidden.map((a) => (
+                    <div
+                      key={a.id}
+                      className="row agent conn hid"
+                      data-id={a.id}
+                      title={a.name}
+                    >
+                      <button
+                        type="button"
+                        className="ag-handle"
+                        aria-label={a.name}
+                      >
+                        <span className="ic">
+                          <img src={iconSrc(a.icon)} alt="" />
+                        </span>
+                      </button>
+                      <div className="who">
+                        <div className="name">{a.name}</div>
+                      </div>
+                      <button
+                        type="button"
+                        className="ag-show"
+                        title={ZH.showAgainTitle}
+                        onClick={() => {
+                          const next = new Set(hiddenIds);
+                          next.delete(a.id);
+                          setHiddenIds(next);
+                        }}
+                      >
+                        <span>{ZH.showAgain}</span>
+                      </button>
+                    </div>
+                  ))
+                : null}
+            </>
+          ) : null}
 
           <div className="ag-manage-bar" id="agentsManage">
             <button
@@ -491,7 +625,11 @@ export function AgentsView({ onAddProvider, refreshNonce }: Props) {
                           {VIA_LABEL[c.via] || c.via}
                         </span>
                         <code>{c.command}</code>
-                        <CopyBtn text={c.command} />
+                        <CopyBtn
+                          text={c.command}
+                          agentName={x.name}
+                          onStatus={onStatus}
+                        />
                       </div>
                     ))}
                   </div>
@@ -540,7 +678,11 @@ export function AgentsView({ onAddProvider, refreshNonce }: Props) {
       </main>
 
       {manageOpen ? (
-        <ManageAgentsModal onClose={() => setManageOpen(false)} />
+        <ManageAgentsModal
+          hiddenIds={hiddenIds}
+          onHiddenChange={setHiddenIds}
+          onClose={() => setManageOpen(false)}
+        />
       ) : null}
     </>
   );

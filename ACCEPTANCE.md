@@ -1,7 +1,7 @@
 # Magpie Shell Demo — 验收清单（对照官方截图 + 源码）
 
 > **静态空态 ≠ 交互 1:1。**  
-> 当前总判定：**`AGENTS_INTERACTIONS_PARTIAL`** — Agents 优先 6 控件（A-01/02/05/06/08/09）已接线；其余页/控件未做。  
+> 当前总判定：**`AGENTS_MANAGE_INSTALL_PARTIAL`** — Agents 优先 6 控件 + Manage A-M01…A-M09 + Install Copy A-I01…A-I18 已接线；Hide Get started / Arrange Cursor 未录；其余页未做。  
 > **不是**全应用 PASS。  
 > 交互计划：[`INTERACTION-PLAN.md`](./INTERACTION-PLAN.md) · Spec：[`interactions/pages/agents/SPEC.md`](./interactions/pages/agents/SPEC.md)
 
@@ -77,15 +77,15 @@
 | A-09 | #sync spin .9s + toast「已重新检测 Agent」 | [x] |
 | — | A-03…A-04 / A-07 / A-10 / A-11…A-52 | [ ] 未验收 |
 
-Web 预览先验这 6 项；Windows `.exe` 随 0.1.2 GHA 构建。
+Web 预览先验 Manage 隐藏/取消隐藏/Done 与安装 Copy toast；Windows `.exe` 随 0.1.3 GHA/Release。
 
 ## F. 交付
 
 | # | 项 | 状态 |
 |---|----|------|
-| F1 | Windows Setup `.exe` Release | [x] | https://github.com/beyondchenlin/magpie-shell-demo/releases/download/v0.1.2/Magpie-Shell-Demo-Setup-0.1.2.exe |
+| F1 | Windows Setup `.exe` Release | [~] | v0.1.2 已有；**v0.1.3** 待 GHA（含 Manage/Copy） |
 | F2 | Vercel Web 预览 | [x] | https://magpie-shell-demo.vercel.app （验 A-01…A-09） |
 
 ---
 
-*诚实原则：仅 6 个 Agents 控件交互达标 ≠ 全应用 1:1；不写全量 PASS。*
+*诚实原则：Agents Manage+Install Copy 部分达标 ≠ 全应用 1:1；不写全量 PASS。*

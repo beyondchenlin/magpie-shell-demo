@@ -149,4 +149,11 @@
 
 P2 建议顺序：先 A-01 → A-02 → A-05（含 A-15…24）→ A-06（含 A-11…14）→ A-08/A-25 → A-09；有第二个可接入 agent 后再录 E/F/G。
 
-**本文件状态：P1 盘点完成 · P2 优先批 A-01/02/05/06/08/09 已录（CLICK-LOG）· demo 已实现 · 其余 A-xx 未做。**
+**本文件状态：P1 盘点完成 · P2 优先批 A-01/02/05/06/08/09 已录已实现 · Manage A-M01…A-M09 + Install Copy A-I01…A-I18 已录已实现（v0.1.3）· Hide Get started / Arrange Cursor 未录不发明 · 其余 A-xx 未做 · 全应用非 PASS。**
+
+### A-M* / A-I* 对照 CONTROLS 旧 ID
+
+| CLICK-LOG | CONTROLS | 状态 |
+|-----------|----------|------|
+| A-11, A-M01…A-M09 | A-15…A-24 | demo 已实现 |
+| A-I01…A-I18 | A-13（每条 Copy） | demo 已实现 |

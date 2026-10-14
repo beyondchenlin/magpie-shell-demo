@@ -203,6 +203,7 @@ export default function App() {
         <AgentsView
           onAddProvider={() => go("providers")}
           refreshNonce={refreshNonce}
+          onStatus={showStatus}
         />
       )}
       {view === "providers" && <ProvidersView />}
