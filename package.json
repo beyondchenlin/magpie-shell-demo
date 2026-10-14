@@ -10,9 +10,9 @@
     "preview": "vite preview",
     "electron": "electron .",
     "dist:web": "tsc -b && vite build",
-    "dist:linux": "tsc -b && vite build && electron-builder --linux AppImage",
+    "dist:linux": "tsc -b && vite build && electron-builder --linux AppImage --publish never",
     "dist:dir": "tsc -b && vite build && electron-builder --linux dir",
-    "dist:win": "tsc -b && vite build && electron-builder --win"
+    "dist:win": "tsc -b && vite build && electron-builder --win --publish never"
   },
   "dependencies": {
     "react": "^19.2.8",
@@ -47,11 +47,7 @@
         "AppImage"
       ],
       "category": "Utility",
-      "artifactName": "${productName}-${version}.${ext}",
-      "desktop": {
-        "Name": "Magpie Shell Demo",
-        "StartupWMClass": "magpie-shell-demo"
-      }
+      "artifactName": "${productName}-${version}.${ext}"
     },
     "win": {
       "target": [
