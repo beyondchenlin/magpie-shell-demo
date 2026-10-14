@@ -1,3 +1,10 @@
+## v0.1.45 PLUGINS_INSTALL
+- Native `plugins/35–40` + NOTES: per-card Install on Suggested (OpenCode Zen Free).
+- Pale Install → hover solid indigo/white; busy **Getting Bun…** (widened gray + spinner; no Installing…); green check **Installed**; stay on Discover; tab **Installed · 1**; toast `{name} is installed`.
+- Installed row (shot 40): icon · name · v0.1.1 · Provider kind chip · Switch off · Remove; footer Bun **1.4.2** + Check for updates (not clicked).
+- Still mock: true Bun download / npm install / Switch-off·Remove nest (next) / Confirm removal dialog.
+- Allowances quota body: **N/A** (unchanged). Skip Vercel 402.
+
 ## v0.1.44 MOTION_GAP
 - Diff Magpie CSS/JS transition tokens vs demo: Magpie-only keyframes were `pm-pulse`, `lib-bob`, `lib-rise`, `lib-skel-in`/`lib-skel-shift`, `mk-spin`, `lib-health-pulse` — now ported into `shell-patch.css`.
 - Wired: Plugins askNPM **ghost** cards (6 pre-debounce · 2 On-npm while `hits.loading`) + detail **pm-rskel** README pulse; Library Find skills **lib-bob** + probe **lib-probe** / content-in.

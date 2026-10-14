@@ -408,7 +408,8 @@ body.web.side-nav {
 .pm-act.get { background: var(--accent-soft, color-mix(in srgb, var(--accent) 16%, var(--card))); color: var(--accent); border-color: transparent; }
 .pm-act.get:hover:not(:disabled) { background: var(--accent); color: var(--accent-fg, #fff); }
 .pm-act.busy { display: inline-flex; align-items: center; gap: 6px; background: transparent; color: var(--muted); border-color: transparent; font-weight: 500; cursor: default; }
-.pm-act.done { background: transparent; color: var(--muted); border-color: transparent; font-weight: 500; cursor: default; }
+.pm-act.done { display: inline-flex; align-items: center; gap: 4px; background: none; color: var(--green); border-color: transparent; padding: 0 8px; min-width: 0; font-weight: 500; cursor: default; }
+.pm-act.done:hover:not(:disabled) { background: var(--green-soft, color-mix(in srgb, var(--green) 14%, var(--card))); color: var(--green); }
 .pm-act .spin { width: 10px; height: 10px; border-radius: 50%; border: 1.5px solid currentColor; border-right-color: transparent; animation: spin .7s linear infinite; flex: none; }
 .pm-card .pm-act { transition: background .12s var(--ease), color .12s var(--ease), transform .12s var(--ease), filter .12s var(--ease); }
 
@@ -653,3 +654,12 @@ body.web.side-nav {
   .lib-icon.busy svg, .lib-skel, .lib-skel .skeleton, .lib-health.checking::before, .mk.loading .mk-spin { animation: none !important; }
   .lib-savebar, .lib-probe { animation: none; }
 }
+
+/* —— Plugins Install nest (v0.1.45) —— */
+.pm-chip.kind { gap: 4px; flex: none; padding: 0; background: none; color: var(--fg-2); font-weight: 400; height: auto; }
+.pm-chip.kind svg { flex: none; }
+.pm-chip.kind.pv { color: color-mix(in srgb, var(--accent) 80%, var(--fg-2)); }
+.pm-chip.kind.mw { color: color-mix(in srgb, color-mix(in oklch, var(--green) 60%, var(--accent)) 80%, var(--fg-2)); }
+.pm-chip.kind.ag { color: color-mix(in srgb, color-mix(in oklch, var(--amber) 55%, var(--accent)) 80%, var(--fg-2)); }
+.pm-row .pm-logo { border-radius: 8px; }
+.pm-act.busy { min-width: 108px; justify-content: center; }

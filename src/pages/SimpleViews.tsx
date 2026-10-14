@@ -1922,7 +1922,11 @@ const DEMO_ON_NPM_MIRROR = [
 ];
 
 
-export function PluginsView() {
+export function PluginsView({
+  onStatus,
+}: {
+  onStatus?: (msg: string, kind?: string, ms?: number) => void;
+} = {}) {
   const [tab, setTab] = useState<string>(() => {
     try {
       return localStorage.getItem("magpie.pluginTab") || "discover";
@@ -1951,6 +1955,8 @@ export function PluginsView() {
     {
       pkg: string;
       name: string;
+      ver?: string;
+      kind?: string;
       off?: boolean;
       optsOpen?: boolean;
       opts?: string;
@@ -2020,14 +2026,62 @@ export function PluginsView() {
     return DEMO_NPM.filter((c) => `${c.name} ${c.pkg} ${c.q}`.toLowerCase().includes(debouncedQ));
   }, [debouncedQ]);
 
+  const lookupPluginMeta = (pkg: string) => {
+    const fromNpm = DEMO_NPM.find((x) => x.pkg === pkg);
+    if (fromNpm) return { ver: fromNpm.ver, kind: fromNpm.kind || "Provider" };
+    for (const sec of DEMO_MARKET) {
+      const c = sec.cards.find((x) => x.pkg === pkg);
+      if (c) return { ver: (c as { ver?: string }).ver, kind: (c as { kind?: string }).kind || "Provider" };
+    }
+    return { ver: undefined as string | undefined, kind: "Provider" as string };
+  };
+
   const install = (pkg: string, name: string) => {
+    if (busy) return;
     setBusy(pkg);
-    // Magpie install: busy on card → Installed tab; demo ~420ms then local list
+    // Magpie: no Bun yet → "Getting Bun…" then stay on Discover + toast (shots 37–39)
     window.setTimeout(() => {
-      setInstalled((list) => (list.some((x) => x.pkg === pkg) ? list : [...list, { pkg, name, opts: "", optsOpen: false }]));
+      const meta = lookupPluginMeta(pkg);
+      setInstalled((list) =>
+        list.some((x) => x.pkg === pkg)
+          ? list
+          : [...list, { pkg, name, ver: meta.ver, kind: meta.kind, opts: "", optsOpen: false }],
+      );
       setBusy(null);
-      setTab("installed");
-    }, 420);
+      onStatus?.(t("{name} is installed", { name }), "ok", 3500);
+    }, 1100);
+  };
+
+  const installAct = (pkg: string, has: boolean) => {
+    if (busy === pkg) {
+      return (
+        <>
+          <span className="spin" aria-hidden />
+          <span>{t("Getting Bun…")}</span>
+        </>
+      );
+    }
+    if (has) {
+      return (
+        <>
+          <svg
+            viewBox="0 0 16 16"
+            width={11}
+            height={11}
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.9"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden
+          >
+            <path d="M3.2 8.2 6.4 11.4 12.8 4.2" />
+          </svg>
+          <span>{t("Installed")}</span>
+        </>
+      );
+    }
+    return t("Install");
   };
 
   const n = installed.length;
@@ -2290,22 +2344,14 @@ export function PluginsView() {
                           <button
                             type="button"
                             className={`pm-act${busy === c.pkg ? " busy" : has ? " done" : " get"}`}
+                            title={busy === c.pkg ? t("Plugins run on Bun {v}, downloaded once", { v: "1.4.2" }) : undefined}
                             disabled={busy === c.pkg || has}
                             onClick={(e) => {
                               e.stopPropagation();
                               install(c.pkg, c.name);
                             }}
                           >
-                            {busy === c.pkg ? (
-                              <>
-                                <span className="spin" aria-hidden />
-                                <span>{t("Installing…")}</span>
-                              </>
-                            ) : has ? (
-                              t("Installed")
-                            ) : (
-                              t("Install")
-                            )}
+                            {installAct(c.pkg, has)}
                           </button>
                         </div>
                       );
@@ -2340,22 +2386,14 @@ export function PluginsView() {
                         <button
                           type="button"
                           className={`pm-act${busy === c.pkg ? " busy" : has ? " done" : " get"}`}
-                          disabled={busy === c.pkg || has}
+                          title={busy === c.pkg ? t("Plugins run on Bun {v}, downloaded once", { v: "1.4.2" }) : undefined}
+                            disabled={busy === c.pkg || has}
                           onClick={(e) => {
                             e.stopPropagation();
                             install(c.pkg, c.name);
                           }}
                         >
-                          {busy === c.pkg ? (
-                            <>
-                              <span className="spin" aria-hidden />
-                              <span>{t("Installing…")}</span>
-                            </>
-                          ) : has ? (
-                            t("Installed")
-                          ) : (
-                            t("Install")
-                          )}
+                          {installAct(c.pkg, has)}
                         </button>
                       </div>
                     );
@@ -2404,22 +2442,14 @@ export function PluginsView() {
                             <button
                               type="button"
                               className={`pm-act${busy === c.pkg ? " busy" : has ? " done" : " get"}`}
-                              disabled={busy === c.pkg || has}
+                              title={busy === c.pkg ? t("Plugins run on Bun {v}, downloaded once", { v: "1.4.2" }) : undefined}
+                            disabled={busy === c.pkg || has}
                               onClick={(e) => {
                                 e.stopPropagation();
                                 install(c.pkg, c.name);
                               }}
                             >
-                              {busy === c.pkg ? (
-                              <>
-                                <span className="spin" aria-hidden />
-                                <span>{t("Installing…")}</span>
-                              </>
-                            ) : has ? (
-                              t("Installed")
-                            ) : (
-                              t("Install")
-                            )}
+                              {installAct(c.pkg, has)}
                             </button>
                           </div>
                         );
@@ -2474,23 +2504,25 @@ export function PluginsView() {
                   disabled={!manualSpec.trim() || busy === "__manual__"}
                   onClick={() => {
                     const spec = manualSpec.trim();
-                    if (!spec) return;
+                    if (!spec || busy) return;
                     setBusy("__manual__");
                     window.setTimeout(() => {
                       const name = spec.split("/").pop() || spec;
                       setInstalled((list) =>
-                        list.some((x) => x.pkg === spec) ? list : [...list, { pkg: spec, name, opts: "", optsOpen: false }],
+                        list.some((x) => x.pkg === spec)
+                          ? list
+                          : [...list, { pkg: spec, name, ver: undefined, kind: "Provider", opts: "", optsOpen: false }],
                       );
                       setBusy(null);
-                      setTab("installed");
                       setManualSpec("");
-                    }, 420);
+                      onStatus?.(t("{name} is installed", { name }), "ok", 3500);
+                    }, 1100);
                   }}
                 >
                   {busy === "__manual__" ? (
                     <>
                       <span className="spin" aria-hidden style={{ display: "inline-block", width: 10, height: 10, marginRight: 6, verticalAlign: -1 }} />
-                      {t("Installing…")}
+                      {t("Getting Bun…")}
                     </>
                   ) : (
                     t("Install")
@@ -2541,10 +2573,33 @@ export function PluginsView() {
                 {[...installed]
                   .sort((a, b) => (pluginsSort === "za" ? -1 : 1) * a.name.localeCompare(b.name))
                   .map((e) => (
-                  <div className="row pref" key={e.pkg}>
+                  <div className={`row pref pm-row${e.off ? " off" : ""}`} key={e.pkg}>
+                    <div className="pm-logo" aria-hidden style={{ width: 32, height: 32, flex: "none" }}>
+                      ◆
+                    </div>
                     <div className="who">
                       <div className="name" style={{ display: "inline-flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
                         <span>{e.name}</span>
+                        {e.ver ? <span className="pm-ver">{e.ver.startsWith("v") ? e.ver : `v${e.ver}`}</span> : null}
+                        {e.kind && !e.off ? (
+                          <span
+                            className={`pm-chip kind${e.kind === "Provider" ? " pv" : e.kind === "Middleware" ? " mw" : e.kind === "Agent" ? " ag" : ""}`}
+                            title={
+                              e.kind === "Provider"
+                                ? t("Signs in to a subscription and serves its models")
+                                : e.kind === "Middleware"
+                                  ? t("Runs in magpie's gateway on what every agent sends and gets back")
+                                  : undefined
+                            }
+                          >
+                            {e.kind === "Provider" ? (
+                              <svg viewBox="0 0 16 16" width={11} height={11} fill="none" stroke="currentColor" strokeWidth="1.3" aria-hidden>
+                                <path d="M6 2v3 M10 2v3 M4.5 5h7v2.5a3.5 3.5 0 0 1-7 0z M8 11v3" />
+                              </svg>
+                            ) : null}
+                            <span>{t(e.kind)}</span>
+                          </span>
+                        ) : null}
                         {e.moved?.length && !e.off ? (
                           <span className="pm-chip moved" title={t("{names} runs on this plugin in place of the built-in", { names: e.moved.join(t(", ")) })}>
                             <span className="dot" />
@@ -2555,7 +2610,9 @@ export function PluginsView() {
                       <div className={`sub${asking?.pkg === e.pkg ? " ask" : ""}`}>
                         {asking?.pkg === e.pkg
                           ? null
-                          : `${e.pkg}${e.off ? ` · ${t("Off")}` : ""}`}
+                          : e.off
+                            ? t("Off")
+                            : null}
                       </div>
                       {e.optsOpen ? (
                         <div className="pm-opts">
@@ -2720,17 +2777,19 @@ export function PluginsView() {
                           {busy === e.pkg ? t("Moving…") : t("Move {name} here", { name: e.movable[0] })}
                         </button>
                       ) : null}
-                      <button
-                        type="button"
-                        className="text"
-                        onClick={() =>
-                          setInstalled((list) =>
-                            list.map((x) => (x.pkg === e.pkg ? { ...x, optsOpen: !x.optsOpen } : x)),
-                          )
-                        }
-                      >
-                        {e.optsOpen ? t("Close") : t("Options")}
-                      </button>
+                      {e.kind === "Middleware" && !e.off ? (
+                        <button
+                          type="button"
+                          className="text"
+                          onClick={() =>
+                            setInstalled((list) =>
+                              list.map((x) => (x.pkg === e.pkg ? { ...x, optsOpen: !x.optsOpen } : x)),
+                            )
+                          }
+                        >
+                          {e.optsOpen ? t("Close") : t("Options")}
+                        </button>
+                      ) : null}
                       <button
                         type="button"
                         className="text"
@@ -2745,11 +2804,13 @@ export function PluginsView() {
                           } else if (e.moved?.length) {
                             setAsking({ pkg: e.pkg, op: "off" });
                           } else {
-                            setAsking({ pkg: e.pkg, op: "off" });
+                            // Magpie: no moved → off immediately (shot 40 not clicked)
+                            setInstalled((list) => list.map((x) => (x.pkg === e.pkg ? { ...x, off: true, moved: [] } : x)));
+                            setAsking(null);
                           }
                         }}
                       >
-                        {e.off ? t("Enable") : t("Disable")}
+                        {e.off ? t("Switch on") : t("Switch off")}
                       </button>
                       <button
                         type="button"
@@ -2770,7 +2831,7 @@ export function PluginsView() {
                 ))}
               </div>
               <div className="pm-foot" style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 12 }}>
-                <span style={{ fontSize: 12, color: "var(--muted)" }}>{t("Plugins run on Bun {v}", { v: "1.2 (demo)" })}</span>
+                <span style={{ fontSize: 12, color: "var(--muted)" }}>{t("Plugins run on Bun {v}", { v: "1.4.2" })}</span>
                 <span className="grow" />
                 <button type="button" className="text pm-check">
                   {t("Check for updates")}
@@ -2943,19 +3004,11 @@ export function PluginsView() {
               <button
                 type="button"
                 className={`pm-act${busy === pluginDetail.pkg ? " busy" : installed.some((x) => x.pkg === pluginDetail.pkg) ? " done" : " get"}`}
+                title={busy === pluginDetail.pkg ? t("Plugins run on Bun {v}, downloaded once", { v: "1.4.2" }) : undefined}
                 disabled={busy === pluginDetail.pkg || installed.some((x) => x.pkg === pluginDetail.pkg)}
                 onClick={() => install(pluginDetail.pkg, pluginDetail.name)}
               >
-                {busy === pluginDetail.pkg ? (
-                  <>
-                    <span className="spin" aria-hidden />
-                    <span>{t("Installing…")}</span>
-                  </>
-                ) : installed.some((x) => x.pkg === pluginDetail.pkg) ? (
-                  t("Installed")
-                ) : (
-                  t("Install")
-                )}
+                {installAct(pluginDetail.pkg, installed.some((x) => x.pkg === pluginDetail.pkg))}
               </button>
             </div>
             <p className="pm-dsum" style={{ marginTop: 10, fontSize: 13, lineHeight: 1.5 }}>{pluginDetail.summary}</p>

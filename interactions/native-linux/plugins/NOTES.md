@@ -50,13 +50,32 @@ Sticky search sits under the Built-in / Discover / Installed tabs. Typing focuse
 | 33 | Cancel. Dialog gone. Manual field still `github:magpie/example` — choosing a folder was not confirmed, so the path was not replaced. |
 | 34 | Field cleared back to the placeholder. **Mirrors in China switched Off** (knob left, gray track). |
 
-Per-card Install was not clicked. No plugin was installed. Sort handle on Installed still not present (no installed plugins).
+Per-card Install is shots 35–40 (OpenCode Zen Free). The detail modal's Install was still not clicked. Sort handle on Installed is still absent: only one plugin, and the header shows only when there is more than one.
+
+## Per-card Install (shots 35–40)
+
+Discover was not the visible tab (Built-in was). Opened Discover, then typed `opencode` in **Search plugins and npm…** so the intro leaves and **Suggested** is the list (Suggested only when the query hits). First card is OpenCode Zen Free.
+
+Clicking its Install does not open a confirm or cancel dialog, and no second window appears. The control changes in place, then a toast, then the Installed row.
+
+| shot | what |
+|---|---|
+| 35 | Query `opencode`, clear control in the field. Heading **Suggested**. Cards OpenCode Zen Free, ZCode, Qoder, Devin… each with a pale Install pill (purple label). Mirror **Off**. |
+| 36 | Pointer on OpenCode Zen Free's Install. Hover fills that pill solid indigo and the label turns white. No tooltip. Neighbouring Install pills stay pale. |
+| 37 | Click. Same control widens to the left, goes pale gray and disabled: spinner, then **Getting Bun…**. No dialog. Other Install pills unchanged. An **Installing…** label was not seen; the busy text stayed Getting Bun… until it finished. |
+| 38 | Control becomes a green check and **Installed** (no pill). Tab label gains a count: **Installed · 1**. Green toast, lower left, drawn over the Zed card, no buttons: **OpenCode Zen Free is installed**. Not the "sign in to use it" line. No account or key prompt. |
+| 39 | Toast gone by itself. Card stays check + Installed. Search still `opencode`. |
+| 40 | Installed tab (white pill **Installed · 1**). One row, no sort header. Left to right: icon, **OpenCode Zen Free**, `v0.1.1`, fork mark **Provider**, then **Switch off** and **Remove**. Footer, left **Plugins run on Bun 1.4.2**, right **Check for updates**. Switch off, Remove, and Check for updates were not clicked. Search still shows `opencode` on this tab. Mirror still **Off**. |
 
 ## Left state
 
-Plugins, Discover, scrolled to the manual row. Search empty. Manual field empty. Mirror **Off** (restored). Built-ins not touched this pass. No plugin installed. Magpie left running (front window 752×652 at +610+300, pid 270034). Close was not used.
+Plugins, **Installed · 1**, OpenCode Zen Free v0.1.1 on the Installed row. Search still `opencode`. Mirror **Off**. Switch off / Remove / Check for updates not used. Magpie left running (front window 752×652 at +610+300, pid 560329). Close was not used.
 
 
 Demo v0.1.22: Suggested only when hits; On npm standing + Mirror set; folder dialog Cancel leaves field (shots 20–34).
 
 Demo v0.1.38: PLUGINS_NEST — 01–34 consumed (intro/market/GitHub/search/mirror/manual/builtin/installed/detail).
+
+Demo v0.1.38: per-card Install — 35–40 Suggested hover, Getting Bun…, toast, Installed row. No confirm dialog.
+
+Demo v0.1.45: PLUGINS_INSTALL — 35–40 Getting Bun… / toast / Installed row Bun 1.4.2.

@@ -1,3 +1,9 @@
+## v0.1.45 PLUGINS_INSTALL
+
+- Consumed native plugins **35–40**: Install hover → Getting Bun… → Installed check + toast + Installed · 1; Installed row Bun 1.4.2.
+- Switch off / Remove / Check for updates not exercised (next nest).
+- Still mock: real Bun/npm; Allowances quota N/A.
+
 ## v0.1.44 MOTION_GAP
 
 - Ported Magpie-only motion keyframes (`pm-pulse` / lib-* / `mk-spin`) into demo.

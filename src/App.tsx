@@ -598,7 +598,7 @@ export default function App() {
         />
       )}
       {view === "usage" && <UsageView />}
-      {view === "plugins" && <PluginsView />}
+      {view === "plugins" && <PluginsView onStatus={showStatus} />}
       {view === "settings" && (
         <SettingsView
           theme={theme}
