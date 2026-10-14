@@ -1292,6 +1292,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
             </button>
             {eventMenu ? (
               <div role="menu" style={{ position: "absolute", zIndex: 2, top: "100%", left: 0, marginTop: 4, minWidth: 280, maxHeight: 320, overflow: "auto", background: "var(--card)", border: "1px solid var(--line)", borderRadius: 10, boxShadow: "0 10px 28px rgba(20,22,30,.16)", padding: 4, animation: "pop-in .28s var(--ease)" }}>
+                <div style={{ padding: "4px 8px 2px", fontSize: 11, color: "var(--muted)", fontWeight: 500 }}>{t("When it runs")}</div>
                 <input
                   type="search"
                   value={eventFilter}
@@ -1301,11 +1302,8 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                   style={{ width: "100%", marginBottom: 4, height: 28, fontSize: 12.5 }}
                   autoFocus
                 />
-                {HOOK_EVENTS.filter(([, n]) => {
-                  const q = eventFilter.trim().toLowerCase();
-                  if (!q) return true;
-                  return n.toLowerCase().includes(q);
-                }).map(([v, n]) => (
+                {/* Magpie: shared events always:true — never hidden by Find an event */}
+                {HOOK_EVENTS.map(([v, n]) => (
                   <button
                     key={v}
                     type="button"
@@ -1368,6 +1366,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
             <div style={{ marginBottom: 10, position: "relative" }}>
               <span style={{ fontSize: 12, fontWeight: 500, display: "block", marginBottom: 4 }}>{t("For which tools")}</span>
               <button type="button" className="sess-pick lib-hooktool" aria-haspopup="menu" aria-expanded={toolMenu}
+                title={t(HOOK_TOOLS.find(([v]) => v === hookEditor.matcher)?.[1] || "Any tool")}
                 onClick={() => { setToolMenu((v) => !v); setEventMenu(false); }}
                 style={{ display: "inline-flex", alignItems: "center", gap: 6, height: 30, padding: "0 10px", borderRadius: 8, border: "1px solid var(--line)", background: "var(--card)", font: "inherit", fontSize: 12.5, cursor: "pointer" }}>
                 <span>{t(HOOK_TOOLS.find(([v]) => v === hookEditor.matcher)?.[1] || "Any tool")}</span>

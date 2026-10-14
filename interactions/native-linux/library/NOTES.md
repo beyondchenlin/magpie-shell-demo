@@ -71,7 +71,7 @@ beforeShellExecution, afterShellExecution, beforeMCPExecution, afterMCPExecution
 
 preCompact is the last row (scrollbar at the end). A few rows between afterAgentThought and sessionEnd were only partly in frame. No event was chosen; the select stayed "When a turn ends". Escape did not close this menu; Cancel on the dialog did.
 
-Not opened: the tool matcher that appears only for After/Before a tool runs (Any tool / Shell commands / File edits). Selecting it would have stayed a draft, but Add was never the goal and the row was left on When a turn ends.
+The tool matcher and the Cursor-own Matcher were opened later, still as a draft (39–46). Add was not clicked.
 
 ## RTK (38)
 
@@ -81,10 +81,22 @@ Not opened: the tool matcher that appears only for After/Before a tool runs (Any
 
 Tooltip on Library folder: `~/.config/magpie/library`. That directory is not on disk (nothing has been kept). The click still raised Thunar on the **parent** config directory. It was closed without opening a file. The shot was **not** kept: that parent lists credential files. Backups was not clicked; it reveals `lib.backups` the same way, and that path is not on disk either.
 
+## Hooks nested (39–46)
+
+Same **New hook** draft (39). Placeholders only; Name focused; Add not clicked. **When it runs** (40) matches 34: header "When it runs", **Find an event**, shared events with When a turn ends checked. Nothing was typed in the search on that shot. Escape still does not close this menu.
+
+**After a tool runs** (41) is what adds the nested tool matcher. **For which tools** appears under it, default **Any tool**, hint "Each agent's own names for them". **Before a tool runs** uses the same control; that row was not selected again. Menu (42): Any tool (checked, hover tip "Any tool"), Shell commands, File edits. No per-row notes. **Shell commands** chosen (43); the button label changes and the hint stays. File edits stayed in the menu only. Command, timeout, and the Cursor chip were not edited. Add not clicked.
+
+Event menu again with After a tool runs still checked (44). **Find an event** `beforeShell` (45): shared events stay in the list (they are always shown) and the list is scrolled to Cursor's own events — afterShellExecution, beforeMCPExecution (row lit), afterMCPExecution, beforeReadFile, afterFileEdit.
+
+**Cursor · afterShellExecution** (46) drops For which tools and shows a **Matcher** text field. Placeholder `every tool`. Hint: "The agent's own matcher, as its hooks file has it; empty for all". Left empty — no pattern typed. An agent's own event is for that agent alone; the chip stays Cursor. Add was not clicked.
+
+The draft was cancelled (Discard on the dirty dialog, not Add). `magpie library` afterwards: Instructions none, MCP servers none, Skills none. `~/.config/magpie/library` still does not exist. No hook file was written.
+
 ## Left state
 
-Plugins → Built-in, Library **Off** (restored). Top chrome is Agents, Providers, Routing, Gateway, Usage, Plugins — no Library. Gateway on, other builtins off. No instruction set, MCP server, skill, or hook was created. RTK switch left off. Window still 752×652 at +610+300. Close was not used.
+Plugins → Built-in, Library **Off** (restored after 39–46). Top chrome is Agents, Providers, Routing, Gateway, Usage, Plugins — no Library. Gateway on, other builtins off. No instruction set, MCP server, skill, or hook was created. RTK switch left off. Window still 752×652 at +610+300. Close was not used. Library folder and Backups were not opened.
 
-## demo 对齐（v0.1.56 HOOKS_NEST_PARTIAL）
-- 无 library/39+；源码对齐：Cursor 自有事件 Matcher 文本框；After/Before tool → For which tools + chev
-- 仍未点录：tool matcher 原生帧、hook Add 落盘
+## demo 对齐（v0.1.57 HOOKS_NEST_DONE）
+- 原生 library/39–46 全消费：When menu Find + always 共享事件；After/Before → For which tools（Any/Shell/File）；Cursor · afterShellExecution → Matcher `every tool`
+- 未 Add；Discard；Library Off 已由点录恢复

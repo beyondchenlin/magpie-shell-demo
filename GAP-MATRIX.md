@@ -1,3 +1,9 @@
+## v0.1.57 HOOKS_NEST_DONE
+- Native `library/39–46` consumed: New hook → When menu → After a tool → For which tools (Any/Shell/File) → Shell pick → Cursor · afterShellExecution **Matcher** (`every tool`).
+- Find an event: shared events **always** visible (Magpie `always:true`); Cursor events filter/scroll.
+- Demo: event menu title; tool pick title tip; Cursor Matcher + For which tools chev (from 0.1.56) verified against shots.
+- Still mock: hook Add persist / write-to-agent. Allowances **N/A**. Skip Vercel 402.
+
 ## v0.1.56 EACH_MODEL_DONE + HOOKS_NEST_PARTIAL + DETAIL_INSTALL
 - **System One Each (NOTES 07):** decide path warn `A decision API is asked with one model…` kept; Each no longer folds tryModel into picks (Magpie `picked()`); model ids split on `,`/`\n` only (#1976).
 - **Each-picked grid (source):** with URL+key+Models picks → Magpie `detect-grid` (Model × API cells) + API `.ep` rows + Use these / truncated hint (shell mock; no real probe).
