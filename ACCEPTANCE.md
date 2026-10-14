@@ -83,7 +83,7 @@ Web 预览先验这 6 项；Windows `.exe` 随 0.1.2 GHA 构建。
 
 | # | 项 | 状态 |
 |---|----|------|
-| F1 | Windows Setup `.exe` Release | [~] | v0.1.1 仍可用；**0.1.2** 含交互，推 main 后 GHA 出包（或 workflow_dispatch） |
+| F1 | Windows Setup `.exe` Release | [x] | https://github.com/beyondchenlin/magpie-shell-demo/releases/download/v0.1.2/Magpie-Shell-Demo-Setup-0.1.2.exe |
 | F2 | Vercel Web 预览 | [x] | https://magpie-shell-demo.vercel.app （验 A-01…A-09） |
 
 ---
