@@ -2535,27 +2535,26 @@ export function PluginsView({
             ) : null}
 
             <div className="pm-sec" style={{ marginTop: 8 }}>
-              {/* Magpie manual(): form submit; busy "+" → Installing…; fail → status.err (plugins/66–72) */}
+              {/* Magpie manual(): CU 66–70 — Installing… purple pill NO spinner; field cleared on draw; bun 404 err */}
               <form
                 className="pm-manual"
                 onSubmit={(e) => {
                   e.preventDefault();
                   const spec = manualSpec.trim();
                   if (!spec || busy) return;
+                  // Magpie act: busy.set → draw() rebuilds form → field empty while Installing…
+                  setManualSpec("");
                   setBusy("__manual__");
-                  // Magpie act("+","add"): success → toast "{name} is installed" (name=full spec);
-                  // catch → status(e.message,"err") + draw() clears the field (native 66–72)
+                  // Fail <1s on native (github:magpie/example); demo ~700ms
                   window.setTimeout(() => {
                     setBusy(null);
-                    setManualSpec("");
-                    // NOTES 29 / shots 66–72: github:magpie/example → bun 404 (honest fail path)
                     const failDemo =
                       /^github:magpie\/example$/i.test(spec) ||
                       /^github:owner\/repo$/i.test(spec);
                     if (failDemo) {
                       const err =
-                        `bun add ${spec}: exit status 1: bun add v1.4.2 (744846f84)\n` +
-                        `Resolving dependencies\nResolved, downloaded and extracted [1]\n` +
+                        `bun add ${spec}: exit status 1: bun add v1.4.2 (744846f84) Resolving dependen` +
+                        `cies\nResolved, downloaded and extracted [1]\n` +
                         `error: GET https://api.github.com/repos/${spec.replace(/^github:/i, "")}/tarball/ - 404\n` +
                         `error: Invalid dependency name "${spec}"\n` +
                         `error: ${spec} failed to resolve`;
@@ -2575,7 +2574,7 @@ export function PluginsView({
                         : [...list, { pkg: spec, name: short, ver: undefined, kind: "Provider", opts: "", optsOpen: false }],
                     );
                     onStatus?.(t("{name} is installed", { name: spec }), "ok", 3500);
-                  }, 1100);
+                  }, 700);
                 }}
               >
                 <span className="pm-mlabel">{t("Have one in mind?")}</span>
@@ -2608,16 +2607,11 @@ export function PluginsView({
                 <button
                   type="submit"
                   className="text primary"
-                  disabled={!manualSpec.trim() || busy === "__manual__"}
+                  disabled={busy === "__manual__"}
+                  aria-busy={busy === "__manual__" || undefined}
                 >
-                  {busy === "__manual__" ? (
-                    <>
-                      <span className="spin" aria-hidden style={{ display: "inline-block", width: 10, height: 10, marginRight: 6, verticalAlign: -1 }} />
-                      {t("Installing…")}
-                    </>
-                  ) : (
-                    t("Install")
-                  )}
+                  {/* Magpie manual busy: text only — no spinner (Bun on disk; CU 68) */}
+                  {busy === "__manual__" ? t("Installing…") : t("Install")}
                 </button>
                 {folderHint ? <span style={{ flexBasis: "100%", fontSize: 11.5, color: "var(--muted)", animation: "fade-in .15s var(--ease)" }}>{folderHint}</span> : null}
               </form>

@@ -1,13 +1,13 @@
-# last-cycle · 06:30 CST
+# last-cycle · 06:35 CST
 
-**Tag:** MANUAL_INSTALL_DONE → **v0.1.66** (plugins/66–72)
+**Tag:** MANUAL_INSTALL_DONE → **v0.1.66** (CU plugins/66–70)
 
-## v0.1.66
-- Native/web `plugins/66–72` Manual Install nest DONE
-- `github:magpie/example` → **Installing…** → red `.status.err` bun 404 (full `title`) → field cleared
-- Success mock kept for other specs; Magpie web has no folder browse
+## v0.1.66 (CU-aligned)
+- Native `plugins/66–70`: Installing… purple pill **no spinner**; field cleared on busy; bun exit-1 red toast; settled
+- Folder browse kept (native picker); Installed · 1 Think Tags (sort N/A)
+- Also: MCP paste JSON fill + In projects Choose (!web) / skills toast copy
 
-## Remaining / GAP
-- P1: live gateway bird, true OAuth/key persist, Allowances quota body **N/A**
+## Remaining
+- P1: live gateway bird, true OAuth/key persist, Allowances **N/A**
 - Skip Vercel 402
-- MCP HTTP Save and sign in = OAuth (skip); Instructions Keep in a file already covered
+- Waiting CU Skills 72+ (chip re-on + Give skills as Links/Copies)

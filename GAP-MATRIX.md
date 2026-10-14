@@ -1,3 +1,8 @@
+## v0.1.66 MANUAL_INSTALL_DONE (CU 66–70)
+- Native `plugins/66–70`: empty+folder+Install → typed `github:magpie/example` → **Installing…** purple pill **no spinner** (Bun on disk; field cleared) → red clipped bun exit-1 toast (~8s) → settled; Installed · 1 Think Tags only.
+- Demo: clear field on busy; no spin; fail path for github:magpie/example; toast title=full.
+- Allowances **N/A**. Skip Vercel 402. P1 unchanged.
+
 ## v0.1.66 MANUAL_INSTALL_DONE
 - Native/web `plugins/66–72` Manual Install consumed: typed `github:magpie/example` → **Installing…** → red `.status.err` bun 404 toast (full `title`) → field cleared by redraw; nothing installed.
 - Magpie `act("+","add")` catch path; web has **no** `.pm-browse` (`mine.picker` false). Electron demo keeps folder browse.

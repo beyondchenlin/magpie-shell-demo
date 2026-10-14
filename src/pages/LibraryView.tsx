@@ -1,8 +1,8 @@
-import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, type ClipboardEvent, type ReactNode } from "react";
 import { t } from "../i18n";
 
 /**
- * Magpie Library plugin (native-linux/library 01–62 Skills Install nest).
+ * Magpie Library plugin (native-linux/library nests + MCP paste / In projects Choose).
  * Feature-gated: Plugins › Built-in › Library.
  * Motion: view-in .24s; modal pop-in .42s; Discard .28s; segs .18s; lib-switch; lib-bob/lib-probe/mk-spin (v0.1.44).
  */
@@ -99,6 +99,77 @@ const emptyHook = (): HookDraft => ({
   agents: DEMO_AGENTS.map((a) => a.id),
 });
 
+/** Magpie library serversIn — paste JSON into New MCP server fills the draft */
+function serversIn(text: string): Array<{
+  name: string;
+  transport: Transport;
+  command?: string;
+  args?: string[];
+  env?: Record<string, string>;
+  url?: string;
+  headers?: Record<string, string>;
+}> | null {
+  let v: unknown;
+  try {
+    v = JSON.parse(text.trim().replace(/,\s*([}\]])/g, "$1"));
+  } catch {
+    try {
+      v = JSON.parse("{" + text.trim().replace(/,\s*$/, "") + "}");
+    } catch {
+      return null;
+    }
+  }
+  if (!v || typeof v !== "object") return null;
+  const obj = v as Record<string, unknown>;
+  const map = (obj.mcpServers || obj.servers || obj.mcp || obj.context_servers || null) as Record<string, unknown> | null;
+  const one = (name: string, e: Record<string, unknown> | null) => {
+    if (!e || typeof e !== "object") return null;
+    const url = (e.url || e.serverUrl || e.httpUrl || e.uri) as string | undefined;
+    const s: {
+      name: string;
+      transport: Transport;
+      command?: string;
+      args?: string[];
+      env?: Record<string, string>;
+      url?: string;
+      headers?: Record<string, string>;
+    } = {
+      name: (name || "").replace(/[^A-Za-z0-9_-]+/g, "-").replace(/^-+|-+$/g, ""),
+      transport: "stdio",
+      env: {},
+      headers: {},
+    };
+    if (url) {
+      s.transport = e.type === "sse" || e.transport === "sse" || /\/sse\/?$/.test(url) ? "sse" : "http";
+      s.url = url;
+      s.headers = { ...((e.headers || e.http_headers || {}) as Record<string, string>) };
+    } else if (e.command) {
+      s.transport = "stdio";
+      const cmd = Array.isArray(e.command) ? e.command : [e.command];
+      s.command = String(cmd[0]);
+      s.args = [...cmd.slice(1), ...((e.args as unknown[]) || [])].map(String);
+      s.env = { ...((e.env || e.environment || {}) as Record<string, string>) };
+    } else return null;
+    return s;
+  };
+  type S = NonNullable<ReturnType<typeof one>>;
+  if (map && typeof map === "object") {
+    return Object.entries(map)
+      .map(([n, e]) => one(n, e as Record<string, unknown>))
+      .filter((x): x is S => !!x);
+  }
+  if (obj.command || obj.url || obj.serverUrl || obj.httpUrl) {
+    const s = one(String(obj.name || ""), obj);
+    return s ? [s] : null;
+  }
+  const entries = Object.entries(obj).filter(
+    ([, e]) => e && typeof e === "object" && ((e as Record<string, unknown>).command || (e as Record<string, unknown>).url || (e as Record<string, unknown>).serverUrl || (e as Record<string, unknown>).httpUrl),
+  );
+  return entries.length
+    ? entries.map(([n, e]) => one(n, e as Record<string, unknown>)).filter((x): x is NonNullable<typeof x> => !!x)
+    : null;
+}
+
 function LibChip({
   on,
   label,
@@ -145,7 +216,17 @@ function LibChip({
   );
 }
 
-function LibModal({ onBg, children, sm }: { onBg: () => void; children: ReactNode; sm?: boolean }) {
+function LibModal({
+  onBg,
+  children,
+  sm,
+  onPaste,
+}: {
+  onBg: () => void;
+  children: ReactNode;
+  sm?: boolean;
+  onPaste?: (e: ClipboardEvent) => void;
+}) {
   return (
     <div
       className="modal"
@@ -181,6 +262,7 @@ function LibModal({ onBg, children, sm }: { onBg: () => void; children: ReactNod
           padding: "16px 18px 14px",
         }}
         onMouseDown={(e) => e.stopPropagation()}
+        onPaste={onPaste}
       >
         {children}
       </div>
@@ -1154,13 +1236,25 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                                 const name = dir.split("/").filter(Boolean).pop() || dir;
                                 setProjects((list) => (list.some((x) => x.dir === dir) ? list : [...list, { dir, name }]));
                                 setAddingProject(null);
-                                onStatus?.(t("{name} added", { name }), "ok");
+                                onStatus?.(t("{name} added — pick the skills it gets", { name }), "ok");
                               }, 400);
                             }
                           }}
                           style={{ flex: "1 1 180px", minWidth: 0 }}
                         />
-                        <button type="button" className="text" disabled={!!addingProject.busy} onClick={() => onStatus?.(t("Demo: choose a folder"), "ok")}>{t("Choose…")}</button>
+                        {!document.body.classList.contains("web") ? (
+                          <button
+                            type="button"
+                            className="text"
+                            disabled={!!addingProject.busy}
+                            onClick={() => {
+                              // Magpie library/projects/choose — demo fills a path (no OS picker / no credentials)
+                              setAddingProject({ ...addingProject, dir: "~/code/app" });
+                            }}
+                          >
+                            {t("Choose…")}
+                          </button>
+                        ) : null}
                         <button
                           type="button"
                           className="text action"
@@ -1173,7 +1267,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                               const name = dir.split("/").filter(Boolean).pop() || dir;
                               setProjects((list) => (list.some((x) => x.dir === dir) ? list : [...list, { dir, name }]));
                               setAddingProject(null);
-                              onStatus?.(t("{name} added", { name }), "ok");
+                              onStatus?.(t("{name} added — pick the skills it gets", { name }), "ok");
                             }, 400);
                           }}
                         >
@@ -1395,7 +1489,42 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
       </div>
 
       {mcpEditor ? (
-        <LibModal onBg={tryCloseMcp}>
+        <LibModal
+          onBg={tryCloseMcp}
+          onPaste={(e) => {
+            const clip = e.clipboardData?.getData("text") || "";
+            if (!/[{]/.test(clip)) return;
+            const found = serversIn(clip);
+            if (!found?.length) return;
+            e.preventDefault();
+            if (found.length === 1) {
+              const f = found[0];
+              const envRows = Object.entries(f.env || {}) as [string, string][];
+              const headerRows = Object.entries(f.headers || {}) as [string, string][];
+              const cmd = [f.command, ...(f.args || [])].filter(Boolean).join(" ");
+              setMcpEditor({
+                ...mcpEditor,
+                name: f.name || mcpEditor.name,
+                transport: f.transport,
+                command: f.transport === "stdio" ? cmd : "",
+                url: f.url || "",
+                envRows,
+                headerRows,
+                oauthOpen: false,
+              });
+              onStatus?.(t("Filled in from what you pasted"), "ok");
+            } else {
+              // Magpie pasteMany — demo adds all named; toast count
+              const names = found.filter((f) => f.name).map((f) => f.name);
+              setMcpServers((s) => [
+                ...s,
+                ...names.filter((n) => !s.some((x) => x.name === n)).map((n) => ({ id: `mcp-${n}`, name: n })),
+              ]);
+              setMcpEditor(null);
+              onStatus?.(t("Added {n} servers", { n: names.length }), "ok");
+            }
+          }}
+        >
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
             <svg viewBox="0 0 16 16" width={16} height={16} fill="none" stroke="currentColor" strokeWidth="1.3" aria-hidden>
               <path d={mcpEditor.transport === "stdio" ? CMD_PATH : WEB_PATH} />

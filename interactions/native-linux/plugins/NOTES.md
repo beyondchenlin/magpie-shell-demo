@@ -183,20 +183,30 @@ Demo v0.1.60: DETAIL_INSTALL_MW — middleware → Installed toast/check; Provid
 - NOTES 29 typed-only path superseded by native **66–72** (Install clicked; bun 404 err).
 - 真 npm/git install 仍 mock；Allowances N/A
 
-## Manual Install nest (shots 66–72) — recording DONE
+## demo 对齐（v0.1.66 MANUAL_INSTALL_DONE · CU 66–70）
+- Installing… = primary purple pill **no spinner** (Bun on disk)
+- Field cleared on busy draw (spec only in toast)
+- Fail → `.status.err` ~8s, clipped one-line + title full; no Cancel (<1s)
+- Folder browse kept (native `mine.picker`); web Magpie has none
+- Sort handle N/A (Installed · 1 Think Tags only)
 
-Discover, Mirror **Off**. Manual row at the bottom (web Magpie: **no** folder browse — `mine.picker` false). Spec typed `github:magpie/example` (same as NOTES 29).
+
+## Manual-row Install (shots 66–70)
+
+Discover was not showing the manual row: the leftover search was `think` (Suggested + Unofficial on GitHub). Cleared it (Discover intro returns; **Mirrors in China** still Off, tab **Installed · 1**). Scrolled to the bottom manual row. Spec `github:magpie/example`. Install clicked. No confirm dialog, no second window, no folder picker. Bun was already on disk, so the busy label is **Installing…**, not Getting Bun…. It failed in well under a second (not a >60s hang — nothing to Cancel). Think Tags stays the only installed plugin, so the Installed sort handle is still absent (header only when there is more than one). Installed tab was not opened.
+
+The form is rebuilt on each draw, so the field does not keep the spec while busy or after the error. The toast is the only place the spec remains. It is a red alert, no buttons, along the bottom edge, and it leaves by itself (error toasts are about 8s). The pill is one line and clips with an ellipsis; the visible text is below.
 
 | shot | what |
 |---|---|
-| 66 | Manual row in view: Have one in mind? · empty field · **Install** (no browse on web). |
-| 67 | Field typed `github:magpie/example`. |
-| 68 | Pointer on Install (primary hover). |
-| 69 | Click → button **Installing…** (busy; field disabled). Brief — poll-caught. |
-| 70 | Fail: Install restored; field **cleared** (Magpie `draw()` after act catch). Red `.status.err` toast: `bun add github:magpie/example: exit status 1: … 404 … failed to resolve` (truncated; full text in `title`). |
-| 71 | Toast still up; settled Install. Nothing added to Installed. |
-| 72 | Hover toast: same full message in title (selectable err). |
+| 66 | Manual row in view. Label **Have one in mind?**, empty field (placeholder `npm package, GitHub repo (github:owner/repo) or a folder`), folder button, purple **Install**. Search is empty; its focus ring is still on from clearing `think`. Mirror **Off**. |
+| 67 | Field focused (purple ring) and typed `github:magpie/example`. Install not yet clicked. |
+| 68 | Click. The button label becomes **Installing…** (still the purple primary pill, not a spinner). Field is disabled and shows the placeholder again, not the spec. No dialog. |
+| 69 | Button back to **Install**. Red toast, lower edge, no buttons: **bun add github:magpie/example: exit status 1: bun add v1.4.2 (744846f84) Resolving dependen…** (clipped). Not a green installed toast. |
+| 70 | Toast gone. Field empty, Install enabled. Tab still **Installed · 1**. Nothing new installed. |
 
-Magpie `act("+","add")` catch → `status(e.message,"err")` — no ok toast. Demo mocks this fail for `github:magpie/example`; other specs still mock success.
+## Left state
 
-Demo v0.1.66: MANUAL_INSTALL_DONE — 66–72 Installing… / bun 404 err toast / field clear.
+Plugins, **Discover**, scrolled to the manual row, field empty. Search empty. Mirror **Off**. Think Tags still installed (middleware from 61–65). `github:magpie/example` was not installed. No credential was entered. Sort handle not shown. Magpie left running (752×652 at +610+300, pid 560329). Close was not used.
+
+Demo v0.1.66: MANUAL_INSTALL_DONE — CU 66–70 typed spec, Installing… (no spinner), bun add exit 1 toast, settled. Not a success install. Sort handle still N/A (one plugin).

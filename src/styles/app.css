@@ -3981,3 +3981,8 @@ input[type="checkbox"]:disabled { opacity: .45; }
   .ag-exp { animation: none; }
   .am-fold .tw svg { transition: none; }
 }
+
+
+/* Magpie manual Install busy (CU 68): stay purple, no spinner */
+.pm-manual .text.primary:disabled { opacity: 1; cursor: default; filter: none; }
+.pm-manual .text.primary:disabled:hover { filter: none; }
