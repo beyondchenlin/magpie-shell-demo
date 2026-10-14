@@ -1,29 +1,28 @@
 # Acceptance — magpie-shell-demo
 
-**Status: `AGENTS_USAGE_PARTIAL`** — v0.1.16
+**Status: `AGENTS_USAGE_PARTIAL`** — **v0.1.16** (53e8361)
 
-- Usage：Requests ledger 行 / Sessions 6 KPI+list / Context agent cards（演示数据，可关）
-- Plugins：Disable `pm-ask` 确认；Install busy → Installed
-- Agents：Manage 多 agent 行（hide/search）
-- Providers：Accounts/Models fold
-- Routing：groups + ModelPop + Conditions
-- Privacy 等 Settings：见先前 PRIVACY_NESTED_PARTIAL
+## 本批
 
-Vercel 若 402 请用 portable / 本地 preview。
+| 区 | 内容 |
+|----|------|
+| Usage Requests | ledger KPI + `table.led` 行展开 + pager（演示数据可关） |
+| Usage Sessions | `.stats.six` 6 KPI + sess-list 行 |
+| Usage Context | `context.css` agent cards（ring/scores/tags/facts/mix） |
+| Plugins | Disable → `.pm-ask` 确认；Install busy |
+| Agents | Manage 多 agent（Cursor/Claude/Codex/OpenCode/Pi） |
+| Providers | Accounts/Models fold |
+| Routing | groups + ModelPop + Conditions |
 
-# Acceptance — magpie-shell-demo
+## 链接
 
-**Latest: v0.1.13 — `USAGE_PLUGINS_PARTIAL`**
+- [Release v0.1.16](https://github.com/beyondchenlin/magpie-shell-demo/releases/tag/v0.1.16)
+- [Portable 0.1.16](https://github.com/beyondchenlin/magpie-shell-demo/releases/download/v0.1.16/Magpie-Shell-Demo-0.1.16-portable.exe)
+- 在线预览：Vercel **402**（免费部署日额度满）；本地 `npm run preview`
 
-| Area | Status |
-|------|--------|
-| Chrome / side-nav / i18n zh | OK (v0.1.8+) |
-| Agents / Providers / Routing empty shells | OK |
-| Gateway empty + motion / filled demo | OK (v0.1.9–0.1.12) |
-| **Usage deep** | **PARTIAL** (v0.1.13) Overview/Requests/Sessions/Context + period/Custom + refresh every |
-| **Plugins deep** | **PARTIAL** (v0.1.13) Built-in/Discover/Installed + Install/Options/Remove |
-| Settings nested | PARTIAL+ (Models `#pop` Image/Search; Replies 真三行; Download mirror; tray Off▾) |
-| Codex `#pop` / Warm-up / SOCKS / LAN / Sync / OTel / Privacy | OK (v0.1.12) |
-| Motion (segs 280ms, copy-pop, pop-in/out, pm-card, spin) | Wired where implemented |
+## 仍缺
 
-Links: https://magpie-shell-demo.vercel.app · [Release v0.1.13](https://github.com/beyondchenlin/magpie-shell-demo/releases/tag/v0.1.13)
+- Usage heatmap / 真 ledger API / Sessions 详情页跳转
+- Plugins 真 npm 安装与 movable 订阅长文案
+- Routing 真请求舞台 / Providers 真保存
+- Setup.exe 本机 wine 异常（请用 portable）；Privacy 等见 PRIVACY_NESTED_PARTIAL
