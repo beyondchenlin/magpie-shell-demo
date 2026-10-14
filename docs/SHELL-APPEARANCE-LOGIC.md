@@ -397,3 +397,9 @@ Same as §4; added: `.pm-opts textarea` focus .12s; `.range-menu .rm-day` backgr
 | New hook | Name/Description/When/Command/Timeout/Agents | LibModal pop-in **.42s** |
 
 *文档版本：v0.1.33*
+
+## v0.1.33 Library native DONE (01–38)
+
+Full nested capture consumed. Hook When-it-runs includes shared events + Cursor own list through **preCompact** (Find an event filter). RTK card shows install.sh curl; Install/Get/Check = mock. Magpie Image + grill-me sheets; MCP New Command/HTTP/SSE/OAuth/Discard.
+
+*文档版本：v0.1.33 LIBRARY_DONE*

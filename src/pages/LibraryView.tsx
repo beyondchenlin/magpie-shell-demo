@@ -59,6 +59,8 @@ const CURSOR_HOOK_EVENTS = [
   "stop",
   "afterAgentResponse",
   "afterAgentThought",
+  "sessionEnd",
+  "preToolUse",
   "postToolUse",
   "postToolUseFailure",
   "subagentStart",
