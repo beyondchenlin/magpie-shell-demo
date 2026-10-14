@@ -476,9 +476,10 @@ type EditorProps = {
   state: NonNullable<EditorState>;
   onClose: () => void;
   onAdd: () => void;
+  onStatus?: (msg: string, kind?: string) => void;
 };
 
-function ProviderEditorModal({ state, onClose, onAdd }: EditorProps) {
+function ProviderEditorModal({ state, onClose, onAdd, onStatus }: EditorProps) {
   const kind = state.form;
   const isLocal = kind === "local" || kind === "ollama" || !!LOCAL_PRESETS[state.id];
   const localMeta = LOCAL_PRESETS[state.id] || LOCAL_PRESETS.ollama;
@@ -1375,186 +1376,6 @@ function ProviderEditorModal({ state, onClose, onAdd }: EditorProps) {
               )}
             </Field>
 
-            {kind === "custom" ? (
-              <Field
-                label={t("Models")}
-                hint={t(
-                  "Optional: Fetch models to pick from the vendor's list, or type ids; none picked, magpie asks for the list after saving.",
-                )}
-              >
-                <div className="stack add-models">
-                  <div className="detect-row">
-                    <input
-                      type="text"
-                      placeholder={t(
-                        "model ids, comma separated · e.g. gpt-5.5, claude-sonnet-5",
-                      )}
-                      value={modelIds}
-                      onChange={(e) => {
-                        setModelIds(e.target.value);
-                        if (fetchView?.mode === "list") {
-                          /* keep chips; typed ids sync on fetch redraw */
-                        }
-                      }}
-                    />
-                    <button
-                      type="button"
-                      className={`text action fetch-models${fetchBusy ? " busy" : ""}`}
-                      title={t(
-                        "Ask the vendor for its model list with the URL and key typed, to pick from; nothing is saved",
-                      )}
-                      disabled={fetchBusy}
-                      onClick={() => {
-                        if (!baseUrl.trim()) {
-                          setFetchView({
-                            mode: "err",
-                            text: t("Type the base URL first"),
-                          });
-                          return;
-                        }
-                        setFetchBusy(true);
-                        setFetchView({ mode: "asking" });
-                        window.setTimeout(() => {
-                          setFetchBusy(false);
-                          // Shell: mock a short list (no real vendor call)
-                          const demo = [
-                            { id: "gpt-4o-mini", name: "GPT-4o mini" },
-                            { id: "gpt-4.1", name: "GPT-4.1" },
-                            { id: "o4-mini", name: "o4-mini" },
-                            { id: "claude-sonnet-4-5", name: "Claude Sonnet 4.5" },
-                          ];
-                          const typed = modelIds
-                            .split(/[,\s]+/)
-                            .map((s) => s.trim())
-                            .filter(Boolean);
-                          setFetchView({
-                            mode: "list",
-                            models: demo,
-                            filter: "",
-                            picked: typed.filter((id) => demo.some((m) => m.id === id)),
-                          });
-                        }, 520);
-                      }}
-                    >
-                      {t("Fetch models")}
-                    </button>
-                  </div>
-                  {fetchView ? (
-                    <div className="models add-models-list">
-                      {fetchView.mode === "asking" ? (
-                        <span className="hint">{t("Asking the vendor…")}</span>
-                      ) : null}
-                      {fetchView.mode === "empty" ? (
-                        <span className="hint">
-                          {t("The vendor's list is empty. Type the model ids instead.")}
-                        </span>
-                      ) : null}
-                      {fetchView.mode === "err" ? (
-                        <span className="hint err">{fetchView.text}</span>
-                      ) : null}
-                      {fetchView.mode === "list" ? (
-                        <>
-                          {fetchView.models.length > 24 ? (
-                            <input
-                              className="add-models-filter"
-                              type="text"
-                              placeholder={t("filter {n} models…", {
-                                n: fetchView.models.length,
-                              })}
-                              value={fetchView.filter}
-                              onChange={(e) =>
-                                setFetchView({ ...fetchView, filter: e.target.value })
-                              }
-                            />
-                          ) : null}
-                          <div className="detect-acts">
-                            <span className="hint">
-                              {t("{n} of {all} picked", {
-                                n: fetchView.picked.length,
-                                all: fetchView.models.length,
-                              })}
-                            </span>
-                            <button
-                              type="button"
-                              className="text action"
-                              onClick={() => {
-                                const f = fetchView.filter.trim().toLowerCase();
-                                const match = fetchView.models.filter(
-                                  (m) =>
-                                    !f ||
-                                    m.id.toLowerCase().includes(f) ||
-                                    (m.name || "").toLowerCase().includes(f),
-                                );
-                                const next = [
-                                  ...new Set([
-                                    ...fetchView.picked,
-                                    ...match.map((m) => m.id),
-                                  ]),
-                                ];
-                                setFetchView({ ...fetchView, picked: next });
-                                setModelIds(next.join(", "));
-                              }}
-                            >
-                              {t(fetchView.filter.trim() ? "Pick those shown" : "Pick all")}
-                            </button>
-                            <button
-                              type="button"
-                              className="text action"
-                              onClick={() => {
-                                setFetchView({ ...fetchView, picked: [] });
-                                setModelIds("");
-                              }}
-                            >
-                              {t("Pick none")}
-                            </button>
-                          </div>
-                          <div className="mchips">
-                            {(() => {
-                              const f = fetchView.filter.trim().toLowerCase();
-                              const match = fetchView.models.filter(
-                                (m) =>
-                                  !f ||
-                                  m.id.toLowerCase().includes(f) ||
-                                  (m.name || "").toLowerCase().includes(f),
-                              );
-                              if (f && !match.length) {
-                                return (
-                                  <span className="hint">
-                                    {t('No model here matches “{q}”.', {
-                                      q: fetchView.filter.trim(),
-                                    })}
-                                  </span>
-                                );
-                              }
-                              return match.map((m) => {
-                                const on = fetchView.picked.includes(m.id);
-                                return (
-                                  <button
-                                    key={m.id}
-                                    type="button"
-                                    className={`mchip${on ? " on" : ""}`}
-                                    title={m.name ? m.id : undefined}
-                                    onClick={() => {
-                                      const picked = on
-                                        ? fetchView.picked.filter((x) => x !== m.id)
-                                        : [...fetchView.picked, m.id];
-                                      setFetchView({ ...fetchView, picked });
-                                      setModelIds(picked.join(", "));
-                                    }}
-                                  >
-                                    <span>{m.name || m.id}</span>
-                                  </button>
-                                );
-                              });
-                            })()}
-                          </div>
-                        </>
-                      ) : null}
-                    </div>
-                  ) : null}
-                </div>
-              </Field>
-            ) : null}
 
                         <Field label={ZH.extraBody} hint={t("JSON fields added to the body of every request to the vendor. A field the request has already is kept; write '!name' to replace it. ${sessionId} is the conversation's id.")}>
               <div className="extra-body">
@@ -1699,7 +1520,7 @@ function ProviderEditorModal({ state, onClose, onAdd }: EditorProps) {
                 <Field
                   label={ZH.maxOutput}
                   hint={t(
-                    "How long a reply the models may write, told to the agents; empty leaves it to them. On Anthropic's API it is also sent as max_tokens when the agent named none.",
+                    "The most a reply may hold, told to the agents as their max tokens and sent as max_tokens on Anthropic's API when the agent names none; empty leaves it to the vendor and models.dev",
                   )}
                 >
                   <input type="text" placeholder={t("e.g. 32k · or gpt-6=128k, comma separated")} />
@@ -1726,6 +1547,200 @@ function ProviderEditorModal({ state, onClose, onAdd }: EditorProps) {
                     ))}
                   </div>
                 </Field>
+
+            {kind === "custom" ? (
+              <Field
+                label={t("Models")}
+                hint={t(
+                  "Optional: Fetch models to pick from the vendor's list, or type ids; none picked, magpie asks for the list after saving.",
+                )}
+              >
+                <div className="stack add-models">
+                  <div className="detect-row">
+                    <input
+                      type="text"
+                      placeholder={t(
+                        "model ids, comma separated · e.g. gpt-5.5, claude-sonnet-5",
+                      )}
+                      value={modelIds}
+                      onChange={(e) => {
+                        setModelIds(e.target.value);
+                        if (fetchView?.mode === "list") {
+                          /* keep chips; typed ids sync on fetch redraw */
+                        }
+                      }}
+                    />
+                    <button
+                      type="button"
+                      className={`text action fetch-models${fetchBusy ? " busy" : ""}`}
+                      title={t(
+                        "Ask the vendor for its model list with the URL and key typed, to pick from; nothing is saved",
+                      )}
+                      disabled={fetchBusy}
+                      onClick={() => {
+                        if (!baseUrl.trim()) {
+                          /* Magpie status(..., "warn") + .lift (shot 56): URL check, not key */
+                          onStatus?.(t("Type the base URL first"), "warn");
+                          return;
+                        }
+                        setFetchBusy(true);
+                        setFetchView({ mode: "asking" });
+                        const url = baseUrl.trim().replace(/\/+$/, "");
+                        const listUrl = /\/models(?:\/|$)/i.test(url)
+                          ? url
+                          : `${url}/models`;
+                        // Port-9 refuse matches native 57–58 (Asking… not visible at 30fps)
+                        const refuse =
+                          /127\.0\.0\.1:9\b/.test(url) ||
+                          /localhost:9\b/.test(url);
+                        window.setTimeout(() => {
+                          setFetchBusy(false);
+                          if (refuse) {
+                            setFetchView({
+                              mode: "err",
+                              text: `no model list: Get "${listUrl}": dial tcp 127.0.0.1:9: connect: connection refused — type its model ids in by hand, or give the URL its list is at`,
+                            });
+                            return;
+                          }
+                          // Shell only when a reachable URL would list (no real vendor call)
+                          const demo = [
+                            { id: "gpt-4o-mini", name: "GPT-4o mini" },
+                            { id: "gpt-4.1", name: "GPT-4.1" },
+                            { id: "o4-mini", name: "o4-mini" },
+                            { id: "claude-sonnet-4-5", name: "Claude Sonnet 4.5" },
+                          ];
+                          const typed = modelIds
+                            .split(/[,\s]+/)
+                            .map((s) => s.trim())
+                            .filter(Boolean);
+                          setFetchView({
+                            mode: "list",
+                            models: demo,
+                            filter: "",
+                            picked: typed.filter((id) => demo.some((m) => m.id === id)),
+                          });
+                        }, refuse ? 40 : 520);
+                      }}
+                    >
+                      {t("Fetch models")}
+                    </button>
+                  </div>
+                  {fetchView ? (
+                    <div className="models add-models-list">
+                      {fetchView.mode === "asking" ? (
+                        <span className="hint">{t("Asking the vendor…")}</span>
+                      ) : null}
+                      {fetchView.mode === "empty" ? (
+                        <span className="hint">
+                          {t("The vendor's list is empty. Type the model ids instead.")}
+                        </span>
+                      ) : null}
+                      {fetchView.mode === "err" ? (
+                        <span className="hint err">{fetchView.text}</span>
+                      ) : null}
+                      {fetchView.mode === "list" ? (
+                        <>
+                          {fetchView.models.length > 24 ? (
+                            <input
+                              className="add-models-filter"
+                              type="text"
+                              placeholder={t("filter {n} models…", {
+                                n: fetchView.models.length,
+                              })}
+                              value={fetchView.filter}
+                              onChange={(e) =>
+                                setFetchView({ ...fetchView, filter: e.target.value })
+                              }
+                            />
+                          ) : null}
+                          <div className="detect-acts">
+                            <span className="hint">
+                              {t("{n} of {all} picked", {
+                                n: fetchView.picked.length,
+                                all: fetchView.models.length,
+                              })}
+                            </span>
+                            <button
+                              type="button"
+                              className="text action"
+                              onClick={() => {
+                                const f = fetchView.filter.trim().toLowerCase();
+                                const match = fetchView.models.filter(
+                                  (m) =>
+                                    !f ||
+                                    m.id.toLowerCase().includes(f) ||
+                                    (m.name || "").toLowerCase().includes(f),
+                                );
+                                const next = [
+                                  ...new Set([
+                                    ...fetchView.picked,
+                                    ...match.map((m) => m.id),
+                                  ]),
+                                ];
+                                setFetchView({ ...fetchView, picked: next });
+                                setModelIds(next.join(", "));
+                              }}
+                            >
+                              {t(fetchView.filter.trim() ? "Pick those shown" : "Pick all")}
+                            </button>
+                            <button
+                              type="button"
+                              className="text action"
+                              onClick={() => {
+                                setFetchView({ ...fetchView, picked: [] });
+                                setModelIds("");
+                              }}
+                            >
+                              {t("Pick none")}
+                            </button>
+                          </div>
+                          <div className="mchips">
+                            {(() => {
+                              const f = fetchView.filter.trim().toLowerCase();
+                              const match = fetchView.models.filter(
+                                (m) =>
+                                  !f ||
+                                  m.id.toLowerCase().includes(f) ||
+                                  (m.name || "").toLowerCase().includes(f),
+                              );
+                              if (f && !match.length) {
+                                return (
+                                  <span className="hint">
+                                    {t('No model here matches “{q}”.', {
+                                      q: fetchView.filter.trim(),
+                                    })}
+                                  </span>
+                                );
+                              }
+                              return match.map((m) => {
+                                const on = fetchView.picked.includes(m.id);
+                                return (
+                                  <button
+                                    key={m.id}
+                                    type="button"
+                                    className={`mchip${on ? " on" : ""}`}
+                                    title={m.name ? m.id : undefined}
+                                    onClick={() => {
+                                      const picked = on
+                                        ? fetchView.picked.filter((x) => x !== m.id)
+                                        : [...fetchView.picked, m.id];
+                                      setFetchView({ ...fetchView, picked });
+                                      setModelIds(picked.join(", "));
+                                    }}
+                                  >
+                                    <span>{m.name || m.id}</span>
+                                  </button>
+                                );
+                              });
+                            })()}
+                          </div>
+                        </>
+                      ) : null}
+                    </div>
+                  ) : null}
+                </div>
+              </Field>
+            ) : null}
               </>
             ) : null}
           </div>
@@ -3859,6 +3874,7 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
         <ProviderEditorModal
           state={editor}
           onClose={() => setEditor(null)}
+          onStatus={onStatus}
           onAdd={() => {
             if (editor) {
               setDemoProvs((list) => {

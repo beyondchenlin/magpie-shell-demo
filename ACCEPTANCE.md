@@ -1,3 +1,9 @@
+## v0.1.55 FETCH_MODELS_DONE
+
+- Native providers **54–60** Custom Fetch models nest: empty-URL toast; port-9 refused red line; no chips; Discard.
+- Models after Context/Max/Compact on Custom only.
+- Still mock: true list/OAuth. Allowances N/A.
+
 ## v0.1.54 IMPORT_CLAUDE_DONE
 
 - Import apps paths + empty Not found (NOTES 20–21); Import… tooltip; Claude Escape-safe import; GTK Select Files mock (NOTES 24).

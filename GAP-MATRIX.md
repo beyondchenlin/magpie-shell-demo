@@ -1,3 +1,11 @@
+## v0.1.55 FETCH_MODELS_DONE
+- Native `providers/54–60` consumed: Custom Models+Fetch only (Gemini sheet has no Fetch); idle Optional hint (54); hover title (55); empty URL → amber lift toast **Type the base URL first** (56, URL not key); `http://127.0.0.1:9/v1` → red `no model list: Get "…/models": dial tcp … refused — type its model ids…` no chips (57–58); Discard (59); catalog foot Custom focused (60).
+- Field order chip: Context window → Max output → Compact at → Models (Magpie add form).
+- Still mock: true list HTTP / Add persist / OAuth. Allowances **N/A**. Skip Vercel 402.
+
+## v0.1.54 IMPORT_CLAUDE_DONE
+- Chip Import apps paths 20–21 + Claude GTK Select Files 22–24; Escape-safe import; Fetch nest landed after → **v0.1.55**.
+
 ## v0.1.54 IMPORT_CLAUDE_DONE
 - Chip Import Claude / file sheets from Magpie source + native NOTES **20–24** (Fetch models 54+ not on disk yet → PARTIAL wait).
 - **Import from other apps (20–21):** paths `~/.config/alma/chat_threads.db` · `~/.cc-switch/cc-switch.db` · `~/.claude/settings.json` · `~/.codex/config.toml`; tabs all **Not found on this computer** / count `–` / Import disabled; copy via `t()`; Import… tooltip **Bring over providers set up in other apps**.

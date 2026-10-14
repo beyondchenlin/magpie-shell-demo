@@ -188,4 +188,31 @@ Providers tab, add sheet, foot of the catalog (relays, On this machine, Remote m
 ## demo 对齐（Import Claude / apps · v0.1.54 IMPORT_CLAUDE_DONE）
 - Import from other apps：四路径与 NOTES 20–21 / Magpie `importapps.go` 一致；全 Not found；Import 禁用；Import… title tip。
 - Claude 22–24：risk / Import sheet / GTK Select Files（Recent 侧栏）；Escape 不关 Import（仅 Cancel）；无真选文件。
-- Fetch models 54+：尚未落盘 — 等点录。
+- Fetch models 54–60：已落盘（Custom Models 行；见下节）。
+
+## Fetch models (54–60)
+
+A new key-vendor sheet does not have Fetch models. Google Gemini was opened and scrolled from API key through Endpoints (OpenAI `https://generativelanguage.googleapis.com/v1beta/op…`). No Models field, no Fetch models button. Escape closed it clean (nothing typed, no Discard). OpenAI is the same add shape. Fetch models before a provider exists is on **+ Custom provider** (OpenAI compatible by default), which is the catalog's OpenAI-style sheet.
+
+No API key was typed. Add was not clicked. `~/.config/magpie/providers.json` was not created.
+
+| shot | what |
+|---|---|
+| 54 | Models row, idle. Placeholder `model ids, comma separated · e.g. gpt-5.5, claude-sonnet…`. Button **Fetch models**. Standing hint: "Optional: Fetch models to pick from the vendor's list, or type ids; none picked, magpie asks for the list after saving." API key still the placeholder. |
+| 55 | Hover the button. Native title, clipped on the right and across the footer: "Ask the vendor for its model list with the URL and key typed, to pick f…" (the title is "…to pick from; nothing is saved"). |
+| 56 | Click with an empty URL and an empty key. Amber toast **Type the base URL first**. Nothing is asked. The click checks the URL, not the key. |
+| 57 | Base URL `http://127.0.0.1:9/v1` (not a key). API key still "paste an API key". |
+| 58 | Fetch models with that URL and no key. Red under the button: `no model list: Get "http://127.0.0.1:9/v1/models": dial tcp 127.0.0.1:9: connect: connection refused — type its model ids in by hand, or give the URL its list is at`. No chips, no Pick all. **Asking the vendor…** did not survive a frame at 30 fps (port 9 refuses at once). An empty key does not block the ask once a URL is typed; there is no "paste a key" tip on this path. |
+| 59 | Cancel on the dirty draft. **Discard** / "Discard unsaved changes? Your changes will be lost." Dialog Cancel had focus. Red Discard was clicked. |
+| 60 | Catalog foot again. + Custom provider focused. No provider added. |
+
+## demo 对齐（Fetch models nest · v0.1.55 FETCH_MODELS_DONE）
+- 新 key 厂商表（Gemini）无 Fetch models；未保存时按钮只在 Custom Models 行
+- 空 URL：琥珀色 Type the base URL first（status.lift），不请求
+- `http://127.0.0.1:9/v1` 且无 key：红字 no model list + dial connection refused；无 chip；Asking… 40ms 壳
+- Context→Max→Compact→Models 字段序对齐 Magpie
+- 脏草稿 Cancel → Discard；未 Add；providers.json 未创建
+
+## Left state (after 60)
+
+Providers tab, add sheet, foot of the catalog (relays, On this machine, Remote magpie, + Custom provider focused). Search empty. No provider added, no key stored, no file chosen. Magpie still running: window 752×652 at +610+300 (id 27262991). Not quit.

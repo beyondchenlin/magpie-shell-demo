@@ -612,7 +612,13 @@ export default function App() {
       <footer className="foot">
         <span
           id="status"
-          className={`status${status ? ` ${status.kind}` : ""}`}
+          className={`status${status ? ` ${status.kind}` : ""}${
+            status &&
+            typeof document !== "undefined" &&
+            !!document.querySelector(".modal:not(.out)")
+              ? " lift"
+              : ""
+          }`}
           role={status?.kind === "err" ? "alert" : "status"}
           aria-atomic="true"
           title={status?.msg || undefined}
