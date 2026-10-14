@@ -1,12 +1,11 @@
-# last-cycle · 06:05 CST
+# last-cycle · 06:12 CST
 
-**Tag:** SKILLS_INSTALL_PARTIAL → **v0.1.63** (await library/57+)
+**Tag:** SKILLS_INSTALL_DONE → **v0.1.64** (57–62); PARTIAL → **v0.1.63**
 
-## v0.1.63
-- Magpie-source Skills Install nest: Installing… → installed toast; have/in the library; Select all fresh; already-in toast.
-- No library/57+ on disk yet.
+## v0.1.64
+- Native library/57–62 Skills Install nest DONE (toast 1 skill installed; Installing… too brief).
+- Post-install: Skills · N, Check for updates, Give skills as, In projects, Discover order.
 
 ## Remaining
-- Consume library/57+ when landed → SKILLS_INSTALL_DONE
 - P1: live gateway bird, true OAuth/key persist, Allowances **N/A**
 - Skip Vercel 402

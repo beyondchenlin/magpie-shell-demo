@@ -156,3 +156,24 @@ Library builtin was switched **Off** again afterwards. Top nav is Agents, Provid
 - 勾选 → Installing… → `1 skill installed` / `{n} skills installed`；再 Find 时已装行 dim + **in the library**；Select all 仅 fresh
 - 不伪造 too-big 帧；Allowances N/A
 
+## Skills Install nest (shots 57–62) — recording DONE
+
+Library On → Skills → Find `mattpocock/skills` (probe already open from prior). Window resized to 752×900 so the probe foot fit, then restored to 752×652.
+
+| shot | what |
+|---|---|
+| 57-skills-probe-ready | Probe open: 38 skills · Select all · Filter · unchecked list |
+| 58-skills-one-checked | **git-guardrails-claude-code** checked → foot **Install 1 skill** (for Cursor · Cancel) |
+| 59-skills-probe-foot | Tall window: foot visible with Install 0/1 under list; Discover below |
+| 60-skills-install-hover | Pointer on **Install 1 skill** (primary) |
+| 61-skills-installed-toast | After click: probe closed; green toast **1 skill installed**; tab **Skills · 1**; In the library row; Give skills as Links; In projects; Discover |
+| 62-skills-in-library | Same settled state (toast may have faded) |
+
+**Installing…** on the button was too brief to freeze (install finished within ~1 frame). Magpie `probeResult` still labels the button Installing… until `skills/install` returns — demo keeps that busy state.
+
+No credential folder opened. Library left On (skill remains). Window restored 752×652 at +610+300.
+
+## demo 对齐（v0.1.64 SKILLS_INSTALL_DONE）
+- 原生 library/57–62 全消费；Installing… 过短同 RTK skeleton
+- 装后：Skills · N、In the library + Check for updates、Give skills as、In projects、Discover 顺序对齐 Magpie
+

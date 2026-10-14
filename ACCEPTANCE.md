@@ -1,5 +1,6 @@
 ## v0.1.55 FETCH_MODELS_DONE
 
+- **v0.1.64** SKILLS_INSTALL_DONE — library 57–62 Install nest + post-install list/how/projects.
 - **v0.1.63** SKILLS_INSTALL_PARTIAL — Magpie-source Installing… / installed toast / have-tag (await library/57+).
 - **v0.1.57** HOOKS_NEST_DONE — library 39–46 tool matcher + Cursor Matcher.
 

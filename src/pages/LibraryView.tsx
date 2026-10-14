@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { t } from "../i18n";
 
 /**
- * Magpie Library plugin (native-linux/library 01–56 + Skills Install nest from source).
+ * Magpie Library plugin (native-linux/library 01–62 Skills Install nest).
  * Feature-gated: Plugins › Built-in › Library.
  * Motion: view-in .24s; modal pop-in .42s; Discard .28s; segs .18s; lib-switch; lib-bob/lib-probe/mk-spin (v0.1.44).
  */
@@ -263,6 +263,9 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
   /** Magpie renderRTK: missing | installing | checking (skeleton) — no fake binary/path */
   const [rtkPhase, setRtkPhase] = useState<"missing" | "installing" | "checking">("missing");
   const [skillInstalling, setSkillInstalling] = useState(false);
+  /** Magpie skillHowBar: link | copy */
+  const [skillHow, setSkillHow] = useState<"link" | "copy">("link");
+  const [skillChecking, setSkillChecking] = useState(false);
   const newNameRef = useRef<HTMLInputElement>(null);
   const mcpNameRef = useRef<HTMLInputElement>(null);
 
@@ -425,7 +428,12 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
     <main className="view" id="view-library" style={{ animation: "view-in .24s var(--ease)" }}>
       <div className="lib-head row-head" style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
         <div className="lib-tabs" role="tablist" aria-label={t("Library")} style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
-          {LIB_TABS.map(([id, label]) => (
+          {LIB_TABS.map(([id, label]) => {
+            // Magpie libHead: Skills · N / MCP · N / Hooks · N when count > 0
+            const n =
+              id === "skills" ? skills.length : id === "mcp" ? mcpServers.length : id === "hooks" ? hooks.length : 0;
+            const shown = n ? `${t(label)} · ${n}` : t(label);
+            return (
             <button
               key={id}
               type="button"
@@ -446,9 +454,10 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                 transition: "color .15s, background .15s, border-color .15s",
               }}
             >
-              {t(label)}
+              {shown}
             </button>
-          ))}
+            );
+          })}
         </div>
         <span className="grow" />
         {tab === "mcp" || tab === "skills" ? (
@@ -936,6 +945,96 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
               ) : null}
             </div>
 
+            {skills.length === 0 ? (
+              <div style={{ padding: "8px 2px", color: "var(--muted)", fontSize: 13 }}>{t("No skills in the library yet — find some above.")}</div>
+            ) : (
+              <>
+                <div style={{ marginTop: 14 }}>
+                  <div className="row-head" style={{ marginBottom: 6, display: "flex", alignItems: "center", gap: 8 }}>
+                    <span className="label" style={{ letterSpacing: ".04em", fontSize: 11, color: "var(--muted)", fontWeight: 600 }}>{t("In the library")}</span>
+                    <span className="grow" />
+                    <button
+                      type="button"
+                      className={`text${skillChecking ? " busy" : ""}`}
+                      title={t("Ask GitHub which skills changed since they were installed")}
+                      disabled={skillChecking}
+                      onClick={() => {
+                        setSkillChecking(true);
+                        window.setTimeout(() => {
+                          setSkillChecking(false);
+                          onStatus?.(t("Up to date"), "ok");
+                        }, 680);
+                      }}
+                    >
+                      {skillChecking ? t("Checking…") : t("Check for updates")}
+                    </button>
+                  </div>
+                  {skills.map((s) => (
+                    <div key={s.id} className="row" style={{ display: "flex", gap: 8, padding: "10px 4px", borderBottom: "1px solid var(--line)" }}>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <b style={{ fontSize: 13 }}>{s.name}</b>
+                        <div style={{ fontSize: 12, color: "var(--muted)" }}>{s.desc}</div>
+                      </div>
+                      <LibChip on label="Cursor" onClick={() => {}} />
+                      <button type="button" className="text" onClick={() => setSkills((list) => list.filter((x) => x.id !== s.id))}>{t("Remove")}</button>
+                    </div>
+                  ))}
+                </div>
+                {/* Magpie skillHowBar — under the list */}
+                <div className="lib-skillhow" style={{ marginTop: 14, display: "flex", flexWrap: "wrap", alignItems: "center", gap: 8 }}>
+                  <span className="label" style={{ letterSpacing: ".04em", fontSize: 11, color: "var(--muted)", fontWeight: 600 }}>{t("Give skills as")}</span>
+                  <div className="segs" style={{ display: "inline-flex", gap: 2, padding: 2, borderRadius: 999, border: "1px solid var(--line)", background: "var(--bg)" }}>
+                    {([["link", "Links"], ["copy", "Copies"]] as const).map(([id, lab]) => (
+                      <button
+                        key={id}
+                        type="button"
+                        className={`opt${skillHow === id ? " on" : ""}`}
+                        onClick={() => {
+                          if (skillHow === id) return;
+                          setSkillHow(id);
+                          onStatus?.(
+                            id === "copy" ? t("The agents get copies of their skills now") : t("The agents get links to their skills now"),
+                            "ok",
+                          );
+                        }}
+                        style={{
+                          height: 26,
+                          padding: "0 10px",
+                          borderRadius: 999,
+                          border: 0,
+                          background: skillHow === id ? "var(--card)" : "transparent",
+                          color: skillHow === id ? "var(--fg)" : "var(--muted)",
+                          font: "inherit",
+                          fontSize: 12,
+                          cursor: "pointer",
+                        }}
+                      >
+                        {t(lab)}
+                      </button>
+                    ))}
+                  </div>
+                  <button type="button" className="text action" title={t("Give an agent its skills its own way")} onClick={() => onStatus?.(t("Demo: by-agent how sheet"), "ok")}>
+                    {t("By agent")}
+                  </button>
+                  <span style={{ fontSize: 12, color: "var(--muted)", flex: "1 1 220px" }}>
+                    {skillHow === "copy"
+                      ? t("Each agent gets a folder of its own, made again when the library's skill changes; edits made in a copy are replaced.")
+                      : t("Links follow the library's skill: an update reaches the agents at once.")}
+                  </span>
+                </div>
+                <div style={{ marginTop: 16 }}>
+                  <div className="row-head" style={{ marginBottom: 6, display: "flex", alignItems: "center", gap: 8 }}>
+                    <span className="label" style={{ letterSpacing: ".04em", fontSize: 11, color: "var(--muted)", fontWeight: 600 }}>{t("In projects")}</span>
+                    <span className="grow" />
+                    <button type="button" className="text action" onClick={() => onStatus?.(t("Demo: add a project"), "ok")}>{t("Add a project")}</button>
+                  </div>
+                  <p style={{ margin: 0, fontSize: 12.5, color: "var(--muted)", lineHeight: 1.45 }}>
+                    {t("Give a project's agents some of these skills as the project's own: magpie links them into its .claude/skills and .agents/skills and keeps them out of git.")}
+                  </p>
+                </div>
+              </>
+            )}
+
             <div id="libSkillDiscover" style={{ marginTop: 18 }}>
               <div className="row-head" style={{ marginBottom: 8, display: "flex", alignItems: "center", gap: 8 }}>
                 <span className="label" style={{ letterSpacing: ".04em", fontSize: 11, color: "var(--muted)", fontWeight: 600 }}>{t("DISCOVER")}</span>
@@ -983,26 +1082,6 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                 ))}
               </div>
             </div>
-
-            {skills.length === 0 ? (
-              <div style={{ padding: "8px 2px", color: "var(--muted)", fontSize: 13 }}>{t("No skills in the library yet — find some above.")}</div>
-            ) : (
-              <div>
-                <div className="row-head" style={{ marginBottom: 6 }}>
-                  <span className="label" style={{ letterSpacing: ".04em", fontSize: 11, color: "var(--muted)", fontWeight: 600 }}>{t("In the library")}</span>
-                </div>
-                {skills.map((s) => (
-                  <div key={s.id} className="row" style={{ display: "flex", gap: 8, padding: "10px 4px", borderBottom: "1px solid var(--line)" }}>
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <b style={{ fontSize: 13 }}>{s.name}</b>
-                      <div style={{ fontSize: 12, color: "var(--muted)" }}>{s.desc}</div>
-                    </div>
-                    <LibChip on label="Cursor" onClick={() => {}} />
-                    <button type="button" className="text" onClick={() => setSkills((list) => list.filter((x) => x.id !== s.id))}>{t("Remove")}</button>
-                  </div>
-                ))}
-              </div>
-            )}
           </>
         ) : tab === "hooks" ? (
           <>

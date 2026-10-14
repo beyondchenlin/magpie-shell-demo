@@ -1,3 +1,9 @@
+## v0.1.64 SKILLS_INSTALL_DONE
+- Native `library/57–62` consumed: probe ready → one checked (**Install 1 skill**) → Install hover → toast **1 skill installed** → Skills · 1 + In the library row (Installing… too brief to freeze, same as RTK Check skeleton).
+- Demo: Magpie order Find → library list → **Give skills as** Links/Copies + By agent note → **In projects** → Discover; tab **Skills · N**; Check for updates → Checking… → Up to date.
+- Prior **v0.1.63** Magpie-source Installing… / have-tag kept.
+- Allowances **N/A**. Skip Vercel 402. P1: live gateway bird, true OAuth/key persist.
+
 ## v0.1.63 SKILLS_INSTALL_PARTIAL
 - Native `library/57+` Skills Install shots **not on disk yet** (NOTES 47–51: Install not clicked; 52–56 RTK only).
 - Magpie-source chip (probeResult / report): Install → **Installing…** (busy + Cancel held) → toast `1 skill installed` / `{n} skills installed`; re-probe marks **have** → dim + disabled + tag **in the library**; Select all only on fresh; toast can append `already in the library: {names}`.
