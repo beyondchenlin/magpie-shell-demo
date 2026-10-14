@@ -1,11 +1,16 @@
 # Magpie Shell Demo — 验收清单（对照官方截图 + 源码）
 
+> **静态空态 ≠ 交互 1:1。**  
+> 当前总判定：**`INTERACTION_NOT_STARTED`** — 仅空态外观接近；按钮点击、动效、内页交互尚未按 Spec 录制/实现。  
+> 交互计划：[`INTERACTION-PLAN.md`](./INTERACTION-PLAN.md) · Agents 控件清单：[`interactions/pages/agents/CONTROLS.md`](./interactions/pages/agents/CONTROLS.md)
+
 对照基准：
 - 官方实机截图：`/workspace/magpie-official/shots/`（01-agents … 03-routing 等）
 - 源码：`magpie` `internal/gui/assets/`（`app.css` / `routing.css` / `index.html` / `i18n.js` zh）
 - 本仓库自检截图：`acceptance-shots/demo-*.png`
+- 交互录制：`interactions/pages/<page>/SPEC.md` + `shots/`（P2 起）
 
-总判定（2026-10-14 重写后自检）：**视觉空态接近官方，仍非完整业务 1:1 → 暂标 `VISUAL_EMPTY_MATCH`（Agents / Providers / Routing 空态）；不宣称 PASS_WITH_GAPS。**
+外观空态（旧）：Agents / Providers / Routing 空态结构接近 → 曾标 `VISUAL_EMPTY_MATCH`；**在交互 Spec 完成前不再单独作为交付结论。**
 
 图例：`[x]` 自检通过 · `[~]` 有意简化 · `[ ]` 未过 / 未做
 

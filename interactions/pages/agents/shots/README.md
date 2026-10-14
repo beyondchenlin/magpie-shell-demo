@@ -1,0 +1,3 @@
+# shots/
+
+P2 截图放这里：`A-01-before.png` / `A-01-after.png` / …
