@@ -1,19 +1,24 @@
 import { useState } from "react";
 import { useSegThumb } from "../components/SegThumb";
-import { ZH } from "../data/mock";
+import { demoCopy, t, type Lang } from "../i18n";
 
 export function GatewayView() {
   return (
     <main className="view" id="view-gateway">
       <div className="row-head">
-        <span className="label">{ZH.gateway}</span>
+        <span className="label">{t("Gateway")}</span>
       </div>
       <div className="list">
         <div className="row pref">
           <div className="who">
-            <div className="name">Gateway running</div>
+            <div className="name">
+              {demoCopy("网关运行中", "Gateway running")}
+            </div>
             <div className="sub">
-              0 models · no agent routed through it yet · five APIs, one URL
+              {demoCopy(
+                `0 个模型 · ${t("no agent routed through it yet")} · ${t("five APIs, one URL")}`,
+                `0 models · ${t("no agent routed through it yet")} · ${t("five APIs, one URL")}`,
+              )}
             </div>
           </div>
           <div className="val">
@@ -22,12 +27,14 @@ export function GatewayView() {
         </div>
         <div className="row pref">
           <div className="who">
-            <div className="name">Restart gateway</div>
-            <div className="sub">Demo shell · no real gateway process</div>
+            <div className="name">{t("Restart gateway")}</div>
+            <div className="sub">
+              {demoCopy("演示壳 · 无真实网关进程", "Demo shell · no real gateway process")}
+            </div>
           </div>
           <div className="val">
             <button type="button" className="text" disabled>
-              Restart
+              {t("Restart")}
             </button>
           </div>
         </div>
@@ -36,22 +43,31 @@ export function GatewayView() {
   );
 }
 
+const USAGE_TABS = [
+  ["Overview", "Overview"],
+  ["Requests", "Requests"],
+  ["Sessions", "Sessions"],
+  ["Context", "Context"],
+] as const;
+
 export function UsageView() {
   return (
     <main className="view" id="view-usage">
       <div className="usage-head">
         <div className="segs">
-          <button type="button" className="on">
-            Overview
-          </button>
-          <button type="button">Requests</button>
-          <button type="button">Sessions</button>
-          <button type="button">Context</button>
+          {USAGE_TABS.map(([en], i) => (
+            <button key={en} type="button" className={i === 0 ? "on" : ""}>
+              {t(en)}
+            </button>
+          ))}
         </div>
       </div>
       <div className="usage-pane">
         <p className="note" style={{ padding: "12px 4px", color: "var(--muted)" }}>
-          No calls today. Point an agent at a catalog model and use it…
+          {t("No calls today.")}{" "}
+          {t(
+            "Point an agent at a catalog model and use it; every call through the gateway is counted here.",
+          )}
         </p>
       </div>
     </main>
@@ -62,24 +78,26 @@ export function PluginsView() {
   return (
     <main className="view" id="view-plugins">
       <div className="row-head">
-        <span className="label">Discover</span>
+        <span className="label">{t("Discover")}</span>
       </div>
       <p className="note" style={{ padding: "12px 4px", color: "var(--muted)" }}>
-        Subscriptions and gateway middleware — demo market not wired. Native
-        gold: interactions/native-linux/shots/N-05-plugins.png
+        {demoCopy(
+          "订阅与网关中间件 — 演示市场未接线。",
+          "Subscriptions and gateway middleware — demo market not wired.",
+        )}
       </p>
     </main>
   );
 }
 
 const SET_TABS = [
-  { id: "general", label: "General" },
-  { id: "usage", label: "Allowances" },
-  { id: "network", label: "Network and sharing" },
-  { id: "models", label: "Models" },
-  { id: "privacy", label: "Privacy" },
-  { id: "sync", label: "Sync and backup" },
-  { id: "about", label: "About" },
+  { id: "general", en: "General" },
+  { id: "usage", en: "Allowances" },
+  { id: "network", en: "Network and sharing" },
+  { id: "models", en: "Models" },
+  { id: "privacy", en: "Privacy" },
+  { id: "sync", en: "Sync and backup" },
+  { id: "about", en: "About" },
 ] as const;
 
 type SetTabId = (typeof SET_TABS)[number]["id"];
@@ -87,9 +105,11 @@ type SetTabId = (typeof SET_TABS)[number]["id"];
 type SettingsProps = {
   theme: "system" | "light" | "dark";
   setTheme: (t: "system" | "light" | "dark") => void;
+  lang: Lang;
+  setLang: (l: Lang) => void;
 };
 
-export function SettingsView({ theme, setTheme }: SettingsProps) {
+export function SettingsView({ theme, setTheme, lang, setLang }: SettingsProps) {
   const [tab, setTab] = useState<SetTabId>("general");
   const setTabsBox = useSegThumb(tab);
 
@@ -100,29 +120,29 @@ export function SettingsView({ theme, setTheme }: SettingsProps) {
           className="warm-tabs set-tabs"
           id="setTabs"
           role="tablist"
-          aria-label="Settings"
+          aria-label={t("Settings")}
           ref={setTabsBox}
         >
-          {SET_TABS.map((t) => (
+          {SET_TABS.map((x) => (
             <button
-              key={t.id}
+              key={x.id}
               type="button"
               role="tab"
-              id={`setTab-${t.id}`}
-              data-set={t.id}
-              className={tab === t.id ? "on" : ""}
-              aria-selected={tab === t.id}
-              onClick={() => setTab(t.id)}
+              id={`setTab-${x.id}`}
+              data-set={x.id}
+              className={tab === x.id ? "on" : ""}
+              aria-selected={tab === x.id}
+              onClick={() => setTab(x.id)}
             >
-              {t.label}
+              {t(x.en)}
             </button>
           ))}
         </div>
         <input
           className="set-q words"
           type="search"
-          placeholder="Find a setting"
-          aria-label="Find a setting"
+          placeholder={t("Find a setting")}
+          aria-label={t("Find a setting")}
         />
       </div>
 
@@ -131,7 +151,7 @@ export function SettingsView({ theme, setTheme }: SettingsProps) {
           <div className="list prefs">
             <div className="row pref" id="themeRow">
               <div className="who">
-                <div className="name">Appearance</div>
+                <div className="name">{t("Appearance")}</div>
               </div>
               <div className="val">
                 <span className="segs">
@@ -141,14 +161,14 @@ export function SettingsView({ theme, setTheme }: SettingsProps) {
                       ["light", "Light"],
                       ["dark", "Dark"],
                     ] as const
-                  ).map(([id, label]) => (
+                  ).map(([id, en]) => (
                     <button
                       key={id}
                       type="button"
                       className={theme === id ? "on" : ""}
                       onClick={() => setTheme(id)}
                     >
-                      {label}
+                      {t(en)}
                     </button>
                   ))}
                 </span>
@@ -156,17 +176,23 @@ export function SettingsView({ theme, setTheme }: SettingsProps) {
             </div>
             <div className="row pref">
               <div className="who">
-                <div className="name">Language</div>
+                <div className="name">{t("Language")}</div>
               </div>
               <div className="val">
-                <select className="pref-pick" defaultValue="system" disabled>
-                  <option value="system">System</option>
+                <select
+                  className="pref-pick"
+                  value={lang}
+                  aria-label={t("Language")}
+                  onChange={(e) => setLang(e.target.value as Lang)}
+                >
+                  <option value="zh">简体中文</option>
+                  <option value="en">English</option>
                 </select>
               </div>
             </div>
             <div className="row pref">
               <div className="who">
-                <div className="name">Text size</div>
+                <div className="name">{t("Text size")}</div>
               </div>
               <div className="val">
                 <span className="segs">
@@ -184,8 +210,13 @@ export function SettingsView({ theme, setTheme }: SettingsProps) {
             </div>
             <div className="row pref">
               <div className="who">
-                <div className="name">About</div>
-                <div className="sub">magpie-shell-demo · not official Magpie</div>
+                <div className="name">{t("About")}</div>
+                <div className="sub">
+                  {demoCopy(
+                    "magpie-shell-demo · 非官方 Magpie",
+                    "magpie-shell-demo · not official Magpie",
+                  )}
+                </div>
               </div>
             </div>
           </div>
@@ -198,8 +229,9 @@ export function SettingsView({ theme, setTheme }: SettingsProps) {
             className="set-none"
             style={{ padding: "18px 4px", color: "var(--muted)" }}
           >
-            {SET_TABS.find((t) => t.id === tab)?.label} — section shell only
-            (native gold: N-06). Full prefs not wired yet.
+            {t(SET_TABS.find((x) => x.id === tab)!.en)}
+            {" — "}
+            {demoCopy("分区壳层（尚未接线）", "section shell only (not wired yet)")}
           </p>
         </div>
       )}

@@ -208,7 +208,7 @@ export const ZH = {
   remoteNote: "远程：另一台电脑上的 magpie，局域网共享",
   remoteHint:
     "另一台电脑的 magpie 在「设置 → 局域网共享」中显示的地址和 API 密钥。其模型和路由组会列在这里；请求按 Agent 所用的 API 原样转发。",
-  ollamaNote: "your local models",
+  ollamaNote: "本机模型",
   moveUp: "上移",
   moveDown: "下移",
   hide: "隐藏",

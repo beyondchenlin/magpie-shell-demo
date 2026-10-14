@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { GATEWAY_ADDR, ZH } from "../data/mock";
+import { GATEWAY_ADDR } from "../data/mock";
+import { ZH } from "../i18n";
 
 type Wire = { d: string; live?: boolean };
 

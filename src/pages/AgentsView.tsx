@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import installsData from "../data/installs.json";
-import { VIA_LABEL, ZH, iconSrc } from "../data/mock";
+import { VIA_LABEL, iconSrc } from "../data/mock";
+import { ZH, t } from "../i18n";
 
 type InstallCmd = { via: string; command: string; node?: string };
 type Install = {
@@ -57,7 +58,7 @@ function CopyBtn({
         setDone(true);
         setTimeout(() => setDone(false), 900);
         // Magpie: status(t("{what} copied", { what: t("{agent}'s install command", …) }))
-        onStatus(ZH.installCmdCopied.replace("{agent}", agentName), "ok");
+        onStatus(t("{what} copied", { what: t("{agent}'s install command", { agent: agentName }) }), "ok");
       }}
     >
       <svg viewBox="0 0 16 16" width={12} height={12} aria-hidden>
@@ -784,7 +785,7 @@ export function AgentsView({
                     {x.commands.map((c) => (
                       <div key={c.command} className="ag-install-cmd">
                         <span className="ag-install-via">
-                          {VIA_LABEL[c.via] || c.via}
+                          {c.via === "script" ? t("Installer") : VIA_LABEL[c.via] || c.via}
                         </span>
                         <code>{c.command}</code>
                         <CopyBtn

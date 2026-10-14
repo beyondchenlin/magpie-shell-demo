@@ -7,7 +7,8 @@ import {
   type ReactNode,
 } from "react";
 import presets from "../data/presets.json";
-import { SUB_TILES, ZH, iconSrc } from "../data/mock";
+import { SUB_TILES, iconSrc } from "../data/mock";
+import { ZH } from "../i18n";
 
 type Preset = { id: string; name: string; icon: string; kind: string };
 const PRESETS = presets as Preset[];
