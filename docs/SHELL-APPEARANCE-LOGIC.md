@@ -317,3 +317,20 @@ Same as §4; added: `.pm-opts textarea` focus .12s; `.range-menu .rm-day` backgr
 | Profile Escape | 关 naming | 已有 |
 
 *文档版本：v0.1.22*
+
+## v0.1.26 Copilot device-code / pairTile
+
+| 控件 | Magpie | demo |
+|------|--------|------|
+| Copilot tile | `startSignIn("copilot")` → device code，无 risk 门 | 点开即 `.signing` waiting（mock code `WXYZ-9K2M`） |
+| `.devcode code` + `.copy` | 字距 .12em、17px 600；copy-pop **1.2s** | `SignCopy` + toast `{what} copied` |
+| `.signlink` | URL + Copy；Open again → `api("open")` | `window.open` 公网 device 页；无 OAuth 轮询 |
+| `Account on GHE.com?` | `signing.state=ghe` → `.copilot-ghe` | 同；校验 `*.ghe.com` 后 mock waiting + `https://{host}/login/device` |
+| `Proxy: {proxy}` | `signInProxyLink` + proto-menu | 演示 Global ↔ Direct 切换；完整菜单可后接 |
+| Cancel | `cancelSignIn` | 清 `copilotSign` |
+| `pairTile(pr, cn)` | 一格；title 两行 Global/China host | `vendorPairs` + `pairHostTip`；点开 Global 编辑器（Region 仍切 China） |
+| China 独立格 | **不出现**（除非无 global） | `-cn` 不进 grid |
+
+动效：`.signing` **fade-in .2s**；`.spinner` **spin .8s**；`.copy.done` **1.2s**（同 §4）。
+
+*文档版本：v0.1.26*

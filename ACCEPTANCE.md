@@ -1,22 +1,23 @@
 # Acceptance — magpie-shell-demo
 
-**Status: `PROVIDERS_CLAUDE_PARTIAL`** — **v0.1.25**
+**Status: `COPILOT_ROUTING_PARTIAL`** — **v0.1.26**
 
 ## 本批
 
 | 区 | 内容 |
 |----|------|
-| Providers 25–34 | Gemini Proxy Custom / Discard；vendor host tip；Vertex 编辑器；Kimi Region+China；Relays/Local/Remote；Remote magpie |
-| (承 v0.1.24) | Claude risk/import 22–24；Arrange sibling slide；Privacy/Plugins Install spin |
+| Providers Copilot | 设备码卡 mock（`.signing` + `.devcode` + `.signlink` + Open again / GHE.com? / Proxy / Cancel）；GHE 表单；无真 OAuth |
+| Providers pairTile | Kimi / Kimi Code / MiniMax / StepFun / Qwen：Global+China **一格**双行 tip（对齐 Magpie `pairTile` / shot 31） |
+| Routing native | `interactions/native-linux/routing/` 仍空 — 等待截图+NOTES 即回写 |
 
 ## 链接
 
-- [Release v0.1.25](https://github.com/beyondchenlin/magpie-shell-demo/releases/tag/v0.1.25)
-- [Portable 0.1.25](https://github.com/beyondchenlin/magpie-shell-demo/releases/download/v0.1.25/Magpie-Shell-Demo-0.1.25-portable.exe)
-- 在线：https://magpie-shell-demo.vercel.app （今日免费部署额度可能已满）
+- [Release v0.1.26](https://github.com/beyondchenlin/magpie-shell-demo/releases/tag/v0.1.26)
+- [Portable 0.1.26](https://github.com/beyondchenlin/magpie-shell-demo/releases/download/v0.1.26/Magpie-Shell-Demo-0.1.26-portable.exe)
+- 在线：https://magpie-shell-demo.vercel.app
 
 ## 仍缺
 
-- Providers 真 OAuth / 真 Vertex ADC；Kimi 真双 preset 成对磁贴与 Magpie pairTile 完全同构再抠
-- Plugins 真 npm 安装流
-- Routing 真 gateway hist
+- Copilot 真 device-code / GHE OAuth；Proxy 完整 proto-menu
+- Antigravity 独立风险卡文案
+- Plugins 真 npm 安装；Routing 真 gateway hist；native routing 嵌套截图待产

@@ -146,6 +146,64 @@ function Tile({
   );
 }
 
+/** Magpie copyBtn beside .devcode / .signlink — flash .done ~1.2s */
+function SignCopy({
+  text,
+  what,
+  onStatus,
+}: {
+  text: string;
+  what: string;
+  onStatus: (msg: string, kind?: string) => void;
+}) {
+  const [done, setDone] = useState(false);
+  return (
+    <button
+      type="button"
+      className={`copy${done ? " done" : ""}`}
+      title={t("Copy")}
+      aria-label={t("Copy")}
+      onClick={(e) => {
+        e.stopPropagation();
+        void navigator.clipboard?.writeText(text).catch(() => {});
+        setDone(true);
+        window.setTimeout(() => setDone(false), 1200);
+        onStatus(t("{what} copied", { what }), "ok");
+      }}
+    >
+      <svg viewBox="0 0 16 16" width={12} height={12} aria-hidden>
+        <rect x="5.5" y="5.5" width="7" height="7" rx="1.2" fill="none" stroke="currentColor" strokeWidth="1.5" />
+        <path d="M3.5 10.5v-7A1.5 1.5 0 0 1 5 2h7" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+      </svg>
+    </button>
+  );
+}
+
+const GHE_HOST = /^(https?:\/\/)?[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?\.ghe\.com\/?$/i;
+
+/** Magpie pairTile tooltip: Global/China hosts on two lines (shot 31). */
+function pairHostTip(pr: Preset, cn: Preset | undefined): string {
+  if (!cn) return VENDOR_HOST[pr.id] || pr.name;
+  const PAIR_HOST: Record<string, [string, string]> = {
+    moonshot: ["api.moonshot.ai", "api.moonshot.cn"],
+    "kimi-code": ["api.moonshot.ai", "api.moonshot.cn"],
+    minimax: ["api.minimax.io", "api.minimaxi.com"],
+    stepfun: ["api.stepfun.com", "api.stepfun.cn"],
+    qwen: ["dashscope-intl.aliyuncs.com", "dashscope.aliyuncs.com"],
+  };
+  const hosts = PAIR_HOST[pr.id];
+  if (hosts) return t("Global") + " " + hosts[0] + "\n" + t("China") + " " + hosts[1];
+  const g =
+    (VENDOR_HOST[pr.id] || pr.name).split("\n")[0]?.replace(/^Global |^China /, "") || pr.name;
+  const c =
+    (VENDOR_HOST[cn.id] || cn.name).split("\n")[0]?.replace(/^Global |^China /, "") || cn.name;
+  return t("Global") + " " + g + "\n" + t("China") + " " + c;
+}
+
+/** Demo device code — not from a live GitHub OAuth (mock only). */
+const DEMO_COPILOT_CODE = "WXYZ-9K2M";
+const DEMO_COPILOT_URL = "https://github.com/login/device";
+
 function Section({
   title,
   hint,
@@ -1117,6 +1175,22 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
   const [claudeSign, setClaudeSign] = useState<ClaudeSign>(null);
   const [claudeFilePick, setClaudeFilePick] = useState(false);
   const [claudeFileLoc, setClaudeFileLoc] = useState<"home" | "desktop" | "settings" | "other">("home");
+  /** Magpie Copilot device-code (NOTES): mock only — no real GitHub OAuth. */
+  type CopilotSign =
+    | null
+    | {
+        state: "waiting";
+        code: string;
+        url: string;
+        proxy: "" | "direct" | string;
+        askProxy?: boolean;
+        customProxy?: string;
+        openError?: string;
+        site?: string;
+      }
+    | { state: "ghe"; host: string }
+    | { state: "failed"; error: string; proxy: "" | "direct" | string; site?: string };
+  const [copilotSign, setCopilotSign] = useState<CopilotSign>(null);
   type DemoProv = {
     id: string;
     name: string;
@@ -1173,7 +1247,20 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
   const byKind = (kind: string) =>
     PRESETS.filter((p) => p.kind === kind && hit(p.name, p.id));
 
-  const vendors = byKind("vendor").filter((p) => !p.id.endsWith("-cn") || f);
+  /** Magpie: china twin is pairTile with global — never a second grid cell (shot 31). */
+  const vendorPairs = useMemo(() => {
+    const all = byKind("vendor");
+    const globals = all.filter((p) => !p.id.endsWith("-cn"));
+    const rows: { pr: Preset; cn?: Preset }[] = [];
+    for (const pr of globals) {
+      const cn = PRESETS.find((x) => x.id === pr.id + "-cn" && x.kind === "vendor");
+      const show = hit(pr.name, pr.id) || (cn ? hit(cn.name, cn.id) : false);
+      if (show) rows.push({ pr, cn });
+    }
+    // Searching a China-only name still surfaces the pair via hit(cn) above.
+    return rows;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [f]);
   const relays = byKind("relay");
   const locals = byKind("local");
   const remotes = byKind("remote");
@@ -1185,10 +1272,36 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
     }
     if (id === "claude") {
       setClaudeSign({ state: "risk" });
+      setCopilotSign(null);
       setEditor(null);
       return;
     }
+    if (id === "copilot") {
+      setClaudeSign(null);
+      setEditor(null);
+      setCopilotSign({
+        state: "waiting",
+        code: DEMO_COPILOT_CODE,
+        url: DEMO_COPILOT_URL,
+        proxy: "",
+      });
+      return;
+    }
+    if (id === "antigravity") {
+      setCopilotSign(null);
+      setClaudeSign(null);
+      setEditor(null);
+      onStatus(
+        demoCopy(
+          "演示：Antigravity 有与 Claude 同构的风险卡，本批优先 Copilot 设备码",
+          "Demo: Antigravity has Claude-like risk gate; this pass prioritizes Copilot device-code",
+        ),
+        "ok",
+      );
+      return;
+    }
     setClaudeSign(null);
+    setCopilotSign(null);
     if (id === "custom") {
       setEditor({
         form: "custom",
@@ -1273,7 +1386,7 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
 
   const anySection =
     subs.length > 0 ||
-    vendors.length > 0 ||
+    vendorPairs.length > 0 ||
     relays.length > 0 ||
     locals.length > 0 ||
     remotes.length > 0;
@@ -1403,7 +1516,10 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
                       id={s.id}
                       name={s.name}
                       icon={s.icon}
-                      on={!!claudeSign && s.id === "claude"}
+                      on={
+                        (!!claudeSign && s.id === "claude") ||
+                        (!!copilotSign && s.id === "copilot")
+                      }
                       onPick={pickTile}
                     />
                   ))}
@@ -1650,18 +1766,252 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
                     ) : null}
                   </div>
                 ) : null}
+                {copilotSign?.state === "waiting" ? (
+                  <div className="signing">
+                    <span className="spinner" aria-hidden />
+                    <span className="tt">
+                      <span className="n">
+                        {t("Finish signing in to {name} in your browser", { name: "Copilot" })}
+                      </span>
+                      <span className="s">
+                        {copilotSign.openError
+                          ? t(
+                              "magpie couldn't open your browser: {error}. Open the sign-in link below in a browser yourself.",
+                              { error: copilotSign.openError },
+                            )
+                          : t(
+                              "magpie opened GitHub's device page. Enter this code there; the account shows up here as soon as you're done.",
+                            )}
+                      </span>
+                      <span className="devcode">
+                        <code>{copilotSign.code}</code>
+                        <SignCopy
+                          text={copilotSign.code}
+                          what={t("Code")}
+                          onStatus={onStatus}
+                        />
+                      </span>
+                      <span className="signlink">
+                        <code title={t("Open it in another browser or profile: copy it there")}>
+                          {copilotSign.url}
+                        </code>
+                        <SignCopy
+                          text={copilotSign.url}
+                          what={t("Sign-in link")}
+                          onStatus={onStatus}
+                        />
+                      </span>
+                      <span className="acts">
+                        <button
+                          type="button"
+                          className="link"
+                          onClick={() => {
+                            try {
+                              window.open(copilotSign.url, "_blank", "noopener,noreferrer");
+                              if (copilotSign.openError) {
+                                setCopilotSign({ ...copilotSign, openError: undefined });
+                              }
+                            } catch (e) {
+                              setCopilotSign({
+                                ...copilotSign,
+                                openError: e instanceof Error ? e.message : String(e),
+                              });
+                            }
+                            onStatus(
+                              demoCopy("演示：重新打开设备页（无真 OAuth）", "Demo: reopened device page (no real OAuth)"),
+                              "ok",
+                            );
+                          }}
+                        >
+                          {t("Open again")}
+                        </button>
+                        <button
+                          type="button"
+                          className="link"
+                          data-ghe="ghe"
+                          title={t(
+                            "An account of an enterprise on GitHub Enterprise Cloud with data residency signs in at its <name>.ghe.com",
+                          )}
+                          onClick={() => setCopilotSign({ state: "ghe", host: "" })}
+                        >
+                          {t("Account on GHE.com?")}
+                        </button>
+                        <button
+                          type="button"
+                          className="link via"
+                          title={
+                            t("Global proxy") +
+                            "\n" +
+                            t(
+                              "The sign-in goes through this proxy, as the account's requests will. One picked here is kept as the account's.",
+                            )
+                          }
+                          aria-haspopup="menu"
+                          onClick={() => {
+                            const next =
+                              copilotSign.proxy === ""
+                                ? "direct"
+                                : copilotSign.proxy === "direct"
+                                  ? ""
+                                  : "";
+                            setCopilotSign({
+                              ...copilotSign,
+                              proxy: next as "" | "direct",
+                              askProxy: false,
+                            });
+                            onStatus(
+                              t("Proxy: {proxy}", {
+                                proxy: next === "direct" ? t("Direct") : t("Global proxy"),
+                              }),
+                              "ok",
+                            );
+                          }}
+                        >
+                          {t("Proxy: {proxy}", {
+                            proxy:
+                              !copilotSign.proxy
+                                ? t("Global proxy")
+                                : copilotSign.proxy === "direct"
+                                  ? t("Direct")
+                                  : copilotSign.proxy,
+                          })}
+                        </button>
+                      </span>
+                    </span>
+                    <button
+                      type="button"
+                      className="text"
+                      onClick={() => setCopilotSign(null)}
+                    >
+                      {t("Cancel")}
+                    </button>
+                  </div>
+                ) : null}
+                {copilotSign?.state === "ghe" ? (
+                  <div className="signing copilot-ghe">
+                    <span className="tt">
+                      <span className="n">{t("Your enterprise on GHE.com")}</span>
+                      <span className="s">
+                        {t(
+                          "The address you sign in to GitHub at, like acme.ghe.com. An account on github.com doesn't need it.",
+                        )}
+                      </span>
+                      <form
+                        className="callback-form"
+                        onSubmit={(e) => {
+                          e.preventDefault();
+                          const host = copilotSign.host
+                            .trim()
+                            .replace(/^https?:\/\//i, "")
+                            .replace(/\/$/, "")
+                            .toLowerCase();
+                          if (!GHE_HOST.test(host)) {
+                            onStatus(t("Type your enterprise's <name>.ghe.com"), "err");
+                            return;
+                          }
+                          // Mock: show waiting card with GHE device URL — no real OAuth
+                          setCopilotSign({
+                            state: "waiting",
+                            code: DEMO_COPILOT_CODE,
+                            url: `https://${host}/login/device`,
+                            proxy: "",
+                            site: host,
+                          });
+                          onStatus(
+                            demoCopy(
+                              "演示：GHE 设备码卡（无真 OAuth）",
+                              "Demo: GHE device-code card (no real OAuth)",
+                            ),
+                            "ok",
+                          );
+                        }}
+                      >
+                        <input
+                          value={copilotSign.host}
+                          placeholder="acme.ghe.com"
+                          aria-label={t("Your enterprise on GHE.com")}
+                          autoComplete="off"
+                          onChange={(e) =>
+                            setCopilotSign({ state: "ghe", host: e.target.value })
+                          }
+                        />
+                        <button
+                          type="submit"
+                          className="text primary"
+                          disabled={!GHE_HOST.test(copilotSign.host.trim())}
+                        >
+                          {t("Sign in")}
+                        </button>
+                      </form>
+                    </span>
+                    <button
+                      type="button"
+                      className="text"
+                      onClick={() => setCopilotSign(null)}
+                    >
+                      {t("Cancel")}
+                    </button>
+                    <button
+                      type="button"
+                      className="text"
+                      title={t("Sign in on github.com instead")}
+                      onClick={() =>
+                        setCopilotSign({
+                          state: "waiting",
+                          code: DEMO_COPILOT_CODE,
+                          url: DEMO_COPILOT_URL,
+                          proxy: "",
+                        })
+                      }
+                    >
+                      github.com
+                    </button>
+                  </div>
+                ) : null}
+                {copilotSign?.state === "failed" ? (
+                  <div className="signing failed">
+                    <span className="mark">!</span>
+                    <span className="tt">
+                      <span className="n">{t("Sign-in didn't finish")}</span>
+                      <span className="s">{copilotSign.error}</span>
+                    </span>
+                    <button
+                      type="button"
+                      className="text"
+                      onClick={() => setCopilotSign(null)}
+                    >
+                      {t("Cancel")}
+                    </button>
+                    <button
+                      type="button"
+                      className="text primary"
+                      onClick={() =>
+                        setCopilotSign({
+                          state: "waiting",
+                          code: DEMO_COPILOT_CODE,
+                          url: DEMO_COPILOT_URL,
+                          proxy: copilotSign.proxy,
+                          site: copilotSign.site,
+                        })
+                      }
+                    >
+                      {t("Try again")}
+                    </button>
+                  </div>
+                ) : null}
               </>
             )}
 
-            {vendors.length > 0 && (
+            {vendorPairs.length > 0 && (
               <Section title={ZH.vendors} hint={ZH.makersApis}>
-                {vendors.map((p) => (
+                {vendorPairs.map(({ pr, cn }) => (
                   <Tile
-                    key={p.id}
-                    id={p.id}
-                    name={p.name.replace(/ \(China\)$/, "")}
-                    icon={p.icon}
-                    tip={VENDOR_HOST[p.id] || p.name}
+                    key={pr.id}
+                    id={pr.id}
+                    name={pr.name.replace(/ \(China\)$/, "")}
+                    icon={pr.icon}
+                    tip={pairHostTip(pr, cn)}
+                    on={!!editor && (editor.id === pr.id || (!!cn && editor.id === cn.id))}
                     onPick={pickTile}
                   />
                 ))}
