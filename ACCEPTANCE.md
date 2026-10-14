@@ -6,7 +6,7 @@
 
 **自检日期：** 2026-10-14  
 **自检人：** Grok Bot（executor）  
-**交付物：** Web 预览 +（尽可能）可安装桌面包
+**交付物：** Web 预览 + Windows NSIS/portable `.exe` + Linux AppImage
 
 ---
 

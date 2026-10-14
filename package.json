@@ -11,7 +11,8 @@
     "electron": "electron .",
     "dist:web": "tsc -b && vite build",
     "dist:linux": "tsc -b && vite build && electron-builder --linux AppImage",
-    "dist:dir": "tsc -b && vite build && electron-builder --linux dir"
+    "dist:dir": "tsc -b && vite build && electron-builder --linux dir",
+    "dist:win": "tsc -b && vite build && electron-builder --win"
   },
   "dependencies": {
     "react": "^19.2.8",
@@ -51,6 +52,34 @@
         "Name": "Magpie Shell Demo",
         "StartupWMClass": "magpie-shell-demo"
       }
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "artifactName": "${productName}-${version}-${arch}.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Magpie Shell Demo",
+      "artifactName": "${productName}-Setup-${version}.${ext}"
+    },
+    "portable": {
+      "artifactName": "${productName}-${version}-portable.${ext}"
     }
   },
   "author": {

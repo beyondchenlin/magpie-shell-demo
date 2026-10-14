@@ -8,8 +8,9 @@
 
 - **Web 预览：** https://magpie-shell-demo.vercel.app （`#routing` `#agents` …）
 - **源码：** https://github.com/beyondchenlin/magpie-shell-demo
-- **Linux AppImage：** https://github.com/beyondchenlin/magpie-shell-demo/releases/tag/v0.1.0
-- **本机副本：** `/workspace/Magpie-Shell-Demo-0.1.0.AppImage`
+- **下载（Release）：** https://github.com/beyondchenlin/magpie-shell-demo/releases/tag/v0.1.0
+  - **Windows：** `Magpie Shell Demo-Setup-0.1.0.exe`（NSIS 安装包，推荐）+ portable `.exe`
+  - **Linux：** `Magpie-Shell-Demo-0.1.0.AppImage`
 
 ## 快速打开（Web）
 
@@ -22,43 +23,53 @@ npm run build && npx vite preview
 
 部署后打开对应 Vercel URL；哈希路由：`#routing` `#agents` `#providers` `#gateway` …
 
-## 安装桌面版（Linux）
+## 安装桌面版
 
-产物在仓库 `release/` 与 `/workspace/`：
+### Windows（推荐）
+
+从 [Release v0.1.0](https://github.com/beyondchenlin/magpie-shell-demo/releases/tag/v0.1.0) 下载：
 
 | 文件 | 说明 |
 |------|------|
-| `Magpie Shell Demo-0.1.0.AppImage` | 推荐，免安装 |
-| `Magpie Shell Demo-0.1.0.deb` | Debian/Ubuntu |
+| `Magpie Shell Demo-Setup-0.1.0.exe` | NSIS 安装包（可选路径、桌面快捷方式） |
+| `Magpie Shell Demo-0.1.0-portable.exe` | 免安装便携版 |
+
+双击 Setup 安装即可。默认窗口 **660×600**，最小 **560×420**。
+
+本地构建（需在 Windows，或 CI）：
 
 ```bash
-chmod +x "Magpie Shell Demo-0.1.0.AppImage"
-./"Magpie Shell Demo-0.1.0.AppImage"
-# 或
-sudo dpkg -i "Magpie Shell Demo-0.1.0.deb"
+npm ci
+npm run dist:win
 ```
 
-默认窗口 **660×600**，最小 **560×420**（对齐 Magpie `window_rule.go` / `textsize.go`）。
+### Linux
 
-### macOS / Windows
+```bash
+chmod +x Magpie-Shell-Demo-0.1.0.AppImage
+./Magpie-Shell-Demo-0.1.0.AppImage
+```
 
-本 box 打出的是 Linux 包。其他平台：
+```bash
+npm run dist:linux
+```
+
+### macOS
 
 ```bash
 npm run build
 npx electron-builder --mac   # 需在 macOS
-npx electron-builder --win
 ```
 
 ### Tauri 说明
 
-目标栈仍是 Tauri 2；本机（box）缺少 `libwebkit2gtk-4.1-dev` 且无 sudo，**未能在此编出 Tauri 原生包**。Electron AppImage 作为可安装替代物交付；UI 为同一套 Web 资源。
+目标栈仍是 Tauri 2；本机（box）缺少 `libwebkit2gtk-4.1-dev` 且无 sudo，**未能在此编出 Tauri 原生包**。Electron 包作为可安装替代物交付；UI 为同一套 Web 资源。
 
 ## 技术
 
 - Vite + React + TypeScript
 - 直接复用 Magpie `app.css` / `routing.css`（同名 class）
-- Electron 打包桌面窗
+- Electron 打包桌面窗（Windows NSIS / portable + Linux AppImage）
 - 中文文案对照 Magpie `i18n.js` zh
 
 ## 范围
