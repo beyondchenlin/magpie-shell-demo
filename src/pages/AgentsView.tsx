@@ -459,6 +459,8 @@ type ArrangeProps = {
   index: number;
   count: number;
   onHide: () => void;
+  onMoveUp: () => void;
+  onMoveDown: () => void;
   onClose: () => void;
 };
 
@@ -468,6 +470,8 @@ function ArrangeMenu({
   index,
   count,
   onHide,
+  onMoveUp,
+  onMoveDown,
   onClose,
 }: ArrangeProps) {
   const boxRef = useRef<HTMLDivElement>(null);
@@ -526,14 +530,14 @@ function ArrangeMenu({
       icon: MOVE_UP,
       key: ALT + "↑",
       off: !canMove || index <= 0,
-      run: () => {},
+      run: () => { onMoveUp(); },
     },
     {
       name: ZH.moveDown,
       icon: MOVE_DOWN,
       key: ALT + "↓",
       off: !canMove || index < 0 || index >= count - 1,
-      run: () => {},
+      run: () => { onMoveDown(); },
     },
     {
       name: ZH.hide,
@@ -602,6 +606,14 @@ export function AgentsView({
   const [naming, setNaming] = useState(false);
   const [profileName, setProfileName] = useState("");
   const [hiddenIds, setHiddenIds] = useState<Set<string>>(() => new Set());
+  const [orderIds, setOrderIds] = useState<string[]>(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem("magpie.agentOrder") || "null");
+      if (Array.isArray(saved) && saved.every((x) => typeof x === "string")) return saved;
+    } catch { /* */ }
+    return [];
+  });
+  const [draggingId, setDraggingId] = useState<string | null>(null);
   const [showHiddenFold, setShowHiddenFold] = useState(false);
   const [wired, setWired] = useState<Record<string, boolean>>(() => {
     try {
@@ -613,6 +625,8 @@ export function AgentsView({
     return {};
   });
   const [relocateFor, setRelocateFor] = useState<string | null>(null);
+  const [relPreview, setRelPreview] = useState<string | null>(null);
+  const [relPhase, setRelPhase] = useState<"edit" | "preview" | "done">("edit");
   const [expandOpen, setExpandOpen] = useState<string | null>(null);
   const [connectBusy, setConnectBusy] = useState<string | null>(null);
   const [diffOpen, setDiffOpen] = useState<string | null>(null);
@@ -679,8 +693,32 @@ export function AgentsView({
     closeSave();
   };
 
-  const visible = ALL_AGENTS.filter((a) => !hiddenIds.has(a.id));
-  const hidden = ALL_AGENTS.filter((a) => hiddenIds.has(a.id));
+  const orderedAll = (() => {
+    type Ag = (typeof ALL_AGENTS)[number];
+    if (!orderIds.length) return [...ALL_AGENTS] as Ag[];
+    const by = new Map<string, Ag>(ALL_AGENTS.map((a) => [a.id, a]));
+    const out: Ag[] = [];
+    for (const id of orderIds) {
+      const a = by.get(id);
+      if (a) { out.push(a); by.delete(id); }
+    }
+    for (const a of ALL_AGENTS) if (by.has(a.id)) out.push(a);
+    return out;
+  })();
+  const visible = orderedAll.filter((a) => !hiddenIds.has(a.id));
+  const hidden = orderedAll.filter((a) => hiddenIds.has(a.id));
+  const persistOrder = (ids: string[]) => {
+    setOrderIds(ids);
+    try { localStorage.setItem("magpie.agentOrder", JSON.stringify(ids)); } catch { /* */ }
+  };
+  const moveVisible = (from: number, to: number) => {
+    if (from === to || from < 0 || to < 0 || from >= visible.length || to >= visible.length) return;
+    const visIds = visible.map((a) => a.id);
+    const [item] = visIds.splice(from, 1);
+    visIds.splice(to, 0, item);
+    const rest = orderedAll.map((a) => a.id).filter((id) => !visIds.includes(id));
+    persistOrder([...visIds, ...rest]);
+  };
 
   return (
     <>
@@ -767,12 +805,13 @@ export function AgentsView({
         ) : null}
 
         <div className="list" id="agents">
-          {visible.map((a) => (
+          {visible.map((a, aIdx) => (
             <div
               key={a.id}
-              className="row agent conn"
+              className={`row agent conn${draggingId === a.id ? " dragging" : ""}`}
               data-id={a.id}
               title={a.name}
+              style={draggingId === a.id ? { transition: "none" } : undefined}
             >
               <button
                 type="button"
@@ -782,9 +821,44 @@ export function AgentsView({
                 title={ZH.arrangeTitle}
                 onClick={(e) => {
                   const el = e.currentTarget;
+                  if (el.dataset.dragged === "1") {
+                    delete el.dataset.dragged;
+                    return;
+                  }
                   setArrangeFor((cur) =>
                     cur?.id === a.id ? null : { id: a.id, el },
                   );
+                }}
+                onPointerDown={(e) => {
+                  if (e.button !== 0 || visible.length < 2) return;
+                  const handle = e.currentTarget;
+                  const row = handle.closest(".row.agent") as HTMLElement | null;
+                  if (!row) return;
+                  const startY = e.clientY;
+                  let moved = false;
+                  const from = aIdx;
+                  const onMove = (ev: PointerEvent) => {
+                    if (Math.abs(ev.clientY - startY) < 4 && !moved) return;
+                    moved = true;
+                    handle.dataset.dragged = "1";
+                    setDraggingId(a.id);
+                    const rows = [...document.querySelectorAll<HTMLElement>("#agents > .row.agent")];
+                    let to = from;
+                    for (let i = 0; i < rows.length; i++) {
+                      const r = rows[i].getBoundingClientRect();
+                      if (ev.clientY >= r.top && ev.clientY <= r.bottom) { to = i; break; }
+                    }
+                    if (to !== from) {
+                      moveVisible(from, to);
+                    }
+                  };
+                  const onUp = () => {
+                    setDraggingId(null);
+                    window.removeEventListener("pointermove", onMove);
+                    window.removeEventListener("pointerup", onUp);
+                  };
+                  window.addEventListener("pointermove", onMove);
+                  window.addEventListener("pointerup", onUp);
                 }}
               >
                 <span className="ic">
@@ -830,7 +904,18 @@ export function AgentsView({
                       type="button"
                       className="text"
                       aria-expanded={relocateFor === a.id}
-                      onClick={() => setRelocateFor((cur) => (cur === a.id ? null : a.id))}
+                      onClick={() => {
+                        setRelocateFor((cur) => {
+                          const next = cur === a.id ? null : a.id;
+                          if (next) {
+                            setRelPhase("edit");
+                            setRelPreview(null);
+                            if (!relFrom) setRelFrom("~/code/magpie");
+                            if (!relTo) setRelTo("~/code/magpie-moved");
+                          }
+                          return next;
+                        });
+                      }}
                     >
                       {t("Relocate")}
                     </button>
@@ -879,35 +964,86 @@ export function AgentsView({
                 >
                   <div className="ag-settings">
                     <div className="ag-kv">
-                      <div className="ag-k">{t("Relocate Claude Code project")}</div>
+                      <div className="ag-k" style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                        <img src={iconSrc("claude-color")} alt="" width={16} height={16} style={{ borderRadius: 3 }} />
+                        <span>{t("Relocate Claude Code project")}</span>
+                      </div>
                       <div className="ag-v">
                         <div className="ag-vl" style={{ flexDirection: "column", alignItems: "stretch", gap: 8 }}>
-                          <label style={{ display: "grid", gridTemplateColumns: "72px 1fr", gap: 8, alignItems: "center", fontSize: 12 }}>
-                            <span style={{ color: "var(--muted)" }}>{t("From folder")}</span>
-                            <input className="words" value={relFrom} onChange={(e) => setRelFrom(e.target.value)} />
+                          <p className="sub sm-ask-path" style={{ margin: 0, fontFamily: "var(--code-font, var(--code))", fontSize: 11.5, color: "var(--fg-2)", wordBreak: "break-all" }}>
+                            {relFrom || "~/code/magpie"}
+                          </p>
+                          <p className="lib-confirm" style={{ margin: 0, fontSize: 12, color: "var(--muted)", lineHeight: 1.45 }}>
+                            {t("Close Claude Code and its editor sessions first. This moves the entire project's sessions, not just filtered or selected rows. Existing target storage is never overwritten. Desktop-only sessions are not changed.")}
+                          </p>
+                          <label className="sm-ask-field" style={{ display: "flex", flexDirection: "column", gap: 4, fontSize: 12 }}>
+                            <span style={{ color: "var(--muted)", fontWeight: 560 }}>{t("New absolute project path")}</span>
+                            <input
+                              className="words"
+                              spellCheck={false}
+                              autoComplete="off"
+                              style={{ width: "100%", fontFamily: "var(--code-font, var(--code))", fontSize: 12.5 }}
+                              value={relTo}
+                              disabled={relPhase === "done"}
+                              onChange={(e) => {
+                                setRelTo(e.target.value);
+                                setRelPhase("edit");
+                                setRelPreview(null);
+                              }}
+                            />
                           </label>
-                          <label style={{ display: "grid", gridTemplateColumns: "72px 1fr", gap: 8, alignItems: "center", fontSize: 12 }}>
-                            <span style={{ color: "var(--muted)" }}>{t("To folder")}</span>
-                            <input className="words" value={relTo} onChange={(e) => setRelTo(e.target.value)} />
-                          </label>
-                          <div style={{ display: "flex", gap: 8 }}>
-                            <button type="button" className="ag-quiet" onClick={() => setRelocateFor(null)}>{t("Cancel")}</button>
+                          {relPreview ? (
+                            <p className="lib-confirm" aria-live="polite" style={{ margin: 0, fontSize: 12, color: "var(--fg-2)", lineHeight: 1.45 }}>
+                              {relPreview}
+                            </p>
+                          ) : null}
+                          <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
                             <span className="grow" />
                             <button
                               type="button"
-                              className="ag-quiet accent"
-                              disabled={relBusy}
+                              className="ag-quiet"
                               onClick={() => {
-                                setRelBusy(true);
-                                window.setTimeout(() => {
-                                  setRelBusy(false);
-                                  setRelocateFor(null);
-                                  onStatus(demoCopy("演示：会话路径已迁移（本地）", "Demo: sessions relocated (local)"), "ok");
-                                }, 480);
+                                setRelocateFor(null);
+                                setRelPhase("edit");
+                                setRelPreview(null);
                               }}
                             >
-                              {relBusy ? "…" : t("Relocate")}
+                              {relPhase === "done" ? t("Close") : t("Cancel")}
                             </button>
+                            {relPhase !== "done" ? (
+                              <button
+                                type="button"
+                                className="ag-quiet accent"
+                                disabled={relBusy || !relTo.trim()}
+                                onClick={() => {
+                                  setRelBusy(true);
+                                  window.setTimeout(() => {
+                                    setRelBusy(false);
+                                    if (relPhase === "edit") {
+                                      setRelPhase("preview");
+                                      setRelPreview(
+                                        t("Move {n} sessions ({size}) from {from} to {to}. Originals are retained outside Claude's project list. Historical message text is unchanged.", {
+                                          n: 12,
+                                          size: "48 MB",
+                                          from: relFrom || "~/code/magpie",
+                                          to: relTo.trim(),
+                                        }),
+                                      );
+                                    } else {
+                                      setRelPhase("done");
+                                      setRelPreview(
+                                        t("Relocation complete. Original files and recovery manifest: {dir}", {
+                                          dir: "~/.config/magpie/relocate-demo",
+                                        }),
+                                      );
+                                      onStatus(demoCopy("演示：会话路径已迁移（本地）", "Demo: sessions relocated (local)"), "ok");
+                                    }
+                                  }, 420);
+                                }}
+                              >
+                                {relBusy ? "…" : relPhase === "preview" ? t("Confirm relocation") : t("Preview relocation")}
+                              </button>
+                            ) : null}
                           </div>
                         </div>
                       </div>
@@ -1438,7 +1574,7 @@ export function AgentsView({
       ) : null}
 
       {arrangeFor ? (
-        <ArrangeMenu
+                <ArrangeMenu
           anchor={arrangeFor.el}
           canMove={visible.length > 1}
           index={visible.findIndex((x) => x.id === arrangeFor.id)}
@@ -1448,6 +1584,14 @@ export function AgentsView({
             next.add(arrangeFor.id);
             setHiddenIds(next);
             setArrangeFor(null);
+          }}
+          onMoveUp={() => {
+            const i = visible.findIndex((x) => x.id === arrangeFor.id);
+            moveVisible(i, i - 1);
+          }}
+          onMoveDown={() => {
+            const i = visible.findIndex((x) => x.id === arrangeFor.id);
+            moveVisible(i, i + 1);
           }}
           onClose={() => setArrangeFor(null)}
         />

@@ -1852,7 +1852,15 @@ export function PluginsView() {
     },
   ]);
   const [busy, setBusy] = useState<string | null>(null);
-  const [asking, setAsking] = useState<{ pkg: string; op: "remove" | "off" | "move" } | null>(null);
+  const [pluginsSort, setPluginsSort] = useState<"az" | "za">(() => {
+    try {
+      const v = localStorage.getItem("magpie.sort.plugins");
+      return v === "za" ? "za" : "az";
+    } catch {
+      return "az";
+    }
+  });
+    const [asking, setAsking] = useState<{ pkg: string; op: "remove" | "off" | "move" } | null>(null);
   const [pluginDetail, setPluginDetail] = useState<(typeof DEMO_MARKET)[number]["cards"][number] | null>(null);
   const [gwCallsOpen, setGwCallsOpen] = useState(false);
 
@@ -2282,8 +2290,31 @@ export function PluginsView() {
             </div>
           ) : (
             <>
+              {installed.length > 1 ? (
+                <div className="row-head pm-listhead" style={{ marginBottom: 6 }}>
+                  <span className="grow" />
+                  <div className="segs sortby" data-sort="plugins" role="group" aria-label={t("Names from A to Z")}>
+                    {([["az", "A→Z"], ["za", "Z→A"]] as const).map(([id, label]) => (
+                      <button
+                        key={id}
+                        type="button"
+                        className={`opt${pluginsSort === id ? " on" : ""}`}
+                        title={id === "az" ? t("Names from A to Z") : t("Names from Z to A")}
+                        onClick={() => {
+                          setPluginsSort(id);
+                          try { localStorage.setItem("magpie.sort.plugins", id); } catch { /* */ }
+                        }}
+                      >
+                        {label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ) : null}
               <div className="list pm-list">
-                {installed.map((e) => (
+                {[...installed]
+                  .sort((a, b) => (pluginsSort === "za" ? -1 : 1) * a.name.localeCompare(b.name))
+                  .map((e) => (
                   <div className="row pref" key={e.pkg}>
                     <div className="who">
                       <div className="name" style={{ display: "inline-flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>

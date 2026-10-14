@@ -1,27 +1,28 @@
 # Acceptance — magpie-shell-demo
 
-**Status: `AGENTS_POP_PARTIAL`** — **v0.1.20**
+**Status: `ROUTING_DAY_PARTIAL`** — **v0.1.23**
 
 ## 本批
 
 | 区 | 内容 |
 |----|------|
-| Agents `#pop` | Tiers / New sessions 的 `.field.ag-pick` 接真 `ModelPop`（左轨·收藏·过滤·自由输入） |
-| Agents `am-pop` | Model list **Pick** 打开 Magpie `.pop.am-pop`（All/Shown/Order · rail · 勾选 · 拖拽排序 mock） |
-| Agents stale | 展开面板 `ag-warn` + `ag-stale-copy`（Got it / Restart daemon）；行下 `ag-st` 短文案 |
-| Routing By session | `magpie.routingBySession`；`.rt-session` 折叠组 + 请求行；By request 平铺 |
-| Privacy | Masked words Enter 保存 / Escape 还原；规则 Edit Enter/Escape；rule-add 焦点环 |
-| Motion | am-pop/ag-exp/ag-pick.open 对齐 SHELL-APPEARANCE-LOGIC |
+| Routing day bar | Live + 日 pills + Earlier days 菜单（fit 溢出）；`histDay` 过滤文案 |
+| Routing Replay | `Replay them all` / 单请求 Replay · `.rt-replay` 时钟·倍速·Stop·轨道 marks/head |
+| Routing trace | 点选请求后 `.rt-log` + `.rt-steps`（why/ok/bad/swap/wait） |
+| Agents Arrange | Move up/down 真排序 + handle 拖拽 mock（`.dragging`）· order 持久化 |
+| Agents Relocate | 对齐 sessions `askRelocate`：绝对路径 / Preview→Confirm / 完成文案 |
+| Plugins Installed | A→Z / Z→A `.segs.sortby`（localStorage `magpie.sort.plugins`） |
+| Providers | 消费 native `01–03` → `interactions/native-linux/providers/NOTES.md` |
 
 ## 链接
 
-- [Release v0.1.20](https://github.com/beyondchenlin/magpie-shell-demo/releases/tag/v0.1.20)
-- [Portable 0.1.20](https://github.com/beyondchenlin/magpie-shell-demo/releases/download/v0.1.20/Magpie-Shell-Demo-0.1.20-portable.exe)
-- 在线：https://magpie-shell-demo.vercel.app （若 402 用 portable / preview）
+- [Release v0.1.23](https://github.com/beyondchenlin/magpie-shell-demo/releases/tag/v0.1.23)
+- [Portable 0.1.23](https://github.com/beyondchenlin/magpie-shell-demo/releases/download/v0.1.23/Magpie-Shell-Demo-0.1.23-portable.exe)
+- 在线：https://magpie-shell-demo.vercel.app
 
 ## 仍缺
 
-- 真 agent-models API / 真 staleCopies 推送
-- Routing 真 gateway hist / 账户列 / Purpose·Metrics 菜单
-- Privacy 实机点录后的字级微调（63–70 已有）
-- Plugins Install 真流 / Agents 嵌套点录更多帧
+- Routing 真 gateway hist / 真 replay 时间轴（现为 mock 日条+重放 UI）
+- Agents 拖拽插入点动画（slide siblings）再抠
+- Plugins Install 真 npm 流；Installed 行手柄若上游新增再对齐
+- Privacy 字级微调；Providers 更多嵌套帧

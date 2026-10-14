@@ -25,7 +25,7 @@
 
 1. 无真实 provider 添加 / agent 接线 / gateway  
 2. 飞鸟仅为 Demo 开关 mock  
-3. Usage/Plugins/Agents nested = **ROUTING_PURPOSE_PARTIAL**（v0.1.22 Plugins search/On npm/folder Cancel；Agents guide 0/2 + Manage hide 文案；v0.1.21 Routing Purpose/Metrics menus + Accounts/keys 列；Agents Manage/Install fold；Privacy 63–70 已齐；Agents `#pop` 见 v0.1.20）  
+3. Usage/Plugins/Agents nested = **ROUTING_DAY_PARTIAL**（v0.1.23 day/Replay/trace；v0.1.22 Plugins search/On npm/folder Cancel；Agents guide 0/2 + Manage hide 文案；v0.1.21 Routing Purpose/Metrics menus + Accounts/keys 列；Agents Manage/Install fold；Privacy 63–70 已齐；Agents `#pop` 见 v0.1.20）  
 4. 未做原生 Tauri；Electron 系统标题栏（Windows 上游亦然）
 
 *Sessions / Library 不是顶栏缺口：官方默认不展示。*

@@ -8,7 +8,7 @@ import {
 } from "react";
 import presets from "../data/presets.json";
 import { SUB_TILES, iconSrc } from "../data/mock";
-import { ZH, t } from "../i18n";
+import { ZH, t, demoCopy } from "../i18n";
 
 type Preset = { id: string; name: string; icon: string; kind: string };
 const PRESETS = presets as Preset[];
@@ -357,6 +357,24 @@ function ProviderEditorModal({ state, onClose, onAdd }: EditorProps) {
   const kind = state.form;
   const { modalRef, dialogRef, close } = useModalAnim(true, onClose);
   const [showKey, setShowKey] = useState(false);
+  const [tryModel, setTryModel] = useState("");
+  const [detectHint, setDetectHint] = useState("");
+  const [detectBusy, setDetectBusy] = useState(false);
+  const [iconsOpen, setIconsOpen] = useState(false);
+  const [iconQ, setIconQ] = useState("");
+  const [pickedIcon, setPickedIcon] = useState(state.icon || "aside");
+  const [hdrs, setHdrs] = useState<{ name: string; value: string }[]>([{ name: "", value: "" }]);
+  const API_HINTS: Record<string, string> = {
+    openai: "…/v1 — chat completions, and responses when the vendor has it",
+    responses: "…/v1 — for a vendor that serves only the Responses API, not chat completions",
+    anthropic: "the root URL, what ANTHROPIC_BASE_URL would take",
+    gemini: "…/v1beta — Google's Gemini API (generateContent), or one that answers as it does; the key goes in x-goog-api-key",
+    decide: "a decision API's root, POST …/systemone under it: its models are a routing group's classifier, never an agent's",
+  };
+  const BUILTIN_ICONS = [
+    "ai21", "anthropic", "aws", "azure-color", "claude-color", "openai", "gemini-color",
+    "deepseek-color", "xai", "kimi", "zhipu-color", "zai", "cohere-color", "mistral-color",
+  ];
   const [key, setKey] = useState("");
   const [proxy, setProxy] = useState("");
   const [authHdr, setAuthHdr] = useState(""); // openrouter: "" both
@@ -402,7 +420,7 @@ function ProviderEditorModal({ state, onClose, onAdd }: EditorProps) {
         <form className="editor new framed" onSubmit={onSubmit}>
           <div className="ehead">
             <span className="ic">
-              <img src={iconSrc(meta.icon)} alt="" />
+              <img src={iconSrc(kind === "custom" ? pickedIcon : meta.icon)} alt="" />
             </span>
             <b id="modalTitle">{meta.title}</b>
             {meta.note ? <span className="note">{meta.note}</span> : null}
@@ -430,7 +448,10 @@ function ProviderEditorModal({ state, onClose, onAdd }: EditorProps) {
                 <div className="stack">
                   <Segs
                     value={api}
-                    onChange={setApi}
+                    onChange={(v) => {
+                      setApi(v);
+                      setDetectHint("");
+                    }}
                     options={[
                       { v: "openai", label: ZH.openaiCompat },
                       { v: "responses", label: ZH.openaiResponses },
@@ -439,13 +460,90 @@ function ProviderEditorModal({ state, onClose, onAdd }: EditorProps) {
                       { v: "decide", label: ZH.systemOne },
                     ]}
                   />
+                  {API_HINTS[api] ? (
+                    <div className="hint" style={{ marginTop: -2, color: "var(--muted)", fontSize: 11.5 }}>
+                      {t(API_HINTS[api]) || API_HINTS[api]}
+                    </div>
+                  ) : null}
                   <input
                     className="base-url"
                     type="url"
                     placeholder="https://…/v1"
                     value={baseUrl}
                     onChange={(e) => setBaseUrl(e.target.value)}
+                    title={API_HINTS[api] || ""}
                   />
+                  <div className="pair detect-row" style={{ gap: 6, flexWrap: "wrap" }}>
+                    <button
+                      type="button"
+                      className={`text action${detectBusy ? " busy" : ""}`}
+                      title={t("Type the base URL first. smallest request to each API (OpenAI chat completions, Responses, Anthropic, Gemini generateContent) at this URL, to see which answer")}
+                      disabled={detectBusy}
+                      onClick={() => {
+                        if (!baseUrl.trim()) {
+                          setDetectHint(t("Type the base URL first. smallest request to each API (OpenAI chat completions, Responses, Anthropic, Gemini generateContent) at this URL, to see which answer"));
+                          return;
+                        }
+                        if (api === "decide" && !tryModel.trim()) {
+                          setDetectHint(t("A decision API is asked with one model: type it and press Detect APIs"));
+                          return;
+                        }
+                        setDetectBusy(true);
+                        setDetectHint("");
+                        window.setTimeout(() => {
+                          setDetectBusy(false);
+                          setDetectHint(
+                            demoCopy(
+                              "演示：未发探测请求。OpenAI chat · Responses 可能可用。",
+                              "Demo: no probe sent. OpenAI chat · Responses may answer.",
+                            ),
+                          );
+                        }, 480);
+                      }}
+                    >
+                      {detectBusy ? "…" : t("Detect APIs")}
+                    </button>
+                    <input
+                      type="text"
+                      placeholder={t("model to try · empty picks one from list")}
+                      value={tryModel}
+                      onChange={(e) => setTryModel(e.target.value)}
+                      style={{ flex: 1, minWidth: 140 }}
+                    />
+                    <button
+                      type="button"
+                      className="text action detect-each"
+                      title={t("Pick models first, or type one and press Detect APIs")}
+                      onClick={() => {
+                        if (!tryModel.trim()) {
+                          setDetectHint(t("Pick models first, or type one and press Detect APIs"));
+                          return;
+                        }
+                        setDetectHint(
+                          demoCopy(
+                            `演示：对每个已选模型探测（${tryModel.trim()}）`,
+                            `Demo: probe each picked model (${tryModel.trim()})`,
+                          ),
+                        );
+                      }}
+                    >
+                      {t("Each picked model")}
+                    </button>
+                  </div>
+                  {detectHint ? (
+                    <div
+                      className="hint"
+                      style={{
+                        color: detectHint.includes("decision") || detectHint.includes("决策") || detectHint.includes("Type the") || detectHint.includes("Pick models") || detectHint.includes("先")
+                          ? "var(--amber, #c47a00)"
+                          : "var(--muted)",
+                        fontSize: 11.5,
+                        animation: "fade-in .15s var(--ease)",
+                      }}
+                    >
+                      {detectHint}
+                    </div>
+                  ) : null}
                 </div>
               </Field>
             ) : null}
@@ -507,10 +605,116 @@ function ProviderEditorModal({ state, onClose, onAdd }: EditorProps) {
               </details>
             ) : null}
 
-            <Field label={ZH.headers}>
-              <button type="button" className="link">
-                {ZH.addHeader}
-              </button>
+            {kind === "custom" ? (
+              <Field label={t("Icon")}>
+                <div className="stack" style={{ gap: 8 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
+                    <span className="ic" style={{ width: 36, height: 36, display: "inline-flex", border: "1px solid var(--line)", borderRadius: 8, alignItems: "center", justifyContent: "center" }}>
+                      <img src={iconSrc(pickedIcon)} alt="" width={22} height={22} />
+                    </span>
+                    <button type="button" className="text" onClick={() => setDetectHint(demoCopy("演示：未打开文件选择器", "Demo: no file picker"))}>
+                      {t("Choose a picture…")}
+                    </button>
+                    <button type="button" className="text" onClick={() => setDetectHint(demoCopy("演示：未从网站拉取图标", "Demo: no website fetch"))}>
+                      {t("From the website")}
+                    </button>
+                    <button
+                      type="button"
+                      className={`text${iconsOpen ? " on" : ""}`}
+                      aria-pressed={iconsOpen}
+                      onClick={() => setIconsOpen((o) => !o)}
+                    >
+                      {t("Built-in icons")}
+                    </button>
+                  </div>
+                  {iconsOpen ? (
+                    <div className="icon-pick" style={{ animation: "fade-in .18s var(--ease)" }}>
+                      <input
+                        type="search"
+                        placeholder={t("Find an icon…")}
+                        value={iconQ}
+                        onChange={(e) => setIconQ(e.target.value)}
+                        style={{ width: "100%", marginBottom: 8 }}
+                      />
+                      <div className="grid" style={{ gridTemplateColumns: "repeat(auto-fill, minmax(72px, 1fr))", gap: 6, maxHeight: 160, overflow: "auto" }}>
+                        {BUILTIN_ICONS.filter((id) => !iconQ.trim() || id.toLowerCase().includes(iconQ.trim().toLowerCase())).map((id) => (
+                          <button
+                            key={id}
+                            type="button"
+                            className={`tile${pickedIcon === id ? " on" : ""}`}
+                            title={id}
+                            onClick={() => setPickedIcon(id)}
+                            style={{ padding: 8 }}
+                          >
+                            <img className="ic-img ic" src={iconSrc(id)} alt="" />
+                            <span className="nm"><span className="n" style={{ fontSize: 10 }}>{id.split("-")[0]}</span></span>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  ) : null}
+                </div>
+              </Field>
+            ) : null}
+
+            <Field label={ZH.headers} hint={kind === "custom" ? t("Extra HTTP headers sent to the vendor, applied after auth. For gateways that need a private scheme.") : undefined}>
+              {kind === "custom" ? (
+                <div className="stack" style={{ gap: 6 }}>
+                  {hdrs.map((h, i) => (
+                    <div key={i} className="pair" style={{ gap: 6 }}>
+                      <input
+                        type="text"
+                        placeholder="Header-Name"
+                        value={h.name}
+                        onChange={(e) =>
+                          setHdrs((rows) => rows.map((r, j) => (j === i ? { ...r, name: e.target.value } : r)))
+                        }
+                      />
+                      <input
+                        type="text"
+                        placeholder="value"
+                        value={h.value}
+                        onChange={(e) =>
+                          setHdrs((rows) => rows.map((r, j) => (j === i ? { ...r, value: e.target.value } : r)))
+                        }
+                      />
+                      <button
+                        type="button"
+                        className="text"
+                        title="{ }"
+                        onClick={() =>
+                          setHdrs((rows) =>
+                            rows.map((r, j) =>
+                              j === i ? { ...r, value: r.value || '{"…":"…"}' } : r,
+                            ),
+                          )
+                        }
+                      >
+                        {"{ }"}
+                      </button>
+                      <button
+                        type="button"
+                        className="text quiet"
+                        aria-label="Remove"
+                        onClick={() => setHdrs((rows) => (rows.length <= 1 ? [{ name: "", value: "" }] : rows.filter((_, j) => j !== i)))}
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ))}
+                  <button
+                    type="button"
+                    className="link"
+                    onClick={() => setHdrs((rows) => [...rows, { name: "", value: "" }])}
+                  >
+                    {ZH.addHeader}
+                  </button>
+                </div>
+              ) : (
+                <button type="button" className="link">
+                  {ZH.addHeader}
+                </button>
+              )}
             </Field>
 
             <Field label={ZH.extraBody}>

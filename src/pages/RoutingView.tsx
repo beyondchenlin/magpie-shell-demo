@@ -23,6 +23,42 @@ const METRIC_OPTS: [string, string][] = [
   ["cost", "Cost"],
 ];
 
+const DEMO_DAYS: { day: string; label: string; requests: number }[] = [
+  { day: "2026-10-14", label: "Tue", requests: 28 },
+  { day: "2026-10-13", label: "Mon", requests: 41 },
+  { day: "2026-10-12", label: "Sun", requests: 9 },
+  { day: "2026-10-11", label: "Sat", requests: 3 },
+  { day: "2026-10-10", label: "Fri", requests: 52 },
+  { day: "2026-10-09", label: "Thu", requests: 17 },
+];
+
+/** Mock gateway-trace steps per demo request id (routing.js renderSteps shape). */
+const TRACE_STEPS: Record<string, { cls: string; text: string }[]> = {
+  q1: [
+    { cls: "why", text: "Claude Code asked for claude-sonnet-4-5" },
+    { cls: "aside", text: "affinity kept · Anthropic first" },
+    { cls: "ok", text: "Anthropic · ada@… answered in 4.1 s · 14.2K tokens" },
+  ],
+  q1b: [
+    { cls: "why", text: "Compaction · Claude Code" },
+    { cls: "ok", text: "Anthropic · ada@… answered in 0.9 s" },
+  ],
+  q2: [
+    { cls: "why", text: "Codex asked for gpt-5" },
+    { cls: "bad", text: "Anthropic · 429 · rate limited" },
+    { cls: "swap", text: "failover → OpenAI · sk-…7a" },
+    { cls: "ok", text: "OpenAI answered in 2.4 s · 6.8K tokens" },
+  ],
+  q3: [
+    { cls: "why", text: "Thread title · Claude Code" },
+    { cls: "bad", text: "Anthropic · 500 · passed error to agent" },
+  ],
+  q4: [
+    { cls: "why", text: "Web search · OpenCode" },
+    { cls: "wait", text: "answering…" },
+  ],
+};
+
 /** Demo purpose ids → Magpie purposeOptions labels */
 const PURPOSE_NAMES: Record<string, string> = {
   unmarked: "Unmarked",
@@ -96,6 +132,15 @@ export function RoutingView() {
   const metricsBtnRef = useRef<HTMLButtonElement>(null);
   const [actBusy, setActBusy] = useState(false);
   const [foldedKeys, setFoldedKeys] = useState<Set<string>>(() => new Set());
+  /** "" = Live (gateway now); else YYYY-MM-DD from day bar */
+  const [histDay, setHistDay] = useState("");
+  const [earlierOpen, setEarlierOpen] = useState(false);
+  const earlierBtnRef = useRef<HTMLButtonElement>(null);
+  const [replaying, setReplaying] = useState(false);
+  const [replaySpeed, setReplaySpeed] = useState(1);
+  const [replayFrac, setReplayFrac] = useState(0);
+  const [replayClock, setReplayClock] = useState("12:02:10.0");
+  const replayRaf = useRef(0);
 
   useEffect(() => {
     const draw = () => {
@@ -167,6 +212,40 @@ export function RoutingView() {
       if (maskTimer.current) clearTimeout(maskTimer.current);
     };
   }, []);
+
+  // Replay mock clock — Magpie rp-clock / rp-head (routing.js step/replayBar)
+  useEffect(() => {
+    if (!replaying || !demoLive) {
+      if (replayRaf.current) cancelAnimationFrame(replayRaf.current);
+      return;
+    }
+    let t0 = performance.now();
+    let last = t0;
+    const tick = (now: number) => {
+      const dt = Math.min(now - last, 250) * replaySpeed;
+      last = now;
+      setReplayFrac((f) => {
+        const next = f + dt / 8000;
+        if (next >= 1) {
+          setReplaying(false);
+          return 1;
+        }
+        return next;
+      });
+      const base = new Date("2026-10-15T12:02:10");
+      base.setMilliseconds(base.getMilliseconds() + (now - t0) * replaySpeed);
+      const hh = String(base.getHours()).padStart(2, "0");
+      const mm = String(base.getMinutes()).padStart(2, "0");
+      const ss = String(base.getSeconds()).padStart(2, "0");
+      const tenths = Math.floor(base.getMilliseconds() / 100);
+      setReplayClock(`${hh}:${mm}:${ss}.${tenths}`);
+      replayRaf.current = requestAnimationFrame(tick);
+    };
+    replayRaf.current = requestAnimationFrame(tick);
+    return () => {
+      if (replayRaf.current) cancelAnimationFrame(replayRaf.current);
+    };
+  }, [replaying, replaySpeed, demoLive]);
 
   const toggleMask = () => {
     const next = !masked;
@@ -255,6 +334,67 @@ export function RoutingView() {
               </p>
             ) : null}
           </div>
+
+          {replaying && demoLive ? (
+            <div className="rt-replay" id="rtReplay" style={{ animation: "fade-in .2s var(--ease)" }}>
+              <div className="rp-top">
+                <span className="rp-tag">{t("Replaying")}</span>
+                <b className="rp-clock">{replayClock}</b>
+                <small className="rp-day">{histDay ? histDay : t("today")}</small>
+                <span className="rp-skip">
+                  {replaySpeed > 2 ? t("skipping a quiet stretch · clock {n}×", { n: replaySpeed }) : ""}
+                </span>
+                <span className="grow" />
+                <button
+                  type="button"
+                  className="text"
+                  onClick={() => setReplaySpeed((s) => (s >= 8 ? 1 : s * 2))}
+                >
+                  {t("{n}× speed", { n: replaySpeed })}
+                </button>
+                <button
+                  type="button"
+                  className="text"
+                  onClick={() => {
+                    setReplaying(false);
+                    setReplayFrac(0);
+                  }}
+                >
+                  {t("Stop replay")}
+                </button>
+              </div>
+              <div className="rp-what">
+                <div className={`rp-req${replayFrac > 0.05 ? " on" : ""}`}>
+                  <span className="rp-n">{t("request {i} of {n}", { i: Math.min(5, Math.max(1, Math.ceil(replayFrac * 5))), n: 5 })}</span>
+                  <i className="ag" style={{ ["--agent" as string]: "#7c3aed" }} />
+                  <b>Claude Code</b>
+                  <code className="mdl">claude-sonnet-4-5</code>
+                  <span className="rp-to">→ Anthropic · ada@…</span>
+                  <span className="rp-at">{t("sent {time}", { time: "12:18:04" })}</span>
+                </div>
+              </div>
+              <div
+                className="rp-track"
+                role="slider"
+                aria-valuenow={Math.round(replayFrac * 100)}
+                aria-valuemin={0}
+                aria-valuemax={100}
+                onClick={(e) => {
+                  const b = e.currentTarget.getBoundingClientRect();
+                  setReplayFrac(Math.max(0, Math.min(1, (e.clientX - b.left) / b.width)));
+                }}
+              >
+                {[0.12, 0.28, 0.45, 0.7, 0.88].map((m, i) => (
+                  <i
+                    key={i}
+                    className={`rp-mark${Math.abs(replayFrac - m) < 0.08 || (replayFrac >= m && replayFrac < m + 0.12) ? " on" : ""}`}
+                    style={{ left: `${m * 100}%`, ["--agent" as string]: i % 2 ? "#10a37f" : "#7c3aed" }}
+                  />
+                ))}
+                <i className="rp-head" style={{ left: `${replayFrac * 100}%` }} />
+              </div>
+            </div>
+          ) : null}
 
           <div className="rt-stage" ref={stageRef}>
             <svg className="rt-wires" aria-hidden="true">
@@ -349,6 +489,52 @@ export function RoutingView() {
               </span>
             </div>
           </div>
+
+          {/* Gateway trace story — Magpie .rt-log / .rt-steps */}
+          {demoLive && (pickedReq || replaying) ? (
+            <div className="rt-log" id="rtLog" style={{ animation: "fade-in .2s var(--ease)" }}>
+              <div className="rt-log-head">
+                <span>
+                  {t("How the request at {time} was routed", {
+                    time: pickedReq === "q2" ? "12:14:22" : pickedReq === "q3" ? "12:09:51" : pickedReq === "q4" ? "12:02:10" : pickedReq === "q1b" ? "12:17:40" : "12:18:04",
+                  })}
+                </span>
+                <span className="grow" />
+                {!replaying && pickedReq ? (
+                  <>
+                    <button type="button" className="text" title={t("View usage")}>
+                      {t("View usage")}
+                    </button>
+                    <button
+                      type="button"
+                      className="text"
+                      onClick={() => {
+                        setReplayFrac(0);
+                        setReplaying(true);
+                      }}
+                    >
+                      {t("Replay")}
+                    </button>
+                    <button
+                      type="button"
+                      className="text"
+                      onClick={() => {
+                        setPickedReq(null);
+                        setHistDay("");
+                      }}
+                    >
+                      {t("Back to live")}
+                    </button>
+                  </>
+                ) : null}
+              </div>
+              <ol className="rt-steps">
+                {(TRACE_STEPS[pickedReq || "q1"] || TRACE_STEPS.q1).map((s, i) => (
+                  <li key={i} className={s.cls}>{s.text}</li>
+                ))}
+              </ol>
+            </div>
+          ) : null}
         </div>
       </section>
 
@@ -359,7 +545,7 @@ export function RoutingView() {
             <span className="label">{t("Requests")}</span>
             <span className="grow" />
             <span className="note" hidden={!demoLive}>
-              {demoLive ? t("the last {n} the gateway keeps", { n: 5 }) : null}
+              {demoLive ? (histDay ? t("kept for {day}", { day: histDay }) : t("the last {n} the gateway keeps", { n: 5 })) : null}
             </span>
             <div className={`rt-purpose-tools${purposes.length ? " set" : ""}`} hidden={!demoLive}>
               <button
@@ -433,6 +619,20 @@ export function RoutingView() {
                 <path d={CHEV} fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
               </svg>
             </button>
+            <button
+              type="button"
+              className="text"
+              id="rtReplayAll"
+              hidden={!demoLive}
+              style={{ display: demoLive ? undefined : "none" }}
+              onClick={() => {
+                if (!demoLive) return;
+                setReplayFrac(0);
+                setReplaying(true);
+              }}
+            >
+              {t("Replay them all")}
+            </button>
             {purposeOpen ? (
               <ProtoMultiMenu
                 open
@@ -477,8 +677,82 @@ export function RoutingView() {
             ) : null}
           </div>
 
-          <div className="rt-filters" hidden={!demoLive} style={{ display: demoLive ? "flex" : "none", marginBottom: 6 }}>
-            <div className="rt-days" style={{ flex: 1 }} />
+          <div className="rt-filters" hidden={!demoLive} style={{ display: demoLive ? "flex" : "none", marginBottom: 6, alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+            <div className="rt-days" style={{ flex: 1, minWidth: 0 }}>
+              <button
+                type="button"
+                className={`rt-day${!histDay ? " on" : ""}`}
+                aria-pressed={!histDay}
+                onClick={() => {
+                  setHistDay("");
+                  setReplaying(false);
+                }}
+              >
+                <span>{t("Live")}</span>
+              </button>
+              {DEMO_DAYS.slice(0, 4).map((d) => (
+                <button
+                  key={d.day}
+                  type="button"
+                  className={`rt-day${histDay === d.day ? " on" : ""}`}
+                  aria-pressed={histDay === d.day}
+                  onClick={() => {
+                    setHistDay(d.day);
+                    setReplaying(false);
+                    setPickedReq(null);
+                  }}
+                >
+                  <span>{d.label}</span>
+                  <small>{d.requests}</small>
+                </button>
+              ))}
+              <button
+                type="button"
+                className={`rt-day rt-day-more${earlierOpen ? " open" : ""}${DEMO_DAYS.slice(4).some((d) => d.day === histDay) ? " on" : ""}`}
+                ref={earlierBtnRef}
+                aria-haspopup="menu"
+                aria-expanded={earlierOpen}
+                aria-pressed={DEMO_DAYS.slice(4).some((d) => d.day === histDay)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setEarlierOpen((o) => !o);
+                }}
+              >
+                <span>
+                  {DEMO_DAYS.slice(4).find((d) => d.day === histDay)?.label || t("Earlier days")}
+                </span>
+                {DEMO_DAYS.slice(4).find((d) => d.day === histDay) ? (
+                  <small>{DEMO_DAYS.slice(4).find((d) => d.day === histDay)!.requests}</small>
+                ) : null}
+                <svg viewBox="0 0 12 12" width={10} height={10} aria-hidden>
+                  <path d={CHEV} fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                </svg>
+              </button>
+              {earlierOpen ? (
+                <ProtoMultiMenu
+                  open
+                  anchor={earlierBtnRef.current}
+                  value={histDay}
+                  live={false}
+                  hideHead
+                  menuClass="rt-days-menu"
+                  head="Earlier days"
+                  options={DEMO_DAYS.slice(4).map((d) => ({
+                    v: d.day,
+                    name: d.label,
+                    literalName: true,
+                    note: String(d.requests),
+                  }))}
+                  onChange={(v) => {
+                    const day = typeof v === "string" ? v : (v[0] || "");
+                    setHistDay(day);
+                    setEarlierOpen(false);
+                    setReplaying(false);
+                  }}
+                  onClose={() => setEarlierOpen(false)}
+                />
+              ) : null}
+            </div>
             <div className="rt-group-by" style={{ display: "inline-flex", gap: 4 }}>
               <button
                 type="button"

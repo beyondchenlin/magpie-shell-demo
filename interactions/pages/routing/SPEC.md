@@ -38,3 +38,9 @@ R-00…R-09 录制=已录 · demo=空态交互已实现（web/exe **v0.1.5**）�
 
 ## v0.1.16
 - `#rtMore`：Routing groups 卡 · model **#pop**（ModelPop）· Conditions fold。
+
+
+## v0.1.23
+- `#rtMore` filters：`Live` + day pills + `Earlier days` menu；`Replay them all`
+- `.rt-replay` 重放条（时钟 / 倍速 / Stop / track）
+- `.rt-log` / `.rt-steps` 网关轨迹故事（点选请求）

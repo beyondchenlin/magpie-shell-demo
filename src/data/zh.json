@@ -4223,5 +4223,16 @@
   "Other Locations": "其他位置",
   "On This Computer": "此电脑",
   "Recent": "最近",
-  "Home": "主目录"
+  "Home": "主目录",
+  "kept for {day}": "保留于 {day}",
+  "A→Z": "A→Z",
+  "Z→A": "Z→A",
+  "New absolute project path": "新的绝对项目路径",
+  "Preview relocation": "预览迁移",
+  "Confirm relocation": "确认迁移",
+  "Close Claude Code and its editor sessions first. This moves the entire project's sessions, not just filtered or selected rows. Existing target storage is never overwritten. Desktop-only sessions are not changed.": "请先关闭 Claude Code 及其编辑器会话。这会迁移整个项目的会话，不只是筛选或选中的行。目标处已有存储不会被覆盖。仅桌面端的会话不变。",
+  "Move {n} sessions ({size}) from {from} to {to}. Originals are retained outside Claude's project list. Historical message text is unchanged.": "将 {n} 个会话（{size}）从 {from} 迁到 {to}。原文件保留在 Claude 项目列表之外。历史消息正文不变。",
+  "Relocation complete. Original files and recovery manifest: {dir}": "迁移完成。原文件与恢复清单：{dir}",
+  "model to try · empty picks one from list": "试探模型 · 空则从列表取一个",
+  "Type the base URL first. smallest request to each API (OpenAI chat completions, Responses, Anthropic, Gemini generateContent) at this URL, to see which answer": "请先填写 Base URL。会对本地址上的各 API（OpenAI chat completions、Responses、Anthropic、Gemini generateContent）发最小请求，看哪个有回应"
 }
