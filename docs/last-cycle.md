@@ -1,12 +1,13 @@
-# last-cycle · 06:25 CST
+# last-cycle · 06:30 CST
 
-**Tag:** SKILLS_POST_DONE → **v0.1.65** (library 63–71)
+**Tag:** MANUAL_INSTALL_DONE → **v0.1.66** (plugins/66–72)
 
-## v0.1.65
-- Native 63–71 Check / By agent how / Add project / Remove / chip tip+off.
-- Plugins manual github Install path (NOTES 29).
+## v0.1.66
+- Native/web `plugins/66–72` Manual Install nest DONE
+- `github:magpie/example` → **Installing…** → red `.status.err` bun 404 (full `title`) → field cleared
+- Success mock kept for other specs; Magpie web has no folder browse
 
-## Next
-- Manual plugins Install deeper nests if CU adds; else next open nest.
-- P1: live gateway bird, true OAuth/key persist, Allowances **N/A**
+## Remaining / GAP
+- P1: live gateway bird, true OAuth/key persist, Allowances quota body **N/A**
 - Skip Vercel 402
+- MCP HTTP Save and sign in = OAuth (skip); Instructions Keep in a file already covered

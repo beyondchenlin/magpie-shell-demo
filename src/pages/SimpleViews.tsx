@@ -2535,7 +2535,7 @@ export function PluginsView({
             ) : null}
 
             <div className="pm-sec" style={{ marginTop: 8 }}>
-              {/* Magpie manual(): form submit; busy "+" → Installing… (NOTES 29 typed github:… Install not clicked) */}
+              {/* Magpie manual(): form submit; busy "+" → Installing…; fail → status.err (plugins/66–72) */}
               <form
                 className="pm-manual"
                 onSubmit={(e) => {
@@ -2543,17 +2543,37 @@ export function PluginsView({
                   const spec = manualSpec.trim();
                   if (!spec || busy) return;
                   setBusy("__manual__");
-                  // Magpie act("+","add") — toast uses full spec as name; stay on Discover
+                  // Magpie act("+","add"): success → toast "{name} is installed" (name=full spec);
+                  // catch → status(e.message,"err") + draw() clears the field (native 66–72)
                   window.setTimeout(() => {
-                    // Magpie toast name = full spec; shown name = repo leaf (demo)
-                    const short = spec.replace(/^github:/i, "").replace(/^https?:\/\/(?:www\.)?github\.com\//i, "").split("/").pop()?.replace(/\.git$/i, "") || spec;
+                    setBusy(null);
+                    setManualSpec("");
+                    // NOTES 29 / shots 66–72: github:magpie/example → bun 404 (honest fail path)
+                    const failDemo =
+                      /^github:magpie\/example$/i.test(spec) ||
+                      /^github:owner\/repo$/i.test(spec);
+                    if (failDemo) {
+                      const err =
+                        `bun add ${spec}: exit status 1: bun add v1.4.2 (744846f84)\n` +
+                        `Resolving dependencies\nResolved, downloaded and extracted [1]\n` +
+                        `error: GET https://api.github.com/repos/${spec.replace(/^github:/i, "")}/tarball/ - 404\n` +
+                        `error: Invalid dependency name "${spec}"\n` +
+                        `error: ${spec} failed to resolve`;
+                      onStatus?.(err, "err", 8000);
+                      return;
+                    }
+                    const short =
+                      spec
+                        .replace(/^github:/i, "")
+                        .replace(/^https?:\/\/(?:www\.)?github\.com\//i, "")
+                        .split("/")
+                        .pop()
+                        ?.replace(/\.git$/i, "") || spec;
                     setInstalled((list) =>
                       list.some((x) => x.pkg === spec)
                         ? list
                         : [...list, { pkg: spec, name: short, ver: undefined, kind: "Provider", opts: "", optsOpen: false }],
                     );
-                    setBusy(null);
-                    setManualSpec("");
                     onStatus?.(t("{name} is installed", { name: spec }), "ok", 3500);
                   }, 1100);
                 }}

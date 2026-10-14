@@ -179,6 +179,24 @@ Second detail Install path (non-Provider). Confirms Magpie `actionFor` / toast s
 Demo v0.1.60: DETAIL_INSTALL_MW — middleware → Installed toast/check; Provider path remains Sign in (55–60).
 
 
-## demo 对齐（v0.1.65 MANUAL_GITHUB_INSTALL）
-- NOTES 29：`github:magpie/example` 已键入但 **Install 未点** — demo 按 Magpie `manual()`：form submit、Installing…、toast 用完整 spec
+## demo 对齐（v0.1.65 MANUAL_GITHUB_INSTALL → superseded by 0.1.66）
+- NOTES 29 typed-only path superseded by native **66–72** (Install clicked; bun 404 err).
 - 真 npm/git install 仍 mock；Allowances N/A
+
+## Manual Install nest (shots 66–72) — recording DONE
+
+Discover, Mirror **Off**. Manual row at the bottom (web Magpie: **no** folder browse — `mine.picker` false). Spec typed `github:magpie/example` (same as NOTES 29).
+
+| shot | what |
+|---|---|
+| 66 | Manual row in view: Have one in mind? · empty field · **Install** (no browse on web). |
+| 67 | Field typed `github:magpie/example`. |
+| 68 | Pointer on Install (primary hover). |
+| 69 | Click → button **Installing…** (busy; field disabled). Brief — poll-caught. |
+| 70 | Fail: Install restored; field **cleared** (Magpie `draw()` after act catch). Red `.status.err` toast: `bun add github:magpie/example: exit status 1: … 404 … failed to resolve` (truncated; full text in `title`). |
+| 71 | Toast still up; settled Install. Nothing added to Installed. |
+| 72 | Hover toast: same full message in title (selectable err). |
+
+Magpie `act("+","add")` catch → `status(e.message,"err")` — no ok toast. Demo mocks this fail for `github:magpie/example`; other specs still mock success.
+
+Demo v0.1.66: MANUAL_INSTALL_DONE — 66–72 Installing… / bun 404 err toast / field clear.

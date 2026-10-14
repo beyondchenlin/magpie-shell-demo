@@ -1,3 +1,9 @@
+## v0.1.66 MANUAL_INSTALL_DONE
+- Native/web `plugins/66–72` Manual Install consumed: typed `github:magpie/example` → **Installing…** → red `.status.err` bun 404 toast (full `title`) → field cleared by redraw; nothing installed.
+- Magpie `act("+","add")` catch path; web has **no** `.pm-browse` (`mine.picker` false). Electron demo keeps folder browse.
+- Prior v0.1.65 success-path mock kept for other specs.
+- Allowances **N/A**. Skip Vercel 402. P1: live gateway bird, true OAuth/key persist, Allowances quota body.
+
 ## v0.1.65 SKILLS_POST_DONE
 - Native `library/63–71` consumed: Check hover tip Ask GitHub… → Checking… → toast **Every skill is up to date** (no row chip); Give skills as › By agent sheet (How not changed); Add a project inline Cancelled; trash hover red → Remove confirm Cancel kept; **chip tip** `{agent} has it — click to take it away` → chip off toast **Removed from Cursor**.
 - Demo: row-head By agent → Skills by agent; how-bar By agent → openSkillHow; github src + ↑ + 🗑; icon chip tip/toggle; Check github-only.
