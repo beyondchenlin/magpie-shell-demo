@@ -1,19 +1,23 @@
 # Library (native Linux, magpie 0.1.1240)
 
-Frameless window shots. Library is a **plugin** (Plugins › Built-in › Library); when On it appears in the top nav between Agents and Providers.
+Plugin page. When On (Plugins › Built-in › Library) it sits in top nav between Agents and Providers.
 
 ## Shots
 
 | File | What |
 |------|------|
-| 01-instructions.png | Instructions tab: Shared instructions card, Default (Empty, In use), + New set; AGENTS empty (“None of your agents reads…”, Cursor note) |
-| 02-default-set-open.png | Default set expanded: name field + Markdown textarea placeholder; Chevron down; Markdown · Ctrl+S |
-| 03-instructions-agents.png | Same Instructions chrome; agents section focus |
+| 01-instructions.png | Instructions empty: Default In use, + New set, AGENTS none |
+| 02-default-set-open.png | Default expanded: name + Markdown textarea |
+| 03-instructions-agents.png | Agents section focus |
+| 04-new-set.png | New set row: Name e.g. Work + Keep in a file… / Cancel / Add |
+| 05-new-set-file.png | Keep in a file path field |
+| 06-mcp-empty.png | MCP empty dashed box + Discover grid (Magpie Image, Context7…) |
+| 07–13 | Discover scroll: Playwright, Chrome DevTools, GitHub, DeepWiki, Exa, Fetch, Sentry, Stripe, Neon, Brave |
 
-Tabs also present (not deep-shot yet): MCP servers, Skills, Hooks, RTK. Header acts: Library folder, Backups.
+Header: Discover (MCP only) · Library folder · Backups. Tabs: Instructions / MCP servers / Skills / Hooks / RTK.
 
-## Demo consumption (v0.1.31)
+## Demo (v0.1.31)
 
-- `LibraryView` Instructions 1:1 empty + open set + New set + Ctrl/Cmd+S mock save toast
-- Feature flag `localStorage magpie.feature.library` from Plugins Built-in toggle
-- MCP/Skills/Hooks/RTK: placeholder until nested capture
+- Instructions + New set (+ Keep in a file…) + Ctrl/Cmd+S mock save
+- MCP empty + paste JSON Add + Discover cards (mock Add)
+- Skills / Hooks / RTK still placeholders
