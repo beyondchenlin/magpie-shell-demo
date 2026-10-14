@@ -54,8 +54,8 @@
 
 | # | 项 | 状态 |
 |---|----|------|
-| F1 | Windows Setup `.exe` | [~] | v0.1.4 Release（GHA） |
-| F2 | Vercel Web | [x] | https://magpie-shell-demo.vercel.app |
+| F1 | Windows Setup `.exe` | [x] | https://github.com/beyondchenlin/magpie-shell-demo/releases/download/v0.1.4/Magpie-Shell-Demo-Setup-0.1.4.exe |
+| F2 | Vercel Web | [x] | https://magpie-shell-demo.vercel.app （验 A-GS01/A-AR01 + Providers P-*） |
 
 ---
 
