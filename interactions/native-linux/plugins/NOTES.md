@@ -122,3 +122,20 @@ Demo v0.1.49: PLUGINS_OFF_DONE — 41–54 full Switch/Remove/Check nest.
 ## demo 对齐（v0.1.56 DETAIL_INSTALL）
 - 详情模态 Install 路径：pm-dhead/pm-dact/pm-links；Getting Bun… → Installed（与卡片同 install）；Escape 不关
 - 详情 Install 仍无原生点录帧（NOTES：未点）
+
+
+## Detail Install (shots 55–60)
+
+Recorded against live Magpie web (top-nav, same `plugins.js`; Bun already present so busy was brief). Native window xdotool clicks did not land this cycle.
+
+| shot | what |
+|---|---|
+| 55-detail-before-open | Discover + search `opencode` Suggested list (before opening card). |
+| 55-detail-open | Card body open → `.editor.pm-detail`: icon · name · magpie community · **Install** (purple get) · Version v0.1.1 · Downloads 3.0k/week · License MIT · Updated Oct 10, 2026 · **Signs in to** opencode-zen-free · npm · Source · README (Install CLI + Sign in `public`) · foot note · Close. Escape does not close. |
+| 56-detail-install-hover | Pointer on detail Install (solid indigo/white). |
+| 57-detail-getting-bun | After click: toast **OpenCode Zen Free is installed — sign in to use it** (Provider has subs). Busy Installing…/Getting Bun… was too brief to freeze with Bun already on disk. |
+| 58-detail-installed | Detail **pm-dact** is blue **Sign in** (`.pm-act.go`), not green Installed — Magpie `actionFor` when unsigned provider. |
+| 59-detail-installed-settled | Same Sign in settled (toast gone). |
+| 60-after-detail-close | Close → back on Discover Suggested; plugin remains installed until Remove. |
+
+Demo v0.1.58: DETAIL_INSTALL_DONE — 55–60 consumed; Provider toast + Sign in in detail/card; Signs in to fact; Escape swallow on detail.

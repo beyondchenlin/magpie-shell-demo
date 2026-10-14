@@ -1,3 +1,9 @@
+## v0.1.58 DETAIL_INSTALL_DONE + GAP_REFRESH
+- **GAP honesty refresh:** retired stale «Still PARTIAL tray Routing / sideEdge» under v0.1.34–0.1.35 (closed since **v0.1.36**).
+- Native/web `plugins/55–60` Detail Install consumed: open → Install hover → toast **{name} is installed — sign in to use it** → detail **Sign in** (`.pm-act.go`) not Installed check; **Signs in to** fact; Escape does not close.
+- True remaining **P1**: live gateway bird (#7), true OAuth/provider persist (#9), Allowances quota body (**N/A** — not invented).
+- Skip Vercel 402.
+
 ## v0.1.57 HOOKS_NEST_DONE
 - Native `library/39–46` consumed: New hook → When menu → After a tool → For which tools (Any/Shell/File) → Shell pick → Cursor · afterShellExecution **Matcher** (`every tool`).
 - Find an event: shared events **always** visible (Magpie `always:true`); Cursor events filter/scroll.
@@ -143,12 +149,12 @@
 
 ## v0.1.35 TRAY_USAGE_EMPTY
 - Consumed tray/02-usage-today: panel Usage (stats) empty — period segs + Open Usage + pu-none
-- Still PARTIAL: tray Routing nested; Allowances with quotas; Bird gateway (P1)
+- Later closed: tray Routing nested (**v0.1.36**); `#sideEdge` (**v0.1.36**). Still open then→now: Allowances quota body **N/A**; Bird gateway (**P1**).
 
 ## v0.1.34 GAP_CHIP_PARTIAL → PROVIDERS_LIST + TRAY_AGENTS
 - **#9 Provider list-with-accounts (P1):** Magpie row = pv-handle · who(signed in · N models) · uses · key.acct/on · lib-switch.pswitch · chev; click → modal `.accts`/`.acc` (dot tick · plan · using · Remove · Add); Turned off fold + off list. Motion: `.provider` bg **.16s**; chev **.15s**; switch thumb **.18s**; modal pop-in **.42s**; `.acc .text.quiet` opacity **.15s**; `.acc.new` sub-in.
 - **Tray panel Agents (native tray/01):** `?panel=1` / `#panel` → `body.panel` + ptabs (Allowances hidden when no quotas) + Cursor row ag-sum (default · eff bars · chev spring) + Profiles / Open magpie / Quit. Nested open uses `.ag-open` row-spring **.48s**.
-- Still PARTIAL: tray Usage/Routing nested shots (only 01 landed); Bird rt-sky real gateway (P1); true OAuth/provider save; `#sideEdge` drag (P2).
+- Later closed: tray Usage/Routing nested (**v0.1.36** TRAY_CONSUME 01–14); `#sideEdge` drag (**v0.1.36**, was P2). Still open: Bird rt-sky live gateway (**P1**); true OAuth/provider save (**P1**).
 
 ## v0.1.33 LIBRARY_DONE
 - Native library **01–13, 15–38** fully captured & consumed (no 14)

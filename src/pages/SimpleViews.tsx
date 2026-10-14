@@ -1855,7 +1855,7 @@ const DEMO_MARKET = [
     section: "Subscriptions",
     note: "written for magpie, checked against its own sign-ins",
     cards: [
-      { pkg: "@magpie-community/opencode-zen-free", name: "OpenCode Zen Free", summary: "OpenCode Zen's free models with the public credential, automatic discovery and native…", downloads: "3.0k/week", ver: "v0.1.1", community: true, kind: "Provider" },
+      { pkg: "@magpie-community/opencode-zen-free", name: "OpenCode Zen Free", summary: "OpenCode Zen's free models with the public credential, automatic discovery and native streaming protocols.", downloads: "3.0k/week", ver: "v0.1.1", community: true, kind: "Provider", signsIn: "opencode-zen-free", updated: "Oct 10, 2026", readme: "OpenCode Zen's free models in magpie and OpenCode.\nProvider id: `opencode-zen-free`.\n\n## Install\n```\nmagpie plugin add @magpie-community/opencode-zen-free-auth\nmagpie plugin login opencode-zen-free\n```\n\n## Sign in\nEnter `public` in the key field. No personal API key is needed. The credential is kept in OpenCode's `auth.json` or magpie's `plugin-auth.json`." },
       { pkg: "@magpie-community/opencode-zcode-auth", name: "ZCode", summary: "Z.ai and BigModel GLM Coding Plan, team seats and ZCode's free Start Plan.", downloads: "9.0k/week", ver: "v0.1.18", community: true, alsoBuiltin: true, kind: "Provider" },
       { pkg: "@magpie-community/opencode-qoder-auth", name: "Qoder", summary: "Your Qoder subscription, international (qoder.com) or Qoder CN (qoder.cn).", downloads: "5.6k/week", ver: "v0.2.15", community: true, alsoBuiltin: true, kind: "Provider" },
       { pkg: "@magpie-community/opencode-devin-auth", name: "Devin", summary: "Devin's models with your Devin account — a browser sign-in or the devin CLI's.", downloads: "2.9k/week", ver: "v0.1.16", community: true, alsoBuiltin: true, kind: "Provider" },
@@ -1897,7 +1897,7 @@ const DEMO_MARKET = [
 
 /** Magpie searchNPM Suggested hits (shots 20–24) — demo filter, 350ms debounce. */
 const DEMO_NPM = [
-  { pkg: "@magpie-community/opencode-zen-free", name: "OpenCode Zen Free", summary: "OpenCode Zen's free models with the public credential, automatic discovery and native…", downloads: "3.0k/week", ver: "v0.1.1", kind: "Provider", q: "opencode" },
+  { pkg: "@magpie-community/opencode-zen-free", name: "OpenCode Zen Free", summary: "OpenCode Zen's free models with the public credential, automatic discovery and native streaming protocols.", downloads: "3.0k/week", ver: "v0.1.1", kind: "Provider", q: "opencode", signsIn: "opencode-zen-free", updated: "Oct 10, 2026" },
   { pkg: "@magpie-community/opencode-zcode-auth", name: "ZCode", summary: "Z.ai and BigModel GLM Coding Plan, team seats and ZCode's free Start Plan.", downloads: "9.0k/week", ver: "v0.1.18", kind: "Provider", builtin: true, q: "opencode zcode" },
   { pkg: "@magpie-community/opencode-qoder-auth", name: "Qoder", summary: "Your Qoder subscription, international (qoder.com) or Qoder CN (qoder.cn).", downloads: "5.6k/week", ver: "v0.2.15", kind: "Provider", builtin: true, q: "opencode qoder" },
   { pkg: "@magpie-community/opencode-devin-auth", name: "Devin", summary: "Devin's models with your Devin account — a browser sign-in or the devin CLI's.", downloads: "2.9k/week", ver: "v0.1.16", kind: "Provider", builtin: true, q: "opencode" },
@@ -2007,6 +2007,19 @@ export function PluginsView({
     return () => clearTimeout(id);
   }, [pluginDetail]);
 
+  // Magpie: Escape does not close pm-detail (Close / backdrop only) — shots 03/55
+  useEffect(() => {
+    if (!pluginDetail) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+    };
+    document.addEventListener("keydown", onKey, true);
+    return () => document.removeEventListener("keydown", onKey, true);
+  }, [pluginDetail]);
+
   // Magpie askNPM: 350ms debounce, then brief plugins/search loading (hits.loading → skeleton)
   useEffect(() => {
     const q = query.trim();
@@ -2043,10 +2056,35 @@ export function PluginsView({
     return { ver: undefined as string | undefined, kind: "Provider" as string };
   };
 
+  /** Magpie actionFor: Provider / signsIn → Sign in after install (shots 55–59 detail). */
+  const pluginNeedsSignIn = (pkg: string) => {
+    const meta = lookupPluginMeta(pkg);
+    if (meta.kind === "Provider") return true;
+    for (const sec of DEMO_MARKET) {
+      const c = sec.cards.find((x) => x.pkg === pkg) as { signsIn?: string } | undefined;
+      if (c?.signsIn) return true;
+    }
+    const n = DEMO_NPM.find((x) => x.pkg === pkg) as { signsIn?: string } | undefined;
+    return Boolean(n?.signsIn);
+  };
+  const pluginSignsInId = (pkg: string) => {
+    for (const sec of DEMO_MARKET) {
+      const c = sec.cards.find((x) => x.pkg === pkg) as { signsIn?: string } | undefined;
+      if (c?.signsIn) return c.signsIn;
+    }
+    const n = DEMO_NPM.find((x) => x.pkg === pkg) as { signsIn?: string } | undefined;
+    return n?.signsIn || "";
+  };
+
   const install = (pkg: string, name: string) => {
     if (busy) return;
+    if (installed.some((x) => x.pkg === pkg)) {
+      // Magpie actionFor Sign in (detail 58): mock only — no OAuth
+      onStatus?.(t("Demo: sign-in was not started"), "ok", 2800);
+      return;
+    }
     setBusy(pkg);
-    // Magpie: no Bun yet → "Getting Bun…" then stay on Discover + toast (shots 37–39)
+    // Magpie: no Bun yet → "Getting Bun…" then stay on Discover + toast (shots 37–39 / 55–59)
     window.setTimeout(() => {
       const meta = lookupPluginMeta(pkg);
       setInstalled((list) =>
@@ -2055,7 +2093,12 @@ export function PluginsView({
           : [...list, { pkg, name, ver: meta.ver, kind: meta.kind, opts: "", optsOpen: false }],
       );
       setBusy(null);
-      onStatus?.(t("{name} is installed", { name }), "ok", 3500);
+      const signToast = pluginNeedsSignIn(pkg);
+      onStatus?.(
+        signToast ? t("{name} is installed — sign in to use it", { name }) : t("{name} is installed", { name }),
+        "ok",
+        3500,
+      );
     }, 1100);
   };
 
@@ -2067,6 +2110,9 @@ export function PluginsView({
           <span>{t("Getting Bun…")}</span>
         </>
       );
+    }
+    if (has && pluginNeedsSignIn(pkg)) {
+      return t("Sign in");
     }
     if (has) {
       return (
@@ -2089,6 +2135,13 @@ export function PluginsView({
       );
     }
     return t("Install");
+  };
+
+  const pmActClass = (pkg: string, has: boolean) => {
+    if (busy === pkg) return "pm-act busy";
+    if (has && pluginNeedsSignIn(pkg)) return "pm-act go";
+    if (has) return "pm-act done";
+    return "pm-act get";
   };
 
   const n = installed.length;
@@ -2350,9 +2403,9 @@ export function PluginsView({
                           </div>
                           <button
                             type="button"
-                            className={`pm-act${busy === c.pkg ? " busy" : has ? " done" : " get"}`}
+                            className={pmActClass(c.pkg, has)}
                             title={busy === c.pkg ? t("Plugins run on Bun {v}, downloaded once", { v: "1.4.2" }) : undefined}
-                            disabled={busy === c.pkg || has}
+                            disabled={busy === c.pkg || (has && !pluginNeedsSignIn(c.pkg))}
                             onClick={(e) => {
                               e.stopPropagation();
                               install(c.pkg, c.name);
@@ -2392,9 +2445,9 @@ export function PluginsView({
                         </div>
                         <button
                           type="button"
-                          className={`pm-act${busy === c.pkg ? " busy" : has ? " done" : " get"}`}
+                          className={pmActClass(c.pkg, has)}
                           title={busy === c.pkg ? t("Plugins run on Bun {v}, downloaded once", { v: "1.4.2" }) : undefined}
-                            disabled={busy === c.pkg || has}
+                            disabled={busy === c.pkg || (has && !pluginNeedsSignIn(c.pkg))}
                           onClick={(e) => {
                             e.stopPropagation();
                             install(c.pkg, c.name);
@@ -2448,9 +2501,9 @@ export function PluginsView({
                             </div>
                             <button
                               type="button"
-                              className={`pm-act${busy === c.pkg ? " busy" : has ? " done" : " get"}`}
+                              className={pmActClass(c.pkg, has)}
                               title={busy === c.pkg ? t("Plugins run on Bun {v}, downloaded once", { v: "1.4.2" }) : undefined}
-                            disabled={busy === c.pkg || has}
+                            disabled={busy === c.pkg || (has && !pluginNeedsSignIn(c.pkg))}
                               onClick={(e) => {
                                 e.stopPropagation();
                                 install(c.pkg, c.name);
@@ -3133,15 +3186,20 @@ export function PluginsView({
               <div className="pm-dact">
                 <button
                   type="button"
-                  className={`pm-act${busy === pluginDetail.pkg ? " busy" : installed.some((x) => x.pkg === pluginDetail.pkg) ? " done" : " get"}`}
+                  className={pmActClass(pluginDetail.pkg, installed.some((x) => x.pkg === pluginDetail.pkg))}
                   title={
                     busy === pluginDetail.pkg
                       ? t("Plugins run on Bun {v}, downloaded once", { v: "1.4.2" })
-                      : installed.some((x) => x.pkg === pluginDetail.pkg)
+                      : installed.some((x) => x.pkg === pluginDetail.pkg) && pluginNeedsSignIn(pluginDetail.pkg)
                         ? undefined
-                        : t("Install")
+                        : installed.some((x) => x.pkg === pluginDetail.pkg)
+                          ? undefined
+                          : t("Install")
                   }
-                  disabled={busy === pluginDetail.pkg || installed.some((x) => x.pkg === pluginDetail.pkg)}
+                  disabled={
+                    busy === pluginDetail.pkg ||
+                    (installed.some((x) => x.pkg === pluginDetail.pkg) && !pluginNeedsSignIn(pluginDetail.pkg))
+                  }
                   onClick={(ev) => {
                     ev.stopPropagation();
                     install(pluginDetail.pkg, pluginDetail.name);
@@ -3158,6 +3216,9 @@ export function PluginsView({
                 <div className="pm-fact"><span className="k">{"stars" in pluginDetail && (pluginDetail as { stars?: number }).stars != null ? t("Stars") : t("Downloads")}</span><span className="v">{"stars" in pluginDetail && (pluginDetail as { stars?: number }).stars != null ? (pluginDetail as { stars: number }).stars : pluginDetail.downloads}</span></div>
                 <div className="pm-fact"><span className="k">{t("License")}</span><span className="v">MIT</span></div>
                 <div className="pm-fact"><span className="k">{t("Updated")}</span><span className="v">{"updated" in pluginDetail && (pluginDetail as { updated?: string }).updated ? (pluginDetail as { updated: string }).updated : "—"}</span></div>
+                {pluginSignsInId(pluginDetail.pkg) ? (
+                  <div className="pm-fact"><span className="k">{t("Signs in to")}</span><span className="v">{pluginSignsInId(pluginDetail.pkg)}</span></div>
+                ) : null}
               </div>
               <div className="pm-links" style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
                 <button
@@ -3225,8 +3286,8 @@ export function PluginsView({
                 ) : (
                   <p>
                     {demoCopy(
-                      "演示详情模态（对照 Magpie Discover 卡片）。Escape 不关闭；点 Close 或遮罩关闭。Install 路径同卡片：Getting Bun… → Installed。",
-                      "Demo detail modal (Magpie Discover card). Escape does not close; Close or backdrop does. Detail Install path matches card: Getting Bun… → Installed.",
+                      "演示详情模态（对照 Magpie Discover 卡片）。Escape 不关闭；点 Close 或遮罩关闭。详情 Install：Getting Bun… → 需登录 toast → Sign in（Provider）。",
+                      "Demo detail modal (Magpie Discover card). Escape does not close; Close or backdrop does. Detail Install: Getting Bun… → toast sign-in → Sign in (Provider).",
                     )}
                   </p>
                 )}
