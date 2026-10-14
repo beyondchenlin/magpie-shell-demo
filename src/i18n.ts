@@ -10,7 +10,7 @@ const table = zhTable as Record<string, string>;
 
 const EN_EXTRA: Record<string, string> = {
   ofDone: "0 of 2 done",
-  installAnother: "Install another agent (14)",
+  installAnother: "Install another agent ({n})",
   demoFlierOn: "Stop demo",
   demoFlierOff: "Demo flier",
   demoFlierTitle:

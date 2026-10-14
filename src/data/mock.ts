@@ -75,7 +75,7 @@ export const ZH = {
   cantConnect: "不能接入",
   onlyCursorOwn: "只能用 Cursor 自己的模型",
   manage: "管理",
-  installAnother: "安装其他 Agent（14）",
+  installAnother: "安装其他 Agent（{n}）",
   profiles: "方案",
   profilesNone: "还没有 · 保存当前设置，之后一键切回",
   saveCurrent: "＋ 保存当前",

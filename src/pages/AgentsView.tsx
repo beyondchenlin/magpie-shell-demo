@@ -347,7 +347,7 @@ function ManageAgentsModal({
                   setSelected(new Set(matching.map((a) => a.id)))
                 }
               >
-                {ZH.selectSearchResults}
+                {t("Select search results")}
               </button>
               <button
                 type="button"
@@ -363,7 +363,7 @@ function ManageAgentsModal({
                   });
                 }}
               >
-                {ZH.invertSearchSelection}
+                {t("Invert search selection")}
               </button>
               <button
                 type="button"
@@ -377,14 +377,14 @@ function ManageAgentsModal({
                   );
                 }}
               >
-                {ZH.selectUnconnected}
+                {t("Select unconnected agents")}
               </button>
               <button
                 type="button"
                 className="text"
                 onClick={() => setSelected(new Set())}
               >
-                {ZH.clearSelection}
+                {t("Clear selection")}
               </button>
             </div>
             <span className="ag-manage-count">
@@ -1330,7 +1330,7 @@ export function AgentsView({
               setInstallsOpen((o) => !o);
             }}
           >
-            <span>{ZH.installAnother}</span>
+            <span>{t("Install another agent ({n})", { n: INSTALLS.length })}</span>
             <span className="chev" aria-hidden>
               <svg viewBox="0 0 16 16" width={11} height={11}>
                 <path
@@ -1345,7 +1345,7 @@ export function AgentsView({
             </span>
           </button>
           {installsOpen ? (
-            <>
+            <div className="ag-install-body" style={{ animation: "fade-in .22s var(--ease)" }}>
               <p className="ag-install-note">{ZH.installNote}</p>
               {INSTALLS.map((x) => (
                 <div key={x.id} className="ag-install-row" data-id={x.id}>
@@ -1384,7 +1384,7 @@ export function AgentsView({
                   </div>
                 </div>
               ))}
-            </>
+            </div>
           ) : null}
         </section>
 

@@ -16,7 +16,7 @@
 | 8 | 账号行 `.dot`/`.bar` 在有请求时 | 空态为 `li.idle` | — | 空态正确 |
 | 9 | Provider 完整行控件 | 仅空态添加表 | P1 | 添加后无列表态 |
 | 10 | Gateway 空态壳+主交互 | **v0.1.9**；filled demo **v0.1.12** | P1 | Gateway 仍可再抠 |
-| 14 | Settings 全 tab 深页 | **v0.1.16** Privacy nested + Disable 左轨 + Models `#pop` | P1 | Privacy 63–70；Disable No matches；Usage/Plugins 继续抠 |
+| 14 | Settings 全 tab 深页 | **v0.1.21** Privacy 63–70 字符串/嵌套齐；Disable 左轨 + Models `#pop` | P1 | Usage/Plugins 继续抠；Privacy 基本对齐 |
 | 11 | `#sideEdge` 拖宽 | 仅视觉 | P2 | |
 | 12 | 业务后端 / 真网关 | 无 | P2 | 范围外 |
 | 13 | 先前 PASS_WITH_GAPS | **已撤销**；现以截图空态对齐为准 | — | |
@@ -25,7 +25,7 @@
 
 1. 无真实 provider 添加 / agent 接线 / gateway  
 2. 飞鸟仅为 Demo 开关 mock  
-3. Usage/Plugins/Agents nested = **AGENTS_POP_PARTIAL**（v0.1.20 Agents `#pop`+`am-pop`+stale；Routing By session；Privacy Masked words/rules keys；Overview/Plugins 见 v0.1.19）  
+3. Usage/Plugins/Agents nested = **ROUTING_PURPOSE_PARTIAL**（v0.1.21 Routing Purpose/Metrics menus + Accounts/keys 列；Agents Manage/Install fold；Privacy 63–70 已齐；Agents `#pop` 见 v0.1.20）  
 4. 未做原生 Tauri；Electron 系统标题栏（Windows 上游亦然）
 
 *Sessions / Library 不是顶栏缺口：官方默认不展示。*

@@ -518,3 +518,28 @@ body.web.side-nav {
   font-size: 12.5px;
 }
 .pv-step-body { animation: fade-in .16s var(--ease); }
+
+/* v0.1.21 — Routing Purpose/Metrics menus + Accounts column outside .rt-more */
+.rt-cols.min1150 {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) clamp(260px, 28%, 360px);
+  column-gap: 16px;
+  align-items: start;
+}
+.rt-cols.min1150:not(.solo) .rt-col:last-child {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.rt-cols.min1150:not(.solo) .rt-acts {
+  flex: 1 1 auto;
+  min-height: 216px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.rt-req.on { border-color: var(--fg-2); background: var(--pill); }
+.rt-purpose.open svg,
+.rt-metric-pick.open svg { transform: rotate(180deg); }
+.pop.proto-menu.rt-purpose-menu .pm-head,
+.pop.proto-menu.rt-purpose-menu .pm-note { display: none; }

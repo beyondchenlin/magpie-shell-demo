@@ -282,3 +282,21 @@ Same as §4; added: `.pm-opts textarea` focus .12s; `.range-menu .rm-day` backgr
 | `.field.ag-pick.open` | accent ring | box-shadow 1.5px |
 | `.rt-session` fold | instant list swap (steady) | fade-in .18s on head |
 | Privacy rule inputs | accent focus ring | rule-add .words:focus |
+
+
+## v0.1.21 Routing Purpose / Metrics / Accounts
+
+| 控件 | Magpie | demo |
+|------|--------|------|
+| `#rtPurpose` | `openProtoMenu` live multi；`All purposes` 清空并关；pill `.set` | `ProtoMultiMenu` live；clear × |
+| `#rtMetrics` | multi live；`magpie.routingMetrics` | 同；6 项 Duration/TTFT/Tokens/Cache/Speed/Cost |
+| `.rt-purpose` / `.rt-metric-pick` chevron | transform **.15s** `--ease`；open 180° | 同 |
+| `proto-menu` open | pop-fade **.18s** + pop-in **.42s** | ProtoMultiMenu |
+| `proto-menu` close | scale/opacity **~180ms** | 同 |
+| Accounts 列 `.rt-acts` | `renderActs`：prov 头 + `.rt-act` + keys fold + bar | demoLive mock；`#rtReadAllowances` busy spin |
+| `.rt-read.busy svg` | spin **.8s** linear | 同（routing.css） |
+| `.rt-req .kind` | purpose pill | unmarked 不显示 |
+| Agents Install head | `Install another agent ({n})`；chevron **.3s** cubic-bezier(.22,1,.36,1) | `t(...)` + fade-in body **.22s** |
+| Manage 四钮 | Select search / Invert / Select unconnected agents / Clear | `t()` 对齐 Magpie 英文源键 |
+
+*文档版本：v0.1.21*
