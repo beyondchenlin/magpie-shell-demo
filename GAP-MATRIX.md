@@ -1,3 +1,7 @@
+## v0.1.68 AGENTS_NEST_DONE
+- Native agents/19-42: landing, Cant connect status, Arrange menu, Manage re-pass, Install expand+Copy tip, fold collapse, Profile name+Escape.
+- No OAuth/keys/real installs. P1 bird/OAuth/Allowances N/A. Skip Vercel 402.
+
 ## v0.1.67 SKILLS_HOW_DONE
 - Native `library/72–87` consumed: chip off tip → **Written to Cursor** (no chip Saving…); Give skills as Links/Copies + **Saving…** on Copies; toasts both ways; How-each-agent Library's way/Links/Copies toasts; row-head By agent tip + Skills by agent 1 of 1; update-arrow 4-line tip; trash tip Remove.
 - Not invented: chip Saving…; back-to-Links Saving…; By-agent seg Saving…; Group/Update all/head Turn all (1 skill).

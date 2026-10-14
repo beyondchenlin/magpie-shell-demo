@@ -1,13 +1,11 @@
-# last-cycle · 06:50 CST
+# last-cycle · 06:58 CST
 
-**Tag:** SKILLS_HOW_DONE → **v0.1.67** (library/72–87)
+**Tag:** AGENTS_NEST_DONE → **v0.1.68** (agents/19–42)
 
-## v0.1.67
-- Chip re-on: Give it to Cursor → Written to Cursor (no chip Saving…)
-- Give skills as Links/Copies + Saving… on Copies; toasts both ways
-- How-each-agent Library's way/Links/Copies toasts; row-head By agent → Skills by agent
-- Update-arrow 4-line tip; trash tip Remove
-- Not invented: chip Saving…; By-agent seg Saving…; Group/Update all (1 skill)
+## v0.1.68
+- Can't connect status (not button); Arrange menu Move up/down off + Hide; handle tip
+- Manage re-pass 30–38; Install expand + Copy tip; fold; Profile name Escape
+- No OAuth/keys/real installs
 
 ## Remaining
 - P1: live gateway bird, true OAuth/key persist, Allowances **N/A**

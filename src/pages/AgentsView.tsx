@@ -146,8 +146,8 @@ function CopyBtn({
     <button
       type="button"
       className={`copy${done ? " done" : ""}`}
-      title={ZH.copy}
-      aria-label={ZH.copy}
+      title={t("Copy")}
+      aria-label={t("Copy")}
       onClick={(e) => {
         e.stopPropagation();
         void navigator.clipboard?.writeText(text).catch(() => {});
@@ -412,7 +412,12 @@ function ManageAgentsModal({
                 <p className="lib-confirm">{ZH.noMatchingAgents}</p>
               ) : (
                 matching.map((a) => (
-                  <label key={a.id} className="ag-manage-row" data-id={a.id}>
+                  <label
+                    key={a.id}
+                    className="ag-manage-row"
+                    data-id={a.id}
+                    title={hiddenIds.has(a.id) ? t("Hidden") : t("Not hidden")}
+                  >
                     <input
                       type="checkbox"
                       checked={selected.has(a.id)}
@@ -424,7 +429,7 @@ function ManageAgentsModal({
                     </span>
                     <span className="ag-manage-name">{a.name}</span>
                     <span className="ag-manage-state">
-                      {hiddenIds.has(a.id) ? ZH.hidden : ZH.notHidden}
+                      {hiddenIds.has(a.id) ? t("Hidden") : t("Not hidden")}
                     </span>
                   </label>
                 ))
@@ -846,7 +851,7 @@ export function AgentsView({
                 className="ag-handle"
                 aria-label={ZH.arrangeAria.replace("{agent}", a.name)}
                 aria-haspopup="menu"
-                title={ZH.arrangeTitle}
+                title={t("Drag to reorder · click to move or hide")}
                 onClick={(e) => {
                   const el = e.currentTarget;
                   if (el.dataset.dragged === "1") {
@@ -1031,7 +1036,7 @@ export function AgentsView({
                 )}
               </div>
               {a.id === "cursor" || !a.connectable ? (
-                <span className="ag-cant">{ZH.cantConnect}</span>
+                <span className="ag-cant" style={{ cursor: "default", userSelect: "none" }}>{t("Can't connect")}</span>
               ) : (
                 <div className="val" style={{ display: "flex", gap: 6, flexWrap: "wrap", alignItems: "center" }}>
                   {a.id === "claude" ? (

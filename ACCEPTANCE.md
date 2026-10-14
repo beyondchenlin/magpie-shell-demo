@@ -1,3 +1,4 @@
+- **v0.1.68** AGENTS_NEST_DONE — agents/19-42 Arrange / Cant connect / Manage / Install / Profiles Escape.
 - **v0.1.67** SKILLS_HOW_DONE — library/72–85 chip re-on + Give skills as Saving… / By-agent Links·Copies.\n- **v0.1.66** MANUAL_INSTALL_DONE — plugins/66–72 Installing… / bun 404 err toast / field clear.\n## v0.1.55 FETCH_MODELS_DONE
 - **v0.1.65** SKILLS_POST_DONE — library 63–71 Check/By agent/Add project/Remove + manual github Installing…
 
