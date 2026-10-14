@@ -111,6 +111,8 @@ Windows：`:root.win` 改用 Segoe UI Variable Text + Microsoft YaHei UI。
 
 ### 3.1 导航 DOM（`index.html` `#nav`）
 
+> **实机默认 IA（2026-10-14 官方截图）：** Sessions / Library 带 `data-feature`，插件默认关闭时**不出现在侧栏**。Work 下仅 Agents。拆解表列出 HTML 全量项；验收以截图为准。
+
 分组与项（`data-t` 英文 key → `i18n.js` zh）：
 
 | 分组 EN / ZH | 项 `data-view` | 标签 EN → ZH |

@@ -1,38 +1,29 @@
 import { useEffect, useState } from "react";
 import { Bird } from "./components/Bird";
 import { NavIcon } from "./components/NavIcons";
-import { NAV, type ViewId } from "./data/mock";
+import {
+  GATEWAY_ADDR,
+  GROUP_OF,
+  NAV,
+  TITLES,
+  ZH,
+  type ViewId,
+} from "./data/mock";
 import { AgentsView } from "./pages/AgentsView";
 import { ProvidersView } from "./pages/ProvidersView";
 import { RoutingView } from "./pages/RoutingView";
 import {
   GatewayView,
-  LibraryView,
   PluginsView,
-  SessionsView,
   SettingsView,
   UsageView,
 } from "./pages/SimpleViews";
 
-const TITLES: Record<ViewId, string> = {
-  agents: "Agent",
-  sessions: "会话",
-  library: "资源库",
-  providers: "供应商",
-  routing: "路由",
-  gateway: "网关",
-  usage: "用量",
-  plugins: "插件",
-  settings: "设置",
-};
-
-const VIEWS = new Set<string>([
-  "agents","sessions","library","providers","routing","gateway","usage","plugins","settings",
-]);
+const VIEWS = new Set<string>(Object.keys(TITLES));
 
 function viewFromHash(): ViewId {
   const h = location.hash.replace(/^#\/?/, "");
-  return (VIEWS.has(h) ? h : "routing") as ViewId;
+  return (VIEWS.has(h) ? h : "agents") as ViewId;
 }
 
 export default function App() {
@@ -57,18 +48,20 @@ export default function App() {
     if (location.hash.replace(/^#\/?/, "") !== id) location.hash = id;
   };
 
+  const group = GROUP_OF[view];
+
   return (
     <>
       <aside className="sidebar" id="side">
-        <div className="side-top" />
-        <div className="side-scroll">
-          <div className="brand" style={{ padding: "10px 8px 6px", gap: 6 }}>
+        <div className="side-top">
+          <div className="brand">
             <span className="logo" aria-hidden>
               <Bird size={18} />
             </span>
             <span>magpie</span>
-            <span className="demo-badge">DEMO</span>
           </div>
+        </div>
+        <div className="side-scroll">
           <nav className="seg" id="nav" aria-label="主导航">
             {NAV.map((g) => (
               <span key={g.group} style={{ display: "contents" }}>
@@ -95,14 +88,32 @@ export default function App() {
             type="button"
             className={`icon${view === "settings" ? " on" : ""}`}
             id="prefs"
-            title="设置"
+            title={ZH.settings}
             onClick={() => go("settings")}
           >
             <NavIcon name="settings" />
-            <span className="side-l">设置</span>
+            <span className="side-l">{ZH.settings}</span>
+          </button>
+          <button
+            type="button"
+            className="side-gw"
+            id="sideGw"
+            onClick={() => go("gateway")}
+            title={`${ZH.gateway} ${GATEWAY_ADDR}`}
+          >
+            <i />
+            <span>
+              {ZH.gateway} {GATEWAY_ADDR}
+            </span>
           </button>
         </div>
-        <div className="side-edge" id="sideEdge" role="separator" aria-orientation="vertical" tabIndex={0} />
+        <div
+          className="side-edge"
+          id="sideEdge"
+          role="separator"
+          aria-orientation="vertical"
+          tabIndex={0}
+        />
       </aside>
 
       <header className="top">
@@ -110,11 +121,24 @@ export default function App() {
           {TITLES[view]}
         </h1>
         <div className="crumb" id="crumb" aria-hidden={false}>
-          <span>{TITLES[view]}</span>
+          {view === "settings" ? (
+            <b>{ZH.settings}</b>
+          ) : (
+            <>
+              {group ? <span>{group}</span> : null}
+              {group ? <i>/</i> : null}
+              <b>{TITLES[view]}</b>
+            </>
+          )}
         </div>
         <div className="grow" />
         <div className="actions">
-          <button className="icon" id="sync" type="button" title="重新检测本机 Agent（Demo 无操作）">
+          <button
+            className="icon"
+            id="sync"
+            type="button"
+            title="重新检测（Demo 无后端）"
+          >
             <svg viewBox="0 0 16 16" width={14} height={14}>
               <path
                 d="M13.5 8a5.5 5.5 0 1 1-1.6-3.9M13.5 2v3h-3"
@@ -129,9 +153,7 @@ export default function App() {
         </div>
       </header>
 
-      {view === "agents" && <AgentsView />}
-      {view === "sessions" && <SessionsView />}
-      {view === "library" && <LibraryView />}
+      {view === "agents" && <AgentsView onAddProvider={() => go("providers")} />}
       {view === "providers" && <ProvidersView />}
       {view === "routing" && <RoutingView />}
       {view === "gateway" && <GatewayView />}

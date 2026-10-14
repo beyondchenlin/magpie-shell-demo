@@ -4,7 +4,7 @@ Magpie **桌面壳视觉复刻进行中**（假数据）。用于 PackGate 外�
 
 对照上游：[yetone/magpie](https://github.com/yetone/magpie)（MIT）。
 
-**当前判定：`FAIL_NOT_1TO1`**（用户反馈非一比一；已先拆源码再改）。详见：
+**当前判定：`VISUAL_EMPTY_MATCH`**（Agents/Providers/Routing **空态**已按官方截图+源码重写；非整产品 1:1，不标 PASS_WITH_GAPS）。详见：
 
 - [`MAGPIE-TEARDOWN.md`](./MAGPIE-TEARDOWN.md) — Magpie 壳源码拆解  
 - [`GAP-MATRIX.md`](./GAP-MATRIX.md) — 与本 Demo 的差距矩阵（含 P0）  
@@ -14,9 +14,9 @@ Magpie **桌面壳视觉复刻进行中**（假数据）。用于 PackGate 外�
 
 - **Web 预览：** https://magpie-shell-demo.vercel.app （`#routing` `#agents` …）
 - **源码：** https://github.com/beyondchenlin/magpie-shell-demo
-- **下载（Release）：** https://github.com/beyondchenlin/magpie-shell-demo/releases/tag/v0.1.0
-  - **Windows：** [Setup .exe](https://github.com/beyondchenlin/magpie-shell-demo/releases/download/v0.1.0/Magpie-Shell-Demo-Setup-0.1.0.exe) + [portable](https://github.com/beyondchenlin/magpie-shell-demo/releases/download/v0.1.0/Magpie-Shell-Demo-0.1.0-portable.exe)
-  - **Linux：** `Magpie-Shell-Demo-0.1.0.AppImage`
+- **下载（Release）：** https://github.com/beyondchenlin/magpie-shell-demo/releases/tag/v0.1.1
+  - **Windows：** [Setup .exe](https://github.com/beyondchenlin/magpie-shell-demo/releases/download/v0.1.1/Magpie-Shell-Demo-Setup-0.1.1.exe) + [portable](https://github.com/beyondchenlin/magpie-shell-demo/releases/download/v0.1.1/Magpie-Shell-Demo-0.1.1-portable.exe)
+  - **Linux：** `Magpie-Shell-Demo-0.1.1.AppImage`
 
 > 安装包可跑，**不代表**视觉已 1:1。P0 清掉前请以 GAP-MATRIX 为准。
 
@@ -35,7 +35,7 @@ npm run build && npx vite preview
 
 ### Windows
 
-从 [Release v0.1.0](https://github.com/beyondchenlin/magpie-shell-demo/releases/tag/v0.1.0) 下载 Setup 或 portable。目标窗 **660×600** / 最小 **560×420**（与 Magpie `window_rule.go` / `textsize.go` 一致）。
+从 [Release v0.1.1](https://github.com/beyondchenlin/magpie-shell-demo/releases/tag/v0.1.1) 下载 Setup 或 portable。目标窗 **660×600** / 最小 **560×420**（与 Magpie `window_rule.go` / `textsize.go` 一致）。
 
 ```bash
 npm ci && npm run dist:win
@@ -44,8 +44,8 @@ npm ci && npm run dist:win
 ### Linux
 
 ```bash
-chmod +x Magpie-Shell-Demo-0.1.0.AppImage
-./Magpie-Shell-Demo-0.1.0.AppImage
+chmod +x Magpie-Shell-Demo-0.1.1.AppImage
+./Magpie-Shell-Demo-0.1.1.AppImage
 ```
 
 ### Tauri

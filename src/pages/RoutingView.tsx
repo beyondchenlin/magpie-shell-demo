@@ -1,61 +1,50 @@
 import { useEffect, useRef, useState } from "react";
-import { AGENTS, PROVIDERS, ROUTING_STATS } from "../data/mock";
-import { Bird } from "../components/Bird";
+import { GATEWAY_ADDR, ZH } from "../data/mock";
 
 type Wire = { d: string; live?: boolean };
 
+/** Empty routing stage matching official Magpie shot 03-routing.png. */
 export function RoutingView() {
   const stageRef = useRef<HTMLDivElement>(null);
   const hubRef = useRef<HTMLDivElement>(null);
-  const srcRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const acctRefs = useRef<(HTMLLIElement | null)[]>([]);
+  const srcRef = useRef<HTMLDivElement>(null);
+  const idleRef = useRef<HTMLLIElement>(null);
   const [wires, setWires] = useState<Wire[]>([]);
-  const [activeAgent, setActiveAgent] = useState(AGENTS[0]?.id ?? "");
-  const [activeAcct, setActiveAcct] = useState(PROVIDERS.filter((p) => p.on)[0]?.id ?? "");
-  const [mask, setMask] = useState(false);
-  const [strategy, setStrategy] = useState<"smart" | "order" | "weight">("smart");
-
-  const onProviders = PROVIDERS.filter((p) => p.on);
-
-  const strategyText =
-    strategy === "smart"
-      ? "智能：按能力与可用性选账号，失败时改道。"
-      : strategy === "order"
-        ? "顺序：按列表从上到下尝试，直到有人接住。"
-        : "权重：按权重抽选，失败时改道。";
+  const [demoLive, setDemoLive] = useState(false);
+  const [flier, setFlier] = useState<{ x: number; y: number; rot: number } | null>(
+    null,
+  );
 
   useEffect(() => {
     const draw = () => {
       const stage = stageRef.current;
       const hub = hubRef.current;
+      const src = srcRef.current;
+      const idle = idleRef.current;
       if (!stage || !hub) return;
       const sr = stage.getBoundingClientRect();
       const hr = hub.getBoundingClientRect();
       const hx = hr.left + hr.width / 2 - sr.left;
       const hy = hr.top + hr.height / 2 - sr.top;
       const next: Wire[] = [];
-      srcRefs.current.forEach((el, i) => {
-        if (!el) return;
-        const r = el.getBoundingClientRect();
+      if (src) {
+        const r = src.getBoundingClientRect();
         const x = r.right - sr.left;
         const y = r.top + r.height / 2 - sr.top;
-        const live = AGENTS[i]?.id === activeAgent;
         next.push({
-          d: `M ${x} ${y} C ${x + 28} ${y}, ${hx - 28} ${hy}, ${hx} ${hy}`,
-          live,
+          d: `M ${x} ${y} C ${x + 36} ${y}, ${hx - 36} ${hy}, ${hx} ${hy}`,
+          live: demoLive,
         });
-      });
-      acctRefs.current.forEach((el, i) => {
-        if (!el) return;
-        const r = el.getBoundingClientRect();
+      }
+      if (idle) {
+        const r = idle.getBoundingClientRect();
         const x = r.left - sr.left;
         const y = r.top + r.height / 2 - sr.top;
-        const live = onProviders[i]?.id === activeAcct;
         next.push({
-          d: `M ${hx} ${hy} C ${hx + 36} ${hy}, ${x - 36} ${y}, ${x} ${y}`,
-          live,
+          d: `M ${hx} ${hy} C ${hx + 40} ${hy}, ${x - 40} ${y}, ${x} ${y}`,
+          live: false,
         });
-      });
+      }
       setWires(next);
     };
     draw();
@@ -66,29 +55,49 @@ export function RoutingView() {
       ro.disconnect();
       window.removeEventListener("resize", draw);
     };
-  }, [activeAgent, activeAcct, onProviders.length, mask]);
+  }, [demoLive]);
+
+  // Optional mock flier along first wire when demo live is on
+  useEffect(() => {
+    if (!demoLive || wires.length === 0) {
+      setFlier(null);
+      return;
+    }
+    const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    path.setAttribute("d", wires[0].d);
+    const len = path.getTotalLength();
+    let t0 = performance.now();
+    let raf = 0;
+    const tick = (now: number) => {
+      const u = ((now - t0) / 2200) % 1;
+      const pt = path.getPointAtLength(u * len);
+      const pt2 = path.getPointAtLength(Math.min(len, u * len + 2));
+      const rot = (Math.atan2(pt2.y - pt.y, pt2.x - pt.x) * 180) / Math.PI;
+      setFlier({ x: pt.x, y: pt.y, rot });
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [demoLive, wires]);
 
   return (
     <main className="view" id="view-routing">
       <div className="row-head">
-        <span className="label">路由</span>
+        <span className="label">{ZH.routing}</span>
         <span className="rt-livedot" aria-hidden="true" />
-        <span className="note">实时 · 网关正在做的决定</span>
+        <span className="note">{ZH.liveAsGateway}</span>
         <span className="grow" />
-        <button className="text rt-newgroup" id="rtNewGroup" type="button">
-          <svg viewBox="0 0 16 16" width={12} height={12} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden>
-            <path d="M8 3.5v9M3.5 8h9" />
-          </svg>
-          <span>新建组</span>
-        </button>
         <button
-          className="text rt-mask"
-          id="rtMask"
+          className="text"
           type="button"
-          aria-pressed={mask}
-          onClick={() => setMask((v) => !v)}
+          aria-pressed={demoLive}
+          title="Demo：模拟飞鸟沿线路移动（非官方网关）"
+          onClick={() => setDemoLive((v) => !v)}
         >
-          <span>账号打码</span>
+          {demoLive ? "停止演示" : "演示飞鸟"}
+        </button>
+        <button className="text rt-mask" id="rtMask" type="button" aria-pressed="false">
+          <span>{ZH.hideAccounts}</span>
         </button>
       </div>
 
@@ -96,30 +105,9 @@ export function RoutingView() {
         <div className="rt-main">
           <div className="rt-top">
             <div className="rt-what">
-              当前策略：
-              <b>
-                {strategy === "smart" ? "智能" : strategy === "order" ? "顺序" : "权重"}
-              </b>
-              <span className="segs" style={{ display: "inline-flex", marginLeft: 10 }}>
-                {(
-                  [
-                    ["smart", "智能"],
-                    ["order", "顺序"],
-                    ["weight", "权重"],
-                  ] as const
-                ).map(([id, label]) => (
-                  <button
-                    key={id}
-                    type="button"
-                    className={strategy === id ? "on" : ""}
-                    onClick={() => setStrategy(id)}
-                  >
-                    {label}
-                  </button>
-                ))}
-              </span>
+              <b>{ZH.waitingRequest}</b>
             </div>
-            <p className="rt-mode">{strategyText}</p>
+            <p className="rt-mode">{ZH.waitingSay}</p>
           </div>
 
           <div className="rt-stage" ref={stageRef}>
@@ -130,90 +118,75 @@ export function RoutingView() {
             </svg>
 
             <div className="rt-srcs">
-              {AGENTS.map((a, i) => (
-                <div
-                  key={a.id}
-                  className={`rt-node rt-src${activeAgent === a.id ? " tick" : ""}`}
-                  ref={(el) => {
-                    srcRefs.current[i] = el;
-                  }}
-                  style={{ ["--agent" as string]: a.color, cursor: "pointer" }}
-                  onClick={() => setActiveAgent(a.id)}
-                >
-                  <span className="rt-ic">
-                    <span className="ic">
-                      <img src={a.icon} alt="" />
-                    </span>
+              <div
+                className="rt-node rt-src"
+                ref={srcRef}
+                style={{ ["--agent" as string]: "#7c3aed" }}
+              >
+                <span className="rt-ic">
+                  <span className="ic" aria-hidden>
+                    <svg viewBox="0 0 20 20" width={22} height={22}>
+                      <circle cx="10" cy="10" r="8" fill="var(--accent-soft)" />
+                      <circle cx="10" cy="10" r="3.5" fill="var(--accent)" />
+                    </svg>
                   </span>
-                  <b>
-                    <span style={{ ["--agent" as string]: a.color }} />
-                    {a.name}
-                  </b>
-                  <small>{a.model}</small>
-                </div>
-              ))}
+                </span>
+                <b>
+                  <span style={{ ["--agent" as string]: "#7c3aed" }} />
+                  {ZH.yourAgent}
+                </b>
+                <small />
+              </div>
             </div>
 
             <div className="rt-node rt-hub" ref={hubRef}>
-              <span className="rt-bird" style={{ color: "var(--fg)" }}>
-                <Bird size={26} />
-              </span>
+              <svg className="rt-bird" viewBox="0 0 44 44" width={26} height={26} aria-hidden>
+                <use href="#bird" />
+              </svg>
               <b>magpie</b>
-              <small>本地网关</small>
-              <i>live</i>
+              <small>{GATEWAY_ADDR}</small>
             </div>
 
             <ol className="rt-accts">
-              {onProviders.map((p, i) => (
-                <li
-                  key={p.id}
-                  className={activeAcct === p.id ? "on" : ""}
-                  ref={(el) => {
-                    acctRefs.current[i] = el;
-                  }}
-                  onClick={() => setActiveAcct(p.id)}
-                  style={{ cursor: "pointer" }}
-                >
-                  <span className="dot" style={{ width: 8, height: 8, borderRadius: 99, background: activeAcct === p.id ? "var(--accent)" : "var(--line)" }} />
-                  <b>
-                    <span className="ic">
-                      <img src={p.icon} alt="" />
-                    </span>
-                    <span className="who">{p.name}</span>
-                    <span>
-                      {" "}
-                      · {mask ? "••••••" : p.account}
-                    </span>
-                  </b>
-                  <i className="fb" style={{ fontStyle: "normal" }}>
-                    {p.models} 模型
-                  </i>
-                </li>
-              ))}
+              <li className="idle" ref={idleRef}>
+                {ZH.noRequestYet}
+              </li>
             </ol>
+
+            <svg className="rt-sky" aria-hidden="true">
+              {flier && (
+                <g
+                  className="rt-flier rt-flier-demo"
+                  transform={`translate(${flier.x} ${flier.y}) rotate(${flier.rot})`}
+                >
+                  <g className="rt-flap">
+                    <use href="#bird" width="18" height="18" x="-9" y="-9" />
+                  </g>
+                </g>
+              )}
+            </svg>
           </div>
 
           <div className="rt-foot">
-            <p className="rt-cap">
-              从任一经 magpie 的 Agent 发一条请求，这里会按网关决定播放：谁被排在第一、为何、每次尝试与回答。
-            </p>
+            <p className="rt-cap">{ZH.everyRequest}</p>
             <div className="rt-stats">
               <span>
-                <b>{ROUTING_STATS.requests}</b>
-                <span>请求</span>
+                <b>0</b>
+                <span>{ZH.requests}</span>
               </span>
               <span>
-                <b>{ROUTING_STATS.rerouted}</b>
-                <span>改道</span>
+                <b>0</b>
+                <span>{ZH.rerouted}</span>
               </span>
               <span className="rt-errs">
-                <b>{ROUTING_STATS.errors}</b>
-                <span>Agent 收到的错误</span>
+                <b>0</b>
+                <span>{ZH.errorsAgentSaw}</span>
               </span>
             </div>
           </div>
         </div>
       </section>
+      <div className="rt-more" id="rtMore" />
     </main>
   );
 }

@@ -1,5 +1,6 @@
-/* Demo shell: Magpie CSS assumes Wails body owns flex layout; React root fills it. */
+/* Demo shell only — Magpie CSS owns visual tokens. Do not invent parallel skins. */
 html, body, #root { height: 100%; }
+body { margin: 0; }
 #root {
   display: flex;
   flex-direction: column;
@@ -7,86 +8,96 @@ html, body, #root { height: 100%; }
   min-height: 0;
   overflow: hidden;
   background: var(--bg);
+  position: relative;
 }
-/* Keep sidebar visible (Magpie starts #side[hidden] until JS). */
+/* Magpie starts #side[hidden] until layoutNav; demo keeps it open. */
 .sidebar { display: flex !important; }
 .sidebar[hidden] { display: flex !important; }
-/* Brand stays visible on web demo. */
+/* Web brand stays (Windows native hides it; this is web/Electron demo). */
 body.web .brand { display: flex; }
-/* Web preview: simulate default Magpie window footprint when viewport is large. */
-@media (min-width: 900px) {
+body.window.web .side-top .brand {
+  display: flex; align-items: center; gap: 7px; height: 100%;
+  padding: 0 10px; font-size: 13.5px;
+}
+
+/*
+  Magpie sidebar is position:fixed to the window (= body).
+  In the web preview, #root is the framed 660×600 window — re-home the side
+  chrome and side-nav padding onto #root so the sidebar sits inside the frame.
+*/
+body.web.side-nav {
+  padding-left: 0 !important;
+}
+body.web.side-nav #root {
+  padding-left: var(--side-w, 212px);
+  box-sizing: border-box;
+}
+body.web .sidebar {
+  position: absolute !important;
+  left: 0; top: 0; bottom: 0;
+  height: auto !important;
+}
+
+/* Default Magpie window footprint 660×600 — not a stretched stage. */
+@media (min-width: 720px) {
+  body.web {
+    background: #e8e8ec;
+  }
   body.web #root {
-    max-width: 960px;
-    max-height: 720px;
+    width: 660px;
+    height: 600px;
+    max-width: 660px;
+    max-height: 600px;
     margin: 24px auto;
     border: 1px solid var(--line);
     border-radius: 12px;
-    box-shadow: var(--shadow);
+    box-shadow: 0 8px 28px rgba(0,0,0,.08);
     overflow: hidden;
-    position: relative;
   }
   body.web .sidebar { border-radius: 12px 0 0 12px; }
 }
-/* Ensure views stack correctly inside React root */
-#root > .top,
-#root > .ptabs,
-#root > .view { position: relative; }
-/* Demo badge — quiet */
-.demo-badge {
-  margin-left: 8px;
-  font-size: 10.5px;
-  font-weight: 560;
-  padding: 1px 7px;
-  border-radius: 999px;
-  background: var(--accent-soft);
-  color: var(--accent);
-  letter-spacing: .02em;
-}
+
 .sr-only {
   position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
   overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
 }
-.chips { display: flex; flex-wrap: wrap; gap: 6px; }
-.chip {
-  height: 26px; padding: 0 10px; border-radius: 999px; border: 1px solid var(--line);
-  background: var(--card); color: var(--fg-2); font: inherit; font-size: 12.5px; cursor: pointer;
-}
-.chip.on { border-color: var(--fg); color: var(--fg); font-weight: 500; box-shadow: var(--seg-edge); }
-.chip:hover { background: var(--pill); }
-/* Provider rows need flex when Magpie's provider-specific CSS isn't fully wired */
-#view-providers .row.provider {
-  display: flex; align-items: center; gap: 12px;
-  padding: 10px 12px; background: var(--card); border: 1px solid var(--line);
-  border-radius: 10px; margin-bottom: 6px;
-}
-#view-providers .pv-head { display: block; margin: 4px 0 10px; }
-#view-sessions .row, #view-usage .row, #view-plugins .row, #view-settings .row, #view-gateway .row {
-  display: flex; align-items: center; gap: 12px;
-  padding: 10px 12px; background: var(--card); border: 1px solid var(--line);
-  border-radius: 10px; margin-bottom: 6px;
-}
-.rt-livedot {
-  width: 7px; height: 7px; border-radius: 50%; background: var(--green);
-  box-shadow: 0 0 0 3px var(--green-soft); margin: 0 2px;
-}
-.rt-stats { display: flex; gap: 18px; margin-top: 10px; }
-.rt-stats > span { display: flex; flex-direction: column; gap: 2px; font-size: 11.5px; color: var(--muted); }
-.rt-stats b { font-size: 16px; color: var(--fg); font-variant-numeric: tabular-nums; }
-.rt-accts li.on { border-color: var(--fg-2); }
-.rt-src b { display: inline-flex; align-items: center; }
-body.side-nav .crumb { display: flex !important; }
-/* Magpie side-nav selection is graphite, not accent — reinforce after any patch */
-body.side-nav :is(#nav button[data-view].on .nav-ic, #prefs.on svg) { color: var(--fg) !important; }
-body.side-nav :is(#nav button[data-view].on, #prefs.on) { color: var(--fg); }
-/* Wider preview so routing stage matches Magpie desktop proportions */
-@media (min-width: 900px) {
-  body.web #root {
-    max-width: 1100px;
-    max-height: 760px;
-    width: calc(100vw - 48px);
-    height: calc(100vh - 48px);
-  }
-}
-/* rt-src name already has ::before dot from Magpie CSS */
-.rt-src b { max-width: 100%; }
 button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+/* sideGw visible in demo */
+.side-gw { display: flex !important; }
+.side-gw[hidden] { display: flex !important; }
+/* Provider empty sheet fills the view */
+#view-providers .sheet { display: block; }
+#view-providers .sheet[hidden] { display: block; }
+/* Tile icon img sizing when Magpie icon() helper isn't present */
+.tile .ic, .tile img.ic-img {
+  width: 18px; height: 18px; flex: none; object-fit: contain;
+}
+.tile {
+  display: flex; align-items: center; gap: 8px; width: 100%;
+  height: 34px; padding: 0 8px; border-radius: 8px; text-align: left;
+}
+.row.agent .ic img { width: 100%; height: 100%; object-fit: contain; }
+/* Native-only note squares (Cursor row) */
+.ag-native-note {
+  display: flex; align-items: center; gap: 6px;
+  margin-top: 2px; font-size: 12px; color: var(--muted);
+}
+.ag-native-note .sq {
+  width: 9px; height: 9px; border-radius: 2px; background: var(--seg-track, #e6e6eb);
+}
+/* Profiles empty hint */
+.profiles .chips .hint { color: var(--muted); font-size: 12.5px; line-height: 30px; }
+/* Routing idle account */
+.rt-accts li.idle {
+  justify-content: center; color: var(--muted); font-size: 12.5px;
+  border-style: dashed; cursor: default;
+}
+.rt-flier-demo { pointer-events: none; }
+
+/* Cursor row layout: name+note left, Can't connect right */
+#view-agents .row.agent.conn {
+  display: flex; align-items: flex-start; gap: 10px;
+  flex-wrap: wrap;
+}
+#view-agents .row.agent.conn .who { flex: 1; min-width: 0; }
+#view-agents .row.agent.conn .ag-cant { margin-left: auto; align-self: center; }

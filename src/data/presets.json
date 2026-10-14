@@ -1,0 +1,344 @@
+[
+  {
+    "id": "anthropic",
+    "name": "Anthropic",
+    "icon": "claude-color",
+    "kind": "vendor"
+  },
+  {
+    "id": "openai",
+    "name": "OpenAI",
+    "icon": "openai",
+    "kind": "vendor"
+  },
+  {
+    "id": "google",
+    "name": "Google Gemini",
+    "icon": "gemini-color",
+    "kind": "vendor"
+  },
+  {
+    "id": "vertex",
+    "name": "Vertex AI",
+    "icon": "vertexai-color",
+    "kind": "vendor"
+  },
+  {
+    "id": "deepseek",
+    "name": "DeepSeek",
+    "icon": "deepseek-color",
+    "kind": "vendor"
+  },
+  {
+    "id": "xai",
+    "name": "xAI",
+    "icon": "xai",
+    "kind": "vendor"
+  },
+  {
+    "id": "moonshot",
+    "name": "Kimi",
+    "icon": "kimi",
+    "kind": "vendor"
+  },
+  {
+    "id": "moonshot-cn",
+    "name": "Kimi (China)",
+    "icon": "kimi",
+    "kind": "vendor"
+  },
+  {
+    "id": "kimi-code",
+    "name": "Kimi Code",
+    "icon": "kimi",
+    "kind": "vendor"
+  },
+  {
+    "id": "kimi-code-cn",
+    "name": "Kimi Code (China)",
+    "icon": "kimi",
+    "kind": "vendor"
+  },
+  {
+    "id": "zhipu",
+    "name": "Zhipu GLM",
+    "icon": "zhipu-color",
+    "kind": "vendor"
+  },
+  {
+    "id": "zai",
+    "name": "Z.ai",
+    "icon": "zai",
+    "kind": "vendor"
+  },
+  {
+    "id": "minimax",
+    "name": "MiniMax",
+    "icon": "minimax-color",
+    "kind": "vendor"
+  },
+  {
+    "id": "minimax-cn",
+    "name": "MiniMax (China)",
+    "icon": "minimax-color",
+    "kind": "vendor"
+  },
+  {
+    "id": "stepfun",
+    "name": "StepFun",
+    "icon": "stepfun-color",
+    "kind": "vendor"
+  },
+  {
+    "id": "stepfun-cn",
+    "name": "StepFun (China)",
+    "icon": "stepfun-color",
+    "kind": "vendor"
+  },
+  {
+    "id": "xiaomi",
+    "name": "Xiaomi MiMo",
+    "icon": "mimocode",
+    "kind": "vendor"
+  },
+  {
+    "id": "baidu-qianfan",
+    "name": "Baidu Qianfan",
+    "icon": "baiducloud-color",
+    "kind": "vendor"
+  },
+  {
+    "id": "tencent-cloud",
+    "name": "Tencent Cloud",
+    "icon": "tencentcloud-color",
+    "kind": "vendor"
+  },
+  {
+    "id": "huaweicloud",
+    "name": "Huawei Cloud",
+    "icon": "huaweicloud-color",
+    "kind": "vendor"
+  },
+  {
+    "id": "volcengine",
+    "name": "Volcengine Ark",
+    "icon": "volcengine-color",
+    "kind": "vendor"
+  },
+  {
+    "id": "qwen",
+    "name": "Qwen",
+    "icon": "qwen-color",
+    "kind": "vendor"
+  },
+  {
+    "id": "qwen-cn",
+    "name": "Qwen (China)",
+    "icon": "qwen-color",
+    "kind": "vendor"
+  },
+  {
+    "id": "qwen-token-plan",
+    "name": "Qwen Plan",
+    "icon": "qwen-color",
+    "kind": "vendor"
+  },
+  {
+    "id": "bailian-token-plan",
+    "name": "Bailian Plan",
+    "icon": "bailian-color",
+    "kind": "vendor"
+  },
+  {
+    "id": "mistral",
+    "name": "Mistral",
+    "icon": "mistral-color",
+    "kind": "vendor"
+  },
+  {
+    "id": "groq",
+    "name": "Groq",
+    "icon": "groq",
+    "kind": "vendor"
+  },
+  {
+    "id": "bedrock",
+    "name": "Amazon Bedrock",
+    "icon": "bedrock-color",
+    "kind": "vendor"
+  },
+  {
+    "id": "azure",
+    "name": "Azure OpenAI",
+    "icon": "azure-color",
+    "kind": "vendor"
+  },
+  {
+    "id": "ollama-cloud",
+    "name": "Ollama Cloud",
+    "icon": "ollama",
+    "kind": "vendor"
+  },
+  {
+    "id": "nous",
+    "name": "Nous Portal",
+    "icon": "nousresearch",
+    "kind": "vendor"
+  },
+  {
+    "id": "openrouter",
+    "name": "OpenRouter",
+    "icon": "openrouter",
+    "kind": "relay"
+  },
+  {
+    "id": "opencode-go",
+    "name": "OpenCode Go",
+    "icon": "opencode",
+    "kind": "relay"
+  },
+  {
+    "id": "clinepass",
+    "name": "ClinePass",
+    "icon": "cline",
+    "kind": "relay"
+  },
+  {
+    "id": "opencode-zen",
+    "name": "OpenCode Zen",
+    "icon": "opencode",
+    "kind": "relay"
+  },
+  {
+    "id": "kilo",
+    "name": "Kilo Gateway",
+    "icon": "kilo",
+    "kind": "relay"
+  },
+  {
+    "id": "commandcode",
+    "name": "Command Code",
+    "icon": "commandcode",
+    "kind": "relay"
+  },
+  {
+    "id": "together",
+    "name": "Together AI",
+    "icon": "together-color",
+    "kind": "relay"
+  },
+  {
+    "id": "fireworks",
+    "name": "Fireworks",
+    "icon": "fireworks-color",
+    "kind": "relay"
+  },
+  {
+    "id": "siliconflow",
+    "name": "SiliconFlow",
+    "icon": "siliconcloud-color",
+    "kind": "relay"
+  },
+  {
+    "id": "nvidia",
+    "name": "NVIDIA NIM",
+    "icon": "nvidia-color",
+    "kind": "relay"
+  },
+  {
+    "id": "modelscope",
+    "name": "ModelScope",
+    "icon": "modelscope-color",
+    "kind": "relay"
+  },
+  {
+    "id": "aihubmix",
+    "name": "AiHubMix",
+    "icon": "aihubmix-color",
+    "kind": "relay"
+  },
+  {
+    "id": "pipellm",
+    "name": "PipeLLM",
+    "icon": "pipellm-color",
+    "kind": "relay"
+  },
+  {
+    "id": "302ai",
+    "name": "302.AI",
+    "icon": "ai302-color",
+    "kind": "relay"
+  },
+  {
+    "id": "cherryin",
+    "name": "CherryIN",
+    "icon": "cherryin-color",
+    "kind": "relay"
+  },
+  {
+    "id": "yylx",
+    "name": "鱼鱼连线",
+    "icon": "yylx",
+    "kind": "relay"
+  },
+  {
+    "id": "typesafe",
+    "name": "TypeSafe Jev",
+    "icon": "typesafe",
+    "kind": "vendor"
+  },
+  {
+    "id": "vercel-jev",
+    "name": "Jev · Vercel AI Gateway",
+    "icon": "vercel",
+    "kind": "relay"
+  },
+  {
+    "id": "cloudflare-jev",
+    "name": "Cloudflare Workers AI · Jev, Clef",
+    "icon": "cloudflare-color",
+    "kind": "relay"
+  },
+  {
+    "id": "bailian-decision",
+    "name": "Bailian Decision",
+    "icon": "bailian-color",
+    "kind": "vendor"
+  },
+  {
+    "id": "qwen-decision",
+    "name": "Qwen Decision",
+    "icon": "qwen-color",
+    "kind": "vendor"
+  },
+  {
+    "id": "ollama",
+    "name": "Ollama",
+    "icon": "ollama",
+    "kind": "local"
+  },
+  {
+    "id": "lmstudio",
+    "name": "LM Studio",
+    "icon": "lmstudio",
+    "kind": "local"
+  },
+  {
+    "id": "omlx",
+    "name": "oMLX",
+    "icon": "omlx",
+    "kind": "local"
+  },
+  {
+    "id": "mlx-serve",
+    "name": "MLX-Serve",
+    "icon": "mlx-serve",
+    "kind": "local"
+  },
+  {
+    "id": "remote",
+    "name": "Remote magpie",
+    "icon": "magpie",
+    "kind": "remote"
+  }
+]
