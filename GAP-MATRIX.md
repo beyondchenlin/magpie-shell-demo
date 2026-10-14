@@ -1,3 +1,9 @@
+## v0.1.63 SKILLS_INSTALL_PARTIAL
+- Native `library/57+` Skills Install shots **not on disk yet** (NOTES 47–51: Install not clicked; 52–56 RTK only).
+- Magpie-source chip (probeResult / report): Install → **Installing…** (busy + Cancel held) → toast `1 skill installed` / `{n} skills installed`; re-probe marks **have** → dim + disabled + tag **in the library**; Select all only on fresh; toast can append `already in the library: {names}`.
+- left/too-big UI wired (no invented oversized skill without native shot).
+- **Not invented:** Allowances quota. Skip Vercel 402. P1: live gateway bird, true OAuth/key persist, Allowances **N/A**.
+
 ## v0.1.62 LIB_FOLDER_TIPS
 - Library folder `title=~/.config/magpie/library`; Backups Magpie tip + `~/.config/magpie/library/backups`.
 - Click still demo toast (NOTES: do not open parent config — credentials). Skip Vercel 402.

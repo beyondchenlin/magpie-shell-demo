@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { t } from "../i18n";
 
 /**
- * Magpie Library plugin (native-linux/library 01–51 + Skills/Hooks/RTK from source).
+ * Magpie Library plugin (native-linux/library 01–56 + Skills Install nest from source).
  * Feature-gated: Plugins › Built-in › Library.
  * Motion: view-in .24s; modal pop-in .42s; Discard .28s; segs .18s; lib-switch; lib-bob/lib-probe/mk-spin (v0.1.44).
  */
@@ -244,7 +244,9 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
   const [skillProbe, setSkillProbe] = useState<{
     source: string;
     empty?: boolean;
-    mock?: { path: string; name: string; desc: string }[];
+    mock?: { path: string; name: string; desc: string; have?: boolean }[];
+    /** Magpie probe found.left — skills over 200 MB, listed but not installable */
+    left?: { path: string; size: number }[];
   } | null>(null);
   const [skillPick, setSkillPick] = useState<Set<string>>(new Set());
   const [probeFilter, setProbeFilter] = useState("");
@@ -340,13 +342,16 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
     window.setTimeout(() => {
       setSkillLooking(false);
       if (/mattpocock|github\.com\/|owner\/|skills\.sh|\//i.test(src)) {
-        const mock = DEMO_PROBE_SKILLS.map((x) => ({ ...x }));
+        // Magpie probeResult: mark x.have when name already in library
+        const haveNames = new Set(skills.map((s) => s.name));
+        const mock = DEMO_PROBE_SKILLS.map((x) => ({ ...x, have: haveNames.has(x.name) }));
         const displaySrc = /mattpocock/i.test(src)
           ? "github.com/mattpocock/skills"
           : src.replace(/^https?:\/\//, "");
         setSkillProbe({ source: displaySrc, mock });
-        // Magpie: auto-pick when few; many → none selected (Install 0)
-        setSkillPick(mock.length <= 3 ? new Set(mock.map((x) => x.path)) : new Set());
+        // Magpie: auto-pick when few fresh; many → none (Install 0); never pick have
+        const fresh = mock.filter((m) => !m.have);
+        setSkillPick(fresh.length <= 3 ? new Set(fresh.map((x) => x.path)) : new Set());
       } else {
         setSkillProbe({ source: src, empty: true });
         setSkillPick(new Set());
@@ -356,16 +361,25 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
   };
   const installSkills = () => {
     if (!skillProbe?.mock?.length || !skillPick.size || skillInstalling) return;
-    const picked = skillProbe.mock.filter((m) => skillPick.has(m.path));
-    // Magpie probeResult go: button → Installing… then skills/install
+    // Magpie: have rows are disabled; only fresh paths go to skills/install
+    const picked = skillProbe.mock.filter((m) => skillPick.has(m.path) && !m.have);
+    if (!picked.length) return;
+    // Magpie probeResult go: button → Installing… then skills/install → toast
     setSkillInstalling(true);
     window.setTimeout(() => {
+      const haveNames = new Set(skills.map((s) => s.name));
+      const fresh = picked.filter((m) => !haveNames.has(m.name));
+      const had = picked.filter((m) => haveNames.has(m.name)).map((m) => m.name);
       setSkills((list) => [
         ...list,
-        ...picked.map((m) => ({ id: `sk-${Date.now()}-${m.path}`, name: m.name, desc: m.desc })),
+        ...fresh.map((m) => ({ id: `sk-${Date.now()}-${m.path}`, name: m.name, desc: m.desc })),
       ]);
-      const n = picked.length;
-      onStatus?.(n === 1 ? t("1 skill installed") : t("{n} skills installed", { n }), "ok");
+      const n = fresh.length;
+      // Magpie report(): installed · already in the library: {names}
+      const parts: string[] = [];
+      if (n) parts.push(n === 1 ? t("1 skill installed") : t("{n} skills installed", { n }));
+      if (had.length) parts.push(t("already in the library: {names}", { names: had.join(", ") }));
+      onStatus?.(parts.join(" · ") || t("1 skill installed"), n && !had.length ? "ok" : had.length && !n ? "warn" : "ok");
       setSkillProbe(null);
       setSkillPick(new Set());
       setSkillSource("");
@@ -792,35 +806,33 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                         : t("{n} skills in {src}", { n: skillProbe.mock.length, src: skillProbe.source })}
                     </span>
                     <span className="grow" />
-                    {skillProbe.mock.length > 1 ? (
-                      <button
-                        type="button"
-                        className="text"
-                        onClick={() => {
-                          const vis = skillProbe.mock!.filter((m) => {
-                            const q = probeFilter.trim().toLowerCase();
-                            if (!q) return true;
-                            return `${m.name} ${m.desc}`.toLowerCase().includes(q);
-                          });
-                          const all = vis.length > 0 && vis.every((m) => skillPick.has(m.path));
-                          setSkillPick((prev) => {
-                            const next = new Set(prev);
-                            if (all) vis.forEach((m) => next.delete(m.path));
-                            else vis.forEach((m) => next.add(m.path));
-                            return next;
-                          });
-                        }}
-                      >
-                        {(() => {
-                          const vis = skillProbe.mock!.filter((m) => {
-                            const q = probeFilter.trim().toLowerCase();
-                            if (!q) return true;
-                            return `${m.name} ${m.desc}`.toLowerCase().includes(q);
-                          });
-                          return vis.length > 0 && vis.every((m) => skillPick.has(m.path)) ? t("Select none") : t("Select all");
-                        })()}
-                      </button>
-                    ) : null}
+                    {(() => {
+                      // Magpie: Select all only when fresh.length > 1 (have excluded)
+                      const freshVis = skillProbe.mock!.filter((m) => {
+                        if (m.have) return false;
+                        const q = probeFilter.trim().toLowerCase();
+                        if (!q) return true;
+                        return `${m.name} ${m.desc}`.toLowerCase().includes(q);
+                      });
+                      if (freshVis.length <= 1) return null;
+                      const allOn = freshVis.every((m) => skillPick.has(m.path));
+                      return (
+                        <button
+                          type="button"
+                          className="text"
+                          onClick={() => {
+                            setSkillPick((prev) => {
+                              const next = new Set(prev);
+                              if (allOn) freshVis.forEach((m) => next.delete(m.path));
+                              else freshVis.forEach((m) => next.add(m.path));
+                              return next;
+                            });
+                          }}
+                        >
+                          {allOn ? t("Select none") : t("Select all")}
+                        </button>
+                      );
+                    })()}
                   </div>
                   {skillProbe.mock.length > 8 ? (
                     <input
@@ -832,7 +844,16 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                       style={{ width: "100%", maxWidth: 320, marginBottom: 8 }}
                     />
                   ) : null}
-                  <div style={{ maxHeight: 220, overflow: "auto" }}>
+                  {(skillProbe.left || []).map((x) => (
+                    <div key={x.path} className="lib-none lib-left" style={{ marginBottom: 8, fontSize: 12.5, color: "var(--muted)" }}>
+                      {t("{name} is too big to install: {size}, over the {limit} a skill may be", {
+                        name: x.path.split("/").pop() || skillProbe.source,
+                        size: `${Math.round(x.size / 1048576)} MB`,
+                        limit: "200 MB",
+                      })}
+                    </div>
+                  ))}
+                  <div className="lib-picks" style={{ maxHeight: 220, overflow: "auto" }}>
                     {skillProbe.mock
                       .filter((m) => {
                         const q = probeFilter.trim().toLowerCase();
@@ -840,11 +861,25 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                         return `${m.name} ${m.desc}`.toLowerCase().includes(q);
                       })
                       .map((m) => (
-                        <label key={m.path} style={{ display: "flex", gap: 8, alignItems: "flex-start", padding: "6px 0", borderTop: "1px solid var(--line)", cursor: "pointer" }}>
+                        <label
+                          key={m.path}
+                          className={`lib-pick${m.have ? " dim" : ""}`}
+                          style={{
+                            display: "flex",
+                            gap: 8,
+                            alignItems: "flex-start",
+                            padding: "6px 0",
+                            borderTop: "1px solid var(--line)",
+                            cursor: m.have ? "default" : "pointer",
+                            opacity: m.have ? 0.55 : 1,
+                          }}
+                        >
                           <input
                             type="checkbox"
                             checked={skillPick.has(m.path)}
+                            disabled={!!m.have || skillInstalling}
                             onChange={(e) => {
+                              if (m.have) return;
                               setSkillPick((prev) => {
                                 const next = new Set(prev);
                                 if (e.target.checked) next.add(m.path);
@@ -853,10 +888,15 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                               });
                             }}
                           />
-                          <span>
-                            <b style={{ display: "block", fontSize: 13 }}>{m.name}</b>
-                            <small style={{ color: "var(--muted)" }}>{m.desc}</small>
+                          <span className="who" style={{ flex: 1, minWidth: 0 }}>
+                            <b className="name" style={{ display: "block", fontSize: 13 }}>{m.name}</b>
+                            <small className="sub" style={{ color: "var(--muted)" }}>{m.desc}</small>
                           </span>
+                          {m.have ? (
+                            <span className="tag" style={{ fontSize: 10.5, color: "var(--muted)", whiteSpace: "nowrap", marginTop: 2 }}>
+                              {t("in the library")}
+                            </span>
+                          ) : null}
                         </label>
                       ))}
                   </div>
@@ -867,7 +907,9 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                     <button
                       type="button"
                       className="text"
+                      disabled={skillInstalling}
                       onClick={() => {
+                        if (skillInstalling) return;
                         setSkillProbe(null);
                         setSkillPick(new Set());
                         setProbeFilter("");
@@ -875,7 +917,12 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                     >
                       {t("Cancel")}
                     </button>
-                    <button type="button" className="text primary" disabled={!skillPick.size || skillInstalling} onClick={installSkills}>
+                    <button
+                      type="button"
+                      className={`text primary${skillInstalling ? " busy" : ""}`}
+                      disabled={!skillPick.size || skillInstalling}
+                      onClick={installSkills}
+                    >
                       {skillInstalling
                         ? t("Installing…")
                         : skillPick.size === 0

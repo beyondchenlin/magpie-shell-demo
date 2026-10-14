@@ -1,5 +1,6 @@
 ## v0.1.55 FETCH_MODELS_DONE
 
+- **v0.1.63** SKILLS_INSTALL_PARTIAL — Magpie-source Installing… / installed toast / have-tag (await library/57+).
 - **v0.1.57** HOOKS_NEST_DONE — library 39–46 tool matcher + Cursor Matcher.
 
 - **v0.1.56** EACH_MODEL_DONE / HOOKS_NEST_PARTIAL / DETAIL_INSTALL — System One Each warn + detect-grid; Hooks Cursor Matcher; Plugins detail Install path.

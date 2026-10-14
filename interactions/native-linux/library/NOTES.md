@@ -150,3 +150,9 @@ No confirm dialog exists on these buttons. **Install RTK** was hovered only. Its
 **Get RTK** was clicked after 54. It opens the system browser (`api("open")`) to the public RTK site. Chrome came up fullscreen, title **RTK — Rust Token Killer**, and was closed without using the page. No library shot of that browser: it covered the magpie window, and it is not the nest. Nothing was installed from the site.
 
 Library builtin was switched **Off** again afterwards. Top nav is Agents, Providers, Routing, Gateway, Usage, Plugins — no Library. Plugins › Built-in. RTK still not installed. Cursor switch was never turned on. Window 752×652 at +610+300. Magpie pid 560329 still running.
+
+## demo 对齐（v0.1.63 SKILLS_INSTALL_PARTIAL）
+- 原生 library/57+ Skills Install **尚未点录**（47–51 未点 Install；Installing… / toast 按 Magpie `probeResult`/`report` 源码回写）
+- 勾选 → Installing… → `1 skill installed` / `{n} skills installed`；再 Find 时已装行 dim + **in the library**；Select all 仅 fresh
+- 不伪造 too-big 帧；Allowances N/A
+

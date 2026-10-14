@@ -161,7 +161,7 @@ The cached Bun binary was not at hand, so the busy control is **Getting Bun…**
 
 ## Left state
 
-Plugins, Discover, Think Tags detail still open, action **Installed**. Search `think`. Mirror **Off**. Think Tags is installed (middleware, not signed in — it has no sign-in). Magpie left running (window 752×652 at +610+300, pid 560329). Close was not used. No credential folder was opened.
+After shots 61–65, **Close** was used. Modal gone. Discover, search `think`, Think Tags card shows a green check **Installed**, tab **Installed · 1**. Mirror **Off**. Think Tags stays installed (middleware, no sign-in). No credential folder was opened. Magpie still running (752×652 at +610+300, pid 560329).
 
 
 ## Detail Install middleware (shots 61–65) — Think Tags
