@@ -1,3 +1,1 @@
-# shots/
-
-P2 截图放这里：`A-01-before.png` / `A-01-after.png` / …
+# Place A-NN-before/after/mid.png here (see RECORDING-QUEUE.md)

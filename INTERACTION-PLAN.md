@@ -54,12 +54,13 @@ Sessions / Library：仅在 Plugins → Built-in 打开后出现时再录。
 
 见 [`interactions/README.md`](./interactions/README.md)。
 
-## 当前进度（2026-10-14 19:14 CST）
+## 当前进度（2026-10-14 19:16 CST）
 
 - P0：本文件  
-- P1 起步：[`interactions/pages/agents/CONTROLS.md`](./interactions/pages/agents/CONTROLS.md)  
-- 总判定：`INTERACTION_NOT_STARTED`（见 `ACCEPTANCE.md`）  
-- 下一步：**P2 开始录 Agents**（逐条点官方 → 填 Spec + shots）
+- P1：[`interactions/pages/agents/CONTROLS.md`](./interactions/pages/agents/CONTROLS.md)（A-01…A-52 盘点完）  
+- P2 起步：[`SPEC.md`](./interactions/pages/agents/SPEC.md) 优先 6 条 **源码已填满**（A-01/02/05/06/08/09）；截图待 computerUse 按 [`RECORDING-QUEUE.md`](./interactions/pages/agents/RECORDING-QUEUE.md)  
+- 总判定：`INTERACTION_RECORDING`（源码批 · 视觉未齐 · demo 未实现）  
+- 下一步：computerUse 跑 RECORDING-QUEUE → 补 `shots/A-*-*.png` → 再源码填 A-05 派生 / A-06 派生
 
 ## Magpie 对照可用性
 

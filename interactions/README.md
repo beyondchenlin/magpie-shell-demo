@@ -11,6 +11,7 @@ interactions/
     <page>/                 ← agents | providers | routing | gateway | usage | plugins | settings | sidebar
       CONTROLS.md           ← P1：可点目标 checklist（id 预分配）
       SPEC.md               ← P2+：Interaction Spec 表（模板见 INTERACTION-PLAN.md）
+      RECORDING-QUEUE.md    ← computerUse 实机点击截图顺序（源码 Spec 已填后补像素）
       shots/                ← 截图：{id}-before.png / {id}-after.png / {id}-mid.png（可选）
 ```
 
