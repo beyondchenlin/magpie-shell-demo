@@ -9,6 +9,7 @@ import {
 import presets from "../data/presets.json";
 import { SUB_TILES, iconSrc } from "../data/mock";
 import { ZH, t, demoCopy } from "../i18n";
+import { ProtoMultiMenu } from "../components/ProtoMultiMenu";
 
 type Preset = { id: string; name: string; icon: string; kind: string };
 const PRESETS = presets as Preset[];
@@ -1175,6 +1176,21 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
   const [claudeSign, setClaudeSign] = useState<ClaudeSign>(null);
   const [claudeFilePick, setClaudeFilePick] = useState(false);
   const [claudeFileLoc, setClaudeFileLoc] = useState<"home" | "desktop" | "settings" | "other">("home");
+  /** Magpie Antigravity: independent risk card (risk:true, importable) — Google riskNote + Cockpit/Manager/CLIProxyAPI import. Mock only. */
+  type AgySign =
+    | null
+    | { state: "risk" }
+    | { state: "waiting" }
+    | {
+        state: "import";
+        text: string;
+        files: { name: string; text: string }[];
+        error?: string;
+      }
+    | { state: "importing" }
+    | { state: "imported"; results: { user: string; status: string; error?: string }[] };
+  const [agySign, setAgySign] = useState<AgySign>(null);
+  const [filePickFor, setFilePickFor] = useState<"claude" | "antigravity" | null>(null);
   /** Magpie Copilot device-code (NOTES): mock only — no real GitHub OAuth. */
   type CopilotSign =
     | null
@@ -1189,8 +1205,10 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
         site?: string;
       }
     | { state: "ghe"; host: string }
-    | { state: "failed"; error: string; proxy: "" | "direct" | string; site?: string };
+    | { state: "failed"; error: string; proxy: "" | "direct" | string; site?: string; askProxy?: boolean; customProxy?: string };
   const [copilotSign, setCopilotSign] = useState<CopilotSign>(null);
+  const [proxyMenuOpen, setProxyMenuOpen] = useState(false);
+  const proxyBtnRef = useRef<HTMLButtonElement>(null);
   type DemoProv = {
     id: string;
     name: string;
@@ -1272,13 +1290,17 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
     }
     if (id === "claude") {
       setClaudeSign({ state: "risk" });
+      setAgySign(null);
       setCopilotSign(null);
+      setProxyMenuOpen(false);
       setEditor(null);
       return;
     }
     if (id === "copilot") {
       setClaudeSign(null);
+      setAgySign(null);
       setEditor(null);
+      setProxyMenuOpen(false);
       setCopilotSign({
         state: "waiting",
         code: DEMO_COPILOT_CODE,
@@ -1290,18 +1312,15 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
     if (id === "antigravity") {
       setCopilotSign(null);
       setClaudeSign(null);
+      setProxyMenuOpen(false);
       setEditor(null);
-      onStatus(
-        demoCopy(
-          "演示：Antigravity 有与 Claude 同构的风险卡，本批优先 Copilot 设备码",
-          "Demo: Antigravity has Claude-like risk gate; this pass prioritizes Copilot device-code",
-        ),
-        "ok",
-      );
+      setAgySign({ state: "risk" });
       return;
     }
     setClaudeSign(null);
+    setAgySign(null);
     setCopilotSign(null);
+    setProxyMenuOpen(false);
     if (id === "custom") {
       setEditor({
         form: "custom",
@@ -1518,6 +1537,7 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
                       icon={s.icon}
                       on={
                         (!!claudeSign && s.id === "claude") ||
+                        (!!agySign && s.id === "antigravity") ||
                         (!!copilotSign && s.id === "copilot")
                       }
                       onPick={pickTile}
@@ -1665,6 +1685,7 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
                               className="link"
                               onClick={() => {
                                 setClaudeFileLoc("home");
+                                setFilePickFor("claude");
                                 setClaudeFilePick(true);
                               }}
                             >
@@ -1766,6 +1787,247 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
                     ) : null}
                   </div>
                 ) : null}
+                {agySign?.state === "risk" ? (
+                  <div className="signing">
+                    <span className="mark">!</span>
+                    <span className="tt">
+                      <span className="n">
+                        {t("{name} accounts can be suspended", { name: "Antigravity" })}
+                      </span>
+                      <span className="s">
+                        {t(
+                          "Google may suspend an Antigravity account it sees used outside Antigravity. Use one you can afford to lose.",
+                        )}
+                      </span>
+                    </span>
+                    <button
+                      type="button"
+                      className="text"
+                      onClick={() => setAgySign(null)}
+                    >
+                      {t("Cancel")}
+                    </button>
+                    <button
+                      type="button"
+                      className="text"
+                      title={t(
+                        "Bring in accounts exported from Antigravity Cockpit, Antigravity Manager or CLIProxyAPI",
+                      )}
+                      onClick={() =>
+                        setAgySign({ state: "import", text: "", files: [] })
+                      }
+                    >
+                      {t("Import instead…")}
+                    </button>
+                    <button
+                      type="button"
+                      className="text primary"
+                      onClick={() => {
+                        setAgySign({ state: "waiting" });
+                        onStatus(
+                          demoCopy(
+                            "演示：Antigravity 登录未接真 OAuth（风险卡已确认）",
+                            "Demo: Antigravity sign-in not wired to real OAuth (risk acknowledged)",
+                          ),
+                          "ok",
+                        );
+                      }}
+                    >
+                      {t("Sign in anyway")}
+                    </button>
+                  </div>
+                ) : null}
+                {agySign?.state === "waiting" ? (
+                  <div className="signing">
+                    <span className="spinner" aria-hidden />
+                    <span className="tt">
+                      <span className="n">
+                        {t("Finish signing in to {name} in your browser", {
+                          name: "Antigravity",
+                        })}
+                      </span>
+                      <span className="s">
+                        {t(
+                          "magpie opened the sign-in page. The account shows up here as soon as you're done.",
+                        )}
+                      </span>
+                    </span>
+                    <button
+                      type="button"
+                      className="text"
+                      onClick={() => setAgySign(null)}
+                    >
+                      {t("Cancel")}
+                    </button>
+                  </div>
+                ) : null}
+                {agySign?.state === "import" ||
+                agySign?.state === "importing" ||
+                agySign?.state === "imported" ? (
+                  <div className="signing import">
+                    {agySign.state === "importing" ? (
+                      <span className="spinner" aria-hidden />
+                    ) : agySign.state === "imported" ? (
+                      <span className="mark">✓</span>
+                    ) : (
+                      <span className="mark">↑</span>
+                    )}
+                    <span className="tt">
+                      {agySign.state === "importing" ? (
+                        <>
+                          <span className="n">
+                            {t("Checking the accounts with Google…")}
+                          </span>
+                          <span className="s">
+                            {t(
+                              "Each account's sign-in is refreshed and its project looked up, as signing in does.",
+                            )}
+                          </span>
+                        </>
+                      ) : agySign.state === "imported" ? (
+                        <>
+                          <span className="n">{t("Import finished")}</span>
+                          <span className="results">
+                            {agySign.results.map((r) => (
+                              <span
+                                className={`res ${r.status}`}
+                                key={r.user + r.status}
+                              >
+                                <span className="u">{r.user}</span>
+                                <span className="st">
+                                  {r.status === "added"
+                                    ? t("Added")
+                                    : r.status === "updated"
+                                      ? t("Updated with this sign-in")
+                                      : t("Not added")}
+                                </span>
+                                {r.error ? (
+                                  <span className="why">{r.error}</span>
+                                ) : null}
+                              </span>
+                            ))}
+                          </span>
+                        </>
+                      ) : (
+                        <>
+                          <span className="n">
+                            {t("Import {name} accounts", { name: "Antigravity" })}
+                          </span>
+                          <span className="s">
+                            {t(
+                              "Choose or paste an export from Antigravity Cockpit, Antigravity Manager or CLIProxyAPI — JSON, or refresh tokens one a line. Each account is checked with Google before it is added.",
+                            )}
+                          </span>
+                          <span className="s">
+                            {t(
+                              "Google may suspend an Antigravity account it sees used outside Antigravity. Use one you can afford to lose.",
+                            )}
+                          </span>
+                          <span className="acts">
+                            <button
+                              type="button"
+                              className="link"
+                              onClick={() => {
+                                setClaudeFileLoc("home");
+                                setFilePickFor("antigravity");
+                                setClaudeFilePick(true);
+                              }}
+                            >
+                              {t("Choose files…")}
+                            </button>
+                            {agySign.files.length ? (
+                              <span className="fname">
+                                {agySign.files.map((f) => f.name).join(", ")}
+                              </span>
+                            ) : null}
+                          </span>
+                          <textarea
+                            rows={3}
+                            spellCheck={false}
+                            autoComplete="off"
+                            placeholder={t("…or paste it here")}
+                            value={agySign.text}
+                            onChange={(e) =>
+                              setAgySign({
+                                state: "import",
+                                text: e.target.value,
+                                files: agySign.files,
+                              })
+                            }
+                          />
+                          {agySign.error ? (
+                            <span className="s why">{agySign.error}</span>
+                          ) : null}
+                        </>
+                      )}
+                    </span>
+                    {agySign.state === "import" ? (
+                      <>
+                        <button
+                          type="button"
+                          className="text"
+                          onClick={() => setAgySign(null)}
+                        >
+                          {t("Cancel")}
+                        </button>
+                        <button
+                          type="button"
+                          className="text primary"
+                          disabled={
+                            !(agySign.files.length || agySign.text.trim())
+                          }
+                          onClick={() => {
+                            setAgySign({ state: "importing" });
+                            window.setTimeout(() => {
+                              setAgySign({
+                                state: "imported",
+                                results: [
+                                  {
+                                    user: "demo@antigravity.import",
+                                    status: "added",
+                                  },
+                                ],
+                              });
+                              onStatus(
+                                demoCopy(
+                                  "演示：Antigravity 导入已本地标记（无真凭据）",
+                                  "Demo: Antigravity import marked locally (no real credentials)",
+                                ),
+                                "ok",
+                              );
+                            }, 720);
+                          }}
+                        >
+                          {t("Import")}
+                        </button>
+                      </>
+                    ) : null}
+                    {agySign.state === "imported" ? (
+                      <>
+                        <button
+                          type="button"
+                          className="text"
+                          onClick={() => setAgySign(null)}
+                        >
+                          {t("Done")}
+                        </button>
+                        <button
+                          type="button"
+                          className="text primary"
+                          onClick={() =>
+                            setAgySign({
+                              state: "import",
+                              text: "",
+                              files: [],
+                            })
+                          }
+                        >
+                          {t("Import more…")}
+                        </button>
+                      </>
+                    ) : null}
+                  </div>
+                ) : null}
                 {copilotSign?.state === "waiting" ? (
                   <div className="signing">
                     <span className="spinner" aria-hidden />
@@ -1838,33 +2100,26 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
                         </button>
                         <button
                           type="button"
-                          className="link via"
+                          ref={proxyBtnRef}
+                          className={`link via${proxyMenuOpen ? " open" : ""}`}
                           title={
-                            t("Global proxy") +
+                            (
+                              !copilotSign.proxy
+                                ? t("Global proxy")
+                                : copilotSign.proxy === "direct"
+                                  ? t("Direct")
+                                  : copilotSign.proxy
+                            ) +
                             "\n" +
                             t(
                               "The sign-in goes through this proxy, as the account's requests will. One picked here is kept as the account's.",
                             )
                           }
                           aria-haspopup="menu"
-                          onClick={() => {
-                            const next =
-                              copilotSign.proxy === ""
-                                ? "direct"
-                                : copilotSign.proxy === "direct"
-                                  ? ""
-                                  : "";
-                            setCopilotSign({
-                              ...copilotSign,
-                              proxy: next as "" | "direct",
-                              askProxy: false,
-                            });
-                            onStatus(
-                              t("Proxy: {proxy}", {
-                                proxy: next === "direct" ? t("Direct") : t("Global proxy"),
-                              }),
-                              "ok",
-                            );
+                          aria-expanded={proxyMenuOpen}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setProxyMenuOpen((o) => !o);
                           }}
                         >
                           {t("Proxy: {proxy}", {
@@ -1877,11 +2132,109 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
                           })}
                         </button>
                       </span>
+                      {copilotSign.askProxy ? (
+                        <form
+                          className="callback-form proxy-ask"
+                          onSubmit={(e) => {
+                            e.preventDefault();
+                            const v = (copilotSign.customProxy || "").trim();
+                            if (!v) return;
+                            setCopilotSign({
+                              ...copilotSign,
+                              proxy: v,
+                              askProxy: false,
+                            });
+                            onStatus(
+                              t("Proxy: {proxy}", { proxy: v }),
+                              "ok",
+                            );
+                          }}
+                        >
+                          <input
+                            aria-label={t("Proxy")}
+                            placeholder="http://127.0.0.1:7890"
+                            autoComplete="off"
+                            value={copilotSign.customProxy || ""}
+                            onChange={(e) =>
+                              setCopilotSign({
+                                ...copilotSign,
+                                customProxy: e.target.value,
+                              })
+                            }
+                            onKeyDown={(e) => e.stopPropagation()}
+                          />
+                          <button
+                            type="submit"
+                            className="text primary"
+                            disabled={!(copilotSign.customProxy || "").trim()}
+                          >
+                            {t("Sign in through it")}
+                          </button>
+                        </form>
+                      ) : null}
                     </span>
+                    <ProtoMultiMenu
+                      open={proxyMenuOpen}
+                      anchor={proxyBtnRef.current}
+                      align="left"
+                      live={false}
+                      head="Sign in through"
+                      value={copilotSign.askProxy ? "\x01" : copilotSign.proxy || ""}
+                      options={[
+                        {
+                          v: "",
+                          name: "Global proxy",
+                          note: "Follows the proxy in Settings",
+                        },
+                        {
+                          v: "direct",
+                          name: "Direct",
+                          note: "Through no proxy",
+                        },
+                        {
+                          v: "\x01",
+                          name: "Custom…",
+                          note: "http://, https:// or socks5://",
+                        },
+                      ]}
+                      onChange={(next) => {
+                        const v = typeof next === "string" ? next : "";
+                        if (v === "\x01") {
+                          setCopilotSign({
+                            ...copilotSign,
+                            askProxy: true,
+                            customProxy: copilotSign.customProxy || "",
+                          });
+                          setProxyMenuOpen(false);
+                          return;
+                        }
+                        setCopilotSign({
+                          ...copilotSign,
+                          proxy: v as "" | "direct" | string,
+                          askProxy: false,
+                        });
+                        setProxyMenuOpen(false);
+                        onStatus(
+                          t("Proxy: {proxy}", {
+                            proxy:
+                              !v
+                                ? t("Global proxy")
+                                : v === "direct"
+                                  ? t("Direct")
+                                  : v,
+                          }),
+                          "ok",
+                        );
+                      }}
+                      onClose={() => setProxyMenuOpen(false)}
+                    />
                     <button
                       type="button"
                       className="text"
-                      onClick={() => setCopilotSign(null)}
+                      onClick={() => {
+                        setProxyMenuOpen(false);
+                        setCopilotSign(null);
+                      }}
                     >
                       {t("Cancel")}
                     </button>
@@ -2190,7 +2543,10 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
           aria-modal="true"
           aria-label={t("Choose files…")}
           onClick={(e) => {
-            if (e.target === e.currentTarget) setClaudeFilePick(false);
+            if (e.target === e.currentTarget) {
+              setClaudeFilePick(false);
+              setFilePickFor(null);
+            }
           }}
         >
           <div
@@ -2285,7 +2641,10 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
               <button
                 type="button"
                 className="text"
-                onClick={() => setClaudeFilePick(false)}
+                onClick={() => {
+                  setClaudeFilePick(false);
+                  setFilePickFor(null);
+                }}
               >
                 {t("Cancel")}
               </button>
@@ -2301,8 +2660,19 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
                 type="button"
                 className="text"
                 onClick={() => {
-                  /* mock pick a credentials file for demo import ready */
-                  if (claudeSign?.state === "import") {
+                  /* mock pick a credentials/export file for demo import ready */
+                  if (filePickFor === "antigravity" && agySign?.state === "import") {
+                    setAgySign({
+                      state: "import",
+                      text: agySign.text,
+                      files: [
+                        {
+                          name: "antigravity-export.json",
+                          text: '{"demo":true,"refresh_tokens":[]}',
+                        },
+                      ],
+                    });
+                  } else if (claudeSign?.state === "import") {
                     setClaudeSign({
                       state: "import",
                       text: claudeSign.text,
@@ -2315,6 +2685,7 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
                     });
                   }
                   setClaudeFilePick(false);
+                  setFilePickFor(null);
                 }}
               >
                 {demoCopy("演示选用示例", "Demo pick sample")}

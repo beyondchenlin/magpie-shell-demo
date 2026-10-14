@@ -1,3 +1,8 @@
+## v0.1.27
+- Providers **Antigravity** independent risk card (Google riskNote) → Sign in anyway (mock waiting) / Import instead… (Cockpit·Manager·CLIProxyAPI copy + Google check) — from Magpie `SUBS`/`renderSigning`/`importSay`
+- Copilot **Proxy** uses Magpie `openProtoMenu` / `signInProxyChoices` via `ProtoMultiMenu` (Global / Direct / Custom… + `proxy-ask` form); no more cycle-toggle
+- Routing `interactions/native-linux/routing/` still empty (poll continues)
+
 ## v0.1.26
 - Providers Copilot device-code card (mock) + GHE form
 - Vendors pairTile (Kimi dual preset tip) closer to Magpie
@@ -31,12 +36,14 @@
 | 11 | `#sideEdge` 拖宽 | 仅视觉 | P2 | |
 | 12 | 业务后端 / 真网关 | 无 | P2 | 范围外 |
 | 13 | 先前 PASS_WITH_GAPS | **已撤销**；现以截图空态对齐为准 | — | |
+| 15 | Antigravity risk/import | **v0.1.27** 独立卡（非 Claude 共用） | — | Sign in anyway = mock waiting；无真 Google OAuth |
+| 16 | Copilot Proxy proto-menu | **v0.1.27** ProtoMultiMenu + Custom… form | — | 对齐 `signInProxyLink`/`signInProxyChoices` |
 
 ## 仍开放的有意差距
 
 1. 无真实 provider 添加 / agent 接线 / gateway  
 2. 飞鸟仅为 Demo 开关 mock  
-3. Usage/Plugins/Agents/Providers nested = **COPILOT_ROUTING_PARTIAL**（v0.1.26 Copilot device-code mock + pairTile；v0.1.25 Claude/Kimi region；v0.1.23 day/Replay/trace；v0.1.22 Plugins search/On npm/folder Cancel；Agents guide 0/2 + Manage hide 文案；v0.1.21 Routing Purpose/Metrics menus + Accounts/keys 列；Agents Manage/Install fold；Privacy 63–70 已齐；Agents `#pop` 见 v0.1.20）  
+3. Usage/Plugins/Agents/Providers nested = **ANTIGRAVITY_ROUTING_PARTIAL**（v0.1.27 Antigravity risk+import + Copilot Proxy proto-menu；v0.1.26 Copilot device-code/GHE；Routing native 点录目录仍空，待 shots+NOTES）  
 4. 未做原生 Tauri；Electron 系统标题栏（Windows 上游亦然）
 
 *Sessions / Library 不是顶栏缺口：官方默认不展示。*
