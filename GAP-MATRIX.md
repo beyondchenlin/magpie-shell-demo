@@ -1,3 +1,10 @@
+## v0.1.38 PLUGINS_NEST
+- Native `plugins/01–34` + NOTES consumed into `PluginsView`.
+- Discover intro (Subscriptions and gateway middleware + trust + pm-art), market sections (Subscriptions / Gateway middleware / Agents / Unofficial on GitHub), Suggested + On npm search (debounce 350ms), Mirrors tip, manual row + folder picker Cancel leaves field, Built-in copy from builtins.test.cjs + Recent calls enum, Installed empty (shot 18) + Discover plugins.
+- Detail: Version/Stars/License/Updated facts + unofficial warn; Escape does not close.
+- Still mock: true npm/git install, `plugins/choose` OS picker bytes, live listings/search API, Bun runtime.
+- Allowances quota UI: **N/A** (unchanged).
+
 ## v0.1.37 USAGE_NEST
 - Native `usage/01–50` consumed: calendar nest, refresh menu ticks, empty Overview/Requests/Sessions/Context copy & controls from NOTES.
 - Allowances quota body: **N/A** (no native shots with quotas) — not invented.
@@ -84,7 +91,7 @@
 | 8 | 账号行 `.dot`/`.bar` 在有请求时 | 空态为 `li.idle` | — | 空态正确 |
 | 9 | Provider 完整行控件 | **v0.1.34** 有账号列表行+accts 编辑器 | P1 | 真 key/OAuth/arrange 落盘仍 mock |
 | 10 | Gateway 空态壳+主交互 | **v0.1.9**；filled demo **v0.1.12** | P1 | Gateway 仍可再抠 |
-| 14 | Settings 全 tab 深页 | **v0.1.21** Privacy 63–70 字符串/嵌套齐；Disable 左轨 + Models `#pop` | P1 | Usage/Plugins 继续抠；Privacy 基本对齐 |
+| 14 | Settings 全 tab 深页 | **v0.1.21** Privacy 63–70；Plugins **v0.1.38** 01–34 | P1 | Settings 01–85 待继续；Privacy 基本对齐 |
 | 11 | `#sideEdge` 拖宽 | **v0.1.36** sideDrag | — | localStorage `magpie.sideWidth` |
 | 12 | 业务后端 / 真网关 | 无 | P2 | 范围外 |
 | 13 | 先前 PASS_WITH_GAPS | **已撤销**；现以截图空态对齐为准 | — | |
@@ -95,7 +102,7 @@
 
 1. 无真实 provider 添加 / agent 接线 / gateway / OAuth  
 2. 飞鸟仍为 Demo 开关 mock（FLIER+rtflap .42s 已对齐；非真 gateway · GAP #7 仍 P1）  
-3. Tray **01–14 已消费**；Usage **01–50 空态已消费**；Allowances 无配额 = **N/A**（有配额体需另录）  
+3. Tray **01–14** · Usage **01–50** · Plugins **01–34** 已消费；Allowances 无配额 = **N/A**（有配额体需另录）；Settings **01–85** 待继续  
 4. Provider 列表已有账号态壳；真 key 轮转 / arrange drag 落盘仍 mock  
 5. 未做原生 Tauri；Electron 系统标题栏（Windows 上游亦然）  
 6. Usage filled（KPI/heatmap/ledger rows）仍为演示开关 mock，非原生有数据截图

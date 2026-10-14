@@ -1,3 +1,11 @@
+## v0.1.38 PLUGINS_NEST
+
+- Consumed native `interactions/native-linux/plugins/01–34` + NOTES into `PluginsView`.
+- Tabs Built-in / Discover / Installed; Discover intro + market (Subscriptions, Gateway middleware, Agents, Unofficial on GitHub); search Suggested / On npm; Mirrors in China tip; manual install row + demo folder picker (Cancel leaves field); Built-in Magpie copy + Recent calls 10/20/50/100; Installed empty default.
+- Detail modal facts + unofficial warning; Escape does not close (Close / backdrop do).
+- **Allowances:** still **N/A** — not invented.
+- Still mock: true npm/git install, OS folder picker, live listings API.
+
 ## v0.1.37 USAGE_NEST
 
 - Consumed native `interactions/native-linux/usage/01–50` + NOTES into `UsageView`.

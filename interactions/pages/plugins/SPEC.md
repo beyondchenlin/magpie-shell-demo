@@ -33,3 +33,8 @@
 ## v0.1.16
 - Disable → **pm-ask** 确认（Yes/Cancel）；Enable 直接开。
 - Install：`.pm-card.installing` + Installing… → Installed tab。
+
+## v0.1.38
+
+- **PLUGINS_NEST_DONE**: native 01–34 + NOTES; market OpenCode/ZCode/… + Unofficial GitHub; Built-in copy; empty Installed; folder Cancel.
+- Still mock: true install / listings API / OS picker.

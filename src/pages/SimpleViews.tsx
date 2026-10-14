@@ -1809,31 +1809,42 @@ const BUILTINS_DEFAULT: Builtin[] = [
   {
     id: "gateway",
     name: "Gateway page",
-    sub: "The gateway page and its Connect card",
+    sub: "The gateway's state and keys, how to connect a client, its models and recent calls",
     on: true,
     locked: true,
     callsPage: 20,
   },
-  { id: "routing-groups", name: "Routing groups", sub: "Name models in Routing as groups", on: false },
+  {
+    id: "routing-groups",
+    name: "Routing groups",
+    sub: "Several models agents pick as one: each request goes to the right one, and to the next when one fails",
+    on: false,
+  },
   {
     id: "library",
     name: "Library",
-    sub: "Skills, MCP servers and Magpie Image for agents",
+    sub: "Instructions, MCP servers, skills and hooks, kept once and given to every agent",
     on: false,
     feature: "library",
   },
-  { id: "otel", name: "Observability", sub: "OpenTelemetry export in Settings", on: false, feature: "otel" },
+  {
+    id: "otel",
+    name: "Observability",
+    sub: "Send each request's traces and metrics to an OpenTelemetry collector, such as Langfuse",
+    on: false,
+    feature: "otel",
+  },
   {
     id: "sessions",
     name: "Sessions",
-    sub: "Agents' session files on Usage › Sessions and the Sessions page",
+    sub: "Your agents' past conversations: read, search, resume and export them",
     on: false,
     feature: "sessions",
   },
   {
     id: "warmups",
     name: "Warm-up and check-in",
-    sub: "Codex / Claude warm-ups and WorkBuddy check-in in Settings",
+    sub: "Start a subscription's usage window at a time you pick, and claim vendors' daily check-in credits",
     on: false,
   },
 ];
@@ -1844,16 +1855,18 @@ const DEMO_MARKET = [
     section: "Subscriptions",
     note: "written for magpie, checked against its own sign-ins",
     cards: [
-      { pkg: "@magpie/demo-kimi", name: "Kimi Code (demo)", summary: "Demo market card — Install is local-only", downloads: "12k" },
-      { pkg: "@magpie/demo-glm", name: "GLM Coding (demo)", summary: "Demo market card — no real npm install", downloads: "8.4k" },
+      { pkg: "@magpie-community/opencode-zen-free", name: "OpenCode Zen Free", summary: "OpenCode Zen's free models with the public credential, automatic discovery and native…", downloads: "3.0k/week", ver: "v0.1.1", community: true, kind: "Provider" },
+      { pkg: "@magpie-community/opencode-zcode-auth", name: "ZCode", summary: "Z.ai and BigModel GLM Coding Plan, team seats and ZCode's free Start Plan.", downloads: "9.0k/week", ver: "v0.1.18", community: true, alsoBuiltin: true, kind: "Provider" },
+      { pkg: "@magpie-community/opencode-qoder-auth", name: "Qoder", summary: "Your Qoder subscription, international (qoder.com) or Qoder CN (qoder.cn).", downloads: "5.6k/week", ver: "v0.2.15", community: true, alsoBuiltin: true, kind: "Provider" },
+      { pkg: "@magpie-community/opencode-devin-auth", name: "Devin", summary: "Devin's models with your Devin account — a browser sign-in or the devin CLI's.", downloads: "2.9k/week", ver: "v0.1.16", community: true, alsoBuiltin: true, kind: "Provider" },
     ],
   },
   {
     kind: "mw" as const,
     section: "Gateway middleware",
-    note: "runs in magpie's gateway on what every agent sends and gets back",
+    note: "runs in magpie's gateway on what every agent sends and gets back, whichever provider serves it",
     cards: [
-      { pkg: "@magpie/demo-log", name: "Request logger (demo)", summary: "Logs each gateway call — demo fold for options", downloads: "3.1k" },
+      { pkg: "@magpie-community/demo-request-log", name: "Request logger", summary: "Logs each gateway call's request and reply — demo fold for options JSON.", downloads: "1.4k/week", ver: "v0.1.0", community: true, kind: "Middleware" },
     ],
   },
   {
@@ -1861,7 +1874,22 @@ const DEMO_MARKET = [
     section: "Agents",
     note: "agents magpie has no setup of its own for",
     cards: [
-      { pkg: "@magpie/demo-agent", name: "Demo agent bridge", summary: "Connect a third-party agent as Magpie does its own", downloads: "1.2k" },
+      { pkg: "@magpie-community/demo-agent-bridge", name: "Demo agent bridge", summary: "Connect a third-party agent the way Magpie wires its own.", downloads: "620/week", ver: "v0.0.9", community: true, kind: "Agent" },
+    ],
+  },
+  {
+    kind: "gh" as const,
+    section: "Unofficial, on GitHub",
+    note: "repositories their authors tagged magpie-plugin — nobody has reviewed them; read the code before you install one",
+    cards: [
+      { pkg: "github:euanguo/magpie-middleware-image-keep", name: "magpie-middleware-image-keep", summary: "magpie gateway middleware: keep the newest images and replace older inline images with…", downloads: "2★", ver: "v0.2.0", unofficial: true, owner: "euanguo", stars: 2, kind: "Middleware", updated: "Oct 12, 2026", github: "https://github.com/euanguo/magpie-middleware-image-keep" },
+      { pkg: "github:bingqilinweimaotai/magpie-github-sync", name: "magpie-github-sync", summary: "Encrypted GitHub sync bridge for Magpie WebDAV sync", downloads: "2★", ver: "v0.2.3", unofficial: true, owner: "bingqilinweimaotai", stars: 2, kind: "Provider", updated: "Oct 10, 2026", github: "https://github.com/bingqilinweimaotai/magpie-github-sync" },
+      { pkg: "github:Hu9956/DSH-model-controls", name: "DSH-model-controls", summary: "切换供应商、模型与思考强度，每个模型各自记住档位。", downloads: "1★", ver: "v0.2.8", unofficial: true, owner: "Hu9956", stars: 1, kind: "Provider", updated: "Oct 14, 2026", github: "https://github.com/Hu9956/DSH-model-controls", readme: "DSH 模型控制器 — DeepSeek Harness for models and thinking intensity." },
+      { pkg: "github:XcodeFish/opencode-cn-ai-auth", name: "opencode-cn-ai-auth", summary: "Magpie provider plugin for Loomy (iFlytek) and Raccoon (SenseTime) coding…", downloads: "1★", ver: "v0.2.1", unofficial: true, owner: "XcodeFish", stars: 1, kind: "Provider", updated: "Oct 8, 2026", github: "https://github.com/XcodeFish/opencode-cn-ai-auth" },
+      { pkg: "github:SadWood/magpie-gaccode", name: "magpie-gaccode", summary: "Unofficial GACCode provider for magpie and OpenCode, with quota reporting and optiona…", downloads: "1★", ver: "v0.1.2", unofficial: true, owner: "SadWood", stars: 1, kind: "Provider", updated: "Oct 5, 2026", github: "https://github.com/SadWood/magpie-gaccode" },
+      { pkg: "github:mu-zi-lee/magpie-chatgptweb", name: "magpie-chatgptweb", summary: "Magpie 的实验性 ChatGPT 网页接入插件：基于 Playwright 和独立浏览器配置，支持匿名聊天…", downloads: "1★", ver: "v0.1.0", unofficial: true, owner: "mu-zi-lee", stars: 1, kind: "Provider", updated: "Oct 1, 2026", github: "https://github.com/mu-zi-lee/magpie-chatgptweb" },
+      { pkg: "github:broven/magpie-sub2api", name: "magpie-sub2api", summary: "magpie plugin for sub2api sites: models, and subscription/quota usage windows for routing", downloads: "0★", ver: "v0.2.1", unofficial: true, owner: "broven", stars: 0, kind: "Provider", updated: "Sep 28, 2026", github: "https://github.com/broven/magpie-sub2api" },
+      { pkg: "github:ChenstarMr/opencode-dumate-auth", name: "opencode-dumate-auth", summary: "OpenCode / magpie provider plugin for Baidu DuMate (百度搭子)", downloads: "0★", ver: "v0.1.0", unofficial: true, owner: "ChenstarMr", stars: 0, kind: "Provider", updated: "Sep 20, 2026", github: "https://github.com/ChenstarMr/opencode-dumate-auth" },
     ],
   },
 ];
@@ -1869,10 +1897,10 @@ const DEMO_MARKET = [
 
 /** Magpie searchNPM Suggested hits (shots 20–24) — demo filter, 350ms debounce. */
 const DEMO_NPM = [
-  { pkg: "@magpie/opencode-zen-free", name: "OpenCode Zen Free", summary: "OpenCode Zen's free models with the public credential, automatic discovery and native…", downloads: "3.0k/week", ver: "v0.1.1", kind: "Provider", q: "opencode" },
-  { pkg: "@magpie/zcode", name: "ZCode", summary: "Z.ai and BigModel GLM Coding Plan, team seats and ZCode's free Start Plan.", downloads: "9.0k/week", ver: "v0.1.18", kind: "Provider", builtin: true, q: "opencode zcode" },
-  { pkg: "@magpie/qoder", name: "Qoder", summary: "Your Qoder subscription, international (qoder.com) or Qoder CN (qoder.cn).", downloads: "5.6k/week", ver: "v0.2.15", kind: "Provider", builtin: true, q: "opencode qoder" },
-  { pkg: "@magpie/devin", name: "Devin", summary: "Devin's models with your Devin account — a browser sign-in or the devin CLI's.", downloads: "2.9k/week", ver: "v0.1.16", kind: "Provider", builtin: true, q: "opencode" },
+  { pkg: "@magpie-community/opencode-zen-free", name: "OpenCode Zen Free", summary: "OpenCode Zen's free models with the public credential, automatic discovery and native…", downloads: "3.0k/week", ver: "v0.1.1", kind: "Provider", q: "opencode" },
+  { pkg: "@magpie-community/opencode-zcode-auth", name: "ZCode", summary: "Z.ai and BigModel GLM Coding Plan, team seats and ZCode's free Start Plan.", downloads: "9.0k/week", ver: "v0.1.18", kind: "Provider", builtin: true, q: "opencode zcode" },
+  { pkg: "@magpie-community/opencode-qoder-auth", name: "Qoder", summary: "Your Qoder subscription, international (qoder.com) or Qoder CN (qoder.cn).", downloads: "5.6k/week", ver: "v0.2.15", kind: "Provider", builtin: true, q: "opencode qoder" },
+  { pkg: "@magpie-community/opencode-devin-auth", name: "Devin", summary: "Devin's models with your Devin account — a browser sign-in or the devin CLI's.", downloads: "2.9k/week", ver: "v0.1.16", kind: "Provider", builtin: true, q: "opencode" },
   { pkg: "opencode-pty", name: "opencode-pty", summary: "OpenCode plugin for interactive PTY management — run background processes.", downloads: "4.3k/week", ver: "v0.4.0", kind: "Provider", q: "opencode pty" },
   { pkg: "@mastra/opencode", name: "@mastra/opencode", summary: "OpenCode plugin for Mastra Observational Memory", downloads: "6.3k/week", ver: "v0.1.36", kind: "Provider", q: "opencode" },
   { pkg: "@brendonovich/vite-annotate", name: "@brendonovich/vite…", summary: "Select UI elements in a Vite app and send contextual feedback to OpenCode.", downloads: "8.8k/week", ver: "v0.1.4", kind: "Provider", q: "opencode vite" },
@@ -1932,17 +1960,7 @@ export function PluginsView() {
       movable?: string[];
       moved?: string[];
     }[]
-  >([
-    // Demo seed: installed subscription with movable long-confirm (Magpie plugins.js)
-    {
-      pkg: "@magpie/demo-kimi",
-      name: "Kimi Code (demo)",
-      opts: "",
-      optsOpen: false,
-      movable: ["Kimi Code"],
-      moved: ["Kimi Code"],
-    },
-  ]);
+  >([]); /* native empty Installed (shot 18); Install demos fill it */
   const [busy, setBusy] = useState<string | null>(null);
   const [pluginsSort, setPluginsSort] = useState<"az" | "za">(() => {
     try {
@@ -2055,6 +2073,10 @@ export function PluginsView() {
                 setQuery(e.target.value);
                 if (tab !== "discover") setTab("discover");
               }}
+              onKeyDown={(e) => {
+                e.stopPropagation();
+                if (e.key === "Escape" && query) setQuery("");
+              }}
             />
           </label>
         ) : null}
@@ -2063,7 +2085,7 @@ export function PluginsView() {
       <div className="lib-body pm-body">
         {tab === "builtin" ? (
           <>
-            <p className="feat-say" style={{ margin: "8px 2px 10px", fontSize: 12.5, color: "var(--fg-2)", lineHeight: 1.5 }}>
+            <p className="feat-say">
               {t("Parts of magpie not everyone needs. Switched off, a part leaves the sidebar, its pages and Settings; magpie works the same either way.")}
             </p>
             <div className="list prefs" id="builtinList">
@@ -2073,6 +2095,9 @@ export function PluginsView() {
                     <div className="who">
                       <div className="name">{t(b.name)}</div>
                       <div className="sub">{t(b.sub)}</div>
+                      {b.on && b.id === "gateway" ? (
+                        <div className="sub feat-use">{t("1 gateway key")}</div>
+                      ) : null}
                       {b.locked ? (
                         <div className="sub feat-why">{t("In use, so it stays on")}</div>
                       ) : null}
@@ -2150,15 +2175,25 @@ export function PluginsView() {
             {!query.trim() ? (
               <div className="pm-intro">
                 <div className="pm-introtext">
-                  <h2>{t("Plugins for magpie")}</h2>
-                  <p>{t("Subscriptions and gateway middleware")}</p>
-                  <p style={{ marginTop: 6 }}>
+                  <h2>{t("Subscriptions and gateway middleware")}</h2>
+                  <p>
+                    {t(
+                      "Plugins sign in to coding plans and make their requests; the models then work in every agent, like any provider's. They're OpenCode's provider plugins or pi's packages, run on Bun.",
+                    )}
+                  </p>
+                  <p>
+                    {t(
+                      "A plugin can also be middleware in magpie's gateway: it reads and rewrites what agents send and get back, for every provider.",
+                    )}{" "}
                     <button
                       type="button"
-                      className="link"
+                      className="pm-link"
                       onClick={() => window.open("https://usemagpie.ai/docs/plugins#middleware", "_blank", "noopener")}
                     >
                       {t("Write a middleware")}
+                      <svg viewBox="0 0 12 12" width={11} height={11} aria-hidden>
+                        <path d="M3.5 2.5h6v6M9.5 2.5 3 9" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+                      </svg>
                     </button>
                   </p>
                   <div className="pm-trust">
@@ -2166,8 +2201,13 @@ export function PluginsView() {
                       <path d="M8 2.3 13 4v3.8c0 3-2.1 5.1-5 5.9-2.9-.8-5-2.9-5-5.9V4z" fill="none" stroke="currentColor" strokeWidth="1.4" />
                       <path d="M5.8 8l1.6 1.6 2.9-3" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
                     </svg>
-                    <span>{t("Checked against magpie's own sign-ins")}</span>
+                    <span>{t("A plugin is someone else's code with your sign-in or your requests: install the ones you trust.")}</span>
                   </div>
+                </div>
+                <div className="pm-art" aria-hidden>
+                  {["Z", "✦", "G", "◇", "◈"].map((lab, i) => (
+                    <div className="pm-logo" key={i}>{lab}</div>
+                  ))}
                 </div>
               </div>
             ) : null}
@@ -2203,11 +2243,31 @@ export function PluginsView() {
                             ◆
                           </div>
                           <div className="pm-words" style={{ flex: 1, minWidth: 0 }}>
-                            <b style={{ fontSize: 13 }}>{c.name}</b>
-                            <p style={{ margin: "4px 0 0", fontSize: 12, color: "var(--muted)", lineHeight: 1.45 }}>{c.summary}</p>
-                            <div style={{ marginTop: 6, fontSize: 11, color: "var(--faint)" }}>
-                              {c.pkg} · {c.downloads}
-                              {mirror ? ` · ${t("via China mirrors")}` : ""}
+                            <div className="pm-name" style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
+                              <b style={{ fontSize: 13 }}>{c.name}</b>
+                              {"alsoBuiltin" in c && (c as { alsoBuiltin?: boolean }).alsoBuiltin ? (
+                                <span className="pm-chip">{t("Also built in")}</span>
+                              ) : null}
+                            </div>
+                            {"community" in c && (c as { community?: boolean }).community ? (
+                              <div className="pm-by" style={{ fontSize: 11, color: "var(--green)", marginTop: 2 }}>
+                                {t("magpie community")}
+                              </div>
+                            ) : "owner" in c && (c as { owner?: string }).owner ? (
+                              <div className="pm-by" style={{ fontSize: 11, color: "var(--muted)", marginTop: 2 }}>
+                                {(c as { owner?: string }).owner}
+                              </div>
+                            ) : null}
+                            <p className="pm-sum" style={{ margin: "4px 0 0", fontSize: 12, color: "var(--muted)", lineHeight: 1.45 }}>{c.summary}</p>
+                            <div className="pm-meta" style={{ marginTop: 6, fontSize: 11, color: "var(--faint)", display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
+                              {"kind" in c && (c as { kind?: string }).kind ? <span className="pm-chip">{t((c as { kind: string }).kind)}</span> : null}
+                              {"unofficial" in c && (c as { unofficial?: boolean }).unofficial ? (
+                                <span className="pm-chip warn"><span className="dot" />{t("Unofficial")}</span>
+                              ) : null}
+                              {"stars" in c && (c as { stars?: number }).stars != null ? <span>★ {(c as { stars: number }).stars}</span> : null}
+                              <span>{c.downloads}</span>
+                              {"ver" in c && (c as { ver?: string }).ver ? <span className="pm-ver">{(c as { ver: string }).ver}</span> : null}
+                              {mirror ? <span>{t("via China mirrors")}</span> : null}
                             </div>
                           </div>
                           <button
@@ -2352,20 +2412,20 @@ export function PluginsView() {
             ) : null}
 
             <div className="pm-sec" style={{ marginTop: 8 }}>
-              <div className="pm-manual" style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center", padding: "8px 2px" }}>
-                <span className="pm-mlabel" style={{ fontSize: 12.5, fontWeight: 600 }}>{t("Have one in mind?")}</span>
+              <div className="pm-manual">
+                <span className="pm-mlabel">{t("Have one in mind?")}</span>
                 <input
-                  className="words"
-                  style={{ flex: 1, minWidth: 200 }}
+                  className="pm-minput"
                   placeholder={t("npm package, GitHub repo (github:owner/repo) or a folder")}
-                  aria-label={t("Have one in mind?")}
+                  aria-label={t("Plugin")}
                   value={manualSpec}
                   onChange={(e) => setManualSpec(e.target.value)}
+                  onKeyDown={(e) => e.stopPropagation()}
                 />
                 <button
                   type="button"
-                  className="icon"
-                  title={demoCopy("选择文件夹（演示）", "Choose folder (demo)")}
+                  className="pm-browse"
+                  title={t("Choose a folder on this computer")}
                   aria-label={t("Choose a folder")}
                   onClick={() => {
                     setFolderLoc("recent");
@@ -2840,7 +2900,13 @@ export function PluginsView() {
               <div className="pm-logo" aria-hidden>◆</div>
               <div style={{ flex: 1, minWidth: 0 }}>
                 <b style={{ fontSize: 15 }}>{pluginDetail.name}</b>
-                <div style={{ fontSize: 12, color: "var(--muted)" }}>{pluginDetail.pkg}</div>
+                <div style={{ fontSize: 12, color: "var(--muted)" }}>
+                  {"community" in pluginDetail && (pluginDetail as { community?: boolean }).community
+                    ? `${t("magpie community")} · ${pluginDetail.pkg}`
+                    : "owner" in pluginDetail && (pluginDetail as { owner?: string }).owner
+                      ? `${(pluginDetail as { owner: string }).owner} · ${pluginDetail.pkg}`
+                      : pluginDetail.pkg}
+                </div>
               </div>
               <button
                 type="button"
@@ -2860,24 +2926,37 @@ export function PluginsView() {
                 )}
               </button>
             </div>
-            <div style={{ marginTop: 10, fontSize: 12, color: "var(--muted)", display: "flex", flexWrap: "wrap", gap: 8 }}>
-              <span>v0.1.0-demo</span>
-              <span>·</span>
-              <span>★ {pluginDetail.downloads}</span>
-              <span>·</span>
-              <span>MIT</span>
-              <span>·</span>
-              <span>{t("Unofficial")}</span>
+            <p className="pm-dsum" style={{ marginTop: 10, fontSize: 13, lineHeight: 1.5 }}>{pluginDetail.summary}</p>
+            <div className="pm-facts" style={{ marginTop: 10 }}>
+              <div className="pm-fact"><span className="k">{t("Version")}</span><span className="v">{"ver" in pluginDetail && (pluginDetail as { ver?: string }).ver ? (pluginDetail as { ver: string }).ver : "v0.1.0-demo"}</span></div>
+              <div className="pm-fact"><span className="k">{"stars" in pluginDetail && (pluginDetail as { stars?: number }).stars != null ? t("Stars") : t("Downloads")}</span><span className="v">{"stars" in pluginDetail && (pluginDetail as { stars?: number }).stars != null ? (pluginDetail as { stars: number }).stars : pluginDetail.downloads}</span></div>
+              <div className="pm-fact"><span className="k">{t("License")}</span><span className="v">MIT</span></div>
+              <div className="pm-fact"><span className="k">{t("Updated")}</span><span className="v">{"updated" in pluginDetail && (pluginDetail as { updated?: string }).updated ? (pluginDetail as { updated: string }).updated : "—"}</span></div>
             </div>
-            <p style={{ marginTop: 12, fontSize: 13, lineHeight: 1.5 }}>{pluginDetail.summary}</p>
-            <div className="pm-readme" style={{ marginTop: 12, padding: 12, borderRadius: 10, background: "var(--pill)", fontSize: 12.5, lineHeight: 1.5, color: "var(--fg-2)" }}>
-              <b>README</b>
-              <p style={{ margin: "6px 0 0" }}>
-                {demoCopy(
-                  "演示详情模态（对照 Magpie Discover 卡片）。Escape 不关闭；点 Close 或遮罩关闭。",
-                  "Demo detail modal (Magpie Discover card). Escape does not close; Close or backdrop does.",
-                )}
+            {"unofficial" in pluginDetail && (pluginDetail as { unofficial?: boolean }).unofficial && "owner" in pluginDetail ? (
+              <p className="pm-note warn" style={{ marginTop: 10, display: "flex", gap: 6, alignItems: "flex-start", padding: "8px 10px", borderRadius: 8, background: "color-mix(in srgb, var(--amber, #d97706) 12%, var(--pill))", fontSize: 12, lineHeight: 1.45 }}>
+                <svg viewBox="0 0 16 16" width={12} height={12} aria-hidden style={{ flex: "none", marginTop: 2 }}>
+                  <path d="M8 2.3 13 4v3.8c0 3-2.1 5.1-5 5.9-2.9-.8-5-2.9-5-5.9V4z" fill="none" stroke="currentColor" strokeWidth="1.4" />
+                </svg>
+                <span>
+                  {t(
+                    "Unofficial: {owner} tagged it {topic} on GitHub, and nobody at magpie has reviewed it. It is installed from the repository as it stands, and runs with your sign-in or your requests.",
+                    { owner: (pluginDetail as { owner: string }).owner, topic: "magpie-plugin" },
+                  )}
+                </span>
               </p>
+            ) : null}
+            <div className="pm-readme" style={{ marginTop: 12, paddingTop: 12, borderTop: "1px solid var(--line)", fontSize: 12.5, lineHeight: 1.5, color: "var(--fg-2)" }}>
+              {"readme" in pluginDetail && (pluginDetail as { readme?: string }).readme ? (
+                <div className="pm-md"><h3>{(pluginDetail as { readme: string }).readme.split("\n")[0]}</h3><p>{(pluginDetail as { readme: string }).readme}</p></div>
+              ) : (
+                <p>
+                  {demoCopy(
+                    "演示详情模态（对照 Magpie Discover 卡片）。Escape 不关闭；点 Close 或遮罩关闭。",
+                    "Demo detail modal (Magpie Discover card). Escape does not close; Close or backdrop does.",
+                  )}
+                </p>
+              )}
             </div>
             <div className="bar" style={{ marginTop: 14, display: "flex", alignItems: "center", gap: 8 }}>
               <span className="note" style={{ fontSize: 11.5, color: "var(--muted)", flex: 1 }}>

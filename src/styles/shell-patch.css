@@ -356,6 +356,40 @@ body.web.side-nav {
 .update-mirror-input { min-width: 180px; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
+
+/* —— Plugins nest v0.1.38 (native 01–34) —— */
+.pm-intro {
+  position: relative; overflow: hidden; display: flex; align-items: center; gap: 18px;
+  padding: 16px 18px; border-radius: 14px; border: 1px solid var(--line);
+  background:
+    radial-gradient(120% 140% at 100% 0%, color-mix(in srgb, var(--accent) 11%, transparent), transparent 60%),
+    var(--card);
+}
+.pm-art { flex: none; display: grid; grid-template-columns: repeat(3, 34px); gap: 8px; transform: rotate(-6deg); margin-right: 6px; }
+.pm-art .pm-logo { width: 34px; height: 34px; border-radius: 10px; box-shadow: 0 1px 2px rgba(0, 0, 0, .06), 0 0 0 1px var(--line-2, var(--line)); background: var(--card); font-size: 13px; }
+.pm-art .pm-logo:nth-child(4) { grid-column: 2; }
+.pm-art .pm-logo:nth-child(odd) { transform: translateY(4px); }
+.pm-manual { display: flex; align-items: center; gap: 8px; padding: 10px 12px; border-radius: 12px; border: 1px dashed var(--line); flex-wrap: wrap; }
+.pm-mlabel { font-size: 12.5px; font-weight: 600; }
+.pm-minput { flex: 1; min-width: 180px; height: 26px; padding: 0 9px; border-radius: 7px; border: 1px solid var(--line); background: var(--card); color: var(--fg); font: inherit; font-size: 12px; outline: none; }
+.pm-minput:focus { border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent); }
+.pm-browse { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; flex: none; padding: 0; border-radius: 7px; border: 1px solid var(--line); background: var(--card); color: var(--muted); cursor: pointer; transition: color .14s var(--ease), border-color .14s var(--ease); }
+.pm-browse:hover:not(:disabled) { color: var(--fg); border-color: var(--faint); }
+.pm-link { display: inline-flex; align-items: center; gap: 4px; height: 24px; padding: 0 9px; border-radius: 7px; border: 0; background: var(--pill); color: var(--fg-2); font: inherit; font-size: 11.5px; cursor: pointer; text-decoration: none; }
+.pm-link:hover { background: var(--pill-hover, color-mix(in srgb, var(--fg) 6%, var(--pill))); color: var(--fg); }
+.pm-chip.warn { gap: 5px; background: none; box-shadow: inset 0 0 0 1px var(--line); color: var(--fg-2); font-weight: 400; }
+.pm-chip.warn .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--amber, #d97706); flex: none; }
+.pm-facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 1px; border-radius: 10px; overflow: hidden; background: var(--line-2, var(--line)); border: 1px solid var(--line-2, var(--line)); }
+.pm-fact { display: flex; flex-direction: column; gap: 2px; padding: 8px 11px; background: var(--card); min-width: 0; }
+.pm-fact .k { font-size: 10.5px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); }
+.pm-fact .v { font-size: 12.5px; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.pm-mirror-tip { position: absolute; top: 100%; right: 0; margin-top: 6px; z-index: 30; max-width: 280px; padding: 8px 10px; border-radius: 8px; background: var(--fg); color: var(--card); font-size: 11.5px; line-height: 1.4; box-shadow: 0 8px 24px color-mix(in srgb, var(--fg) 25%, transparent); animation: fade-in .12s var(--ease); pointer-events: none; }
+.feat-say { margin: 8px 2px 10px; font-size: 12.5px; color: var(--fg-2); line-height: 1.5; }
+.pm-note.warn { color: var(--fg); }
+@media (max-width: 560px) {
+  .pm-art { display: none; }
+}
+
 /* —— Plugins Options (Magpie pm-opts) —— */
 .pm-opts { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; width: 100%; }
 .pm-opts textarea {

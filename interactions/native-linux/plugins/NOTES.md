@@ -58,3 +58,5 @@ Plugins, Discover, scrolled to the manual row. Search empty. Manual field empty.
 
 
 Demo v0.1.22: Suggested only when hits; On npm standing + Mirror set; folder dialog Cancel leaves field (shots 20–34).
+
+Demo v0.1.38: PLUGINS_NEST — 01–34 consumed (intro/market/GitHub/search/mirror/manual/builtin/installed/detail).
