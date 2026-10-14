@@ -270,3 +270,15 @@ Same as §4; added: `.pm-opts textarea` focus .12s; `.range-menu .rm-day` backgr
 | Plugins search | 350ms debounce → Suggested `DEMO_NPM` | Mirror tip absolute；folder → manualSpec |
 | Routing trace | `.rt-reqs .rt-req` live demo rows | wait 点 rtlive；failover `.swap` |
 | Privacy discovery Off | `window.confirm` 双段文案 | Saved toast 仍走 setPrefs |
+
+
+## v0.1.20 Agents / Routing motion notes
+
+| 控件 | Magpie | demo |
+|------|--------|------|
+| `#pop` field (ag-pick) | pop-fade .18s + pop-in .42s；leaving .22s | ModelPop 同 |
+| `.pop.am-pop` | 同上 + am-fold chevron .2s | AgentModelsPop |
+| `.ag-exp` open | fade-in ~.22s | 同；reduced → none |
+| `.field.ag-pick.open` | accent ring | box-shadow 1.5px |
+| `.rt-session` fold | instant list swap (steady) | fade-in .18s on head |
+| Privacy rule inputs | accent focus ring | rule-add .words:focus |

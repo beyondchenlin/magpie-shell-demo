@@ -29,26 +29,29 @@ List fits; scrolling does not reveal more (`17`).
 
 Empty: logo, "No plugins yet", "Install a subscription or a middleware from Discover…", button "Discover plugins" (`18`). Clicking it returns to Discover (`19`).
 
-## Not finished
+## Search, mirror, manual row (shots 20–34)
 
-- Search field (typing switches to Discover and queries npm after 350ms, min 2 chars) — not exercised.
-- Mirrors in China toggle — seen Off, not flipped. It would call `plugins/mirror` and reload listings.
-- Folder picker — not opened.
-- Per-card Install / Switch on / sign-in — deliberately not clicked.
-- Sort handle on Installed only appears with 2+ plugins.
+Sticky search sits under the Built-in / Discover / Installed tabs. Typing focuses Discover (already selected). Placeholder `Search plugins and npm…`. A clear control appears once there is text.
+
+| shot | what |
+|---|---|
+| 20 | Query `opencode`. Intro card leaves. Heading **Suggested**, then cards (OpenCode Zen Free first, also ZCode, Qoder, Devin, Zed, Factory…). Field shows a clear button. Install not clicked. |
+| 21 | Scrolled Suggested (Zed, Factory, Grok, Command Code, Xiaomi MiMo, Cursor). |
+| 22–23 | Further down, **npm / GitHub** hits whose names contain opencode (`opencode-models-discovery`, `@opencode/plugin`, `opencode-plugin-browser`, …). Publisher line under the name (GitHub Actions, ranjithraj). Unofficial house icon. Still no section title captured between Suggested and these cards; scrollbar not quite at the end in 22. |
+| 24 | Replaced the query with `zzzzqq` (select-all, then type). Local **Suggested** section disappears. An **On npm** block remains, with the standing line "OpenCode plugins and pi packages anyone published — read what one does before you install it", and cards that are still OpenCode-related (ai-sdk-provider, opencode-poe-auth, …). Skeletons showed while it loaded. Not a clean empty state — the npm list did not go blank. |
+| 25 | **Mirrors in China** switched On (knob moves to the right, track goes dark). List under the same `zzzzqq` query refreshed to a wider set (Plannotator, `@brendonovich/vite`, `opencode-pty`, `@mastra/opencode`, …). |
+| 26 | Hover tooltip, switch still On: "Download the plugin list, plugins and Bun from mirrors in China first (npmmirror, jsDelivr), their official addresses after. Each is a copy of the very file, checked as the original is". |
+| 27 | Search cleared. Discover top returns (intro + Subscriptions: OpenCode Zen Free, ZCode) with the switch still On. |
+| 28 | Scrolled to the manual row, mirror still On. |
+| 29 | Field focused (purple ring) and typed `github:magpie/example`. **Install not clicked.** |
+| 30 | Folder button opens a GTK dialog titled **Choose a plugin folder** (1100×680). Sidebar: Recent (selected, empty list), Home, Desktop, settings, Other Locations. Columns Name / Location / Size / Type / Accessed. Cancel and Open. |
+| 31 | Home: breadcrumb `box`, folders agent-data, chrome-profile, cli-config, reference, sand-data. Modified column. Back/forward and a new-folder icon (not used). |
+| 32 | Other Locations: **On This Computer**, row Computer, "107.4 GB / 134.2 GB available", path `/`. |
+| 33 | Cancel. Dialog gone. Manual field still `github:magpie/example` — choosing a folder was not confirmed, so the path was not replaced. |
+| 34 | Field cleared back to the placeholder. **Mirrors in China switched Off** (knob left, gray track). |
+
+Per-card Install was not clicked. No plugin was installed. Sort handle on Installed still not present (no installed plugins).
 
 ## Left state
 
-Plugins on Discover. Built-ins unchanged (Gateway on, calls page 20, Library off). No plugin installed. Mirror off.
-
-## Search / Mirror / folder (shots 20–31) — computerUse follow-up
-
-| shot | control | seen |
-|---|---|---|
-| 20–23 | Search `opencode` | Switches Discover; Suggested grid (OpenCode Zen Free, ZCode, Qoder…). 350ms debounce. |
-| 24 | Search `zzzzqq` | No/odd npm hits; mirror still Off. |
-| 25–27 | Mirrors in China On | Toggle On; tooltip long npmmirror/jsDelivr copy; Discover reloads via mirrors. |
-| 28–29 | Manual row | Have one in mind? field typed. |
-| 30–31 | Folder picker | `plugins/choose` dialog → home / folder selected into field. |
-
-Demo v0.1.19: 350ms Suggested DEMO_NPM · mirror tip · folder fills manualSpec.
+Plugins, Discover, scrolled to the manual row. Search empty. Manual field empty. Mirror **Off** (restored). Built-ins not touched this pass. No plugin installed. Magpie left running (front window 752×652 at +610+300, pid 270034). Close was not used.

@@ -439,7 +439,23 @@ export function RedactRulesBlock({
                 setEby(next);
               }} items={[{ id: "prefix", label: t("Prefix") }, { id: "regex", label: t("Regex") }]} />
               <div className="rule-tail">
-                <input className="words rule-match editing" value={ematch} onChange={(e) => setEmatch(e.target.value)} />
+                <input
+                  className="words rule-match editing"
+                  value={ematch}
+                  onChange={(e) => setEmatch(e.target.value)}
+                  onKeyDown={(e) => {
+                    e.stopPropagation();
+                    if (e.key === "Escape") setEditAt(null);
+                    else if (e.key === "Enter") {
+                      const m = ematch.trim();
+                      if (!m) return;
+                      const next = rules.slice();
+                      next[n] = { kind: ekind.trim(), ...(eby === "prefix" ? { prefix: m } : { regex: m }) };
+                      onChange(next);
+                      setEditAt(null);
+                    }
+                  }}
+                />
                 <button type="button" className="text rule-save" onClick={() => {
                   const m = ematch.trim();
                   if (!m) return;

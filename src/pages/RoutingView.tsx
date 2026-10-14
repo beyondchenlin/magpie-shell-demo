@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { ModelPop } from "../components/ModelPop";
 import { GATEWAY_ADDR } from "../data/mock";
 import { ZH, t } from "../i18n";
@@ -41,7 +41,15 @@ export function RoutingView() {
   const [popOpen, setPopOpen] = useState(false);
   const modelBtnRef = useRef<HTMLButtonElement>(null);
   const [condOpen, setCondOpen] = useState(false);
-
+  const [bySession, setBySession] = useState(() => {
+    try {
+      return localStorage.getItem("magpie.routingBySession") === "1";
+    } catch {
+      return false;
+    }
+  });
+  const [closedSessions, setClosedSessions] = useState<Set<string>>(() => new Set());
+  const [pickedReq, setPickedReq] = useState<string | null>(null);
 
   useEffect(() => {
     const draw = () => {
@@ -298,7 +306,7 @@ export function RoutingView() {
         </div>
       </section>
 
-      {/* Magpie gateway trace list — demo when live */}
+      {/* Magpie gateway trace list — By request / By session */}
       <div className="rt-hist" style={{ marginTop: 10 }}>
         <div className="row-head rt-req-head">
           <span className="label">{t("Requests")}</span>
@@ -306,55 +314,151 @@ export function RoutingView() {
             {demoLive ? t("A live request would fly here") : t("Waiting for a request")}
           </span>
           <span className="grow" />
-          <div className="rt-group-by" style={{ display: "inline-flex", gap: 4 }}>
-            <button type="button" className="rt-day on" aria-pressed="true">{t("By request")}</button>
-            <button type="button" className="rt-day" aria-pressed="false">{t("By session")}</button>
+          <div className="rt-group-by" style={{ display: demoLive ? "inline-flex" : "none", gap: 4 }}>
+            <button
+              type="button"
+              className={`rt-day${!bySession ? " on" : ""}`}
+              aria-pressed={!bySession}
+              onClick={() => {
+                setBySession(false);
+                try { localStorage.setItem("magpie.routingBySession", "0"); } catch { /* ignore */ }
+              }}
+            >
+              {t("By request")}
+            </button>
+            <button
+              type="button"
+              className={`rt-day${bySession ? " on" : ""}`}
+              aria-pressed={bySession}
+              onClick={() => {
+                setBySession(true);
+                try { localStorage.setItem("magpie.routingBySession", "1"); } catch { /* ignore */ }
+              }}
+            >
+              {t("By session")}
+            </button>
           </div>
         </div>
-        <div className="list rt-reqs" id="rtReqs">
-          {(
-            demoLive
+        <div className={`list rt-reqs${demoLive ? "" : " none"}`} id="rtReqs">
+          {(() => {
+            type Req = {
+              id: string;
+              at: string;
+              agent: string;
+              model: string;
+              to: string;
+              tokens: string;
+              ms: string;
+              ok: boolean;
+              moved: boolean;
+              wait: boolean;
+              session: string;
+              folder?: string;
+              title?: string;
+            };
+            const rows: Req[] = demoLive
               ? [
-                  { id: "q1", at: "12:18:04", agent: "Claude Code", model: "claude-sonnet-4-5", to: "Anthropic", tokens: "14.2K", ms: "4.1s", ok: true, moved: false, wait: false },
-                  { id: "q2", at: "12:14:22", agent: "Codex", model: "gpt-5", to: "OpenAI", tokens: "6.8K", ms: "2.4s", ok: true, moved: true, wait: false },
-                  { id: "q3", at: "12:09:51", agent: "Claude Code", model: "claude-haiku-4", to: "Anthropic", tokens: "1.1K", ms: "0.8s", ok: false, moved: false, wait: false },
-                  { id: "q4", at: "12:02:10", agent: "OpenCode", model: "claude-sonnet-4-5", to: "…", tokens: "—", ms: "…", ok: true, moved: false, wait: true },
+                  { id: "q1", at: "12:18:04", agent: "Claude Code", model: "claude-sonnet-4-5", to: "Anthropic", tokens: "14.2K", ms: "4.1s", ok: true, moved: false, wait: false, session: "sess-claude-a", folder: "~/code/magpie", title: "Wire Agents #pop" },
+                  { id: "q1b", at: "12:17:40", agent: "Claude Code", model: "claude-haiku-4", to: "Anthropic", tokens: "2.0K", ms: "0.9s", ok: true, moved: false, wait: false, session: "sess-claude-a", folder: "~/code/magpie", title: "Wire Agents #pop" },
+                  { id: "q2", at: "12:14:22", agent: "Codex", model: "gpt-5", to: "OpenAI", tokens: "6.8K", ms: "2.4s", ok: true, moved: true, wait: false, session: "sess-codex-b", folder: "~/code/demo", title: "Replay failover" },
+                  { id: "q3", at: "12:09:51", agent: "Claude Code", model: "claude-haiku-4", to: "Anthropic", tokens: "1.1K", ms: "0.8s", ok: false, moved: false, wait: false, session: "sess-claude-c", title: "Quick ask" },
+                  { id: "q4", at: "12:02:10", agent: "OpenCode", model: "claude-sonnet-4-5", to: "…", tokens: "—", ms: "…", ok: true, moved: false, wait: true, session: "sess-oc-d", folder: "/tmp" },
                 ]
-              : ([] as { id: string; at: string; agent: string; model: string; to: string; tokens: string; ms: string; ok: boolean; moved: boolean; wait: boolean }[])
-          ).map((r) => (
-            <button
-              key={r.id}
-              type="button"
-              className={`rt-req${r.ok === false ? " bad" : ""}${r.moved ? " moved" : ""}${r.wait ? " wait" : ""}`}
-              aria-pressed={false}
-              style={{ animation: "fade-in .2s var(--ease)" }}
-              onClick={() => setDemoTurn((n) => n + 1)}
-            >
-              <span className="at">{r.at}</span>
-              <span className="asked">
-                <i className="ag" aria-hidden />
-                <span className="m">{r.agent}</span>
-                <code className="mdl">{r.model}</code>
-              </span>
-              <span className="to">
-                <i aria-hidden />
-                <span className="said">
-                  <span className="who">{r.to}</span>
+              : [];
+
+            const renderReq = (r: Req) => (
+              <button
+                key={r.id}
+                type="button"
+                className={`rt-req${r.ok === false ? " bad" : ""}${r.moved ? " moved" : ""}${r.wait ? " wait" : ""}`}
+                aria-pressed={pickedReq === r.id}
+                style={{ animation: "fade-in .2s var(--ease)" }}
+                onClick={() => {
+                  setPickedReq(r.id);
+                  setDemoTurn((n) => n + 1);
+                }}
+              >
+                <span className="at">{r.at}</span>
+                <span className="asked">
+                  <i className="ag" aria-hidden />
+                  <span className="m">{r.agent}</span>
+                  <code className="mdl">{r.model}</code>
                 </span>
-                {r.moved ? <span className="swap">{t("failover")}</span> : null}
-              </span>
-              <span className="meta">
-                <span className="tokens">{r.tokens}</span>
-                <span>·</span>
-                <span>{r.ms}</span>
-              </span>
-            </button>
-          ))}
-          {!demoLive ? (
-            <div className="empty-state" style={{ padding: "14px 8px", color: "var(--muted)", fontSize: 12.5 }}>
-              {t("Waiting for a request")}
-            </div>
-          ) : null}
+                <span className="to">
+                  <i aria-hidden />
+                  <span className="said">
+                    <span className="who">{r.to}</span>
+                  </span>
+                  {r.moved ? <span className="swap">{t("failover")}</span> : null}
+                </span>
+                <span className="meta">
+                  <span className="tokens">{r.tokens}</span>
+                  <span>·</span>
+                  <span>{r.ms}</span>
+                </span>
+              </button>
+            );
+
+            if (!demoLive) {
+              return (
+                <div className="empty-state" style={{ padding: "14px 8px", color: "var(--muted)", fontSize: 12.5 }}>
+                  <b style={{ display: "block", marginBottom: 4, color: "var(--fg-2)" }}>
+                    {t("No requests since magpie started")}
+                  </b>
+                  {t("Each request an agent sends through magpie shows up here: who answered it, why, and each try.")}
+                </div>
+              );
+            }
+
+            if (!bySession) return rows.map(renderReq);
+
+            const groups = new Map<string, Req[]>();
+            for (const r of rows) {
+              const k = r.session || "";
+              if (!groups.has(k)) groups.set(k, []);
+              groups.get(k)!.push(r);
+            }
+            const out: ReactNode[] = [];
+            for (const [key, g] of groups) {
+              const open = !closedSessions.has(key);
+              const head = g[0];
+              const nm = [head.agent, head.folder, head.title || key].filter(Boolean).join(" · ");
+              out.push(
+                <button
+                  key={"s-" + key}
+                  type="button"
+                  className="rt-session"
+                  aria-expanded={open}
+                  onClick={() => {
+                    setClosedSessions((prev) => {
+                      const n = new Set(prev);
+                      if (n.has(key)) n.delete(key);
+                      else n.add(key);
+                      return n;
+                    });
+                  }}
+                  style={{ animation: "fade-in .18s var(--ease)" }}
+                >
+                  <span className="arrow" aria-hidden>
+                    {open ? "▾" : "▸"}
+                  </span>
+                  <span className="nm" title={`${t("Session id")}: ${key}`}>
+                    {nm}
+                  </span>
+                  <span className="summary">
+                    <span className="session-count">
+                      {t(g.length === 1 ? "{n} request" : "{n} requests", { n: g.length })}
+                    </span>
+                    {g.some((x) => x.wait) ? (
+                      <span> · {t("{n} in progress", { n: g.filter((x) => x.wait).length })}</span>
+                    ) : null}
+                  </span>
+                </button>,
+              );
+              if (open) out.push(...g.map(renderReq));
+            }
+            return out;
+          })()}
         </div>
       </div>
 

@@ -1,0 +1,296 @@
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { t } from "../i18n";
+
+export type AmModel = {
+  id: string;
+  name: string;
+  group: string;
+  on: boolean;
+};
+
+type Props = {
+  open: boolean;
+  anchor: HTMLElement | null;
+  agentName: string;
+  models: AmModel[];
+  onChange: (next: AmModel[]) => void;
+  onClose: () => void;
+};
+
+/** Magpie `.pop.am-pop` — agent model list (Pick), not `#pop` field picker. */
+export function AgentModelsPop({
+  open,
+  anchor,
+  agentName,
+  models,
+  onChange,
+  onClose,
+}: Props) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [q, setQ] = useState("");
+  const [seg, setSeg] = useState<"all" | "shown" | "order">("all");
+  const [group, setGroup] = useState("all");
+  const [leaving, setLeaving] = useState(false);
+  const [pos, setPos] = useState<{ top: number; left: number; ox: number; up: boolean } | null>(null);
+  const shown = open || leaving;
+
+  useEffect(() => {
+    if (open) {
+      setLeaving(false);
+      setQ("");
+      setSeg("all");
+      setGroup("all");
+    }
+  }, [open]);
+
+  useLayoutEffect(() => {
+    if (!open || !anchor || !ref.current) return;
+    const r = anchor.getBoundingClientRect();
+    const w = Math.min(520, window.innerWidth - 16);
+    const h = Math.min(480, window.innerHeight - 16);
+    let left = Math.min(Math.max(8, r.left), window.innerWidth - w - 8);
+    let top = r.bottom + 8;
+    let up = false;
+    if (top + Math.min(h, 280) > window.innerHeight - 8) {
+      top = Math.max(8, r.top - 8);
+      up = true;
+    }
+    const ox = Math.min(Math.max(16, r.left + r.width / 2 - left), w - 16);
+    setPos({ top: up ? Math.max(8, top - h) : top, left, ox, up });
+  }, [open, anchor, models.length]);
+
+  useEffect(() => {
+    if (!shown) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        dismiss();
+      }
+    };
+    const onDown = (e: MouseEvent) => {
+      const p = ref.current;
+      if (!p) return;
+      if (p.contains(e.target as Node) || anchor?.contains(e.target as Node)) return;
+      dismiss();
+    };
+    document.addEventListener("keydown", onKey, true);
+    document.addEventListener("mousedown", onDown, true);
+    return () => {
+      document.removeEventListener("keydown", onKey, true);
+      document.removeEventListener("mousedown", onDown, true);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [shown, anchor]);
+
+  const dismiss = () => {
+    if (leaving) return;
+    setLeaving(true);
+    window.setTimeout(() => {
+      setLeaving(false);
+      onClose();
+    }, 220);
+  };
+
+  const groups = useMemo(() => {
+    const g = new Map<string, number>();
+    for (const m of models) g.set(m.group, (g.get(m.group) || 0) + 1);
+    return [...g.entries()];
+  }, [models]);
+
+  const filtered = useMemo(() => {
+    const words = q.trim().toLowerCase().split(/\s+/).filter(Boolean);
+    return models.filter((m) => {
+      if (seg === "shown" && !m.on) return false;
+      if (group !== "all" && m.group !== group) return false;
+      if (!words.length) return true;
+      const hay = `${m.name} ${m.id} ${m.group}`.toLowerCase();
+      return words.every((w) => hay.includes(w));
+    });
+  }, [models, q, seg, group]);
+
+  const byGroup = useMemo(() => {
+    const map = new Map<string, AmModel[]>();
+    for (const m of filtered) {
+      if (!map.has(m.group)) map.set(m.group, []);
+      map.get(m.group)!.push(m);
+    }
+    return [...map.entries()];
+  }, [filtered]);
+
+  if (!shown || !pos) return null;
+
+  const toggle = (id: string) => {
+    onChange(models.map((m) => (m.id === id ? { ...m, on: !m.on } : m)));
+  };
+
+  const setGroupAll = (g: string, on: boolean) => {
+    onChange(models.map((m) => (m.group === g ? { ...m, on } : m)));
+  };
+
+  return (
+    <div
+      className={`pop am-pop${pos.up ? " up" : ""}${leaving ? " leaving" : ""}${seg === "order" ? " ordering" : ""}`}
+      ref={ref}
+      role="dialog"
+      aria-label={t("{agent}'s model list", { agent: agentName })}
+      style={{
+        position: "fixed",
+        top: pos.up ? undefined : pos.top,
+        bottom: pos.up ? window.innerHeight - pos.top - 8 : undefined,
+        left: pos.left,
+        width: Math.min(520, window.innerWidth - 16),
+        maxHeight: Math.min(480, window.innerHeight - 16),
+        zIndex: 80,
+        display: "flex",
+        flexDirection: "column",
+        ["--ox" as string]: `${pos.ox}px`,
+      }}
+    >
+      <div className="am-head">
+        <div className="am-t">{t("{agent}'s model list", { agent: agentName })}</div>
+        <div className="am-d">
+          {t("Models turned off don't show in {agent}'s model picker; other agents can still use them.", {
+            agent: agentName,
+          })}
+        </div>
+      </div>
+      <div className="am-tools">
+        <label className="am-search">
+          <svg viewBox="0 0 16 16" width={12} height={12} aria-hidden>
+            <circle cx="7" cy="7" r="4.5" fill="none" stroke="currentColor" strokeWidth="1.6" />
+            <path d="m10.5 10.5 3 3" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+          </svg>
+          <input
+            type="text"
+            spellCheck={false}
+            autoComplete="off"
+            placeholder={t("Search models")}
+            value={q}
+            autoFocus
+            onChange={(e) => setQ(e.target.value)}
+          />
+        </label>
+        <div className="am-seg" role="group">
+          {(
+            [
+              ["all", t("All")],
+              ["shown", t("Shown")],
+              ["order", t("Order")],
+            ] as const
+          ).map(([id, label]) => (
+            <button
+              key={id}
+              type="button"
+              className={seg === id ? "on" : ""}
+              onClick={() => setSeg(id)}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+      </div>
+      <div className="am-body">
+        <nav className="am-rail" aria-label={t("Model providers")}>
+          <button
+            type="button"
+            className={`am-ri${group === "all" ? " on" : ""}`}
+            onClick={() => setGroup("all")}
+          >
+            <span className="rn">{t("All models")}</span>
+            <span className="c">{models.length}</span>
+          </button>
+          {groups.map(([g, n]) => (
+            <button
+              key={g}
+              type="button"
+              className={`am-ri${group === g ? " on" : ""}`}
+              onClick={() => setGroup(g)}
+            >
+              <span className="rn">{g}</span>
+              <span className="c">{n}</span>
+            </button>
+          ))}
+        </nav>
+        <div className="am-list">
+          {byGroup.map(([g, rows]) => (
+            <div className="am-g" key={g}>
+              <div className="am-gh">
+                <button type="button" className="am-fold" tabIndex={-1}>
+                  <span className="tw" aria-hidden>
+                    <svg viewBox="0 0 12 12" width={10} height={10}>
+                      <path
+                        d="M4.5 2.5 8 6l-3.5 3.5"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.6"
+                        strokeLinecap="round"
+                      />
+                    </svg>
+                  </span>
+                  <span className="gn">{g}</span>
+                  <span className="c">{rows.length}</span>
+                </button>
+                <button
+                  type="button"
+                  className="am-all"
+                  onClick={() => setGroupAll(g, !rows.every((m) => m.on))}
+                >
+                  {rows.every((m) => m.on) ? t("Hide all") : t("Show all")}
+                </button>
+              </div>
+              <div className="am-rows">
+                {rows.map((m, i) => (
+                  <button
+                    key={m.id}
+                    type="button"
+                    className={`am-mr${m.on ? " on" : ""}`}
+                    aria-pressed={m.on}
+                    onClick={() => toggle(m.id)}
+                    style={
+                      seg === "order"
+                        ? { cursor: "grab" }
+                        : undefined
+                    }
+                    draggable={seg === "order"}
+                    onDragStart={(e) => {
+                      e.dataTransfer.setData("text/plain", m.id);
+                    }}
+                    onDragOver={(e) => e.preventDefault()}
+                    onDrop={(e) => {
+                      e.preventDefault();
+                      const from = e.dataTransfer.getData("text/plain");
+                      if (!from || from === m.id) return;
+                      const next = models.slice();
+                      const fi = next.findIndex((x) => x.id === from);
+                      const ti = next.findIndex((x) => x.id === m.id);
+                      if (fi < 0 || ti < 0) return;
+                      const [item] = next.splice(fi, 1);
+                      next.splice(ti, 0, item);
+                      onChange(next);
+                    }}
+                  >
+                    {seg === "order" ? (
+                      <span className="am-ord" aria-hidden>
+                        {i + 1}
+                      </span>
+                    ) : (
+                      <span className={`am-tick${m.on ? " on" : ""}`} aria-hidden>
+                        {m.on ? "✓" : ""}
+                      </span>
+                    )}
+                    <span className="am-name">{m.name}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          ))}
+          {!filtered.length ? (
+            <div className="none" style={{ padding: "16px 12px", color: "var(--muted)", fontSize: 12.5 }}>
+              {t("No matches.")}
+            </div>
+          ) : null}
+        </div>
+      </div>
+    </div>
+  );
+}

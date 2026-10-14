@@ -1,4 +1,6 @@
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
+import { AgentModelsPop, type AmModel } from "../components/AgentModelsPop";
+import { ModelPop, type PopOption } from "../components/ModelPop";
 import installsData from "../data/installs.json";
 import { VIA_LABEL, iconSrc } from "../data/mock";
 import { ZH, demoCopy, t } from "../i18n";
@@ -20,6 +22,81 @@ const ALL_AGENTS = [
   { id: "opencode", name: "OpenCode", icon: "openai", connectable: true },
   { id: "pi", name: "Pi", icon: "openai", connectable: true },
 ] as const;
+
+const DEMO_POP_OPTS: PopOption[] = [
+  { value: "claude-opus-4", label: "claude-opus-4", group: "Anthropic", note: "Opus" },
+  { value: "claude-sonnet-4-5", label: "claude-sonnet-4-5", group: "Anthropic", note: "Sonnet" },
+  { value: "claude-haiku-4", label: "claude-haiku-4", group: "Anthropic", note: "Haiku" },
+  { value: "gpt-5", label: "gpt-5", group: "OpenAI" },
+  { value: "gpt-5-mini", label: "gpt-5-mini", group: "OpenAI" },
+  { value: "o4-mini", label: "o4-mini", group: "OpenAI" },
+  { value: "gemini-2.5-pro", label: "gemini-2.5-pro", group: "Google" },
+  { value: "magpie/fast", label: "magpie/fast", group: "Routing groups", note: "group" },
+];
+
+const DEMO_AM_MODELS: AmModel[] = [
+  { id: "claude-opus-4", name: "claude-opus-4", group: "Anthropic", on: true },
+  { id: "claude-sonnet-4-5", name: "claude-sonnet-4-5", group: "Anthropic", on: true },
+  { id: "claude-haiku-4", name: "claude-haiku-4", group: "Anthropic", on: true },
+  { id: "claude-3-5-haiku", name: "claude-3-5-haiku", group: "Anthropic", on: false },
+  { id: "gpt-5", name: "gpt-5", group: "OpenAI", on: true },
+  { id: "gpt-5-mini", name: "gpt-5-mini", group: "OpenAI", on: true },
+  { id: "o4-mini", name: "o4-mini", group: "OpenAI", on: false },
+  { id: "gemini-2.5-pro", name: "gemini-2.5-pro", group: "Google", on: true },
+  { id: "magpie/fast", name: "magpie/fast", group: "Routing groups", on: true },
+];
+
+type StaleCopy = { kind: "app" | "ide" | "daemon" | "embedded" | "cli"; since: number; app?: string };
+const STALE_HOW: Record<string, [string, string?]> = {
+  app: ["The {agent} app, started {when}: closing its window keeps it running. Quit it with {cmd} and open it again.", "⌘Q"],
+  ide: ["{agent} in an editor (VS Code, Cursor…), started {when}: reload that editor's window."],
+  daemon: ["{agent}'s background app-server, started {when}: restart it with {cmd}.", "codex app-server daemon restart"],
+  embedded: ["{app}'s own {agent}, started {when}: quit {app} and open it again."],
+  cli: ["A {agent} in a terminal, started {when}: quit it and start it again."],
+};
+const STALE_SHORT: Record<string, string> = {
+  app: "Connected · quit and reopen the {agent} app",
+  ide: "Connected · reload the editor's window",
+  daemon: "Connected · restart {agent}'s app-server",
+  embedded: "Connected · reopen {app}",
+  cli: "Connected · restart {agent} in the terminal",
+};
+function ago(ms: number) {
+  const s = Math.max(1, Math.round((Date.now() - ms) / 1000));
+  if (s < 60) return t("{n}s ago", { n: s });
+  const m = Math.round(s / 60);
+  if (m < 60) return t("{n}m ago", { n: m });
+  return t("{n}h ago", { n: Math.round(m / 60) });
+}
+function staleSaid(name: string, copies: StaleCopy[]) {
+  if (!copies.length || copies.some((c) => !STALE_HOW[c.kind]))
+    return { text: t("Connected · takes effect once {agent} is reopened", { agent: name }), title: "" };
+  const title = copies
+    .map((c) =>
+      t(STALE_HOW[c.kind][0], { agent: name, when: ago(c.since), app: c.app || "" }).replace(
+        "{cmd}",
+        STALE_HOW[c.kind][1] || "",
+      ),
+    )
+    .join("\n");
+  const kinds = new Set(copies.map((c) => c.kind + "\0" + (c.app || "")));
+  if (kinds.size > 1) return { text: t("Connected · {n} copies of {agent} to reopen", { n: copies.length, agent: name }), title };
+  return { text: t(STALE_SHORT[copies[0].kind], { agent: name, app: copies[0].app || "" }), title };
+}
+
+const DEMO_STALE: Record<string, { stale: number; copies: StaleCopy[] }> = {
+  claude: {
+    stale: 2,
+    copies: [
+      { kind: "ide", since: Date.now() - 12 * 60_000 },
+      { kind: "cli", since: Date.now() - 3 * 60_000 },
+    ],
+  },
+  codex: {
+    stale: 1,
+    copies: [{ kind: "daemon", since: Date.now() - 25 * 60_000 }],
+  },
+};
 
 const SPRING = (() => {
   try {
@@ -543,6 +620,27 @@ export function AgentsView({
   const [relTo, setRelTo] = useState("~/.claude/projects/new");
   const [relBusy, setRelBusy] = useState(false);
   const nameRef = useRef<HTMLInputElement>(null);
+  /** Magpie #pop for tier / New sessions model fields */
+  const [fieldPop, setFieldPop] = useState<{
+    agentId: string;
+    key: string;
+    el: HTMLElement;
+  } | null>(null);
+  const [fieldVals, setFieldVals] = useState<Record<string, string>>(() => ({
+    "claude:opus": "claude-opus-4",
+    "claude:sonnet": "claude-sonnet-4-5",
+    "claude:haiku": "claude-haiku-4",
+    "claude:model": "claude-sonnet-4-5",
+    "codex:model": "gpt-5",
+    "opencode:model": "claude-sonnet-4-5",
+    "pi:model": "gpt-5-mini",
+  }));
+  /** Magpie am-pop (Pick on Model list) */
+  const [amPop, setAmPop] = useState<{ agentId: string; el: HTMLElement } | null>(null);
+  const [amModels, setAmModels] = useState<Record<string, AmModel[]>>({});
+  /** Magpie staleSeen — dismiss "Got it" per agent */
+  const [staleSeen, setStaleSeen] = useState<Record<string, number>>({});
+  const [staleDemo, setStaleDemo] = useState(true);
 
   useEffect(() => {
     try {
@@ -726,8 +824,20 @@ export function AgentsView({
                     <span>{ZH.onlyCursorOwn}</span>
                   </div>
                 ) : wired[a.id] ? (
-                  <div className="sub" style={{ fontSize: 12, color: "var(--muted)" }}>
-                    {t("Connected · new sessions take it")}
+                  <div
+                    className={`ag-st${staleDemo && DEMO_STALE[a.id] && staleSeen[a.id] !== DEMO_STALE[a.id].stale ? " wait" : " on"}`}
+                    title={
+                      staleDemo && DEMO_STALE[a.id] && staleSeen[a.id] !== DEMO_STALE[a.id].stale
+                        ? staleSaid(a.name, DEMO_STALE[a.id].copies).title
+                        : undefined
+                    }
+                  >
+                    <span className="ag-dot" />
+                    <span className="ag-st-t">
+                      {staleDemo && DEMO_STALE[a.id] && staleSeen[a.id] !== DEMO_STALE[a.id].stale
+                        ? staleSaid(a.name, DEMO_STALE[a.id].copies).text
+                        : t("Connected · new sessions take it")}
+                    </span>
                   </div>
                 ) : (
                   <div className="sub" style={{ fontSize: 12, color: "var(--faint)" }}>
@@ -842,24 +952,126 @@ export function AgentsView({
                               <code className="ag-code">/model</code>
                             </>
                           ) : (
-                            <span>{t("Reopen {agent}, then pick any model in {cmd}.", { agent: a.name, cmd: "/model" }).replace("{cmd}", "")}<code className="ag-code">/model</code></span>
+                            <span>
+                              {t("Reopen {agent}, then pick any model in {cmd}.", { agent: a.name, cmd: "/model" }).replace("{cmd}", "")}
+                              <code className="ag-code">/model</code>
+                            </span>
                           )}
                         </div>
+                        {staleDemo && DEMO_STALE[a.id] && staleSeen[a.id] !== DEMO_STALE[a.id].stale ? (
+                          <>
+                            <div className="ag-vl ag-warn" style={{ marginTop: 6 }}>
+                              <span className="ag-dot" />
+                              <span>
+                                {t(
+                                  DEMO_STALE[a.id].stale === 1
+                                    ? "1 running {agent} still has the old list"
+                                    : "{n} running {agent} still have the old list",
+                                  { n: DEMO_STALE[a.id].stale, agent: a.name },
+                                )}
+                              </span>
+                              <button
+                                type="button"
+                                className="ag-quiet"
+                                onClick={() =>
+                                  setStaleSeen((s) => ({ ...s, [a.id]: DEMO_STALE[a.id].stale }))
+                                }
+                              >
+                                {t("Got it")}
+                              </button>
+                            </div>
+                            {DEMO_STALE[a.id].copies.map((c, i) => {
+                              const how = STALE_HOW[c.kind];
+                              if (!how) return null;
+                              const raw = t(how[0], {
+                                agent: a.name,
+                                when: ago(c.since),
+                                app: c.app || "",
+                              });
+                              const [pre, post] = raw.split("{cmd}");
+                              return (
+                                <div className="ag-vl ag-stale-copy" key={i}>
+                                  {pre}
+                                  {how[1] ? <code className="ag-code">{how[1]}</code> : null}
+                                  {post || ""}
+                                  {c.kind === "daemon" && a.id === "codex" ? (
+                                    <button
+                                      type="button"
+                                      className="ag-quiet"
+                                      onClick={() =>
+                                        onStatus(
+                                          demoCopy("演示：已重启 app-server", "Demo: app-server restarted"),
+                                          "ok",
+                                        )
+                                      }
+                                    >
+                                      {t("Restart")}
+                                    </button>
+                                  ) : null}
+                                </div>
+                              );
+                            })}
+                          </>
+                        ) : null}
                       </div>
                     </div>
                     {a.id === "claude" ? (
                       <div className="ag-kv">
                         <div className="ag-k">{t("Tiers")}</div>
                         <div className="ag-v">
-                          {(["opus", "sonnet", "haiku"] as const).map((tier) => (
-                            <div className="ag-vl" key={tier}>
-                              <span className="ag-tier">{tier[0].toUpperCase() + tier.slice(1)}</span>
-                              <button type="button" className="field ag-pick" style={{ height: 28, padding: "0 10px", borderRadius: 8, border: "1px solid var(--line)", background: "var(--card)" }}>
-                                <span className="v">{tier === "sonnet" ? "claude-sonnet-4-5" : tier === "opus" ? "claude-opus-4" : "claude-haiku-4"}</span>
-                              </button>
-                              <span className="ag-hint">/model {tier}{tier === "sonnet" ? ` · ${t("the default tier")}` : tier === "haiku" ? ` · ${t("also for small background tasks")}` : ""}</span>
-                            </div>
-                          ))}
+                          {(["opus", "sonnet", "haiku"] as const).map((tier) => {
+                            const fk = `claude:${tier}`;
+                            const val = fieldVals[fk] || (tier === "sonnet" ? "claude-sonnet-4-5" : tier === "opus" ? "claude-opus-4" : "claude-haiku-4");
+                            const open = fieldPop?.agentId === a.id && fieldPop.key === fk;
+                            return (
+                              <div className="ag-vl" key={tier}>
+                                <span className="ag-tier">{tier[0].toUpperCase() + tier.slice(1)}</span>
+                                <button
+                                  type="button"
+                                  className={`field ag-pick${open ? " open" : ""}`}
+                                  style={{
+                                    height: 28,
+                                    padding: "0 10px",
+                                    borderRadius: 8,
+                                    border: "1px solid var(--line)",
+                                    background: "var(--card)",
+                                    display: "inline-flex",
+                                    alignItems: "center",
+                                    gap: 6,
+                                    width: 220,
+                                    justifyContent: "flex-start",
+                                    cursor: "pointer",
+                                  }}
+                                  aria-haspopup="listbox"
+                                  aria-expanded={open}
+                                  onClick={(e) => {
+                                    const el = e.currentTarget;
+                                    setAmPop(null);
+                                    setFieldPop((cur) =>
+                                      cur?.agentId === a.id && cur.key === fk
+                                        ? null
+                                        : { agentId: a.id, key: fk, el },
+                                    );
+                                  }}
+                                >
+                                  <span className="v" style={{ flex: 1, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", textAlign: "left" }}>
+                                    {val}
+                                  </span>
+                                  <svg viewBox="0 0 12 12" width={10} height={10} aria-hidden>
+                                    <path d="M3 4.5 6 7.5 9 4.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                                  </svg>
+                                </button>
+                                <span className="ag-hint">
+                                  /model {tier}
+                                  {tier === "sonnet"
+                                    ? ` · ${t("the default tier")}`
+                                    : tier === "haiku"
+                                      ? ` · ${t("also for small background tasks")}`
+                                      : ""}
+                                </span>
+                              </div>
+                            );
+                          })}
                         </div>
                       </div>
                     ) : null}
@@ -867,10 +1079,41 @@ export function AgentsView({
                       <div className="ag-k">{t("Model list")}</div>
                       <div className="ag-v">
                         <div className="ag-vl ag-chips">
-                          <span className="ag-chip"><span>Anthropic</span><span className="n">4</span></span>
-                          <span className="ag-chip"><span>OpenAI</span><span className="n">3</span></span>
-                          <span className="ag-chip"><span>{t("Routing groups")}</span><span className="n">1</span></span>
-                          <button type="button" className="ag-quiet" onClick={() => onStatus(demoCopy("演示：打开模型挑选", "Demo: open model picker"), "ok")}>
+                          {(() => {
+                            const list = amModels[a.id] || DEMO_AM_MODELS;
+                            const by = new Map<string, number>();
+                            for (const m of list.filter((x) => x.on)) by.set(m.group, (by.get(m.group) || 0) + 1);
+                            const hidden = list.filter((x) => !x.on).length;
+                            return (
+                              <>
+                                {[...by.entries()].map(([g, n]) => (
+                                  <span className="ag-chip" key={g}>
+                                    <span>{g === "Routing groups" ? t("Routing groups") : g}</span>
+                                    <span className="n">{n}</span>
+                                  </span>
+                                ))}
+                                {hidden > 0 ? (
+                                  <span className="ag-hint">{t("{n} hidden", { n: hidden })}</span>
+                                ) : null}
+                              </>
+                            );
+                          })()}
+                          <button
+                            type="button"
+                            className={`ag-quiet${amPop?.agentId === a.id ? " open" : ""}`}
+                            aria-haspopup="dialog"
+                            aria-expanded={amPop?.agentId === a.id}
+                            onClick={(e) => {
+                              const el = e.currentTarget;
+                              setFieldPop(null);
+                              setAmPop((cur) =>
+                                cur?.agentId === a.id ? null : { agentId: a.id, el },
+                              );
+                              if (!amModels[a.id]) {
+                                setAmModels((m) => ({ ...m, [a.id]: DEMO_AM_MODELS.map((x) => ({ ...x })) }));
+                              }
+                            }}
+                          >
                             <span>{t("Pick")}</span>
                             <span className="chev">
                               <svg viewBox="0 0 12 12" width={10} height={10} aria-hidden>
@@ -886,14 +1129,70 @@ export function AgentsView({
                       <div className="ag-v">
                         <div className="ag-vl">
                           <div className="fields" style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
-                            <button type="button" className="field main" style={{ height: 28, minWidth: 170, padding: "0 10px", borderRadius: 8, border: "1px solid var(--line)", background: "var(--card)", display: "inline-flex", alignItems: "center", gap: 6 }}>
-                              <span className="k" style={{ fontSize: 11, color: "var(--muted)" }}>{t("Model")}</span>
-                              <span className="v">claude-sonnet-4-5</span>
-                            </button>
+                            {(() => {
+                              const fk = `${a.id}:model`;
+                              const val = fieldVals[fk] || "claude-sonnet-4-5";
+                              const open = fieldPop?.agentId === a.id && fieldPop.key === fk;
+                              return (
+                                <button
+                                  type="button"
+                                  className={`field main ag-pick${open ? " open" : ""}`}
+                                  style={{
+                                    height: 28,
+                                    minWidth: 170,
+                                    padding: "0 10px",
+                                    borderRadius: 8,
+                                    border: "1px solid var(--line)",
+                                    background: "var(--card)",
+                                    display: "inline-flex",
+                                    alignItems: "center",
+                                    gap: 6,
+                                    cursor: "pointer",
+                                  }}
+                                  aria-haspopup="listbox"
+                                  aria-expanded={open}
+                                  onClick={(e) => {
+                                    const el = e.currentTarget;
+                                    setAmPop(null);
+                                    setFieldPop((cur) =>
+                                      cur?.agentId === a.id && cur.key === fk
+                                        ? null
+                                        : { agentId: a.id, key: fk, el },
+                                    );
+                                  }}
+                                >
+                                  <span className="k" style={{ fontSize: 11, color: "var(--muted)" }}>
+                                    {t("Model")}
+                                  </span>
+                                  <span className="v">{val}</span>
+                                  <svg viewBox="0 0 12 12" width={10} height={10} aria-hidden style={{ marginLeft: "auto" }}>
+                                    <path d="M3 4.5 6 7.5 9 4.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                                  </svg>
+                                </button>
+                              );
+                            })()}
                           </div>
                         </div>
                       </div>
                     </div>
+                    {a.id === "claude" || a.id === "codex" ? (
+                      <div className="ag-kv" style={{ marginTop: 2 }}>
+                        <div className="ag-k" />
+                        <div className="ag-v">
+                          <label style={{ display: "inline-flex", alignItems: "center", gap: 8, fontSize: 11.5, color: "var(--muted)", cursor: "pointer" }}>
+                            <input
+                              type="checkbox"
+                              checked={staleDemo}
+                              onChange={(e) => {
+                                setStaleDemo(e.target.checked);
+                                if (e.target.checked) setStaleSeen({});
+                              }}
+                            />
+                            {demoCopy("演示：显示 stale copies UI", "Demo: show stale copies UI")}
+                          </label>
+                        </div>
+                      </div>
+                    ) : null}
                   </div>
                   <div className="ag-foot">
                     <span className="ag-files">
@@ -920,6 +1219,8 @@ export function AgentsView({
                         setWired((w) => ({ ...w, [a.id]: false }));
                         setExpandOpen(null);
                         setDiffOpen(null);
+                        setFieldPop(null);
+                        setAmPop(null);
                         onStatus(demoCopy("演示：已断开并还原", "Demo: disconnected and restored"), "ok");
                       }}
                     >
@@ -932,7 +1233,7 @@ export function AgentsView({
                         <div className="ag-diff-file">
                           <div className="ag-diff-path">~/.{a.id === "claude" ? "claude" : a.id}/settings.json</div>
                           <pre className="ag-diff-body" style={{ margin: "6px 0 0", padding: 10, borderRadius: 8, background: "var(--pill)", fontSize: 11.5, lineHeight: 1.45, overflow: "auto" }}>
-{`+ "model": "claude-sonnet-4-5"
+{`+ "model": "${fieldVals[a.id + ":model"] || "claude-sonnet-4-5"}"
 + "env": { "ANTHROPIC_BASE_URL": "http://127.0.0.1:3425" }`}
                           </pre>
                         </div>
@@ -1124,6 +1425,33 @@ export function AgentsView({
           </button>
         </section>
       </main>
+
+      {fieldPop ? (
+        <ModelPop
+          open
+          anchor={fieldPop.el}
+          value={fieldVals[fieldPop.key] || ""}
+          modelPicker
+          options={DEMO_POP_OPTS}
+          onPick={(v) => {
+            setFieldVals((f) => ({ ...f, [fieldPop.key]: v }));
+            setFieldPop(null);
+            onStatus(t("Saved"), "ok");
+          }}
+          onClose={() => setFieldPop(null)}
+        />
+      ) : null}
+
+      {amPop ? (
+        <AgentModelsPop
+          open
+          anchor={amPop.el}
+          agentName={ALL_AGENTS.find((x) => x.id === amPop.agentId)?.name || amPop.agentId}
+          models={amModels[amPop.agentId] || DEMO_AM_MODELS}
+          onChange={(next) => setAmModels((m) => ({ ...m, [amPop.agentId]: next }))}
+          onClose={() => setAmPop(null)}
+        />
+      ) : null}
 
       {manageOpen ? (
         <ManageAgentsModal

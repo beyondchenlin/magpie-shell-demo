@@ -1,26 +1,27 @@
 # Acceptance — magpie-shell-demo
 
-**Status: `OVERVIEW_AGENTS_PARTIAL`** — **v0.1.19**
+**Status: `AGENTS_POP_PARTIAL`** — **v0.1.20**
 
 ## 本批
 
 | 区 | 内容 |
 |----|------|
-| Usage Overview 有数据 | Magpie `#stats` 四 KPI（tokens / cache read / reasoning / calls）+ `#chart` bars + Agents/Models/Accounts 行 + 额度卡；`demoFilled` 开关 |
-| Plugins Search/Mirror/folder | 350ms 防抖 Suggested（DEMO_NPM）· Mirror tip · 文件夹填入手动安装 |
-| Agents Connect | `.ag-exp` 面板（In agent / Tiers / Model list Pick / New sessions / Disconnect and restore / View diff）· Relocate · Get started 淡出 |
-| Routing | `rt-reqs` 演示网关 trace 行（live 时） |
-| Privacy | Subscription accounts Off 确认框 |
+| Agents `#pop` | Tiers / New sessions 的 `.field.ag-pick` 接真 `ModelPop`（左轨·收藏·过滤·自由输入） |
+| Agents `am-pop` | Model list **Pick** 打开 Magpie `.pop.am-pop`（All/Shown/Order · rail · 勾选 · 拖拽排序 mock） |
+| Agents stale | 展开面板 `ag-warn` + `ag-stale-copy`（Got it / Restart daemon）；行下 `ag-st` 短文案 |
+| Routing By session | `magpie.routingBySession`；`.rt-session` 折叠组 + 请求行；By request 平铺 |
+| Privacy | Masked words Enter 保存 / Escape 还原；规则 Edit Enter/Escape；rule-add 焦点环 |
+| Motion | am-pop/ag-exp/ag-pick.open 对齐 SHELL-APPEARANCE-LOGIC |
 
 ## 链接
 
-- [Release v0.1.19](https://github.com/beyondchenlin/magpie-shell-demo/releases/tag/v0.1.19)
-- [Portable 0.1.19](https://github.com/beyondchenlin/magpie-shell-demo/releases/download/v0.1.19/Magpie-Shell-Demo-0.1.19-portable.exe)
+- [Release v0.1.20](https://github.com/beyondchenlin/magpie-shell-demo/releases/tag/v0.1.20)
+- [Portable 0.1.20](https://github.com/beyondchenlin/magpie-shell-demo/releases/download/v0.1.20/Magpie-Shell-Demo-0.1.20-portable.exe)
 - 在线：https://magpie-shell-demo.vercel.app （若 402 用 portable / preview）
 
 ## 仍缺
 
-- 真 ledger/heatmap/npm API
-- Agents 真 wire / 真 #pop 模型挑选与 stale copies
-- Routing 真 gateway hist / By session 分组
-- Privacy Masked words / Add rule 未点录交互
+- 真 agent-models API / 真 staleCopies 推送
+- Routing 真 gateway hist / 账户列 / Purpose·Metrics 菜单
+- Privacy 实机点录后的字级微调（63–70 已有）
+- Plugins Install 真流 / Agents 嵌套点录更多帧

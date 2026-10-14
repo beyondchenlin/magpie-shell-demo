@@ -1472,7 +1472,38 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus }: Setti
             <Segs value={prefs.hideAccounts ? "on" : "off"} onChange={(v) => setPrefs({ hideAccounts: v === "on" })} items={[{ id: "off", label: t("Off") }, { id: "on", label: t("On") }]} />
           </PrefRow>
           <PrefRow name={t("Masked words")} sub={t("Your own words to keep from vendors, separated by commas")}>
-            <input className="words" value={prefs.redactWords} placeholder={t("names, codenames, hosts")} onChange={(e) => setPrefsState((p) => ({ ...p, redactWords: e.target.value }))} onBlur={() => setPrefs({ redactWords: prefs.redactWords })} />
+            <input
+              className="words"
+              value={prefs.redactWords}
+              placeholder={t("names, codenames, hosts")}
+              aria-label={t("Masked words")}
+              onChange={(e) => setPrefsState((p) => ({ ...p, redactWords: e.target.value }))}
+              onKeyDown={(e) => {
+                e.stopPropagation();
+                if (e.key === "Enter") {
+                  const v = (e.target as HTMLInputElement).value
+                    .split(/[,，\n]/)
+                    .map((w) => w.trim())
+                    .filter(Boolean)
+                    .join(", ");
+                  setPrefs({ redactWords: v });
+                  (e.target as HTMLInputElement).blur();
+                } else if (e.key === "Escape") {
+                  (e.target as HTMLInputElement).value = prefs.redactWords;
+                  setPrefsState((p) => ({ ...p, redactWords: prefs.redactWords }));
+                  (e.target as HTMLInputElement).blur();
+                }
+              }}
+              onBlur={(e) => {
+                const v = e.target.value
+                  .split(/[,，\n]/)
+                  .map((w) => w.trim())
+                  .filter(Boolean)
+                  .join(", ");
+                if (v !== prefs.redactWords) setPrefs({ redactWords: v });
+                else setPrefs({ redactWords: prefs.redactWords });
+              }}
+            />
           </PrefRow>
           <RedactRulesBlock rules={prefs.redactRules} onChange={(redactRules) => setPrefs({ redactRules })} />
           <PrefRow name={t("Count me as a user")} sub={t("Once a day, a random id for this computer with magpie's version and system")}>
