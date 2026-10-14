@@ -12,7 +12,7 @@ import {
   UsageView,
 } from "./pages/SimpleViews";
 
-/** Native Linux desktop top tabs (gold: interactions/native-linux). Not side-nav. */
+/** Win/Mac desktop gold: top tabs at default 660×600 (SIDE_AT=1024). Not side-nav. */
 const TOP_TABS: { id: ViewId; label: string }[] = [
   { id: "agents", label: "Agents" },
   { id: "providers", label: "Providers" },
@@ -53,10 +53,16 @@ export default function App() {
 
   useEffect(() => {
     const electron = isElectron();
-    document.body.classList.remove("side-nav");
-    document.body.classList.add("window", "linux");
-    if (electron) document.body.classList.remove("web");
-    else document.body.classList.add("web");
+    // Gold: Win/Mac compact window = top tabs. Never force body.linux (that adds in-page X).
+    document.body.classList.remove("side-nav", "linux", "mac");
+    document.body.classList.add("window");
+    if (electron) {
+      // Windows exe: OS title bar; Magpie hides .brand when not mac/linux/web
+      document.body.classList.remove("web");
+    } else {
+      // Browser preview: keep brand (marketing / agents-light.png)
+      document.body.classList.add("web");
+    }
     const root = document.documentElement;
     if (theme === "system") root.removeAttribute("data-theme");
     else root.setAttribute("data-theme", theme);
@@ -108,9 +114,6 @@ export default function App() {
     } else stop();
   };
 
-  const onClose = () => {
-    if (isElectron()) window.close();
-  };
 
   return (
     <>
@@ -135,7 +138,7 @@ export default function App() {
           aria-label="Show sidebar"
           onClick={() =>
             showStatus(
-              "Desktop 1:1 gold is top tabs (native Linux). Side-nav is the web/wide layout — not this target.",
+              "Win/Mac gold is top tabs at 660×600. Side-nav only if width≥1024 or user picks it — not default desktop.",
               "ok",
               4500,
             )
@@ -216,23 +219,6 @@ export default function App() {
               </g>
             </svg>
             <span className="side-l">{ZH.settings}</span>
-          </button>
-          <button
-            className="icon winclose"
-            id="winclose"
-            type="button"
-            title="Close"
-            onClick={onClose}
-          >
-            <svg viewBox="0 0 16 16" width={10} height={10}>
-              <path
-                d="M4 4l8 8M12 4l-8 8"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.8"
-                strokeLinecap="round"
-              />
-            </svg>
           </button>
         </div>
       </header>

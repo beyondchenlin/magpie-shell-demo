@@ -32,3 +32,8 @@
 ## Verdict
 
 `NATIVE_CHROME_PARTIAL` — outer chrome + empty tab pages aligned to native shots; full per-control interaction still follows INTERACTION-PLAN.
+
+
+## Superseded as desktop gold
+
+As of v0.1.7, **Win/Mac** is the acceptance gold (see `../win-mac/WIN-MAC-CHROME.md`). This folder remains useful for empty-state page content under top tabs; do not treat Linux `#winclose` / 712×652 as the exe target.

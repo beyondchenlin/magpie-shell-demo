@@ -1,55 +1,45 @@
-# Magpie Shell Demo — 验收清单（对照官方 **Linux 原生窗**）
+# Magpie Shell Demo — 验收清单（金标：**Win / Mac 默认窗**）
 
-> **桌面 1:1 金标 = 原生顶栏标签，不是 web 左侧栏。**  
-> 证据：[`interactions/native-linux/shots/`](./interactions/native-linux/shots/) · [`NATIVE-CHROME.md`](./interactions/native-linux/NATIVE-CHROME.md)  
-> 当前总判定：**`NATIVE_CHROME_PARTIAL`** — 外壳已改为顶栏；Agents/Providers/Routing 既有交互在顶栏下保留；Gateway/Usage/Plugins/Settings 仍为壳级。  
-> **不是**全应用 PASS。  
-> 交互计划：[`INTERACTION-PLAN.md`](./INTERACTION-PLAN.md)
+> **桌面 1:1 金标 = Win/Mac 默认 660×600 顶栏标签**（不是 web 宽窗侧栏；也不是 Linux 页内关闭钮）。  
+> 依据：[`interactions/win-mac/WIN-MAC-CHROME.md`](./interactions/win-mac/WIN-MAC-CHROME.md)  
+> 源码：`window_rule.go` 660×600 · `SIDE_AT=1024` → 默认顶栏；Windows 保留系统标题栏、藏 brand、无 `#winclose`。  
+> 当前总判定：**`WIN_MAC_CHROME_PARTIAL`**  
+> **不是**全应用 PASS。
 
 对照基准：
-- **桌面金标**：官方 Linux 原生窗截图 `interactions/native-linux/shots/N-00…N-09`
-- ~~web 侧栏截图~~：仅作宽窗/web 布局参考，**不作**桌面 exe 验收金标
-- 源码：`magpie` `internal/gui/assets/`（`body.window` 无 `side-nav` = 顶栏）
+- **金标**：官方营销图 `magpie-src/site/public/img/agents-light.png`（顶栏）+ Win 标题栏规则
+- 页内容可参考：`interactions/native-linux/shots/`（同为顶栏空态；忽略 Linux 的页内 X）
+- ~~web 侧栏~~：宽窗/浏览器 ≥1024 布局，**非** Win/Mac 默认窗金标
 
 图例：`[x]` 自检通过 · `[~]` 有意简化 · `[ ]` 未过 / 未做
 
 ---
 
-## A. 外壳 / IA（原生顶栏）
+## A. 外壳（Win/Mac）
 
 | # | 项 | 状态 |
 |---|----|------|
-| A1 | 无左侧栏、无 Work/Models 分组、无面包屑 | [x] |
-| A2 | 顶栏标签 Agents / Providers / Routing / Gateway / Usage / Plugins | [x] |
-| A3 | 右侧 refresh + gear + Linux close | [x] |
-| A4 | 窗默认 ≈712×652（web 预览框 / Electron） | [x] |
-| A5 | Settings = 原地视图 + 横向 set-tabs | [x] |
-| A6 | web side-nav 标为错误桌面目标 | [x] | 见 NATIVE-CHROME.md |
+| A1 | 默认顶栏标签（非 side-nav） | [x] |
+| A2 | 无 Linux 页内 winclose | [x] |
+| A3 | Windows exe：系统标题栏 + 页内 brand 隐藏 | [x] |
+| A4 | 窗默认 660×600 | [x] |
+| A5 | Settings = 原地 + 横向 set-tabs | [x] |
+| A6 | 侧栏仅作宽窗参考，非桌面默认金标 | [x] |
 
-## B–D. 页内交互（顶栏下保留）
-
-| # | 项 | 状态 |
-|---|----|------|
-| B | Agents 空态 + 已接线交互 | [x] | 对照仍可参考 web 录制；chrome 以 N-00 为准 |
-| C | Providers 空目录 + 部分交互 | [x] |
-| D | Routing 空态交互 | [x] |
-
-## E. 其它页
+## B–D. 页内交互
 
 | # | 项 | 状态 |
 |---|----|------|
-| E1 | Gateway | [~] | 空态壳；交互未完录 |
-| E2 | Usage | [~] | Overview 空态文案 |
-| E3 | Plugins | [~] | Discover 壳 |
-| E4 | Settings 全部分页内容 | [~] | 横签齐；General 部分行；其余占位 |
+| B–D | Agents / Providers / Routing 既有交互 | [x] |
+| E | Gateway / Usage / Plugins / Settings 深交互 | [~]/[ ] |
 
 ## F. 交付
 
 | # | 项 | 状态 |
 |---|----|------|
-| F1 | Windows Setup `.exe` | [x] | https://github.com/beyondchenlin/magpie-shell-demo/releases/download/v0.1.6/Magpie-Shell-Demo-Setup-0.1.6.exe |
+| F1 | Windows Setup `.exe` | [ ] | v0.1.7（GHA） |
 | F2 | Vercel Web | [x] | https://magpie-shell-demo.vercel.app |
 
 ---
 
-*诚实原则：顶栏外壳对齐原生 ≠ 全应用交互 1:1。判定 `NATIVE_CHROME_PARTIAL`。*
+*判定 `WIN_MAC_CHROME_PARTIAL`：外壳对齐 Win/Mac 默认顶栏 + Windows 标题栏；交互仍部分。*

@@ -1,13 +1,18 @@
 # Magpie 壳交互 1:1 计划
 
-## 桌面金标更正（2026-10-14）
+## 金标再更正（2026-10-14 · Win/Mac）
 
-**对照物改为官方 Linux 原生窗顶栏**，不是 `magpie web` 左侧栏。
+**桌面金标 = Win/Mac 默认窗顶栏**（660×600，`SIDE_AT=1024` 以下），**不是** Linux 页内关闭钮，也**不是** web 宽窗侧栏。
 
-- 金标截图：[`interactions/native-linux/shots/`](./interactions/native-linux/shots/)（CLICK-LOG + N-00…N-09）
-- 差异说明：[`interactions/native-linux/NATIVE-CHROME.md`](./interactions/native-linux/NATIVE-CHROME.md)
-- web side-nav：宽窗/浏览器布局，**不作**桌面 exe 1:1 目标
-- 总判定：`NATIVE_CHROME_PARTIAL`
+- 说明：[`interactions/win-mac/WIN-MAC-CHROME.md`](./interactions/win-mac/WIN-MAC-CHROME.md)
+- 总判定：`WIN_MAC_CHROME_PARTIAL`
+
+---
+
+
+## （已废止）Linux 原生窗曾作金标
+
+已被上方 **Win/Mac** 金标取代。`interactions/native-linux/` 仅作顶栏页内容参考。
 
 ---
 
