@@ -297,6 +297,67 @@ export function RoutingView() {
           </div>
         </div>
       </section>
+
+      {/* Magpie gateway trace list — demo when live */}
+      <div className="rt-hist" style={{ marginTop: 10 }}>
+        <div className="row-head rt-req-head">
+          <span className="label">{t("Requests")}</span>
+          <span className="note" style={{ marginLeft: 8 }}>
+            {demoLive ? t("A live request would fly here") : t("Waiting for a request")}
+          </span>
+          <span className="grow" />
+          <div className="rt-group-by" style={{ display: "inline-flex", gap: 4 }}>
+            <button type="button" className="rt-day on" aria-pressed="true">{t("By request")}</button>
+            <button type="button" className="rt-day" aria-pressed="false">{t("By session")}</button>
+          </div>
+        </div>
+        <div className="list rt-reqs" id="rtReqs">
+          {(
+            demoLive
+              ? [
+                  { id: "q1", at: "12:18:04", agent: "Claude Code", model: "claude-sonnet-4-5", to: "Anthropic", tokens: "14.2K", ms: "4.1s", ok: true, moved: false, wait: false },
+                  { id: "q2", at: "12:14:22", agent: "Codex", model: "gpt-5", to: "OpenAI", tokens: "6.8K", ms: "2.4s", ok: true, moved: true, wait: false },
+                  { id: "q3", at: "12:09:51", agent: "Claude Code", model: "claude-haiku-4", to: "Anthropic", tokens: "1.1K", ms: "0.8s", ok: false, moved: false, wait: false },
+                  { id: "q4", at: "12:02:10", agent: "OpenCode", model: "claude-sonnet-4-5", to: "…", tokens: "—", ms: "…", ok: true, moved: false, wait: true },
+                ]
+              : ([] as { id: string; at: string; agent: string; model: string; to: string; tokens: string; ms: string; ok: boolean; moved: boolean; wait: boolean }[])
+          ).map((r) => (
+            <button
+              key={r.id}
+              type="button"
+              className={`rt-req${r.ok === false ? " bad" : ""}${r.moved ? " moved" : ""}${r.wait ? " wait" : ""}`}
+              aria-pressed={false}
+              style={{ animation: "fade-in .2s var(--ease)" }}
+              onClick={() => setDemoTurn((n) => n + 1)}
+            >
+              <span className="at">{r.at}</span>
+              <span className="asked">
+                <i className="ag" aria-hidden />
+                <span className="m">{r.agent}</span>
+                <code className="mdl">{r.model}</code>
+              </span>
+              <span className="to">
+                <i aria-hidden />
+                <span className="said">
+                  <span className="who">{r.to}</span>
+                </span>
+                {r.moved ? <span className="swap">{t("failover")}</span> : null}
+              </span>
+              <span className="meta">
+                <span className="tokens">{r.tokens}</span>
+                <span>·</span>
+                <span>{r.ms}</span>
+              </span>
+            </button>
+          ))}
+          {!demoLive ? (
+            <div className="empty-state" style={{ padding: "14px 8px", color: "var(--muted)", fontSize: 12.5 }}>
+              {t("Waiting for a request")}
+            </div>
+          ) : null}
+        </div>
+      </div>
+
       {/* Magpie #rtMore — demo groups / model pick / conditions (v0.1.16) */}
       <div className="rt-more" id="rtMore">
         <div className="row-head" style={{ marginTop: 8 }}>

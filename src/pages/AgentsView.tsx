@@ -536,6 +536,9 @@ export function AgentsView({
     return {};
   });
   const [relocateFor, setRelocateFor] = useState<string | null>(null);
+  const [expandOpen, setExpandOpen] = useState<string | null>(null);
+  const [connectBusy, setConnectBusy] = useState<string | null>(null);
+  const [diffOpen, setDiffOpen] = useState<string | null>(null);
   const [relFrom, setRelFrom] = useState("~/.claude/projects/old");
   const [relTo, setRelTo] = useState("~/.claude/projects/new");
   const [relBusy, setRelBusy] = useState(false);
@@ -602,11 +605,18 @@ export function AgentsView({
                   aria-label={ZH.hideGetStarted}
                   onClick={(e) => {
                     e.stopPropagation();
-                    setGuideHidden(true);
-                    try {
-                      localStorage.setItem(GUIDE_KEY, "1");
-                    } catch {
-                      /* ignore */
+                    const lead = document.getElementById("agentsLead");
+                    if (lead && !calm()) {
+                      lead.style.transition = "opacity .22s var(--ease), transform .22s var(--ease)";
+                      lead.style.opacity = "0";
+                      lead.style.transform = "translateY(-6px)";
+                      window.setTimeout(() => {
+                        setGuideHidden(true);
+                        try { localStorage.setItem(GUIDE_KEY, "1"); } catch { /* ignore */ }
+                      }, 220);
+                    } else {
+                      setGuideHidden(true);
+                      try { localStorage.setItem(GUIDE_KEY, "1"); } catch { /* ignore */ }
                     }
                   }}
                 >
@@ -653,9 +663,25 @@ export function AgentsView({
                           key={a.id}
                           type="button"
                           className={`text${wired[a.id] ? "" : " primary"} guide-go`}
-                          onClick={() => setWired((w) => ({ ...w, [a.id]: true }))}
+                          onClick={() => {
+                            if (wired[a.id]) {
+                              setExpandOpen(a.id);
+                              return;
+                            }
+                            setConnectBusy(a.id);
+                            window.setTimeout(() => {
+                              setWired((w) => ({ ...w, [a.id]: true }));
+                              setExpandOpen(a.id);
+                              setConnectBusy(null);
+                              onStatus(t("Connected · new sessions take it"), "ok");
+                            }, 380);
+                          }}
                         >
-                          {wired[a.id] ? t("Connected · new sessions take it") : t("Connect {agent}", { agent: a.name })}
+                          {connectBusy === a.id
+                            ? "…"
+                            : wired[a.id]
+                              ? t("Connected · new sessions take it")
+                              : t("Connect {agent}", { agent: a.name })}
                         </button>
                       ))}
                     </div>
@@ -708,38 +734,6 @@ export function AgentsView({
                     {demoCopy("演示：可接入 Magpie 模型列表", "Demo: can connect Magpie models")}
                   </div>
                 )}
-                {relocateFor === a.id ? (
-                  <div className="ag-relocate" style={{ marginTop: 8, padding: "10px 12px", borderRadius: 10, border: "1px solid var(--line)", background: "var(--pill)", display: "flex", flexDirection: "column", gap: 8, animation: "fade-in .18s var(--ease)" }}>
-                    <b style={{ fontSize: 12.5 }}>{t("Relocate Claude Code project")}</b>
-                    <label style={{ display: "grid", gridTemplateColumns: "72px 1fr", gap: 8, alignItems: "center", fontSize: 12 }}>
-                      <span style={{ color: "var(--muted)" }}>{t("From folder")}</span>
-                      <input className="words" value={relFrom} onChange={(e) => setRelFrom(e.target.value)} />
-                    </label>
-                    <label style={{ display: "grid", gridTemplateColumns: "72px 1fr", gap: 8, alignItems: "center", fontSize: 12 }}>
-                      <span style={{ color: "var(--muted)" }}>{t("To folder")}</span>
-                      <input className="words" value={relTo} onChange={(e) => setRelTo(e.target.value)} />
-                    </label>
-                    <div style={{ display: "flex", gap: 8 }}>
-                      <button type="button" className="text" onClick={() => setRelocateFor(null)}>{t("Cancel")}</button>
-                      <span className="grow" />
-                      <button
-                        type="button"
-                        className="text primary"
-                        disabled={relBusy}
-                        onClick={() => {
-                          setRelBusy(true);
-                          window.setTimeout(() => {
-                            setRelBusy(false);
-                            setRelocateFor(null);
-                            onStatus(demoCopy("演示：会话路径已迁移（本地）", "Demo: sessions relocated (local)"), "ok");
-                          }, 480);
-                        }}
-                      >
-                        {relBusy ? "…" : t("Relocate")}
-                      </button>
-                    </div>
-                  </div>
-                ) : null}
               </div>
               {a.id === "cursor" || !a.connectable ? (
                 <span className="ag-cant">{ZH.cantConnect}</span>
@@ -757,22 +751,196 @@ export function AgentsView({
                   ) : null}
                   <button
                     type="button"
-                    className={`text${wired[a.id] ? "" : " primary"}`}
+                    className={`text${wired[a.id] ? "" : " primary"}${connectBusy === a.id ? " busy" : ""}`}
                     aria-pressed={!!wired[a.id]}
-                    aria-label={t("Connect {agent}", { agent: a.name })}
+                    aria-expanded={expandOpen === a.id}
+                    aria-label={t("Connect {agent} to magpie", { agent: a.name })}
                     title={
                       wired[a.id]
                         ? t("Connected · new sessions take it")
                         : t("Connect {agent}", { agent: a.name })
                     }
-                    onClick={() =>
-                      setWired((w) => ({ ...w, [a.id]: !w[a.id] }))
-                    }
+                    disabled={connectBusy === a.id}
+                    onClick={() => {
+                      if (wired[a.id]) {
+                        setExpandOpen((cur) => (cur === a.id ? null : a.id));
+                        return;
+                      }
+                      setConnectBusy(a.id);
+                      window.setTimeout(() => {
+                        setWired((w) => ({ ...w, [a.id]: true }));
+                        setExpandOpen(a.id);
+                        setConnectBusy(null);
+                        onStatus(t("Connected · new sessions take it"), "ok");
+                      }, 380);
+                    }}
                   >
-                    {wired[a.id] ? t("Disconnect") : demoCopy("接入", "Connect")}
+                    {connectBusy === a.id
+                      ? "…"
+                      : wired[a.id]
+                        ? expandOpen === a.id
+                          ? t("Connected · new sessions take it")
+                          : t("Connected · new sessions take it")
+                        : demoCopy("接入", "Connect")}
                   </button>
                 </div>
               )}
+              {relocateFor === a.id ? (
+                <div
+                  className="ag-relocate ag-exp"
+                  style={{ animation: "fade-in .18s var(--ease)" }}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <div className="ag-settings">
+                    <div className="ag-kv">
+                      <div className="ag-k">{t("Relocate Claude Code project")}</div>
+                      <div className="ag-v">
+                        <div className="ag-vl" style={{ flexDirection: "column", alignItems: "stretch", gap: 8 }}>
+                          <label style={{ display: "grid", gridTemplateColumns: "72px 1fr", gap: 8, alignItems: "center", fontSize: 12 }}>
+                            <span style={{ color: "var(--muted)" }}>{t("From folder")}</span>
+                            <input className="words" value={relFrom} onChange={(e) => setRelFrom(e.target.value)} />
+                          </label>
+                          <label style={{ display: "grid", gridTemplateColumns: "72px 1fr", gap: 8, alignItems: "center", fontSize: 12 }}>
+                            <span style={{ color: "var(--muted)" }}>{t("To folder")}</span>
+                            <input className="words" value={relTo} onChange={(e) => setRelTo(e.target.value)} />
+                          </label>
+                          <div style={{ display: "flex", gap: 8 }}>
+                            <button type="button" className="ag-quiet" onClick={() => setRelocateFor(null)}>{t("Cancel")}</button>
+                            <span className="grow" />
+                            <button
+                              type="button"
+                              className="ag-quiet accent"
+                              disabled={relBusy}
+                              onClick={() => {
+                                setRelBusy(true);
+                                window.setTimeout(() => {
+                                  setRelBusy(false);
+                                  setRelocateFor(null);
+                                  onStatus(demoCopy("演示：会话路径已迁移（本地）", "Demo: sessions relocated (local)"), "ok");
+                                }, 480);
+                              }}
+                            >
+                              {relBusy ? "…" : t("Relocate")}
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ) : null}
+              {wired[a.id] && expandOpen === a.id && a.connectable ? (
+                <div className="ag-exp" onClick={(e) => e.stopPropagation()} style={{ animation: "fade-in .22s var(--ease)" }}>
+                  <div className="ag-settings">
+                    <div className="ag-kv">
+                      <div className="ag-k">{t("In {agent}", { agent: a.name })}</div>
+                      <div className="ag-v">
+                        <div className="ag-vl">
+                          {a.id === "claude" ? (
+                            <>
+                              <span>{t("New sessions take it; switch the tiers in {cmd}.", { cmd: "" }).split("{cmd}")[0]}</span>
+                              <code className="ag-code">/model</code>
+                            </>
+                          ) : (
+                            <span>{t("Reopen {agent}, then pick any model in {cmd}.", { agent: a.name, cmd: "/model" }).replace("{cmd}", "")}<code className="ag-code">/model</code></span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                    {a.id === "claude" ? (
+                      <div className="ag-kv">
+                        <div className="ag-k">{t("Tiers")}</div>
+                        <div className="ag-v">
+                          {(["opus", "sonnet", "haiku"] as const).map((tier) => (
+                            <div className="ag-vl" key={tier}>
+                              <span className="ag-tier">{tier[0].toUpperCase() + tier.slice(1)}</span>
+                              <button type="button" className="field ag-pick" style={{ height: 28, padding: "0 10px", borderRadius: 8, border: "1px solid var(--line)", background: "var(--card)" }}>
+                                <span className="v">{tier === "sonnet" ? "claude-sonnet-4-5" : tier === "opus" ? "claude-opus-4" : "claude-haiku-4"}</span>
+                              </button>
+                              <span className="ag-hint">/model {tier}{tier === "sonnet" ? ` · ${t("the default tier")}` : tier === "haiku" ? ` · ${t("also for small background tasks")}` : ""}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ) : null}
+                    <div className="ag-kv">
+                      <div className="ag-k">{t("Model list")}</div>
+                      <div className="ag-v">
+                        <div className="ag-vl ag-chips">
+                          <span className="ag-chip"><span>Anthropic</span><span className="n">4</span></span>
+                          <span className="ag-chip"><span>OpenAI</span><span className="n">3</span></span>
+                          <span className="ag-chip"><span>{t("Routing groups")}</span><span className="n">1</span></span>
+                          <button type="button" className="ag-quiet" onClick={() => onStatus(demoCopy("演示：打开模型挑选", "Demo: open model picker"), "ok")}>
+                            <span>{t("Pick")}</span>
+                            <span className="chev">
+                              <svg viewBox="0 0 12 12" width={10} height={10} aria-hidden>
+                                <path d="M4.5 3 7.5 6 4.5 9" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                              </svg>
+                            </span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="ag-kv">
+                      <div className="ag-k">{t("New sessions")}</div>
+                      <div className="ag-v">
+                        <div className="ag-vl">
+                          <div className="fields" style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+                            <button type="button" className="field main" style={{ height: 28, minWidth: 170, padding: "0 10px", borderRadius: 8, border: "1px solid var(--line)", background: "var(--card)", display: "inline-flex", alignItems: "center", gap: 6 }}>
+                              <span className="k" style={{ fontSize: 11, color: "var(--muted)" }}>{t("Model")}</span>
+                              <span className="v">claude-sonnet-4-5</span>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="ag-foot">
+                    <span className="ag-files">
+                      {t("Changed ")}
+                      <span className="ag-path">~/.{a.id === "claude" ? "claude" : a.id}/settings.json</span>
+                    </span>
+                    <button
+                      type="button"
+                      className={`ag-quiet${diffOpen === a.id ? " open" : ""}`}
+                      onClick={() => setDiffOpen((cur) => (cur === a.id ? null : a.id))}
+                    >
+                      <span>{diffOpen === a.id ? t("Hide changes") : t("View")}</span>
+                      <span className="chev">
+                        <svg viewBox="0 0 12 12" width={10} height={10} aria-hidden>
+                          <path d="M4.5 3 7.5 6 4.5 9" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                        </svg>
+                      </span>
+                    </button>
+                    <span className="grow" />
+                    <button
+                      type="button"
+                      className="ag-quiet red"
+                      onClick={() => {
+                        setWired((w) => ({ ...w, [a.id]: false }));
+                        setExpandOpen(null);
+                        setDiffOpen(null);
+                        onStatus(demoCopy("演示：已断开并还原", "Demo: disconnected and restored"), "ok");
+                      }}
+                    >
+                      {t("Disconnect and restore")}
+                    </button>
+                  </div>
+                  {diffOpen === a.id ? (
+                    <div className="ag-diff-box" style={{ marginTop: 8, animation: "fade-in .15s var(--ease)" }}>
+                      <div className="ag-diff">
+                        <div className="ag-diff-file">
+                          <div className="ag-diff-path">~/.{a.id === "claude" ? "claude" : a.id}/settings.json</div>
+                          <pre className="ag-diff-body" style={{ margin: "6px 0 0", padding: 10, borderRadius: 8, background: "var(--pill)", fontSize: 11.5, lineHeight: 1.45, overflow: "auto" }}>
+{`+ "model": "claude-sonnet-4-5"
++ "env": { "ANTHROPIC_BASE_URL": "http://127.0.0.1:3425" }`}
+                          </pre>
+                        </div>
+                      </div>
+                    </div>
+                  ) : null}
+                </div>
+              ) : null}
             </div>
           ))}
 

@@ -40,3 +40,15 @@ Empty: logo, "No plugins yet", "Install a subscription or a middleware from Disc
 ## Left state
 
 Plugins on Discover. Built-ins unchanged (Gateway on, calls page 20, Library off). No plugin installed. Mirror off.
+
+## Search / Mirror / folder (shots 20–31) — computerUse follow-up
+
+| shot | control | seen |
+|---|---|---|
+| 20–23 | Search `opencode` | Switches Discover; Suggested grid (OpenCode Zen Free, ZCode, Qoder…). 350ms debounce. |
+| 24 | Search `zzzzqq` | No/odd npm hits; mirror still Off. |
+| 25–27 | Mirrors in China On | Toggle On; tooltip long npmmirror/jsDelivr copy; Discover reloads via mirrors. |
+| 28–29 | Manual row | Have one in mind? field typed. |
+| 30–31 | Folder picker | `plugins/choose` dialog → home / folder selected into field. |
+
+Demo v0.1.19: 350ms Suggested DEMO_NPM · mirror tip · folder fills manualSpec.

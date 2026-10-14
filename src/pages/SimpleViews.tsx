@@ -9,10 +9,12 @@ import {
   DEMO_SESSIONS_MORE,
   DEMO_SESS_KPIS,
   ago,
+  buildDemoOverview,
   demoSessDetail,
   fmtCost,
   fmtN,
   ledTime,
+  tokensOf,
   type LedRow,
 } from "../data/usage-demo";
 import { demoCopy, t } from "../i18n";
@@ -483,6 +485,14 @@ export function UsageView() {
   const sessHidden = demoFilled && !sessMore ? DEMO_SESSIONS_MORE.length : 0;
 
   const ctxAgents = demoFilled ? DEMO_CTX_AGENTS : [];
+  const overview = useMemo(
+    () => (demoFilled ? buildDemoOverview(period) : null),
+    [demoFilled, period],
+  );
+  const [agentMenuFor, setAgentMenuFor] = useState<string | null>(null);
+  const [hiddenUsageAgents, setHiddenUsageAgents] = useState<Set<string>>(() => new Set());
+  const [usageHidOpen, setUsageHidOpen] = useState(false);
+
 
   const toggleLed = (id: string) => {
     setLedOpen((prev) => {
@@ -592,7 +602,7 @@ export function UsageView() {
           />
         </span>
         <span className="usage-cost" id="usageCost">
-          <b>≈$0.000</b>
+          <b>{demoFilled && overview ? (overview.cost ? "≈$" + overview.cost.toFixed(overview.cost >= 1 ? 2 : 4) : "≈$0.000") : "≈$0.000"}</b>
           <span>{t("effective prices")}</span>
         </span>
       </div>
@@ -613,36 +623,324 @@ export function UsageView() {
             <span>{t("Hide accounts")}</span>
           </button>
         </div>
-        <section className="subscription-usage" id="subscriptionUsage" />
+        <section className="subscription-usage" id="subscriptionUsage">
+          {demoFilled && overview ? (
+            <div className="subscription-card several" data-provider="anthropic" style={{ animation: "fade-in .22s var(--ease)" }}>
+              <div className="subscription-head" style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+                <span className="ic" style={{ width: 18, height: 18 }}>
+                  <img src={iconSrc("anthropic")} alt="" />
+                </span>
+                <b style={{ fontSize: 13 }}>Anthropic</b>
+                <span className="quota-alias" style={{ marginLeft: 4 }}>{mask ? "••••@••••.com" : "demo@example.com"}</span>
+                <span className="grow" />
+                <button type="button" className="icon" title={t("Refresh now")} aria-label={t("Refresh now")} onClick={refresh}>
+                  <RefreshSpin busy={busy} />
+                </button>
+              </div>
+              <div className="quota-windows">
+                <div className="quota">
+                  <div className="quota-labels">
+                    <button type="button" className="quota-n"><span>{t("5-hour")}</span></button>
+                    <span>42%</span>
+                  </div>
+                  <div className="quota-track"><i style={{ width: "42%", transition: "width .35s var(--ease)" }} /></div>
+                  <div className="quota-reset"><span>{t("resets in {t}", { t: "3h 12m" })}</span></div>
+                </div>
+                <div className="quota">
+                  <div className="quota-labels">
+                    <button type="button" className="quota-n"><span>{t("Weekly")}</span></button>
+                    <span>18%</span>
+                  </div>
+                  <div className="quota-track"><i style={{ width: "18%", transition: "width .35s var(--ease)" }} /></div>
+                  <div className="quota-reset"><span>{t("resets in {t}", { t: "4d 6h" })}</span></div>
+                </div>
+              </div>
+            </div>
+          ) : null}
+        </section>
         <p className="usage-note" id="usageScope">
           {t("Gateway calls only; session-log calls are in Requests. Local rejections are excluded from totals.")}
         </p>
-        {!demoFilled ? (
+        {!demoFilled || !overview ? (
           <div className="card empty-state us-empty" style={{ padding: "22px 16px", marginTop: 8 }}>
             <b style={{ display: "block", fontWeight: 600, marginBottom: 6 }}>{noCallsIn(periodValue)}</b>
             <span style={{ color: "var(--muted)", fontSize: 12.5, lineHeight: 1.45 }}>
               {t("Point an agent at a catalog model and use it; every call through the gateway is counted here.")}
             </span>
+            <div style={{ marginTop: 12 }}>
+              <button type="button" className="text primary" onClick={() => setDemoFilled(true)}>
+                {demoCopy("显示演示有数据", "Show demo with data")}
+              </button>
+            </div>
           </div>
         ) : (
           <>
-            <section className="stats" id="stats" />
-            <section className="chart" id="chart" />
+            <section className="stats" id="stats" style={{ animation: "fade-in .28s var(--ease)" }}>
+              <div className="kpi" title="">
+                <b>{fmtN(tokensOf(overview))}</b>
+                <span>{t("tokens")}</span>
+                <small>{t("{a} in · {b} out", { a: fmtN(overview.input), b: fmtN(overview.output) })}</small>
+              </div>
+              <div className="kpi" title={overview.cache_write ? t("{n} written", { n: fmtN(overview.cache_write) }) : undefined}>
+                <b>{fmtN(overview.cache_read)}</b>
+                <span>{t("cache read")}</span>
+                <small>
+                  {overview.cache_read && overview.input + overview.cache_read + overview.cache_write
+                    ? t("hit rate {p}", {
+                        p:
+                          Math.round(
+                            (100 * overview.cache_read) /
+                              (overview.input + overview.cache_read + overview.cache_write),
+                          ) + "%",
+                      })
+                    : ""}
+                </small>
+              </div>
+              <div className="kpi">
+                <b>{fmtN(overview.reasoning)}</b>
+                <span>{t("reasoning")}</span>
+                <small>{t("inside output")}</small>
+              </div>
+              <div className="kpi">
+                <b>{String(overview.calls)}</b>
+                <span>{t(overview.calls === 1 ? "call" : "calls")}</span>
+                <small>
+                  {[
+                    overview.errors ? t("{n} failed", { n: String(overview.errors) }) : "",
+                    overview.retried ? t("{n} answered on a retry", { n: String(overview.retried) }) : "",
+                  ]
+                    .filter(Boolean)
+                    .join(" · ")}
+                </small>
+              </div>
+            </section>
+            <section className="chart" id="chart" style={{ animation: "fade-in .32s var(--ease)" }}>
+              <div className="peak">
+                {fmtN(Math.max(1, ...overview.series.map((p) => tokensOf(p))))}
+              </div>
+              <div className="bars">
+                {overview.series.map((p, i) => {
+                  const peak = Math.max(1, ...overview.series.map((x) => tokensOf(x)));
+                  const when =
+                    overview.bucket === "hour"
+                      ? `${p.label}:00`
+                      : p.label;
+                  const tip = p.calls
+                    ? t(p.calls === 1 ? "{when} · {tokens} tokens · {n} call" : "{when} · {tokens} tokens · {n} calls", {
+                        when,
+                        tokens: fmtN(tokensOf(p)),
+                        n: String(p.calls),
+                      }) + (p.cost ? ` · ≈${fmtCost(p.cost)}` : "")
+                    : t("{when} · nothing", { when });
+                  return (
+                    <div className="bar" key={`${p.label}-${i}`} title={tip}>
+                      <i className="out" style={{ height: `${((100 * p.output) / peak).toFixed(1)}%`, transition: "height .28s var(--ease)" }} />
+                      <i className="in" style={{ height: `${((100 * p.input) / peak).toFixed(1)}%`, transition: "height .28s var(--ease)" }} />
+                    </div>
+                  );
+                })}
+              </div>
+              <div className="labels">
+                {overview.series.map((p, i) => {
+                  const n = overview.series.length;
+                  const every = n <= 8 ? 1 : n <= 31 ? Math.ceil(n / 6) : Math.ceil(n / 5);
+                  const last = i === n - 1 && (n - 1) % every >= every / 2;
+                  const show = i % every === 0 || last;
+                  return <span key={`${p.label}-l-${i}`}>{show ? (overview.bucket === "hour" ? p.label : p.label) : ""}</span>;
+                })}
+              </div>
+            </section>
             <div className="row-head">
               <span className="label">{t("Agents")}</span>
             </div>
             <div className="list" id="usageAgents">
-              <div className="empty-state" style={{ padding: "14px 16px" }}>
-                {demoCopy("演示 Overview 有数据开关开着，但仍无 agent 行；关演示数据看真空态卡。", "Demo data on — no agent rows yet; turn demo off for Magpie empty card.")}
-              </div>
+              {overview.agents
+                .filter((g) => !hiddenUsageAgents.has(g.id))
+                .map((g) => {
+                  const total = Math.max(1, tokensOf(overview));
+                  const prompt = g.input + g.cache_read + (g.cache_write || 0);
+                  const hit =
+                    g.cache_read && prompt
+                      ? " · " + t("hit rate {p}", { p: Math.round((100 * g.cache_read) / prompt) + "%" })
+                      : "";
+                  return (
+                    <div className="row stat acts" key={g.id} data-id={g.id} style={{ position: "relative" }}>
+                      <span className="ic">
+                        <img src={iconSrc(g.icon)} alt="" />
+                      </span>
+                      <div className="who">
+                        <div className="name">{g.name}</div>
+                        <div className="sub">
+                          {[
+                            t(g.calls === 1 ? "{n} call" : "{n} calls", { n: String(g.calls) }),
+                            g.errors ? t("{n} failed", { n: String(g.errors) }) : "",
+                          ]
+                            .filter(Boolean)
+                            .join(" · ")}
+                        </div>
+                      </div>
+                      <div className="share" title={t("{n}% of tokens", { n: String(Math.round((100 * tokensOf(g)) / total)) })}>
+                        <i style={{ width: `${Math.max(1.5, (100 * tokensOf(g)) / total).toFixed(1)}%`, transition: "width .28s var(--ease)" }} />
+                      </div>
+                      <button
+                        type="button"
+                        className={`icon us-more${agentMenuFor === g.id ? " open" : ""}`}
+                        aria-haspopup="menu"
+                        aria-label={t("Actions for {name}", { name: g.name })}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setAgentMenuFor((cur) => (cur === g.id ? null : g.id));
+                        }}
+                      >
+                        <svg viewBox="0 0 16 16" width={14} height={14} aria-hidden>
+                          <circle cx="3.5" cy="8" r="1.2" fill="currentColor" />
+                          <circle cx="8" cy="8" r="1.2" fill="currentColor" />
+                          <circle cx="12.5" cy="8" r="1.2" fill="currentColor" />
+                        </svg>
+                      </button>
+                      {agentMenuFor === g.id ? (
+                        <div className="proto-menu open" role="menu" style={{ position: "absolute", right: 8, top: 36, zIndex: 20, minWidth: 180, animation: "fade-in .15s var(--ease)" }}>
+                          <button
+                            type="button"
+                            className="proto-item"
+                            role="menuitem"
+                            onClick={() => {
+                              setHiddenUsageAgents((s) => new Set(s).add(g.id));
+                              setAgentMenuFor(null);
+                            }}
+                          >
+                            {t("Hide from this list")}
+                          </button>
+                        </div>
+                      ) : null}
+                      <div className="num">
+                        <b>{fmtN(tokensOf(g))}</b>
+                        <small>
+                          {t("{a} in · {b} out", { a: fmtN(g.input), b: fmtN(g.output) })}
+                          {g.cache_read ? ` · ${t("{n} cached", { n: fmtN(g.cache_read) })}` : ""}
+                          {hit}
+                        </small>
+                      </div>
+                      <div className="cost">{g.cost ? "≈" + fmtCost(g.cost).replace(/^≈/, "") : ""}</div>
+                    </div>
+                  );
+                })}
             </div>
+            {overview.agents.some((g) => hiddenUsageAgents.has(g.id)) ? (
+              <div id="usageAgentsHid">
+                <button
+                  type="button"
+                  className="us-hidline text"
+                  aria-expanded={usageHidOpen}
+                  title={t("Hidden from this list only: their calls still count in the totals and the chart. Click to see them.")}
+                  onClick={() => setUsageHidOpen((o) => !o)}
+                  style={{ display: "inline-flex", alignItems: "center", gap: 4, margin: "6px 0", fontSize: 12 }}
+                >
+                  <span>{t("{n} hidden", { n: String([...hiddenUsageAgents].filter((id) => overview.agents.some((g) => g.id === id)).length) })}</span>
+                  <svg viewBox="0 0 12 12" width={11} height={11} aria-hidden style={{ transform: usageHidOpen ? "rotate(180deg)" : undefined, transition: "transform .15s ease-out" }}>
+                    <path d="M3 4.5 6 7.5 9 4.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                  </svg>
+                </button>
+                {usageHidOpen
+                  ? overview.agents
+                      .filter((g) => hiddenUsageAgents.has(g.id))
+                      .map((g) => (
+                        <div className="row stat hid acts" key={`hid-${g.id}`} data-id={g.id}>
+                          <span className="ic">
+                            <img src={iconSrc(g.icon)} alt="" />
+                          </span>
+                          <div className="who">
+                            <div className="name">{g.name}</div>
+                            <div className="sub">{t(g.calls === 1 ? "{n} call" : "{n} calls", { n: String(g.calls) })}</div>
+                          </div>
+                          <button
+                            type="button"
+                            className="text us-unhide"
+                            onClick={() =>
+                              setHiddenUsageAgents((s) => {
+                                const n = new Set(s);
+                                n.delete(g.id);
+                                return n;
+                              })
+                            }
+                          >
+                            {t("Unhide")}
+                          </button>
+                        </div>
+                      ))
+                  : null}
+              </div>
+            ) : null}
             <div className="row-head">
               <span className="label">{t("Models")}</span>
             </div>
             <div className="list" id="usageModels">
-              <div className="empty-state" style={{ padding: "14px 16px", opacity: 0.85 }}>
-                {demoCopy("尚无模型用量行。", "No model usage rows.")}
-              </div>
+              {overview.models.map((g) => {
+                const total = Math.max(1, tokensOf(overview));
+                return (
+                  <div className="row stat" key={g.id} data-id={g.id}>
+                    <span className="ic" aria-hidden>◆</span>
+                    <div className="who">
+                      <div className="name">{g.name}</div>
+                      <div className="sub">
+                        {[g.sub, t(g.calls === 1 ? "{n} call" : "{n} calls", { n: String(g.calls) })].filter(Boolean).join(" · ")}
+                      </div>
+                    </div>
+                    <div className="share" title={t("{n}% of tokens", { n: String(Math.round((100 * tokensOf(g)) / total)) })}>
+                      <i style={{ width: `${Math.max(1.5, (100 * tokensOf(g)) / total).toFixed(1)}%`, transition: "width .28s var(--ease)" }} />
+                    </div>
+                    <div className="num">
+                      <b>{fmtN(tokensOf(g))}</b>
+                      <small>{t("{a} in · {b} out", { a: fmtN(g.input), b: fmtN(g.output) })}</small>
+                    </div>
+                    <div className="cost">{g.cost ? "≈" + fmtCost(g.cost).replace(/^≈/, "") : ""}</div>
+                  </div>
+                );
+              })}
+            </div>
+            {overview.accounts.length ? (
+              <>
+                <div className="row-head" id="usageAccountsHead">
+                  <span className="label">{t("Accounts")}</span>
+                </div>
+                <div className="list" id="usageAccounts">
+                  {overview.accounts.map((g) => {
+                    const total = Math.max(1, tokensOf(overview));
+                    return (
+                      <div className="row stat" key={g.id} data-id={g.id}>
+                        <span className="ic">
+                          <img src={iconSrc(g.icon)} alt="" />
+                        </span>
+                        <div className="who">
+                          <div className={`name${mask ? " faint" : ""}`}>{mask ? "••••@••••.com" : g.name}</div>
+                          <div className="sub">
+                            {[g.sub, t(g.calls === 1 ? "{n} call" : "{n} calls", { n: String(g.calls) })].filter(Boolean).join(" · ")}
+                          </div>
+                        </div>
+                        <div className="share">
+                          <i style={{ width: `${Math.max(1.5, (100 * tokensOf(g)) / total).toFixed(1)}%` }} />
+                        </div>
+                        <div className="num">
+                          <b>{fmtN(tokensOf(g))}</b>
+                          <small>{t("{a} in · {b} out", { a: fmtN(g.input), b: fmtN(g.output) })}</small>
+                        </div>
+                        <div className="cost">{g.cost ? "≈" + fmtCost(g.cost).replace(/^≈/, "") : ""}</div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </>
+            ) : null}
+            <div style={{ marginTop: 10, display: "flex", gap: 8, flexWrap: "wrap" }}>
+              <button
+                type="button"
+                className="text"
+                aria-pressed={demoFilled}
+                onClick={() => setDemoFilled(false)}
+                title={demoCopy("关演示数据看真空态", "Turn off demo data for Magpie empty")}
+              >
+                {demoCopy("演示数据开 · 点此关", "Demo data on · click to clear")}
+              </button>
             </div>
           </>
         )}
@@ -1483,6 +1781,18 @@ const DEMO_MARKET = [
   },
 ];
 
+
+/** Magpie searchNPM Suggested hits (shots 20–24) — demo filter, 350ms debounce. */
+const DEMO_NPM = [
+  { pkg: "@magpie/opencode-zen-free", name: "OpenCode Zen Free", summary: "OpenCode Zen's free models with the public credential, automatic discovery and native…", downloads: "3.0k/week", ver: "v0.1.1", kind: "Provider", q: "opencode" },
+  { pkg: "@magpie/zcode", name: "ZCode", summary: "Z.ai and BigModel GLM Coding Plan, team seats and ZCode's free Start Plan.", downloads: "9.0k/week", ver: "v0.1.18", kind: "Provider", builtin: true, q: "opencode zcode" },
+  { pkg: "@magpie/qoder", name: "Qoder", summary: "Your Qoder subscription, international (qoder.com) or Qoder CN (qoder.cn).", downloads: "5.6k/week", ver: "v0.2.15", kind: "Provider", builtin: true, q: "opencode qoder" },
+  { pkg: "@magpie/devin", name: "Devin", summary: "Devin's models with your Devin account — a browser sign-in or the devin CLI's.", downloads: "2.9k/week", ver: "v0.1.16", kind: "Provider", builtin: true, q: "opencode" },
+  { pkg: "opencode-pty", name: "opencode-pty", summary: "OpenCode plugin for interactive PTY management — run background processes.", downloads: "4.3k/week", ver: "v0.4.0", kind: "Provider", q: "opencode pty" },
+  { pkg: "@mastra/opencode", name: "@mastra/opencode", summary: "OpenCode plugin for Mastra Observational Memory", downloads: "6.3k/week", ver: "v0.1.36", kind: "Provider", q: "opencode" },
+  { pkg: "@brendonovich/vite-annotate", name: "@brendonovich/vite…", summary: "Select UI elements in a Vite app and send contextual feedback to OpenCode.", downloads: "8.8k/week", ver: "v0.1.4", kind: "Provider", q: "opencode vite" },
+];
+
 export function PluginsView() {
   const [tab, setTab] = useState<string>(() => {
     try {
@@ -1492,7 +1802,12 @@ export function PluginsView() {
     }
   });
   const [query, setQuery] = useState("");
+  const [debouncedQ, setDebouncedQ] = useState("");
+  const [searchBusy, setSearchBusy] = useState(false);
+  const [manualSpec, setManualSpec] = useState("");
+  const [folderHint, setFolderHint] = useState("");
   const [mirror, setMirror] = useState(false);
+  const [mirrorTip, setMirrorTip] = useState(false);
   const [builtins, setBuiltins] = useState(BUILTINS_DEFAULT);
   const [installed, setInstalled] = useState<
     {
@@ -1531,6 +1846,27 @@ export function PluginsView() {
     }
   }, [tab]);
 
+  // Magpie askNPM: 350ms debounce, min 2 chars
+  useEffect(() => {
+    const q = query.trim();
+    if (q.length < 2) {
+      setDebouncedQ("");
+      setSearchBusy(false);
+      return;
+    }
+    setSearchBusy(true);
+    const id = window.setTimeout(() => {
+      setDebouncedQ(q.toLowerCase());
+      setSearchBusy(false);
+    }, 350);
+    return () => clearTimeout(id);
+  }, [query]);
+
+  const npmHits = useMemo(() => {
+    if (!debouncedQ) return [] as typeof DEMO_NPM;
+    return DEMO_NPM.filter((c) => `${c.name} ${c.pkg} ${c.q}`.toLowerCase().includes(debouncedQ));
+  }, [debouncedQ]);
+
   const install = (pkg: string, name: string) => {
     setBusy(pkg);
     // Magpie install: busy on card → Installed tab; demo ~420ms then local list
@@ -1559,15 +1895,29 @@ export function PluginsView() {
           <button
             type="button"
             className={`pm-mirror${mirror ? " on" : ""}`}
+            style={{ position: "relative" }}
             role="switch"
             aria-checked={mirror}
             title={t("Download the plugin list, plugins and Bun from mirrors in China first (npmmirror, jsDelivr), their official addresses after. Each is a copy of the very file, checked as the original is")}
-            onClick={() => setMirror((m) => !m)}
+            onMouseEnter={() => setMirrorTip(true)}
+            onMouseLeave={() => setMirrorTip(false)}
+            onFocus={() => setMirrorTip(true)}
+            onBlur={() => setMirrorTip(false)}
+            onClick={() => {
+              setMirror((m) => !m);
+              setSearchBusy(true);
+              window.setTimeout(() => setSearchBusy(false), 420);
+            }}
           >
             <span>{t("Mirrors in China")}</span>
             <span className={`lib-switch${mirror ? " on" : ""}`}>
               <i />
             </span>
+            {mirrorTip ? (
+              <span className="pm-mirror-tip" role="tooltip" style={{ position: "absolute", top: "100%", right: 0, marginTop: 6, zIndex: 30, maxWidth: 280, padding: "8px 10px", borderRadius: 8, background: "var(--fg)", color: "var(--card)", fontSize: 11.5, lineHeight: 1.4, boxShadow: "0 8px 24px color-mix(in srgb, var(--fg) 25%, transparent)", animation: "fade-in .12s var(--ease)", pointerEvents: "none" }}>
+                {t("Download the plugin list, plugins and Bun from mirrors in China first (npmmirror, jsDelivr), their official addresses after. Each is a copy of the very file, checked as the original is")}
+              </span>
+            ) : null}
           </button>
         ) : null}
         {tab !== "builtin" ? (
@@ -1754,13 +2104,66 @@ export function PluginsView() {
                 </div>
               );
             })}
+            {debouncedQ ? (
+              <div className="pm-sec" style={{ animation: "fade-in .2s var(--ease)" }}>
+                <div className="pm-sechead">
+                  <h3>{t("Suggested")}</h3>
+                  <span>{searchBusy ? t("Searching…") : mirror ? t("via China mirrors") : ""}</span>
+                </div>
+                {npmHits.length ? (
+                  <div className="pm-grid">
+                    {npmHits.map((c) => {
+                      const has = installed.some((x) => x.pkg === c.pkg);
+                      return (
+                        <div className={`pm-card${busy === c.pkg ? " installing" : ""}${has ? " has" : ""}`} key={c.pkg} tabIndex={0} role="button">
+                          <div className="pm-logo" aria-hidden>◆</div>
+                          <div className="pm-words" style={{ flex: 1, minWidth: 0 }}>
+                            <b style={{ fontSize: 13 }}>{c.name}</b>
+                            {c.builtin ? <span className="pm-chip" style={{ marginLeft: 6, fontSize: 10.5 }}>{t("Also built in")}</span> : null}
+                            <p style={{ margin: "4px 0 0", fontSize: 12, color: "var(--muted)", lineHeight: 1.45 }}>{c.summary}</p>
+                            <div style={{ marginTop: 6, fontSize: 11, color: "var(--faint)" }}>
+                              {c.kind} · {c.downloads} · {c.ver}
+                              {mirror ? ` · ${t("via China mirrors")}` : ""}
+                            </div>
+                          </div>
+                          <button
+                            type="button"
+                            className={`pm-act${has ? " get" : ""}`}
+                            disabled={busy === c.pkg || has}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              install(c.pkg, c.name);
+                            }}
+                          >
+                            {busy === c.pkg ? t("Installing…") : has ? t("Installed") : t("Install")}
+                          </button>
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <div className="pm-ghnone">
+                    <b>{demoCopy(`npm 演示无结果：「${debouncedQ}」`, `No demo npm hits for “${debouncedQ}”`)}</b>
+                    <p>{demoCopy("真站会查 npm；此处演示 Suggested（350ms）。", "Real Magpie queries npm; demo Suggested after 350ms.")}</p>
+                  </div>
+                )}
+              </div>
+            ) : null}
             {query.trim() &&
+            query.trim().length >= 2 &&
+            !debouncedQ &&
+            searchBusy ? (
+              <div className="pm-ghnone" style={{ opacity: 0.7 }}>
+                <b>{t("Searching…")}</b>
+              </div>
+            ) : null}
+            {!debouncedQ &&
+            query.trim() &&
             !DEMO_MARKET.some((s) =>
               s.cards.some((c) => `${c.name} ${c.pkg}`.toLowerCase().includes(query.trim().toLowerCase())),
             ) ? (
               <div className="pm-ghnone">
-                <b>{demoCopy(`npm 演示无结果：「${query.trim()}」`, `No demo npm hits for “${query.trim()}”`)}</b>
-                <p>{demoCopy("真站会查 npm；此处仅过滤演示卡片。", "Real Magpie queries npm; here only demo cards are filtered.")}</p>
+                <b>{demoCopy(`市场卡片无匹配：「${query.trim()}」`, `No market cards for “${query.trim()}”`)}</b>
               </div>
             ) : null}
             <div className="pm-sec" style={{ marginTop: 8 }}>
@@ -1771,15 +2174,47 @@ export function PluginsView() {
                   style={{ flex: 1, minWidth: 200 }}
                   placeholder={t("npm package, GitHub repo (github:owner/repo) or a folder")}
                   aria-label={t("Have one in mind?")}
+                  value={manualSpec}
+                  onChange={(e) => setManualSpec(e.target.value)}
                 />
-                <button type="button" className="icon" title={demoCopy("选择文件夹（演示）", "Choose folder (demo)")} aria-label="folder">
+                <button
+                  type="button"
+                  className="icon"
+                  title={demoCopy("选择文件夹（演示）", "Choose folder (demo)")}
+                  aria-label={t("Choose a folder")}
+                  onClick={() => {
+                    const p = "/home/demo/plugins/my-middleware";
+                    setManualSpec(p);
+                    setFolderHint(demoCopy("已填入演示路径（无真对话框）", "Filled demo path (no native dialog)"));
+                    window.setTimeout(() => setFolderHint(""), 2200);
+                  }}
+                >
                   <svg viewBox="0 0 16 16" width={14} height={14} aria-hidden>
                     <path d="M2 4.5h4l1.2 1.5H14v7H2z" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round" />
                   </svg>
                 </button>
-                <button type="button" className="text primary" disabled>
-                  {t("Install")}
+                <button
+                  type="button"
+                  className="text primary"
+                  disabled={!manualSpec.trim() || busy === "__manual__"}
+                  onClick={() => {
+                    const spec = manualSpec.trim();
+                    if (!spec) return;
+                    setBusy("__manual__");
+                    window.setTimeout(() => {
+                      const name = spec.split("/").pop() || spec;
+                      setInstalled((list) =>
+                        list.some((x) => x.pkg === spec) ? list : [...list, { pkg: spec, name, opts: "", optsOpen: false }],
+                      );
+                      setBusy(null);
+                      setTab("installed");
+                      setManualSpec("");
+                    }, 420);
+                  }}
+                >
+                  {busy === "__manual__" ? t("Installing…") : t("Install")}
                 </button>
+                {folderHint ? <span style={{ flexBasis: "100%", fontSize: 11.5, color: "var(--muted)", animation: "fade-in .15s var(--ease)" }}>{folderHint}</span> : null}
               </div>
             </div>
           </>

@@ -257,3 +257,16 @@ Same as §4; added: `.pm-opts textarea` focus .12s; `.range-menu .rm-day` backgr
 | Providers 嵌套 | `.fold` chevron **.15s** 账户/模型 | 添加后写入 `#providers` 列表 |
 | Routing 组 | `#rtMore` 组卡 + `#pop` ModelPop + Conditions fold | 空舞台仍保留；组为演示壳 |
 
+
+
+## 16. Overview filled / Agents Connect / Plugins search（v0.1.19）
+
+| 目的 | 机制 | 二开注意 |
+|------|------|----------|
+| Overview KPI | `.stats` 四格 `.kpi`（tokens / cache read / reasoning / calls） | 空态藏 chart 与 Agents/Models 头；`buildDemoOverview` |
+| Overview chart | `.chart .bars .bar i.in/i.out` peak+labels | 高度 transition `.28s`；hour/day bucket |
+| Agents Connect | 接入后展开 `.ag-exp` / `.ag-settings` / `.ag-foot` | Disconnect and restore；View diff；Relocate 同壳 |
+| Get started hide | `#agentsLead` opacity/transform `.22s` | `magpie-demo-guideHidden` |
+| Plugins search | 350ms debounce → Suggested `DEMO_NPM` | Mirror tip absolute；folder → manualSpec |
+| Routing trace | `.rt-reqs .rt-req` live demo rows | wait 点 rtlive；failover `.swap` |
+| Privacy discovery Off | `window.confirm` 双段文案 | Saved toast 仍走 setPrefs |

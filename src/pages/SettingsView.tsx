@@ -1492,7 +1492,17 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus }: Setti
           >
             <Segs
               value={prefs.discovery === "off" ? "off" : "on"}
-              onChange={(v) => setPrefs({ discovery: v as DemoPrefs["discovery"] })}
+              onChange={(v) => {
+                if (v === "off" && prefs.discovery !== "off") {
+                  const ok = window.confirm(
+                    t("Turn off subscription accounts?") +
+                      "\n\n" +
+                      t("Every subscription stops working in magpie until this is on again: magpie reads none of the sign-ins they come from. API-key providers work as before."),
+                  );
+                  if (!ok) return;
+                }
+                setPrefs({ discovery: v as DemoPrefs["discovery"] });
+              }}
               items={[{ id: "off", label: t("Off") }, { id: "on", label: t("On") }]}
             />
           </PrefRow>

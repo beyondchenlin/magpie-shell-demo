@@ -467,3 +467,175 @@ export const DEMO_SESSIONS_MORE: typeof DEMO_SESSIONS = [
     cost: 0,
   },
 ];
+
+/** Overview summary — Magpie renderUsage tile/chart/list shapes (demo filled). */
+export type OverviewPoint = { label: string; time?: number; input: number; output: number; calls: number; cost: number };
+export type OverviewGroup = {
+  id: string;
+  name: string;
+  icon: string;
+  input: number;
+  output: number;
+  cache_read: number;
+  cache_write?: number;
+  calls: number;
+  errors?: number;
+  retried?: number;
+  cost: number;
+  sub?: string;
+};
+
+export type OverviewSummary = {
+  input: number;
+  output: number;
+  cache_read: number;
+  cache_write: number;
+  reasoning: number;
+  calls: number;
+  errors: number;
+  retried: number;
+  unpriced: number;
+  cost: number;
+  bucket: "hour" | "day" | "week";
+  series: OverviewPoint[];
+  agents: OverviewGroup[];
+  models: OverviewGroup[];
+  accounts: OverviewGroup[];
+  path: string;
+};
+
+const tokensOfRow = (r: { input: number; output: number }) => r.input + r.output;
+
+/** Build Magpie-shaped Overview from DEMO_LEDGER (+ synthetic series). */
+export function buildDemoOverview(period = "today"): OverviewSummary {
+  const rows = DEMO_LEDGER.filter((r) => r.status !== "rej");
+  const input = rows.reduce((n, r) => n + r.in, 0);
+  const output = rows.reduce((n, r) => n + r.out, 0);
+  const cache_read = rows.reduce((n, r) => n + r.cache_read, 0);
+  const cache_write = rows.reduce((n, r) => n + r.cache_write, 0);
+  const cost = rows.reduce((n, r) => n + r.cost, 0);
+  const errors = DEMO_LEDGER.filter((r) => r.status === "err").length;
+  const calls = rows.length;
+
+  // Hourly bars for today / day bars otherwise — Magpie u.series
+  const series: OverviewPoint[] = [];
+  if (period === "today" || period === "yesterday") {
+    for (let h = 0; h < 24; h++) {
+      const hit = rows.filter((r) => new Date(r.t).getHours() === h);
+      const inp = hit.reduce((n, r) => n + r.in, 0) || (h >= 9 && h <= 18 && h % 3 === 0 ? 1200 + h * 40 : 0);
+      const out = hit.reduce((n, r) => n + r.out, 0) || (inp ? Math.round(inp * 0.14) : 0);
+      series.push({
+        label: String(h).padStart(2, "0"),
+        input: inp,
+        output: out,
+        calls: hit.length || (inp ? 1 : 0),
+        cost: hit.reduce((n, r) => n + r.cost, 0),
+      });
+    }
+  } else {
+    const days = period === "7d" ? 7 : period === "30d" ? 30 : 14;
+    for (let i = days - 1; i >= 0; i--) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      d.setHours(12, 0, 0, 0);
+      const seed = (d.getDate() * 17 + d.getMonth() * 3) % 11;
+      const scale = i < 3 ? 1.4 : 0.7 + (seed % 5) * 0.12;
+      const inp = Math.round((input / Math.max(3, days / 4)) * scale * (0.4 + (seed % 7) * 0.1));
+      const out = Math.round(inp * 0.15);
+      series.push({
+        label: d.toLocaleDateString(undefined, { month: "short", day: "numeric" }),
+        time: d.getTime(),
+        input: inp,
+        output: out,
+        calls: Math.max(1, Math.round(calls * scale * 0.3)),
+        cost: Math.round(cost * scale * 0.2 * 10000) / 10000,
+      });
+    }
+  }
+
+  const byAgent = new Map<string, OverviewGroup>();
+  for (const r of rows) {
+    const g = byAgent.get(r.agent) || {
+      id: r.agent,
+      name: r.agentName,
+      icon: r.icon,
+      input: 0,
+      output: 0,
+      cache_read: 0,
+      cache_write: 0,
+      calls: 0,
+      errors: 0,
+      cost: 0,
+    };
+    g.input += r.in;
+    g.output += r.out;
+    g.cache_read += r.cache_read;
+    g.cache_write = (g.cache_write || 0) + r.cache_write;
+    g.calls += 1;
+    g.cost += r.cost;
+    if (r.status === "err") g.errors = (g.errors || 0) + 1;
+    byAgent.set(r.agent, g);
+  }
+
+  const byModel = new Map<string, OverviewGroup>();
+  for (const r of rows) {
+    const id = r.served || r.req;
+    const g = byModel.get(id) || {
+      id,
+      name: id,
+      icon: "generic",
+      input: 0,
+      output: 0,
+      cache_read: 0,
+      cache_write: 0,
+      calls: 0,
+      cost: 0,
+      sub: r.providerName,
+    };
+    g.input += r.in;
+    g.output += r.out;
+    g.cache_read += r.cache_read;
+    g.cache_write = (g.cache_write || 0) + r.cache_write;
+    g.calls += 1;
+    g.cost += r.cost;
+    byModel.set(id, g);
+  }
+
+  const agents = [...byAgent.values()].sort((a, b) => tokensOfRow(b) - tokensOfRow(a));
+  const models = [...byModel.values()].sort((a, b) => tokensOfRow(b) - tokensOfRow(a));
+
+  return {
+    input,
+    output,
+    cache_read,
+    cache_write,
+    reasoning: Math.round(output * 0.22),
+    calls,
+    errors,
+    retried: 1,
+    unpriced: 0,
+    cost,
+    bucket: period === "today" || period === "yesterday" ? "hour" : "day",
+    series,
+    agents,
+    models,
+    accounts: [
+      {
+        id: "acct-demo",
+        name: "demo@example.com",
+        icon: "anthropic",
+        input: Math.round(input * 0.62),
+        output: Math.round(output * 0.55),
+        cache_read: Math.round(cache_read * 0.7),
+        calls: Math.max(1, Math.round(calls * 0.6)),
+        cost: Math.round(cost * 0.58 * 10000) / 10000,
+        sub: "Anthropic",
+      },
+    ],
+    path: "~/.magpie/usage",
+  };
+}
+
+export function tokensOf(u: { input: number; output: number }): number {
+  return u.input + u.output;
+}
