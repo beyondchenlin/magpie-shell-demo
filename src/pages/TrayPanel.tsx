@@ -1,6 +1,6 @@
 /**
  * Magpie tray / menu-bar panel (body.panel) — Agents tab from native-linux/tray/01-agents.png.
- * Open with ?panel=1 or #panel. Allowances tab hidden when no quotas (Magpie renderPanelQuota).
+ * Open with ?panel=1 or #panel. Allowances hidden when no quotas; Usage empty = tray/02.
  */
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Bird } from "../components/Bird";
@@ -44,6 +44,8 @@ export function TrayPanel({ onOpenMain, onQuit, onPrefs, onStatus }: Props) {
   const syncRef = useRef<HTMLButtonElement>(null);
   const hasAllowances = false; // demo: no quotas → Allowances tab hidden (shot 01)
   const setTabs = useSegThumb(tab);
+  const [usePeriod, setUsePeriod] = useState<"today" | "7d" | "30d" | "all">("today");
+  const setPeriodThumb = useSegThumb(usePeriod);
 
   useEffect(() => {
     document.body.classList.add("panel", "linux", "window");
@@ -238,9 +240,74 @@ export function TrayPanel({ onOpenMain, onQuit, onPrefs, onStatus }: Props) {
         </section>
 
         <section className="panel-usage" id="panelUsage" hidden={tab !== "stats"}>
-          <p style={{ padding: "12px 4px", color: "var(--muted)", fontSize: 12.5, textAlign: "center" }}>
-            {t("No usage yet")}
+          <div className="pu-bar">
+            <div className="segs" ref={setPeriodThumb}>
+              {(
+                [
+                  ["today", "Today"],
+                  ["7d", "7 days"],
+                  ["30d", "30 days"],
+                  ["all", "All"],
+                ] as const
+              ).map(([id, name]) => (
+                <button
+                  key={id}
+                  type="button"
+                  className={`opt${usePeriod === id ? " on" : ""}`}
+                  onClick={() => setUsePeriod(id)}
+                >
+                  {t(name)}
+                </button>
+              ))}
+            </div>
+            <span className="grow" />
+            <button
+              type="button"
+              className="icon pu-again"
+              title={t("Refresh now")}
+              aria-label={t("Refresh now")}
+              onClick={(e) => {
+                const b = e.currentTarget;
+                b.classList.add("spin");
+                onStatus(t("Usage refreshed"), "ok");
+                setTimeout(() => b.classList.remove("spin"), 400);
+              }}
+            >
+              <svg viewBox="0 0 16 16" width={13} height={13}>
+                <path
+                  d="M13.5 8a5.5 5.5 0 1 1-1.6-3.9M13.5 2.5v3h-3"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </button>
+            <button
+              type="button"
+              className="text"
+              onClick={() => {
+                onOpenMain();
+                try {
+                  location.hash = "#/usage";
+                } catch {
+                  /* */
+                }
+              }}
+            >
+              {t("Open Usage")}
+            </button>
+          </div>
+          <p className="usage-note">
+            {t("Gateway and session-log calls; local rejections excluded from totals.")}
           </p>
+          <div className="pu-none">
+            <b>{usePeriod === "today" ? t("No requests today") : t("No requests here")}</b>
+            {t(
+              "Every request an agent sends to magpie, and every call the agents' own session files record, is counted here.",
+            )}
+          </div>
         </section>
 
         <section className="panel-routing" id="panelRouting" hidden={tab !== "routing"}>

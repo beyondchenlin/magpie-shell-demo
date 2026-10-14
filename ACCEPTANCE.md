@@ -1,3 +1,8 @@
+## v0.1.35 TRAY_USAGE_EMPTY
+
+- Tray Usage tab empty state from native `02-usage-today.png` (Today/7d/30d/All · refresh · Open Usage · pu-none).
+- Profiles still Agents-only. Allowances remain hidden without quotas.
+
 ## v0.1.34 PROVIDERS_LIST + TRAY_AGENTS_PARTIAL
 
 - Providers `#providers` list-with-accounts: Magpie `renderProviders` row chrome (handle / signed-in sub / uses / key pill / pswitch / chev) + editor modal `.accts` from `renderAccounts` (dot / plan / using / Remove / Add). Off fold `#offProviders`.

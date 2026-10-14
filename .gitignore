@@ -27,3 +27,4 @@ release/
 dist/
 acceptance-shots/
 .cache/
+.vercel

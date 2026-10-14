@@ -421,3 +421,16 @@ Full nested capture consumed. Hook When-it-runs includes shared events + Cursor 
 | `.row.agent` open | `--row-spring` .48s | CSS 已齐；Model/Effort 字段 mock |
 
 *文档版本：v0.1.34*
+
+
+## v0.1.35 Tray Usage empty (native 02)
+
+| 控件 | Magpie | demo |
+|------|--------|------|
+| `#panelUsage` stats tab | `renderPanelUse` | TrayPanel when `data-ptab=stats` |
+| period segs | Today/7 days/30 days/All | `useSegThumb` 280ms |
+| `.pu-again` spin | refresh | mock toast |
+| Open Usage | `window/main?view=usage` | leave panel → `#/usage` |
+| `.pu-none` | No requests today | 同文案 |
+
+*文档版本：v0.1.35*
