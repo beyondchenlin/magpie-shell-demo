@@ -8,6 +8,33 @@ const COPY_FLASH_MS = 1200;
 
 const GW_URL = `http://${GATEWAY_ADDR}`;
 
+type DemoGwModel = { id: string; name: string; provider: string; icon?: string };
+type DemoCall = { id: string; time: number; agent: string; model: string; from: string; to: string; status: number; ms: number; ttft?: number; error?: string };
+
+const DEMO_MODELS: DemoGwModel[] = [
+  { id: "codex/gpt-5.4", name: "gpt-5.4", provider: "OpenAI" },
+  { id: "codex/gpt-5.4-mini", name: "gpt-5.4-mini", provider: "OpenAI" },
+  { id: "anthropic/claude-sonnet-4-5", name: "claude-sonnet-4-5", provider: "Anthropic" },
+  { id: "google/gemini-2.5-pro", name: "gemini-2.5-pro", provider: "Google" },
+];
+
+const DEMO_CALLS: DemoCall[] = [
+  { id: "1042", time: Date.now() - 120000, agent: "Codex", model: "codex/gpt-5.4", from: "openai", to: "openai", status: 200, ms: 1840, ttft: 320 },
+  { id: "1041", time: Date.now() - 300000, agent: "Claude Code", model: "anthropic/claude-sonnet-4-5", from: "anthropic", to: "anthropic", status: 200, ms: 2560 },
+  { id: "1040", time: Date.now() - 600000, agent: "curl", model: "codex/gpt-5.4-mini", from: "openai", to: "openai", status: 429, ms: 210, error: "rate limited" },
+];
+
+function readDemoPrefs(): { lan: boolean; showGwDemo: boolean; port: string } {
+  try {
+    const raw = localStorage.getItem("magpie.demoPrefs");
+    if (!raw) return { lan: false, showGwDemo: true, port: "3425" };
+    const j = JSON.parse(raw);
+    return { lan: !!j.lan, showGwDemo: j.showGwDemo !== false, port: String(j.port || "3425") };
+  } catch {
+    return { lan: false, showGwDemo: true, port: "3425" };
+  }
+}
+
 type FlavorId = "openai" | "responses" | "anthropic" | "gemini" | "systemone";
 type SnipLang = "shell" | "curl" | "python" | "node";
 type SnipOS = "windows" | "unix";
@@ -245,13 +272,29 @@ export function GatewayView({ onStatus, onGoNetwork }: Props) {
     () => lsGet("magpie.gwModelsFolded", "") === "1",
   );
   const [restartBusy, setRestartBusy] = useState(false);
-  /** Demo always "running · mine" empty catalog — matches official empty shots. */
+  const [demoPrefs, setDemoPrefs] = useState(readDemoPrefs);
+  const [exampleModel, setExampleModel] = useState(() => lsGet("magpie.model", DEMO_MODELS[0].id));
+  const [expandedCalls, setExpandedCalls] = useState<Set<string>>(() => new Set());
+  const [gwKeys, setGwKeys] = useState<{ name: string; key: string }[]>([
+    { name: "laptop", key: "mgk_demo_laptop_••••••••" },
+    { name: "ci", key: "mgk_demo_ci_••••••••" },
+  ]);
+  useEffect(() => {
+    const tick = () => setDemoPrefs(readDemoPrefs());
+    window.addEventListener("storage", tick);
+    const id = window.setInterval(tick, 1500);
+    return () => { window.removeEventListener("storage", tick); window.clearInterval(id); };
+  }, []);
   const running = true;
-  const models = 0;
+  const showFilled = demoPrefs.showGwDemo;
+  const lanOn = demoPrefs.lan;
+  const catalog = showFilled ? DEMO_MODELS : [];
+  const models = catalog.length;
+  const calls = showFilled ? DEMO_CALLS : [];
   const f = FLAVORS.find((x) => x.id === flavor) || FLAVORS[0];
   const base = f.base(GW_URL);
-  const modelPlaceholder = f.decide ? "provider/jev-latest" : "provider/model";
-  const secret = "magpie";
+  const modelPlaceholder = f.decide ? "provider/jev-latest" : (exampleModel || "provider/model");
+  const secret = lanOn && gwKeys.length ? gwKeys[0].key.replace("••••••••", "x7k9m2p4") : "magpie";
   const win = snipOS === "windows";
 
   const flavorSeg = useSegThumb(flavor);
@@ -362,16 +405,52 @@ export function GatewayView({ onStatus, onGoNetwork }: Props) {
         </div>
       </div>
 
-      <p className="usage-note gw-keys-off" id="gatewayKeysOff">
-        <span>
-          {t(
-            "Gateway keys are for other computers, and for a tunnel to this one such as Cloudflare Tunnel: they are added here once Share on local network is on. Agents on this computer need none.",
-          )}
-        </span>{" "}
-        <button type="button" className="text" id="openLanSettings" onClick={onGoNetwork}>
-          {t("Network and sharing")}
-        </button>
-      </p>
+      {lanOn ? (
+        <section id="gatewayKeysBlock">
+          <div className="row-head">
+            <span className="label">{t("Gateway keys")}</span>
+            <span className="grow" />
+            <button
+              type="button"
+              className="text"
+              id="addGatewayKey"
+              onClick={() => {
+                const n = `key-${gwKeys.length + 1}`;
+                setGwKeys((ks) => [...ks, { name: n, key: `mgk_demo_${n}_••••••••` }]);
+                onStatus(t("Saved"), "ok");
+              }}
+            >
+              {t("Add gateway key")}
+            </button>
+          </div>
+          <p className="usage-note">{t("Create a gateway key for each client. Usage is counted separately for each key.")}</p>
+          <section id="gatewayKeys" className="list prefs">
+            {gwKeys.map((k) => (
+              <div className="row pref" key={k.name}>
+                <div className="who">
+                  <div className="name">{k.name}</div>
+                  <div className="sub"><code>{k.key}</code></div>
+                </div>
+                <div className="val">
+                  <CopyBtn text={k.key.replace("••••••••", "x7k9m2p4")} what={t("Key")} onStatus={onStatus} />
+                  <button type="button" className="text" onClick={() => setGwKeys((ks) => ks.filter((x) => x.name !== k.name))}>{t("Remove")}</button>
+                </div>
+              </div>
+            ))}
+          </section>
+        </section>
+      ) : (
+        <p className="usage-note gw-keys-off" id="gatewayKeysOff">
+          <span>
+            {t(
+              "Gateway keys are for other computers, and for a tunnel to this one such as Cloudflare Tunnel: they are added here once Share on local network is on. Agents on this computer need none.",
+            )}
+          </span>{" "}
+          <button type="button" className="text" id="openLanSettings" onClick={onGoNetwork}>
+            {t("Network and sharing")}
+          </button>
+        </p>
+      )}
 
       <div className="row-head">
         <button
@@ -398,7 +477,7 @@ export function GatewayView({ onStatus, onGoNetwork }: Props) {
               <CopyBtn text={base} what={t("Base URL")} onStatus={onStatus} />
             </>
           ) : (
-            t("Loopback only · the key can be anything")
+            t(lanOn && gwKeys.length ? "Use a gateway key to track usage" : lanOn ? "Local network · an enabled gateway key is required" : "Loopback only · the key can be anything")
           )}
         </span>
       </div>
@@ -556,21 +635,48 @@ export function GatewayView({ onStatus, onGoNetwork }: Props) {
         >
           <FoldChev />
           <span className="label">{t("Models")}</span>
-          <span className="note" id="modelsCount" />
+          <span className="note" id="modelsCount">{models ? String(models) : ""}</span>
         </button>
         <span className="grow" />
-        <button type="button" className="text" id="copyModels" hidden>
+        <button
+          type="button"
+          className="text"
+          id="copyModels"
+          hidden={!models || modelsFolded}
+          onClick={() => {
+            void navigator.clipboard?.writeText(catalog.map((m) => m.id).join("\n"));
+            onStatus(t("{what} copied", { what: t("Model ids") }), "ok");
+          }}
+        >
           {t("Copy all ids")}
         </button>
       </div>
-      {/* empty catalog: Magpie keeps list visible even when fold remembered */}
-      <div className="list" id="gwModels" hidden={false}>
-        <div className="empty-state">
-          <b>{t("No models exposed yet")}</b>
-          {t(
-            "Add a provider, or sign in to Codex or Copilot; their models show up here for every agent.",
-          )}
-        </div>
+      <div className="list" id="gwModels" hidden={!!(modelsFolded && models > 0)}>
+        {!catalog.length ? (
+          <div className="empty-state">
+            <b>{t("No models exposed yet")}</b>
+            {t("Add a provider, or sign in to Codex or Copilot; their models show up here for every agent.")}
+          </div>
+        ) : (
+          catalog.map((m) => (
+            <div
+              key={m.id}
+              className={`row model${m.id === exampleModel ? " selected" : ""}`}
+              title={t("Use this model in the snippets")}
+              onClick={() => {
+                setExampleModel(m.id);
+                lsSet("magpie.model", m.id);
+              }}
+            >
+              <span className="ic" aria-hidden>◎</span>
+              <div className="who">
+                <div className="name">{m.id}</div>
+                <div className="sub">{m.name !== m.id.split("/")[1] ? `${m.name} · ${m.provider}` : m.provider}</div>
+              </div>
+              <CopyBtn text={m.id} what={t("Model id")} onStatus={onStatus} />
+            </div>
+          ))
+        )}
       </div>
 
       <div className="row-head">
@@ -579,11 +685,54 @@ export function GatewayView({ onStatus, onGoNetwork }: Props) {
         <span className="note" id="callsNote" />
       </div>
       <div className="list activity" id="activity">
-        <div className="none">
-          {t(
-            "No requests yet. Point an agent at a model, or run the example above; every call shows up here as it happens.",
-          )}
-        </div>
+        {!calls.length ? (
+          <div className="none">
+            {t("No requests yet. Point an agent at a model, or run the example above; every call shows up here as it happens.")}
+          </div>
+        ) : (
+          calls.map((c) => {
+            const id = `#${c.id}`;
+            const open = expandedCalls.has(id);
+            return (
+              <div key={id} className={`call-item${open ? " open" : ""}${c.status >= 400 ? " bad" : ""}`} data-id={id}>
+                <div
+                  className="call"
+                  role="button"
+                  tabIndex={0}
+                  aria-expanded={open}
+                  title={open ? t("Hide request and response bodies") : t("Show request and response bodies")}
+                  onClick={() => {
+                    setExpandedCalls((prev) => {
+                      const n = new Set(prev);
+                      if (n.has(id)) n.delete(id); else n.add(id);
+                      return n;
+                    });
+                  }}
+                  onKeyDown={(ev) => {
+                    if (ev.key === "Enter" || ev.key === " ") {
+                      ev.preventDefault();
+                      (ev.currentTarget as HTMLElement).click();
+                    }
+                  }}
+                >
+                  <span className="call-chev"><FoldChev /></span>
+                  <span className="when">{new Date(c.time).toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit", second: "2-digit" })}</span>
+                  <span className="a">{c.agent}</span>
+                  <span className="m">{c.model}</span>
+                  <span className="p">{c.from === c.to ? c.from : `${c.from} → ${c.to}`}</span>
+                  <span className="grow" />
+                  <span className="st">{c.error ? `${c.status} ${c.error}` : `${c.status} · ${c.ms}ms`}{c.ttft ? ` · TTFT ${c.ttft}ms` : ""}</span>
+                </div>
+                {open ? (
+                  <div className="call-body">
+                    <pre className="snip"><code>{demoCopy("演示请求体（未接线真网关）", "Demo request body (no live gateway)")}</code></pre>
+                    <pre className="snip"><code>{demoCopy("演示响应体", "Demo response body")}</code></pre>
+                  </div>
+                ) : null}
+              </div>
+            );
+          })
+        )}
       </div>
     </main>
   );

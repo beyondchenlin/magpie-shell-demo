@@ -1,0 +1,99 @@
+# Settings — native Linux (magpie 0.1.1233)
+
+Opened from the gear on the top tab strip. Tooltip: `Settings (Ctrl+,)`. Top tabs stay, **none selected**. Section nav is a wrapping row under the tabs (not a sidebar).
+
+Window still **712×652**. `textSize` was exercised at 125% then restored to **110**. `theme` left **system**. `lang` left **system**. No export, import, port apply, share toggle, or token save.
+
+Observability (`setTab-otel`, feature `otel`) is **not in the tab row**.
+
+## Tab row
+
+Wraps. On this width, row 1: GENERAL, ALLOWANCES, NETWORK AND SHARING, MODELS, PRIVACY, SYNC AND BACKUP. Row 2: ABOUT. Selected label is darker/heavier. Find a setting sits under the row, right-aligned search.
+
+## GENERAL (top → bottom)
+
+| row | control | seen state |
+|---|---|---|
+| Appearance | System / Light / Dark | System. Clicked Light (page stays light, cards white). Clicked Dark: page ~`rgb(35,35,39)`, chrome ~`rgb(26,26,30)`. Restored System. Thumb 280ms `--ease`. |
+| Language | menu `System ▾` | Opens a card menu, chevron flips up. Items: **System** (check), English, 简体中文, 繁體中文, 日本語, Deutsch. Hover fills the row (繁體中文). Esc closed. Not changed. |
+| Text size | 100 / 110 / 125 / 150 | Was 110. Tooltip: everything in magpie's windows, larger; Ctrl+ / Ctrl− / Ctrl+0. Clicked **125** (layout reflow, persisted). Restored **110**. |
+| Interface font | two `System default` menus + preview `Aa 0123 · 中文` | Menus not opened. |
+| Code font | same pair + same preview | Menus not opened. |
+| Click the tray icon to | Open the quick panel (on) / Open the main window | Matches `tray=panel`. Not toggled. |
+| Provider in model names | Off / Not on names I set / **On** | Not toggled. |
+| Codex subagents on any model | Off / On | Off. Sub: a GPT lead spawns subagents on magpie's other models. New threads only. |
+| Long conversations | Compact at 272K (on) / Full window / 272k | Not toggled. |
+| Codex thread titles | chip `Codex's own (ChatGPT)` | Picker not opened. |
+| Codex thread descriptions | same chip | Picker not opened. |
+| Codex composer predictions | same chip | Picker not opened. |
+| Codex auto-review model | `Codex's own pick` | Picker not opened. |
+| Open at login | Off / On | Off. |
+| Lightweight mode | Off / On | Off. Sub: a closed panel frees about 100 MB after a minute. |
+| Prevent sleep | Off (on) / On / Screen on too | Off. Sub: keeps this computer awake while magpie runs tasks. |
+
+Not on this Linux window (present in HTML, hidden): Gateway mode, Bar icon, Show in Dock, Detect agents in WSL, Session terminal, Codex memories model.
+
+## ALLOWANCES
+
+- Allowances in the menu bar: **Off ▾** (dropdown not opened). Sub about subscriptions or tokens/cost today or 7 days.
+- Allowance display: **Used** / Left.
+- Allowance reads: **Automatic** / When I ask.
+- Currency: **$ USD** / ¥ CNY.
+- Allowance alert: Off / On.
+- Low balance alert: Off / On.
+- Reset reminder: **Off** / 12 h before / 24 h before / 48 h before.
+- Task done alert: **Off** / 1 min / 3 min / 10 min. Sub names Claude Code, Codex, OpenCode.
+
+Lower rows from the HTML (menu bar refresh, logos, magpie icon, pace, warm-up, daily check-in) were **below this scroll** and not captured as their own shot. Scroll file shows through Task done alert.
+
+## NETWORK AND SHARING
+
+- Proxy: **Auto** / Off / Custom. Sub: no system proxy found.
+- GITHUB — GitHub token field placeholder `ghp_… / github_pat_…`, **Create one ↗**, Save. Not edited.
+- GATEWAY — port field **3425**, Apply. Sub: agents move with it. Now `http://127.0.0.1:3425`. **Apply not clicked.**
+- Model ids without the provider: Off / On.
+- LOCAL NETWORK — Share on local network: **Off** / On. Not turned on.
+
+## MODELS
+
+- IMAGES — Image recognition: `Automatic · no model that sees` (picker not opened).
+- Image generation: `Automatic · no model that draws`. Link **Turn on the Library** (Plugins). Not clicked.
+- Image recognition MCP server: `http://127.0.0.1:3425/mcp/magpie/vision` + copy.
+- WEB SEARCH — Searches for other models: `Automatic · no provider that searches`.
+- Search APIs row starts at the bottom of the shot (order of search APIs). Rest not scrolled in a dedicated frame (`12-models-scroll.png`).
+
+## PRIVACY
+
+- Mask secrets Off/On. Mask personal data Off/On. Hide accounts Off/On.
+- Masked words field placeholder `names, codenames, hosts`.
+- Masking rules: API_KEY chip, **Prefix** / Regex, value `oc_sk_`, **Add**.
+- Count me as a user Off/On.
+- Share the agents, providers and models I use — row clipped.
+
+## SYNC AND BACKUP
+
+- WebDAV, S3 or GitHub sync — **Set up** (not opened; click landed on the description tooltip).
+- **Export…** expands inline (not a separate window). Close on the row. Fields: Passphrase, again. Checks on: With the providers' API keys; With the library. Cancel / **Export**. Cancelled. Nothing exported.
+- **Import…** expands inline. Close. File: No file chosen, Choose…. Passphrase. Checks on: Set the agents' models too; Bring in the library too (copy explains providers with the same id are replaced; library replaces the local one and keeps backups). Cancel / **Import**. Closed without choosing a file.
+
+## ABOUT
+
+- Version: running **0.1.1233**, `0.1.12335 is downloaded`, **Restart to update** (not clicked).
+- What's new — Open.
+- Update button Off/On (header arrow is On; the purple update chip is showing).
+- Automatic updates Off/On.
+- Check every: 30 min / 1 h / **6 h** / 24 h.
+- Restart automatically Off/On.
+- Download source: **GitHub** / Use a mirror…
+- Config folder `~/.config/magpie` copy + **Open**. Hover tooltip shows the path.
+- Command line: green dot, **bash**, `runs this app`.
+- Gateway URL `http://127.0.0.1:3425` copy.
+- Community: **Join Discord**, **GitHub**.
+
+## Motion
+
+Same tokens as Gateway: segment thumb **280ms** `cubic-bezier(.2,.8,.2,1)`; buttons **.16s** `--ease`, active scale .96. Language menu chevron flips immediately; row hover is a gray fill. Inline Export/Import panels expand in place (no scrim). Dark appearance is an instant repaint of the page (no cross-fade caught at 30fps).
+
+## Left state
+
+Settings, Sync and backup, export/import panels closed. theme system, lang system, textSize 110, tray panel. Gateway still running. Top tabs visible, settings section still showing (no app tab selected).

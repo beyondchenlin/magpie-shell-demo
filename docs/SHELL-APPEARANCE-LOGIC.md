@@ -73,7 +73,13 @@ footer.foot                 ← #status toast 胶囊
 | `.warm-tabs button` | color/background **.12s** | Settings Allowances 预热分区 |
 | `.set-searching` | tabs 隐藏；`.set-page::before` 显示 `data-part` | Settings 搜索 |
 | `.text` / `.discord`/`.github` | background/color **.12s** | Settings About / Sync 文本钮 |
-| `lan-address-row` height | **.28s** `--ease` | Network LAN 地址行展开（后续） |
+| `lan-address-row` height | **.28s** `--ease` | Network LAN 地址行展开 |
+| `#pop` `pop-fade` + `pop-in` | **.18s** ease-out + **.42s** cubic-bezier(.16,1,.3,1) | 模型选择器打开 |
+| `#pop.leaving` `pop-out` | **.22s** cubic-bezier(.4,0,.7,.2) | 模型选择器关闭 |
+| `.rail-thumb` | transform **260ms** cubic-bezier(.22,1,.36,1) | model-picker 左侧 rail（二开可后续） |
+| `.warm-at input.at` | border/box-shadow **.12s** | Daily warm-up 时间片 |
+| `.proxy-segs input` | border/box-shadow **.12s** | Proxy / SOCKS 字段 |
+| `.modal` / `.dialog` | fade **280ms** + spring **570ms**（Providers 已有 `useModalAnim`） | Restore / What's new |
 
 **规则：** 每个可点控件落地时对照 Magpie 同选择器的 `transition` / `@keyframes` / JS 定时器；缺动效 = 未对齐。尊重 `prefers-reduced-motion: reduce`。
 
@@ -160,4 +166,4 @@ footer.foot                 ← #status toast 胶囊
 - **扩展一行：** 在对应 `setPage-*` 加 `.row.pref`（`.who` + `.val`），控件用 `Segs` / `.pref-pick` / `.text` / `.copy`，对照 `app.js` 同名字段的 API，demo 只本地态。  
 - **从 Gateway：** `#openLanSettings` → `sessionStorage magpie.setTab=network` 再进 Settings。
 
-*文档版本：Settings 深页壳 v0.1.10*
+*文档版本：Settings nested + #pop v0.1.12*

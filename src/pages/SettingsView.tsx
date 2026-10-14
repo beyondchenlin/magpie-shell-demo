@@ -3,6 +3,22 @@ import { Segs } from "../components/Segs";
 import { useSegThumb } from "../components/SegThumb";
 import { GATEWAY_ADDR } from "../data/mock";
 import { demoCopy, t, type Lang } from "../i18n";
+import {
+  AutoResetOwn,
+  CliRow,
+  CodexModelPick,
+  DailyWarmRow,
+  LanAddressRow,
+  OtelFull,
+  ProxyBlock,
+  RedactRulesBlock,
+  RestoreModal,
+  SyncForms,
+  WhatsNewModal,
+  type AutoResetMap,
+  type OtelConfig,
+  type RedactRule,
+} from "./settings/NestedBlocks";
 
 const SET_TABS = [
   { id: "general", en: "General" },
@@ -82,12 +98,29 @@ type DemoPrefs = {
   imageGen: "auto" | "off";
   webSearch: "auto" | "off";
   replies: "auto" | "off";
-  codexTitles: "auto" | "off" | "model";
-  codexDescriptions: "auto" | "off";
-  codexPredictions: "auto" | "off";
-  codexAutoReview: "auto" | "off";
+  codexTitles: string;
+  codexDescriptions: string;
+  codexPredictions: string;
+  codexAutoReview: string;
   allowIPs: string[];
   allowDraft: string;
+  codexWarmAts: string[];
+  claudeWarmAts: string[];
+  proxyUser: string;
+  proxyPass: string;
+  lanProtocol: "openai" | "anthropic";
+  lanSelectedURL: string;
+  redactPersonal: boolean;
+  redactWords: string;
+  redactRules: RedactRule[];
+  noStats: boolean;
+  noUsageStats: boolean;
+  hideAccounts: boolean;
+  otelCfg: OtelConfig;
+  syncKind: "webdav" | "s3" | "github";
+  autoReset: AutoResetMap;
+  autoResetUsers: string[];
+  showGwDemo: boolean;
 };
 
 const DEFAULTS: DemoPrefs = {
@@ -140,12 +173,37 @@ const DEFAULTS: DemoPrefs = {
   imageGen: "auto",
   webSearch: "auto",
   replies: "auto",
-  codexTitles: "auto",
-  codexDescriptions: "auto",
-  codexPredictions: "auto",
-  codexAutoReview: "auto",
+  codexTitles: "",
+  codexDescriptions: "",
+  codexPredictions: "",
+  codexAutoReview: "",
   allowIPs: [],
   allowDraft: "",
+  codexWarmAts: [],
+  claudeWarmAts: [],
+  proxyUser: "",
+  proxyPass: "",
+  lanProtocol: "openai",
+  lanSelectedURL: "http://192.168.1.10:3425",
+  redactPersonal: false,
+  redactWords: "",
+  redactRules: [{ kind: "API_KEY", prefix: "oc_sk_" }],
+  noStats: false,
+  noUsageStats: true,
+  hideAccounts: false,
+  otelCfg: {
+    enabled: false,
+    endpoint: "",
+    headers: "",
+    metrics: false,
+    sessions: false,
+    bodies: false,
+    bodiesWhole: false,
+  },
+  syncKind: "webdav",
+  autoReset: { "demo@openai.com": { week: false, expiring: false } },
+  autoResetUsers: ["demo@openai.com"],
+  showGwDemo: true,
 };
 
 function loadPrefs(): DemoPrefs {
@@ -278,6 +336,9 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus }: Setti
   const [langOpen, setLangOpen] = useState(false);
   const [localePick, setLocalePick] = useState<string>(() => (lang === "zh" ? "zh" : lang === "en" ? "en" : "system"));
   const [warmTab, setWarmTab] = useState<"codex" | "claude">("codex");
+  const [restoreOpen, setRestoreOpen] = useState(false);
+  const [whatsNewOpen, setWhatsNewOpen] = useState(false);
+  const [proxyTest, setProxyTest] = useState("");
   const setTabsBox = useSegThumb(tab);
   const warmBox = useSegThumb(warmTab);
   const langBtn = useRef<HTMLButtonElement>(null);
@@ -406,6 +467,7 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus }: Setti
     matchQ("Gateway URL");
 
   return (
+    <>
     <main className={`view${searching ? " set-searching" : ""}`} id="view-settings">
       <div className="row-head set-head">
         <div
@@ -602,51 +664,22 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus }: Setti
           )}
           {gRows.codexTitles && (
             <PrefRow name={t("Codex thread titles")} id="codexTitlesRow">
-              <Segs
-                value={prefs.codexTitles}
-                onChange={(v) => setPrefs({ codexTitles: v as DemoPrefs["codexTitles"] })}
-                items={[
-                  { id: "auto", label: t("Automatic") },
-                  { id: "off", label: t("Off") },
-                  { id: "model", label: demoCopy("选模型…", "Pick model…") },
-                ]}
-              />
+              <CodexModelPick field="codexTitles" value={prefs.codexTitles} label={t("Codex thread titles")} onChange={(v) => setPrefs({ codexTitles: v })} />
             </PrefRow>
           )}
           {gRows.codexDesc && (
             <PrefRow name={t("Codex thread descriptions")} id="codexDescriptionsRow">
-              <Segs
-                value={prefs.codexDescriptions}
-                onChange={(v) => setPrefs({ codexDescriptions: v as DemoPrefs["codexDescriptions"] })}
-                items={[
-                  { id: "auto", label: t("Automatic") },
-                  { id: "off", label: t("Off") },
-                ]}
-              />
+              <CodexModelPick field="codexDescriptions" value={prefs.codexDescriptions} label={t("Codex thread descriptions")} onChange={(v) => setPrefs({ codexDescriptions: v })} />
             </PrefRow>
           )}
           {gRows.codexPred && (
             <PrefRow name={t("Codex composer predictions")} id="codexPredictionsRow">
-              <Segs
-                value={prefs.codexPredictions}
-                onChange={(v) => setPrefs({ codexPredictions: v as DemoPrefs["codexPredictions"] })}
-                items={[
-                  { id: "auto", label: t("Automatic") },
-                  { id: "off", label: t("Off") },
-                ]}
-              />
+              <CodexModelPick field="codexPredictions" value={prefs.codexPredictions} label={t("Codex composer predictions")} onChange={(v) => setPrefs({ codexPredictions: v })} />
             </PrefRow>
           )}
           {gRows.codexReview && (
             <PrefRow name={t("Codex auto-review model")} id="codexAutoReviewRow">
-              <Segs
-                value={prefs.codexAutoReview}
-                onChange={(v) => setPrefs({ codexAutoReview: v as DemoPrefs["codexAutoReview"] })}
-                items={[
-                  { id: "auto", label: t("Automatic") },
-                  { id: "off", label: t("Off") },
-                ]}
-              />
+              <CodexModelPick field="codexAutoReview" value={prefs.codexAutoReview} label={t("Codex auto-review model")} onChange={(v) => setPrefs({ codexAutoReview: v })} />
             </PrefRow>
           )}
           {gRows.login && (
@@ -905,6 +938,17 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus }: Setti
               />
             </PrefRow>
           )}
+          <PrefRow
+            name={t("Codex: auto-use resets")}
+            sub={t("A ChatGPT account uses one of its resets by itself when its week is used up and no other account can answer, or before one expires unused. Off until turned on, account by account; each account's card on the Usage page has the same switch.")}
+            id="codexAutoResetRow"
+            className="wraps"
+          />
+          <AutoResetOwn
+            users={prefs.autoResetUsers}
+            map={prefs.autoReset}
+            onChange={(autoReset) => setPrefs({ autoReset })}
+          />
         </div>
 
         {uRows.warm && (
@@ -933,20 +977,15 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus }: Setti
                       ]}
                     />
                   </PrefRow>
-                  <PrefRow name={t("Daily warm-up")} sub={t("At times of day so 5-hour windows line up")}>
-                    <Segs
-                      className="warm-at"
-                      value={prefs.codexWarmup === "off" ? "off" : "on"}
-                      onChange={(v) => {
-                        if (v === "off") setPrefs({ codexWarmup: "off" });
-                        else if (prefs.codexWarmup === "off") setPrefs({ codexWarmup: "week" });
-                      }}
-                      items={[
-                        { id: "off", label: t("Off") },
-                        { id: "on", label: t("On") },
-                      ]}
-                    />
-                  </PrefRow>
+                  <DailyWarmRow
+                    ats={prefs.codexWarmAts}
+                    onChange={(codexWarmAts) => setPrefs({ codexWarmAts })}
+                    sub={
+                      prefs.codexWarmAts.length > 1
+                        ? t("Starts each account's 5-hour window at each of these times every day")
+                        : t("Starts each account's 5-hour window at this time every day")
+                    }
+                  />
                 </div>
               )}
               {warmTab === "claude" && (
@@ -962,20 +1001,11 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus }: Setti
                       ]}
                     />
                   </PrefRow>
-                  <PrefRow name={t("Daily warm-up")} sub={t("Sent through Claude Code.")}>
-                    <Segs
-                      className="warm-at"
-                      value={prefs.claudeWarmup === "off" ? "off" : "on"}
-                      onChange={(v) => {
-                        if (v === "off") setPrefs({ claudeWarmup: "off" });
-                        else if (prefs.claudeWarmup === "off") setPrefs({ claudeWarmup: "week" });
-                      }}
-                      items={[
-                        { id: "off", label: t("Off") },
-                        { id: "on", label: t("On") },
-                      ]}
-                    />
-                  </PrefRow>
+                  <DailyWarmRow
+                    ats={prefs.claudeWarmAts}
+                    onChange={(claudeWarmAts) => setPrefs({ claudeWarmAts })}
+                    sub={t("Sent through Claude Code.")}
+                  />
                 </div>
               )}
             </div>
@@ -994,40 +1024,19 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus }: Setti
       >
         <div className="list prefs">
           {nRows.proxy && (
-            <PrefRow
-              name={t("Proxy")}
-              sub={
-                prefs.proxy === "off"
-                  ? t("Off: requests to vendors without a proxy of their own, and update checks, go direct")
-                  : prefs.proxy === "custom" && prefs.proxyUrl
-                    ? t("Requests to vendors without a proxy of their own, and update checks, go through {proxy}", { proxy: prefs.proxyUrl })
-                    : t("No system proxy found; requests to vendors without a proxy of their own, and update checks, go direct")
-              }
-            >
-              <div className="proxy-segs" id="proxySegs">
-                <div className="proxy-controls" style={{ display: "inline-flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
-                  {prefs.proxy === "custom" ? (
-                    <input
-                      className="proxy"
-                      value={prefs.proxyUrl}
-                      placeholder="http://127.0.0.1:7890"
-                      aria-label={t("Proxy address")}
-                      onChange={(e) => setPrefsState((p) => ({ ...p, proxyUrl: e.target.value }))}
-                      onBlur={() => setPrefs({ proxyUrl: prefs.proxyUrl })}
-                    />
-                  ) : null}
-                  <Segs
-                    value={prefs.proxy}
-                    onChange={(v) => setPrefs({ proxy: v as DemoPrefs["proxy"] })}
-                    items={[
-                      { id: "auto", label: t("Auto") },
-                      { id: "off", label: t("Off") },
-                      { id: "custom", label: t("Custom") },
-                    ]}
-                  />
-                </div>
-              </div>
-            </PrefRow>
+            <ProxyBlock
+              mode={prefs.proxy}
+              url={prefs.proxyUrl}
+              user={prefs.proxyUser}
+              pass={prefs.proxyPass}
+              testLine={proxyTest}
+              onMode={(proxy) => setPrefs({ proxy })}
+              onUrl={(proxyUrl) => setPrefsState((p) => ({ ...p, proxyUrl }))}
+              onUser={(proxyUser) => setPrefsState((p) => ({ ...p, proxyUser }))}
+              onPass={(proxyPass) => setPrefsState((p) => ({ ...p, proxyPass }))}
+              onSave={() => setPrefs({ proxyUrl: prefs.proxyUrl, proxyUser: prefs.proxyUser, proxyPass: prefs.proxyPass })}
+              onTest={() => setProxyTest(demoCopy("演示：直连与代理出口相同 · 127.0.0.1", "Demo: direct and proxy egress match · 127.0.0.1"))}
+            />
           )}
         </div>
         {nRows.github && (
@@ -1117,10 +1126,14 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus }: Setti
                 />
               </PrefRow>
               {prefs.lan ? (
-                <PrefRow name={t("Address")} sub={demoCopy("演示局域网地址", "Demo LAN address")}>
-                  <code>{`http://192.168.1.10:${prefs.port}/v1`}</code>
-                  <CopyBtn text={`http://192.168.1.10:${prefs.port}/v1`} what={t("Address")} onStatus={onStatus} />
-                </PrefRow>
+                <LanAddressRow
+                  port={prefs.port}
+                  protocol={prefs.lanProtocol}
+                  selected={prefs.lanSelectedURL}
+                  onProtocol={(lanProtocol) => setPrefs({ lanProtocol })}
+                  onSelect={(lanSelectedURL) => setPrefs({ lanSelectedURL })}
+                  onStatus={onStatus}
+                />
               ) : null}
             </div>
             {prefs.lan ? (
@@ -1311,39 +1324,32 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus }: Setti
         hidden={pageHidden("privacy", pAny)}
       >
         <div className="list prefs" id="redactList">
-          <PrefRow name={t("Redact secrets in logs")} sub={demoCopy("演示：日志脱敏", "Demo: redact secrets in logs")}>
-            <Segs
-              value={prefs.redactKeys ? "on" : "off"}
-              onChange={(v) => setPrefs({ redactKeys: v === "on" })}
-              items={[
-                { id: "off", label: t("Off") },
-                { id: "on", label: t("On") },
-              ]}
-            />
+          <PrefRow name={t("Mask secrets")} sub={t("API keys, private keys, tokens and passwords go to vendors as placeholders, and come back as they were")}>
+            <Segs value={prefs.redactKeys ? "on" : "off"} onChange={(v) => setPrefs({ redactKeys: v === "on" })} items={[{ id: "off", label: t("Off") }, { id: "on", label: t("On") }]} />
           </PrefRow>
-          <PrefRow name={t("Redact request bodies")} sub={demoCopy("演示：请求体脱敏", "Demo: redact bodies")}>
-            <Segs
-              value={prefs.redactBodies ? "on" : "off"}
-              onChange={(v) => setPrefs({ redactBodies: v === "on" })}
-              items={[
-                { id: "off", label: t("Off") },
-                { id: "on", label: t("On") },
-              ]}
-            />
+          <PrefRow name={t("Mask personal data")} sub={t("Emails, phone numbers, ID and bank card numbers too")}>
+            <Segs value={prefs.redactPersonal ? "on" : "off"} onChange={(v) => setPrefs({ redactPersonal: v === "on", hideAccounts: v === "on" ? true : prefs.hideAccounts })} items={[{ id: "off", label: t("Off") }, { id: "on", label: t("On") }]} />
           </PrefRow>
+          <PrefRow name={t("Hide accounts")} sub={t("Email addresses and account names on Usage and Routing are blurred, for a screenshot to share")}>
+            <Segs value={prefs.hideAccounts ? "on" : "off"} onChange={(v) => setPrefs({ hideAccounts: v === "on" })} items={[{ id: "off", label: t("Off") }, { id: "on", label: t("On") }]} />
+          </PrefRow>
+          <PrefRow name={t("Masked words")} sub={t("Your own words to keep from vendors, separated by commas")}>
+            <input className="words" value={prefs.redactWords} placeholder={t("names, codenames, hosts")} onChange={(e) => setPrefsState((p) => ({ ...p, redactWords: e.target.value }))} onBlur={() => setPrefs({ redactWords: prefs.redactWords })} />
+          </PrefRow>
+          <RedactRulesBlock rules={prefs.redactRules} onChange={(redactRules) => setPrefs({ redactRules })} />
+          <PrefRow name={t("Count me as a user")} sub={t("Once a day, a random id for this computer with magpie's version and system")}>
+            <Segs value={prefs.noStats ? "off" : "on"} onChange={(v) => setPrefs({ noStats: v === "off" })} items={[{ id: "off", label: t("Off") }, { id: "on", label: t("On") }]} />
+          </PrefRow>
+          {!prefs.noStats ? (
+            <PrefRow name={t("Share the agents, providers and models I use")} sub={t("Sent with that event, by magpie's own ids, with how many of each, and how often each partner was shown, opened and added; a provider you added yourself is only “custom”. No names, addresses, accounts, keys or usage")}>
+              <Segs value={prefs.noUsageStats ? "off" : "on"} onChange={(v) => setPrefs({ noUsageStats: v === "off" })} items={[{ id: "off", label: t("Off") }, { id: "on", label: t("On") }]} />
+            </PrefRow>
+          ) : null}
         </div>
         <Label en="Agents' sign-ins" />
         <div className="list prefs" id="discoveryList">
           <PrefRow name={t("Discover agent sign-ins")} sub={demoCopy("演示：代理登录发现", "Demo: agent sign-in discovery")}>
-            <Segs
-              value={prefs.discovery}
-              onChange={(v) => setPrefs({ discovery: v as DemoPrefs["discovery"] })}
-              items={[
-                { id: "ask", label: t("Ask") },
-                { id: "allow", label: t("Allow") },
-                { id: "deny", label: t("Deny") },
-              ]}
-            />
+            <Segs value={prefs.discovery} onChange={(v) => setPrefs({ discovery: v as DemoPrefs["discovery"] })} items={[{ id: "ask", label: t("Ask") }, { id: "allow", label: t("Allow") }, { id: "deny", label: t("Deny") }]} />
           </PrefRow>
         </div>
       </section>
@@ -1358,30 +1364,10 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus }: Setti
         data-feature="otel"
         hidden={pageHidden("otel", oAny)}
       >
-        <div id="otelList" className="list prefs">
-          <PrefRow name={t("OpenTelemetry")} sub={demoCopy("演示：OTLP 导出壳", "Demo: OTLP export shell")}>
-            <Segs
-              value={prefs.otel ? "on" : "off"}
-              onChange={(v) => setPrefs({ otel: v === "on" })}
-              items={[
-                { id: "off", label: t("Off") },
-                { id: "on", label: t("On") },
-              ]}
-            />
-          </PrefRow>
-          {prefs.otel ? (
-            <PrefRow name={t("OTLP endpoint")}>
-              <input
-                className="words set-field"
-                style={{ width: 220 }}
-                value={prefs.otelEndpoint}
-                placeholder="http://127.0.0.1:4318"
-                onChange={(e) => setPrefsState((p) => ({ ...p, otelEndpoint: e.target.value }))}
-                onBlur={() => setPrefs({ otelEndpoint: prefs.otelEndpoint })}
-              />
-            </PrefRow>
-          ) : null}
-        </div>
+        <OtelFull
+          config={{ ...prefs.otelCfg, enabled: prefs.otel || prefs.otelCfg.enabled, endpoint: prefs.otelEndpoint || prefs.otelCfg.endpoint }}
+          onChange={(otelCfg) => setPrefs({ otelCfg, otel: otelCfg.enabled, otelEndpoint: otelCfg.endpoint })}
+        />
       </section>
 
       {/* SYNC */}
@@ -1395,7 +1381,7 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus }: Setti
       >
         <div className="list prefs" id="syncList">
           <PrefRow
-            name={t(prefs.syncOn ? "WebDAV sync" : "WebDAV, S3 or GitHub sync")}
+            name={t(prefs.syncOn ? (prefs.syncKind === "s3" ? "S3 sync" : prefs.syncKind === "github" ? "GitHub sync" : "WebDAV sync") : "WebDAV, S3 or GitHub sync")}
             sub={
               prefs.syncOn
                 ? t("Not synced yet · {host}", { host: "demo.example.com" })
@@ -1406,82 +1392,46 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus }: Setti
           >
             {prefs.syncOn ? (
               <>
-                <button type="button" className="text" onClick={() => onStatus?.(demoCopy("演示：已触发同步", "Demo: sync triggered"), "ok")}>
-                  {t("Sync now")}
-                </button>
-                <button
-                  type="button"
-                  className="text"
-                  onClick={() => setPrefs({ syncOpen: prefs.syncOpen === "dav" ? "" : "dav" }, " ")}
-                >
-                  {t(prefs.syncOpen === "dav" ? "Close" : "Edit")}
-                </button>
+                <button type="button" className="text" onClick={() => onStatus?.(demoCopy("演示：已触发同步", "Demo: sync triggered"), "ok")}>{t("Sync now")}</button>
+                <button type="button" className="text" onClick={() => setPrefs({ syncOpen: prefs.syncOpen === "dav" ? "" : "dav" }, " ")}>{t(prefs.syncOpen === "dav" ? "Close" : "Edit")}</button>
               </>
             ) : (
-              <button
-                type="button"
-                className="text"
-                onClick={() => setPrefs({ syncOpen: prefs.syncOpen === "dav" ? "" : "dav", syncOn: prefs.syncOpen !== "dav" }, " ")}
-              >
-                {t(prefs.syncOpen === "dav" ? "Close" : "Set up")}
-              </button>
+              <button type="button" className="text" onClick={() => setPrefs({ syncOpen: prefs.syncOpen === "dav" ? "" : "dav" }, " ")}>{t(prefs.syncOpen === "dav" ? "Close" : "Set up")}</button>
             )}
           </PrefRow>
-          {prefs.syncOpen === "dav" && (
-            <div className="row pref" style={{ flexDirection: "column", alignItems: "stretch", gap: 8 }}>
-              <input className="words" placeholder="https://dav.example.com/magpie" defaultValue="" aria-label="URL" />
-              <div style={{ display: "flex", gap: 6, justifyContent: "flex-end" }}>
-                <button type="button" className="text action" onClick={() => setPrefs({ syncOn: true, syncOpen: "" }, t("Saved"))}>
-                  {t("Save")}
-                </button>
-                <button type="button" className="text" onClick={() => setPrefs({ syncOn: false, syncOpen: "" }, " ")}>
-                  {t("Off")}
-                </button>
-              </div>
-            </div>
-          )}
-          {prefs.syncOn && (
-            <PrefRow
-              name={t("Sync by itself")}
-              sub={prefs.syncAuto ? t("Every {n} minutes while magpie runs", { n: prefs.syncAuto }) : t("Off: only Sync now syncs")}
-            >
-              <Segs
-                value={prefs.syncAuto}
-                onChange={(m) => setPrefs({ syncAuto: Number(m) })}
-                items={[
-                  { id: 0, label: t("Off") },
-                  { id: 3, label: t("3 min") },
-                  { id: 15, label: t("15 min") },
-                  { id: 30, label: t("30 min") },
-                  { id: 60, label: t("1 hour") },
-                ]}
-              />
-            </PrefRow>
-          )}
+          {prefs.syncOpen === "dav" ? (
+            <SyncForms
+              open="dav"
+              kind={prefs.syncKind}
+              onKind={(syncKind) => setPrefs({ syncKind })}
+              onClose={() => setPrefs({ syncOpen: "" }, " ")}
+              onSave={() => setPrefs({ syncOn: true, syncOpen: "" })}
+              onOff={prefs.syncOn ? () => setPrefs({ syncOn: false, syncOpen: "" }) : undefined}
+              onStatus={onStatus}
+            />
+          ) : null}
+          {prefs.syncOn ? (
+            <>
+              <PrefRow name={t("Sync by itself")} sub={prefs.syncAuto ? t("Every {n} minutes while magpie runs", { n: prefs.syncAuto }) : t("Off: only Sync now syncs")}>
+                <Segs value={prefs.syncAuto} onChange={(m) => setPrefs({ syncAuto: Number(m) })} items={[{ id: 0, label: t("Off") }, { id: 3, label: t("3 min") }, { id: 15, label: t("15 min") }, { id: 30, label: t("30 min") }, { id: 60, label: t("1 hour") }]} />
+              </PrefRow>
+              <PrefRow name={t("Restore from the server")} sub={t("This computer's setup becomes the one on the server. What is here now is kept first, to undo.")}>
+                <button type="button" className="text" onClick={() => setRestoreOpen(true)}>{t("Restore…")}</button>
+              </PrefRow>
+            </>
+          ) : null}
           <PrefRow name={t("Export")} sub={t("Everything above in one file, sealed with a passphrase, to carry to another computer")}>
-            <button
-              type="button"
-              className="text"
-              onClick={() => {
-                setPrefs({ syncOpen: prefs.syncOpen === "export" ? "" : "export" }, " ");
-                onStatus?.(demoCopy("演示：导出表单壳", "Demo: export form shell"), "ok");
-              }}
-            >
-              {t(prefs.syncOpen === "export" ? "Close" : "Export…")}
-            </button>
+            <button type="button" className="text" onClick={() => setPrefs({ syncOpen: prefs.syncOpen === "export" ? "" : "export" }, " ")}>{t(prefs.syncOpen === "export" ? "Close" : "Export…")}</button>
           </PrefRow>
+          {prefs.syncOpen === "export" ? (
+            <SyncForms open="export" kind={prefs.syncKind} onKind={(syncKind) => setPrefs({ syncKind })} onClose={() => setPrefs({ syncOpen: "" }, " ")} onSave={() => {}} onStatus={onStatus} />
+          ) : null}
           <PrefRow name={t("Import")} sub={t("Bring in a file exported from magpie")}>
-            <button
-              type="button"
-              className="text"
-              onClick={() => {
-                setPrefs({ syncOpen: prefs.syncOpen === "import" ? "" : "import" }, " ");
-                onStatus?.(demoCopy("演示：导入表单壳", "Demo: import form shell"), "ok");
-              }}
-            >
-              {t(prefs.syncOpen === "import" ? "Close" : "Import…")}
-            </button>
+            <button type="button" className="text" onClick={() => setPrefs({ syncOpen: prefs.syncOpen === "import" ? "" : "import" }, " ")}>{t(prefs.syncOpen === "import" ? "Close" : "Import…")}</button>
           </PrefRow>
+          {prefs.syncOpen === "import" ? (
+            <SyncForms open="import" kind={prefs.syncKind} onKind={(syncKind) => setPrefs({ syncKind })} onClose={() => setPrefs({ syncOpen: "" }, " ")} onSave={() => {}} onStatus={onStatus} />
+          ) : null}
         </div>
       </section>
 
@@ -1496,13 +1446,13 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus }: Setti
       >
         <div className="list prefs" id="about">
           <PrefRow name={t("Version")}>
-            <code>0.1.11-demo</code>
+            <code>0.1.12-demo</code>
             <button type="button" className="text" onClick={() => onStatus?.(demoCopy("演示：已是最新", "Demo: up to date"), "ok")}>
               {t("Check")}
             </button>
           </PrefRow>
           <PrefRow name={t("What's new")} sub={t("The release notes since the last update")} className="whatsnew-row">
-            <button type="button" className="text" onClick={() => onStatus?.(demoCopy("演示：更新说明壳", "Demo: release notes shell"), "ok")}>
+            <button type="button" className="text" onClick={() => setWhatsNewOpen(true)}>
               {t("Open")}
             </button>
           </PrefRow>
@@ -1566,6 +1516,7 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus }: Setti
               {t("Open")}
             </button>
           </PrefRow>
+          <CliRow />
           <PrefRow name={t("Gateway URL")} sub={t("the address every agent is pointed at")}>
             <code>{`http://${GATEWAY_ADDR}`}</code>
             <CopyBtn text={`http://${GATEWAY_ADDR}`} what={t("Gateway URL")} onStatus={onStatus} />
@@ -1592,5 +1543,16 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus }: Setti
         </div>
       </section>
     </main>
+      {restoreOpen ? (
+        <RestoreModal
+          onClose={() => setRestoreOpen(false)}
+          onConfirm={() => {
+            setRestoreOpen(false);
+            onStatus?.(demoCopy("演示：已从服务器恢复", "Demo: restored from server"), "ok");
+          }}
+        />
+      ) : null}
+      {whatsNewOpen ? <WhatsNewModal onClose={() => setWhatsNewOpen(false)} /> : null}
+    </>
   );
 }
