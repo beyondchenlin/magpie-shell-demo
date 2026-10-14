@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { t } from "../i18n";
 
 /**
- * Magpie Library plugin (native-linux/library 01–21 + Skills/Hooks/RTK from source).
+ * Magpie Library plugin (native-linux/library 01–51 + Skills/Hooks/RTK from source).
  * Feature-gated: Plugins › Built-in › Library.
  * Motion: view-in .24s; modal pop-in .42s; Discard .28s; segs .18s; lib-switch; lib-bob/lib-probe/mk-spin (v0.1.44).
  */
@@ -258,7 +258,9 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
   const [eventFilter, setEventFilter] = useState("");
   const [toolMenu, setToolMenu] = useState(false);
   const [rtkOn, setRtkOn] = useState<Record<string, boolean>>({ cursor: false });
-  const [rtkBusy, setRtkBusy] = useState(false);
+  /** Magpie renderRTK: missing | installing | checking (skeleton) — no fake binary/path */
+  const [rtkPhase, setRtkPhase] = useState<"missing" | "installing" | "checking">("missing");
+  const [skillInstalling, setSkillInstalling] = useState(false);
   const newNameRef = useRef<HTMLInputElement>(null);
   const mcpNameRef = useRef<HTMLInputElement>(null);
 
@@ -353,17 +355,22 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
     }, 480);
   };
   const installSkills = () => {
-    if (!skillProbe?.mock?.length || !skillPick.size) return;
+    if (!skillProbe?.mock?.length || !skillPick.size || skillInstalling) return;
     const picked = skillProbe.mock.filter((m) => skillPick.has(m.path));
-    setSkills((list) => [
-      ...list,
-      ...picked.map((m) => ({ id: `sk-${Date.now()}-${m.path}`, name: m.name, desc: m.desc })),
-    ]);
-    const n = picked.length;
-    onStatus?.(n === 1 ? t("1 skill installed") : t("{n} skills installed", { n }), "ok");
-    setSkillProbe(null);
-    setSkillPick(new Set());
-    setSkillSource("");
+    // Magpie probeResult go: button → Installing… then skills/install
+    setSkillInstalling(true);
+    window.setTimeout(() => {
+      setSkills((list) => [
+        ...list,
+        ...picked.map((m) => ({ id: `sk-${Date.now()}-${m.path}`, name: m.name, desc: m.desc })),
+      ]);
+      const n = picked.length;
+      onStatus?.(n === 1 ? t("1 skill installed") : t("{n} skills installed", { n }), "ok");
+      setSkillProbe(null);
+      setSkillPick(new Set());
+      setSkillSource("");
+      setSkillInstalling(false);
+    }, 720);
   };
 
   useEffect(() => {
@@ -868,12 +875,14 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                     >
                       {t("Cancel")}
                     </button>
-                    <button type="button" className="text primary" disabled={!skillPick.size} onClick={installSkills}>
-                      {skillPick.size === 0
-                        ? t("Install 0 skills")
-                        : skillPick.size === 1
-                          ? t("Install 1 skill")
-                          : t("Install {n} skills", { n: skillPick.size })}
+                    <button type="button" className="text primary" disabled={!skillPick.size || skillInstalling} onClick={installSkills}>
+                      {skillInstalling
+                        ? t("Installing…")
+                        : skillPick.size === 0
+                          ? t("Install 0 skills")
+                          : skillPick.size === 1
+                            ? t("Install 1 skill")
+                            : t("Install {n} skills", { n: skillPick.size })}
                     </button>
                   </div>
                 </div>
@@ -985,68 +994,106 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
             <p style={{ margin: "0 0 12px", fontSize: 12.5, color: "var(--muted)", lineHeight: 1.45 }}>
               {t("RTK rewrites the shell commands an agent runs — git status, cargo test, ls… — to print only what the model needs, so they cost fewer tokens. Switch it on for an agent and magpie runs RTK's own installer for it.")}
             </p>
-            <div className="card" style={{ padding: "12px 14px", border: "1px solid var(--line)", borderRadius: 12, marginBottom: 16 }}>
-              <div className="row-head" style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
-                <b style={{ fontSize: 14 }}>RTK</b>
-                <span className="grow" />
+            {rtkPhase === "checking" ? (
+              <div className="lib-skel" style={{ marginBottom: 16 }}>
+                <div className="row skeleton" style={{ height: 88, borderRadius: 12 }} />
               </div>
-              <p style={{ margin: "0 0 10px", fontSize: 12.5, color: "var(--muted)", lineHeight: 1.5 }}>
-                {rtkBusy ? t("Installing RTK… this can take a minute.") : t("RTK isn't installed. magpie can install it for you, or get it from its site.")}
-              </p>
-              {!rtkBusy ? (
-                <p className="lib-rtk-cmd mono" style={{ margin: "0 0 10px", fontSize: 11.5, color: "var(--muted)", userSelect: "text", wordBreak: "break-all" }}>
-                  curl -fsSL https://raw.githubusercontent.com/rtk-ai/rtk/refs/heads/master/install.sh | sh
+            ) : (
+              <div className="card lib-rtk-card" style={{ padding: "12px 14px", border: "1px solid var(--line)", borderRadius: 12, marginBottom: 16 }}>
+                <div className="row-head lib-cardhead" style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+                  <span className="lib-glyph lib-rtk-logo" aria-hidden>
+                    <img src="/icons/rtk.png" alt="" width={20} height={20} style={{ display: "block", objectFit: "contain" }} />
+                  </span>
+                  <b style={{ fontSize: 14 }}>RTK</b>
+                  <span className="grow" />
+                </div>
+                <p className="lib-rtk-gain" style={{ margin: "0 0 10px", fontSize: 12.5, color: "var(--muted)", lineHeight: 1.5 }}>
+                  {rtkPhase === "installing"
+                    ? t("Installing RTK… this can take a minute.")
+                    : t("RTK isn't installed. magpie can install it for you, or get it from its site.")}
                 </p>
-              ) : null}
-              <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                <button
-                  type="button"
-                  className="text action"
-                  disabled={rtkBusy}
-                  onClick={() => {
-                    setRtkBusy(true);
-                    window.setTimeout(() => {
-                      setRtkBusy(false);
-                      onStatus?.(t("RTK is installed — switch it on for your agents below"), "ok");
-                    }, 900);
-                  }}
-                >
-                  {rtkBusy ? t("Installing…") : t("Install RTK")}
-                </button>
-                <button type="button" className="text" onClick={() => window.open("https://rtk-ai.app", "_blank", "noopener,noreferrer")}>{t("Get RTK")}</button>
-                <button type="button" className="text" onClick={() => onStatus?.(t("Demo: checked again"), "ok")}>{t("Check again")}</button>
+                {rtkPhase !== "installing" ? (
+                  <p className="lib-rtk-cmd mono" style={{ margin: "0 0 10px", fontSize: 11.5, color: "var(--muted)", userSelect: "text", wordBreak: "break-all" }}>
+                    curl -fsSL https://raw.githubusercontent.com/rtk-ai/rtk/refs/heads/master/install.sh | sh
+                  </p>
+                ) : null}
+                <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                  <button
+                    type="button"
+                    className="text action"
+                    disabled={rtkPhase === "installing"}
+                    onClick={() => {
+                      // Magpie installRTK busy → API; demo does not run the binary installer
+                      setRtkPhase("installing");
+                      window.setTimeout(() => {
+                        setRtkPhase("missing");
+                        onStatus?.(t("Demo shell: RTK installer not run — still not installed"), "warn");
+                      }, 1100);
+                    }}
+                  >
+                    {rtkPhase === "installing" ? t("Installing…") : t("Install RTK")}
+                  </button>
+                  <button
+                    type="button"
+                    className="text"
+                    disabled={rtkPhase === "installing"}
+                    onClick={() => window.open("https://rtk-ai.app", "_blank", "noopener,noreferrer")}
+                  >
+                    {t("Get RTK")}
+                  </button>
+                  <button
+                    type="button"
+                    className="text"
+                    disabled={rtkPhase === "installing"}
+                    onClick={() => {
+                      // Magpie: rtk = null; render() → skeleton + loadRTK
+                      setRtkPhase("checking");
+                      window.setTimeout(() => setRtkPhase("missing"), 480);
+                    }}
+                  >
+                    {t("Check again")}
+                  </button>
+                </div>
               </div>
-            </div>
+            )}
             <div className="row-head" style={{ marginBottom: 6, display: "flex", alignItems: "center", gap: 8 }}>
               <span className="label" style={{ letterSpacing: ".04em", fontSize: 11, color: "var(--muted)", fontWeight: 600 }}>{t("Agents")}</span>
               <span className="grow" />
               <span style={{ fontSize: 11.5, color: "var(--muted)" }}>{t("restart an agent after switching it")}</span>
             </div>
             <div className="list">
-              {DEMO_AGENTS.map((a) => (
-                <div key={a.id} className="row" style={{ display: "flex", alignItems: "center", gap: 8, padding: "10px 4px", borderBottom: "1px solid var(--line)" }}>
-                  <b style={{ fontSize: 13 }}>{a.name}</b>
-                  <span className="grow" />
-                  <button
-                    type="button"
-                    className={`lib-switch${rtkOn[a.id] ? " on" : ""}`}
-                    role="switch"
-                    aria-checked={!!rtkOn[a.id]}
-                    aria-label={t("{agent} runs its commands through RTK", { agent: a.name })}
-                    disabled={rtkBusy}
-                    onClick={() => {
-                      const on = !rtkOn[a.id];
-                      setRtkOn((m) => ({ ...m, [a.id]: on }));
-                      onStatus?.(
-                        on ? t("RTK is on for {agent} — restart it to use it", { agent: a.name }) : t("RTK is off for {agent} — restart it to see it", { agent: a.name }),
-                        "ok",
-                      );
-                    }}
-                  >
-                    <i />
-                  </button>
-                </div>
-              ))}
+              {DEMO_AGENTS.map((a) => {
+                const on = !!rtkOn[a.id];
+                // Magpie: (!rtk.path && !a.on) || rtkInstalling → disabled
+                const disabled = rtkPhase === "installing" || rtkPhase === "checking" || !on;
+                return (
+                  <div key={a.id} className="row" style={{ display: "flex", alignItems: "center", gap: 8, padding: "10px 4px", borderBottom: "1px solid var(--line)" }}>
+                    <img src="/icons/cursor.svg" alt="" width={18} height={18} style={{ flex: "none", borderRadius: 4 }} />
+                    <b style={{ fontSize: 13 }}>{a.name}</b>
+                    <span className="grow" />
+                    <button
+                      type="button"
+                      className={`lib-switch${on ? " on" : ""}`}
+                      role="switch"
+                      aria-checked={on}
+                      aria-label={t("{agent} runs its commands through RTK", { agent: a.name })}
+                      disabled={disabled}
+                      title={disabled && !on ? t("RTK isn't installed. magpie can install it for you, or get it from its site.") : undefined}
+                      onClick={() => {
+                        if (disabled) return;
+                        const next = !on;
+                        setRtkOn((m) => ({ ...m, [a.id]: next }));
+                        onStatus?.(
+                          next ? t("RTK is on for {agent} — restart it to use it", { agent: a.name }) : t("RTK is off for {agent} — restart it to see it", { agent: a.name }),
+                          "ok",
+                        );
+                      }}
+                    >
+                      <i />
+                    </button>
+                  </div>
+                );
+              })}
             </div>
           </>
         ) : null}

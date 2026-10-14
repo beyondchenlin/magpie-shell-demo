@@ -674,3 +674,10 @@ body.web.side-nav {
 .pm-dsum { margin: 0; font-size: 13px; line-height: 1.5; color: var(--fg); }
 .pm-links { display: flex; gap: 6px; flex-wrap: wrap; }
 .dialog.pm-detail .ehead.pm-dhead { min-height: 76px; gap: 12px; }
+
+/* v0.1.61 RTK card — Magpie library.css lib-rtk-* (NOTES 38 + renderRTK) */
+.lib-rtk-logo { display: inline-flex; align-items: center; flex: none; }
+.lib-rtk-logo img { width: 20px; height: 20px; }
+.lib-rtk-gain { margin: 6px 0 10px; font-size: 12.5px; line-height: 1.5; color: var(--muted); }
+.lib-rtk-cmd { margin: -4px 0 10px; font-size: 11.5px; color: var(--muted); user-select: text; word-break: break-all; }
+.lib-rtk-card .text.action:disabled { opacity: .55; cursor: default; }

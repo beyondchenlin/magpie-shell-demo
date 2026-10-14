@@ -1,11 +1,13 @@
-# last-cycle · 05:45 CST
+# last-cycle · 05:56 CST
 
-**Tag:** DETAIL_INSTALL_MW → **v0.1.60**
+**Tag:** RTK_NEST_DONE → **v0.1.61**
 
-## Cascade this half-hour
-- **v0.1.58** DETAIL_INSTALL_DONE + GAP_REFRESH (plugins 55–60 Provider Sign in)
-- **v0.1.59** SKILLS_PROBE_PICK (library 47–51)
-- **v0.1.60** DETAIL_INSTALL_MW (plugins 61–65 Think Tags Getting Bun… → Installed)
+## Consumed
+- Native `library/52–56` RTK nest DONE: page · Install/Get/Check hover · Check again click → still not-installed (skeleton too brief).
+- **Do not** auto-click Install (runs installer). Get RTK → external browser (doc). Cursor switch not toggled.
+- Magpie shell: Installing… / Check skeleton / switch disabled when missing; no fake binary path·version·gain.
+- Skills probe Install → Installing… path. plugins 61–65 already in v0.1.60.
 
 ## Remaining
 - P1: live gateway bird, true OAuth/key persist, Allowances quota **N/A**
+- Skip Vercel 402

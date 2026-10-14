@@ -4310,5 +4310,8 @@
   "{agent}'s own event": "{agent} 自己的事件",
   "Select Files": "选择文件",
   "Desktop": "桌面",
-  "This folder is empty": "此文件夹为空"
+  "This folder is empty": "此文件夹为空",
+  "Nothing saved yet: the agents' commands go through RTK once it's switched on and the agent is restarted.": "还没有节省记录：打开后重启 Agent，它的命令就会经过 RTK。",
+  "RTK's own count (rtk gain): every command run through RTK on this computer, from any agent or terminal.": "RTK 自己的统计（rtk gain）：本机上经 RTK 跑过的每条命令，来自任何 Agent 或终端。",
+  "Demo shell: RTK installer not run — still not installed": "演示壳：未运行 RTK 安装器 — 仍未安装"
 }

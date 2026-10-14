@@ -1,3 +1,10 @@
+## v0.1.61 RTK_NEST_DONE
+- Native `library/52–56` consumed: not-installed page; Install/Get/Check **hover**; Check again **click** → still not-installed (skeleton too brief on native).
+- Demo: Magpie `renderRTK` Install→Installing… (no auto-click / no binary); Get→rtk-ai.app; Check→brief skeleton→missing; Cursor switch disabled when missing; logo.
+- Skills probe: checkbox → Install enabled → Installing… → toast.
+- **Not invented:** installed path/version/upgrade/PATH/gain. Allowances **N/A**. Skip Vercel 402. P1 unchanged.
+
+
 ## v0.1.60 DETAIL_INSTALL_MW
 - Native/web `plugins/61–65` Think Tags middleware detail Install: **Getting Bun…** busy visible → toast `{name} is installed` (no sign-in) → green **Installed** (not Sign in).
 - Confirms dual path vs Provider 55–60. Think Tags card added to Gateway middleware market.

@@ -114,3 +114,39 @@ Web top-nav Magpie (same library.js). Built-in Library On → Library → Skills
 | 51-skills-probe-cancelled | Cancel → probe closed; no skills written. Library Off restored after session. |
 
 Demo v0.1.59: SKILLS_PROBE_PICK — 47–51 consumed (checked → Install 1 skill already in LibraryView since earlier; NOTES nest closed).
+
+## RTK nest (shots 52–56) — recording DONE
+
+Same not-installed card as 38. **Install was not clicked** (would run RTK installer). Cursor switch not toggled. Get RTK opens external browser (document only). Library Off restored after session.
+
+| shot | what |
+|---|---|
+| 52-rtk-page | Not-installed: logo · curl · Install RTK / Get RTK / Check again · Cursor switch off |
+| 53-rtk-install-hover | Install RTK `.text.action` border hover |
+| 54-rtk-get-hover | Get RTK pale hover |
+| 55-rtk-check-hover | Check again pale hover |
+| 56-rtk-check-again | Check again click → still not-installed (Magpie skeleton too brief to freeze) |
+
+## demo 对齐（v0.1.61 RTK_NEST_DONE）
+- 原生 library/52–56 全消费；Magpie Install/Get/Check 壳态（Installing… 不自动点 Install；Check skeleton 过短；未装 switch 禁用）
+- Get RTK → 外链文档；**不**伪造已安装 path/version/gain/upgrade
+- Skills probe Install：勾选后 → Installing… → 装入列表
+
+
+## RTK nest — native window (shots 52–56)
+
+Library was switched **On** under Plugins › Built-in (it had been Off), then Library → **RTK**. Same card as shot 38: not installed. Agent row **Cursor**, switch **off** — not toggled (that runs RTK's installer for the agent). Library folder and Backups were not opened.
+
+No confirm dialog exists on these buttons. **Install RTK** was hovered only. Its click calls `library/rtk/install` immediately (label **Installing…**, copy "Installing RTK… this can take a minute.", then the curl install.sh line). There is no Cancel, so it was not clicked and the install was not started.
+
+| shot | what |
+|---|---|
+| 52 | RTK tab. "RTK isn't installed." curl install line. **Install RTK**, **Get RTK**, **Check again**. Cursor switch off. |
+| 53 | Pointer on **Install RTK**. Hover draws a border on that pill. No tooltip. Not clicked. |
+| 54 | Pointer on **Get RTK**. Hover fills a pale pill behind the words. No tooltip. |
+| 55 | Pointer on **Check again**. Same pale hover pill. No tooltip. |
+| 56 | **Check again** clicked. The card comes back the same: still not installed, same three buttons, Cursor still off. The skeleton while `rtk` is cleared did not stay on screen long enough to freeze (15–30 fps). No dialog. |
+
+**Get RTK** was clicked after 54. It opens the system browser (`api("open")`) to the public RTK site. Chrome came up fullscreen, title **RTK — Rust Token Killer**, and was closed without using the page. No library shot of that browser: it covered the magpie window, and it is not the nest. Nothing was installed from the site.
+
+Library builtin was switched **Off** again afterwards. Top nav is Agents, Providers, Routing, Gateway, Usage, Plugins — no Library. Plugins › Built-in. RTK still not installed. Cursor switch was never turned on. Window 752×652 at +610+300. Magpie pid 560329 still running.
