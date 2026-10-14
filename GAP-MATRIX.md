@@ -1,3 +1,12 @@
+## v0.1.47 PROVIDERS_LOCAL_PARTIAL
+- Magpie `KindLocal` editors (NOTES: Ollama/LM Studio/oMLX/MLX-Serve tiles on 33, editors never opened — chip from `presets.go` + `app.js`): all four open **local** form.
+- **Server address** fold (Address + Magpie listen hint) with per-preset defaults `11434` / `1234` / `8000` / `11234`; dirty when address ≠ default.
+- API key placeholder **optional for local servers**; no Get a key ↗; **Redaction** · Send requests unmasked (LAN tick from Magpie).
+- Sheet: **On this machine** / **Another computer's magpie** titles; Remote Endpoint hint = Magpie `EndpointHint` (shot 34).
+- Custom / vendor editors unchanged (03–18 / 26–32 already nested).
+- Plugins **41+** (Switch off / Remove / Check updates nest) **not on disk yet** — Switch off·Remove·Check already source-aligned in v0.1.46; consume frames when recorder lands → v0.1.48.
+- Still mock: true local probe / OAuth / key persist. Allowances quota **N/A**. Skip Vercel 402.
+
 ## v0.1.46 PLUGINS_REMOVE_CONFIRM
 - Magpie `confirmRemoval` for Installed **Remove** when no moved accounts: dialog `Remove {name}?` + consequence + Cancel / danger Remove; toast `{name} removed`.
 - **Check for updates** → Checking… → toast `Every plugin is up to date` (demo mock; no npm).

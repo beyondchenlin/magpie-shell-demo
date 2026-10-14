@@ -82,10 +82,39 @@ const VENDOR_HOST: Record<string, string> = {
 
 const REGION_VENDORS = new Set(["moonshot", "moonshot-cn", "kimi-code", "kimi-code-cn"]);
 
+/** Magpie KindLocal presets (presets.go) — editors not opened in NOTES; chip from source. */
+const LOCAL_PRESETS: Record<
+  string,
+  { address: string; note: string; site: string }
+> = {
+  ollama: {
+    address: "http://localhost:11434",
+    note: "your local models",
+    site: "ollama.com",
+  },
+  lmstudio: {
+    address: "http://localhost:1234",
+    note: "local server, port 1234 by default",
+    site: "lmstudio.ai",
+  },
+  omlx: {
+    address: "http://localhost:8000",
+    note: "local server, port 8000 by default",
+    site: "omlx.ai",
+  },
+  "mlx-serve": {
+    address: "http://localhost:11234",
+    note: "local server, port 11234 by default",
+    site: "github.com/ddalcu/mlx-serve",
+  },
+};
+
+
 type EditorForm =
   | "anthropic"
   | "openrouter"
-  | "ollama"
+  | "ollama" /* legacy alias → local */
+  | "local"
   | "remote"
   | "vertex"
   | "custom"
@@ -440,6 +469,8 @@ type EditorProps = {
 
 function ProviderEditorModal({ state, onClose, onAdd }: EditorProps) {
   const kind = state.form;
+  const isLocal = kind === "local" || kind === "ollama" || !!LOCAL_PRESETS[state.id];
+  const localMeta = LOCAL_PRESETS[state.id] || LOCAL_PRESETS.ollama;
   const { modalRef, dialogRef, close } = useModalAnim(true, onClose);
   const [showKey, setShowKey] = useState(false);
   const [tryModel, setTryModel] = useState("");
@@ -470,6 +501,8 @@ function ProviderEditorModal({ state, onClose, onAdd }: EditorProps) {
   const [endpoint, setEndpoint] = useState("");
   const [extra, setExtra] = useState(EXTRA_BODY_DEFAULT);
   const [addrOpen, setAddrOpen] = useState(false);
+  const [serverAddr, setServerAddr] = useState(localMeta.address);
+  const [unmasked, setUnmasked] = useState(false);
 
   const [proxyUrl, setProxyUrl] = useState("http://127.0.0.1:7890");
   const [region, setRegion] = useState(
@@ -489,6 +522,8 @@ function ProviderEditorModal({ state, onClose, onAdd }: EditorProps) {
       vxProject.trim() ||
       vxCred.trim() ||
       vxImp.trim() ||
+      (isLocal && serverAddr.trim() !== localMeta.address) ||
+      unmasked ||
       proxy === "direct" ||
       proxy === "custom" ||
       extra !== EXTRA_BODY_DEFAULT ||
@@ -527,9 +562,12 @@ function ProviderEditorModal({ state, onClose, onAdd }: EditorProps) {
         ? t("your Google Cloud project, with gcloud's sign-in")
         : kind === "remote"
           ? t("another computer's magpie, shared on its network")
-          : state.note || (state.id === "google" ? "Gemini Developer API" : ""),
-    keyPh:
-      kind === "ollama" || state.id === "ollama" ? ZH.optionalLocal : ZH.pasteKey,
+          : isLocal
+            ? t(localMeta.note)
+            : state.note || (state.id === "google" ? "Gemini Developer API" : ""),
+    keyPh: isLocal
+      ? t("optional for local servers")
+      : ZH.pasteKey,
   };
 
   const onSubmit = (e: FormEvent) => {
@@ -776,7 +814,7 @@ function ProviderEditorModal({ state, onClose, onAdd }: EditorProps) {
               <Field
                 label={t("Endpoint")}
                 hint={t(
-                  "The address and API key shown on the other computer under Settings → Share on the network. Its models and routing groups are listed here; requests are forwarded as the agent's own API.",
+                  "The address and API key the other computer's magpie shows in Settings, under Share on local network. Its models and routing groups are listed here; each request goes on in the API the agent spoke.",
                 )}
               >
                 <input
@@ -806,7 +844,7 @@ function ProviderEditorModal({ state, onClose, onAdd }: EditorProps) {
                     >
                       {showKey ? ZH.hide : ZH.show}
                     </button>
-                    {kind !== "remote" && kind !== "ollama" ? (
+                    {kind !== "remote" && !isLocal ? (
                       <button type="button" className="link" tabIndex={-1}>
                         {ZH.getKey}
                       </button>
@@ -816,24 +854,49 @@ function ProviderEditorModal({ state, onClose, onAdd }: EditorProps) {
               </Field>
             ) : null}
 
-            {kind === "ollama" ? (
+            {isLocal ? (
               <details
                 className="more"
-                open={addrOpen}
+                open={addrOpen || serverAddr.trim() !== localMeta.address}
                 onToggle={(e) => setAddrOpen(e.currentTarget.open)}
               >
-                <summary>{ZH.serverAddress}</summary>
+                <summary>{t("Server address")}</summary>
                 <div className="inner">
-                  <Field label={ZH.address}>
+                  <Field
+                    label={t("Address")}
+                    hint={t(
+                      "Where the server listens; change the port, or give another computer's address",
+                    )}
+                  >
                     <input
                       className="address"
                       type="url"
                       inputMode="url"
-                      placeholder="http://localhost:11434"
+                      placeholder={localMeta.address}
+                      value={serverAddr}
+                      onChange={(e) => setServerAddr(e.target.value)}
                     />
                   </Field>
                 </div>
               </details>
+            ) : null}
+
+            {isLocal ? (
+              <Field
+                label={t("Redaction")}
+                hint={t(
+                  "For a model running on this computer or your local network: secrets, personal data and your masked words go to it as written. Leave it off for a local relay or proxy that passes requests on to a vendor.",
+                )}
+              >
+                <label className="tick" style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13 }}>
+                  <input
+                    type="checkbox"
+                    checked={unmasked}
+                    onChange={(e) => setUnmasked(e.target.checked)}
+                  />
+                  <span>{t("Send requests unmasked")}</span>
+                </label>
+              </Field>
             ) : null}
 
             {kind === "custom" ? (
@@ -1062,7 +1125,7 @@ function ProviderEditorModal({ state, onClose, onAdd }: EditorProps) {
               <input type="text" placeholder={ZH.priceOne} />
             </Field>
 
-            {kind === "openrouter" || kind === "ollama" ? (
+            {kind === "openrouter" || isLocal ? (
               <Field label={ZH.keyHeader}>
                 <Segs
                   value={authHdr}
@@ -1396,22 +1459,24 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
         icon: "openrouter",
         site: "openrouter.ai",
       });
-    else if (id === "ollama")
+    else if (LOCAL_PRESETS[id]) {
+      const loc = LOCAL_PRESETS[id];
+      const prLoc = PRESETS.find((p) => p.id === id);
       setEditor({
-        form: "ollama",
+        form: "local",
         id,
-        name: "Ollama",
-        icon: "ollama",
-        site: "ollama.com",
-        note: ZH.ollamaNote,
+        name: prLoc?.name || id,
+        icon: prLoc?.icon || id,
+        site: loc.site,
+        note: loc.note,
       });
-    else if (id === "remote")
+    } else if (id === "remote")
       setEditor({
         form: "remote",
         id,
         name: "Remote magpie",
         icon: "magpie",
-        note: ZH.remoteNote,
+        note: t("another computer's magpie, shared on its network"),
       });
     else if (id === "vertex")
       setEditor({
@@ -2507,13 +2572,15 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
             )}
 
             {locals.length > 0 && (
-              <Section title={ZH.onThisMachine}>
+              <Section title={t("On this machine")}>
                 {locals.map((p) => (
                   <Tile
                     key={p.id}
                     id={p.id}
                     name={p.name}
                     icon={p.icon}
+                    tip={LOCAL_PRESETS[p.id]?.address || p.name}
+                    on={!!editor && editor.id === p.id}
                     onPick={pickTile}
                   />
                 ))}
@@ -2521,13 +2588,18 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
             )}
 
             {remotes.length > 0 && (
-              <Section title={ZH.anotherComputer} hint={ZH.sharedNetwork}>
+              <Section
+                title={t("Another computer's magpie")}
+                hint={t("shared on its network")}
+              >
                 {remotes.map((p) => (
                   <Tile
                     key={p.id}
                     id={p.id}
                     name={p.name}
                     icon={p.icon}
+                    tip="http://192.168.1.20:3425"
+                    on={!!editor && editor.id === p.id}
                     onPick={pickTile}
                   />
                 ))}

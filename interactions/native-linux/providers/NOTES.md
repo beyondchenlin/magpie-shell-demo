@@ -118,3 +118,7 @@ Providers tab, add sheet, scrolled to the foot (33: relays, On this machine, Rem
 
 ## demo 对齐（v0.1.25）
 - Proxy Custom 输入框；Discard 对所有脏编辑器；VENDOR_HOST tip；Vertex 表单；Kimi Region；Remote 文案
+
+## demo 对齐（v0.1.47）
+- On this machine：Ollama / LM Studio / oMLX / MLX-Serve 均开 local 编辑器（Server address + optional key + Redaction）；NOTES 未点开，对齐 Magpie source
+- Remote EndpointHint 文案对齐 presets.go；分区标题 On this machine / Another computer's magpie
