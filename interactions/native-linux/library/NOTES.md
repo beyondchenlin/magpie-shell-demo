@@ -20,6 +20,10 @@ Plugin page. When On (Plugins › Built-in › Library) it sits in top nav betwe
 | 19-mcp-header-row.png | Headers + Add row |
 | 20-mcp-discard-confirm.png | Discard unsaved changes? Cancel / Discard (red) |
 | 21-mcp-magpie-image-sheet.png | Magpie Image Discover sheet · Agents · Add to the library |
+| 22–23 | Magpie Image agent chip tip / on |
+| 24–26 | MCP Discover search Figma / more / empty |
+| 27-skills-empty.png | Skills tab: Find skills + Discover Popular on skills.sh |
+| 28-skill-grill-me-sheet.png | grill-me Add to the library sheet |
 
 Header: Discover (MCP only) · Library folder · Backups. Tabs: Instructions / MCP servers / Skills / Hooks / RTK.
 
@@ -27,7 +31,7 @@ Header: Discover (MCP only) · Library folder · Backups. Tabs: Instructions / M
 
 - Instructions + New set (+ Keep in a file…) + Ctrl/Cmd+S mock save
 - MCP empty + New server modal (Command/HTTP/SSE, OAuth, Discard) + Discover + Magpie Image sheet
-- Skills: Find skills install card (mock probe) + empty / list
+- Skills: Find skills install card (mock probe) + Discover skills.sh + grill-me sheet
 - Hooks: empty + New hook editor (events/tools menus)
 - RTK: not-installed card + Install mock + agent lib-switch
 - No true OAuth / npm / RTK binary / skill GitHub probe

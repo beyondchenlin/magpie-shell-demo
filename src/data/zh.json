@@ -4300,5 +4300,7 @@
   "RTK rewrites the shell commands an agent runs — git status, cargo test, ls… — to print only what the model needs, so they cost fewer tokens. Switch it on for an agent and magpie runs RTK's own installer for it.": "RTK 改写 Agent 运行的 shell 命令（git status、cargo test、ls…），只打印模型需要的内容以节省 token。为 Agent 打开后，magpie 会运行 RTK 自带安装程序。",
   "A value can name a variable, as ${NAME}: each agent is given it in its own way, so the token stays out of its settings": "值可写成变量如 ${NAME}：各 Agent 以自己的方式注入，令牌不写入其设置",
   "Pick the agents that may generate images: each image costs what the model set in Settings → Images charges.": "选择可生成图像的 Agent：每张图按设置 → 图像中模型的计费扣费。",
-  "Run by the agent's shell, in the session's folder; the agent passes what happened as JSON on its input": "由 Agent 的 shell 在会话目录运行；Agent 将发生内容作为 JSON 输入传入"
+  "Run by the agent's shell, in the session's folder; the agent passes what happened as JSON on its input": "由 Agent 的 shell 在会话目录运行；Agent 将发生内容作为 JSON 输入传入",
+  "Popular on skills.sh": "skills.sh 上的热门",
+  "DISCOVER": "发现"
 }

@@ -170,6 +170,13 @@ const DEMO_MCP = [
   { id: "brave", name: "Brave Search", by: "Brave", tag: "Remote", desc: "Web search with the Brave Search API." },
 ];
 
+const DEMO_SKILLS_MARKET = [
+  { id: "magpie-quota", name: "magpie-quota", by: "magpie-community/plugins", installs: "", desc: "Check how much is left of the user's AI subscriptions, coding plans and API key…", verified: true },
+  { id: "find-skills", name: "find-skills", by: "vercel-labs/skills", installs: "3.9M", desc: "Helps users discover and install agent skills when they ask questions like 'how do I do X…", verified: true },
+  { id: "grill-me", name: "grill-me", by: "mattpocock/skills", installs: "1.4M", desc: "A relentless interview to sharpen a plan or design.", sheet: true },
+  { id: "grill-with-docs", name: "grill-with-docs", by: "mattpocock/skills", installs: "", desc: "Grill a design with the docs open beside you.", sheet: true },
+];
+
 export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: string) => void }) {
   const [tab, setTab] = useState<string>(() => {
     try {
@@ -192,6 +199,8 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
   const [discardOpen, setDiscardOpen] = useState(false);
   const [imageSheet, setImageSheet] = useState(false);
   const [imageAgents, setImageAgents] = useState<string[]>(["cursor"]);
+  const [skillSheet, setSkillSheet] = useState<(typeof DEMO_SKILLS_MARKET)[number] | null>(null);
+  const [skillQ, setSkillQ] = useState("");
   const [skillSource, setSkillSource] = useState("");
   const [skillLooking, setSkillLooking] = useState(false);
   const [skillProbe, setSkillProbe] = useState<{
@@ -378,12 +387,16 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
           ))}
         </div>
         <span className="grow" />
-        {tab === "mcp" ? (
+        {tab === "mcp" || tab === "skills" ? (
           <button
             type="button"
             className="text"
             title={t("Go to the MCP servers you can add, under the list")}
-            onClick={() => document.getElementById("libDiscover")?.scrollIntoView({ behavior: "smooth", block: "start" })}
+            onClick={() =>
+              document
+                .getElementById(tab === "skills" ? "libSkillDiscover" : "libDiscover")
+                ?.scrollIntoView({ behavior: "smooth", block: "start" })
+            }
           >
             <svg viewBox="0 0 16 16" width={14} height={14} fill="none" stroke="currentColor" strokeWidth="1.3" aria-hidden style={{ marginRight: 4, verticalAlign: -2 }}>
               <path d={SEARCH} />
@@ -766,6 +779,55 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                 </div>
               ) : null}
             </div>
+
+            <div id="libSkillDiscover" style={{ marginTop: 18 }}>
+              <div className="row-head" style={{ marginBottom: 8, display: "flex", alignItems: "center", gap: 8 }}>
+                <span className="label" style={{ letterSpacing: ".04em", fontSize: 11, color: "var(--muted)", fontWeight: 600 }}>{t("DISCOVER")}</span>
+                <span className="grow" />
+                <span style={{ fontSize: 12, color: "var(--muted)" }}>{t("Popular on skills.sh")}</span>
+              </div>
+              <input
+                type="search"
+                value={skillQ}
+                placeholder={t("Search skills on skills.sh — react, pdf, testing…")}
+                onChange={(e) => setSkillQ(e.target.value)}
+                style={{ width: "100%", maxWidth: 420, marginBottom: 12 }}
+              />
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: 10 }}>
+                {DEMO_SKILLS_MARKET.filter((c) => {
+                  const q = skillQ.trim().toLowerCase();
+                  if (!q) return true;
+                  return `${c.name} ${c.by} ${c.desc}`.toLowerCase().includes(q);
+                }).map((c) => (
+                  <div key={c.id} className="card" style={{ padding: "12px 12px 10px", border: "1px solid var(--line)", borderRadius: 12, animation: "fade-in .18s var(--ease)", display: "flex", flexDirection: "column", gap: 6, minHeight: 120 }}>
+                    <div style={{ display: "flex", alignItems: "baseline", gap: 6 }}>
+                      <b style={{ fontSize: 13 }}>{c.name}</b>
+                      <span className="grow" />
+                      {c.installs ? <span style={{ fontSize: 10.5, color: "var(--muted)" }}>{c.installs}</span> : null}
+                    </div>
+                    <small style={{ color: "var(--muted)", fontSize: 11.5 }}>{c.by}</small>
+                    <p style={{ margin: 0, fontSize: 12, color: "var(--fg-2)", lineHeight: 1.4, flex: 1 }}>{c.desc}</p>
+                    <div>
+                      <button
+                        type="button"
+                        className="text primary"
+                        style={{ height: 26, fontSize: 12 }}
+                        onClick={() => {
+                          if ((c as { sheet?: boolean }).sheet) setSkillSheet(c);
+                          else {
+                            setSkills((list) => (list.some((x) => x.id === c.id) ? list : [...list, { id: c.id, name: c.name, desc: c.desc }]));
+                            onStatus?.(t("{name} added", { name: c.name }), "ok");
+                          }
+                        }}
+                      >
+                        {(c as { sheet?: boolean }).sheet ? t("Add…") : t("Add")}
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
             {skills.length === 0 ? (
               <div style={{ padding: "8px 2px", color: "var(--muted)", fontSize: 13 }}>{t("No skills in the library yet — find some above.")}</div>
             ) : (
@@ -1051,6 +1113,46 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                 if (!mcpServers.some((s) => s.id === "magpie-image")) setMcpServers((s) => [...s, { id: "magpie-image", name: "Magpie Image" }]);
                 setImageSheet(false);
                 onStatus?.(t("{name} added", { name: "Magpie Image" }), "ok");
+              }}
+            >
+              {t("Add to the library")}
+            </button>
+          </div>
+        </LibModal>
+      ) : null}
+
+
+      {skillSheet ? (
+        <LibModal onBg={() => setSkillSheet(null)}>
+          <div style={{ display: "flex", alignItems: "flex-start", gap: 10, marginBottom: 10 }}>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <b style={{ display: "block", fontSize: 15 }}>{skillSheet.name}</b>
+              <span style={{ fontSize: 12.5, color: "var(--muted)" }}>
+                {skillSheet.by}
+                {skillSheet.installs ? (
+                  <span style={{ marginLeft: 8, padding: "1px 7px", borderRadius: 999, border: "1px solid var(--line)", fontSize: 11 }}>{skillSheet.installs} installs</span>
+                ) : null}
+              </span>
+            </div>
+            <button type="button" className="text" onClick={() => window.open("https://skills.sh", "_blank", "noopener,noreferrer")}>skills.sh ↗</button>
+          </div>
+          <p style={{ margin: "0 0 6px", fontSize: 13, lineHeight: 1.45 }}>{skillSheet.desc}</p>
+          <p style={{ margin: "0 0 12px", fontSize: 12, color: "var(--muted)" }}>From github.com/{skillSheet.by}</p>
+          <div style={{ marginBottom: 14 }}>
+            <span style={{ fontSize: 12, fontWeight: 500, display: "block", marginBottom: 6 }}>{t("Agents")}</span>
+            <LibChip on label="Cursor" onClick={() => {}} />
+          </div>
+          <div className="bar" style={{ display: "flex", gap: 8, alignItems: "center" }}>
+            <span className="grow" />
+            <button type="button" className="text" onClick={() => setSkillSheet(null)}>{t("Cancel")}</button>
+            <button
+              type="button"
+              className="text primary"
+              onClick={() => {
+                const c = skillSheet;
+                setSkills((list) => (list.some((x) => x.id === c.id) ? list : [...list, { id: c.id, name: c.name, desc: c.desc }]));
+                setSkillSheet(null);
+                onStatus?.(t("{name} added", { name: c.name }), "ok");
               }}
             >
               {t("Add to the library")}
