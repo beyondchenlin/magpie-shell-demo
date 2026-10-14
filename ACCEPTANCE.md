@@ -37,7 +37,7 @@
 
 | # | 项 | 状态 |
 |---|----|------|
-| F1 | Windows Setup `.exe` | [ ] | v0.1.7（GHA） |
+| F1 | Windows Setup `.exe` | [x] | https://github.com/beyondchenlin/magpie-shell-demo/releases/download/v0.1.7/Magpie-Shell-Demo-Setup-0.1.7.exe |
 | F2 | Vercel Web | [x] | https://magpie-shell-demo.vercel.app |
 
 ---
