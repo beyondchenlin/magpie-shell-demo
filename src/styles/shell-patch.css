@@ -208,3 +208,87 @@ body.web.side-nav .sidebar {
 body.web.side-nav {
   padding-left: 0 !important;
 }
+
+/* Settings: language pref-pick menu (demo popover; Magpie uses .pop.proto-menu.sess-menu) */
+.pref-pick {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 8px 0 10px;
+  border-radius: 7px;
+  background: var(--pill);
+  transition: background .12s, color .12s;
+}
+.pref-pick:hover, .pref-pick.open { background: var(--pill-hover); color: var(--fg); }
+.pref-pick svg { opacity: .7; transition: transform .15s var(--ease); }
+.pref-pick.open svg { transform: rotate(180deg); }
+.sess-menu {
+  min-width: 160px;
+  padding: 4px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--card);
+  box-shadow: 0 8px 24px rgba(0,0,0,.12);
+  list-style: none;
+  margin: 0;
+}
+.sess-menu button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 12.5px;
+  color: var(--fg-2);
+  transition: background .12s, color .12s;
+}
+.sess-menu button:hover { background: var(--pill); color: var(--fg); }
+.sess-menu button.on { background: var(--pill); color: var(--fg); font-weight: 600; }
+
+/* Settings search: Magpie puts .set-searching on #view-settings */
+#view-settings.set-searching .set-tabs { display: none; }
+#view-settings.set-searching .set-q { flex: 1 1 100%; width: 100%; margin-left: 0; }
+#view-settings.set-searching .set-page::before {
+  content: attr(data-part);
+  display: block;
+  margin: 4px 2px 6px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* Motion backfill: lib-switch thumb (Agents/Providers) */
+.lib-switch {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  width: 32px;
+  height: 18px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: var(--pill);
+  cursor: pointer;
+  transition: background .18s var(--ease);
+  flex: none;
+}
+.lib-switch i {
+  display: block;
+  width: 14px;
+  height: 14px;
+  margin-left: 2px;
+  border-radius: 50%;
+  background: var(--card);
+  box-shadow: 0 1px 2px rgba(0,0,0,.12);
+  transition: transform .18s var(--ease);
+}
+.lib-switch.on { background: var(--accent); }
+.lib-switch.on i { transform: translateX(14px); }
+.lib-switch:disabled { opacity: .5; cursor: default; }
+
+/* text.action / icon hover already in app.css — ensure copy-pop available */
+@media (prefers-reduced-motion: reduce) {
+  .lib-switch i, .pref-pick svg, .copy.done { transition: none !important; animation: none !important; }
+}

@@ -68,6 +68,12 @@ footer.foot                 ← #status toast 胶囊
 | `.nav-hl`（侧栏） | transform/height **.3s** `cubic-bezier(.25,.9,.3,1)` | 侧栏行高亮 |
 | view-transition（侧栏进出） | **.5s** `cubic-bezier(.32,.72,0,1)` | 顶栏↔侧栏 morph（可选） |
 | `skeleton-shift` | **1.4s** ease-in-out infinite | Gateway loading 骨架 |
+| `.lib-switch` / `i` | background **.18s**；thumb translateX **.18s** `--ease` | Agents 连接 / Providers / 额度开关 |
+| `.pref-pick` chevron | transform **.15s** `--ease`；open 旋转 180° | Settings 语言等菜单钮 |
+| `.warm-tabs button` | color/background **.12s** | Settings Allowances 预热分区 |
+| `.set-searching` | tabs 隐藏；`.set-page::before` 显示 `data-part` | Settings 搜索 |
+| `.text` / `.discord`/`.github` | background/color **.12s** | Settings About / Sync 文本钮 |
+| `lan-address-row` height | **.28s** `--ease` | Network LAN 地址行展开（后续） |
 
 **规则：** 每个可点控件落地时对照 Magpie 同选择器的 `transition` / `@keyframes` / JS 定时器；缺动效 = 未对齐。尊重 `prefers-reduced-motion: reduce`。
 
@@ -142,3 +148,16 @@ footer.foot                 ← #status toast 胶囊
 5. Gap 写进 GAP-MATRIX；未录的控件不宣称 1:1  
 
 *文档版本：随 Gateway 空态落地（demo v0.1.9）*
+
+
+---
+
+## 11. Settings 页（二开）
+
+- **DOM：** `#view-settings` → `.set-head`（`.set-tabs` + `#setQ`）→ 多个 `.set-page`（`hidden` 切换，非卸载）。  
+- **渲染：** Magpie `renderSettings()` 往 `#themeSegs` 等空容器 `replaceChildren(segs(...))`；demo 用 React `Segs` + `magpie.demoPrefs`。  
+- **搜索：** 输入非空 → `set-searching`；各行按名称/译文过滤；无匹配 → `#setNone`。  
+- **扩展一行：** 在对应 `setPage-*` 加 `.row.pref`（`.who` + `.val`），控件用 `Segs` / `.pref-pick` / `.text` / `.copy`，对照 `app.js` 同名字段的 API，demo 只本地态。  
+- **从 Gateway：** `#openLanSettings` → `sessionStorage magpie.setTab=network` 再进 Settings。
+
+*文档版本：Settings 深页壳 v0.1.10*

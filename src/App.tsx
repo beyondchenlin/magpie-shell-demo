@@ -8,11 +8,8 @@ import { AgentsView } from "./pages/AgentsView";
 import { ProvidersView } from "./pages/ProvidersView";
 import { RoutingView } from "./pages/RoutingView";
 import { GatewayView } from "./pages/GatewayView";
-import {
-  PluginsView,
-  SettingsView,
-  UsageView,
-} from "./pages/SimpleViews";
+import { PluginsView, UsageView } from "./pages/SimpleViews";
+import { SettingsView } from "./pages/SettingsView";
 
 const SIDE_AT = 1024;
 const NAV_LS = "magpie.navLayout";
@@ -388,7 +385,12 @@ export default function App() {
       {view === "gateway" && (
         <GatewayView
           onStatus={showStatus}
-          onGoNetwork={() => go("settings")}
+          onGoNetwork={() => {
+            try {
+              sessionStorage.setItem("magpie.setTab", "network");
+            } catch { /* ignore */ }
+            go("settings");
+          }}
         />
       )}
       {view === "usage" && <UsageView />}
@@ -399,6 +401,7 @@ export default function App() {
           setTheme={setTheme}
           lang={lang}
           setLang={(v: Lang) => setLang(v)}
+          onStatus={showStatus}
         />
       )}
 
