@@ -49,9 +49,8 @@ const USAGE_EVERY = [
 
 const LED_STATUS = [
   ["", "All"],
-  ["ok", "OK"],
-  ["err", "Errors"],
-  ["rej", "Rejected"],
+  ["failed", "Failed"],
+  ["retried", "Retried"],
 ] as const;
 
 const LED_METRIC = [
@@ -366,7 +365,13 @@ export function UsageView() {
   });
   const [period, setPeriod] = useState("today");
   const [sessRange, setSessRange] = useState("30d");
-  const [every, setEvery] = useState(5);
+  const [every, setEvery] = useState(() => {
+    try {
+      const n = Number(localStorage.getItem("magpie.usageEvery"));
+      if ([0, 5, 10, 30, 60].includes(n)) return n;
+    } catch { /* ignore */ }
+    return 5;
+  });
   const [everyOpen, setEveryOpen] = useState(false);
   const [busy, setBusy] = useState(false);
   const [customOpen, setCustomOpen] = useState(false);
@@ -378,7 +383,6 @@ export function UsageView() {
   const [sessAgent, setSessAgent] = useState("all");
   const [sessQ, setSessQ] = useState("");
   const [mask, setMask] = useState(false);
-  const [hidOpen, setHidOpen] = useState(false);
   /** Magpie ledDash stays hidden with no ledger; demo can show a chart shell. */
   const [demoChart, setDemoChart] = useState(false);
   const [ctxDays, setCtxDays] = useState("7");
@@ -407,6 +411,14 @@ export function UsageView() {
   }, [tab]);
 
   useEffect(() => {
+    try {
+      localStorage.setItem("magpie.usageEvery", String(every));
+    } catch {
+      /* ignore */
+    }
+  }, [every]);
+
+  useEffect(() => {
     if (!every) return;
     const id = window.setInterval(() => {
       if (document.hidden) return;
@@ -421,9 +433,8 @@ export function UsageView() {
   const ledRows = useMemo(() => {
     if (!demoFilled) return [] as LedRow[];
     let rows = DEMO_LEDGER;
-    if (ledStatus === "ok") rows = rows.filter((r) => r.status === "ok");
-    else if (ledStatus === "err") rows = rows.filter((r) => r.status === "err");
-    else if (ledStatus === "rej") rows = rows.filter((r) => r.status === "rej");
+    if (ledStatus === "failed") rows = rows.filter((r) => r.status === "err");
+    else if (ledStatus === "retried") rows = rows.filter((r) => r.id === "r3" || r.status === "err"); // demo: r3 + errors as retried set
     const q = ledQ.trim().toLowerCase();
     if (q) {
       rows = rows.filter((r) =>
@@ -586,9 +597,9 @@ export function UsageView() {
         </span>
       </div>
 
-      {/* Overview */}
+      {/* Overview — Magpie empty: hide chart/Agents/Models/Accounts heads when calls==0 */}
       <div className="usage-pane" id="usagePane" hidden={tab !== "usage"}>
-        <div className="row-head quota-head" id="quotaHead" hidden>
+        <div className="row-head quota-head" id="quotaHead" hidden={!demoFilled}>
           <span className="label">{t("Allowances")}</span>
           <span className="grow" />
           <button
@@ -606,34 +617,35 @@ export function UsageView() {
         <p className="usage-note" id="usageScope">
           {t("Gateway calls only; session-log calls are in Requests. Local rejections are excluded from totals.")}
         </p>
-        <section className="stats" id="stats" />
-        <section className="chart" id="chart" />
-        <div className="row-head">
-          <span className="label">{t("Agents")}</span>
-        </div>
-        <div className="list" id="usageAgents">
-          <div className="empty-state" style={{ padding: "22px 16px" }}>
-            {noCallsIn(periodValue)}{" "}
-            {t("Point an agent at a catalog model and use it; every call through the gateway is counted here.")}
+        {!demoFilled ? (
+          <div className="card empty-state us-empty" style={{ padding: "22px 16px", marginTop: 8 }}>
+            <b style={{ display: "block", fontWeight: 600, marginBottom: 6 }}>{noCallsIn(periodValue)}</b>
+            <span style={{ color: "var(--muted)", fontSize: 12.5, lineHeight: 1.45 }}>
+              {t("Point an agent at a catalog model and use it; every call through the gateway is counted here.")}
+            </span>
           </div>
-        </div>
-        <div className="us-hid" id="usageAgentsHid" hidden={!hidOpen && true}>
-          <button
-            type="button"
-            className="text us-hidline"
-            aria-expanded={hidOpen}
-            onClick={() => setHidOpen((o) => !o)}
-            hidden
-          />
-        </div>
-        <div className="row-head">
-          <span className="label">{t("Models")}</span>
-        </div>
-        <div className="list" id="usageModels">
-          <div className="empty-state" style={{ padding: "14px 16px", opacity: 0.85 }}>
-            {demoCopy("尚无模型用量行（空态）。", "No model usage rows (empty).")}
-          </div>
-        </div>
+        ) : (
+          <>
+            <section className="stats" id="stats" />
+            <section className="chart" id="chart" />
+            <div className="row-head">
+              <span className="label">{t("Agents")}</span>
+            </div>
+            <div className="list" id="usageAgents">
+              <div className="empty-state" style={{ padding: "14px 16px" }}>
+                {demoCopy("演示 Overview 有数据开关开着，但仍无 agent 行；关演示数据看真空态卡。", "Demo data on — no agent rows yet; turn demo off for Magpie empty card.")}
+              </div>
+            </div>
+            <div className="row-head">
+              <span className="label">{t("Models")}</span>
+            </div>
+            <div className="list" id="usageModels">
+              <div className="empty-state" style={{ padding: "14px 16px", opacity: 0.85 }}>
+                {demoCopy("尚无模型用量行。", "No model usage rows.")}
+              </div>
+            </div>
+          </>
+        )}
         <p className="usage-note" id="usageNote" />
       </div>
 
@@ -711,8 +723,8 @@ export function UsageView() {
                     {ledTotals.errors ? (
                       <button
                         type="button"
-                        className={`led-jump bad${ledStatus === "err" ? " on" : ""}`}
-                        onClick={() => setLedStatus(ledStatus === "err" ? "" : "err")}
+                        className={`led-jump bad${ledStatus === "failed" ? " on" : ""}`}
+                        onClick={() => setLedStatus(ledStatus === "failed" ? "" : "failed")}
                       >
                         {t("{n} failed", { n: String(ledTotals.errors) })}
                       </button>
@@ -959,10 +971,13 @@ export function UsageView() {
               <div className="led-none" style={{ padding: "22px 16px", textAlign: "center", color: "var(--muted)", lineHeight: 1.5 }}>
                 {ledQ.trim() || ledStatus
                   ? t("No requests match these filters.")
-                  : t(periodValue === "today" || period === "today" ? "No requests today" : "No requests here")}
+                  : noCallsIn(periodValue)}
                 <div style={{ marginTop: 6, fontSize: 12 }}>
-                  {t("Every request an agent sends to magpie, and every call the agents' own session files record, is counted here.")}
+                  {ledQ.trim() || ledStatus
+                    ? null
+                    : t("Every request an agent sends to magpie, and every call the agents' own session files record, is counted here.")}
                 </div>
+                <div style={{ marginTop: 4, fontSize: 12, color: "var(--faint)" }}>0 {t("requests")}</div>
               </div>
             </div>
           </>
@@ -972,7 +987,8 @@ export function UsageView() {
 
       {/* Sessions — Magpie #sessionsPane with 6 KPIs + list (demo filled) */}
       <div className="usage-pane sess-pane" id="sessionsPane" hidden={tab !== "sessions"}>
-        <div className="sess-tools">
+        {/* Magpie: agent/model/folder picks hidden with no sessions */}
+        <div className="sess-tools" hidden={!demoFilled}>
           <div className="segs" id="sessAgent">
             <Segs
               value={sessAgent}
@@ -997,6 +1013,13 @@ export function UsageView() {
             {demoFilled ? demoCopy("演示数据开", "Demo data on") : demoCopy("演示数据关", "Demo data off")}
           </button>
         </div>
+        {!demoFilled ? (
+          <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 6 }}>
+            <button type="button" className="text" aria-pressed={false} onClick={() => setDemoFilled(true)}>
+              {demoCopy("演示数据关 · 点此填充", "Demo data off · fill")}
+            </button>
+          </div>
+        ) : null}
         {demoFilled && sessRows.length ? (
           <>
             <section className="stats six" id="sessStats">
@@ -1204,28 +1227,15 @@ export function UsageView() {
                   : t(
                       "No sessions yet. Claude Code's, Codex's, OpenCode's and Pi's sessions on this computer show up here, with what each cost and the command that resumes it.",
                     )}
-                {sessRange !== "all" && sessAgent === "all" && !sessQ.trim() && !demoFilled ? (
-                  <div style={{ marginTop: 8 }}>
-                    <button type="button" className="text sess-show-history" onClick={() => setSessRange("all")}>
-                      {t("All sessions")}
-                    </button>
-                  </div>
-                ) : null}
               </div>
+              <p className="usage-note" style={{ marginTop: 10, fontSize: 11.5 }}>
+                {t("Totals count native sessions and gateway requests with a session ID")}
+                {" · 0 "}
+                {t("sessions")}
+                {" · ~/.claude ~/.codex ~/.cursor"}
+              </p>
             </section>
-            <div className="sess-tools" style={{ justifyContent: "flex-end", marginTop: 4 }}>
-              <input
-                className="sess-filter"
-                type="search"
-                spellCheck={false}
-                autoComplete="off"
-                placeholder={t("Search sessions")}
-                value={sessQ}
-                onChange={(e) => setSessQ(e.target.value)}
-                aria-label={t("Search sessions")}
-              />
-            </div>
-            <div className="list sess-list" id="sessList" hidden />
+            {/* Magpie: search / list hidden with no sessions */}
           </>
         )}
         <p className="usage-note" id="sessNote" />
@@ -1233,8 +1243,8 @@ export function UsageView() {
 
       {/* Context — Magpie context.js agent cards (demo filled) */}
       <div className="usage-pane ctx-pane" id="contextPane" hidden={tab !== "context"}>
-        <div className="row-head ctx-sess-head">
-          <span className="label">{t("Through magpie")}</span>
+        <div className="row-head">
+          <span className="label">{t("Tuned for you")}</span>
           <span className="grow" />
           <button
             type="button"
@@ -1244,6 +1254,15 @@ export function UsageView() {
           >
             {demoFilled ? demoCopy("演示数据开", "Demo data on") : demoCopy("演示数据关", "Demo data off")}
           </button>
+        </div>
+        {!demoFilled ? (
+          <div className="ctx-none" style={{ marginBottom: 14 }}>
+            <span>{t("Not enough calls in this range to tune on")}</span>
+          </div>
+        ) : null}
+        <div className="row-head ctx-sess-head">
+          <span className="label">{t("Through magpie")}</span>
+          <span className="grow" />
         </div>
         <p className="usage-note">
           {t("What each agent's prompts hold, as magpie's gateway read them: the score and tags are worked out from the requests of the range.")}
@@ -1392,13 +1411,48 @@ const PLUGIN_TABS = [
   ["installed", "Installed"],
 ] as const;
 
-type Builtin = { id: string; name: string; sub: string; on: boolean; feature?: string };
+type Builtin = {
+  id: string;
+  name: string;
+  sub: string;
+  on: boolean;
+  feature?: string;
+  locked?: boolean;
+  /** nested config when on — Magpie schema form (demo: gateway recent calls) */
+  callsPage?: number;
+};
 
 const BUILTINS_DEFAULT: Builtin[] = [
-  { id: "sessions", name: "Sessions", sub: "Agents' session files on Usage › Sessions and the Sessions page", on: true, feature: "sessions" },
-  { id: "library", name: "Library", sub: "Skills, MCP servers and Magpie Image for agents", on: true, feature: "library" },
-  { id: "gateway-keys", name: "Gateway keys", sub: "Keys for other computers / tunnels on the Gateway page", on: true },
+  {
+    id: "gateway",
+    name: "Gateway page",
+    sub: "The gateway page and its Connect card",
+    on: true,
+    locked: true,
+    callsPage: 20,
+  },
+  { id: "routing-groups", name: "Routing groups", sub: "Name models in Routing as groups", on: false },
+  {
+    id: "library",
+    name: "Library",
+    sub: "Skills, MCP servers and Magpie Image for agents",
+    on: false,
+    feature: "library",
+  },
   { id: "otel", name: "Observability", sub: "OpenTelemetry export in Settings", on: false, feature: "otel" },
+  {
+    id: "sessions",
+    name: "Sessions",
+    sub: "Agents' session files on Usage › Sessions and the Sessions page",
+    on: false,
+    feature: "sessions",
+  },
+  {
+    id: "warmups",
+    name: "Warm-up and check-in",
+    sub: "Codex / Claude warm-ups and WorkBuddy check-in in Settings",
+    on: false,
+  },
 ];
 
 const DEMO_MARKET = [
@@ -1466,6 +1520,8 @@ export function PluginsView() {
   ]);
   const [busy, setBusy] = useState<string | null>(null);
   const [asking, setAsking] = useState<{ pkg: string; op: "remove" | "off" | "move" } | null>(null);
+  const [pluginDetail, setPluginDetail] = useState<(typeof DEMO_MARKET)[number]["cards"][number] | null>(null);
+  const [gwCallsOpen, setGwCallsOpen] = useState(false);
 
   useEffect(() => {
     try {
@@ -1544,23 +1600,69 @@ export function PluginsView() {
             </p>
             <div className="list prefs" id="builtinList">
               {builtins.map((b) => (
-                <div className="row pref" key={b.id} data-feature={b.feature}>
-                  <div className="who">
-                    <div className="name">{t(b.name)}</div>
-                    <div className="sub">{t(b.sub)}</div>
+                <div key={b.id}>
+                  <div className="row pref feat-row" data-feature={b.feature} data-id={b.id}>
+                    <div className="who">
+                      <div className="name">{t(b.name)}</div>
+                      <div className="sub">{t(b.sub)}</div>
+                      {b.locked ? (
+                        <div className="sub feat-why">{t("In use, so it stays on")}</div>
+                      ) : null}
+                    </div>
+                    <div className="val">
+                      <button
+                        type="button"
+                        className={`lib-switch use-credits${b.on ? " on" : ""}`}
+                        role="switch"
+                        aria-checked={b.on}
+                        aria-label={t(b.name)}
+                        disabled={!!b.locked}
+                        title={b.locked ? t("In use, so it stays on") : undefined}
+                        onClick={() => {
+                          if (b.locked) return;
+                          setBuiltins((list) => list.map((x) => (x.id === b.id ? { ...x, on: !x.on } : x)));
+                        }}
+                      >
+                        <i />
+                      </button>
+                    </div>
                   </div>
-                  <div className="val">
-                    <Segs
-                      value={b.on ? "on" : "off"}
-                      onChange={(v) =>
-                        setBuiltins((list) => list.map((x) => (x.id === b.id ? { ...x, on: v === "on" } : x)))
-                      }
-                      items={[
-                        { id: "off", label: t("Off") },
-                        { id: "on", label: t("On") },
-                      ]}
-                    />
-                  </div>
+                  {b.on && b.id === "gateway" ? (
+                    <div className="row pref feat-set" data-of="gateway" style={{ position: "relative" }}>
+                      <div className="who">
+                        <div className="name">{t("Recent calls at a time")}</div>
+                        <div className="sub">
+                          {t("How many of the gateway's recent calls the page shows, and how many more each Show more adds")}
+                        </div>
+                      </div>
+                      <div className="val">
+                        <button
+                          type="button"
+                          className={`sess-pick set${gwCallsOpen ? " open" : ""}`}
+                          aria-haspopup="menu"
+                          aria-expanded={gwCallsOpen}
+                          onClick={() => setGwCallsOpen((o) => !o)}
+                        >
+                          <span>{b.callsPage ?? 20}</span>
+                          <svg viewBox="0 0 12 12" width={11} height={11} aria-hidden>
+                            <path d="M3 4.5 6 7.5 9 4.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                          </svg>
+                        </button>
+                        <ProtoMenu
+                          open={gwCallsOpen}
+                          onClose={() => setGwCallsOpen(false)}
+                          value={String(b.callsPage ?? 20)}
+                          title={t("Recent calls at a time")}
+                          items={[10, 20, 50, 100].map((n) => ({ v: String(n), name: String(n) }))}
+                          onPick={(v) =>
+                            setBuiltins((list) =>
+                              list.map((x) => (x.id === "gateway" ? { ...x, callsPage: Number(v) } : x)),
+                            )
+                          }
+                        />
+                      </div>
+                    </div>
+                  ) : null}
                 </div>
               ))}
             </div>
@@ -1573,11 +1675,15 @@ export function PluginsView() {
               <div className="pm-intro">
                 <div className="pm-introtext">
                   <h2>{t("Plugins for magpie")}</h2>
-                  <p>
-                    {demoCopy(
-                      "订阅与网关中间件市场（演示）。安装只记在本页，不访问 npm。",
-                      "Subscriptions and gateway middleware market (demo). Install stays on this page — no npm.",
-                    )}
+                  <p>{t("Subscriptions and gateway middleware")}</p>
+                  <p style={{ marginTop: 6 }}>
+                    <button
+                      type="button"
+                      className="link"
+                      onClick={() => window.open("https://usemagpie.ai/docs/plugins#middleware", "_blank", "noopener")}
+                    >
+                      {t("Write a middleware")}
+                    </button>
                   </p>
                   <div className="pm-trust">
                     <svg viewBox="0 0 16 16" width={12} height={12} aria-hidden>
@@ -1606,7 +1712,19 @@ export function PluginsView() {
                     {cards.map((c) => {
                       const has = installed.some((x) => x.pkg === c.pkg);
                       return (
-                        <div className={`pm-card${busy === c.pkg ? " installing" : ""}${has ? " has" : ""}`} key={c.pkg} tabIndex={0}>
+                        <div
+                          className={`pm-card${busy === c.pkg ? " installing" : ""}${has ? " has" : ""}`}
+                          key={c.pkg}
+                          tabIndex={0}
+                          role="button"
+                          onClick={() => setPluginDetail(c)}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter" || e.key === " ") {
+                              e.preventDefault();
+                              setPluginDetail(c);
+                            }
+                          }}
+                        >
                           <div className="pm-logo" aria-hidden>
                             ◆
                           </div>
@@ -1622,7 +1740,10 @@ export function PluginsView() {
                             type="button"
                             className={`pm-act${has ? " get" : ""}`}
                             disabled={busy === c.pkg || has}
-                            onClick={() => install(c.pkg, c.name)}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              install(c.pkg, c.name);
+                            }}
                           >
                             {busy === c.pkg ? t("Installing…") : has ? t("Installed") : t("Install")}
                           </button>
@@ -1643,21 +1764,22 @@ export function PluginsView() {
               </div>
             ) : null}
             <div className="pm-sec" style={{ marginTop: 8 }}>
-              <div className="pm-sechead">
-                <h3>{t("Add from a path or git")}</h3>
-                <span>{demoCopy("演示：粘贴路径不安装", "Demo: paste path — no install")}</span>
-              </div>
-              <div className="row pref">
-                <div className="who">
-                  <div className="name">{t("Folder or git URL")}</div>
-                  <div className="sub">{t("file:…, github:owner/repo, or a path")}</div>
-                </div>
-                <div className="val" style={{ display: "flex", gap: 6 }}>
-                  <input className="words" placeholder="github:owner/repo" style={{ minWidth: 160 }} />
-                  <button type="button" className="text" disabled>
-                    {t("Add")}
-                  </button>
-                </div>
+              <div className="pm-manual" style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center", padding: "8px 2px" }}>
+                <span className="pm-mlabel" style={{ fontSize: 12.5, fontWeight: 600 }}>{t("Have one in mind?")}</span>
+                <input
+                  className="words"
+                  style={{ flex: 1, minWidth: 200 }}
+                  placeholder={t("npm package, GitHub repo (github:owner/repo) or a folder")}
+                  aria-label={t("Have one in mind?")}
+                />
+                <button type="button" className="icon" title={demoCopy("选择文件夹（演示）", "Choose folder (demo)")} aria-label="folder">
+                  <svg viewBox="0 0 16 16" width={14} height={14} aria-hidden>
+                    <path d="M2 4.5h4l1.2 1.5H14v7H2z" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round" />
+                  </svg>
+                </button>
+                <button type="button" className="text primary" disabled>
+                  {t("Install")}
+                </button>
               </div>
             </div>
           </>
@@ -1918,6 +2040,56 @@ export function PluginsView() {
           )
         ) : null}
       </div>
+
+      {pluginDetail ? (
+        <div className="modal open" role="dialog" aria-modal="true" aria-label={pluginDetail.name}>
+          <div className="backdrop" onClick={() => setPluginDetail(null)} />
+          <div className="dialog pm-detail" style={{ maxWidth: 520, width: "min(520px, 94vw)", maxHeight: "86vh", overflow: "auto" }}>
+            <div className="bar" style={{ display: "flex", gap: 10, alignItems: "center" }}>
+              <div className="pm-logo" aria-hidden>◆</div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <b style={{ fontSize: 15 }}>{pluginDetail.name}</b>
+                <div style={{ fontSize: 12, color: "var(--muted)" }}>{pluginDetail.pkg}</div>
+              </div>
+              <button
+                type="button"
+                className="text primary"
+                disabled={busy === pluginDetail.pkg || installed.some((x) => x.pkg === pluginDetail.pkg)}
+                onClick={() => install(pluginDetail.pkg, pluginDetail.name)}
+              >
+                {installed.some((x) => x.pkg === pluginDetail.pkg) ? t("Installed") : t("Install")}
+              </button>
+            </div>
+            <div style={{ marginTop: 10, fontSize: 12, color: "var(--muted)", display: "flex", flexWrap: "wrap", gap: 8 }}>
+              <span>v0.1.0-demo</span>
+              <span>·</span>
+              <span>★ {pluginDetail.downloads}</span>
+              <span>·</span>
+              <span>MIT</span>
+              <span>·</span>
+              <span>{t("Unofficial")}</span>
+            </div>
+            <p style={{ marginTop: 12, fontSize: 13, lineHeight: 1.5 }}>{pluginDetail.summary}</p>
+            <div className="pm-readme" style={{ marginTop: 12, padding: 12, borderRadius: 10, background: "var(--pill)", fontSize: 12.5, lineHeight: 1.5, color: "var(--fg-2)" }}>
+              <b>README</b>
+              <p style={{ margin: "6px 0 0" }}>
+                {demoCopy(
+                  "演示详情模态（对照 Magpie Discover 卡片）。Escape 不关闭；点 Close 或遮罩关闭。",
+                  "Demo detail modal (Magpie Discover card). Escape does not close; Close or backdrop does.",
+                )}
+              </p>
+            </div>
+            <div className="bar" style={{ marginTop: 14, display: "flex", alignItems: "center", gap: 8 }}>
+              <span className="note" style={{ fontSize: 11.5, color: "var(--muted)", flex: 1 }}>
+                {t("Plugins are other people's code: they sign in and make the requests, or see them as middleware.")}
+              </span>
+              <button type="button" className="text" onClick={() => setPluginDetail(null)}>
+                {t("Close")}
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </main>
   );
 }

@@ -4210,5 +4210,12 @@
   "Next step": "下一步",
   "Back": "返回",
   "Save provider": "保存供应商",
-  "Yes": "是"
+  "Yes": "是",
+  "Show only the requests answered on a retry.": "只显示重试后才成功的请求。",
+  "The gateway page and its Connect card": "网关页面及其连接卡片",
+  "Name models in Routing as groups": "在路由里把模型编成组",
+  "Skills, MCP servers and Magpie Image for agents": "给 agent 用的 Skills、MCP 与 Magpie Image",
+  "OpenTelemetry export in Settings": "设置里的 OpenTelemetry 导出",
+  "Agents' session files on Usage › Sessions and the Sessions page": "用量 › 会话与会话页上的 agent 会话文件",
+  "Codex / Claude warm-ups and WorkBuddy check-in in Settings": "设置里的 Codex/Claude 预热与 WorkBuddy 签到"
 }
