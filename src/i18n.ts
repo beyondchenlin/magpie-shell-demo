@@ -16,7 +16,7 @@ const EN_EXTRA: Record<string, string> = {
   demoFlierTitle:
     "Demo: move a bird along the route (not the real gateway; empty Magpie shows no Live/Replay)",
   installCmdCopied: "Copied {agent}'s install command",
-  claudeRiskTitle: "A Claude account may be banned",
+  claudeRiskTitle: "Claude accounts can be suspended",
   remoteHint:
     "The address and API key shown on the other computer under Settings → Share on the network. Its models and routing groups are listed here; requests are forwarded as the agent's own API.",
   ollamaNote: "your local models",

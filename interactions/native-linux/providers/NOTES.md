@@ -40,3 +40,19 @@ System One 空模型 Detect：橙字「A decision API is asked with one model…
 | 19 | search→Plugins | miss 链 look for a plugin → Plugins Discover 搜同词 |
 
 | 20–21 | Import Alma/Codex | Import… 应用列表嵌套 |
+
+
+| 22 | claude-risk | Claude 磁贴 on · `.signing`「{name} accounts can be suspended」· Cancel / Import instead… / Sign in anyway |
+| 23 | claude-import | `.signing.import`「Import Claude accounts」↑ · intro+spent+risk · Choose files… · textarea · Cancel/Import |
+| 24 | claude-choose-files | 系统文件选择 Home 空态 · Cancel / Open(禁用) · sidebar Home/Desktop/settings/Other Locations |
+
+## demo 对齐（v0.1.24）
+- risk/import 内联 `.signing`（不再误开 ImportAppsModal）；Choose files mock；Import → importing → imported mock
+- 文案走 Magpie i18n：`{name} accounts can be suspended` + Anthropic riskNote
+
+
+| 25 | vendors-more | 滚动 Vendors 可见更多：MiniMax · Xiaomi MiMo · StepFun · Baidu Qianfan · Tencent · Huawei… |
+| 26 | gemini-editor-foot | Google Gemini 编辑器脚：Proxy Global/Direct/Custom · Concurrency · Requests per minute · Cancel/Add |
+
+## demo 对齐（v0.1.24 续）
+- Vendors 列表随 presets.json；Gemini/generic 编辑器已有 Proxy segs + Concurrency/RPM 脚字段

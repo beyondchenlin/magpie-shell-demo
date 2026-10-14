@@ -1448,7 +1448,7 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus }: Setti
             ? REDACT_KINDS.map(([id, name, sub, defOn]) => {
                 const on = prefs.redactKinds[id] ?? defOn;
                 return (
-                  <div className="row pref redact-kind" key={id} data-redact={id}>
+                  <div className="row pref redact-kind" key={id} data-redact={id} style={{ animation: "fade-in .2s var(--ease)" }}>
                     <div className="who">
                       <div className="name">{t(name)}</div>
                       <div className="sub">{t(sub)}</div>

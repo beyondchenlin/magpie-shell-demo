@@ -373,7 +373,9 @@ body.web.side-nav {
 .pm-mw { font-size: 11.5px; color: var(--muted); }
 .pm-act.get { background: var(--accent-soft, color-mix(in srgb, var(--accent) 16%, var(--card))); color: var(--accent); border-color: transparent; }
 .pm-act.get:hover:not(:disabled) { background: var(--accent); color: var(--accent-fg, #fff); }
-.pm-act.busy { color: var(--muted); font-weight: 500; }
+.pm-act.busy { display: inline-flex; align-items: center; gap: 6px; background: transparent; color: var(--muted); border-color: transparent; font-weight: 500; cursor: default; }
+.pm-act.done { background: transparent; color: var(--muted); border-color: transparent; font-weight: 500; cursor: default; }
+.pm-act .spin { width: 10px; height: 10px; border-radius: 50%; border: 1.5px solid currentColor; border-right-color: transparent; animation: spin .7s linear infinite; flex: none; }
 .pm-card .pm-act { transition: background .12s var(--ease), color .12s var(--ease), transform .12s var(--ease), filter .12s var(--ease); }
 
 /* —— Usage led chart demo —— */

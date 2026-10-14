@@ -805,7 +805,7 @@ export function AgentsView({
         ) : null}
 
         <div className="list" id="agents">
-          {visible.map((a, aIdx) => (
+          {visible.map((a) => (
             <div
               key={a.id}
               className={`row agent conn${draggingId === a.id ? " dragging" : ""}`}
@@ -830,35 +830,142 @@ export function AgentsView({
                   );
                 }}
                 onPointerDown={(e) => {
-                  if (e.button !== 0 || visible.length < 2) return;
+                  /* Magpie dragRows: measure once, sibling translateY slide, commit on release */
+                  if (e.button !== 0 || e.isPrimary === false || visible.length < 2) return;
                   const handle = e.currentTarget;
+                  const list = document.getElementById("agents");
                   const row = handle.closest(".row.agent") as HTMLElement | null;
-                  if (!row) return;
-                  const startY = e.clientY;
-                  let moved = false;
-                  const from = aIdx;
-                  const onMove = (ev: PointerEvent) => {
-                    if (Math.abs(ev.clientY - startY) < 4 && !moved) return;
-                    moved = true;
-                    handle.dataset.dragged = "1";
-                    setDraggingId(a.id);
-                    const rows = [...document.querySelectorAll<HTMLElement>("#agents > .row.agent")];
-                    let to = from;
-                    for (let i = 0; i < rows.length; i++) {
-                      const r = rows[i].getBoundingClientRect();
-                      if (ev.clientY >= r.top && ev.clientY <= r.bottom) { to = i; break; }
+                  if (!list || !row) return;
+                  const rows = [...list.querySelectorAll<HTMLElement>(":scope > .row.agent")];
+                  const from = rows.indexOf(row);
+                  if (from < 0) return;
+                  const rects = rows.map((r) => r.getBoundingClientRect());
+                  const tops = rects.map((r) => r.top);
+                  const heights = rects.map((r) => r.height);
+                  const h = heights[from];
+                  let scroll: HTMLElement | Element | null = list.parentElement;
+                  while (
+                    scroll &&
+                    scroll instanceof HTMLElement &&
+                    !/(auto|scroll)/.test(getComputedStyle(scroll).overflowY)
+                  ) {
+                    scroll = scroll.parentElement;
+                  }
+                  scroll ||= document.scrollingElement;
+                  if (!scroll) return;
+                  const bounds = scroll.getBoundingClientRect();
+                  const scroll0 = (scroll as HTMLElement).scrollTop ?? 0;
+                  let dragging = false;
+                  let ended = false;
+                  let to = from;
+                  let y = e.clientY;
+                  let frame = 0;
+                  let lastTime = 0;
+                  const y0 = y;
+                  const pointer = e.pointerId;
+                  const paint = (time: number) => {
+                    frame = 0;
+                    if (!row.isConnected) return finish(false);
+                    if (!dragging) return;
+                    const dt = Math.min(32, lastTime ? time - lastTime : 16);
+                    lastTime = time;
+                    const edge = 36;
+                    const speed =
+                      y < bounds.top + edge
+                        ? -Math.min(1, (bounds.top + edge - y) / edge)
+                        : y > bounds.bottom - edge
+                          ? Math.min(1, (y - bounds.bottom + edge) / edge)
+                          : 0;
+                    if (speed) (scroll as HTMLElement).scrollTop += speed * dt * 0.6;
+                    const dy = y - y0 + ((scroll as HTMLElement).scrollTop ?? 0) - scroll0;
+                    const lo = tops[0] - tops[from];
+                    const hi = tops[tops.length - 1]! + heights[heights.length - 1]! - h - tops[from];
+                    const d = Math.max(lo, Math.min(hi, dy));
+                    row.style.transform = `translateY(${d}px)`;
+                    const mid = tops[from] + d + h / 2;
+                    to = from;
+                    if (d > 0) {
+                      while (to < rows.length - 1 && mid >= tops[to + 1]! + heights[to + 1]! / 2) to++;
+                    } else {
+                      while (to > 0 && mid <= tops[to - 1]! + heights[to - 1]! / 2) to--;
                     }
-                    if (to !== from) {
-                      moveVisible(from, to);
-                    }
+                    if (d <= lo && from > 0) to = 0;
+                    else if (d >= hi && from < rows.length - 1) to = rows.length - 1;
+                    rows.forEach((r, i) => {
+                      if (i === from) return;
+                      const shift =
+                        i > from && i <= to ? -h : i < from && i >= to ? h : 0;
+                      r.style.transform = shift ? `translateY(${shift}px)` : "";
+                    });
+                    if (speed) frame = requestAnimationFrame(paint);
                   };
-                  const onUp = () => {
+                  const move = (ev: PointerEvent) => {
+                    if (ev.pointerId !== pointer) return;
+                    if (!row.isConnected || !handle.isConnected) return finish(false, ev);
+                    y = ev.clientY;
+                    if (!dragging) {
+                      if (Math.abs(y - y0) < 4) return;
+                      dragging = true;
+                      handle.dataset.dragged = "1";
+                      setDraggingId(a.id);
+                      setArrangeFor(null);
+                      list.classList.add("sorting");
+                      row.classList.add("dragging");
+                      window.getSelection()?.removeAllRanges();
+                      try {
+                        handle.setPointerCapture(pointer);
+                      } catch {
+                        /* */
+                      }
+                    }
+                    ev.preventDefault();
+                    if (!frame) frame = requestAnimationFrame(paint);
+                  };
+                  const finish = (save: boolean, ev?: PointerEvent) => {
+                    if (ended || (ev?.pointerId != null && ev.pointerId !== pointer)) return;
+                    if (save && dragging && ev) {
+                      y = ev.clientY;
+                      cancelAnimationFrame(frame);
+                      paint(performance.now());
+                    }
+                    if (ended) return;
+                    ended = true;
+                    cancelAnimationFrame(frame);
+                    document.removeEventListener("pointermove", move);
+                    document.removeEventListener("pointerup", up);
+                    document.removeEventListener("pointercancel", cancel);
+                    document.removeEventListener("keydown", keys, true);
+                    handle.removeEventListener("lostpointercapture", cancel);
+                    window.removeEventListener("blur", cancel);
+                    window.removeEventListener("resize", cancel);
+                    try {
+                      if (handle.hasPointerCapture(pointer)) handle.releasePointerCapture(pointer);
+                    } catch {
+                      /* */
+                    }
+                    list.classList.remove("sorting");
+                    row.classList.remove("dragging");
+                    rows.forEach((r) => {
+                      r.style.transform = "";
+                    });
                     setDraggingId(null);
-                    window.removeEventListener("pointermove", onMove);
-                    window.removeEventListener("pointerup", onUp);
+                    if (save && dragging && to !== from) moveVisible(from, to);
                   };
-                  window.addEventListener("pointermove", onMove);
-                  window.addEventListener("pointerup", onUp);
+                  const up = (ev: PointerEvent) => finish(true, ev);
+                  const cancel = () => finish(false);
+                  const keys = (ev: KeyboardEvent) => {
+                    if (ev.key === "Escape") {
+                      ev.preventDefault();
+                      finish(false);
+                    }
+                  };
+                  document.addEventListener("pointermove", move);
+                  document.addEventListener("pointerup", up);
+                  document.addEventListener("pointercancel", cancel);
+                  document.addEventListener("keydown", keys, true);
+                  handle.addEventListener("lostpointercapture", cancel);
+                  window.addEventListener("blur", cancel);
+                  window.addEventListener("resize", cancel);
                 }}
               >
                 <span className="ic">

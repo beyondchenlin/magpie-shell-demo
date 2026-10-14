@@ -1,3 +1,8 @@
+## v0.1.24
+- Providers Claude risk/import nested 22–24
+- Agents Arrange sibling slide (dragRows)
+- Privacy micro-pass + Plugins Install spin
+
 # Magpie 壳 vs magpie-shell-demo 差距矩阵（重写后）
 
 对照：官方截图 `magpie-official/shots/` + `MAGPIE-TEARDOWN.md` + 本仓库 `src/`（v0.1.1 空态重写）。

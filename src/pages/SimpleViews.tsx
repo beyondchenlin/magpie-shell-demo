@@ -2112,14 +2112,23 @@ export function PluginsView() {
                           </div>
                           <button
                             type="button"
-                            className={`pm-act${has ? " get" : ""}`}
+                            className={`pm-act${busy === c.pkg ? " busy" : has ? " done" : " get"}`}
                             disabled={busy === c.pkg || has}
                             onClick={(e) => {
                               e.stopPropagation();
                               install(c.pkg, c.name);
                             }}
                           >
-                            {busy === c.pkg ? t("Installing…") : has ? t("Installed") : t("Install")}
+                            {busy === c.pkg ? (
+                              <>
+                                <span className="spin" aria-hidden />
+                                <span>{t("Installing…")}</span>
+                              </>
+                            ) : has ? (
+                              t("Installed")
+                            ) : (
+                              t("Install")
+                            )}
                           </button>
                         </div>
                       );
@@ -2153,14 +2162,23 @@ export function PluginsView() {
                         </div>
                         <button
                           type="button"
-                          className={`pm-act${has ? " get" : ""}`}
+                          className={`pm-act${busy === c.pkg ? " busy" : has ? " done" : " get"}`}
                           disabled={busy === c.pkg || has}
                           onClick={(e) => {
                             e.stopPropagation();
                             install(c.pkg, c.name);
                           }}
                         >
-                          {busy === c.pkg ? t("Installing…") : has ? t("Installed") : t("Install")}
+                          {busy === c.pkg ? (
+                            <>
+                              <span className="spin" aria-hidden />
+                              <span>{t("Installing…")}</span>
+                            </>
+                          ) : has ? (
+                            t("Installed")
+                          ) : (
+                            t("Install")
+                          )}
                         </button>
                       </div>
                     );
@@ -2198,14 +2216,23 @@ export function PluginsView() {
                             </div>
                             <button
                               type="button"
-                              className={`pm-act${has ? " get" : ""}`}
+                              className={`pm-act${busy === c.pkg ? " busy" : has ? " done" : " get"}`}
                               disabled={busy === c.pkg || has}
                               onClick={(e) => {
                                 e.stopPropagation();
                                 install(c.pkg, c.name);
                               }}
                             >
-                              {busy === c.pkg ? t("Installing…") : has ? t("Installed") : t("Install")}
+                              {busy === c.pkg ? (
+                              <>
+                                <span className="spin" aria-hidden />
+                                <span>{t("Installing…")}</span>
+                              </>
+                            ) : has ? (
+                              t("Installed")
+                            ) : (
+                              t("Install")
+                            )}
                             </button>
                           </div>
                         );
@@ -2268,7 +2295,14 @@ export function PluginsView() {
                     }, 420);
                   }}
                 >
-                  {busy === "__manual__" ? t("Installing…") : t("Install")}
+                  {busy === "__manual__" ? (
+                    <>
+                      <span className="spin" aria-hidden style={{ display: "inline-block", width: 10, height: 10, marginRight: 6, verticalAlign: -1 }} />
+                      {t("Installing…")}
+                    </>
+                  ) : (
+                    t("Install")
+                  )}
                 </button>
                 {folderHint ? <span style={{ flexBasis: "100%", fontSize: 11.5, color: "var(--muted)", animation: "fade-in .15s var(--ease)" }}>{folderHint}</span> : null}
               </div>
@@ -2710,11 +2744,20 @@ export function PluginsView() {
               </div>
               <button
                 type="button"
-                className="text primary"
+                className={`pm-act${busy === pluginDetail.pkg ? " busy" : installed.some((x) => x.pkg === pluginDetail.pkg) ? " done" : " get"}`}
                 disabled={busy === pluginDetail.pkg || installed.some((x) => x.pkg === pluginDetail.pkg)}
                 onClick={() => install(pluginDetail.pkg, pluginDetail.name)}
               >
-                {installed.some((x) => x.pkg === pluginDetail.pkg) ? t("Installed") : t("Install")}
+                {busy === pluginDetail.pkg ? (
+                  <>
+                    <span className="spin" aria-hidden />
+                    <span>{t("Installing…")}</span>
+                  </>
+                ) : installed.some((x) => x.pkg === pluginDetail.pkg) ? (
+                  t("Installed")
+                ) : (
+                  t("Install")
+                )}
               </button>
             </div>
             <div style={{ marginTop: 10, fontSize: 12, color: "var(--muted)", display: "flex", flexWrap: "wrap", gap: 8 }}>

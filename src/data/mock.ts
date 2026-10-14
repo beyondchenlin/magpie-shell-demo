@@ -200,7 +200,7 @@ export const ZH = {
     "magpie 只读取这些应用的配置，不会改动它们。勾选要导入的供应商。",
   notFound: "这台电脑上没有找到",
   importAction: "导入",
-  claudeRiskTitle: "Claude 账号可能被封禁",
+  claudeRiskTitle: "Claude 账号可能被封禁", /* Magpie: "{name} accounts can be suspended" */
   claudeRiskNote:
     "Anthropic 可能封禁在其官方应用之外使用的 Claude 账号。magpie 的请求经 Claude Code 发出，但 Anthropic 仍可能采取措施，风险自负。请用丢了也不心疼的账号。",
   importInstead: "改为导入…",

@@ -374,9 +374,9 @@ export function RedactRulesBlock({
   rules: RedactRule[];
   onChange: (r: RedactRule[]) => void;
 }) {
-  const [kind, setKind] = useState("");
+  const [kind, setKind] = useState("API_KEY");
   const [by, setBy] = useState<"prefix" | "regex">("prefix");
-  const [match, setMatch] = useState("");
+  const [match, setMatch] = useState("oc_sk_");
   const [editAt, setEditAt] = useState<number | null>(null);
   const [ekind, setEkind] = useState("");
   const [eby, setEby] = useState<"prefix" | "regex">("prefix");
@@ -387,8 +387,8 @@ export function RedactRulesBlock({
     if (!m) return;
     const r: RedactRule = { kind: kind.trim(), ...(by === "prefix" ? { prefix: m } : { regex: m }) };
     onChange([...rules, r]);
-    setKind("");
-    setMatch("");
+    setKind("API_KEY");
+    setMatch(by === "prefix" ? "oc_sk_" : "oc_sk_[A-Za-z0-9]{20,}");
   };
 
   return (

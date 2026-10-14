@@ -751,23 +751,31 @@ function ProviderEditorModal({ state, onClose, onAdd }: EditorProps) {
               </div>
             </Field>
 
-            <Field label={ZH.proxy} hint={ZH.followsProxy}>
+            <Field label={t("Proxy")} hint={t("Follows the proxy in Settings")}>
               <Segs
                 value={proxy}
                 onChange={setProxy}
                 options={[
-                  { v: "", label: ZH.globalProxy },
-                  { v: "direct", label: ZH.direct },
-                  { v: "custom", label: ZH.custom },
+                  { v: "", label: t("Global proxy") },
+                  { v: "direct", label: t("Direct") },
+                  { v: "custom", label: t("Custom") },
                 ]}
               />
             </Field>
 
-            <Field label={ZH.concurrency}>
-              <input type="text" placeholder={ZH.noLimit} />
+            <Field
+              label={t("Concurrency")}
+              hint={t("Over it, requests queue and go out in order; 0 or empty is no limit")}
+            >
+              <input type="text" placeholder={t("No limit")} />
             </Field>
-            <Field label={ZH.rpm}>
-              <input type="text" placeholder={ZH.noLimit} />
+            <Field
+              label={t("Requests per minute")}
+              hint={t(
+                "How many requests each key or account sends in any minute, retries included; one more waits for room, up to 2 minutes. 0 or empty is no limit",
+              )}
+            >
+              <input type="text" placeholder={t("No limit")} />
             </Field>
             <Field label={ZH.queueSize}>
               <input type="text" placeholder={ZH.noBound} />
@@ -878,7 +886,21 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
   const [q, setQ] = useState("");
   const [importOpen, setImportOpen] = useState(false);
   const [editor, setEditor] = useState<EditorState>(null);
-  const [riskClaude, setRiskClaude] = useState(false);
+  /** Magpie signing flow for Claude (shots 22–24): risk → import → importing → imported */
+  type ClaudeSign =
+    | null
+    | { state: "risk" }
+    | {
+        state: "import";
+        text: string;
+        files: { name: string; text: string }[];
+        error?: string;
+      }
+    | { state: "importing" }
+    | { state: "imported"; results: { user: string; status: string; error?: string }[] };
+  const [claudeSign, setClaudeSign] = useState<ClaudeSign>(null);
+  const [claudeFilePick, setClaudeFilePick] = useState(false);
+  const [claudeFileLoc, setClaudeFileLoc] = useState<"home" | "desktop" | "settings" | "other">("home");
   type DemoProv = {
     id: string;
     name: string;
@@ -946,11 +968,11 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
       return;
     }
     if (id === "claude") {
-      setRiskClaude(true);
+      setClaudeSign({ state: "risk" });
       setEditor(null);
       return;
     }
-    setRiskClaude(false);
+    setClaudeSign(null);
     if (id === "custom") {
       setEditor({
         form: "custom",
@@ -1138,7 +1160,7 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
                       id={s.id}
                       name={s.name}
                       icon={s.icon}
-                      on={riskClaude && s.id === "claude"}
+                      on={!!claudeSign && s.id === "claude"}
                       onPick={pickTile}
                     />
                   ))}
@@ -1165,40 +1187,224 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
                     </span>
                   </button>
                 </Section>
-                {riskClaude ? (
+                {claudeSign?.state === "risk" ? (
                   <div className="signing">
                     <span className="mark">!</span>
                     <span className="tt">
-                      <span className="n">{ZH.claudeRiskTitle}</span>
-                      <span className="s">{ZH.claudeRiskNote}</span>
+                      <span className="n">
+                        {t("{name} accounts can be suspended", { name: "Claude" })}
+                      </span>
+                      <span className="s">
+                        {t(
+                          "Anthropic may suspend or ban a Claude account it sees used outside its own apps. magpie sends requests through Claude Code, but Anthropic may still act on them; you use it at your own risk. Use an account you can afford to lose.",
+                        )}
+                      </span>
                     </span>
                     <button
                       type="button"
                       className="text"
-                      onClick={() => setRiskClaude(false)}
+                      onClick={() => setClaudeSign(null)}
                     >
-                      {ZH.cancel}
+                      {t("Cancel")}
                     </button>
                     <button
                       type="button"
                       className="text"
-                      onClick={() => {
-                        setRiskClaude(false);
-                        setImportOpen(true);
-                      }}
+                      title={t(
+                        "Bring in accounts from CLIProxyAPI's auth files or {own}",
+                        { own: "Claude Code's .credentials.json" },
+                      )}
+                      onClick={() =>
+                        setClaudeSign({ state: "import", text: "", files: [] })
+                      }
                     >
-                      {ZH.importInstead}
+                      {t("Import instead…")}
                     </button>
                     <button
                       type="button"
                       className="text primary"
                       onClick={() => {
-                        setRiskClaude(false);
+                        setClaudeSign(null);
                         onStatus(ZH.signInSkipped, "ok");
                       }}
                     >
-                      {ZH.signInAnyway}
+                      {t("Sign in anyway")}
                     </button>
+                  </div>
+                ) : null}
+                {claudeSign?.state === "import" ||
+                claudeSign?.state === "importing" ||
+                claudeSign?.state === "imported" ? (
+                  <div
+                    className={`signing import${claudeSign.state === "importing" ? "" : ""}`}
+                  >
+                    {claudeSign.state === "importing" ? (
+                      <span className="spinner" aria-hidden />
+                    ) : claudeSign.state === "imported" ? (
+                      <span className="mark">✓</span>
+                    ) : (
+                      <span className="mark">↑</span>
+                    )}
+                    <span className="tt">
+                      {claudeSign.state === "importing" ? (
+                        <>
+                          <span className="n">{t("Adding the accounts…")}</span>
+                          <span className="s">
+                            {t(
+                              "Each account is kept as the file has it; nothing is asked of Claude.",
+                            )}
+                          </span>
+                        </>
+                      ) : claudeSign.state === "imported" ? (
+                        <>
+                          <span className="n">{t("Import finished")}</span>
+                          <span className="results">
+                            {claudeSign.results.map((r) => (
+                              <span
+                                className={`res ${r.status}`}
+                                key={r.user + r.status}
+                              >
+                                <span className="u">{r.user}</span>
+                                <span className="st">
+                                  {r.status === "added"
+                                    ? t("Added")
+                                    : r.status === "updated"
+                                      ? t("Updated with this sign-in")
+                                      : t("Not added")}
+                                </span>
+                                {r.error ? (
+                                  <span className="why">{r.error}</span>
+                                ) : null}
+                              </span>
+                            ))}
+                          </span>
+                        </>
+                      ) : (
+                        <>
+                          <span className="n">
+                            {t("Import {name} accounts", { name: "Claude" })}
+                          </span>
+                          <span className="s">
+                            {t(
+                              "Choose or paste CLIProxyAPI's auth files (JSON) or {own}. Each account is kept as the file has it.",
+                              { own: "Claude Code's .credentials.json" },
+                            )}
+                          </span>
+                          <span className="s">
+                            {t(
+                              "Claude Code renews the sign-in the first time it uses it, and the file's copy then stops working: the tool it came from has to sign in again.",
+                            )}
+                          </span>
+                          <span className="s">
+                            {t(
+                              "Anthropic may suspend or ban a Claude account it sees used outside its own apps. magpie sends requests through Claude Code, but Anthropic may still act on them; you use it at your own risk. Use an account you can afford to lose.",
+                            )}
+                          </span>
+                          <span className="acts">
+                            <button
+                              type="button"
+                              className="link"
+                              onClick={() => {
+                                setClaudeFileLoc("home");
+                                setClaudeFilePick(true);
+                              }}
+                            >
+                              {t("Choose files…")}
+                            </button>
+                            {claudeSign.files.length ? (
+                              <span className="fname">
+                                {claudeSign.files.map((f) => f.name).join(", ")}
+                              </span>
+                            ) : null}
+                          </span>
+                          <textarea
+                            rows={3}
+                            spellCheck={false}
+                            autoComplete="off"
+                            placeholder={t("…or paste it here")}
+                            value={claudeSign.text}
+                            onChange={(e) =>
+                              setClaudeSign({
+                                state: "import",
+                                text: e.target.value,
+                                files: claudeSign.files,
+                              })
+                            }
+                          />
+                          {claudeSign.error ? (
+                            <span className="s why">{claudeSign.error}</span>
+                          ) : null}
+                        </>
+                      )}
+                    </span>
+                    {claudeSign.state === "import" ? (
+                      <>
+                        <button
+                          type="button"
+                          className="text"
+                          onClick={() => setClaudeSign(null)}
+                        >
+                          {t("Cancel")}
+                        </button>
+                        <button
+                          type="button"
+                          className="text primary"
+                          disabled={
+                            !(
+                              claudeSign.files.length ||
+                              claudeSign.text.trim()
+                            )
+                          }
+                          onClick={() => {
+                            setClaudeSign({ state: "importing" });
+                            window.setTimeout(() => {
+                              setClaudeSign({
+                                state: "imported",
+                                results: [
+                                  {
+                                    user: "demo@claude.import",
+                                    status: "added",
+                                  },
+                                ],
+                              });
+                              onStatus(
+                                demoCopy(
+                                  "演示：已本地标记导入（无真凭据）",
+                                  "Demo: import marked locally (no real credentials)",
+                                ),
+                                "ok",
+                              );
+                            }, 720);
+                          }}
+                        >
+                          {t("Import")}
+                        </button>
+                      </>
+                    ) : null}
+                    {claudeSign.state === "imported" ? (
+                      <>
+                        <button
+                          type="button"
+                          className="text"
+                          onClick={() => setClaudeSign(null)}
+                        >
+                          {t("Done")}
+                        </button>
+                        <button
+                          type="button"
+                          className="text primary"
+                          onClick={() =>
+                            setClaudeSign({
+                              state: "import",
+                              text: "",
+                              files: [],
+                            })
+                          }
+                        >
+                          {t("Import more…")}
+                        </button>
+                      </>
+                    ) : null}
                   </div>
                 ) : null}
               </>
@@ -1382,6 +1588,146 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
 
       {importOpen ? (
         <ImportAppsModal onClose={() => setImportOpen(false)} />
+      ) : null}
+      {claudeFilePick ? (
+        <div
+          className="modal open"
+          role="dialog"
+          aria-modal="true"
+          aria-label={t("Choose files…")}
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setClaudeFilePick(false);
+          }}
+        >
+          <div
+            className="dialog"
+            style={{
+              width: "min(560px, 92vw)",
+              maxHeight: "min(480px, 82vh)",
+              display: "flex",
+              flexDirection: "column",
+              animation: "pop-in .42s cubic-bezier(.16,1,.3,1)",
+            }}
+          >
+            <div
+              className="ebody"
+              style={{
+                display: "grid",
+                gridTemplateColumns: "148px 1fr",
+                gap: 0,
+                minHeight: 300,
+                padding: 0,
+                flex: 1,
+              }}
+            >
+              <nav
+                style={{
+                  borderRight: "1px solid var(--line)",
+                  padding: "10px 8px",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 2,
+                }}
+              >
+                {(
+                  [
+                    ["home", t("Home")],
+                    ["desktop", t("Desktop")],
+                    ["settings", "settings"],
+                    ["other", t("Other Locations")],
+                  ] as const
+                ).map(([id, label]) => (
+                  <button
+                    key={id}
+                    type="button"
+                    className="text"
+                    style={{
+                      justifyContent: "flex-start",
+                      padding: "7px 10px",
+                      borderRadius: 8,
+                      background:
+                        claudeFileLoc === id ? "var(--accent-soft, #dbe4ff)" : "transparent",
+                      color: claudeFileLoc === id ? "var(--accent)" : "var(--fg)",
+                      fontWeight: claudeFileLoc === id ? 600 : 450,
+                    }}
+                    onClick={() => setClaudeFileLoc(id)}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </nav>
+              <div
+                style={{
+                  padding: 12,
+                  overflow: "auto",
+                  border: "1px dashed color-mix(in srgb, var(--line) 80%, transparent)",
+                  margin: 10,
+                  borderRadius: 8,
+                  minHeight: 220,
+                }}
+              >
+                <p
+                  style={{
+                    color: "var(--muted)",
+                    fontSize: 12.5,
+                    textAlign: "center",
+                    padding: "48px 12px",
+                    margin: 0,
+                  }}
+                >
+                  {demoCopy("此文件夹为空", "This folder is empty")}
+                </p>
+              </div>
+            </div>
+            <div
+              className="bar"
+              style={{
+                display: "flex",
+                gap: 8,
+                justifyContent: "flex-end",
+                padding: "10px 14px",
+              }}
+            >
+              <button
+                type="button"
+                className="text"
+                onClick={() => setClaudeFilePick(false)}
+              >
+                {t("Cancel")}
+              </button>
+              <button
+                type="button"
+                className="text primary"
+                disabled
+                title={demoCopy("演示：未选文件时 Open 禁用", "Demo: Open disabled with no selection")}
+              >
+                {t("Open")}
+              </button>
+              <button
+                type="button"
+                className="text"
+                onClick={() => {
+                  /* mock pick a credentials file for demo import ready */
+                  if (claudeSign?.state === "import") {
+                    setClaudeSign({
+                      state: "import",
+                      text: claudeSign.text,
+                      files: [
+                        {
+                          name: ".credentials.json",
+                          text: '{"demo":true}',
+                        },
+                      ],
+                    });
+                  }
+                  setClaudeFilePick(false);
+                }}
+              >
+                {demoCopy("演示选用示例", "Demo pick sample")}
+              </button>
+            </div>
+          </div>
+        </div>
       ) : null}
       {editor ? (
         <ProviderEditorModal
