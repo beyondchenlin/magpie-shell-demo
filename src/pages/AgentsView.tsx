@@ -851,7 +851,11 @@ export function AgentsView({
                 className="ag-handle"
                 aria-label={ZH.arrangeAria.replace("{agent}", a.name)}
                 aria-haspopup="menu"
-                title={t("Drag to reorder · click to move or hide")}
+                title={t(
+                  wired[a.id]
+                    ? "Drag to reorder · click to move, hide or disconnect from magpie"
+                    : "Drag to reorder · click to move or hide",
+                )}
                 onClick={(e) => {
                   const el = e.currentTarget;
                   if (el.dataset.dragged === "1") {
