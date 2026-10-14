@@ -4236,5 +4236,6 @@
   "model to try · empty picks one from list": "试探模型 · 空则从列表取一个",
   "Type the base URL first. smallest request to each API (OpenAI chat completions, Responses, Anthropic, Gemini generateContent) at this URL, to see which answer": "请先填写 Base URL。会对本地址上的各 API（OpenAI chat completions、Responses、Anthropic、Gemini generateContent）发最小请求，看哪个有回应",
   "Look for the icon of the site the base URL is on.": "查找 Base URL 所在站点的图标。",
-  "type the provider's base URL first: its site's icon is looked for there.": "请先填写供应商的 Base URL：会在该站点查找图标。"
+  "type the provider's base URL first: its site's icon is looked for there.": "请先填写供应商的 Base URL：会在该站点查找图标。",
+  "Paste a shared group…": "粘贴分享的路由组…"
 }

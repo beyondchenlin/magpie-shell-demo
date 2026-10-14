@@ -1,3 +1,7 @@
+## v0.1.28
+- Routing native **01-empty-live** consumed: header New group, Routing groups foot (Import / found switch / names segs / empty copy)
+- Continues ANTIGRAVITY_ROUTING_PARTIAL → closer on Routing empty
+
 ## v0.1.27
 - Providers **Antigravity** independent risk card (Google riskNote) → Sign in anyway (mock waiting) / Import instead… (Cockpit·Manager·CLIProxyAPI copy + Google check) — from Magpie `SUBS`/`renderSigning`/`importSay`
 - Copilot **Proxy** uses Magpie `openProtoMenu` / `signInProxyChoices` via `ProtoMultiMenu` (Global / Direct / Custom… + `proxy-ask` form); no more cycle-toggle
@@ -43,7 +47,7 @@
 
 1. 无真实 provider 添加 / agent 接线 / gateway  
 2. 飞鸟仅为 Demo 开关 mock  
-3. Usage/Plugins/Agents/Providers nested = **ANTIGRAVITY_ROUTING_PARTIAL**（v0.1.27 Antigravity risk+import + Copilot Proxy proto-menu；v0.1.26 Copilot device-code/GHE；Routing native 点录目录仍空，待 shots+NOTES）  
+3. Usage/Plugins/Agents/Providers nested = **ANTIGRAVITY_ROUTING_PARTIAL**（v0.1.28 Routing 01-empty-live 已回写；v0.1.27 Antigravity risk+import + Copilot Proxy proto-menu；嵌套点录继续）  
 4. 未做原生 Tauri；Electron 系统标题栏（Windows 上游亦然）
 
 *Sessions / Library 不是顶栏缺口：官方默认不展示。*

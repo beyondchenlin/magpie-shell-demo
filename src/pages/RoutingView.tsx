@@ -111,6 +111,13 @@ export function RoutingView() {
   const [masked, setMasked] = useState(readMasked);
   const [masking, setMasking] = useState(false);
   const [demoGroups, setDemoGroups] = useState(true);
+  /** Magpie groups.found (shot 01-empty-live): Find groups on their own */
+  const [foundOn, setFoundOn] = useState(true);
+  /** Magpie suffixSegs: Off | Not on names I set | On */
+  const [nameSuffix, setNameSuffix] = useState<"off" | "skip" | "on">("on");
+  const [groupEditorOpen, setGroupEditorOpen] = useState(false);
+  const [gImportOpen, setGImportOpen] = useState(false);
+
   const [groupModel, setGroupModel] = useState("claude-sonnet-4-5");
   const [popOpen, setPopOpen] = useState(false);
   const modelBtnRef = useRef<HTMLButtonElement>(null);
@@ -289,6 +296,30 @@ export function RoutingView() {
           }}
         >
           {demoLive ? ZH.demoFlierOn : ZH.demoFlierOff}
+        </button>
+        <button
+          className="text rt-newgroup"
+          id="rtNewGroup"
+          type="button"
+          data-feature="groups"
+          title={t("Make a routing group of any models you like — agents pick it as one model")}
+          onClick={() => {
+            setFoundOn(true);
+            setGroupEditorOpen(true);
+            setDemoGroups(true);
+          }}
+        >
+          <svg
+            viewBox="0 0 16 16"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.8"
+            strokeLinecap="round"
+            aria-hidden="true"
+          >
+            <path d="M8 3.5v9M3.5 8h9" />
+          </svg>
+          <span data-t>{t("New group")}</span>
         </button>
         <button
           className="text rt-mask"
@@ -1082,94 +1113,219 @@ export function RoutingView() {
         </div>
       </div>
 
-      {/* Magpie #rtMore — demo groups / model pick / conditions (v0.1.16) */}
+      {/* Magpie #rtMore — Routing groups empty (native 01-empty-live) */}
       <div className="rt-more" id="rtMore">
-        <div className="row-head" style={{ marginTop: 8 }}>
-          <span className="label">{t("Routing groups")}</span>
-          <span className="grow" />
-          <button type="button" className="text" aria-pressed={demoGroups} onClick={() => setDemoGroups((d) => !d)}>
-            {demoGroups ? t("Hide demo") : t("Show demo")}
-          </button>
-        </div>
-        {demoGroups ? (
-          <div className="rt-groups">
-            <div className="rt-group card">
-              <div className="rt-ghead">
-                <b>{t("Default")}</b>
-                <span className="grow" />
+        <div className="rt-gsec">
+          <div className="row-head">
+            <span className="label">{t("Routing groups")}</span>
+            <span className="grow" />
+            <span className="note">{t("models agents pick as one")}</span>
+            <button
+              type="button"
+              className="text rt-gimportbtn"
+              title={t("Add a routing group someone shared from their magpie")}
+              aria-expanded={gImportOpen}
+              onClick={() => setGImportOpen((o) => !o)}
+            >
+              {t("Import")}
+            </button>
+            <button
+              type="button"
+              className="text rt-gnew"
+              onClick={() => {
+                setGroupEditorOpen(true);
+                setDemoGroups(true);
+              }}
+            >
+              <svg viewBox="0 0 16 16" width={11} height={11} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden>
+                <path d="M8 3.5v9M3.5 8h9" />
+              </svg>
+              <span>{t("New group")}</span>
+            </button>
+          </div>
+          {gImportOpen ? (
+            <div className="rt-gimport card" style={{ margin: "8px 0", padding: 12, animation: "fade-in .18s var(--ease)" }}>
+              <p className="note" style={{ margin: "0 0 8px" }}>
+                {t("Add a routing group someone shared from their magpie")}
+              </p>
+              <textarea
+                rows={3}
+                placeholder={t("Paste a shared group…")}
+                style={{ width: "100%", font: "inherit", borderRadius: 8, border: "1px solid var(--line)", padding: 8 }}
+              />
+              <div style={{ display: "flex", gap: 8, marginTop: 8, justifyContent: "flex-end" }}>
+                <button type="button" className="text" onClick={() => setGImportOpen(false)}>
+                  {t("Cancel")}
+                </button>
                 <button
                   type="button"
-                  className="sess-pick set"
-                  ref={modelBtnRef}
-                  aria-haspopup="listbox"
-                  aria-expanded={popOpen}
-                  onClick={() => setPopOpen((o) => !o)}
+                  className="text primary"
+                  onClick={() => setGImportOpen(false)}
                 >
-                  <span>{groupModel}</span>
-                  <svg viewBox="0 0 12 12" width={11} height={11} aria-hidden>
-                    <path d="M3 4.5 6 7.5 9 4.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-                  </svg>
+                  {t("Import")}
                 </button>
-                <ModelPop
-                  open={popOpen}
-                  anchor={modelBtnRef.current}
-                  value={groupModel}
-                  modelPicker
-                  options={[
-                    { value: "claude-sonnet-4-5", label: "claude-sonnet-4-5", group: "Anthropic" },
-                    { value: "claude-haiku-4-5", label: "claude-haiku-4-5", group: "Anthropic" },
-                    { value: "gpt-5", label: "gpt-5", group: "OpenAI" },
-                    { value: "gemini-2.5-pro", label: "gemini-2.5-pro", group: "Google" },
-                  ]}
-                  onPick={(v) => {
-                    setGroupModel(v);
-                    setPopOpen(false);
-                  }}
-                  onClose={() => setPopOpen(false)}
-                />
               </div>
-              <button
-                type="button"
-                className={`fold text${condOpen ? " open" : ""}`}
-                aria-expanded={condOpen}
-                onClick={() => setCondOpen((o) => !o)}
-              >
-                <svg viewBox="0 0 12 12" width={11} height={11} aria-hidden>
-                  <path d="M4.5 2.5 8 6l-3.5 3.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-                </svg>
-                {t("Conditions")}
-              </button>
-              {condOpen ? (
-                <div className="rt-conds" style={{ marginTop: 8, display: "flex", flexDirection: "column", gap: 6 }}>
-                  <div className="row pref" style={{ padding: "6px 8px" }}>
-                    <div className="who">
-                      <div className="name">{t("When agent is")}</div>
-                      <div className="sub">Claude Code · Codex</div>
-                    </div>
-                    <button type="button" className="text">{t("Edit")}</button>
-                  </div>
-                  <div className="row pref" style={{ padding: "6px 8px" }}>
-                    <div className="who">
-                      <div className="name">{t("When model matches")}</div>
-                      <div className="sub">*sonnet* · gpt-*</div>
-                    </div>
-                    <button type="button" className="text">{t("Edit")}</button>
-                  </div>
-                  <button type="button" className="text" style={{ alignSelf: "flex-start" }}>
-                    + {t("Condition")}
-                  </button>
-                </div>
-              ) : null}
             </div>
-            <div className="rt-group card muted">
-              <div className="rt-ghead">
-                <b>{t("Fallback")}</b>
-                <span className="grow" />
-                <span style={{ fontSize: 12, color: "var(--muted)" }}>ollama / llama3.2</span>
-              </div>
+          ) : null}
+          <div className="rt-gfound row pref" style={{ alignItems: "flex-start", gap: 12, padding: "10px 4px" }}>
+            <div className="txt" style={{ flex: 1, minWidth: 0 }}>
+              <b style={{ display: "block", fontSize: 13 }}>{t("Find groups on their own")}</b>
+              <small style={{ display: "block", color: "var(--muted)", lineHeight: 1.4, marginTop: 2 }}>
+                {foundOn
+                  ? t(
+                      "A model two or more of your providers serve becomes a group of them (auto-…). Switch it off to list and serve only the groups you made or changed.",
+                    )
+                  : t(
+                      "Off: only the groups you made or changed are listed and served. An agent set to a found group is moved to its model from one provider, and a request still naming one goes there too.",
+                    )}
+              </small>
+            </div>
+            <button
+              type="button"
+              className={`lib-switch${foundOn ? " on" : ""}`}
+              role="switch"
+              aria-checked={foundOn}
+              aria-label={t("Find groups on their own")}
+              onClick={() => setFoundOn((v) => !v)}
+            >
+              <i />
+            </button>
+          </div>
+          <div className="rt-gnames row pref" style={{ alignItems: "flex-start", gap: 12, padding: "10px 4px" }}>
+            <div className="txt" style={{ flex: 1, minWidth: 0 }}>
+              <b style={{ display: "block", fontSize: 13 }}>{t("Names in agents’ lists")}</b>
+              <small style={{ display: "block", color: "var(--muted)", lineHeight: 1.4, marginTop: 2 }}>
+                {t(
+                  "Whether “· routing group” follows a group’s name in the agents’ lists: one setting for every group, and for the provider after each model’s name, as on Settings.",
+                )}
+              </small>
+            </div>
+            <div className="segs" role="radiogroup" aria-label={t("Names in agents’ lists")}>
+              {(
+                [
+                  ["off", "Off"],
+                  ["skip", "Not on names I set"],
+                  ["on", "On"],
+                ] as const
+              ).map(([v, label]) => (
+                <button
+                  key={v}
+                  type="button"
+                  className={`opt${nameSuffix === v ? " on" : ""}`}
+                  role="radio"
+                  aria-checked={nameSuffix === v}
+                  onClick={() => setNameSuffix(v)}
+                >
+                  {t(label)}
+                </button>
+              ))}
             </div>
           </div>
-        ) : null}
+          {groupEditorOpen ? (
+            <div className="rt-group card" style={{ marginTop: 8, padding: 12, animation: "pop-in .42s cubic-bezier(.16,1,.3,1)" }}>
+              <div className="rt-ghead" style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <b>{t("New group")}</b>
+                <span className="grow" />
+                <button type="button" className="text" onClick={() => setGroupEditorOpen(false)}>
+                  {t("Cancel")}
+                </button>
+                <button
+                  type="button"
+                  className="text primary"
+                  onClick={() => {
+                    setGroupEditorOpen(false);
+                    setDemoGroups(true);
+                  }}
+                >
+                  {t("Save")}
+                </button>
+              </div>
+              <p className="note" style={{ margin: "8px 0 0" }}>
+                {t("No group yet. A model two of your providers serve becomes one on its own; New group makes one of any models you like.")}
+              </p>
+            </div>
+          ) : (
+            <div className="none rt-gnone" style={{ padding: "16px 4px", color: "var(--muted)", fontSize: 13 }}>
+              {foundOn
+                ? t(
+                    "No group yet. A model two of your providers serve becomes one on its own; New group makes one of any models you like.",
+                  )
+                : t("No group yet. New group makes one of any models you like.")}
+            </div>
+          )}
+          {demoGroups ? (
+            <div className="rt-groups" style={{ marginTop: 8 }}>
+              <div className="rt-group card">
+                <div className="rt-ghead">
+                  <b>{t("Default")}</b>
+                  <span className="grow" />
+                  <button
+                    type="button"
+                    className="sess-pick set"
+                    ref={modelBtnRef}
+                    aria-haspopup="listbox"
+                    aria-expanded={popOpen}
+                    onClick={() => setPopOpen((o) => !o)}
+                  >
+                    <span>{groupModel}</span>
+                    <svg viewBox="0 0 12 12" width={11} height={11} aria-hidden>
+                      <path d="M3 4.5 6 7.5 9 4.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                    </svg>
+                  </button>
+                  <ModelPop
+                    open={popOpen}
+                    anchor={modelBtnRef.current}
+                    value={groupModel}
+                    modelPicker
+                    options={[
+                      { value: "claude-sonnet-4-5", label: "claude-sonnet-4-5", group: "Anthropic" },
+                      { value: "claude-haiku-4-5", label: "claude-haiku-4-5", group: "Anthropic" },
+                      { value: "gpt-5", label: "gpt-5", group: "OpenAI" },
+                      { value: "gemini-2.5-pro", label: "gemini-2.5-pro", group: "Google" },
+                    ]}
+                    onPick={(v) => {
+                      setGroupModel(v);
+                      setPopOpen(false);
+                    }}
+                    onClose={() => setPopOpen(false)}
+                  />
+                </div>
+                <button
+                  type="button"
+                  className={`fold text${condOpen ? " open" : ""}`}
+                  aria-expanded={condOpen}
+                  onClick={() => setCondOpen((o) => !o)}
+                >
+                  <svg viewBox="0 0 12 12" width={11} height={11} aria-hidden>
+                    <path d="M4.5 2.5 8 6l-3.5 3.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                  </svg>
+                  {t("Conditions")}
+                </button>
+                {condOpen ? (
+                  <div className="rt-conds" style={{ marginTop: 8, display: "flex", flexDirection: "column", gap: 6 }}>
+                    <div className="row pref" style={{ padding: "6px 8px" }}>
+                      <div className="who">
+                        <div className="name">{t("When agent is")}</div>
+                        <div className="sub">Claude Code · Codex</div>
+                      </div>
+                      <button type="button" className="text">{t("Edit")}</button>
+                    </div>
+                    <div className="row pref" style={{ padding: "6px 8px" }}>
+                      <div className="who">
+                        <div className="name">{t("When model matches")}</div>
+                        <div className="sub">*sonnet* · gpt-*</div>
+                      </div>
+                      <button type="button" className="text">{t("Edit")}</button>
+                    </div>
+                    <button type="button" className="text" style={{ alignSelf: "flex-start" }}>
+                      + {t("Condition")}
+                    </button>
+                  </div>
+                ) : null}
+              </div>
+            </div>
+          ) : null}
+        </div>
       </div>
     </main>
   );
