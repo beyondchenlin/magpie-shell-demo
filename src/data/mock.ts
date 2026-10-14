@@ -2,6 +2,7 @@
 
 export type ViewId =
   | "agents"
+  | "library"
   | "providers"
   | "routing"
   | "gateway"
@@ -43,6 +44,7 @@ export const NAV: {
 
 export const TITLES: Record<ViewId, string> = {
   agents: "Agent",
+  library: "资料库",
   providers: "供应商",
   routing: "路由",
   gateway: "网关",
@@ -53,6 +55,7 @@ export const TITLES: Record<ViewId, string> = {
 
 export const GROUP_OF: Partial<Record<ViewId, string>> = {
   agents: "使用",
+  library: "使用",
   providers: "模型",
   routing: "模型",
   gateway: "模型",

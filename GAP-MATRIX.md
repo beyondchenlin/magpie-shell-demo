@@ -1,3 +1,7 @@
+## v0.1.31
+- **RULES_EFFORT**: GroupEditor Rules deep conditions + Effort classifier + By-weight in-place (no weight-drag in Magpie) + mock Save/Import/template Add
+- Library native 01–03 → LibraryView (Plugins › Library feature)
+
 ## v0.1.28
 - Routing native **01-empty-live** consumed: header New group, Routing groups foot (Import / found switch / names segs / empty copy)
 - Continues ANTIGRAVITY_ROUTING_PARTIAL → closer on Routing empty

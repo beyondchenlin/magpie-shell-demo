@@ -1826,7 +1826,14 @@ export function PluginsView() {
   const [folderLoc, setFolderLoc] = useState<"recent" | "home" | "other">("recent");
   const [mirror, setMirror] = useState(false);
   const [mirrorTip, setMirrorTip] = useState(false);
-  const [builtins, setBuiltins] = useState(BUILTINS_DEFAULT);
+  const [builtins, setBuiltins] = useState(() => {
+    try {
+      const on = localStorage.getItem("magpie.feature.library") === "1";
+      return BUILTINS_DEFAULT.map((b) => (b.id === "library" ? { ...b, on } : b));
+    } catch {
+      return BUILTINS_DEFAULT;
+    }
+  });
   const [installed, setInstalled] = useState<
     {
       pkg: string;
@@ -1996,7 +2003,15 @@ export function PluginsView() {
                         title={b.locked ? t("In use, so it stays on") : undefined}
                         onClick={() => {
                           if (b.locked) return;
-                          setBuiltins((list) => list.map((x) => (x.id === b.id ? { ...x, on: !x.on } : x)));
+                          setBuiltins((list) => {
+                            const next = list.map((x) => (x.id === b.id ? { ...x, on: !x.on } : x));
+                            const lib = next.find((x) => x.id === "library");
+                            try {
+                              localStorage.setItem("magpie.feature.library", lib?.on ? "1" : "0");
+                              window.dispatchEvent(new Event("magpie-feature"));
+                            } catch { /* */ }
+                            return next;
+                          });
                         }}
                       >
                         <i />

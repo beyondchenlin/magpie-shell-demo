@@ -113,7 +113,7 @@ function readMasked(): boolean {
 }
 
 /** Empty routing stage matching official Magpie R-00…R-09. */
-export function RoutingView() {
+export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: string) => void } = {}) {
   const stageRef = useRef<HTMLDivElement>(null);
   const hubRef = useRef<HTMLDivElement>(null);
   const srcRef = useRef<HTMLDivElement>(null);
@@ -134,9 +134,11 @@ export function RoutingView() {
   /** Magpie suffixSegs: Off | Not on names I set | On */
   const [nameSuffix, setNameSuffix] = useState<"off" | "skip" | "on">("on");
   const [groupEditorOpen, setGroupEditorOpen] = useState(false);
-  const [savedGroups, setSavedGroups] = useState<{ name: string }[]>([]);
+  const [savedGroups, setSavedGroups] = useState<{ name: string; members?: string[] }[]>([]);
   const [gImportOpen, setGImportOpen] = useState(false);
   const [importPaste, setImportPaste] = useState("");
+  const [importNote, setImportNote] = useState("");
+  const [templateSeed, setTemplateSeed] = useState<{ name: string; memberIds: string[] } | null>(null);
 
   const [groupModel, setGroupModel] = useState("claude-sonnet-4-5");
   const [popOpen, setPopOpen] = useState(false);
@@ -1212,6 +1214,7 @@ export function RoutingView() {
               type="button"
               className="text rt-gnew"
               onClick={() => {
+                setTemplateSeed(null);
                 setGroupEditorOpen(true);
                 setDemoGroups(true);
               }}
@@ -1283,17 +1286,35 @@ export function RoutingView() {
                 {t("Start from a template: made of your own models, added in a click")}
               </div>
               <div className="rt-gtpl-cards">
-                {GROUP_TEMPLATES.map((tp) => (
-                  <div key={tp.title} className="rt-gtpl-card off">
-                    <div className="hd">
-                      <b>{t(tp.title)}</b>
+                {GROUP_TEMPLATES.map((tp, ti) => {
+                  const seedMembers =
+                    ti === 0
+                      ? ["claude-opus-4-1", "claude-haiku-4-5"]
+                      : ti === 1
+                        ? ["claude-haiku-4-5", "claude-sonnet-4-5", "claude-opus-4-1"]
+                        : ["claude-opus-4-1", "gpt-5", "gemini-2.5-pro"];
+                  return (
+                    <div key={tp.title} className="rt-gtpl-card">
+                      <div className="hd">
+                        <b>{t(tp.title)}</b>
+                      </div>
+                      <div className="desc">{t(tp.desc)}</div>
+                      <div className="acts">
+                        <button
+                          type="button"
+                          className="text primary"
+                          onClick={() => {
+                            setTemplateSeed({ name: t(tp.title), memberIds: seedMembers });
+                            setGroupEditorOpen(true);
+                            setDemoGroups(true);
+                          }}
+                        >
+                          {t("Add")}
+                        </button>
+                      </div>
                     </div>
-                    <div className="desc">{t(tp.desc)}</div>
-                    <div className="acts">
-                      <span className="mem why">{t("Add a provider first")}</span>
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
           ) : null}
@@ -1328,9 +1349,40 @@ export function RoutingView() {
                   className="text primary"
                   disabled={!importPaste.trim()}
                   onClick={() => {
-                    if (!importPaste.trim()) return;
+                    const raw = importPaste.trim();
+                    if (!raw) return;
+                    let name = "";
+                    let members: string[] = [];
+                    let rulesLeft = 0;
+                    try {
+                      const j = JSON.parse(raw) as {
+                        name?: string;
+                        members?: string[];
+                        rules?: unknown[];
+                      };
+                      name = (j.name || "").trim() || t("Imported group");
+                      members = Array.isArray(j.members) ? j.members.map(String) : [];
+                      // Magpie may leave out rules that reference missing models
+                      if (Array.isArray(j.rules) && j.rules.length && members.length < 2) {
+                        rulesLeft = j.rules.length;
+                      }
+                    } catch {
+                      // Magpie share blob is often opaque; demo accepts a name line
+                      name = raw.split("\n")[0].slice(0, 64) || t("Imported group");
+                      members = ["claude-sonnet-4-5", "claude-haiku-4-5"];
+                    }
+                    setSavedGroups((gs) => [...gs, { name, members }]);
+                    setDemoGroups(true);
                     setGImportOpen(false);
                     setImportPaste("");
+                    setImportNote(
+                      rulesLeft
+                        ? t(rulesLeft === 1 ? "1 rule left out with them" : "{n} rules left out with them", {
+                            n: rulesLeft,
+                          })
+                        : "",
+                    );
+                    onStatus?.(t("{name} imported", { name }), "ok");
                   }}
                 >
                   {t("Import")}
@@ -1338,13 +1390,24 @@ export function RoutingView() {
               </div>
             </div>
           ) : null}
+          {importNote ? (
+            <div className="rt-gimport-note" style={{ marginTop: 6, fontSize: 12.5, color: "var(--muted)" }}>
+              {importNote}
+            </div>
+          ) : null}
           <GroupEditor
             open={groupEditorOpen}
             nameSuffixOn={nameSuffix === "on"}
-            onClose={() => setGroupEditorOpen(false)}
+            templateSeed={templateSeed}
+            onStatus={onStatus}
+            onClose={() => {
+              setGroupEditorOpen(false);
+              setTemplateSeed(null);
+            }}
             onSaved={(name: string) => {
               setSavedGroups((gs) => [...gs, { name }]);
               setDemoGroups(true);
+              setTemplateSeed(null);
             }}
           />
           {false ? (
@@ -1365,6 +1428,11 @@ export function RoutingView() {
                     <span className="grow" />
                     <span className="note">{t("routing group")}</span>
                   </div>
+                  {g.members?.length ? (
+                    <div className="rt-gbody" style={{ padding: "0 12px 10px", fontSize: 12, color: "var(--muted)" }}>
+                      {g.members.join(" · ")}
+                    </div>
+                  ) : null}
                 </div>
               ))}
             </div>

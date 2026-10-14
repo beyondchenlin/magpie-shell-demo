@@ -9,22 +9,29 @@ import { ProvidersView } from "./pages/ProvidersView";
 import { RoutingView } from "./pages/RoutingView";
 import { GatewayView } from "./pages/GatewayView";
 import { PluginsView, UsageView } from "./pages/SimpleViews";
+import { LibraryView } from "./pages/LibraryView";
 import { SettingsView } from "./pages/SettingsView";
 
 const SIDE_AT = 1024;
 const NAV_LS = "magpie.navLayout";
 
-const TOP_IDS: ViewId[] = [
-  "agents",
-  "providers",
-  "routing",
-  "gateway",
-  "usage",
-  "plugins",
-];
+function libraryOn(): boolean {
+  try {
+    return localStorage.getItem("magpie.feature.library") === "1";
+  } catch {
+    return false;
+  }
+}
+
+function topIds(): ViewId[] {
+  const base: ViewId[] = ["agents", "providers", "routing", "gateway", "usage", "plugins"];
+  if (libraryOn()) base.splice(1, 0, "library");
+  return base;
+}
 
 const VIEW_EN: Record<ViewId, string> = {
   agents: "Agents",
+  library: "Library",
   providers: "Providers",
   routing: "Routing",
   gateway: "Gateway",
@@ -33,7 +40,7 @@ const VIEW_EN: Record<ViewId, string> = {
   settings: "Settings",
 };
 
-const VIEWS = new Set<string>([...TOP_IDS, "settings"]);
+const VIEWS = new Set<string>(["agents", "library", "providers", "routing", "gateway", "usage", "plugins", "settings"]);
 
 function viewFromHash(): ViewId {
   const h = location.hash.replace(/^#\/?/, "");
@@ -69,6 +76,7 @@ export default function App() {
   const [spinning, setSpinning] = useState(false);
   const [refreshNonce, setRefreshNonce] = useState(0);
   const [sideOn, setSideOn] = useState(() => wantSide(readNavPick()));
+  const [libFeat, setLibFeat] = useState(libraryOn);
   const statusTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const syncRef = useRef<HTMLButtonElement>(null);
   const setNavBox = useSegThumb(sideOn || view === "settings" ? null : view);
@@ -94,6 +102,24 @@ export default function App() {
   useEffect(() => {
     applyChrome();
   }, [applyChrome]);
+
+  useEffect(() => {
+    const sync = () => setLibFeat(libraryOn());
+    window.addEventListener("storage", sync);
+    window.addEventListener("magpie-feature", sync);
+    const id = window.setInterval(sync, 1500);
+    return () => {
+      window.removeEventListener("storage", sync);
+      window.removeEventListener("magpie-feature", sync);
+      clearInterval(id);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (view === "library" && !libFeat) {
+      location.hash = "#/agents";
+    }
+  }, [view, libFeat]);
 
   useEffect(() => {
     const onHash = () => setView(viewFromHash());
@@ -186,7 +212,10 @@ export default function App() {
   if (sideOn) {
     if (view === "settings") crumbParts.push(t("Settings"));
     else {
-      const group = NAV.find((g) => g.items.some((i) => i.id === view));
+      const group =
+        view === "library"
+          ? NAV.find((g) => g.groupEn === "Work")
+          : NAV.find((g) => g.items.some((i) => i.id === view));
       if (group) crumbParts.push(lang === "en" ? group.groupEn : group.group);
       crumbParts.push(t(VIEW_EN[view]));
     }
@@ -226,24 +255,30 @@ export default function App() {
     </button>
   );
 
-  const sideNavItems = NAV.flatMap((g) => [
-    <span key={`gl-${g.groupEn}`} className="nav-gl">
-      {lang === "en" ? g.groupEn : g.group}
-    </span>,
-    ...g.items.map((item) => (
-      <button
-        key={item.id}
-        type="button"
-        data-view={item.id}
-        className={view === item.id ? "on" : ""}
-        aria-current={view === item.id ? "page" : undefined}
-        onClick={() => go(item.id)}
-      >
-        <NavIcon name={item.icon} />
-        <span>{t(VIEW_EN[item.id])}</span>
-      </button>
-    )),
-  ]);
+  const sideNavItems = NAV.flatMap((g) => {
+    const items = [...g.items];
+    if (g.groupEn === "Work" && libFeat) {
+      items.push({ id: "library" as ViewId, label: "Library", icon: "library" });
+    }
+    return [
+      <span key={`gl-${g.groupEn}`} className="nav-gl">
+        {lang === "en" ? g.groupEn : g.group}
+      </span>,
+      ...items.map((item) => (
+        <button
+          key={item.id}
+          type="button"
+          data-view={item.id}
+          className={view === item.id ? "on" : ""}
+          aria-current={view === item.id ? "page" : undefined}
+          onClick={() => go(item.id)}
+        >
+          <NavIcon name={item.icon} />
+          <span>{t(VIEW_EN[item.id])}</span>
+        </button>
+      )),
+    ];
+  });
 
   const sideNav = (
     <nav className="seg" id="nav" aria-label={t("Agents")}>
@@ -329,7 +364,7 @@ export default function App() {
             aria-label="Main navigation"
             ref={setNavBox}
           >
-            {TOP_IDS.map((id) => (
+            {topIds().map((id) => (
               <button
                 key={id}
                 type="button"
@@ -368,6 +403,7 @@ export default function App() {
         </div>
       </header>
 
+      {view === "library" && libFeat && <LibraryView onStatus={showStatus} />}
       {view === "agents" && (
         <AgentsView
           onAddProvider={() => {
@@ -384,7 +420,7 @@ export default function App() {
           onGoPlugins={() => go("plugins")}
         />
       )}
-      {view === "routing" && <RoutingView />}
+      {view === "routing" && <RoutingView onStatus={showStatus} />}
       {view === "gateway" && (
         <GatewayView
           onStatus={showStatus}
