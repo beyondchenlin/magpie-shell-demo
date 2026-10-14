@@ -1,0 +1,13 @@
+Magpie Shell Demo includes styles derived from:
+
+  Magpie — https://github.com/yetone/magpie
+  Copyright (c) 2026 yetone
+  License: MIT
+
+Files adapted under MIT:
+  src/styles/app.css      ← internal/gui/assets/app.css
+  src/styles/routing.css  ← internal/gui/assets/routing.css
+  public/icons/*          ← selected icons from internal/gui/assets/icons/
+
+This demo is NOT affiliated with or endorsed by Magpie / yetone.
+It is a visual shell recreation for PackGate product exploration.

@@ -1,0 +1,61 @@
+{
+  "name": "magpie-shell-demo",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "lint": "oxlint",
+    "preview": "vite preview",
+    "electron": "electron .",
+    "dist:web": "tsc -b && vite build",
+    "dist:linux": "tsc -b && vite build && electron-builder --linux AppImage",
+    "dist:dir": "tsc -b && vite build && electron-builder --linux dir"
+  },
+  "dependencies": {
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8"
+  },
+  "devDependencies": {
+    "@types/node": "^24.13.3",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.7",
+    "@vitejs/plugin-react": "^6.1.1",
+    "electron": "^44.7.2",
+    "electron-builder": "^26.15.3",
+    "oxlint": "^1.81.0",
+    "typescript": "~6.0.2",
+    "vite": "^8.3.0"
+  },
+  "description": "1:1 Magpie desktop shell visual demo (not official Magpie)",
+  "main": "electron/main.cjs",
+  "build": {
+    "appId": "com.beyondchenlin.magpie-shell-demo",
+    "productName": "Magpie Shell Demo",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "electron/**/*",
+      "package.json"
+    ],
+    "linux": {
+      "target": [
+        "AppImage"
+      ],
+      "category": "Utility",
+      "artifactName": "${productName}-${version}.${ext}",
+      "desktop": {
+        "Name": "Magpie Shell Demo",
+        "StartupWMClass": "magpie-shell-demo"
+      }
+    }
+  },
+  "author": {
+    "name": "beyondchenlin",
+    "email": "beyondchenlin@users.noreply.github.com"
+  },
+  "homepage": "https://github.com/beyondchenlin/magpie-shell-demo"
+}
