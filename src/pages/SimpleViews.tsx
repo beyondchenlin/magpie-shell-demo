@@ -3115,68 +3115,124 @@ export function PluginsView({
       {pluginDetail ? (
         <div className="modal open" role="dialog" aria-modal="true" aria-label={pluginDetail.name}>
           <div className="backdrop" onClick={() => setPluginDetail(null)} />
-          <div className="dialog pm-detail" style={{ maxWidth: 520, width: "min(520px, 94vw)", maxHeight: "86vh", overflow: "auto" }}>
-            <div className="bar" style={{ display: "flex", gap: 10, alignItems: "center" }}>
+          <div className="dialog editor pm-detail" style={{ maxWidth: 520, width: "min(520px, 94vw)", maxHeight: "86vh", overflow: "auto", padding: 0 }}>
+            <div className="ehead pm-dhead" style={{ display: "flex", gap: 12, alignItems: "center", minHeight: 76, padding: "14px 18px", borderBottom: "1px solid var(--line-2, var(--line))" }}>
               <div className="pm-logo" aria-hidden>◆</div>
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <b style={{ fontSize: 15 }}>{pluginDetail.name}</b>
-                <div style={{ fontSize: 12, color: "var(--muted)" }}>
-                  {"community" in pluginDetail && (pluginDetail as { community?: boolean }).community
-                    ? `${t("magpie community")} · ${pluginDetail.pkg}`
-                    : "owner" in pluginDetail && (pluginDetail as { owner?: string }).owner
-                      ? `${(pluginDetail as { owner: string }).owner} · ${pluginDetail.pkg}`
-                      : pluginDetail.pkg}
+              <div className="pm-who" style={{ flex: 1, minWidth: 0 }}>
+                <div className="pm-name"><b>{pluginDetail.name}</b></div>
+                <div className="pm-by">
+                  <span>
+                    {"community" in pluginDetail && (pluginDetail as { community?: boolean }).community
+                      ? `${t("magpie community")} · ${pluginDetail.pkg}`
+                      : "owner" in pluginDetail && (pluginDetail as { owner?: string }).owner
+                        ? `${(pluginDetail as { owner: string }).owner} · ${pluginDetail.pkg}`
+                        : pluginDetail.pkg}
+                  </span>
                 </div>
               </div>
-              <button
-                type="button"
-                className={`pm-act${busy === pluginDetail.pkg ? " busy" : installed.some((x) => x.pkg === pluginDetail.pkg) ? " done" : " get"}`}
-                title={busy === pluginDetail.pkg ? t("Plugins run on Bun {v}, downloaded once", { v: "1.4.2" }) : undefined}
-                disabled={busy === pluginDetail.pkg || installed.some((x) => x.pkg === pluginDetail.pkg)}
-                onClick={() => install(pluginDetail.pkg, pluginDetail.name)}
-              >
-                {installAct(pluginDetail.pkg, installed.some((x) => x.pkg === pluginDetail.pkg))}
-              </button>
+              <div className="pm-dact">
+                <button
+                  type="button"
+                  className={`pm-act${busy === pluginDetail.pkg ? " busy" : installed.some((x) => x.pkg === pluginDetail.pkg) ? " done" : " get"}`}
+                  title={
+                    busy === pluginDetail.pkg
+                      ? t("Plugins run on Bun {v}, downloaded once", { v: "1.4.2" })
+                      : installed.some((x) => x.pkg === pluginDetail.pkg)
+                        ? undefined
+                        : t("Install")
+                  }
+                  disabled={busy === pluginDetail.pkg || installed.some((x) => x.pkg === pluginDetail.pkg)}
+                  onClick={(ev) => {
+                    ev.stopPropagation();
+                    install(pluginDetail.pkg, pluginDetail.name);
+                  }}
+                >
+                  {installAct(pluginDetail.pkg, installed.some((x) => x.pkg === pluginDetail.pkg))}
+                </button>
+              </div>
             </div>
-            <p className="pm-dsum" style={{ marginTop: 10, fontSize: 13, lineHeight: 1.5 }}>{pluginDetail.summary}</p>
-            <div className="pm-facts" style={{ marginTop: 10 }}>
-              <div className="pm-fact"><span className="k">{t("Version")}</span><span className="v">{"ver" in pluginDetail && (pluginDetail as { ver?: string }).ver ? (pluginDetail as { ver: string }).ver : "v0.1.0-demo"}</span></div>
-              <div className="pm-fact"><span className="k">{"stars" in pluginDetail && (pluginDetail as { stars?: number }).stars != null ? t("Stars") : t("Downloads")}</span><span className="v">{"stars" in pluginDetail && (pluginDetail as { stars?: number }).stars != null ? (pluginDetail as { stars: number }).stars : pluginDetail.downloads}</span></div>
-              <div className="pm-fact"><span className="k">{t("License")}</span><span className="v">MIT</span></div>
-              <div className="pm-fact"><span className="k">{t("Updated")}</span><span className="v">{"updated" in pluginDetail && (pluginDetail as { updated?: string }).updated ? (pluginDetail as { updated: string }).updated : "—"}</span></div>
-            </div>
-            {"unofficial" in pluginDetail && (pluginDetail as { unofficial?: boolean }).unofficial && "owner" in pluginDetail ? (
-              <p className="pm-note warn" style={{ marginTop: 10, display: "flex", gap: 6, alignItems: "flex-start", padding: "8px 10px", borderRadius: 8, background: "color-mix(in srgb, var(--amber, #d97706) 12%, var(--pill))", fontSize: 12, lineHeight: 1.45 }}>
-                <svg viewBox="0 0 16 16" width={12} height={12} aria-hidden style={{ flex: "none", marginTop: 2 }}>
-                  <path d="M8 2.3 13 4v3.8c0 3-2.1 5.1-5 5.9-2.9-.8-5-2.9-5-5.9V4z" fill="none" stroke="currentColor" strokeWidth="1.4" />
-                </svg>
-                <span>
-                  {t(
-                    "Unofficial: {owner} tagged it {topic} on GitHub, and nobody at magpie has reviewed it. It is installed from the repository as it stands, and runs with your sign-in or your requests.",
-                    { owner: (pluginDetail as { owner: string }).owner, topic: "magpie-plugin" },
-                  )}
-                </span>
-              </p>
-            ) : null}
-            <div className="pm-readme" style={{ marginTop: 12, paddingTop: 12, borderTop: "1px solid var(--line)", fontSize: 12.5, lineHeight: 1.5, color: "var(--fg-2)" }}>
-              {!detailReadmeReady ? (
-                <>
-                  <div className="pm-rskel" aria-hidden />
-                  <div className="pm-rskel short" aria-hidden />
-                  <div className="pm-rskel" aria-hidden />
-                </>
-              ) : "readme" in pluginDetail && (pluginDetail as { readme?: string }).readme ? (
-                <div className="pm-md"><h3>{(pluginDetail as { readme: string }).readme.split("\n")[0]}</h3><p>{(pluginDetail as { readme: string }).readme}</p></div>
-              ) : (
-                <p>
-                  {demoCopy(
-                    "演示详情模态（对照 Magpie Discover 卡片）。Escape 不关闭；点 Close 或遮罩关闭。",
-                    "Demo detail modal (Magpie Discover card). Escape does not close; Close or backdrop does.",
-                  )}
+            <div className="pm-dbody" style={{ display: "flex", flexDirection: "column", gap: 12, padding: "14px 18px 18px" }}>
+              <p className="pm-dsum" style={{ margin: 0, fontSize: 13, lineHeight: 1.5 }}>{pluginDetail.summary}</p>
+              <div className="pm-facts">
+                <div className="pm-fact"><span className="k">{t("Version")}</span><span className="v">{"ver" in pluginDetail && (pluginDetail as { ver?: string }).ver ? (pluginDetail as { ver: string }).ver : "v0.1.0-demo"}</span></div>
+                <div className="pm-fact"><span className="k">{"stars" in pluginDetail && (pluginDetail as { stars?: number }).stars != null ? t("Stars") : t("Downloads")}</span><span className="v">{"stars" in pluginDetail && (pluginDetail as { stars?: number }).stars != null ? (pluginDetail as { stars: number }).stars : pluginDetail.downloads}</span></div>
+                <div className="pm-fact"><span className="k">{t("License")}</span><span className="v">MIT</span></div>
+                <div className="pm-fact"><span className="k">{t("Updated")}</span><span className="v">{"updated" in pluginDetail && (pluginDetail as { updated?: string }).updated ? (pluginDetail as { updated: string }).updated : "—"}</span></div>
+              </div>
+              <div className="pm-links" style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+                <button
+                  type="button"
+                  className="pm-link"
+                  onClick={() => window.open(`https://www.npmjs.com/package/${pluginDetail.pkg}`, "_blank", "noopener")}
+                >
+                  <span>npm</span>
+                  <svg viewBox="0 0 12 12" width={11} height={11} aria-hidden>
+                    <path d="M9.5 3.5h3v3M12.5 3.5 7.5 8.5M11 9.5v3H3.5V5h3" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </button>
+                {"owner" in pluginDetail && (pluginDetail as { owner?: string }).owner ? (
+                  <button
+                    type="button"
+                    className="pm-link"
+                    onClick={() =>
+                      window.open(
+                        `https://github.com/${(pluginDetail as { owner: string }).owner}/${pluginDetail.pkg.split("/").pop() || pluginDetail.pkg}`,
+                        "_blank",
+                        "noopener",
+                      )
+                    }
+                  >
+                    <span>GitHub</span>
+                    <svg viewBox="0 0 12 12" width={11} height={11} aria-hidden>
+                      <path d="M9.5 3.5h3v3M12.5 3.5 7.5 8.5M11 9.5v3H3.5V5h3" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    className="pm-link"
+                    onClick={() => window.open(`https://www.npmjs.com/package/${pluginDetail.pkg}`, "_blank", "noopener")}
+                  >
+                    <span>{t("Source")}</span>
+                    <svg viewBox="0 0 12 12" width={11} height={11} aria-hidden>
+                      <path d="M9.5 3.5h3v3M12.5 3.5 7.5 8.5M11 9.5v3H3.5V5h3" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </button>
+                )}
+              </div>
+              {"unofficial" in pluginDetail && (pluginDetail as { unofficial?: boolean }).unofficial && "owner" in pluginDetail ? (
+                <p className="pm-note warn" style={{ margin: 0, display: "flex", gap: 6, alignItems: "flex-start", padding: "8px 10px", borderRadius: 8, background: "color-mix(in srgb, var(--amber, #d97706) 12%, var(--pill))", fontSize: 12, lineHeight: 1.45 }}>
+                  <svg viewBox="0 0 16 16" width={12} height={12} aria-hidden style={{ flex: "none", marginTop: 2 }}>
+                    <path d="M8 2.3 13 4v3.8c0 3-2.1 5.1-5 5.9-2.9-.8-5-2.9-5-5.9V4z" fill="none" stroke="currentColor" strokeWidth="1.4" />
+                  </svg>
+                  <span>
+                    {t(
+                      "Unofficial: {owner} tagged it {topic} on GitHub, and nobody at magpie has reviewed it. It is installed from npm, as its author published it from the repository, and runs with your sign-in or your requests.",
+                      { owner: (pluginDetail as { owner: string }).owner, topic: "magpie-plugin" },
+                    )}
+                  </span>
                 </p>
-              )}
+              ) : null}
+              <div className="pm-readme" style={{ borderTop: "1px solid var(--line-2, var(--line))", paddingTop: 12, minHeight: 60, fontSize: 12.5, lineHeight: 1.5, color: "var(--fg-2)" }}>
+                {!detailReadmeReady ? (
+                  <>
+                    <div className="pm-rskel" aria-hidden />
+                    <div className="pm-rskel short" aria-hidden />
+                    <div className="pm-rskel" aria-hidden />
+                  </>
+                ) : "readme" in pluginDetail && (pluginDetail as { readme?: string }).readme ? (
+                  <div className="pm-md"><h3>{(pluginDetail as { readme: string }).readme.split("\n")[0]}</h3><p>{(pluginDetail as { readme: string }).readme}</p></div>
+                ) : (
+                  <p>
+                    {demoCopy(
+                      "演示详情模态（对照 Magpie Discover 卡片）。Escape 不关闭；点 Close 或遮罩关闭。Install 路径同卡片：Getting Bun… → Installed。",
+                      "Demo detail modal (Magpie Discover card). Escape does not close; Close or backdrop does. Detail Install path matches card: Getting Bun… → Installed.",
+                    )}
+                  </p>
+                )}
+              </div>
             </div>
-            <div className="bar" style={{ marginTop: 14, display: "flex", alignItems: "center", gap: 8 }}>
+            <div className="bar" style={{ display: "flex", alignItems: "center", gap: 8, padding: "12px 18px 16px", borderTop: "1px solid var(--line-2, var(--line))" }}>
               <span className="note" style={{ fontSize: 11.5, color: "var(--muted)", flex: 1 }}>
                 {t("Plugins are other people's code: they sign in and make the requests, or see them as middleware.")}
               </span>

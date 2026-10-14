@@ -216,3 +216,7 @@ No API key was typed. Add was not clicked. `~/.config/magpie/providers.json` was
 ## Left state (after 60)
 
 Providers tab, add sheet, foot of the catalog (relays, On this machine, Remote magpie, + Custom provider focused). Search empty. No provider added, no key stored, no file chosen. Magpie still running: window 752×652 at +610+300 (id 27262991). Not quit.
+
+## demo 对齐（v0.1.56 EACH_MODEL_DONE）
+- System One Each（07）：decide warn；picks 不含 model-to-try；ids 仅按逗号/换行切
+- Each 成功壳：detect-grid + ep 行 + Use these（无真探测）

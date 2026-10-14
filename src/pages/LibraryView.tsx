@@ -1349,19 +1349,38 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
               </div>
             ) : null}
           </div>
-          {toolEvent(hookEditor.event) ? (
+          {hookEditor.event.includes(":") ? (
+            <label style={{ display: "grid", gap: 4, marginBottom: 10 }}>
+              <span style={{ fontSize: 12, fontWeight: 500 }}>{t("Matcher")}</span>
+              <input
+                className="mono lib-hookmatcher"
+                type="text"
+                value={hookEditor.matcher}
+                placeholder={t("every tool")}
+                onChange={(e) => setHookEditor({ ...hookEditor, matcher: e.target.value })}
+                onKeyDown={(e) => e.stopPropagation()}
+              />
+              <small style={{ color: "var(--muted)", fontSize: 11.5 }}>
+                {t("The agent's own matcher, as its hooks file has it; empty for all")}
+              </small>
+            </label>
+          ) : toolEvent(hookEditor.event) ? (
             <div style={{ marginBottom: 10, position: "relative" }}>
               <span style={{ fontSize: 12, fontWeight: 500, display: "block", marginBottom: 4 }}>{t("For which tools")}</span>
-              <button type="button" className="sess-pick" onClick={() => { setToolMenu((v) => !v); setEventMenu(false); }}
+              <button type="button" className="sess-pick lib-hooktool" aria-haspopup="menu" aria-expanded={toolMenu}
+                onClick={() => { setToolMenu((v) => !v); setEventMenu(false); }}
                 style={{ display: "inline-flex", alignItems: "center", gap: 6, height: 30, padding: "0 10px", borderRadius: 8, border: "1px solid var(--line)", background: "var(--card)", font: "inherit", fontSize: 12.5, cursor: "pointer" }}>
-                {t(HOOK_TOOLS.find(([v]) => v === hookEditor.matcher)?.[1] || "Any tool")}
+                <span>{t(HOOK_TOOLS.find(([v]) => v === hookEditor.matcher)?.[1] || "Any tool")}</span>
+                <svg viewBox="0 0 12 12" width={11} height={11} aria-hidden style={{ transform: toolMenu ? "rotate(180deg)" : undefined, transition: "transform .15s var(--ease)" }}>
+                  <path d="M3 4.5 6 7.5 9 4.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                </svg>
               </button>
               {toolMenu ? (
                 <div role="menu" style={{ position: "absolute", zIndex: 2, top: "100%", left: 0, marginTop: 4, minWidth: 180, background: "var(--card)", border: "1px solid var(--line)", borderRadius: 10, boxShadow: "0 10px 28px rgba(20,22,30,.16)", padding: 4, animation: "pop-in .28s var(--ease)" }}>
                   {HOOK_TOOLS.map(([v, n]) => (
                     <button key={v || "any"} type="button" role="menuitem" className="text" style={{ display: "block", width: "100%", textAlign: "left", padding: "7px 10px", borderRadius: 7 }}
                       onClick={() => { setHookEditor({ ...hookEditor, matcher: v }); setToolMenu(false); }}>
-                      {t(n)}
+                      {t(n)}{hookEditor.matcher === v ? " ✓" : ""}
                     </button>
                   ))}
                 </div>

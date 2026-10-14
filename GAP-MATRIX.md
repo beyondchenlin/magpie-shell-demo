@@ -1,3 +1,10 @@
+## v0.1.56 EACH_MODEL_DONE + HOOKS_NEST_PARTIAL + DETAIL_INSTALL
+- **System One Each (NOTES 07):** decide path warn `A decision API is asked with one model…` kept; Each no longer folds tryModel into picks (Magpie `picked()`); model ids split on `,`/`\n` only (#1976).
+- **Each-picked grid (source):** with URL+key+Models picks → Magpie `detect-grid` (Model × API cells) + API `.ep` rows + Use these / truncated hint (shell mock; no real probe).
+- **Hooks nest (source, no library/39+ yet):** Cursor-own event → free-text **Matcher** (`every tool` / agent matcher hint); After/Before tool → **For which tools** menu + chevron (NOTES said matcher never opened).
+- **Plugins detail Install path (source-clear):** `pm-dhead` / `pm-dact` / `pm-dbody` / `pm-links` (npm·GitHub/Source); Install `stopPropagation` → Getting Bun… → Installed in-modal (same `install`/`installAct` as card). Escape still does not close.
+- No library/39+ on disk. Still mock: true detect/list HTTP, OAuth, hook write. Allowances **N/A**. Skip Vercel 402.
+
 ## v0.1.55 FETCH_MODELS_DONE
 - Native `providers/54–60` consumed: Custom Models+Fetch only (Gemini sheet has no Fetch); idle Optional hint (54); hover title (55); empty URL → amber lift toast **Type the base URL first** (56, URL not key); `http://127.0.0.1:9/v1` → red `no model list: Get "…/models": dial tcp … refused — type its model ids…` no chips (57–58); Discard (59); catalog foot Custom focused (60).
 - Field order chip: Context window → Max output → Compact at → Models (Magpie add form).

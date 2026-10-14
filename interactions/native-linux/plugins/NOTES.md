@@ -118,3 +118,7 @@ Native Installed row — 41–54 Switch off/on (Sign in appears, not used), Remo
 | 54 | Empty: logo · **No plugins yet** · Discover copy · **Discover plugins**. No Bun/Check footer while empty. Search may still hold `opencode`. |
 
 Demo v0.1.49: PLUGINS_OFF_DONE — 41–54 full Switch/Remove/Check nest.
+
+## demo 对齐（v0.1.56 DETAIL_INSTALL）
+- 详情模态 Install 路径：pm-dhead/pm-dact/pm-links；Getting Bun… → Installed（与卡片同 install）；Escape 不关
+- 详情 Install 仍无原生点录帧（NOTES：未点）

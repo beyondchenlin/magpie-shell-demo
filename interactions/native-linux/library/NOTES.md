@@ -84,3 +84,7 @@ Tooltip on Library folder: `~/.config/magpie/library`. That directory is not on 
 ## Left state
 
 Plugins → Built-in, Library **Off** (restored). Top chrome is Agents, Providers, Routing, Gateway, Usage, Plugins — no Library. Gateway on, other builtins off. No instruction set, MCP server, skill, or hook was created. RTK switch left off. Window still 752×652 at +610+300. Close was not used.
+
+## demo 对齐（v0.1.56 HOOKS_NEST_PARTIAL）
+- 无 library/39+；源码对齐：Cursor 自有事件 Matcher 文本框；After/Before tool → For which tools + chev
+- 仍未点录：tool matcher 原生帧、hook Add 落盘

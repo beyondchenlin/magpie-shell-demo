@@ -1,5 +1,7 @@
 ## v0.1.55 FETCH_MODELS_DONE
 
+- **v0.1.56** EACH_MODEL_DONE / HOOKS_NEST_PARTIAL / DETAIL_INSTALL — System One Each warn + detect-grid; Hooks Cursor Matcher; Plugins detail Install path.
+
 - Native providers **54–60** Custom Fetch models nest: empty-URL toast; port-9 refused red line; no chips; Discard.
 - Models after Context/Max/Compact on Custom only.
 - Still mock: true list/OAuth. Allowances N/A.

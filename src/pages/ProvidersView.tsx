@@ -498,12 +498,26 @@ function ProviderEditorModal({ state, onClose, onAdd, onStatus }: EditorProps) {
     error?: string;
     errorTitle?: string;
   };
+  type DetectGridModel = {
+    model: string;
+    cells: { protocol: string; label: string; ok: boolean; ms?: number; error?: string }[];
+  };
   type DetectView =
     | null
     | { mode: "say"; text: string; tone: "warn" | "err" }
     | { mode: "asking" }
     | { mode: "none"; keyless: boolean }
-    | { mode: "results"; rows: DetectRow[]; taken: boolean; keyless?: boolean };
+    | { mode: "results"; rows: DetectRow[]; taken: boolean; keyless?: boolean }
+    /** Magpie Each-picked success: Model × API grid (NOTES 07 empty-warn is decide path). */
+    | {
+        mode: "grid";
+        rows: DetectRow[];
+        models: DetectGridModel[];
+        asked: { protocol: string; label: string }[];
+        taken: boolean;
+        truncated?: { n: number; all: number };
+        keyless?: boolean;
+      };
   const [detectView, setDetectView] = useState<DetectView>(null);
   const [modelIds, setModelIds] = useState("");
   const [fetchBusy, setFetchBusy] = useState(false);
@@ -878,6 +892,7 @@ function ProviderEditorModal({ state, onClose, onAdd, onStatus }: EditorProps) {
                         )}
                         disabled={detectBusy}
                         onClick={() => {
+                          // Magpie each.onclick: System One first (NOTES 07)
                           if (api === "decide") {
                             setDetectView({
                               mode: "say",
@@ -888,17 +903,17 @@ function ProviderEditorModal({ state, onClose, onAdd, onStatus }: EditorProps) {
                             });
                             return;
                           }
+                          // Magpie picked(): Models field + fetch chips only (not model-to-try)
+                          // typedIds: split at commas/newlines only (#1976 space in id)
+                          const typed = modelIds
+                            .split(/[,\n]/)
+                            .map((s) => s.trim())
+                            .filter(Boolean);
                           const ids = [
-                            ...new Set(
-                              [
-                                ...modelIds
-                                  .split(/[,\s]+/)
-                                  .map((s) => s.trim())
-                                  .filter(Boolean),
-                                ...(fetchView?.mode === "list" ? fetchView.picked : []),
-                                tryModel.trim(),
-                              ].filter(Boolean),
-                            ),
+                            ...new Set([
+                              ...typed,
+                              ...(fetchView?.mode === "list" ? fetchView.picked : []),
+                            ]),
                           ];
                           if (!ids.length) {
                             setDetectView({
@@ -925,26 +940,40 @@ function ProviderEditorModal({ state, onClose, onAdd, onStatus }: EditorProps) {
                               setDetectView({ mode: "none", keyless: true });
                               return;
                             }
-                            // Shell: one-model grid row for typed/picked ids (demo structure)
+                            const asked = [
+                              { protocol: "openai", label: "OpenAI" },
+                              { protocol: "responses", label: "Responses" },
+                            ];
+                            const rows: DetectRow[] = asked.map((a, i) => ({
+                              protocol: a.protocol,
+                              label: a.label,
+                              base,
+                              ok: i === 0,
+                              ms: i === 0 ? 38 : undefined,
+                              error: i === 0 ? undefined : "404",
+                            }));
+                            const cap = 30;
+                            const shown = ids.slice(0, cap);
+                            const models = shown.map((model, mi) => ({
+                              model,
+                              cells: asked.map((a, ai) => ({
+                                protocol: a.protocol,
+                                label: a.label,
+                                ok: ai === 0 && mi % 2 === 0,
+                                ms: ai === 0 && mi % 2 === 0 ? 40 + mi : undefined,
+                                error: ai === 0 && mi % 2 === 0 ? undefined : "404",
+                              })),
+                            }));
                             setDetectView({
-                              mode: "results",
+                              mode: "grid",
+                              rows,
+                              models,
+                              asked,
                               taken: false,
-                              rows: [
-                                {
-                                  protocol: "openai",
-                                  label: "OpenAI",
-                                  base: base,
-                                  ok: true,
-                                  ms: 38,
-                                },
-                                {
-                                  protocol: "responses",
-                                  label: "Responses",
-                                  base: base,
-                                  ok: false,
-                                  error: "404",
-                                },
-                              ],
+                              truncated:
+                                ids.length > shown.length
+                                  ? { n: shown.length, all: ids.length }
+                                  : undefined,
                             });
                           }, 420);
                         }}
@@ -1019,6 +1048,146 @@ function ProviderEditorModal({ state, onClose, onAdd, onStatus }: EditorProps) {
                                 </span>
                               </div>
                             ))}
+                            <div className="detect-acts">
+                              {detectView.rows.some((r) => r.ok) ? (
+                                <button
+                                  type="button"
+                                  className="text action"
+                                  disabled={detectView.taken}
+                                  title={t(
+                                    "Set the URLs of the APIs that answered; one not found there is cleared",
+                                  )}
+                                  onClick={() => {
+                                    const ok = detectView.rows.find((r) => r.ok);
+                                    if (ok?.protocol === "responses") setApi("responses");
+                                    else if (ok?.protocol === "anthropic") setApi("anthropic");
+                                    else if (ok?.protocol === "gemini") setApi("gemini");
+                                    else setApi("openai");
+                                    setDetectView({ ...detectView, taken: true });
+                                  }}
+                                >
+                                  {detectView.taken
+                                    ? t("Taken · save to keep")
+                                    : t("Use these")}
+                                </button>
+                              ) : (
+                                <span className="hint">
+                                  {detectView.keyless || !key.trim()
+                                    ? t(
+                                        "None answered, and no API key is typed: paste the key under API key and detect again",
+                                      )
+                                    : t(
+                                        "None answered: check the URL and the key, or type a model the vendor serves",
+                                      )}
+                                </span>
+                              )}
+                            </div>
+                          </>
+                        ) : null}
+                        {detectView.mode === "grid" ? (
+                          <>
+                            {detectView.rows.map((r) => (
+                              <div className="ep" key={r.protocol} data-api={r.protocol}>
+                                <span className="pl" title={r.label}>
+                                  {r.label}
+                                </span>
+                                <code>{r.base || "—"}</code>
+                                <span className={`res ${r.ok ? "ok" : "bad"}`}>
+                                  <svg viewBox="0 0 12 12" width={10} height={10} aria-hidden>
+                                    {r.ok ? (
+                                      <path
+                                        d="M2.5 6.2 5 8.7 9.5 3.5"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        strokeWidth="2.2"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                      />
+                                    ) : (
+                                      <path
+                                        d="M3.5 3.5 8.5 8.5M8.5 3.5 3.5 8.5"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        strokeWidth="1.8"
+                                        strokeLinecap="round"
+                                      />
+                                    )}
+                                  </svg>
+                                  <span>
+                                    {r.ok ? (r.ms != null ? `${r.ms} ms` : "ok") : r.error || "—"}
+                                  </span>
+                                </span>
+                              </div>
+                            ))}
+                            <div
+                              className="detect-grid"
+                              style={{
+                                gridTemplateColumns: `minmax(0, 1.3fr) repeat(${detectView.asked.length}, minmax(0, 1fr))`,
+                              }}
+                            >
+                              <span className="dg-head">{t("Model")}</span>
+                              {detectView.asked.map((a) => (
+                                <span className="dg-head" key={a.protocol}>
+                                  {a.label}
+                                </span>
+                              ))}
+                              {detectView.models.map((md) => (
+                                <div key={md.model} style={{ display: "contents" }}>
+                                  <code className="dg-model" title={md.model}>
+                                    {md.model}
+                                  </code>
+                                  {md.cells.map((c) => (
+                                    <span
+                                      key={c.protocol}
+                                      className={`dg-cell ${c.ok ? "ok" : "bad"}`}
+                                      title={`${md.model} · ${c.label}\n${
+                                        c.ok
+                                          ? t("Answered in {took}", {
+                                              took: c.ms != null ? `${c.ms} ms` : "ok",
+                                            })
+                                          : c.error || ""
+                                      }`}
+                                    >
+                                      <svg viewBox="0 0 12 12" width={10} height={10} aria-hidden>
+                                        {c.ok ? (
+                                          <path
+                                            d="M2.5 6.2 5 8.7 9.5 3.5"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            strokeWidth="2.2"
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                          />
+                                        ) : (
+                                          <path
+                                            d="M3.5 3.5 8.5 8.5M8.5 3.5 3.5 8.5"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            strokeWidth="1.8"
+                                            strokeLinecap="round"
+                                          />
+                                        )}
+                                      </svg>
+                                      <span>
+                                        {c.ok
+                                          ? c.ms != null
+                                            ? `${c.ms} ms`
+                                            : "ok"
+                                          : c.error || "—"}
+                                      </span>
+                                    </span>
+                                  ))}
+                                </div>
+                              ))}
+                            </div>
+                            {detectView.truncated ? (
+                              <span className="hint">
+                                {t("Only the first {n} of {all} models were asked", {
+                                  n: detectView.truncated.n,
+                                  all: detectView.truncated.all,
+                                })}
+                              </span>
+                            ) : null}
                             <div className="detect-acts">
                               {detectView.rows.some((r) => r.ok) ? (
                                 <button
