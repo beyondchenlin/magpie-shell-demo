@@ -1,6 +1,7 @@
 import { Fragment, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { LedHeat } from "../components/LedHeat";
 import { Segs } from "../components/Segs";
+import { useSegThumb } from "../components/SegThumb";
 import { iconSrc } from "../data/mock";
 import {
   DEMO_CTX_AGENTS,
@@ -151,7 +152,10 @@ function ProtoMenu({
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
+      if (e.key === "Escape") {
+        e.preventDefault();
+        onClose();
+      }
     };
     const onDown = (e: MouseEvent) => {
       if (!ref.current?.contains(e.target as Node)) onClose();
@@ -165,26 +169,45 @@ function ProtoMenu({
   }, [open, onClose]);
   if (!open) return null;
   return (
-    <div className="pop proto-menu sess-menu" ref={ref} role="menu" aria-label={title} style={{ position: "absolute", zIndex: 40, minWidth: 160 }}>
-      {items.map((it) => (
-        <button
-          type="button"
-          key={it.v}
-          className={it.v === value ? "on" : ""}
-          role="menuitem"
-          onClick={() => {
-            onPick(it.v);
-            onClose();
-          }}
-        >
-          <span className="pm-name">{t(it.name)}</span>
-          {it.note ? <span className="pm-note">{t(it.note)}</span> : null}
-        </button>
-      ))}
+    <div
+      className="pop proto-menu sess-menu"
+      ref={ref}
+      role="menu"
+      aria-label={title}
+      style={{ position: "absolute", top: "100%", right: 0, zIndex: 40, minWidth: 160 }}
+    >
+      {title ? <div className="pm-head">{t(title)}</div> : null}
+      {items.map((it) => {
+        const on = it.v === value;
+        return (
+          <button
+            type="button"
+            key={it.v}
+            className={`pm-item${on ? " on" : ""}`}
+            role="menuitemradio"
+            aria-checked={on}
+            onClick={() => {
+              onPick(it.v);
+              onClose();
+            }}
+          >
+            <span className="pm-tick" aria-hidden>
+              {on ? (
+                <svg viewBox="0 0 16 16" width={12} height={12} fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M3.2 8.2 6.4 11.4 12.8 4.2" />
+                </svg>
+              ) : null}
+            </span>
+            <span className="pm-words">
+              <span className="pm-name">{t(it.name)}</span>
+              {it.note ? <span className="pm-note">{t(it.note)}</span> : null}
+            </span>
+          </button>
+        );
+      })}
     </div>
   );
 }
-
 
 function dayKeyOf(d: Date) {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
@@ -225,11 +248,32 @@ function RangeCalendar({
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         e.preventDefault();
+        e.stopPropagation();
         onClose();
+        return;
       }
+      const at = (document.activeElement as HTMLElement | null)?.dataset?.day;
+      const by = ({ ArrowLeft: -1, ArrowRight: 1, ArrowUp: -7, ArrowDown: 7 } as Record<string, number>)[e.key];
+      if (!at || !by || !ref.current?.contains(document.activeElement)) return;
+      e.preventDefault();
+      e.stopPropagation();
+      const d = dayOfKey(at);
+      d.setDate(d.getDate() + by);
+      const k = dayKeyOf(d);
+      if (k > today) return;
+      if (d.getMonth() !== shown.getMonth() || d.getFullYear() !== shown.getFullYear()) {
+        setShown(new Date(d.getFullYear(), d.getMonth(), 1, 12));
+      }
+      requestAnimationFrame(() => {
+        (ref.current?.querySelector(`[data-day="${k}"]`) as HTMLElement | null)?.focus({ preventScroll: true });
+      });
     };
     const onDown = (e: MouseEvent) => {
-      if (!ref.current?.contains(e.target as Node)) onClose();
+      const t = e.target as Node;
+      if (ref.current?.contains(t)) return;
+      // Magpie outside ignores the range-opt anchor
+      if ((e.target as HTMLElement | null)?.closest?.(".range-opt")) return;
+      onClose();
     };
     document.addEventListener("keydown", onKey, true);
     document.addEventListener("mousedown", onDown, true);
@@ -237,7 +281,7 @@ function RangeCalendar({
       document.removeEventListener("keydown", onKey, true);
       document.removeEventListener("mousedown", onDown, true);
     };
-  }, [onClose]);
+  }, [onClose, shown, today]);
 
   const now = new Date();
   now.setHours(12, 0, 0, 0);
@@ -366,7 +410,13 @@ export function UsageView() {
     }
   });
   const [period, setPeriod] = useState("today");
-  const [sessRange, setSessRange] = useState("30d");
+  const [sessRange, setSessRange] = useState(() => {
+    try {
+      const r = localStorage.getItem("magpie.sessRange");
+      if (SESS_RANGES.some(([id]) => id === r)) return r!;
+    } catch { /* ignore */ }
+    return "30d";
+  });
   const [every, setEvery] = useState(() => {
     try {
       const n = Number(localStorage.getItem("magpie.usageEvery"));
@@ -387,9 +437,15 @@ export function UsageView() {
   const [mask, setMask] = useState(false);
   /** Magpie ledDash stays hidden with no ledger; demo can show a chart shell. */
   const [demoChart, setDemoChart] = useState(false);
-  const [ctxDays, setCtxDays] = useState("7");
-  /** Magpie empty vs filled demo (ledger / sessions / context). Default filled for 1:1 data shells. */
-  const [demoFilled, setDemoFilled] = useState(true);
+  const [ctxDays, setCtxDays] = useState(() => {
+    try {
+      const d = localStorage.getItem("magpie.ctxDays");
+      if (["1", "7", "30"].includes(d || "")) return d!;
+    } catch { /* ignore */ }
+    return "7";
+  });
+  /** Magpie empty vs filled demo. Native usage/01–50 are empty — default off; toggle fills mock data. */
+  const [demoFilled, setDemoFilled] = useState(false);
   const [ledOpen, setLedOpen] = useState<Set<string>>(() => new Set());
   const [ledPage, setLedPage] = useState(0);
   const [sessOpen, setSessOpen] = useState<string | null>(null);
@@ -421,6 +477,22 @@ export function UsageView() {
   }, [every]);
 
   useEffect(() => {
+    try {
+      localStorage.setItem("magpie.sessRange", sessRange);
+    } catch {
+      /* ignore */
+    }
+  }, [sessRange]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem("magpie.ctxDays", ctxDays);
+    } catch {
+      /* ignore */
+    }
+  }, [ctxDays]);
+
+  useEffect(() => {
     if (!every) return;
     const id = window.setInterval(() => {
       if (document.hidden) return;
@@ -430,7 +502,9 @@ export function UsageView() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [every, tab]);
 
-  const periodValue = customLabel ? customLabel : period;
+  const periodIsCustom = period.includes("..");
+  const periodSegOn = periodIsCustom ? "__custom__" : period;
+  const setPeriodBox = useSegThumb(periodSegOn + (customLabel || ""));
 
   const ledRows = useMemo(() => {
     if (!demoFilled) return [] as LedRow[];
@@ -512,35 +586,40 @@ export function UsageView() {
           items={USAGE_TABS.map(([id, en]) => ({ id, label: t(en) }))}
         />
         {tab !== "sessions" && tab !== "context" ? (
-          <div className="segs period-wrap" style={{ position: "relative" }}>
-            <Segs
-              value={customLabel ? "__custom__" : period}
-              onChange={(v) => {
-                if (v === "__custom__") return;
-                setCustomLabel("");
-                setPeriod(v);
-              }}
-              items={[
-                ...PERIODS.map(([id, en]) => ({ id, label: t(en) })),
-                {
-                  id: "__custom__",
-                  label: customLabel || t("Custom"),
-                },
-              ]}
-            />
+          <div className="segs period-wrap" id="period" ref={setPeriodBox} style={{ position: "relative" }}>
+            {PERIODS.map(([id, en]) => (
+              <button
+                key={id}
+                type="button"
+                className={`opt${periodSegOn === id ? " on" : ""}`}
+                aria-pressed={periodSegOn === id}
+                onClick={() => {
+                  setCustomLabel("");
+                  setPeriod(id);
+                  setCustomOpen(false);
+                }}
+              >
+                {t(en)}
+              </button>
+            ))}
             <button
               type="button"
-              className={`opt range-opt${customLabel ? " on" : ""}`}
+              className={`opt range-opt${periodIsCustom ? " on" : ""}${customOpen ? " open" : ""}`}
               aria-haspopup="dialog"
               aria-expanded={customOpen}
               aria-label={customLabel ? t("Days picked: {days}", { days: customLabel }) : t("Pick days")}
-              style={{ position: "absolute", right: 0, top: 0, opacity: 0, width: 72, height: "100%", cursor: "pointer" }}
+              title={customLabel ? t("Days picked: {days}", { days: customLabel }) : undefined}
               onClick={() => setCustomOpen((o) => !o)}
-            />
+            >
+              <svg viewBox="0 0 16 16" width={12} height={12} fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                <path d="M3 4.5h10v8.5H3zM3 7h10M5.5 3v3M10.5 3v3" />
+              </svg>
+              <span>{customLabel || t("Custom")}</span>
+            </button>
             {customOpen ? (
               <RangeCalendar
                 current={
-                  period.includes("..")
+                  periodIsCustom
                     ? { from: period.split("..")[0], to: period.split("..")[1] }
                     : null
                 }
@@ -569,7 +648,6 @@ export function UsageView() {
                 { id: "1", label: t("Today") },
                 { id: "7", label: t("7 days") },
                 { id: "30", label: t("30 days") },
-                { id: "90", label: t("90 days") },
               ]}
             />
           </span>
@@ -581,7 +659,11 @@ export function UsageView() {
             id="usageReload"
             type="button"
             aria-label={t("Refresh now")}
-            title={t("Refresh now")}
+            title={
+              tab === "usage"
+                ? t("Refresh now, the allowances too; a Claude account's is read by running Claude Code's own /usage")
+                : t("Refresh now")
+            }
             onClick={refresh}
           >
             <RefreshSpin busy={busy} />
@@ -609,7 +691,8 @@ export function UsageView() {
 
       {/* Overview — Magpie empty: hide chart/Agents/Models/Accounts heads when calls==0 */}
       <div className="usage-pane" id="usagePane" hidden={tab !== "usage"}>
-        <div className="row-head quota-head" id="quotaHead" hidden={!demoFilled}>
+        {/* Allowances / quotas: Magpie hides quotaHead when empty; native usage shots have none — do not invent. */}
+        <div className="row-head quota-head" id="quotaHead" hidden>
           <span className="label">{t("Allowances")}</span>
           <span className="grow" />
           <button
@@ -623,47 +706,13 @@ export function UsageView() {
             <span>{t("Hide accounts")}</span>
           </button>
         </div>
-        <section className="subscription-usage" id="subscriptionUsage">
-          {demoFilled && overview ? (
-            <div className="subscription-card several" data-provider="anthropic" style={{ animation: "fade-in .22s var(--ease)" }}>
-              <div className="subscription-head" style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
-                <span className="ic" style={{ width: 18, height: 18 }}>
-                  <img src={iconSrc("anthropic")} alt="" />
-                </span>
-                <b style={{ fontSize: 13 }}>Anthropic</b>
-                <span className="quota-alias" style={{ marginLeft: 4 }}>{mask ? "••••@••••.com" : "demo@example.com"}</span>
-                <span className="grow" />
-                <button type="button" className="icon" title={t("Refresh now")} aria-label={t("Refresh now")} onClick={refresh}>
-                  <RefreshSpin busy={busy} />
-                </button>
-              </div>
-              <div className="quota-windows">
-                <div className="quota">
-                  <div className="quota-labels">
-                    <button type="button" className="quota-n"><span>{t("5-hour")}</span></button>
-                    <span>42%</span>
-                  </div>
-                  <div className="quota-track"><i style={{ width: "42%", transition: "width .35s var(--ease)" }} /></div>
-                  <div className="quota-reset"><span>{t("resets in {t}", { t: "3h 12m" })}</span></div>
-                </div>
-                <div className="quota">
-                  <div className="quota-labels">
-                    <button type="button" className="quota-n"><span>{t("Weekly")}</span></button>
-                    <span>18%</span>
-                  </div>
-                  <div className="quota-track"><i style={{ width: "18%", transition: "width .35s var(--ease)" }} /></div>
-                  <div className="quota-reset"><span>{t("resets in {t}", { t: "4d 6h" })}</span></div>
-                </div>
-              </div>
-            </div>
-          ) : null}
-        </section>
+        <section className="subscription-usage" id="subscriptionUsage" />
         <p className="usage-note" id="usageScope">
           {t("Gateway calls only; session-log calls are in Requests. Local rejections are excluded from totals.")}
         </p>
         {!demoFilled || !overview ? (
           <div className="card empty-state us-empty" style={{ padding: "22px 16px", marginTop: 8 }}>
-            <b style={{ display: "block", fontWeight: 600, marginBottom: 6 }}>{noCallsIn(periodValue)}</b>
+            <b style={{ display: "block", fontWeight: 600, marginBottom: 6 }}>{noCallsIn(period)}</b>
             <span style={{ color: "var(--muted)", fontSize: 12.5, lineHeight: 1.45 }}>
               {t("Point an agent at a catalog model and use it; every call through the gateway is counted here.")}
             </span>
@@ -956,7 +1005,11 @@ export function UsageView() {
               setLedStatus(v);
               setLedPage(0);
             }}
-            items={LED_STATUS.map(([id, en]) => ({ id, label: t(en) }))}
+            items={LED_STATUS.map(([id, en]) => ({
+              id,
+              label: t(en),
+              title: id === "retried" ? t("Show only the requests answered on a retry.") : undefined,
+            }))}
           />
           <span className="grow" />
           <button
@@ -972,19 +1025,46 @@ export function UsageView() {
           >
             {demoFilled ? demoCopy("演示数据开", "Demo data on") : demoCopy("演示数据关", "Demo data off")}
           </button>
-          <input
-            className="sess-filter"
-            id="ledQ"
-            type="search"
-            spellCheck={false}
-            autoComplete="off"
-            placeholder={t("Search models, providers, sessions")}
-            value={ledQ}
-            onChange={(e) => {
-              setLedQ(e.target.value);
-              setLedPage(0);
-            }}
-          />
+          <span className="led-q-wrap" style={{ position: "relative", display: "inline-flex", alignItems: "center" }}>
+            <input
+              className="sess-filter"
+              id="ledQ"
+              type="search"
+              spellCheck={false}
+              autoComplete="off"
+              placeholder={t("Search models, providers, sessions")}
+              value={ledQ}
+              onChange={(e) => {
+                setLedQ(e.target.value);
+                setLedPage(0);
+              }}
+              onKeyDown={(e) => {
+                if (e.key === "Escape" && ledQ) {
+                  e.preventDefault();
+                  setLedQ("");
+                  setLedPage(0);
+                }
+              }}
+              style={ledQ ? { paddingRight: 28 } : undefined}
+            />
+            {ledQ ? (
+              <button
+                type="button"
+                className="icon led-q-clear"
+                aria-label={t("Clear")}
+                title={t("Clear")}
+                style={{ position: "absolute", right: 4, width: 22, height: 22, border: 0, background: "none", cursor: "pointer", color: "var(--muted)", display: "grid", placeItems: "center" }}
+                onClick={() => {
+                  setLedQ("");
+                  setLedPage(0);
+                }}
+              >
+                <svg viewBox="0 0 12 12" width={10} height={10} aria-hidden>
+                  <path d="M3 3l6 6M9 3l-6 6" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                </svg>
+              </button>
+            ) : null}
+          </span>
           <button
             type="button"
             className="text"
@@ -992,7 +1072,7 @@ export function UsageView() {
             disabled={!ledRows.length}
             title={t("Save every request listed, all pages, as a CSV file in Downloads")}
             onClick={() => {
-              /* demo: no export */
+              /* demo: no export when empty — Magpie click does nothing */
             }}
           >
             <span>{t("Export CSV")}</span>
@@ -1269,7 +1349,7 @@ export function UsageView() {
               <div className="led-none" style={{ padding: "22px 16px", textAlign: "center", color: "var(--muted)", lineHeight: 1.5 }}>
                 {ledQ.trim() || ledStatus
                   ? t("No requests match these filters.")
-                  : noCallsIn(periodValue)}
+                  : noCallsIn(period)}
                 <div style={{ marginTop: 6, fontSize: 12 }}>
                   {ledQ.trim() || ledStatus
                     ? null
@@ -1530,7 +1610,7 @@ export function UsageView() {
                 {t("Totals count native sessions and gateway requests with a session ID")}
                 {" · 0 "}
                 {t("sessions")}
-                {" · ~/.claude ~/.codex ~/.cursor"}
+                {" · ~/.claude · ~/.codex · ~/.cursor"}
               </p>
             </section>
             {/* Magpie: search / list hidden with no sessions */}
@@ -1553,6 +1633,11 @@ export function UsageView() {
             {demoFilled ? demoCopy("演示数据开", "Demo data on") : demoCopy("演示数据关", "Demo data off")}
           </button>
         </div>
+        <p className="usage-note ctx-tune-note">
+          {t(
+            "Your own calls of the range, replayed setting by setting from your agents' session files: the settings that would have spent the fewest tokens, for how you work. Tokens are weighed as the vendor charges them: a cache read is a tenth of one.",
+          )}
+        </p>
         {!demoFilled ? (
           <div className="ctx-none" style={{ marginBottom: 14 }}>
             <span>{t("Not enough calls in this range to tune on")}</span>
@@ -1691,9 +1776,9 @@ export function UsageView() {
             })}
           </div>
         ) : (
-          <div className="ctx-none">
+          <div className="ctx-none ctx-empty-dash" style={{ border: "1px dashed var(--line)", borderRadius: 12, padding: "28px 16px", textAlign: "center", display: "grid", gap: 6, justifyContent: "center" }}>
             <b>{t("No prompts read yet")}</b>
-            <span>{t("Requests your agents send through magpie show here.")}</span>
+            <span style={{ color: "var(--muted)", fontSize: 12.5 }}>{t("Requests your agents send through magpie show here.")}</span>
           </div>
         )}
       </div>

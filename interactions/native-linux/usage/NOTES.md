@@ -1,5 +1,9 @@
 # Usage (native Linux, magpie ~0.1.1233)
 
+## Consumed in demo v0.1.37 (USAGE_NEST)
+- Empty path 02–50: Overview periods + range dialog, refresh 20–27, Requests 28–35, Sessions 36/46–50, Context 42–45 (prefer over mis-aimed 37–41).
+- Allowances / filled KPI: not in shots — demo keeps quotaHead hidden; filled toggle remains mock-only.
+
 Top tabs stay: Agents, Providers, Routing, Gateway, Usage, Plugins, plus refresh, gear, window close. Usage is a view (`#view-usage`), not a modal. Segment thumb uses the app glide (~280ms, cubic-bezier(.2,.8,.2,1)); opening a menu is a pop, no page morph.
 
 ## Head (every tab)

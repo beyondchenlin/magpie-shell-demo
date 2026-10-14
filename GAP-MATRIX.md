@@ -1,3 +1,8 @@
+## v0.1.37 USAGE_NEST
+- Native `usage/01–50` consumed: calendar nest, refresh menu ticks, empty Overview/Requests/Sessions/Context copy & controls from NOTES.
+- Allowances quota body: **N/A** (no native shots with quotas) — not invented.
+- Still mock: true ledger/API refresh, CSV export bytes, session file scan, context tune scoring, filled-data toggle.
+
 ## v0.1.36 also GATEWAY_NATIVE (01–26 empty path)
 - Native `interactions/native-linux/gateway/01–26` consumed against `GatewayView`: default empty catalog matches shots; System One `provider/jev_latest`; Restart busy copy; folds/copy/API segs already from earlier passes.
 - Still mock: real `POST gateway/restart`, LAN key mint, non-running / take-over states.
@@ -90,8 +95,9 @@
 
 1. 无真实 provider 添加 / agent 接线 / gateway / OAuth  
 2. 飞鸟仍为 Demo 开关 mock（FLIER+rtflap .42s 已对齐；非真 gateway · GAP #7 仍 P1）  
-3. Tray **01–14 已消费**；Allowances 无配额时整 tab 隐藏 = **N/A**（有配额体需另录）  
+3. Tray **01–14 已消费**；Usage **01–50 空态已消费**；Allowances 无配额 = **N/A**（有配额体需另录）  
 4. Provider 列表已有账号态壳；真 key 轮转 / arrange drag 落盘仍 mock  
-5. 未做原生 Tauri；Electron 系统标题栏（Windows 上游亦然）
+5. 未做原生 Tauri；Electron 系统标题栏（Windows 上游亦然）  
+6. Usage filled（KPI/heatmap/ledger rows）仍为演示开关 mock，非原生有数据截图
 
 *Sessions / Library 不是顶栏缺口：官方默认不展示。*

@@ -3,6 +3,7 @@ import { useSegThumb } from "./SegThumb";
 export type SegItem<T extends string | number | boolean = string> = {
   id: T;
   label: string;
+  title?: string;
 };
 
 type Props<T extends string | number | boolean> = {
@@ -43,6 +44,7 @@ export function Segs<T extends string | number | boolean>({
             type="button"
             className={`opt${on ? " on" : ""}`}
             aria-pressed={on}
+            title={it.title}
             onClick={() => onChange(it.id)}
           >
             {it.label}

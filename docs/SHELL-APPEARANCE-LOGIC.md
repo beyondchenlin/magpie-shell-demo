@@ -450,3 +450,17 @@ Full nested capture consumed. Hook When-it-runs includes shared events + Cursor 
 | Logo 拍翅 | `.logo.wag` 拆 parts；wing-flap/tail-flick/bird-bob **.9s**；开窗 250ms + hover | clipPath `#bird-body/tail/wing` |
 | rt-sky 飞鸟 | Magpie `FLIER` paths；`.rt-flier .wing` **rtflap .42s** cubic-bezier(.45,0,.3,1) | Demo hop mock；真飞依赖 gateway trace |
 
+
+
+## Usage nest · v0.1.37
+
+对照 `interactions/native-linux/usage/NOTES.md` + Magpie `openRangeMenu` / `renderUsageEvery` / `context.js` CTX_RANGES。
+
+| 控件 | Magpie 机制 | Demo |
+|------|-------------|------|
+| `#period` + `.range-opt` | 预设 segs + 日历 opt；选中后 label 换成 `Oct 1 – Oct 11` | `UsageView` 手写 segs + thumb；`RangeCalendar` |
+| `openRangeMenu` | Quick Yesterday/This/Last/90d；先首日后末日；`.end`/`.in`/`.today` | 同结构；Esc + 方向键走格 |
+| `#usageEvery` | `openProtoMenu` head "Refresh every" + tick | `ProtoMenu` `pm-head` + `pm-tick` |
+| 空态 Overview | `noCallsIn(period)` + 引导句；隐藏 chart/Agents/… | 默认 `demoFilled=false` |
+| Context `#ctxRange` | Today / 7d / 30d（`magpie.ctxDays`） | 已去掉误加的 90d |
+| Allowances | 无配额时 `quotaHead` hidden | **不发明**配额卡（无原生镜头） |
