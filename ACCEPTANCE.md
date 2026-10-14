@@ -37,9 +37,14 @@
 
 | # | 项 | 状态 |
 |---|----|------|
-| F1 | Windows Setup `.exe` | [x] | https://github.com/beyondchenlin/magpie-shell-demo/releases/download/v0.1.7/Magpie-Shell-Demo-Setup-0.1.7.exe |
+| F1 | Windows Setup `.exe` | [x] | https://github.com/beyondchenlin/magpie-shell-demo/releases/download/v0.1.8/Magpie-Shell-Demo-Setup-0.1.8.exe |
 | F2 | Vercel Web | [x] | https://magpie-shell-demo.vercel.app |
 
 ---
 
 *判定 `WIN_MAC_CHROME_PARTIAL`：外壳对齐 Win/Mac 默认顶栏 + Windows 标题栏；交互仍部分。*
+
+
+## Verdict
+
+**SIDEBAR_I18N_PARTIAL** — side-nav toggle wired; zh-CN default + Settings language switch. Full interaction 1:1 still in progress.
