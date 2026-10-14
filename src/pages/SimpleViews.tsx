@@ -1958,6 +1958,8 @@ export function PluginsView({
       ver?: string;
       kind?: string;
       off?: boolean;
+      /** Magpie subsOf: provider plugin not signed in → Sign in (shots 43–44) */
+      signedIn?: boolean;
       optsOpen?: boolean;
       opts?: string;
       optsErr?: string;
@@ -2584,7 +2586,7 @@ export function PluginsView({
                       <div className="name" style={{ display: "inline-flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
                         <span>{e.name}</span>
                         {e.ver ? <span className="pm-ver">{e.ver.startsWith("v") ? e.ver : `v${e.ver}`}</span> : null}
-                        {e.kind && !e.off ? (
+                        {e.kind ? (
                           <span
                             className={`pm-chip kind${e.kind === "Provider" ? " pv" : e.kind === "Middleware" ? " mw" : e.kind === "Agent" ? " ag" : ""}`}
                             title={
@@ -2615,7 +2617,21 @@ export function PluginsView({
                           ? null
                           : e.off
                             ? t("Off")
-                            : null}
+                            : e.kind === "Provider" && !e.signedIn
+                              ? (
+                                  <span className="pm-sub">
+                                    <span className="dot" />
+                                    <span>{t("{name}: not signed in", { name: e.name })}</span>
+                                  </span>
+                                )
+                              : e.kind === "Provider" && e.signedIn
+                                ? (
+                                    <span className="pm-sub in">
+                                      <span className="dot" />
+                                      <span>{t("{name}: signed in", { name: e.name })}</span>
+                                    </span>
+                                  )
+                                : null}
                       </div>
                       {e.optsOpen ? (
                         <div className="pm-opts">
@@ -2757,7 +2773,7 @@ export function PluginsView({
                                 setAsking(null);
                               }}
                             >
-                              {asking.op === "move" ? t("Move") : t("Yes")}
+                              {asking.op === "move" ? t("Move") : asking.op === "remove" ? t("Remove") : t("Switch off")}
                             </button>
                             <button type="button" className="text" onClick={() => setAsking(null)}>
                               {asking.op === "move" ? t("Not now") : t("Cancel")}
@@ -2767,6 +2783,24 @@ export function PluginsView({
                       ) : null}
                     </div>
                     <div className="val" style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+                      {!e.off && e.kind === "Provider" && !e.signedIn && asking?.pkg !== e.pkg ? (
+                        <button
+                          type="button"
+                          className="text primary"
+                          onClick={() =>
+                            onStatus?.(
+                              demoCopy(
+                                "演示：未发起插件登录（无真 OAuth）",
+                                "Demo: plugin sign-in not started (no real OAuth)",
+                              ),
+                              "warn",
+                              2800,
+                            )
+                          }
+                        >
+                          {t("Sign in")}
+                        </button>
+                      ) : null}
                       {e.movable?.length && !e.off && !(e.moved && e.moved.length) && asking?.pkg !== e.pkg ? (
                         <button
                           type="button"

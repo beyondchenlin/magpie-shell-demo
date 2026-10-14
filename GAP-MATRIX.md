@@ -1,3 +1,8 @@
+## v0.1.48 PLUGINS_OFF_DONE
+- Native `plugins/41–46`: Switch off (no confirm when no moved) → sub **Off** + Switch on; Switch on restores **{name}: not signed in** + purple Sign in; Provider chip stays while Off; Remove tip + `confirmRemoval` Cancel (45–46).
+- Check for updates nest shot still pending recorder — busy **Checking…** + toast `Every plugin is up to date` already from Magpie source (v0.1.46).
+- Still mock: true npm off/remove/update, plugin OAuth Sign in. Allowances quota **N/A**. Skip Vercel 402.
+
 ## v0.1.47 PROVIDERS_LOCAL_PARTIAL
 - Magpie `KindLocal` editors (NOTES: Ollama/LM Studio/oMLX/MLX-Serve tiles on 33, editors never opened — chip from `presets.go` + `app.js`): all four open **local** form.
 - **Server address** fold (Address + Magpie listen hint) with per-preset defaults `11434` / `1234` / `8000` / `11234`; dirty when address ≠ default.

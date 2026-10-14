@@ -79,3 +79,18 @@ Demo v0.1.38: PLUGINS_NEST — 01–34 consumed (intro/market/GitHub/search/mirr
 Demo v0.1.38: per-card Install — 35–40 Suggested hover, Getting Bun…, toast, Installed row. No confirm dialog.
 
 Demo v0.1.45: PLUGINS_INSTALL — 35–40 Getting Bun… / toast / Installed row Bun 1.4.2.
+
+## Switch off / Remove nest (shots 41–44)
+
+Installed · 1, OpenCode Zen Free (no moved accounts). Search still `opencode`. Mirror Off.
+
+| shot | what |
+|---|---|
+| 41 | Hover on **Switch off** (pale → pressed look). No tooltip on Switch off. Remove + Check for updates still idle. |
+| 42 | Click Switch off. No confirm (no moved). Sub line becomes **Off**. Button becomes **Switch on**. Provider chip stays. No toast. |
+| 43 | Switch on restored. Sub: dot + **OpenCode Zen Free: not signed in**. Purple **Sign in** + Switch off + Remove. |
+| 44 | Hover **Remove**: host tooltip "Removes the plugin and what it installed; its sign-ins are kept until you sign out". Sign in still shown. |
+| 45 | Click Remove → Magpie `confirmRemoval` dialog: **Remove OpenCode Zen Free?** + consequence + Cancel / red **Remove**. Backdrop blur. |
+| 46 | Cancel. Dialog gone. Row unchanged (Sign in · Switch off · Remove). Check for updates still not clicked (source-aligned Checking… toast in demo since v0.1.46). |
+
+Demo v0.1.48: PLUGINS_OFF_DONE — 41–46 Switch off / Off / Sign in / Remove tip+confirm+Cancel.
