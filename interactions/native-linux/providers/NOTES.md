@@ -33,3 +33,8 @@ System One 空模型 Detect：橙字「A decision API is asked with one model…
 
 | 14 | icon file recent | 系统文件选择 · Recent |
 | 15 | icon file home | 系统文件选择 · Home |
+
+| 16 | icon file other | 文件选择 Other locations |
+| 17 | favicon need URL | From the website · 红字 type base URL first |
+| 18 | Discard | Discard unsaved changes? · Cancel / 红 Discard |
+| 19 | search→Plugins | miss 链 look for a plugin → Plugins Discover 搜同词 |

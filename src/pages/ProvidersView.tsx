@@ -364,6 +364,7 @@ function ProviderEditorModal({ state, onClose, onAdd }: EditorProps) {
   const [iconQ, setIconQ] = useState("");
   const [pickedIcon, setPickedIcon] = useState(state.icon || "aside");
   const [hdrs, setHdrs] = useState<{ name: string; value: string }[]>([{ name: "", value: "" }]);
+  const [discardOpen, setDiscardOpen] = useState(false);
   const API_HINTS: Record<string, string> = {
     openai: "…/v1 — chat completions, and responses when the vendor has it",
     responses: "…/v1 — for a vendor that serves only the Responses API, not chat completions",
@@ -384,6 +385,13 @@ function ProviderEditorModal({ state, onClose, onAdd }: EditorProps) {
   const [endpoint, setEndpoint] = useState("");
   const [extra, setExtra] = useState(EXTRA_BODY_DEFAULT);
   const [addrOpen, setAddrOpen] = useState(false);
+
+  const dirty =
+    !!(name.trim() || baseUrl.trim() || key.trim() || tryModel.trim() || extra !== EXTRA_BODY_DEFAULT || hdrs.some((h) => h.name || h.value));
+  const requestClose = () => {
+    if (kind === "custom" && dirty) setDiscardOpen(true);
+    else close();
+  };
 
   const meta = {
     title: state.name,
@@ -534,9 +542,12 @@ function ProviderEditorModal({ state, onClose, onAdd }: EditorProps) {
                     <div
                       className="hint"
                       style={{
-                        color: detectHint.includes("decision") || detectHint.includes("决策") || detectHint.includes("Type the") || detectHint.includes("Pick models") || detectHint.includes("先")
-                          ? "var(--amber, #c47a00)"
-                          : "var(--muted)",
+                        color:
+                          detectHint.includes("base URL first") || detectHint.includes("先填写") || detectHint.includes("type the provider")
+                            ? "var(--red)"
+                            : detectHint.includes("decision") || detectHint.includes("决策") || detectHint.includes("Type the") || detectHint.includes("Pick models") || detectHint.includes("先")
+                              ? "var(--amber, #c47a00)"
+                              : "var(--muted)",
                         fontSize: 11.5,
                         animation: "fade-in .15s var(--ease)",
                       }}
@@ -615,7 +626,18 @@ function ProviderEditorModal({ state, onClose, onAdd }: EditorProps) {
                     <button type="button" className="text" onClick={() => setDetectHint(demoCopy("演示：未打开文件选择器", "Demo: no file picker"))}>
                       {t("Choose a picture…")}
                     </button>
-                    <button type="button" className="text" onClick={() => setDetectHint(demoCopy("演示：未从网站拉取图标", "Demo: no website fetch"))}>
+                    <button
+                      type="button"
+                      className="text"
+                      title={t("Look for the icon of the site the base URL is on.")}
+                      onClick={() => {
+                        if (!baseUrl.trim()) {
+                          setDetectHint(t("type the provider's base URL first: its site's icon is looked for there."));
+                          return;
+                        }
+                        setDetectHint(demoCopy("演示：未从网站拉取图标", "Demo: fetched favicon skipped (local)"));
+                      }}
+                    >
                       {t("From the website")}
                     </button>
                     <button
@@ -804,7 +826,7 @@ function ProviderEditorModal({ state, onClose, onAdd }: EditorProps) {
           </div>
           <div className="bar">
             <span className="grow" />
-            <button type="button" className="text" onClick={close}>
+            <button type="button" className="text" onClick={requestClose}>
               {ZH.cancel}
             </button>
             <button type="submit" className="text primary">
@@ -813,6 +835,41 @@ function ProviderEditorModal({ state, onClose, onAdd }: EditorProps) {
           </div>
         </form>
       </div>
+      {discardOpen ? (
+        <div
+          className="modal"
+          style={{ zIndex: 40, background: "rgba(20,22,30,.35)" }}
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setDiscardOpen(false);
+          }}
+        >
+          <div className="dialog sm" role="alertdialog" aria-labelledby="discardTitle" style={{ animation: "pop-in .28s var(--ease)", maxWidth: 360 }}>
+            <div className="ehead" style={{ padding: "14px 16px 0" }}>
+              <b id="discardTitle">{t("Discard")}</b>
+            </div>
+            <p style={{ margin: "10px 16px 0", fontSize: 13, color: "var(--fg-2)", lineHeight: 1.45 }}>
+              {t("Discard unsaved changes? Your changes will be lost.")}
+            </p>
+            <div className="bar" style={{ padding: "14px 16px" }}>
+              <span className="grow" />
+              <button type="button" className="text" onClick={() => setDiscardOpen(false)}>
+                {ZH.cancel}
+              </button>
+              <button
+                type="button"
+                className="text"
+                style={{ background: "var(--red)", color: "#fff", borderColor: "var(--red)" }}
+                onClick={() => {
+                  setDiscardOpen(false);
+                  close();
+                }}
+              >
+                {t("Discard")}
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }
