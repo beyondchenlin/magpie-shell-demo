@@ -989,6 +989,11 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
               <p style={{ margin: "0 0 10px", fontSize: 12.5, color: "var(--muted)", lineHeight: 1.5 }}>
                 {rtkBusy ? t("Installing RTK… this can take a minute.") : t("RTK isn't installed. magpie can install it for you, or get it from its site.")}
               </p>
+              {!rtkBusy ? (
+                <p className="lib-rtk-cmd mono" style={{ margin: "0 0 10px", fontSize: 11.5, color: "var(--muted)", userSelect: "text", wordBreak: "break-all" }}>
+                  curl -fsSL https://raw.githubusercontent.com/rtk-ai/rtk/refs/heads/master/install.sh | sh
+                </p>
+              ) : null}
               <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
                 <button
                   type="button"

@@ -20,6 +20,7 @@ Plugin page. When On (Plugins › Built-in › Library) it sits in top nav betwe
 | 34-hook-events.png | When it runs menu: common events + Find an event + notes |
 | 35-hook-events-cursor.png | Cursor · beforeShellExecution… own events |
 | 36–37 | Cursor · afterFileEdit/stop/…/postToolUseFailure/subagent*/preCompact |
+| 38-rtk.png | RTK not installed + install.sh curl + Agents Cursor off |
 
 Header: Discover (MCP + Skills) · Library folder · Backups. Tabs: Instructions / MCP servers / Skills / Hooks / RTK.
 
@@ -28,4 +29,4 @@ Header: Discover (MCP + Skills) · Library folder · Backups. Tabs: Instructions
 - Skills probe mock (DEMO_PROBE_SKILLS) + Filter when >8 + Install 0 when none picked
 - Skills Discover expanded (8 cards from 27–31)
 - Hooks empty + New hook (32–33) + When-it-runs Find an event + Cursor own events (34–35)
-- MCP / RTK as 0.1.32; no true GitHub probe / OAuth / RTK binary
+- RTK card shows install.sh curl (38); Install still mock; no true RTK binary
