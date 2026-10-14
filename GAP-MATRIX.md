@@ -4,9 +4,6 @@
 - Still mock: true list HTTP / Add persist / OAuth. Allowances **N/A**. Skip Vercel 402.
 
 ## v0.1.54 IMPORT_CLAUDE_DONE
-- Chip Import apps paths 20–21 + Claude GTK Select Files 22–24; Escape-safe import; Fetch nest landed after → **v0.1.55**.
-
-## v0.1.54 IMPORT_CLAUDE_DONE
 - Chip Import Claude / file sheets from Magpie source + native NOTES **20–24** (Fetch models 54+ not on disk yet → PARTIAL wait).
 - **Import from other apps (20–21):** paths `~/.config/alma/chat_threads.db` · `~/.cc-switch/cc-switch.db` · `~/.claude/settings.json` · `~/.codex/config.toml`; tabs all **Not found on this computer** / count `–` / Import disabled; copy via `t()`; Import… tooltip **Bring over providers set up in other apps**.
 - **Claude risk → Import (22–23):** already Magpie `importSay` + risk note; Escape does **not** dismiss import sheet (Cancel only).
