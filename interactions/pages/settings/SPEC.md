@@ -30,15 +30,14 @@
 
 ## 嵌套未做 / 部分
 
-- Codex titles/descriptions/predictions/auto-review/memories 的 **模型选择器 pop**（`.rt-cond` + `#pop`）
-- Warm-up 具体时刻 chips、账号级 auto-reset 开关行
+- Codex titles… **真模型 `#pop` picker**（现为 Automatic/Off/选模型 segs 壳）
+- Warm-up 具体时刻 chips、账号级 auto-reset / check-in 行
 - Proxy SOCKS 认证字段、GitHub 完整表单
-- LAN 多网卡 pick + OpenAI/Anthropic segs 地址
-- Allowed addresses（allowIPs）整块
-- Sync 真 WebDAV/S3/GitHub 表单字段全集、Restore 确认 modal
+- LAN 多网卡 pick + OpenAI/Anthropic 地址 segs
+- Sync 真 WebDAV/S3/GitHub 字段全集、Restore 确认 modal
 - About CLI / Download source / What's new 真 notes modal
-- Observability 完整 OTel 字段集
+- Observability 完整 OTel 字段集；Privacy 自定义 redact 规则行
 
 ## 判定
 
-**`SETTINGS_DEEP_PARTIAL`** — 全部 tab 可点、主 segs/搜索/网络/同步/关于已接线；深层 picker/modal/账号行仍缺。
+**`SETTINGS_DEEP_PARTIAL`** — 8 tab + Codex 行 segs + allowIPs + CORS + 搜索已接线；真 picker/modal/账号级仍缺。

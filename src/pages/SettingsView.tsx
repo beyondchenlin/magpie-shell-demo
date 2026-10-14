@@ -82,6 +82,12 @@ type DemoPrefs = {
   imageGen: "auto" | "off";
   webSearch: "auto" | "off";
   replies: "auto" | "off";
+  codexTitles: "auto" | "off" | "model";
+  codexDescriptions: "auto" | "off";
+  codexPredictions: "auto" | "off";
+  codexAutoReview: "auto" | "off";
+  allowIPs: string[];
+  allowDraft: string;
 };
 
 const DEFAULTS: DemoPrefs = {
@@ -134,6 +140,12 @@ const DEFAULTS: DemoPrefs = {
   imageGen: "auto",
   webSearch: "auto",
   replies: "auto",
+  codexTitles: "auto",
+  codexDescriptions: "auto",
+  codexPredictions: "auto",
+  codexAutoReview: "auto",
+  allowIPs: [],
+  allowDraft: "",
 };
 
 function loadPrefs(): DemoPrefs {
@@ -339,6 +351,10 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus }: Setti
     login: matchQ("Open at login"),
     lightweight: matchQ("Lightweight mode"),
     keepAwake: matchQ("Prevent sleep"),
+    codexTitles: matchQ("Codex thread titles"),
+    codexDesc: matchQ("Codex thread descriptions"),
+    codexPred: matchQ("Codex composer predictions"),
+    codexReview: matchQ("Codex auto-review model"),
   };
   const gAny = Object.values(gRows).some(Boolean);
 
@@ -367,6 +383,7 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus }: Setti
     bare: matchQ("Model ids without the provider"),
     lan: matchQ("Share on local network") || matchQ("Local network"),
     cors: matchQ("Web pages") || matchQ("Web pages that may call magpie"),
+    allow: matchQ("Allowed addresses") || matchQ("Local network"),
   };
   const nAny = Object.values(nRows).some(Boolean);
 
@@ -581,6 +598,55 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus }: Setti
                   />
                 ) : null}
               </div>
+            </PrefRow>
+          )}
+          {gRows.codexTitles && (
+            <PrefRow name={t("Codex thread titles")} id="codexTitlesRow">
+              <Segs
+                value={prefs.codexTitles}
+                onChange={(v) => setPrefs({ codexTitles: v as DemoPrefs["codexTitles"] })}
+                items={[
+                  { id: "auto", label: t("Automatic") },
+                  { id: "off", label: t("Off") },
+                  { id: "model", label: demoCopy("选模型…", "Pick model…") },
+                ]}
+              />
+            </PrefRow>
+          )}
+          {gRows.codexDesc && (
+            <PrefRow name={t("Codex thread descriptions")} id="codexDescriptionsRow">
+              <Segs
+                value={prefs.codexDescriptions}
+                onChange={(v) => setPrefs({ codexDescriptions: v as DemoPrefs["codexDescriptions"] })}
+                items={[
+                  { id: "auto", label: t("Automatic") },
+                  { id: "off", label: t("Off") },
+                ]}
+              />
+            </PrefRow>
+          )}
+          {gRows.codexPred && (
+            <PrefRow name={t("Codex composer predictions")} id="codexPredictionsRow">
+              <Segs
+                value={prefs.codexPredictions}
+                onChange={(v) => setPrefs({ codexPredictions: v as DemoPrefs["codexPredictions"] })}
+                items={[
+                  { id: "auto", label: t("Automatic") },
+                  { id: "off", label: t("Off") },
+                ]}
+              />
+            </PrefRow>
+          )}
+          {gRows.codexReview && (
+            <PrefRow name={t("Codex auto-review model")} id="codexAutoReviewRow">
+              <Segs
+                value={prefs.codexAutoReview}
+                onChange={(v) => setPrefs({ codexAutoReview: v as DemoPrefs["codexAutoReview"] })}
+                items={[
+                  { id: "auto", label: t("Automatic") },
+                  { id: "off", label: t("Off") },
+                ]}
+              />
             </PrefRow>
           )}
           {gRows.login && (
@@ -1057,6 +1123,52 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus }: Setti
                 </PrefRow>
               ) : null}
             </div>
+            {prefs.lan ? (
+              <div className="list prefs" id="allowList">
+                <PrefRow
+                  name={t("Allowed addresses")}
+                  sub={t("Other computers reach magpie only from these addresses or ranges (CIDR), even with a gateway key; this computer always can. None listed lets every address in")}
+                  className="rule-row"
+                  valClassName="rule-add"
+                >
+                  <input
+                    className="words rule-match allow-ip"
+                    value={prefs.allowDraft}
+                    placeholder="203.0.113.7, 10.0.0.0/8"
+                    aria-label={t("IP address or range")}
+                    onChange={(e) => setPrefsState((p) => ({ ...p, allowDraft: e.target.value }))}
+                    onKeyDown={(e) => {
+                      if (e.key !== "Enter") return;
+                      const parts = prefs.allowDraft.split(/[\s,;]+/).filter(Boolean);
+                      if (!parts.length) return;
+                      setPrefs({ allowIPs: [...prefs.allowIPs, ...parts], allowDraft: "" });
+                    }}
+                  />
+                  <button
+                    type="button"
+                    className="text"
+                    onClick={() => {
+                      const parts = prefs.allowDraft.split(/[\s,;]+/).filter(Boolean);
+                      if (!parts.length) return;
+                      setPrefs({ allowIPs: [...prefs.allowIPs, ...parts], allowDraft: "" });
+                    }}
+                  >
+                    {t("Add")}
+                  </button>
+                </PrefRow>
+                {prefs.allowIPs.map((a) => (
+                  <PrefRow key={a} name={a} className="allow-ip-row">
+                    <button
+                      type="button"
+                      className="text"
+                      onClick={() => setPrefs({ allowIPs: prefs.allowIPs.filter((x) => x !== a) })}
+                    >
+                      {t("Remove")}
+                    </button>
+                  </PrefRow>
+                ))}
+              </div>
+            ) : null}
           </>
         )}
         {nRows.cors && (
@@ -1384,7 +1496,7 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus }: Setti
       >
         <div className="list prefs" id="about">
           <PrefRow name={t("Version")}>
-            <code>0.1.10-demo</code>
+            <code>0.1.11-demo</code>
             <button type="button" className="text" onClick={() => onStatus?.(demoCopy("演示：已是最新", "Demo: up to date"), "ok")}>
               {t("Check")}
             </button>
