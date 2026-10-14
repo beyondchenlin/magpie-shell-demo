@@ -63,8 +63,8 @@
 
 | # | 项 | 状态 |
 |---|----|------|
-| F1 | Windows Setup `.exe` Release | （发布后填 URL） |
-| F2 | Vercel Web 预览 | （部署后填 URL） |
+| F1 | Windows Setup `.exe` Release | [x] | https://github.com/beyondchenlin/magpie-shell-demo/releases/download/v0.1.1/Magpie-Shell-Demo-Setup-0.1.1.exe |
+| F2 | Vercel Web 预览 | [~] | https://magpie-shell-demo.vercel.app （正在 redeploy） |
 
 ---
 
