@@ -1,3 +1,8 @@
+## v0.1.34 GAP_CHIP_PARTIAL → PROVIDERS_LIST + TRAY_AGENTS
+- **#9 Provider list-with-accounts (P1):** Magpie row = pv-handle · who(signed in · N models) · uses · key.acct/on · lib-switch.pswitch · chev; click → modal `.accts`/`.acc` (dot tick · plan · using · Remove · Add); Turned off fold + off list. Motion: `.provider` bg **.16s**; chev **.15s**; switch thumb **.18s**; modal pop-in **.42s**; `.acc .text.quiet` opacity **.15s**; `.acc.new` sub-in.
+- **Tray panel Agents (native tray/01):** `?panel=1` / `#panel` → `body.panel` + ptabs (Allowances hidden when no quotas) + Cursor row ag-sum (default · eff bars · chev spring) + Profiles / Open magpie / Quit. Nested open uses `.ag-open` row-spring **.48s**.
+- Still PARTIAL: tray Usage/Routing nested shots (only 01 landed); Bird rt-sky real gateway (P1); true OAuth/provider save; `#sideEdge` drag (P2).
+
 ## v0.1.33 LIBRARY_DONE
 - Native library **01–13, 15–38** fully captured & consumed (no 14)
 - Instructions / MCP New+Discover+Image / Skills probe+Discover / Hooks events+Cursor own / RTK off+install.sh
@@ -53,7 +58,7 @@
 | 6 | Web 预览 660×600（非 1100×760） | **已改**；侧栏 absolute 于 `#root` | — | |
 | 7 | `.rt-sky` 飞鸟依赖 gateway trace | mock「演示飞鸟」可选 | P1 | 默认空态无飞；非官方拍翅 timing |
 | 8 | 账号行 `.dot`/`.bar` 在有请求时 | 空态为 `li.idle` | — | 空态正确 |
-| 9 | Provider 完整行控件 | 仅空态添加表 | P1 | 添加后无列表态 |
+| 9 | Provider 完整行控件 | **v0.1.34** 有账号列表行+accts 编辑器 | P1 | 真 key/OAuth/arrange 落盘仍 mock |
 | 10 | Gateway 空态壳+主交互 | **v0.1.9**；filled demo **v0.1.12** | P1 | Gateway 仍可再抠 |
 | 14 | Settings 全 tab 深页 | **v0.1.21** Privacy 63–70 字符串/嵌套齐；Disable 左轨 + Models `#pop` | P1 | Usage/Plugins 继续抠；Privacy 基本对齐 |
 | 11 | `#sideEdge` 拖宽 | 仅视觉 | P2 | |
@@ -64,9 +69,10 @@
 
 ## 仍开放的有意差距
 
-1. 无真实 provider 添加 / agent 接线 / gateway  
-2. 飞鸟仅为 Demo 开关 mock  
-3. Usage/Plugins/Agents/Providers nested = **ANTIGRAVITY_ROUTING_PARTIAL**（v0.1.28 Routing 01-empty-live 已回写；v0.1.27 Antigravity risk+import + Copilot Proxy proto-menu；嵌套点录继续）  
-4. 未做原生 Tauri；Electron 系统标题栏（Windows 上游亦然）
+1. 无真实 provider 添加 / agent 接线 / gateway / OAuth  
+2. 飞鸟仅为 Demo 开关 mock（非官方拍翅 timing · GAP #7 P1）  
+3. Tray 仅 Agents 空配额态（01）；Allowances/Usage/Routing 托盘嵌套待点录  
+4. Provider 列表已有账号态壳；真 key 轮转 / arrange drag 落盘仍 mock  
+5. 未做原生 Tauri；Electron 系统标题栏（Windows 上游亦然）
 
 *Sessions / Library 不是顶栏缺口：官方默认不展示。*

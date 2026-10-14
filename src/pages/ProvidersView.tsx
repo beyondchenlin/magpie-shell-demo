@@ -1209,40 +1209,86 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
   const [copilotSign, setCopilotSign] = useState<CopilotSign>(null);
   const [proxyMenuOpen, setProxyMenuOpen] = useState(false);
   const proxyBtnRef = useRef<HTMLButtonElement>(null);
+  type DemoAcct = {
+    id: string;
+    label: string;
+    plan?: string;
+    on?: boolean;
+    using?: string; // "In use" | "First" | "Paused" | …
+  };
   type DemoProv = {
     id: string;
     name: string;
     icon: string;
-    accountsOpen: boolean;
-    modelsOpen: boolean;
-    accounts: { id: string; label: string }[];
+    off?: boolean;
+    /** Magpie sub: signed in as {user} · {n} models */
+    user?: string;
+    host?: string;
+    keyKind: "acct" | "on" | "none" | "free";
+    keyLabel: string;
+    accounts: DemoAcct[];
     models: string[];
+    agentsUsing?: { id: string; name: string; icon: string }[];
+  };
+  const normalizeProv = (raw: Record<string, unknown>): DemoProv => {
+    const accounts = Array.isArray(raw.accounts)
+      ? (raw.accounts as DemoAcct[]).map((a) => ({
+          id: String(a.id),
+          label: String(a.label || a.id),
+          plan: a.plan,
+          on: a.on !== false,
+          using: a.using,
+        }))
+      : [];
+    const models = Array.isArray(raw.models) ? (raw.models as string[]) : [];
+    const keyKind = (raw.keyKind as DemoProv["keyKind"]) || (accounts.length ? "acct" : "on");
+    return {
+      id: String(raw.id),
+      name: String(raw.name || raw.id),
+      icon: String(raw.icon || "generic"),
+      off: !!raw.off,
+      user: raw.user ? String(raw.user) : accounts[0]?.label,
+      host: raw.host ? String(raw.host) : undefined,
+      keyKind,
+      keyLabel: String(raw.keyLabel || (keyKind === "acct" ? "Pro" : accounts[0]?.label || "needs a key")),
+      accounts: accounts.length
+        ? accounts
+        : [{ id: "a1", label: "default", plan: "Pro", on: true, using: "In use" }],
+      models: models.length ? models : ["model-a"],
+      agentsUsing: Array.isArray(raw.agentsUsing)
+        ? (raw.agentsUsing as DemoProv["agentsUsing"])
+        : [{ id: "cursor", name: "Cursor", icon: "cursor" }],
+    };
   };
   const [demoProvs, setDemoProvs] = useState<DemoProv[]>(() => {
     try {
       const raw = localStorage.getItem("magpie.demoProviders");
       if (raw) {
-        const parsed = JSON.parse(raw) as DemoProv[];
-        if (Array.isArray(parsed) && parsed.length) return parsed;
+        const parsed = JSON.parse(raw) as Record<string, unknown>[];
+        if (Array.isArray(parsed) && parsed.length) return parsed.map(normalizeProv);
       }
     } catch {
       /* ignore */
     }
     return [
-      {
+      normalizeProv({
         id: "anthropic",
         name: "Anthropic",
         icon: "claude-color",
-        accountsOpen: true,
-        modelsOpen: false,
+        user: "work@example.com",
+        keyKind: "acct",
+        keyLabel: "Pro",
         accounts: [
-          { id: "acct-1", label: "work@example.com" },
-          { id: "acct-2", label: "api-key · sk-…demo" },
+          { id: "acct-1", label: "work@example.com", plan: "Pro", on: true, using: "In use" },
+          { id: "acct-2", label: "api-key · sk-…demo", plan: "API", on: false },
         ],
         models: ["claude-sonnet-4-5", "claude-haiku-4-5", "claude-opus-4"],
-      },
+        agentsUsing: [{ id: "cursor", name: "Cursor", icon: "cursor" }],
+      }),
     ];
   });
+  const [listEditId, setListEditId] = useState<string | null>(null);
+  const [offFolded, setOffFolded] = useState(false);
   const [addStep, setAddStep] = useState(0); // nested add-provider wizard on sheet foot
   useEffect(() => {
     try {
@@ -1413,88 +1459,163 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
   return (
     <>
       <main className="view" id="view-providers">
-        <div className="list" id="providers" hidden={!demoProvs.length}>
-          {demoProvs.map((pv) => (
-            <div className="row provider" key={pv.id} data-id={pv.id}>
-              <span className="ic">
-                <img src={iconSrc(pv.icon)} alt="" />
-              </span>
-              <div className="who">
-                <div className="name">{pv.name}</div>
-                <div className="sub">
-                  {pv.accounts.length} accounts · {pv.models.length} models
+        <div className="list" id="providers" hidden={!demoProvs.some((p) => !p.off)}>
+          {demoProvs
+            .filter((pv) => !pv.off)
+            .map((pv) => {
+              const n = pv.models.length;
+              const modelsLabel =
+                n === 1
+                  ? t("{n} model", { n })
+                  : n
+                    ? t("{n} models", { n })
+                    : t("no models exposed");
+              const sub = pv.user
+                ? t("signed in as {user}", { user: pv.user }) + " · " + modelsLabel
+                : (pv.host || "") + (pv.host ? " · " : "") + modelsLabel;
+              const selected = listEditId === pv.id;
+              return (
+                <div
+                  className={`row provider${selected ? " selected" : ""}`}
+                  key={pv.id}
+                  data-id={pv.id}
+                  onClick={() => setListEditId(selected ? null : pv.id)}
+                >
+                  <button
+                    type="button"
+                    className="ag-handle pv-handle"
+                    aria-label={t("Arrange {agent}", { agent: pv.name })}
+                    title={t("Drag to reorder — a model several providers serve goes to the higher one first · Alt+↑/↓ to move")}
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <img className="ic" src={iconSrc(pv.icon)} alt="" />
+                  </button>
+                  <div className="who">
+                    <div className="name">{pv.name}</div>
+                    <div className="sub">{sub}</div>
+                  </div>
+                  <div className="uses">
+                    {(pv.agentsUsing || []).map((a) => (
+                      <button
+                        type="button"
+                        className="use"
+                        key={a.id}
+                        title={a.name}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onStatus(t("{name} · {model} — click to change", { name: a.name, model: "default" }), "ok");
+                        }}
+                      >
+                        <img className="ic" src={iconSrc(a.icon)} alt="" />
+                      </button>
+                    ))}
+                  </div>
+                  <span
+                    className={`key ${pv.keyKind}`}
+                    title={
+                      pv.keyKind === "acct"
+                        ? t("{agent} is signed in; its models are here for every other agent", { agent: pv.name })
+                        : pv.keyLabel
+                    }
+                  >
+                    <span>{pv.keyLabel}</span>
+                  </span>
+                  <button
+                    type="button"
+                    className={`lib-switch pswitch${pv.off ? "" : " on"}`}
+                    role="switch"
+                    aria-checked={!pv.off}
+                    aria-label={t("Use {name}", { name: pv.name })}
+                    title={
+                      pv.off
+                        ? t("Off · switch it on and agents get its models again")
+                        : t("On · switch it off and agents no longer get its models; its keys and settings are kept")
+                    }
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setDemoProvs((list) =>
+                        list.map((x) => (x.id === pv.id ? { ...x, off: !x.off } : x)),
+                      );
+                      onStatus(
+                        pv.off
+                          ? t("{name} is on", { name: pv.name })
+                          : t("{name} is off: agents no longer get its models", { name: pv.name }),
+                        "ok",
+                      );
+                    }}
+                  >
+                    <i />
+                  </button>
+                  <span className="chev" aria-hidden>
+                    <svg viewBox="0 0 12 12" width={11} height={11}>
+                      <path
+                        d="M4.5 2.5 8 6l-3.5 3.5"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.7"
+                        strokeLinecap="round"
+                      />
+                    </svg>
+                  </span>
                 </div>
-                <button
-                  type="button"
-                  className={`fold text${pv.accountsOpen ? " open" : ""}`}
-                  aria-expanded={pv.accountsOpen}
-                  onClick={() =>
-                    setDemoProvs((list) =>
-                      list.map((x) => (x.id === pv.id ? { ...x, accountsOpen: !x.accountsOpen } : x)),
-                    )
-                  }
-                >
-                  <svg viewBox="0 0 12 12" width={11} height={11} aria-hidden>
-                    <path d="M4.5 2.5 8 6l-3.5 3.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-                  </svg>
-                  Accounts
-                </button>
-                {pv.accountsOpen ? (
-                  <div className="pv-accounts" style={{ marginTop: 6, display: "flex", flexDirection: "column", gap: 4 }}>
-                    {pv.accounts.map((a) => (
-                      <div className="row pref" key={a.id} style={{ padding: "6px 8px" }}>
-                        <div className="who">
-                          <div className="name" style={{ fontSize: 12.5 }}>{a.label}</div>
-                          <div className="sub">{"Demo account fold row"}</div>
-                        </div>
-                        <div className="val">
-                          <button type="button" className="text">Edit</button>
-                        </div>
-                      </div>
-                    ))}
-                    <button type="button" className="text" style={{ alignSelf: "flex-start" }}>
-                      + Account
-                    </button>
+              );
+            })}
+        </div>
+        <div className="row-head off-head" id="offHead" hidden={!demoProvs.some((p) => p.off)}>
+          <button
+            type="button"
+            className="fold"
+            id="foldOff"
+            aria-expanded={!offFolded}
+            aria-controls="offProviders"
+            onClick={() => setOffFolded((f) => !f)}
+          >
+            <span className="label">{t("Turned off")}</span>
+            <span className="note" id="offCount">
+              {demoProvs.filter((p) => p.off).length || ""}
+            </span>
+          </button>
+        </div>
+        <div className="list" id="offProviders" hidden={!demoProvs.some((p) => p.off) || offFolded}>
+          {demoProvs
+            .filter((pv) => pv.off)
+            .map((pv) => (
+              <div className="row provider off" key={pv.id} data-id={pv.id} onClick={() => setListEditId(pv.id)}>
+                <span className="ic">
+                  <img src={iconSrc(pv.icon)} alt="" />
+                </span>
+                <div className="who">
+                  <div className="name">
+                    {pv.name}
+                    <span className="badge off">{t("Switched off")}</span>
                   </div>
-                ) : null}
+                  <div className="sub">{t("{n} models", { n: pv.models.length })}</div>
+                </div>
+                <span className={`key ${pv.keyKind}`}>
+                  <span>{pv.keyLabel}</span>
+                </span>
                 <button
                   type="button"
-                  className={`fold text${pv.modelsOpen ? " open" : ""}`}
-                  aria-expanded={pv.modelsOpen}
-                  style={{ marginTop: 6 }}
-                  onClick={() =>
+                  className="lib-switch pswitch"
+                  role="switch"
+                  aria-checked={false}
+                  onClick={(e) => {
+                    e.stopPropagation();
                     setDemoProvs((list) =>
-                      list.map((x) => (x.id === pv.id ? { ...x, modelsOpen: !x.modelsOpen } : x)),
-                    )
-                  }
+                      list.map((x) => (x.id === pv.id ? { ...x, off: false } : x)),
+                    );
+                    onStatus(t("{name} is on", { name: pv.name }), "ok");
+                  }}
                 >
-                  <svg viewBox="0 0 12 12" width={11} height={11} aria-hidden>
-                    <path d="M4.5 2.5 8 6l-3.5 3.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                  <i />
+                </button>
+                <span className="chev" aria-hidden>
+                  <svg viewBox="0 0 12 12" width={11} height={11}>
+                    <path d="M4.5 2.5 8 6l-3.5 3.5" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
                   </svg>
-                  Models
-                </button>
-                {pv.modelsOpen ? (
-                  <div className="pv-models" style={{ marginTop: 6, display: "flex", flexWrap: "wrap", gap: 6 }}>
-                    {pv.models.map((m) => (
-                      <code key={m} style={{ fontSize: 11, padding: "3px 7px", borderRadius: 6, background: "var(--pill)" }}>
-                        {m}
-                      </code>
-                    ))}
-                    <button type="button" className="text">+ Model</button>
-                  </div>
-                ) : null}
+                </span>
               </div>
-              <div className="val">
-                <button
-                  type="button"
-                  className="text"
-                  onClick={() => setDemoProvs((list) => list.filter((x) => x.id !== pv.id))}
-                >
-                  Remove
-                </button>
-              </div>
-            </div>
-          ))}
+            ))}
         </div>
         <section className="sheet" id="addSheet">
           <div className="row-head">
@@ -2513,10 +2634,11 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
                             id: "demo-nested",
                             name: "Nested demo",
                             icon: "generic",
-                            accountsOpen: true,
-                            modelsOpen: true,
-                            accounts: [{ id: "n1", label: "sk-…nested" }],
+                            keyKind: "on" as const,
+                            keyLabel: "sk-…nested",
+                            accounts: [{ id: "n1", label: "sk-…nested", on: true, using: "In use" }],
                             models: ["claude-sonnet-4-5", "claude-haiku-4-5"],
+                            agentsUsing: [{ id: "cursor", name: "Cursor", icon: "cursor" }],
                           },
                         ];
                       });
@@ -2694,6 +2816,144 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
           </div>
         </div>
       ) : null}
+      {listEditId ? (() => {
+        const pv = demoProvs.find((x) => x.id === listEditId);
+        if (!pv) return null;
+        return (
+          <div
+            className="modal open"
+            role="dialog"
+            aria-modal="true"
+            aria-label={pv.name}
+            onClick={(e) => {
+              if (e.target === e.currentTarget) setListEditId(null);
+            }}
+          >
+            <div
+              className="dialog editor"
+              style={{
+                width: "min(520px, 94vw)",
+                maxHeight: "min(640px, 88vh)",
+                display: "flex",
+                flexDirection: "column",
+                animation: "pop-in .42s cubic-bezier(.16,1,.3,1)",
+              }}
+            >
+              <div className="ehead" style={{ display: "flex", alignItems: "center", gap: 10, padding: "14px 16px 8px" }}>
+                <img className="ic" src={iconSrc(pv.icon)} alt="" width={22} height={22} />
+                <div className="who" style={{ flex: 1, minWidth: 0 }}>
+                  <div className="name">{pv.name}</div>
+                  <div className="sub">{pv.user ? t("signed in as {user}", { user: pv.user }) : pv.host || ""}</div>
+                </div>
+                <button type="button" className="text" onClick={() => setListEditId(null)}>{t("Done")}</button>
+              </div>
+              <div className="ebody" style={{ padding: "8px 16px 16px", overflow: "auto" }}>
+                <div className="label" style={{ marginBottom: 6 }}>{t("Accounts")}</div>
+                <div className="accts">
+                  {pv.accounts.map((a) => (
+                    <div
+                      className={`acc${a.on !== false ? " in-use" : " off"}`}
+                      key={a.id}
+                      data-account-id={a.id}
+                    >
+                      <button
+                        type="button"
+                        className={`dot tick${a.on !== false ? "" : ""}`}
+                        title={a.on !== false ? t("Stop using this account") : t("Use this account too")}
+                        onClick={() => {
+                          setDemoProvs((list) =>
+                            list.map((x) =>
+                              x.id !== pv.id
+                                ? x
+                                : {
+                                    ...x,
+                                    accounts: x.accounts.map((ac) =>
+                                      ac.id === a.id ? { ...ac, on: !(ac.on !== false) } : ac,
+                                    ),
+                                  },
+                            ),
+                          );
+                        }}
+                      >
+                        {a.on !== false ? (
+                          <svg viewBox="0 0 12 12" width={10} height={10}>
+                            <path d="M2.5 6.2 5 8.7 9.5 3.5" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+                          </svg>
+                        ) : null}
+                      </button>
+                      <span className="n">{a.label}</span>
+                      {a.plan ? <span className="plan">{a.plan}</span> : null}
+                      <span className="grow" />
+                      {a.using ? <span className="using">{t(a.using)}</span> : null}
+                      <button
+                        type="button"
+                        className="text quiet"
+                        onClick={() => {
+                          setDemoProvs((list) =>
+                            list.map((x) =>
+                              x.id !== pv.id
+                                ? x
+                                : { ...x, accounts: x.accounts.filter((ac) => ac.id !== a.id) },
+                            ),
+                          );
+                          onStatus(t("{user} removed", { user: a.label }), "ok");
+                        }}
+                      >
+                        {t("Remove")}
+                      </button>
+                    </div>
+                  ))}
+                  <button
+                    type="button"
+                    className="acc add"
+                    onClick={() => {
+                      const id = "acct-" + Date.now();
+                      setDemoProvs((list) =>
+                        list.map((x) =>
+                          x.id !== pv.id
+                            ? x
+                            : {
+                                ...x,
+                                accounts: [
+                                  ...x.accounts,
+                                  { id, label: "demo+" + (x.accounts.length + 1) + "@example.com", plan: "Pro", on: true, using: "In use" },
+                                ],
+                              },
+                        ),
+                      );
+                      onStatus(t("Account added"), "ok");
+                    }}
+                  >
+                    <span className="dot" />
+                    <span className="n">{t("Add an account")}</span>
+                  </button>
+                </div>
+                <div className="label" style={{ margin: "14px 0 6px" }}>{t("Models")}</div>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                  {pv.models.map((m) => (
+                    <code key={m} style={{ fontSize: 11, padding: "3px 7px", borderRadius: 6, background: "var(--pill)" }}>
+                      {m}
+                    </code>
+                  ))}
+                </div>
+                <div className="bar" style={{ display: "flex", gap: 8, marginTop: 16, justifyContent: "flex-end" }}>
+                  <button
+                    type="button"
+                    className="text"
+                    onClick={() => {
+                      setDemoProvs((list) => list.filter((x) => x.id !== pv.id));
+                      setListEditId(null);
+                      onStatus(t("{name} removed", { name: pv.name }), "ok");
+                    }}
+                  >
+                    {t("Remove")}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      })() : null}
       {editor ? (
         <ProviderEditorModal
           state={editor}
@@ -2708,10 +2968,11 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
                     id: editor.id,
                     name: editor.name,
                     icon: editor.icon,
-                    accountsOpen: false,
-                    modelsOpen: true,
-                    accounts: [{ id: "a1", label: "default" }],
+                    keyKind: "on" as const,
+                    keyLabel: "sk-…demo",
+                    accounts: [{ id: "a1", label: "default", on: true, using: "In use" }],
                     models: ["model-a", "model-b"],
+                    agentsUsing: [{ id: "cursor", name: "Cursor", icon: "cursor" }],
                   },
                 ];
               });

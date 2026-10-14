@@ -11,6 +11,7 @@ import { GatewayView } from "./pages/GatewayView";
 import { PluginsView, UsageView } from "./pages/SimpleViews";
 import { LibraryView } from "./pages/LibraryView";
 import { SettingsView } from "./pages/SettingsView";
+import { TrayPanel, wantPanelMode } from "./pages/TrayPanel";
 
 const SIDE_AT = 1024;
 const NAV_LS = "magpie.navLayout";
@@ -285,6 +286,60 @@ export default function App() {
       {sideNavItems}
     </nav>
   );
+
+  const [panelMode, setPanelMode] = useState(wantPanelMode);
+
+  useEffect(() => {
+    const sync = () => setPanelMode(wantPanelMode());
+    window.addEventListener("hashchange", sync);
+    window.addEventListener("popstate", sync);
+    return () => {
+      window.removeEventListener("hashchange", sync);
+      window.removeEventListener("popstate", sync);
+    };
+  }, []);
+
+  if (panelMode) {
+    return (
+      <TrayPanel
+        onOpenMain={() => {
+          try {
+            localStorage.removeItem("magpie.demoPanel");
+          } catch {
+            /* */
+          }
+          const u = new URL(location.href);
+          u.searchParams.delete("panel");
+          if (u.hash === "#panel" || u.hash === "#/panel") u.hash = "#/agents";
+          history.replaceState(null, "", u.pathname + u.search + (u.hash || "#/agents"));
+          setPanelMode(false);
+          document.body.classList.remove("panel", "linux");
+          delete document.body.dataset.ptab;
+          applyChrome();
+        }}
+        onQuit={() => {
+          showStatus(t("Quit is demo-only"), "ok");
+        }}
+        onPrefs={() => {
+          try {
+            localStorage.removeItem("magpie.demoPanel");
+          } catch {
+            /* */
+          }
+          const u = new URL(location.href);
+          u.searchParams.delete("panel");
+          u.hash = "#/settings";
+          history.replaceState(null, "", u.pathname + u.search + u.hash);
+          setPanelMode(false);
+          document.body.classList.remove("panel", "linux");
+          delete document.body.dataset.ptab;
+          setView("settings");
+          applyChrome();
+        }}
+        onStatus={showStatus}
+      />
+    );
+  }
 
   return (
     <>

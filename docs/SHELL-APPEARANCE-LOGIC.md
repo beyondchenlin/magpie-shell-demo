@@ -403,3 +403,21 @@ Same as §4; added: `.pm-opts textarea` focus .12s; `.range-menu .rm-day` backgr
 Full nested capture consumed. Hook When-it-runs includes shared events + Cursor own list through **preCompact** (Find an event filter). RTK card shows install.sh curl; Install/Get/Check = mock. Magpie Image + grill-me sheets; MCP New Command/HTTP/SSE/OAuth/Discard.
 
 *文档版本：v0.1.33 LIBRARY_DONE*
+
+
+## v0.1.34 Providers list-with-accounts + Tray Agents
+
+| 控件 | Magpie | demo |
+|------|--------|------|
+| `#providers > .row.provider` | handle · who · uses · key · pswitch · chev | 同；默认 Anthropic mock 有账号 |
+| `.key.acct` / `.key.on` | 绿点 pill 128px | 同 CSS |
+| `.uses` / `.use` | agent 图标钮 | Cursor mock |
+| `.lib-switch.pswitch` | on/off 立即 | mock toast；off → `#offProviders` |
+| 点行 → editor | `openModal(renderEditor)` | modal + `.accts` / `.acc` |
+| `.acc .dot.tick` | 勾选用账号 | mock toggle |
+| Tray `body.panel` | ptabs + agents + foot | `?panel=1` / `#panel` |
+| ptabs thumb | slide 280ms | `useSegThumb` |
+| Allowances 无配额 | tab hidden | `hasAllowances=false` |
+| `.row.agent` open | `--row-spring` .48s | CSS 已齐；Model/Effort 字段 mock |
+
+*文档版本：v0.1.34*
