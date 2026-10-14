@@ -1,14 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Bird } from "./components/Bird";
-import { NavIcon } from "./components/NavIcons";
-import {
-  GATEWAY_ADDR,
-  GROUP_OF,
-  NAV,
-  TITLES,
-  ZH,
-  type ViewId,
-} from "./data/mock";
+import { useSegThumb } from "./components/SegThumb";
+import { GATEWAY_ADDR, TITLES, ZH, type ViewId } from "./data/mock";
 import { AgentsView } from "./pages/AgentsView";
 import { ProvidersView } from "./pages/ProvidersView";
 import { RoutingView } from "./pages/RoutingView";
@@ -19,11 +12,25 @@ import {
   UsageView,
 } from "./pages/SimpleViews";
 
-const VIEWS = new Set<string>(Object.keys(TITLES));
+/** Native Linux desktop top tabs (gold: interactions/native-linux). Not side-nav. */
+const TOP_TABS: { id: ViewId; label: string }[] = [
+  { id: "agents", label: "Agents" },
+  { id: "providers", label: "Providers" },
+  { id: "routing", label: "Routing" },
+  { id: "gateway", label: "Gateway" },
+  { id: "usage", label: "Usage" },
+  { id: "plugins", label: "Plugins" },
+];
+
+const VIEWS = new Set<string>([...TOP_TABS.map((t) => t.id), "settings"]);
 
 function viewFromHash(): ViewId {
   const h = location.hash.replace(/^#\/?/, "");
   return (VIEWS.has(h) ? h : "agents") as ViewId;
+}
+
+function isElectron(): boolean {
+  return /\bElectron\b/i.test(navigator.userAgent);
 }
 
 export default function App() {
@@ -36,6 +43,7 @@ export default function App() {
   const [refreshNonce, setRefreshNonce] = useState(0);
   const statusTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const syncRef = useRef<HTMLButtonElement>(null);
+  const setNavBox = useSegThumb(view === "settings" ? null : view);
 
   const showStatus = (msg: string, kind = "ok", ms = 3500) => {
     setStatus({ msg, kind });
@@ -44,7 +52,11 @@ export default function App() {
   };
 
   useEffect(() => {
-    document.body.classList.add("side-nav", "window", "web");
+    const electron = isElectron();
+    document.body.classList.remove("side-nav");
+    document.body.classList.add("window", "linux");
+    if (electron) document.body.classList.remove("web");
+    else document.body.classList.add("web");
     const root = document.documentElement;
     if (theme === "system") root.removeAttribute("data-theme");
     else root.setAttribute("data-theme", theme);
@@ -61,25 +73,18 @@ export default function App() {
     if (location.hash.replace(/^#\/?/, "") !== id) location.hash = id;
   };
 
-  // Magpie refreshKind: agents → agents; usage → usage; else → models (routing etc.)
-  const syncKind = view === "agents" ? "agents" : view === "usage" ? "usage" : "models";
+  const syncKind =
+    view === "agents" ? "agents" : view === "usage" ? "usage" : "models";
   const syncTitle =
-    syncKind === "agents"
-      ? ZH.syncAgentsTitle
-      : syncKind === "usage"
-        ? ZH.syncModelsTitle /* usage toast/title stub until Usage recorded */
-        : ZH.syncModelsTitle;
+    syncKind === "agents" ? ZH.syncAgentsTitle : ZH.syncModelsTitle;
   const syncToast =
-    syncKind === "agents"
-      ? ZH.agentsLookedAgain
-      : ZH.modelListsRefreshed;
+    syncKind === "agents" ? ZH.agentsLookedAgain : ZH.modelListsRefreshed;
 
   const onSync = async () => {
     const b = syncRef.current;
     if (!b || spinning) return;
     setSpinning(true);
     b.classList.add("spin");
-    // Demo: no agents/rescan or sync API — brief delay then toast (A-09 / R-04)
     await new Promise((r) => setTimeout(r, 280));
     setRefreshNonce((n) => n + 1);
     showStatus(syncToast, "ok");
@@ -103,90 +108,72 @@ export default function App() {
     } else stop();
   };
 
-  const group = GROUP_OF[view];
+  const onClose = () => {
+    if (isElectron()) window.close();
+  };
 
   return (
     <>
-      <aside className="sidebar" id="side">
-        <div className="side-top">
-          <div className="brand">
-            <span className="logo" aria-hidden>
-              <Bird size={18} />
-            </span>
-            <span>magpie</span>
-          </div>
-        </div>
-        <div className="side-scroll">
-          <nav className="seg" id="nav" aria-label="主导航">
-            {NAV.map((g) => (
-              <span key={g.group} style={{ display: "contents" }}>
-                <span className="nav-gl">{g.group}</span>
-                {g.items.map((it) => (
-                  <button
-                    key={it.id}
-                    type="button"
-                    data-view={it.id}
-                    className={view === it.id ? "on" : ""}
-                    aria-current={view === it.id ? "page" : undefined}
-                    onClick={() => go(it.id)}
-                  >
-                    <NavIcon name={it.icon} />
-                    <span>{it.label}</span>
-                  </button>
-                ))}
-              </span>
-            ))}
-          </nav>
-        </div>
-        <div className="side-foot">
-          <button
-            type="button"
-            className={`icon${view === "settings" ? " on" : ""}`}
-            id="prefs"
-            title={ZH.settings}
-            onClick={() => go("settings")}
-          >
-            <NavIcon name="settings" />
-            <span className="side-l">{ZH.settings}</span>
-          </button>
-          <button
-            type="button"
-            className="side-gw"
-            id="sideGw"
-            onClick={() => go("gateway")}
-            title={`${ZH.gateway} ${GATEWAY_ADDR}`}
-          >
-            <i />
-            <span>
-              {ZH.gateway} {GATEWAY_ADDR}
-            </span>
-          </button>
-        </div>
-        <div
-          className="side-edge"
-          id="sideEdge"
-          role="separator"
-          aria-orientation="vertical"
-          tabIndex={0}
-        />
-      </aside>
+      {/* Magpie starts #side[hidden]; desktop gold is top tabs — do not mount sidebar */}
+      <aside className="sidebar" id="side" hidden />
 
-      <header className="top">
+      <header className="top inrow tight">
+        <div className="brand">
+          <span className="logo" aria-hidden>
+            <Bird size={18} />
+          </span>
+          <span>magpie</span>
+        </div>
         <h1 className="sr-only" id="pageTitle">
           {TITLES[view]}
         </h1>
-        <div className="crumb" id="crumb" aria-hidden={false}>
-          {view === "settings" ? (
-            <b>{ZH.settings}</b>
-          ) : (
-            <>
-              {group ? <span>{group}</span> : null}
-              {group ? <i>/</i> : null}
-              <b>{TITLES[view]}</b>
-            </>
-          )}
-        </div>
-        <div className="grow" />
+        <button
+          type="button"
+          className="icon side-toggle"
+          id="sideToggle"
+          title="Show sidebar"
+          aria-label="Show sidebar"
+          onClick={() =>
+            showStatus(
+              "Desktop 1:1 gold is top tabs (native Linux). Side-nav is the web/wide layout — not this target.",
+              "ok",
+              4500,
+            )
+          }
+        >
+          <svg viewBox="0 0 16 16" width={15} height={15} aria-hidden="true">
+            <rect className="st-pane" x="2.5" y="3.5" width="4" height="9" rx="1" />
+            <g
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.25"
+              strokeLinecap="round"
+            >
+              <rect x="1.75" y="2.75" width="12.5" height="10.5" rx="2.25" />
+              <path d="M6.75 2.75v10.5" />
+            </g>
+          </svg>
+        </button>
+        <div className="crumb" id="crumb" aria-hidden hidden />
+        <nav
+          className="seg"
+          id="nav"
+          aria-label="Main navigation"
+          ref={setNavBox}
+        >
+          {TOP_TABS.map((t) => (
+            <button
+              key={t.id}
+              type="button"
+              data-view={t.id}
+              className={view === t.id ? "on" : ""}
+              aria-current={view === t.id ? "page" : undefined}
+              onClick={() => go(t.id)}
+            >
+              <span>{t.label}</span>
+            </button>
+          ))}
+        </nav>
         <div className="actions">
           <button
             className="icon"
@@ -205,6 +192,45 @@ export default function App() {
                 strokeWidth="1.5"
                 strokeLinecap="round"
                 strokeLinejoin="round"
+              />
+            </svg>
+          </button>
+          <button
+            className={`icon${view === "settings" ? " on" : ""}`}
+            id="prefs"
+            type="button"
+            title="Settings (Ctrl+,)"
+            aria-current={view === "settings" ? "page" : undefined}
+            onClick={() => go("settings")}
+          >
+            <svg viewBox="0 0 24 24" width={14} height={14}>
+              <g
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" />
+                <circle cx="12" cy="12" r="3" />
+              </g>
+            </svg>
+            <span className="side-l">{ZH.settings}</span>
+          </button>
+          <button
+            className="icon winclose"
+            id="winclose"
+            type="button"
+            title="Close"
+            onClick={onClose}
+          >
+            <svg viewBox="0 0 16 16" width={10} height={10}>
+              <path
+                d="M4 4l8 8M12 4l-8 8"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.8"
+                strokeLinecap="round"
               />
             </svg>
           </button>
@@ -243,6 +269,7 @@ export default function App() {
           {status?.msg || ""}
         </span>
         <span className="grow" />
+        <span className="sr-only">{GATEWAY_ADDR}</span>
       </footer>
     </>
   );

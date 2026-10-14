@@ -1,5 +1,17 @@
 # Magpie 壳交互 1:1 计划
 
+## 桌面金标更正（2026-10-14）
+
+**对照物改为官方 Linux 原生窗顶栏**，不是 `magpie web` 左侧栏。
+
+- 金标截图：[`interactions/native-linux/shots/`](./interactions/native-linux/shots/)（CLICK-LOG + N-00…N-09）
+- 差异说明：[`interactions/native-linux/NATIVE-CHROME.md`](./interactions/native-linux/NATIVE-CHROME.md)
+- web side-nav：宽窗/浏览器布局，**不作**桌面 exe 1:1 目标
+- 总判定：`NATIVE_CHROME_PARTIAL`
+
+---
+
+
 ## 目的
 
 外观 + 交互 + 动效 1:1。静态空态像 ≠ 交互 1:1。

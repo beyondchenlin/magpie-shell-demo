@@ -1,72 +1,55 @@
-# Magpie Shell Demo — 验收清单（对照官方截图 + 源码）
+# Magpie Shell Demo — 验收清单（对照官方 **Linux 原生窗**）
 
-> **静态空态 ≠ 交互 1:1。**  
-> 当前总判定：**`ROUTING_EMPTY_PARTIAL`** — Agents + Providers 部分 + Routing 空态交互（Hide accounts / Refresh models toast）已接线；Gateway / Usage / Plugins / Settings 交互未录/未做。  
+> **桌面 1:1 金标 = 原生顶栏标签，不是 web 左侧栏。**  
+> 证据：[`interactions/native-linux/shots/`](./interactions/native-linux/shots/) · [`NATIVE-CHROME.md`](./interactions/native-linux/NATIVE-CHROME.md)  
+> 当前总判定：**`NATIVE_CHROME_PARTIAL`** — 外壳已改为顶栏；Agents/Providers/Routing 既有交互在顶栏下保留；Gateway/Usage/Plugins/Settings 仍为壳级。  
 > **不是**全应用 PASS。  
-> 交互计划：[`INTERACTION-PLAN.md`](./INTERACTION-PLAN.md)  
-> Spec：Agents · Providers · [`interactions/pages/routing/SPEC.md`](./interactions/pages/routing/SPEC.md)
+> 交互计划：[`INTERACTION-PLAN.md`](./INTERACTION-PLAN.md)
 
 对照基准：
-- 官方实机截图：`/workspace/magpie-official/shots/`
-- 源码：`magpie` `internal/gui/assets/`
-- 交互录制：`interactions/pages/<page>/shots/CLICK-LOG.md`
+- **桌面金标**：官方 Linux 原生窗截图 `interactions/native-linux/shots/N-00…N-09`
+- ~~web 侧栏截图~~：仅作宽窗/web 布局参考，**不作**桌面 exe 验收金标
+- 源码：`magpie` `internal/gui/assets/`（`body.window` 无 `side-nav` = 顶栏）
 
 图例：`[x]` 自检通过 · `[~]` 有意简化 · `[ ]` 未过 / 未做
 
 ---
 
-## A. 外壳 / IA
+## A. 外壳 / IA（原生顶栏）
 
 | # | 项 | 状态 |
 |---|----|------|
-| A1–A6 | 窗框 / tokens / 侧栏分组 / Brand / 选中 pill / zh 文案 | [x] |
+| A1 | 无左侧栏、无 Work/Models 分组、无面包屑 | [x] |
+| A2 | 顶栏标签 Agents / Providers / Routing / Gateway / Usage / Plugins | [x] |
+| A3 | 右侧 refresh + gear + Linux close | [x] |
+| A4 | 窗默认 ≈712×652（web 预览框 / Electron） | [x] |
+| A5 | Settings = 原地视图 + 横向 set-tabs | [x] |
+| A6 | web side-nav 标为错误桌面目标 | [x] | 见 NATIVE-CHROME.md |
 
-## B. Agents 空态 + 交互
-
-| # | 项 | 状态 |
-|---|----|------|
-| B1–B4 | 空态结构 | [x] |
-| A-01…A-09 | 优先 6 控件 | [x] |
-| A-M01…A-M09 | Manage | [x] |
-| A-I01…A-I18 | Install Copy | [x] |
-| A-GS01 | Hide Get started（会话持久 localStorage） | [x] |
-| A-AR01 | Arrange 菜单（上移/下移 disabled；Hide；Esc） | [x] |
-
-## C. Providers
+## B–D. 页内交互（顶栏下保留）
 
 | # | 项 | 状态 |
 |---|----|------|
-| C1–C4 | 空目录分区 | [x] |
-| P-01/P-02 | Find 过滤 + Escape 清空 | [x] |
-| P-03 | Import… Not found 空态 + Cancel | [x] |
-| P-S1 | Claude 行内 risk | [x]（无真 OAuth） |
-| P-S2…P-S5 / P-C1 | Anthropic / OpenRouter / Ollama / Remote / Custom 表单壳 | [x]（Cancel；Add 仅 toast） |
-| C5 | 全厂商字段差异 | [~] | 仅采样；其它瓦片用 generic 壳 |
+| B | Agents 空态 + 已接线交互 | [x] | 对照仍可参考 web 录制；chrome 以 N-00 为准 |
+| C | Providers 空目录 + 部分交互 | [x] |
+| D | Routing 空态交互 | [x] |
 
-## D. Routing
+## E. 其它页
 
 | # | 项 | 状态 |
 |---|----|------|
-| D1–D4 | Routing 空态外观 | [x] |
-| R-00…R-09 | 空态点击（Hide accounts / Refresh / 节点无 panel / errs disabled） | [x] | 见 [`interactions/pages/routing/SPEC.md`](./interactions/pages/routing/SPEC.md) |
-| D5 | 真请求飞鸟 / Live·By request·Replay | [ ] | 空态 Magpie 隐藏；demo 仅显式「演示飞鸟」 |
-
-## E. 其它页（未录 / 未做）
-
-| # | 项 | 状态 |
-|---|----|------|
-| E1 | Gateway 交互录制 + 实现 | [ ] | 见 `interactions/pages/gateway/RECORD-NOTES.md` |
-| E2 | Usage | [ ] |
-| E3 | Plugins | [ ] |
-| E4 | Settings 全部分页 | [ ] |
+| E1 | Gateway | [~] | 空态壳；交互未完录 |
+| E2 | Usage | [~] | Overview 空态文案 |
+| E3 | Plugins | [~] | Discover 壳 |
+| E4 | Settings 全部分页内容 | [~] | 横签齐；General 部分行；其余占位 |
 
 ## F. 交付
 
 | # | 项 | 状态 |
 |---|----|------|
-| F1 | Windows Setup `.exe` | [x] | https://github.com/beyondchenlin/magpie-shell-demo/releases/download/v0.1.5/Magpie-Shell-Demo-Setup-0.1.5.exe |
-| F2 | Vercel Web | [x] | https://magpie-shell-demo.vercel.app （验 Routing R-01/R-04） |
+| F1 | Windows Setup `.exe` | [ ] | v0.1.6（GHA 构建中） |
+| F2 | Vercel Web | [x] | https://magpie-shell-demo.vercel.app |
 
 ---
 
-*诚实原则：Routing 空态交互部分达标 ≠ 全应用 1:1；不写全量 PASS。判定 `ROUTING_EMPTY_PARTIAL`。*
+*诚实原则：顶栏外壳对齐原生 ≠ 全应用交互 1:1。判定 `NATIVE_CHROME_PARTIAL`。*

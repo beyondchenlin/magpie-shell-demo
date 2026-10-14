@@ -1,4 +1,4 @@
-/* Demo shell only — Magpie CSS owns visual tokens. Do not invent parallel skins. */
+/* Demo shell — Magpie CSS owns visual tokens. Desktop gold = top tabs (native Linux). */
 html, body, #root { height: 100%; }
 body { margin: 0; }
 #root {
@@ -10,51 +10,24 @@ body { margin: 0; }
   background: var(--bg);
   position: relative;
 }
-/* Magpie starts #side[hidden] until layoutNav; demo keeps it open. */
-.sidebar { display: flex !important; }
-.sidebar[hidden] { display: flex !important; }
-/* Web brand stays (Windows native hides it; this is web/Electron demo). */
-body.web .brand { display: flex; }
-body.window.web .side-top .brand {
-  display: flex; align-items: center; gap: 7px; height: 100%;
-  padding: 0 10px; font-size: 13.5px;
-}
 
-/*
-  Magpie sidebar is position:fixed to the window (= body).
-  In the web preview, #root is the framed 660×600 window — re-home the side
-  chrome and side-nav padding onto #root so the sidebar sits inside the frame.
-*/
-body.web.side-nav {
-  padding-left: 0 !important;
-}
-body.web.side-nav #root {
-  padding-left: var(--side-w, 212px);
-  box-sizing: border-box;
-}
-body.web .sidebar {
-  position: absolute !important;
-  left: 0; top: 0; bottom: 0;
-  height: auto !important;
-}
-
-/* Default Magpie window footprint 660×600 — not a stretched stage. */
-@media (min-width: 720px) {
+/* Web preview: floating card ≈ native Magpie Linux window (712×652). */
+@media (min-width: 760px) {
   body.web {
-    background: #e8e8ec;
+    background: #1a1a1e;
+    min-height: 100%;
   }
   body.web #root {
-    width: 660px;
-    height: 600px;
-    max-width: 660px;
-    max-height: 600px;
-    margin: 24px auto;
+    width: 712px;
+    height: 652px;
+    max-width: 712px;
+    max-height: 652px;
+    margin: 32px auto;
     border: 1px solid var(--line);
     border-radius: 12px;
-    box-shadow: 0 8px 28px rgba(0,0,0,.08);
+    box-shadow: 0 12px 40px rgba(0,0,0,.35);
     overflow: hidden;
   }
-  body.web .sidebar { border-radius: 12px 0 0 12px; }
 }
 
 .sr-only {
@@ -62,57 +35,29 @@ body.web .sidebar {
   overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
 }
 button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
-/* sideGw visible in demo */
-.side-gw { display: flex !important; }
-.side-gw[hidden] { display: flex !important; }
-/* Provider empty sheet fills the view */
-#view-providers .sheet { display: block; }
-#view-providers .sheet[hidden] { display: block; }
-/* Tile icon img sizing when Magpie icon() helper isn't present */
-.tile .ic, .tile img.ic-img {
-  width: 18px; height: 18px; flex: none; object-fit: contain;
-}
-.tile {
-  display: flex; align-items: center; gap: 8px; width: 100%;
-  height: 34px; padding: 0 8px; border-radius: 8px; text-align: left;
-}
-.row.agent .ic img { width: 100%; height: 100%; object-fit: contain; }
-/* Native-only note squares (Cursor row) */
-.ag-native-note {
-  display: flex; align-items: center; gap: 6px;
-  margin-top: 2px; font-size: 12px; color: var(--muted);
-}
-.ag-native-note .sq {
-  width: 9px; height: 9px; border-radius: 2px; background: var(--seg-track, #e6e6eb);
-}
-/* Profiles empty hint */
-.profiles .chips .hint { color: var(--muted); font-size: 12.5px; line-height: 30px; }
-/* Routing idle account */
-.rt-accts li.idle {
-  justify-content: center; color: var(--muted); font-size: 12.5px;
-  border-style: dashed; cursor: default;
-}
-.rt-flier-demo { pointer-events: none; }
 
-/* Cursor row layout: name+note left, Can't connect right */
-#view-agents .row.agent.conn {
-  display: flex; align-items: flex-start; gap: 10px;
-  flex-wrap: wrap;
+/* Top-tab mode: keep side-toggle visible (native Linux chrome). */
+body.window:not(.side-nav) #sideToggle { display: inline-flex; }
+body.window:not(.side-nav) .side-toggle .st-pane {
+  fill: color-mix(in srgb, var(--fg) 18%, transparent);
 }
-#view-agents .row.agent.conn .who { flex: 1; min-width: 0; }
-#view-agents .row.agent.conn .ag-cant { margin-left: auto; align-self: center; }
 
-/* Modal lives inside #root (the framed window), not the page viewport. */
+/* Linux winclose is shown by Magpie CSS when body.window.linux */
+body.web.window.linux #winclose { display: inline-flex; }
+
+/* Modal / popover inside framed #root */
 body.web .modal {
   position: absolute !important;
   inset: 0;
   border-radius: inherit;
 }
+body.web .pop {
+  position: absolute !important;
+  z-index: 40;
+}
 
-/* Window mode: hide profiles hint while naming (panel already has this). */
 body.window .profiles.naming .chips .hint { display: none; }
 
-/* Footer toast room inside framed window */
 body.web .foot {
   position: relative;
   z-index: 5;
@@ -121,7 +66,44 @@ body.web .foot {
   padding: 0 8px 6px 18px;
 }
 
-/* Manage modal: lib-confirm note spacing */
+/* Header: Magpie fitTop-ish — logo + toggle + centered tabs + actions */
+body.window:not(.side-nav) .top.inrow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+body.window:not(.side-nav) .top.inrow .seg {
+  position: relative;
+  left: auto;
+  top: auto;
+  transform: none;
+  margin: 0 auto;
+  flex: 0 1 auto;
+}
+body.window:not(.side-nav) .top.inrow .actions { margin-left: 0; }
+body.window:not(.side-nav) .top.tight .brand > span:not(.logo) { display: none; }
+
+.ag-native-note {
+  display: flex; align-items: center; gap: 6px;
+  margin-top: 2px; font-size: 12px; color: var(--muted);
+}
+.ag-native-note .sq {
+  width: 9px; height: 9px; border-radius: 2px; background: var(--seg-track, #e6e6eb);
+}
+.profiles .chips .hint { color: var(--muted); font-size: 12.5px; line-height: 30px; }
+.rt-accts li.idle {
+  justify-content: center; color: var(--muted); font-size: 12.5px;
+  border-style: dashed; cursor: default;
+}
+.rt-flier-demo { pointer-events: none; }
+
+#view-agents .row.agent.conn {
+  display: flex; align-items: flex-start; gap: 10px;
+  flex-wrap: wrap;
+}
+#view-agents .row.agent.conn .who { flex: 1; min-width: 0; }
+#view-agents .row.agent.conn .ag-cant { margin-left: auto; align-self: center; }
+
 .lib-confirm {
   margin: 0;
   font-size: 12.5px;
@@ -129,144 +111,75 @@ body.web .foot {
   color: var(--fg-2);
   grid-column: 1 / -1;
 }
-
-/* ag-manage icon img */
-.ag-manage-row .ic img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-}
+.ag-manage-row .ic img,
 .ag-install-who .ic img {
   width: 100%;
   height: 100%;
   object-fit: contain;
 }
 
-/* Arrange menu inside framed web window */
-body.web .pop {
-  position: absolute !important;
-  z-index: 40;
+#view-providers .sheet { display: block; }
+#view-providers .sheet[hidden] { display: block; }
+.tile .ic, .tile img.ic-img {
+  width: 18px; height: 18px; flex: none; object-fit: contain;
 }
+.tile {
+  display: flex; align-items: center; gap: 8px; width: 100%;
+  height: 34px; padding: 0 8px; border-radius: 8px; text-align: left;
+}
+.row.agent .ic img { width: 100%; height: 100%; object-fit: contain; }
 
-/* Import apps / signing / editor demos */
 .signing .mark {
-  flex: none;
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  font-weight: 700;
-  font-size: 13px;
+  flex: none; width: 22px; height: 22px; border-radius: 50%;
+  display: grid; place-items: center; font-weight: 700; font-size: 13px;
   background: color-mix(in srgb, var(--amber, #d97706) 22%, transparent);
   color: var(--amber, #b45309);
 }
-.editor .ehead .ic img {
-  width: 20px;
-  height: 20px;
-  object-fit: contain;
-}
+.editor .ehead .ic img { width: 20px; height: 20px; object-fit: contain; }
 .editor .extra-body textarea.json {
-  width: 100%;
-  box-sizing: border-box;
-  padding: 8px 10px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: var(--card);
+  width: 100%; box-sizing: border-box; padding: 8px 10px;
+  border: 1px solid var(--line); border-radius: 8px; background: var(--card);
   color: var(--fg);
   font: var(--code-style, normal) var(--code-weight, 400) 12px/1.45 var(--code-font, var(--code));
   resize: vertical;
 }
-.editor .stack {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
+.editor .stack { display: flex; flex-direction: column; gap: 6px; }
 .editor details.more {
-  grid-column: 1 / -1;
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  padding: 6px 10px;
-  background: var(--card);
+  grid-column: 1 / -1; border: 1px solid var(--line); border-radius: 10px;
+  padding: 6px 10px; background: var(--card);
 }
-.editor details.more summary {
-  cursor: pointer;
-  font-size: 12.5px;
-  color: var(--fg-2);
-}
+.editor details.more summary { cursor: pointer; font-size: 12.5px; color: var(--fg-2); }
 .editor details.more .inner {
-  display: grid;
-  grid-template-columns: 72px minmax(0, 1fr);
-  gap: 10px 14px;
-  margin-top: 8px;
+  display: grid; grid-template-columns: 72px minmax(0, 1fr);
+  gap: 10px 14px; margin-top: 8px;
 }
-body.web .editor details.more .inner {
-  grid-template-columns: minmax(0, 1fr);
+body.web .editor details.more .inner { grid-template-columns: minmax(0, 1fr); }
+.editor .chips .chip, .editor button.chip {
+  height: 24px; padding: 0 8px; border-radius: 6px; border: 1px solid var(--line);
+  background: var(--card); font-size: 11.5px; color: var(--fg-2);
+  margin-right: 4px; margin-bottom: 4px;
 }
-.editor .chips .chip,
-.editor button.chip {
-  height: 24px;
-  padding: 0 8px;
-  border-radius: 6px;
-  border: 1px solid var(--line);
-  background: var(--card);
-  font-size: 11.5px;
-  color: var(--fg-2);
-  margin-right: 4px;
-  margin-bottom: 4px;
-}
-.importapps .appnote {
-  font-size: 12.5px;
-  color: var(--fg-2);
-  line-height: 1.45;
-  margin-bottom: 8px;
-}
-.importapps .apptabs {
-  display: flex;
-  gap: 4px;
-  flex-wrap: wrap;
-  margin-bottom: 8px;
-}
+.importapps .appnote { font-size: 12.5px; color: var(--fg-2); line-height: 1.45; margin-bottom: 8px; }
+.importapps .apptabs { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 8px; }
 .importapps .apptab {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  height: 30px;
-  padding: 0 10px;
-  border-radius: 8px;
-  border: 1px solid transparent;
-  background: var(--card-2, var(--pill));
-  font-size: 12px;
+  display: inline-flex; align-items: center; gap: 6px; height: 30px;
+  padding: 0 10px; border-radius: 8px; border: 1px solid transparent;
+  background: var(--card-2, var(--pill)); font-size: 12px;
 }
 .importapps .apptab.on {
-  background: var(--card);
-  border-color: var(--line);
+  background: var(--card); border-color: var(--line);
   box-shadow: 0 1px 2px rgba(0,0,0,.04);
 }
-.importapps .apptab.missing {
-  color: var(--muted);
-}
-.importapps .apptab .count {
-  color: var(--faint);
-  font-variant-numeric: tabular-nums;
-}
-.importapps .applogo {
-  width: 16px;
-  height: 16px;
-  object-fit: contain;
-}
-.importapps .apphead {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 8px;
-}
-.importapps .apphead code {
-  font-size: 11.5px;
-  color: var(--muted);
-}
-.importapps .appempty {
-  font-size: 13px;
-  color: var(--fg-2);
-  padding: 18px 4px;
+.importapps .apptab.missing { color: var(--muted); }
+.importapps .apptab .count { color: var(--faint); font-variant-numeric: tabular-nums; }
+.importapps .applogo { width: 16px; height: 16px; object-fit: contain; }
+.importapps .apphead { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.importapps .apphead code { font-size: 11.5px; color: var(--muted); }
+.importapps .appempty { font-size: 13px; color: var(--fg-2); padding: 18px 4px; }
+
+/* Settings search beside set-tabs */
+#view-settings .set-q {
+  flex: 0 1 180px; margin-left: auto; min-width: 120px;
+  height: 27px; padding: 0 9px; border-radius: 7px;
+  border: 1px solid var(--line); background: var(--card); font-size: 12.5px;
 }

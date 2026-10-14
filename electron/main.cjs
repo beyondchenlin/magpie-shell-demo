@@ -1,8 +1,10 @@
 const { app, BrowserWindow } = require("electron");
 const path = require("path");
 
-const W = 660;
-const H = 600;
+/* Native Magpie Linux measured ~712×652; Magpie window_rule default ~660×600.
+   Prefer measured native size for desktop 1:1 chrome. */
+const W = 712;
+const H = 652;
 const MIN_W = 560;
 const MIN_H = 420;
 
@@ -14,6 +16,7 @@ function create() {
     minHeight: MIN_H,
     title: "magpie",
     backgroundColor: "#f4f4f6",
+    frame: true,
     webPreferences: {
       contextIsolation: true,
       nodeIntegration: false,
