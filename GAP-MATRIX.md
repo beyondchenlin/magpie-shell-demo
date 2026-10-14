@@ -1,6 +1,11 @@
+## v0.1.51 PROVIDERS_LOCAL_DONE
+- Native `providers/35–43` consumed: Ollama nest (address / scroll / Key header / User-Agent / Redaction / Context·Max·Compact) + oMLX / LM Studio / MLX-Serve editors.
+- Demo KindLocal: User-Agent tick, Compact at chips, richer Context/Max placeholders; Redaction after UA (Magpie order); MLX-Serve site host `github.com`.
+- Custom chip remains from v0.1.50. Still mock: true local probe / Add persist / OAuth. Allowances quota **N/A**. Skip Vercel 402.
+
 ## v0.1.50 PROVIDERS_CUSTOM_DONE
 - Custom provider sheet (NOTES **03–18** + Magpie `app.js`): protocol segs use **title tooltips** (API_HINTS); URL placeholder per proto (`https://…` / `…/v1beta` / `…/v1`); Extra body **empty + placeholder** (not prefilled); Headers **Edit as JSON** ↔ Collapse + custom hint; Key header when custom Anthropic.
-- On-this-machine editors (**35+**) **not on disk yet** — KindLocal still source-chipped (v0.1.47); consume when recorder lands → v0.1.51.
+- On-this-machine editors → consumed in **v0.1.51** (35–43).
 - Still mock: Detect APIs probe, favicon fetch, Choose a picture GTK, Add/Save persist, OAuth/keys. Allowances quota **N/A**. Skip Vercel 402.
 
 ## v0.1.49 PLUGINS_OFF_DONE

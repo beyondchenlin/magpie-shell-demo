@@ -7,7 +7,7 @@
 ## v0.1.50 PROVIDERS_CUSTOM_DONE
 
 - Custom 03–18 fidelity: proto tooltips + urlHint, Extra body placeholder, Edit-as-JSON headers, custom headers hint, Key header on custom Anthropic.
-- Local On-this-machine editors still awaiting native **35+** (PARTIAL from source since 0.1.47).
+- Local On-this-machine editors → **v0.1.51** DONE (35–43).
 - Still mock: true Detect/favicon/file picker/OAuth/key persist. Allowances N/A.
 
 ## v0.1.46 PLUGINS_REMOVE_CONFIRM
