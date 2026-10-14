@@ -47,7 +47,7 @@
         "AppImage"
       ],
       "category": "Utility",
-      "artifactName": "${productName}-${version}.${ext}"
+      "artifactName": "Magpie-Shell-Demo-${version}.${ext}"
     },
     "win": {
       "target": [
@@ -64,7 +64,7 @@
           ]
         }
       ],
-      "artifactName": "${productName}-${version}-${arch}.${ext}"
+      "artifactName": "Magpie-Shell-Demo-${version}-${arch}.${ext}"
     },
     "nsis": {
       "oneClick": false,
@@ -72,10 +72,10 @@
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
       "shortcutName": "Magpie Shell Demo",
-      "artifactName": "${productName}-Setup-${version}.${ext}"
+      "artifactName": "Magpie-Shell-Demo-Setup-${version}.${ext}"
     },
     "portable": {
-      "artifactName": "${productName}-${version}-portable.${ext}"
+      "artifactName": "Magpie-Shell-Demo-${version}-portable.${ext}"
     }
   },
   "author": {

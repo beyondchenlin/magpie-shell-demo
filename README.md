@@ -9,7 +9,7 @@
 - **Web 预览：** https://magpie-shell-demo.vercel.app （`#routing` `#agents` …）
 - **源码：** https://github.com/beyondchenlin/magpie-shell-demo
 - **下载（Release）：** https://github.com/beyondchenlin/magpie-shell-demo/releases/tag/v0.1.0
-  - **Windows：** `Magpie Shell Demo-Setup-0.1.0.exe`（NSIS 安装包，推荐）+ portable `.exe`
+  - **Windows：** [Magpie-Shell-Demo-Setup-0.1.0.exe](https://github.com/beyondchenlin/magpie-shell-demo/releases/download/v0.1.0/Magpie-Shell-Demo-Setup-0.1.0.exe)（NSIS 安装包，推荐）+ [portable](https://github.com/beyondchenlin/magpie-shell-demo/releases/download/v0.1.0/Magpie-Shell-Demo-0.1.0-portable.exe)
   - **Linux：** `Magpie-Shell-Demo-0.1.0.AppImage`
 
 ## 快速打开（Web）
@@ -31,8 +31,8 @@ npm run build && npx vite preview
 
 | 文件 | 说明 |
 |------|------|
-| `Magpie Shell Demo-Setup-0.1.0.exe` | NSIS 安装包（可选路径、桌面快捷方式） |
-| `Magpie Shell Demo-0.1.0-portable.exe` | 免安装便携版 |
+| [`Magpie-Shell-Demo-Setup-0.1.0.exe`](https://github.com/beyondchenlin/magpie-shell-demo/releases/download/v0.1.0/Magpie-Shell-Demo-Setup-0.1.0.exe) | NSIS 安装包（可选路径、桌面快捷方式） |
+| [`Magpie-Shell-Demo-0.1.0-portable.exe`](https://github.com/beyondchenlin/magpie-shell-demo/releases/download/v0.1.0/Magpie-Shell-Demo-0.1.0-portable.exe) | 免安装便携版 |
 
 双击 Setup 安装即可。默认窗口 **660×600**，最小 **560×420**。
 
