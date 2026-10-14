@@ -51,7 +51,7 @@ function otelFeatureOn(): boolean {
   }
 }
 
-const DEMO_APP_VERSION = "0.1.45";
+const DEMO_APP_VERSION = "0.1.46";
 const applyThemeFlash: { t?: number } = {};
 const IS_MAC = /\bMac\b|Macintosh/i.test(navigator.platform || navigator.userAgent);
 

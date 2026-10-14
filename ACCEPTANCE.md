@@ -1,3 +1,9 @@
+## v0.1.46 PLUGINS_REMOVE_CONFIRM
+
+- Remove without moved → Magpie `action-confirm` dialog; Check for updates busy + Every plugin is up to date.
+- Switch off/Remove nest with moved still awaiting recorder.
+- Allowances N/A.
+
 ## v0.1.45 PLUGINS_INSTALL
 
 - Consumed native plugins **35–40**: Install hover → Getting Bun… → Installed check + toast + Installed · 1; Installed row Bun 1.4.2.

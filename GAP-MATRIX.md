@@ -1,3 +1,9 @@
+## v0.1.46 PLUGINS_REMOVE_CONFIRM
+- Magpie `confirmRemoval` for Installed **Remove** when no moved accounts: dialog `Remove {name}?` + consequence + Cancel / danger Remove; toast `{name} removed`.
+- **Check for updates** → Checking… → toast `Every plugin is up to date` (demo mock; no npm).
+- Switch off / Remove with moved still in-row ask (shot 40 didn't click; nest pending recorder).
+- Allowances quota **N/A**. Skip Vercel 402.
+
 ## v0.1.45 PLUGINS_INSTALL
 - Native `plugins/35–40` + NOTES: per-card Install on Suggested (OpenCode Zen Free).
 - Pale Install → hover solid indigo/white; busy **Getting Bun…** (widened gray + spinner; no Installing…); green check **Installed**; stay on Discover; tab **Installed · 1**; toast `{name} is installed`.

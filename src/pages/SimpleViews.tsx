@@ -1977,6 +1977,9 @@ export function PluginsView({
     }
   });
     const [asking, setAsking] = useState<{ pkg: string; op: "remove" | "off" | "move" } | null>(null);
+  /** Magpie confirmRemoval when Remove with no moved accounts (shot 40 not clicked; Magpie source) */
+  const [removeConfirm, setRemoveConfirm] = useState<{ pkg: string; name: string } | null>(null);
+  const [checkingUpdates, setCheckingUpdates] = useState(false);
   const [pluginDetail, setPluginDetail] = useState<(typeof DEMO_MARKET)[number]["cards"][number] | null>(null);
   /** Magpie detail: pm-rskel until README resolves */
   const [detailReadmeReady, setDetailReadmeReady] = useState(false);
@@ -2820,9 +2823,12 @@ export function PluginsView({
                             ? t("{names} goes back to the built-in first, then the plugin is removed", {
                                 names: e.moved.join(t(", ")),
                               })
-                            : undefined
+                            : t("Removes the plugin and what it installed; its sign-ins are kept until you sign out")
                         }
-                        onClick={() => setAsking({ pkg: e.pkg, op: "remove" })}
+                        onClick={() => {
+                          if (e.moved?.length) setAsking({ pkg: e.pkg, op: "remove" });
+                          else setRemoveConfirm({ pkg: e.pkg, name: e.name });
+                        }}
                       >
                         {t("Remove")}
                       </button>
@@ -2833,14 +2839,76 @@ export function PluginsView({
               <div className="pm-foot" style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 12 }}>
                 <span style={{ fontSize: 12, color: "var(--muted)" }}>{t("Plugins run on Bun {v}", { v: "1.4.2" })}</span>
                 <span className="grow" />
-                <button type="button" className="text pm-check">
-                  {t("Check for updates")}
+                <button
+                  type="button"
+                  className={`text pm-check${checkingUpdates ? " busy" : ""}`}
+                  disabled={checkingUpdates || !!busy}
+                  title={t("Ask npm now for each plugin's newest version")}
+                  onClick={() => {
+                    if (checkingUpdates || busy) return;
+                    setCheckingUpdates(true);
+                    window.setTimeout(() => {
+                      setCheckingUpdates(false);
+                      onStatus?.(t("Every plugin is up to date"), "ok", 2500);
+                    }, 900);
+                  }}
+                >
+                  {checkingUpdates ? (
+                    <>
+                      <span className="spin" aria-hidden style={{ display: "inline-block", width: 10, height: 10, marginRight: 6, verticalAlign: -1 }} />
+                      {t("Checking…")}
+                    </>
+                  ) : (
+                    t("Check for updates")
+                  )}
                 </button>
               </div>
             </>
           )
         ) : null}
       </div>
+
+      {removeConfirm ? (
+        <dialog
+          className="action-confirm"
+          open
+          role="alertdialog"
+          aria-labelledby="pluginRemoveTitle"
+          aria-describedby="pluginRemoveMsg"
+          style={{ zIndex: 50 }}
+          onCancel={(e) => {
+            e.preventDefault();
+            setRemoveConfirm(null);
+          }}
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setRemoveConfirm(null);
+          }}
+        >
+          <h2 id="pluginRemoveTitle">{t("Remove {name}?", { name: removeConfirm.name })}</h2>
+          <p id="pluginRemoveMsg">
+            {t("Removes the plugin and what it installed; its sign-ins are kept until you sign out")}
+          </p>
+          <div className="bar">
+            <span className="grow" />
+            <button type="button" className="text" onClick={() => setRemoveConfirm(null)}>
+              {t("Cancel")}
+            </button>
+            <button
+              type="button"
+              className="text primary danger-fill"
+              onClick={() => {
+                const pkg = removeConfirm.pkg;
+                const name = removeConfirm.name;
+                setInstalled((list) => list.filter((x) => x.pkg !== pkg));
+                setRemoveConfirm(null);
+                onStatus?.(t("{name} removed", { name }), "ok", 2500);
+              }}
+            >
+              {t("Remove")}
+            </button>
+          </div>
+        </dialog>
+      ) : null}
 
       {folderPicker ? (
         <div
