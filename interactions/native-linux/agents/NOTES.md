@@ -106,12 +106,13 @@ Same Magpie window (moved on-screen). Get started stays hidden. One agent: **Cur
 | 41 | Install fold collapsed again. |
 | 42 | **+ Save current** → inline **Profile name** field + Save (Escape dismisses; no name typed). |
 
-## demo 对齐（v0.1.68 AGENTS_NEST_DONE）
-- Arrange menu Move up/down off with 1 agent; Hide; handle tip Magpie string
-- Can't connect = status span (not button)
-- Manage re-pass 30–38 parity with 04–11 strings
-- Install fold + Copy tip; Profiles Escape already from 0.1.22
-- No OAuth/keys/real installs. Allowances N/A
+## demo 对齐（v0.1.68 AGENTS_NEST_DONE · 19–54）
+- Cursor 副标题 tip `~/.cursor/cli-config.json`（row.title = path）
+- Can't connect = status only（无 tip、无 nest）
+- Arrange：Move up/down disabled（1 agent）、Hide、Escape；handle tip（Drag 可能裁切）
+- Manage 30–38 + 46–53 Invert/Clear/Select unconnected/search results
+- Install 39–41 Copy tip 未跑命令；Profiles 42–44 demo-nest + Escape（无 profiles.json）
+- 不编造：install run / OAuth / keys / Add provider 空表 Cancel
 
 ## Shots 19–54 (Library still on)
 

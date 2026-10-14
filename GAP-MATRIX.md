@@ -1,5 +1,6 @@
 ## v0.1.68 AGENTS_NEST_DONE
-- Native agents/19-42: landing, Cant connect status, Arrange menu, Manage re-pass, Install expand+Copy tip, fold collapse, Profile name+Escape.
+- Native agents/19–54 full: Cursor path tip; Cant connect status; Arrange Escape; Manage Invert/Clear/Select; Install Copy tip; Profile demo-nest Escape.
+- Native agents/19-54: landing, Cant connect status, Arrange menu, Manage re-pass, Install expand+Copy tip, fold collapse, Profile name+Escape.
 - No OAuth/keys/real installs. P1 bird/OAuth/Allowances N/A. Skip Vercel 402.
 
 ## v0.1.67 SKILLS_HOW_DONE

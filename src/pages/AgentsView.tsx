@@ -843,7 +843,7 @@ export function AgentsView({
               key={a.id}
               className={`row agent conn${draggingId === a.id ? " dragging" : ""}`}
               data-id={a.id}
-              title={a.name}
+              title={a.id === "cursor" ? "~/.cursor/cli-config.json" : a.name}
               style={draggingId === a.id ? { transition: "none" } : undefined}
             >
               <button
@@ -1008,10 +1008,10 @@ export function AgentsView({
               <div className="who">
                 <div className="name">{a.name}</div>
                 {a.id === "cursor" ? (
-                  <div className="ag-native-note">
+                  <div className="ag-native-note" title="~/.cursor/cli-config.json">
                     <span className="sq" aria-hidden />
                     <span className="sq" aria-hidden />
-                    <span>{ZH.onlyCursorOwn}</span>
+                    <span>{t("Only Cursor's own models")}</span>
                   </div>
                 ) : wired[a.id] ? (
                   <div

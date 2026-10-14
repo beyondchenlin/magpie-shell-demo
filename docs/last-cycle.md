@@ -1,12 +1,10 @@
-# last-cycle · 06:58 CST
+# last-cycle · 2026-10-15 ~07:05 Asia/Shanghai
 
-**Tag:** AGENTS_NEST_DONE → **v0.1.68** (agents/19–42)
+## v0.1.68 AGENTS_NEST_DONE (clobber)
 
-## v0.1.68
-- Can't connect status (not button); Arrange menu Move up/down off + Hide; handle tip
-- Manage re-pass 30–38; Install expand + Copy tip; fold; Profile name Escape
-- No OAuth/keys/real installs
+Consumed agents/19–54 NOTES 1:1 into demo; rebuilt portable after Cursor `~/.cursor/cli-config.json` tip (row + subtitle).
 
-## Remaining
-- P1: live gateway bird, true OAuth/key persist, Allowances **N/A**
-- Skip Vercel 402
+Portable: https://github.com/beyondchenlin/magpie-shell-demo/releases/download/v0.1.68/Magpie-Shell-Demo-0.1.68-portable.exe
+Tag: https://github.com/beyondchenlin/magpie-shell-demo/releases/tag/v0.1.68
+
+P1 N/A. Skip Vercel 402. No invent install/OAuth/keys.
