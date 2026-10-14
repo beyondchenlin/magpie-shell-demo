@@ -3,17 +3,36 @@ import { GATEWAY_ADDR, ZH } from "../data/mock";
 
 type Wire = { d: string; live?: boolean };
 
-/** Empty routing stage matching official Magpie shot 03-routing.png. */
+const EYE =
+  "M2 12s3.5-8 10-8 10 8 10 8-3.5 8-10 8-10-8-10-8zM12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6z";
+const EYE_OFF =
+  "M9.9 4.2A10.4 10.4 0 0 1 12 4c6.5 0 10 8 10 8a17.6 17.6 0 0 1-2.2 3.2M6.6 6.6C3.9 8.4 2 12 2 12s3.5 8 10 8a9.7 9.7 0 0 0 5.4-1.6M9.9 9.9a3 3 0 0 0 4.2 4.2M2 2l20 20";
+
+const MASK_KEY = "magpie.maskEmails";
+
+function readMasked(): boolean {
+  try {
+    return localStorage.getItem(MASK_KEY) === "1";
+  } catch {
+    return false;
+  }
+}
+
+/** Empty routing stage matching official Magpie R-00…R-09. */
 export function RoutingView() {
   const stageRef = useRef<HTMLDivElement>(null);
   const hubRef = useRef<HTMLDivElement>(null);
   const srcRef = useRef<HTMLDivElement>(null);
   const idleRef = useRef<HTMLLIElement>(null);
+  const maskTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [wires, setWires] = useState<Wire[]>([]);
+  /** Explicit demo-only control (not Magpie Live UI on empty). */
   const [demoLive, setDemoLive] = useState(false);
   const [flier, setFlier] = useState<{ x: number; y: number; rot: number } | null>(
     null,
   );
+  const [masked, setMasked] = useState(readMasked);
+  const [masking, setMasking] = useState(false);
 
   useEffect(() => {
     const draw = () => {
@@ -80,8 +99,35 @@ export function RoutingView() {
     return () => cancelAnimationFrame(raf);
   }, [demoLive, wires]);
 
+  useEffect(() => {
+    return () => {
+      if (maskTimer.current) clearTimeout(maskTimer.current);
+    };
+  }, []);
+
+  const toggleMask = () => {
+    const next = !masked;
+    setMasked(next);
+    try {
+      localStorage.setItem(MASK_KEY, next ? "1" : "0");
+    } catch {
+      /* ignore */
+    }
+    setMasking(true);
+    if (maskTimer.current) clearTimeout(maskTimer.current);
+    maskTimer.current = setTimeout(() => setMasking(false), 450);
+  };
+
+  const viewClass = [
+    "view",
+    masked ? "masked" : "",
+    masking ? "masking" : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
+
   return (
-    <main className="view" id="view-routing">
+    <main className={viewClass} id="view-routing">
       <div className="row-head">
         <span className="label">{ZH.routing}</span>
         <span className="rt-livedot" aria-hidden="true" />
@@ -91,13 +137,31 @@ export function RoutingView() {
           className="text"
           type="button"
           aria-pressed={demoLive}
-          title="Demo：模拟飞鸟沿线路移动（非官方网关）"
+          title={ZH.demoFlierTitle}
           onClick={() => setDemoLive((v) => !v)}
         >
-          {demoLive ? "停止演示" : "演示飞鸟"}
+          {demoLive ? ZH.demoFlierOn : ZH.demoFlierOff}
         </button>
-        <button className="text rt-mask" id="rtMask" type="button" aria-pressed="false">
-          <span>{ZH.hideAccounts}</span>
+        <button
+          className="text rt-mask"
+          id="rtMask"
+          type="button"
+          aria-pressed={masked}
+          title={masked ? ZH.unmaskAccountsTitle : ZH.maskAccountsTitle}
+          onClick={toggleMask}
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+          >
+            <path d={masked ? EYE_OFF : EYE} />
+          </svg>
+          <span data-t>{masked ? ZH.accountsHidden : ZH.hideAccounts}</span>
         </button>
       </div>
 
@@ -178,7 +242,11 @@ export function RoutingView() {
                 <b>0</b>
                 <span>{ZH.rerouted}</span>
               </span>
-              <span className="rt-errs">
+              <span
+                className="rt-errs"
+                aria-disabled="true"
+                title={ZH.noFailedRequest}
+              >
                 <b>0</b>
                 <span>{ZH.errorsAgentSaw}</span>
               </span>
@@ -186,7 +254,8 @@ export function RoutingView() {
           </div>
         </div>
       </section>
-      <div className="rt-more" id="rtMore" />
+      {/* Magpie #rtMore exists but stays empty/hidden on empty card (R-03/R-09) */}
+      <div className="rt-more" id="rtMore" hidden />
     </main>
   );
 }

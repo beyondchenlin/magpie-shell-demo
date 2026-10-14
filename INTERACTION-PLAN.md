@@ -73,3 +73,9 @@ Sessions / Library：仅在 Plugins → Built-in 打开后出现时再录。
 - Agents：A-01/02/05/06/08/09 + **A-M01…A-M09** + **A-I01…A-I18** 已录已实现（web）。
 - 总判定：`AGENTS_MANAGE_INSTALL_PARTIAL`（非全应用 PASS）。
 - 未录：Hide Get started、Arrange Cursor；Providers 起未开录。
+
+## 进度（自动）
+
+- Agents / Providers：部分已实现（v0.1.4）
+- Routing 空态 R-00…R-09：已录 + demo v0.1.5（`ROUTING_EMPTY_PARTIAL`）
+- Gateway / Usage / Plugins / Settings：未录；Gateway 见 `interactions/pages/gateway/RECORD-NOTES.md`

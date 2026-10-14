@@ -61,16 +61,28 @@ export default function App() {
     if (location.hash.replace(/^#\/?/, "") !== id) location.hash = id;
   };
 
+  // Magpie refreshKind: agents → agents; usage → usage; else → models (routing etc.)
+  const syncKind = view === "agents" ? "agents" : view === "usage" ? "usage" : "models";
+  const syncTitle =
+    syncKind === "agents"
+      ? ZH.syncAgentsTitle
+      : syncKind === "usage"
+        ? ZH.syncModelsTitle /* usage toast/title stub until Usage recorded */
+        : ZH.syncModelsTitle;
+  const syncToast =
+    syncKind === "agents"
+      ? ZH.agentsLookedAgain
+      : ZH.modelListsRefreshed;
+
   const onSync = async () => {
     const b = syncRef.current;
     if (!b || spinning) return;
     setSpinning(true);
     b.classList.add("spin");
-    // Demo: no agents/rescan API — brief delay then toast (A-09)
+    // Demo: no agents/rescan or sync API — brief delay then toast (A-09 / R-04)
     await new Promise((r) => setTimeout(r, 280));
     setRefreshNonce((n) => n + 1);
-    if (view === "agents") showStatus(ZH.agentsLookedAgain, "ok");
-    else showStatus(ZH.agentsLookedAgain, "ok");
+    showStatus(syncToast, "ok");
     b.blur();
     const spins = b.querySelector("svg")?.getAnimations({ subtree: true }) ?? [];
     const stop = () => {
@@ -181,8 +193,8 @@ export default function App() {
             id="sync"
             type="button"
             ref={syncRef}
-            title={ZH.syncAgentsTitle}
-            aria-label={ZH.syncAgentsTitle}
+            title={syncTitle}
+            aria-label={syncTitle}
             onClick={() => void onSync()}
           >
             <svg viewBox="0 0 16 16" width={14} height={14}>

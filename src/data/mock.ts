@@ -97,6 +97,10 @@ export const ZH = {
   routing: "路由",
   liveAsGateway: "实时 · 网关正在做的决定",
   hideAccounts: "账号打码",
+  accountsHidden: "账号已打码",
+  maskAccountsTitle:
+    "给本页的账号（邮箱地址和账号名）打码，方便截图分享",
+  unmaskAccountsTitle: "账号已打码，点击显示",
   waitingRequest: "等待请求",
   waitingSay:
     "经 magpie 的 Agent 发出请求后，这里实时播放：路由把谁排第一及原因、每次尝试和各自的回应。",
@@ -128,8 +132,14 @@ export const ZH = {
   profileName: "方案名称",
   save: "保存",
   agentsLookedAgain: "已重新检测 Agent",
+  modelListsRefreshed: "模型列表已刷新",
   syncAgentsTitle:
     "重新检测本机的 Agent：刚安装或卸载的，或在别处改过配置的",
+  syncModelsTitle: "刷新模型列表（models.dev 与各供应商）",
+  noFailedRequest: "当前列表中没有失败的请求",
+  demoFlierOn: "停止演示",
+  demoFlierOff: "演示飞鸟",
+  demoFlierTitle: "Demo：模拟飞鸟沿线路移动（非官方网关；空态 Magpie 不显示 Live/Replay）",
   installNote:
     "在终端运行任一命令，安装后会列在这里。npm 命令需要 Node.js（nodejs.org）。",
   viaInstaller: "安装脚本",
