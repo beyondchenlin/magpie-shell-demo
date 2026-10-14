@@ -260,7 +260,7 @@ export function ProxyBlock({
   );
 }
 
-const DEMO_LAN_URLS = ["http://192.168.1.10:3425", "http://10.0.0.5:3425"];
+const DEMO_LAN_URLS = ["http://172.30.0.2:3425", "http://172.17.0.1:3425"];
 
 export function LanAddressRow({
   port,
@@ -349,10 +349,11 @@ export function LanAddressRow({
                     key={u}
                     className={u === cur ? "sel" : ""}
                     role="menuitem"
-                    style={{ padding: "6px 8px", borderRadius: 7, cursor: "pointer" }}
+                    style={{ padding: "6px 8px", borderRadius: 7, cursor: "pointer", display: "flex", alignItems: "center", gap: 8 }}
                     onClick={() => { onSelect(u); setMenu(false); }}
                   >
-                    <span className="pm-name">{u}{suffix}</span>
+                    <span className="pm-name" style={{ flex: 1 }}>{u}{suffix}</span>
+                    {u === cur ? <span aria-hidden style={{ color: "var(--accent)" }}>✓</span> : null}
                   </li>
                 ))}
               </ul>
@@ -1098,5 +1099,286 @@ export function TrayUsagePick({
         </div>
       ) : null}
     </div>
+  );
+}
+
+
+/** Settings › Models › Disable… opens Magpie #pop (list + free pattern). */
+export function DisableModelsBlock({
+  models,
+  onChange,
+}: {
+  models: string[];
+  onChange: (next: string[]) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const [anchor, setAnchor] = useState<HTMLElement | null>(null);
+  const btnRef = useRef<HTMLButtonElement | null>(null);
+
+  const options: PopOption[] = DEMO_MODELS.map((m) => ({ ...m }));
+
+  const add = (id: string) => {
+    const v = String(id || "").trim();
+    if (!v) return;
+    if (models.some((p) => p.toLowerCase() === v.toLowerCase())) return;
+    onChange([...models, v]);
+  };
+
+  return (
+    <>
+      <div className="row pref wraps" id="disabledAddRow">
+        <div className="who">
+          <div className="name">{t("Disable a model")}</div>
+          <div className="sub wraps">
+            {t("A disabled model is refused on every route through magpie (a request, a session, a routing group, a fallback, a sub-agent, a decision model) and left out of magpie's lists and agents' pickers. Only requests through magpie are covered. Type a pattern such as *fable* to disable every model it matches")}
+          </div>
+        </div>
+        <div className="val">
+          <button
+            type="button"
+            className="text action"
+            id="disabledAdd"
+            ref={btnRef}
+            onClick={(e) => {
+              setAnchor(e.currentTarget);
+              setOpen(true);
+            }}
+          >
+            {t("Disable…")}
+          </button>
+        </div>
+      </div>
+      {models.map((pat) => (
+        <div className="row pref disabled-model" key={pat} data-pattern={pat}>
+          <div className="who">
+            <div className="name">{pat}</div>
+            <div className="sub wraps">
+              {DEMO_MODELS.some((m) => m.value === pat || m.label === pat)
+                ? t("Matches {n}: {list}", { n: 1, list: pat })
+                : t("Matches no model now; it is refused if one appears")}
+            </div>
+          </div>
+          <div className="val">
+            <button
+              type="button"
+              className="text"
+              aria-label={t("Enable {model}", { model: pat })}
+              onClick={() => onChange(models.filter((p) => p !== pat))}
+            >
+              {t("Enable")}
+            </button>
+          </div>
+        </div>
+      ))}
+      {!models.length ? (
+        <div className="empty-state" style={{ padding: "18px 12px" }}>
+          {t("No disabled models")}
+        </div>
+      ) : null}
+      <ModelPop
+        open={open}
+        anchor={anchor || btnRef.current}
+        options={options}
+        value=""
+        modelPicker
+        placeholder={t("Filter, or type any model id…")}
+        onPick={(v) => {
+          add(v);
+          setOpen(false);
+        }}
+        onClose={() => setOpen(false)}
+      />
+    </>
+  );
+}
+
+const SEARCH_VENDORS = [
+  { id: "tavily", name: "Tavily", keysURL: "https://app.tavily.com/home", base: "https://api.tavily.com", needURL: false, keyOptional: false },
+  { id: "brave", name: "Brave Search", keysURL: "https://brave.com/search/api/", base: "https://api.search.brave.com", needURL: false, keyOptional: false },
+  { id: "exa", name: "Exa", keysURL: "https://dashboard.exa.ai/api-keys", base: "https://api.exa.ai", needURL: false, keyOptional: false },
+  { id: "firecrawl", name: "Firecrawl", keysURL: "https://www.firecrawl.dev/app/api-keys", base: "https://api.firecrawl.dev", needURL: false, keyOptional: false },
+  { id: "you", name: "You.com", keysURL: "https://api.you.com/", base: "https://api.you.com", needURL: false, keyOptional: true },
+  { id: "searxng", name: "SearXNG", keysURL: "", base: "", needURL: true, keyOptional: true },
+] as const;
+
+export type SearchApiEntry = { vendor: string; name: string; key: string; url: string };
+
+/** Settings › Models › Search APIs add row + list (demo local). */
+export function SearchApisBlock({
+  apis,
+  onChange,
+  onStatus,
+}: {
+  apis: SearchApiEntry[];
+  onChange: (next: SearchApiEntry[]) => void;
+  onStatus?: (m: string, k?: string) => void;
+}) {
+  const [vendor, setVendor] = useState<string>("tavily");
+  const [key, setKey] = useState("");
+  const [url, setUrl] = useState("");
+  const [menu, setMenu] = useState(false);
+  const [err, setErr] = useState("");
+  const [showKey, setShowKey] = useState<Record<string, boolean>>({});
+  const pickRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (!menu) return;
+    const onDoc = (e: MouseEvent) => {
+      if (!pickRef.current?.contains(e.target as Node)) setMenu(false);
+    };
+    document.addEventListener("mousedown", onDoc);
+    return () => document.removeEventListener("mousedown", onDoc);
+  }, [menu]);
+
+  const v = SEARCH_VENDORS.find((x) => x.id === vendor) || SEARCH_VENDORS[0];
+  const saved = apis.find((a) => a.vendor === vendor);
+
+  const add = () => {
+    const k = key.trim();
+    const u = url.trim();
+    if (v.needURL ? !u : !k && !saved?.key && !v.keyOptional) {
+      setErr(v.needURL ? t("Address") : t("API key"));
+      return;
+    }
+    setErr("");
+    const next = apis.filter((a) => a.vendor !== vendor);
+    next.push({ vendor, name: v.name, key: k || saved?.key || "", url: u });
+    onChange(next);
+    setKey("");
+    setUrl("");
+    onStatus?.(t("Saved"), "ok");
+  };
+
+  return (
+    <>
+      <div className={`row pref rule-row search-add${err ? " err" : ""}`}>
+        <div className="who">
+          <div className="name">{t("Search APIs")}</div>
+          <div className={`sub${err ? " err" : ""}`}>
+            {err ||
+              t("When a model can't search the web, magpie searches for it with these, in this order, and gives it what they found") +
+                " · " +
+                t("No provider can search, so these are asked")}
+          </div>
+        </div>
+        <div className="val rule-add" style={{ position: "relative", display: "flex", flexWrap: "wrap", gap: 6, alignItems: "center" }}>
+          <button
+            type="button"
+            className={`proto pick search-vendor${menu ? " open" : ""}`}
+            ref={pickRef}
+            aria-label={t("Search API")}
+            onClick={() => setMenu((m) => !m)}
+          >
+            <span>{v.name}</span>
+            <svg viewBox="0 0 16 16" width={11} height={11} aria-hidden>
+              <path d="M4 6l4 4 4-4" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </button>
+          <input
+            className="words search-key"
+            type="password"
+            value={key}
+            placeholder={
+              v.needURL
+                ? t("API key, if it needs one")
+                : saved?.key
+                  ? t("A new key, or empty to keep {key}", { key: saved.key.slice(0, 4) + "…" })
+                  : v.keyOptional
+                    ? t("API key, or empty for its free search")
+                    : t("API key, or several split by commas")
+            }
+            aria-label={t("API key")}
+            onChange={(e) => setKey(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") add();
+            }}
+          />
+          {v.keysURL ? (
+            <button
+              type="button"
+              className="link"
+              onClick={() => onStatus?.(demoCopy("演示：打开密钥页", "Demo: open keys page") + " · " + v.keysURL, "ok")}
+            >
+              {t("Get a key ↗")}
+            </button>
+          ) : null}
+          <button type="button" className="text" onClick={add}>
+            {t("Add")}
+          </button>
+          <input
+            className="words search-url"
+            value={url}
+            placeholder={v.needURL ? "https://searx.example.com" : t("Base URL, empty for {url}", { url: v.base || "" })}
+            aria-label={v.needURL ? t("Address") : t("Base URL")}
+            onChange={(e) => setUrl(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") add();
+            }}
+          />
+          {menu ? (
+            <div className="pop proto-menu" style={{ position: "absolute", top: 32, left: 0, zIndex: 40, minWidth: 180 }} role="menu">
+              {SEARCH_VENDORS.map((x) => (
+                <button
+                  type="button"
+                  key={x.id}
+                  className={x.id === vendor ? "on" : ""}
+                  role="menuitem"
+                  onClick={() => {
+                    setVendor(x.id);
+                    setMenu(false);
+                    setErr("");
+                  }}
+                >
+                  <span className="pm-name">{x.name}</span>
+                  {x.needURL ? <span className="pm-note">{t("your own")}</span> : null}
+                </button>
+              ))}
+            </div>
+          ) : null}
+        </div>
+      </div>
+      {apis.map((a, n) => (
+        <div className="row pref search-api" key={a.vendor}>
+          <div className="who">
+            <div className="name">
+              {n + 1}. {a.name}
+            </div>
+            <div className={`sub${showKey[a.vendor] ? " revealed" : ""}`}>
+              {[showKey[a.vendor] ? a.key : a.key ? a.key.slice(0, 4) + "…" : "", a.url].filter(Boolean).join(" · ") || t("needs its key")}
+            </div>
+          </div>
+          <div className="val" style={{ display: "inline-flex", gap: 6 }}>
+            {a.key ? (
+              <>
+                <button
+                  type="button"
+                  className="text search-eye"
+                  onClick={() => setShowKey((s) => ({ ...s, [a.vendor]: !s[a.vendor] }))}
+                >
+                  {showKey[a.vendor] ? t("Hide") : t("Show")}
+                </button>
+                <button
+                  type="button"
+                  className="text search-copy"
+                  onClick={async () => {
+                    try {
+                      await navigator.clipboard.writeText(a.key);
+                    } catch {
+                      /* */
+                    }
+                    onStatus?.(t("{what} copied", { what: t("API key") }), "ok");
+                  }}
+                >
+                  {t("Copy")}
+                </button>
+              </>
+            ) : null}
+            <button type="button" className="text" onClick={() => onChange(apis.filter((x) => x.vendor !== a.vendor))}>
+              {t("Remove")}
+            </button>
+          </div>
+        </div>
+      ))}
+    </>
   );
 }

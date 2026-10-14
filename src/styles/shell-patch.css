@@ -355,3 +355,38 @@ body.web.side-nav {
 .link:hover { filter: brightness(1.1); }
 .update-mirror-input { min-width: 180px; }
 @keyframes spin { to { transform: rotate(360deg); } }
+
+/* —— Plugins Options (Magpie pm-opts) —— */
+.pm-opts { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; width: 100%; }
+.pm-opts textarea {
+  width: 100%; min-height: 84px; padding: 8px 10px; border-radius: 8px; border: 1px solid var(--line);
+  background: var(--bg); color: var(--fg); font: var(--code-style, normal) 12px var(--code-font, var(--code));
+  resize: vertical; outline: none; transition: border-color .12s var(--ease), box-shadow .12s var(--ease);
+}
+.pm-opts textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent); }
+.pm-opts-err { font-size: 11.5px; color: var(--red); }
+.pm-opts-err:empty { display: none; }
+.pm-opts-bar { display: flex; align-items: center; gap: 2px; flex-wrap: wrap; }
+.pm-opts-bar > span { flex: 1; min-width: 120px; font-size: 11.5px; color: var(--muted); }
+.pm-opts-bar .text.primary { color: var(--accent); font-weight: 600; }
+.pm-opts-bar .text.quiet { color: var(--muted); }
+.pm-mw { font-size: 11.5px; color: var(--muted); }
+.pm-act.get { background: var(--accent-soft, color-mix(in srgb, var(--accent) 16%, var(--card))); color: var(--accent); border-color: transparent; }
+.pm-act.get:hover:not(:disabled) { background: var(--accent); color: var(--accent-fg, #fff); }
+.pm-act.busy { color: var(--muted); font-weight: 500; }
+.pm-card .pm-act { transition: background .12s var(--ease), color .12s var(--ease), transform .12s var(--ease), filter .12s var(--ease); }
+
+/* —— Usage led chart demo —— */
+.led-chart { transition: opacity .18s var(--ease); }
+.led-rank { transition: opacity .18s var(--ease); }
+
+/* —— Search API / Disable —— */
+.search-add .proto.pick.search-vendor svg { transition: transform .15s var(--ease); }
+.search-add .proto.pick.search-vendor.open svg { transform: rotate(180deg); }
+.disabled-model .name { font-family: var(--code); font-size: 12px; overflow-wrap: anywhere; }
+
+/* —— Range menu head —— */
+.range-menu .pm-head { padding: 6px 4px 4px; font-size: 11.5px; color: var(--muted); }
+.range-menu .rm-span { border: 0; cursor: pointer; font: inherit; transition: color .12s var(--ease), background .12s var(--ease); }
+.range-menu .rm-day { border: 0; background: none; cursor: pointer; font: inherit; transition: background .12s var(--ease), color .12s var(--ease); }
+.range-menu .rm-step { border: 0; background: none; cursor: pointer; }

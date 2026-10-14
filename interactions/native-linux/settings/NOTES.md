@@ -110,3 +110,37 @@ Same tokens as Gateway: segment thumb **280ms** `cubic-bezier(.2,.8,.2,1)`; butt
 ## Left state
 
 Settings, Sync and backup, export/import panels closed. theme system, lang system, textSize 110, tray panel. Gateway still running. Top tabs visible, settings section still showing (no app tab selected).
+
+## NETWORK deep pass (shots 41–50)
+
+Exercised on native Linux (magpie 0.1.1233), then share restored Off:
+
+| shot | control | seen |
+|---|---|---|
+| 41 | Proxy → Custom | Input `http://127.0.0.1:7890` appears left of segs |
+| 42 | Proxy → Auto | Restored; "No system proxy found…" |
+| 43 | Proxy → Off | Sub: Off · go direct |
+| 44 | Model ids without the provider → On | Bare ids On |
+| 45 | Share on local network → On | Address / Allowed / Web pages appear |
+| 46 | scrolled with Share On | Address OpenAI + URL pill + Allowed Add + WEB PAGES header |
+| 47–48 | Address OpenAI / Anthropic + interface menu | URLs `http://172.30.0.2:3425/v1` and `http://172.17.0.1:3425/v1` (OpenAI adds `/v1`; Anthropic root). Menu checkmark on selected. Copy beside pick. |
+| 49 | Web pages that may call magpie | Placeholder `http://localhost:3000` + Add |
+| 50 | Share → Off | Address + Allowed collapse (height .28s); Web pages stays |
+
+Demo v0.1.14: LAN demo IPs match 172.30.0.2 / 172.17.0.1; protocol suffix; menu; Allowed + CORS Add; Proxy Custom fields.
+
+
+## MODELS deep pass (shots 51–60)
+
+| shot | control | seen |
+|---|---|---|
+| 51 | Models top | Image recognition/generation Automatic chips; Turn on the Library link; MCP vision URL; Searches Automatic; Search APIs row |
+| 52–53 | Image recognition / generation #pop | Model picker menus opened (not changed) |
+| 54 | MCP copy | Copy flash on vision MCP |
+| 55 | Searches for other models #pop | Picker opened |
+| 56 | scrolled | Search APIs + MCP web-search + Replies start |
+| 57–58 | Search API vendor menu | Tavily (check), Brave Search, Exa, Firecrawl, You.com, SearXNG (your own); key + Get a key + Add; Base URL field |
+| 59 | Name the member → On | then restored Off in later frames if noted |
+| 60 | bottom | Stop looping On; Ask again = All; Disable…; Saved toast |
+
+Demo v0.1.14: Disable… → #pop; Search APIs vendor list matches; Add/Show/Copy/Remove local.

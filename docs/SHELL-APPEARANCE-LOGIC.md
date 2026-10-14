@@ -195,3 +195,34 @@ footer.foot                 ← #status toast 胶囊
 - Replies：**不是**模型 pick — `Name the member` / `Stop looping` / `Ask again after a refusal` 三段 segs。
 - About：**Download source** = `GitHub` + `Use a mirror…` 行内编辑（`UpdateMirrorRow`）。
 - Allowances menu bar：`TrayUsagePick` Off ▾ / Today / 7 days（对齐 native NOTES）。
+
+---
+
+## 13. v0.1.14 — Network LAN / Models Disable+Search / Usage calendar / Plugins opts
+
+### Network (native 41–50)
+
+- Share On → `LanAddressRow` (OpenAI|Anthropic segs + multi-IP pick + copy) height **.28s** `--ease`.
+- Demo LAN bases: `http://172.30.0.2:3425`, `http://172.17.0.1:3425`; OpenAI appends `/v1`.
+- Allowed addresses + Web pages Add rows (CORS) stay as Magpie `rule-add`.
+
+### Models
+
+- **Disable…** → real `#pop` (`DisableModelsBlock` / `ModelPop`); Enter typed glob adds pattern; Enable removes.
+- **Search APIs** → vendor proto-pick (Tavily/Brave/You/SearXNG) + key + URL + Add; list Show/Copy/Remove.
+
+### Usage
+
+- Custom period = Magpie `openRangeMenu`: quick spans + month grid (first→last day); period id `YYYY-MM-DD..YYYY-MM-DD`.
+- Requests `led-strip` uses Magpie `.blk` / `.k` / `.v` / `.sub` (5 cells); demo `led-chart` bars with metric/split labels.
+- Sessions keeps 6 KPI + agent segs + filter empty.
+
+### Plugins
+
+- Install `pm-act` / `.get` accent soft→fill; Options = `.pm-opts` textarea + err + bar (Clear/Cancel/Save JSON object) + middleware hooks note.
+
+### Motion tokens re-scan (still required)
+
+Same as §4; added: `.pm-opts textarea` focus .12s; `.range-menu .rm-day` background .12s; `.search-vendor.open` chevron .15s; led-chart bar height .28s.
+
+*文档版本：v0.1.14*

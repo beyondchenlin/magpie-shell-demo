@@ -18,9 +18,12 @@ import {
   TrayUsagePick,
   UpdateMirrorRow,
   WhatsNewModal,
+  DisableModelsBlock,
+  SearchApisBlock,
   type AutoResetMap,
   type OtelConfig,
   type RedactRule,
+  type SearchApiEntry,
 } from "./settings/NestedBlocks";
 
 const SET_TABS = [
@@ -128,6 +131,8 @@ type DemoPrefs = {
   autoReset: AutoResetMap;
   autoResetUsers: string[];
   showGwDemo: boolean;
+  disabledModels: string[];
+  searchAPIs: SearchApiEntry[];
 };
 
 const DEFAULTS: DemoPrefs = {
@@ -195,7 +200,7 @@ const DEFAULTS: DemoPrefs = {
   proxyUser: "",
   proxyPass: "",
   lanProtocol: "openai",
-  lanSelectedURL: "http://192.168.1.10:3425",
+  lanSelectedURL: "http://172.30.0.2:3425",
   redactPersonal: false,
   redactWords: "",
   redactRules: [{ kind: "API_KEY", prefix: "oc_sk_" }],
@@ -215,6 +220,8 @@ const DEFAULTS: DemoPrefs = {
   autoReset: { "demo@openai.com": { week: false, expiring: false } },
   autoResetUsers: ["demo@openai.com"],
   showGwDemo: true,
+  disabledModels: [],
+  searchAPIs: [],
 };
 
 function loadPrefs(): DemoPrefs {
@@ -1329,14 +1336,11 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus }: Setti
               offNote={t("Search APIs")}
             />
           </PrefRow>
-          <PrefRow name={t("Search APIs")} sub={t("When a model can't search the web, magpie searches for it with these, in this order, and gives it what they found") + " · " + t("No provider can search, so these are asked")}>
-            <button type="button" className="proto pick search-vendor" disabled>
-              <span>Tavily</span>
-            </button>
-            <input className="words search-key" type="password" placeholder={t("API key")} disabled />
-            <button type="button" className="link" disabled>{t("Get a key ↗")}</button>
-            <button type="button" className="text" disabled>{t("Add")}</button>
-          </PrefRow>
+          <SearchApisBlock
+            apis={prefs.searchAPIs}
+            onChange={(searchAPIs) => setPrefs({ searchAPIs })}
+            onStatus={onStatus}
+          />
           <PrefRow name={t("MCP server")} sub={t("Cursor, Claude Desktop and other agents can add this search as an MCP server (Streamable HTTP) with one web_search tool. From another computer, send a gateway key as Authorization: Bearer <key>.")}>
             <code>{`http://${GATEWAY_ADDR}/mcp/magpie/web-search`}</code>
             <CopyBtn text={`http://${GATEWAY_ADDR}/mcp/magpie/web-search`} what={t("Address")} onStatus={onStatus} />
@@ -1388,19 +1392,10 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus }: Setti
         </div>
         <Label en="Disabled models" />
         <div className="list prefs" id="disabledModelsList">
-          <PrefRow
-            name={t("Disable a model")}
-            sub={t("A disabled model is refused on every route through magpie (a request, a session, a routing group, a fallback, a sub-agent, a decision model) and left out of magpie's lists and agents' pickers. Only requests through magpie are covered. Type a pattern such as *fable* to disable every model it matches")}
-            id="disabledAddRow"
-            className="wraps"
-          >
-            <button type="button" className="text action" id="disabledAdd" onClick={() => onStatus?.(demoCopy("演示：禁用模型 #pop", "Demo: disable-model #pop"), "ok")}>
-              {t("Disable…")}
-            </button>
-          </PrefRow>
-          <div className="empty-state" style={{ padding: "18px 12px" }}>
-            {t("No disabled models")}
-          </div>
+          <DisableModelsBlock
+            models={prefs.disabledModels}
+            onChange={(disabledModels) => setPrefs({ disabledModels })}
+          />
         </div>
       </section>
 

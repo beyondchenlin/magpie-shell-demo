@@ -169,6 +169,177 @@ function ProtoMenu({
   );
 }
 
+
+function dayKeyOf(d: Date) {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+function dayOfKey(k: string) {
+  return new Date(k + "T12:00:00");
+}
+function rangeName(from: string, to: string) {
+  const year = new Date().getFullYear();
+  const name = (k: string) =>
+    dayOfKey(k).toLocaleDateString(undefined, {
+      month: "short",
+      day: "numeric",
+      ...(dayOfKey(k).getFullYear() !== year ? { year: "numeric" as const } : {}),
+    });
+  return from === to ? name(from) : `${name(from)} – ${name(to)}`;
+}
+
+/** Magpie openRangeMenu: quick spans + month grid (first day then last). */
+function RangeCalendar({
+  current,
+  onChoose,
+  onClose,
+}: {
+  current: { from: string; to: string } | null;
+  onChoose: (from: string, to: string) => void;
+  onClose: () => void;
+}) {
+  const today = dayKeyOf(new Date());
+  const [start, setStart] = useState<string | null>(null);
+  const [shown, setShown] = useState(() => {
+    const base = dayOfKey(current?.to || today);
+    return new Date(base.getFullYear(), base.getMonth(), 1, 12);
+  });
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        onClose();
+      }
+    };
+    const onDown = (e: MouseEvent) => {
+      if (!ref.current?.contains(e.target as Node)) onClose();
+    };
+    document.addEventListener("keydown", onKey, true);
+    document.addEventListener("mousedown", onDown, true);
+    return () => {
+      document.removeEventListener("keydown", onKey, true);
+      document.removeEventListener("mousedown", onDown, true);
+    };
+  }, [onClose]);
+
+  const now = new Date();
+  now.setHours(12, 0, 0, 0);
+  const back = (n: number) => {
+    const d = new Date(now);
+    d.setDate(d.getDate() - n);
+    return d;
+  };
+  const span = (from: Date, to: Date) => ({ from: dayKeyOf(from), to: dayKeyOf(to) });
+  const quicks: [string, { from: string; to: string }][] = [
+    ["Yesterday", span(back(1), back(1))],
+    ["This month", span(new Date(now.getFullYear(), now.getMonth(), 1, 12), now)],
+    [
+      "Last month",
+      span(new Date(now.getFullYear(), now.getMonth() - 1, 1, 12), new Date(now.getFullYear(), now.getMonth(), 0, 12)),
+    ],
+    ["90 days", span(back(89), now)],
+  ];
+
+  const lo = start || current?.from || null;
+  const hi = start ? null : current?.to || null;
+  const cells: ReactNode[] = [];
+  for (let i = 0; i < 7; i++) {
+    cells.push(
+      <span className="rm-wd" key={`wd${i}`}>
+        {new Date(2024, 0, 1 + i, 12).toLocaleDateString(undefined, { weekday: "narrow" })}
+      </span>,
+    );
+  }
+  const first = new Date(shown);
+  const lead = (first.getDay() + 6) % 7;
+  for (let i = 0; i < lead; i++) cells.push(<span className="rm-pad" key={`pad${i}`} />);
+  for (let d = new Date(first); d.getMonth() === shown.getMonth(); d.setDate(d.getDate() + 1)) {
+    const k = dayKeyOf(d);
+    const dayNum = d.getDate();
+    const cls = [
+      "rm-day",
+      k === today ? "today" : "",
+      lo && (k === lo || k === hi) ? "end" : "",
+      lo && hi && k > lo && k < hi ? "in" : "",
+    ]
+      .filter(Boolean)
+      .join(" ");
+    cells.push(
+      <button
+        type="button"
+        key={k}
+        className={cls}
+        data-day={k}
+        disabled={k > today}
+        aria-label={d.toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" })}
+        onClick={() => {
+          if (!start) {
+            setStart(k);
+            return;
+          }
+          const [from, to] = start <= k ? [start, k] : [k, start];
+          onChoose(from, to);
+          onClose();
+        }}
+      >
+        {dayNum}
+      </button>,
+    );
+  }
+
+  const nextMonthStart = dayKeyOf(new Date(shown.getFullYear(), shown.getMonth() + 1, 1, 12));
+
+  return (
+    <div className="pop proto-menu range-menu" ref={ref} role="dialog" aria-label={t("Pick days")} style={{ position: "absolute", top: "100%", right: 0, zIndex: 40 }}>
+      <div className="pm-head">{start ? t("Now the last day") : t("Pick the first day, then the last")}</div>
+      <div className="rm-quick">
+        {quicks.map(([name, r]) => (
+          <button
+            key={name}
+            type="button"
+            className={`rm-span${current && current.from === r.from && current.to === r.to ? " on" : ""}`}
+            title={rangeName(r.from, r.to)}
+            onClick={() => {
+              onChoose(r.from, r.to);
+              onClose();
+            }}
+          >
+            {t(name)}
+          </button>
+        ))}
+      </div>
+      <div className="rm-nav">
+        <button
+          type="button"
+          className="rm-step"
+          aria-label={t("Previous month")}
+          onClick={() => setShown(new Date(shown.getFullYear(), shown.getMonth() - 1, 1, 12))}
+        >
+          <svg viewBox="0 0 12 12" width={12} height={12} aria-hidden>
+            <path d="M10 4 6 8l4 4" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+          </svg>
+        </button>
+        <span className="rm-month">{shown.toLocaleDateString(undefined, { year: "numeric", month: "long" })}</span>
+        <button
+          type="button"
+          className="rm-step"
+          aria-label={t("Next month")}
+          disabled={nextMonthStart > today}
+          onClick={() => setShown(new Date(shown.getFullYear(), shown.getMonth() + 1, 1, 12))}
+        >
+          <svg viewBox="0 0 12 12" width={12} height={12} aria-hidden>
+            <path d="m6 4 4 4-4 4" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+          </svg>
+        </button>
+      </div>
+      <div className="rm-grid" role="grid">
+        {cells}
+      </div>
+    </div>
+  );
+}
+
 /** Magpie Usage: Overview / Requests / Sessions / Context + period + refresh. */
 export function UsageView() {
   const [tab, setTab] = useState<string>(() => {
@@ -256,40 +427,18 @@ export function UsageView() {
               onClick={() => setCustomOpen((o) => !o)}
             />
             {customOpen ? (
-              <div className="pop proto-menu range-menu" role="dialog" aria-label={t("Pick days")} style={{ position: "absolute", top: "100%", right: 0, zIndex: 30, padding: 10, minWidth: 220 }}>
-                <div className="rm-quick" style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-                  {[
-                    ["Yesterday", "yesterday"],
-                    ["This month", "month"],
-                    ["Last month", "last"],
-                    ["90 days", "90"],
-                  ].map(([name, id]) => (
-                    <button
-                      key={id}
-                      type="button"
-                      className="rm-span text"
-                      onClick={() => {
-                        const label =
-                          id === "yesterday"
-                            ? demoCopy("昨天", "Yesterday")
-                            : id === "month"
-                              ? demoCopy("本月", "This month")
-                              : id === "last"
-                                ? demoCopy("上月", "Last month")
-                                : t("90 days");
-                        setCustomLabel(label);
-                        setPeriod(id);
-                        setCustomOpen(false);
-                      }}
-                    >
-                      {t(name)}
-                    </button>
-                  ))}
-                </div>
-                <p className="usage-note" style={{ margin: "8px 0 0", fontSize: 11 }}>
-                  {demoCopy("演示：日历点选未接线；快捷区间已可点。", "Demo: calendar not wired; quick spans work.")}
-                </p>
-              </div>
+              <RangeCalendar
+                current={
+                  period.includes("..")
+                    ? { from: period.split("..")[0], to: period.split("..")[1] }
+                    : null
+                }
+                onChoose={(from, to) => {
+                  setPeriod(`${from}..${to}`);
+                  setCustomLabel(rangeName(from, to));
+                }}
+                onClose={() => setCustomOpen(false)}
+              />
             ) : null}
           </div>
         ) : null}
@@ -424,15 +573,18 @@ export function UsageView() {
           {t("Gateway and session-log calls; local rejections excluded from totals.")}
         </p>
         <div className="led-dash" id="ledDash">
-          <div className="led-strip" id="ledKpi" style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 8 }}>
+          <div className="led-strip" id="ledKpi">
             {[
-              ["Calls", "0"],
-              ["Tokens", "0"],
-              ["Cost", "≈$0"],
-            ].map(([k, v]) => (
-              <div key={k} className="kpi" style={{ padding: "8px 12px", borderRadius: 10, background: "var(--card)", border: "1px solid var(--line)", minWidth: 88 }}>
-                <div style={{ fontWeight: 650, fontVariantNumeric: "tabular-nums" }}>{v}</div>
-                <div style={{ fontSize: 11, color: "var(--muted)" }}>{t(k)}</div>
+              ["Calls", "0", ""],
+              ["Tokens", "0", ""],
+              ["Cost", "≈$0", "cost"],
+              ["OK", "0", ""],
+              ["Errors", "0", ""],
+            ].map(([k, v, vc]) => (
+              <div key={k} className="blk">
+                <span className="k">{t(k)}</span>
+                <span className={`v${vc ? ` ${vc}` : ""}`}>{v}</span>
+                <span className="sub">{ledStatus ? t(LED_STATUS.find(([id]) => id === ledStatus)?.[1] || "All") : t("All")}</span>
               </div>
             ))}
           </div>
@@ -447,8 +599,27 @@ export function UsageView() {
                 <Segs value={ledSplit} onChange={setLedSplit} items={LED_SPLIT.map(([id, en]) => ({ id, label: t(en) }))} />
               </span>
             </div>
-            <div className="led-body empty-state" style={{ padding: "28px 16px", borderRadius: 12, border: "1px dashed var(--line)" }}>
-              {demoCopy("尚无请求趋势（空态）。切换上方筛选项可看到分段动效。", "No request trend yet (empty). Switch filters above to see segment motion.")}
+            <div className="led-chart" id="ledChart" aria-hidden style={{ height: 120, borderRadius: 12, border: "1px solid var(--line)", background: "var(--card)", display: "flex", alignItems: "flex-end", gap: 3, padding: "12px 10px 8px" }}>
+              {[18, 34, 22, 48, 30, 12, 40, 26, 36, 20, 44, 28].map((h, i) => (
+                <div
+                  key={i}
+                  title={`${ledMetric} · ${ledSplit}`}
+                  style={{
+                    flex: 1,
+                    height: `${h}%`,
+                    borderRadius: "4px 4px 2px 2px",
+                    background: "color-mix(in srgb, var(--accent) 55%, var(--pill))",
+                    opacity: 0.55 + (i % 3) * 0.1,
+                    transition: "height .28s var(--ease), opacity .12s",
+                  }}
+                />
+              ))}
+            </div>
+            <div className="led-rank empty-state" style={{ padding: "14px 12px", marginTop: 8, borderRadius: 10, border: "1px dashed var(--line)", fontSize: 12, color: "var(--muted)" }}>
+              {demoCopy(
+                `演示柱图 · 指标 ${ledMetric} · 拆分 ${ledSplit}（无真实请求数据）`,
+                `Demo columns · metric ${ledMetric} · split ${ledSplit} (no real request data)`,
+              )}
             </div>
           </section>
         </div>
@@ -585,7 +756,7 @@ export function PluginsView() {
   const [query, setQuery] = useState("");
   const [mirror, setMirror] = useState(false);
   const [builtins, setBuiltins] = useState(BUILTINS_DEFAULT);
-  const [installed, setInstalled] = useState<{ pkg: string; name: string; off?: boolean; optsOpen?: boolean; opts?: string }[]>([]);
+  const [installed, setInstalled] = useState<{ pkg: string; name: string; off?: boolean; optsOpen?: boolean; opts?: string; optsErr?: string; optsSaved?: boolean }[]>([]);
   const [busy, setBusy] = useState<string | null>(null);
   const [asking, setAsking] = useState<{ pkg: string; op: "remove" | "off" } | null>(null);
 
@@ -808,18 +979,80 @@ export function PluginsView() {
                         {e.off ? ` · ${t("Off")}` : ""}
                       </div>
                       {e.optsOpen ? (
-                        <textarea
-                          className="words"
-                          rows={3}
-                          style={{ width: "100%", marginTop: 8, fontFamily: "inherit" }}
-                          placeholder={demoCopy("中间件选项 JSON（演示）", "Middleware options JSON (demo)")}
-                          value={e.opts || ""}
-                          onChange={(ev) =>
-                            setInstalled((list) =>
-                              list.map((x) => (x.pkg === e.pkg ? { ...x, opts: ev.target.value } : x)),
-                            )
-                          }
-                        />
+                        <div className="pm-opts">
+                          <textarea
+                            aria-label={t("Options")}
+                            rows={Math.min(10, Math.max(4, (e.opts || "").split("\n").length + 1))}
+                            placeholder='{\n  "hooks": ["request", "response"],\n  "sample": 0.1\n}'
+                            value={e.opts || '{\n  "hooks": ["request", "response"],\n  "logBodies": false\n}'}
+                            onChange={(ev) =>
+                              setInstalled((list) =>
+                                list.map((x) => (x.pkg === e.pkg ? { ...x, opts: ev.target.value, optsErr: "" } : x)),
+                              )
+                            }
+                            onKeyDown={(ev) => {
+                              if (ev.key === "Escape") {
+                                setInstalled((list) => list.map((x) => (x.pkg === e.pkg ? { ...x, optsOpen: false } : x)));
+                              }
+                            }}
+                          />
+                          {e.optsErr ? (
+                            <div className="pm-opts-err" role="alert">
+                              {e.optsErr}
+                            </div>
+                          ) : null}
+                          <div className="pm-opts-bar">
+                            <span>{e.optsSaved ? t("Applied to the next request") : t("Not set: these are its package's example")}</span>
+                            <button
+                              type="button"
+                              className="text quiet"
+                              onClick={() =>
+                                setInstalled((list) =>
+                                  list.map((x) => (x.pkg === e.pkg ? { ...x, opts: "", optsSaved: false, optsErr: "" } : x)),
+                                )
+                              }
+                            >
+                              {t("Clear")}
+                            </button>
+                            <button
+                              type="button"
+                              className="text"
+                              onClick={() =>
+                                setInstalled((list) => list.map((x) => (x.pkg === e.pkg ? { ...x, optsOpen: false } : x)))
+                              }
+                            >
+                              {t("Cancel")}
+                            </button>
+                            <button
+                              type="button"
+                              className="text primary"
+                              onClick={() => {
+                                try {
+                                  const raw = e.opts || "{}";
+                                  const v = JSON.parse(raw);
+                                  if (!v || typeof v !== "object" || Array.isArray(v)) throw new Error(t("Options are a JSON object"));
+                                  setInstalled((list) =>
+                                    list.map((x) =>
+                                      x.pkg === e.pkg ? { ...x, optsSaved: true, optsErr: "", optsOpen: false } : x,
+                                    ),
+                                  );
+                                } catch (err) {
+                                  const msg = err instanceof Error ? err.message : String(err);
+                                  setInstalled((list) =>
+                                    list.map((x) =>
+                                      x.pkg === e.pkg ? { ...x, optsErr: t("Not JSON: {error}", { error: msg }) } : x,
+                                    ),
+                                  );
+                                }
+                              }}
+                            >
+                              {t("Save")}
+                            </button>
+                          </div>
+                          <div className="sub pm-mw" style={{ marginTop: 2 }}>
+                            {demoCopy("网关中间件 · hooks: request, response（演示字段）", "Gateway middleware · hooks: request, response (demo fields)")}
+                          </div>
+                        </div>
                       ) : null}
                       {asking?.pkg === e.pkg ? (
                         <div style={{ marginTop: 8, display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
