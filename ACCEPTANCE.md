@@ -1,4 +1,5 @@
 ## v0.1.55 FETCH_MODELS_DONE
+- **v0.1.65** SKILLS_POST_DONE — library 63–71 Check/By agent/Add project/Remove + manual github Installing…
 
 - **v0.1.64** SKILLS_INSTALL_DONE — library 57–62 Install nest + post-install list/how/projects.
 - **v0.1.63** SKILLS_INSTALL_PARTIAL — Magpie-source Installing… / installed toast / have-tag (await library/57+).

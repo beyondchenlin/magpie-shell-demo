@@ -99,30 +99,48 @@ const emptyHook = (): HookDraft => ({
   agents: DEMO_AGENTS.map((a) => a.id),
 });
 
-function LibChip({ on, label, onClick }: { on: boolean; label: string; onClick: () => void }) {
+function LibChip({
+  on,
+  label,
+  onClick,
+  title,
+  iconOnly,
+}: {
+  on: boolean;
+  label: string;
+  onClick: () => void;
+  title?: string;
+  /** Magpie agentChips: icon-only cube (library/70–71) */
+  iconOnly?: boolean;
+}) {
   return (
     <button
       type="button"
       className={`lib-ag${on ? " on" : ""}`}
       aria-pressed={on}
+      aria-label={label}
+      title={title}
       onClick={onClick}
       style={{
         display: "inline-flex",
         alignItems: "center",
-        gap: 5,
-        height: 26,
-        padding: "0 10px 0 8px",
-        borderRadius: 999,
+        justifyContent: "center",
+        gap: iconOnly ? 0 : 5,
+        height: iconOnly ? 28 : 26,
+        width: iconOnly ? 28 : undefined,
+        padding: iconOnly ? 0 : "0 10px 0 8px",
+        borderRadius: iconOnly ? 8 : 999,
         border: `1px solid ${on ? "var(--line)" : "transparent"}`,
         background: on ? "var(--card)" : "transparent",
         color: on ? "var(--fg)" : "var(--muted)",
+        opacity: on ? 1 : 0.45,
         font: "inherit",
-        fontSize: 12,
+        fontSize: iconOnly ? 14 : 12,
         cursor: "pointer",
-        transition: "background .14s, border-color .14s, color .14s",
+        transition: "background .14s, border-color .14s, color .14s, opacity .14s",
       }}
     >
-      {label}
+      {iconOnly ? "▦" : label}
     </button>
   );
 }
@@ -250,7 +268,17 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
   } | null>(null);
   const [skillPick, setSkillPick] = useState<Set<string>>(new Set());
   const [probeFilter, setProbeFilter] = useState("");
-  const [skills, setSkills] = useState<{ id: string; name: string; desc: string }[]>([]);
+  const [skills, setSkills] = useState<{ id: string; name: string; desc: string; kind?: "github" | "folder"; agents?: string[] }[]>([]);
+  /** Magpie confirmRemoveSkill — row trash (library/63+ nest not on disk yet) */
+  const [skillRemoveConfirm, setSkillRemoveConfirm] = useState<{ id: string; name: string } | null>(null);
+  /** Magpie openSkillHow — Give skills as › By agent */
+  const [skillHowOpen, setSkillHowOpen] = useState(false);
+  const [agentHow, setAgentHow] = useState<"" | "link" | "copy">("");
+  /** Magpie openByAgent — In the library row-head By agent */
+  const [skillsByAgentOpen, setSkillsByAgentOpen] = useState(false);
+  /** Magpie addingProject — In projects inline card */
+  const [addingProject, setAddingProject] = useState<{ dir: string; busy?: boolean } | null>(null);
+  const [projects, setProjects] = useState<{ dir: string; name: string }[]>([]);
   const [hooks, setHooks] = useState<
     { id: string; name: string; description: string; event: string; matcher: string; command: string; agents: string[] }[]
   >([]);
@@ -375,7 +403,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
       const had = picked.filter((m) => haveNames.has(m.name)).map((m) => m.name);
       setSkills((list) => [
         ...list,
-        ...fresh.map((m) => ({ id: `sk-${Date.now()}-${m.path}`, name: m.name, desc: m.desc })),
+        ...fresh.map((m) => ({ id: `sk-${Date.now()}-${m.path}`, name: m.name, desc: m.desc, kind: "github" as const, agents: ["cursor"] })),
       ]);
       const n = fresh.length;
       // Magpie report(): installed · already in the library: {names}
@@ -955,28 +983,101 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                     <span className="grow" />
                     <button
                       type="button"
-                      className={`text${skillChecking ? " busy" : ""}`}
+                      className="text action lib-updall lib-byagent"
+                      title={t("Turn every skill on or off for one agent")}
+                      onClick={() => setSkillsByAgentOpen(true)}
+                    >
+                      {t("By agent")}
+                    </button>
+                    {skills.some((s) => s.kind === "github") ? (
+                    <button
+                      type="button"
+                      className={`text lib-updall${skillChecking ? " busy" : ""}`}
                       title={t("Ask GitHub which skills changed since they were installed")}
                       disabled={skillChecking}
                       onClick={() => {
                         setSkillChecking(true);
                         window.setTimeout(() => {
                           setSkillChecking(false);
-                          onStatus?.(t("Up to date"), "ok");
+                          onStatus?.(t("Every skill is up to date"), "ok");
                         }, 680);
                       }}
                     >
                       {skillChecking ? t("Checking…") : t("Check for updates")}
                     </button>
+                    ) : null}
                   </div>
                   {skills.map((s) => (
-                    <div key={s.id} className="row" style={{ display: "flex", gap: 8, padding: "10px 4px", borderBottom: "1px solid var(--line)" }}>
-                      <div style={{ flex: 1, minWidth: 0 }}>
-                        <b style={{ fontSize: 13 }}>{s.name}</b>
-                        <div style={{ fontSize: 12, color: "var(--muted)" }}>{s.desc}</div>
+                    <div key={s.id} className="row lib-row lib-skill" style={{ display: "flex", gap: 8, alignItems: "flex-start", padding: "10px 4px", borderBottom: "1px solid var(--line)" }}>
+                      <div className="who" style={{ flex: 1, minWidth: 0 }}>
+                        <b className="name" style={{ fontSize: 13 }}>{s.name}</b>
+                        <div className="sub" style={{ fontSize: 12, color: "var(--muted)", lineHeight: 1.4 }}>{s.desc}</div>
+                        {s.kind === "github" ? (
+                          <div className="lib-src" style={{ fontSize: 11.5, marginTop: 2 }}>
+                            <a
+                              className="lib-srclink"
+                              href={`https://github.com/mattpocock/skills/tree/HEAD/skills/engineering/${s.name}`}
+                              onClick={(e) => { e.preventDefault(); onStatus?.(t("Demo: open GitHub"), "ok"); }}
+                              style={{ color: "var(--accent)", textDecoration: "none" }}
+                            >
+                              {`mattpocock/skills/tree/HEAD/skills/engineering/${s.name}`}
+                            </a>
+                          </div>
+                        ) : null}
                       </div>
-                      <LibChip on label="Cursor" onClick={() => {}} />
-                      <button type="button" className="text" onClick={() => setSkills((list) => list.filter((x) => x.id !== s.id))}>{t("Remove")}</button>
+                      <div className="lib-rowacts" style={{ display: "flex", gap: 4, alignItems: "center", flexShrink: 0 }}>
+                        {s.kind === "github" ? (
+                          <button
+                            type="button"
+                            className="lib-icon text"
+                            title={t("Update from GitHub")}
+                            aria-label={t("Update from GitHub")}
+                            onClick={() => onStatus?.(t("{name} is up to date", { name: s.name }), "ok")}
+                            style={{ width: 28, height: 28, padding: 0, fontSize: 14, lineHeight: 1 }}
+                          >
+                            ↑
+                          </button>
+                        ) : null}
+                        <button
+                          type="button"
+                          className="lib-icon danger text"
+                          title={t("Remove")}
+                          aria-label={t("Remove")}
+                          onClick={() => setSkillRemoveConfirm({ id: s.id, name: s.name })}
+                          style={{ width: 28, height: 28, padding: 0, fontSize: 14, lineHeight: 1, color: "var(--red)" }}
+                        >
+                          🗑
+                        </button>
+                        <LibChip
+                          iconOnly
+                          on={(s.agents ?? ["cursor"]).includes("cursor")}
+                          label="Cursor"
+                          title={
+                            (s.agents ?? ["cursor"]).includes("cursor")
+                              ? t("{agent} has it — click to take it away", { agent: "Cursor" })
+                              : t("Give it to {agent}", { agent: "Cursor" })
+                          }
+                          onClick={() => {
+                            const has = (s.agents ?? ["cursor"]).includes("cursor");
+                            setSkills((list) =>
+                              list.map((x) =>
+                                x.id !== s.id
+                                  ? x
+                                  : {
+                                      ...x,
+                                      agents: has
+                                        ? (x.agents ?? ["cursor"]).filter((a) => a !== "cursor")
+                                        : [...(x.agents ?? []).filter((a) => a !== "cursor"), "cursor"],
+                                    },
+                              ),
+                            );
+                            onStatus?.(
+                              has ? t("Removed from {agent}", { agent: "Cursor" }) : t("Written to {agent}", { agent: "Cursor" }),
+                              "ok",
+                            );
+                          }}
+                        />
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -1013,7 +1114,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                       </button>
                     ))}
                   </div>
-                  <button type="button" className="text action" title={t("Give an agent its skills its own way")} onClick={() => onStatus?.(t("Demo: by-agent how sheet"), "ok")}>
+                  <button type="button" className="text action lib-updall lib-howagent" title={t("Give an agent its skills its own way")} onClick={() => { setAgentHow(""); setSkillHowOpen(true); }}>
                     {t("By agent")}
                   </button>
                   <span style={{ fontSize: 12, color: "var(--muted)", flex: "1 1 220px" }}>
@@ -1026,11 +1127,79 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                   <div className="row-head" style={{ marginBottom: 6, display: "flex", alignItems: "center", gap: 8 }}>
                     <span className="label" style={{ letterSpacing: ".04em", fontSize: 11, color: "var(--muted)", fontWeight: 600 }}>{t("In projects")}</span>
                     <span className="grow" />
-                    <button type="button" className="text action" onClick={() => onStatus?.(t("Demo: add a project"), "ok")}>{t("Add a project")}</button>
+                    {!addingProject ? (
+                      <button type="button" className="text action lib-updall" onClick={() => setAddingProject({ dir: "" })}>{t("Add a project")}</button>
+                    ) : null}
                   </div>
-                  <p style={{ margin: 0, fontSize: 12.5, color: "var(--muted)", lineHeight: 1.45 }}>
-                    {t("Give a project's agents some of these skills as the project's own: magpie links them into its .claude/skills and .agents/skills and keeps them out of git.")}
-                  </p>
+                  {addingProject ? (
+                    <div className="list lib-card lib-install" style={{ padding: "10px 8px", border: "1px solid var(--line)", borderRadius: 12, marginBottom: 8 }}>
+                      <div className="lib-find" style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center" }}>
+                        <span aria-hidden style={{ fontSize: 14, color: "var(--muted)" }}>📁</span>
+                        <input
+                          type="text"
+                          spellCheck={false}
+                          autoComplete="off"
+                          placeholder={t("The project's folder, like ~/code/app")}
+                          value={addingProject.dir}
+                          disabled={!!addingProject.busy}
+                          onChange={(e) => setAddingProject({ ...addingProject, dir: e.target.value })}
+                          onKeyDown={(e) => {
+                            e.stopPropagation();
+                            if (e.key === "Escape") setAddingProject(null);
+                            if (e.key === "Enter") {
+                              const dir = addingProject.dir.trim();
+                              if (!dir || addingProject.busy) return;
+                              setAddingProject({ ...addingProject, busy: true });
+                              window.setTimeout(() => {
+                                const name = dir.split("/").filter(Boolean).pop() || dir;
+                                setProjects((list) => (list.some((x) => x.dir === dir) ? list : [...list, { dir, name }]));
+                                setAddingProject(null);
+                                onStatus?.(t("{name} added", { name }), "ok");
+                              }, 400);
+                            }
+                          }}
+                          style={{ flex: "1 1 180px", minWidth: 0 }}
+                        />
+                        <button type="button" className="text" disabled={!!addingProject.busy} onClick={() => onStatus?.(t("Demo: choose a folder"), "ok")}>{t("Choose…")}</button>
+                        <button
+                          type="button"
+                          className="text action"
+                          disabled={!!addingProject.busy || !addingProject.dir.trim()}
+                          onClick={() => {
+                            const dir = addingProject.dir.trim();
+                            if (!dir || addingProject.busy) return;
+                            setAddingProject({ ...addingProject, busy: true });
+                            window.setTimeout(() => {
+                              const name = dir.split("/").filter(Boolean).pop() || dir;
+                              setProjects((list) => (list.some((x) => x.dir === dir) ? list : [...list, { dir, name }]));
+                              setAddingProject(null);
+                              onStatus?.(t("{name} added", { name }), "ok");
+                            }, 400);
+                          }}
+                        >
+                          {addingProject.busy ? t("Adding…") : t("Add")}
+                        </button>
+                        <button type="button" className="text" disabled={!!addingProject.busy} onClick={() => setAddingProject(null)}>{t("Cancel")}</button>
+                      </div>
+                    </div>
+                  ) : null}
+                  {projects.length ? (
+                    <div style={{ marginBottom: 8 }}>
+                      {projects.map((pr) => (
+                        <div key={pr.dir} className="row" style={{ display: "flex", gap: 8, padding: "8px 4px", borderBottom: "1px solid var(--line)" }}>
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            <b style={{ fontSize: 13 }}>{pr.name}</b>
+                            <div style={{ fontSize: 12, color: "var(--muted)" }}>{pr.dir}</div>
+                          </div>
+                          <button type="button" className="text" onClick={() => setProjects((list) => list.filter((x) => x.dir !== pr.dir))}>{t("Remove")}</button>
+                        </div>
+                      ))}
+                    </div>
+                  ) : !addingProject ? (
+                    <p style={{ margin: 0, fontSize: 12.5, color: "var(--muted)", lineHeight: 1.45 }}>
+                      {t("Give a project's agents some of these skills as the project's own: magpie links them into its .claude/skills and .agents/skills and keeps them out of git.")}
+                    </p>
+                  ) : null}
                 </div>
               </>
             )}
@@ -1070,7 +1239,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                         onClick={() => {
                           if ((c as { sheet?: boolean }).sheet) setSkillSheet(c);
                           else {
-                            setSkills((list) => (list.some((x) => x.id === c.id) ? list : [...list, { id: c.id, name: c.name, desc: c.desc }]));
+                            setSkills((list) => (list.some((x) => x.id === c.id) ? list : [...list, { id: c.id, name: c.name, desc: c.desc, agents: ["cursor"] }]));
                             onStatus?.(t("{name} added", { name: c.name }), "ok");
                           }
                         }}
@@ -1428,7 +1597,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
               className="text primary"
               onClick={() => {
                 const c = skillSheet;
-                setSkills((list) => (list.some((x) => x.id === c.id) ? list : [...list, { id: c.id, name: c.name, desc: c.desc }]));
+                setSkills((list) => (list.some((x) => x.id === c.id) ? list : [...list, { id: c.id, name: c.name, desc: c.desc, agents: ["cursor"] }]));
                 setSkillSheet(null);
                 onStatus?.(t("{name} added", { name: c.name }), "ok");
               }}
@@ -1577,6 +1746,120 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
             <span className="grow" />
             <button type="button" className="text" onClick={tryCloseHook}>{t("Cancel")}</button>
             <button type="button" className="text primary" onClick={saveHook}>{t("Add")}</button>
+          </div>
+        </LibModal>
+      ) : null}
+
+
+      {skillRemoveConfirm ? (
+        <LibModal onBg={() => setSkillRemoveConfirm(null)} sm>
+          <div className="ehead" style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
+            <b style={{ fontSize: 15 }}>{t("Remove {name}?", { name: skillRemoveConfirm.name })}</b>
+          </div>
+          <p className="lib-confirm" style={{ margin: "0 0 14px", fontSize: 13, color: "var(--fg-2)", lineHeight: 1.45 }}>
+            {t("It is taken out of every agent it was given to, and its folder is moved to magpie's backups.")}
+          </p>
+          <div className="bar" style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
+            <button type="button" className="text" onClick={() => setSkillRemoveConfirm(null)}>{t("Cancel")}</button>
+            <button
+              type="button"
+              className="text primary danger-fill"
+              style={{ background: "var(--red)", color: "#fff", borderColor: "transparent" }}
+              onClick={() => {
+                const { id, name } = skillRemoveConfirm;
+                setSkills((list) => list.filter((x) => x.id !== id));
+                setSkillRemoveConfirm(null);
+                onStatus?.(t("{name} removed", { name }), "ok");
+              }}
+            >
+              {t("Remove")}
+            </button>
+          </div>
+        </LibModal>
+      ) : null}
+
+      {skillHowOpen ? (
+        <LibModal onBg={() => setSkillHowOpen(false)}>
+          <div className="ehead" style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+            <b style={{ fontSize: 15 }}>{t("How each agent gets its skills")}</b>
+          </div>
+          <p className="lib-confirm" style={{ margin: "0 0 12px", fontSize: 13, color: "var(--fg-2)", lineHeight: 1.45 }}>
+            {skillHow === "copy"
+              ? t("An agent can have its own way; the others get copies, as the library gives them.")
+              : t("An agent can have its own way; the others get links, as the library gives them.")}
+          </p>
+          <div className="list lib-list lib-byagent-list" style={{ marginBottom: 12 }}>
+            <div className="row lib-row lib-byagent-row lib-how-row" style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 4px", borderBottom: "1px solid var(--line)" }}>
+              <div className="who" style={{ flex: 1, minWidth: 0 }}>
+                <div className="name" style={{ fontWeight: 500, fontSize: 13 }}>Cursor</div>
+                <div className="sub" style={{ fontSize: 12, color: "var(--muted)" }}>
+                  {agentHow === "copy" ? t("Gets copies") : agentHow === "link" ? t("Gets links") : (skillHow === "copy" ? t("Gets copies") : t("Gets links"))}
+                </div>
+              </div>
+              <div className="segs" style={{ display: "inline-flex", gap: 2, padding: 2, borderRadius: 999, border: "1px solid var(--line)", background: "var(--bg)" }}>
+                {([["", "Library's way"], ["link", "Links"], ["copy", "Copies"]] as const).map(([id, lab]) => (
+                  <button
+                    key={id || "lib"}
+                    type="button"
+                    className={`opt${agentHow === id ? " on" : ""}`}
+                    onClick={() => {
+                      setAgentHow(id);
+                      onStatus?.(
+                        id === "copy" || (id === "" && skillHow === "copy")
+                          ? t("{agent} gets copies of its skills now", { agent: "Cursor" })
+                          : t("{agent} gets links to its skills now", { agent: "Cursor" }),
+                        "ok",
+                      );
+                    }}
+                    style={{
+                      height: 26,
+                      padding: "0 10px",
+                      borderRadius: 999,
+                      border: 0,
+                      background: agentHow === id ? "var(--card)" : "transparent",
+                      color: agentHow === id ? "var(--fg)" : "var(--muted)",
+                      font: "inherit",
+                      fontSize: 12,
+                      cursor: "pointer",
+                    }}
+                  >
+                    {t(lab)}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+          <div className="bar" style={{ display: "flex", gap: 8 }}>
+            <span className="grow" />
+            <button type="button" className="text primary" onClick={() => setSkillHowOpen(false)}>{t("Done")}</button>
+          </div>
+        </LibModal>
+      ) : null}
+
+
+      {skillsByAgentOpen ? (
+        <LibModal onBg={() => setSkillsByAgentOpen(false)}>
+          <div className="ehead" style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+            <b style={{ fontSize: 15 }}>{t("Skills by agent")}</b>
+          </div>
+          <p className="lib-confirm" style={{ margin: "0 0 12px", fontSize: 13, color: "var(--fg-2)", lineHeight: 1.45 }}>
+            {t("Every skill on or off for one agent; the others keep theirs. Turned off, they stay in the library.")}
+          </p>
+          <div className="list lib-list lib-byagent-list" style={{ marginBottom: 12 }}>
+            <div className="row lib-row lib-byagent-row" style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 4px", borderBottom: "1px solid var(--line)" }}>
+              <div className="who" style={{ flex: 1, minWidth: 0 }}>
+                <div className="name" style={{ fontWeight: 500, fontSize: 13 }}>Cursor</div>
+                <div className="sub" style={{ fontSize: 12, color: "var(--muted)" }}>
+                  {t("{n} of {m} skills", { n: skills.length, m: skills.length })}
+                </div>
+              </div>
+              <button type="button" className="text action lib-updall" disabled title={t("Give {agent} every skill", { agent: "Cursor" })} onClick={() => onStatus?.(t("{n} skills are on for {agent}", { n: skills.length, agent: "Cursor" }), "ok")}>{t("Turn all on")}</button>
+              <button type="button" className="text action lib-updall" title={t("Take every skill from {agent}", { agent: "Cursor" })} onClick={() => onStatus?.(t("Every skill is off for {agent}", { agent: "Cursor" }), "ok")}>{t("Turn all off")}</button>
+            </div>
+          </div>
+          <div className="bar" style={{ display: "flex", gap: 8 }}>
+            <span className="grow" />
+            <button type="button" className="text primary" onClick={() => setSkillsByAgentOpen(false)}>{t("Done")}</button>
           </div>
         </LibModal>
       ) : null}

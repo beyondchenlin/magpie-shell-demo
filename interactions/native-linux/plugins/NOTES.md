@@ -177,3 +177,8 @@ Second detail Install path (non-Provider). Confirms Magpie `actionFor` / toast s
 | 65 | Settled Installed in detail. |
 
 Demo v0.1.60: DETAIL_INSTALL_MW — middleware → Installed toast/check; Provider path remains Sign in (55–60).
+
+
+## demo 对齐（v0.1.65 MANUAL_GITHUB_INSTALL）
+- NOTES 29：`github:magpie/example` 已键入但 **Install 未点** — demo 按 Magpie `manual()`：form submit、Installing…、toast 用完整 spec
+- 真 npm/git install 仍 mock；Allowances N/A

@@ -1,3 +1,9 @@
+## v0.1.65 SKILLS_POST_DONE
+- Native `library/63–71` consumed: Check hover tip Ask GitHub… → Checking… → toast **Every skill is up to date** (no row chip); Give skills as › By agent sheet (How not changed); Add a project inline Cancelled; trash hover red → Remove confirm Cancel kept; **chip tip** `{agent} has it — click to take it away` → chip off toast **Removed from Cursor**.
+- Demo: row-head By agent → Skills by agent; how-bar By agent → openSkillHow; github src + ↑ + 🗑; icon chip tip/toggle; Check github-only.
+- Plugins manual (NOTES **29**): form → **Installing…** → toast full-spec.
+- Allowances **N/A**. Skip Vercel 402. P1 unchanged.
+
 ## v0.1.64 SKILLS_INSTALL_DONE
 - Native `library/57–62` consumed: probe ready → one checked (**Install 1 skill**) → Install hover → toast **1 skill installed** → Skills · 1 + In the library row (Installing… too brief to freeze, same as RTK Check skeleton).
 - Demo: Magpie order Find → library list → **Give skills as** Links/Copies + By agent note → **In projects** → Discover; tab **Skills · N**; Check for updates → Checking… → Up to date.

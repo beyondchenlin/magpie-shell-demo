@@ -1,11 +1,12 @@
-# last-cycle · 06:12 CST
+# last-cycle · 06:25 CST
 
-**Tag:** SKILLS_INSTALL_DONE → **v0.1.64** (57–62); PARTIAL → **v0.1.63**
+**Tag:** SKILLS_POST_DONE → **v0.1.65** (library 63–71)
 
-## v0.1.64
-- Native library/57–62 Skills Install nest DONE (toast 1 skill installed; Installing… too brief).
-- Post-install: Skills · N, Check for updates, Give skills as, In projects, Discover order.
+## v0.1.65
+- Native 63–71 Check / By agent how / Add project / Remove / chip tip+off.
+- Plugins manual github Install path (NOTES 29).
 
-## Remaining
+## Next
+- Manual plugins Install deeper nests if CU adds; else next open nest.
 - P1: live gateway bird, true OAuth/key persist, Allowances **N/A**
 - Skip Vercel 402

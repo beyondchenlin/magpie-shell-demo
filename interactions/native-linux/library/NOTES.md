@@ -177,3 +177,45 @@ No credential folder opened. Library left On (skill remains). Window restored 75
 - 原生 library/57–62 全消费；Installing… 过短同 RTK skeleton
 - 装后：Skills · N、In the library + Check for updates、Give skills as、In projects、Discover 顺序对齐 Magpie
 
+
+
+## Skills post-install nest (shots 63–69) — recording DONE
+
+| shot | what |
+|---|---|
+| 63-skills-check-hover | Pointer on **Check for updates** (tip Ask GitHub…); row-head also **By agent** |
+| 64-skills-checking | Button **Checking…** busy/disabled |
+| 65-skills-up-to-date | Settled; green toast **Every skill is up to date** |
+| 66-skills-how-by-agent | Give skills as › By agent → **How each agent gets its skills** (Cursor · Library's way/Links/Copies · Done) |
+| 67-skills-add-project | **Add a project** → folder field · Choose… · Add · Cancel (not submitted) |
+| 68-skills-remove-hover | Row trash icon hover (↑ update + trash + Cursor chip) |
+| 69-skills-remove-confirm | **Remove ask-matt?** + backups line · Cancel / danger Remove |
+
+## demo 对齐（v0.1.65 SKILLS_POST_DONE）
+- 原生 library/63–69 全消费；toast `Every skill is up to date`；双 By agent（row-head Skills by agent / how-bar How each agent）
+- Add a project 内联卡；Remove 确认对齐 Magpie confirmRemoveSkill
+- Plugins manual github Installing…（NOTES 29）同发
+
+## Post-install nest (shots 63–71)
+
+Same window, 752×652 at +610+300, Library still On, Skills tab. The live library row for this pass is **ask-matt** (github.com/mattpocock/skills, path `skills/engineering/ask-matt`), not the git-guardrails row in 61–62. git-guardrails had been removed before these shots; 57–62 are unchanged. One skill, so the head is only **By agent** and **Check for updates** (no Group again, Update all, or Turn all on/off).
+
+| shot | what |
+|---|---|
+| 63-skills-check-hover | Pointer on **Check for updates**. Dark tip, clipped at the right edge: "Ask GitHub which skills changed since they were" (full title continues "installed"). |
+| 64-skills-checking | Click. The control's label becomes **Checking…**. No dialog. No spinner froze in the frame. |
+| 65-skills-up-to-date | Label back to **Check for updates**. Green toast, lower left, no buttons: **Every skill is up to date**. No Up to date chip on the row. |
+| 66-skills-how-by-agent | **Give skills as** → **By agent** opens a sheet (page dimmed): **How each agent gets its skills**. Body: an agent can have its own way; the others get links. Row **Cursor**, sub **Gets links**, segments **Library's way** (on) / **Links** / **Copies**. Footer **Done**. Nothing was switched. Done closed it. |
+| 67-skills-add-project | **In projects** → **Add a project**. Field placeholder "The project's folder, like ~/code/app", then **Choose…**, **Add**, **Cancel**. Choose… was not clicked (it opens the system folder picker). Nothing typed. Cancel put the aside back. |
+| 68-skills-remove-hover | Row hover shows an update arrow and a trash icon left of the Cursor chip. Pointer on the trash; it turns red. No tooltip stayed on screen (title is Remove). |
+| 69-skills-remove-confirm | Click opens **Remove ask-matt?** Body: "It is taken out of every agent it was given to, and its folder is moved to magpie's backups." **Cancel** and red **Remove** (pointer on Remove). Cancel. Skill stayed. |
+| 70-skills-chip-on-tip | Pointer on the Cursor chip, still on. Tip clipped at the right edge: "Cursor has it — click to take it" (full: "click to take it away"). |
+| 71-skills-off-cursor | Click. Chip draws unfilled. Green toast **Removed from Cursor**. Skill stays in the library. |
+
+`magpie library` afterwards: **ask-matt → no agent**. Give skills as still **Links** (Library's way was not changed). No project added. Library folder, Backups, and Choose… were not opened. Window still 752×652 at +610+300. Magpie pid 560329 still running. Close was not used.
+
+## demo 对齐（63–71 已落盘）
+- Check for updates：Checking… → toast **Every skill is up to date**（单行无 Up to date chip）
+- Give skills as → By agent 表：Cursor · Library's way / Links / Copies · Done（未改 how）
+- In projects：Add a project 空卡 + Cancel；未点 Choose…
+- 行 Remove 确认后 Cancel；芯片 off → toast **Removed from Cursor**；技能仍在库

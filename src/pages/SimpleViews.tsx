@@ -2535,13 +2535,38 @@ export function PluginsView({
             ) : null}
 
             <div className="pm-sec" style={{ marginTop: 8 }}>
-              <div className="pm-manual">
+              {/* Magpie manual(): form submit; busy "+" → Installing… (NOTES 29 typed github:… Install not clicked) */}
+              <form
+                className="pm-manual"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  const spec = manualSpec.trim();
+                  if (!spec || busy) return;
+                  setBusy("__manual__");
+                  // Magpie act("+","add") — toast uses full spec as name; stay on Discover
+                  window.setTimeout(() => {
+                    // Magpie toast name = full spec; shown name = repo leaf (demo)
+                    const short = spec.replace(/^github:/i, "").replace(/^https?:\/\/(?:www\.)?github\.com\//i, "").split("/").pop()?.replace(/\.git$/i, "") || spec;
+                    setInstalled((list) =>
+                      list.some((x) => x.pkg === spec)
+                        ? list
+                        : [...list, { pkg: spec, name: short, ver: undefined, kind: "Provider", opts: "", optsOpen: false }],
+                    );
+                    setBusy(null);
+                    setManualSpec("");
+                    onStatus?.(t("{name} is installed", { name: spec }), "ok", 3500);
+                  }, 1100);
+                }}
+              >
                 <span className="pm-mlabel">{t("Have one in mind?")}</span>
                 <input
                   className="pm-minput"
                   placeholder={t("npm package, GitHub repo (github:owner/repo) or a folder")}
                   aria-label={t("Plugin")}
+                  spellCheck={false}
+                  autoComplete="off"
                   value={manualSpec}
+                  disabled={busy === "__manual__"}
                   onChange={(e) => setManualSpec(e.target.value)}
                   onKeyDown={(e) => e.stopPropagation()}
                 />
@@ -2550,6 +2575,7 @@ export function PluginsView({
                   className="pm-browse"
                   title={t("Choose a folder on this computer")}
                   aria-label={t("Choose a folder")}
+                  disabled={busy === "__manual__"}
                   onClick={() => {
                     setFolderLoc("recent");
                     setFolderPicker(true);
@@ -2560,37 +2586,21 @@ export function PluginsView({
                   </svg>
                 </button>
                 <button
-                  type="button"
+                  type="submit"
                   className="text primary"
                   disabled={!manualSpec.trim() || busy === "__manual__"}
-                  onClick={() => {
-                    const spec = manualSpec.trim();
-                    if (!spec || busy) return;
-                    setBusy("__manual__");
-                    window.setTimeout(() => {
-                      const name = spec.split("/").pop() || spec;
-                      setInstalled((list) =>
-                        list.some((x) => x.pkg === spec)
-                          ? list
-                          : [...list, { pkg: spec, name, ver: undefined, kind: "Provider", opts: "", optsOpen: false }],
-                      );
-                      setBusy(null);
-                      setManualSpec("");
-                      onStatus?.(t("{name} is installed", { name }), "ok", 3500);
-                    }, 1100);
-                  }}
                 >
                   {busy === "__manual__" ? (
                     <>
                       <span className="spin" aria-hidden style={{ display: "inline-block", width: 10, height: 10, marginRight: 6, verticalAlign: -1 }} />
-                      {t("Getting Bun…")}
+                      {t("Installing…")}
                     </>
                   ) : (
                     t("Install")
                   )}
                 </button>
                 {folderHint ? <span style={{ flexBasis: "100%", fontSize: 11.5, color: "var(--muted)", animation: "fade-in .15s var(--ease)" }}>{folderHint}</span> : null}
-              </div>
+              </form>
             </div>
           </>
         ) : null}
