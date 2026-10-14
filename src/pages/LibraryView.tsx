@@ -56,7 +56,14 @@ const CURSOR_HOOK_EVENTS = [
   "beforeReadFile",
   "afterFileEdit",
   "beforeSubmitPrompt",
+  "stop",
   "afterAgentResponse",
+  "afterAgentThought",
+  "postToolUse",
+  "postToolUseFailure",
+  "subagentStart",
+  "subagentStop",
+  "preCompact",
 ] as const;
 const HOOK_TOOLS = [
   ["", "Any tool"],

@@ -19,6 +19,7 @@ Plugin page. When On (Plugins › Built-in › Library) it sits in top nav betwe
 | 33-hook-new.png | New hook modal: Name/Description/When/Command/Timeout/Agents |
 | 34-hook-events.png | When it runs menu: common events + Find an event + notes |
 | 35-hook-events-cursor.png | Cursor · beforeShellExecution… own events |
+| 36–37 | Cursor · afterFileEdit/stop/…/postToolUseFailure/subagent*/preCompact |
 
 Header: Discover (MCP + Skills) · Library folder · Backups. Tabs: Instructions / MCP servers / Skills / Hooks / RTK.
 
