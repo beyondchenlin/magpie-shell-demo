@@ -1,10 +1,14 @@
+## v0.1.42 ROUTING_NEST
+- Native routing **02–30** fidelity close-out: templates disabled **Add a provider first** (shots 23–24) unless `magpie.demoProviders=1`; Accounts hidden default (28–30); Import paste disabled until text (25–27). Editor nest already in v0.1.29–30.
+- Still mock: live gateway history / day pills / Replay; true Find-groups write; OS providers for template Add.
+
+## v0.1.41 FONTS_MENU + MOTION
 ## v0.1.41 FONTS_MENU + MOTION
 - Interface / Code font: Magpie `renderFonts` menus — System default · demo catalogue · Search fonts… · Refresh fonts; style pick disabled until family chosen; preview `Aa 0123 · 中文`; `applyDemoFonts` → `--ui-*` / `--code-*` + `data-fonts`.
 - Appearance: Magpie `html.theming` crossfade **.35s** / clear **450ms** (NOTES 30fps missed it; Magpie source keeps theming).
 - Still mock: true desktop font enumeration (OS API); catalogue is demo list.
 - Allowances quota body still **N/A**.
 
-## v0.1.40 SETTINGS_NEST
 ## v0.1.40 SETTINGS_NEST
 - Native `settings/10–70` + NOTES consumed into `SettingsView` / NestedBlocks (frames stop at 70; no 71–85 on disk).
 - **Allowances:** TrayUsage pick Off/Today/7d; Menu bar refresh **1/3/5/10/30** (was wrong 15); pace nested when tray on; Linux hides Menu bar logos/bird (Mac-only in Magpie); Allowance display Used/Left; reads Automatic/When I ask; Currency USD/CNY; **Allowance alert** = number field % + Off/On (shots 29–30, editable e.g. 81); **Low balance** = amount field + Off/On (shots 32–33); reset 12/24/48 h; task done 1/3/10 min; warm-up / auto-reset structure. **Quota body cards still N/A** — not invented.

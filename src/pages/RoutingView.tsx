@@ -106,7 +106,18 @@ const CROSS = "M3.5 3.5 8.5 8.5M8.5 3.5 3.5 8.5";
 
 function readMasked(): boolean {
   try {
-    return localStorage.getItem(MASK_KEY) === "1";
+    const v = localStorage.getItem(MASK_KEY);
+    if (v === null) return true; // Magpie default / native left: Accounts hidden
+    return v === "1";
+  } catch {
+    return true;
+  }
+}
+
+/** Demo: templates need a provider (native shots 23–24 = Add a provider first). */
+function demoHasProviders(): boolean {
+  try {
+    return localStorage.getItem("magpie.demoProviders") === "1";
   } catch {
     return false;
   }
@@ -1308,24 +1319,31 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                       : ti === 1
                         ? ["claude-haiku-4-5", "claude-sonnet-4-5", "claude-opus-4-1"]
                         : ["claude-opus-4-1", "gpt-5", "gemini-2.5-pro"];
+                  const canAdd = demoHasProviders();
                   return (
-                    <div key={tp.title} className="rt-gtpl-card">
+                    <div key={tp.title} className={`rt-gtpl-card${canAdd ? "" : " off"}`}>
                       <div className="hd">
                         <b>{t(tp.title)}</b>
                       </div>
                       <div className="desc">{t(tp.desc)}</div>
                       <div className="acts">
-                        <button
-                          type="button"
-                          className="text primary"
-                          onClick={() => {
-                            setTemplateSeed({ name: t(tp.title), memberIds: seedMembers });
-                            setGroupEditorOpen(true);
-                            setDemoGroups(true);
-                          }}
-                        >
-                          {t("Add")}
-                        </button>
+                        {canAdd ? (
+                          <button
+                            type="button"
+                            className="text primary"
+                            onClick={() => {
+                              setTemplateSeed({ name: t(tp.title), memberIds: seedMembers });
+                              setGroupEditorOpen(true);
+                              setDemoGroups(true);
+                            }}
+                          >
+                            {t("Add")}
+                          </button>
+                        ) : (
+                          <span className="text quiet" style={{ opacity: 0.55, pointerEvents: "none" }}>
+                            {t("Add a provider first")}
+                          </span>
+                        )}
                       </div>
                     </div>
                   );

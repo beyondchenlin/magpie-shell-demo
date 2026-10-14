@@ -1,3 +1,10 @@
+## v0.1.42 ROUTING_NEST
+
+- Templates show **Add a provider first** with no demo providers; Import disabled until paste; Accounts hidden default.
+- New group editor / Discard / Import box from prior bumps.
+
+## v0.1.41 FONTS_MENU + MOTION
+
 ## v0.1.41 FONTS_MENU + MOTION
 
 - Interface/Code font menus (family + style + Search/Refresh) + preview; Appearance theming class.

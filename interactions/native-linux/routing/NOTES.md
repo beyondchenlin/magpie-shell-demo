@@ -119,3 +119,5 @@ Routing tab on the 752×652 window at +610+300. Editor closed, import closed, ac
 ## demo 对齐
 - **v0.1.29**: New group editor 02–22（segs / pop / reasoning / discard）
 - **v0.1.30**: 23–30 templates + Import paste box + Accounts mask tip；空态 Waiting / Send one… / Every request… 英文源键；ModelPop multi keepOpen + use as typed
+
+Demo v0.1.42: ROUTING_NEST — templates **Add a provider first** (empty providers; `magpie.demoProviders=1` enables Add); Accounts hidden default; Import disabled until paste; editor 02–22 already from v0.1.29–30.
