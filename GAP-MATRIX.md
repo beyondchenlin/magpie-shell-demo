@@ -1,3 +1,10 @@
+## v0.1.43 AGENTS_MOTION
+- Native Agents **01–18** empty path: default list **Cursor only** (Can't connect); Manage Select unconnected = Magpie `!onMagpie` (checks Cursor); guide `{n} of {m} done`.
+- Connect / stale / ModelPop / Not set up fold: gated `?demoAgents=1` or `localStorage magpie.demoAgents=1` — Show more · agent-fold spring · Connect from fold.
+- Motion chips: `.guide-x` .12s; agent-fold / agent-more / install chev reduced-motion; `#providers.sorting` sibling slide + reduce.
+- Providers: arrange drag / true OAuth / key save still **mock** (NOTES incomplete by design — no sign-in/key typed).
+- Allowances quota body still **N/A**.
+
 ## v0.1.42 ROUTING_NEST
 - Native routing **02–30** fidelity close-out: templates disabled **Add a provider first** (shots 23–24) unless `magpie.demoProviders=1`; Accounts hidden default (28–30); Import paste disabled until text (25–27). Editor nest already in v0.1.29–30.
 - Still mock: live gateway history / day pills / Replay; true Find-groups write; OS providers for template Add.

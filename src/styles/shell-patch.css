@@ -590,3 +590,23 @@ body.web.side-nav {
 .ctx-tune-note { margin: 0 0 10px; }
 .ctx-empty-dash b { display: block; font-weight: 600; }
 .led-q-wrap .sess-filter { min-width: 180px; }
+
+/* v0.1.43 MOTION — Magpie control transitions still unmatched */
+.guide-x { transition: background .12s var(--ease, ease), color .12s var(--ease, ease); }
+.ag-install-head .chev { transition: transform .3s cubic-bezier(.22, 1, .36, 1); }
+@media (prefers-reduced-motion: reduce) {
+  .agent-more .chev,
+  .agent-fold,
+  .agent-fold .row,
+  .agent-fold .agent-fold-cap,
+  .ag-install-head .chev,
+  .guide-x,
+  .guide-agent { transition: none !important; }
+  .agent-fold.open .row,
+  .agent-fold.open .agent-fold-cap { transition: none !important; }
+}
+#providers.sorting > .row { transition: transform .22s cubic-bezier(.22, 1, .36, 1); }
+@media (prefers-reduced-motion: reduce) {
+  #providers.sorting > .row,
+  #agents.sorting > .row { transition: none !important; }
+}

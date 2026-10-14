@@ -15,13 +15,26 @@ type Install = {
 
 const INSTALLS = installsData as Install[];
 
-const ALL_AGENTS = [
-  { id: "cursor", name: "Cursor", icon: "cursor", connectable: false },
+/** Native empty Agents list is Cursor only (NOTES 01 / 18). Extra connectable
+ *  agents (Connect / stale / ModelPop) gate behind ?demoAgents=1 or
+ *  localStorage magpie.demoAgents=1 — not invented on the default empty path. */
+const CURSOR_AGENT = { id: "cursor", name: "Cursor", icon: "cursor", connectable: false } as const;
+const DEMO_CONNECTABLES = [
   { id: "claude", name: "Claude Code", icon: "claude-color", connectable: true },
   { id: "codex", name: "Codex", icon: "codex-color", connectable: true },
   { id: "opencode", name: "OpenCode", icon: "openai", connectable: true },
   { id: "pi", name: "Pi", icon: "openai", connectable: true },
 ] as const;
+type AgentDef = typeof CURSOR_AGENT | (typeof DEMO_CONNECTABLES)[number];
+function readDemoAgents(): boolean {
+  try {
+    const q = new URLSearchParams(location.search);
+    if (q.get("demoAgents") === "1" || q.get("agents") === "demo") return true;
+    return localStorage.getItem("magpie.demoAgents") === "1";
+  } catch {
+    return false;
+  }
+}
 
 const DEMO_POP_OPTS: PopOption[] = [
   { value: "claude-opus-4", label: "claude-opus-4", group: "Anthropic", note: "Opus" },
@@ -168,12 +181,17 @@ function CopyBtn({
 }
 
 type ManageProps = {
+  agents: readonly AgentDef[];
+  /** Magpie onMagpie — wired / added / drift. Select unconnected = !onMagpie. */
+  wired: Record<string, boolean>;
   hiddenIds: Set<string>;
   onHiddenChange: (next: Set<string>) => void;
   onClose: () => void;
 };
 
 function ManageAgentsModal({
+  agents,
+  wired,
   hiddenIds,
   onHiddenChange,
   onClose,
@@ -185,7 +203,6 @@ function ManageAgentsModal({
   const [result, setResult] = useState("");
   const closing = useRef(false);
 
-  const agents = ALL_AGENTS;
   const matching = useMemo(
     () =>
       agents.filter((a) =>
@@ -369,10 +386,10 @@ function ManageAgentsModal({
                 type="button"
                 className="text"
                 onClick={() => {
-                  // Magpie: clear then add matching !onMagpie
+                  // Magpie: clear then add matching !onMagpie(a)
                   setSelected(
                     new Set(
-                      matching.filter((a) => a.connectable).map((a) => a.id),
+                      matching.filter((a) => !wired[a.id]).map((a) => a.id),
                     ),
                   );
                 }}
@@ -590,6 +607,11 @@ export function AgentsView({
   refreshNonce,
   onStatus,
 }: Props) {
+  const [demoAgents] = useState(() => readDemoAgents());
+  const ALL_AGENTS = useMemo<readonly AgentDef[]>(
+    () => (demoAgents ? [CURSOR_AGENT, ...DEMO_CONNECTABLES] : [CURSOR_AGENT]),
+    [demoAgents],
+  );
   const [guideHidden, setGuideHidden] = useState(() => {
     try {
       return localStorage.getItem(GUIDE_KEY) === "1";
@@ -597,6 +619,7 @@ export function AgentsView({
       return false;
     }
   });
+  const [showAllAgents, setShowAllAgents] = useState(false);
   const [arrangeFor, setArrangeFor] = useState<{
     id: string;
     el: HTMLElement;
@@ -694,10 +717,9 @@ export function AgentsView({
   };
 
   const orderedAll = (() => {
-    type Ag = (typeof ALL_AGENTS)[number];
-    if (!orderIds.length) return [...ALL_AGENTS] as Ag[];
-    const by = new Map<string, Ag>(ALL_AGENTS.map((a) => [a.id, a]));
-    const out: Ag[] = [];
+    if (!orderIds.length) return [...ALL_AGENTS];
+    const by = new Map<string, AgentDef>(ALL_AGENTS.map((a) => [a.id, a]));
+    const out: AgentDef[] = [];
     for (const id of orderIds) {
       const a = by.get(id);
       if (a) { out.push(a); by.delete(id); }
@@ -705,7 +727,13 @@ export function AgentsView({
     for (const a of ALL_AGENTS) if (by.has(a.id)) out.push(a);
     return out;
   })();
-  const visible = orderedAll.filter((a) => !hiddenIds.has(a.id));
+  // Magpie agentUsed / onMagpie: Cursor stays up; connectable rows stay up once wired.
+  const isUsed = (a: AgentDef) =>
+    a.id === "cursor" || !a.connectable || !!wired[a.id];
+  const visibleAll = orderedAll.filter((a) => !hiddenIds.has(a.id));
+  const used = visibleAll.filter(isUsed);
+  const unset = visibleAll.filter((a) => !isUsed(a));
+  const visible = used; // top list = in-use (native: Cursor only)
   const hidden = orderedAll.filter((a) => hiddenIds.has(a.id));
   const persistOrder = (ids: string[]) => {
     setOrderIds(ids);
@@ -733,7 +761,7 @@ export function AgentsView({
                     const done =
                       (typeof window !== "undefined" && sessionStorage.getItem("magpie-demo-providerAdded") === "1" ? 1 : 0) +
                       (Object.values(wired).some(Boolean) ? 1 : 0);
-                    return t("{n} of {total} done", { n: done, total: 2 });
+                    return t("{n} of {m} done", { n: done, m: 2 });
                   })()}
                 </span>
                 <button
@@ -1464,54 +1492,162 @@ export function AgentsView({
             </div>
           ))}
 
-          {hidden.length > 0 ? (
+          {unset.length || hidden.length ? (
             <>
-              <button
-                type="button"
-                className="agent-fold-cap agent-hid-line"
-                aria-expanded={showHiddenFold}
-                title={ZH.showHidden}
-                onClick={() => setShowHiddenFold((o) => !o)}
+              <div
+                className={`agent-fold${showAllAgents ? " open" : ""}`}
+                style={{ ["--n" as string]: unset.length + (hidden.length && !unset.length ? hidden.length : 0) }}
               >
-                <span>
-                  {ZH.hiddenFold.replace("{n}", String(hidden.length))}
-                </span>
-              </button>
-              {showHiddenFold
-                ? hidden.map((a) => (
-                    <div
-                      key={a.id}
-                      className="row agent conn hid"
-                      data-id={a.id}
-                      title={a.name}
-                    >
+                <div className="agent-fold-inner" inert={!showAllAgents ? true : undefined}>
+                  {unset.length ? (
+                    <>
+                      <div className="agent-fold-cap" style={{ ["--i" as string]: 0 }}>
+                        {t("Not set up")}
+                      </div>
+                      {unset.map((a, i) => (
+                        <div
+                          key={a.id}
+                          className="row agent conn put-away"
+                          data-id={a.id}
+                          title={a.name}
+                          style={{ ["--i" as string]: i + 1 }}
+                        >
+                          <button type="button" className="ag-handle" aria-label={a.name}>
+                            <span className="ic">
+                              <img src={iconSrc(a.icon)} alt="" />
+                            </span>
+                          </button>
+                          <div className="who">
+                            <div className="name">{a.name}</div>
+                            <div className="sub" style={{ fontSize: 12, color: "var(--faint)" }}>
+                              {demoCopy("演示：可接入 Magpie 模型列表", "Demo: can connect Magpie models")}
+                            </div>
+                          </div>
+                          <button
+                            type="button"
+                            className={`text primary${connectBusy === a.id ? " busy" : ""}`}
+                            disabled={connectBusy === a.id}
+                            onClick={() => {
+                              setConnectBusy(a.id);
+                              window.setTimeout(() => {
+                                setWired((w) => ({ ...w, [a.id]: true }));
+                                setExpandOpen(a.id);
+                                setConnectBusy(null);
+                                setShowAllAgents(false);
+                                onStatus(t("Connected · new sessions take it"), "ok");
+                              }, 380);
+                            }}
+                          >
+                            {connectBusy === a.id ? "…" : demoCopy("接入", "Connect")}
+                          </button>
+                        </div>
+                      ))}
+                    </>
+                  ) : null}
+                  {hidden.length && !unset.length ? (
+                    <>
+                      <div className="agent-fold-cap" style={{ ["--i" as string]: 0 }}>
+                        {t("Hidden")}
+                      </div>
+                      {hidden.map((a, i) => (
+                        <div
+                          key={a.id}
+                          className="row agent conn hid put-away"
+                          data-id={a.id}
+                          title={a.name}
+                          style={{ ["--i" as string]: i + 1 }}
+                        >
+                          <button type="button" className="ag-handle" aria-label={a.name}>
+                            <span className="ic">
+                              <img src={iconSrc(a.icon)} alt="" />
+                            </span>
+                          </button>
+                          <div className="who">
+                            <div className="name">{a.name}</div>
+                          </div>
+                          <button
+                            type="button"
+                            className="ag-show"
+                            title={ZH.showAgainTitle}
+                            onClick={() => {
+                              const next = new Set(hiddenIds);
+                              next.delete(a.id);
+                              setHiddenIds(next);
+                            }}
+                          >
+                            <span>{ZH.showAgain}</span>
+                          </button>
+                        </div>
+                      ))}
+                    </>
+                  ) : null}
+                  {hidden.length && unset.length ? (
+                    <>
                       <button
                         type="button"
-                        className="ag-handle"
-                        aria-label={a.name}
+                        className="agent-fold-cap agent-hid-line"
+                        aria-expanded={showHiddenFold}
+                        title={t("Hidden by you · click to see them")}
+                        style={{ ["--i" as string]: unset.length + 1 }}
+                        onClick={() => setShowHiddenFold((o) => !o)}
                       >
-                        <span className="ic">
-                          <img src={iconSrc(a.icon)} alt="" />
+                        <span>{t("Hidden ({n})", { n: hidden.length })}</span>
+                        <span className="chev" aria-hidden>
+                          <svg viewBox="0 0 16 16" width={9} height={9}>
+                            <path d="M4 6l4 4 4-4" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                          </svg>
                         </span>
                       </button>
-                      <div className="who">
-                        <div className="name">{a.name}</div>
-                      </div>
-                      <button
-                        type="button"
-                        className="ag-show"
-                        title={ZH.showAgainTitle}
-                        onClick={() => {
-                          const next = new Set(hiddenIds);
-                          next.delete(a.id);
-                          setHiddenIds(next);
-                        }}
-                      >
-                        <span>{ZH.showAgain}</span>
-                      </button>
-                    </div>
-                  ))
-                : null}
+                      {showHiddenFold
+                        ? hidden.map((a) => (
+                            <div key={a.id} className="row agent conn hid put-away" data-id={a.id} title={a.name}>
+                              <button type="button" className="ag-handle" aria-label={a.name}>
+                                <span className="ic">
+                                  <img src={iconSrc(a.icon)} alt="" />
+                                </span>
+                              </button>
+                              <div className="who">
+                                <div className="name">{a.name}</div>
+                              </div>
+                              <button
+                                type="button"
+                                className="ag-show"
+                                title={ZH.showAgainTitle}
+                                onClick={() => {
+                                  const next = new Set(hiddenIds);
+                                  next.delete(a.id);
+                                  setHiddenIds(next);
+                                }}
+                              >
+                                <span>{ZH.showAgain}</span>
+                              </button>
+                            </div>
+                          ))
+                        : null}
+                    </>
+                  ) : null}
+                </div>
+              </div>
+              <button
+                type="button"
+                className="agent-more"
+                data-unrolls=""
+                aria-expanded={showAllAgents}
+                onClick={() => setShowAllAgents((o) => !o)}
+              >
+                <span>
+                  {showAllAgents
+                    ? t("Show less")
+                    : !unset.length
+                      ? t("{n} hidden agents", { n: hidden.length })
+                      : t("Show {n} more", { n: unset.length })}
+                </span>
+                <span className="chev" aria-hidden>
+                  <svg viewBox="0 0 16 16" width={10} height={10}>
+                    <path d="M4 6l4 4 4-4" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </span>
+              </button>
             </>
           ) : null}
 
@@ -1674,6 +1810,8 @@ export function AgentsView({
 
       {manageOpen ? (
         <ManageAgentsModal
+          agents={ALL_AGENTS}
+          wired={wired}
           hiddenIds={hiddenIds}
           onHiddenChange={setHiddenIds}
           onClose={() => setManageOpen(false)}

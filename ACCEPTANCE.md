@@ -1,3 +1,10 @@
+## v0.1.43 AGENTS_MOTION
+
+- Default Agents = native empty (Cursor only · Manage Select unconnected · Install 14 · Profiles none).
+- Demo Connect/stale/ModelPop/Not-set-up fold behind `?demoAgents=1`.
+- Motion: guide-x + agent-fold/install reduce + providers sorting.
+- Still mock: true OAuth / provider arrange persist / Allowances quota body N/A.
+
 ## v0.1.42 ROUTING_NEST
 
 - Templates show **Add a provider first** with no demo providers; Import disabled until paste; Accounts hidden default.
