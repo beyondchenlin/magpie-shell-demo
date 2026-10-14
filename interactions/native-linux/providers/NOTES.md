@@ -133,7 +133,7 @@ Opened from the catalog foot (33). Add was never clicked. No key typed.
 
 | shot | what |
 |---|---|
-| 35 | Ollama editor. Note "your local models", site ollama.com. API key optional for local servers + Show. Server address folded. Headers empty row + { } / × / + Add header. Extra body placeholder `prompt_cache_key`. Proxy Global. Concurrency No limit. Cancel / Add. |
+| 35 | Ollama editor. Note "your local models", site ollama.com. API key optional for local servers + Show. Server address folded. Headers is + Add header only (no empty row).  Extra body placeholder `prompt_cache_key`. Proxy Global. Concurrency No limit. Cancel / Add. |
 | 36 | Server address opened: Address `http://localhost:11434`, hint "Where the server listens…". |
 | 37 | Scrolled: Extra body, Proxy, Concurrency, Requests per minute, Queue size, Queue wait. |
 | 38 | Further: Queue wait, Price rate, **Key header** Both / x-api-key / Authorization: Bearer (Ollama has Anthropic URL → third-party both-headers), User-Agent tick. |
@@ -145,3 +145,8 @@ Opened from the catalog foot (33). Add was never clicked. No key typed.
 
 ## demo 对齐（v0.1.51）
 - KindLocal 四编辑器：Server address / optional key / Redaction / Key header / User-Agent / Context·Max·Compact chips；MLX-Serve site `github.com`
+
+## demo 对齐（v0.1.52）
+- Detect APIs：空 URL warn / System One Each / Asking… / keyless None answered / mock ep+Use these（无真探测）
+- Custom Models + Fetch models：Asking the vendor… / chip Pick all·none（无真 list）
+- Gateway `?gw=off|older` 未运行 / 接管文案

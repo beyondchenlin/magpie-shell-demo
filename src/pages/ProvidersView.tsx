@@ -477,6 +477,24 @@ function ProviderEditorModal({ state, onClose, onAdd }: EditorProps) {
   const [tryModel, setTryModel] = useState("");
   const [detectHint, setDetectHint] = useState("");
   const [detectBusy, setDetectBusy] = useState(false);
+  /** Magpie detect-out: say / asking / none / results (shell only — no real probe). */
+  type DetectRow = { protocol: string; label: string; base: string; ok: boolean; ms?: number; error?: string };
+  type DetectView =
+    | null
+    | { mode: "say"; text: string; tone: "warn" | "err" }
+    | { mode: "asking" }
+    | { mode: "none"; keyless: boolean }
+    | { mode: "results"; rows: DetectRow[]; taken: boolean };
+  const [detectView, setDetectView] = useState<DetectView>(null);
+  const [modelIds, setModelIds] = useState("");
+  const [fetchBusy, setFetchBusy] = useState(false);
+  type FetchView =
+    | null
+    | { mode: "asking" }
+    | { mode: "empty" }
+    | { mode: "err"; text: string }
+    | { mode: "list"; models: { id: string; name?: string }[]; filter: string; picked: string[] };
+  const [fetchView, setFetchView] = useState<FetchView>(null);
   const [iconsOpen, setIconsOpen] = useState(false);
   const [iconQ, setIconQ] = useState("");
   const [pickedIcon, setPickedIcon] = useState(state.icon || "aside");
@@ -711,6 +729,7 @@ function ProviderEditorModal({ state, onClose, onAdd }: EditorProps) {
                     onChange={(v) => {
                       setApi(v);
                       setDetectHint("");
+                      setDetectView(null);
                     }}
                     options={[
                       { v: "openai", label: ZH.openaiCompat, title: t(API_HINTS.openai) },
@@ -734,80 +753,279 @@ function ProviderEditorModal({ state, onClose, onAdd }: EditorProps) {
                     onChange={(e) => setBaseUrl(e.target.value)}
                     title={t(API_HINTS[api]) || API_HINTS[api] || ""}
                   />
-                  <div className="pair detect-row" style={{ gap: 6, flexWrap: "wrap" }}>
-                    <button
-                      type="button"
-                      className={`text action${detectBusy ? " busy" : ""}`}
-                      title={t("Type the base URL first. smallest request to each API (OpenAI chat completions, Responses, Anthropic, Gemini generateContent) at this URL, to see which answer")}
-                      disabled={detectBusy}
-                      onClick={() => {
-                        if (!baseUrl.trim()) {
-                          setDetectHint(t("Type the base URL first. smallest request to each API (OpenAI chat completions, Responses, Anthropic, Gemini generateContent) at this URL, to see which answer"));
-                          return;
-                        }
-                        if (api === "decide" && !tryModel.trim()) {
-                          setDetectHint(t("A decision API is asked with one model: type it and press Detect APIs"));
-                          return;
-                        }
-                        setDetectBusy(true);
-                        setDetectHint("");
-                        window.setTimeout(() => {
-                          setDetectBusy(false);
-                          setDetectHint(
-                            demoCopy(
-                              "演示：未发探测请求。OpenAI chat · Responses 可能可用。",
-                              "Demo: no probe sent. OpenAI chat · Responses may answer.",
+                  <div className="detect">
+                    <div className="detect-row">
+                      <button
+                        type="button"
+                        className={`text action${detectBusy ? " busy" : ""}`}
+                        title={t(
+                          "Send the smallest request to each API (OpenAI chat completions, Responses, Anthropic messages, Gemini generateContent) at this URL, to see which answer",
+                        )}
+                        disabled={detectBusy}
+                        onClick={() => {
+                          const base = baseUrl.trim();
+                          if (!base) {
+                            setDetectView({
+                              mode: "say",
+                              text: t("Type the base URL first"),
+                              tone: "warn",
+                            });
+                            setDetectHint("");
+                            return;
+                          }
+                          setDetectBusy(true);
+                          setDetectHint("");
+                          setDetectView({ mode: "asking" });
+                          window.setTimeout(() => {
+                            setDetectBusy(false);
+                            // Shell only: no real probe. Keyless → Magpie noneAnswered copy.
+                            if (!key.trim()) {
+                              setDetectView({ mode: "none", keyless: true });
+                              return;
+                            }
+                            const root = base.replace(/\/+$/, "");
+                            setDetectView({
+                              mode: "results",
+                              taken: false,
+                              rows: [
+                                {
+                                  protocol: "openai",
+                                  label: "OpenAI",
+                                  base: root.includes("/v1") ? root : root + "/v1",
+                                  ok: true,
+                                  ms: 42,
+                                },
+                                {
+                                  protocol: "responses",
+                                  label: "Responses",
+                                  base: root.includes("/v1") ? root : root + "/v1",
+                                  ok: true,
+                                  ms: 51,
+                                },
+                                {
+                                  protocol: "anthropic",
+                                  label: "Anthropic",
+                                  base: root.replace(/\/v1(beta)?$/, "") || root,
+                                  ok: false,
+                                  error: "404",
+                                },
+                                {
+                                  protocol: "gemini",
+                                  label: "Gemini",
+                                  base: root.includes("v1beta")
+                                    ? root
+                                    : root.replace(/\/v1$/, "/v1beta") || root + "/v1beta",
+                                  ok: false,
+                                  error: "404",
+                                },
+                              ],
+                            });
+                          }, 480);
+                        }}
+                      >
+                        {detectBusy ? "…" : t("Detect APIs")}
+                      </button>
+                      <input
+                        type="text"
+                        className="detect-model"
+                        placeholder={t("model to try · empty picks one from the vendor's list")}
+                        value={tryModel}
+                        onChange={(e) => setTryModel(e.target.value)}
+                      />
+                      <button
+                        type="button"
+                        className="text action detect-each"
+                        title={t(
+                          "Ask every model picked below on each API, to see which API serves which model (up to {n}, a few at a time)",
+                          { n: 30 },
+                        )}
+                        disabled={detectBusy}
+                        onClick={() => {
+                          if (api === "decide") {
+                            setDetectView({
+                              mode: "say",
+                              text: t(
+                                "A decision API is asked with one model: type it and press Detect APIs",
+                              ),
+                              tone: "warn",
+                            });
+                            return;
+                          }
+                          const ids = [
+                            ...new Set(
+                              [
+                                ...modelIds
+                                  .split(/[,\s]+/)
+                                  .map((s) => s.trim())
+                                  .filter(Boolean),
+                                ...(fetchView?.mode === "list" ? fetchView.picked : []),
+                                tryModel.trim(),
+                              ].filter(Boolean),
                             ),
-                          );
-                        }, 480);
-                      }}
-                    >
-                      {detectBusy ? "…" : t("Detect APIs")}
-                    </button>
-                    <input
-                      type="text"
-                      placeholder={t("model to try · empty picks one from list")}
-                      value={tryModel}
-                      onChange={(e) => setTryModel(e.target.value)}
-                      style={{ flex: 1, minWidth: 140 }}
-                    />
-                    <button
-                      type="button"
-                      className="text action detect-each"
-                      title={t("Pick models first, or type one and press Detect APIs")}
-                      onClick={() => {
-                        if (!tryModel.trim()) {
-                          setDetectHint(t("Pick models first, or type one and press Detect APIs"));
-                          return;
-                        }
-                        setDetectHint(
-                          demoCopy(
-                            `演示：对每个已选模型探测（${tryModel.trim()}）`,
-                            `Demo: probe each picked model (${tryModel.trim()})`,
-                          ),
-                        );
-                      }}
-                    >
-                      {t("Each picked model")}
-                    </button>
-                  </div>
-                  {detectHint ? (
-                    <div
-                      className="hint"
-                      style={{
-                        color:
-                          detectHint.includes("base URL first") || detectHint.includes("先填写") || detectHint.includes("type the provider")
-                            ? "var(--red)"
-                            : detectHint.includes("decision") || detectHint.includes("决策") || detectHint.includes("Type the") || detectHint.includes("Pick models") || detectHint.includes("先")
-                              ? "var(--amber, #c47a00)"
-                              : "var(--muted)",
-                        fontSize: 11.5,
-                        animation: "fade-in .15s var(--ease)",
-                      }}
-                    >
-                      {detectHint}
+                          ];
+                          if (!ids.length) {
+                            setDetectView({
+                              mode: "say",
+                              text: t("Pick models first, or type one and press Detect APIs"),
+                              tone: "warn",
+                            });
+                            return;
+                          }
+                          const base = baseUrl.trim();
+                          if (!base) {
+                            setDetectView({
+                              mode: "say",
+                              text: t("Type the base URL first"),
+                              tone: "warn",
+                            });
+                            return;
+                          }
+                          setDetectBusy(true);
+                          setDetectView({ mode: "asking" });
+                          window.setTimeout(() => {
+                            setDetectBusy(false);
+                            if (!key.trim()) {
+                              setDetectView({ mode: "none", keyless: true });
+                              return;
+                            }
+                            // Shell: one-model grid row for typed/picked ids (demo structure)
+                            setDetectView({
+                              mode: "results",
+                              taken: false,
+                              rows: [
+                                {
+                                  protocol: "openai",
+                                  label: "OpenAI",
+                                  base: base,
+                                  ok: true,
+                                  ms: 38,
+                                },
+                                {
+                                  protocol: "responses",
+                                  label: "Responses",
+                                  base: base,
+                                  ok: false,
+                                  error: "404",
+                                },
+                              ],
+                            });
+                          }, 420);
+                        }}
+                      >
+                        {t("Each picked model")}
+                      </button>
                     </div>
-                  ) : null}
+                    {detectView ? (
+                      <div className="eps detect-out">
+                        {detectView.mode === "say" ? (
+                          <span className={`hint detect-say ${detectView.tone}`}>{detectView.text}</span>
+                        ) : null}
+                        {detectView.mode === "asking" ? (
+                          <span className="hint">{t("Asking each API…")}</span>
+                        ) : null}
+                        {detectView.mode === "none" ? (
+                          <span className="hint">
+                            {detectView.keyless
+                              ? t(
+                                  "None answered, and no API key is typed: paste the key under API key and detect again",
+                                )
+                              : t(
+                                  "None answered: check the URL and the key, or type a model the vendor serves",
+                                )}
+                          </span>
+                        ) : null}
+                        {detectView.mode === "results" ? (
+                          <>
+                            {detectView.rows.map((r) => (
+                              <div className="ep" key={r.protocol} data-api={r.protocol}>
+                                <span className="pl" title={r.label}>
+                                  {r.label}
+                                </span>
+                                <code>{r.base || "—"}</code>
+                                <span className={`res ${r.ok ? "ok" : "bad"}`}>
+                                  <svg viewBox="0 0 12 12" width={10} height={10} aria-hidden>
+                                    {r.ok ? (
+                                      <path
+                                        d="M2.5 6.2 5 8.7 9.5 3.5"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        strokeWidth="2.2"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                      />
+                                    ) : (
+                                      <path
+                                        d="M3.5 3.5 8.5 8.5M8.5 3.5 3.5 8.5"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        strokeWidth="1.8"
+                                        strokeLinecap="round"
+                                      />
+                                    )}
+                                  </svg>
+                                  <span>
+                                    {r.ok
+                                      ? r.ms != null
+                                        ? `${r.ms} ms`
+                                        : "ok"
+                                      : r.error || "—"}
+                                  </span>
+                                </span>
+                              </div>
+                            ))}
+                            <div className="detect-acts">
+                              {detectView.rows.some((r) => r.ok) ? (
+                                <button
+                                  type="button"
+                                  className="text action"
+                                  disabled={detectView.taken}
+                                  title={t(
+                                    "Set the URLs of the APIs that answered; one not found there is cleared",
+                                  )}
+                                  onClick={() => {
+                                    const ok = detectView.rows.find((r) => r.ok);
+                                    if (ok?.protocol === "responses") setApi("responses");
+                                    else if (ok?.protocol === "anthropic") setApi("anthropic");
+                                    else if (ok?.protocol === "gemini") setApi("gemini");
+                                    else setApi("openai");
+                                    setDetectView({ ...detectView, taken: true });
+                                  }}
+                                >
+                                  {detectView.taken
+                                    ? t("Taken · save to keep")
+                                    : t("Use these")}
+                                </button>
+                              ) : (
+                                <span className="hint">
+                                  {t(
+                                    "None answered: check the URL and the key, or type a model the vendor serves",
+                                  )}
+                                </span>
+                              )}
+                            </div>
+                          </>
+                        ) : null}
+                      </div>
+                    ) : null}
+                    {/* favicon / file-picker demo hints still use detectHint */}
+                    {detectHint ? (
+                      <div
+                        className="hint"
+                        style={{
+                          color:
+                            detectHint.includes("base URL first") ||
+                            detectHint.includes("先填写") ||
+                            detectHint.includes("type the provider")
+                              ? "var(--red)"
+                              : "var(--muted)",
+                          fontSize: 11.5,
+                          animation: "fade-in .15s var(--ease)",
+                        }}
+                      >
+                        {detectHint}
+                      </div>
+                    ) : null}
+                  </div>
                 </div>
               </Field>
             ) : null}
@@ -1070,8 +1288,8 @@ function ProviderEditorModal({ state, onClose, onAdd }: EditorProps) {
                 </div>
               ) : (
                 <div className="stack" style={{ gap: 4 }}>
-                  <button type="button" className="link">
-                    {ZH.addHeader}
+                  <button type="button" className="text">
+                    {t("+ Add header")}
                   </button>
                   {state.id === "vertex" ? (
                     <>
@@ -1108,7 +1326,179 @@ function ProviderEditorModal({ state, onClose, onAdd }: EditorProps) {
               )}
             </Field>
 
-            <Field label={ZH.extraBody} hint={t("JSON fields added to the body of every request to the vendor. A field the request has already is kept; write '!name' to replace it. ${sessionId} is the conversation's id.")}>
+            {kind === "custom" ? (
+              <Field
+                label={t("Models")}
+                hint={t(
+                  "Optional: Fetch models to pick from the vendor's list, or type ids; none picked, magpie asks for the list after saving.",
+                )}
+              >
+                <div className="stack add-models">
+                  <div className="detect-row">
+                    <input
+                      type="text"
+                      placeholder={t(
+                        "model ids, comma separated · e.g. gpt-5.5, claude-sonnet-5",
+                      )}
+                      value={modelIds}
+                      onChange={(e) => {
+                        setModelIds(e.target.value);
+                        if (fetchView?.mode === "list") {
+                          /* keep chips; typed ids sync on fetch redraw */
+                        }
+                      }}
+                    />
+                    <button
+                      type="button"
+                      className={`text action fetch-models${fetchBusy ? " busy" : ""}`}
+                      title={t(
+                        "Ask the vendor for its model list with the URL and key typed, to pick from; nothing is saved",
+                      )}
+                      disabled={fetchBusy}
+                      onClick={() => {
+                        if (!baseUrl.trim()) {
+                          setFetchView({
+                            mode: "err",
+                            text: t("Type the base URL first"),
+                          });
+                          return;
+                        }
+                        setFetchBusy(true);
+                        setFetchView({ mode: "asking" });
+                        window.setTimeout(() => {
+                          setFetchBusy(false);
+                          // Shell: mock a short list (no real vendor call)
+                          const demo = [
+                            { id: "gpt-4o-mini", name: "GPT-4o mini" },
+                            { id: "gpt-4.1", name: "GPT-4.1" },
+                            { id: "o4-mini", name: "o4-mini" },
+                            { id: "claude-sonnet-4-5", name: "Claude Sonnet 4.5" },
+                          ];
+                          const typed = modelIds
+                            .split(/[,\s]+/)
+                            .map((s) => s.trim())
+                            .filter(Boolean);
+                          setFetchView({
+                            mode: "list",
+                            models: demo,
+                            filter: "",
+                            picked: typed.filter((id) => demo.some((m) => m.id === id)),
+                          });
+                        }, 520);
+                      }}
+                    >
+                      {fetchBusy ? "…" : t("Fetch models")}
+                    </button>
+                  </div>
+                  {fetchView ? (
+                    <div className="models add-models-list">
+                      {fetchView.mode === "asking" ? (
+                        <span className="hint">{t("Asking the vendor…")}</span>
+                      ) : null}
+                      {fetchView.mode === "empty" ? (
+                        <span className="hint">
+                          {t("The vendor's list is empty. Type the model ids instead.")}
+                        </span>
+                      ) : null}
+                      {fetchView.mode === "err" ? (
+                        <span className="hint err">{fetchView.text}</span>
+                      ) : null}
+                      {fetchView.mode === "list" ? (
+                        <>
+                          {fetchView.models.length > 24 ? (
+                            <input
+                              className="add-models-filter"
+                              type="text"
+                              placeholder={t("filter {n} models…", {
+                                n: fetchView.models.length,
+                              })}
+                              value={fetchView.filter}
+                              onChange={(e) =>
+                                setFetchView({ ...fetchView, filter: e.target.value })
+                              }
+                            />
+                          ) : null}
+                          <div className="detect-acts">
+                            <span className="hint">
+                              {t("{n} of {all} picked", {
+                                n: fetchView.picked.length,
+                                all: fetchView.models.length,
+                              })}
+                            </span>
+                            <button
+                              type="button"
+                              className="text action"
+                              onClick={() => {
+                                const f = fetchView.filter.trim().toLowerCase();
+                                const match = fetchView.models.filter(
+                                  (m) =>
+                                    !f ||
+                                    m.id.toLowerCase().includes(f) ||
+                                    (m.name || "").toLowerCase().includes(f),
+                                );
+                                const next = [
+                                  ...new Set([
+                                    ...fetchView.picked,
+                                    ...match.map((m) => m.id),
+                                  ]),
+                                ];
+                                setFetchView({ ...fetchView, picked: next });
+                                setModelIds(next.join(", "));
+                              }}
+                            >
+                              {t(fetchView.filter.trim() ? "Pick those shown" : "Pick all")}
+                            </button>
+                            <button
+                              type="button"
+                              className="text action"
+                              onClick={() => {
+                                setFetchView({ ...fetchView, picked: [] });
+                                setModelIds("");
+                              }}
+                            >
+                              {t("Pick none")}
+                            </button>
+                          </div>
+                          <div className="mchips">
+                            {fetchView.models
+                              .filter((m) => {
+                                const f = fetchView.filter.trim().toLowerCase();
+                                return (
+                                  !f ||
+                                  m.id.toLowerCase().includes(f) ||
+                                  (m.name || "").toLowerCase().includes(f)
+                                );
+                              })
+                              .map((m) => {
+                                const on = fetchView.picked.includes(m.id);
+                                return (
+                                  <button
+                                    key={m.id}
+                                    type="button"
+                                    className={`mchip${on ? " on" : ""}`}
+                                    title={m.name ? m.id : undefined}
+                                    onClick={() => {
+                                      const picked = on
+                                        ? fetchView.picked.filter((x) => x !== m.id)
+                                        : [...fetchView.picked, m.id];
+                                      setFetchView({ ...fetchView, picked });
+                                      setModelIds(picked.join(", "));
+                                    }}
+                                  >
+                                    <span>{m.name || m.id}</span>
+                                  </button>
+                                );
+                              })}
+                          </div>
+                        </>
+                      ) : null}
+                    </div>
+                  ) : null}
+                </div>
+              </Field>
+            ) : null}
+
+                        <Field label={ZH.extraBody} hint={t("JSON fields added to the body of every request to the vendor. A field the request has already is kept; write '!name' to replace it. ${sessionId} is the conversation's id.")}>
               <div className="extra-body">
                 <textarea
                   className="json"

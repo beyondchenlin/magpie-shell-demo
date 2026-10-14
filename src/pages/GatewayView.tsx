@@ -35,6 +35,19 @@ function readDemoPrefs(): { lan: boolean; showGwDemo: boolean; port: string } {
   }
 }
 
+/** Magpie gateway status chip: on (default) · off · older (take-over). `?gw=` or localStorage magpie.demoGw */
+type GwMode = "on" | "off" | "older";
+function readGwMode(): GwMode {
+  try {
+    const q = new URLSearchParams(location.search).get("gw");
+    if (q === "off" || q === "older" || q === "on") return q;
+    const v = localStorage.getItem("magpie.demoGw") || "on";
+    return v === "off" || v === "older" ? v : "on";
+  } catch {
+    return "on";
+  }
+}
+
 type FlavorId = "openai" | "responses" | "anthropic" | "gemini" | "systemone";
 type SnipLang = "shell" | "curl" | "python" | "node";
 type SnipOS = "windows" | "unix";
@@ -285,8 +298,10 @@ export function GatewayView({ onStatus, onGoNetwork }: Props) {
     const id = window.setInterval(tick, 1500);
     return () => { window.removeEventListener("storage", tick); window.clearInterval(id); };
   }, []);
-  const running = true;
-  const showFilled = demoPrefs.showGwDemo;
+  const [gwMode, setGwMode] = useState<GwMode>(() => readGwMode());
+  const running = gwMode !== "off";
+  const older = gwMode === "older";
+  const showFilled = demoPrefs.showGwDemo && gwMode === "on";
   const lanOn = demoPrefs.lan;
   const catalog = showFilled ? DEMO_MODELS : [];
   const models = catalog.length;
@@ -337,22 +352,53 @@ export function GatewayView({ onStatus, onGoNetwork }: Props) {
     snippet = `curl ${base}/systemone \\\n  -H "Authorization: Bearer ${secret}" \\\n  -H "Content-Type: application/json" \\\n  -d '{"model": "${modelPlaceholder}", "state": {}, "questions": {}}'`;
   }
 
-  const sub = [
-    t("{n} models", { n: models }),
-    t("no agent routed through it yet"),
-    t("five APIs, one URL"),
-  ].join(" · ");
+  const sub = older
+    ? t(
+        "Agents' requests go through magpie {v} and are sent as it sends them, without this version's fixes. Quit it here and this one serves the gateway at once.",
+        { v: "0.1.1000" },
+      )
+    : running
+      ? [
+          t("{n} models", { n: models }),
+          t("no agent routed through it yet"),
+          t("five APIs, one URL"),
+        ].join(" · ")
+      : t("start it with magpie serve, or open magpie at login");
 
   const onRestart = () => {
     if (restartBusy) return;
     setRestartBusy(true);
-    // Magpie awaits gateway/restart; demo: brief busy then toast (no process)
+    // Magpie awaits gateway/restart or take-over; demo: brief busy then toast
     window.setTimeout(() => {
       setRestartBusy(false);
-      onStatus(
-        demoCopy("演示壳 · 无真实网关进程", "Demo shell · no real gateway process"),
-        "ok",
-      );
+      if (older) {
+        setGwMode("on");
+        try {
+          localStorage.setItem("magpie.demoGw", "on");
+        } catch {
+          /* ignore */
+        }
+        onStatus(
+          demoCopy("演示：已接管网关（无真实进程）", "Demo: took over gateway (no real process)"),
+          "ok",
+        );
+      } else if (!running) {
+        setGwMode("on");
+        try {
+          localStorage.setItem("magpie.demoGw", "on");
+        } catch {
+          /* ignore */
+        }
+        onStatus(
+          demoCopy("演示：已启动网关（无真实进程）", "Demo: started gateway (no real process)"),
+          "ok",
+        );
+      } else {
+        onStatus(
+          demoCopy("演示壳 · 无真实网关进程", "Demo shell · no real gateway process"),
+          "ok",
+        );
+      }
     }, 700);
   };
 
@@ -373,13 +419,17 @@ export function GatewayView({ onStatus, onGoNetwork }: Props) {
     <main className="view" id="view-gateway">
       <div className="list gwcard">
         <div className="row gw" id="gateway">
-          <span className={`dot${running ? " on" : ""}`} aria-hidden />
+          <span className={`dot${older ? " old" : running ? " on" : ""}`} aria-hidden />
           <div className="who">
             <div className="name">
               {t("Gateway")}
-              <span className="state">{t(running ? "running" : "not running")}</span>
+              <span className="state">
+                {older
+                  ? t("running · served by magpie {v}, older than this one", { v: "0.1.1000" })
+                  : t(running ? "running" : "not running")}
+              </span>
             </div>
-            <div className="sub">{sub}</div>
+            <div className={`sub${older ? " old" : ""}`}>{sub}</div>
             <button
               type="button"
               className="text action gw-fix"
@@ -387,8 +437,12 @@ export function GatewayView({ onStatus, onGoNetwork }: Props) {
               onClick={onRestart}
             >
               {restartBusy
-                ? t(running ? "Restarting the gateway…" : "Starting the gateway…")
-                : t(running ? "Restart gateway" : "Start gateway")}
+                ? older
+                  ? t("Quitting magpie {v}…", { v: "0.1.1000" })
+                  : t(running ? "Restarting the gateway…" : "Starting the gateway…")
+                : older
+                  ? t("Quit magpie {v} and take over", { v: "0.1.1000" })
+                  : t(running ? "Restart gateway" : "Start gateway")}
             </button>
           </div>
           <button

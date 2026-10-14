@@ -1,3 +1,9 @@
+## v0.1.52 DETECT_FETCH_DONE
+
+- Custom Detect APIs / Each / Fetch models UI states aligned to Magpie (NOTES 06–07 + `app.js`); no real probe/list.
+- Gateway `?gw=off|older` empty / take-over copy.
+- Still mock: true Detect/favicon/file picker/OAuth/key persist. Allowances N/A.
+
 ## v0.1.51 PROVIDERS_LOCAL_DONE
 
 - Consumed native providers **35–43** On-this-machine editors (Ollama nest + oMLX / LM Studio / MLX-Serve).

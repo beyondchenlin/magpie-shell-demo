@@ -1,3 +1,10 @@
+## v0.1.52 DETECT_FETCH_DONE
+- Custom **Detect APIs** shell states from Magpie `detectAPIs` + NOTES 06/07: empty URL → `detect-say warn` "Type the base URL first"; System One Each → decision warn; no picks → Pick models first; busy "Asking each API…"; keyless → None answered (paste key); with key → mock `.ep` rows + **Use these** → Taken · save to keep (no real probe).
+- Custom **Models** + **Fetch models** (`addFormModels`): no URL → err; busy "Asking the vendor…"; mock chip list + Pick all/none / `{n} of {all}` (nothing saved).
+- KindLocal Headers: `+ Add header` as `.text` (shot 35: no empty row) — already no empty row for non-custom.
+- Gateway status modes: `?gw=off|older` / `localStorage magpie.demoGw` → not running · Start / take-over Quit magpie {v} copy (shell only).
+- Still mock: true detect/list HTTP, Add/Save persist, OAuth/keys. Allowances quota **N/A**. Skip Vercel 402.
+
 ## v0.1.51 PROVIDERS_LOCAL_DONE
 - Native `providers/35–43` consumed: Ollama nest (address / scroll / Key header / User-Agent / Redaction / Context·Max·Compact) + oMLX / LM Studio / MLX-Serve editors.
 - Demo KindLocal: User-Agent tick, Compact at chips, richer Context/Max placeholders; Redaction after UA (Magpie order); MLX-Serve site host `github.com`.
