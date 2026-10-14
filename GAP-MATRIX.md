@@ -1,3 +1,8 @@
+## v0.1.39 SETTINGS_NEST_PARTIAL
+- Native settings General (NOTES + shots 01–09 path): Provider in model names = Off / Not on names I set / On; Text size Magpie tip + status; Interface font / Code font System-default shell (font menus still mock); Lightweight / Prevent sleep copy.
+- Remaining settings 10–85 (Allowances deep, Network, Models, Privacy nest already partial, Sync, About): continue next bumps.
+- Allowances quota body still **N/A**.
+
 ## v0.1.38 PLUGINS_NEST
 - Native `plugins/01–34` + NOTES consumed into `PluginsView`.
 - Discover intro (Subscriptions and gateway middleware + trust + pm-art), market sections (Subscriptions / Gateway middleware / Agents / Unofficial on GitHub), Suggested + On npm search (debounce 350ms), Mirrors tip, manual row + folder picker Cancel leaves field, Built-in copy from builtins.test.cjs + Recent calls enum, Installed empty (shot 18) + Discover plugins.

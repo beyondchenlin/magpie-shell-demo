@@ -72,7 +72,7 @@ type DemoPrefs = {
   colorblind: boolean;
   textSize: number;
   tray: "panel" | "window";
-  plainNames: "show" | "hide";
+  plainNames: "off" | "own" | "on";
   codexAgentsV1: boolean;
   fullContext: boolean;
   compactAt: string;
@@ -154,7 +154,7 @@ const DEFAULTS: DemoPrefs = {
   colorblind: false,
   textSize: 110,
   tray: "panel",
-  plainNames: "show",
+  plainNames: "on",
   codexAgentsV1: false,
   fullContext: false,
   compactAt: "272k",
@@ -251,6 +251,8 @@ function loadPrefs(): DemoPrefs {
     if (next.imageGen === "auto") next.imageGen = "";
     if (next.webSearch === "auto") next.webSearch = "";
     if (parsed.trayUsage && !parsed.trayUsageMode) next.trayUsageMode = "usage:today";
+    if ((parsed as { plainNames?: string }).plainNames === "show") next.plainNames = "on";
+    if ((parsed as { plainNames?: string }).plainNames === "hide") next.plainNames = "off";
     if ((parsed as { turnDone?: string }).turnDone === "on") next.turnDone = "1";
     const oldDisc = (parsed as { discovery?: string }).discovery;
     if (oldDisc === "ask" || oldDisc === "allow") next.discovery = "on";
@@ -453,6 +455,8 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus }: Setti
     textSize: matchQ("Text size"),
     tray: matchQ("Click the tray icon to"),
     plainNames: matchQ("Provider in model names"),
+    uiFont: matchQ("Interface font"),
+    codeFont: matchQ("Code font"),
     codexAgents: matchQ("Codex subagents on any model"),
     longConv: matchQ("Long conversations"),
     login: matchQ("Open at login"),
@@ -634,13 +638,51 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus }: Setti
             </PrefRow>
           )}
           {gRows.textSize && (
-            <PrefRow name={t("Text size")} id="textSizeRow" sub={demoCopy("演示壳内缩放", "Demo in-shell zoom")}>
+            <PrefRow
+              name={t("Text size")}
+              id="textSizeRow"
+              sub={t("Everything in magpie's windows, larger; {keys} too", { keys: "Ctrl+ / Ctrl− / Ctrl+0" })}
+            >
               <Segs
                 value={prefs.textSize}
-                onChange={(n) => setPrefs({ textSize: Number(n) })}
+                onChange={(n) => {
+                  setPrefs({ textSize: Number(n) });
+                  onStatus?.(t("Text size {n}%", { n: Number(n) }), "ok", 1200);
+                }}
                 items={TEXT_SIZES.map((n) => ({ id: n, label: `${n}%` }))}
+                title={t("Everything in magpie's windows, larger; {keys} too", { keys: "Ctrl+ / Ctrl− / Ctrl+0" })}
               />
             </PrefRow>
+          )}
+          {gRows.uiFont && (
+              <PrefRow name={t("Interface font")} id="uiFontRow" sub={demoCopy("演示：系统默认字体；真字体列表需桌面壳", "Demo: System default; real font list needs desktop shell")}>
+                <div className="font-picks" style={{ display: "inline-flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
+                  <button type="button" className="sess-pick pref-pick font-family" title={t("System default")}>
+                    <span>{t("System default")}</span>
+                    {CHEV}
+                  </button>
+                  <button type="button" className="sess-pick pref-pick font-style" title={t("System default")}>
+                    <span>{t("System default")}</span>
+                    {CHEV}
+                  </button>
+                  <span className="font-preview" style={{ fontSize: 13, color: "var(--muted)", marginLeft: 4 }}>{t("Aa 0123 · 中文")}</span>
+                </div>
+              </PrefRow>
+          )}
+          {gRows.codeFont && (
+              <PrefRow name={t("Code font")} id="codeFontRow" sub={demoCopy("演示：系统默认等宽；真字体列表需桌面壳", "Demo: System default mono; real font list needs desktop shell")}>
+                <div className="font-picks" style={{ display: "inline-flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
+                  <button type="button" className="sess-pick pref-pick font-family" title={t("System default")}>
+                    <span>{t("System default")}</span>
+                    {CHEV}
+                  </button>
+                  <button type="button" className="sess-pick pref-pick font-style" title={t("System default")}>
+                    <span>{t("System default")}</span>
+                    {CHEV}
+                  </button>
+                  <span className="font-preview" style={{ fontSize: 13, fontFamily: "var(--code, ui-monospace, monospace)", color: "var(--muted)", marginLeft: 4 }}>{t("Aa 0123 · 中文")}</span>
+                </div>
+              </PrefRow>
           )}
           {gRows.tray && (
             <PrefRow name={t("Click the tray icon to")}>
@@ -655,13 +697,14 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus }: Setti
             </PrefRow>
           )}
           {gRows.plainNames && (
-            <PrefRow name={t("Provider in model names")}>
+            <PrefRow name={t("Provider in model names")} id="plainNamesRow">
               <Segs
                 value={prefs.plainNames}
                 onChange={(v) => setPrefs({ plainNames: v as DemoPrefs["plainNames"] })}
                 items={[
-                  { id: "show", label: t("Show") },
-                  { id: "hide", label: t("Hide") },
+                  { id: "off", label: t("Off") },
+                  { id: "own", label: t("Not on names I set") },
+                  { id: "on", label: t("On") },
                 ]}
               />
             </PrefRow>
@@ -743,7 +786,7 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus }: Setti
           {gRows.lightweight && (
             <PrefRow
               name={t("Lightweight mode")}
-              sub={t("A closed panel or window frees about 100 MB after a minute; opening it loads it again")}
+              sub={t("A closed panel frees about 100 MB after a minute; opening it loads it again")}
               id="lightweightRow"
             >
               <Segs

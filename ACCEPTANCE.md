@@ -1,3 +1,8 @@
+## v0.1.39 SETTINGS_NEST_PARTIAL
+
+- General: Magpie `suffixSegs` Off / Not on names I set / On; Text size tip `Everything in magpie's windows…`; Interface/Code font System default + Aa preview (menus mock).
+- Next: continue native settings 10–85 (Allowances/Network/Models/…).
+
 ## v0.1.38 PLUGINS_NEST
 
 - Consumed native `interactions/native-linux/plugins/01–34` + NOTES into `PluginsView`.
