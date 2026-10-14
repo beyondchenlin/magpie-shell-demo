@@ -210,3 +210,79 @@ The form is rebuilt on each draw, so the field does not keep the spec while busy
 Plugins, **Discover**, scrolled to the manual row, field empty. Search empty. Mirror **Off**. Think Tags still installed (middleware from 61–65). `github:magpie/example` was not installed. No credential was entered. Sort handle not shown. Magpie left running (752×652 at +610+300, pid 560329). Close was not used.
 
 Demo v0.1.66: MANUAL_INSTALL_DONE — CU 66–70 typed spec, Installing… (no spinner), bun add exit 1 toast, settled. Not a success install. Sort handle still N/A (one plugin).
+
+## Mirror On/Off re-pass (shots 71–75)
+
+Discover landing (intro + Subscriptions). No search. Think Tags still **Installed · 1**. Install not clicked.
+
+| shot | what |
+|---|---|
+| 71 | Discover top. **Mirrors in China** Off (gray track, knob left). Search empty. |
+| 72 | Hover switch (still Off). Dark tip (native title / clipped): full Magpie string about npmmirror, jsDelivr — may clip at window edge. |
+| 73 | Click → On. Track **var(--fg)** (black), knob right. Tip dismissed. List unchanged at Discover top (no query). |
+| 74 | Settled On. Same Subscriptions cards. |
+| 75 | Click Off → restored gray track. Same Discover top. |
+
+No fake installs. Sort handle still N/A (one plugin).
+
+## demo 对齐（v0.1.69 MIRROR_TOGGLE_DONE · CU 71–75）
+- Mirror tip Magpie string; On track = `--fg` (not accent)
+- Brief `mirrorSaving` disabled while toggle settles
+- On/Off at Discover landing; search+mirror npm refresh kept from 25–34
+- No invent success install / OAuth / keys. P1 N/A
+
+## Mirror and remaining Discover nests (shots 71–90)
+
+Last numbered frame before this pass was **70** (no 71). Native window stayed **752×652 at +200+40**, pid 560329. Started on Agents, switched to Plugins. Think Tags was already the only install. Nothing new was installed. No credential was entered. Switch off was not clicked (covered in 41–54). Remove was not clicked.
+
+Label on the control is **Mirrors in China** (role switch). Off: white knob on the left, light gray track. On: knob on the right, track near-black. No confirm dialog and no toast either way. Clicking again put it back Off. Discover's top (Subscriptions: OpenCode Zen Free, ZCode) did not visibly change.
+
+| shot | what |
+|---|---|
+| 71 | Plugins, **Discover** at the top. Intro "Subscriptions and gateway middleware". Mirror **Off**. Tab **Installed · 1**. Search empty. |
+| 72 | Pointer on the switch. Tooltip, clipped at the window's right edge: **Download the plugin list, plugins and Bun from mirrors** / **their official addresses after. Each is a copy of the very f…**. Full title (same as shot 26): "Download the plugin list, plugins and Bun from mirrors in China first (npmmirror, jsDelivr), their official addresses after. Each is a copy of the very file, checked as the original is". |
+| 73 | Click. Track goes dark immediately. Pointer still on the knob. No dialog. |
+| 74 | Pointer moved off. Knob right, dark track. Still **Mirrors in China**. No toast. |
+| 75 | Clicked again. Knob left, gray track. **Off** restored. |
+
+## Unofficial GitHub filters (shots 76–80)
+
+Not in 01–70. The section sits under Agents. Heading **Unofficial, on GitHub**. Subtitle: "repositories their authors tagged magpie-plugin — nobody has reviewed them; read the code before you install one". Kind group (aria "Kind of plugin"): **All · 47** (selected), **Provider · 39**, **Middleware · 5**, **Agent · 3**. Field placeholder **Filter by name, author or description** (aria "Filter the plugins on GitHub"). Counts are of the text query, not of the selected kind. No Install was clicked.
+
+| shot | what |
+|---|---|
+| 76 | Default. **All · 47** selected (white pill). Filter empty. First cards are providers (magpie-our-free-mo…, magpie-intelligence-…). |
+| 77 | **Middleware · 5** selected. Grid is only middleware: magpie-claude-scie… (Claude Science), magpie-middleware-… (newest images), magpie-haiku55-thi… (Haiku 5.5 thinking), claude-api-billing. Counts unchanged. |
+| 78 | Same kind, field typed `claude` (purple ring, clear ×). Counts become **All · 5**, **Provider · 3**, **Middleware · 2**, **Agent · 0**. Two middleware cards remain. Manual row is in view under them. |
+| 79 | **Agent · 0** with `claude` still in the field. Dashed empty: **No plugin on GitHub matches** and **Show all**. |
+| 80 | **Show all**. Kind back to **All · 47**, field cleared, provider cards return. (The field's clear × was not used.) |
+
+## Installed — Think Tags (shots 81–90)
+
+One row, so there is still **no sort header**. There is **no overflow (⋯) menu**. Controls are inline: **Options**, **Switch off**, **Remove**. Footer: **Plugins run on Bun 1.4.2** and **Check for updates**. Subtitle **Gateway middleware: onEvent, onResponse**. Chip **Middleware**. Switch off was left alone (41–54). Remove was not opened.
+
+| shot | what |
+|---|---|
+| 81 | Installed · 1. Row as above. Mirror still **Off**. |
+| 82 | Right-click on the name. No app menu. A native tooltip shows the row text run together: **Think Tagsv0.1.0Middleware**. |
+| 83 | **Options**. Editor (not a dialog): JSON `{ "mode": "strip" }`, note **Not set: these are its package's example**, **Cancel** and purple **Save**. No Clear (nothing saved yet). Switch off and Remove stay beside it. |
+| 84 | **Cancel**. Editor gone. **Options** is back. No toast. Options were not saved. |
+| 85 | Pointer on **Options**. Hover pill. Tooltip: **It runs with no options; its package suggests some**. |
+| 86 | Pointer on **Check for updates** (pale hover pill). Tooltip had not appeared yet. |
+| 87 | Click. **Checking…** was already over before the frame. Pale chip **Up to date** after v0.1.0. Green toast, no buttons: **Every plugin is up to date**. Label back to **Check for updates**. |
+| 88 | Same toast still up, pointer still on the button. |
+| 89 | Hover again. Tooltip, clipped on the right: **Ask npm now for each plugin's newest ver…** and **Last checked 07:13 AM**. Full first line is "Ask npm now for each plugin's newest version". |
+| 90 | Toast gone. Chip **Up to date** stays. Row unchanged. |
+
+## Left state
+
+Plugins, **Installed · 1**. Think Tags v0.1.0 still installed (middleware, on). Chip **Up to date**. Options not saved. Switch off not used. Mirror **Off**. GitHub filter cleared (Show all). Search empty. No new package. Magpie left running (752×652 at +200+40, pid 560329).
+
+Skipped: Switch off/on (41–54), Remove, sort handle (only one plugin), row overflow menu (none), Checking… spinner (too brief), main search / Suggested (20–40), Provider kind as its own click (counts only), Mirror confirm (none), `github:magpie/example` (not retried), credentials.
+
+## demo 对齐（v0.1.69 PLUGINS_71_90）
+- Mirror Off→On→Off; tip clipped; On track `--fg`; mirrorSaving
+- GitHub kinds All/Provider/Middleware/Agent + Filter + empty Show all
+- Think Tags seeded; Options strip example Cancel (no Clear unsaved); Options tip
+- Check → brief Checking… → Up to date chip + toast Every plugin is up to date; Last checked tip
+- P1 N/A. No invent install/OAuth/keys.

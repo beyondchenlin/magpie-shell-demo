@@ -1,3 +1,9 @@
+## v0.1.69 PLUGINS_71_90
+- plugins/71–90 Mirror + GitHub kinds/filter + Think Tags Options/Check updates.
+
+## v0.1.69 MIRROR_TOGGLE_DONE
+- plugins/71–75 Mirror On/Off; tip; On track `--fg`; mirrorSaving.
+
 ## v0.1.68 AGENTS_NEST_DONE
 - Native agents/19–54 full: Cursor path tip; Cant connect status; Arrange Escape; Manage Invert/Clear/Select; Install Copy tip; Profile demo-nest Escape.
 - Native agents/19-54: landing, Cant connect status, Arrange menu, Manage re-pass, Install expand+Copy tip, fold collapse, Profile name+Escape.

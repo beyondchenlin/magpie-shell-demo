@@ -1883,14 +1883,18 @@ const DEMO_MARKET = [
     section: "Unofficial, on GitHub",
     note: "repositories their authors tagged magpie-plugin — nobody has reviewed them; read the code before you install one",
     cards: [
+      { pkg: "github:mu-zi-lee/magpie-our-free-models", name: "magpie-our-free-models", summary: "Our Free Model 的 Magpie 适配插件：整合免费模型池、EAC 授权与多账号渠道，支持自动服务…", downloads: "225★", ver: "v0.9.0", unofficial: true, owner: "mu-zi-lee", stars: 225, kind: "Provider", updated: "Oct 14, 2026", github: "https://github.com/mu-zi-lee/magpie-our-free-models" },
+      { pkg: "github:mu-zi-lee/magpie-intelligence", name: "magpie-intelligence", summary: "Magpie 模型质量检测插件：对指定主力模型进行自动探针、请求门禁和人工确认，支持本地与…", downloads: "50★", ver: "v0.3.0", unofficial: true, owner: "mu-zi-lee", stars: 50, kind: "Provider", updated: "Oct 13, 2026", github: "https://github.com/mu-zi-lee/magpie-intelligence" },
+      { pkg: "github:BUKOWSKIREAL/magpie-gemini-web", name: "magpie-gemini-web", summary: "Gemini Web provider for Magpie with a local backend and experimental Argon support.", downloads: "12★", ver: "v0.2.0", unofficial: true, owner: "BUKOWSKIREAL", stars: 12, kind: "Provider", updated: "Oct 12, 2026", github: "https://github.com/BUKOWSKIREAL/magpie-gemini-web" },
+      { pkg: "github:JohnWangggg/magpie-muse-web", name: "magpie-muse-web", summary: "Magpie plugin for muse.ai: sign in to each account in a browser, use Muse Spark with…", downloads: "8★", ver: "v0.1.4", unofficial: true, owner: "JohnWangggg", stars: 8, kind: "Provider", updated: "Oct 11, 2026", github: "https://github.com/JohnWangggg/magpie-muse-web" },
       { pkg: "github:euanguo/magpie-middleware-image-keep", name: "magpie-middleware-image-keep", summary: "magpie gateway middleware: keep the newest images and replace older inline images with…", downloads: "2★", ver: "v0.2.0", unofficial: true, owner: "euanguo", stars: 2, kind: "Middleware", updated: "Oct 12, 2026", github: "https://github.com/euanguo/magpie-middleware-image-keep" },
-      { pkg: "github:bingqilinweimaotai/magpie-github-sync", name: "magpie-github-sync", summary: "Encrypted GitHub sync bridge for Magpie WebDAV sync", downloads: "2★", ver: "v0.2.3", unofficial: true, owner: "bingqilinweimaotai", stars: 2, kind: "Provider", updated: "Oct 10, 2026", github: "https://github.com/bingqilinweimaotai/magpie-github-sync" },
-      { pkg: "github:Hu9956/DSH-model-controls", name: "DSH-model-controls", summary: "切换供应商、模型与思考强度，每个模型各自记住档位。", downloads: "1★", ver: "v0.2.8", unofficial: true, owner: "Hu9956", stars: 1, kind: "Provider", updated: "Oct 14, 2026", github: "https://github.com/Hu9956/DSH-model-controls", readme: "DSH 模型控制器 — DeepSeek Harness for models and thinking intensity." },
-      { pkg: "github:XcodeFish/opencode-cn-ai-auth", name: "opencode-cn-ai-auth", summary: "Magpie provider plugin for Loomy (iFlytek) and Raccoon (SenseTime) coding…", downloads: "1★", ver: "v0.2.1", unofficial: true, owner: "XcodeFish", stars: 1, kind: "Provider", updated: "Oct 8, 2026", github: "https://github.com/XcodeFish/opencode-cn-ai-auth" },
+      { pkg: "github:shiyang1026/magpie-claude-science", name: "magpie-claude-science", summary: "Use Magpie models in Claude Science with the original macOS app.", downloads: "4★", ver: "v0.1.3", unofficial: true, owner: "shiyang1026", stars: 4, kind: "Middleware", updated: "Oct 10, 2026", github: "https://github.com/shiyang1026/magpie-claude-science" },
+      { pkg: "github:ezdemo/magpie-haiku55-think", name: "magpie-haiku55-think", summary: "Magpie Haiku 5.5 thinking middleware with a verified OpenDesign compatibility workaround", downloads: "1★", ver: "v0.1.0", unofficial: true, owner: "ezdemo", stars: 1, kind: "Middleware", updated: "Oct 9, 2026", github: "https://github.com/ezdemo/magpie-haiku55-think" },
+      { pkg: "github:Lixsp11/claude-api-billing", name: "claude-api-billing", summary: "Claude API billing middleware for Magpie gateway traces.", downloads: "0★", ver: "v0.1.0", unofficial: true, owner: "Lixsp11", stars: 0, kind: "Middleware", updated: "Oct 8, 2026", github: "https://github.com/Lixsp11/claude-api-billing" },
+      { pkg: "github:nodlles/magpie-agent-cursor", name: "magpie-agent-cursor", summary: "Use Magpie models in Cursor through a local protocol bridge (Apple Silicon macOS)", downloads: "0★", ver: "v0.2.1", unofficial: true, owner: "nodlles", stars: 0, kind: "Agent", updated: "Oct 7, 2026", github: "https://github.com/nodlles/magpie-agent-cursor" },
       { pkg: "github:SadWood/magpie-gaccode", name: "magpie-gaccode", summary: "Unofficial GACCode provider for magpie and OpenCode, with quota reporting and optiona…", downloads: "1★", ver: "v0.1.2", unofficial: true, owner: "SadWood", stars: 1, kind: "Provider", updated: "Oct 5, 2026", github: "https://github.com/SadWood/magpie-gaccode" },
       { pkg: "github:mu-zi-lee/magpie-chatgptweb", name: "magpie-chatgptweb", summary: "Magpie 的实验性 ChatGPT 网页接入插件：基于 Playwright 和独立浏览器配置，支持匿名聊天…", downloads: "1★", ver: "v0.1.0", unofficial: true, owner: "mu-zi-lee", stars: 1, kind: "Provider", updated: "Oct 1, 2026", github: "https://github.com/mu-zi-lee/magpie-chatgptweb" },
-      { pkg: "github:broven/magpie-sub2api", name: "magpie-sub2api", summary: "magpie plugin for sub2api sites: models, and subscription/quota usage windows for routing", downloads: "0★", ver: "v0.2.1", unofficial: true, owner: "broven", stars: 0, kind: "Provider", updated: "Sep 28, 2026", github: "https://github.com/broven/magpie-sub2api" },
-      { pkg: "github:ChenstarMr/opencode-dumate-auth", name: "opencode-dumate-auth", summary: "OpenCode / magpie provider plugin for Baidu DuMate (百度搭子)", downloads: "0★", ver: "v0.1.0", unofficial: true, owner: "ChenstarMr", stars: 0, kind: "Provider", updated: "Sep 20, 2026", github: "https://github.com/ChenstarMr/opencode-dumate-auth" },
+      { pkg: "github:demo/magpie-agent-bridge-gh", name: "magpie-agent-bridge-gh", summary: "Third-party agent bridge tagged magpie-plugin on GitHub.", downloads: "0★", ver: "v0.0.3", unofficial: true, owner: "demo", stars: 0, kind: "Agent", updated: "Sep 28, 2026", github: "https://github.com/demo/magpie-agent-bridge-gh" },
     ],
   },
 ];
@@ -1944,6 +1948,10 @@ export function PluginsView({
   const [folderLoc, setFolderLoc] = useState<"recent" | "home" | "other">("recent");
   const [mirror, setMirror] = useState(false);
   const [mirrorTip, setMirrorTip] = useState(false);
+  const [mirrorSaving, setMirrorSaving] = useState(false);
+  /** Magpie drawGh: kind segs + Filter by name (shots 76–80); only when GitHub list > 6 */
+  const [ghKind, setGhKind] = useState<"" | "Provider" | "Middleware" | "Agent">("");
+  const [ghFilter, setGhFilter] = useState("");
   const [builtins, setBuiltins] = useState(() => {
     try {
       const on = localStorage.getItem("magpie.feature.library") === "1";
@@ -1971,7 +1979,18 @@ export function PluginsView({
       movable?: string[];
       moved?: string[];
     }[]
-  >([]); /* native empty Installed (shot 18); Install demos fill it */
+  >([
+    /* CU 71+: Think Tags left installed (middleware Options nest 81–83). Shot 18 empty was pre-install. */
+    {
+      pkg: "@magpie-community/middleware-think-tags",
+      name: "Think Tags",
+      ver: "v0.1.0",
+      kind: "Middleware",
+      opts: '{\n  "mode": "strip"\n}',
+      optsOpen: false,
+      optsSaved: false,
+    },
+  ]);
   const [busy, setBusy] = useState<string | null>(null);
   const [pluginsSort, setPluginsSort] = useState<"az" | "za">(() => {
     try {
@@ -1985,6 +2004,7 @@ export function PluginsView({
   /** Magpie confirmRemoval when Remove with no moved accounts (shot 40 not clicked; Magpie source) */
   const [removeConfirm, setRemoveConfirm] = useState<{ pkg: string; name: string } | null>(null);
   const [checkingUpdates, setCheckingUpdates] = useState(false);
+  const [lastCheckedAt, setLastCheckedAt] = useState<string | null>(null);
   const [pluginDetail, setPluginDetail] = useState<(typeof DEMO_MARKET)[number]["cards"][number] | null>(null);
   /** Magpie detail: pm-rskel until README resolves */
   const [detailReadmeReady, setDetailReadmeReady] = useState(false);
@@ -2166,15 +2186,22 @@ export function PluginsView({
             style={{ position: "relative" }}
             role="switch"
             aria-checked={mirror}
+            disabled={mirrorSaving}
             title={t("Download the plugin list, plugins and Bun from mirrors in China first (npmmirror, jsDelivr), their official addresses after. Each is a copy of the very file, checked as the original is")}
             onMouseEnter={() => setMirrorTip(true)}
             onMouseLeave={() => setMirrorTip(false)}
             onFocus={() => setMirrorTip(true)}
             onBlur={() => setMirrorTip(false)}
             onClick={() => {
+              if (mirrorSaving) return;
+              setMirrorSaving(true);
               setMirror((m) => !m);
               setSearchBusy(true);
-              window.setTimeout(() => setSearchBusy(false), 420);
+              // Magpie plugins/mirror then reload listings; brief busy then re-enable
+              window.setTimeout(() => {
+                setSearchBusy(false);
+                setMirrorSaving(false);
+              }, 420);
             }}
           >
             <span>{t("Mirrors in China")}</span>
@@ -2348,14 +2375,88 @@ export function PluginsView({
               ? DEMO_MARKET.map((sec) => {
               const cards = sec.cards;
               if (!cards.length) return null;
+              const isGh = sec.kind === "gh";
+              const ghFound = isGh
+                ? cards.filter((c) => {
+                    const f = ghFilter.trim().toLowerCase();
+                    if (!f) return true;
+                    const owner = "owner" in c ? String((c as { owner?: string }).owner || "") : "";
+                    return `${c.name} ${owner} ${c.summary} ${c.pkg}`.toLowerCase().includes(f);
+                  })
+                : cards;
+              const kindsPresent = isGh
+                ? (["Provider", "Middleware", "Agent"] as const).filter((k) =>
+                    cards.some((c) => "kind" in c && (c as { kind?: string }).kind === k),
+                  )
+                : [];
+              const nKind = (k: string) =>
+                ghFound.filter((c) => !k || ("kind" in c && (c as { kind?: string }).kind === k)).length;
+              const shown = isGh
+                ? ghFound.filter((c) => !ghKind || ("kind" in c && (c as { kind?: string }).kind === ghKind))
+                : cards;
               return (
                 <div className="pm-sec" key={sec.kind}>
                   <div className="pm-sechead">
                     <h3>{t(sec.section)}</h3>
                     <span>{t(sec.note)}</span>
                   </div>
+                  {isGh && cards.length > 6 && kindsPresent.length > 1 ? (
+                    <div className="pm-ghbar" style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap", margin: "8px 0 10px" }}>
+                      <div className="pm-ghkinds" role="group" aria-label={t("Kind of plugin")} style={{ display: "inline-flex", gap: 2, padding: 2, borderRadius: 8, background: "var(--seg-track)" }}>
+                        {([["", t("All")] as const, ...kindsPresent.map((k) => [k, t(k)] as const)]).map(([id, lab]) => (
+                          <button
+                            key={id || "all"}
+                            type="button"
+                            className={ghKind === id ? "on" : ""}
+                            style={{
+                              border: 0,
+                              background: ghKind === id ? "var(--seg-thumb)" : "transparent",
+                              boxShadow: ghKind === id ? "var(--seg-edge)" : undefined,
+                              borderRadius: 6,
+                              padding: "4px 10px",
+                              font: "inherit",
+                              fontSize: 12,
+                              color: ghKind === id ? "var(--fg)" : "var(--ctl-fg)",
+                              cursor: "pointer",
+                            }}
+                            onClick={() => setGhKind(id as typeof ghKind)}
+                          >
+                            {lab} · {nKind(id)}
+                          </button>
+                        ))}
+                      </div>
+                      <span className="grow" />
+                      <label className="pm-find pm-ghfind" style={{ flex: "0 1 220px", minWidth: 140 }}>
+                        <svg viewBox="0 0 16 16" width={13} height={13} aria-hidden>
+                          <circle cx="7" cy="7" r="4.5" fill="none" stroke="currentColor" strokeWidth="1.6" />
+                          <path d="m10.5 10.5 3 3" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                        </svg>
+                        <input
+                          type="search"
+                          spellCheck={false}
+                          autoComplete="off"
+                          placeholder={t("Filter by name, author or description")}
+                          aria-label={t("Filter the plugins on GitHub")}
+                          value={ghFilter}
+                          onChange={(e) => setGhFilter(e.target.value)}
+                          onKeyDown={(e) => {
+                            e.stopPropagation();
+                            if (e.key === "Escape" && ghFilter) setGhFilter("");
+                          }}
+                        />
+                      </label>
+                    </div>
+                  ) : null}
+                  {isGh && shown.length === 0 ? (
+                    <div className="pm-ghnone" style={{ padding: "18px 14px", border: "1px dashed var(--line)", borderRadius: 10, textAlign: "center", color: "var(--muted)", fontSize: 13 }}>
+                      <div>{t("No plugin on GitHub matches")}</div>
+                      <button type="button" className="text" style={{ marginTop: 8 }} onClick={() => { setGhKind(""); setGhFilter(""); }}>
+                        {t("Show all")}
+                      </button>
+                    </div>
+                  ) : (
                   <div className="pm-grid">
-                    {cards.map((c) => {
+                    {shown.map((c) => {
                       const has = installed.some((x) => x.pkg === c.pkg);
                       return (
                         <div
@@ -2418,6 +2519,7 @@ export function PluginsView({
                       );
                     })}
                   </div>
+                  )}
                 </div>
               );
             })
@@ -2658,7 +2760,11 @@ export function PluginsView({
                 {[...installed]
                   .sort((a, b) => (pluginsSort === "za" ? -1 : 1) * a.name.localeCompare(b.name))
                   .map((e) => (
-                  <div className={`row pref pm-row${e.off ? " off" : ""}`} key={e.pkg}>
+                  <div
+                    className={`row pref pm-row${e.off ? " off" : ""}`}
+                    key={e.pkg}
+                    title={`${e.name}${e.ver || ""}${e.kind || ""}`}
+                  >
                     <div className="pm-logo" aria-hidden style={{ width: 32, height: 32, flex: "none" }}>
                       ◆
                     </div>
@@ -2669,7 +2775,7 @@ export function PluginsView({
                         {e.checkStatus === "current" && e.ver ? (
                           <span
                             className="pm-chip soft"
-                            title={t("v{v} is the newest on npm", { v: e.ver.replace(/^v/, "") }) + "\n" + t("Last checked {time}", { time: new Date().toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" }) })}
+                            title={t("v{v} is the newest on npm", { v: e.ver.replace(/^v/, "") }) + (lastCheckedAt ? "\n" + t("Last checked {time}", { time: lastCheckedAt }) : "")}
                           >
                             {t("Up to date")}
                           </span>
@@ -2719,15 +2825,17 @@ export function PluginsView({
                                       <span>{t("{name}: signed in", { name: e.name })}</span>
                                     </span>
                                   )
-                                : null}
+                                : e.kind === "Middleware"
+                                  ? t("Gateway middleware: onEvent, onResponse")
+                                  : null}
                       </div>
                       {e.optsOpen ? (
                         <div className="pm-opts">
                           <textarea
                             aria-label={t("Options")}
                             rows={Math.min(10, Math.max(4, (e.opts || "").split("\n").length + 1))}
-                            placeholder='{\n  "hooks": ["request", "response"],\n  "onEvent": ["error"]\n}'
-                            value={e.opts || '{\n  "hooks": ["request", "response"],\n  "onEvent": ["error"]\n}'}
+                            placeholder={e.pkg.includes("think-tags") ? '{\n  "mode": "strip"\n}' : '{\n  "hooks": ["request", "response"],\n  "onEvent": ["error"]\n}'}
+                            value={e.opts || (e.pkg.includes("think-tags") ? '{\n  "mode": "strip"\n}' : '{\n  "hooks": ["request", "response"],\n  "onEvent": ["error"]\n}')}
                             onChange={(ev) =>
                               setInstalled((list) =>
                                 list.map((x) => (x.pkg === e.pkg ? { ...x, opts: ev.target.value, optsErr: "" } : x)),
@@ -2746,6 +2854,7 @@ export function PluginsView({
                           ) : null}
                           <div className="pm-opts-bar">
                             <span>{e.optsSaved ? t("Applied to the next request") : t("Not set: these are its package's example")}</span>
+                            {e.optsSaved ? (
                             <button
                               type="button"
                               className="text quiet"
@@ -2757,6 +2866,7 @@ export function PluginsView({
                             >
                               {t("Clear")}
                             </button>
+                            ) : null}
                             <button
                               type="button"
                               className="text"
@@ -2902,17 +3012,18 @@ export function PluginsView({
                           {busy === e.pkg ? t("Moving…") : t("Move {name} here", { name: e.movable[0] })}
                         </button>
                       ) : null}
-                      {e.kind === "Middleware" && !e.off ? (
+                      {e.kind === "Middleware" && !e.off && !e.optsOpen ? (
                         <button
                           type="button"
                           className="text"
+                          title={e.optsSaved ? t("Change the options it runs with") : t("It runs with no options; its package suggests some")}
                           onClick={() =>
                             setInstalled((list) =>
-                              list.map((x) => (x.pkg === e.pkg ? { ...x, optsOpen: !x.optsOpen } : x)),
+                              list.map((x) => (x.pkg === e.pkg ? { ...x, optsOpen: true } : x)),
                             )
                           }
                         >
-                          {e.optsOpen ? t("Close") : t("Options")}
+                          {t("Options")}
                         </button>
                       ) : null}
                       <button
@@ -2966,15 +3077,21 @@ export function PluginsView({
                   type="button"
                   className={`text pm-check${checkingUpdates ? " busy" : ""}`}
                   disabled={checkingUpdates || !!busy}
-                  title={t("Ask npm now for each plugin's newest version")}
+                  title={
+                    t("Ask npm now for each plugin's newest version") +
+                    (lastCheckedAt ? "\n" + t("Last checked {time}", { time: lastCheckedAt }) : "")
+                  }
                   onClick={() => {
                     if (checkingUpdates || busy) return;
                     setCheckingUpdates(true);
+                    // Magpie Checking… often <1 frame (shot 87)
                     window.setTimeout(() => {
                       setCheckingUpdates(false);
+                      const when = new Date().toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" });
+                      setLastCheckedAt(when);
                       setInstalled((list) => list.map((x) => ({ ...x, checkStatus: "current" as const })));
-                      onStatus?.(t("Every plugin is up to date"), "ok", 2500);
-                    }, 900);
+                      onStatus?.(t("Every plugin is up to date"), "ok", 2800);
+                    }, 180);
                   }}
                 >
                   {checkingUpdates ? (

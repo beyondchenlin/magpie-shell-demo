@@ -119,3 +119,6 @@
 - Allowances tab: **N/A** without quotas (Magpie hides it) — not scored as a gap.
 - Bird logo wag + Routing demo FLIER wing `rtflap .42s`; `#sideEdge` width drag.
 
+## v0.1.69 MIRROR_TOGGLE_DONE
+- Mirrors in China On/Off + tip (71–75); switch On = fg track.
+- No fake installs. P1 N/A. Skip Vercel.
