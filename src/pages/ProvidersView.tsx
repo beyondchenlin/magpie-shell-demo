@@ -1436,7 +1436,7 @@ function ProviderEditorModal({ state, onClose, onAdd }: EditorProps) {
                         }, 520);
                       }}
                     >
-                      {fetchBusy ? "…" : t("Fetch models")}
+                      {t("Fetch models")}
                     </button>
                   </div>
                   {fetchView ? (
@@ -1509,16 +1509,24 @@ function ProviderEditorModal({ state, onClose, onAdd }: EditorProps) {
                             </button>
                           </div>
                           <div className="mchips">
-                            {fetchView.models
-                              .filter((m) => {
-                                const f = fetchView.filter.trim().toLowerCase();
-                                return (
+                            {(() => {
+                              const f = fetchView.filter.trim().toLowerCase();
+                              const match = fetchView.models.filter(
+                                (m) =>
                                   !f ||
                                   m.id.toLowerCase().includes(f) ||
-                                  (m.name || "").toLowerCase().includes(f)
+                                  (m.name || "").toLowerCase().includes(f),
+                              );
+                              if (f && !match.length) {
+                                return (
+                                  <span className="hint">
+                                    {t('No model here matches “{q}”.', {
+                                      q: fetchView.filter.trim(),
+                                    })}
+                                  </span>
                                 );
-                              })
-                              .map((m) => {
+                              }
+                              return match.map((m) => {
                                 const on = fetchView.picked.includes(m.id);
                                 return (
                                   <button
@@ -1537,7 +1545,8 @@ function ProviderEditorModal({ state, onClose, onAdd }: EditorProps) {
                                     <span>{m.name || m.id}</span>
                                   </button>
                                 );
-                              })}
+                              });
+                            })()}
                           </div>
                         </>
                       ) : null}
