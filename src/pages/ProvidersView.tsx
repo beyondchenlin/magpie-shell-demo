@@ -28,7 +28,8 @@ const calm = () =>
   typeof matchMedia === "function" &&
   matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-const EXTRA_BODY_DEFAULT = '{\n  "prompt_cache_key": "${sessionId}"\n}';
+/** Magpie extraBodyEditor placeholder (NOTES 12) — draft starts empty. */
+const EXTRA_BODY_PLACEHOLDER = '{\n  "prompt_cache_key": "${sessionId}"\n}';
 
 const CTX_CHIPS = ["128K", "200K", "256K", "400K", "512K", "1M"];
 const OUT_CHIPS = ["8K", "16K", "32K", "64K", "128K"];
@@ -479,7 +480,7 @@ function ProviderEditorModal({ state, onClose, onAdd }: EditorProps) {
   const [iconsOpen, setIconsOpen] = useState(false);
   const [iconQ, setIconQ] = useState("");
   const [pickedIcon, setPickedIcon] = useState(state.icon || "aside");
-  const [hdrs, setHdrs] = useState<{ name: string; value: string }[]>([{ name: "", value: "" }]);
+  const [hdrs, setHdrs] = useState<{ name: string; value: string; json?: boolean }[]>([{ name: "", value: "" }]);
   const [discardOpen, setDiscardOpen] = useState(false);
   const API_HINTS: Record<string, string> = {
     openai: "…/v1 — chat completions, and responses when the vendor has it",
@@ -499,7 +500,7 @@ function ProviderEditorModal({ state, onClose, onAdd }: EditorProps) {
   const [name, setName] = useState("");
   const [baseUrl, setBaseUrl] = useState("");
   const [endpoint, setEndpoint] = useState("");
-  const [extra, setExtra] = useState(EXTRA_BODY_DEFAULT);
+  const [extra, setExtra] = useState("");
   const [addrOpen, setAddrOpen] = useState(false);
   const [serverAddr, setServerAddr] = useState(localMeta.address);
   const [unmasked, setUnmasked] = useState(false);
@@ -526,7 +527,7 @@ function ProviderEditorModal({ state, onClose, onAdd }: EditorProps) {
       unmasked ||
       proxy === "direct" ||
       proxy === "custom" ||
-      extra !== EXTRA_BODY_DEFAULT ||
+      extra.trim() ||
       hdrs.some((h) => h.name || h.value)
     );
   /* Region switch alone is NOT dirty (native NOTES shot 32). */
@@ -712,25 +713,26 @@ function ProviderEditorModal({ state, onClose, onAdd }: EditorProps) {
                       setDetectHint("");
                     }}
                     options={[
-                      { v: "openai", label: ZH.openaiCompat },
-                      { v: "responses", label: ZH.openaiResponses },
-                      { v: "anthropic", label: ZH.anthropicCompat },
-                      { v: "gemini", label: ZH.geminiCompat },
-                      { v: "decide", label: ZH.systemOne },
+                      { v: "openai", label: ZH.openaiCompat, title: t(API_HINTS.openai) },
+                      { v: "responses", label: ZH.openaiResponses, title: t(API_HINTS.responses) },
+                      { v: "anthropic", label: ZH.anthropicCompat, title: t(API_HINTS.anthropic) },
+                      { v: "gemini", label: ZH.geminiCompat, title: t(API_HINTS.gemini) },
+                      { v: "decide", label: ZH.systemOne, title: t(API_HINTS.decide) },
                     ]}
                   />
-                  {API_HINTS[api] ? (
-                    <div className="hint" style={{ marginTop: -2, color: "var(--muted)", fontSize: 11.5 }}>
-                      {t(API_HINTS[api]) || API_HINTS[api]}
-                    </div>
-                  ) : null}
                   <input
                     className="base-url"
                     type="url"
-                    placeholder="https://…/v1"
+                    placeholder={
+                      api === "anthropic"
+                        ? "https://…"
+                        : api === "gemini"
+                          ? "https://…/v1beta"
+                          : "https://…/v1"
+                    }
                     value={baseUrl}
                     onChange={(e) => setBaseUrl(e.target.value)}
-                    title={API_HINTS[api] || ""}
+                    title={t(API_HINTS[api]) || API_HINTS[api] || ""}
                   />
                   <div className="pair detect-row" style={{ gap: 6, flexWrap: "wrap" }}>
                     <button
@@ -962,57 +964,126 @@ function ProviderEditorModal({ state, onClose, onAdd }: EditorProps) {
               </Field>
             ) : null}
 
-            <Field label={ZH.headers} hint={t("Optional headers sent with every request to {p}, applied after auth.", { p: meta.title })}>
+            <Field
+              label={ZH.headers}
+              hint={
+                kind === "custom"
+                  ? t(
+                      "Extra HTTP headers sent to the vendor, applied after auth. For gateways that need a private scheme.",
+                    )
+                  : t("Optional headers sent with every request to {p}, applied after auth.", {
+                      p: meta.title,
+                    })
+              }
+            >
               {kind === "custom" ? (
-                <div className="stack" style={{ gap: 6 }}>
+                <div className="stack headers" style={{ gap: 6 }}>
                   {hdrs.map((h, i) => (
-                    <div key={i} className="pair" style={{ gap: 6 }}>
-                      <input
-                        type="text"
-                        placeholder="Header-Name"
-                        value={h.name}
-                        onChange={(e) =>
-                          setHdrs((rows) => rows.map((r, j) => (j === i ? { ...r, name: e.target.value } : r)))
-                        }
-                      />
-                      <input
-                        type="text"
-                        placeholder="value"
-                        value={h.value}
-                        onChange={(e) =>
-                          setHdrs((rows) => rows.map((r, j) => (j === i ? { ...r, value: e.target.value } : r)))
-                        }
-                      />
-                      <button
-                        type="button"
-                        className="text"
-                        title="{ }"
-                        onClick={() =>
-                          setHdrs((rows) =>
-                            rows.map((r, j) =>
-                              j === i ? { ...r, value: r.value || '{"…":"…"}' } : r,
-                            ),
-                          )
-                        }
-                      >
-                        {"{ }"}
-                      </button>
-                      <button
-                        type="button"
-                        className="text quiet"
-                        aria-label="Remove"
-                        onClick={() => setHdrs((rows) => (rows.length <= 1 ? [{ name: "", value: "" }] : rows.filter((_, j) => j !== i)))}
-                      >
-                        ×
-                      </button>
+                    <div
+                      key={i}
+                      className={`pair${h.json ? " col" : ""}`}
+                      style={
+                        h.json
+                          ? { gap: 6, flexDirection: "column", alignItems: "stretch" }
+                          : { gap: 6 }
+                      }
+                    >
+                      <div className="pair" style={{ gap: 6, width: "100%" }}>
+                        <input
+                          type="text"
+                          placeholder={t("Header-Name")}
+                          value={h.name}
+                          onChange={(e) =>
+                            setHdrs((rows) =>
+                              rows.map((r, j) => (j === i ? { ...r, name: e.target.value } : r)),
+                            )
+                          }
+                        />
+                        {!h.json ? (
+                          <input
+                            type="text"
+                            placeholder={t("value")}
+                            value={h.value}
+                            onChange={(e) =>
+                              setHdrs((rows) =>
+                                rows.map((r, j) => (j === i ? { ...r, value: e.target.value } : r)),
+                              )
+                            }
+                          />
+                        ) : null}
+                        <div className="side" style={{ display: "flex", gap: 4 }}>
+                          <button
+                            type="button"
+                            className={`text${h.json ? " on" : ""}`}
+                            title={h.json ? t("Collapse to one line") : t("Edit as JSON")}
+                            onClick={() =>
+                              setHdrs((rows) =>
+                                rows.map((r, j) => {
+                                  if (j !== i) return r;
+                                  if (r.json) {
+                                    /* minify: collapse whitespace like Magpie minifyJSON */
+                                    let v = r.value;
+                                    try {
+                                      v = JSON.stringify(JSON.parse(r.value));
+                                    } catch {
+                                      v = r.value.replace(/\s+/g, " ").trim();
+                                    }
+                                    return { ...r, json: false, value: v };
+                                  }
+                                  let v = r.value;
+                                  try {
+                                    v = JSON.stringify(JSON.parse(r.value || "{}"), null, 2);
+                                  } catch {
+                                    /* keep as typed */
+                                  }
+                                  return { ...r, json: true, value: v };
+                                }),
+                              )
+                            }
+                          >
+                            {"{ }"}
+                          </button>
+                          <button
+                            type="button"
+                            className="text danger"
+                            title={t("Remove header")}
+                            aria-label="Remove"
+                            onClick={() =>
+                              setHdrs((rows) =>
+                                rows.length <= 1
+                                  ? [{ name: "", value: "" }]
+                                  : rows.filter((_, j) => j !== i),
+                              )
+                            }
+                          >
+                            ×
+                          </button>
+                        </div>
+                      </div>
+                      {h.json ? (
+                        <textarea
+                          className="json"
+                          rows={Math.min(16, Math.max(4, (h.value || "").split("\n").length))}
+                          placeholder={t("value")}
+                          value={h.value}
+                          spellCheck={false}
+                          wrap="off"
+                          onChange={(e) =>
+                            setHdrs((rows) =>
+                              rows.map((r, j) => (j === i ? { ...r, value: e.target.value } : r)),
+                            )
+                          }
+                          style={{ width: "100%", fontFamily: "var(--code-font, ui-monospace, monospace)", fontSize: 12 }}
+                        />
+                      ) : null}
                     </div>
                   ))}
                   <button
                     type="button"
-                    className="link"
+                    className="text"
                     onClick={() => setHdrs((rows) => [...rows, { name: "", value: "" }])}
                   >
-                    {ZH.addHeader}
+                    {t("+ Add header")}
                   </button>
                 </div>
               ) : (
@@ -1061,8 +1132,10 @@ function ProviderEditorModal({ state, onClose, onAdd }: EditorProps) {
                   className="json"
                   rows={3}
                   value={extra}
+                  placeholder={EXTRA_BODY_PLACEHOLDER}
                   onChange={(e) => setExtra(e.target.value)}
                   spellCheck={false}
+                  wrap="off"
                 />
               </div>
             </Field>
@@ -1125,7 +1198,7 @@ function ProviderEditorModal({ state, onClose, onAdd }: EditorProps) {
               <input type="text" placeholder={ZH.priceOne} />
             </Field>
 
-            {kind === "openrouter" || isLocal ? (
+            {kind === "openrouter" || isLocal || (kind === "custom" && api === "anthropic") ? (
               <Field label={ZH.keyHeader}>
                 <Segs
                   value={authHdr}

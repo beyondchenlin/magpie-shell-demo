@@ -1,3 +1,8 @@
+## v0.1.50 PROVIDERS_CUSTOM_DONE
+- Custom provider sheet (NOTES **03–18** + Magpie `app.js`): protocol segs use **title tooltips** (API_HINTS); URL placeholder per proto (`https://…` / `…/v1beta` / `…/v1`); Extra body **empty + placeholder** (not prefilled); Headers **Edit as JSON** ↔ Collapse + custom hint; Key header when custom Anthropic.
+- On-this-machine editors (**35+**) **not on disk yet** — KindLocal still source-chipped (v0.1.47); consume when recorder lands → v0.1.51.
+- Still mock: Detect APIs probe, favicon fetch, Choose a picture GTK, Add/Save persist, OAuth/keys. Allowances quota **N/A**. Skip Vercel 402.
+
 ## v0.1.49 PLUGINS_OFF_DONE
 - Native `plugins/41–54` consumed: Switch off → Off/Switch on; Sign in + not-signed-in (mock); Remove tip/confirm (Cancel focused)/Cancel keep; Check tip → Checking… → Up to date chip + toast; Removing… → removed toast → empty Installed (no Check footer).
 - Still mock: true npm off/remove/update, plugin OAuth. Allowances quota **N/A**. Skip Vercel 402.
