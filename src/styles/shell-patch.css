@@ -101,3 +101,43 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 }
 #view-agents .row.agent.conn .who { flex: 1; min-width: 0; }
 #view-agents .row.agent.conn .ag-cant { margin-left: auto; align-self: center; }
+
+/* Modal lives inside #root (the framed window), not the page viewport. */
+body.web .modal {
+  position: absolute !important;
+  inset: 0;
+  border-radius: inherit;
+}
+
+/* Window mode: hide profiles hint while naming (panel already has this). */
+body.window .profiles.naming .chips .hint { display: none; }
+
+/* Footer toast room inside framed window */
+body.web .foot {
+  position: relative;
+  z-index: 5;
+  flex: none;
+  min-height: 28px;
+  padding: 0 8px 6px 18px;
+}
+
+/* Manage modal: lib-confirm note spacing */
+.lib-confirm {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--fg-2);
+  grid-column: 1 / -1;
+}
+
+/* ag-manage icon img */
+.ag-manage-row .ic img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.ag-install-who .ic img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}

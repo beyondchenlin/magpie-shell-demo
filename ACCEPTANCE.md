@@ -1,8 +1,9 @@
 # Magpie Shell Demo — 验收清单（对照官方截图 + 源码）
 
 > **静态空态 ≠ 交互 1:1。**  
-> 当前总判定：**`INTERACTION_NOT_STARTED`** — 仅空态外观接近；按钮点击、动效、内页交互尚未按 Spec 录制/实现。  
-> 交互计划：[`INTERACTION-PLAN.md`](./INTERACTION-PLAN.md) · Agents 控件清单：[`interactions/pages/agents/CONTROLS.md`](./interactions/pages/agents/CONTROLS.md)
+> 当前总判定：**`AGENTS_INTERACTIONS_PARTIAL`** — Agents 优先 6 控件（A-01/02/05/06/08/09）已接线；其余页/控件未做。  
+> **不是**全应用 PASS。  
+> 交互计划：[`INTERACTION-PLAN.md`](./INTERACTION-PLAN.md) · Spec：[`interactions/pages/agents/SPEC.md`](./interactions/pages/agents/SPEC.md)
 
 对照基准：
 - 官方实机截图：`/workspace/magpie-official/shots/`（01-agents … 03-routing 等）
@@ -64,13 +65,27 @@
 | E1 | Gateway / Usage / Plugins / Settings 骨架 | [~] |
 | E2 | 原生 Tauri / 完整飞鸟拍翅 SVG 与官方一致 | [ ] |
 
+## G. Agents 优先交互（对照 SPEC + shots/CLICK-LOG）
+
+| id | 项 | 状态 |
+|----|----|------|
+| A-01 | 添加供应商 → Providers 目录（无 leave 动画 / 无假 modal） | [x] |
+| A-02 | 接入 agent 步骤 **无控件**（不发明按钮） | [x] |
+| A-05 | 管理 → Manage modal；backdrop 280ms + dialog spring 570ms；Esc 关 | [x] |
+| A-06 | 安装其他 Agent（14）chev .3s 展开安装命令 | [x] |
+| A-08 | ＋ 保存当前 → chip-input「方案名称」+「保存」 | [x] |
+| A-09 | #sync spin .9s + toast「已重新检测 Agent」 | [x] |
+| — | A-03…A-04 / A-07 / A-10 / A-11…A-52 | [ ] 未验收 |
+
+Web 预览先验这 6 项；Windows `.exe` 随 0.1.2 GHA 构建。
+
 ## F. 交付
 
 | # | 项 | 状态 |
 |---|----|------|
-| F1 | Windows Setup `.exe` Release | [x] | https://github.com/beyondchenlin/magpie-shell-demo/releases/download/v0.1.1/Magpie-Shell-Demo-Setup-0.1.1.exe |
-| F2 | Vercel Web 预览 | [~] | https://magpie-shell-demo.vercel.app （正在 redeploy） |
+| F1 | Windows Setup `.exe` Release | [~] | v0.1.1 仍可用；**0.1.2** 含交互，推 main 后 GHA 出包（或 workflow_dispatch） |
+| F2 | Vercel Web 预览 | [x] | https://magpie-shell-demo.vercel.app （验 A-01…A-09） |
 
 ---
 
-*诚实原则：空态页结构/密度对齐官方截图前，不写 PASS_WITH_GAPS。*
+*诚实原则：仅 6 个 Agents 控件交互达标 ≠ 全应用 1:1；不写全量 PASS。*

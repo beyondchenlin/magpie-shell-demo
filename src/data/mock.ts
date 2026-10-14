@@ -110,7 +110,41 @@ export const ZH = {
   gateway: "网关",
   settings: "设置",
   newGroup: "新建组",
+  manageAgents: "批量管理",
+  manageAgentsAria: "批量管理",
+  manageNote:
+    "隐藏只改变列表显示，不影响 Agent 的接入或设置。取消隐藏后，Agent 仍可能留在「未设置」中。",
+  searchAgents: "搜索 Agent…",
+  selectSearchResults: "全选搜索结果",
+  invertSearchSelection: "反选搜索结果",
+  selectUnconnected: "选择未接入项",
+  clearSelection: "清空选择",
+  hideSelected: "隐藏所选",
+  unhideSelected: "取消隐藏所选",
+  done: "完成",
+  notHidden: "未隐藏",
+  hidden: "已隐藏",
+  agentsSelected: "已选择 {n} 个 Agent",
+  profileName: "方案名称",
+  save: "保存",
+  agentsLookedAgain: "已重新检测 Agent",
+  syncAgentsTitle:
+    "重新检测本机的 Agent：刚安装或卸载的，或在别处改过配置的",
+  installNote:
+    "在终端运行任一命令，安装后会列在这里。npm 命令需要 Node.js（nodejs.org）。",
+  viaInstaller: "安装脚本",
+  viaHomebrew: "Homebrew",
+  viaNpm: "npm",
+  copy: "复制",
 } as const;
+
+export const VIA_LABEL: Record<string, string> = {
+  script: "安装脚本",
+  powershell: "PowerShell",
+  brew: "Homebrew",
+  npm: "npm",
+};
+
 
 /** Subscriptions row on empty Providers — subset matching official first-run shot. */
 export const SUB_TILES: { id: string; name: string; icon: string }[] = [

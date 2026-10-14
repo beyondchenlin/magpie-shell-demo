@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Bird } from "./components/Bird";
 import { NavIcon } from "./components/NavIcons";
 import {
@@ -29,6 +29,19 @@ function viewFromHash(): ViewId {
 export default function App() {
   const [view, setView] = useState<ViewId>(() => viewFromHash());
   const [theme, setTheme] = useState<"system" | "light" | "dark">("light");
+  const [status, setStatus] = useState<{ msg: string; kind: string } | null>(
+    null,
+  );
+  const [spinning, setSpinning] = useState(false);
+  const [refreshNonce, setRefreshNonce] = useState(0);
+  const statusTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const syncRef = useRef<HTMLButtonElement>(null);
+
+  const showStatus = (msg: string, kind = "ok", ms = 3500) => {
+    setStatus({ msg, kind });
+    if (statusTimer.current) clearTimeout(statusTimer.current);
+    statusTimer.current = setTimeout(() => setStatus(null), ms);
+  };
 
   useEffect(() => {
     document.body.classList.add("side-nav", "window", "web");
@@ -46,6 +59,36 @@ export default function App() {
   const go = (id: ViewId) => {
     setView(id);
     if (location.hash.replace(/^#\/?/, "") !== id) location.hash = id;
+  };
+
+  const onSync = async () => {
+    const b = syncRef.current;
+    if (!b || spinning) return;
+    setSpinning(true);
+    b.classList.add("spin");
+    // Demo: no agents/rescan API — brief delay then toast (A-09)
+    await new Promise((r) => setTimeout(r, 280));
+    setRefreshNonce((n) => n + 1);
+    if (view === "agents") showStatus(ZH.agentsLookedAgain, "ok");
+    else showStatus(ZH.agentsLookedAgain, "ok");
+    b.blur();
+    const spins = b.querySelector("svg")?.getAnimations({ subtree: true }) ?? [];
+    const stop = () => {
+      b.classList.remove("spin");
+      setSpinning(false);
+    };
+    if (
+      spins.length &&
+      spins.every((a) => a.effect && "updateTiming" in a.effect)
+    ) {
+      for (const a of spins) {
+        const t = a.effect!.getComputedTiming();
+        a.effect!.updateTiming({
+          iterations: (t.currentIteration || 0) + 1,
+        });
+      }
+      Promise.all(spins.map((a) => a.finished)).then(stop, stop);
+    } else stop();
   };
 
   const group = GROUP_OF[view];
@@ -137,7 +180,10 @@ export default function App() {
             className="icon"
             id="sync"
             type="button"
-            title="重新检测（Demo 无后端）"
+            ref={syncRef}
+            title={ZH.syncAgentsTitle}
+            aria-label={ZH.syncAgentsTitle}
+            onClick={() => void onSync()}
           >
             <svg viewBox="0 0 16 16" width={14} height={14}>
               <path
@@ -153,13 +199,33 @@ export default function App() {
         </div>
       </header>
 
-      {view === "agents" && <AgentsView onAddProvider={() => go("providers")} />}
+      {view === "agents" && (
+        <AgentsView
+          onAddProvider={() => go("providers")}
+          refreshNonce={refreshNonce}
+        />
+      )}
       {view === "providers" && <ProvidersView />}
       {view === "routing" && <RoutingView />}
       {view === "gateway" && <GatewayView />}
       {view === "usage" && <UsageView />}
       {view === "plugins" && <PluginsView />}
-      {view === "settings" && <SettingsView theme={theme} setTheme={setTheme} />}
+      {view === "settings" && (
+        <SettingsView theme={theme} setTheme={setTheme} />
+      )}
+
+      <footer className="foot">
+        <span
+          id="status"
+          className={`status${status ? ` ${status.kind}` : ""}`}
+          role={status?.kind === "err" ? "alert" : "status"}
+          aria-atomic="true"
+          title={status?.msg || undefined}
+        >
+          {status?.msg || ""}
+        </span>
+        <span className="grow" />
+      </footer>
     </>
   );
 }
