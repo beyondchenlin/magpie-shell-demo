@@ -13,7 +13,13 @@ type Install = {
 
 const INSTALLS = installsData as Install[];
 
-const ALL_AGENTS = [{ id: "cursor", name: "Cursor", icon: "cursor", connected: false }] as const;
+const ALL_AGENTS = [
+  { id: "cursor", name: "Cursor", icon: "cursor", connected: false },
+  { id: "claude", name: "Claude Code", icon: "claude-color", connected: false },
+  { id: "codex", name: "Codex", icon: "codex-color", connected: false },
+  { id: "opencode", name: "OpenCode", icon: "openai", connected: false },
+  { id: "pi", name: "Pi", icon: "openai", connected: false },
+] as const;
 
 const SPRING = (() => {
   try {

@@ -1,5 +1,18 @@
 # Acceptance — magpie-shell-demo
 
+**Status: `AGENTS_USAGE_PARTIAL`** — v0.1.16
+
+- Usage：Requests ledger 行 / Sessions 6 KPI+list / Context agent cards（演示数据，可关）
+- Plugins：Disable `pm-ask` 确认；Install busy → Installed
+- Agents：Manage 多 agent 行（hide/search）
+- Providers：Accounts/Models fold
+- Routing：groups + ModelPop + Conditions
+- Privacy 等 Settings：见先前 PRIVACY_NESTED_PARTIAL
+
+Vercel 若 402 请用 portable / 本地 preview。
+
+# Acceptance — magpie-shell-demo
+
 **Latest: v0.1.13 — `USAGE_PLUGINS_PARTIAL`**
 
 | Area | Status |

@@ -244,3 +244,16 @@ Same as §4; added: `.pm-opts textarea` focus .12s; `.range-menu .rm-day` backgr
 - Requests：`#ledDash` 无数据时 **hidden**（官方）；demo 提供「显示演示图」开关。
 - Sessions：`#sessStats.stats.empty` + `.none` 文案；`#sessChart` / `#sessGrid` hidden。
 - Context：`context.js` — 「No prompts read yet」+ Through magpie 头。
+
+
+## 15. Usage filled / Context cards / Plugins ask（v0.1.16）
+
+| 目的 | 机制 | 二开注意 |
+|------|------|----------|
+| Requests 有数据 | `table.led` + `.led-row` 展开详情；KPI `.led-strip` 五格 | 空态仍藏 dash；演示开关 `demoFilled` |
+| Sessions 总览 | `.stats.six` 六 KPI + `.sess-list .row.sess` | Magpie 真数据来自 session 文件索引 |
+| Context 评分卡 | `context.css` `.ctx-agent` ring/scores/tags/facts/mix | 动画 `ctx-arc` / `ctx-grow`；`prefers-reduced-motion` → `.still` |
+| Plugins Disable | `.pm-ask` 内联确认，非立刻 toggle | 有 movable 订阅时 Magpie 文案更长 |
+| Providers 嵌套 | `.fold` chevron **.15s** 账户/模型 | 添加后写入 `#providers` 列表 |
+| Routing 组 | `#rtMore` 组卡 + `#pop` ModelPop + Conditions fold | 空舞台仍保留；组为演示壳 |
+

@@ -618,6 +618,29 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
   const [importOpen, setImportOpen] = useState(false);
   const [editor, setEditor] = useState<EditorState>(null);
   const [riskClaude, setRiskClaude] = useState(false);
+  type DemoProv = {
+    id: string;
+    name: string;
+    icon: string;
+    accountsOpen: boolean;
+    modelsOpen: boolean;
+    accounts: { id: string; label: string }[];
+    models: string[];
+  };
+  const [demoProvs, setDemoProvs] = useState<DemoProv[]>([
+    {
+      id: "anthropic",
+      name: "Anthropic",
+      icon: "claude-color",
+      accountsOpen: true,
+      modelsOpen: false,
+      accounts: [
+        { id: "acct-1", label: "work@example.com" },
+        { id: "acct-2", label: "api-key · sk-…demo" },
+      ],
+      models: ["claude-sonnet-4-5", "claude-haiku-4-5", "claude-opus-4"],
+    },
+  ]);
   const findRef = useRef<HTMLInputElement>(null);
   const f = q.trim().toLowerCase();
 
@@ -713,7 +736,89 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
   return (
     <>
       <main className="view" id="view-providers">
-        <div className="list" id="providers" hidden />
+        <div className="list" id="providers" hidden={!demoProvs.length}>
+          {demoProvs.map((pv) => (
+            <div className="row provider" key={pv.id} data-id={pv.id}>
+              <span className="ic">
+                <img src={iconSrc(pv.icon)} alt="" />
+              </span>
+              <div className="who">
+                <div className="name">{pv.name}</div>
+                <div className="sub">
+                  {pv.accounts.length} accounts · {pv.models.length} models
+                </div>
+                <button
+                  type="button"
+                  className={`fold text${pv.accountsOpen ? " open" : ""}`}
+                  aria-expanded={pv.accountsOpen}
+                  onClick={() =>
+                    setDemoProvs((list) =>
+                      list.map((x) => (x.id === pv.id ? { ...x, accountsOpen: !x.accountsOpen } : x)),
+                    )
+                  }
+                >
+                  <svg viewBox="0 0 12 12" width={11} height={11} aria-hidden>
+                    <path d="M4.5 2.5 8 6l-3.5 3.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                  </svg>
+                  Accounts
+                </button>
+                {pv.accountsOpen ? (
+                  <div className="pv-accounts" style={{ marginTop: 6, display: "flex", flexDirection: "column", gap: 4 }}>
+                    {pv.accounts.map((a) => (
+                      <div className="row pref" key={a.id} style={{ padding: "6px 8px" }}>
+                        <div className="who">
+                          <div className="name" style={{ fontSize: 12.5 }}>{a.label}</div>
+                          <div className="sub">{"Demo account fold row"}</div>
+                        </div>
+                        <div className="val">
+                          <button type="button" className="text">Edit</button>
+                        </div>
+                      </div>
+                    ))}
+                    <button type="button" className="text" style={{ alignSelf: "flex-start" }}>
+                      + Account
+                    </button>
+                  </div>
+                ) : null}
+                <button
+                  type="button"
+                  className={`fold text${pv.modelsOpen ? " open" : ""}`}
+                  aria-expanded={pv.modelsOpen}
+                  style={{ marginTop: 6 }}
+                  onClick={() =>
+                    setDemoProvs((list) =>
+                      list.map((x) => (x.id === pv.id ? { ...x, modelsOpen: !x.modelsOpen } : x)),
+                    )
+                  }
+                >
+                  <svg viewBox="0 0 12 12" width={11} height={11} aria-hidden>
+                    <path d="M4.5 2.5 8 6l-3.5 3.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                  </svg>
+                  Models
+                </button>
+                {pv.modelsOpen ? (
+                  <div className="pv-models" style={{ marginTop: 6, display: "flex", flexWrap: "wrap", gap: 6 }}>
+                    {pv.models.map((m) => (
+                      <code key={m} style={{ fontSize: 11, padding: "3px 7px", borderRadius: 6, background: "var(--pill)" }}>
+                        {m}
+                      </code>
+                    ))}
+                    <button type="button" className="text">+ Model</button>
+                  </div>
+                ) : null}
+              </div>
+              <div className="val">
+                <button
+                  type="button"
+                  className="text"
+                  onClick={() => setDemoProvs((list) => list.filter((x) => x.id !== pv.id))}
+                >
+                  Remove
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
         <section className="sheet" id="addSheet">
           <div className="row-head">
             <span className="label">{ZH.addFirstProvider}</span>
@@ -928,7 +1033,26 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
         <ProviderEditorModal
           state={editor}
           onClose={() => setEditor(null)}
-          onAdd={() => onStatus(ZH.providerAddedDemo, "ok")}
+          onAdd={() => {
+            if (editor) {
+              setDemoProvs((list) => {
+                if (list.some((x) => x.id === editor.id)) return list;
+                return [
+                  ...list,
+                  {
+                    id: editor.id,
+                    name: editor.name,
+                    icon: editor.icon,
+                    accountsOpen: false,
+                    modelsOpen: true,
+                    accounts: [{ id: "a1", label: "default" }],
+                    models: ["model-a", "model-b"],
+                  },
+                ];
+              });
+            }
+            onStatus(ZH.providerAddedDemo, "ok");
+          }}
         />
       ) : null}
     </>

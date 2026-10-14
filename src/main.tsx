@@ -3,6 +3,7 @@ import { createRoot } from "react-dom/client";
 import "./styles/app.css";
 import "./styles/routing.css";
 import "./styles/shell-patch.css";
+import "./styles/context.css";
 import App from "./App";
 
 createRoot(document.getElementById("root")!).render(

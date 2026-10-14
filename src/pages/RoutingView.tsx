@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
+import { ModelPop } from "../components/ModelPop";
 import { GATEWAY_ADDR } from "../data/mock";
-import { ZH } from "../i18n";
+import { ZH, t } from "../i18n";
 
 type Wire = { d: string; live?: boolean };
 
@@ -34,6 +35,12 @@ export function RoutingView() {
   );
   const [masked, setMasked] = useState(readMasked);
   const [masking, setMasking] = useState(false);
+  const [demoGroups, setDemoGroups] = useState(true);
+  const [groupModel, setGroupModel] = useState("claude-sonnet-4-5");
+  const [popOpen, setPopOpen] = useState(false);
+  const modelBtnRef = useRef<HTMLButtonElement>(null);
+  const [condOpen, setCondOpen] = useState(false);
+
 
   useEffect(() => {
     const draw = () => {
@@ -255,8 +262,95 @@ export function RoutingView() {
           </div>
         </div>
       </section>
-      {/* Magpie #rtMore exists but stays empty/hidden on empty card (R-03/R-09) */}
-      <div className="rt-more" id="rtMore" hidden />
+      {/* Magpie #rtMore — demo groups / model pick / conditions (v0.1.16) */}
+      <div className="rt-more" id="rtMore">
+        <div className="row-head" style={{ marginTop: 8 }}>
+          <span className="label">{t("Routing groups")}</span>
+          <span className="grow" />
+          <button type="button" className="text" aria-pressed={demoGroups} onClick={() => setDemoGroups((d) => !d)}>
+            {demoGroups ? t("Hide demo") : t("Show demo")}
+          </button>
+        </div>
+        {demoGroups ? (
+          <div className="rt-groups">
+            <div className="rt-group card">
+              <div className="rt-ghead">
+                <b>{t("Default")}</b>
+                <span className="grow" />
+                <button
+                  type="button"
+                  className="sess-pick set"
+                  ref={modelBtnRef}
+                  aria-haspopup="listbox"
+                  aria-expanded={popOpen}
+                  onClick={() => setPopOpen((o) => !o)}
+                >
+                  <span>{groupModel}</span>
+                  <svg viewBox="0 0 12 12" width={11} height={11} aria-hidden>
+                    <path d="M3 4.5 6 7.5 9 4.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                  </svg>
+                </button>
+                <ModelPop
+                  open={popOpen}
+                  anchor={modelBtnRef.current}
+                  value={groupModel}
+                  modelPicker
+                  options={[
+                    { value: "claude-sonnet-4-5", label: "claude-sonnet-4-5", group: "Anthropic" },
+                    { value: "claude-haiku-4-5", label: "claude-haiku-4-5", group: "Anthropic" },
+                    { value: "gpt-5", label: "gpt-5", group: "OpenAI" },
+                    { value: "gemini-2.5-pro", label: "gemini-2.5-pro", group: "Google" },
+                  ]}
+                  onPick={(v) => {
+                    setGroupModel(v);
+                    setPopOpen(false);
+                  }}
+                  onClose={() => setPopOpen(false)}
+                />
+              </div>
+              <button
+                type="button"
+                className={`fold text${condOpen ? " open" : ""}`}
+                aria-expanded={condOpen}
+                onClick={() => setCondOpen((o) => !o)}
+              >
+                <svg viewBox="0 0 12 12" width={11} height={11} aria-hidden>
+                  <path d="M4.5 2.5 8 6l-3.5 3.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                </svg>
+                {t("Conditions")}
+              </button>
+              {condOpen ? (
+                <div className="rt-conds" style={{ marginTop: 8, display: "flex", flexDirection: "column", gap: 6 }}>
+                  <div className="row pref" style={{ padding: "6px 8px" }}>
+                    <div className="who">
+                      <div className="name">{t("When agent is")}</div>
+                      <div className="sub">Claude Code · Codex</div>
+                    </div>
+                    <button type="button" className="text">{t("Edit")}</button>
+                  </div>
+                  <div className="row pref" style={{ padding: "6px 8px" }}>
+                    <div className="who">
+                      <div className="name">{t("When model matches")}</div>
+                      <div className="sub">*sonnet* · gpt-*</div>
+                    </div>
+                    <button type="button" className="text">{t("Edit")}</button>
+                  </div>
+                  <button type="button" className="text" style={{ alignSelf: "flex-start" }}>
+                    + {t("Condition")}
+                  </button>
+                </div>
+              ) : null}
+            </div>
+            <div className="rt-group card muted">
+              <div className="rt-ghead">
+                <b>{t("Fallback")}</b>
+                <span className="grow" />
+                <span style={{ fontSize: 12, color: "var(--muted)" }}>ollama / llama3.2</span>
+              </div>
+            </div>
+          </div>
+        ) : null}
+      </div>
     </main>
   );
 }

@@ -1,5 +1,17 @@
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { Fragment, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { Segs } from "../components/Segs";
+import { iconSrc } from "../data/mock";
+import {
+  DEMO_CTX_AGENTS,
+  DEMO_LEDGER,
+  DEMO_SESSIONS,
+  DEMO_SESS_KPIS,
+  ago,
+  fmtCost,
+  fmtN,
+  ledTime,
+  type LedRow,
+} from "../data/usage-demo";
 import { demoCopy, t } from "../i18n";
 
 const USAGE_TABS = [
@@ -367,6 +379,11 @@ export function UsageView() {
   /** Magpie ledDash stays hidden with no ledger; demo can show a chart shell. */
   const [demoChart, setDemoChart] = useState(false);
   const [ctxDays, setCtxDays] = useState("7");
+  /** Magpie empty vs filled demo (ledger / sessions / context). Default filled for 1:1 data shells. */
+  const [demoFilled, setDemoFilled] = useState(true);
+  const [ledOpen, setLedOpen] = useState<Set<string>>(() => new Set());
+  const [ledPage, setLedPage] = useState(0);
+
 
   const everyLabel = USAGE_EVERY.find(([n]) => n === every)?.[1] || "5 s";
 
@@ -394,6 +411,69 @@ export function UsageView() {
   }, [every, tab]);
 
   const periodValue = customLabel ? customLabel : period;
+
+  const ledRows = useMemo(() => {
+    if (!demoFilled) return [] as LedRow[];
+    let rows = DEMO_LEDGER;
+    if (ledStatus === "ok") rows = rows.filter((r) => r.status === "ok");
+    else if (ledStatus === "err") rows = rows.filter((r) => r.status === "err");
+    else if (ledStatus === "rej") rows = rows.filter((r) => r.status === "rej");
+    const q = ledQ.trim().toLowerCase();
+    if (q) {
+      rows = rows.filter((r) =>
+        `${r.req} ${r.providerName} ${r.agentName} ${r.host || ""}`.toLowerCase().includes(q),
+      );
+    }
+    return rows;
+  }, [demoFilled, ledStatus, ledQ]);
+
+  const ledTotals = useMemo(() => {
+    const rows = ledRows;
+    const tokens = rows.reduce((n, r) => n + r.in + r.out + r.cache_read + r.cache_write, 0);
+    const cost = rows.reduce((n, r) => n + r.cost, 0);
+    const errors = rows.filter((r) => r.status === "err").length;
+    const cacheRead = rows.reduce((n, r) => n + r.cache_read, 0);
+    const prompt = rows.reduce((n, r) => n + r.in + r.cache_write + r.cache_read, 0);
+    return {
+      calls: rows.length,
+      tokens,
+      cost,
+      errors,
+      input: rows.reduce((n, r) => n + r.in, 0),
+      output: rows.reduce((n, r) => n + r.out, 0),
+      cache_read: cacheRead,
+      cache_write: rows.reduce((n, r) => n + r.cache_write, 0),
+      hit: prompt ? cacheRead / prompt : 0,
+    };
+  }, [ledRows]);
+
+  const pageSize = 5;
+  const ledPageRows = ledRows.slice(ledPage * pageSize, ledPage * pageSize + pageSize);
+  const ledPages = Math.max(1, Math.ceil(ledRows.length / pageSize) || 1);
+
+  const sessRows = useMemo(() => {
+    if (!demoFilled) return [];
+    let rows = DEMO_SESSIONS;
+    if (sessAgent !== "all") rows = rows.filter((s) => s.agent === sessAgent);
+    const q = sessQ.trim().toLowerCase();
+    if (q) {
+      rows = rows.filter((s) =>
+        `${s.title} ${s.cwd} ${s.models} ${s.agent}`.toLowerCase().includes(q),
+      );
+    }
+    return rows;
+  }, [demoFilled, sessAgent, sessQ]);
+
+  const ctxAgents = demoFilled ? DEMO_CTX_AGENTS : [];
+
+  const toggleLed = (id: string) => {
+    setLedOpen((prev) => {
+      const n = new Set(prev);
+      if (n.has(id)) n.delete(id);
+      else n.add(id);
+      return n;
+    });
+  };
 
   return (
     <main className="view" id="view-usage">
@@ -555,10 +635,26 @@ export function UsageView() {
         <div className="sess-tools" style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center", marginBottom: 8 }}>
           <Segs
             value={ledStatus}
-            onChange={setLedStatus}
+            onChange={(v) => {
+              setLedStatus(v);
+              setLedPage(0);
+            }}
             items={LED_STATUS.map(([id, en]) => ({ id, label: t(en) }))}
           />
           <span className="grow" />
+          <button
+            type="button"
+            className="text"
+            aria-pressed={demoFilled}
+            title={demoCopy("切换演示 ledger 数据", "Toggle demo ledger data")}
+            onClick={() => {
+              setDemoFilled((d) => !d);
+              setLedPage(0);
+              setDemoChart(false);
+            }}
+          >
+            {demoFilled ? demoCopy("演示数据开", "Demo data on") : demoCopy("演示数据关", "Demo data off")}
+          </button>
           <input
             className="sess-filter"
             id="ledQ"
@@ -567,12 +663,16 @@ export function UsageView() {
             autoComplete="off"
             placeholder={t("Search models, providers, sessions")}
             value={ledQ}
-            onChange={(e) => setLedQ(e.target.value)}
+            onChange={(e) => {
+              setLedQ(e.target.value);
+              setLedPage(0);
+            }}
           />
           <button
             type="button"
             className="text"
             id="ledExport"
+            disabled={!ledRows.length}
             title={t("Save every request listed, all pages, as a CSV file in Downloads")}
             onClick={() => {
               /* demo: no export */
@@ -584,93 +684,285 @@ export function UsageView() {
         <p className="usage-note" id="ledScope">
           {t("Gateway and session-log calls; local rejections excluded from totals.")}
         </p>
-        <div className="led-tools-extra" style={{ display: "flex", justifyContent: "flex-end", marginBottom: 6 }}>
-          <button
-            type="button"
-            className="text"
-            aria-pressed={demoChart}
-            onClick={() => setDemoChart((d) => !d)}
-            title={demoCopy("官方空态隐藏 ledDash；点此预览演示柱图壳", "Magpie hides ledDash when empty; preview demo chart shell")}
-          >
-            {demoChart ? demoCopy("隐藏演示图", "Hide demo chart") : demoCopy("显示演示图", "Show demo chart")}
-          </button>
-        </div>
-        <div className="led-dash" id="ledDash" hidden={!demoChart}>
-          <div className="led-strip" id="ledKpi">
-            {[
-              ["Calls", "0", ""],
-              ["Tokens", "0", ""],
-              ["Cost", "≈$0", "cost"],
-              ["OK", "0", ""],
-              ["Errors", "0", ""],
-            ].map(([k, v, vc]) => (
-              <div key={k} className="blk">
-                <span className="k">{t(k)}</span>
-                <span className={`v${vc ? ` ${vc}` : ""}`}>{v}</span>
-                <span className="sub">{ledStatus ? t(LED_STATUS.find(([id]) => id === ledStatus)?.[1] || "All") : t("All")}</span>
+        {demoFilled && ledRows.length ? (
+          <>
+            <div className="led-dash" id="ledDash">
+              <div className="led-strip" id="ledKpi">
+                <div className="blk">
+                  <span className="k">{t("Tokens")}</span>
+                  <span className="v">{fmtN(ledTotals.tokens)}</span>
+                  <span className="sub">
+                    {t("{a} in · {b} out", { a: fmtN(ledTotals.input), b: fmtN(ledTotals.output) })}
+                    {" · "}
+                    {t("{a} cache", { a: fmtN(ledTotals.cache_read + ledTotals.cache_write) })}
+                  </span>
+                </div>
+                <div className="blk">
+                  <span className="k">{t("Requests")}</span>
+                  <span className="v">{ledTotals.calls}</span>
+                  <span className="sub jumps">
+                    {ledTotals.errors ? (
+                      <button
+                        type="button"
+                        className={`led-jump bad${ledStatus === "err" ? " on" : ""}`}
+                        onClick={() => setLedStatus(ledStatus === "err" ? "" : "err")}
+                      >
+                        {t("{n} failed", { n: String(ledTotals.errors) })}
+                      </button>
+                    ) : (
+                      t("none failed")
+                    )}
+                  </span>
+                </div>
+                <div className="blk">
+                  <span className="k">{t("Cost")}</span>
+                  <span className="v cost">{fmtCost(ledTotals.cost)}</span>
+                  <span className="sub">{t("effective prices")}</span>
+                </div>
+                <div className="blk">
+                  <span className="k">{t("Cache hit rate")}</span>
+                  <span className="v">{(100 * ledTotals.hit).toFixed(1)}%</span>
+                  <div className="meter">
+                    <i style={{ width: `${(100 * ledTotals.hit).toFixed(1)}%` }} />
+                  </div>
+                </div>
+                <div className="blk">
+                  <span className="k">{t("Output speed")}</span>
+                  <span className="v parts">
+                    <span>72</span>
+                    <span> tok/s</span>
+                  </span>
+                  <span className="sub ttft">{t("first token in {ms} on average", { ms: "420ms" })}</span>
+                </div>
               </div>
-            ))}
-          </div>
-          <section className="led-trend">
-            <div className="led-bar" style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", marginBottom: 6 }}>
-              <Segs value={ledMetric} onChange={setLedMetric} items={LED_METRIC.map(([id, en]) => ({ id, label: t(en) }))} />
-              <span className="grow" />
-              <span className="led-split" style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
-                <span className="led-by" style={{ fontSize: 12, color: "var(--muted)" }}>
-                  {t("Split by")}
-                </span>
-                <Segs value={ledSplit} onChange={setLedSplit} items={LED_SPLIT.map(([id, en]) => ({ id, label: t(en) }))} />
-              </span>
-            </div>
-            <div className="led-body">
-              <div className="led-chart" id="ledChart" aria-hidden style={{ height: 120, borderRadius: 12, border: "1px solid var(--line)", background: "var(--card)", display: "flex", alignItems: "flex-end", gap: 3, padding: "12px 10px 8px" }}>
-                {[18, 34, 22, 48, 30, 12, 40, 26, 36, 20, 44, 28].map((h, i) => (
+              <section className="led-trend">
+                <div className="led-bar" style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", marginBottom: 6 }}>
+                  <Segs value={ledMetric} onChange={setLedMetric} items={LED_METRIC.map(([id, en]) => ({ id, label: t(en) }))} />
+                  <span className="grow" />
+                  <span className="led-split" style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+                    <span className="led-by" style={{ fontSize: 12, color: "var(--muted)" }}>
+                      {t("Split by")}
+                    </span>
+                    <Segs value={ledSplit} onChange={setLedSplit} items={LED_SPLIT.map(([id, en]) => ({ id, label: t(en) }))} />
+                  </span>
+                </div>
+                <div className="led-body">
                   <div
-                    key={i}
-                    title={`${ledMetric} · ${ledSplit}`}
+                    className="led-chart"
+                    id="ledChart"
+                    aria-hidden
                     style={{
-                      flex: 1,
-                      height: `${h}%`,
-                      borderRadius: "4px 4px 2px 2px",
-                      background: "color-mix(in srgb, var(--accent) 55%, var(--pill))",
-                      opacity: 0.55 + (i % 3) * 0.1,
-                      transition: "height .28s var(--ease), opacity .12s",
+                      height: 120,
+                      borderRadius: 12,
+                      border: "1px solid var(--line)",
+                      background: "var(--card)",
+                      display: "flex",
+                      alignItems: "flex-end",
+                      gap: 3,
+                      padding: "12px 10px 8px",
                     }}
-                  />
+                  >
+                    {[28, 44, 36, 62, 48, 22, 55, 40, 50, 34, 58, 42].map((h, i) => (
+                      <div
+                        key={i}
+                        title={`${ledMetric} · ${ledSplit}`}
+                        style={{
+                          flex: 1,
+                          height: `${h}%`,
+                          borderRadius: "4px 4px 2px 2px",
+                          background: "color-mix(in srgb, var(--accent) 55%, var(--pill))",
+                          opacity: 0.55 + (i % 3) * 0.1,
+                          transition: "height .28s var(--ease), opacity .12s",
+                        }}
+                      />
+                    ))}
+                  </div>
+                  <div className="led-rank" id="ledRank" />
+                </div>
+              </section>
+            </div>
+            <div className="led-head" style={{ display: "flex", alignItems: "baseline", gap: 8, marginTop: 10 }}>
+              <p className="led-sum" id="ledSum" style={{ margin: 0, fontSize: 12, color: "var(--muted)" }}>
+                {t(ledTotals.calls === 1 ? "{n} request" : "{n} requests", { n: String(ledTotals.calls) })}
+                {" · "}
+                {t("{n} in", { n: fmtN(ledTotals.input) })}
+                {" · "}
+                {t("{n} out", { n: fmtN(ledTotals.output) })}
+                {ledTotals.errors ? ` · ${t("{n} failed", { n: String(ledTotals.errors) })}` : ""}
+              </p>
+              <span className="grow" />
+            </div>
+            <div className="led-wrap" id="ledWrap">
+              <table className="led">
+                <thead>
+                  <tr>
+                    {[
+                      "Time",
+                      "Agent",
+                      "Requested",
+                      "Provider · account",
+                      "Served",
+                      "In",
+                      "Out",
+                      "Cost",
+                      "Duration",
+                      "Status",
+                    ].map((h) => (
+                      <th key={h} className={["In", "Out", "Cost", "Duration"].includes(h) ? "n" : undefined}>
+                        {t(h)}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {ledPageRows.map((r) => {
+                    const open = ledOpen.has(r.id);
+                    const bad = r.status === "err";
+                    return (
+                      <Fragment key={r.id}>
+                        <tr
+                          className={`led-row${bad ? " bad" : ""}${open ? " open" : ""}`}
+                          tabIndex={0}
+                          aria-expanded={open}
+                          onClick={() => toggleLed(r.id)}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter" || e.key === " ") {
+                              e.preventDefault();
+                              toggleLed(r.id);
+                            }
+                          }}
+                        >
+                          <td className="when" title={new Date(r.t).toLocaleString()}>
+                            {ledTime(r.t)}
+                          </td>
+                          <td>
+                            <span className="who">
+                              <span className="ic">
+                                <img
+                                  src={iconSrc(
+                                    r.icon === "claude"
+                                      ? "claude-color"
+                                      : r.icon === "codex"
+                                        ? "codex-color"
+                                        : "openai",
+                                  )}
+                                  alt=""
+                                  width={14}
+                                  height={14}
+                                />
+                              </span>
+                              <span>{r.agentName}</span>
+                            </span>
+                          </td>
+                          <td className="model">{r.req}</td>
+                          <td className="where">
+                            <div className="where-name">
+                              {t(r.providerName)}
+                              {r.host ? ` · ${r.host}` : ""}
+                            </div>
+                            {r.source === "log" ? (
+                              <div className="source-badges">
+                                <span className="src">{t("Local session")}</span>
+                              </div>
+                            ) : null}
+                          </td>
+                          <td className="model">{r.served || "—"}</td>
+                          <td className="n">{fmtN(r.in)}</td>
+                          <td className="n">{fmtN(r.out)}</td>
+                          <td className={`n cost${r.cost ? "" : " faint"}`}>{fmtCost(r.cost)}</td>
+                          <td className="n">{(r.ms / 1000).toFixed(1)}s</td>
+                          <td>
+                            <span className="st">
+                              <i className="dot" />
+                              {bad ? t("Error") : t("OK")}
+                            </span>
+                          </td>
+                        </tr>
+                        {open ? (
+                          <tr className="led-detail">
+                            <td colSpan={10}>
+                              <div className="led-detail-inner" style={{ padding: "8px 12px 12px", fontSize: 12, color: "var(--fg-2)", display: "grid", gap: 4 }}>
+                                <div>
+                                  <b>{t("Cache write")}</b>: {fmtN(r.cache_write)} · <b>{t("Cache read")}</b>: {fmtN(r.cache_read)}
+                                  {r.speed ? ` · ${t("Speed")}: ${r.speed} tok/s` : ""}
+                                  {r.effort ? ` · ${t("Effort")}: ${r.effort}` : ""}
+                                </div>
+                                <div style={{ color: "var(--muted)" }}>
+                                  {demoCopy("演示行展开（Magpie led-row details）", "Demo row expand (Magpie led-row details)")}
+                                </div>
+                              </div>
+                            </td>
+                          </tr>
+                        ) : null}
+                      </Fragment>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+            <div className="led-pager" id="ledPager" hidden={ledRows.length <= pageSize}>
+              <button type="button" className="text" disabled={ledPage <= 0} onClick={() => setLedPage((p) => Math.max(0, p - 1))}>
+                {t("Previous")}
+              </button>
+              <span>
+                {ledPage + 1} / {ledPages}
+              </span>
+              <button
+                type="button"
+                className="text"
+                disabled={ledPage + 1 >= ledPages}
+                onClick={() => setLedPage((p) => p + 1)}
+              >
+                {t("Next")}
+              </button>
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="led-tools-extra" style={{ display: "flex", justifyContent: "flex-end", marginBottom: 6 }}>
+              <button
+                type="button"
+                className="text"
+                aria-pressed={demoChart}
+                onClick={() => setDemoChart((d) => !d)}
+                title={demoCopy("官方空态隐藏 ledDash；点此预览演示柱图壳", "Magpie hides ledDash when empty; preview demo chart shell")}
+              >
+                {demoChart ? demoCopy("隐藏演示图", "Hide demo chart") : demoCopy("显示演示图", "Show demo chart")}
+              </button>
+            </div>
+            <div className="led-dash" id="ledDash" hidden={!demoChart}>
+              <div className="led-strip" id="ledKpi">
+                {[
+                  ["Calls", "0", ""],
+                  ["Tokens", "0", ""],
+                  ["Cost", "≈$0", "cost"],
+                  ["OK", "0", ""],
+                  ["Errors", "0", ""],
+                ].map(([k, v, vc]) => (
+                  <div key={k} className="blk">
+                    <span className="k">{t(k)}</span>
+                    <span className={`v${vc ? ` ${vc}` : ""}`}>{v}</span>
+                    <span className="sub">{t("All")}</span>
+                  </div>
                 ))}
               </div>
-              <div className="led-rank" id="ledRank" />
-              <div className="led-rail" id="ledRail" hidden>
-                <i />
+            </div>
+            <div className={`led-wrap${!demoChart ? " none" : ""}`} id="ledWrap">
+              <div className="led-none" style={{ padding: "22px 16px", textAlign: "center", color: "var(--muted)", lineHeight: 1.5 }}>
+                {ledQ.trim() || ledStatus
+                  ? t("No requests match these filters.")
+                  : t(periodValue === "today" || period === "today" ? "No requests today" : "No requests here")}
+                <div style={{ marginTop: 6, fontSize: 12 }}>
+                  {t("Every request an agent sends to magpie, and every call the agents' own session files record, is counted here.")}
+                </div>
               </div>
             </div>
-          </section>
-        </div>
-        <div className="led-head" style={{ display: "flex", alignItems: "baseline", gap: 8, marginTop: 10 }}>
-          <p className="led-sum" id="ledSum" style={{ margin: 0, fontSize: 12, color: "var(--muted)" }}>
-            {ledQ.trim() || ledStatus
-              ? t("No requests match these filters.")
-              : noCallsIn(periodValue)}
-          </p>
-          <span className="grow" />
-          <span className="led-arch" id="ledArchive" />
-        </div>
-        <div className={`led-wrap${!demoChart ? " none" : ""}`} id="ledWrap">
-          {!demoChart ? (
-            <div className="led-none" style={{ padding: "22px 16px", textAlign: "center", color: "var(--muted)", lineHeight: 1.5 }}>
-              {ledQ.trim() || ledStatus
-                ? t("No requests match these filters.")
-                : t(periodValue === "today" || period === "today" ? "No requests today" : "No requests here")}
-              <div style={{ marginTop: 6, fontSize: 12 }}>
-                {t("Every request an agent sends to magpie, and every call the agents' own session files record, is counted here.")}
-              </div>
-            </div>
-          ) : null}
-        </div>
+          </>
+        )}
         <p className="usage-note" id="ledNote" />
       </div>
 
-      {/* Sessions — Magpie index.html #sessionsPane DOM */}
+      {/* Sessions — Magpie #sessionsPane with 6 KPIs + list (demo filled) */}
       <div className="usage-pane sess-pane" id="sessionsPane" hidden={tab !== "sessions"}>
         <div className="sess-tools">
           <div className="segs" id="sessAgent">
@@ -679,91 +971,290 @@ export function UsageView() {
               onChange={setSessAgent}
               items={[
                 { id: "all", label: t("All agents") },
-                { id: "codex", label: "Codex" },
                 { id: "claude", label: "Claude Code" },
+                { id: "codex", label: "Codex" },
+                { id: "opencode", label: "OpenCode" },
               ]}
             />
           </div>
           <button className="sess-pick" id="sessModel" type="button" hidden />
           <button className="sess-pick" id="sessFolder" type="button" hidden />
-        </div>
-        <section className="stats empty" id="sessStats">
-          <div className="none">
-            {sessAgent !== "all" || sessQ.trim()
-              ? t("No session matches.")
-              : t("No sessions yet. Claude Code's, Codex's, OpenCode's and Pi's sessions on this computer show up here, with what each cost and the command that resumes it.")}
-            {sessRange !== "all" && sessAgent === "all" && !sessQ.trim() ? (
-              <div style={{ marginTop: 8 }}>
-                <button
-                  type="button"
-                  className="text sess-show-history"
-                  onClick={() => setSessRange("all")}
-                >
-                  {t("All sessions")}
-                </button>
-              </div>
-            ) : null}
-          </div>
-        </section>
-        <section className="chart sess-chart" id="sessChart" hidden />
-        <div className="sess-grid" id="sessGrid" hidden>
-          <section className="sess-card" id="sessProjects" />
-          <section className="sess-card" id="sessModels" />
-          <section className="sess-card" id="sessHours" />
-          <section className="sess-card" id="sessTop" />
-          <section className="sess-card" id="sessShape" />
-          <section className="sess-card" id="sessSkills" />
-          <section className="sess-card wide" id="sessTools" />
-        </div>
-        <div className="row-head" id="sessListHead" hidden={!sessQ.trim()}>
-          <span className="label">{t("Latest sessions")}</span>
           <span className="grow" />
-          <button className="text sess-all" id="sessAll" type="button" data-feature="sessions">
-            {t("All sessions")}
+          <button
+            type="button"
+            className="text"
+            aria-pressed={demoFilled}
+            onClick={() => setDemoFilled((d) => !d)}
+          >
+            {demoFilled ? demoCopy("演示数据开", "Demo data on") : demoCopy("演示数据关", "Demo data off")}
           </button>
-          <input
-            className="sess-filter"
-            id="sessQ"
-            type="search"
-            spellCheck={false}
-            autoComplete="off"
-            placeholder={t("Search sessions")}
-            value={sessQ}
-            onChange={(e) => setSessQ(e.target.value)}
-          />
         </div>
-        {/* Keep search reachable when head hidden */}
-        {!sessQ.trim() ? (
-          <div className="sess-tools" style={{ justifyContent: "flex-end", marginTop: 4 }}>
-            <input
-              className="sess-filter"
-              type="search"
-              spellCheck={false}
-              autoComplete="off"
-              placeholder={t("Search sessions")}
-              value={sessQ}
-              onChange={(e) => setSessQ(e.target.value)}
-              aria-label={t("Search sessions")}
-            />
-          </div>
-        ) : null}
-        <div className="list sess-list" id="sessList" hidden />
+        {demoFilled && sessRows.length ? (
+          <>
+            <section className="stats six" id="sessStats">
+              {DEMO_SESS_KPIS.map((k) => (
+                <div className="kpi" key={k.label}>
+                  <b>
+                    {k.value}
+                    {"unit" in k && k.unit ? <i className="u">{k.unit}</i> : null}
+                  </b>
+                  <span>{t(k.label)}</span>
+                  <small>{t(k.sub)}</small>
+                </div>
+              ))}
+            </section>
+            <section className="chart sess-chart" id="sessChart" hidden />
+            <div className="sess-grid" id="sessGrid" hidden>
+              <section className="sess-card" id="sessProjects" />
+              <section className="sess-card" id="sessModels" />
+              <section className="sess-card" id="sessHours" />
+              <section className="sess-card" id="sessTop" />
+              <section className="sess-card" id="sessShape" />
+              <section className="sess-card" id="sessSkills" />
+              <section className="sess-card wide" id="sessTools" />
+            </div>
+            <div className="row-head" id="sessListHead">
+              <span className="label">{t("Latest sessions")}</span>
+              <span className="grow" />
+              <button className="text sess-all" id="sessAll" type="button" data-feature="sessions">
+                {t("All sessions")}
+              </button>
+              <input
+                className="sess-filter"
+                id="sessQ"
+                type="search"
+                spellCheck={false}
+                autoComplete="off"
+                placeholder={t("Search sessions")}
+                value={sessQ}
+                onChange={(e) => setSessQ(e.target.value)}
+              />
+            </div>
+            <div className="list sess-list" id="sessList">
+              {sessRows.map((s) => {
+                const tokens = s.input + s.output + s.cache_read;
+                return (
+                  <div className="sess-item" key={s.id}>
+                    <div className="row sess sess-link" tabIndex={0} role="link" title={t("Open in Sessions")}>
+                      <span className="ic">
+                        <img
+                          src={iconSrc(
+                            s.icon === "claude" ? "claude-color" : s.icon === "codex" ? "codex-color" : "openai",
+                          )}
+                          alt=""
+                        />
+                      </span>
+                      <div className="who">
+                        <div className="name">{s.title === "(no prompt)" ? t("(no prompt)") : s.title}</div>
+                        <div className="sub">
+                          {[s.cwd, s.models, ago(s.last)].filter(Boolean).join(" · ")}
+                        </div>
+                      </div>
+                      <div className={`num${tokens ? "" : " none"}`}>
+                        <b>{tokens ? fmtN(tokens) : "—"}</b>
+                        {tokens ? (
+                          <small>
+                            {t("{a} in · {b} out", { a: fmtN(s.input), b: fmtN(s.output) })}
+                            {s.cache_read ? ` · ${t("{n} cached", { n: fmtN(s.cache_read) })}` : ""}
+                          </small>
+                        ) : null}
+                      </div>
+                      <div className={`cost${s.cost ? "" : " none"}`}>{fmtCost(s.cost)}</div>
+                      <span className="sess-go" aria-hidden>
+                        <svg viewBox="0 0 12 12" width={12} height={12}>
+                          <path d="M4.5 2.5 8 6l-3.5 3.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                        </svg>
+                      </span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </>
+        ) : (
+          <>
+            <section className="stats empty" id="sessStats">
+              <div className="none">
+                {sessAgent !== "all" || sessQ.trim()
+                  ? t("No session matches.")
+                  : t(
+                      "No sessions yet. Claude Code's, Codex's, OpenCode's and Pi's sessions on this computer show up here, with what each cost and the command that resumes it.",
+                    )}
+                {sessRange !== "all" && sessAgent === "all" && !sessQ.trim() && !demoFilled ? (
+                  <div style={{ marginTop: 8 }}>
+                    <button type="button" className="text sess-show-history" onClick={() => setSessRange("all")}>
+                      {t("All sessions")}
+                    </button>
+                  </div>
+                ) : null}
+              </div>
+            </section>
+            <div className="sess-tools" style={{ justifyContent: "flex-end", marginTop: 4 }}>
+              <input
+                className="sess-filter"
+                type="search"
+                spellCheck={false}
+                autoComplete="off"
+                placeholder={t("Search sessions")}
+                value={sessQ}
+                onChange={(e) => setSessQ(e.target.value)}
+                aria-label={t("Search sessions")}
+              />
+            </div>
+            <div className="list sess-list" id="sessList" hidden />
+          </>
+        )}
         <p className="usage-note" id="sessNote" />
       </div>
 
-      {/* Context — Magpie context.js empty: No prompts read yet */}
+      {/* Context — Magpie context.js agent cards (demo filled) */}
       <div className="usage-pane ctx-pane" id="contextPane" hidden={tab !== "context"}>
         <div className="row-head ctx-sess-head">
           <span className="label">{t("Through magpie")}</span>
           <span className="grow" />
+          <button
+            type="button"
+            className="text"
+            aria-pressed={demoFilled}
+            onClick={() => setDemoFilled((d) => !d)}
+          >
+            {demoFilled ? demoCopy("演示数据开", "Demo data on") : demoCopy("演示数据关", "Demo data off")}
+          </button>
         </div>
         <p className="usage-note">
           {t("What each agent's prompts hold, as magpie's gateway read them: the score and tags are worked out from the requests of the range.")}
         </p>
-        <div className="ctx-none">
-          <b>{t("No prompts read yet")}</b>
-          <span>{t("Requests your agents send through magpie show here.")}</span>
-        </div>
+        {ctxAgents.length ? (
+          <div className="ctx-agents">
+            {ctxAgents.map((a) => {
+              const grade =
+                a.score >= 85 ? "great" : a.score >= 70 ? "good" : a.score >= 50 ? "fair" : "poor";
+              const word =
+                a.score >= 85 ? "Excellent" : a.score >= 70 ? "Good" : a.score >= 50 ? "Fair" : "Needs care";
+              const r = 26;
+              const c = 2 * Math.PI * r;
+              const to = (c * (1 - a.score / 100)).toFixed(2);
+              return (
+                <div className="ctx-agent" key={a.agent}>
+                  <div className="ctx-agent-head">
+                    <div className="ctx-who-box">
+                      <div className="ctx-who">
+                        <span className="ic">
+                          <img
+                            src={iconSrc(
+                              a.icon === "claude" ? "claude-color" : a.icon === "codex" ? "codex-color" : "openai",
+                            )}
+                            alt=""
+                          />
+                        </span>
+                        <b>{a.name}</b>
+                      </div>
+                      <div className="ctx-who-sub">
+                        {t(a.requests === 1 ? "1 request" : "{n} requests", { n: String(a.requests) })}
+                        {" · "}
+                        {t(a.sessions === 1 ? "1 session" : "{n} sessions", { n: String(a.sessions) })}
+                      </div>
+                    </div>
+                    <span className="grow" />
+                    <div className="ctx-grade">
+                      <div className={`ctx-ring ${grade}`}>
+                        <svg viewBox="0 0 64 64" aria-hidden>
+                          <circle cx="32" cy="32" r={r} className="track" />
+                          <circle
+                            cx="32"
+                            cy="32"
+                            r={r}
+                            className="arc"
+                            strokeDasharray={c.toFixed(2)}
+                            style={{ ["--to" as string]: to }}
+                          />
+                        </svg>
+                        <b>{a.score}</b>
+                      </div>
+                      <span className={`ctx-grade-word ${grade}`}>{t(word)}</span>
+                    </div>
+                  </div>
+                  <div className="ctx-scores">
+                    {a.scores.map((s) => {
+                      const ratio = s.most ? s.points / s.most : 0;
+                      const tone = ratio >= 0.8 ? "ok" : ratio >= 0.5 ? "warn" : "bad";
+                      return (
+                        <div className={`ctx-score ${tone}`} key={s.key}>
+                          <span className="n">{t(s.name)}</span>
+                          <span className="ctx-bar">
+                            <i style={{ width: `${(ratio * 100).toFixed(1)}%` }} />
+                          </span>
+                          <span className="v">
+                            {s.points}/{s.most}
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  <div className="ctx-tags">
+                    {a.tags.map((tg) => (
+                      <span className={`ctx-chip ${tg.tone}`} key={tg.key}>
+                        <i />
+                        {t(tg.label)}
+                      </span>
+                    ))}
+                  </div>
+                  <div className="ctx-facts">
+                    {[
+                      ["Typical prompt", a.median],
+                      ["Largest", a.p90],
+                      ["Starts with", a.baseline],
+                      ["Grows by", a.growth],
+                      ["Cache hit", a.cache],
+                      ["Window size", a.window],
+                    ].map(([label, value]) => (
+                      <div className="ctx-fact" key={label}>
+                        <span className="ctx-k">{t(label)}</span>
+                        <b>{value}</b>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="ctx-mix">
+                    <span className="ctx-k">{t("What its prompts hold")}</span>
+                    <div className="ctx-share">
+                      {a.shares.map((sh) => (
+                        <i key={sh.k} className={`k-${sh.k}`} style={{ flexGrow: sh.v }} title={`${sh.name} · ${Math.round(sh.v * 100)}%`} />
+                      ))}
+                    </div>
+                    <div className="ctx-mix-keys">
+                      {a.shares
+                        .filter((sh) => sh.v >= 0.01)
+                        .map((sh) => (
+                          <span key={sh.k}>
+                            <i className={`dot k-${sh.k}`} />
+                            {t(sh.name)} {Math.round(sh.v * 100)}%
+                          </span>
+                        ))}
+                    </div>
+                  </div>
+                  <div className="ctx-agent-foot">
+                    <span className="ctx-models">
+                      {a.models.map((m) => (
+                        <code key={m} title={m}>
+                          {m.split("/").pop()}
+                        </code>
+                      ))}
+                    </span>
+                    <span className="grow" />
+                    <button type="button" className="text">
+                      {t("Latest request")}
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="ctx-none">
+            <b>{t("No prompts read yet")}</b>
+            <span>{t("Requests your agents send through magpie show here.")}</span>
+          </div>
+        )}
       </div>
     </main>
   );
@@ -839,8 +1330,9 @@ export function PluginsView() {
 
   const install = (pkg: string, name: string) => {
     setBusy(pkg);
+    // Magpie install: busy on card → Installed tab; demo ~420ms then local list
     window.setTimeout(() => {
-      setInstalled((list) => (list.some((x) => x.pkg === pkg) ? list : [...list, { pkg, name, opts: "" }]));
+      setInstalled((list) => (list.some((x) => x.pkg === pkg) ? list : [...list, { pkg, name, opts: "", optsOpen: false }]));
       setBusy(null);
       setTab("installed");
     }, 420);
@@ -967,7 +1459,7 @@ export function PluginsView() {
                     {cards.map((c) => {
                       const has = installed.some((x) => x.pkg === c.pkg);
                       return (
-                        <div className="pm-card" key={c.pkg} tabIndex={0}>
+                        <div className={`pm-card${busy === c.pkg ? " installing" : ""}${has ? " has" : ""}`} key={c.pkg} tabIndex={0}>
                           <div className="pm-logo" aria-hidden>
                             ◆
                           </div>
@@ -1126,24 +1618,39 @@ export function PluginsView() {
                         </div>
                       ) : null}
                       {asking?.pkg === e.pkg ? (
-                        <div style={{ marginTop: 8, display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
-                          <span style={{ fontSize: 12 }}>
-                            {asking.op === "remove" ? t("Remove this plugin?") : t("Switch this plugin off?")}
-                          </span>
-                          <button
-                            type="button"
-                            className="text"
-                            onClick={() => {
-                              if (asking.op === "remove") setInstalled((list) => list.filter((x) => x.pkg !== e.pkg));
-                              else setInstalled((list) => list.map((x) => (x.pkg === e.pkg ? { ...x, off: true } : x)));
-                              setAsking(null);
-                            }}
-                          >
-                            {t("Yes")}
-                          </button>
-                          <button type="button" className="text" onClick={() => setAsking(null)}>
-                            {t("Cancel")}
-                          </button>
+                        <div className="pm-ask" role="group" aria-label={asking.op === "remove" ? t("Remove this plugin?") : t("Switch this plugin off?")}>
+                          <p className="pm-ask-say">
+                            {asking.op === "remove"
+                              ? t("Remove this plugin?")
+                              : t("Switch this plugin off?")}
+                          </p>
+                          <p className="pm-ask-sub">
+                            {asking.op === "remove"
+                              ? demoCopy(
+                                  "演示：移除只从本页列表删掉，不碰磁盘。",
+                                  "Demo: remove only clears this page list — nothing on disk.",
+                                )
+                              : demoCopy(
+                                  "关掉后订阅账户会回到内置；演示仅本地标记 Off。",
+                                  "Off sends subscription accounts back to built-ins; demo only marks Off locally.",
+                                )}
+                          </p>
+                          <div className="pm-ask-acts">
+                            <button
+                              type="button"
+                              className="text primary"
+                              onClick={() => {
+                                if (asking.op === "remove") setInstalled((list) => list.filter((x) => x.pkg !== e.pkg));
+                                else setInstalled((list) => list.map((x) => (x.pkg === e.pkg ? { ...x, off: true } : x)));
+                                setAsking(null);
+                              }}
+                            >
+                              {t("Yes")}
+                            </button>
+                            <button type="button" className="text" onClick={() => setAsking(null)}>
+                              {t("Cancel")}
+                            </button>
+                          </div>
                         </div>
                       ) : null}
                     </div>
@@ -1162,11 +1669,16 @@ export function PluginsView() {
                       <button
                         type="button"
                         className="text"
-                        onClick={() =>
-                          setInstalled((list) =>
-                            list.map((x) => (x.pkg === e.pkg ? { ...x, off: !x.off } : x)),
-                          )
-                        }
+                        onClick={() => {
+                          if (e.off) {
+                            setInstalled((list) =>
+                              list.map((x) => (x.pkg === e.pkg ? { ...x, off: false } : x)),
+                            );
+                            setAsking(null);
+                          } else {
+                            setAsking({ pkg: e.pkg, op: "off" });
+                          }
+                        }}
                       >
                         {e.off ? t("Enable") : t("Disable")}
                       </button>

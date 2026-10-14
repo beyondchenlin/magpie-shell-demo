@@ -34,3 +34,7 @@ Demo 可保留显式「演示飞鸟」开关（非官方空态控件）；**不�
 ## 本文件状态
 
 R-00…R-09 录制=已录 · demo=空态交互已实现（web/exe **v0.1.5**）· 全应用仍非 PASS · 判定 **`ROUTING_EMPTY_PARTIAL`**。
+
+
+## v0.1.16
+- `#rtMore`：Routing groups 卡 · model **#pop**（ModelPop）· Conditions fold。

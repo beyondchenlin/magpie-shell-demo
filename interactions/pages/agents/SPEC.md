@@ -67,3 +67,7 @@ Toast：`{agent}'s install command copied` → zh **`已复制{agent} 的安装�
 |----|------|------|------|------|-----------|
 | A-GS01 | `.guide-x` Hide Get started | 点击 | 快速上手卡消失 | 已录 | **已实现**（`localStorage` `magpie-demo-guideHidden`） |
 | A-AR01 | `.ag-handle` Arrange Cursor | 点击开菜单 | Move up/down **disabled**（仅 1 agent）；Hide；Esc 关；**非**拖拽 | 已录 | **已实现**（Hide → 同 Manage 隐藏） |
+
+
+## v0.1.16
+- Manage modal：`ALL_AGENTS` 扩为 Cursor / Claude Code / Codex / OpenCode / Pi（hide/search/select 深层可点）。

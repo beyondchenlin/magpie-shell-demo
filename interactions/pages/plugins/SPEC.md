@@ -28,3 +28,8 @@
 ## v0.1.15
 
 - Installed middleware 行文案对齐 `plugins.js` `mwLine`：`Gateway middleware: {hooks}` + `{n} calls, {us} µs each`；Options JSON 示例含 `hooks` / `onEvent`。
+
+
+## v0.1.16
+- Disable → **pm-ask** 确认（Yes/Cancel）；Enable 直接开。
+- Install：`.pm-card.installing` + Installing… → Installed tab。

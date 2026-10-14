@@ -31,3 +31,7 @@
 - Claude risk：`renderSigning` `state==="risk"`
 - 编辑器：`drawEditor` / `frame` → `#modal`
 - Import：`renderImportApps`
+
+
+## v0.1.16
+- `#providers` 演示行：Accounts / Models **fold**（chevron `.15s`）+ Edit / + Account / + Model。
