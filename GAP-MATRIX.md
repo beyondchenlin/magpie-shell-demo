@@ -1,3 +1,8 @@
+## v0.1.77 TRAY_22_24
+- tray/22–24 Save current naming landed: field + Save, draft type, PROFILES-label blur discard, no chip.
+- Escape still HideOnEscape (not naming discard). Still mock: true `profiles.json` write / chip Apply / ×.
+- Allowances **N/A**. P1 bird hop **N/A**. No portable / Vercel this cycle.
+
 ## v0.1.76 TRAY_15_21
 - tray/15–21 landed: ModelPop rail tips + favorites empty + typed custom; Open Usage → Requests empty; Open Routing peer-serves card; Escape unmaps.
 - Still mock: true systray / second-process panel handoff / live gateway ownership.

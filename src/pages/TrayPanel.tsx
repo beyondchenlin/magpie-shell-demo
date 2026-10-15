@@ -1,10 +1,11 @@
 /**
- * Magpie tray / quick panel (body.panel) — native-linux/tray/01–21.
+ * Magpie tray / quick panel (body.panel) — native-linux/tray/01–24.
  * Open: ?panel=1 | #panel | localStorage magpie.demoPanel=1
  * Allowances tab: Magpie hides entire [data-ptab=usage] when no subscription/balance — N/A here (not a missing UI).
- * Escape: HideOnEscape unmaps panel (shot 21). Open Usage → Requests/Today; Open Routing → peer-serves card.
+ * Escape: HideOnEscape unmaps panel (shot 21). Save current naming: blur discards (22–24); Escape is not discard.
+ * Open Usage → Requests/Today; Open Routing → peer-serves card.
  */
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState, type MouseEvent as ReactMouseEvent } from "react";
 import { Bird, useLogoWag } from "../components/Bird";
 import { ModelPop, type PopOption } from "../components/ModelPop";
 import { useSegThumb } from "../components/SegThumb";
@@ -66,11 +67,15 @@ export function TrayPanel({ onOpenMain, onHide, onQuit, onPrefs, onStatus }: Pro
   const [model, setModel] = useState("default");
   const [modelPop, setModelPop] = useState(false);
   const [profilesOpen, setProfilesOpen] = useState(false);
+  /** tray/22–24: ＋ Save current → name field; blur discards (Escape is HideOnEscape) */
+  const [naming, setNaming] = useState(false);
+  const [profileName, setProfileName] = useState("");
   const syncRef = useRef<HTMLButtonElement>(null);
   const brandRef = useRef<HTMLDivElement>(null);
   const modelFieldRef = useRef<HTMLButtonElement>(null);
   const profBtnRef = useRef<HTMLButtonElement>(null);
   const profBoxRef = useRef<HTMLElement | null>(null);
+  const nameRef = useRef<HTMLInputElement>(null);
   /** Native: no subscription/balance → Allowances tab omitted from DOM (tray NOTES). */
   const hasAllowances = false;
   const setTabs = useSegThumb(tab);
@@ -99,17 +104,37 @@ export function TrayPanel({ onOpenMain, onHide, onQuit, onPrefs, onStatus }: Pro
     const away = (e: MouseEvent) => {
       const n = e.target as Node;
       if (profBoxRef.current?.contains(n) || profBtnRef.current?.contains(n)) return;
+      setNaming(false);
+      setProfileName("");
       setProfilesOpen(false);
     };
     document.addEventListener("mousedown", away, true);
     return () => document.removeEventListener("mousedown", away, true);
   }, [profilesOpen]);
 
-  // tray/21 HideOnEscape — unmap panel; nested pop/profiles close first
+  useEffect(() => {
+    if (naming) nameRef.current?.focus({ preventScroll: true });
+  }, [naming]);
+
+  const discardNaming = useCallback(() => {
+    setNaming(false);
+    setProfileName("");
+  }, []);
+
+  // tray/21 HideOnEscape — unmap panel.
+  // tray/24: Escape is NOT naming discard (field does not preventDefault); blur is.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== "Escape") return;
       if (modelPop) return; // ModelPop dismisses itself (capture + stopPropagation)
+      if (naming) {
+        // Native HideOnEscape unmaps whole panel; do not leave idle Profiles popover
+        e.preventDefault();
+        discardNaming();
+        setProfilesOpen(false);
+        onHide();
+        return;
+      }
       if (profilesOpen) {
         e.preventDefault();
         setProfilesOpen(false);
@@ -120,7 +145,7 @@ export function TrayPanel({ onOpenMain, onHide, onQuit, onPrefs, onStatus }: Pro
     };
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
-  }, [modelPop, profilesOpen, onHide]);
+  }, [modelPop, profilesOpen, naming, onHide, discardNaming]);
 
   // Magpie placeProfiles: float above Profiles btn, under ptabs
   useLayoutEffect(() => {
@@ -136,7 +161,7 @@ export function TrayPanel({ onOpenMain, onHide, onQuit, onPrefs, onStatus }: Pro
     place();
     window.addEventListener("resize", place);
     return () => window.removeEventListener("resize", place);
-  }, [profilesOpen]);
+  }, [profilesOpen, naming]);
 
   const goTab = useCallback(
     (next: PTab) => {
@@ -144,6 +169,8 @@ export function TrayPanel({ onOpenMain, onHide, onQuit, onPrefs, onStatus }: Pro
       setTab(next);
       setOpenId(null);
       setModelPop(false);
+      setNaming(false);
+      setProfileName("");
       setProfilesOpen(false);
     },
     [hasAllowances],
@@ -436,26 +463,74 @@ export function TrayPanel({ onOpenMain, onHide, onQuit, onPrefs, onStatus }: Pro
           <p className="pr-none">{t("The gateway isn't running, so nothing is routed.")}</p>
         </section>
 
-        {/* 10-profiles empty popover */}
+        {/* 10-profiles + tray/22–24 Save current naming */}
         <section
-          className={`profiles${profilesOpen ? " open" : ""}`}
+          className={`profiles${profilesOpen ? " open" : ""}${naming ? " naming" : ""}`}
           ref={profBoxRef}
           aria-hidden={!profilesOpen}
         >
-          <span className="label">{t("Profiles")}</span>
+          <span
+            className="label"
+            onMouseDown={(e: ReactMouseEvent) => {
+              /* tray/24: click PROFILES label → blur discards field; hint returns */
+              if (naming) {
+                e.preventDefault();
+                discardNaming();
+              }
+            }}
+          >
+            {t("Profiles")}
+          </span>
           <div id="profiles" className="chips">
-            <span className="hint">{t("none yet · save the setup to switch back in one click")}</span>
+            {!naming ? (
+              <span className="hint">{t("none yet · save the setup to switch back in one click")}</span>
+            ) : null}
           </div>
+          {naming ? (
+            <input
+              ref={nameRef}
+              className="chip-input"
+              placeholder={t("Profile name")}
+              value={profileName}
+              onChange={(e) => setProfileName(e.target.value)}
+              onKeyDown={(e) => {
+                /* tray/24: Escape must NOT discard here — HideOnEscape unmaps panel */
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  if (!profileName.trim()) return;
+                  /* Demo: no profiles.json write — exit naming, no chip */
+                  discardNaming();
+                }
+                /* Escape: do not preventDefault / stopPropagation */
+              }}
+              onBlur={() => {
+                /* blur (incl. PROFILES label) discards draft; popover stays */
+                window.setTimeout(() => discardNaming(), 100);
+              }}
+            />
+          ) : null}
           <button
             className="text"
             id="save"
             type="button"
+            onMouseDown={(e) => {
+              if (naming) e.preventDefault();
+            }}
             onClick={() => {
-              /* Magpie opens name field; demo mock — no save */
-              onStatus(t("＋ Save current"), "ok");
+              if (!naming) {
+                setNaming(true);
+                return;
+              }
+              if (!profileName.trim()) {
+                nameRef.current?.focus({ preventScroll: true });
+                return;
+              }
+              /* Demo mock — no chip / no profiles.json (NOTES: draft not kept) */
+              discardNaming();
             }}
           >
-            {t("＋ Save current")}
+            {naming ? t("Save") : t("＋ Save current")}
           </button>
         </section>
       </main>
@@ -468,7 +543,15 @@ export function TrayPanel({ onOpenMain, onHide, onQuit, onPrefs, onStatus }: Pro
           ref={profBtnRef}
           aria-haspopup="dialog"
           aria-expanded={profilesOpen}
-          onClick={() => setProfilesOpen((v) => !v)}
+          onClick={() =>
+            setProfilesOpen((v) => {
+              if (v) {
+                setNaming(false);
+                setProfileName("");
+              }
+              return !v;
+            })
+          }
         >
           <span>{t("Profiles")}</span>
         </button>

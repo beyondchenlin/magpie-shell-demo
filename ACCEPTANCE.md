@@ -1,3 +1,9 @@
+## v0.1.77 TRAY_22_24
+- Consumed native `tray/22–24` NOTES: **＋ Save current** → name field placeholder **Profile name**, button **Save**, hint hidden; type `draft` without Enter/Save; blur on **PROFILES** label discards field → hint **none yet · save the setup to switch back in one click**, button **＋ Save current** again, no chip.
+- Escape is **not** naming discard (`HideOnEscape` unmaps panel); blur is.
+- Demo: `?panel=1` Profiles → Save current naming class `.profiles.naming` + `.chip-input`.
+- Allowances **N/A**. P1 bird **N/A**. **No portable / GitHub release / Vercel** (user freeze).
+
 ## v0.1.76 TRAY_15_21
 - Consumed native `tray/15–21` NOTES: rail **All models** / **Favorites** tips; Favorites → **No matches.**; filter `zzznomatch` → **use as typed** (no Enter); **Open Usage** → Requests · Today · **No calls today.** · 0 / ≈$0.000 · Request archive off; **Open Routing** → green live + **Another magpie serves the gateway; its routing plays live in that magpie's window.** (panel Routing still gateway-not-running); Escape unmaps panel.
 - Demo: `?panel=1` · Open Routing sets `magpie.routingPeerServes=1` / `?rtPeer=1`; Escape → `.panel-unmapped`.

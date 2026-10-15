@@ -109,4 +109,32 @@ Main magpie still running, pid 560329, window 752×652 at +200+40. Close was not
 
 Not in this slice: Save current's name field. Effort bars were hovered and no tooltip appeared. Allowances and the usage chart still need a subscription or a request. P1 N/A.
 
-Next: tray **Save current** (the name field only; do not keep a profile), still not Quit.
+Next was Save current; recorded as 22–24.
+
+## Consumed in demo v0.1.77 (TRAY_22_24)
+- **22** ＋ Save current → field placeholder **Profile name**, button **Save**, hint hidden
+- **23** typed `draft`, Enter/Save not pressed
+- **24** blur on PROFILES label discards field; hint returns; button **＋ Save current**; no chip
+- Escape is not discard (HideOnEscape); blur is. Allowances / P1 **N/A**. No portable / release / Vercel.
+
+## Save current (22–24)
+
+Same quick panel, relaunched from pid 560329's binary (0.1.1240) after the panel from 15–21 had been hidden. Second process again (no session bus, so it does not hand off). It does not hold port 3425. Agents tab. Cursor still **default** (`~/.cursor/cli-config.json` and `applied.json` still `{}`). No profile was written (`profiles.json` absent; `magpie profiles` → no profiles yet). Quit and Open magpie were not clicked. Allowances still absent. No usage chart.
+
+The popover is the one in 10. **＋ Save current** is the last row. Clicking it does not save. The hint hides, and one row opens, left to right: a name field, then the same button now reading **Save**.
+
+| shot | control | seen |
+|---|---|---|
+| 22-save-field | click **＋ Save current** | Field, accent border, caret, placeholder **Profile name**. Button **Save**. Hint gone. Nothing saved |
+| 23-save-typed | type `draft` in that field | Field shows **draft** and the caret. Button still **Save**. Enter not pressed. Save not clicked |
+| 24-save-discard | click the **PROFILES** label (blur) | Field gone. Hint back: **none yet · save the setup to switch back in one click**. Button **＋ Save current** again. No chip |
+
+An empty name is not a profile. `draft` was not kept. Escape was not the discard: native `HideOnEscape` unmapped the whole panel (the field's key handler does not `preventDefault`), so that window was closed and this one opened. Blur leaves the popover up, which is 24.
+
+## Left state
+
+Main magpie still running, pid 560329, window 752×652 at +200+40. Close was not used. Panel process running (from `/proc/560329/exe panel`), 484×572 at +1200+80, moved off the main window. After 24, Profiles was clicked again so the popover closed. Agents tab, no popover. Cursor still default. No profile saved.
+
+Not in this slice: a kept profile, its chip, ×, or Apply. Effort bars still show no tooltip. Allowances and the usage chart still need a subscription or a request. Open magpie and Quit still not clicked. P1 N/A.
+
+Next: tray effort bars (hover still has no tooltip), or stop. Not Allowances, not the usage chart, not Quit.
