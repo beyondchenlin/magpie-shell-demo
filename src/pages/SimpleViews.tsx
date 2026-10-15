@@ -2908,34 +2908,63 @@ export function PluginsView({
                           </span>
                         ) : null}
                       </div>
-                      <div className={`sub${asking?.pkg === e.pkg ? " ask" : ""}`}>
-                        {asking?.pkg === e.pkg
-                          ? null
-                          : e.off
+                      {asking?.pkg === e.pkg ? (
+                        <div className="sub ask">
+                          {asking.op === "move"
+                            ? t("{names} can run on it again, with the same accounts.", {
+                                names: (e.movable || e.moved || ["Kimi Code"]).join(t(", ")),
+                              })
+                            : asking.op === "remove"
+                              ? e.moved?.length
+                                ? t(
+                                    "{names} goes back to the built-in, with its accounts, before the plugin is removed.",
+                                    { names: e.moved.join(t(", ")) },
+                                  )
+                                : demoCopy(
+                                    "演示：移除只从本页列表删掉，不碰磁盘。",
+                                    "Demo: remove only clears this page list — nothing on disk.",
+                                  )
+                              : e.moved?.length
+                                ? t(
+                                    "{names} goes back to the built-in, with its accounts, before the plugin is switched off.",
+                                    { names: e.moved.join(t(", ")) },
+                                  )
+                                : demoCopy(
+                                    "关掉后订阅账户会回到内置；演示仅本地标记 Off。",
+                                    "Off sends subscription accounts back to built-ins; demo only marks Off locally.",
+                                  )}
+                        </div>
+                      ) : e.off || e.kind === "Provider" ? (
+                        <div className="sub">
+                          {e.off
                             ? t("Off")
-                            : e.kind === "Provider" && !e.signedIn
+                            : !e.signedIn
                               ? (
                                   <span className="pm-sub">
                                     <span className="dot" />
                                     <span>{t("{name}: not signed in", { name: e.name })}</span>
                                   </span>
                                 )
-                              : e.kind === "Provider" && e.signedIn
-                                ? (
-                                    <span className="pm-sub in">
-                                      <span className="dot" />
-                                      <span>{t("{name}: signed in", { name: e.name })}</span>
-                                    </span>
-                                  )
-                                : e.kind === "Middleware"
-                                  ? t("Gateway middleware: {hooks}", {
-                                      hooks: e.pkg.includes("word-guard")
-                                        ? "onRequest, onEvent, onResponse"
-                                        : "onEvent, onResponse",
-                                    })
-                                  : null}
-                      </div>
-                      {e.optsOpen ? (
+                              : (
+                                  <span className="pm-sub in">
+                                    <span className="dot" />
+                                    <span>{t("{name}: signed in", { name: e.name })}</span>
+                                  </span>
+                                )}
+                        </div>
+                      ) : null}
+                      {e.kind === "Middleware" && !e.off && asking?.pkg !== e.pkg ? (
+                        <div className="sub pm-mw">
+                          {t("Gateway middleware: {hooks}", {
+                            hooks: e.pkg.includes("word-guard")
+                              ? "onRequest, onEvent, onResponse"
+                              : "onEvent, onResponse",
+                          })}
+                          {" · "}
+                          {t("{n} calls, {us} µs each", { n: "0", us: "0" })}
+                        </div>
+                      ) : null}
+                      {e.optsOpen && asking?.pkg !== e.pkg ? (
                         <div className="pm-opts">
                           <textarea
                             aria-label={t("Options")}
@@ -3043,173 +3072,126 @@ export function PluginsView({
                               {t("Save")}
                             </TextBtn>
                           </div>
-                          <div className="sub pm-mw">
-                            {t("Gateway middleware: {hooks}", {
-                              hooks: e.pkg.includes("word-guard")
-                                ? "onRequest, onEvent, onResponse"
-                                : "onEvent, onResponse",
-                            })}
-                            {" · "}
-                            {t("{n} calls, {us} µs each", { n: "0", us: "0" })}
-                          </div>
                         </div>
                       ) : null}
-                      {asking?.pkg === e.pkg ? (
-                        <div
-                          className="pm-ask"
-                          role="group"
-                          aria-label={
-                            asking.op === "remove"
-                              ? t("Remove this plugin?")
-                              : asking.op === "move"
-                                ? t("Move {name} here", { name: (e.movable || e.moved || ["…"])[0] })
-                                : t("Switch this plugin off?")
-                          }>
-                          <p className="pm-ask-say">
-                            {asking.op === "remove"
-                              ? t("Remove this plugin?")
-                              : asking.op === "move"
-                                ? t("Move {name} here", { name: (e.movable || ["Kimi Code"])[0] })
-                                : t("Switch this plugin off?")}
-                          </p>
-                          <p className="pm-ask-sub">
-                            {asking.op === "move"
-                              ? t("{names} can run on it again, with the same accounts.", {
-                                  names: (e.movable || ["Kimi Code"]).join(t(", ")),
-                                })
-                              : asking.op === "remove"
-                                ? e.moved?.length
-                                  ? t(
-                                      "{names} goes back to the built-in, with its accounts, before the plugin is removed.",
-                                      { names: e.moved.join(t(", ")) },
-                                    )
-                                  : demoCopy(
-                                      "演示：移除只从本页列表删掉，不碰磁盘。",
-                                      "Demo: remove only clears this page list — nothing on disk.",
-                                    )
-                                : e.moved?.length
-                                  ? t(
-                                      "{names} goes back to the built-in, with its accounts, before the plugin is switched off.",
-                                      { names: e.moved.join(t(", ")) },
-                                    )
-                                  : demoCopy(
-                                      "关掉后订阅账户会回到内置；演示仅本地标记 Off。",
-                                      "Off sends subscription accounts back to built-ins; demo only marks Off locally.",
-                                    )}
-                          </p>
-                          <div className="pm-ask-acts">
-                            <TextBtn
-                              variant="primary"
-                              onClick={() => {
-                                if (asking.op === "remove") setInstalled((list) => list.filter((x) => x.pkg !== e.pkg));
-                                else if (asking.op === "move")
-                                  setInstalled((list) =>
-                                    list.map((x) =>
-                                      x.pkg === e.pkg
-                                        ? { ...x, moved: x.movable || x.moved || ["Kimi Code"], off: false }
-                                        : x,
-                                    ),
-                                  );
-                                else setInstalled((list) => list.map((x) => (x.pkg === e.pkg ? { ...x, off: true, moved: [] } : x)));
-                                setAsking(null);
-                              }}>
-                              {asking.op === "move" ? t("Move") : asking.op === "remove" ? t("Remove") : t("Switch off")}
-                            </TextBtn>
-                            <TextBtn onClick={() => setAsking(null)}>
-                              {asking.op === "move" ? t("Not now") : t("Cancel")}
-                            </TextBtn>
-                          </div>
-                        </div>
-                      ) : null}
+
+
                     </div>
                     <div className="val">
-                      {!e.off && e.kind === "Provider" && !e.signedIn && asking?.pkg !== e.pkg ? (
-                        <TextBtn
-                          variant="primary"
-                          onClick={() =>
-                            onStatus?.(
-                              demoCopy(
-                                "演示：未发起插件登录（无真 OAuth）",
-                                "Demo: plugin sign-in not started (no real OAuth)",
-                              ),
-                              "warn",
-                              2800,
-                            )
-                          }>
-                          {t("Sign in")}
-                        </TextBtn>
-                      ) : null}
-                      {e.movable?.length && !e.off && !(e.moved && e.moved.length) && asking?.pkg !== e.pkg ? (
-                        <TextBtn
-                          variant="primary"
-                          title={t(
-                            "Runs {name} on this plugin in place of the built-in, with the same accounts; nothing changes if one doesn't work through it",
-                            { name: e.movable[0] },
-                          )}
-                          onClick={() => setAsking({ pkg: e.pkg, op: "move" })}>
-                          {busy === e.pkg ? t("Moving…") : t("Move {name} here", { name: e.movable[0] })}
-                        </TextBtn>
-                      ) : null}
-                      {e.kind === "Middleware" && !e.off && !e.optsOpen ? (
-                        <TextBtn
-                          title={e.optsSaved ? t("The options it runs with") : t("It runs with no options; its package suggests some")}
-                          onClick={() =>
-                            setInstalled((list) =>
-                              list.map((x) => {
-                                if (x.pkg !== e.pkg) return x;
-                                const example = x.pkg.includes("think-tags")
-                                  ? '{\n  "mode": "strip"\n}'
-                                  : '{\n  "hooks": ["request", "response"],\n  "onEvent": ["error"]\n}';
-                                return {
-                                  ...x,
-                                  optsOpen: true,
-                                  optsDraft: x.optsSaved && x.opts ? x.opts : example,
-                                  optsErr: "",
-                                };
-                              }),
-                            )
-                          }>
-                          {t("Options")}
-                        </TextBtn>
-                      ) : null}
-                      <TextBtn
-                        onClick={() => {
-                          if (e.off) {
-                            setInstalled((list) =>
-                              list.map((x) => (x.pkg === e.pkg ? { ...x, off: false } : x)),
-                            );
-                            // Magpie again(): offer movable after switch-on
-                            if (e.movable?.length) setAsking({ pkg: e.pkg, op: "move" });
-                            else setAsking(null);
-                          } else if (e.moved?.length) {
-                            setAsking({ pkg: e.pkg, op: "off" });
-                          } else {
-                            // Magpie: no moved → off immediately (shot 40 not clicked)
-                            setInstalled((list) => list.map((x) => (x.pkg === e.pkg ? { ...x, off: true, moved: [] } : x)));
-                            setAsking(null);
-                          }
-                        }}>
-                        {e.off ? t("Switch on") : t("Switch off")}
-                      </TextBtn>
-                      <TextBtn
-                        className="quiet"
-                        disabled={busy === "remove:" + e.pkg || busy === e.pkg}
-                        title={
-                          e.moved?.length
-                            ? t("{names} goes back to the built-in first, then the plugin is removed", {
-                                names: e.moved.join(t(", ")),
-                              })
-                            : t("Removes the plugin and what it installed; its sign-ins are kept until you sign out")
-                        }
-                        onClick={(ev) => {
-                          if (e.moved?.length) setAsking({ pkg: e.pkg, op: "remove" });
-                          else {
-                            removeFocusRef.current = ev.currentTarget;
-                            setRemoveConfirm({ pkg: e.pkg, name: e.name });
-                          }
-                        }}>
-                        {busy === "remove:" + e.pkg ? t("Removing…") : t("Remove")}
-                      </TextBtn>
+                      {asking?.pkg === e.pkg ? (
+                        <>
+                          <TextBtn onClick={() => setAsking(null)}>
+                            {asking.op === "move" ? t("Not now") : t("Cancel")}
+                          </TextBtn>
+                          <TextBtn
+                            variant="primary"
+                            onClick={() => {
+                              if (asking.op === "remove") setInstalled((list) => list.filter((x) => x.pkg !== e.pkg));
+                              else if (asking.op === "move")
+                                setInstalled((list) =>
+                                  list.map((x) =>
+                                    x.pkg === e.pkg
+                                      ? { ...x, moved: x.movable || x.moved || ["Kimi Code"], off: false }
+                                      : x,
+                                  ),
+                                );
+                              else setInstalled((list) => list.map((x) => (x.pkg === e.pkg ? { ...x, off: true, moved: [] } : x)));
+                              setAsking(null);
+                            }}>
+                            {asking.op === "move" ? t("Move") : asking.op === "remove" ? t("Remove") : t("Switch off")}
+                          </TextBtn>
+                        </>
+                      ) : (
+                        <>
+                          {!e.off && e.kind === "Provider" && !e.signedIn ? (
+                            <TextBtn
+                              variant="primary"
+                              onClick={() =>
+                                onStatus?.(
+                                  demoCopy(
+                                    "演示：未发起插件登录（无真 OAuth）",
+                                    "Demo: plugin sign-in not started (no real OAuth)",
+                                  ),
+                                  "warn",
+                                  2800,
+                                )
+                              }>
+                              {t("Sign in")}
+                            </TextBtn>
+                          ) : null}
+                          {e.movable?.length && !e.off && !(e.moved && e.moved.length) ? (
+                            <TextBtn
+                              variant="primary"
+                              title={t(
+                                "Runs {name} on this plugin in place of the built-in, with the same accounts; nothing changes if one doesn't work through it",
+                                { name: e.movable[0] },
+                              )}
+                              onClick={() => setAsking({ pkg: e.pkg, op: "move" })}>
+                              {busy === e.pkg ? t("Moving…") : t("Move {name} here", { name: e.movable[0] })}
+                            </TextBtn>
+                          ) : null}
+                          {e.kind === "Middleware" && !e.off && !e.optsOpen ? (
+                            <TextBtn
+                              title={e.optsSaved ? t("The options it runs with") : t("It runs with no options; its package suggests some")}
+                              onClick={() =>
+                                setInstalled((list) =>
+                                  list.map((x) => {
+                                    if (x.pkg !== e.pkg) return x;
+                                    const example = x.pkg.includes("think-tags")
+                                      ? '{\n  "mode": "strip"\n}'
+                                      : '{\n  "hooks": ["request", "response"],\n  "onEvent": ["error"]\n}';
+                                    return {
+                                      ...x,
+                                      optsOpen: true,
+                                      optsDraft: x.optsSaved && x.opts ? x.opts : example,
+                                      optsErr: "",
+                                    };
+                                  }),
+                                )
+                              }>
+                              {t("Options")}
+                            </TextBtn>
+                          ) : null}
+                          <TextBtn
+                            onClick={() => {
+                              if (e.off) {
+                                setInstalled((list) =>
+                                  list.map((x) => (x.pkg === e.pkg ? { ...x, off: false } : x)),
+                                );
+                                // Magpie again(): offer movable after switch-on
+                                if (e.movable?.length) setAsking({ pkg: e.pkg, op: "move" });
+                                else setAsking(null);
+                              } else if (e.moved?.length) {
+                                setAsking({ pkg: e.pkg, op: "off" });
+                              } else {
+                                // Magpie: no moved → off immediately (shot 40 not clicked)
+                                setInstalled((list) => list.map((x) => (x.pkg === e.pkg ? { ...x, off: true, moved: [] } : x)));
+                                setAsking(null);
+                              }
+                            }}>
+                            {e.off ? t("Switch on") : t("Switch off")}
+                          </TextBtn>
+                          <TextBtn
+                            className="quiet"
+                            disabled={busy === "remove:" + e.pkg || busy === e.pkg}
+                            title={
+                              e.moved?.length
+                                ? t("{names} goes back to the built-in first, then the plugin is removed", {
+                                    names: e.moved.join(t(", ")),
+                                  })
+                                : t("Removes the plugin and what it installed; its sign-ins are kept until you sign out")
+                            }
+                            onClick={(ev) => {
+                              if (e.moved?.length) setAsking({ pkg: e.pkg, op: "remove" });
+                              else {
+                                removeFocusRef.current = ev.currentTarget;
+                                setRemoveConfirm({ pkg: e.pkg, name: e.name });
+                              }
+                            }}>
+                            {busy === "remove:" + e.pkg ? t("Removing…") : t("Remove")}
+                          </TextBtn>
+                        </>
+                      )}
                     </div>
                   </div>
                 ))}

@@ -1,3 +1,9 @@
+## v0.1.144 PLUGINS_ASK_INLINE_OPTS_OSS_FIDELITY
+- Plugins installed ask: drop invent `pm-ask` / `pm-ask-say` / `pm-ask-sub` / `pm-ask-acts` card — restore Magpie in-row `.sub.ask` + `.val` Cancel|Not now + primary (plugins.js L1025–1108; plugins.css L88).
+- Plugins middleware: `mwLine` (`.sub.pm-mw`) sibling before `optionsEditor` (plugins.js L1057–1059 / L1223); hide opts while asking; no empty `.sub`.
+- shell-patch: drop invent `.pm-opts*` / `.pm-act*` overrides / `.pm-ask*` / `.pm-card.installing|.has` / invent `.pm-chip` pill999 / invent `.sub.ask` / dead `.pv-add-steps` / invent ghost+detail duplicates — Magpie plugins.css L79–88 / L114–132 / L135–140 / L173–182 / L193–207.
+- SIDE_AT=1024. No portable / Vercel.
+
 ## v0.1.143 AGENTS_NATIVE_WHATSNEW_OSS_FIDELITY
 - Agents Cursor native-only line: drop invent `ag-native-note` + square `.sq` — restore Magpie `connectLine` kind `"no"` → `.ag-st` > `.ag-dot` + `.ag-st-t` (app.js L1234–1240 / NATIVE_ONLY L1107; app.css L3762–3765).
 - Settings What's new: drop invent `whatsnew-body` / `wn-badge` / `wn-ref` — restore Magpie `showWhatsNew` `.ebody` + `span.badge` "Not installed yet" + `a.wn-link` issues (app.js L4144–4152 / L4240–4246; app.css L3279).
