@@ -4373,5 +4373,13 @@
   "The skills and MCP servers magpie put in it are taken away, with their lines in its .gitignore. Nothing else in the folder is touched.": "magpie 放进去的技能和 MCP 服务器会一并带走，连同它在 .gitignore 里写的行。文件夹里别的东西不动。",
   "magpie forgets the project. The skills and MCP servers it put in the folder stay there as they are, with their lines in its .gitignore, and are yours from then on; a linked skill still follows the library's.": "magpie 忘掉这个项目。它写进文件夹的技能和 MCP 服务器原样留下，连同 .gitignore 里的行，从那时起归你；链接的技能仍跟着库走。",
   "Placed in .agents/skills of the project and listed in its .gitignore. A folder there that isn't magpie's is left as it is.": "放在项目的 .agents/skills 里，并写进它的 .gitignore。那里已有、不是 magpie 放的文件夹保持原样。",
-  "No skills in the library yet.": "资源库里还没有技能。"
+  "No skills in the library yet.": "资源库里还没有技能。",
+  "The agents switched on below read this set": "下面打开的代理读这一套",
+  "Switch the agents to this set": "让代理改读这一套",
+  "Saved — the agents already had it": "已保存 — 代理本来就有这份",
+  "{name} added — the agents read it": "已添加 {name} — 代理正在读它",
+  "The agents read {name} now": "代理现在读 {name}",
+  "Switch the agents to another set before removing this one": "先让代理改读另一套，再移除这一套",
+  "Remove {name} and its text": "移除 {name} 及其正文",
+  "Expand": "展开"
 }

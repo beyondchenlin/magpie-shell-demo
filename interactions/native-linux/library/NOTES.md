@@ -398,3 +398,68 @@ Right-click on the open card's footer opened no menu. No second agent chip. Inst
 - 行头文件夹图：展开 **Hide its skills**，折起 **Pick the skills it gets**（tip 向左出窗）。名字悬停 tip 是项目名本身。折起且技能开着时药丸 **ask-matt**。垃圾桶悬停变红，tip **Remove the project**（向右出窗）。右键无菜单。
 - 移除：有已放入的技能时才有 **Keep its skills and MCP servers**。勾上后正文改为「只忘记项目、留下写入」。勾过再 Cancel 会先问 **Discard unsaved changes?**；Discard 不删除项目。技能已关掉、没有 placed 时对话框没有保留勾选，只有「带走技能和 gitignore 行」。Remove toast **{name} removed**。ask-matt 仍在库里。
 - demo 消费（v0.1.85）：行默认展开；Copy files 开关 + Copies 标 + toast；Cursor 芯片 tip/toast；Hide/Pick/Remove tips；有 placed 才 Keep 勾选；勾脏 Cancel → Discard（Discard 不删项目）；无 placed 无勾选；Remove toast；默认空列表可交互增删
+
+## Instructions nested (shots 148–183)
+
+Running magpie pid **560329**. Window still **752×652 at +200+40** (id 27262991, DISPLAY=:6). Not resized. Close (X) was not clicked. Library stayed on **Instructions**. **ask-matt** was not touched. RTK Install was not clicked. No Vercel or package action.
+
+01–05 already had the closed Default row, the open editor, the agents empty card, **+ New set**, and **Keep in a file…** filling `AGENTS.md` / `~/.agents/AGENTS.md`. This pass is the rest: tips, the unsaved bar, Discard, Ctrl+S, Escape, and a set that was added and then removed. Cursor still has no user-wide instructions file, so there is still no agent row to assign.
+
+Tips that leave the window: **148** is **880×652 from +90+40** (left). **149** is **1200×652 from +80+40** (right). **174** is **1100×720 from +40+20** (below-left). **175** is **1000×652 from +40+40** (left). The rest are the window rect.
+
+| shot | what |
+|---|---|
+| 148-default-radio-tip | Pointer on Default's filled radio, set open. Tip **The agents switched on below read this set**, past the left edge. |
+| 149-in-use-tip | Pointer on the **In use** tag (lower half of the pill; the upper half did not raise it). Same sentence, past the right edge. |
+| 150-name-typed | Name field focused, **DefaultX**. Purple ring. Not blurred, so nothing was renamed. |
+| 151-name-escape | Escape in the name field puts **Default** back and blurs. No rename. |
+| 152-text-dirty | Textarea **Prefer short functions.** Sticky bar: dot **Not saved yet**, **Discard**, purple **Save**. The row still says **Empty** — typing only shows the bar. |
+| 153-textarea-escape | Escape in the textarea does not clear it. Bar stays. |
+| 154-discard-hover | Pointer on **Discard**. Pale pill. No tip. |
+| 155-save-hover | Pointer on **Save**. No tip. |
+| 156-dirty-closed | Row closed while dirty. Subtitle is the first line. Amber **Not saved yet** beside **In use**. Pointer on the name raises a tip **Default** and covers part of the subtitle. Agents card is in frame: **None of your agents reads a user-wide instructions file magpie knows.** Aside: **Cursor keeps no user-wide instructions file.** |
+| 157-dirty-row | Same row, pointer off the name. Subtitle reads **Prefer short functions.** in full. Bar still up. |
+| 158-discard-dialog | **Discard** on the bar. Dialog **Discard** / **Discard unsaved changes? Your changes will be lost.** **Cancel** (focused) and red **Discard**. Backdrop blurs the page. |
+| 159-discard-cancel | **Cancel**. Text stays. Focus returns to the bar's **Discard** (blue ring). |
+| 160-discard-escape | Dialog opened again. Escape keeps the text, same as Cancel. |
+| 161-discarded | Red **Discard**. Subtitle **Empty**. Bar and the amber tag are gone. Nothing written. |
+| 162-saved-toast | Typed again, **Ctrl+S**. Green toast **Saved — the agents already had it** (no agent file to write). Bar gone. Subtitle is the saved line. `library/instructions.md` appeared. |
+| 163-cleared-toast | Select all, delete, **Ctrl+S**. Same toast. Placeholder back, subtitle **Empty**. `instructions.md` is gone. |
+| 164-keep-file-hover | **+ New set** draft (same fields as 04). Pointer on **Keep in a file…**. Border. No tip. |
+| 165-add-hover | Pointer on purple **Add**. No tip. |
+| 166-cancel-hover | Pointer on **Cancel**. Pale pill. No tip. |
+| 167-add-empty-noop | **Add** with the name empty. Draft stays. Placeholder **Name, e.g. Work**. |
+| 168-new-set-escape | Name field focused, Escape. Draft gone. **+ New set** is back. |
+| 169-file-path-edited | **Keep in a file…** fills the name **AGENTS.md** and a path field (not a file chooser; 05 is the default `~/.agents/AGENTS.md`). Path replaced with **/tmp/magpie-probe-AGENTS.md**. Add was not clicked. |
+| 170-file-escape | Escape in the path field drops the whole draft. Neither that path nor `~/.agents/AGENTS.md` was created. |
+| 171-new-set-cancel | A new draft. **Cancel** drops it, same as Escape. |
+| 172-probe-name | Name **probe-set**. |
+| 173-probe-added-toast | **Add**. Because Default is empty, the new set is the one in use and it opens. Toast **probe-set added — the agents read it**. Default's radio is off. **Remove** sits under the editor. |
+| 174-remove-disabled-tip | Pointer on **Remove** while probe-set is in use. The button goes pink and does nothing. Tip **Switch the agents to another set before removing this one**, past the bottom-left. |
+| 175-default-switch-tip | Default's empty radio. Tip **Switch the agents to this set**, past the left edge. |
+| 176-default-switch-button | Default opened. Button **Switch the agents to this set**. Default has no Remove. probe-set is folded, still **In use**. |
+| 177-switch-hover | Pointer on that button. Border. No extra tip. |
+| 178-switched-toast | Click. Default is **In use** and stays open. probe-set folds, radio off. Toast **The agents read Default now**. |
+| 179-probe-not-in-use | probe-set opened. **Switch the agents to this set** and **Remove** (now allowed). |
+| 180-remove-ask | Click landed under **Remove**, not on it. Label stayed **Remove**. |
+| 181-remove-sure | Click on **Remove**. It becomes red **Remove probe-set and its text**, with **Cancel** beside it. The switch button stays. |
+| 182-remove-cancel | **Cancel**. Back to **Remove**. The set stays. |
+| 183-probe-removed-toast | **Remove**, then the red label. Set gone. Only Default, **Empty**, **In use**. Toast **probe-set removed**. Agents empty card is back. |
+
+**Save and Discard.** Typing does not retitle the row. Closing it does: the subtitle becomes the first line, and an amber **Not saved yet** sits by **In use**. The bar is sticky at the bottom of the page. **Discard** asks; **Cancel** and Escape keep the text; the red **Discard** throws it away and writes nothing. Escape in the textarea does not discard. Escape in the name field reverts an uncommitted edit. **Ctrl+S** saves. With no agent instructions file the toast is **Saved — the agents already had it**, and the text is `~/.config/magpie/library/instructions.md`. Clearing the textarea and saving again deletes that file.
+
+**Sets.** **Add** with an empty name does nothing. Escape (name or path focused) and **Cancel** both drop a draft. **Keep in a file…** is an inline path, not a picker. A set added while the set in use is empty becomes the one agents read, and it opens. **Remove** on that set is disabled until another set is in use. The switch is the empty radio (tip **Switch the agents to this set**) or the button of the same words on the open set. Toast **The agents read {name} now**. **Remove** is two clicks, not a dialog: the second label is **Remove {name} and its text** (red) plus **Cancel**. **Cancel** leaves the set. The red label removes it. Toast **{name} removed**. Default has no Remove.
+
+`library.json` instructions afterwards is `{"agents": []}` — no sets. No `instructions.md`. `magpie library` still says Instructions none yet. Skills still **ask-matt → cursor**. No `~/.agents/AGENTS.md`.
+
+Not shown, because Cursor has no instructions file: an agent row, its switch, the per-agent extra textarea, "lines of its own", or **Move its own into the shared text**. Also not done: a set actually kept in a file (the **Your file** tag), a rename that is committed (Enter or blur), Enter creating a set, and a backdrop click on the Discard dialog. MCP, Hooks, and RTK were not opened.
+
+## demo 对齐（148–183）· v0.1.86 INSTRUCTIONS_NEST_DONE
+- 在用 radio tip **The agents switched on below read this set**（向左出窗）；**In use** 药丸同一句（向下半才出，向右出窗）。未在用 radio tip **Switch the agents to this set**。
+- 名字框 Escape 撤回未提交的改名（DefaultX → Default），不保存。正文 Escape **不**丢弃。
+- 输入只出底栏 **Not saved yet / Discard / Save**；折起行才把副标题换成首行，并出琥珀色 **Not saved yet**。Discard 对话框：**Discard unsaved changes? Your changes will be lost.** Cancel 与 Escape 都留下文字；红色 Discard 丢掉且不写盘。Ctrl+S toast **Saved — the agents already had it**（没有 agent 指令文件）；写 `library/instructions.md`，清空再 Ctrl+S 则删掉该文件。
+- 新套：空 Add 无操作；名字或路径聚焦时 Escape、以及 Cancel，都丢掉草稿。**Keep in a file…** 不是文件选择器，填名字 `AGENTS.md` 和路径；改成 `/tmp/…` 后 Escape，不创建文件。
+- 在用套为空时 Add：**{name} added — the agents read it**，新套在用并展开。在用时 Remove 禁用，变粉，tip **Switch the agents to another set before removing this one**。打开另一套有按钮 **Switch the agents to this set**；点后 toast **The agents read Default now**。Default 没有 Remove。
+- 非在用套的 Remove 是两次点击，不是对话框：第二次红字 **Remove {name} and its text** + **Cancel**。Cancel 不删。红字删除，toast **{name} removed**。180 点在按钮下方，未进入确认。
+- 仍无 agent 行（Cursor 没有 magpie 认识的用户级指令文件）。未做：真正保存在文件里的套（Your file）、提交改名、Enter 创建、Discard 点遮罩。ask-matt 仍在。MCP / Hooks / RTK 未打开。
+- demo 消费（v0.1.86）：sticky **Not saved yet / Discard / Save**；名字 Escape 撤回；正文 Escape 不丢；折起才改副标题+琥珀标；Discard Cancel/Escape 留字；Ctrl+S toast **Saved — the agents already had it**；空 Add no-op；Keep in a file 内联路径；空在用时 Add 接管；Remove 两步红字；未做 agent 行 / Your file / Enter 创建 / Discard 遮罩

@@ -4,7 +4,7 @@ import { useSegThumb } from "../components/SegThumb";
 import { t } from "../i18n";
 
 /**
- * Magpie Library plugin (native-linux/library nests through 120–147 In projects row + Choose… + folder/Backups).
+ * Magpie Library plugin (native-linux/library nests through 148–183 Instructions + projects/Choose/folder).
  * Feature-gated: Plugins › Built-in › Library.
  * Motion: view-in .24s; modal pop-in .42s; Discard .28s; segs .18s; lib-switch; lib-bob/lib-probe/mk-spin (v0.1.44).
  */
@@ -17,7 +17,7 @@ const LIB_TABS = [
   ["rtk", "RTK"],
 ] as const;
 
-type InstSet = { id: string; name: string; body: string; inUse: boolean; file?: string };
+type InstSet = { id: string; name: string; body: string; savedBody: string; inUse: boolean; file?: string };
 type Transport = "stdio" | "http" | "sse";
 type McpDraft = {
   name: string;
@@ -1313,9 +1313,12 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
       return "instructions";
     }
   });
-  const [sets, setSets] = useState<InstSet[]>([{ id: "default", name: "Default", body: "", inUse: true }]);
+  const [sets, setSets] = useState<InstSet[]>([{ id: "default", name: "Default", body: "", savedBody: "", inUse: true }]);
   const [openId, setOpenId] = useState<string | null>(null);
-  const [dirty, setDirty] = useState(false);
+  /** Magpie instructions Discard dialog (148–183) — separate from MCP/hook discard */
+  const [instDiscardOpen, setInstDiscardOpen] = useState(false);
+  /** Two-step Remove on a non–in-use set */
+  const [instRemoveAsk, setInstRemoveAsk] = useState<string | null>(null);
   const [addingSet, setAddingSet] = useState(false);
   const [newName, setNewName] = useState("");
   const [fileMode, setFileMode] = useState(false);
@@ -1509,19 +1512,47 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
     }, 720);
   };
 
+  const instDirty = useMemo(() => sets.some((s) => s.body !== s.savedBody), [sets]);
+
+  const saveInstructions = () => {
+    if (!instDirty) return;
+    setSets((list) => list.map((x) => ({ ...x, savedBody: x.body })));
+    // Magpie: no agent instructions file → this toast; empty body deletes instructions.md
+    onStatus?.(t("Saved — the agents already had it"), "ok");
+  };
+
+  const discardInstructions = () => {
+    setSets((list) => list.map((x) => ({ ...x, body: x.savedBody })));
+    setInstDiscardOpen(false);
+  };
+
+  const switchAgentsTo = (id: string) => {
+    const target = sets.find((s) => s.id === id);
+    if (!target || target.inUse) return;
+    setSets((list) => list.map((x) => ({ ...x, inUse: x.id === id })));
+    setOpenId(id);
+    setInstRemoveAsk(null);
+    onStatus?.(t("The agents read {name} now", { name: target.name }), "ok");
+  };
+
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "s") {
         e.preventDefault();
-        if (dirty) {
-          setDirty(false);
-          onStatus?.(t("Instructions saved"), "ok");
+        if (tab === "instructions" && instDirty) {
+          setSets((list) => list.map((x) => ({ ...x, savedBody: x.body })));
+          onStatus?.(t("Saved — the agents already had it"), "ok");
         }
       }
+      if (e.key === "Escape" && instDiscardOpen) {
+        e.preventDefault();
+        e.stopPropagation();
+        setInstDiscardOpen(false);
+      }
     };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [dirty, onStatus]);
+    window.addEventListener("keydown", onKey, true);
+    return () => window.removeEventListener("keydown", onKey, true);
+  }, [instDirty, tab, instDiscardOpen, onStatus]);
 
   const openSet = sets.find((s) => s.id === openId);
   const mcpHits = useMemo(() => {
@@ -1531,16 +1562,37 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
   }, [mcpQ]);
 
   const addSet = () => {
-    const name = newName.trim() || t("New set");
+    // NOTES 167: empty Add = no-op
+    const name = newName.trim();
+    if (!name) return;
     const id = `set-${Date.now()}`;
-    setSets((list) => [...list, { id, name, body: "", inUse: false, file: fileMode ? filePath.trim() || undefined : undefined }]);
+    const inUseEmpty = sets.some((s) => s.inUse && !s.body.trim() && !s.savedBody.trim());
+    setSets((list) => [
+      ...list.map((x) => (inUseEmpty ? { ...x, inUse: false } : x)),
+      {
+        id,
+        name,
+        body: "",
+        savedBody: "",
+        inUse: inUseEmpty,
+        file: fileMode ? filePath.trim() || undefined : undefined,
+      },
+    ]);
     setOpenId(id);
     setAddingSet(false);
     setNewName("");
     setFileMode(false);
     setFilePath("~/.agents/AGENTS.md");
-    setDirty(true);
-    onStatus?.(t("{name} added", { name }), "ok");
+    setInstRemoveAsk(null);
+    onStatus?.(
+      inUseEmpty ? t("{name} added — the agents read it", { name }) : t("{name} added", { name }),
+      "ok",
+    );
+  };
+
+  const firstLine = (body: string) => {
+    const line = body.split(/\r?\n/).find((l) => l.trim()) || "";
+    return line.trim() || t("Empty");
   };
 
   return (
@@ -1647,53 +1699,134 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
 
               {sets.map((s) => {
                 const open = openId === s.id;
+                const setDirtyLocal = s.body !== s.savedBody;
+                // NOTES 152: while open+typing, row still says Empty if saved was empty
+                const rowSub =
+                  open && setDirtyLocal && !s.savedBody.trim()
+                    ? t("Empty")
+                    : !open && setDirtyLocal
+                      ? firstLine(s.body)
+                      : s.savedBody.trim()
+                        ? firstLine(s.savedBody)
+                        : t("Empty");
                 return (
                   <div key={s.id} style={{ borderTop: "1px solid var(--line)", padding: "10px 0" }}>
-                    <button
-                      type="button"
-                      className="text"
+                    <div
                       style={{
                         display: "flex",
                         alignItems: "center",
                         gap: 10,
                         width: "100%",
-                        textAlign: "left",
                         padding: "4px 2px",
-                        background: "transparent",
-                        border: 0,
-                        cursor: "pointer",
-                        font: "inherit",
                       }}
-                      onClick={() => setOpenId(open ? null : s.id)}
-                      aria-expanded={open}
                     >
-                      <span
-                        aria-hidden
-                        style={{
-                          width: 14,
-                          height: 14,
-                          borderRadius: "50%",
-                          border: `2px solid ${s.inUse ? "var(--accent)" : "var(--line)"}`,
-                          boxShadow: s.inUse ? "inset 0 0 0 3px var(--card)" : undefined,
-                          background: s.inUse ? "var(--accent)" : "transparent",
-                          flex: "none",
+                      <button
+                        type="button"
+                        className="text"
+                        title={
+                          s.inUse
+                            ? t("The agents switched on below read this set")
+                            : t("Switch the agents to this set")
+                        }
+                        aria-label={s.inUse ? t("In use") : t("Switch the agents to this set")}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (!s.inUse) switchAgentsTo(s.id);
                         }}
-                      />
-                      <span style={{ flex: 1, minWidth: 0 }}>
+                        style={{
+                          width: 18,
+                          height: 18,
+                          padding: 0,
+                          border: 0,
+                          background: "transparent",
+                          cursor: s.inUse ? "default" : "pointer",
+                          flex: "none",
+                          display: "grid",
+                          placeItems: "center",
+                        }}
+                      >
+                        <span
+                          aria-hidden
+                          style={{
+                            width: 14,
+                            height: 14,
+                            borderRadius: "50%",
+                            border: `2px solid ${s.inUse ? "var(--accent)" : "var(--line)"}`,
+                            boxShadow: s.inUse ? "inset 0 0 0 3px var(--card)" : undefined,
+                            background: s.inUse ? "var(--accent)" : "transparent",
+                            display: "block",
+                          }}
+                        />
+                      </button>
+                      <button
+                        type="button"
+                        className="text"
+                        title={s.name}
+                        onClick={() => {
+                          setOpenId(open ? null : s.id);
+                          setInstRemoveAsk(null);
+                        }}
+                        aria-expanded={open}
+                        style={{
+                          flex: 1,
+                          minWidth: 0,
+                          textAlign: "left",
+                          padding: 0,
+                          background: "transparent",
+                          border: 0,
+                          cursor: "pointer",
+                          font: "inherit",
+                        }}
+                      >
                         <b style={{ display: "block", fontSize: 13, fontWeight: 560 }}>{s.name}</b>
-                        <small style={{ color: "var(--muted)" }}>
-                          {s.file ? t("Your file") : s.body.trim() ? t("{n} characters", { n: s.body.length }) : t("Empty")}
-                        </small>
-                      </span>
+                        <small style={{ color: "var(--muted)" }}>{rowSub}</small>
+                      </button>
+                      {setDirtyLocal && !open ? (
+                        <span
+                          style={{
+                            fontSize: 11,
+                            fontWeight: 560,
+                            padding: "1px 8px",
+                            borderRadius: 999,
+                            background: "var(--amber-soft, #fbf0df)",
+                            color: "var(--amber, #b45309)",
+                            flex: "none",
+                          }}
+                        >
+                          {t("Not saved yet")}
+                        </span>
+                      ) : null}
                       {s.inUse ? (
-                        <span style={{ fontSize: 11, fontWeight: 560, padding: "1px 8px", borderRadius: 999, border: "1px solid var(--line)", color: "var(--fg-2)" }}>
+                        <span
+                          title={t("The agents switched on below read this set")}
+                          style={{
+                            fontSize: 11,
+                            fontWeight: 560,
+                            padding: "1px 8px",
+                            borderRadius: 999,
+                            border: "1px solid var(--line)",
+                            color: "var(--fg-2)",
+                            flex: "none",
+                          }}
+                        >
                           {t("In use")}
                         </span>
                       ) : null}
-                      <svg viewBox="0 0 12 12" width={11} height={11} aria-hidden style={{ transform: open ? "rotate(180deg)" : undefined, transition: "transform .15s var(--ease)", color: "var(--muted)" }}>
-                        <path d="M3 4.5 6 7.5 9 4.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-                      </svg>
-                    </button>
+                      <button
+                        type="button"
+                        className="text"
+                        aria-label={open ? t("Collapse") : t("Expand")}
+                        onClick={() => {
+                          setOpenId(open ? null : s.id);
+                          setInstRemoveAsk(null);
+                        }}
+                        style={{ width: 24, height: 24, padding: 0, border: 0, background: "transparent", color: "var(--muted)", flex: "none" }}
+                      >
+                        <svg viewBox="0 0 12 12" width={11} height={11} aria-hidden style={{ transform: open ? "rotate(180deg)" : undefined, transition: "transform .15s var(--ease)" }}>
+                          <path d="M3 4.5 6 7.5 9 4.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                        </svg>
+                      </button>
+                    </div>
                     {open ? (
                       <div style={{ marginTop: 8, display: "grid", gap: 8, animation: "fade-in .18s var(--ease)" }}>
                         {s.file ? (
@@ -1707,8 +1840,24 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                           aria-label={t("Set name")}
                           onChange={(e) => {
                             const name = e.target.value;
+                            // Name draft does not dirty the save bar (NOTES 150)
                             setSets((list) => list.map((x) => (x.id === s.id ? { ...x, name } : x)));
-                            setDirty(true);
+                          }}
+                          onKeyDown={(e) => {
+                            e.stopPropagation();
+                            if (e.key === "Escape") {
+                              e.preventDefault();
+                              // Revert uncommitted rename — Magpie restores saved/display name from last committed
+                              // Demo: Default stays Default; for other sets restore from id default pattern not available,
+                              // so keep name only if it matches a prior snap via saved name held in data-name.
+                              const el = e.currentTarget;
+                              const prev = el.getAttribute("data-saved-name") || s.name;
+                              setSets((list) => list.map((x) => (x.id === s.id ? { ...x, name: prev } : x)));
+                              el.blur();
+                            }
+                          }}
+                          onFocus={(e) => {
+                            e.currentTarget.setAttribute("data-saved-name", s.name);
                           }}
                           style={{ maxWidth: 220 }}
                         />
@@ -1719,7 +1868,10 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                           onChange={(e) => {
                             const body = e.target.value;
                             setSets((list) => list.map((x) => (x.id === s.id ? { ...x, body } : x)));
-                            setDirty(true);
+                          }}
+                          onKeyDown={(e) => {
+                            e.stopPropagation();
+                            // NOTES 153: Escape in textarea does NOT discard
                           }}
                           style={{
                             width: "100%",
@@ -1735,6 +1887,88 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                             color: "var(--fg)",
                           }}
                         />
+                        <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
+                          {!s.inUse ? (
+                            <button
+                              type="button"
+                              className="text"
+                              onClick={() => switchAgentsTo(s.id)}
+                              style={{
+                                height: 28,
+                                padding: "0 12px",
+                                borderRadius: 8,
+                                border: "1px solid var(--line)",
+                                background: "var(--card)",
+                                font: "inherit",
+                                fontSize: 12.5,
+                              }}
+                            >
+                              {t("Switch the agents to this set")}
+                            </button>
+                          ) : null}
+                          {s.id !== "default" ? (
+                            instRemoveAsk === s.id ? (
+                              <>
+                                <button
+                                  type="button"
+                                  className="text"
+                                  disabled={s.inUse}
+                                  onClick={() => {
+                                    if (s.inUse) return;
+                                    setSets((list) => list.filter((x) => x.id !== s.id));
+                                    setInstRemoveAsk(null);
+                                    if (openId === s.id) setOpenId(null);
+                                    onStatus?.(t("{name} removed", { name: s.name }), "ok");
+                                  }}
+                                  style={{
+                                    height: 28,
+                                    padding: "0 12px",
+                                    borderRadius: 8,
+                                    border: "1px solid transparent",
+                                    background: "var(--red)",
+                                    color: "#fff",
+                                    font: "inherit",
+                                    fontSize: 12.5,
+                                  }}
+                                >
+                                  {t("Remove {name} and its text", { name: s.name })}
+                                </button>
+                                <button type="button" className="text" onClick={() => setInstRemoveAsk(null)}>
+                                  {t("Cancel")}
+                                </button>
+                              </>
+                            ) : (
+                              <button
+                                type="button"
+                                className="text"
+                                disabled={s.inUse}
+                                title={
+                                  s.inUse
+                                    ? t("Switch the agents to another set before removing this one")
+                                    : undefined
+                                }
+                                onClick={() => {
+                                  if (s.inUse) return;
+                                  setInstRemoveAsk(s.id);
+                                }}
+                                style={{
+                                  height: 28,
+                                  padding: "0 12px",
+                                  borderRadius: 8,
+                                  border: "1px solid var(--line)",
+                                  background: s.inUse ? "color-mix(in srgb, var(--red) 12%, var(--card))" : "var(--card)",
+                                  color: s.inUse ? "color-mix(in srgb, var(--red) 70%, var(--fg))" : "var(--fg)",
+                                  font: "inherit",
+                                  fontSize: 12.5,
+                                  cursor: s.inUse ? "default" : "pointer",
+                                  opacity: s.inUse ? 0.85 : 1,
+                                }}
+                              >
+                                {t("Remove")}
+                              </button>
+                            )
+                          ) : null}
+                        </div>
                       </div>
                     ) : null}
                   </div>
@@ -1755,6 +1989,8 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                       if (e.key === "Escape") {
                         setAddingSet(false);
                         setFileMode(false);
+                        setNewName("");
+                        setFilePath("~/.agents/AGENTS.md");
                       }
                     }}
                   />
@@ -1764,11 +2000,28 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                       value={filePath}
                       placeholder={t("Full path of a Markdown file")}
                       onChange={(e) => setFilePath(e.target.value)}
-                      onKeyDown={(e) => e.stopPropagation()}
+                      onKeyDown={(e) => {
+                        e.stopPropagation();
+                        if (e.key === "Escape") {
+                          setAddingSet(false);
+                          setFileMode(false);
+                          setNewName("");
+                          setFilePath("~/.agents/AGENTS.md");
+                        }
+                      }}
                     />
                   ) : null}
                   <div className="bar" style={{ display: "flex", gap: 8, alignItems: "center" }}>
-                    <button type="button" className="text" onClick={() => setFileMode((v) => !v)}>
+                    <button
+                      type="button"
+                      className="text"
+                      onClick={() => {
+                        // Keep in a file… fills AGENTS.md + path (inline, not a picker)
+                        setFileMode(true);
+                        setNewName("AGENTS.md");
+                        setFilePath("~/.agents/AGENTS.md");
+                      }}
+                    >
                       {t("Keep in a file…")}
                     </button>
                     <span className="grow" />
@@ -1779,6 +2032,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                         setAddingSet(false);
                         setFileMode(false);
                         setNewName("");
+                        setFilePath("~/.agents/AGENTS.md");
                       }}
                     >
                       {t("Cancel")}
@@ -1798,6 +2052,41 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
               )}
             </div>
 
+            {instDirty && tab === "instructions" ? (
+              <div
+                className="lib-inst-bar"
+                style={{
+                  position: "sticky",
+                  bottom: 8,
+                  zIndex: 5,
+                  marginTop: 12,
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 10,
+                  padding: "8px 12px",
+                  borderRadius: 999,
+                  border: "1px solid var(--line)",
+                  background: "var(--card)",
+                  boxShadow: "0 6px 20px rgba(20,22,30,.12)",
+                }}
+              >
+                <span style={{ width: 7, height: 7, borderRadius: "50%", background: "var(--fg)", flex: "none" }} />
+                <span style={{ fontSize: 12.5, fontWeight: 500 }}>{t("Not saved yet")}</span>
+                <span className="grow" />
+                <button type="button" className="text" onClick={() => setInstDiscardOpen(true)}>
+                  {t("Discard")}
+                </button>
+                <button
+                  type="button"
+                  className="text primary"
+                  onClick={saveInstructions}
+                  style={{ background: "var(--accent)", color: "var(--accent-fg, #fff)", borderColor: "transparent", borderRadius: 999, padding: "0 14px", height: 28 }}
+                >
+                  {t("Save")}
+                </button>
+              </div>
+            ) : null}
+
             <div style={{ marginTop: 22 }}>
               <div className="row-head" style={{ marginBottom: 6 }}>
                 <span className="label" style={{ letterSpacing: ".04em", fontSize: 11, color: "var(--muted)", fontWeight: 600 }}>
@@ -1806,7 +2095,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
               </div>
               <p style={{ margin: "0 0 8px", fontSize: 12.5, color: "var(--muted)", lineHeight: 1.45 }}>
                 {t("They read {name} · magpie writes its part between two marker lines — the rest of each file stays yours.", {
-                  name: openSet?.name || "Default",
+                  name: sets.find((x) => x.inUse)?.name || openSet?.name || "Default",
                 })}
               </p>
               <div className="card" style={{ padding: "14px 16px", border: "1px solid var(--line)", borderRadius: 10, background: "var(--card-2, var(--bg))", color: "var(--muted)", fontSize: 13, lineHeight: 1.45 }}>
@@ -3311,6 +3600,28 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                 if (mcpEditor) setMcpEditor(null);
                 if (hookEditor) setHookEditor(null);
               }}
+            >
+              {t("Discard")}
+            </button>
+          </div>
+        </LibModal>
+      ) : null}
+
+      {instDiscardOpen ? (
+        <LibModal onBg={() => setInstDiscardOpen(false)} sm>
+          <b style={{ display: "block", fontSize: 15, marginBottom: 8 }}>{t("Discard")}</b>
+          <p style={{ margin: "0 0 14px", fontSize: 13, color: "var(--fg-2)", lineHeight: 1.45 }}>
+            {t("Discard unsaved changes? Your changes will be lost.")}
+          </p>
+          <div className="bar" style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
+            <button type="button" className="text" autoFocus onClick={() => setInstDiscardOpen(false)}>
+              {t("Cancel")}
+            </button>
+            <button
+              type="button"
+              className="text"
+              style={{ background: "var(--red)", color: "#fff", borderColor: "transparent" }}
+              onClick={discardInstructions}
             >
               {t("Discard")}
             </button>
