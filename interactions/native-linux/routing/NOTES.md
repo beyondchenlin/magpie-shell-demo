@@ -345,3 +345,27 @@ Routing tab, empty live stage, **Accounts hidden**. Groups plugin **off** (Plugi
 Routing mode hints other than Smart are recorded, including the weight chips and the manual pick on the card. Day pills and replay still need gateway history.
 
 Next: **tray**.
+
+
+## Live stage after take-over (115–117)
+
+Same window, pid **1871993**, magpie **0.1.1247**, **752×652 at +200+40** (id 85983247). Shots are ffmpeg x11grab of that rect (`-framerate 25`). Close was not used. Restart was not clicked. No request was sent. No OAuth. Groups stayed **off**. `providers.json`, `settings.json` (`window` still `[700, 600]`), and `plugins.yml` were not rewritten.
+
+Before this slice Routing was only the line "Another magpie serves the gateway…" (responsive 05 and 09). The listener on `127.0.0.1:3425` was pid **1632377**, the panel of the deleted 0.1.1240 binary (`/proc/560329/exe panel`, version **0.1.1240**, 0 models). Gateway was orange **running · served by magpie 0.1.1240, older than this one**, with **Quit magpie 0.1.1240 and take over**. That button was clicked. 1632377 quit. This process now listens. `/v1` reports `0.1.1247`, models 0. The old panel window is gone. `magpie web` on 17890 was not touched.
+
+| shot | what |
+|---|---|
+| 115 | Gateway, this magpie. Green dot, **running**, `0 models · no agent routed through it yet · five APIs, one URL`, URL `http://127.0.0.1:3425`, **Restart gateway**. Connect still expanded on **System One**. |
+| 116 | Routing at **752×652**. Header **ROUTING**, green live dot, "live, as the gateway decides", **Accounts hidden**. No **+ New group** (Groups is off). Stage **Waiting for a request**. Three nodes in one row: **your agent** — **magpie** `127.0.0.1:3425` — dashed **No request yet**. Foot on one row: "Every request an agent sends to magpie shows up here, routed for real." and **0** requests, **0** rerouted, **0** errors your agent saw. |
+| 117 | Same page after a 390-wide request, clamped to **616×652**. Bird mark gives way to the side toggle; tabs stay one row, Routing pill selected. The sentence wraps. Nodes reflow: **your agent** and **magpie** on the first row, **No request yet** full width under them. The **0 / 0 / 0** counts drop under the sentence. |
+
+The page does not scroll. No routing-groups block, no mode pills, no rules row: those mount in the New group editor, and Groups is off, so they were not turned on. No day bar, no By request / By session, no Replay (still 0 requests).
+
+Window put back to **752×652 at +200+40** after 117. Still the live empty stage.
+
+## Left state
+
+Routing tab, empty live stage, **Accounts hidden**. Groups plugin **off**. Gateway **running** on this pid, **Restart gateway**, 0 models. Magpie still running, pid 1871993, window 752×652 at +200+40. Close was not used. The 0.1.1240 panel process is gone and was not restarted.
+
+## demo 对齐
+- **v0.1.92**: Live stage after take-over 115–117（this magpie green **running** + Restart · Waiting / three nodes at 752 · 616 wrap: No request yet under the pair, counts under the sentence；Groups off so no + New group / mode/rules chrome；day pills N/A；peer card still when gw older/other）. No portable / Vercel.

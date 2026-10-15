@@ -464,6 +464,10 @@ export function GatewayView({ onStatus, onGoNetwork }: Props) {
         }
         setGwMode("on");
         persistGwMode("on");
+        try {
+          localStorage.setItem("magpie.routingPeerServes", "0");
+          window.dispatchEvent(new Event("magpie-gw-mode"));
+        } catch { /* */ }
         setGwErr(null);
         onStatus(
           demoCopy("演示：已接管网关（无真实进程）", "Demo: took over gateway (no real process)"),
@@ -481,6 +485,10 @@ export function GatewayView({ onStatus, onGoNetwork }: Props) {
         }
         setGwMode("on");
         persistGwMode("on");
+        try {
+          localStorage.setItem("magpie.routingPeerServes", "0");
+          window.dispatchEvent(new Event("magpie-gw-mode"));
+        } catch { /* */ }
         setGwErr(null);
         onStatus(
           demoCopy("演示：已启动网关（无真实进程）", "Demo: started gateway (no real process)"),

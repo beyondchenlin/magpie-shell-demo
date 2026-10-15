@@ -1989,8 +1989,13 @@ export function PluginsView({
   const [ghFilter, setGhFilter] = useState("");
   const [builtins, setBuiltins] = useState(() => {
     try {
-      const on = localStorage.getItem("magpie.feature.library") === "1";
-      return BUILTINS_DEFAULT.map((b) => (b.id === "library" ? { ...b, on } : b));
+      const libOn = localStorage.getItem("magpie.feature.library") === "1";
+      const groupsOn = localStorage.getItem("magpie.feature.groups") === "1";
+      return BUILTINS_DEFAULT.map((b) => {
+        if (b.id === "library") return { ...b, on: libOn };
+        if (b.id === "routing-groups") return { ...b, on: groupsOn };
+        return b;
+      });
     } catch {
       return BUILTINS_DEFAULT;
     }
@@ -2416,8 +2421,10 @@ export function PluginsView({
                           setBuiltins((list) => {
                             const next = list.map((x) => (x.id === b.id ? { ...x, on: !x.on } : x));
                             const lib = next.find((x) => x.id === "library");
+                            const groups = next.find((x) => x.id === "routing-groups");
                             try {
                               localStorage.setItem("magpie.feature.library", lib?.on ? "1" : "0");
+                              localStorage.setItem("magpie.feature.groups", groups?.on ? "1" : "0");
                               window.dispatchEvent(new Event("magpie-feature"));
                             } catch { /* */ }
                             return next;

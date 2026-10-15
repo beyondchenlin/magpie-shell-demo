@@ -123,6 +123,18 @@ function demoHasProviders(): boolean {
   }
 }
 
+/** Same key as GatewayView — this magpie holds the listener when "on". */
+function readGwModeForRouting(): "on" | "off" | "older" | "other" {
+  try {
+    const q = new URLSearchParams(location.search).get("gw");
+    if (q === "off" || q === "older" || q === "on" || q === "other") return q;
+    const v = localStorage.getItem("magpie.demoGw") || "on";
+    return v === "off" || v === "older" || v === "other" ? v : "on";
+  } catch {
+    return "on";
+  }
+}
+
 function readPeerServes(): boolean {
   try {
     const q = new URLSearchParams(location.search).get("rtPeer");
@@ -131,17 +143,35 @@ function readPeerServes(): boolean {
     const ls = localStorage.getItem("magpie.routingPeerServes");
     if (ls === "0") return false;
     if (ls === "1") return true;
-    // NOTES responsive 05/09: another magpie serves the gateway (take-over not clicked)
-    return true;
+    // Live empty stage when this magpie holds the gateway (routing 116 / responsive 11).
+    // Peer card when older/other still serves (responsive 05/09).
+    const gw = readGwModeForRouting();
+    return gw === "older" || gw === "other";
   } catch {
-    return true;
+    return false;
+  }
+}
+
+/** Built-in Routing groups plugin — off in these live shots (no + New group). */
+function readGroupsOn(): boolean {
+  try {
+    const q = new URLSearchParams(location.search).get("rtGroups");
+    if (q === "1") return true;
+    if (q === "0") return false;
+    return localStorage.getItem("magpie.feature.groups") === "1";
+  } catch {
+    return false;
   }
 }
 
 /** Empty routing stage matching official Magpie R-00…R-09. */
 export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: string) => void } = {}) {
-  /** tray/20: panel's Open Routing opens a window that does not hold the gateway. */
-  const [peerServes] = useState(readPeerServes);
+  /** tray/20 + responsive 05/09: peer card when another magpie holds the gateway. */
+  const [peerServes, setPeerServes] = useState(readPeerServes);
+  /** Plugins → Routing groups; off in live 115–117 / responsive 11–12. */
+  const [groupsOn, setGroupsOn] = useState(readGroupsOn);
+  const mainRef = useRef<HTMLDivElement>(null);
+  const [mainNarrow, setMainNarrow] = useState(false);
   const stageRef = useRef<HTMLDivElement>(null);
   const hubRef = useRef<HTMLDivElement>(null);
   const srcRef = useRef<HTMLDivElement>(null);
@@ -156,7 +186,7 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
   );
   const [masked, setMasked] = useState(readMasked);
   const [masking, setMasking] = useState(false);
-  const [demoGroups, setDemoGroups] = useState(true);
+  const [demoGroups, setDemoGroups] = useState(() => readGroupsOn());
   /** Magpie groups.found (shot 01-empty-live): Find groups on their own */
   const [foundOn, setFoundOn] = useState(true);
   /** Magpie suffixSegs: Off | Not on names I set | On */
@@ -201,6 +231,36 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
   const [replayFrac, setReplayFrac] = useState(0);
   const [replayClock, setReplayClock] = useState("12:02:10.0");
   const replayRaf = useRef(0);
+
+  // Sync peer / groups with Gateway take-over and Plugins toggle
+  useEffect(() => {
+    const sync = () => {
+      setPeerServes(readPeerServes());
+      const g = readGroupsOn();
+      setGroupsOn(g);
+      setDemoGroups(g);
+    };
+    window.addEventListener("storage", sync);
+    window.addEventListener("magpie-feature", sync);
+    window.addEventListener("magpie-gw-mode", sync);
+    return () => {
+      window.removeEventListener("storage", sync);
+      window.removeEventListener("magpie-feature", sync);
+      window.removeEventListener("magpie-gw-mode", sync);
+    };
+  }, []);
+
+  // Magpie routing.js: max560 on rt-main when ≤560 CSS px (616 window at 110%)
+  useEffect(() => {
+    if (peerServes) return;
+    const el = mainRef.current;
+    if (!el) return;
+    const apply = () => setMainNarrow(el.clientWidth <= 560);
+    apply();
+    const ro = new ResizeObserver(apply);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [peerServes]);
 
   useEffect(() => {
     const draw = () => {
@@ -374,48 +434,35 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
     <main className={viewClass} id="view-routing">
       <div className="row-head">
         <span className="label">{ZH.routing}</span>
-        <span className="rt-livedot" aria-hidden="true" />
-        <span className="note">{ZH.liveAsGateway}</span>
+        <span className="rt-livedot on" aria-hidden="true" />
+        <span className="note">{t("live, as the gateway decides")}</span>
         <span className="grow" />
-        <button
-          className="text"
-          type="button"
-          aria-pressed={demoLive}
-          title={ZH.demoFlierTitle}
-          onClick={() => {
-            setDemoLive((v) => {
-              const next = !v;
-              if (next) setDemoTurn((n) => n + 1);
-              return next;
-            });
-          }}
-        >
-          {demoLive ? ZH.demoFlierOn : ZH.demoFlierOff}
-        </button>
-        <button
-          className="text rt-newgroup"
-          id="rtNewGroup"
-          type="button"
-          data-feature="groups"
-          title={t("Make a routing group of any models you like — agents pick it as one model")}
-          onClick={() => {
-            setFoundOn(true);
-            setGroupEditorOpen(true);
-            setDemoGroups(true);
-          }}
-        >
-          <svg
-            viewBox="0 0 16 16"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.8"
-            strokeLinecap="round"
-            aria-hidden="true"
+        {groupsOn ? (
+          <button
+            className="text rt-newgroup"
+            id="rtNewGroup"
+            type="button"
+            data-feature="groups"
+            title={t("Make a routing group of any models you like — agents pick it as one model")}
+            onClick={() => {
+              setFoundOn(true);
+              setGroupEditorOpen(true);
+              setDemoGroups(true);
+            }}
           >
-            <path d="M8 3.5v9M3.5 8h9" />
-          </svg>
-          <span data-t>{t("New group")}</span>
-        </button>
+            <svg
+              viewBox="0 0 16 16"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.8"
+              strokeLinecap="round"
+              aria-hidden="true"
+            >
+              <path d="M8 3.5v9M3.5 8h9" />
+            </svg>
+            <span data-t>{t("New group")}</span>
+          </button>
+        ) : null}
         <button
           className="text rt-mask"
           id="rtMask"
@@ -442,7 +489,7 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
       </div>
 
       <section className="rt" id="rt">
-        <div className="rt-main">
+        <div className={`rt-main${mainNarrow ? " max560" : ""}`} ref={mainRef}>
           <div className="rt-top">
             <div className="rt-what">
               <b>{demoLive ? t("Demo request · affinity kept") : t("Waiting for a request")}</b>
@@ -549,7 +596,7 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                 </span>
                 <b>
                   <span style={{ ["--agent" as string]: "#7c3aed" }} />
-                  {ZH.yourAgent}
+                  {t("your agent")}
                 </b>
                 <small />
               </div>
@@ -579,7 +626,7 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                 </>
               ) : (
                 <li className="idle" ref={idleRef}>
-                  {ZH.noRequestYet}
+                  {t("No request yet")}
                 </li>
               )}
             </ol>
@@ -618,11 +665,11 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
             <div className="rt-stats">
               <span>
                 <b>{demoLive ? String(Math.max(1, demoTurn)) : "0"}</b>
-                <span>{ZH.requests}</span>
+                <span>{t("requests")}</span>
               </span>
               <span>
                 <b>{demoLive ? "1" : "0"}</b>
-                <span>{ZH.rerouted}</span>
+                <span>{t("rerouted")}</span>
               </span>
               <span
                 className="rt-errs"
@@ -630,7 +677,7 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                 title={ZH.noFailedRequest}
               >
                 <b>0</b>
-                <span>{ZH.errorsAgentSaw}</span>
+                <span>{t("errors your agent saw")}</span>
               </span>
             </div>
           </div>
@@ -1276,7 +1323,8 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
         </div>
       ) : null}
 
-      {/* Magpie #rtMore — Routing groups empty (native 01-empty-live) */}
+      {/* Magpie #rtMore — only when Routing groups plugin is on */}
+      {groupsOn ? (
       <div className="rt-more" id="rtMore">
         <div className="rt-gsec">
           <div className="row-head">
@@ -1769,6 +1817,7 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
           ) : null}
         </div>
       </div>
+      ) : null}
     </main>
   );
 }

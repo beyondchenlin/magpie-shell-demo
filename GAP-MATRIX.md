@@ -368,3 +368,10 @@
 - Day pills / Replay still **N/A** (empty gateway history).
 - P1 unchanged: true gateway bird hop · true OAuth/key · Allowances quota body N/A.
 - Portable/release skipped this cycle (user freeze). No Vercel.
+
+## v0.1.92 ROUTING_LIVE_DONE
+- Native routing 115–117 + responsive 11–12: live empty stage after take-over (Waiting / three nodes / 0·0·0; 616 reflow).
+- Gateway this-magpie green **running** + Restart; peer card retained when older/other serves.
+- Groups still **off** — no + New group / groups chrome invented.
+- Day pills / Replay still **N/A** (0 requests). P1 bird hop **N/A**.
+- Portable/release skipped (user freeze). No Vercel.

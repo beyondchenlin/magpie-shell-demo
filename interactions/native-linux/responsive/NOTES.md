@@ -27,3 +27,21 @@ Providers tab, empty add sheet. Window **752×652 at +200+40**. Not quit.
 - Routing 空网关文案 **Another magpie serves the gateway…**（05/09）；616 换行仍可读。
 - Web 框 752×652；min CSS 560（110% 视约 616）；顶栏/Appearance 不破。
 - 无 portable、无 Vercel。
+
+## Live Routing after take-over (11–12)
+
+05 and 09 were the "another magpie" line, because take-over had not been clicked. It was clicked for routing 115–117. These two frames are that live page. Same pixels as routing **116** and **117**.
+
+| shot | what |
+|---|---|
+| 11 | Routing live at **752×652**. ROUTING, green live dot, "live, as the gateway decides", Accounts hidden. Waiting for a request. Three nodes in a row. 0 / 0 / 0 on the footer row. |
+| 12 | Same page at clamped **616×652**. Bird mark gives way to the side toggle. Tabs stay one row. **No request yet** wraps under your agent and magpie. Counts drop under the sentence. |
+
+## Left state
+
+Routing tab, empty live stage. Window **752×652 at +200+40**, pid 1871993. Not quit. (The earlier left state of this folder was the Providers add sheet; this follow-up left the window on Routing.)
+
+## demo 对齐（11–12）· v0.1.92 ROUTING_LIVE_DONE
+- Routing 实况 **Waiting for a request**（11/12），不再是 Another magpie…（take-over 后）。
+- 616 节点换行（No request yet under pair · counts under sentence），顶栏不破。
+- Groups off；无 portable / Vercel。

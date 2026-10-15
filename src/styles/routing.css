@@ -204,6 +204,18 @@
 .rt-accts:where(.max560) em { grid-column: 2; white-space: normal; }
 .rt-accts:where(.max560) .bar { grid-column: 2; }
 :where(.rt-main.max560) .rt-stats { gap: 14px; }
+/* 117 / responsive 12: counts under the sentence; No request yet full width under the pair */
+:where(.rt-main.max560) .rt-foot {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+}
+:where(.rt-main.max560) .rt-cap {
+  flex: none;
+  min-height: 0;
+  width: 100%;
+}
+:where(.rt-main.max560) .rt-accts:has(> li.idle) { padding-left: 0; }
 /* the Routing view */
 #view-routing .row-head { margin: 14px 0 6px; padding: 0 2px; gap: 0; }
 #view-routing .row-head .note { font-size: 11px; color: var(--faint); margin-left: 8px; }
