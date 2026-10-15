@@ -795,6 +795,7 @@ button.rt-session { cursor: pointer; }
 .rt-gtplbtn svg { opacity: .7; }
 
 /* v0.1.74 — routing 55–98 pause / rule ⋯ */
+/* v0.1.75 — routing 99–114 modes / weight / manual picks */
 .rt-rule-more {
   min-width: 28px; height: 26px; padding: 0 6px;
   font-size: 16px; line-height: 1; letter-spacing: 0.02em;

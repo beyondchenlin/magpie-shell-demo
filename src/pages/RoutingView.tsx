@@ -1431,6 +1431,8 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                         members,
                         memberNames: members,
                         routing: "",
+                        pick: "",
+                        weights: {},
                         rules: 0,
                         levels: ["low", "medium", "high"],
                         on: true,
@@ -1551,9 +1553,43 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                       <b>{g.name}</b>
                       <code className="mdl">{`group/${g.slug}`}</code>
                     </div>
-                    <div className="mem">
-                      {(g.memberNames.length ? g.memberNames : g.members).join(" · ") || t("no models")}
-                    </div>
+                    {g.routing === "manual" && g.members.length ? (
+                      <div className="rt-picks" onClick={(e) => e.stopPropagation()}>
+                        {g.members.map((id, i) => {
+                          const label = g.memberNames[i] || id;
+                          const short = (label.includes(":") ? label.split(":")[0] : label).split("/").pop() || label;
+                          const on = (g.pick || g.members[0]) === id;
+                          return (
+                            <button
+                              type="button"
+                              key={id}
+                              className={`rt-pick${on ? " on" : ""}`}
+                              title={on ? undefined : t("Send every request to {name}", { name: short })}
+                              onClick={() => {
+                                if (on) return;
+                                setSavedGroups((gs) =>
+                                  gs.map((x) => (x.slug === g.slug ? { ...x, pick: id } : x)),
+                                );
+                                onStatus?.(
+                                  t("{name}: every request to {model}", {
+                                    name: g.name || g.slug,
+                                    model: short,
+                                  }),
+                                  "ok",
+                                );
+                              }}
+                            >
+                              <i className="dot" aria-hidden />
+                              <span className="n">{short}</span>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    ) : (
+                      <div className="mem">
+                        {(g.memberNames.length ? g.memberNames : g.members).join(" · ") || t("no models")}
+                      </div>
+                    )}
                   </div>
                   <div className="tags">
                     <span className="tag">{t(g.routing === "" || g.routing === "smart" ? "Smart" : g.routing === "order" ? "In order" : g.routing === "rotate" ? "In turn" : g.routing === "usage" ? "Least used" : g.routing === "pace" ? "Weekly pace" : g.routing === "weight" ? "By weight" : g.routing === "manual" ? "Manual" : "Smart")}</span>
@@ -1580,6 +1616,15 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                     role="switch"
                     aria-checked={g.on}
                     aria-label={g.name}
+                    title={
+                      g.on
+                        ? t("On: agents may pick {name}. Click to switch it off and keep it as it is", {
+                            name: g.name || g.slug,
+                          })
+                        : t("Off: agents aren't offered {name} and a request to it is turned away. Click to switch it on", {
+                            name: g.name || g.slug,
+                          })
+                    }
                     onClick={(e) => {
                       e.stopPropagation();
                       setSavedGroups((gs) => gs.map((x) => (x.slug === g.slug ? { ...x, on: !x.on } : x)));

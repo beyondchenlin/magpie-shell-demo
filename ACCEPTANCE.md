@@ -1,3 +1,7 @@
+## v0.1.75 ROUTING_MODES_99_114
+- Consumed native `routing/99–114` NOTES: mode pills In order / In turn / Least used / Weekly pace / By weight / Manual + nest sentence; **Rate limited** stays for In order / Least used / Weekly pace, gone for In turn / By weight / Manual; By weight chips **Weight 1 · 50%** → edit **3** → **75% / 25%**; Manual rules line **The rules wait while you pick the model by hand.**; card picks opus/haiku + toast `{name}: every request to {model}`; Remove → **group removed**; Day pills **N/A**; P1 **N/A**.
+- Code+docs+git only. **No portable / GitHub release / Vercel** (user freeze).
+
 ## v0.1.72 GATEWAY_STATUS_27_42
 - Consumed native `gateway/27–42` NOTES: Restarting… → orange **not running** / Start (login tip, no red kept); Starting… clears red; port held by python3.13 red (Escape unchanged); **another magpie** green · no button; older **0.1.550** Quit… and take over (hover, no tip); take-over refused when Python (red, button stays); Quitting… → this magpie + Restart gateway; Copy gateway URL tip; models/recent empty; no confirm/Cancel; P1 bird **N/A**.
 - Demo: `?gw=on|off|older|other` + `?gwHold=python` / `magpie.demoGwHold`. Still mock: real POST gateway/restart|take-over.
@@ -150,6 +154,8 @@
 - **Add** → green toast **group added**; row `group` / `group/group` · members · Smart · 1 rule · red **no member ready** · Edit · switch. Templates collapses to menu.
 - Edit footer **Remove / Cancel / Save**; **Remove group?** → red Remove → toast **group removed**; templates cards return.
 - P1 live bird hop: **N/A**. Skip Vercel 402.
+
+- Code+docs+git only. **No portable / GitHub release / Vercel** (user freeze).
 
 ## v0.1.74 ROUTING_SEGMENTS_55_98
 

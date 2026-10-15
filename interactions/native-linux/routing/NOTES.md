@@ -286,3 +286,62 @@ Next: those routing-mode hints, still Routing, not tray.
 
 ## demo 对齐
 - **v0.1.74**: Segments + rest of a rule 55–98（Rate limited · Slow s-hints/Custom · Busy · Context 200,000 · Stays · choose a model No matches/typed · other conditions · ⋯ Pause · Discard 98；Day pills N/A；P1 N/A）
+- **v0.1.75**: Modes 99–114（In order / In turn / Least used / Weekly pace / By weight / Manual hints；Rate limited stays/gone；Weight chips 1·50%→3·75%/25%；Manual rules wait + card picks toast；Remove；Day pills N/A；P1 N/A）
+
+
+## Routing modes other than Smart (99–114)
+
+Same window, pid 560329, **752×652 at +200+40**, magpie 0.1.1240. Groups was off; the Built-in **Routing groups** switch was turned on for the editor and off again at the end. Two typed ids, `opus` and `haiku`. Find-groups and the names segments were not clicked (still **on** and **On**). P1 bird hop: **N/A**.
+
+The mode row, left to right: **Smart**, **In order**, **In turn**, **Least used**, **Weekly pace**, **By weight**, **Manual**. Smart was already recorded. Under every pill, the same second sentence stays:
+
+> A group among the models, and a model whose provider routes its accounts or keys other than Smart, keeps its own routing: this group only picks between it and the others, weighing it by the account or key it would try first, then tries it whole in its own order.
+
+**Rate limited** is on screen for In order, Least used, and Weekly pace (still **Keeps its place**). It is not on screen for **In turn**, **By weight**, or **Manual**; the next row is **Slow to start**.
+
+| shot | selected | hint |
+|---|---|---|
+| 99 | **In order** | In order: the first model until it can't answer, then the next — each over its own accounts or keys as its provider routes them. |
+| 100 | **In turn** | In turn: each conversation's next turn goes to the next member's account or key, spreading the load. |
+| 101 | **Least used** | Least used first: the account or key with the most of its allowance left goes first. |
+| 102 | **Weekly pace** | Weekly pace: the account with the most of its week left per hour until it renews goes first, so less of each member's week is lost at its reset — an account with five hours and no week (Claude Enterprise) by what its five hours have left per hour until they renew, so almost always first; a key by the tokens magpie sent it lately. |
+| 103 | **By weight** | By weight: each model takes its share of the requests by the weight set beside it — one weighing 3 three for every one a model weighing 1 takes, spread out rather than in bursts. One resting after a failure leaves the round and the others share its requests; the next model is the fallback when one fails. |
+| 107 | **Manual** | Manual: every request goes to the model you pick on the group's card, over its own accounts or keys; the others, and the rules, wait until you pick another — none takes over when it fails. |
+
+### By weight, on the member rows (104–106)
+
+Each member grows a chip. Both started **Weight 1 · 50%** (dashed).
+
+| shot | what |
+|---|---|
+| 104 | Pointer on opus's chip. Tip, clipped at the window's right edge: "Its share of the requests: a model weighing 3 takes three for every one a model weighi…" and a wrapped "takes". |
+| 105 | Click. The chip becomes a number field, prefilled **1**, selected, blue ring. haiku stays **Weight 1 · 50%**. |
+| 106 | Typed **3**, left the field. opus **Weight 3 · 75%** (solid). haiku **Weight 1 · 25%** (dashed). |
+
+### Manual, rules line and the card (108–114)
+
+Under **Rules** the line is no longer the checked-top-first sentence. It reads **The rules wait while you pick the model by hand.** The row under it is **+ Add a rule** and the info dot. No second add button was on that row.
+
+| shot | what |
+|---|---|
+| 108 | That rules line, pointer off the words. |
+| 109 | Info dot. Tip is the old sentence, clipped on the left: "…op first when you send a message: the first that matches sends that turn to its …; the rest stay behind it if it fails. A turn under way is never moved." Same words as 32, not the "rules wait" line. |
+| 110 | **Add** did save. Green toast **group added**. Card: **group** `group/group`, picks **opus** (on) and **haiku**, tag **Manual**, red **no member ready**, **Edit**, switch on. Templates collapse to a **Templates** menu. Stage still **Waiting for a request**, **0 / 0 / 0**. |
+| 111 | Same card, pointer off the switch so its tip is gone. opus still the filled pick. |
+| 112 | haiku clicked. The fill moves to **haiku**. Green toast **group: every request to haiku**. |
+| 113 | Edit → **Remove**. **Remove group?** "This routing group will no longer be available to agents." **Cancel** and red **Remove**. |
+| 114 | Red Remove. Green toast **group removed**. Template cards return (**Add a provider first**). No group row. |
+
+The written group, before it was removed, was id `group`, members `opus` and `haiku`, routing `manual`, pick `haiku` (it had been `opus`), and a weight `opus: 3` left over from 106. It is not in `providers.json` now (`{"providers": null}`). The `.bak` that still held it was stripped so a restore does not bring it back.
+
+### Day pills
+
+**N/A.** 110 and 112, and the page after 114, are still **Waiting for a request**, 0 requests, 0 rerouted, 0 errors. No day bar, no By request / By session, no Replay. No request was sent.
+
+## Left state
+
+Routing tab, empty live stage, **Accounts hidden**. Groups plugin **off** (Plugins switch and `plugins.yml`; the yml bak was set back to off with it). Gateway and Library still on, as found. No group, no key. Magpie still running, pid 560329, window 752×652 at +200+40. Close was not used.
+
+Routing mode hints other than Smart are recorded, including the weight chips and the manual pick on the card. Day pills and replay still need gateway history.
+
+Next: **tray**.

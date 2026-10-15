@@ -33,7 +33,7 @@ const GROUP_HINT: Record<string, string> = {
   usage: "Least used first: the account or key with the most of its allowance left goes first.",
   pace: "Weekly pace: the account with the most of its week left per hour until it renews goes first, so less of each member's week is lost at its reset — an account with five hours and no week (Claude Enterprise) by what its five hours have left per hour until they renew, so almost always first; a key by the tokens magpie sent it lately.",
   weight:
-    "By weight: each member takes requests in proportion to its weight (set beside it). A model weighing 3 takes three for every one a model weighing 1 takes.",
+    "By weight: each model takes its share of the requests by the weight set beside it — one weighing 3 three for every one a model weighing 1 takes, spread out rather than in bursts. One resting after a failure leaves the round and the others share its requests; the next model is the fallback when one fails.",
   manual:
     "Manual: every request goes to the model you pick on the group's card, over its own accounts or keys; the others, and the rules, wait until you pick another — none takes over when it fails.",
 };
@@ -459,6 +459,10 @@ export type SavedGroupDraft = {
   members: string[];
   memberNames: string[];
   routing: string;
+  /** Manual mode: member id currently picked on the card (shots 110–112). */
+  pick: string;
+  /** By weight: member id → weight (default 1 omitted). */
+  weights: Record<string, number>;
   rules: number;
   levels: string[];
   on: boolean;
@@ -519,6 +523,7 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
         return { id, name: name.includes(":") ? name.split(":")[0] : name, on: true, fixed };
       });
       d.routing = editGroup.routing;
+      d.weights = editGroup.weights ? { ...editGroup.weights } : {};
       d.levelsOwn = true;
       d.levels = editGroup.levels.length ? [...editGroup.levels] : ["low", "medium", "high"];
       if (d.members.length >= 2 && editGroup.rules > 0) {
@@ -721,12 +726,22 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
       return;
     }
     const name = draft.name.trim() || idOf();
+    const memberIds = draft.members.map((m) => m.id);
+    const firstOn = draft.members.find((m) => m.on)?.id || memberIds[0] || "";
+    const keepPick =
+      draft.routing === "manual"
+        ? editGroup?.routing === "manual" && editGroup.pick && memberIds.includes(editGroup.pick)
+          ? editGroup.pick
+          : firstOn
+        : "";
     const payload: SavedGroupDraft = {
       name,
       slug: idOf(),
-      members: draft.members.map((m) => m.id),
+      members: memberIds,
       memberNames: draft.members.map((m) => memberDisplay(m)),
       routing: draft.routing,
+      pick: keepPick,
+      weights: { ...draft.weights },
       rules: rules.length,
       levels: draft.levelsOwn ? [...draft.levels] : ["low", "medium", "high"],
       on: true,

@@ -1,3 +1,8 @@
+## v0.1.75 ROUTING_MODES_99_114
+- routing/99–114 modes landed: hints 1:1, Rate limited visibility, weight chips + %, Manual card picks + toast, remove toast.
+- Still mock: live gateway history / day pills / replay. Day pills **N/A**. P1 bird hop **N/A**.
+- Allowances **N/A**. No portable / Vercel this cycle.
+
 ## v0.1.72 GATEWAY_STATUS_27_42
 - gateway/27–42 status nest landed: off/Start, other (no button), older 0.1.550 take-over, port/not-magpie red lines, busy labels, Escape no-op on red.
 - Still mock: true `POST gateway/restart` / `gateway/take-over`, live port probe. P1 bird hop **N/A** (native header bird did not hop).
@@ -319,6 +324,9 @@
 ## v0.1.73 ROUTING_RULES_31_54
 - Routing rules nest 31–54 consumed (progressive + condition · full agent list · save/remove group row).
 - P1 unchanged: true gateway bird hop · true OAuth/key · Allowances quota body N/A.
+
+- Still mock: live gateway history / day pills / replay. Day pills **N/A**. P1 bird hop **N/A**.
+- Allowances **N/A**. No portable / Vercel this cycle.
 
 ## v0.1.74 ROUTING_SEGMENTS_55_98
 - Native routing 55–98 segments/conditions/pause consumed 1:1 into GroupEditor.
