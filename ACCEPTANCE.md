@@ -1,3 +1,10 @@
+## v0.1.189 · AG_DIFF_LINE_OSS · 2026-10-16 Asia/Shanghai
+- AgentsView invent `pre.ag-diff-body` (+ blob) → Magpie `div.ag-diff-line.back` with `.op` / `code>.ind+.t` / `.ag-tag` (changesList line()).
+- **Cite:** Magpie `app.js` **L1959–1991** `changesList`; **L1970–1977** `line()` → `ag-diff-line` + `del`/`back`; `app.css` **L3867–3876** `.ag-diff-line` (already vendored).
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; skip oauth; Magpie `.ag-diff-*` CSS already vendored; ag-install-body / openai-mark deferred.
+- Routing tip extras / led-tools-extra left (skip unless clear).
+- No portable / Vercel.
+
 ## v0.1.188 · FEAT_WHY_OSS · 2026-10-16 Asia/Shanghai
 - Plugins Built-in invent `sub feat-use` (+ invent visible "In use…" sub) → Magpie `sub feat-why` with f.use ("1 gateway key"); "In use, so it stays on" stays on switch title only.
 - **Cite:** Magpie `app.js` **L24450** `el("div","sub feat-why", t(f.use,…))`; **L24458** `b.title = t("In use, so it stays on")`; `app.css` **L3042** `.row.pref .sub.feat-why`; builtins.test `one: "1 gateway key"`.

@@ -1385,10 +1385,22 @@ export function AgentsView({
                       <div className="ag-diff">
                         <div className="ag-diff-file">
                           <div className="ag-diff-path">~/.{a.id === "claude" ? "claude" : a.id}/settings.json</div>
-                          <pre className="ag-diff-body">
-{`+ "model": "${fieldVals[a.id + ":model"] || "claude-sonnet-4-5"}"
-+ "env": { "ANTHROPIC_BASE_URL": "http://127.0.0.1:3425" }`}
-                          </pre>
+                          <div className="ag-diff-line back">
+                            <span className="op">↺</span>
+                            <code>
+                              <span className="ind" />
+                              <span className="t">{`"model": "${fieldVals[a.id + ":model"] || "claude-sonnet-4-5"}"`}</span>
+                            </code>
+                            <span className="ag-tag">{t("value before connecting")}</span>
+                          </div>
+                          <div className="ag-diff-line back">
+                            <span className="op">↺</span>
+                            <code>
+                              <span className="ind" />
+                              <span className="t">{`"env": { "ANTHROPIC_BASE_URL": "http://127.0.0.1:3425" }`}</span>
+                            </code>
+                            <span className="ag-tag">{t("value before connecting")}</span>
+                          </div>
                         </div>
                       </div>
                     </div>

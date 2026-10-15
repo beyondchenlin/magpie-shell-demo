@@ -1,3 +1,17 @@
+## v0.1.189 · AG_DIFF_LINE_OSS · 2026-10-16 Asia/Shanghai
+
+- **WHY:** Hard invent leftover — AgentsView connected "View" diff still painted invent `pre.ag-diff-body` with a raw `+` blob. Magpie OSS builds each preview row as `div.ag-diff-line` (`del` / `back`) via `changesList` / `line()`.
+- **CAUSE:** Tip demo used a single `<pre>` invent wrapper instead of Magpie per-line DOM.
+- **Cite:**
+  - Magpie `app.js` **L1959–1991** `changesList`: `ag-diff` → `ag-diff-file` → `ag-diff-path` + lines
+  - Magpie `app.js` **L1970–1977** `line()`: `el("div","ag-diff-line "+(del|back))` + `span.op` (−/↺) + `code` (`span.ind` + `span.t`) + optional `span.ag-tag` "value before connecting"
+  - Magpie `app.css` **L3867–3876** `.ag-diff-line` / `.op` / `code` / `.del` / `.back` (already vendored in tip `app.css`)
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; skip oauth Approve wall; Magpie `.ag-diff-box` / `.ag-diff` / `.ag-diff-file` / `.ag-diff-path` / `.ag-tag` gold already in tip; `ag-install-body` / `openai-mark` deferred; routing tip extras / led-tools-extra unchanged.
+- **WHAT changed:**
+  - `AgentsView.tsx`: invent `pre.ag-diff-body` → two Magpie `div.ag-diff-line.back` rows (demo model/env restore lines) with `.op` ↺, `code>.ind+.t`, `.ag-tag` "value before connecting".
+- **Remaining invent (intentional skip):** oauth Approve wall; `rt-flier-demo`; `win-caption*`; `lib-hook*` / `pref-anchor` React bridges. **Deferred (not 1:1 this tip):** routing.css tip extras `rt-info`/`rt-cond-*`/`rt-pause-*`/`rt-rule-more`/`rt-arrow`/`rt-effort-row` (GroupEditor rewrite); `led-tools-extra`. Live weak leftovers for later: `ag-install-body` (no Magpie wrapper), `openai-mark` (→ Magpie `icon("openai")`).
+- **Guard:** `npm run chrome-guard`. No portable. No manual Vercel.
+
 ## v0.1.188 · FEAT_WHY_OSS · 2026-10-16 Asia/Shanghai
 
 - **WHY:** Hard invent audit — Plugins Built-in still painted invent `div.sub.feat-use` for "1 gateway key", plus a second invent visible `div.sub.feat-why` with "In use, so it stays on". Magpie OSS uses only `sub feat-why` for `f.use` (e.g. "1 gateway key") and puts "In use, so it stays on" on the switch `title` only.
