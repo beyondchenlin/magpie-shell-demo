@@ -743,6 +743,7 @@ export default function App() {
             try { sessionStorage.setItem("magpie-demo-providerAdded", "1"); } catch { /* */ }
             go("providers");
           }}
+          onGoRouting={() => go("routing")}
           refreshNonce={refreshNonce}
           onStatus={showStatus}
         />

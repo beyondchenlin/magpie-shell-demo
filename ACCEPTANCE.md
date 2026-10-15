@@ -1,3 +1,10 @@
+## v0.1.135 GW_CONNECT_AGENTS_GUIDE_OSS_FIDELITY
+- Gateway Connect: drop invent always-`API key` + raw secret when lan — restore Magpie `keyLabel` Gateway key / API key, empty `Create a gateway key above to connect`, lan key hints (client.js L431–442); snippet empty → Magpie L467 prompt (no copy).
+- Gateway Model hint: Magpie L446–448 branch when models listed vs empty.
+- Gateway Models: Magpie `#findModel.find` in row-head (client.js L500–509; app.css L2659–2673); drop invent `◎` — `img.ic` + provider icon; none match Magpie L525.
+- Agents guide: Magpie optional step 3 Set up routing + `guide-open` → Routing (app.js L1591–1622 / L1611–1615); acts only when source done (L1597).
+- SIDE_AT=1024. No portable / Vercel.
+
 ## v0.1.134 PV_SEARCH_ADD_IMPORTAPPS_OSS_FIDELITY
 - Providers search: drop invent `row-head.pv-tools` / `find.pv-find` — restore Magpie `pv-head` > `sess-filter.pv-q` (index.html L112; app.css L2113–2114 / L1366).
 - Providers none: Magpie `p.set-none.pv-none` (index.html L113; app.css L3036 / L2115).

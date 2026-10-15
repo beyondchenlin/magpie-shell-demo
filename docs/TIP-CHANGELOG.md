@@ -1,3 +1,14 @@
+## v0.1.135 · GW_CONNECT_AGENTS_GUIDE_OSS_FIDELITY · 2026-10-15 Asia/Shanghai
+- **WHY:** Continue Magpie 1:1 after 0.1.134 — delete tip invent Gateway Connect key/model chrome + Agents guide missing optional step; restore Magpie OSS.
+- **CAUSE:** Demo always labeled Connect key `API key` and painted invent model-row `◎`; Models head lacked Magpie `#findModel`; Agents Get started omitted Magpie optional routing step 3.
+- **Gold:**
+  - Magpie `plugins/gateway/client.js` **431–442** keyLabel / empty create / lan key hints; **446–448** model hint; **467–478** snippet without secret; **500–509** `#findModel`; **525** none match; **534** `icon(provider)`
+  - Magpie `app.css` **2659–2673** `#view-gateway .find` / `.row-head .find`
+  - Magpie `app.js` **1591–1622** guide step 3 optional routing; **1611–1615** `guide-open` → Routing; **1597** acts iff source
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; Gateway keys accts/acc (0.1.133); Providers search/add (0.1.134); CIS PrefRow/Segs/TextBtn.
+- **WHAT changed:** `GatewayView.tsx` Connect key/model/snippet + Models find/icon; `AgentsView.tsx` + `App.tsx` guide step 3 / onGoRouting.
+- SIDE_AT=1024. Push/PR #1. No portable / Vercel.
+
 ## v0.1.134 · PV_SEARCH_ADD_IMPORTAPPS_OSS_FIDELITY · 2026-10-15 Asia/Shanghai
 - **WHY:** Continue Magpie 1:1 after 0.1.133 — delete tip invent Providers search/add chrome + shell-patch `.importapps` that covered Magpie OSS.
 - **CAUSE:** Demo painted Providers find as invent `row-head.pv-tools` + `find.pv-find` and add as invent `rt-gadd.pv-gap` (Routing add chrome); ImportApps used invent `framed`/`ebody` + shell-patch `.importapps` geometry against Magpie `.editor.importapps`.

@@ -129,6 +129,8 @@ const calm = () =>
 
 type Props = {
   onAddProvider: () => void;
+  /** Magpie app.js L1611–1615 guide-open → show("routing") */
+  onGoRouting: () => void;
   /** Incremented by App on #sync — closes naming like Magpie renderProfiles. */
   refreshNonce: number;
   onStatus: (msg: string, kind?: string) => void;
@@ -588,6 +590,7 @@ function ArrangeMenu({
 
 export function AgentsView({
   onAddProvider,
+  onGoRouting,
   refreshNonce,
   onStatus,
 }: Props) {
@@ -797,6 +800,40 @@ export function AgentsView({
                     <span className="guide-say">{ZH.connectAgentSay}</span>
                     {/* Native: no connectable agents detected → no chips (Cursor can't connect) */}
                     <div className="guide-acts" />
+                  </div>
+                </li>
+                {/* Magpie app.js L1591–1622: optional routing step (counter still 2 of source+agent) */}
+                <li
+                  className="guide-step optional"
+                  data-step="routing"
+                  data-feature="groups"
+                  aria-label={t("Set up routing (optional)")}
+                >
+                  <span className="guide-tick" aria-hidden>
+                    3
+                  </span>
+                  <div className="guide-body">
+                    <b className="guide-title">{t("Set up routing (optional)")}</b>
+                    <span className="guide-say">
+                      {t(
+                        "A routing group sends each request to the right model, and to the next one when a model fails",
+                      )}
+                    </span>
+                    {typeof window !== "undefined" &&
+                    sessionStorage.getItem("magpie-demo-providerAdded") === "1" ? (
+                      <div className="guide-acts">
+                        <button
+                          type="button"
+                          className="text guide-open"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onGoRouting();
+                          }}
+                        >
+                          {t("Open Routing")}
+                        </button>
+                      </div>
+                    ) : null}
                   </div>
                 </li>
               </ol>

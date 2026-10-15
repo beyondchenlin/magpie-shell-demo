@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState, type ReactNode } from "react"
 import { Fold, FoldChev } from "../components/Fold";
 import { Segs } from "../components/Segs";
 import { TextBtn } from "../components/TextBtn";
-import { GATEWAY_ADDR } from "../data/mock";
+import { GATEWAY_ADDR, iconSrc } from "../data/mock";
 import { demoCopy, t, useLang } from "../i18n";
 
 /** Magpie flashCopied: 1200ms; copy-pop .36s --ease */
@@ -14,10 +14,11 @@ type DemoGwModel = { id: string; name: string; provider: string; icon?: string }
 type DemoCall = { id: string; time: number; agent: string; model: string; from: string; to: string; status: number; ms: number; ttft?: number; error?: string };
 
 const DEMO_MODELS: DemoGwModel[] = [
-  { id: "codex/gpt-5.4", name: "gpt-5.4", provider: "OpenAI" },
-  { id: "codex/gpt-5.4-mini", name: "gpt-5.4-mini", provider: "OpenAI" },
-  { id: "anthropic/claude-sonnet-4-5", name: "claude-sonnet-4-5", provider: "Anthropic" },
-  { id: "google/gemini-2.5-pro", name: "gemini-2.5-pro", provider: "Google" },
+  { id: "codex/gpt-5.4", name: "gpt-5.4", provider: "OpenAI", icon: "openai" },
+  { id: "codex/gpt-5.4-mini", name: "gpt-5.4-mini", provider: "OpenAI", icon: "openai" },
+  { id: "anthropic/claude-sonnet-4-5", name: "claude-sonnet-4-5", provider: "Anthropic", icon: "anthropic" },
+  { id: "google/gemini-2.5-pro", name: "gemini-2.5-pro", provider: "Google", icon: "google-color" },
+  { id: "anthropic/claude-opus-4", name: "claude-opus-4", provider: "Anthropic", icon: "anthropic" },
 ];
 
 const DEMO_CALLS: DemoCall[] = [
@@ -302,6 +303,8 @@ export function GatewayView({ onStatus, onGoNetwork }: Props) {
   const [modelsFolded, setModelsFolded] = useState(
     () => lsGet("magpie.gwModelsFolded", "") === "1",
   );
+  /** Magpie client.js L483 / L500–509: findModel in Models head when ≥5 */
+  const [modelQuery, setModelQuery] = useState("");
   const [restartBusy, setRestartBusy] = useState(false);
   const [demoPrefs, setDemoPrefs] = useState(readDemoPrefs);
   const [exampleModel, setExampleModel] = useState(() => lsGet("magpie.model", DEMO_MODELS[0].id));
@@ -333,8 +336,22 @@ export function GatewayView({ onStatus, onGoNetwork }: Props) {
   const f = FLAVORS.find((x) => x.id === flavor) || FLAVORS[0];
   const base = f.base(GW_URL);
   const modelPlaceholder = f.decide ? "provider/jev_latest" : (exampleModel || "provider/model");
-  const secret = lanOn && gwKeys.filter((k) => !k.off).length ? (gwKeys.find((k) => !k.off)?.secret || "magpie") : lanOn ? "" : "magpie";
+  /** Magpie client.js L394–405 / L431–437: lan keys vs loopback magpie */
+  const enabledKeys = lanOn ? gwKeys.filter((k) => !k.off) : [];
+  const connectKey = enabledKeys[0] || null;
+  const secret = !lanOn ? "magpie" : connectKey ? connectKey.secret : "";
+  /** Magpie L431: Gateway key when a key is in use; else API key */
+  const keyLabel = connectKey ? "Gateway key" : "API key";
   const win = snipOS === "windows";
+  const modelsListHidden = !!(modelsFolded && models > 0);
+  const findHidden = catalog.length < 5 || modelsListHidden;
+  const mqWords = modelQuery.trim().toLowerCase().split(/\s+/).filter(Boolean);
+  const filteredModels = findHidden
+    ? catalog
+    : catalog.filter((m) => {
+        const hay = `${m.id} ${m.name || ""} ${m.provider}`.toLowerCase();
+        return mqWords.every((w) => hay.includes(w));
+      });
 
   // Escape does not clear the red port line (native 35 = 34)
   useEffect(() => {
@@ -364,7 +381,10 @@ export function GatewayView({ onStatus, onGoNetwork }: Props) {
     : langs[0][0];
 
   let snippet = "";
-  if (f.baseEnv && f.keyEnv && activeSnip === "shell") {
+  // Magpie client.js L467: no secret → prompt, not a fake snippet
+  if (!secret) {
+    snippet = t(connectKey ? "Loading gateway key…" : "Create a gateway key above to connect");
+  } else if (f.baseEnv && f.keyEnv && activeSnip === "shell") {
     snippet = envSnippet(f.baseEnv, base, f.keyEnv, secret, win);
   } else if (activeSnip === "curl" && f.id === "openai") {
     snippet = win
@@ -713,20 +733,35 @@ export function GatewayView({ onStatus, onGoNetwork }: Props) {
             </div>
           </div>
 
-          <label>{t(f.baseEnv ? "API key" : "API key")}</label>
+          <label>{t(keyLabel)}</label>
           <div>
             <div className="val">
-              <code>{secret}</code>
-              <CopyBtn text={secret} what={t("Key")} onStatus={onStatus} />
+              {!lanOn ? (
+                <>
+                  <code>magpie</code>
+                  <CopyBtn text="magpie" what={t("Key")} onStatus={onStatus} />
+                </>
+              ) : connectKey ? (
+                <>
+                  <code>{connectKey.name}</code>
+                  <CopyBtn text={connectKey.secret} what={t("Key")} onStatus={onStatus} />
+                </>
+              ) : (
+                <code>{t("Create a gateway key above to connect")}</code>
+              )}
             </div>
             <div className="hint">
-              {f.keyEnv
+              {!f.keyEnv
                 ? t(
-                    "{env}=magpie. The gateway trusts everything on loopback, so any value works.",
-                    { env: f.keyEnv },
+                    lanOn && (connectKey || enabledKeys.length)
+                      ? "Choose a gateway key to send as Authorization: Bearer; usage is tracked by key."
+                      : "Sent as Authorization: Bearer. The gateway trusts everything on loopback, so any value works.",
                   )
                 : t(
-                    "Sent as Authorization: Bearer. The gateway trusts everything on loopback, so any value works.",
+                    lanOn && (connectKey || enabledKeys.length)
+                      ? "Choose a gateway key to use as {env}; usage is tracked by key."
+                      : "{env}=magpie. The gateway trusts everything on loopback, so any value works.",
+                    { env: f.keyEnv },
                   )}
             </div>
           </div>
@@ -744,8 +779,12 @@ export function GatewayView({ onStatus, onGoNetwork }: Props) {
             <div className="hint">
               {t(
                 f.decide
-                  ? "No decision models yet. Add a System One, Jev or Workers AI provider."
-                  : "No models yet. Add a provider, or sign in to Codex or Copilot.",
+                  ? catalog.length
+                    ? "A decision model (Jev, Clef), as listed below. Click one there to put it in the snippets."
+                    : "No decision models yet. Add a System One, Jev or Workers AI provider."
+                  : catalog.length
+                    ? "provider/model, as listed below. Click a model there to put it in the snippets."
+                    : "No models yet. Add a provider, or sign in to Codex or Copilot.",
               )}
             </div>
           </div>
@@ -782,7 +821,7 @@ export function GatewayView({ onStatus, onGoNetwork }: Props) {
                       : snippet}
                   </code>
                 </pre>
-                {snippet ? (
+                {secret ? (
                   <CopyBtn text={snippet} what={t("Snippet")} onStatus={onStatus} />
                 ) : null}
               </div>
@@ -813,25 +852,43 @@ export function GatewayView({ onStatus, onGoNetwork }: Props) {
           }}
         />
         <span className="grow" />
+        <input
+          id="findModel"
+          className="find"
+          type="search"
+          value={modelQuery}
+          placeholder={t("Find a model…")}
+          title={t("Words match a model's id, name, provider or a group's models")}
+          hidden={findHidden}
+          onChange={(e) => setModelQuery(e.target.value)}
+          onKeyDown={(e) => {
+            e.stopPropagation();
+            if (e.key === "Escape" && modelQuery) {
+              setModelQuery("");
+            }
+          }}
+        />
         <TextBtn
           id="copyModels"
-          hidden={!models || modelsFolded}
+          hidden={!filteredModels.length || modelsListHidden}
           onClick={() => {
-            void navigator.clipboard?.writeText(catalog.map((m) => m.id).join("\n"));
+            void navigator.clipboard?.writeText(filteredModels.map((m) => m.id).join("\n"));
             onStatus(t("{what} copied", { what: t("Model ids") }), "ok");
           }}
         >
           {t("Copy all ids")}
         </TextBtn>
       </div>
-      <div className="list" id="gwModels" hidden={!!(modelsFolded && models > 0)}>
+      <div className="list" id="gwModels" hidden={modelsListHidden}>
         {!catalog.length ? (
           <div className="empty-state">
             <b>{t("No models exposed yet")}</b>
             {t("Add a provider, or sign in to Codex or Copilot; their models show up here for every agent.")}
           </div>
+        ) : !filteredModels.length ? (
+          <div className="none">{t("No models match “{q}”", { q: modelQuery.trim() })}</div>
         ) : (
-          catalog.map((m) => (
+          filteredModels.map((m) => (
             <div
               key={m.id}
               className={`row model${m.id === exampleModel ? " selected" : ""}`}
@@ -841,7 +898,7 @@ export function GatewayView({ onStatus, onGoNetwork }: Props) {
                 lsSet("magpie.model", m.id);
               }}
             >
-              <span className="ic" aria-hidden>◎</span>
+              <img className="ic" src={iconSrc(m.icon || "openai")} alt="" />
               <div className="who">
                 <div className="name">{m.id}</div>
                 <div className="sub">{m.name !== m.id.split("/")[1] ? `${m.name} · ${m.provider}` : m.provider}</div>
