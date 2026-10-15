@@ -3986,3 +3986,6 @@ input[type="checkbox"]:disabled { opacity: .45; }
 /* Magpie manual Install busy (CU 68): stay purple, no spinner */
 .pm-manual .text.primary:disabled { opacity: 1; cursor: default; filter: none; }
 .pm-manual .text.primary:disabled:hover { filter: none; }
+
+/* v0.1.76 tray/21 Escape unmaps panel */
+.panel-unmapped { min-height: 100vh; background: transparent; }

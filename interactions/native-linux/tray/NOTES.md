@@ -63,3 +63,50 @@ Tooltips are clipped by the panel's right edge.
 - Allowances body (Arrange, rings, Used/Left, totals on that tab): tab not in the DOM while there are no quotas.
 - Usage chart / Tokens·Requests·Cost·Cache totals: no requests, so the empty card stays.
 - Filter-miss inside the model menu, star rail, Save current, Open Usage, Open Routing, Open magpie, Quit.
+
+## Consumed in demo v0.1.76 (TRAY_15_21)
+- **15–16** All models / Favorites rail tips (`title`)
+- **17** Favorites → **No matches.** (star filled when selected)
+- **18** filter `zzznomatch` → custom row **use as typed** (Enter not pressed)
+- **19** Open Usage → Requests · Today · No calls today · 0 / ≈$0.000 · Request archive off
+- **20** Open Routing → peer card **Another magpie serves…**; panel Routing still gateway-not-running
+- **21** Escape unmaps panel (`HideOnEscape` / `.panel-unmapped`)
+- Allowances / P1 **N/A**. No portable / release / Vercel.
+
+## Model menu, shortcuts, Escape (15–21)
+
+Same quick panel as 01–14: `magpie panel` from the running 0.1.1240 binary (pid 560329's exe), a second process. No session bus, so it does not hand off to 560329. That process does not hold port 3425. Cursor stayed **default** (`~/.cursor/cli-config.json` still `{}`). Nothing was saved. P1 bird hop: **N/A**. Allowances still absent.
+
+### Model menu rail and filter (15–18)
+
+Cursor row open, model menu as in 09. Left rail, top to bottom:
+
+| shot | control | seen |
+|---|---|---|
+| 15 | hover the grid | tip **All models**, to the right of the icon, over the Default row |
+| 16 | hover the star | tip **Favorites**, over the auto row |
+| 17 | click the star | star selected (filled). List is **No matches.** Grid is not selected. No favorite was starred |
+| 18 | grid again, filter `zzznomatch` | field shows `zzznomatch`. One row: **zzznomatch** · **use as typed**, highlighted. Not committed (Enter not pressed) |
+
+### Open Usage / Open Routing (19–20)
+
+The panel's own buttons. Each opens **this panel process's** window (752×652), not pid 560329's window, which stayed at +200+40.
+
+| shot | control | seen |
+|---|---|---|
+| 19 | **Open Usage** | that window, **Usage** on, **Requests** on, **Today**. **0 requests**. **No calls today.** ≈$0.000. Search, All / Failed / Retried, Export CSV, Request archive off. Note: Gateway and session-log calls; local rejections excluded from totals. |
+| 20 | **Open Routing** | same window, **Routing** on. Green dot, **live, as the gateway decides**. **Hide accounts**. Card: **Another magpie serves the gateway; its routing plays live in that magpie's window.** |
+
+The panel's Routing tab itself is unchanged from 07: **The gateway isn't running, so nothing is routed.** today 0 calls · 0 tokens.
+
+### Escape (21)
+
+Escape hides the panel. The window unmaps. 21 is the same 484×572 rectangle afterwards: desktop only, panel gone. Quit and Open magpie were not clicked.
+
+## Left state
+
+Main magpie still running, pid 560329, window 752×652 at +200+40. Close was not used. Panel process stopped. Cursor still default. No profile saved.
+
+Not in this slice: Save current's name field. Effort bars were hovered and no tooltip appeared. Allowances and the usage chart still need a subscription or a request. P1 N/A.
+
+Next: tray **Save current** (the name field only; do not keep a profile), still not Quit.

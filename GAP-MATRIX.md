@@ -1,3 +1,8 @@
+## v0.1.76 TRAY_15_21
+- tray/15–21 landed: ModelPop rail tips + favorites empty + typed custom; Open Usage → Requests empty; Open Routing peer-serves card; Escape unmaps.
+- Still mock: true systray / second-process panel handoff / live gateway ownership.
+- Allowances **N/A**. P1 bird hop **N/A**. No portable / Vercel this cycle.
+
 ## v0.1.75 ROUTING_MODES_99_114
 - routing/99–114 modes landed: hints 1:1, Rate limited visibility, weight chips + %, Manual card picks + toast, remove toast.
 - Still mock: live gateway history / day pills / replay. Day pills **N/A**. P1 bird hop **N/A**.

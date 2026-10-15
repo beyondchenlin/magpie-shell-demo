@@ -1,7 +1,8 @@
 /**
- * Magpie tray / quick panel (body.panel) — native-linux/tray/01–14.
+ * Magpie tray / quick panel (body.panel) — native-linux/tray/01–21.
  * Open: ?panel=1 | #panel | localStorage magpie.demoPanel=1
  * Allowances tab: Magpie hides entire [data-ptab=usage] when no subscription/balance — N/A here (not a missing UI).
+ * Escape: HideOnEscape unmaps panel (shot 21). Open Usage → Requests/Today; Open Routing → peer-serves card.
  */
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Bird, useLogoWag } from "../components/Bird";
@@ -41,13 +42,16 @@ const CURSOR_MODELS: PopOption[] = [
 ];
 
 type Props = {
-  onOpenMain: () => void;
+  /** Leave panel into main window; optional hash view id (usage / routing / agents…). */
+  onOpenMain: (dest?: string) => void;
+  /** Escape / HideOnEscape — unmap panel without opening main (shot 21). */
+  onHide: () => void;
   onQuit: () => void;
   onPrefs: () => void;
   onStatus: (msg: string, kind?: string) => void;
 };
 
-export function TrayPanel({ onOpenMain, onQuit, onPrefs, onStatus }: Props) {
+export function TrayPanel({ onOpenMain, onHide, onQuit, onPrefs, onStatus }: Props) {
   const [tab, setTab] = useState<PTab>(() => {
     try {
       const v = localStorage.getItem("magpie.panelTab") || "agents";
@@ -100,6 +104,23 @@ export function TrayPanel({ onOpenMain, onQuit, onPrefs, onStatus }: Props) {
     document.addEventListener("mousedown", away, true);
     return () => document.removeEventListener("mousedown", away, true);
   }, [profilesOpen]);
+
+  // tray/21 HideOnEscape — unmap panel; nested pop/profiles close first
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== "Escape") return;
+      if (modelPop) return; // ModelPop dismisses itself (capture + stopPropagation)
+      if (profilesOpen) {
+        e.preventDefault();
+        setProfilesOpen(false);
+        return;
+      }
+      e.preventDefault();
+      onHide();
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [modelPop, profilesOpen, onHide]);
 
   // Magpie placeProfiles: float above Profiles btn, under ptabs
   useLayoutEffect(() => {
@@ -182,7 +203,14 @@ export function TrayPanel({ onOpenMain, onQuit, onPrefs, onStatus }: Props) {
             id="open"
             type="button"
             title={t("Open as a window")}
-            onClick={onOpenMain}
+            onClick={() => {
+              try {
+                localStorage.removeItem("magpie.routingPeerServes");
+              } catch {
+                /* */
+              }
+              onOpenMain("agents");
+            }}
           >
             <svg viewBox="0 0 16 16" width={14} height={14}>
               <path
@@ -358,12 +386,13 @@ export function TrayPanel({ onOpenMain, onQuit, onPrefs, onStatus }: Props) {
               type="button"
               className="text"
               onClick={() => {
-                onOpenMain();
                 try {
-                  location.hash = "#/usage";
+                  localStorage.setItem("magpie.usageTab", "requests");
+                  localStorage.setItem("magpie.usagePeriod", "today");
                 } catch {
                   /* */
                 }
+                onOpenMain("usage");
               }}
             >
               {t("Open Usage")}
@@ -392,12 +421,13 @@ export function TrayPanel({ onOpenMain, onQuit, onPrefs, onStatus }: Props) {
               type="button"
               className="text"
               onClick={() => {
-                onOpenMain();
                 try {
-                  location.hash = "#/routing";
+                  /* Panel process does not hold the gateway — main window shows peer-serves card (shot 20). */
+                  localStorage.setItem("magpie.routingPeerServes", "1");
                 } catch {
                   /* */
                 }
+                onOpenMain("routing");
               }}
             >
               {t("Open Routing")}
@@ -443,7 +473,19 @@ export function TrayPanel({ onOpenMain, onQuit, onPrefs, onStatus }: Props) {
           <span>{t("Profiles")}</span>
         </button>
         <span className="grow" />
-        <button className="text" id="openMain" type="button" onClick={onOpenMain}>
+        <button
+          className="text"
+          id="openMain"
+          type="button"
+          onClick={() => {
+            try {
+              localStorage.removeItem("magpie.routingPeerServes");
+            } catch {
+              /* */
+            }
+            onOpenMain("agents");
+          }}
+        >
           {t("Open magpie")}
         </button>
         <button className="text" id="quit" type="button" onClick={onQuit}>

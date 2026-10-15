@@ -409,7 +409,16 @@ export function UsageView() {
       return "usage";
     }
   });
-  const [period, setPeriod] = useState("today");
+  const [period, setPeriod] = useState(() => {
+    try {
+      const p = localStorage.getItem("magpie.usagePeriod");
+      if (p === "today" || p === "7d" || p === "30d" || p === "all") return p;
+    } catch {
+      /* ignore */
+    }
+    return "today";
+  });
+  const [reqArchive, setReqArchive] = useState(false);
   const [sessRange, setSessRange] = useState(() => {
     try {
       const r = localStorage.getItem("magpie.sessRange");
@@ -1345,17 +1354,37 @@ export function UsageView() {
                 ))}
               </div>
             </div>
+            <div
+              className="led-head"
+              style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 10, marginBottom: 8 }}
+            >
+              <p className="led-sum" style={{ margin: 0, fontSize: 12, color: "var(--muted)" }}>
+                {t("{n} requests", { n: "0" })}
+              </p>
+              <span className="grow" />
+              <label
+                className="led-archive"
+                style={{ display: "inline-flex", alignItems: "center", gap: 8, fontSize: 12.5, color: "var(--muted)", cursor: "pointer" }}
+                title={t("The request archive goes to the S3 bucket sync keeps its backup in, and sync isn't set up with one")}
+              >
+                <span>{t("Request archive")}</span>
+                <input
+                  type="checkbox"
+                  role="switch"
+                  checked={reqArchive}
+                  aria-checked={reqArchive}
+                  onChange={(e) => setReqArchive(e.target.checked)}
+                  style={{ accentColor: "var(--accent)" }}
+                />
+              </label>
+            </div>
             <div className={`led-wrap${!demoChart ? " none" : ""}`} id="ledWrap">
               <div className="led-none" style={{ padding: "22px 16px", textAlign: "center", color: "var(--muted)", lineHeight: 1.5 }}>
-                {ledQ.trim() || ledStatus
-                  ? t("No requests match these filters.")
-                  : noCallsIn(period)}
-                <div style={{ marginTop: 6, fontSize: 12 }}>
+                <b style={{ display: "block", fontWeight: 600, color: "var(--fg)", marginBottom: 4 }}>
                   {ledQ.trim() || ledStatus
-                    ? null
-                    : t("Every request an agent sends to magpie, and every call the agents' own session files record, is counted here.")}
-                </div>
-                <div style={{ marginTop: 4, fontSize: 12, color: "var(--faint)" }}>0 {t("requests")}</div>
+                    ? t("No requests match these filters.")
+                    : noCallsIn(period)}
+                </b>
               </div>
             </div>
           </>

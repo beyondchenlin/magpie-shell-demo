@@ -498,10 +498,36 @@ export default function App() {
     };
   }, []);
 
+  const [panelUnmapped, setPanelUnmapped] = useState(false);
+
+  if (panelUnmapped) {
+    /* tray/21 Escape: panel window unmapped — desktop only */
+    return <div className="panel-unmapped" aria-hidden="true" />;
+  }
+
   if (panelMode) {
+    const leavePanel = (dest?: string) => {
+      try {
+        localStorage.removeItem("magpie.demoPanel");
+      } catch {
+        /* */
+      }
+      const u = new URL(location.href);
+      u.searchParams.delete("panel");
+      const id = dest && VIEWS.has(dest) ? dest : "agents";
+      u.hash = `#/${id}`;
+      history.replaceState(null, "", u.pathname + u.search + u.hash);
+      setPanelMode(false);
+      setPanelUnmapped(false);
+      document.body.classList.remove("panel", "linux");
+      delete document.body.dataset.ptab;
+      setView(id as ViewId);
+      applyChrome();
+    };
     return (
       <TrayPanel
-        onOpenMain={() => {
+        onOpenMain={(dest) => leavePanel(dest)}
+        onHide={() => {
           try {
             localStorage.removeItem("magpie.demoPanel");
           } catch {
@@ -509,31 +535,18 @@ export default function App() {
           }
           const u = new URL(location.href);
           u.searchParams.delete("panel");
-          if (u.hash === "#panel" || u.hash === "#/panel") u.hash = "#/agents";
-          history.replaceState(null, "", u.pathname + u.search + (u.hash || "#/agents"));
-          setPanelMode(false);
-          document.body.classList.remove("panel", "linux");
+          if (u.hash === "#panel" || u.hash === "#/panel") u.hash = "";
+          history.replaceState(null, "", u.pathname + u.search + (u.hash || ""));
+          document.body.classList.remove("panel", "linux", "window");
           delete document.body.dataset.ptab;
-          applyChrome();
+          setPanelMode(false);
+          setPanelUnmapped(true);
         }}
         onQuit={() => {
           showStatus(t("Quit is demo-only"), "ok");
         }}
         onPrefs={() => {
-          try {
-            localStorage.removeItem("magpie.demoPanel");
-          } catch {
-            /* */
-          }
-          const u = new URL(location.href);
-          u.searchParams.delete("panel");
-          u.hash = "#/settings";
-          history.replaceState(null, "", u.pathname + u.search + u.hash);
-          setPanelMode(false);
-          document.body.classList.remove("panel", "linux");
-          delete document.body.dataset.ptab;
-          setView("settings");
-          applyChrome();
+          leavePanel("settings");
         }}
         onStatus={showStatus}
       />

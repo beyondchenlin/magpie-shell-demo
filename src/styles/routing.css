@@ -812,3 +812,6 @@ button.rt-session { cursor: pointer; }
 }
 .rt-classifier { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
 .rt-classifier .hint { flex: 1 1 100%; }
+
+/* v0.1.76 — tray 15–21: peer-serves routing card + panel Escape */
+.rt-peer.pr-none { margin: 12px 0 0; }

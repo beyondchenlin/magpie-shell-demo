@@ -105,6 +105,7 @@ export function ModelPop({
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         e.preventDefault();
+        e.stopPropagation();
         dismiss();
       }
     };
@@ -224,6 +225,7 @@ export function ModelPop({
               type="button"
               className={`rail-item${groupFilter === "all" ? " on" : ""}`}
               data-group="all"
+              title={t("All models")}
               aria-label={t("All models")}
               onClick={() => setGroupFilter("all")}
             >
@@ -235,13 +237,14 @@ export function ModelPop({
               type="button"
               className={`rail-item${groupFilter === "favorites" ? " on" : ""}`}
               data-group="favorites"
+              title={t("Favorites")}
               aria-label={t("Favorites")}
               onClick={() => setGroupFilter("favorites")}
             >
               <svg className="ic" viewBox="0 0 16 16" width={16} height={16} aria-hidden>
                 <path
                   d="m8 2 1.8 3.7 4.1.6-3 2.9.7 4.1L8 11.4l-3.6 1.9.7-4.1-3-2.9 4.1-.6z"
-                  fill="none"
+                  fill={groupFilter === "favorites" ? "currentColor" : "none"}
                   stroke="currentColor"
                   strokeWidth="1.4"
                   strokeLinejoin="round"
@@ -322,9 +325,9 @@ export function ModelPop({
           {!filtered.length ? (
             q.trim() ? (
               <li
-                className="custom"
+                className="custom sel"
                 role="option"
-                aria-selected={false}
+                aria-selected={true}
                 title={t("use as typed")}
                 onClick={() => {
                   onPick(q.trim());
@@ -333,8 +336,10 @@ export function ModelPop({
                 }}
               >
                 <span className="ic" aria-hidden>✦</span>
-                <span className="name">{q.trim()}</span>
-                <span className="note">{t("use as typed")}</span>
+                <span className="option-words">
+                  <span className="v">{q.trim()}</span>
+                  <span className="n">{t("use as typed")}</span>
+                </span>
               </li>
             ) : (
               <div className="none">{t("No matches.")}</div>

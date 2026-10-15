@@ -1,3 +1,8 @@
+## v0.1.76 TRAY_15_21
+- Consumed native `tray/15–21` NOTES: rail **All models** / **Favorites** tips; Favorites → **No matches.**; filter `zzznomatch` → **use as typed** (no Enter); **Open Usage** → Requests · Today · **No calls today.** · 0 / ≈$0.000 · Request archive off; **Open Routing** → green live + **Another magpie serves the gateway; its routing plays live in that magpie's window.** (panel Routing still gateway-not-running); Escape unmaps panel.
+- Demo: `?panel=1` · Open Routing sets `magpie.routingPeerServes=1` / `?rtPeer=1`; Escape → `.panel-unmapped`.
+- Allowances **N/A**. P1 bird **N/A**. **No portable / GitHub release / Vercel** (user freeze).
+
 ## v0.1.75 ROUTING_MODES_99_114
 - Consumed native `routing/99–114` NOTES: mode pills In order / In turn / Least used / Weekly pace / By weight / Manual + nest sentence; **Rate limited** stays for In order / Least used / Weekly pace, gone for In turn / By weight / Manual; By weight chips **Weight 1 · 50%** → edit **3** → **75% / 25%**; Manual rules line **The rules wait while you pick the model by hand.**; card picks opus/haiku + toast `{name}: every request to {model}`; Remove → **group removed**; Day pills **N/A**; P1 **N/A**.
 - Code+docs+git only. **No portable / GitHub release / Vercel** (user freeze).

@@ -123,8 +123,19 @@ function demoHasProviders(): boolean {
   }
 }
 
+function readPeerServes(): boolean {
+  try {
+    if (new URLSearchParams(location.search).get("rtPeer") === "1") return true;
+    return localStorage.getItem("magpie.routingPeerServes") === "1";
+  } catch {
+    return false;
+  }
+}
+
 /** Empty routing stage matching official Magpie R-00…R-09. */
 export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: string) => void } = {}) {
+  /** tray/20: panel's Open Routing opens a window that does not hold the gateway. */
+  const [peerServes] = useState(readPeerServes);
   const stageRef = useRef<HTMLDivElement>(null);
   const hubRef = useRef<HTMLDivElement>(null);
   const srcRef = useRef<HTMLDivElement>(null);
@@ -310,6 +321,48 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
   ]
     .filter(Boolean)
     .join(" ");
+
+  // tray/20 + routing NOTES: another process holds the gateway — only the peer card
+  if (peerServes) {
+    return (
+      <main className={viewClass} id="view-routing">
+        <div className="row-head">
+          <span className="label">{ZH.routing}</span>
+          <span className="rt-livedot on" aria-hidden="true" />
+          <span className="note">{t("live, as the gateway decides")}</span>
+          <span className="grow" />
+          <button
+            className="text rt-mask"
+            id="rtMask"
+            type="button"
+            aria-pressed={masked}
+            title={masked
+              ? t("Accounts are masked for a screenshot — click to show them")
+              : t("Mask the accounts on this page — email addresses and account names — for a screenshot to share")}
+            onClick={toggleMask}
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <path d={masked ? EYE_OFF : EYE} />
+            </svg>
+            <span data-t>{masked ? t("Accounts hidden") : t("Hide accounts")}</span>
+          </button>
+        </div>
+        <section className="rt" id="rt">
+          <p className="pr-none rt-peer">
+            {t("Another magpie serves the gateway; its routing plays live in that magpie's window.")}
+          </p>
+        </section>
+      </main>
+    );
+  }
 
   return (
     <main className={viewClass} id="view-routing">
