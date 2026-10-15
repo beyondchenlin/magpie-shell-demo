@@ -254,3 +254,56 @@ No project added. Give skills as left on **Links**. Cursor chip left **on** (ask
 - How each agent：Cursor 段 Links ↔ Copies（不是只停在 Library's way）；toast **Cursor gets links/copies of its skills now**；录完拨回 Library's way 再 Done
 - 行首 By agent 是另一张 **Skills by agent**（Turn all on/off，1 of 1，未点）
 - 行内更新箭头 tip 四行（Up to date + check 行）；未点更新。Remove tip 定格，未提交
+
+## Library folder and Backups (shots 88–100)
+
+Running magpie **0.1.1247**, pid 560329. Window still **752×652 at +200+40** (id 27262991, DISPLAY=:6). Not resized. Close (X) on magpie was not clicked. Library was already On (top chrome includes Library). This pass started on Settings; Library in the top chrome was clicked, which landed on **Skills · 1** (ask-matt still the row). Nothing in the library was added, removed, or saved.
+
+Head, second row, LTR: **Discover**, **Library folder**, **Backups**. Tabs above them, LTR: Instructions, MCP servers, Skills · 1, Hooks, RTK. Right-click on Backups opened no menu.
+
+| shot | what |
+|---|---|
+| 88-library-head | Skills tab. Both head buttons visible. No tip. |
+| 89-library-folder-tip | Pointer on **Library folder**. Dark tip, one line: `~/.config/magpie/library`. Inside the 752px frame. |
+| 90-backups-tip | Pointer on **Backups**. Tip, two lines: `magpie keeps a copy of every file before it writes it.` / `~/.config/magpie/backups`. The tip runs past the window's right edge, so this grab is **900×652** from the same origin (a 752px grab cuts the path). |
+| 91-library-folder-thunar | Click **Library folder**. Thunar, title **library - Thunar**, client 640×480. Not the parent config directory. |
+| 92-library-folder-escape | Escape. Window stays **library - Thunar**. Frame is the same picture as 91. |
+| 93-backups-thunar | Click **Backups**. Thunar, title **backups - Thunar**. |
+| 94-backups-escape | Escape. Stays **backups - Thunar**. Same picture as 93. |
+| 95-backups-file-menu | Alt+F. File menu. No **Cancel**. |
+| 96-backups-nested | Opened the left-hand backup folder. |
+| 97-backups-skill-folder | Opened **skills** inside it. |
+| 98-backups-nested-escape | Escape there. Title stays **skills - Thunar**. Same picture as 97. Does not go up and does not close. |
+| 99-backups-nested-second | The right-hand backup folder. |
+| 100-backups-second-skill | **skills** inside that one. |
+
+**Library folder** (91). Location field `/home/box/.config/magpie/library/`. Title-bar buttons, right: minimize, maximize, close. Menu bar LTR: File, Edit, View, Go, Bookmarks, Help. Toolbar LTR: left arrow, right arrow (both pale at this folder), up arrow, house, location field (folder glyph + path), magnifying glass at the right of the field. Sidebar TTB: **Places** / **box**, **Devices** / **File System**. Content: one folder, **skills**. Status: `1 folder | Free space: 104.5 GiB`. No Cancel button. Places and File System were not clicked. Up was not clicked (the parent of this folder is `~/.config/magpie`).
+
+**Backups** (93). Same chrome. Location `/home/box/.config/magpie/backups/`. At this folder the left and right arrows are pale; the up arrow and the house are dark. Content, LTR, labels wrap under the icon:
+
+- `2026-10-15_06-08-5` / `0.641`
+- `2026-10-15_06-12-1` / `6.936`
+
+Status: `2 folders | Free space: 104.5 GiB`.
+
+Opening the left one (96) puts the full name in the title and the location field: **2026-10-15_06-08-50.641 - Thunar**, path `/home/box/.config/magpie/backups/2026-10-15_06-08-50.641/`. The left arrow is dark (right arrow still pale). One folder, **skills**. Status `1 folder | Free space: 104.5 GiB`.
+
+**skills** (97): title **skills - Thunar**. The location field is scrolled, so the left of the path is cut (`…e/box/.config/magpie/backups/2026-10-15_06-08-50.641/skills/`). One folder, label wraps: `git-guardrails-claude-` / `code`. That folder was not opened.
+
+96 is the Thunar opened by the Backups click. That process exited before the next level; 97–100 are the same backups folder opened again and walked the same way.
+
+The right-hand backup (99): title **2026-10-15_06-12-16.936 - Thunar**, path `/home/box/.config/magpie/backups/2026-10-15_06-12-16.936/`, one folder **skills**. Inside it (100), title **skills - Thunar**, location tail `…/2026-10-15_06-12-16.936/skills/`, one folder **ask-matt**. Not opened.
+
+**File** menu (95), top to bottom. **New Tab** is lit (Ctrl+T); the status line starts `Open a new tab for the displayed lo` and is cut off at the right of this grab. Then New Window (Ctrl+N), Create Folder… (Shift+Ctrl+N), Create Document (submenu arrow; not opened), Open Terminal Here, Properties… (Alt+Return), Detach Tab, Close All Windows (Shift+Ctrl+W), Close Tab (Ctrl+W), Close Window (Ctrl+Q). No Cancel. Escape closed the menu and left the window up.
+
+Escape never closed Thunar and never moved up a folder. Alt+Left did move up one folder (titles changed skills → the dated folder → backups). Up, Places, and File System were not used. Thunar was then closed with the window close (no Cancel). Magpie was still Library → Skills · 1, Discover / Library folder / Backups, window 752×652 at +200+40. pid 560329 still running.
+
+The path on the Backups tip is `~/.config/magpie/backups`, not `~/.config/magpie/library/backups`. P1 not exercised. Allowances not on this page.
+
+## demo 对齐（88–100）· v0.1.83 LIBRARY_FOLDER_BACKUPS_DONE
+- Head LTR：Discover（MCP/Skills）· Library folder · Backups；idle 无 tip
+- Library folder tip 一行 `~/.config/magpie/library`；Backups tip 两行（说明 + `~/.config/magpie/backups`，非 library/backups）；752px 下 tip 可贴边裁切（title）
+- 点击 → 演示 Thunar 叠层（640×480）：library 仅 `skills`；backups 两日期夹 → skills → `git-guardrails-claude-code` / `ask-matt`
+- Escape **不**关窗、**不**上翻（仅关 File 菜单）；关窗用标题 × 或 File → Close Window；无 Cancel；Backups 右键无菜单
+- 真 Magpie 外抛 Thunar 时 Escape N/A；本演示叠层对齐 NOTES Escape 行为
+- 未做：Observability / Allowances / Codex memories / P1 / In projects → Choose…

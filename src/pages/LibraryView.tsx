@@ -3,7 +3,7 @@ import { useSegThumb } from "../components/SegThumb";
 import { t } from "../i18n";
 
 /**
- * Magpie Library plugin (native-linux/library nests + MCP paste / In projects Choose).
+ * Magpie Library plugin (native-linux/library nests through 88–100 folder/Backups Thunar + MCP paste).
  * Feature-gated: Plugins › Built-in › Library.
  * Motion: view-in .24s; modal pop-in .42s; Discard .28s; segs .18s; lib-switch; lib-bob/lib-probe/mk-spin (v0.1.44).
  */
@@ -271,6 +271,432 @@ function LibModal({
   );
 }
 
+
+/** Demo Thunar for Library folder / Backups (native-linux/library 88–100).
+ * Escape does not close and does not go up (NOTES 92/94/98). Close via title X or File → Close Window.
+ * Real Magpie shells out to the OS file manager; Escape N/A for external Thunar. */
+type FmNode = { name: string; kids?: FmNode[] };
+
+const LIB_FM_ROOT: FmNode = {
+  name: "library",
+  kids: [{ name: "skills" }],
+};
+const BACKUPS_FM_ROOT: FmNode = {
+  name: "backups",
+  kids: [
+    {
+      name: "2026-10-15_06-08-50.641",
+      kids: [{ name: "skills", kids: [{ name: "git-guardrails-claude-code" }] }],
+    },
+    {
+      name: "2026-10-15_06-12-16.936",
+      kids: [{ name: "skills", kids: [{ name: "ask-matt" }] }],
+    },
+  ],
+};
+
+function fmAt(root: FmNode, segs: string[]): FmNode {
+  let n = root;
+  for (const s of segs) {
+    const next = n.kids?.find((k) => k.name === s);
+    if (!next) break;
+    n = next;
+  }
+  return n;
+}
+
+function LibThunar({
+  kind,
+  onClose,
+}: {
+  kind: "library" | "backups";
+  onClose: () => void;
+}) {
+  const root = kind === "library" ? LIB_FM_ROOT : BACKUPS_FM_ROOT;
+  const base = kind === "library" ? "/home/box/.config/magpie/library" : "/home/box/.config/magpie/backups";
+  const [segs, setSegs] = useState<string[]>([]);
+  const [hist, setHist] = useState<string[][]>([[]]);
+  const [histI, setHistI] = useState(0);
+  const [fileMenu, setFileMenu] = useState(false);
+  const node = fmAt(root, segs);
+  const kids = node.kids || [];
+  const titleName = segs.length ? segs[segs.length - 1] : root.name;
+  const loc = segs.length ? `${base}/${segs.join("/")}/` : `${base}/`;
+  const canBack = histI > 0;
+  const canFwd = histI < hist.length - 1;
+  const canUp = segs.length > 0;
+
+  const go = (next: string[]) => {
+    const cut = hist.slice(0, histI + 1);
+    cut.push(next);
+    setHist(cut);
+    setHistI(cut.length - 1);
+    setSegs(next);
+    setFileMenu(false);
+  };
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        // NOTES 92/94/98: Escape never closes Thunar and never moves up.
+        // Escape only dismisses an open File menu (NOTES 95).
+        e.preventDefault();
+        e.stopPropagation();
+        setFileMenu(false);
+        return;
+      }
+      if (e.altKey && (e.key === "f" || e.key === "F")) {
+        e.preventDefault();
+        setFileMenu((v) => !v);
+      }
+    };
+    window.addEventListener("keydown", onKey, true);
+    return () => window.removeEventListener("keydown", onKey, true);
+  }, []);
+
+  const folderIcon = (
+    <svg viewBox="0 0 48 48" width={48} height={48} aria-hidden>
+      <path fill="#e8b84a" d="M6 14h14l3 3h19v22H6z" />
+      <path fill="#f5d57a" d="M6 17h36v19H6z" />
+    </svg>
+  );
+
+  const FILE_ITEMS: { label: string; accel?: string; disabled?: boolean; sep?: boolean; close?: boolean }[] = [
+    { label: "New Tab", accel: "Ctrl+T" },
+    { label: "New Window", accel: "Ctrl+N" },
+    { label: "Create Folder…", accel: "Shift+Ctrl+N" },
+    { label: "Create Document", accel: "▸" },
+    { sep: true, label: "" },
+    { label: "Open Terminal Here" },
+    { label: "Properties…", accel: "Alt+Return" },
+    { sep: true, label: "" },
+    { label: "Detach Tab", disabled: true },
+    { label: "Close All Windows", accel: "Shift+Ctrl+W" },
+    { label: "Close Tab", accel: "Ctrl+W" },
+    { label: "Close Window", accel: "Ctrl+Q", close: true },
+  ];
+
+  return (
+    <div
+      className="modal open lib-thunar-scrim"
+      role="presentation"
+      style={{
+        position: "fixed",
+        inset: 0,
+        zIndex: 90,
+        display: "grid",
+        placeItems: "center",
+        background: "rgba(20,22,30,.38)",
+        animation: "fade-in .18s var(--ease)",
+      }}
+      onMouseDown={(e) => {
+        // Outside click does not close — Magpie leaves Thunar until window close.
+        if (e.target === e.currentTarget) setFileMenu(false);
+      }}
+    >
+      <div
+        className="lib-thunar"
+        role="dialog"
+        aria-modal
+        aria-label={`${titleName} - Thunar`}
+        style={{
+          width: 640,
+          height: 480,
+          maxWidth: "min(640px, 96vw)",
+          maxHeight: "min(480px, 90vh)",
+          display: "flex",
+          flexDirection: "column",
+          background: "#fafafa",
+          color: "#1c1c1c",
+          borderRadius: 6,
+          border: "1px solid #b0b0b0",
+          boxShadow: "0 14px 40px rgba(0,0,0,.28)",
+          overflow: "hidden",
+          fontFamily: "Cantarell, 'Noto Sans', system-ui, sans-serif",
+          fontSize: 13,
+          animation: "pop-in .42s cubic-bezier(.16,1,.3,1)",
+          position: "relative",
+        }}
+        onMouseDown={(e) => e.stopPropagation()}
+        onContextMenu={(e) => e.preventDefault()}
+      >
+        <div
+          className="lib-thunar-title"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+            height: 32,
+            padding: "0 8px 0 10px",
+            background: "linear-gradient(#ebebeb, #dcdcdc)",
+            borderBottom: "1px solid #b8b8b8",
+            userSelect: "none",
+          }}
+        >
+          <svg viewBox="0 0 16 16" width={14} height={14} aria-hidden>
+            <path fill="#5b9bd5" d="M2 3.5h5l1.2 1.2H14V13H2z" />
+          </svg>
+          <span style={{ flex: 1, textAlign: "center", fontWeight: 500, fontSize: 12.5 }}>{titleName} - Thunar</span>
+          <button type="button" className="text" aria-label="Minimize" style={{ width: 24, height: 22, padding: 0, border: "1px solid #aaa", borderRadius: 3, background: "#eee", fontSize: 11, lineHeight: 1, color: "#444" }} title="Minimize">─</button>
+          <button type="button" className="text" aria-label="Maximize" style={{ width: 24, height: 22, padding: 0, border: "1px solid #aaa", borderRadius: 3, background: "#eee", fontSize: 10, lineHeight: 1, color: "#444" }} title="Maximize">□</button>
+          <button type="button" className="text" aria-label="Close" onClick={onClose} style={{ width: 24, height: 22, padding: 0, border: "1px solid #aaa", borderRadius: 3, background: "#eee", fontSize: 12, lineHeight: 1, color: "#444" }} title="Close">×</button>
+        </div>
+
+        <div className="lib-thunar-menubar" style={{ display: "flex", gap: 2, padding: "2px 6px", background: "#f6f6f6", borderBottom: "1px solid #ddd", position: "relative" }}>
+          {(["File", "Edit", "View", "Go", "Bookmarks", "Help"] as const).map((m) => (
+            <button
+              key={m}
+              type="button"
+              className="text"
+              style={{
+                height: 24,
+                padding: "0 8px",
+                border: 0,
+                borderRadius: 3,
+                background: m === "File" && fileMenu ? "#4a90d9" : "transparent",
+                color: m === "File" && fileMenu ? "#fff" : "#222",
+                font: "inherit",
+                fontSize: 12.5,
+                cursor: "default",
+              }}
+              onClick={() => (m === "File" ? setFileMenu((v) => !v) : setFileMenu(false))}
+            >
+              {m}
+            </button>
+          ))}
+          {fileMenu ? (
+            <div
+              role="menu"
+              style={{
+                position: "absolute",
+                top: 26,
+                left: 6,
+                zIndex: 5,
+                minWidth: 220,
+                background: "#fff",
+                border: "1px solid #aaa",
+                boxShadow: "0 4px 14px rgba(0,0,0,.18)",
+                padding: "4px 0",
+              }}
+            >
+              {FILE_ITEMS.map((it, i) =>
+                it.sep ? (
+                  <div key={`sep-${i}`} style={{ height: 1, background: "#ddd", margin: "4px 0" }} />
+                ) : (
+                  <button
+                    key={it.label}
+                    type="button"
+                    role="menuitem"
+                    disabled={it.disabled}
+                    onClick={() => {
+                      if (it.close) onClose();
+                      else setFileMenu(false);
+                    }}
+                    style={{
+                      display: "flex",
+                      width: "100%",
+                      alignItems: "center",
+                      gap: 12,
+                      padding: "5px 14px 5px 28px",
+                      border: 0,
+                      background: "transparent",
+                      font: "inherit",
+                      fontSize: 12.5,
+                      color: it.disabled ? "#aaa" : "#222",
+                      cursor: it.disabled ? "default" : "pointer",
+                      textAlign: "left",
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!it.disabled) e.currentTarget.style.background = "#4a90d9";
+                      if (!it.disabled) e.currentTarget.style.color = "#fff";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = "transparent";
+                      e.currentTarget.style.color = it.disabled ? "#aaa" : "#222";
+                    }}
+                  >
+                    <span style={{ flex: 1 }}>{it.label}</span>
+                    {it.accel && it.accel !== "▸" ? (
+                      <span style={{ opacity: 0.75, fontSize: 11.5 }}>{it.accel}</span>
+                    ) : it.accel === "▸" ? (
+                      <span style={{ opacity: 0.75 }}>▸</span>
+                    ) : null}
+                  </button>
+                ),
+              )}
+            </div>
+          ) : null}
+        </div>
+
+        <div
+          className="lib-thunar-toolbar"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 4,
+            padding: "4px 8px",
+            background: "#f0f0f0",
+            borderBottom: "1px solid #ddd",
+          }}
+        >
+          <button
+            type="button"
+            className="text"
+            disabled={!canBack}
+            aria-label="Back"
+            onClick={() => {
+              if (!canBack) return;
+              const i = histI - 1;
+              setHistI(i);
+              setSegs(hist[i]);
+            }}
+            style={{ width: 28, height: 28, opacity: canBack ? 1 : 0.35, border: 0, background: "transparent", fontSize: 16, cursor: canBack ? "pointer" : "default" }}
+          >
+            ←
+          </button>
+          <button
+            type="button"
+            className="text"
+            disabled={!canFwd}
+            aria-label="Forward"
+            onClick={() => {
+              if (!canFwd) return;
+              const i = histI + 1;
+              setHistI(i);
+              setSegs(hist[i]);
+            }}
+            style={{ width: 28, height: 28, opacity: canFwd ? 1 : 0.35, border: 0, background: "transparent", fontSize: 16, cursor: canFwd ? "pointer" : "default" }}
+          >
+            →
+          </button>
+          <button
+            type="button"
+            className="text"
+            disabled={!canUp}
+            aria-label="Up"
+            onClick={() => {
+              if (!canUp) return;
+              go(segs.slice(0, -1));
+            }}
+            style={{ width: 28, height: 28, opacity: canUp ? 1 : 0.45, border: 0, background: "transparent", fontSize: 14, cursor: canUp ? "pointer" : "default", color: canUp ? "#222" : "#999" }}
+          >
+            ↑
+          </button>
+          <button type="button" className="text" aria-label="Home" onClick={() => go([])} style={{ width: 28, height: 28, border: 0, background: "transparent", fontSize: 14, cursor: "pointer", color: "#222" }}>⌂</button>
+          <div
+            style={{
+              flex: 1,
+              display: "flex",
+              alignItems: "center",
+              gap: 6,
+              height: 28,
+              padding: "0 8px",
+              border: "1px solid #bbb",
+              borderRadius: 4,
+              background: "#fff",
+              minWidth: 0,
+              overflow: "hidden",
+            }}
+          >
+            <svg viewBox="0 0 16 16" width={14} height={14} aria-hidden style={{ flex: "none" }}>
+              <path fill="#5b9bd5" d="M2 3.5h5l1.2 1.2H14V13H2z" />
+            </svg>
+            <span style={{ overflow: "hidden", whiteSpace: "nowrap", direction: "rtl", textAlign: "left", fontSize: 12.5 }}>{loc}</span>
+          </div>
+          <button type="button" className="text" aria-label="Search" style={{ width: 28, height: 28, border: 0, background: "transparent", fontSize: 14 }}>⌕</button>
+        </div>
+
+        <div style={{ display: "flex", flex: 1, minHeight: 0 }}>
+          <nav
+            style={{
+              width: 140,
+              flex: "none",
+              borderRight: "1px solid #ddd",
+              background: "#f7f7f7",
+              padding: "8px 6px",
+              fontSize: 12,
+              color: "#555",
+            }}
+          >
+            <div style={{ fontWeight: 600, fontSize: 11, margin: "4px 6px 6px", color: "#777" }}>Places</div>
+            <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "5px 6px", borderRadius: 4 }}>
+              <span aria-hidden>🏠</span> box
+            </div>
+            <div style={{ fontWeight: 600, fontSize: 11, margin: "12px 6px 6px", color: "#777" }}>Devices</div>
+            <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "5px 6px", borderRadius: 4 }}>
+              <span aria-hidden>💾</span> File System
+            </div>
+          </nav>
+          <div
+            style={{
+              flex: 1,
+              padding: 16,
+              background: "#fff",
+              display: "flex",
+              flexWrap: "wrap",
+              alignContent: "flex-start",
+              gap: 18,
+              overflow: "auto",
+            }}
+          >
+            {kids.map((k) => (
+              <button
+                key={k.name}
+                type="button"
+                onDoubleClick={() => go([...segs, k.name])}
+                onClick={() => go([...segs, k.name])}
+                style={{
+                  width: 96,
+                  border: 0,
+                  background: "transparent",
+                  cursor: "pointer",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  gap: 4,
+                  padding: 4,
+                  borderRadius: 4,
+                  font: "inherit",
+                  color: "#222",
+                }}
+                title={k.name}
+              >
+                {folderIcon}
+                <span
+                  style={{
+                    fontSize: 12,
+                    lineHeight: 1.25,
+                    textAlign: "center",
+                    wordBreak: "break-all",
+                    maxWidth: 90,
+                  }}
+                >
+                  {k.name}
+                </span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div
+          style={{
+            height: 24,
+            padding: "0 10px",
+            display: "flex",
+            alignItems: "center",
+            borderTop: "1px solid #ddd",
+            background: "#f0f0f0",
+            fontSize: 11.5,
+            color: "#444",
+          }}
+        >
+          {kids.length} folder{kids.length === 1 ? "" : "s"} | Free space: 104.5 GiB
+        </div>
+      </div>
+    </div>
+  );
+}
+
 const DOC = "M4 2.5h5.5L12 5v8.5H4z M9.5 2.5V5H12";
 const FOLDER = "M2.5 4.5h4l1.2 1.3h5.8v6.7h-11z";
 const BACKUP = "M3.2 8a4.8 4.8 0 1 0 1.4-3.4 M2.8 2.6v2.4h2.4 M8 5.3V8l1.9 1.2";
@@ -380,6 +806,8 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
   const [skillHowBusy, setSkillHowBusy] = useState<"link" | "copy" | null>(null);
   const setSkillHowSeg = useSegThumb(skillHowBusy ? `busy-${skillHowBusy}` : skillHow);
   const [skillChecking, setSkillChecking] = useState(false);
+  /** Magpie Library folder / Backups → OS Thunar (library 88–100) */
+  const [thunarKind, setThunarKind] = useState<"library" | "backups" | null>(null);
   const newNameRef = useRef<HTMLInputElement>(null);
   const mcpNameRef = useRef<HTMLInputElement>(null);
 
@@ -540,7 +968,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
 
   return (
     <main className="view" id="view-library" style={{ animation: "view-in .24s var(--ease)" }}>
-      <div className="lib-head row-head" style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
+      <div className="lib-head row-head" style={{ display: "flex", flexDirection: "column", alignItems: "stretch", gap: 6 }}>
         <div className="lib-tabs" role="tablist" aria-label={t("Library")} style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
           {LIB_TABS.map(([id, label]) => {
             // Magpie libHead: Skills · N / MCP · N / Hooks · N when count > 0
@@ -573,36 +1001,51 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
             );
           })}
         </div>
-        <span className="grow" />
-        {tab === "mcp" || tab === "skills" ? (
+        <div className="lib-headacts" style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: 4, flexWrap: "wrap" }}>
+          {tab === "mcp" || tab === "skills" ? (
+            <button
+              type="button"
+              className="text"
+              title={tab === "skills" ? t("Go to the skills you can add, under the list") : t("Go to the MCP servers you can add, under the list")}
+              onClick={() =>
+                document
+                  .getElementById(tab === "skills" ? "libSkillDiscover" : "libDiscover")
+                  ?.scrollIntoView({ behavior: "smooth", block: "start" })
+              }
+            >
+              <svg viewBox="0 0 16 16" width={14} height={14} fill="none" stroke="currentColor" strokeWidth="1.3" aria-hidden style={{ marginRight: 4, verticalAlign: -2 }}>
+                <path d={SEARCH} />
+              </svg>
+              {t("Discover")}
+            </button>
+          ) : null}
           <button
             type="button"
             className="text"
-            title={tab === "skills" ? t("Go to the skills you can add, under the list") : t("Go to the MCP servers you can add, under the list")}
-            onClick={() =>
-              document
-                .getElementById(tab === "skills" ? "libSkillDiscover" : "libDiscover")
-                ?.scrollIntoView({ behavior: "smooth", block: "start" })
-            }
+            title="~/.config/magpie/library"
+            onClick={() => setThunarKind("library")}
           >
             <svg viewBox="0 0 16 16" width={14} height={14} fill="none" stroke="currentColor" strokeWidth="1.3" aria-hidden style={{ marginRight: 4, verticalAlign: -2 }}>
-              <path d={SEARCH} />
+              <path d={FOLDER} />
             </svg>
-            {t("Discover")}
+            {t("Library folder")}
           </button>
-        ) : null}
-        <button type="button" className="text" title="~/.config/magpie/library" onClick={() => onStatus?.(t("Demo: open library folder"), "ok")}>
-          <svg viewBox="0 0 16 16" width={14} height={14} fill="none" stroke="currentColor" strokeWidth="1.3" aria-hidden style={{ marginRight: 4, verticalAlign: -2 }}>
-            <path d={FOLDER} />
-          </svg>
-          {t("Library folder")}
-        </button>
-        <button type="button" className="text" title={t("magpie keeps a copy of every file before it writes it.") + "\n~/.config/magpie/backups"} onClick={() => onStatus?.(t("Demo: library backups"), "ok")}>
-          <svg viewBox="0 0 16 16" width={14} height={14} fill="none" stroke="currentColor" strokeWidth="1.3" aria-hidden style={{ marginRight: 4, verticalAlign: -2 }}>
-            <path d={BACKUP} />
-          </svg>
-          {t("Backups")}
-        </button>
+          <button
+            type="button"
+            className="text"
+            title={t("magpie keeps a copy of every file before it writes it.") + "\n~/.config/magpie/backups"}
+            onClick={() => setThunarKind("backups")}
+            onContextMenu={(e) => {
+              // NOTES 88–100: right-click on Backups opens no menu
+              e.preventDefault();
+            }}
+          >
+            <svg viewBox="0 0 16 16" width={14} height={14} fill="none" stroke="currentColor" strokeWidth="1.3" aria-hidden style={{ marginRight: 4, verticalAlign: -2 }}>
+              <path d={BACKUP} />
+            </svg>
+            {t("Backups")}
+          </button>
+        </div>
       </div>
 
       <div className="lib-body" style={{ padding: "8px 4px 24px" }}>
@@ -2055,6 +2498,8 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
           </div>
         </LibModal>
       ) : null}
+
+      {thunarKind ? <LibThunar kind={thunarKind} onClose={() => setThunarKind(null)} /> : null}
 
     </main>
   );
