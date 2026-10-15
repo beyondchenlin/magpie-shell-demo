@@ -3,7 +3,7 @@ import { Bird, useLogoWag } from "./components/Bird";
 import { NavIcon } from "./components/NavIcons";
 import { useSegThumb } from "./components/SegThumb";
 import { GATEWAY_ADDR, NAV, type ViewId } from "./data/mock";
-import { ZH, setLang, t, useLang, type Lang } from "./i18n";
+import { ZH, demoCopy, setLang, t, useLang, type Lang } from "./i18n";
 import { AgentsView } from "./pages/AgentsView";
 import { ProvidersView } from "./pages/ProvidersView";
 import { RoutingView } from "./pages/RoutingView";
@@ -101,6 +101,7 @@ export default function App() {
   const [status, setStatus] = useState<{ msg: string; kind: string } | null>(
     null,
   );
+  const [headerUpdateOn, setHeaderUpdateOn] = useState(false);
   const [spinning, setSpinning] = useState(false);
   const [refreshNonce, setRefreshNonce] = useState(0);
   const [sideOn, setSideOn] = useState(() => wantSide(readNavPick()));
@@ -655,6 +656,30 @@ export default function App() {
           </nav>
         ) : null}
         <div className="actions">
+          {headerUpdateOn ? (
+            <div className="update-wrap">
+              <button
+                type="button"
+                className="update"
+                id="headerUpdate"
+                title={t("Restart to update")}
+                aria-label={t("Restart to update")}
+                onClick={() => showStatus(demoCopy("演示：重启以更新（未接线）", "Demo: Restart to update (not wired)"), "ok")}
+              >
+                <svg viewBox="0 0 16 16" width={12} height={12} aria-hidden>
+                  <path
+                    d="M8 12V4M5 7l3-3 3 3"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.7"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+                <span>{t("Update")}</span>
+              </button>
+            </div>
+          ) : null}
           <button
             className="icon"
             id="sync"
@@ -717,6 +742,7 @@ export default function App() {
           lang={lang}
           setLang={(v: Lang) => setLang(v)}
           onStatus={showStatus}
+          onHeaderUpdate={setHeaderUpdateOn}
         />
       )}
 

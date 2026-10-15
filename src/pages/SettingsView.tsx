@@ -51,7 +51,7 @@ function otelFeatureOn(): boolean {
   }
 }
 
-const DEMO_APP_VERSION = "0.1.46";
+const DEMO_APP_VERSION = "0.1.1240";
 const applyThemeFlash: { t?: number } = {};
 const IS_MAC = /\bMac\b|Macintosh/i.test(navigator.platform || navigator.userAgent);
 
@@ -205,7 +205,7 @@ const DEFAULTS: DemoPrefs = {
   redactKinds: {},
   otel: false,
   otelEndpoint: "",
-  noUpdatePill: false,
+  noUpdatePill: true,  // Off — NOTES 89/97
   noAutoUpdate: false,
   updateEvery: 360,
   autoRestart: false,
@@ -324,6 +324,7 @@ function applyTextSize(n: number) {
 function PrefRow({
   name,
   sub,
+  subTitle,
   children,
   id,
   hidden,
@@ -332,6 +333,7 @@ function PrefRow({
 }: {
   name: string;
   sub?: ReactNode;
+  subTitle?: string;
   children?: ReactNode;
   id?: string;
   hidden?: boolean;
@@ -343,7 +345,7 @@ function PrefRow({
     <div className={`row pref${className ? ` ${className}` : ""}`} id={id}>
       <div className="who">
         <div className="name">{name}</div>
-        {sub ? <div className="sub">{sub}</div> : null}
+        {sub ? <div className="sub" title={subTitle}>{sub}</div> : null}
       </div>
       {children != null ? (
         <div className={`val${valClassName ? ` ${valClassName}` : ""}`}>{children}</div>
@@ -412,9 +414,10 @@ type SettingsProps = {
   lang: Lang;
   setLang: (l: Lang) => void;
   onStatus?: (msg: string, kind?: string, ms?: number) => void;
+  onHeaderUpdate?: (show: boolean) => void;
 };
 
-export function SettingsView({ theme, setTheme, lang, setLang, onStatus }: SettingsProps) {
+export function SettingsView({ theme, setTheme, lang, setLang, onStatus, onHeaderUpdate }: SettingsProps) {
   const [tab, setTab] = useState<SetTabId>(() => {
     try {
       const v = sessionStorage.getItem("magpie.setTab") || "";
@@ -458,6 +461,10 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus }: Setti
   useEffect(() => {
     applyTextSize(prefs.textSize);
   }, [prefs.textSize]);
+
+  useEffect(() => {
+    onHeaderUpdate?.(!prefs.noUpdatePill);
+  }, [prefs.noUpdatePill, onHeaderUpdate]);
 
   useEffect(() => {
     const onDoc = (e: MouseEvent) => {
@@ -1701,6 +1708,7 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus }: Setti
                       t("library"),
                   })
             }
+            subTitle={t("Keeps providers with their API keys, settings, profiles, agents' models, library the same on every computer")}
           >
             {prefs.syncOn ? (
               <>
@@ -1757,7 +1765,7 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus }: Setti
         hidden={pageHidden("about", aAny)}
       >
         <div className="list prefs" id="about">
-          <AboutVersionRow current={DEMO_APP_VERSION} onStatus={onStatus} />
+          <AboutVersionRow current={DEMO_APP_VERSION} downloaded="0.1.1244" onStatus={onStatus} />
           <PrefRow name={t("What's new")} sub={t("The release notes since the last update")} className="whatsnew-row">
             <button type="button" className="text" onClick={() => setWhatsNewOpen(true)}>
               {t("Open")}
@@ -1823,9 +1831,9 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus }: Setti
             onStatus={onStatus}
           />
           <PrefRow name={t("Config folder")} sub={t("providers, profiles and these settings")}>
-            <code>~/.config/magpie</code>
+            <code title="~/.config/magpie">~/.config/magpie</code>
             <CopyBtn text="~/.config/magpie" what={t("Path")} onStatus={onStatus} />
-            <button type="button" className="text" onClick={() => onStatus?.(demoCopy("演示：无法打开目录", "Demo: cannot reveal folder"), "warn")}>
+            <button type="button" className="text" onClick={() => onStatus?.(demoCopy("演示：未点 Open", "Demo: Open not clicked"), "warn")}>
               {t("Open")}
             </button>
           </PrefRow>
@@ -1839,7 +1847,10 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus }: Setti
               type="button"
               className="discord"
               title="discord.gg/vGSnD3ZKQF"
-              onClick={() => window.open("https://discord.gg/vGSnD3ZKQF", "_blank", "noopener")}
+              onClick={(e) => {
+                // NOTES 104: tip only — not opened
+                e.preventDefault();
+              }}
             >
               <span>{t("Join Discord")}</span>
             </button>
@@ -1847,7 +1858,10 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus }: Setti
               type="button"
               className="github"
               title="github.com/yetone/magpie"
-              onClick={() => window.open("https://github.com/yetone/magpie", "_blank", "noopener")}
+              onClick={(e) => {
+                // NOTES 106: tip only — not opened
+                e.preventDefault();
+              }}
             >
               <span>GitHub</span>
             </button>

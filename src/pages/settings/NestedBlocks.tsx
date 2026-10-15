@@ -611,92 +611,218 @@ export function SyncForms({
   const [agents, setAgents] = useState(true);
   const [lib, setLib] = useState(true);
   const [usage, setUsage] = useState(false);
+  const [endpoint, setEndpoint] = useState("");
+  const [bucket, setBucket] = useState("");
+  const [prefix, setPrefix] = useState("");
+  const [region, setRegion] = useState("");
+  const [accessKey, setAccessKey] = useState("");
+  const [secret, setSecret] = useState("");
+  const [pathStyle, setPathStyle] = useState(false);
+  const [repo, setRepo] = useState("");
+  const [branch, setBranch] = useState("");
+  const [folder, setFolder] = useState("");
+  const [ghToken, setGhToken] = useState("");
   const [p1, setP1] = useState("");
   const [p2, setP2] = useState("");
   const [expKeys, setExpKeys] = useState(true);
   const [expLib, setExpLib] = useState(true);
   const [impAgents, setImpAgents] = useState(true);
   const [impLib, setImpLib] = useState(true);
-  const [fname, setFname] = useState(t("No file chosen"));
+  const [fname] = useState(t("No file chosen"));
+  const [chooser, setChooser] = useState(false);
+  const [chooserPlace, setChooserPlace] = useState<"home" | "desktop" | "workspace" | "other">("home");
   const [err, setErr] = useState("");
+
+  useEffect(() => {
+    if (!chooser) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        e.stopPropagation();
+        setChooser(false);
+      }
+    };
+    window.addEventListener("keydown", onKey, true);
+    return () => window.removeEventListener("keydown", onKey, true);
+  }, [chooser]);
+
+  const alsoSync = (
+    <div className="stack">
+      <label className="tick"><input type="checkbox" checked={keys} onChange={(e) => setKeys(e.target.checked)} />{t("Providers' API keys")}</label>
+      <label className="tick"><input type="checkbox" checked={agents} onChange={(e) => setAgents(e.target.checked)} />{t("Agents' models")}</label>
+      <label className="tick"><input type="checkbox" checked={lib} onChange={(e) => setLib(e.target.checked)} />{t("Library: instructions, MCP servers and skills")}</label>
+      <label className="tick"><input type="checkbox" checked={usage} onChange={(e) => setUsage(e.target.checked)} />{t("Usage: this computer's calls, for the Usage page on the others")}</label>
+      {usage ? (
+        <div className="hint">{t("Usage goes as a file a day: times, tokens, models and costs, never what was said. Turn it on on each computer that shares its own.")}</div>
+      ) : null}
+    </div>
+  );
+
+  const formBar = (
+    <div className="bar">
+      {onOff ? <button type="button" className="text danger" onClick={onOff}>{t("Turn off")}</button> : <span />}
+      <span className="grow" />
+      <button type="button" className="text" onClick={onClose}>{t("Cancel")}</button>
+      <button
+        type="button"
+        className="text primary"
+        onClick={() => {
+          if (!phrase) { setErr(t("Pick a passphrase: the file is sealed with it")); return; }
+          setErr("");
+          onSave();
+          onStatus?.(t("Saved"), "ok");
+        }}
+      >
+        {t("Turn on")}
+      </button>
+    </div>
+  );
+
+  const chooserModal = chooser ? (
+    <div
+      className="modal open"
+      role="dialog"
+      aria-modal="true"
+      aria-label={t("Select File")}
+      onClick={(e) => { if (e.target === e.currentTarget) setChooser(false); }}
+    >
+      <div
+        className="dialog gtk-select-files"
+        style={{
+          width: "min(640px, 94vw)",
+          maxHeight: "min(520px, 84vh)",
+          display: "flex",
+          flexDirection: "column",
+          animation: "pop-in .42s cubic-bezier(.16,1,.3,1)",
+        }}
+      >
+        <div className="ebody" style={{ display: "grid", gridTemplateColumns: "160px 1fr", gap: 0, minHeight: 340, padding: 0, flex: 1 }}>
+          <nav style={{ borderRight: "1px solid var(--line)", padding: "10px 8px", display: "flex", flexDirection: "column", gap: 2 }}>
+            {([
+              ["home", t("Home")],
+              ["desktop", t("Desktop")],
+              ["workspace", "workspace"],
+              ["other", t("Other Locations")],
+            ] as const).map(([id, label]) => (
+              <button
+                key={id}
+                type="button"
+                className="text"
+                style={{
+                  justifyContent: "flex-start",
+                  padding: "7px 10px",
+                  borderRadius: 8,
+                  background: chooserPlace === id ? "color-mix(in srgb, var(--accent) 18%, transparent)" : "transparent",
+                }}
+                onClick={() => setChooserPlace(id)}
+              >
+                {label}
+              </button>
+            ))}
+          </nav>
+          <div style={{ padding: 16, color: "var(--muted)", fontSize: 12.5, border: "1px dashed var(--line)", margin: 12, borderRadius: 8, minHeight: 280 }}>
+            {/* empty list — accept .magpie-backup; NOTES 86 */}
+          </div>
+        </div>
+        <div className="bar" style={{ padding: "10px 14px", borderTop: "1px solid var(--line)" }}>
+          <span className="grow" />
+          <button type="button" className="text" onClick={() => setChooser(false)}>{t("Cancel")}</button>
+          <button type="button" className="text primary" disabled title={t("No file chosen")}>{t("Open")}</button>
+        </div>
+      </div>
+    </div>
+  ) : null;
 
   if (open === "dav") {
     return (
-      <div className="editor sync-form">
-        <label>{t("Sync to")}</label>
-        <div>
-          <Segs
-            value={kind}
-            onChange={(v) => onKind(v as "webdav" | "s3" | "github")}
-            items={[
-              { id: "webdav", label: "WebDAV" },
-              { id: "s3", label: "S3" },
-              { id: "github", label: "GitHub" },
-            ]}
-          />
+      <>
+        <div className="editor sync-form">
+          <label>{t("Sync to")}</label>
+          <div>
+            <Segs
+              value={kind}
+              onChange={(v) => onKind(v as "webdav" | "s3" | "github")}
+              items={[
+                { id: "webdav", label: "WebDAV" },
+                { id: "s3", label: "S3" },
+                { id: "github", label: "GitHub" },
+              ]}
+            />
+          </div>
+          {kind === "webdav" ? (
+            <>
+              <label>{t("Address")}</label>
+              <div>
+                <input className="words" style={{ width: "100%" }} value={url} placeholder="https://dav.jianguoyun.com/dav/" onChange={(e) => setUrl(e.target.value)} />
+                <div className="hint">{t("A folder named magpie is made in it.")}</div>
+              </div>
+              <label>{t("User")}</label>
+              <div><input className="words" style={{ width: "100%" }} value={user} placeholder={t("user name")} onChange={(e) => setUser(e.target.value)} /></div>
+              <label>{t("Password")}</label>
+              <div><input className="words" type="password" style={{ width: "100%" }} value={pass} placeholder={t("password, or an app password")} onChange={(e) => setPass(e.target.value)} /></div>
+            </>
+          ) : kind === "s3" ? (
+            <>
+              <label>{t("Endpoint")}</label>
+              <div>
+                <input className="words" style={{ width: "100%" }} value={endpoint} placeholder="https://<account>.r2.cloudflarestorage.com" onChange={(e) => setEndpoint(e.target.value)} />
+                <div className="hint">{t("Empty for AWS S3; for R2, B2, MinIO and the like, their S3 API address.")}</div>
+              </div>
+              <label>{t("Bucket")}</label>
+              <div><input className="words" style={{ width: "100%" }} value={bucket} placeholder={t("bucket name")} onChange={(e) => setBucket(e.target.value)} /></div>
+              <label>{t("Prefix")}</label>
+              <div>
+                <input className="words" style={{ width: "100%" }} value={prefix} placeholder={t("optional")} onChange={(e) => setPrefix(e.target.value)} />
+                <div className="hint">{t("The backup goes in a folder named magpie under it.")}</div>
+              </div>
+              <label>{t("Region")}</label>
+              <div><input className="words" style={{ width: "100%" }} value={region} placeholder="us-east-1, or auto for R2" onChange={(e) => setRegion(e.target.value)} /></div>
+              <label>{t("Access key")}</label>
+              <div><input className="words" style={{ width: "100%" }} value={accessKey} placeholder="AKIA…" onChange={(e) => setAccessKey(e.target.value)} /></div>
+              <label>{t("Secret")}</label>
+              <div><input className="words" type="password" style={{ width: "100%" }} value={secret} placeholder={t("secret access key")} onChange={(e) => setSecret(e.target.value)} /></div>
+              <label />
+              <div className="stack">
+                <label className="tick"><input type="checkbox" checked={pathStyle} onChange={(e) => setPathStyle(e.target.checked)} />{t("Path-style: the bucket in the path, not the host name")}</label>
+                {pathStyle ? <div className="hint">{t("MinIO and most NAS servers need it.")}</div> : null}
+              </div>
+            </>
+          ) : (
+            <>
+              <label>{t("Repository")}</label>
+              <div>
+                <input className="words" style={{ width: "100%" }} value={repo} placeholder="owner/repo" onChange={(e) => setRepo(e.target.value)} />
+                <div className="hint">{t("An existing private GitHub repository, in owner/repo form.")}</div>
+              </div>
+              <label>{t("Branch")}</label>
+              <div>
+                <input className="words" style={{ width: "100%" }} value={branch} placeholder={t("default branch")} onChange={(e) => setBranch(e.target.value)} />
+                <div className="hint">{t("Empty uses the repository's default branch. Empty repositories are initialized by the first sync; other branches must already exist.")}</div>
+              </div>
+              <label>{t("Folder")}</label>
+              <div>
+                <input className="words" style={{ width: "100%" }} value={folder} placeholder={t("optional")} onChange={(e) => setFolder(e.target.value)} />
+                <div className="hint">{t("The encrypted backup goes in <folder>/magpie/magpie.magpie-backup. Each update creates a commit.")}</div>
+              </div>
+              <label>{t("GitHub token")}</label>
+              <div>
+                <input className="words" type="password" style={{ width: "100%" }} value={ghToken} placeholder={t("GitHub token")} onChange={(e) => setGhToken(e.target.value)} />
+                <div className="hint">{t("A fine-grained token for this repository with Contents: read and write. Kept on this computer, separately from the library's GitHub token.")}</div>
+              </div>
+            </>
+          )}
+          <label>{t("Passphrase")}</label>
+          <div>
+            <input className="words" type="password" style={{ width: "100%" }} value={phrase} placeholder={t("the same on every computer")} onChange={(e) => setPhrase(e.target.value)} />
+            <div className="hint">{t("The file is sealed with it on this computer; the server only ever sees it sealed. Keep it: without it the file can't be opened.")}</div>
+          </div>
+          <label>{t("Also sync")}</label>
+          {alsoSync}
+          {err ? <p className="editor-error">{err}</p> : null}
+          {formBar}
         </div>
-        {kind === "webdav" ? (
-          <>
-            <label>{t("Address")}</label>
-            <div>
-              <input className="words" style={{ width: "100%" }} value={url} onChange={(e) => setUrl(e.target.value)} />
-              <div className="hint">{t("A folder named magpie is made in it.")}</div>
-            </div>
-            <label>{t("User")}</label>
-            <div><input className="words" style={{ width: "100%" }} value={user} placeholder={t("user name")} onChange={(e) => setUser(e.target.value)} /></div>
-            <label>{t("Password")}</label>
-            <div><input className="words" type="password" style={{ width: "100%" }} value={pass} placeholder={t("password, or an app password")} onChange={(e) => setPass(e.target.value)} /></div>
-          </>
-        ) : kind === "s3" ? (
-          <>
-            <label>{t("Endpoint")}</label>
-            <div><input className="words" style={{ width: "100%" }} placeholder="https://<account>.r2.cloudflarestorage.com" /></div>
-            <label>{t("Bucket")}</label>
-            <div><input className="words" style={{ width: "100%" }} placeholder={t("bucket name")} /></div>
-            <label>{t("Access key")}</label>
-            <div><input className="words" style={{ width: "100%" }} placeholder="AKIA…" /></div>
-            <label>{t("Secret")}</label>
-            <div><input className="words" type="password" style={{ width: "100%" }} placeholder={t("secret access key")} /></div>
-          </>
-        ) : (
-          <>
-            <label>{t("Repository")}</label>
-            <div><input className="words" style={{ width: "100%" }} placeholder="owner/repo" /></div>
-            <label>{t("GitHub token")}</label>
-            <div><input className="words" type="password" style={{ width: "100%" }} placeholder={t("GitHub token")} /></div>
-          </>
-        )}
-        <label>{t("Passphrase")}</label>
-        <div>
-          <input className="words" type="password" style={{ width: "100%" }} value={phrase} placeholder={t("the same on every computer")} onChange={(e) => setPhrase(e.target.value)} />
-          <div className="hint">{t("The file is sealed with it on this computer; the server only ever sees it sealed. Keep it: without it the file can't be opened.")}</div>
-        </div>
-        <label>{t("Also sync")}</label>
-        <div className="stack">
-          <label className="tick"><input type="checkbox" checked={keys} onChange={(e) => setKeys(e.target.checked)} />{t("Providers' API keys")}</label>
-          <label className="tick"><input type="checkbox" checked={agents} onChange={(e) => setAgents(e.target.checked)} />{t("Agents' models")}</label>
-          <label className="tick"><input type="checkbox" checked={lib} onChange={(e) => setLib(e.target.checked)} />{t("Library: instructions, MCP servers and skills")}</label>
-          <label className="tick"><input type="checkbox" checked={usage} onChange={(e) => setUsage(e.target.checked)} />{t("Usage: this computer's calls, for the Usage page on the others")}</label>
-        </div>
-        {err ? <p className="editor-error">{err}</p> : null}
-        <div className="bar">
-          {onOff ? <button type="button" className="text danger" onClick={onOff}>{t("Turn off")}</button> : <span />}
-          <span className="grow" />
-          <button type="button" className="text" onClick={onClose}>{t("Cancel")}</button>
-          <button
-            type="button"
-            className="text primary"
-            onClick={() => {
-              if (!phrase) { setErr(t("Pick a passphrase: the file is sealed with it")); return; }
-              setErr("");
-              onSave();
-              onStatus?.(t("Saved"), "ok");
-            }}
-          >
-            {t("Turn on")}
-          </button>
-        </div>
-      </div>
+        {chooserModal}
+      </>
     );
   }
 
@@ -739,37 +865,40 @@ export function SyncForms({
 
   if (open === "import") {
     return (
-      <div className="editor sync-form">
-        <label>{t("File")}</label>
-        <div className="pair" style={{ display: "flex", gap: 8, alignItems: "center" }}>
-          <span className="fname">{fname}</span>
-          <button type="button" className="text" onClick={() => setFname("demo.magpie-backup")}>{t("Choose…")}</button>
+      <>
+        <div className="editor sync-form">
+          <label>{t("File")}</label>
+          <div className="pair" style={{ display: "flex", gap: 8, alignItems: "center" }}>
+            <span className="fname">{fname}</span>
+            <button type="button" className="text" onClick={() => { setChooserPlace("home"); setChooser(true); }}>{t("Choose…")}</button>
+          </div>
+          <label>{t("Passphrase")}</label>
+          <div><input className="words" type="password" style={{ width: "100%" }} placeholder={t("passphrase")} /></div>
+          <label />
+          <div className="stack">
+            <label className="tick"><input type="checkbox" checked={impAgents} onChange={(e) => setImpAgents(e.target.checked)} />{t("Set the agents' models too")}</label>
+            <label className="tick"><input type="checkbox" checked={impLib} onChange={(e) => setImpLib(e.target.checked)} />{t("Bring in the library too: instructions, MCP servers and skills")}</label>
+            <div className="hint">{t("Providers with the same id are replaced; one that came without a key keeps the key it has here. The library replaces the one here, which is kept with its backups.")}</div>
+          </div>
+          <div className="bar">
+            <span className="grow" />
+            <button type="button" className="text" onClick={onClose}>{t("Cancel")}</button>
+            <button
+              type="button"
+              className="text primary"
+              onClick={() => {
+                if (fname === t("No file chosen")) { setErr(t("Choose a file first")); return; }
+                onStatus?.(demoCopy("演示：导入已模拟完成", "Demo: import simulated"), "ok");
+                onClose();
+              }}
+            >
+              {t("Import")}
+            </button>
+          </div>
+          {err ? <p className="editor-error">{err}</p> : null}
         </div>
-        <label>{t("Passphrase")}</label>
-        <div><input className="words" type="password" style={{ width: "100%" }} placeholder={t("passphrase")} /></div>
-        <label />
-        <div className="stack">
-          <label className="tick"><input type="checkbox" checked={impAgents} onChange={(e) => setImpAgents(e.target.checked)} />{t("Set the agents' models too")}</label>
-          <label className="tick"><input type="checkbox" checked={impLib} onChange={(e) => setImpLib(e.target.checked)} />{t("Bring in the library too: instructions, MCP servers and skills")}</label>
-          <div className="hint">{t("Providers with the same id are replaced; one that came without a key keeps the key it has here. The library replaces the one here, which is kept with its backups.")}</div>
-        </div>
-        <div className="bar">
-          <span className="grow" />
-          <button type="button" className="text" onClick={onClose}>{t("Cancel")}</button>
-          <button
-            type="button"
-            className="text primary"
-            onClick={() => {
-              if (fname === t("No file chosen")) { setErr(t("Choose a file first")); return; }
-              onStatus?.(demoCopy("演示：导入已模拟完成", "Demo: import simulated"), "ok");
-              onClose();
-            }}
-          >
-            {t("Import")}
-          </button>
-        </div>
-        {err ? <p className="editor-error">{err}</p> : null}
-      </div>
+        {chooserModal}
+      </>
     );
   }
   return null;
@@ -799,18 +928,36 @@ export function WhatsNewModal({ onClose }: { onClose: () => void }) {
     <div className="modal lib" id="modal" onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}>
       <div className="dialog">
         <div className="editor whatsnew framed">
-          <div className="ehead"><b>{t("What's new")}</b></div>
+          <div className="ehead"><b>{t("What's new in v{v}", { v: "0.1.1244" })}</b></div>
           <div className="ebody" style={{ padding: "12px 18px", maxHeight: 360, overflow: "auto" }}>
-            <div className="wn-sec">
-              <h3 style={{ margin: "0 0 8px", fontSize: 14 }}>0.1.12-demo</h3>
+            <div className="wn-rel">
+              <div className="wn-ver">
+                <b>v0.1.1244</b>
+                <span className="wn-badge">{t("NOT INSTALLED YET")}</span>
+              </div>
               <div className="wn-notes">
-                <p>{demoCopy("演示：Settings 深层嵌套与 #pop 模型选择器、暖机时间片、SOCKS 认证、LAN 多网卡、Sync 全表单与 Restore、OTel / Privacy 规则。", "Demo: nested Settings, #pop model picker, warm-up chips, SOCKS auth, LAN multi-NIC, Sync forms + Restore, OTel / Privacy rules.")}</p>
+                <ul>
+                  <li><b>sessions:</b> Each reply in a session's conversation names the model its own line in the agent's file names (<span className="wn-ref">#2253</span>, cnlove7777777-art).</li>
+                  <li><b>library:</b> An agent whose CLI is gone (only its config folder left) is no Library write target, and nothing it already has is removed (<span className="wn-ref">#2254</span>, ggbdpq).</li>
+                  <li><b>provider:</b> magpie://import links take gemini=, and its host is named before adding (<span className="wn-ref">#2251</span>, ggbdpq).</li>
+                  <li><b>agent:</b> A Claude Code tier set to a model keeps it when the main model moves onto that model, not "Same as main model" (<span className="wn-ref">#2257</span>, luokinging).</li>
+                  <li><b>provider:</b> TestCopilotSecretToolUsername's fake secret-tool answers a loaded Mac's suite, not 'token ""' after two 5s waits (<span className="wn-ref">#1627</span>).</li>
+                </ul>
+              </div>
+            </div>
+            <div className="wn-rel">
+              <div className="wn-ver"><b>v0.1.1240</b></div>
+              <div className="wn-notes">
+                <ul>
+                  <li><b>gui, cli:</b> Sync and backup say the synced settings use a subscription not signed in here, and that one not used here needs nothing (悠悠哥 on Discord).</li>
+                  <li><b>proc, agent:</b> Asking Cline's version no longer starts an npm update of Cline (新v学员 on Discord).</li>
+                </ul>
               </div>
             </div>
           </div>
           <div className="bar">
             <span className="grow" />
-            <button type="button" className="text primary" onClick={onClose}>{t("OK")}</button>
+            <button type="button" className="text primary" onClick={onClose}>{t("Close")}</button>
           </div>
         </div>
       </div>
@@ -819,26 +966,46 @@ export function WhatsNewModal({ onClose }: { onClose: () => void }) {
 }
 
 export function CliRow() {
+  const [copied, setCopied] = useState(false);
   return (
     <div className="row pref cli-row">
       <div className="who">
         <div className="name">{t("Command line")}</div>
-        <div className="sub">{t("In a new terminal, magpie runs this app: {path}", { path: "magpie" })}</div>
+        <div className="sub">{t("A new terminal can't find the magpie command")}</div>
         <div className="cli-shells">
           <div className="cli-shell on" data-shell="bash">
             <span className="cli-dot" />
-            <span className="cli-sh">bash · {t("default")}</span>
-            <span className="cli-state">{t("runs this app")}</span>
-          </div>
-          <div className="cli-shell" data-shell="zsh">
-            <span className="cli-dot" />
-            <span className="cli-sh">zsh</span>
+            <span className="cli-sh">bash</span>
             <span className="cli-state">{t("runs this app")}</span>
           </div>
         </div>
         <div className="cli-note">{t("A change reaches terminals opened after it")}</div>
       </div>
-      <div className="val" />
+      <div className="val">
+        <button
+          type="button"
+          className={`copy${copied ? " done" : ""}`}
+          title={t("Copy")}
+          aria-label={t("Copy")}
+          onClick={async () => {
+            const tip = "magpie";
+            try { await navigator.clipboard.writeText(tip); } catch { /* demo */ }
+            setCopied(true);
+            window.setTimeout(() => setCopied(false), 1200);
+          }}
+        >
+          {copied ? (
+            <svg viewBox="0 0 16 16" width={13} height={13}>
+              <path d="M3.5 8.5 6.5 11.5 12.5 4.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          ) : (
+            <svg viewBox="0 0 16 16" width={13} height={13}>
+              <rect x="5.5" y="5.5" width="7" height="7" rx="1.5" fill="none" stroke="currentColor" strokeWidth="1.4" />
+              <path d="M3.5 10.5V3.5h7" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+            </svg>
+          )}
+        </button>
+      </div>
     </div>
   );
 }
@@ -1472,81 +1639,36 @@ export function AlertNumField({
 /** About › Version — Magpie update states (shots 15). Demo only; no real install. */
 export function AboutVersionRow({
   current,
+  downloaded = "0.1.1244",
   onStatus,
 }: {
   current: string;
+  downloaded?: string;
   onStatus?: (m: string, k?: string) => void;
 }) {
-  type St = "latest" | "checking" | "ready" | "available";
-  const [st, setSt] = useState<St>("latest");
-  const demoNext = (() => {
-    const parts = current.split(".");
-    const patch = Number(parts[2] || 0) + 1;
-    return `${parts[0]}.${parts[1]}.${patch}`;
-  })();
-
-  useEffect(() => {
-    if (st !== "checking") return;
-    const tmr = window.setTimeout(() => setSt("latest"), 900);
-    return () => clearTimeout(tmr);
-  }, [st]);
-
-  const sub =
-    st === "checking"
-      ? t("Checking for updates…")
-      : st === "ready"
-        ? t("{v} is downloaded", { v: demoNext })
-        : st === "available"
-          ? t("{v} is out", { v: demoNext })
-          : t("Up to date");
+  // NOTES 89–97 left state: running current, downloaded ready; Restart hovered not clicked.
+  const [st] = useState<"ready">("ready");
+  void st;
+  void onStatus;
 
   return (
     <div className="row pref" id="aboutVersionRow">
       <div className="who">
-        <div className="name">{t("Version")}</div>
-        <div className="sub">
-          <code style={{ marginRight: 6 }}>{current}</code>
-          {sub}
-        </div>
+        <div className="sub">{t("{v} is downloaded", { v: downloaded })}</div>
       </div>
-      <div className="val">
-        {st === "ready" ? (
-          <button
-            type="button"
-            className="text"
-            onClick={() => {
-              onStatus?.(demoCopy("演示：重启以更新（未接线真安装）", "Demo: Restart to update (no real install)"), "ok");
-              setSt("latest");
-            }}
-          >
-            {t("Restart to update")}
-          </button>
-        ) : st === "available" ? (
-          <button
-            type="button"
-            className="text"
-            onClick={() => {
-              onStatus?.(demoCopy("演示：已标为已下载", "Demo: marked downloaded"), "ok");
-              setSt("ready");
-            }}
-          >
-            {t("Download")}
-          </button>
-        ) : (
-          <button
-            type="button"
-            className={`text${st === "checking" ? " busy" : ""}`}
-            disabled={st === "checking"}
-            onClick={() => setSt("checking")}
-            onContextMenu={(e) => {
-              e.preventDefault();
-              setSt("ready");
-            }}
-            title={demoCopy("右键：演示「已下载」态", "Right-click: demo downloaded state")}
-          >
-            {t("Check")}
-          </button>
-        )}
+      <div className="val" style={{ display: "flex", gap: 8, alignItems: "center" }}>
+        <code>{current}</code>
+        <button
+          type="button"
+          className="text"
+          title={t("Restart to update")}
+          onClick={(e) => {
+            // NOTES: Restart hovered only — demo keeps ready; no install.
+            e.preventDefault();
+          }}
+        >
+          {t("Restart to update")}
+        </button>
       </div>
     </div>
   );

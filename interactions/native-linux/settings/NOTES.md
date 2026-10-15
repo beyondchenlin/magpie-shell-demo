@@ -177,3 +177,49 @@ Demo v0.1.39: SETTINGS_NEST_PARTIAL — General Provider names / Text size / fon
 Demo v0.1.40: SETTINGS_NEST — frames 10–70 consumed (Allowances alert num+%/balance amount, TRAY_EVERY 1/3/5/10/30, Linux no logos/bird, Network GitHub Create one↗, Models/Privacy/Sync/About; Observability tab hidden unless magpie.feature.otel=1). Allowances quota body still N/A.
 
 Demo v0.1.41: FONTS_MENU + Appearance theming .35s — Interface/Code font family+style menus (Search fonts… / Refresh / System default), CSS vars via applyDemoFonts; style pick disabled on System default.
+
+## SYNC + ABOUT deep pass (shots 71–106)
+
+Native Linux, magpie pid 560329, window **752×652**. Running **0.1.1240**; About says **0.1.1244 is downloaded**. Restart to update was hovered, not clicked. Sync was not turned on. Nothing exported or imported. Mirror was not saved. P1 N/A. Allowances quota body not touched. Observability still not in the tab row.
+
+### SYNC AND BACKUP (71–88)
+
+| shot | control | seen |
+|---|---|---|
+| 71 | Sync top | WebDAV, S3 or GitHub sync · Set up. Export… Import…. Sync is off. |
+| 72 | truncated subtitle hover | Tooltip: "Keeps providers with their API keys, settings, profiles, agents' models, library the same on every computer". |
+| 73–74 | Set up · WebDAV | Sync to WebDAV (selected) / S3 / GitHub. Address placeholder `https://dav.jianguoyun.com/dav/`. Hint: a folder named magpie is made in it. User, Password, Passphrase. Also sync: Providers' API keys, Agents' models, Library on; Usage off. Cancel / **Turn on** (not clicked). |
+| 75 | Usage checkbox | Turned on locally (not saved). Hint: usage goes as a file a day — times, tokens, models and costs, never what was said. Turned back off before leaving WebDAV. |
+| 76 | Sync to S3 | Endpoint `https://<account>.r2.cloudflarestorage.com`, Bucket, Prefix, Region `us-east-1, or auto for R2`, Access key `AKIA…`, Secret. |
+| 77 | Path-style On | "the bucket in the path, not the host name". Hint: MinIO and most NAS servers need it. Turned back off. |
+| 78 | S3 lower | Also sync defaults (Usage off). Cancel / Turn on. Not saved. |
+| 79–80 | Sync to GitHub | Repository `owner/repo` (private, owner/repo). Branch empty = default; empty repos initialized by first sync. Folder optional; backup at `<folder>/magpie/magpie.magpie-backup`, each update a commit. Token: fine-grained, Contents read and write, kept on this computer, separate from the library token. Same passphrase + Also sync. Cancel / Turn on. |
+| 81 | Cancel | Form closes. Row returns to **Set up**. Sync still off. |
+| 82–83 | Export… | Passphrase / again. Both checks on, then Library unchecked. Hint: needed to open the file; subscriptions aren't in it. Cancel. **Export not clicked.** Nothing written. |
+| 84–88 | Import… | File: No file chosen, Choose…. Passphrase. Agents' models unchecked; library stays on. Hint: providers with the same id are replaced; a provider without a key keeps the key here; library replaces the local one and keeps backups. Choose… opens the GTK **Select File** dialog (shot 86, 1100×680): Home / Desktop / workspace / Other Locations, Cancel / Open. List empty (accept `.magpie-backup`). Escape. Still "No file chosen". Cancel. **Import not clicked.** |
+
+### ABOUT (89–106)
+
+| shot | control | seen |
+|---|---|---|
+| 89 | About top | Version `0.1.1240`, sub `0.1.1244 is downloaded`, Restart to update. What's new · Open. Update button **Off** (no header arrow). Automatic updates **On**. Check every **6 h** (also 30 min / 1 h / 24 h). Restart automatically **Off**. Download source `GitHub` · Use a mirror… |
+| 90–92 | What's new | Dialog "What's new in v0.1.1244". v0.1.1244 badge **NOT INSTALLED YET**, then v0.1.1240 changes. Scrolled. Close. No issue links opened. |
+| 93 | Update button On | Header gets the purple update arrow. Green **Saved**. Restored Off in 97 (arrow gone). |
+| 94 | Automatic updates Off | Check every and Restart automatically subs become "While automatic updates are on"; segments dim. Restored On before 95. |
+| 95 | Check every 30 min | Selected, then restored **6 h**. 1 h and 24 h seen, not selected. |
+| 96 | Restart automatically On | White thumb on On. Restored **Off**. |
+| 97 | restored | Update button Off, automatic updates On, check every 6 h, restart automatically Off. |
+| 98 | Download source hover | Tooltip: "The update and its checksum always come from usemagpie.ai; a file from the mirror that doesn't match it is not installed." |
+| 99 | Use a mirror… | Inline editor, placeholder `https://mirror.example/`, Cancel / Save. **Cancel.** Still GitHub. |
+| 100 | lower | Config folder, Command line, Gateway URL. |
+| 101–102 | Config folder | Path tooltip `~/.config/magpie`. Copy → green check + toast **Path copied**. Open not clicked. |
+| 100, 105 | Command line / copy tip | Sub: "A new terminal can't find the magpie command". Green dot **bash** · "runs this app". "A change reaches terminals opened after it". Copy button tooltip **Copy**. |
+| 103 | Gateway + Community | Gateway `http://127.0.0.1:3425`, copy → **Gateway URL copied**. Join Discord, GitHub. |
+| 104 | Discord hover | Tooltip `discord.gg/vGSnD3ZKQF`. Not opened. |
+| 106 | GitHub hover | Tooltip `github.com/yetone/magpie`. Not opened. |
+
+## Left state after this pass
+
+Settings on About (community row). Sync off (Set up). Export and import panels closed. No file chosen, nothing exported. Update button Off, automatic updates On, check every 6 h, restart automatically Off, download source GitHub. theme system, textSize 110. Gateway still `http://127.0.0.1:3425`. magpie pid 560329 still running. Restart to update not clicked.
+
+Not in this window: Observability tab (still hidden). Allowances quota body still N/A. P1 N/A.

@@ -1,3 +1,8 @@
+## v0.1.79 SETTINGS_SYNC_ABOUT_71_106
+- Consumed native `settings/71–106` NOTES: Sync Set up WebDAV/S3/GitHub forms (Prefix/Region/Path-style, Branch/Folder/token hints, Usage day-file hint); Cancel / Turn on shown — **Turn on not required**; Export/Import Cancel; Import Choose… → GTK **Select File** (Home/Desktop/workspace/Other Locations, empty `.magpie-backup` list, Escape → No file chosen); Sync stays off.
+- About: running **0.1.1240**, **0.1.1244 is downloaded**, Restart hover-only; What's new → **NOT INSTALLED YET** + Close (issue # as text); Update button Off→On→header purple arrow + Saved→Off; Automatic updates Off dims Check every / Restart automatically then On; Check every 30 min then **6 h**; Restart automatically On then Off; Mirror tip + editor Cancel; Config path copy → Path copied; CLI bash tip + Copy; Gateway URL copy; Discord/GitHub tips **not opened**.
+- Allowances **N/A**. P1 bird **N/A**. **No portable / GitHub release / Vercel** (user freeze).
+
 ## v0.1.78 TRAY_25_27
 - Consumed native `tray/25–27` NOTES honesty: Cursor **no effort field**; three faint unlit bars = **one** control; hover tip is row path `~/.cursor/cli-config.` (clipped) — **not** an effort name; click opens row with **model** line only (**no** slider / levels invented); hover again same path tip.
 - Demo: `?panel=1` row `title` = path; `.eff[data-l=0]` no effort title; open body model-only.

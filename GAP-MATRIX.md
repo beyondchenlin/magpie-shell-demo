@@ -1,3 +1,8 @@
+## v0.1.79 SETTINGS_SYNC_ABOUT_71_106
+- settings/71–106 Sync+About deep nest landed: full WebDAV/S3/GitHub forms, export/import Cancel, GTK Select File Escape, About downloaded/What's new badge, Update pill ↔ header arrow, mirror Cancel, CLI/config/gateway copy, community tip-only.
+- Still mock: true Turn on sync / export write / import apply / Restart install / open Discord·GitHub / Open config folder.
+- Allowances **N/A**. P1 bird hop **N/A**. No portable / Vercel this cycle.
+
 ## v0.1.78 TRAY_25_27
 - tray/25–27 effort bars landed **thin / honest**: no effort field on Cursor → unlit `.eff[data-l=0]`, tip = row path (not Effort), click = row toggle + model-only nest — **no slider invented**.
 - GAP «tray effort picker / slider» **closed honestly** as recorded-thin (native has nothing more for Cursor).
