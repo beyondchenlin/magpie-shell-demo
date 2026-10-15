@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   buildDemoHeat,
-  fmtCost,
   fmtN,
   heatLevels,
   isoDay,
@@ -19,6 +18,7 @@ const METRICS = [
 type Metric = "tokens" | "calls" | "cost";
 
 function weekdayNames(): string[] {
+  // Magpie sessWeekdays: Monday first (2024-01-01 is Monday)
   return Array.from({ length: 7 }, (_, i) =>
     new Date(2024, 0, 1 + i).toLocaleDateString(undefined, { weekday: "short" }),
   );
@@ -31,6 +31,14 @@ function parseISO(s: string): Date {
 
 function valueOf(x: HeatDay, m: Metric): number {
   return m === "cost" ? x.cost : m === "calls" ? x.calls : x.tokens;
+}
+
+/** Magpie fmtCost for heat tip: "$…" then tip prefixes ≈ (app.js L14595 / L18384). */
+function heatTipCost(x: HeatDay): string {
+  if (!x.cost) return "";
+  const c = x.cost;
+  const s = c >= 100 ? c.toFixed(0) : c >= 1 ? c.toFixed(2) : c.toFixed(3);
+  return "$" + s;
 }
 
 /** Magpie #ledHeat — 53-week contribution grid (demo data). */
@@ -48,13 +56,17 @@ export function LedHeat({ show }: { show: boolean }) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const tipRef = useRef<HTMLDivElement>(null);
   const boxRef = useRef<HTMLElement>(null);
+  const gridRef = useRef<HTMLDivElement>(null);
   const [tip, setTip] = useState<{
     day: Date;
     x: HeatDay;
     left: number;
     top: number;
   } | null>(null);
+  const tipCell = useRef<HTMLElement | null>(null);
   const atEnd = useRef(true);
+  const setAt = useRef(-1);
+  const dayByDate = useRef(new Map<string, { day: Date; x: HeatDay }>());
 
   useEffect(() => {
     try {
@@ -77,6 +89,8 @@ export function LedHeat({ show }: { show: boolean }) {
     return out;
   }, [data]);
 
+  dayByDate.current = new Map(days.map((d) => [isoDay(d.day), d]));
+
   const lv = useMemo(
     () => heatLevels(days.map(({ x }) => valueOf(x, metric))),
     [days, metric],
@@ -85,16 +99,20 @@ export function LedHeat({ show }: { show: boolean }) {
   const hasBusy = days.some(({ x }) => x.calls > 0);
   const names = useMemo(() => weekdayNames(), []);
 
+  // Magpie ledHeatKeepEnd + ledHeatSized: observe scroll and grid
   useEffect(() => {
     const scroll = scrollRef.current;
+    const grid = gridRef.current;
     if (!scroll || !show || !hasBusy) return;
     const keep = () => {
-      if (!atEnd.current || scroll.scrollWidth <= scroll.clientWidth) return;
+      if (!atEnd.current || !scroll.clientWidth || scroll.scrollWidth <= scroll.clientWidth) return;
       scroll.scrollLeft = scroll.scrollWidth;
+      setAt.current = scroll.scrollLeft;
     };
     keep();
     const ro = new ResizeObserver(keep);
     ro.observe(scroll);
+    if (grid) ro.observe(grid);
     return () => ro.disconnect();
   }, [show, hasBusy, metric, days]);
 
@@ -121,12 +139,13 @@ export function LedHeat({ show }: { show: boolean }) {
     }
   });
 
+  // Magpie ledHeatShow: tip over a day, kept inside the card
   const showTip = (cell: HTMLElement, day: Date, x: HeatDay) => {
     const box = boxRef.current;
     if (!box) return;
     const b = box.getBoundingClientRect();
     const c = cell.getBoundingClientRect();
-    // provisional place; refine after paint
+    tipCell.current = cell;
     let left = c.left - b.left + c.width / 2 - 60;
     let top = c.top - b.top - 48;
     setTip({ day, x, left: Math.max(6, left), top: Math.max(4, top) });
@@ -143,17 +162,28 @@ export function LedHeat({ show }: { show: boolean }) {
     });
   };
 
+  // Magpie ledHeatTip (app.js L18375–18390)
   const tipParts = (x: HeatDay) => {
     if (!x.calls) return t("No requests");
     const parts = [
       t("{n} tokens", { n: fmtN(x.tokens) }),
       t(x.calls === 1 ? "{n} request" : "{n} requests", { n: String(x.calls) }),
     ];
-    const c = fmtCost(x.cost);
-    if (c !== "—") parts.push(c);
+    const c = heatTipCost(x);
+    if (c) parts.push("≈" + c);
     const order = { tokens: 0, calls: 1, cost: 2 }[metric];
     if (order && parts[order]) parts.unshift(...parts.splice(order, 1));
     return parts.join(" · ");
+  };
+
+  // Magpie grid.onpointerover / onpointerleave (app.js L18458–59)
+  const onGridPointerOver = (e: React.PointerEvent) => {
+    const el = e.target as HTMLElement;
+    const date = el.dataset?.date;
+    if (!date) return;
+    const hit = dayByDate.current.get(date);
+    if (!hit) return;
+    showTip(el, hit.day, hit.x);
   };
 
   return (
@@ -165,6 +195,7 @@ export function LedHeat({ show }: { show: boolean }) {
         </div>
         <span className="grow" />
         <Segs
+          id="ledHeatMetric"
           value={metric}
           onChange={(v) => setMetric(v as Metric)}
           items={METRICS.map(([id, en]) => ({ id, label: t(en) }))}
@@ -176,11 +207,25 @@ export function LedHeat({ show }: { show: boolean }) {
         ref={scrollRef}
         onScroll={() => {
           setTip(null);
+          tipCell.current = null;
           const scroll = scrollRef.current;
           if (!scroll?.clientWidth) return;
-          atEnd.current = scroll.scrollLeft >= scroll.scrollWidth - scroll.clientWidth - 2;
+          // Magpie: ignore own scroll-to-end from keepEnd (ledHeatSetAt)
+          if (scroll.scrollLeft !== setAt.current) {
+            atEnd.current =
+              scroll.scrollLeft >= scroll.scrollWidth - scroll.clientWidth - 2;
+          }
         }}>
-        <div className="heat-grid" role="img" aria-label={t("Usage heatmap")}>
+        <div
+          className="heat-grid"
+          role="img"
+          aria-label={t("Usage heatmap")}
+          ref={gridRef}
+          onPointerOver={onGridPointerOver}
+          onPointerLeave={() => {
+            setTip(null);
+            tipCell.current = null;
+          }}>
           {names.map((n, i) => (
             <span key={n + i} className="wd" style={{ gridArea: `${i + 2} / 1` }}>
               {i % 2 ? "" : n}
@@ -196,7 +241,7 @@ export function LedHeat({ show }: { show: boolean }) {
               {label}
             </span>
           ))}
-          {days.map(({ day, x }, i) => {
+          {days.map(({ x }, i) => {
             const w = Math.floor(i / 7);
             const wd = i % 7;
             const level = lv(valueOf(x, metric));
@@ -206,8 +251,6 @@ export function LedHeat({ show }: { show: boolean }) {
                 className={`l${level}`}
                 data-date={x.date}
                 style={{ gridArea: `${wd + 2} / ${w + 2}` }}
-                onPointerEnter={(e) => showTip(e.currentTarget, day, x)}
-                onPointerLeave={() => setTip(null)}
               />
             );
           })}

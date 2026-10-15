@@ -15,6 +15,8 @@ type Props<T extends string | number | boolean> = {
   "aria-label"?: string;
   /** Magpie sortBy `dataset.sort` (e.g. plugins / mcp). */
   dataSort?: string;
+  /** Magpie segs id (e.g. ledHeatMetric). */
+  id?: string;
 };
 
 /** Magpie segs(): .opt + sliding .thumb (280ms). */
@@ -26,6 +28,7 @@ export function Segs<T extends string | number | boolean>({
   title,
   "aria-label": ariaLabel,
   dataSort,
+  id,
 }: Props<T>) {
   const dep = String(value);
   const setBox = useSegThumb(dep);
@@ -33,6 +36,7 @@ export function Segs<T extends string | number | boolean>({
 
   return (
     <div
+      id={id}
       className={`segs${className ? ` ${className}` : ""}`}
       ref={setBox}
       data-kind={kind}

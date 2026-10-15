@@ -1,3 +1,10 @@
+## v0.1.169 · LED_HEAT_TIP_OSS_FIDELITY · 2026-10-16 Asia/Shanghai
+
+- **WHY:** Magpie Usage heatmap tip polish — drop invent shell-patch `.heat-tip` / `.heat-grid i` transition; align tip DOM/handlers + `#ledHeatMetric` + tip cost `≈` with Magpie gold.
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; ledFit (0.1.168); skip oauth Approve wall.
+- **Cite:** Magpie app.css **L1202–1211** heat-grid/heat-tip; app.js **L18375–90** ledHeatTip; **L18458–59** grid pointerover/leave; **L18489–99** ledHeatKeepEnd+sized; **L14595** fmtCost; index.html **L205** `#ledHeatMetric`.
+- **chrome-guard:** pass. Push/PR #1. No portable/Vercel.
+
 ## v0.1.168 · LED_FIT_TIGHT_OSS_FIDELITY · 2026-10-16 Asia/Shanghai
 
 - **WHY:** Magpie Usage `ledFit` tight/tighter column collapse was missing — restore gold (optional cols → details + #ledTight).

@@ -1,3 +1,19 @@
+## v0.1.169 · LED_HEAT_TIP_OSS_FIDELITY · 2026-10-16 Asia/Shanghai
+
+- **WHY:** Continue Magpie Usage after 0.1.168 — optional heatmap tip polish to Magpie gold (invent CSS out; tip behavior + metric segs id + cost format).
+- **CAUSE:** shell-patch still re-owned Magpie `.heat-tip` (with invent `--pop-bg` fallback) and added invent `.heat-grid i` transition/cursor Magpie never ships; tip used per-cell leave (flicker) instead of Magpie grid pointerover/leave; Segs lacked `#ledHeatMetric`; tip cost used demo `fmtCost` (`≈$` + 4dp) instead of Magpie heat tip `≈` + `fmtCost` (`$` + 3dp under $1).
+- **Cite:**
+  - Magpie `app.css` **1202–1203** `.heat-grid i` (aspect/radius only) + **1203** hover outline; **1208–1211** `.heat-tip`
+  - Magpie `app.js` **18375–18390** `ledHeatTip` (metric order + `≈` + fmtCost)
+  - Magpie `app.js` **18458–59** `grid.onpointerover` / `onpointerleave`
+  - Magpie `app.js` **18489–99** `ledHeatKeepEnd` + `ResizeObserver` on scroll+grid; scroll ignores own setAt
+  - Magpie `index.html` **205** `.segs#ledHeatMetric`
+  - Magpie `app.js` **14595–14601** `fmtCost` → `$` + decimals
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; Magpie ledFit (0.1.168); skip oauth Approve wall (nest=browser).
+- **WHAT changed:** `shell-patch.css` drop invent `.heat-tip*` / `.heat-grid i` transition; `LedHeat.tsx` Magpie grid pointer handlers + keepEnd observe grid + tip cost `≈$…`; `Segs` optional `id` → `#ledHeatMetric`.
+- **Chrome:** none (nest Usage heatmap slice only).
+- **Remaining invent:** oauth Approve wall (nest=browser by design). Heatmap invent queue after this tip.
+
 ## v0.1.168 · LED_FIT_TIGHT_OSS_FIDELITY · 2026-10-16 Asia/Shanghai
 
 - **WHY:** Continue Magpie Usage after 0.1.167 — restore `ledFit` tight/tighter column collapse so a narrow wrap hides `.lc-opt` (Sent / Effort / cache) into row details and can still drop `.price-reference` + shorten names.
