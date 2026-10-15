@@ -28,3 +28,7 @@ dist/
 acceptance-shots/
 .cache/
 .vercel
+
+# Local tip diagnostic previews (not part of ship)
+tip-*-preview/
+tip-*-diag/
