@@ -777,16 +777,9 @@ label.tick input { margin: 0; }
   font-size: 12px;
   color: var(--muted);
 }
-/* MCP Remove still invent .acts (Magpie puts Remove in .bar) — later tip. */
-.modal .editor.lib-editor .acts {
-  grid-column: 1 / -1;
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  align-items: center;
-  margin-bottom: 10px;
-  position: relative;
-}
+/* v0.1.155: drop invent .acts MCP Remove — Magpie editServer puts
+   Remove from the library + copyConfigButton in .bar (client.js L2046–2091;
+   button danger → text danger; app.css L2847–2848 .editor .bar / .bar .danger). */
 /* v0.1.152: drop invent .pop.menu / .gl / .text.item —
    Magpie openProtoMenu (library/client.js L2305–2311 event + L2345 tools;
    app.js L13799–13849) → .pop.proto-menu + .pm-head / .pm-item / .sc-top .sc-q.

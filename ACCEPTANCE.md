@@ -1,3 +1,11 @@
+## v0.1.155 · LIBRARY_MCP_REMOVE_BAR_OSS_FIDELITY · 2026-10-16 Asia/Shanghai
+
+- **WHY:** Library invent `.acts` MCP Remove / Copy config → Magpie `.bar` (editServer L2046–2091).
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; CIS PrefPick/WordsField; invent gtk-select-files / ehead.detail / blurb later.
+- **Cite:** client.js L2046–2091 / L79–82 / L3183–3205; app.css L2847–2848.
+- **chrome-guard:** pass (SIDE_AT=1024).
+- **No portable / Vercel.**
+
 ## v0.1.154 · LIBRARY_FIELD_OSS_FIDELITY · 2026-10-15 Asia/Shanghai
 
 - **WHY:** Library invent `field-block` / `label.field` / `.stack` / `.pair`+`.hrow` → Magpie `field()` + `lib-pairs` / `lib-slot`.

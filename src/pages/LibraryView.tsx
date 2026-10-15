@@ -2835,48 +2835,55 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
               ))}
             </div>
           </LibField>
-          {mcpEditId ? (
-            <div className="acts">
-              <button
-                type="button"
-                className="text danger" onClick={() => {
-                  const s = mcpServers.find((x) => x.id === mcpEditId);
-                  if (s) setMcpRemoveAsk({ id: s.id, name: s.name });
-                }}>
-                {t("Remove from the library")}
-              </button>
-              <span className="pref-anchor">
+          {/* Magpie editServer bar: Remove + copyConfigButton + grow + Cancel + Save/Add
+              (library/client.js L2046–2091; button() → text+cls; .bar .danger margin-left:-7px app.css L2848).
+              No invent .acts — Magpie puts Remove in .bar. */}
+          <div className="bar">
+            {mcpEditId ? (
+              <>
                 <button
                   type="button"
-                  className="text action lib-updall lib-copyconfig"
-                  title={t("Copy {name} as an agent's project file has it, to paste into a project yourself", {
-                    name: mcpEditor.name || "server",
-                  })}
-                  aria-expanded={mcpCopyMenu === "editor"}
-                  onClick={() => setMcpCopyMenu((m) => (m === "editor" ? null : "editor"))}>
-                  {mcpCopyFlash && mcpCopyMenu !== "editor" ? "✓ " : ""}
-                  {t("Copy config…")}
+                  className="text danger"
+                  onClick={() => {
+                    const s = mcpServers.find((x) => x.id === mcpEditId);
+                    if (s) setMcpRemoveAsk({ id: s.id, name: s.name });
+                  }}
+                >
+                  {t("Remove from the library")}
                 </button>
-                {mcpCopyMenu === "editor" ? (
-                  <div className="pop proto-menu" role="menu" aria-label={t("Copy as an agent's project file")}>
-                    <div className="pm-head">{t("Copy as an agent's project file")}</div>
-                    <button
-                      type="button"
-                      className="pm-item"
-                      role="menuitem"
-                      onClick={() => mcpEditId && copyMcpConfig([mcpEditId])}>
-                      <span className="pm-tick" aria-hidden />
-                      <span className="pm-words">
-                        <span className="pm-name">Cursor</span>
-                        <span className="pm-note" />
-                      </span>
-                    </button>
-                  </div>
-                ) : null}
-              </span>
-            </div>
-          ) : null}
-          <div className="bar">
+                <span className="pref-anchor">
+                  <button
+                    type="button"
+                    className="text lib-updall lib-copyconfig"
+                    title={t("Copy {name} as an agent's project file has it, to paste into a project yourself", {
+                      name: mcpEditor.name || "server",
+                    })}
+                    aria-expanded={mcpCopyMenu === "editor"}
+                    onClick={() => setMcpCopyMenu((m) => (m === "editor" ? null : "editor"))}
+                  >
+                    {mcpCopyFlash && mcpCopyMenu !== "editor" ? "✓ " : ""}
+                    {t("Copy config…")}
+                  </button>
+                  {mcpCopyMenu === "editor" ? (
+                    <div className="pop proto-menu" role="menu" aria-label={t("Copy as an agent's project file")}>
+                      <div className="pm-head">{t("Copy as an agent's project file")}</div>
+                      <button
+                        type="button"
+                        className="pm-item"
+                        role="menuitem"
+                        onClick={() => mcpEditId && copyMcpConfig([mcpEditId])}
+                      >
+                        <span className="pm-tick" aria-hidden />
+                        <span className="pm-words">
+                          <span className="pm-name">Cursor</span>
+                          <span className="pm-note" />
+                        </span>
+                      </button>
+                    </div>
+                  ) : null}
+                </span>
+              </>
+            ) : null}
             <span className="grow" />
             <button type="button" className="text" onClick={tryCloseMcp} disabled={mcpSignWaiting}>{t("Cancel")}</button>
             <button

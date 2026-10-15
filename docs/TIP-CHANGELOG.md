@@ -1,3 +1,16 @@
+## v0.1.155 · LIBRARY_MCP_REMOVE_BAR_OSS_FIDELITY · 2026-10-16 Asia/Shanghai
+
+- **WHY:** Continue Magpie 1:1 after 0.1.154 — cut Library MCP invent `.acts` that held Remove / Copy config above the footer instead of Magpie `.bar`.
+- **CAUSE:** Demo painted MCP editor Remove + Copy config as invent `.acts` (shell-patch grid-column + margin) before `.bar`, covering Magpie `editServer` gold where `bar.append(Remove…)` + `copyConfigButton` + grow + Cancel + Save/Add live in one `.bar` (library/client.js **L2046–2091**; app.css **L2847–2848** `.editor .bar` / `.bar .danger` margin-left:-7px).
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; CIS PrefPick/WordsField/Segs/TextBtn/LibSwitch; Magpie field()/lib-pairs (0.1.154); invent gtk-select-files + image/skill `.ehead.detail`/`.blurb` bridges — later tips.
+- **Cite:**
+  - Magpie `plugins/library/client.js` **2046–2091** `editServer` bar: Remove from the library (`danger`) + `copyConfigButton` + grow + Cancel + Save/Add
+  - Magpie `plugins/library/client.js` **79–82** `button(text, cls)` → `text `+cls; **3183–3205** `copyConfigButton` → `text lib-updall lib-copyconfig` + openProtoMenu
+  - Magpie `plugins/library/client.js` **2353–2370** `editHook` same Remove-in-`.bar` pattern
+  - Magpie `app.css` **2847–2848** `.editor .bar` / `.bar .danger`
+- **WHAT changed:** `LibraryView.tsx` MCP Remove + Copy config → Magpie `.bar` (drop invent `.acts`); `shell-patch.css` drop invent `.modal .editor.lib-editor .acts`.
+- **chrome-guard:** pass (SIDE_AT=1024). Push/PR #1. No portable/Vercel.
+
 ## v0.1.154 · LIBRARY_FIELD_OSS_FIDELITY · 2026-10-15 Asia/Shanghai
 
 - **WHY:** Continue Magpie 1:1 after 0.1.153 — cut Library invent `field-block` / `label.field` / invent `.stack` / invent `.pair`+`.hrow` that covered Magpie `field()` gold in MCP / hook / image / skill editors.
