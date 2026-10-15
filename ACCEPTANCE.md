@@ -1,3 +1,7 @@
+## v0.1.113 CIS_LIBRARY_THUNAR_CHOOSE
+- Library `LibThunar` / `LibChooseProject`: Magpie/demo GTK classes (`.lib-thunar*`, `.dialog.gtk-choose-project`); 0 `style={{` in those regions. Behavior kept.
+- CIS listed knife empty for shell demo (aside from future nest). SIDE_AT=1024. No portable / Vercel.
+
 ## v0.1.112 CIS_PROVIDERS_OAUTH_WALLS
 - Providers: signing note Magpie class; GTK Select Files `.gtk-select-files`; Move `.scrim`/`.pop.move`; Remove → ActionConfirm. Only `--detect-n` style token left.
 - Library Thunar / Choose-project GTK mocks still Open. SIDE_AT=1024. No portable / Vercel.

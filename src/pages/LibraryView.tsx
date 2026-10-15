@@ -347,15 +347,6 @@ function LibThunar({
     <div
       className="modal open lib-thunar-scrim"
       role="presentation"
-      style={{
-        position: "fixed",
-        inset: 0,
-        zIndex: 90,
-        display: "grid",
-        placeItems: "center",
-        background: "rgba(20,22,30,.38)",
-        animation: "fade-in .18s var(--ease)",
-      }}
       onMouseDown={(e) => {
         // Outside click does not close — Magpie leaves Thunar until window close.
         if (e.target === e.currentTarget) setFileMenu(false);
@@ -366,127 +357,52 @@ function LibThunar({
         role="dialog"
         aria-modal
         aria-label={`${titleName} - Thunar`}
-        style={{
-          width: 640,
-          height: 480,
-          maxWidth: "min(640px, 96vw)",
-          maxHeight: "min(480px, 90vh)",
-          display: "flex",
-          flexDirection: "column",
-          background: "#fafafa",
-          color: "#1c1c1c",
-          borderRadius: 6,
-          border: "1px solid #b0b0b0",
-          boxShadow: "0 14px 40px rgba(0,0,0,.28)",
-          overflow: "hidden",
-          fontFamily: "Cantarell, 'Noto Sans', system-ui, sans-serif",
-          fontSize: 13,
-          animation: "pop-in .42s cubic-bezier(.16,1,.3,1)",
-          position: "relative",
-        }}
         onMouseDown={(e) => e.stopPropagation()}
         onContextMenu={(e) => e.preventDefault()}
       >
-        <div
-          className="lib-thunar-title"
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 8,
-            height: 32,
-            padding: "0 8px 0 10px",
-            background: "linear-gradient(#ebebeb, #dcdcdc)",
-            borderBottom: "1px solid #b8b8b8",
-            userSelect: "none",
-          }}
-        >
+        <div className="titlebar">
           <svg viewBox="0 0 16 16" width={14} height={14} aria-hidden>
             <path fill="#5b9bd5" d="M2 3.5h5l1.2 1.2H14V13H2z" />
           </svg>
-          <span style={{ flex: 1, textAlign: "center", fontWeight: 500, fontSize: 12.5 }}>{titleName} - Thunar</span>
-          <button type="button" className="text" aria-label="Minimize" style={{ width: 24, height: 22, padding: 0, border: "1px solid #aaa", borderRadius: 3, background: "#eee", fontSize: 11, lineHeight: 1, color: "#444" }} title="Minimize">─</button>
-          <button type="button" className="text" aria-label="Maximize" style={{ width: 24, height: 22, padding: 0, border: "1px solid #aaa", borderRadius: 3, background: "#eee", fontSize: 10, lineHeight: 1, color: "#444" }} title="Maximize">□</button>
-          <button type="button" className="text" aria-label="Close" onClick={onClose} style={{ width: 24, height: 22, padding: 0, border: "1px solid #aaa", borderRadius: 3, background: "#eee", fontSize: 12, lineHeight: 1, color: "#444" }} title="Close">×</button>
+          <span className="ttl">{titleName} - Thunar</span>
+          <button type="button" className="text winbtn" aria-label="Minimize" title="Minimize">─</button>
+          <button type="button" className="text winbtn max" aria-label="Maximize" title="Maximize">□</button>
+          <button type="button" className="text winbtn close" aria-label="Close" onClick={onClose} title="Close">×</button>
         </div>
 
-        <div className="lib-thunar-menubar" style={{ display: "flex", gap: 2, padding: "2px 6px", background: "#f6f6f6", borderBottom: "1px solid #ddd", position: "relative" }}>
+        <div className="lib-thunar-menubar">
           {(["File", "Edit", "View", "Go", "Bookmarks", "Help"] as const).map((m) => (
             <button
               key={m}
               type="button"
-              className="text"
-              style={{
-                height: 24,
-                padding: "0 8px",
-                border: 0,
-                borderRadius: 3,
-                background: m === "File" && fileMenu ? "#4a90d9" : "transparent",
-                color: m === "File" && fileMenu ? "#fff" : "#222",
-                font: "inherit",
-                fontSize: 12.5,
-                cursor: "default",
-              }}
+              className={`text mb${m === "File" && fileMenu ? " on" : ""}`}
               onClick={() => (m === "File" ? setFileMenu((v) => !v) : setFileMenu(false))}
             >
               {m}
             </button>
           ))}
           {fileMenu ? (
-            <div
-              role="menu"
-              style={{
-                position: "absolute",
-                top: 26,
-                left: 6,
-                zIndex: 5,
-                minWidth: 220,
-                background: "#fff",
-                border: "1px solid #aaa",
-                boxShadow: "0 4px 14px rgba(0,0,0,.18)",
-                padding: "4px 0",
-              }}
-            >
+            <div role="menu" className="menu">
               {FILE_ITEMS.map((it, i) =>
                 it.sep ? (
-                  <div key={`sep-${i}`} style={{ height: 1, background: "#ddd", margin: "4px 0" }} />
+                  <div key={`sep-${i}`} className="sep" />
                 ) : (
                   <button
                     key={it.label}
                     type="button"
                     role="menuitem"
+                    className="mi"
                     disabled={it.disabled}
                     onClick={() => {
                       if (it.close) onClose();
                       else setFileMenu(false);
                     }}
-                    style={{
-                      display: "flex",
-                      width: "100%",
-                      alignItems: "center",
-                      gap: 12,
-                      padding: "5px 14px 5px 28px",
-                      border: 0,
-                      background: "transparent",
-                      font: "inherit",
-                      fontSize: 12.5,
-                      color: it.disabled ? "#aaa" : "#222",
-                      cursor: it.disabled ? "default" : "pointer",
-                      textAlign: "left",
-                    }}
-                    onMouseEnter={(e) => {
-                      if (!it.disabled) e.currentTarget.style.background = "#4a90d9";
-                      if (!it.disabled) e.currentTarget.style.color = "#fff";
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.background = "transparent";
-                      e.currentTarget.style.color = it.disabled ? "#aaa" : "#222";
-                    }}
                   >
-                    <span style={{ flex: 1 }}>{it.label}</span>
+                    <span className="lab">{it.label}</span>
                     {it.accel && it.accel !== "▸" ? (
-                      <span style={{ opacity: 0.75, fontSize: 11.5 }}>{it.accel}</span>
+                      <span className="acc">{it.accel}</span>
                     ) : it.accel === "▸" ? (
-                      <span style={{ opacity: 0.75 }}>▸</span>
+                      <span className="acc">▸</span>
                     ) : null}
                   </button>
                 ),
@@ -495,20 +411,10 @@ function LibThunar({
           ) : null}
         </div>
 
-        <div
-          className="lib-thunar-toolbar"
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 4,
-            padding: "4px 8px",
-            background: "#f0f0f0",
-            borderBottom: "1px solid #ddd",
-          }}
-        >
+        <div className="lib-thunar-toolbar">
           <button
             type="button"
-            className="text"
+            className="text nav back"
             disabled={!canBack}
             aria-label="Back"
             onClick={() => {
@@ -517,13 +423,12 @@ function LibThunar({
               setHistI(i);
               setSegs(hist[i]);
             }}
-            style={{ width: 28, height: 28, opacity: canBack ? 1 : 0.35, border: 0, background: "transparent", fontSize: 16, cursor: canBack ? "pointer" : "default" }}
           >
             ←
           </button>
           <button
             type="button"
-            className="text"
+            className="text nav fwd"
             disabled={!canFwd}
             aria-label="Forward"
             onClick={() => {
@@ -532,131 +437,56 @@ function LibThunar({
               setHistI(i);
               setSegs(hist[i]);
             }}
-            style={{ width: 28, height: 28, opacity: canFwd ? 1 : 0.35, border: 0, background: "transparent", fontSize: 16, cursor: canFwd ? "pointer" : "default" }}
           >
             →
           </button>
           <button
             type="button"
-            className="text"
+            className="text nav"
             disabled={!canUp}
             aria-label="Up"
             onClick={() => {
               if (!canUp) return;
               go(segs.slice(0, -1));
             }}
-            style={{ width: 28, height: 28, opacity: canUp ? 1 : 0.45, border: 0, background: "transparent", fontSize: 14, cursor: canUp ? "pointer" : "default", color: canUp ? "#222" : "#999" }}
           >
             ↑
           </button>
-          <button type="button" className="text" aria-label="Home" onClick={() => go([])} style={{ width: 28, height: 28, border: 0, background: "transparent", fontSize: 14, cursor: "pointer", color: "#222" }}>⌂</button>
-          <div
-            style={{
-              flex: 1,
-              display: "flex",
-              alignItems: "center",
-              gap: 6,
-              height: 28,
-              padding: "0 8px",
-              border: "1px solid #bbb",
-              borderRadius: 4,
-              background: "#fff",
-              minWidth: 0,
-              overflow: "hidden",
-            }}
-          >
-            <svg viewBox="0 0 16 16" width={14} height={14} aria-hidden style={{ flex: "none" }}>
+          <button type="button" className="text nav" aria-label="Home" onClick={() => go([])}>⌂</button>
+          <div className="path">
+            <svg className="ic" viewBox="0 0 16 16" width={14} height={14} aria-hidden>
               <path fill="#5b9bd5" d="M2 3.5h5l1.2 1.2H14V13H2z" />
             </svg>
-            <span style={{ overflow: "hidden", whiteSpace: "nowrap", direction: "rtl", textAlign: "left", fontSize: 12.5 }}>{loc}</span>
+            <span className="loc">{loc}</span>
           </div>
-          <button type="button" className="text" aria-label="Search" style={{ width: 28, height: 28, border: 0, background: "transparent", fontSize: 14 }}>⌕</button>
+          <button type="button" className="text nav" aria-label="Search">⌕</button>
         </div>
 
-        <div style={{ display: "flex", flex: 1, minHeight: 0 }}>
-          <nav
-            style={{
-              width: 140,
-              flex: "none",
-              borderRight: "1px solid #ddd",
-              background: "#f7f7f7",
-              padding: "8px 6px",
-              fontSize: 12,
-              color: "#555",
-            }}
-          >
-            <div style={{ fontWeight: 600, fontSize: 11, margin: "4px 6px 6px", color: "#777" }}>Places</div>
-            <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "5px 6px", borderRadius: 4 }}>
-              <span aria-hidden>🏠</span> box
-            </div>
-            <div style={{ fontWeight: 600, fontSize: 11, margin: "12px 6px 6px", color: "#777" }}>Devices</div>
-            <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "5px 6px", borderRadius: 4 }}>
-              <span aria-hidden>💾</span> File System
-            </div>
+        <div className="body">
+          <nav className="side">
+            <div className="gl">Places</div>
+            <div className="row"><span aria-hidden>🏠</span> box</div>
+            <div className="gl">Devices</div>
+            <div className="row"><span aria-hidden>💾</span> File System</div>
           </nav>
-          <div
-            style={{
-              flex: 1,
-              padding: 16,
-              background: "#fff",
-              display: "flex",
-              flexWrap: "wrap",
-              alignContent: "flex-start",
-              gap: 18,
-              overflow: "auto",
-            }}
-          >
+          <div className="icons">
             {kids.map((k) => (
               <button
                 key={k.name}
                 type="button"
+                className="icon"
                 onDoubleClick={() => go([...segs, k.name])}
                 onClick={() => go([...segs, k.name])}
-                style={{
-                  width: 96,
-                  border: 0,
-                  background: "transparent",
-                  cursor: "pointer",
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  gap: 4,
-                  padding: 4,
-                  borderRadius: 4,
-                  font: "inherit",
-                  color: "#222",
-                }}
                 title={k.name}
               >
                 {folderIcon}
-                <span
-                  style={{
-                    fontSize: 12,
-                    lineHeight: 1.25,
-                    textAlign: "center",
-                    wordBreak: "break-all",
-                    maxWidth: 90,
-                  }}
-                >
-                  {k.name}
-                </span>
+                <span className="nm">{k.name}</span>
               </button>
             ))}
           </div>
         </div>
 
-        <div
-          style={{
-            height: 24,
-            padding: "0 10px",
-            display: "flex",
-            alignItems: "center",
-            borderTop: "1px solid #ddd",
-            background: "#f0f0f0",
-            fontSize: 11.5,
-            color: "#444",
-          }}
-        >
+        <div className="status">
           {kids.length} folder{kids.length === 1 ? "" : "s"} | Free space: 104.5 GiB
         </div>
       </div>
@@ -827,26 +657,9 @@ function LibChooseProject({
     <button
       key={id}
       type="button"
-      className="text"
+      className={`text pb${place === id ? " on" : ""}`}
       onMouseEnter={() => setDeskTip(id === "desktop" && !!tip)}
       onMouseLeave={() => setDeskTip(false)}
-      style={{
-        display: "flex",
-        alignItems: "center",
-        gap: 10,
-        justifyContent: "flex-start",
-        width: "100%",
-        padding: "8px 12px",
-        borderRadius: 8,
-        border: 0,
-        background: place === id ? "#3584e4" : "transparent",
-        color: place === id ? "#fff" : "var(--fg)",
-        font: "inherit",
-        fontSize: 13,
-        cursor: "pointer",
-        textAlign: "left",
-        position: "relative",
-      }}
       onClick={() => {
         setPlace(id);
         setBrowse("place");
@@ -859,42 +672,15 @@ function LibChooseProject({
       {id === "recent" ? "◷" : id === "home" ? "⌂" : id === "other" ? "+" : "📁"}
       <span>{id === "other" ? `+ ${label}` : label}</span>
       {id === "desktop" && deskTip ? (
-        <span
-          style={{
-            position: "absolute",
-            left: -8,
-            top: "50%",
-            transform: "translate(-100%, -50%)",
-            background: "#1c1c1c",
-            color: "#fff",
-            fontSize: 12,
-            padding: "6px 10px",
-            borderRadius: 6,
-            whiteSpace: "nowrap",
-            pointerEvents: "none",
-            zIndex: 4,
-            boxShadow: "0 4px 12px rgba(0,0,0,.25)",
-          }}
-        >
-          {t("Open the contents of your desktop in a folder")}
-        </span>
+        <span className="tip">{t("Open the contents of your desktop in a folder")}</span>
       ) : null}
     </button>
   );
 
   return (
     <div
-      className="modal open"
+      className="modal open lib-choose-scrim"
       role="presentation"
-      style={{
-        position: "fixed",
-        inset: 0,
-        zIndex: 95,
-        display: "grid",
-        placeItems: "center",
-        background: "rgba(20,22,30,.42)",
-        animation: "fade-in .18s var(--ease)",
-      }}
       onMouseDown={(e) => {
         if (e.target === e.currentTarget) {
           /* Magpie Escape/Cancel close; outside click not documented — leave open */
@@ -902,91 +688,47 @@ function LibChooseProject({
       }}
     >
       <div
-        className="dialog gtk-select-files lib-choose-project"
+        className="dialog gtk-choose-project"
         role="dialog"
         aria-modal
         aria-label={t("Choose a project")}
-        style={{
-          width: "min(1100px, 96vw)",
-          height: "min(680px, 90vh)",
-          maxHeight: "min(680px, 90vh)",
-          display: "flex",
-          flexDirection: "column",
-          animation: "pop-in .42s cubic-bezier(.16,1,.3,1)",
-          background: "#fafafa",
-          borderRadius: 10,
-          border: "1px solid #c0c0c0",
-          boxShadow: "0 18px 48px rgba(20,22,30,.28)",
-          overflow: "hidden",
-          position: "relative",
-        }}
         onMouseDown={(e) => e.stopPropagation()}
       >
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 8,
-            height: 40,
-            padding: "0 10px 0 12px",
-            background: "linear-gradient(#f0f0f0, #e6e6e6)",
-            borderBottom: "1px solid #c8c8c8",
-            userSelect: "none",
-          }}
-        >
-          <span style={{ color: "var(--fg)", display: "inline-flex" }}>
+        <div className="titlebar">
+          <span className="mark">
             <Bird size={16} />
           </span>
-          <span style={{ flex: 1, textAlign: "center", fontWeight: 600, fontSize: 13 }}>{t("Choose a project")}</span>
-          <button type="button" aria-label="Minimize" style={{ width: 24, height: 22, border: "1px solid #aaa", borderRadius: 4, background: "#eee", fontSize: 11 }}>─</button>
-          <button type="button" aria-label="Maximize" style={{ width: 24, height: 22, border: "1px solid #aaa", borderRadius: 4, background: "#eee", fontSize: 10 }}>□</button>
-          <button type="button" aria-label="Close" onClick={onClose} style={{ width: 24, height: 22, border: "1px solid #aaa", borderRadius: 4, background: "#eee", fontSize: 12 }}>×</button>
+          <span className="ttl">{t("Choose a project")}</span>
+          <button type="button" className="winbtn" aria-label="Minimize">─</button>
+          <button type="button" className="winbtn max" aria-label="Maximize">□</button>
+          <button type="button" className="winbtn close" aria-label="Close" onClick={onClose}>×</button>
         </div>
 
-        <div style={{ display: "flex", flex: 1, minHeight: 0 }}>
-          <nav
-            style={{
-              width: 188,
-              flex: "none",
-              borderRight: "1px solid #ddd",
-              padding: "10px 8px",
-              display: "flex",
-              flexDirection: "column",
-              gap: 2,
-              background: "#f3f3f3",
-            }}
-          >
+        <div className="body">
+          <nav className="places">
             {sideBtn("recent", t("Recent"))}
             {sideBtn("home", t("Home"))}
             {sideBtn("desktop", t("Desktop"), t("Open the contents of your desktop in a folder"))}
             {sideBtn("workspace", "workspace")}
-            <div style={{ height: 1, background: "#ddd", margin: "8px 6px" }} />
+            <div className="sep" />
             {sideBtn("other", t("Other Locations"))}
           </nav>
 
-          <div style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0, background: "#fff" }}>
+          <div className="main">
             {(place === "home" || place === "workspace" || browse === "computer") && !locOpen ? (
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 6,
-                  padding: "8px 12px",
-                  borderBottom: "1px solid #e8e8e8",
-                }}
-              >
-                <button type="button" className="text" disabled style={{ opacity: 0.35, border: 0, background: "transparent" }}>←</button>
-                <button type="button" className="text" style={{ display: "inline-flex", alignItems: "center", gap: 6, height: 28, padding: "0 10px", borderRadius: 999, border: "1px solid #ccc", background: "#f6f6f6", font: "inherit", fontSize: 12.5 }}>
+              <div className="crumb">
+                <button type="button" className="text nav" disabled>←</button>
+                <button type="button" className="text pill">
                   {place === "home" ? "⌂ box" : place === "workspace" || browse === "computer" ? "📁 workspace" : "⌂"}
                 </button>
-                <button type="button" className="text" disabled style={{ opacity: 0.35, border: 0, background: "transparent" }}>→</button>
+                <button type="button" className="text nav" disabled>→</button>
                 <span className="grow" />
-                <button type="button" className="text" title={t("Create Folder…")} aria-label={t("Create Folder…")} style={{ width: 32, height: 28, border: "1px solid #ccc", borderRadius: 6, background: "#f6f6f6" }}>📁+</button>
+                <button type="button" className="text mk" title={t("Create Folder…")} aria-label={t("Create Folder…")}>📁+</button>
               </div>
             ) : null}
 
             {locOpen ? (
-              <div style={{ padding: "8px 12px", borderBottom: "1px solid #e8e8e8" }}>
+              <div className="locbar">
                 <input
                   ref={locRef}
                   type="text"
@@ -1017,42 +759,20 @@ function LibChooseProject({
                       setLocVal("");
                     }
                   }}
-                  style={{
-                    width: "100%",
-                    height: 34,
-                    padding: "0 10px",
-                    borderRadius: 8,
-                    border: "2px solid #3584e4",
-                    outline: "none",
-                    font: "inherit",
-                    fontSize: 13,
-                    background: "#fff",
-                  }}
                 />
               </div>
             ) : null}
 
-            <div style={{ flex: 1, overflow: "auto", padding: place === "other" ? 16 : 0 }}>
+            <div className={`pane${place === "other" ? " pad" : ""}`}>
               {complete ? (
-                <div style={{ padding: "8px 16px", fontSize: 13, lineHeight: 1.7 }}>
+                <div className="complete">
                   {complete.map((c) => (
                     <div key={c}>{c}</div>
                   ))}
                 </div>
               ) : place === "recent" ? (
                 <div>
-                  <div
-                    style={{
-                      display: "grid",
-                      gridTemplateColumns: "1.4fr 1.2fr 0.6fr 0.7fr 0.8fr",
-                      gap: 8,
-                      padding: "8px 14px",
-                      borderBottom: "1px solid #eee",
-                      fontSize: 12,
-                      color: "#666",
-                      fontWeight: 500,
-                    }}
-                  >
+                  <div className="cols recent">
                     <span>{t("Name")}</span>
                     <span>{t("Location")}</span>
                     <span>{t("Size")}</span>
@@ -1062,59 +782,27 @@ function LibChooseProject({
                 </div>
               ) : place === "home" ? (
                 <div>
-                  <div
-                    style={{
-                      display: "grid",
-                      gridTemplateColumns: "1.6fr 0.5fr 0.7fr 0.7fr",
-                      gap: 8,
-                      padding: "8px 14px",
-                      borderBottom: "1px solid #eee",
-                      fontSize: 12,
-                      color: "#666",
-                      fontWeight: 500,
-                    }}
-                  >
+                  <div className="cols files">
                     <span>{t("Name")} ↓</span>
                     <span>{t("Size")}</span>
                     <span>{t("Type")}</span>
                     <span>{t("Modified")}</span>
                   </div>
                   {HOME_FOLDERS.map((f) => (
-                    <div
-                      key={f.name}
-                      style={{
-                        display: "grid",
-                        gridTemplateColumns: "1.6fr 0.5fr 0.7fr 0.7fr",
-                        gap: 8,
-                        padding: "7px 14px",
-                        fontSize: 13,
-                        alignItems: "center",
-                      }}
-                    >
-                      <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
+                    <div key={f.name} className="row files">
+                      <span className="who">
                         <span aria-hidden>📁</span>
                         {f.name}
                       </span>
-                      <span style={{ color: "#888" }}>—</span>
-                      <span style={{ color: "#666" }}>{t("Folder")}</span>
-                      <span style={{ color: "#666" }}>{f.modified}</span>
+                      <span className="faint">—</span>
+                      <span className="muted">{t("Folder")}</span>
+                      <span className="muted">{f.modified}</span>
                     </div>
                   ))}
                 </div>
               ) : place === "workspace" && browse === "place" ? (
                 <div>
-                  <div
-                    style={{
-                      display: "grid",
-                      gridTemplateColumns: "1.6fr 0.5fr 0.7fr 0.7fr",
-                      gap: 8,
-                      padding: "8px 14px",
-                      borderBottom: "1px solid #eee",
-                      fontSize: 12,
-                      color: "#666",
-                      fontWeight: 500,
-                    }}
-                  >
+                  <div className="cols files">
                     <span>{t("Name")} ↓</span>
                     <span>{t("Size")}</span>
                     <span>{t("Type")}</span>
@@ -1124,48 +812,23 @@ function LibChooseProject({
                     <button
                       key={name}
                       type="button"
+                      className={`row files${selected === name ? " on" : ""}`}
                       onClick={() => setSelected(name)}
                       onDoubleClick={() => onOpen(`/workspace/${name}`)}
-                      style={{
-                        display: "grid",
-                        gridTemplateColumns: "1.6fr 0.5fr 0.7fr 0.7fr",
-                        gap: 8,
-                        padding: "7px 14px",
-                        fontSize: 13,
-                        alignItems: "center",
-                        width: "100%",
-                        border: 0,
-                        textAlign: "left",
-                        font: "inherit",
-                        cursor: "pointer",
-                        background: selected === name ? "#3584e4" : "transparent",
-                        color: selected === name ? "#fff" : "#222",
-                      }}
                     >
-                      <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
+                      <span className="who">
                         <span aria-hidden>📁</span>
                         {name}
                       </span>
-                      <span style={{ opacity: 0.7 }}>—</span>
-                      <span style={{ opacity: 0.85 }}>{t("Folder")}</span>
-                      <span style={{ opacity: 0.85 }}>—</span>
+                      <span className="faint">—</span>
+                      <span className="muted">{t("Folder")}</span>
+                      <span className="muted">—</span>
                     </button>
                   ))}
                 </div>
               ) : browse === "computer" ? (
                 <div>
-                  <div
-                    style={{
-                      display: "grid",
-                      gridTemplateColumns: "1.6fr 0.5fr 0.7fr 0.7fr",
-                      gap: 8,
-                      padding: "8px 14px",
-                      borderBottom: "1px solid #eee",
-                      fontSize: 12,
-                      color: "#666",
-                      fontWeight: 500,
-                    }}
-                  >
+                  <div className="cols files">
                     <span>{t("Name")} ↓</span>
                     <span>{t("Size")}</span>
                     <span>{t("Type")}</span>
@@ -1175,94 +838,51 @@ function LibChooseProject({
                     <button
                       key={name}
                       type="button"
+                      className={`row files${selected === name ? " on" : ""}`}
                       onClick={() => setSelected(name)}
-                      style={{
-                        display: "grid",
-                        gridTemplateColumns: "1.6fr 0.5fr 0.7fr 0.7fr",
-                        gap: 8,
-                        padding: "7px 14px",
-                        fontSize: 13,
-                        alignItems: "center",
-                        width: "100%",
-                        border: 0,
-                        textAlign: "left",
-                        font: "inherit",
-                        cursor: "pointer",
-                        background: selected === name ? "#3584e4" : "transparent",
-                        color: selected === name ? "#fff" : "#222",
-                      }}
                     >
-                      <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
+                      <span className="who">
                         <span aria-hidden>📁</span>
                         {name}
                       </span>
-                      <span style={{ opacity: 0.7 }}>—</span>
-                      <span style={{ opacity: 0.85 }}>{t("Folder")}</span>
-                      <span style={{ opacity: 0.85 }}>—</span>
+                      <span className="faint">—</span>
+                      <span className="muted">{t("Folder")}</span>
+                      <span className="muted">—</span>
                     </button>
                   ))}
                 </div>
               ) : place === "other" ? (
                 <div>
-                  <div style={{ fontWeight: 600, fontSize: 13, marginBottom: 12 }}>{t("On This Computer")}</div>
+                  <div className="other-h">{t("On This Computer")}</div>
                   <button
                     type="button"
+                    className={`computer${selected === "Computer" ? " on" : ""}`}
                     onDoubleClick={() => {
                       setBrowse("computer");
                       setSelected("bin");
                     }}
                     onClick={() => setSelected("Computer")}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 12,
-                      padding: "10px 12px",
-                      borderRadius: 8,
-                      border: selected === "Computer" ? "1px dashed #3584e4" : "1px dashed #bbb",
-                      maxWidth: 520,
-                      width: "100%",
-                      background: "transparent",
-                      font: "inherit",
-                      cursor: "pointer",
-                      textAlign: "left",
-                      color: "inherit",
-                    }}
                   >
-                    <span aria-hidden style={{ fontSize: 22 }}>💾</span>
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontWeight: 500 }}>{t("Computer")}</div>
-                      <div style={{ fontSize: 12, color: "#666" }}>112.2 GB / 134.2 GB available</div>
+                    <span className="ic" aria-hidden>💾</span>
+                    <div className="who">
+                      <div className="name">{t("Computer")}</div>
+                      <div className="sub">112.2 GB / 134.2 GB available</div>
                     </div>
-                    <span style={{ color: "#888" }}>/</span>
+                    <span className="slash">/</span>
                   </button>
                 </div>
               ) : (
-                <p style={{ margin: 48, textAlign: "center", color: "#888", fontSize: 13 }}>{t("This folder is empty")}</p>
+                <p className="empty">{t("This folder is empty")}</p>
               )}
             </div>
           </div>
         </div>
 
-        <div
-          className="bar"
-          style={{
-            display: "flex",
-            gap: 8,
-            justifyContent: "flex-end",
-            padding: "10px 14px",
-            borderTop: "1px solid #ddd",
-            background: "#f0f0f0",
-          }}
-        >
-          <button type="button" className="text" onClick={onClose} style={{ height: 32, padding: "0 14px", border: "1px solid #bbb", borderRadius: 6, background: "#fff", font: "inherit" }}>
+        <div className="bar">
+          <button type="button" className="text gtk" onClick={onClose}>
             {t("Cancel")}
           </button>
-          <button
-            type="button"
-            className="text"
-            onClick={openCurrent}
-            style={{ height: 32, padding: "0 14px", border: "1px solid #bbb", borderRadius: 6, background: "#fff", font: "inherit", color: "#1c1c1c" }}
-          >
+          <button type="button" className="text gtk" onClick={openCurrent}>
             {t("Open")}
           </button>
         </div>

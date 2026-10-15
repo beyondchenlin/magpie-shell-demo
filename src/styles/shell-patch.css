@@ -1528,3 +1528,524 @@ button.lib-ag.icon {
   font-size: 11px;
   color: var(--muted);
 }
+
+/* Magpie Library GTK mocks — Thunar + Choose a project (CIS v0.1.113) */
+.modal.lib-thunar-scrim,
+.modal.lib-choose-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: grid;
+  place-items: center;
+  background: rgba(20, 22, 30, .38);
+  animation: fade-in .18s var(--ease);
+}
+.modal.lib-choose-scrim {
+  z-index: 95;
+  background: rgba(20, 22, 30, .42);
+}
+
+.lib-thunar {
+  width: 640px;
+  height: 480px;
+  max-width: min(640px, 96vw);
+  max-height: min(480px, 90vh);
+  display: flex;
+  flex-direction: column;
+  background: #fafafa;
+  color: #1c1c1c;
+  border-radius: 6px;
+  border: 1px solid #b0b0b0;
+  box-shadow: 0 14px 40px rgba(0, 0, 0, .28);
+  overflow: hidden;
+  font-family: Cantarell, "Noto Sans", system-ui, sans-serif;
+  font-size: 13px;
+  animation: pop-in .42s cubic-bezier(.16, 1, .3, 1);
+  position: relative;
+}
+.lib-thunar .titlebar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 32px;
+  padding: 0 8px 0 10px;
+  background: linear-gradient(#ebebeb, #dcdcdc);
+  border-bottom: 1px solid #b8b8b8;
+  user-select: none;
+}
+.lib-thunar .titlebar .ttl {
+  flex: 1;
+  text-align: center;
+  font-weight: 500;
+  font-size: 12.5px;
+}
+.lib-thunar .winbtn {
+  width: 24px;
+  height: 22px;
+  padding: 0;
+  border: 1px solid #aaa;
+  border-radius: 3px;
+  background: #eee;
+  font-size: 11px;
+  line-height: 1;
+  color: #444;
+}
+.lib-thunar .winbtn.max { font-size: 10px; }
+.lib-thunar .winbtn.close { font-size: 12px; }
+
+.lib-thunar-menubar {
+  display: flex;
+  gap: 2px;
+  padding: 2px 6px;
+  background: #f6f6f6;
+  border-bottom: 1px solid #ddd;
+  position: relative;
+}
+.lib-thunar-menubar .mb {
+  height: 24px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 3px;
+  background: transparent;
+  color: #222;
+  font: inherit;
+  font-size: 12.5px;
+  cursor: default;
+}
+.lib-thunar-menubar .mb.on {
+  background: #4a90d9;
+  color: #fff;
+}
+.lib-thunar .menu {
+  position: absolute;
+  top: 26px;
+  left: 6px;
+  z-index: 5;
+  min-width: 220px;
+  background: #fff;
+  border: 1px solid #aaa;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, .18);
+  padding: 4px 0;
+}
+.lib-thunar .menu .sep {
+  height: 1px;
+  background: #ddd;
+  margin: 4px 0;
+}
+.lib-thunar .menu .mi {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 12px;
+  padding: 5px 14px 5px 28px;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  font-size: 12.5px;
+  color: #222;
+  cursor: pointer;
+  text-align: left;
+}
+.lib-thunar .menu .mi:disabled {
+  color: #aaa;
+  cursor: default;
+}
+.lib-thunar .menu .mi:not(:disabled):hover {
+  background: #4a90d9;
+  color: #fff;
+}
+.lib-thunar .menu .mi .lab { flex: 1; }
+.lib-thunar .menu .mi .acc { opacity: .75; font-size: 11.5px; }
+
+.lib-thunar-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  background: #f0f0f0;
+  border-bottom: 1px solid #ddd;
+}
+.lib-thunar-toolbar .nav {
+  width: 28px;
+  height: 28px;
+  border: 0;
+  background: transparent;
+  font-size: 14px;
+  color: #222;
+  cursor: pointer;
+  padding: 0;
+}
+.lib-thunar-toolbar .nav.back,
+.lib-thunar-toolbar .nav.fwd { font-size: 16px; }
+.lib-thunar-toolbar .nav:disabled {
+  opacity: .35;
+  cursor: default;
+  color: #999;
+}
+.lib-thunar-toolbar .path {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 8px;
+  border: 1px solid #bbb;
+  border-radius: 4px;
+  background: #fff;
+  min-width: 0;
+  overflow: hidden;
+}
+.lib-thunar-toolbar .path .ic { flex: none; }
+.lib-thunar-toolbar .path .loc {
+  overflow: hidden;
+  white-space: nowrap;
+  direction: rtl;
+  text-align: left;
+  font-size: 12.5px;
+}
+
+.lib-thunar .body {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+.lib-thunar .side {
+  width: 140px;
+  flex: none;
+  border-right: 1px solid #ddd;
+  background: #f7f7f7;
+  padding: 8px 6px;
+  font-size: 12px;
+  color: #555;
+}
+.lib-thunar .side .gl {
+  font-weight: 600;
+  font-size: 11px;
+  margin: 4px 6px 6px;
+  color: #777;
+}
+.lib-thunar .side .gl + .gl { margin-top: 12px; }
+.lib-thunar .side .row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 6px;
+  border-radius: 4px;
+}
+.lib-thunar .icons {
+  flex: 1;
+  padding: 16px;
+  background: #fff;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  gap: 18px;
+  overflow: auto;
+}
+.lib-thunar .icon {
+  width: 96px;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 4px;
+  font: inherit;
+  color: #222;
+}
+.lib-thunar .icon .nm {
+  font-size: 12px;
+  line-height: 1.25;
+  text-align: center;
+  word-break: break-all;
+  max-width: 90px;
+}
+.lib-thunar .status {
+  height: 24px;
+  padding: 0 10px;
+  display: flex;
+  align-items: center;
+  border-top: 1px solid #ddd;
+  background: #f0f0f0;
+  font-size: 11.5px;
+  color: #444;
+}
+
+/* Choose a project — Magpie GTK dialog (extends gtk-select-files naming) */
+.dialog.gtk-choose-project {
+  width: min(1100px, 96vw);
+  height: min(680px, 90vh);
+  max-height: min(680px, 90vh);
+  display: flex;
+  flex-direction: column;
+  animation: pop-in .42s cubic-bezier(.16, 1, .3, 1);
+  background: #fafafa;
+  border-radius: 10px;
+  border: 1px solid #c0c0c0;
+  box-shadow: 0 18px 48px rgba(20, 22, 30, .28);
+  overflow: hidden;
+  position: relative;
+  padding: 0;
+}
+.dialog.gtk-choose-project > .titlebar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 10px 0 12px;
+  background: linear-gradient(#f0f0f0, #e6e6e6);
+  border-bottom: 1px solid #c8c8c8;
+  user-select: none;
+}
+.dialog.gtk-choose-project > .titlebar .mark { color: var(--fg); display: inline-flex; }
+.dialog.gtk-choose-project > .titlebar .ttl {
+  flex: 1;
+  text-align: center;
+  font-weight: 600;
+  font-size: 13px;
+}
+.dialog.gtk-choose-project .winbtn {
+  width: 24px;
+  height: 22px;
+  border: 1px solid #aaa;
+  border-radius: 4px;
+  background: #eee;
+  font-size: 11px;
+  padding: 0;
+  line-height: 1;
+  color: #444;
+}
+.dialog.gtk-choose-project .winbtn.max { font-size: 10px; }
+.dialog.gtk-choose-project .winbtn.close { font-size: 12px; }
+
+.dialog.gtk-choose-project > .body {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+.dialog.gtk-choose-project .places {
+  width: 188px;
+  flex: none;
+  border-right: 1px solid #ddd;
+  padding: 10px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  background: #f3f3f3;
+}
+.dialog.gtk-choose-project .places .sep {
+  height: 1px;
+  background: #ddd;
+  margin: 8px 6px;
+}
+.dialog.gtk-choose-project .places .pb {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: flex-start;
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 0;
+  background: transparent;
+  color: var(--fg);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+  text-align: left;
+  position: relative;
+}
+.dialog.gtk-choose-project .places .pb.on {
+  background: #3584e4;
+  color: #fff;
+}
+.dialog.gtk-choose-project .places .tip {
+  position: absolute;
+  left: -8px;
+  top: 50%;
+  transform: translate(-100%, -50%);
+  background: #1c1c1c;
+  color: #fff;
+  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 4;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, .25);
+}
+
+.dialog.gtk-choose-project .main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  background: #fff;
+}
+.dialog.gtk-choose-project .crumb {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-bottom: 1px solid #e8e8e8;
+}
+.dialog.gtk-choose-project .crumb .nav {
+  border: 0;
+  background: transparent;
+  opacity: .35;
+  padding: 0 4px;
+}
+.dialog.gtk-choose-project .crumb .pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 10px;
+  border-radius: 999px;
+  border: 1px solid #ccc;
+  background: #f6f6f6;
+  font: inherit;
+  font-size: 12.5px;
+}
+.dialog.gtk-choose-project .crumb .mk {
+  width: 32px;
+  height: 28px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: #f6f6f6;
+}
+.dialog.gtk-choose-project .locbar {
+  padding: 8px 12px;
+  border-bottom: 1px solid #e8e8e8;
+}
+.dialog.gtk-choose-project .locbar input {
+  width: 100%;
+  height: 34px;
+  padding: 0 10px;
+  border-radius: 8px;
+  border: 2px solid #3584e4;
+  outline: none;
+  font: inherit;
+  font-size: 13px;
+  background: #fff;
+  box-sizing: border-box;
+}
+.dialog.gtk-choose-project .pane {
+  flex: 1;
+  overflow: auto;
+  padding: 0;
+}
+.dialog.gtk-choose-project .pane.pad { padding: 16px; }
+.dialog.gtk-choose-project .complete {
+  padding: 8px 16px;
+  font-size: 13px;
+  line-height: 1.7;
+}
+.dialog.gtk-choose-project .cols,
+.dialog.gtk-choose-project .row {
+  display: grid;
+  gap: 8px;
+  padding: 7px 14px;
+  font-size: 13px;
+  align-items: center;
+}
+.dialog.gtk-choose-project .cols.recent {
+  grid-template-columns: 1.4fr 1.2fr .6fr .7fr .8fr;
+  padding: 8px 14px;
+  border-bottom: 1px solid #eee;
+  font-size: 12px;
+  color: #666;
+  font-weight: 500;
+}
+.dialog.gtk-choose-project .cols.files,
+.dialog.gtk-choose-project .row.files {
+  grid-template-columns: 1.6fr .5fr .7fr .7fr;
+}
+.dialog.gtk-choose-project .cols.files {
+  padding: 8px 14px;
+  border-bottom: 1px solid #eee;
+  font-size: 12px;
+  color: #666;
+  font-weight: 500;
+}
+.dialog.gtk-choose-project .row.files {
+  width: 100%;
+  border: 0;
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+  background: transparent;
+  color: #222;
+}
+.dialog.gtk-choose-project button.row.files.on {
+  background: #3584e4;
+  color: #fff;
+}
+.dialog.gtk-choose-project .row .who {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.dialog.gtk-choose-project .row .muted { color: #666; }
+.dialog.gtk-choose-project .row .faint { color: #888; }
+.dialog.gtk-choose-project button.row.files .muted,
+.dialog.gtk-choose-project button.row.files .faint { opacity: .85; }
+.dialog.gtk-choose-project button.row.files .faint { opacity: .7; }
+
+.dialog.gtk-choose-project .other-h {
+  font-weight: 600;
+  font-size: 13px;
+  margin-bottom: 12px;
+}
+.dialog.gtk-choose-project .computer {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px dashed #bbb;
+  max-width: 520px;
+  width: 100%;
+  background: transparent;
+  font: inherit;
+  cursor: pointer;
+  text-align: left;
+  color: inherit;
+}
+.dialog.gtk-choose-project .computer.on {
+  border-color: #3584e4;
+  border-style: dashed;
+}
+.dialog.gtk-choose-project .computer .ic { font-size: 22px; }
+.dialog.gtk-choose-project .computer .who { flex: 1; min-width: 0; }
+.dialog.gtk-choose-project .computer .who .name { font-weight: 500; }
+.dialog.gtk-choose-project .computer .who .sub { font-size: 12px; color: #666; }
+.dialog.gtk-choose-project .computer .slash { color: #888; }
+.dialog.gtk-choose-project .empty {
+  margin: 48px;
+  text-align: center;
+  color: #888;
+  font-size: 13px;
+}
+
+.dialog.gtk-choose-project > .bar {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  padding: 10px 14px;
+  border-top: 1px solid #ddd;
+  background: #f0f0f0;
+  margin: 0;
+}
+.dialog.gtk-choose-project > .bar .text.gtk {
+  height: 32px;
+  padding: 0 14px;
+  border: 1px solid #bbb;
+  border-radius: 6px;
+  background: #fff;
+  font: inherit;
+  color: #1c1c1c;
+}

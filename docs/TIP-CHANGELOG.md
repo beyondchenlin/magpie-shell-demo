@@ -4,6 +4,17 @@
 
 ---
 
+## v0.1.113 · CIS_LIBRARY_THUNAR_CHOOSE · 2026-10-15 Asia/Shanghai
+
+- **WHY:** CIS §10 — Library Thunar / Choose-project GTK OS chrome mocks drop page-local `style={{…}}` for Magpie/demo GTK dialog classes (same pattern as Providers `.dialog.gtk-select-files`).
+- **WHAT kept:** `SIDE_AT=1024`; no `WEB_SIDE_AT`; Win chrome / 752 frame; browse / pick / confirm-cancel behavior unchanged; no new Magpie features.
+- **WHAT changed:**
+  - CSS: `.lib-thunar*` / `.modal.lib-thunar-scrim` + `.dialog.gtk-choose-project` in `shell-patch.css`.
+  - `LibThunar` + `LibChooseProject` in `LibraryView.tsx` → class-based JSX (0 `style={{` in those regions).
+  - CIS §10 marks Thunar/Choose Done; listed CIS knife empty for shell demo (aside from future nest).
+- **Guard:** `npm run chrome-guard`. No portable. No push/Vercel.
+
+---
 ## v0.1.112 · CIS_PROVIDERS_OAUTH_WALLS · 2026-10-15 Asia/Shanghai
 
 - **WHY:** CIS §10 — Providers OAuth walls / GTK Select Files / Move menu / remove confirm drop page-local `style={{…}}` for Magpie classes (+ ActionConfirm).
