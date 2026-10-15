@@ -589,3 +589,49 @@ Routing, **ROUTING GROUPS**, no group row, templates showing, Import box closed.
 - ≥2 groups: **Filter groups and models** + **Select** · multi-remove **Remove share, share 2?** · toast **{n} groups removed** · templates return
 - Template **Add a provider first** is the line itself (no further tip)
 - Day pills / Replay N/A · provider-kept / instead / rules-left-out paths N/A · P1 bird N/A · no portable / Vercel
+
+## Duplicate / Move / Filter (205–222)
+
+Same window, pid **1871993**, magpie **0.1.1247**, **752×652 at +200+40** (id 85983247). Shots are ffmpeg x11grab of that rect (`-framerate 25`, cursor drawn). **208** is widened to **900×720 from +70+20** and **216** to **1000×720 from +0+0** so a title tip that draws past the window's left edge is whole. Close was not used. Gateway was not restarted. No request was sent. No OAuth. Find-groups was not toggled (still **on**). The names segments were not clicked (still **On**). P1 bird hop: **N/A**.
+
+Started from three groups already on the page (**probe-a**, **probe-a copy**, **probe-b**), each a pattern only (`probe-a/*`, `probe-a/*`, `probe-b/*`), **matches nothing now**. Select was open on them (**3 selected**); **Done** left it without removing. The row menu is the handle or a right-click. **Duplicate** asks for **{name} copy** and, when that name is already a group, numbers it.
+
+| shot | what |
+|---|---|
+| 205 | Three cards. Header field placeholder is **Filter groups and models**; beside Templates, Import, Select, and **+ New group** at 752 it clips to **Filter groups and**. Find-groups **on**. Names **On**. Each card: orange **matches nothing now**, **Smart**, red **no member ready**, **Edit**, switch on. |
+| 206 | Menu on **probe-a**, the first. **Move up** gray, shortcut **Alt+↑**. **Move down** lit, **Alt+↓**. **Duplicate**. **Copy to share**. |
+| 207 | Pointer on **Duplicate**. Tip, clipped at the window's left edge: "robe-a with its models, routing and rules, listed after it". |
+| 208 | Same tip, whole: **A copy of probe-a with its models, routing and rules, listed after it**. |
+| 209 | Click. Menu closes. Green toast **Duplicated probe-a**. New card **probe-a copy 2** `group/probe-a-copy-2`, listed right after **probe-a** (**probe-a copy** was already taken, so the name is numbered). Same pattern, **Smart**, **no member ready**, switch on. The editor did not open. |
+| 210 | Settled. Four cards: **probe-a**, **probe-a copy 2**, **probe-a copy**, **probe-b**. |
+| 211 | Menu on **probe-b**, the last. **Move up** lit (**Alt+↑**). **Move down** gray (**Alt+↓**). |
+| 212 | Menu on **probe-a copy 2**, not an end. **Move up** and **Move down** both lit, **Alt+↑** and **Alt+↓**. |
+| 213 | **Move down**. Order is **probe-a**, **probe-a copy**, **probe-a copy 2**, **probe-b**. Green toast **Group order saved**. |
+| 214 | **Move up** on **probe-a copy 2**. Order returns to **probe-a**, **probe-a copy 2**, **probe-a copy**, **probe-b**. Green toast **Group order saved**. |
+| 215 | Pointer on the handle (the cube). Grip in the row's margin. Tip, clipped at the left: "lists show the groups in this order · Alt+↑/↓ to move". |
+| 216 | Same tip, whole: **Drag to reorder — agents' model lists show the groups in this order · Alt+↑/↓ to move**. |
+| 217 | The filter focused. Placeholder still clips to **Filter groups and**. All four cards. |
+| 218 | `copy 2`. Every word. Only **probe-a copy 2**. The field's clear mark is in the box. |
+| 219 | `probe-b`. Only **probe-b** (the name, the id, and the pattern). |
+| 220 | `zzz`. **No group or model matches “zzz”**. Find-groups and the names row stay. |
+| 221 | Escape clears it. All four cards return. The keyboard stays in the field. |
+| 222 | With Select open the header buttons leave, and the same field shows the whole placeholder **Filter groups and models**. |
+
+Select / Remove was not re-shot. The confirm is the same as 202–203: **Remove {names}?** and **These routing groups will no longer be available to agents.**, then a green toast **{n} groups removed** and the template cards. After these shots the four groups were removed that way (toast **4 groups removed**) only so the catalog could be emptied. `providers.json` and `providers.json.bak` were both rewritten to `{"providers": []}` so a restore does not bring a group back. `settings.json` was not rewritten (`window` still `[700, 600]`). `plugins.yml` `groups.enabled` is still `true`.
+
+A click while emptying the list flipped the nav to the sidebar. **Hide sidebar** put the top tabs back. Shots 205–222 are the top-tab window. Close was not used.
+
+### Not in this slice
+
+Day pills, By request / By session, Replay (still **Waiting for a request**, 0 / 0 / 0). Alt+↑ / Alt+↓ were shown on the menu and on the handle tip; they were not pressed from the keyboard. Dragging a row by the grip was not done. No OAuth. No Vercel, no package.
+
+## Left state
+
+Routing, **ROUTING GROUPS**, no group row, template cards (**Hard to strong, easy to cheap**, **Cheap first**, **Never stuck**, each **Add a provider first**). Header is Import and **+ New group** (the filter and Select leave with the last extra group). Groups plugin **on**. Find-groups **on**. Names **On**. Gateway **running** on this pid, 0 models. No group, no key. `providers.json` and `.bak` are `{"providers": []}`. Magpie still running, pid 1871993, window 752×652 at +200+40, top tabs. Close was not used.
+
+## demo 对齐（205–222）· v0.1.102 DUPLICATE_MOVE_FILTER_DONE
+- Row menu: **Move up** / **Move down** with **Alt+↑** / **Alt+↓**, gray at the ends (first cannot move up, last cannot move down) · **Duplicate** native tip **A copy of {name} with its models, routing and rules, listed after it** (clips at the left unless the grab is widened)
+- Toast **Duplicated {name}** · new card **{name} copy**, numbered (**{name} copy 2**, `…-copy-2`) when that name is already a group, listed right after the one it copies · editor does not open
+- Move toasts **Group order saved** · handle tip **Drag to reorder — agents' model lists show the groups in this order · Alt+↑/↓ to move** (clips at the left)
+- Header field **Filter groups and models** once there are ≥2 groups; at 752 beside Templates / Import / Select / **+ New group** the placeholder clips after "and". Every word. None: **No group or model matches “{q}”**. Escape clears and the cards return
+- Select / Remove not re-shot (same confirm as 202–203). Day pills / Replay N/A · keyboard Alt+arrows and grip-drag N/A · P1 bird N/A · no portable / Vercel

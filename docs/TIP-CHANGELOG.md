@@ -4,6 +4,18 @@
 
 ---
 
+## v0.1.102 · DUPLICATE_MOVE_FILTER_205_222 · 2026-10-15 Asia/Shanghai
+
+- **WHY:** Consume nest `routing/205–222` Duplicate / Move / Filter into RoutingView (slice only).
+- **WHAT kept:** Win desktop chrome from v0.1.101 (`html.win`, `.win-caption`, brand hide); `SIDE_AT=1024`; no `WEB_SIDE_AT`; 752 nest frame.
+- **WHAT changed (Routing only):**
+  - Duplicate names **`{name} copy`** / numbered **`{name} copy 2`** (was wrong `Copy of {name}`) · toast **Duplicated {name}** · listed after source
+  - Move up/down disabled at ends · toast **Group order saved** · handle tip + Alt+↑/↓
+  - Filter: every word · empty **No group or model matches “{q}”** · Escape clears · Select mode hides Templates/Import/Select/+ New group
+- **Nest:** `interactions/native-linux/routing/205–222` + NOTES; Magpie OSS `routing.js` groupMenu / hayMatches / gQ Escape.
+- **Guard:** `npm run chrome-guard` pass. No portable. Vercel not forced (402 risk).
+
+---
 ## v0.1.101 · WIN_DESKTOP_CHROME · 2026-10-15 Asia/Shanghai
 
 - **WHY:** User wants 1:1 **Windows** Magpie desktop chrome from open source — Linux nest screenshots look thinner; Win system title bar is the gold look.

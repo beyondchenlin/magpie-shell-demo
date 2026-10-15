@@ -1,3 +1,7 @@
+## v0.1.102 DUPLICATE_MOVE_FILTER_205_222
+- Consumed native `routing/205–222` NOTES: Duplicate → **{name} copy** / **{name} copy 2** after original + toast **Duplicated {name}**; Move up/down gray at ends + toast **Group order saved**; handle tip **Drag to reorder — agents' model lists show the groups in this order · Alt+↑/↓ to move** (+ Alt+↑/↓); Filter every-word, empty **No group or model matches “{q}”**, Escape clears; Select hides Templates/Import/Select/New group (filter stays).
+- Win chrome from v0.1.101 **kept** (`html.win` / caption / brand hide). SIDE_AT=1024; no WEB_SIDE_AT. No portable.
+
 ## v0.1.101 WIN_DESKTOP_CHROME
 - Web/Electron desktop preview defaults to **Windows Magpie** chrome: fake OS title bar (`.win-caption`), `html.win` Segoe, in-page brand hidden, `side-top` 10px — from Magpie open source (`layout.js`, `app.css` L184/L347, `titlebar_other.go`).
 - `SIDE_AT=1024` gold; no `WEB_SIDE_AT`; 752 nest frame kept; Duplicate 205–222 deferred. No portable.

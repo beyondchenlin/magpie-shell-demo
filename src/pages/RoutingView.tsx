@@ -1584,16 +1584,27 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
             <span className="label">{t("Routing groups")}</span>
             <span className="grow" />
             <span className="note">{t("models agents pick as one")}</span>
-            {savedGroups.length >= 2 ? (
+            {savedGroups.length >= 2 || groupFilter ? (
               <input
                 type="search"
                 className="rt-gfilter"
                 value={groupFilter}
                 placeholder={t("Filter groups and models")}
+                spellCheck={false}
+                autoComplete="off"
+                aria-label={t("Filter groups and models")}
                 onChange={(e) => setGroupFilter(e.target.value)}
-                onKeyDown={(e) => e.stopPropagation()}
+                onKeyDown={(e) => {
+                  e.stopPropagation();
+                  if (e.key === "Escape" && groupFilter) {
+                    e.preventDefault();
+                    setGroupFilter("");
+                  }
+                }}
               />
             ) : null}
+            {!selecting ? (
+              <>
             {savedGroups.length ? (
               <button
                 type="button"
@@ -1656,6 +1667,8 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
               </svg>
               <span>{t("New group")}</span>
             </button>
+              </>
+            ) : null}
           </div>
           <div className="rt-gfound row pref" style={{ alignItems: "flex-start", gap: 12, padding: "10px 4px" }}>
             <div className="txt" style={{ flex: 1, minWidth: 0 }}>
@@ -2101,22 +2114,31 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
 
           {savedGroups.length ? (
             <div className="rt-groups" style={{ marginTop: 8 }}>
-              {savedGroups
-                .filter((g) => {
-                  const q = groupFilter.trim().toLowerCase();
-                  if (!q) return true;
-                  const hay = [
-                    g.name,
-                    g.slug,
-                    ...g.members,
-                    ...g.memberNames,
-                    ...(g.patterns || []),
-                  ]
-                    .join(" ")
-                    .toLowerCase();
-                  return hay.includes(q);
-                })
-                .map((g) => {
+              {(() => {
+                const words = groupFilter.trim().toLowerCase().split(/\s+/).filter(Boolean);
+                const filtered = words.length
+                  ? savedGroups.filter((g) => {
+                      const hay = [
+                        g.name,
+                        g.slug,
+                        "group/" + g.slug,
+                        ...g.members,
+                        ...g.memberNames,
+                        ...(g.patterns || []),
+                      ]
+                        .join("\n")
+                        .toLowerCase();
+                      return words.every((w) => hay.includes(w));
+                    })
+                  : savedGroups;
+                if (!filtered.length && words.length) {
+                  return (
+                    <div className="none rt-gnone">
+                      {t("No group or model matches “{q}”", { q: groupFilter.trim() })}
+                    </div>
+                  );
+                }
+                return filtered.map((g) => {
                   const picked = pickedSlugs.has(g.slug);
                   return (
                 <div
@@ -2159,13 +2181,30 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                   <button
                     type="button"
                     className={`ics rt-ghandle ag-handle${rowMenu?.slug === g.slug ? " open" : ""}`}
-                    aria-label={g.name}
+                    aria-label={t("Arrange {agent}", { agent: g.name })}
                     aria-haspopup="menu"
                     aria-expanded={rowMenu?.slug === g.slug}
+                    title={t("Drag to reorder — agents' model lists show the groups in this order · Alt+↑/↓ to move")}
                     onClick={(e) => {
                       e.stopPropagation();
                       const el = e.currentTarget;
                       setRowMenu((m) => (m?.slug === g.slug ? null : { slug: g.slug, el }));
+                    }}
+                    onKeyDown={(e) => {
+                      if (!e.altKey || (e.key !== "ArrowUp" && e.key !== "ArrowDown")) return;
+                      e.preventDefault();
+                      e.stopPropagation();
+                      const i = savedGroups.findIndex((x) => x.slug === g.slug);
+                      if (i < 0) return;
+                      const to = e.key === "ArrowUp" ? i - 1 : i + 1;
+                      if (to < 0 || to >= savedGroups.length) return;
+                      setSavedGroups((gs) => {
+                        const next = [...gs];
+                        const [row] = next.splice(i, 1);
+                        next.splice(to, 0, row);
+                        return next;
+                      });
+                      onStatus?.(t("Group order saved"), "ok");
                     }}
                   >
                     <svg className="ic" viewBox="0 0 16 16" width={16} height={16} aria-hidden>
@@ -2271,7 +2310,8 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                   ) : null}
                 </div>
                   );
-                })}
+                });
+              })()}
             </div>
           ) : null}
 
@@ -2291,6 +2331,7 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                   [next[i - 1], next[i]] = [next[i], next[i - 1]];
                   return next;
                 });
+                onStatus?.(t("Group order saved"), "ok");
               }}
               onMoveDown={() => {
                 const i = savedGroups.findIndex((x) => x.slug === rowMenu.slug);
@@ -2300,11 +2341,12 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                   [next[i], next[i + 1]] = [next[i + 1], next[i]];
                   return next;
                 });
+                onStatus?.(t("Group order saved"), "ok");
               }}
               onDuplicate={() => {
                 const src = savedGroups.find((x) => x.slug === rowMenu.slug);
                 if (!src) return;
-                const { name, slug } = uniqueGroupName(t("Copy of {name}", { name: src.name }), savedGroups);
+                const { name, slug } = uniqueGroupName(t("{name} copy", { name: src.name }), savedGroups);
                 setSavedGroups((gs) => {
                   const i = gs.findIndex((x) => x.slug === src.slug);
                   const copy: SavedGroupDraft = {
