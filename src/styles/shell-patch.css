@@ -422,13 +422,14 @@ body.web.side-nav {
 
 
 /* USAGE_NEST v0.1.37 — native usage/01–50 calendar + refresh */
-.usage-head .period-wrap { flex-wrap: wrap; max-width: min(100%, 420px); }
+/* v0.1.177: drop invent .period-wrap / .led-q-wrap — Magpie #period is plain .segs
+   (index.html L138; app.css L2782 position:relative + L3359 body.web .usage-head > .segs);
+   Magpie #ledQ is bare .sess-filter (index.html L182; Escape clears app.js L18964–65). */
 .usage-head .range-opt { display: inline-flex; align-items: center; gap: 5px; }
 .usage-head .range-opt > span { max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .usage-head .range-opt.on > span { max-width: 220px; white-space: normal; }
 .usage-refresh .pop.proto-menu.sess-menu { width: 148px; min-width: 148px; }
 .ctx-tune-note { margin: 0 0 10px; }
-.led-q-wrap .sess-filter { min-width: 180px; }
 
 /* v0.1.43 MOTION — Magpie control transitions still unmatched
    v0.1.128: drop invent .guide-x transition (Magpie app.css L3728–3729: snap hover) */
@@ -608,7 +609,7 @@ body.web.side-nav {
   }
   body.web .pm-art { display: none; }
   body.web .sess-filter { min-width: 0; width: 100%; }
-  body.web .usage-head .period-wrap { max-width: 100%; }
+  /* v0.1.177: drop invent body.web .usage-head .period-wrap — Magpie app.css L3359 */
   body.web .ag-install-cmds { flex-wrap: wrap; }
   /* v0.1.131: drop invent body.web .row.agent.conn flex-wrap — Magpie app.css L3329 body.web .row.agent */
   body.web .modal .editor,
@@ -776,10 +777,9 @@ label.tick input { margin: 0; }
    v0.1.164: LedChart speed marks/stems (metric===speed; Magpie L18030–55).
    v0.1.171: drop invent #view-usage .us-empty — Magpie Usage empty is
    #stats.stats.empty > .none (app.js L17250–55; app.css L1020–21), not
-   card.empty-state.us-empty. Keep nest bridges: period-wrap/usage-refresh
-   relative for pops. */
-#view-usage .usage-refresh,
-#view-usage .period-wrap { position: relative; }
+   card.empty-state.us-empty. Keep nest bridge: usage-refresh relative for pops;
+   #period is Magpie .segs (already position:relative). */
+#view-usage .usage-refresh { position: relative; }
 /* v0.1.162: drop invent #view-usage .us-miniplot — Magpie app.css .led-chart SVG */
 /* v0.1.174: drop invent #view-plugins .pm-headrow wrap + ProtoMenu pm-headrow /
    invent Plugins folderPicker .pm-folder-row dialog —

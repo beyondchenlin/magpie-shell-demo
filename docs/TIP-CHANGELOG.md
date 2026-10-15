@@ -1,3 +1,20 @@
+## v0.1.177 · PERIOD_LEDQ_OSS · 2026-10-16 Asia/Shanghai
+
+- **WHY:** Hard invent audit — Usage period picker stacked invent `period-wrap` on Magpie `#period.segs`, and Requests search wrapped `#ledQ` in invent `led-q-wrap` plus invent `icon led-q-clear` with paddingRight. Magpie OSS uses plain `.segs#period` and a bare `.sess-filter#ledQ`; Escape clears the query (no clear button). Gold already gives `.segs` `position:relative` and `body.web .usage-head > .segs` wrap/max-width.
+- **CAUSE:** Tip invented layout wrappers for calendar pop / clear UX instead of relying on Magpie `.segs` + Escape.
+- **Cite:**
+  - Magpie `index.html` **L138** `<div class="segs" id="period"></div>`
+  - Magpie `index.html` **L182** bare `<input class="sess-filter" id="ledQ" type="search" …>`
+  - Magpie `app.css` **L2782** `.segs { position: relative; … }`
+  - Magpie `app.css` **L3359** `body.web .usage-head > .segs { max-width: 100%; flex-wrap: wrap; }`
+  - Magpie `app.js` **L18964–65** Escape → clear ledQ / ledModel (no clear button)
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; skip oauth Approve wall; Magpie `.range-opt`; `#view-usage .usage-refresh { position: relative }` for pops; Escape clear (+ stopPropagation to match Magpie).
+- **WHAT changed:**
+  - `SimpleViews.tsx`: `segs period-wrap` → Magpie `segs`; unwrap `led-q-wrap`; drop invent `led-q-clear` + paddingRight.
+  - `shell-patch.css`: delete invent `.usage-head .period-wrap`, `.led-q-wrap .sess-filter`, `body.web .usage-head .period-wrap`, `#view-usage .period-wrap` relative (`.segs` already relative).
+- **Remaining invent (weak/skip):** oauth Approve wall (nest=browser); `rt-flier-demo`; `win-caption*`; intentional `lib-hook*` / `pref-anchor` React bridges; weak: `pm-find-clear` vs Magpie native search cancel; `ic-img` vs Magpie `span.ic>img`; `rt-peer` / `rt-fade` extras; residual `.usage-head .range-opt > span` max-width ellipsis bridge.
+- **Guard:** `npm run chrome-guard`. No portable. No manual Vercel.
+
 ## v0.1.176 · CTX_EMPTY_DASH_OSS · 2026-10-16 Asia/Shanghai
 
 - **WHY:** Hard invent audit — Context "Through magpie" empty state stacked invent `ctx-empty-dash` on Magpie `ctx-none`, with shell-patch `.ctx-empty-dash b { display:block; font-weight:600 }`. Magpie OSS uses only `div.ctx-none` with `b` + `span`; `.ctx-none` is already column flex and `.ctx-none b` already sets weight 600.

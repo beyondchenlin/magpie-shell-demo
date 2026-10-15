@@ -850,7 +850,7 @@ export function UsageView() {
           items={USAGE_TABS.map(([id, en]) => ({ id, label: t(en) }))}
         />
         {tab !== "sessions" && tab !== "context" ? (
-          <div className="segs period-wrap" id="period" ref={setPeriodBox}>
+          <div className="segs" id="period" ref={setPeriodBox}>
             {PERIODS.map(([id, en]) => (
               <button
                 key={id}
@@ -1269,45 +1269,27 @@ export function UsageView() {
             }}>
             {demoFilled ? demoCopy("演示数据开", "Demo data on") : demoCopy("演示数据关", "Demo data off")}
           </TextBtn>
-          <span className="led-q-wrap">
-            <input
-              className="sess-filter"
-              id="ledQ"
-              type="search"
-              spellCheck={false}
-              autoComplete="off"
-              placeholder={t("Search models, providers, sessions")}
-              value={ledQ}
-              onChange={(e) => {
-                setLedQ(e.target.value);
+          <input
+            className="sess-filter"
+            id="ledQ"
+            type="search"
+            spellCheck={false}
+            autoComplete="off"
+            placeholder={t("Search models, providers, sessions")}
+            value={ledQ}
+            onChange={(e) => {
+              setLedQ(e.target.value);
+              setLedPage(0);
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Escape" && ledQ) {
+                e.preventDefault();
+                e.stopPropagation();
+                setLedQ("");
                 setLedPage(0);
-              }}
-              onKeyDown={(e) => {
-                if (e.key === "Escape" && ledQ) {
-                  e.preventDefault();
-                  setLedQ("");
-                  setLedPage(0);
-                }
-              }}
-              style={ledQ ? { paddingRight: 28 } : undefined}
-            />
-            {ledQ ? (
-              <button
-                type="button"
-                className="icon led-q-clear"
-                aria-label={t("Clear")}
-                title={t("Clear")}
-               
-                onClick={() => {
-                  setLedQ("");
-                  setLedPage(0);
-                }}>
-                <svg viewBox="0 0 12 12" width={10} height={10} aria-hidden>
-                  <path d="M3 3l6 6M9 3l-6 6" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-                </svg>
-              </button>
-            ) : null}
-          </span>
+              }
+            }}
+          />
           <TextBtn
             id="ledExport"
             disabled={!ledRows.length}

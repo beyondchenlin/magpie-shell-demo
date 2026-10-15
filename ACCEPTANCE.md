@@ -1,3 +1,10 @@
+## v0.1.177 · PERIOD_LEDQ_OSS · 2026-10-16 Asia/Shanghai
+
+- **WHY:** Drop invent Usage wrappers `period-wrap` + `led-q-wrap` / invent `led-q-clear`; restore Magpie plain `#period.segs` and bare `#ledQ.sess-filter` (Escape clears).
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; skip oauth Approve wall; Magpie `.range-opt` / Escape clear; `#view-usage .usage-refresh` relative for pops.
+- **Cite:** Magpie index.html **L138** `div.segs#period`; **L182** bare `input.sess-filter#ledQ`; app.css **L2782** `.segs` position:relative; **L3359** `body.web .usage-head > .segs`; app.js **L18964–65** Escape clears ledQ (no clear button).
+- **chrome-guard:** pass. Push/PR #1. No portable/Vercel.
+
 ## v0.1.176 · CTX_EMPTY_DASH_OSS · 2026-10-16 Asia/Shanghai
 
 - **WHY:** Drop invent Context empty class `ctx-empty-dash` on Magpie `ctx-none`; Magpie OSS already styles title via `.ctx-none b`.
