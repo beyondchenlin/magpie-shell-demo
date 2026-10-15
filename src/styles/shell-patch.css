@@ -735,48 +735,10 @@ label.tick input { margin: 0; }
    Magpie app.js field() L7219–7238 + library/client.js editServer/editHook
    (bare <label> + wrap <div> on .editor 2-col grid; lib-slot/lib-grid;
    lib-pairs/lib-pair/lib-addpair). WordsField = Magpie field2 input.words. */
-/* Image/skill sheet ehead.detail + blurb bridges (not Magpie field()) — later tip if gold differs. */
-.modal .editor.lib-editor .ehead.detail {
-  align-items: flex-start;
-  gap: 10px;
-  margin-bottom: 10px;
-}
-.modal .editor.lib-editor .ehead.detail .mark {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: var(--bg);
-  border: 1px solid var(--line);
-  display: grid;
-  place-items: center;
-  flex: none;
-}
-.modal .editor.lib-editor .ehead.detail .who { flex: 1; min-width: 0; }
-.modal .editor.lib-editor .ehead.detail .who .name { display: block; font-size: 15px; font-weight: 600; }
-.modal .editor.lib-editor .ehead.detail .who .sub { font-size: 12.5px; color: var(--muted); }
-.modal .editor.lib-editor .ehead.detail .who .pill {
-  margin-left: 8px;
-  padding: 1px 7px;
-  border-radius: 999px;
-  border: 1px solid var(--line);
-  font-size: 11px;
-}
-.modal .editor.lib-editor .blurb {
-  grid-column: 1 / -1;
-  margin: 0 0 8px;
-  font-size: 13px;
-  line-height: 1.45;
-  color: var(--fg);
-}
-.modal .editor.lib-editor .blurb.muted {
-  margin: 0 0 12px;
-  font-size: 12.5px;
-  color: var(--muted);
-}
-.modal .editor.lib-editor .bar .note {
-  font-size: 12px;
-  color: var(--muted);
-}
+/* v0.1.157: drop invent .ehead.detail / .blurb / .bar .note —
+   Magpie market sheets: editor.lib-editor.mk-sheet + mk-sheethead / mk-about / mk-hint /
+   mk-id (library/client.js serverSheet L4795–4849 / skillSheet L4899–4939;
+   library.css L441–451). */
 /* v0.1.155: drop invent .acts MCP Remove — Magpie editServer puts
    Remove from the library + copyConfigButton in .bar (client.js L2046–2091;
    button danger → text danger; app.css L2847–2848 .editor .bar / .bar .danger). */

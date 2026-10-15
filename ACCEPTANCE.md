@@ -1,3 +1,12 @@
+## v0.1.157 · LIBRARY_MK_SHEET_OSS_FIDELITY · 2026-10-16 Asia/Shanghai
+
+- **WHY:** invent image/skill `.ehead.detail` / `.blurb` → Magpie `mk-sheet` / `mk-sheethead` / `mk-about` / `mk-hint`.
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; CIS PrefPick/WordsField; Magpie field()/MCP `.bar`/OS file input.
+- **Cite:** library/client.js L4795–4849 / L4899–4939; library.css L441–451.
+- **chrome-guard:** pass (SIDE_AT=1024).
+- **No portable / Vercel.**
+- **Handoff remaining invent (light):** Discover cards still omit Magpie `mk-icon` on grid; demo oauth Approve wall; Agents `.val.acts` Connect/Relocate bridge; any leftover shell-patch tip comments without live invent selectors.
+
 ## v0.1.156 · GTK_SELECT_FILES_OSS_FIDELITY · 2026-10-16 Asia/Shanghai
 
 - **WHY:** invent `.dialog.gtk-select-files` → Magpie OS `<input type=file>` (Providers import + Sync importForm).

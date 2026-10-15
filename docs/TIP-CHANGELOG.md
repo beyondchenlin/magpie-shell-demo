@@ -1,3 +1,16 @@
+## v0.1.157 · LIBRARY_MK_SHEET_OSS_FIDELITY · 2026-10-16 Asia/Shanghai
+
+- **WHY:** Continue Magpie 1:1 after 0.1.156 — cut invent image/skill sheet `.ehead.detail` / `.mark` / `.who` / `.blurb` / `.bar .note` that painted a fake editor-head over Magpie market sheet gold.
+- **CAUSE:** Demo Magpie Image + skills.sh detail sheets used invent `ehead detail` + `blurb`/`blurb muted` (+ shell-patch geometry) instead of Magpie `serverSheet` / `skillSheet` → `editor.lib-editor.mk-sheet` + `mk-sheethead` (`mk-icon` / `mk-who` / `mk-name.big` / `mk-meta` / `mk-ext`) + `mk-about` + `mk-hint` + bar `mk-id` (library/client.js **L4795–4849** / **L4899–4939**; library.css **L441–451**).
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; CIS PrefPick/WordsField/Segs/TextBtn/LibSwitch; Magpie field()/lib-pairs (0.1.154) + MCP `.bar` (0.1.155) + OS file input (0.1.156).
+- **Cite:**
+  - Magpie `plugins/library/client.js` **4795–4849** `serverSheet`: `mk-sheethead` + logo + `mk-about` + opt-in `mk-hint` + `field(Agents)` + bar `mk-id` / Cancel / Add
+  - Magpie `plugins/library/client.js` **4899–4939** `skillSheet`: same head + `mk-about` + `mk-hint` From+github `mk-ext` + skills.sh `mk-ext`
+  - Magpie `plugins/library/client.js` **4853–4858** `extLink` → `a.mk-ext` + GLYPH.out; **4709–4728** `logo` → `mk-icon` / mono fallback
+  - Magpie `plugins/library/library.css` **441–451** `.mk-sheet` / `.mk-sheethead` / `.mk-about` / `.mk-hint` / `.mk-ext` / `.mk-id`
+- **WHAT changed:** `LibraryView.tsx` image/skill sheets → Magpie `mk-sheet` DOM; `shell-patch.css` drop invent `.ehead.detail` / `.blurb` / `.bar .note`.
+- **chrome-guard:** pass (SIDE_AT=1024). Push/PR #1. No portable/Vercel.
+
 ## v0.1.156 · GTK_SELECT_FILES_OSS_FIDELITY · 2026-10-16 Asia/Shanghai
 
 - **WHY:** Continue Magpie 1:1 after 0.1.155 — cut invent `.dialog.gtk-select-files` / `.places` / `.pane` that painted an in-app GTK Select Files sheet over Magpie OS file input gold.

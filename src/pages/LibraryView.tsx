@@ -93,6 +93,8 @@ const HOOK_GLYPH = "M10.5 2.5v6.5a3 3 0 0 1-6 0V7.5 M3 9l1.5-1.5L6 9";
 const TRASH_GLYPH = "M3.5 4.5h9 M6.5 4.5V3h3v1.5 M4.5 4.5l.6 8.5h5.8l.6-8.5";
 const CHEV_R = "m6.5 4.5 3 3.5-3 3.5";
 const SKILL_GLYPH = "M4 2.5h6.5L12 4v9.5H4z M6 6h4 M6 8.5h4 M6 11h2.5";
+/** Magpie library/client.js GLYPH.out L44 — mk-ext external link. */
+const OUT_GLYPH = "M9.5 3.5h3v3 M12.5 3.5 7.5 8.5 M11 9.5v3H3.5V5h3";
 const DEMO_MCP = [
   { id: "magpie-image", name: "Magpie Image", by: "Magpie", tag: "magpie", desc: "Generate and edit images with the image model set in Magpie (Settings → Images), and make short videos with a video model set up in Magpie (Grok Imagine, Seedance), saved in the project.", addDots: true, sheet: true as const },
   { id: "context7", name: "Context7", by: "Upstash", tag: "Remote", desc: "Up-to-date documentation and code examples for any library, straight into the…" },
@@ -2897,19 +2899,37 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
       ) : null}
 
       {imageSheet ? (
-        <LibModal onBg={() => setImageSheet(false)}>
-          <div className="ehead detail">
-            <span className="mark" aria-hidden>🐦</span>
-            <div className="who">
-              <span className="name">Magpie Image</span>
-              <span className="sub">Magpie <code>magpie</code></span>
+        <LibModal onBg={() => setImageSheet(false)} editorClassName="mk-sheet">
+          {/* Magpie serverSheet: mk-sheethead / mk-about / mk-hint (library/client.js L4795–4849) */}
+          <div className="mk-sheethead">
+            <span className="mk-icon mono" aria-hidden>
+              <span className="mk-mono">M</span>
+            </span>
+            <div className="mk-who">
+              <div className="mk-name big">Magpie Image</div>
+              <div className="mk-meta">
+                <span className="mk-pub">Magpie</span>
+                <span className="mk-badge">magpie</span>
+              </div>
             </div>
-            <button type="button" className="text" onClick={() => window.open("https://github.com/beyondchenlin/magpie-shell-demo", "_blank", "noopener,noreferrer")}>{t("Homepage")} ↗</button>
+            <a
+              className="mk-ext"
+              href="https://github.com/beyondchenlin/magpie-shell-demo"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                window.open("https://github.com/beyondchenlin/magpie-shell-demo", "_blank", "noopener,noreferrer");
+              }}>
+              <span>{t("Homepage")}</span>
+              <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden>
+                <path d={OUT_GLYPH} />
+              </svg>
+            </a>
           </div>
-          <p className="blurb">
+          <p className="mk-about">
             {t("Generate and edit images with the image model set in Magpie (Settings → Images), and make short videos with a video model set up in Magpie (Grok Imagine, Seedance), saved in the project.")}
           </p>
-          <p className="blurb muted">
+          <p className="mk-hint">
             {t("Pick the agents that may generate images: each image costs what the model set in Settings → Images charges.")}
           </p>
           <LibField label={t("Agents")}>
@@ -2918,7 +2938,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
             </div>
           </LibField>
           <div className="bar">
-            <span className="note">magpie-image</span>
+            <span className="mk-id mono">magpie-image</span>
             <span className="grow" />
             <button type="button" className="text" onClick={() => setImageSheet(false)}>{t("Cancel")}</button>
             <button
@@ -2949,21 +2969,52 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
 
 
       {skillSheet ? (
-        <LibModal onBg={() => setSkillSheet(null)}>
-          <div className="ehead detail">
-            <div className="who">
-              <span className="name">{skillSheet.name}</span>
-              <span className="sub">
-                {skillSheet.by}
+        <LibModal onBg={() => setSkillSheet(null)} editorClassName="mk-sheet">
+          {/* Magpie skillSheet: mk-sheethead / mk-about / mk-hint (library/client.js L4899–4939) */}
+          <div className="mk-sheethead">
+            <span className="mk-icon mono" aria-hidden>
+              <span className="mk-mono">{(skillSheet.name.replace(/^[^a-z0-9]+/i, "").charAt(0) || "?").toUpperCase()}</span>
+            </span>
+            <div className="mk-who">
+              <div className="mk-name big">{skillSheet.name}</div>
+              <div className="mk-meta">
+                <span className="mk-pub">{skillSheet.by}</span>
                 {skillSheet.installs ? (
-                  <span className="pill">{skillSheet.installs} installs</span>
+                  <span className="mk-badge">{t("{n} installs", { n: skillSheet.installs })}</span>
                 ) : null}
-              </span>
+              </div>
             </div>
-            <button type="button" className="text" onClick={() => window.open("https://skills.sh", "_blank", "noopener,noreferrer")}>skills.sh ↗</button>
+            <a
+              className="mk-ext"
+              href={`https://skills.sh/${skillSheet.by}/${skillSheet.id}`}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                window.open(`https://skills.sh/${skillSheet.by}/${skillSheet.id}`, "_blank", "noopener,noreferrer");
+              }}>
+              <span>skills.sh</span>
+              <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden>
+                <path d={OUT_GLYPH} />
+              </svg>
+            </a>
           </div>
-          <p className="blurb">{skillSheet.desc}</p>
-          <p className="blurb muted">From github.com/{skillSheet.by}</p>
+          <p className="mk-about">{skillSheet.desc}</p>
+          <div className="mk-hint">
+            <span>{t("From")}</span>
+            <a
+              className="mk-ext"
+              href={`https://github.com/${skillSheet.by}`}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                window.open(`https://github.com/${skillSheet.by}`, "_blank", "noopener,noreferrer");
+              }}>
+              <span>github.com/{skillSheet.by}</span>
+              <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden>
+                <path d={OUT_GLYPH} />
+              </svg>
+            </a>
+          </div>
           <LibField label={t("Agents")}>
             <div className="lib-agents">
               <LibChip on label="Cursor" onClick={() => {}} />
