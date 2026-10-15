@@ -847,56 +847,14 @@ label.tick input { margin: 0; }
   margin-bottom: 10px;
   position: relative;
 }
-.modal .editor.lib-editor .pop.menu {
-  position: absolute;
-  z-index: 8;
-  min-width: 180px;
-  max-height: 320px;
-  overflow: auto;
-  padding: 4px;
-  border-radius: 10px;
-  border: 1px solid var(--line);
-  background: var(--card);
-  box-shadow: 0 10px 28px rgba(20, 22, 30, .16);
-  animation: pop-in .28s var(--ease);
-}
-.modal .editor.lib-editor .pop.menu.up {
-  bottom: 100%;
+/* v0.1.152: drop invent .pop.menu / .gl / .text.item —
+   Magpie openProtoMenu (library/client.js L2305–2311 event + L2345 tools;
+   app.js L13799–13849) → .pop.proto-menu + .pm-head / .pm-item / .sc-top .sc-q.
+   React nest: Magpie placeMenu→body; framed web anchors under .pref-anchor.lib-hookpick. */
+.pref-anchor.lib-hookpick > .pop.proto-menu {
   left: 0;
-  margin-bottom: 6px;
-  min-width: 220px;
-  padding: 6px 0;
+  right: auto;
 }
-.modal .editor.lib-editor .pop.menu .words {
-  width: calc(100% - 8px);
-  max-width: none;
-  margin: 0 4px 4px;
-}
-.modal .editor.lib-editor .pop.menu.down {
-  top: 100%;
-  left: 0;
-  margin-top: 4px;
-}
-.modal .editor.lib-editor .pop.menu .gl {
-  padding: 4px 12px 6px;
-  font-size: 11px;
-  color: var(--muted);
-  font-weight: 600;
-}
-.modal .editor.lib-editor .pop.menu .text.item {
-  display: block;
-  width: 100%;
-  text-align: left;
-  padding: 7px 10px;
-  border-radius: 7px;
-  border: 0;
-  background: transparent;
-  font: inherit;
-  font-size: 13px;
-  cursor: pointer;
-}
-.modal .editor.lib-editor .pop.menu .text.item .v { display: block; font-size: 12.5px; }
-.modal .editor.lib-editor .pop.menu .text.item .n { color: var(--muted); font-size: 11px; }
 .modal .editor.lib-editor .field-block {
   margin-bottom: 12px;
   position: relative;

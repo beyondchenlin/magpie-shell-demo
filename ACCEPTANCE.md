@@ -1,3 +1,11 @@
+## v0.1.152 · LIBRARY_HOOK_PROTO_MENU_OSS_FIDELITY · 2026-10-15 Asia/Shanghai
+
+- **WHY:** Hook editor When-it-runs / For-which-tools invent `.pop.menu` / `.gl` / `.text.item` → Magpie `openProtoMenu` `.pop.proto-menu`.
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; CIS PrefPick/PrefRow; Magpie library.css `lib-hookedit` / `lib-menu`; Copy-config proto-menu.
+- **Cite:** library/client.js L2291–2347; app.js L13799–13849 openProtoMenu; app.css L2499–2506 `.pm-*`.
+- **chrome-guard:** pass (SIDE_AT=1024).
+- **No portable / Vercel.**
+
 ## v0.1.151 · LIBRARY_PROJECT_HOOK_OAUTH_OSS_FIDELITY · 2026-10-15 Asia/Shanghai
 
 - **WHY:** Cut Library invent project/hook/oauth/intro/Copy-config/lib-mini bridges → Magpie OSS DOM.

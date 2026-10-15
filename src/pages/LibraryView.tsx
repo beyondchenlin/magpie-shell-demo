@@ -87,6 +87,8 @@ const DOC = "M4 2.5h5.5L12 5v8.5H4z M9.5 2.5V5H12";
 const FOLDER = "M2.5 4.5h4l1.2 1.3h5.8v6.7h-11z";
 const BACKUP = "M3.2 8a4.8 4.8 0 1 0 1.4-3.4 M2.8 2.6v2.4h2.4 M8 5.3V8l1.9 1.2";
 const SEARCH = "M7 3a4 4 0 1 0 0 8 4 4 0 0 0 0-8z M10 10l3 3";
+/** Magpie openProtoMenu tick (app.js CHECK / NestedBlocks PM_CHECK) */
+const PM_CHECK = "M3.2 8.2 6.4 11.4 12.8 4.2";
 const HOOK_GLYPH = "M10.5 2.5v6.5a3 3 0 0 1-6 0V7.5 M3 9l1.5-1.5L6 9";
 const TRASH_GLYPH = "M3.5 4.5h9 M6.5 4.5V3h3v1.5 M4.5 4.5l.6 8.5h5.8l.6-8.5";
 const CHEV_R = "m6.5 4.5 3 3.5-3 3.5";
@@ -260,10 +262,13 @@ function LibModal({
   onBg,
   children,
   onPaste,
+  editorClassName,
 }: {
   onBg: () => void;
   children: ReactNode;
   onPaste?: (e: ClipboardEvent) => void;
+  /** Magpie hook editor adds `lib-hookedit` (client.js L2270). */
+  editorClassName?: string;
 }) {
   /** Magpie openLib: `.modal.lib` > `.dialog` > `.editor.lib-editor` (client.js openLib / openModal). */
   return (
@@ -277,7 +282,7 @@ function LibModal({
         role="dialog"
         aria-modal
         onMouseDown={(e) => e.stopPropagation()}>
-        <div className="editor lib-editor" onPaste={onPaste}>
+        <div className={`editor lib-editor${editorClassName ? " " + editorClassName : ""}`} onPaste={onPaste}>
           {children}
         </div>
       </div>
@@ -389,6 +394,30 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
   const [eventMenu, setEventMenu] = useState(false);
   const [eventFilter, setEventFilter] = useState("");
   const [toolMenu, setToolMenu] = useState(false);
+  /* Magpie openProtoMenu outside/Escape (app.js L13854–L13864) */
+  useEffect(() => {
+    if (!eventMenu && !toolMenu) return;
+    const onDown = (e: MouseEvent) => {
+      const n = e.target as Node | null;
+      const host = n && (n as Element).closest?.(".lib-hookpick");
+      if (host) return;
+      setEventMenu(false);
+      setToolMenu(false);
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setEventMenu(false);
+        setToolMenu(false);
+        setEventFilter("");
+      }
+    };
+    document.addEventListener("mousedown", onDown, true);
+    document.addEventListener("keydown", onKey, true);
+    return () => {
+      document.removeEventListener("mousedown", onDown, true);
+      document.removeEventListener("keydown", onKey, true);
+    };
+  }, [eventMenu, toolMenu]);
   const [rtkOn, setRtkOn] = useState<Record<string, boolean>>({ cursor: false });
   /** Magpie renderRTK: missing | installing | checking (skeleton) — no fake binary/path */
   const [rtkPhase, setRtkPhase] = useState<"missing" | "installing" | "checking">("missing");
@@ -2866,7 +2895,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
       ) : null}
 
       {hookEditor ? (
-        <LibModal onBg={tryCloseHook}>
+        <LibModal onBg={tryCloseHook} editorClassName="lib-hookedit">
           <div className="ehead">
             <b>{t("New hook")}</b>
           </div>
@@ -2892,68 +2921,109 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
               />
               <span className="hint">{t("Optional: what it's for, in any language. Only the library keeps it")}</span>
             </label>
-            <div className="field-block">
+            {/* Magpie client.js L2291–2313: sess-pick.lib-menu + openProtoMenu(..., "When it runs", "", "left", false, "Find an event") */}
+            <label className="field">
               <span className="k">{t("When it runs")}</span>
-              <PrefPick
-                label={
-                  hookEditor.event.includes(":")
-                    ? `Cursor · ${hookEditor.event.split(":")[1]}`
-                    : t(HOOK_EVENTS.find(([v]) => v === hookEditor.event)?.[1] || hookEditor.event)
-                }
-                open={eventMenu}
-                onClick={() => { setEventMenu((v) => !v); setToolMenu(false); }}
-                aria-haspopup="menu"
-              />
-              {eventMenu ? (
-                <div role="menu" className="pop menu down">
-                  <div className="gl">{t("When it runs")}</div>
-                  <WordsField
-                    className="full" type="search"
-                    value={eventFilter}
-                    placeholder={t("Find an event")}
-                    onChange={(e) => setEventFilter(e.target.value)}
-                    onKeyDown={(e) => e.stopPropagation()}
-                    autoFocus
-                  />
-                  {/* Magpie: shared events always:true — never hidden by Find an event */}
-                  {HOOK_EVENTS.map(([v, n]) => (
-                    <button
-                      key={v}
-                      type="button"
-                      role="menuitem"
-                      className="text item" onClick={() => {
-                        setHookEditor({ ...hookEditor, event: v, matcher: toolEvent(v) ? hookEditor.matcher : "", agents: DEMO_AGENTS.map((a) => a.id) });
-                        setEventMenu(false);
-                        setEventFilter("");
-                      }}>
-                      <span className="v">{t(n)}{hookEditor.event === v ? " ✓" : ""}</span>
-                      <small className="n">{t("every agent, in its own name for it")}</small>
-                    </button>
-                  ))}
-                  {CURSOR_HOOK_EVENTS.filter((ev) => {
-                    const q = eventFilter.trim().toLowerCase();
-                    if (!q) return true;
-                    return (`cursor ${ev}`).toLowerCase().includes(q);
-                  }).map((ev) => {
-                    const v = `cursor:${ev}`;
-                    return (
-                      <button
-                        key={v}
-                        type="button"
-                        role="menuitem"
-                        className="text item" onClick={() => {
-                          setHookEditor({ ...hookEditor, event: v, matcher: "", agents: ["cursor"] });
-                          setEventMenu(false);
-                          setEventFilter("");
-                        }}>
-                        <span className="v">Cursor · {ev}{hookEditor.event === v ? " ✓" : ""}</span>
-                        <small className="n">{t("{agent}'s own event", { agent: "Cursor" })}</small>
-                      </button>
-                    );
-                  })}
-                </div>
-              ) : null}
-            </div>
+              <span className="pref-anchor lib-hookpick">
+                <PrefPick
+                  className="lib-menu lib-hookevent"
+                  label={
+                    hookEditor.event.includes(":")
+                      ? `Cursor · ${hookEditor.event.split(":")[1]}`
+                      : t(HOOK_EVENTS.find(([v]) => v === hookEditor.event)?.[1] || hookEditor.event)
+                  }
+                  open={eventMenu}
+                  onClick={() => { setEventMenu((v) => !v); setToolMenu(false); }}
+                  aria-haspopup="menu"
+                />
+                {eventMenu ? (
+                  <div className="pop proto-menu" role="menu" aria-label={t("When it runs")}>
+                    <div className="pm-head">{t("When it runs")}</div>
+                    <div className="sc-top">
+                      <input
+                        className="sc-q"
+                        type="search"
+                        value={eventFilter}
+                        placeholder={t("Find an event")}
+                        aria-label={t("Find an event")}
+                        autoFocus
+                        onChange={(e) => setEventFilter(e.target.value)}
+                        onKeyDown={(e) => e.stopPropagation()}
+                      />
+                    </div>
+                    {HOOK_EVENTS.map(([v, n]) => {
+                      const on = hookEditor.event === v;
+                      return (
+                        <button
+                          key={v}
+                          type="button"
+                          role="menuitemradio"
+                          aria-checked={on}
+                          className={`pm-item${on ? " on" : ""}`}
+                          onClick={() => {
+                            let matcher = hookEditor.matcher;
+                            if (!toolEvent(v)) matcher = "";
+                            if (!HOOK_TOOLS.some(([m]) => m === matcher)) matcher = "";
+                            setHookEditor({
+                              ...hookEditor,
+                              event: v,
+                              matcher,
+                              agents: DEMO_AGENTS.map((a) => a.id),
+                            });
+                            setEventMenu(false);
+                            setEventFilter("");
+                          }}>
+                          <span className="pm-tick" aria-hidden>
+                            {on ? (
+                              <svg viewBox="0 0 16 16" width={12} height={12} fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+                                <path d={PM_CHECK} />
+                              </svg>
+                            ) : null}
+                          </span>
+                          <span className="pm-words">
+                            <span className="pm-name">{t(n)}</span>
+                            <span className="pm-note">{t("every agent, in its own name for it")}</span>
+                          </span>
+                        </button>
+                      );
+                    })}
+                    {CURSOR_HOOK_EVENTS.filter((ev) => {
+                      const q = eventFilter.trim().toLocaleLowerCase();
+                      if (!q) return true;
+                      return (`Cursor · ${ev}`).toLocaleLowerCase().includes(q);
+                    }).map((ev) => {
+                      const v = `cursor:${ev}`;
+                      const on = hookEditor.event === v;
+                      return (
+                        <button
+                          key={v}
+                          type="button"
+                          role="menuitemradio"
+                          aria-checked={on}
+                          className={`pm-item${on ? " on" : ""}`}
+                          onClick={() => {
+                            setHookEditor({ ...hookEditor, event: v, matcher: "", agents: ["cursor"] });
+                            setEventMenu(false);
+                            setEventFilter("");
+                          }}>
+                          <span className="pm-tick" aria-hidden>
+                            {on ? (
+                              <svg viewBox="0 0 16 16" width={12} height={12} fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+                                <path d={PM_CHECK} />
+                              </svg>
+                            ) : null}
+                          </span>
+                          <span className="pm-words">
+                            <span className="pm-name">Cursor · {ev}</span>
+                            <span className="pm-note">{t("{agent}'s own event", { agent: "Cursor" })}</span>
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                ) : null}
+              </span>
+            </label>
             {hookEditor.event.includes(":") ? (
               <label className="field">
                 <span className="k">{t("Matcher")}</span>
@@ -2968,26 +3038,50 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                 </span>
               </label>
             ) : toolEvent(hookEditor.event) ? (
-              <div className="field-block">
+              /* Magpie client.js L2337–2347: openProtoMenu(..., "For which tools") */
+              <label className="field">
                 <span className="k">{t("For which tools")}</span>
-                <PrefPick
-                  className="lib-hooktool" label={t(HOOK_TOOLS.find(([v]) => v === hookEditor.matcher)?.[1] || "Any tool")}
-                  open={toolMenu}
-                  title={t(HOOK_TOOLS.find(([v]) => v === hookEditor.matcher)?.[1] || "Any tool")}
-                  onClick={() => { setToolMenu((v) => !v); setEventMenu(false); }}
-                  aria-haspopup="menu"
-                />
-                {toolMenu ? (
-                  <div role="menu" className="pop menu down">
-                    {HOOK_TOOLS.map(([v, n]) => (
-                      <button key={v || "any"} type="button" role="menuitem" className="text item" onClick={() => { setHookEditor({ ...hookEditor, matcher: v }); setToolMenu(false); }}>
-                        {t(n)}{hookEditor.matcher === v ? " ✓" : ""}
-                      </button>
-                    ))}
-                  </div>
-                ) : null}
+                <span className="pref-anchor lib-hookpick">
+                  <PrefPick
+                    className="lib-menu lib-hooktool"
+                    label={t(HOOK_TOOLS.find(([v]) => v === hookEditor.matcher)?.[1] || "Any tool")}
+                    open={toolMenu}
+                    title={t(HOOK_TOOLS.find(([v]) => v === hookEditor.matcher)?.[1] || "Any tool")}
+                    onClick={() => { setToolMenu((v) => !v); setEventMenu(false); }}
+                    aria-haspopup="menu"
+                  />
+                  {toolMenu ? (
+                    <div className="pop proto-menu" role="menu" aria-label={t("For which tools")}>
+                      <div className="pm-head">{t("For which tools")}</div>
+                      {HOOK_TOOLS.map(([v, n]) => {
+                        const on = hookEditor.matcher === v;
+                        return (
+                          <button
+                            key={v || "any"}
+                            type="button"
+                            role="menuitemradio"
+                            aria-checked={on}
+                            className={`pm-item${on ? " on" : ""}`}
+                            onClick={() => { setHookEditor({ ...hookEditor, matcher: v }); setToolMenu(false); }}>
+                            <span className="pm-tick" aria-hidden>
+                              {on ? (
+                                <svg viewBox="0 0 16 16" width={12} height={12} fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+                                  <path d={PM_CHECK} />
+                                </svg>
+                              ) : null}
+                            </span>
+                            <span className="pm-words">
+                              <span className="pm-name">{t(n)}</span>
+                              <span className="pm-note" />
+                            </span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  ) : null}
+                </span>
                 <span className="hint">{t("Each agent's own names for them")}</span>
-              </div>
+              </label>
             ) : null}
             <label className="field">
               <span className="k">{t("Command")}</span>

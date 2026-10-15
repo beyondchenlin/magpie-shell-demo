@@ -1,3 +1,16 @@
+## v0.1.152 · LIBRARY_HOOK_PROTO_MENU_OSS_FIDELITY · 2026-10-15 Asia/Shanghai
+
+- **WHY:** Continue Magpie 1:1 after 0.1.151 — cut Hook editor invent `.pop.menu` / `.gl` / `.text.item` that covered Magpie `openProtoMenu` gold for When-it-runs / For-which-tools.
+- **CAUSE:** Demo painted hook event/tool picks as invent `role=menu` `.pop.menu.down` + `.gl` header + `.text.item` / `.v`/`.n` (+ shell-patch re-own) instead of Magpie `openProtoMenu` → `.pop.proto-menu` + `.pm-head` / `.pm-item` / `.pm-tick` / `.pm-words` / `.pm-name` / `.pm-note` + search `.sc-top`/`.sc-q` (library/client.js **L2305–2311** event with `always` shared + "Find an event"; **L2345** tools; app.js **L13799–13849**). PrefPick lacked Magpie `lib-menu lib-hookevent` / `lib-hooktool`; editor lacked `lib-hookedit`.
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; CIS PrefPick/WordsField/Segs/TextBtn; Magpie `library.css`/`plugins.css`; Copy-config `pref-anchor`+proto-menu; invent `.pop.move` (Providers) and remaining non-hook `field-block` elsewhere — later tips.
+- **Cite:**
+  - Magpie `plugins/library/client.js` **2291–2313** event `sess-pick.lib-menu.lib-hookevent` + `openProtoMenu(..., "When it runs", "", "left", false, "Find an event")`; **2337–2347** tools `lib-hooktool` + `openProtoMenu(..., "For which tools")`; **2270** `editor.lib-editor.lib-hookedit`
+  - Magpie `app.js` **13799–13849** `openProtoMenu` (`.pm-head` / `.pm-item` / `.pm-tick` / `.sc-top`/`.sc-q` / `always` filter)
+  - Magpie `app.css` **2499–2506** `.pop.proto-menu` / `.pm-*`; **1378–1380** `.sc-top`/`.sc-q` (under `.sess-menu` in OSS; hook cls="")
+  - Magpie `library.css` **609** `.lib-hookedit .lib-menu`
+- **WHAT changed:** `LibraryView.tsx` event/tool menus → Magpie proto-menu DOM + `lib-hookedit` / `lib-menu lib-hookevent|lib-hooktool` + outside/Escape close; `shell-patch.css` drop invent `.pop.menu`/`.gl`/`.text.item`, add `.pref-anchor.lib-hookpick` left nest.
+- **chrome-guard:** pass (SIDE_AT=1024). Push/PR #1. No portable/Vercel.
+
 ## v0.1.151 · LIBRARY_PROJECT_HOOK_OAUTH_OSS_FIDELITY · 2026-10-15 Asia/Shanghai
 
 - **WHY:** Continue Magpie 1:1 after 0.1.150 — cut remaining Library invent bridges for projects / hooks / oauth modal / intro / Copy-config / lib-mini / grow-min / lib-find.words that re-owned Magpie `library.css` + client.js DOM.
