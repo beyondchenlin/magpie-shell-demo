@@ -2659,10 +2659,10 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
     <>
       <main className="view" id="view-providers">
         {!sheetOpen && demoProvs.length > 0 ? (
-          <div className="row-head" style={{ marginBottom: 8, gap: 8 }}>
+          <div className="row-head pv-tools">
             <input
               ref={listFindRef}
-              className="find"
+              className="find pv-find"
               type="search"
               spellCheck={false}
               autoComplete="off"
@@ -2676,7 +2676,6 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
                 e.stopPropagation();
                 if (listQ) setListQ("");
               }}
-              style={{ width: 180 }}
             />
             <span className="grow" />
           </div>
@@ -2860,15 +2859,14 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
             })}
         </div>
         {!sheetOpen && demoProvs.length > 0 && lf && !demoProvs.some((pv) => !pv.off && (pv.name.toLowerCase().includes(lf) || pv.id.toLowerCase().includes(lf))) ? (
-          <div className="none" style={{ padding: "12px 2px", color: "var(--muted)", fontSize: 13 }}>
+          <div className="none pv-none">
             {t("No provider matches “{q}”", { q: listQ.trim() })}
           </div>
         ) : null}
         {!sheetOpen ? (
           <button
             type="button"
-            className="rt-gadd"
-            style={{ marginTop: 8 }}
+            className="rt-gadd pv-gap"
             onClick={() => {
               setSheetOpen(true);
               setQ("");

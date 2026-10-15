@@ -14,6 +14,7 @@ import { ModelPop, type PopOption } from "../components/ModelPop";
 import { useSegThumb } from "../components/SegThumb";
 import { iconSrc } from "../data/mock";
 import { t } from "../i18n";
+import { FieldPill } from "../components/FieldPill";
 
 type PTab = "agents" | "usage" | "stats" | "routing";
 
@@ -350,17 +351,15 @@ export function TrayPanel({ onOpenMain, onHide, onQuit, onPrefs, onStatus }: Pro
             <div className="ag-open" onClick={(e) => e.stopPropagation()}>
               <div className="ag-in">
                 <div className="ag-body">
-                  <button
-                    type="button"
-                    className={`field solo${modelPop ? " open" : ""}`}
+                  <FieldPill
+                    kind="solo"
+                    open={modelPop}
+                    k={t("Model")}
+                    v={modelLabel}
+                    trailing={<img className="ic" src={iconSrc("cursor")} alt="" />}
                     ref={modelFieldRef}
                     onClick={() => setModelPop((v) => !v)}
-                  >
-                    <span className="k">{t("Model")}</span>
-                    <span className="v">{modelLabel}</span>
-                    <img className="ic" src={iconSrc("cursor")} alt="" />
-                    <span className="chev">{CHEV}</span>
-                  </button>
+                  />
                 </div>
               </div>
             </div>

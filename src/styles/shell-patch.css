@@ -1071,3 +1071,22 @@ label.tick input { margin: 0; }
 }
 .editor .bar .text.danger { color: var(--red); }
 .editor .bar .text.danger:hover { background: var(--red-soft); }
+
+
+/* —— v0.1.106 CIS P2: PrefPick / FieldPill helpers —— */
+.ag-vl > .field { width: min(220px, 100%); }
+.ag-open .fields.inline .field.main { min-width: 170px; }
+.fields.inline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  width: auto;
+  margin-left: 0;
+  grid-template-columns: none;
+}
+.font-controls { position: relative; display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+/* Providers list chrome (outside editor) */
+#view-providers > .row-head.pv-tools { margin-bottom: 8px; gap: 8px; }
+#view-providers .find.pv-find { width: 180px; }
+#view-providers .none.pv-none { padding: 12px 2px; color: var(--muted); font-size: 13px; }
+#view-providers .rt-gadd.pv-gap { margin-top: 8px; }

@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { PrefPick } from "../components/PrefPick";
 import { PrefRow } from "../components/PrefRow";
 import { Segs } from "../components/Segs";
 import { TextBtn } from "../components/TextBtn";
@@ -383,11 +384,6 @@ function CopyBtn({ text, what, onStatus }: { text: string; what: string; onStatu
   );
 }
 
-const CHEV = (
-  <svg viewBox="0 0 16 16" width={11} height={11} aria-hidden>
-    <path d="M4 6l4 4 4-4" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-  </svg>
-);
 
 type SettingsProps = {
   theme: Theme;
@@ -678,19 +674,15 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus, onHeade
           {gRows.language && (
             <PrefRow name={t("Language")}>
               <div className="pref-anchor">
-                <button
-                  type="button"
+                <PrefPick
                   id="langPick"
-                  className={`sess-pick pref-pick${langOpen ? " open" : ""}`}
+                  label={localeLabel(localePick)}
+                  open={langOpen}
                   aria-label={t("Language")}
                   aria-haspopup="menu"
-                  aria-expanded={langOpen}
                   ref={langBtn}
                   onClick={() => setLangOpen((o) => !o)}
-                >
-                  <span>{localeLabel(localePick)}</span>
-                  {CHEV}
-                </button>
+                />
                 {langOpen ? (
                   <ul className="sess-menu" role="menu">
                     {LOCALES.map((x) => (

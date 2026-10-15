@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { AgentModelsPop, type AmModel } from "../components/AgentModelsPop";
+import { FieldPill } from "../components/FieldPill";
 import { ModelPop, type PopOption } from "../components/ModelPop";
 import installsData from "../data/installs.json";
 import { VIA_LABEL, iconSrc } from "../data/mock";
@@ -1282,24 +1283,11 @@ export function AgentsView({
                             return (
                               <div className="ag-vl" key={tier}>
                                 <span className="ag-tier">{tier[0].toUpperCase() + tier.slice(1)}</span>
-                                <button
-                                  type="button"
-                                  className={`field ag-pick${open ? " open" : ""}`}
-                                  style={{
-                                    height: 28,
-                                    padding: "0 10px",
-                                    borderRadius: 8,
-                                    border: "1px solid var(--line)",
-                                    background: "var(--card)",
-                                    display: "inline-flex",
-                                    alignItems: "center",
-                                    gap: 6,
-                                    width: 220,
-                                    justifyContent: "flex-start",
-                                    cursor: "pointer",
-                                  }}
+                                <FieldPill
+                                  className="ag-pick"
+                                  open={open}
+                                  v={val}
                                   aria-haspopup="listbox"
-                                  aria-expanded={open}
                                   onClick={(e) => {
                                     const el = e.currentTarget;
                                     setAmPop(null);
@@ -1309,14 +1297,7 @@ export function AgentsView({
                                         : { agentId: a.id, key: fk, el },
                                     );
                                   }}
-                                >
-                                  <span className="v" style={{ flex: 1, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", textAlign: "left" }}>
-                                    {val}
-                                  </span>
-                                  <svg viewBox="0 0 12 12" width={10} height={10} aria-hidden>
-                                    <path d="M3 4.5 6 7.5 9 4.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-                                  </svg>
-                                </button>
+                                />
                                 <span className="ag-hint">
                                   /model {tier}
                                   {tier === "sonnet"
@@ -1384,29 +1365,19 @@ export function AgentsView({
                       <div className="ag-k">{t("New sessions")}</div>
                       <div className="ag-v">
                         <div className="ag-vl">
-                          <div className="fields" style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+                          <div className="fields inline">
                             {(() => {
                               const fk = `${a.id}:model`;
                               const val = fieldVals[fk] || "claude-sonnet-4-5";
                               const open = fieldPop?.agentId === a.id && fieldPop.key === fk;
                               return (
-                                <button
-                                  type="button"
-                                  className={`field main ag-pick${open ? " open" : ""}`}
-                                  style={{
-                                    height: 28,
-                                    minWidth: 170,
-                                    padding: "0 10px",
-                                    borderRadius: 8,
-                                    border: "1px solid var(--line)",
-                                    background: "var(--card)",
-                                    display: "inline-flex",
-                                    alignItems: "center",
-                                    gap: 6,
-                                    cursor: "pointer",
-                                  }}
+                                <FieldPill
+                                  kind="main"
+                                  className="ag-pick"
+                                  open={open}
+                                  k={t("Model")}
+                                  v={val}
                                   aria-haspopup="listbox"
-                                  aria-expanded={open}
                                   onClick={(e) => {
                                     const el = e.currentTarget;
                                     setAmPop(null);
@@ -1416,15 +1387,7 @@ export function AgentsView({
                                         : { agentId: a.id, key: fk, el },
                                     );
                                   }}
-                                >
-                                  <span className="k" style={{ fontSize: 11, color: "var(--muted)" }}>
-                                    {t("Model")}
-                                  </span>
-                                  <span className="v">{val}</span>
-                                  <svg viewBox="0 0 12 12" width={10} height={10} aria-hidden style={{ marginLeft: "auto" }}>
-                                    <path d="M3 4.5 6 7.5 9 4.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-                                  </svg>
-                                </button>
+                                />
                               );
                             })()}
                           </div>

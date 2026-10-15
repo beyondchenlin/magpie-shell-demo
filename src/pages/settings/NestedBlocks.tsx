@@ -1,6 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { ModelPop, PrefPickChip, type PopOption } from "../../components/ModelPop";
+import { PrefPick } from "../../components/PrefPick";
 import { Segs } from "../../components/Segs";
 import { Tick } from "../../components/Tick";
 import { WordsField } from "../../components/WordsField";
@@ -2084,15 +2085,16 @@ export function FontRow({
       <div className="who">
         <div className="name">{t(label)}</div>
       </div>
-      <div className="font-controls" style={{ position: "relative" }}>
-        <button
-          type="button"
+      <div className="font-controls">
+        <PrefPick
           ref={famRef}
-          className={`proto pick sess-pick pref-pick font-family${open === "family" ? " open" : ""}`}
+          className="proto pick font-family"
+          label={value?.family || defaultLabel}
+          open={open === "family"}
           aria-haspopup="menu"
-          aria-expanded={open === "family"}
           aria-label={`${t(label)}: ${t("Font family")}`}
           title={value?.family || defaultLabel}
+          chevron={CHEV_PATH}
           onClick={(e) => {
             e.stopPropagation();
             if (open === "family") closeMenu();
@@ -2101,29 +2103,25 @@ export function FontRow({
               setOpen("family");
             }
           }}
-        >
-          <span>{value?.family || defaultLabel}</span>
-          {CHEV_PATH}
-        </button>
-        <button
-          type="button"
+        />
+        <PrefPick
           ref={styleRef}
-          className={`proto pick sess-pick pref-pick font-style${open === "style" ? " open" : ""}`}
+          className="proto pick font-style"
+          label={value?.name || defaultLabel}
+          open={open === "style"}
+          set={!!value}
           aria-haspopup="menu"
-          aria-expanded={open === "style"}
           aria-label={`${t(label)}: ${t("Font style")}`}
           title={styleEnabled ? value?.name || defaultLabel : undefined}
           disabled={!styleEnabled}
+          chevron={CHEV_PATH}
           onClick={(e) => {
             e.stopPropagation();
             if (!styleEnabled) return;
             if (open === "style") closeMenu();
             else setOpen("style");
           }}
-        >
-          <span>{value?.name || defaultLabel}</span>
-          {CHEV_PATH}
-        </button>
+        />
         <div className="font-preview">{t("Aa 0123 · 中文")}</div>
         {menu && createPortal(menu, document.body)}
       </div>

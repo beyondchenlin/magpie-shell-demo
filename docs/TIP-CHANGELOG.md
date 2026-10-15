@@ -4,6 +4,18 @@
 
 ---
 
+## v0.1.106 · CIS_P2_PREFPICK_FIELDPILL · 2026-10-15 Asia/Shanghai
+
+- **WHY:** CIS P2 — extract PrefPick (Language/font `.pref-pick`) + FieldPill (Agents/tray `.field`); wire existing call sites only.
+- **WHAT kept:** `SIDE_AT=1024`; no `WEB_SIDE_AT`; Win chrome / 752 frame; no new features.
+- **WHAT changed:**
+  - `PrefPick` → Settings Language + NestedBlocks FontRow (family/style).
+  - `FieldPill` → Agents tier/New-sessions model pills + Tray solo model (drop page-local field chrome styles).
+  - Light Providers list: find/none/+Add → `.pv-tools` / `.pv-find` / `.pv-none` / `.pv-gap`.
+  - CIS §10.5 P2 marked done.
+- **Guard:** `npm run chrome-guard`. No portable. No push/Vercel.
+
+---
 ## v0.1.105 · CIS_P1_PROVIDERS_EDITOR · 2026-10-15 Asia/Shanghai
 
 - **WHY:** CIS P1 — Providers editor remaining layout `style={{…}}` → Magpie `.icon-pick` / `.headers` / `.pair` / `.action-confirm` (no feature stuffing; PrefPick/.field skipped).

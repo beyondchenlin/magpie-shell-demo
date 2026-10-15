@@ -1,3 +1,8 @@
+## v0.1.106 CIS_P2_PREFPICK_FIELDPILL
+- Extracted `PrefPick` (`.sess-pick.pref-pick`) — Settings Language + FontRow.
+- Extracted `FieldPill` (`.field` + k/v/chev) — Agents tiers / New sessions + Tray solo; removed one-off field border/height styles.
+- Light Providers list chrome classes. CIS §10.5 P2 done. OAuth walls / remove-all confirms still open. SIDE_AT=1024. No portable / Vercel.
+
 ## v0.1.105 CIS_P1_PROVIDERS_EDITOR
 - ProviderEditorModal: icon-pick / headers / discard use Magpie classes (`.icon-pick`, `.headers` `.pair` `.hhead`, `.action-confirm` + showModal + danger-fill). Editor layout inline styles cleared (only `--detect-n` CSS var remains).
 - CIS §10.5 P1 marked done. P2 PrefPick / `.field` open. Outside-editor Providers styles deferred. SIDE_AT=1024. No portable / Vercel.
