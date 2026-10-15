@@ -3491,7 +3491,7 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
                         ) : null}
                       </span>
                       {browserSign.id === "codex" ? (
-                        <span className="s note">
+                        <span className="s">
                           {t("Note for a server or Docker: copy the address the browser ends on.")}
                         </span>
                       ) : null}

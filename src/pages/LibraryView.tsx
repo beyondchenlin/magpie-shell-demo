@@ -3076,48 +3076,62 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                   <>
                     <div className="field-block">
                       <span className="k">{t("OAuth app")}</span>
-                      {!mcpEditor.oauthOpen ? (
-                        <>
-                          <button type="button" className="text" onClick={() => setMcpEditor({ ...mcpEditor, oauthOpen: true })}>{t("Use your own OAuth app")}</button>
-                          <span className="hint">{t("For a server whose sign-in doesn't let magpie register itself, as GitHub's")}</span>
-                        </>
-                      ) : (
-                        <>
-                          <div className="oauth-pair">
-                            <WordsField placeholder={t("Client ID")} aria-label={t("Client ID")} value={mcpEditor.clientId} onChange={(e) => setMcpEditor({ ...mcpEditor, clientId: e.target.value })} onKeyDown={(e) => e.stopPropagation()} />
-                            <WordsField type="password" placeholder={t("Client secret")} aria-label={t("Client secret")} value={mcpEditor.clientSecret} onChange={(e) => setMcpEditor({ ...mcpEditor, clientSecret: e.target.value })} onKeyDown={(e) => e.stopPropagation()} />
-                            <WordsField className="port" placeholder={t("Callback port")} aria-label={t("Callback port")} inputMode="numeric" value={mcpEditor.callbackPort} onChange={(e) => setMcpEditor({ ...mcpEditor, callbackPort: e.target.value.replace(/\D/g, "").slice(0, 5) })} onKeyDown={(e) => e.stopPropagation()} />
-                            <button type="button" className="text" title={t("Remove")} onClick={() => setMcpEditor({ ...mcpEditor, oauthOpen: false, clientId: "", clientSecret: "", callbackPort: "" })}>×</button>
-                          </div>
-                          <span className="hint">
-                            {t("Made with its vendor (GitHub's under Settings › Developer settings › OAuth Apps), with {url} as its callback URL", {
+                      {/* Magpie drawApp: lib-app + field2 inputs + lib-x; closed = lib-addpair (client.js L1971–2031; library.css L133–135 / L341–343) */}
+                      <div className="lib-app">
+                        {!mcpEditor.oauthOpen ? (
+                          <button type="button" className="lib-addpair" onClick={() => setMcpEditor({ ...mcpEditor, oauthOpen: true })}>{t("Use your own OAuth app")}</button>
+                        ) : (
+                          <>
+                            <input type="text" placeholder={t("Client ID")} aria-label={t("Client ID")} spellCheck={false} autoComplete="off" value={mcpEditor.clientId} onChange={(e) => setMcpEditor({ ...mcpEditor, clientId: e.target.value })} onKeyDown={(e) => e.stopPropagation()} />
+                            <input type="password" placeholder={t("Client secret")} aria-label={t("Client secret")} spellCheck={false} autoComplete="off" value={mcpEditor.clientSecret} onChange={(e) => setMcpEditor({ ...mcpEditor, clientSecret: e.target.value })} onKeyDown={(e) => e.stopPropagation()} />
+                            <input type="text" className="port" placeholder={t("Callback port")} aria-label={t("Callback port")} inputMode="numeric" spellCheck={false} autoComplete="off" value={mcpEditor.callbackPort} onChange={(e) => setMcpEditor({ ...mcpEditor, callbackPort: e.target.value.replace(/\D/g, "").slice(0, 5) })} onKeyDown={(e) => e.stopPropagation()} />
+                            <button
+                              type="button"
+                              className="lib-x"
+                              title={t("Remove")}
+                              onClick={() => setMcpEditor({ ...mcpEditor, oauthOpen: false, clientId: "", clientSecret: "", callbackPort: "" })}
+                            >
+                              <svg width="11" height="11" viewBox="0 0 16 16" fill="none" aria-hidden>
+                                <path d="M4.5 4.5l7 7M11.5 4.5l-7 7" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                              </svg>
+                            </button>
+                          </>
+                        )}
+                      </div>
+                      <span className="hint">
+                        {!mcpEditor.oauthOpen
+                          ? t("For a server whose sign-in doesn't let magpie register itself, as GitHub's")
+                          : t("Made with its vendor (GitHub's under Settings › Developer settings › OAuth Apps), with {url} as its callback URL", {
                               url: `http://localhost${mcpEditor.callbackPort ? ":" + mcpEditor.callbackPort : ""}/callback`,
                             })}
-                          </span>
-                        </>
-                      )}
+                      </span>
                     </div>
                     <div className="field-block">
                       <span className="k">{t("Sign-in")}</span>
-                      {mcpSignWaiting ? (
-                        <div className="sign-row">
-                          <span className="hint">{t("Finish signing in in your browser…")}</span>
-                          <button
-                            type="button"
-                            className="text" onClick={() => {
-                              setMcpSignWaiting(false);
-                              setMcpOauthWall(false);
-                            }}>
-                            {t("Cancel")}
-                          </button>
+                      {/* Magpie signInBox → .lib-signin > .lib-signin-line + .note (client.js L1714–1733; library.css L131–132) */}
+                      <div className="lib-signin">
+                        <div className="lib-signin-line">
+                          {mcpSignWaiting ? (
+                            <>
+                              <span className="note">{t("Finish signing in in your browser…")}</span>
+                              <button
+                                type="button"
+                                className="text"
+                                onClick={() => {
+                                  setMcpSignWaiting(false);
+                                  setMcpOauthWall(false);
+                                }}
+                              >
+                                {t("Cancel")}
+                              </button>
+                            </>
+                          ) : (
+                            <button type="button" className="text action" onClick={() => saveMcp({ signIn: true })}>
+                              {t(mcpEditId ? "Sign in" : "Save and sign in")}
+                            </button>
+                          )}
                         </div>
-                      ) : (
-                        <button
-                          type="button"
-                          className="text action" onClick={() => saveMcp({ signIn: true })}>
-                          {t(mcpEditId ? "Sign in" : "Save and sign in")}
-                        </button>
-                      )}
+                      </div>
                       {mcpEditId && mcpServers.find((x) => x.id === mcpEditId)?.oauthRefused ? (
                         <span className="hint err">{t("the sign-in was refused (access_denied)")}</span>
                       ) : null}

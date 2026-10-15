@@ -1,3 +1,9 @@
+## v0.1.145 LIBRARY_OAUTH_LIBAPP_SIGNING_OSS_FIDELITY
+- Library MCP OAuth app: drop invent `oauth-pair` + text × — restore Magpie `lib-app` + bare `field2` inputs + `lib-x` / closed `lib-addpair` (client.js L1971–2031; library.css L133–135 / L341–343).
+- Library Sign-in waiting: drop invent `sign-row` + hint — restore Magpie `lib-signin` > `lib-signin-line` + `span.note` (client.js L1714–1733; library.css L131–132).
+- Providers signing: drop invent shell-patch `.signing .mark` amber22 / `.s.note` / `.signing > .text` align-self — Magpie app.css L2563–2564 / L2603; Codex note class `s` only.
+- SIDE_AT=1024. No portable / Vercel.
+
 ## v0.1.144 PLUGINS_ASK_INLINE_OPTS_OSS_FIDELITY
 - Plugins installed ask: drop invent `pm-ask` / `pm-ask-say` / `pm-ask-sub` / `pm-ask-acts` card — restore Magpie in-row `.sub.ask` + `.val` Cancel|Not now + primary (plugins.js L1025–1108; plugins.css L88).
 - Plugins middleware: `mwLine` (`.sub.pm-mw`) sibling before `optionsEditor` (plugins.js L1057–1059 / L1223); hide opts while asking; no empty `.sub`.

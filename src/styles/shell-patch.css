@@ -275,12 +275,8 @@ body.window:not(.side-nav) .top.tight .brand > span:not(.logo) { display: none; 
 .tile img.ic-img { width: 18px; height: 18px; object-fit: contain; }
 .row.agent .ic img { width: 100%; height: 100%; object-fit: contain; }
 
-.signing .mark {
-  flex: none; width: 22px; height: 22px; border-radius: 50%;
-  display: grid; place-items: center; font-weight: 700; font-size: 13px;
-  background: color-mix(in srgb, var(--amber, #d97706) 22%, transparent);
-  color: var(--amber, #b45309);
-}
+/* v0.1.145: drop invent .signing .mark amber 22px —
+   Magpie app.css L2603: 16px / var(--fg) on var(--card). */
 /* React bridge: Magpie .editor .ehead .ic is 20×20 (app.css L2695); img fill */
 .editor .ehead .ic img { width: 20px; height: 20px; object-fit: contain; }
 /* v0.1.131: drop invent .editor .extra-body textarea.json (padding 8/radius 8) —
@@ -944,33 +940,15 @@ label.tick input { margin: 0; }
   font-weight: 500;
   margin-bottom: 6px;
 }
-.modal .editor.lib-editor .oauth-pair {
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-  align-items: center;
-}
-.modal .editor.lib-editor .oauth-pair .words {
-  flex: 1 1 120px;
-  width: auto;
-  min-width: 0;
-}
-.modal .editor.lib-editor .sign-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
-}
+/* v0.1.145: drop invent .oauth-pair / .sign-row —
+   Magpie OAuth app = .lib-app (+ .lib-x / .lib-addpair) library.css L133–135 / L341–343
+   (client.js drawApp L1971–2031); Sign-in = .lib-signin > .lib-signin-line (L131–132;
+   signInBox L1714–1733). */
 /* v0.1.140: drop invent .action-confirm .extra / label.tick.keep — Magpie confirmRemoveProject uses lib-pick.lib-keep in openLib (library/client.js L3668–3703), not ActionConfirm.extra */
 
-/* Magpie Providers signing / GTK Select Files / Move menu — CIS v0.1.112 */
-.signing .s.note {
-  display: block;
-  margin-top: 6px;
-}
-.signing > .text {
-  align-self: flex-start;
-}
+/* Magpie Providers signing / GTK Select Files / Move menu — CIS v0.1.112
+   v0.1.145: drop invent .signing .s.note + .signing > .text { align-self } —
+   Magpie app.css L2563 .signing .s; L2564 .signing > .text { margin: -3px 0 }. */
 
 .modal .dialog.gtk-select-files {
   width: min(560px, 92vw);
