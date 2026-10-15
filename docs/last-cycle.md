@@ -1,10 +1,8 @@
 # last-cycle · 2026-10-15 Asia/Shanghai
 
-## v0.1.100 WEB_FRAME_ZOOM_FIT
+## v0.1.101 WIN_DESKTOP_CHROME
 
-Chrome audit overflow fix (nest/consume still PAUSED):
-- CAUSE: html zoom 1.1 × #root CSS width > viewport → left shift / right clip at 752–1100.
-- FIX: zoom-aware `calc((100vw - 48px) / var(--zoom, 1.1))` on web #root + side-nav card; body.web overflow-x hidden; phone nav scroll padding.
-- KEPT: SIDE_AT=1024, no WEB_SIDE_AT, 752 nest footprint, 1024 side-nav gate.
-- chrome-guard: now also requires zoom-aware width. Passed.
-- No portable. Push + one Vercel try.
+- WHY: 1:1 Windows Magpie desktop chrome from open source (not Linux nest aesthetics).
+- Magpie gold cited: layout.js:16 html.win; app.css L108–111/L184/L187/L347; titlebar_other.go; titletint_windows.go; SIDE_AT app.js:24670.
+- Demo: html.win + data-sim-platform=win + WinCaption; brand hidden; side-top 10px; SIDE_AT=1024 kept; no WEB_SIDE_AT; nest 205–222 not consumed.
+- chrome-guard + TIP-CYCLE run. No portable. Push + Vercel try.

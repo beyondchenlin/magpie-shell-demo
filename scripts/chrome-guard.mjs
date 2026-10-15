@@ -70,4 +70,41 @@ if (!/@media\s*\(\s*min-width:\s*1024px\s*\)\s*\{[\s\S]*?body\.web\.side-nav\s+#
 }
 ok("side-nav expand gated at 1024");
 
+
+// Windows Magpie desktop sim (v0.1.101+): not Linux in-page brand chrome
+const winCap = join(root, "src/components/WinCaption.tsx");
+if (!existsSync(winCap)) fail("missing WinCaption.tsx (Win OS title bar sim)");
+ok("WinCaption.tsx present");
+
+if (!/document\.documentElement\.classList\.add\(\s*["']win["']\s*\)/.test(app)) {
+  fail('App must add html.win (:root.win Segoe — Magpie layout.js:16)');
+}
+ok("html.win forced");
+
+if (!/dataset\.simPlatform\s*=\s*["']win["']/.test(app) && !/simPlatform\s*=\s*["']win["']/.test(app)) {
+  fail('App must set data-sim-platform=win for desktop preview');
+}
+ok("data-sim-platform=win");
+
+if (!/WinCaption/.test(app)) {
+  fail("App must render <WinCaption />");
+}
+ok("App renders WinCaption");
+
+if (!/data-sim-platform="win"[\s\S]*?\.brand[\s\S]*?display:\s*none/s.test(patch) &&
+    !/\[data-sim-platform="win"\][\s\S]{0,200}\.brand[\s\S]{0,80}display:\s*none/.test(patch)) {
+  fail('shell-patch must hide .brand under [data-sim-platform="win"] (Magpie app.css L184)');
+}
+ok("Win brand-hide in shell-patch");
+
+if (!/\.win-caption/.test(patch)) {
+  fail("shell-patch must style .win-caption");
+}
+ok("win-caption styles");
+
+if (!/:root\.win/.test(css)) {
+  fail("app.css must keep :root.win Segoe stack (Magpie app.css L108)");
+}
+ok(":root.win fonts in app.css");
+
 console.log("chrome-guard: all checks passed");

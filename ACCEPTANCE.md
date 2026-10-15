@@ -1,3 +1,7 @@
+## v0.1.101 WIN_DESKTOP_CHROME
+- Web/Electron desktop preview defaults to **Windows Magpie** chrome: fake OS title bar (`.win-caption`), `html.win` Segoe, in-page brand hidden, `side-top` 10px — from Magpie open source (`layout.js`, `app.css` L184/L347, `titlebar_other.go`).
+- `SIDE_AT=1024` gold; no `WEB_SIDE_AT`; 752 nest frame kept; Duplicate 205–222 deferred. No portable.
+
 ## v0.1.100 WEB_FRAME_ZOOM_FIT
 - Web card at text 110%: CSS width/height divide by `--zoom` so visual frame fits viewport (no left-shift / right clip at ~752–1100).
 - SIDE_AT=1024 gold; no WEB_SIDE_AT; chrome-guard + zoom-aware check pass.

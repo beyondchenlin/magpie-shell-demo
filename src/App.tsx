@@ -12,6 +12,7 @@ import { PluginsView, UsageView } from "./pages/SimpleViews";
 import { LibraryView } from "./pages/LibraryView";
 import { SettingsView, applyColorblind } from "./pages/SettingsView";
 import { TrayPanel, wantPanelMode } from "./pages/TrayPanel";
+import { WinCaption } from "./components/WinCaption";
 
 const SIDE_AT = 1024;
 const NAV_LS = "magpie.navLayout";
@@ -127,12 +128,19 @@ export default function App() {
   const applyChrome = useCallback(() => {
     const electron = isElectron();
     const onPhone = !electron && isPhoneWebViewport();
+    // Magpie layout.js:16 — :root.win Segoe stack (app.css L108–111)
+    document.documentElement.classList.add("win");
     document.body.classList.add("window");
+    // Default gold = Windows desktop chrome, not Linux in-page title bar
+    // (titlebar_other.go: Windows keeps its own title bar; no body.linux).
     document.body.classList.remove("linux", "mac");
     document.body.classList.toggle("side-nav", sideOn && !onPhone);
     document.body.classList.toggle("phone-web", onPhone);
     if (electron) document.body.classList.remove("web");
     else document.body.classList.add("web");
+    // Phone Magpie web has no OS caption; desktop preview simulates Win.
+    if (onPhone) delete document.body.dataset.simPlatform;
+    else document.body.dataset.simPlatform = "win";
     const root = document.documentElement;
     if (theme === "system") root.removeAttribute("data-theme");
     else root.setAttribute("data-theme", theme);
@@ -574,6 +582,7 @@ export default function App() {
 
   return (
     <>
+      {!phone ? <WinCaption /> : null}
       <aside className="sidebar" id="side" hidden={!sideOn}>
         <div className="side-top">{sideOn ? brand : null}</div>
         <div className="side-scroll">{sideOn ? sideNav : null}</div>

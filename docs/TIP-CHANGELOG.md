@@ -4,6 +4,19 @@
 
 ---
 
+## v0.1.101 · WIN_DESKTOP_CHROME · 2026-10-15 Asia/Shanghai
+
+- **WHY:** User wants 1:1 **Windows** Magpie desktop chrome from open source — Linux nest screenshots look thinner; Win system title bar is the gold look.
+- **CAUSE:** Demo web preview used `body.web` framing with **in-page brand** (Linux/web look). Magpie Windows is the opposite: native OS title bar + brand hidden in page.
+- **WHAT kept:** `SIDE_AT=1024`; no `WEB_SIDE_AT`; nest web `#root` 752×652 zoom-aware frame; top tabs under 1024; Duplicate nest 205–222 **not** consumed this tip.
+- **WHAT changed:** Default desktop preview = Windows Magpie sim:
+  - `html.win` Segoe stack — Magpie `layout.js:16`, `app.css` L108–111
+  - Fake `.win-caption` (icon + Magpie + min/max/close) — `titlebar_other.go` (“Windows keeps its own title bar”), tinted `--bg` like `titletint_windows.go`
+  - Hide in-page `.brand` / `side-top` → 10px — `app.css` L184, L347 (mirrored under `[data-sim-platform="win"]` because true Win selector excludes `.web`)
+  - No `body.linux` / no in-page `#winclose` — `app.css` L187, `app.js` (~24590)
+- **Nest:** 无（纯 chrome platform gold；Duplicate 205–222 deferred）。
+
+---
 ## v0.1.100 · WEB_FRAME_ZOOM_FIT · 2026-10-15 Asia/Shanghai
 
 - **WHY:** chrome audit `web-chrome-audit-2026-10-15` — at text 110%, web card overflowed / clipped right actions (不能接入 / 管理 / ＋保存当前) and left-shifted Settings labels at ~752–1100.

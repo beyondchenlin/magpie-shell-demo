@@ -1,4 +1,5 @@
-/* Demo shell — Magpie CSS owns visual tokens. Desktop gold = top tabs (native Linux). */
+/* Demo shell — Magpie CSS owns visual tokens. Desktop gold = Windows Magpie
+   (system title bar + top tabs under SIDE_AT; not Linux in-page brand/close). */
 html, body, #root { height: 100%; }
 body { margin: 0; }
 #root {
@@ -97,6 +98,99 @@ body.window:not(.side-nav) .side-toggle .st-pane {
 }
 
 /* Win/Mac: never show in-page winclose (Magpie: body:not(.window.linux) #winclose { display:none }). */
+
+
+/* —— Windows Magpie desktop sim (source gold) ——
+   Magpie layout.js:16 → :root.win fonts (app.css L108–111).
+   titlebar_other.go: Windows keeps its own title bar (not frameless Linux).
+   titletint_windows.go: title bar tinted to page --bg.
+   app.css L184: body.window:not(.mac):not(.linux):not(.web) .brand { display:none }
+   app.css L187: winclose only on body.window.linux
+   app.css L347: Win side-top height 10px (brand already in OS bar)
+   Web preview keeps body.web for the 752 frame, so we mirror Win rules under
+   [data-sim-platform="win"] and draw .win-caption as the OS title bar. */
+body.web[data-sim-platform="win"],
+body.window[data-sim-platform="win"] {
+  --win-caption-h: 32px;
+}
+.win-caption {
+  flex: none;
+  display: none;
+  align-items: center;
+  height: var(--win-caption-h, 32px);
+  padding: 0 0 0 12px;
+  background: var(--bg);
+  border-bottom: .5px solid var(--line);
+  position: relative;
+  z-index: 30;
+  user-select: none;
+}
+body[data-sim-platform="win"] .win-caption { display: flex; }
+.win-caption-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--fg-2, var(--fg));
+  letter-spacing: .01em;
+}
+.win-caption-ico {
+  display: inline-flex;
+  width: 16px;
+  height: 16px;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+}
+.win-caption-ico svg { display: block; }
+.win-caption-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.win-caption-btns {
+  display: flex;
+  align-items: stretch;
+  height: 100%;
+  margin-left: 8px;
+  flex: none;
+}
+.win-cap-btn {
+  width: 46px;
+  height: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--fg-2, var(--fg));
+  border-radius: 0;
+  cursor: default;
+}
+.win-cap-btn:hover { background: color-mix(in srgb, var(--fg) 8%, transparent); }
+.win-cap-btn.close:hover {
+  background: #e81123;
+  color: #fff;
+}
+/* Mirror app.css L184 under body.web (true Win selector excludes .web) */
+body[data-sim-platform="win"] header.top > .brand,
+body[data-sim-platform="win"] .side-top .brand {
+  display: none !important;
+}
+/* Mirror app.css L347 */
+body[data-sim-platform="win"] .side-top {
+  height: 10px;
+  padding: 0;
+  min-height: 10px;
+}
+/* Sidebar below fake OS caption inside framed #root */
+body.web[data-sim-platform="win"] .sidebar {
+  top: var(--win-caption-h, 32px);
+}
+body.web[data-sim-platform="win"].side-nav .sidebar {
+  top: var(--win-caption-h, 32px);
+}
+
 
 /* Modal / popover inside framed #root */
 body.web .modal {
