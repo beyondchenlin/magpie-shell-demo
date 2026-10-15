@@ -138,3 +138,31 @@ Main magpie still running, pid 560329, window 752×652 at +200+40. Close was not
 Not in this slice: a kept profile, its chip, ×, or Apply. Effort bars still show no tooltip. Allowances and the usage chart still need a subscription or a request. Open magpie and Quit still not clicked. P1 N/A.
 
 Next: tray effort bars (hover still has no tooltip), or stop. Not Allowances, not the usage chart, not Quit.
+
+## Consumed in demo v0.1.78 (TRAY_25_27)
+- **25** hover bars (row closed) → path tip `~/.cursor/cli-config.` clipped (same path as 14); grip dots; **no** effort name
+- **26** click bars → row opens; nested line **model / default** only — **no** effort label, slider, or end names; bars stay unlit in summary
+- **27** hover bars again (row open) → same clipped path tip; still no effort wording
+- Cursor has **no** effort field; three faint bars = one control (row toggle). Second click closes. Allowances / P1 **N/A**. No portable / release / Vercel.
+
+## Effort bars (25–27)
+
+Same quick panel as 22–24 (pid from 560329's binary, 484×572 at +1200+80). Agents tab. One row, Cursor. `~/.cursor/cli-config.json` still `{}`. No profile written. Quit and Open magpie were not clicked. Allowances still absent. No usage chart. Nothing was saved.
+
+Cursor has no effort field, only model. The three bars sit in the summary, left to right, short then taller, all the same faint grey (none lit). They are one control. Hover does not name an effort.
+
+| shot | control | seen |
+|---|---|---|
+| 25-effort-hover | hover the bars, row closed | Pointer on the bars. No effort name. The tip that comes up is the row's path, **~/.cursor/cli-config.** cut off at the panel's right edge (the same path as 14, which started further left and showed `.json`). Grip dots show in the row's left margin, as on any row hover |
+| 26-effort-open | click the bars | Tip goes. The row opens in place. Nested line, top to bottom, is only **model** / **default** / cube / chevron — already the line in 08. No effort label, no slider, no end names. Bars stay in the summary, still unlit |
+| 27-effort-open-tip | hover the bars again, row open | The path tip is back, over the right of the model line, clipped the same way. Still no effort wording |
+
+A second click on the bars closes the row. That is the row toggle, not an effort picker. Left bar, middle bar, and tall bar are not separate tips.
+
+## Left state
+
+Main magpie still running, pid 560329, window 752×652 at +200+40. Close was not used. Panel process still running (`/proc/560329/exe panel`), 484×572 at +1200+80. Agents tab, row closed, no popover, no tip. Cursor still default. No profile saved.
+
+Effort on this tray is thin: no level to pick, no chart of levels. Allowances and the usage chart still need a subscription or a request. Open magpie and Quit still not clicked. P1 N/A.
+
+Next: stop. Not another effort pass. Not Allowances, not the usage chart, not Quit. A kept profile (chip, ×, Apply) would be a different batch.

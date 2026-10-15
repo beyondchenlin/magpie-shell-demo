@@ -1,9 +1,12 @@
 /**
- * Magpie tray / quick panel (body.panel) — native-linux/tray/01–24.
+ * Magpie tray / quick panel (body.panel) — native-linux/tray/01–27.
  * Open: ?panel=1 | #panel | localStorage magpie.demoPanel=1
  * Allowances tab: Magpie hides entire [data-ptab=usage] when no subscription/balance — N/A here (not a missing UI).
  * Escape: HideOnEscape unmaps panel (shot 21). Save current naming: blur discards (22–24); Escape is not discard.
  * Open Usage → Requests/Today; Open Routing → peer-serves card.
+ * tray/25–27 effort bars (Cursor has no effort field): three faint unlit bars = one control;
+ *   hover shows row path tip (~/.cursor/cli-config.json, clipped at panel edge) — NOT an effort name;
+ *   click toggles row open with model line only — NO slider / levels invented.
  */
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, type MouseEvent as ReactMouseEvent } from "react";
 import { Bird, useLogoWag } from "../components/Bird";
@@ -314,7 +317,9 @@ export function TrayPanel({ onOpenMain, onHide, onQuit, onPrefs, onStatus }: Pro
             className={`row agent${agentOpen ? " open" : ""}`}
             data-id="cursor"
             aria-expanded={agentOpen}
+            title="~/.cursor/cli-config.json"
             onClick={(ev) => {
+              /* tray/25–27: bars are one control on the row; click toggles open (model only). */
               if ((ev.target as HTMLElement).closest(".ag-open, .ag-handle")) return;
               setOpenId(agentOpen ? null : "cursor");
               setModelPop(false);
@@ -334,7 +339,8 @@ export function TrayPanel({ onOpenMain, onHide, onQuit, onPrefs, onStatus }: Pro
               <div className="v">
                 <span className="vt">{modelLabel}</span>
               </div>
-              <span className="eff" data-l="3" title={t("Effort")} aria-hidden>
+              {/* Cursor: no effort field — bars unlit (data-l=0), no effort title; tip is row.path */}
+              <span className="eff" data-l="0" aria-hidden>
                 <i />
                 <i />
                 <i />

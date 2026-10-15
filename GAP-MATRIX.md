@@ -1,3 +1,8 @@
+## v0.1.78 TRAY_25_27
+- tray/25–27 effort bars landed **thin / honest**: no effort field on Cursor → unlit `.eff[data-l=0]`, tip = row path (not Effort), click = row toggle + model-only nest — **no slider invented**.
+- GAP «tray effort picker / slider» **closed honestly** as recorded-thin (native has nothing more for Cursor).
+- Allowances **N/A**. P1 bird hop **N/A**. No portable / Vercel this cycle.
+
 ## v0.1.77 TRAY_22_24
 - tray/22–24 Save current naming landed: field + Save, draft type, PROFILES-label blur discard, no chip.
 - Escape still HideOnEscape (not naming discard). Still mock: true `profiles.json` write / chip Apply / ×.
@@ -325,7 +330,7 @@
 | 9 | 真 OAuth / key 落盘 / arrange persist | **P1** | 列表+accts 壳已在；NOTES 未点 Sign-in/key |
 | — | Allowances 配额正文 | **P1 / N/A** | 无订阅时整段隐藏属原生；有配额 UI 需 signed-in 点录，**不编造** |
 
-**已关闭（勿再标 PARTIAL）：** Tray Routing 嵌套（v0.1.36）· `#sideEdge` 拖宽（v0.1.36）· Tray 01–14 · Usage 01–50 · Plugins 01–34 · Settings 10–70 · Agents empty motion（v0.1.43）· 控件动效 token 对齐（v0.1.44，Install 点击仍留给 recorder）。
+**已关闭（勿再标 PARTIAL）：** Tray Routing 嵌套（v0.1.36）· `#sideEdge` 拖宽（v0.1.36）· Tray 01–14 · Tray 15–27（含 effort thin / 无滑条，v0.1.78）· Usage 01–50 · Plugins 01–34 · Settings 10–70 · Agents empty motion（v0.1.43）· 控件动效 token 对齐（v0.1.44，Install 点击仍留给 recorder）。
 
 有意 Demo 简化（非 P1）：无真后端；Electron 标题栏；Usage filled 演示开关；OS 字体枚举 mock；OTel 默认隐藏。
 

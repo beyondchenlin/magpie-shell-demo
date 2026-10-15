@@ -1,3 +1,8 @@
+## v0.1.78 TRAY_25_27
+- Consumed native `tray/25–27` NOTES honesty: Cursor **no effort field**; three faint unlit bars = **one** control; hover tip is row path `~/.cursor/cli-config.` (clipped) — **not** an effort name; click opens row with **model** line only (**no** slider / levels invented); hover again same path tip.
+- Demo: `?panel=1` row `title` = path; `.eff[data-l=0]` no effort title; open body model-only.
+- Tray effort recorded **thin** / GAP closed honestly. Allowances **N/A**. P1 bird **N/A**. **No portable / GitHub release / Vercel** (user freeze).
+
 ## v0.1.77 TRAY_22_24
 - Consumed native `tray/22–24` NOTES: **＋ Save current** → name field placeholder **Profile name**, button **Save**, hint hidden; type `draft` without Enter/Save; blur on **PROFILES** label discards field → hint **none yet · save the setup to switch back in one click**, button **＋ Save current** again, no chip.
 - Escape is **not** naming discard (`HideOnEscape` unmaps panel); blur is.
