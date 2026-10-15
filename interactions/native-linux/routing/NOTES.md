@@ -478,3 +478,38 @@ Routing, **ROUTING GROUPS**, no group row, templates showing. Groups plugin **on
 - Conditions: tokens · member Filter · reasoning ≥ high · compacting tip · agents through Droid · in folder / not in folder · hours placeholders · weekdays → **Mon–Fri**.
 - Cancel → Discard; Add empty name → **group** / `group/group` · 1 rule card; … Actions for rule 1 (Move up/down disabled) · Pause hides request chips · whole-day 00:00–00:00; Save footer; Remove group → templates.
 - Find-groups/names not flipped; day pills N/A; P1 N/A. No portable / Vercel.
+
+
+## Find-groups and names (172–179)
+
+Same window, pid **1871993**, magpie **0.1.1247**, **752×652 at +200+40** (id 85983247). Shots are ffmpeg x11grab of that rect (`-framerate 25`, cursor drawn). Close was not used. Gateway was not restarted. No request was sent. No OAuth. No group was saved. P1 bird hop: **N/A**.
+
+Both controls sit under the **ROUTING GROUPS** head and write on the click. Neither has a hover tip of its own. Find-groups is a switch; the sentence under the title is the tip, and it changes. Names is three segments, **Off** / **Not on names I set** / **On**; the sentence under that title does not change.
+
+| shot | what |
+|---|---|
+| 172 | Pointer on the switch, **on**. "A model two or more of your providers serve becomes a group of them (auto-…). Switch it off to list and serve only the groups you made or changed." Names still **On**. |
+| 173 | Click. Knob to the left. The sentence is now "Off: only the groups you made or changed are listed and served. An agent set to a found group is moved to its model from one provider, and a request still naming one goes there too." Green toast **Found groups are off: only yours are listed and served**. |
+| 174 | Toast gone. Same off sentence. Names still **On**. No found-group row was here to leave (no providers). |
+| 175 | Click. Switch **on** again, the 172 sentence back. Green toast **Found groups are on**. |
+| 176 | **Not on names I set** lit. The sentence stays "Whether “· routing group” follows a group’s name in the agents’ lists: one setting for every group, and for the provider after each model’s name, as on Settings." No toast. |
+| 177 | **Off** lit. Same sentence. No toast. |
+| 178 | **On** lit again. Same sentence. No toast. |
+| 179 | **Import** hover. Tip, clipped at the window's right edge: "Add a routing group someone shared from their magpie". The box was not opened. Nothing pasted. Find-groups still **on**, names still **On**. |
+
+Find-groups posts `groups/found` at once. While off, `providers.json` had `noAutoGroups: true`; on again the field is omitted, and the file matches what it was before 172 (`{"providers": []}`). Names posts `settings/plain-names` at once: **Not on names I set** set `plainOwnNames`, **Off** set `plainNames`, **On** omits both. `settings.json` matches the pre-slice file. Each click's `.bak` kept the generation before it, so after the last click the baks still held the off flags; both were rewritten to the restored files so a fallback does not turn Find-groups or names off. `settings.json` `window` was not touched. `plugins.yml` `groups.enabled` is still `true`.
+
+The group's editor was not opened, so the line "Agents’ lists show …" (it adds " · routing group" only while names is **On**) was not on screen. No agent is wired whose lists this setting cannot reach, so the extra "changes nothing in …" line was not shown.
+
+### Not in this slice
+
+Import box. The editor's "in agents' lists" line while the segments change. Template Add (still **Add a provider first**). Day pills, By request / By session, Replay (still **Waiting for a request**, 0 / 0 / 0).
+
+## Left state
+
+Routing, **ROUTING GROUPS**, no group row, templates showing. Groups plugin **on**. Find-groups **on**. Names **On**. Gateway **running** on this pid, 0 models. No group, no key. Magpie still running, pid 1871993, window 752×652 at +200+40. Close was not used.
+
+## demo 对齐（172–179）· v0.1.95 FIND_GROUPS_NAMES_DONE
+- Find-groups switch: sentence is the tip (on/off copy swaps); no hover tip; toasts **Found groups are off: only yours are listed and served** / **Found groups are on**; persists `noAutoGroups`.
+- Names segments Off / Not on names I set / On: sentence stays; no toast; persists `plainNames` / `plainOwnNames`. Defaults: found on, names On.
+- Import tip only (box not opened). Day pills N/A. No portable / Vercel.

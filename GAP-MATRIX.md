@@ -385,3 +385,8 @@
 - Native routing 145–171: Add-a-rule conditions · Pause · Discard · empty-name group/group · Remove group.
 - Gaps: Find-groups / names segments not flipped this slice; day pills / Replay N/A; P1 bird hop N/A; second rule Move up/down not exercised.
 - Portable/release skipped. No Vercel.
+
+## v0.1.95 FIND_GROUPS_NAMES_DONE
+- Native routing 172–179: Find-groups switch toasts + sentence swap · names segments persist · Import tip.
+- Gaps: Import box not opened; editor “in agents' lists” line while segments change not shown; day pills / Replay N/A; P1 bird hop N/A.
+- Portable/release skipped. No Vercel.

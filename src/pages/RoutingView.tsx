@@ -164,6 +164,53 @@ function readGroupsOn(): boolean {
   }
 }
 
+/** Magpie groups/found → providers.json noAutoGroups (routing 172–175). Default on. */
+function readFoundOn(): boolean {
+  try {
+    const q = new URLSearchParams(location.search).get("rtFound");
+    if (q === "0") return false;
+    if (q === "1") return true;
+    return localStorage.getItem("magpie.noAutoGroups") !== "1";
+  } catch {
+    return true;
+  }
+}
+
+function persistFoundOn(on: boolean) {
+  try {
+    if (on) localStorage.removeItem("magpie.noAutoGroups");
+    else localStorage.setItem("magpie.noAutoGroups", "1");
+  } catch { /* */ }
+}
+
+/** Magpie settings/plain-names: On omits both; skip → plainOwnNames; off → plainNames. */
+function readNameSuffix(): "off" | "skip" | "on" {
+  try {
+    const q = new URLSearchParams(location.search).get("rtNames");
+    if (q === "off" || q === "skip" || q === "on") return q;
+    if (localStorage.getItem("magpie.plainNames") === "1") return "off";
+    if (localStorage.getItem("magpie.plainOwnNames") === "1") return "skip";
+    return "on";
+  } catch {
+    return "on";
+  }
+}
+
+function persistNameSuffix(v: "off" | "skip" | "on") {
+  try {
+    if (v === "off") {
+      localStorage.setItem("magpie.plainNames", "1");
+      localStorage.removeItem("magpie.plainOwnNames");
+    } else if (v === "skip") {
+      localStorage.setItem("magpie.plainOwnNames", "1");
+      localStorage.removeItem("magpie.plainNames");
+    } else {
+      localStorage.removeItem("magpie.plainNames");
+      localStorage.removeItem("magpie.plainOwnNames");
+    }
+  } catch { /* */ }
+}
+
 /** Empty routing stage matching official Magpie R-00…R-09. */
 export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: string) => void } = {}) {
   /** tray/20 + responsive 05/09: peer card when another magpie holds the gateway. */
@@ -189,10 +236,10 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
   const [masked, setMasked] = useState(readMasked);
   const [masking, setMasking] = useState(false);
   const [demoGroups, setDemoGroups] = useState(() => readGroupsOn());
-  /** Magpie groups.found (shot 01-empty-live): Find groups on their own */
-  const [foundOn, setFoundOn] = useState(true);
-  /** Magpie suffixSegs: Off | Not on names I set | On */
-  const [nameSuffix, setNameSuffix] = useState<"off" | "skip" | "on">("on");
+  /** Magpie groups.found / noAutoGroups (routing 172–175). Default on. */
+  const [foundOn, setFoundOn] = useState(readFoundOn);
+  /** Magpie plain-names segments: Off | Not on names I set | On (176–178). */
+  const [nameSuffix, setNameSuffix] = useState(readNameSuffix);
   const [groupEditorOpen, setGroupEditorOpen] = useState(false);
   const [savedGroups, setSavedGroups] = useState<SavedGroupDraft[]>([]);
   const [gImportOpen, setGImportOpen] = useState(false);
@@ -1413,7 +1460,18 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
               role="switch"
               aria-checked={foundOn}
               aria-label={t("Find groups on their own")}
-              onClick={() => setFoundOn((v) => !v)}
+              onClick={() => {
+                const next = !foundOn;
+                persistFoundOn(next);
+                setFoundOn(next);
+                // Magpie: sentence is the tip; toast confirms write (173 / 175)
+                onStatus?.(
+                  next
+                    ? t("Found groups are on")
+                    : t("Found groups are off: only yours are listed and served"),
+                  "ok",
+                );
+              }}
             >
               <i />
             </button>
@@ -1441,7 +1499,11 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                   className={`opt${nameSuffix === v ? " on" : ""}`}
                   role="radio"
                   aria-checked={nameSuffix === v}
-                  onClick={() => setNameSuffix(v)}
+                  onClick={() => {
+                    setNameSuffix(v);
+                    persistNameSuffix(v);
+                    // Magpie settings/plain-names: write at once, no toast (176–178)
+                  }}
                 >
                   {t(label)}
                 </button>
