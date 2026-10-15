@@ -96,8 +96,7 @@ function RefreshSpin({ busy }: { busy: boolean }) {
       strokeLinecap="round"
       strokeLinejoin="round"
       aria-hidden
-      style={busy ? { animation: "spin .8s linear infinite" } : undefined}
-    >
+      style={busy ? { animation: "spin .8s linear infinite" } : undefined}>
       <path d="M13.5 8a5.5 5.5 0 1 1-1.6-3.9M13.5 2.5v3h-3" />
     </svg>
   );
@@ -123,8 +122,7 @@ function SessPick({
       aria-haspopup="menu"
       aria-expanded={open}
       aria-label={label}
-      onClick={onToggle}
-    >
+      onClick={onToggle}>
       <span>{label}</span>
       <svg viewBox="0 0 12 12" width={11} height={11} aria-hidden>
         <path d="M3 4.5 6 7.5 9 4.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
@@ -175,9 +173,8 @@ function ProtoMenu({
       ref={ref}
       role="menu"
       aria-label={title}
-      style={{ position: "absolute", top: "100%", right: 0, zIndex: 40, minWidth: 160 }}
     >
-      {title ? <div className="pm-head">{t(title)}</div> : null}
+      {title ? <div className="pm-head pm-headrow">{t(title)}</div> : null}
       {items.map((it) => {
         const on = it.v === value;
         return (
@@ -190,8 +187,7 @@ function ProtoMenu({
             onClick={() => {
               onPick(it.v);
               onClose();
-            }}
-          >
+            }}>
             <span className="pm-tick" aria-hidden>
               {on ? (
                 <svg viewBox="0 0 16 16" width={12} height={12} fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
@@ -342,8 +338,7 @@ function RangeCalendar({
           const [from, to] = start <= k ? [start, k] : [k, start];
           onChoose(from, to);
           onClose();
-        }}
-      >
+        }}>
         {dayNum}
       </button>,
     );
@@ -352,7 +347,7 @@ function RangeCalendar({
   const nextMonthStart = dayKeyOf(new Date(shown.getFullYear(), shown.getMonth() + 1, 1, 12));
 
   return (
-    <div className="pop proto-menu range-menu" ref={ref} role="dialog" aria-label={t("Pick days")} style={{ position: "absolute", top: "100%", right: 0, zIndex: 40 }}>
+    <div className="pop proto-menu range-menu" ref={ref} role="dialog" aria-label={t("Pick days")}>
       <div className="pm-head">{start ? t("Now the last day") : t("Pick the first day, then the last")}</div>
       <div className="rm-quick">
         {quicks.map(([name, r]) => (
@@ -364,8 +359,7 @@ function RangeCalendar({
             onClick={() => {
               onChoose(r.from, r.to);
               onClose();
-            }}
-          >
+            }}>
             {t(name)}
           </button>
         ))}
@@ -375,8 +369,7 @@ function RangeCalendar({
           type="button"
           className="rm-step"
           aria-label={t("Previous month")}
-          onClick={() => setShown(new Date(shown.getFullYear(), shown.getMonth() - 1, 1, 12))}
-        >
+          onClick={() => setShown(new Date(shown.getFullYear(), shown.getMonth() - 1, 1, 12))}>
           <svg viewBox="0 0 12 12" width={12} height={12} aria-hidden>
             <path d="M10 4 6 8l4 4" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
           </svg>
@@ -387,8 +380,7 @@ function RangeCalendar({
           className="rm-step"
           aria-label={t("Next month")}
           disabled={nextMonthStart > today}
-          onClick={() => setShown(new Date(shown.getFullYear(), shown.getMonth() + 1, 1, 12))}
-        >
+          onClick={() => setShown(new Date(shown.getFullYear(), shown.getMonth() + 1, 1, 12))}>
           <svg viewBox="0 0 12 12" width={12} height={12} aria-hidden>
             <path d="m6 4 4 4-4 4" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
           </svg>
@@ -596,7 +588,7 @@ export function UsageView() {
           items={USAGE_TABS.map(([id, en]) => ({ id, label: t(en) }))}
         />
         {tab !== "sessions" && tab !== "context" ? (
-          <div className="segs period-wrap" id="period" ref={setPeriodBox} style={{ position: "relative" }}>
+          <div className="segs period-wrap" id="period" ref={setPeriodBox}>
             {PERIODS.map(([id, en]) => (
               <button
                 key={id}
@@ -607,8 +599,7 @@ export function UsageView() {
                   setCustomLabel("");
                   setPeriod(id);
                   setCustomOpen(false);
-                }}
-              >
+                }}>
                 {t(en)}
               </button>
             ))}
@@ -619,8 +610,7 @@ export function UsageView() {
               aria-expanded={customOpen}
               aria-label={customLabel ? t("Days picked: {days}", { days: customLabel }) : t("Pick days")}
               title={customLabel ? t("Days picked: {days}", { days: customLabel }) : undefined}
-              onClick={() => setCustomOpen((o) => !o)}
-            >
+              onClick={() => setCustomOpen((o) => !o)}>
               <svg viewBox="0 0 16 16" width={12} height={12} fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                 <path d="M3 4.5h10v8.5H3zM3 7h10M5.5 3v3M10.5 3v3" />
               </svg>
@@ -663,7 +653,7 @@ export function UsageView() {
           </span>
         ) : null}
         <span className="grow" />
-        <span className="usage-refresh" id="usageRefresh" style={{ position: "relative" }}>
+        <span className="usage-refresh" id="usageRefresh">
           <button
             className={`icon${busy ? " busy" : ""}`}
             id="usageReload"
@@ -674,8 +664,7 @@ export function UsageView() {
                 ? t("Refresh now, the allowances too; a Claude account's is read by running Claude Code's own /usage")
                 : t("Refresh now")
             }
-            onClick={refresh}
-          >
+            onClick={refresh}>
             <RefreshSpin busy={busy} />
           </button>
           <SessPick
@@ -711,8 +700,7 @@ export function UsageView() {
             id="usageMask"
             aria-pressed={mask}
             title={t("Mask the accounts on this page — email addresses and account names — for a screenshot to share")}
-            onClick={() => setMask((m) => !m)}
-          >
+            onClick={() => setMask((m) => !m)}>
             <span>{t("Hide accounts")}</span>
           </button>
         </div>
@@ -721,12 +709,12 @@ export function UsageView() {
           {t("Gateway calls only; session-log calls are in Requests. Local rejections are excluded from totals.")}
         </p>
         {!demoFilled || !overview ? (
-          <div className="card empty-state us-empty" style={{ padding: "22px 16px", marginTop: 8 }}>
-            <b style={{ display: "block", fontWeight: 600, marginBottom: 6 }}>{noCallsIn(period)}</b>
-            <span style={{ color: "var(--muted)", fontSize: 12.5, lineHeight: 1.45 }}>
+          <div className="card empty-state us-empty">
+            <b>{noCallsIn(period)}</b>
+            <span>
               {t("Point an agent at a catalog model and use it; every call through the gateway is counted here.")}
             </span>
-            <div style={{ marginTop: 12 }}>
+            <div>
               <button type="button" className="text primary" onClick={() => setDemoFilled(true)}>
                 {demoCopy("显示演示有数据", "Show demo with data")}
               </button>
@@ -734,7 +722,7 @@ export function UsageView() {
           </div>
         ) : (
           <>
-            <section className="stats" id="stats" style={{ animation: "fade-in .28s var(--ease)" }}>
+            <section className="stats" id="stats">
               <div className="kpi" title="">
                 <b>{fmtN(tokensOf(overview))}</b>
                 <span>{t("tokens")}</span>
@@ -773,7 +761,7 @@ export function UsageView() {
                 </small>
               </div>
             </section>
-            <section className="chart" id="chart" style={{ animation: "fade-in .32s var(--ease)" }}>
+            <section className="chart" id="chart">
               <div className="peak">
                 {fmtN(Math.max(1, ...overview.series.map((p) => tokensOf(p))))}
               </div>
@@ -793,8 +781,8 @@ export function UsageView() {
                     : t("{when} · nothing", { when });
                   return (
                     <div className="bar" key={`${p.label}-${i}`} title={tip}>
-                      <i className="out" style={{ height: `${((100 * p.output) / peak).toFixed(1)}%`, transition: "height .28s var(--ease)" }} />
-                      <i className="in" style={{ height: `${((100 * p.input) / peak).toFixed(1)}%`, transition: "height .28s var(--ease)" }} />
+                      <i className="out" style={{ ["--h" as string]: `${((100 * p.output) / peak).toFixed(1)}%` }} />
+                      <i className="in" style={{ ["--h" as string]: `${((100 * p.input) / peak).toFixed(1)}%` }} />
                     </div>
                   );
                 })}
@@ -823,7 +811,7 @@ export function UsageView() {
                       ? " · " + t("hit rate {p}", { p: Math.round((100 * g.cache_read) / prompt) + "%" })
                       : "";
                   return (
-                    <div className="row stat acts" key={g.id} data-id={g.id} style={{ position: "relative" }}>
+                    <div className="row stat acts" key={g.id} data-id={g.id}>
                       <span className="ic">
                         <img src={iconSrc(g.icon)} alt="" />
                       </span>
@@ -839,7 +827,7 @@ export function UsageView() {
                         </div>
                       </div>
                       <div className="share" title={t("{n}% of tokens", { n: String(Math.round((100 * tokensOf(g)) / total)) })}>
-                        <i style={{ width: `${Math.max(1.5, (100 * tokensOf(g)) / total).toFixed(1)}%`, transition: "width .28s var(--ease)" }} />
+                        <i style={{ ["--bar" as string]: `${Math.max(1.5, (100 * tokensOf(g)) / total).toFixed(1)}%` }} className="us-bar" />
                       </div>
                       <button
                         type="button"
@@ -849,8 +837,7 @@ export function UsageView() {
                         onClick={(e) => {
                           e.stopPropagation();
                           setAgentMenuFor((cur) => (cur === g.id ? null : g.id));
-                        }}
-                      >
+                        }}>
                         <svg viewBox="0 0 16 16" width={14} height={14} aria-hidden>
                           <circle cx="3.5" cy="8" r="1.2" fill="currentColor" />
                           <circle cx="8" cy="8" r="1.2" fill="currentColor" />
@@ -858,7 +845,7 @@ export function UsageView() {
                         </svg>
                       </button>
                       {agentMenuFor === g.id ? (
-                        <div className="proto-menu open" role="menu" style={{ position: "absolute", right: 8, top: 36, zIndex: 20, minWidth: 180, animation: "fade-in .15s var(--ease)" }}>
+                        <div className="proto-menu open" role="menu">
                           <button
                             type="button"
                             className="proto-item"
@@ -866,8 +853,7 @@ export function UsageView() {
                             onClick={() => {
                               setHiddenUsageAgents((s) => new Set(s).add(g.id));
                               setAgentMenuFor(null);
-                            }}
-                          >
+                            }}>
                             {t("Hide from this list")}
                           </button>
                         </div>
@@ -893,10 +879,9 @@ export function UsageView() {
                   aria-expanded={usageHidOpen}
                   title={t("Hidden from this list only: their calls still count in the totals and the chart. Click to see them.")}
                   onClick={() => setUsageHidOpen((o) => !o)}
-                  style={{ display: "inline-flex", alignItems: "center", gap: 4, margin: "6px 0", fontSize: 12 }}
                 >
                   <span>{t("{n} hidden", { n: String([...hiddenUsageAgents].filter((id) => overview.agents.some((g) => g.id === id)).length) })}</span>
-                  <svg viewBox="0 0 12 12" width={11} height={11} aria-hidden style={{ transform: usageHidOpen ? "rotate(180deg)" : undefined, transition: "transform .15s ease-out" }}>
+                  <svg viewBox="0 0 12 12" width={11} height={11} aria-hidden >
                     <path d="M3 4.5 6 7.5 9 4.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
                   </svg>
                 </button>
@@ -921,8 +906,7 @@ export function UsageView() {
                                 n.delete(g.id);
                                 return n;
                               })
-                            }
-                          >
+                            }>
                             {t("Unhide")}
                           </button>
                         </div>
@@ -946,7 +930,7 @@ export function UsageView() {
                       </div>
                     </div>
                     <div className="share" title={t("{n}% of tokens", { n: String(Math.round((100 * tokensOf(g)) / total)) })}>
-                      <i style={{ width: `${Math.max(1.5, (100 * tokensOf(g)) / total).toFixed(1)}%`, transition: "width .28s var(--ease)" }} />
+                      <i style={{ ["--bar" as string]: `${Math.max(1.5, (100 * tokensOf(g)) / total).toFixed(1)}%` }} className="us-bar" />
                     </div>
                     <div className="num">
                       <b>{fmtN(tokensOf(g))}</b>
@@ -977,7 +961,7 @@ export function UsageView() {
                           </div>
                         </div>
                         <div className="share">
-                          <i style={{ width: `${Math.max(1.5, (100 * tokensOf(g)) / total).toFixed(1)}%` }} />
+                          <i style={{ ["--bar" as string]: `${Math.max(1.5, (100 * tokensOf(g)) / total).toFixed(1)}%` }} />
                         </div>
                         <div className="num">
                           <b>{fmtN(tokensOf(g))}</b>
@@ -990,14 +974,13 @@ export function UsageView() {
                 </div>
               </>
             ) : null}
-            <div style={{ marginTop: 10, display: "flex", gap: 8, flexWrap: "wrap" }}>
+            <div>
               <button
                 type="button"
                 className="text"
                 aria-pressed={demoFilled}
                 onClick={() => setDemoFilled(false)}
-                title={demoCopy("关演示数据看真空态", "Turn off demo data for Magpie empty")}
-              >
+                title={demoCopy("关演示数据看真空态", "Turn off demo data for Magpie empty")}>
                 {demoCopy("演示数据开 · 点此关", "Demo data on · click to clear")}
               </button>
             </div>
@@ -1008,7 +991,7 @@ export function UsageView() {
 
       {/* Requests / Ledger */}
       <div className="usage-pane" id="ledgerPane" hidden={tab !== "requests"}>
-        <div className="sess-tools" style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center", marginBottom: 8 }}>
+        <div className="sess-tools">
           <Segs
             value={ledStatus}
             onChange={(v) => {
@@ -1031,11 +1014,10 @@ export function UsageView() {
               setDemoFilled((d) => !d);
               setLedPage(0);
               setDemoChart(false);
-            }}
-          >
+            }}>
             {demoFilled ? demoCopy("演示数据开", "Demo data on") : demoCopy("演示数据关", "Demo data off")}
           </button>
-          <span className="led-q-wrap" style={{ position: "relative", display: "inline-flex", alignItems: "center" }}>
+          <span className="led-q-wrap">
             <input
               className="sess-filter"
               id="ledQ"
@@ -1063,12 +1045,11 @@ export function UsageView() {
                 className="icon led-q-clear"
                 aria-label={t("Clear")}
                 title={t("Clear")}
-                style={{ position: "absolute", right: 4, width: 22, height: 22, border: 0, background: "none", cursor: "pointer", color: "var(--muted)", display: "grid", placeItems: "center" }}
+               
                 onClick={() => {
                   setLedQ("");
                   setLedPage(0);
-                }}
-              >
+                }}>
                 <svg viewBox="0 0 12 12" width={10} height={10} aria-hidden>
                   <path d="M3 3l6 6M9 3l-6 6" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
                 </svg>
@@ -1083,8 +1064,7 @@ export function UsageView() {
             title={t("Save every request listed, all pages, as a CSV file in Downloads")}
             onClick={() => {
               /* demo: no export when empty — Magpie click does nothing */
-            }}
-          >
+            }}>
             <span>{t("Export CSV")}</span>
           </button>
         </div>
@@ -1112,8 +1092,7 @@ export function UsageView() {
                       <button
                         type="button"
                         className={`led-jump bad${ledStatus === "failed" ? " on" : ""}`}
-                        onClick={() => setLedStatus(ledStatus === "failed" ? "" : "failed")}
-                      >
+                        onClick={() => setLedStatus(ledStatus === "failed" ? "" : "failed")}>
                         {t("{n} failed", { n: String(ledTotals.errors) })}
                       </button>
                     ) : (
@@ -1130,7 +1109,7 @@ export function UsageView() {
                   <span className="k">{t("Cache hit rate")}</span>
                   <span className="v">{(100 * ledTotals.hit).toFixed(1)}%</span>
                   <div className="meter">
-                    <i style={{ width: `${(100 * ledTotals.hit).toFixed(1)}%` }} />
+                    <i style={{ ["--bar" as string]: `${(100 * ledTotals.hit).toFixed(1)}%` }} />
                   </div>
                 </div>
                 <div className="blk">
@@ -1143,43 +1122,26 @@ export function UsageView() {
                 </div>
               </div>
               <section className="led-trend">
-                <div className="led-bar" style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", marginBottom: 6 }}>
+                <div className="led-bar">
                   <Segs value={ledMetric} onChange={setLedMetric} items={LED_METRIC.map(([id, en]) => ({ id, label: t(en) }))} />
                   <span className="grow" />
-                  <span className="led-split" style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
-                    <span className="led-by" style={{ fontSize: 12, color: "var(--muted)" }}>
+                  <span className="led-split">
+                    <span className="led-by">
                       {t("Split by")}
                     </span>
                     <Segs value={ledSplit} onChange={setLedSplit} items={LED_SPLIT.map(([id, en]) => ({ id, label: t(en) }))} />
                   </span>
                 </div>
                 <div className="led-body">
-                  <div
-                    className="led-chart"
-                    id="ledChart"
-                    aria-hidden
-                    style={{
-                      height: 120,
-                      borderRadius: 12,
-                      border: "1px solid var(--line)",
-                      background: "var(--card)",
-                      display: "flex",
-                      alignItems: "flex-end",
-                      gap: 3,
-                      padding: "12px 10px 8px",
-                    }}
-                  >
+                  <div className="led-chart us-miniplot" id="ledChart" aria-hidden>
                     {[28, 44, 36, 62, 48, 22, 55, 40, 50, 34, 58, 42].map((h, i) => (
                       <div
                         key={i}
+                        className="col"
                         title={`${ledMetric} · ${ledSplit}`}
                         style={{
-                          flex: 1,
-                          height: `${h}%`,
-                          borderRadius: "4px 4px 2px 2px",
-                          background: "color-mix(in srgb, var(--accent) 55%, var(--pill))",
-                          opacity: 0.55 + (i % 3) * 0.1,
-                          transition: "height .28s var(--ease), opacity .12s",
+                          ["--h" as string]: `${h}%`,
+                          ["--op" as string]: 0.55 + (i % 3) * 0.1,
                         }}
                       />
                     ))}
@@ -1189,8 +1151,8 @@ export function UsageView() {
               </section>
             </div>
             {heatMetricRemember ? <LedHeat show={demoFilled && ledRows.length > 0} /> : null}
-            <div className="led-head" style={{ display: "flex", alignItems: "baseline", gap: 8, marginTop: 10 }}>
-              <p className="led-sum" id="ledSum" style={{ margin: 0, fontSize: 12, color: "var(--muted)" }}>
+            <div className="led-head">
+              <p className="led-sum" id="ledSum">
                 {t(ledTotals.calls === 1 ? "{n} request" : "{n} requests", { n: String(ledTotals.calls) })}
                 {" · "}
                 {t("{n} in", { n: fmtN(ledTotals.input) })}
@@ -1238,8 +1200,7 @@ export function UsageView() {
                               e.preventDefault();
                               toggleLed(r.id);
                             }
-                          }}
-                        >
+                          }}>
                           <td className="when" title={new Date(r.t).toLocaleString()}>
                             {ledTime(r.t)}
                           </td>
@@ -1289,13 +1250,13 @@ export function UsageView() {
                         {open ? (
                           <tr className="led-detail">
                             <td colSpan={10}>
-                              <div className="led-detail-inner" style={{ padding: "8px 12px 12px", fontSize: 12, color: "var(--fg-2)", display: "grid", gap: 4 }}>
+                              <div className="led-detail-inner">
                                 <div>
                                   <b>{t("Cache write")}</b>: {fmtN(r.cache_write)} · <b>{t("Cache read")}</b>: {fmtN(r.cache_read)}
                                   {r.speed ? ` · ${t("Speed")}: ${r.speed} tok/s` : ""}
                                   {r.effort ? ` · ${t("Effort")}: ${r.effort}` : ""}
                                 </div>
-                                <div style={{ color: "var(--muted)" }}>
+                                <div>
                                   {demoCopy("演示行展开（Magpie led-row details）", "Demo row expand (Magpie led-row details)")}
                                 </div>
                               </div>
@@ -1319,22 +1280,20 @@ export function UsageView() {
                 type="button"
                 className="text"
                 disabled={ledPage + 1 >= ledPages}
-                onClick={() => setLedPage((p) => p + 1)}
-              >
+                onClick={() => setLedPage((p) => p + 1)}>
                 {t("Next")}
               </button>
             </div>
           </>
         ) : (
           <>
-            <div className="led-tools-extra" style={{ display: "flex", justifyContent: "flex-end", marginBottom: 6 }}>
+            <div className="led-tools-extra">
               <button
                 type="button"
                 className="text"
                 aria-pressed={demoChart}
                 onClick={() => setDemoChart((d) => !d)}
-                title={demoCopy("官方空态隐藏 ledDash；点此预览演示柱图壳", "Magpie hides ledDash when empty; preview demo chart shell")}
-              >
+                title={demoCopy("官方空态隐藏 ledDash；点此预览演示柱图壳", "Magpie hides ledDash when empty; preview demo chart shell")}>
                 {demoChart ? demoCopy("隐藏演示图", "Hide demo chart") : demoCopy("显示演示图", "Show demo chart")}
               </button>
             </div>
@@ -1357,17 +1316,15 @@ export function UsageView() {
             </div>
             <div
               className="led-head"
-              style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 10, marginBottom: 8 }}
             >
-              <p className="led-sum" style={{ margin: 0, fontSize: 12, color: "var(--muted)" }}>
+              <p className="led-sum">
                 {t("{n} requests", { n: "0" })}
               </p>
               <span className="grow" />
               <label
                 className="led-archive"
-                style={{ display: "inline-flex", alignItems: "center", gap: 8, fontSize: 12.5, color: "var(--muted)", cursor: "pointer" }}
-                title={t("The request archive goes to the S3 bucket sync keeps its backup in, and sync isn't set up with one")}
-              >
+               
+                title={t("The request archive goes to the S3 bucket sync keeps its backup in, and sync isn't set up with one")}>
                 <span>{t("Request archive")}</span>
                 <input
                   type="checkbox"
@@ -1375,13 +1332,13 @@ export function UsageView() {
                   checked={reqArchive}
                   aria-checked={reqArchive}
                   onChange={(e) => setReqArchive(e.target.checked)}
-                  style={{ accentColor: "var(--accent)" }}
+                 
                 />
               </label>
             </div>
             <div className={`led-wrap${!demoChart ? " none" : ""}`} id="ledWrap">
-              <div className="led-none" style={{ padding: "22px 16px", textAlign: "center", color: "var(--muted)", lineHeight: 1.5 }}>
-                <b style={{ display: "block", fontWeight: 600, color: "var(--fg)", marginBottom: 4 }}>
+              <div className="led-none">
+                <b>
                   {ledQ.trim() || ledStatus
                     ? t("No requests match these filters.")
                     : noCallsIn(period)}
@@ -1416,13 +1373,12 @@ export function UsageView() {
             type="button"
             className="text"
             aria-pressed={demoFilled}
-            onClick={() => setDemoFilled((d) => !d)}
-          >
+            onClick={() => setDemoFilled((d) => !d)}>
             {demoFilled ? demoCopy("演示数据开", "Demo data on") : demoCopy("演示数据关", "Demo data off")}
           </button>
         </div>
         {!demoFilled ? (
-          <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 6 }}>
+          <div>
             <button type="button" className="text" aria-pressed={false} onClick={() => setDemoFilled(true)}>
               {demoCopy("演示数据关 · 点此填充", "Demo data off · fill")}
             </button>
@@ -1488,8 +1444,7 @@ export function UsageView() {
                           e.preventDefault();
                           setSessOpen(open ? null : s.id);
                         }
-                      }}
-                    >
+                      }}>
                       <span className="ic">
                         <img
                           src={iconSrc(
@@ -1542,8 +1497,7 @@ export function UsageView() {
                             onClick={(e) => {
                               e.stopPropagation();
                               void navigator.clipboard?.writeText(detail.id);
-                            }}
-                          >
+                            }}>
                             <svg viewBox="0 0 16 16" width={12} height={12} aria-hidden>
                               <rect x="5.5" y="5.5" width="7" height="7" rx="1.2" fill="none" stroke="currentColor" strokeWidth="1.5" />
                               <path d="M3.5 10.5v-7A1.5 1.5 0 0 1 5 2h7" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
@@ -1560,8 +1514,7 @@ export function UsageView() {
                             onClick={(e) => {
                               e.stopPropagation();
                               void navigator.clipboard?.writeText(detail.resume);
-                            }}
-                          >
+                            }}>
                             <svg viewBox="0 0 16 16" width={12} height={12} aria-hidden>
                               <rect x="5.5" y="5.5" width="7" height="7" rx="1.2" fill="none" stroke="currentColor" strokeWidth="1.5" />
                               <path d="M3.5 10.5v-7A1.5 1.5 0 0 1 5 2h7" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
@@ -1606,21 +1559,19 @@ export function UsageView() {
                 <button
                   type="button"
                   className="text sess-show-more"
-                  style={{ margin: "8px 12px 4px", alignSelf: "flex-start" }}
-                  onClick={() => setSessMore(true)}
-                >
+                 
+                  onClick={() => setSessMore(true)}>
                   {t("Show more · {n} left", { n: String(sessHidden) })}
                 </button>
               ) : sessMore && DEMO_SESSIONS_MORE.length ? (
                 <button
                   type="button"
                   className="text sess-show-more"
-                  style={{ margin: "8px 12px 4px", alignSelf: "flex-start" }}
+                 
                   onClick={() => {
                     setSessMore(false);
                     setSessOpen(null);
-                  }}
-                >
+                  }}>
                   {t("Show less")}
                 </button>
               ) : null}
@@ -1636,7 +1587,7 @@ export function UsageView() {
                       "No sessions yet. Claude Code's, Codex's, OpenCode's and Pi's sessions on this computer show up here, with what each cost and the command that resumes it.",
                     )}
               </div>
-              <p className="usage-note" style={{ marginTop: 10, fontSize: 11.5 }}>
+              <p className="usage-note">
                 {t("Totals count native sessions and gateway requests with a session ID")}
                 {" · 0 "}
                 {t("sessions")}
@@ -1658,8 +1609,7 @@ export function UsageView() {
             type="button"
             className="text"
             aria-pressed={demoFilled}
-            onClick={() => setDemoFilled((d) => !d)}
-          >
+            onClick={() => setDemoFilled((d) => !d)}>
             {demoFilled ? demoCopy("演示数据开", "Demo data on") : demoCopy("演示数据关", "Demo data off")}
           </button>
         </div>
@@ -1669,7 +1619,7 @@ export function UsageView() {
           )}
         </p>
         {!demoFilled ? (
-          <div className="ctx-none" style={{ marginBottom: 14 }}>
+          <div className="ctx-none">
             <span>{t("Not enough calls in this range to tune on")}</span>
           </div>
         ) : null}
@@ -1738,7 +1688,7 @@ export function UsageView() {
                         <div className={`ctx-score ${tone}`} key={s.key}>
                           <span className="n">{t(s.name)}</span>
                           <span className="ctx-bar">
-                            <i style={{ width: `${(ratio * 100).toFixed(1)}%` }} />
+                            <i style={{ ["--bar" as string]: `${(ratio * 100).toFixed(1)}%` }} className="ctx-fill" />
                           </span>
                           <span className="v">
                             {s.points}/{s.most}
@@ -1774,7 +1724,7 @@ export function UsageView() {
                     <span className="ctx-k">{t("What its prompts hold")}</span>
                     <div className="ctx-share">
                       {a.shares.map((sh) => (
-                        <i key={sh.k} className={`k-${sh.k}`} style={{ flexGrow: sh.v }} title={`${sh.name} · ${Math.round(sh.v * 100)}%`} />
+                        <i key={sh.k} className={`ctx-share k-${sh.k}`} style={{ ["--grow" as string]: sh.v }} title={`${sh.name} · ${Math.round(sh.v * 100)}%`} />
                       ))}
                     </div>
                     <div className="ctx-mix-keys">
@@ -1806,9 +1756,9 @@ export function UsageView() {
             })}
           </div>
         ) : (
-          <div className="ctx-none ctx-empty-dash" style={{ border: "1px dashed var(--line)", borderRadius: 12, padding: "28px 16px", textAlign: "center", display: "grid", gap: 6, justifyContent: "center" }}>
+          <div className="ctx-none ctx-empty-dash">
             <b>{t("No prompts read yet")}</b>
-            <span style={{ color: "var(--muted)", fontSize: 12.5 }}>{t("Requests your agents send through magpie show here.")}</span>
+            <span>{t("Requests your agents send through magpie show here.")}</span>
           </div>
         )}
       </div>
@@ -2027,8 +1977,7 @@ export function PluginsView({
       /** Magpie movable: built-in subscription names this plugin can/does serve */
       movable?: string[];
       moved?: string[];
-    }[]
-  >([
+    }[]>([
     /* plugins/104–138 left: Installed · 2, Think Tags options saved as example, Word Guard on, A→Z */
     {
       pkg: "@magpie-community/middleware-think-tags",
@@ -2224,8 +2173,7 @@ export function PluginsView({
             strokeWidth="1.9"
             strokeLinecap="round"
             strokeLinejoin="round"
-            aria-hidden
-          >
+            aria-hidden>
             <path d="M3.2 8.2 6.4 11.4 12.8 4.2" />
           </svg>
           <span>{t("Installed")}</span>
@@ -2246,7 +2194,7 @@ export function PluginsView({
 
   return (
     <main className="view" id="view-plugins">
-      <div className="lib-head pm-head row-head" style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
+      <div className="lib-head pm-head row-head">
         <Segs
           value={tab}
           onChange={setTab}
@@ -2260,7 +2208,7 @@ export function PluginsView({
           <button
             type="button"
             className={`pm-mirror${mirror ? " on" : ""}`}
-            style={{ position: "relative" }}
+           
             role="switch"
             aria-checked={mirror}
             disabled={mirrorSaving}
@@ -2279,14 +2227,13 @@ export function PluginsView({
                 setSearchBusy(false);
                 setMirrorSaving(false);
               }, 420);
-            }}
-          >
+            }}>
             <span>{t("Mirrors in China")}</span>
             <span className={`lib-switch${mirror ? " on" : ""}`}>
               <i />
             </span>
             {mirrorTip ? (
-              <span className="pm-mirror-tip" role="tooltip" style={{ position: "absolute", top: "100%", right: 0, marginTop: 6, zIndex: 30, maxWidth: 280, padding: "8px 10px", borderRadius: 8, background: "var(--fg)", color: "var(--card)", fontSize: 11.5, lineHeight: 1.4, boxShadow: "0 8px 24px color-mix(in srgb, var(--fg) 25%, transparent)", animation: "fade-in .12s var(--ease)", pointerEvents: "none" }}>
+              <span className="pm-mirror-tip" role="tooltip" >
                 {t("Download the plugin list, plugins and Bun from mirrors in China first (npmmirror, jsDelivr), their official addresses after. Each is a copy of the very file, checked as the original is")}
               </span>
             ) : null}
@@ -2329,8 +2276,7 @@ export function PluginsView({
                   setQuery("");
                   setTab("discover");
                   requestAnimationFrame(() => searchInputRef.current?.focus({ preventScroll: true }));
-                }}
-              >
+                }}>
                 ×
               </button>
             ) : null}
@@ -2382,14 +2328,13 @@ export function PluginsView({
                           });
                           // Magpie plugins.yml write → toast Saved (routing 119)
                           onStatus?.(t("Saved"), "ok", 2200);
-                        }}
-                      >
+                        }}>
                         <i />
                       </button>
                     </div>
                   </div>
                   {b.on && b.id === "gateway" ? (
-                    <div className="row pref feat-set" data-of="gateway" style={{ position: "relative" }}>
+                    <div className="row pref feat-set" data-of="gateway">
                       <div className="who">
                         <div className="name">{t("Recent calls at a time")}</div>
                         <div className="sub">
@@ -2402,8 +2347,7 @@ export function PluginsView({
                           className={`sess-pick set${gwCallsOpen ? " open" : ""}`}
                           aria-haspopup="menu"
                           aria-expanded={gwCallsOpen}
-                          onClick={() => setGwCallsOpen((o) => !o)}
-                        >
+                          onClick={() => setGwCallsOpen((o) => !o)}>
                           <span>{b.callsPage ?? 20}</span>
                           <svg viewBox="0 0 12 12" width={11} height={11} aria-hidden>
                             <path d="M3 4.5 6 7.5 9 4.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
@@ -2448,8 +2392,7 @@ export function PluginsView({
                     <button
                       type="button"
                       className="pm-link"
-                      onClick={() => window.open("https://usemagpie.ai/docs/plugins#middleware", "_blank", "noopener")}
-                    >
+                      onClick={() => window.open("https://usemagpie.ai/docs/plugins#middleware", "_blank", "noopener")}>
                       {t("Write a middleware")}
                       <svg viewBox="0 0 12 12" width={11} height={11} aria-hidden>
                         <path d="M3.5 2.5h6v6M9.5 2.5 3 9" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
@@ -2502,32 +2445,20 @@ export function PluginsView({
                     <span>{t(sec.note)}</span>
                   </div>
                   {isGh && cards.length > 6 && kindsPresent.length > 1 ? (
-                    <div className="pm-ghbar" style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap", margin: "8px 0 10px" }}>
-                      <div className="pm-ghkinds" role="group" aria-label={t("Kind of plugin")} style={{ display: "inline-flex", gap: 2, padding: 2, borderRadius: 8, background: "var(--seg-track)" }}>
+                    <div className="pm-ghbar">
+                      <div className="pm-ghkinds" role="group" aria-label={t("Kind of plugin")}>
                         {([["", t("All")] as const, ...kindsPresent.map((k) => [k, t(k)] as const)]).map(([id, lab]) => (
                           <button
                             key={id || "all"}
                             type="button"
-                            className={ghKind === id ? "on" : ""}
-                            style={{
-                              border: 0,
-                              background: ghKind === id ? "var(--seg-thumb)" : "transparent",
-                              boxShadow: ghKind === id ? "var(--seg-edge)" : undefined,
-                              borderRadius: 6,
-                              padding: "4px 10px",
-                              font: "inherit",
-                              fontSize: 12,
-                              color: ghKind === id ? "var(--fg)" : "var(--ctl-fg)",
-                              cursor: "pointer",
-                            }}
-                            onClick={() => setGhKind(id as typeof ghKind)}
-                          >
+                            className={`opt${ghKind === id ? " on" : ""}`}
+                            onClick={() => setGhKind(id as typeof ghKind)}>
                             {lab} · {nKind(id)}
                           </button>
                         ))}
                       </div>
                       <span className="grow" />
-                      <label className="pm-find pm-ghfind" style={{ flex: "0 1 220px", minWidth: 140 }}>
+                      <label className="pm-find pm-ghfind">
                         <svg viewBox="0 0 16 16" width={13} height={13} aria-hidden>
                           <circle cx="7" cy="7" r="4.5" fill="none" stroke="currentColor" strokeWidth="1.6" />
                           <path d="m10.5 10.5 3 3" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
@@ -2549,9 +2480,9 @@ export function PluginsView({
                     </div>
                   ) : null}
                   {isGh && shown.length === 0 ? (
-                    <div className="pm-ghnone" style={{ padding: "18px 14px", border: "1px dashed var(--line)", borderRadius: 10, textAlign: "center", color: "var(--muted)", fontSize: 13 }}>
+                    <div className="pm-ghnone">
                       <div>{t("No plugin on GitHub matches")}</div>
-                      <button type="button" className="text" style={{ marginTop: 8 }} onClick={() => { setGhKind(""); setGhFilter(""); }}>
+                      <button type="button" className="text" onClick={() => { setGhKind(""); setGhFilter(""); }}>
                         {t("Show all")}
                       </button>
                     </div>
@@ -2571,29 +2502,28 @@ export function PluginsView({
                               e.preventDefault();
                               setPluginDetail(c);
                             }
-                          }}
-                        >
+                          }}>
                           <div className="pm-logo" aria-hidden>
                             ◆
                           </div>
-                          <div className="pm-words" style={{ flex: 1, minWidth: 0 }}>
-                            <div className="pm-name" style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
-                              <b style={{ fontSize: 13 }}>{c.name}</b>
+                          <div className="pm-words">
+                            <div className="pm-name">
+                              <b>{c.name}</b>
                               {"alsoBuiltin" in c && (c as { alsoBuiltin?: boolean }).alsoBuiltin ? (
                                 <span className="pm-chip">{t("Also built in")}</span>
                               ) : null}
                             </div>
                             {"community" in c && (c as { community?: boolean }).community ? (
-                              <div className="pm-by" style={{ fontSize: 11, color: "var(--green)", marginTop: 2 }}>
+                              <div className="pm-by">
                                 {t("magpie community")}
                               </div>
                             ) : "owner" in c && (c as { owner?: string }).owner ? (
-                              <div className="pm-by" style={{ fontSize: 11, color: "var(--muted)", marginTop: 2 }}>
+                              <div className="pm-by">
                                 {(c as { owner?: string }).owner}
                               </div>
                             ) : null}
-                            <p className="pm-sum" style={{ margin: "4px 0 0", fontSize: 12, color: "var(--muted)", lineHeight: 1.45 }}>{c.summary}</p>
-                            <div className="pm-meta" style={{ marginTop: 6, fontSize: 11, color: "var(--faint)", display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
+                            <p className="pm-sum">{c.summary}</p>
+                            <div className="pm-meta">
                               {"kind" in c && (c as { kind?: string }).kind ? <span className="pm-chip">{t((c as { kind: string }).kind)}</span> : null}
                               {"unofficial" in c && (c as { unofficial?: boolean }).unofficial ? (
                                 <span className="pm-chip warn"><span className="dot" />{t("Unofficial")}</span>
@@ -2612,8 +2542,7 @@ export function PluginsView({
                             onClick={(e) => {
                               e.stopPropagation();
                               install(c.pkg, c.name);
-                            }}
-                          >
+                            }}>
                             {installAct(c.pkg, has)}
                           </button>
                         </div>
@@ -2627,7 +2556,7 @@ export function PluginsView({
               : null}
             {/* Magpie: Suggested only when listings match; On npm always while searching (shots 20–25) */}
             {debouncedQ && npmHits.length ? (
-              <div className="pm-sec" style={{ animation: "fade-in .2s var(--ease)" }}>
+              <div className="pm-sec">
                 <div className="pm-sechead">
                   <h3>{t("Suggested")}</h3>
                   <span>{searchBusy ? t("Searching…") : mirror ? t("via China mirrors") : ""}</span>
@@ -2638,16 +2567,16 @@ export function PluginsView({
                     return (
                       <div className={`pm-card${busy === c.pkg ? " installing" : ""}${has ? " has" : ""}`} key={c.pkg} tabIndex={0} role="button">
                         <div className="pm-logo" aria-hidden>◆</div>
-                        <div className="pm-words" style={{ flex: 1, minWidth: 0 }}>
-                          <b style={{ fontSize: 13 }}>{c.name}</b>
-                          {c.builtin ? <span className="pm-chip" style={{ marginLeft: 6, fontSize: 10.5 }}>{t("Also built in")}</span> : null}
+                        <div className="pm-words">
+                          <b>{c.name}</b>
+                          {c.builtin ? <span className="pm-chip">{t("Also built in")}</span> : null}
                           {"community" in c && (c as { community?: boolean }).community ? (
-                            <div className="pm-by" style={{ fontSize: 11, color: "var(--green)", marginTop: 2 }}>
+                            <div className="pm-by">
                               {t("magpie community")}
                             </div>
                           ) : null}
-                          <p style={{ margin: "4px 0 0", fontSize: 12, color: "var(--muted)", lineHeight: 1.45 }}>{c.summary}</p>
-                          <div style={{ marginTop: 6, fontSize: 11, color: "var(--faint)", display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
+                          <p>{c.summary}</p>
+                          <div>
                             {c.kind ? <span className="pm-chip">{t(c.kind)}</span> : null}
                             <span>{c.downloads}</span>
                             <span className="pm-ver">{c.ver}</span>
@@ -2662,8 +2591,7 @@ export function PluginsView({
                           onClick={(e) => {
                             e.stopPropagation();
                             install(c.pkg, c.name);
-                          }}
-                        >
+                          }}>
                           {installAct(c.pkg, has)}
                         </button>
                       </div>
@@ -2673,7 +2601,7 @@ export function PluginsView({
               </div>
             ) : null}
             {debouncedQ ? (
-              <div className="pm-sec" style={{ animation: "fade-in .2s var(--ease)", marginTop: 10 }}>
+              <div className="pm-sec">
                 <div className="pm-sechead">
                   <h3>{t("On npm")}</h3>
                   <span>{t("OpenCode plugins and pi packages anyone published — read what one does before you install it")}</span>
@@ -2702,10 +2630,10 @@ export function PluginsView({
                         return (
                           <div className={`pm-card${busy === c.pkg ? " installing" : ""}${has ? " has" : ""}`} key={c.pkg} tabIndex={0} role="button">
                             <div className="pm-logo" aria-hidden>◆</div>
-                            <div className="pm-words" style={{ flex: 1, minWidth: 0 }}>
-                              <b style={{ fontSize: 13 }}>{c.name}</b>
-                              <p style={{ margin: "4px 0 0", fontSize: 12, color: "var(--muted)", lineHeight: 1.45 }}>{c.summary}</p>
-                              <div style={{ marginTop: 6, fontSize: 11, color: "var(--faint)" }}>
+                            <div className="pm-words">
+                              <b>{c.name}</b>
+                              <p>{c.summary}</p>
+                              <div>
                                 {c.pkg} · {c.downloads} · {c.ver}
                                 {mirror ? ` · ${t("via China mirrors")}` : ""}
                               </div>
@@ -2718,8 +2646,7 @@ export function PluginsView({
                               onClick={(e) => {
                                 e.stopPropagation();
                                 install(c.pkg, c.name);
-                              }}
-                            >
+                              }}>
                               {installAct(c.pkg, has)}
                             </button>
                           </div>
@@ -2731,7 +2658,7 @@ export function PluginsView({
               </div>
             ) : null}
             {query.trim().length >= 2 && !debouncedQ && searchBusy ? (
-              <div className="pm-sec" style={{ animation: "fade-in .16s var(--ease)" }} aria-busy="true" aria-label={t("Searching…")}>
+              <div className="pm-sec" aria-busy="true" aria-label={t("Searching…")}>
                 <div className="pm-grid">
                   {Array.from({ length: 6 }, (_, i) => (
                     <div className="pm-card ghost" key={i} aria-hidden>
@@ -2744,7 +2671,7 @@ export function PluginsView({
               </div>
             ) : null}
 
-            <div className="pm-sec" style={{ marginTop: 8 }}>
+            <div className="pm-sec">
               {/* Magpie manual(): CU 66–70 — Installing… purple pill NO spinner; field cleared on draw; bun 404 err */}
               <form
                 className="pm-manual"
@@ -2785,8 +2712,7 @@ export function PluginsView({
                     );
                     onStatus?.(t("{name} is installed", { name: spec }), "ok", 3500);
                   }, 700);
-                }}
-              >
+                }}>
                 <span className="pm-mlabel">{t("Have one in mind?")}</span>
                 <input
                   className="pm-minput"
@@ -2808,8 +2734,7 @@ export function PluginsView({
                   onClick={() => {
                     setFolderLoc("recent");
                     setFolderPicker(true);
-                  }}
-                >
+                  }}>
                   <svg viewBox="0 0 16 16" width={14} height={14} aria-hidden>
                     <path d="M2 4.5h4l1.2 1.5H14v7H2z" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round" />
                   </svg>
@@ -2818,12 +2743,11 @@ export function PluginsView({
                   type="submit"
                   className="text primary"
                   disabled={busy === "__manual__"}
-                  aria-busy={busy === "__manual__" || undefined}
-                >
+                  aria-busy={busy === "__manual__" || undefined}>
                   {/* Magpie manual busy: text only — no spinner (Bun on disk; CU 68) */}
                   {busy === "__manual__" ? t("Installing…") : t("Install")}
                 </button>
-                {folderHint ? <span style={{ flexBasis: "100%", fontSize: 11.5, color: "var(--muted)", animation: "fade-in .15s var(--ease)" }}>{folderHint}</span> : null}
+                {folderHint ? <span>{folderHint}</span> : null}
               </form>
             </div>
           </>
@@ -2844,7 +2768,7 @@ export function PluginsView({
           ) : (
             <>
               {installed.length > 1 ? (
-                <div className="row-head pm-listhead" style={{ marginBottom: 6 }}>
+                <div className="row-head pm-listhead">
                   <span className="grow" />
                   <div className="segs sortby" data-sort="plugins" role="group" aria-label={t("Names from A to Z")}>
                     {([["az", "A→Z"], ["za", "Z→A"]] as const).map(([id, label]) => (
@@ -2856,8 +2780,7 @@ export function PluginsView({
                         onClick={() => {
                           setPluginsSort(id);
                           try { localStorage.setItem("magpie.sort.plugins", id); } catch { /* */ }
-                        }}
-                      >
+                        }}>
                         {label}
                       </button>
                     ))}
@@ -2871,20 +2794,18 @@ export function PluginsView({
                   <div
                     className={`row pref pm-row${e.off ? " off" : ""}`}
                     key={e.pkg}
-                    title={`${e.name}${e.ver || ""}${e.kind || ""}`}
-                  >
-                    <div className="pm-logo" aria-hidden style={{ width: 32, height: 32, flex: "none" }}>
+                    title={`${e.name}${e.ver || ""}${e.kind || ""}`}>
+                    <div className="pm-logo" aria-hidden>
                       ◆
                     </div>
                     <div className="who">
-                      <div className="name" style={{ display: "inline-flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
+                      <div className="name pm-name-row">
                         <span>{e.name}</span>
                         {e.ver ? <span className="pm-ver">{e.ver.startsWith("v") ? e.ver : `v${e.ver}`}</span> : null}
                         {e.checkStatus === "current" && e.ver ? (
                           <span
                             className="pm-chip soft"
-                            title={t("v{v} is the newest on npm", { v: e.ver.replace(/^v/, "") }) + (lastCheckedAt ? "\n" + t("Last checked {time}", { time: lastCheckedAt }) : "")}
-                          >
+                            title={t("v{v} is the newest on npm", { v: e.ver.replace(/^v/, "") }) + (lastCheckedAt ? "\n" + t("Last checked {time}", { time: lastCheckedAt }) : "")}>
                             {t("Up to date")}
                           </span>
                         ) : null}
@@ -2897,8 +2818,7 @@ export function PluginsView({
                                 : e.kind === "Middleware"
                                   ? t("Runs in magpie's gateway on what every agent sends and gets back")
                                   : undefined
-                            }
-                          >
+                            }>
                             {e.kind === "Provider" ? (
                               <svg viewBox="0 0 16 16" width={11} height={11} fill="none" stroke="currentColor" strokeWidth="1.3" aria-hidden>
                                 <path d="M6 2v3 M10 2v3 M4.5 5h7v2.5a3.5 3.5 0 0 1-7 0z M8 11v3" />
@@ -2986,8 +2906,7 @@ export function PluginsView({
                               onClick={(ev) => {
                                 clearFocusRef.current = ev.currentTarget;
                                 setClearConfirm({ pkg: e.pkg, name: e.name });
-                              }}
-                            >
+                              }}>
                               {t("Clear")}
                             </button>
                             ) : null}
@@ -3000,8 +2919,7 @@ export function PluginsView({
                                     x.pkg === e.pkg ? { ...x, optsOpen: false, optsDraft: undefined, optsErr: "" } : x,
                                   ),
                                 )
-                              }
-                            >
+                              }>
                               {t("Cancel")}
                             </button>
                             <button
@@ -3051,12 +2969,11 @@ export function PluginsView({
                                     ),
                                   );
                                 }
-                              }}
-                            >
+                              }}>
                               {t("Save")}
                             </button>
                           </div>
-                          <div className="sub pm-mw" style={{ marginTop: 2 }}>
+                          <div className="sub pm-mw">
                             {t("Gateway middleware: {hooks}", {
                               hooks: e.pkg.includes("word-guard")
                                 ? "onRequest, onEvent, onResponse"
@@ -3077,8 +2994,7 @@ export function PluginsView({
                               : asking.op === "move"
                                 ? t("Move {name} here", { name: (e.movable || e.moved || ["…"])[0] })
                                 : t("Switch this plugin off?")
-                          }
-                        >
+                          }>
                           <p className="pm-ask-say">
                             {asking.op === "remove"
                               ? t("Remove this plugin?")
@@ -3127,8 +3043,7 @@ export function PluginsView({
                                   );
                                 else setInstalled((list) => list.map((x) => (x.pkg === e.pkg ? { ...x, off: true, moved: [] } : x)));
                                 setAsking(null);
-                              }}
-                            >
+                              }}>
                               {asking.op === "move" ? t("Move") : asking.op === "remove" ? t("Remove") : t("Switch off")}
                             </button>
                             <button type="button" className="text" onClick={() => setAsking(null)}>
@@ -3138,7 +3053,7 @@ export function PluginsView({
                         </div>
                       ) : null}
                     </div>
-                    <div className="val" style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+                    <div className="val">
                       {!e.off && e.kind === "Provider" && !e.signedIn && asking?.pkg !== e.pkg ? (
                         <button
                           type="button"
@@ -3152,8 +3067,7 @@ export function PluginsView({
                               "warn",
                               2800,
                             )
-                          }
-                        >
+                          }>
                           {t("Sign in")}
                         </button>
                       ) : null}
@@ -3165,8 +3079,7 @@ export function PluginsView({
                             "Runs {name} on this plugin in place of the built-in, with the same accounts; nothing changes if one doesn't work through it",
                             { name: e.movable[0] },
                           )}
-                          onClick={() => setAsking({ pkg: e.pkg, op: "move" })}
-                        >
+                          onClick={() => setAsking({ pkg: e.pkg, op: "move" })}>
                           {busy === e.pkg ? t("Moving…") : t("Move {name} here", { name: e.movable[0] })}
                         </button>
                       ) : null}
@@ -3190,8 +3103,7 @@ export function PluginsView({
                                 };
                               }),
                             )
-                          }
-                        >
+                          }>
                           {t("Options")}
                         </button>
                       ) : null}
@@ -3213,8 +3125,7 @@ export function PluginsView({
                             setInstalled((list) => list.map((x) => (x.pkg === e.pkg ? { ...x, off: true, moved: [] } : x)));
                             setAsking(null);
                           }
-                        }}
-                      >
+                        }}>
                         {e.off ? t("Switch on") : t("Switch off")}
                       </button>
                       <button
@@ -3234,16 +3145,15 @@ export function PluginsView({
                             removeFocusRef.current = ev.currentTarget;
                             setRemoveConfirm({ pkg: e.pkg, name: e.name });
                           }
-                        }}
-                      >
+                        }}>
                         {busy === "remove:" + e.pkg ? t("Removing…") : t("Remove")}
                       </button>
                     </div>
                   </div>
                 ))}
               </div>
-              <div className="pm-foot" style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 12 }}>
-                <span style={{ fontSize: 12, color: "var(--muted)" }}>{t("Plugins run on Bun {v}", { v: BUN_VER })}</span>
+              <div className="pm-foot">
+                <span>{t("Plugins run on Bun {v}", { v: BUN_VER })}</span>
                 <span className="grow" />
                 <button
                   type="button"
@@ -3264,11 +3174,10 @@ export function PluginsView({
                       setInstalled((list) => list.map((x) => ({ ...x, checkStatus: "current" as const })));
                       onStatus?.(t("Every plugin is up to date"), "ok", 2800);
                     }, 180);
-                  }}
-                >
+                  }}>
                   {checkingUpdates ? (
                     <>
-                      <span className="spin" aria-hidden style={{ display: "inline-block", width: 10, height: 10, marginRight: 6, verticalAlign: -1 }} />
+                      <span className="spin" aria-hidden />
                       {t("Checking…")}
                     </>
                   ) : (
@@ -3285,7 +3194,7 @@ export function PluginsView({
         open={!!removeConfirm}
         titleId="pluginRemoveTitle"
         messageId="pluginRemoveMsg"
-        style={{ zIndex: 50 }}
+       
         title={removeConfirm ? t("Remove {name}?", { name: removeConfirm.name }) : ""}
         message={t("Removes the plugin and what it installed; its sign-ins are kept until you sign out")}
         cancelLabel={t("Cancel")}
@@ -3316,7 +3225,7 @@ export function PluginsView({
         open={!!clearConfirm}
         titleId="pluginClearTitle"
         messageId="pluginClearMsg"
-        style={{ zIndex: 50 }}
+       
         title={t("Clear")}
         message={t("Saved middleware options will be removed. The plugin will run with no options.")}
         cancelLabel={t("Cancel")}
@@ -3354,23 +3263,15 @@ export function PluginsView({
           aria-label={t("Choose a plugin folder")}
           onClick={(e) => {
             if (e.target === e.currentTarget) setFolderPicker(false);
-          }}
-        >
+          }}>
           <div
             className="dialog"
-            style={{
-              width: "min(640px, 92vw)",
-              maxHeight: "min(520px, 85vh)",
-              display: "flex",
-              flexDirection: "column",
-              animation: "pop-in .42s cubic-bezier(.16,1,.3,1)",
-            }}
           >
-            <div className="ehead" style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <div className="ehead">
               <b id="folderTitle">{t("Choose a plugin folder")}</b>
             </div>
-            <div className="ebody" style={{ display: "grid", gridTemplateColumns: "140px 1fr", gap: 0, minHeight: 280, padding: 0 }}>
-              <nav style={{ borderRight: "1px solid var(--line)", padding: "8px 6px", display: "flex", flexDirection: "column", gap: 2 }}>
+            <div className="ebody">
+              <nav>
                 {(
                   [
                     ["recent", t("Recent")],
@@ -3381,71 +3282,47 @@ export function PluginsView({
                   <button
                     key={id}
                     type="button"
-                    className={`text${folderLoc === id ? " on" : ""}`}
-                    style={{
-                      justifyContent: "flex-start",
-                      padding: "6px 8px",
-                      borderRadius: 6,
-                      background: folderLoc === id ? "var(--pill)" : "transparent",
-                      color: folderLoc === id ? "var(--fg)" : "var(--muted)",
-                    }}
-                    onClick={() => setFolderLoc(id)}
-                  >
+                    className={`opt text${folderLoc === id ? " on" : ""}`}
+                    onClick={() => setFolderLoc(id)}>
                     {label}
                   </button>
                 ))}
               </nav>
-              <div style={{ padding: "10px 12px", overflow: "auto" }}>
+              <div>
                 {folderLoc === "recent" ? (
-                  <p style={{ color: "var(--muted)", fontSize: 12.5, padding: "24px 8px", textAlign: "center" }}>
+                  <p>
                     {demoCopy("最近为空", "Recent is empty")}
                   </p>
                 ) : null}
                 {folderLoc === "home" ? (
-                  <ul style={{ listStyle: "none", margin: 0, padding: 0, fontSize: 12.5 }}>
+                  <ul>
                     {["agent-data", "chrome-profile", "cli-config", "reference", "sand-data", "plugins"].map((name) => (
                       <li
                         key={name}
-                        style={{
-                          display: "grid",
-                          gridTemplateColumns: "1fr 80px",
-                          gap: 8,
-                          padding: "6px 8px",
-                          borderRadius: 6,
-                          cursor: "pointer",
-                        }}
+                       
                         className="pm-folder-row"
                         onDoubleClick={() => {
                           setManualSpec(`/home/box/${name}`);
                           setFolderPicker(false);
                           setFolderHint("");
-                        }}
-                      >
+                        }}>
                         <span>📁 {name}</span>
-                        <span style={{ color: "var(--muted)", textAlign: "right" }}>—</span>
+                        <span>—</span>
                       </li>
                     ))}
                   </ul>
                 ) : null}
                 {folderLoc === "other" ? (
-                  <div style={{ padding: 8 }}>
-                    <b style={{ fontSize: 12.5 }}>{t("On This Computer")}</b>
+                  <div>
+                    <b>{t("On This Computer")}</b>
                     <div
-                      style={{
-                        marginTop: 8,
-                        padding: "8px 10px",
-                        border: "1px solid var(--line)",
-                        borderRadius: 8,
-                        fontSize: 12.5,
-                        cursor: "pointer",
-                      }}
+                     
                       onDoubleClick={() => {
                         setManualSpec("/");
                         setFolderPicker(false);
-                      }}
-                    >
+                      }}>
                       <div>Computer</div>
-                      <div style={{ color: "var(--muted)", fontSize: 11.5, marginTop: 2 }}>
+                      <div>
                         107.4 GB / 134.2 GB available · /
                       </div>
                     </div>
@@ -3453,7 +3330,7 @@ export function PluginsView({
                 ) : null}
               </div>
             </div>
-            <div className="bar" style={{ display: "flex", gap: 8, justifyContent: "flex-end", padding: "10px 12px" }}>
+            <div className="bar">
               <button
                 type="button"
                 className="text"
@@ -3461,8 +3338,7 @@ export function PluginsView({
                   /* Magpie Cancel: field unchanged (shot 33) */
                   setFolderPicker(false);
                   setFolderHint("");
-                }}
-              >
+                }}>
                 {t("Cancel")}
               </button>
               <button
@@ -3480,8 +3356,7 @@ export function PluginsView({
                   setManualSpec(path);
                   setFolderPicker(false);
                   setFolderHint("");
-                }}
-              >
+                }}>
                 {t("Open")}
               </button>
             </div>
@@ -3492,10 +3367,10 @@ export function PluginsView({
       {pluginDetail ? (
         <div className="modal open" role="dialog" aria-modal="true" aria-label={pluginDetail.name}>
           <div className="backdrop" onClick={() => setPluginDetail(null)} />
-          <div className="dialog editor pm-detail" style={{ maxWidth: 520, width: "min(520px, 94vw)", maxHeight: "86vh", overflow: "auto", padding: 0 }}>
-            <div className="ehead pm-dhead" style={{ display: "flex", gap: 12, alignItems: "center", minHeight: 76, padding: "14px 18px", borderBottom: "1px solid var(--line-2, var(--line))" }}>
+          <div className="dialog editor pm-detail">
+            <div className="ehead pm-dhead">
               <div className="pm-logo" aria-hidden>◆</div>
-              <div className="pm-who" style={{ flex: 1, minWidth: 0 }}>
+              <div className="pm-who">
                 <div className="pm-name"><b>{pluginDetail.name}</b></div>
                 <div className="pm-by">
                   <span>
@@ -3527,14 +3402,13 @@ export function PluginsView({
                   onClick={(ev) => {
                     ev.stopPropagation();
                     install(pluginDetail.pkg, pluginDetail.name);
-                  }}
-                >
+                  }}>
                   {installAct(pluginDetail.pkg, installed.some((x) => x.pkg === pluginDetail.pkg))}
                 </button>
               </div>
             </div>
-            <div className="pm-dbody" style={{ display: "flex", flexDirection: "column", gap: 12, padding: "14px 18px 18px" }}>
-              <p className="pm-dsum" style={{ margin: 0, fontSize: 13, lineHeight: 1.5 }}>{pluginDetail.summary}</p>
+            <div className="pm-dbody">
+              <p className="pm-dsum">{pluginDetail.summary}</p>
               <div className="pm-facts">
                 <div className="pm-fact"><span className="k">{t("Version")}</span><span className="v">{"ver" in pluginDetail && (pluginDetail as { ver?: string }).ver ? (pluginDetail as { ver: string }).ver : "v0.1.0-demo"}</span></div>
                 <div className="pm-fact"><span className="k">{"stars" in pluginDetail && (pluginDetail as { stars?: number }).stars != null ? t("Stars") : t("Downloads")}</span><span className="v">{"stars" in pluginDetail && (pluginDetail as { stars?: number }).stars != null ? (pluginDetail as { stars: number }).stars : pluginDetail.downloads}</span></div>
@@ -3544,12 +3418,11 @@ export function PluginsView({
                   <div className="pm-fact"><span className="k">{t("Signs in to")}</span><span className="v">{pluginSignsInId(pluginDetail.pkg)}</span></div>
                 ) : null}
               </div>
-              <div className="pm-links" style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+              <div className="pm-links">
                 <button
                   type="button"
                   className="pm-link"
-                  onClick={() => window.open(`https://www.npmjs.com/package/${pluginDetail.pkg}`, "_blank", "noopener")}
-                >
+                  onClick={() => window.open(`https://www.npmjs.com/package/${pluginDetail.pkg}`, "_blank", "noopener")}>
                   <span>npm</span>
                   <svg viewBox="0 0 12 12" width={11} height={11} aria-hidden>
                     <path d="M9.5 3.5h3v3M12.5 3.5 7.5 8.5M11 9.5v3H3.5V5h3" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
@@ -3565,8 +3438,7 @@ export function PluginsView({
                         "_blank",
                         "noopener",
                       )
-                    }
-                  >
+                    }>
                     <span>GitHub</span>
                     <svg viewBox="0 0 12 12" width={11} height={11} aria-hidden>
                       <path d="M9.5 3.5h3v3M12.5 3.5 7.5 8.5M11 9.5v3H3.5V5h3" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
@@ -3576,8 +3448,7 @@ export function PluginsView({
                   <button
                     type="button"
                     className="pm-link"
-                    onClick={() => window.open(`https://www.npmjs.com/package/${pluginDetail.pkg}`, "_blank", "noopener")}
-                  >
+                    onClick={() => window.open(`https://www.npmjs.com/package/${pluginDetail.pkg}`, "_blank", "noopener")}>
                     <span>{t("Source")}</span>
                     <svg viewBox="0 0 12 12" width={11} height={11} aria-hidden>
                       <path d="M9.5 3.5h3v3M12.5 3.5 7.5 8.5M11 9.5v3H3.5V5h3" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
@@ -3586,8 +3457,8 @@ export function PluginsView({
                 )}
               </div>
               {"unofficial" in pluginDetail && (pluginDetail as { unofficial?: boolean }).unofficial && "owner" in pluginDetail ? (
-                <p className="pm-note warn" style={{ margin: 0, display: "flex", gap: 6, alignItems: "flex-start", padding: "8px 10px", borderRadius: 8, background: "color-mix(in srgb, var(--amber, #d97706) 12%, var(--pill))", fontSize: 12, lineHeight: 1.45 }}>
-                  <svg viewBox="0 0 16 16" width={12} height={12} aria-hidden style={{ flex: "none", marginTop: 2 }}>
+                <p className="pm-note warn">
+                  <svg viewBox="0 0 16 16" width={12} height={12} aria-hidden>
                     <path d="M8 2.3 13 4v3.8c0 3-2.1 5.1-5 5.9-2.9-.8-5-2.9-5-5.9V4z" fill="none" stroke="currentColor" strokeWidth="1.4" />
                   </svg>
                   <span>
@@ -3598,7 +3469,7 @@ export function PluginsView({
                   </span>
                 </p>
               ) : null}
-              <div className="pm-readme" style={{ borderTop: "1px solid var(--line-2, var(--line))", paddingTop: 12, minHeight: 60, fontSize: 12.5, lineHeight: 1.5, color: "var(--fg-2)" }}>
+              <div className="pm-readme">
                 {!detailReadmeReady ? (
                   <>
                     <div className="pm-rskel" aria-hidden />
@@ -3617,8 +3488,8 @@ export function PluginsView({
                 )}
               </div>
             </div>
-            <div className="bar" style={{ display: "flex", alignItems: "center", gap: 8, padding: "12px 18px 16px", borderTop: "1px solid var(--line-2, var(--line))" }}>
-              <span className="note" style={{ fontSize: 11.5, color: "var(--muted)", flex: 1 }}>
+            <div className="bar">
+              <span className="note">
                 {t("Plugins are other people's code: they sign in and make the requests, or see them as middleware.")}
               </span>
               <button type="button" className="text" onClick={() => setPluginDetail(null)}>

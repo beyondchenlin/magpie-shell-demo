@@ -1,7 +1,7 @@
-# Last tip cycle · v0.1.114
+# Last tip cycle · v0.1.115
 
-- **WHY:** CIS LibraryView layout/field `style={{…}}` → Magpie library.css + CIS wrappers
+- **WHY:** CIS SimpleViews (Usage/Plugins) layout `style={{…}}` → Magpie plugins.css + bridge
 - **Chrome:** SIDE_AT=1024 / no WEB_SIDE_AT / 752 frame unchanged
 - **Guard:** chrome-guard OK
-- **Cut:** LibraryView 232 → 1 `style={{` (health color token)
+- **Cut:** SimpleViews 118 → 10 `style={{` (metric CSS vars)
 - **Date:** 2026-10-15 Asia/Shanghai

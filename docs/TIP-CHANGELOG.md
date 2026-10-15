@@ -4,6 +4,18 @@
 
 ---
 
+## v0.1.115 · CIS_SIMPLEVIEWS_LAYOUT_CHROME · 2026-10-15 Asia/Shanghai
+
+- **WHY:** CIS continuous — SimpleViews (Usage + Plugins) held ~118 `style={{…}}`; cut layout chrome to Magpie classes + CIS wrappers (same approach as LibraryView).
+- **WHAT kept:** `SIDE_AT=1024`; no `WEB_SIDE_AT`; Win chrome / 752 frame; behavior unchanged; dynamic bar/% → CSS vars (`--h`/`--bar`/`--grow`/`--to`).
+- **WHAT changed:**
+  - Import Magpie `plugins.css`.
+  - Bridge tokens in `shell-patch.css` (`#view-usage` / `#view-plugins` / plugin dialogs).
+  - Chart/share/meter consume `var(--h)` / `var(--bar)`; gh kinds → `.opt.on`; hid chevron via `aria-expanded`.
+  - SimpleViews `style={{` **118 → 10** (~91.5%; remaining = metric CSS vars only).
+- **Guard:** `npm run chrome-guard`. No portable. No push/Vercel.
+
+---
 ## v0.1.114 · CIS_LIBRARYVIEW_LAYOUT_CHROME · 2026-10-15 Asia/Shanghai
 
 - **WHY:** CIS continuous — LibraryView still held ~232 `style={{…}}` after Thunar/Choose; cut layout/field chrome to Magpie classes + existing CIS wrappers.

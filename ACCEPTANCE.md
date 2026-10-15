@@ -1,3 +1,6 @@
+## v0.1.115 CIS_SIMPLEVIEWS_LAYOUT_CHROME
+- SimpleViews Usage/Plugins layout chrome → Magpie `plugins.css` + bridge; `style={{` 118 → 10 (metric CSS vars). SIDE_AT=1024. No portable / Vercel.
+
 ## v0.1.114 CIS_LIBRARYVIEW_LAYOUT_CHROME
 - LibraryView layout/field chrome → Magpie `library.css` + CIS Segs/WordsField/Tick + bridge classes. `style={{` 232 → 1 (health color). SIDE_AT=1024. No portable / Vercel.
 
