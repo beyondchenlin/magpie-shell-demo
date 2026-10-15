@@ -1422,9 +1422,8 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                         onClick={(e) => {
                           e.stopPropagation();
                           if (!s.inUse) switchAgentsTo(s.id);
-                        }}>
-                        <i aria-hidden />
-                      </button>
+                        }}
+                      />
                       <button
                         type="button"
                         className="lib-setname"
@@ -1774,12 +1773,17 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                             : displayHealth === "unset"
                               ? t("{name} not set", { name: s.unsetName || "NAME" })
                               : t("not checked");
-                  const healthColor =
-                    displayHealth === "timeout" || displayHealth === "needs-signin" || displayHealth === "unset"
-                      ? "var(--red)"
+                  // Magpie client.js paintHealth L1679–1698: idle|checking|ok|auth|err + has-list
+                  const healthCls =
+                    displayHealth === "checking"
+                      ? "lib-health checking"
                       : displayHealth === "tools"
-                        ? "var(--green)"
-                        : "var(--muted)";
+                        ? "lib-health ok has-list"
+                        : displayHealth === "needs-signin"
+                          ? "lib-health auth"
+                          : displayHealth === "timeout" || displayHealth === "unset"
+                            ? "lib-health err"
+                            : "lib-health idle";
                   return (
                     <div
                       key={s.id}
@@ -1824,8 +1828,8 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                             <button
                                 type="button"
                                 title={healthTitle}
-                                className={`lib-health${displayHealth === "checking" ? " checking" : ""}`}
-                                style={{ color: healthColor }}
+                                className={healthCls}
+                                aria-expanded={displayHealth === "tools" ? s.toolsOpen : undefined}
                                 onClick={() => {
                                   if (displayHealth === "tools") {
                                     setMcpServers((list) => list.map((x) => (x.id === s.id ? { ...x, toolsOpen: !x.toolsOpen } : x)));
@@ -1833,13 +1837,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                                     runMcpHealth(s.id, displayHealth === "timeout" || displayHealth === "unset" || displayHealth === "idle");
                                   }
                                 }}>
-                                <span
-                                  className="dot" aria-hidden
-                                />
-                                {healthLabel}
-                                {displayHealth === "tools" ? (
-                                  <span className={`chev${s.toolsOpen ? " open" : ""}`}>›</span>
-                                ) : null}
+                                <span>{healthLabel}</span>
                               </button>
                           </div>
                           <div>
@@ -1877,40 +1875,43 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                         ) : null}
                       </div>
                       {s.toolsOpen && displayHealth === "tools" ? (
-                        <div>
-                          {s.tools.map((tool) => (
-                            <div
-                              key={tool.id}
-                              className={`lib-tool${tool.on ? "" : " off"}`}>
-                              <div>
-                                <b>{tool.name}</b>
-                                <div>{tool.desc}</div>
-                              </div>
-                              <LibSwitch
-                                on={tool.on}
-                                aria-label={tool.name}
-                                onClick={() => {
-                                  setMcpServers((list) =>
-                                    list.map((x) =>
-                                      x.id !== s.id
-                                        ? x
-                                        : {
-                                            ...x,
-                                            tools: x.tools.map((tt) => (tt.id === tool.id ? { ...tt, on: !tt.on } : tt)),
-                                          },
-                                    ),
-                                  );
-                                  onStatus?.(t("Tools of {name} saved", { name: s.name }), "ok");
-                                }}
-                              />
-                            </div>
-                          ))}
+                        <div className="lib-tools">
+                          <ul className="lib-toollist">
+                            {s.tools.map((tool) => (
+                              <li
+                                key={tool.id}
+                                className={`lib-tool${tool.on ? "" : " off"}`}>
+                                <div className="lib-tooltxt">
+                                  <span className="lib-toolname mono">{tool.name}</span>
+                                  {tool.desc ? <span className="lib-tooldesc">{tool.desc}</span> : null}
+                                </div>
+                                <LibSwitch
+                                  on={tool.on}
+                                  aria-label={tool.name}
+                                  onClick={() => {
+                                    setMcpServers((list) =>
+                                      list.map((x) =>
+                                        x.id !== s.id
+                                          ? x
+                                          : {
+                                              ...x,
+                                              tools: x.tools.map((tt) => (tt.id === tool.id ? { ...tt, on: !tt.on } : tt)),
+                                            },
+                                      ),
+                                    );
+                                    onStatus?.(t("Tools of {name} saved", { name: s.name }), "ok");
+                                  }}
+                                />
+                              </li>
+                            ))}
+                          </ul>
                           {hasCursor ? (
-                            <p>
+                            <p className="lib-toolcant">
                               {t("Cursor can't turn off single tools: they get every tool of the server.")}
                             </p>
                           ) : null}
-                          <div>
+                          <div className="lib-toolfoot">
+                            <span className="grow" />
                             <button type="button" className="text" onClick={() => runMcpHealth(s.id, true)}>
                               {t("Check again")}
                             </button>

@@ -421,34 +421,8 @@ body.web.side-nav {
   color: var(--muted);
 }
 
-/* Motion backfill: lib-switch thumb (Agents/Providers) */
-.lib-switch {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  width: 32px;
-  height: 18px;
-  padding: 0;
-  border: 0;
-  border-radius: 999px;
-  background: var(--pill);
-  cursor: pointer;
-  transition: background .18s var(--ease);
-  flex: none;
-}
-.lib-switch i {
-  display: block;
-  width: 14px;
-  height: 14px;
-  margin-left: 2px;
-  border-radius: 50%;
-  background: var(--card);
-  box-shadow: 0 1px 2px rgba(0,0,0,.12);
-  transition: transform .18s var(--ease);
-}
-/* Magpie library.css: .lib-switch.on = var(--fg) (black track), not accent */
-.lib-switch.on { background: var(--fg); }
-.lib-switch.on i { transform: translateX(14px); }
+/* v0.1.129: drop invent .lib-switch geometry (height 18 / thumb 14 / translateX 14 / --pill).
+   Magpie library.css L141–146 owns .lib-switch (32×19, thumb 15, translateX 13, --line/--fg). */
 .lib-switch:disabled { opacity: .5; cursor: default; }
 
 /* text.action / icon hover already in app.css — ensure copy-pop available */
@@ -2063,18 +2037,9 @@ button.lib-ag.icon {
 #view-library .lib-set > .lib-setrow {
   display: flex; align-items: center; gap: 10px; width: 100%; padding: 4px 2px;
 }
-#view-library .lib-radio {
-  width: 18px; height: 18px; padding: 0; border: 0; background: transparent;
-  cursor: pointer; flex: none; display: grid; place-items: center;
-}
+/* v0.1.129: drop invent #view-library .lib-radio nested-i / accent fill —
+   Magpie library.css L150–153: empty button + ::after --fg disc */
 #view-library .lib-radio:disabled { cursor: default; }
-#view-library .lib-radio i {
-  width: 14px; height: 14px; border-radius: 50%; border: 2px solid var(--line);
-  display: block; background: var(--card);
-}
-#view-library .lib-radio.on i {
-  border-color: var(--accent); box-shadow: inset 0 0 0 3px var(--card); background: var(--accent);
-}
 #view-library .lib-setname {
   flex: 1; min-width: 0; text-align: left; padding: 0; background: transparent;
   border: 0; cursor: pointer; font: inherit;
@@ -2094,9 +2059,7 @@ button.lib-ag.icon {
 }
 #view-library .lib-chev svg { transition: transform .15s var(--ease); }
 #view-library .lib-set.open .lib-chev svg { transform: rotate(180deg); }
-#view-library .lib-detail {
-  margin-top: 8px; display: grid; gap: 8px; animation: fade-in .18s var(--ease);
-}
+/* v0.1.129: drop invent .lib-detail fade-in .18s — Magpie library.css L166 content-in .2s */
 #view-library .lib-text {
   display: block; width: 100%; box-sizing: border-box; resize: vertical; min-height: 120px;
   font: inherit; font-size: 13px; line-height: 1.45; padding: 10px 12px; border-radius: 10px;
@@ -2161,27 +2124,11 @@ button.lib-ag.icon {
 #view-library .lib-mcp .name { font-size: 13px; }
 #view-library .lib-mcp .name.click { cursor: pointer; }
 #view-library .lib-mcp .name.plain { cursor: default; }
-#view-library .lib-health {
-  display: inline-flex; align-items: center; gap: 5px; height: 22px; padding: 0 2px;
-  border: 0; background: transparent; font: inherit; font-size: 12; cursor: pointer;
-}
-#view-library .lib-health .dot {
-  width: 7px; height: 7px; border-radius: 50%; background: currentColor; flex: none;
-}
-#view-library .lib-health.checking .dot { opacity: .55; animation: pm-pulse 1s ease-in-out infinite alternate; }
-#view-library .lib-tools {
-  margin-top: 10px; padding: 10px 12px; border-radius: 10px;
-  border: 1px solid var(--line); background: var(--card-2, var(--bg));
-}
-#view-library .lib-tool {
-  display: flex; align-items: center; gap: 10px; padding: 8px 0;
-  border-bottom: 1px solid var(--line);
-}
-#view-library .lib-tool.off { opacity: .55; }
-#view-library .lib-toolfoot {
-  display: flex; justify-content: flex-end; margin-top: 8px;
-}
-#view-library .lib-toolfoot .note { margin: 8px 0 0; font-size: 12px; color: var(--muted); line-height: 1.4; }
+/* v0.1.129: drop invent .lib-health .dot / pm-pulse —
+   Magpie library.css L477–510: ::before disc + lib-health-pulse on .checking */
+/* v0.1.129: drop invent .lib-tools/.lib-tool card+row-opacity —
+   Magpie library.css L491–507: .lib-tools / .lib-toollist / .lib-tooltxt;
+   .off dims .lib-tooltxt only + strikes .lib-toolname (not whole-row opacity) */
 #view-library .lib-selbar {
   position: sticky; bottom: 8px; z-index: 6; margin-top: 10px; display: flex;
   align-items: center; gap: 10px; flex-wrap: wrap; padding: 8px 12px; border-radius: 999px;
@@ -2264,7 +2211,8 @@ button.lib-ag.icon {
 #view-library .lib-project .agent-chip i {
   width: 6px; height: 6px; border-radius: 50%; background: var(--muted);
 }
-#view-library .lib-project .lib-detail { margin-top: 10px; animation: fade-in .18s var(--ease); }
+/* Magpie .lib-detail animation from library.css; project open keeps layout only */
+#view-library .lib-project .lib-detail { margin-top: 10px; }
 #view-library .lib-project .lib-detail .lib-prow { margin-bottom: 10px; flex-wrap: wrap; gap: 10px; }
 #view-library .lib-hook.row {
   display: flex; gap: 8px; padding: 10px 4px; border-bottom: 1px solid var(--line);
@@ -2293,11 +2241,10 @@ button.lib-ag.icon {
 #view-library .lib-find .words,
 #view-library .lib-find input.words { flex: 1; min-width: 0; }
 
-#view-library .chev { display: inline-block; transition: transform .15s var(--ease); transform: rotate(90deg); }
-#view-library .chev.open { transform: rotate(-90deg); }
+/* v0.1.129: drop invent #view-library .chev / lib-health color override —
+   Magpie health chevron = .has-list::after (library.css L489–490); row chev = .lib-row .chev L96–97 */
 #view-library .lib-project .chev { transform: none; }
 #view-library .lib-project .chev.open { transform: rotate(90deg); }
-#view-library .lib-health { color: inherit; }
 #view-library .lib-addmenu .pop { /* positioned via bridge */ }
 
 

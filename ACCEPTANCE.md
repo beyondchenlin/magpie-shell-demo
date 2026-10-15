@@ -1,3 +1,10 @@
+## v0.1.129 LIB_HEALTH_TOOL_RADIO_FIDELITY
+- Library MCP health: Magpie `paintHealth` DOM — `lib-health idle|checking|ok|auth|err` + `has-list`/`aria-expanded`; label in `<span>` only; drop invent `.dot` child + `›` chevron + inline color (library.css L477–510 / client.js L1679–1698).
+- Library MCP tools: Magpie `lib-tools` / `ul.lib-toollist` / `li.lib-tool` + `lib-tooltxt` / `lib-toolname` / `lib-tooldesc` / `lib-toolcant` / `lib-toolfoot` (client.js L1540–1559); drop invent whole-row `.off` opacity (library.css L500–501 dims text + strikes name only).
+- Instructions radio: Magpie empty `.lib-radio` + `::after` --fg disc (library.css L150–153); drop invent nested `<i>` / accent fill.
+- shell-patch: drop invent lib-switch geometry (restore Magpie library.css L141–146), invent health/tool/radio/detail CSS.
+- SIDE_AT=1024. No portable / Vercel.
+
 ## v0.1.128 RT_ACCTS_BAR_GUIDE_X_FIDELITY
 - Routing live `.rt-accts`: Magpie track+fill (`div.bar > i` width; routing.css L84–90 / routing.js ~1315–1587) — drop tip invent bar-as-fill (`--bar` on outer bar, agent color-mix, shell-patch overrides).
 - Live row DOM: `i.dot` + `b>who` + `em` + `div.bar>i` (Magpie makeRow); idle uses Magpie routing.css L74 (drop tip invent).

@@ -1,3 +1,19 @@
+## v0.1.129 · LIB_HEALTH_TOOL_RADIO_FIDELITY · 2026-10-15 Asia/Shanghai
+- **WHY:** Continue Magpie 1:1 after 0.1.128 — remove tip invents on Library MCP health / tools / instructions radio (and shell-patch lib-switch fight).
+- **CAUSE:** Tip invented `.lib-health .dot` + `›` chevron + inline colors instead of Magpie `::before`/`::after`+class states; tools used invent whole-row opacity without Magpie `lib-tooltxt` DOM; radio used nested `<i>` accent fill; shell-patch re-sized `.lib-switch` against Magpie library.css.
+- **Gold:**
+  - Magpie `plugins/library/client.js` **1679–1698** `paintHealth`: `idle|checking|ok|auth|err`, `has-list` + `aria-expanded`, children = `span` text only
+  - Magpie `library.css` **477–510**: `::before` disc; `.checking::before` = `lib-health-pulse`; `.has-list::after` chevron
+  - Magpie `client.js` **1540–1559** `paintTools`: `ul.lib-toollist` > `li.lib-tool` + `div.lib-tooltxt` > `lib-toolname` / `lib-tooldesc` + switch; `lib-toolcant` / `lib-toolfoot`
+  - Magpie `library.css` **500–501**: `.lib-tool.off .lib-tooltxt { opacity: .5 }` + `.lib-toolname` strike — **not** whole-row opacity
+  - Magpie `library.css` **150–153** / **141–146**: `.lib-radio` empty+`::after`; `.lib-switch` 32×19 / translateX(13px)
+  - Magpie `library.css` **166**: `.lib-detail` `content-in .2s` (not invent fade-in .18s)
+- **WHAT kept:** `SIDE_AT=1024`; no `WEB_SIDE_AT`; 752×652; CIS PrefRow/Segs/TextBtn/LibSwitch; Routing/Agents fidelity 0.1.127–128; no PrefRow on Magpie-distinct `.acc` / `pm-row`.
+- **WHAT changed:**
+  - `LibraryView.tsx`: Magpie health classes/DOM; tools Magpie list DOM; radio drop `<i>`
+  - `shell-patch.css`: drop invent lib-switch / lib-radio / lib-health.dot / lib-tool.off / lib-detail fade-in / health chev overrides
+- **Guard:** chrome-guard. Push/PR. No portable / Vercel.
+
 ## v0.1.128 · RT_ACCTS_BAR_GUIDE_X_FIDELITY · 2026-10-15 Asia/Shanghai
 - **WHY:** Continue Magpie 1:1 fidelity after 0.1.127 — remove tip invents on Routing live accounts bar and Agents guide-x hover.
 - **CAUSE:** Tip painted `.rt-accts .bar` as the fill (`--bar` width + agent color-mix + shell-patch overrides) instead of Magpie track+`i`; invented `.guide-x` transition Magpie does not have; idle row tip override fought Magpie L74.

@@ -1,8 +1,8 @@
-## v0.1.128 RT_ACCTS_BAR_GUIDE_X_FIDELITY
-- WHY: 1:1 Magpie fidelity — Routing live rt-accts bar track+i + Agents guide-x snap hover (drop tip invents).
-- CAUSE: tip invent bar-as-fill (--bar/agent color-mix/shell-patch); invent guide-x .12s transition; idle tip override.
-- Gold: routing.css L84–90 + routing.js ~1315/1587; app.css L3728–3729; routing.css L74 idle.
-- WHAT kept: SIDE_AT=1024 / no WEB_SIDE_AT / nest-752 / CIS / livedot+guide-hide 0.1.127.
-- WHAT changed: RoutingView makeRow DOM; shell-patch drop bar/idle/guide-x invents.
+## v0.1.129 LIB_HEALTH_TOOL_RADIO_FIDELITY
+- WHY: 1:1 Magpie fidelity — Library MCP health/tools/radio + drop shell-patch lib-switch invent.
+- CAUSE: tip invent .dot/›/inline color; invent whole-row tool.off opacity without lib-tooltxt; invent radio nested-i accent; shell-patch lib-switch geometry fight.
+- Gold: library client.js paintHealth L1679–1698 + paintTools L1540–1559; library.css L141–146 / L150–153 / L166 / L477–510 / L500–501.
+- WHAT kept: SIDE_AT=1024 / no WEB_SIDE_AT / nest-752 / CIS / 0.1.127–128 Routing/Agents fidelity.
+- WHAT changed: LibraryView Magpie health/tool/radio DOM; shell-patch drop invents.
 - Guard: chrome-guard. Push/PR. No portable / Vercel.
 - Date: 2026-10-15 Asia/Shanghai
