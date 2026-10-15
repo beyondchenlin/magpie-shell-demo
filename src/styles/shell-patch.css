@@ -820,10 +820,8 @@ label.tick input { margin: 0; }
    label.ag-vl.ag-longest (app.js L1713). */
 
 /* Settings NestedBlocks */
-.ic.openai-mark {
-  display: inline-flex; width: 14px; height: 14px; align-items: center;
-  justify-content: center; font-size: 11px;
-}
+/* v0.1.190: drop invent .ic.openai-mark — Magpie icon("openai") is span.ic[data-icon]
+   > img (app.js L284–318 / L22407+); tip NestedBlocks MagpieIcon. */
 /* v0.1.142: drop invent .lan-pop* — Magpie LAN is openProtoMenu
    lan-address-menu (app.js L23639–23640; NestedBlocks 0.1.137). */
 /* v0.1.143: drop invent #view-settings .whatsnew-body — Magpie showWhatsNew

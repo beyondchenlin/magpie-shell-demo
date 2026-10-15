@@ -8,6 +8,7 @@ import { Segs } from "../../components/Segs";
 import { Tick } from "../../components/Tick";
 import { WordsField } from "../../components/WordsField";
 import { WarmAt } from "../../components/WarmAt";
+import { iconSrc } from "../../data/mock";
 import { demoCopy, t } from "../../i18n";
 
 const PM_CHECK = "M3.2 8.2 6.4 11.4 12.8 4.2";
@@ -36,10 +37,12 @@ const AUTO_RESET_CASES = [
 
 export type AutoResetMap = Record<string, { week: boolean; expiring: boolean }>;
 
-function OpenAIIcon() {
+/** Magpie app.js icon(name): span.ic[data-icon] > img (or mask). */
+function MagpieIcon({ name }: { name: string }) {
+  const n = name || "generic";
   return (
-    <span className="ic openai-mark" aria-hidden>
-      ◉
+    <span className="ic" data-icon={n} aria-hidden>
+      <img src={iconSrc(n)} alt="" draggable={false} />
     </span>
   );
 }
@@ -86,8 +89,10 @@ export function CodexModelPick({ field, value, label, onChange }: CodexPickProps
 
   let display: ReactNode;
   if (value === "off") display = <span>{t("Off")}</span>;
-  else if (value) display = (<><OpenAIIcon /><span>{named(value)}</span></>);
-  else display = (<><OpenAIIcon /><span>{ownLabel}</span></>);
+  else if (value) {
+    const m = DEMO_MODELS.find((x) => x.value === value);
+    display = (<><MagpieIcon name={m?.icon || "generic"} /><span>{named(value)}</span></>);
+  } else display = (<><MagpieIcon name="openai" /><span>{ownLabel}</span></>);
 
   return (
     <>
@@ -997,7 +1002,7 @@ export function SideModelPick({
     const m = options.find((x) => x.value === value);
     display = (
       <>
-        <OpenAIIcon />
+        <MagpieIcon name={m?.icon || "generic"} />
         <span>{m ? `${m.label} · ${m.note}` : value}</span>
       </>
     );

@@ -1,3 +1,20 @@
+## v0.1.190 · AG_INSTALL_OPENAI_ICON_OSS · 2026-10-16 Asia/Shanghai
+
+- **WHY:** Hard invent leftovers — Agents "Install another" still wrapped note+rows in invent `div.ag-install-body`; Settings Codex/Side model chips still painted invent `span.ic.openai-mark` (◉ glyph) instead of Magpie `icon("openai")`.
+- **CAUSE:** Tip invented a body wrapper Magpie never has, and a text-mark stand-in for Magpie `icon()`.
+- **Cite:**
+  - Magpie `app.js` **L2348–2392** `paintInstalls`: `section.ag-install` → `ag-install-head` + (when open) `p.ag-install-note` + `div.ag-install-row`s as **siblings** — no `ag-install-body`
+  - Magpie `app.js` **L284–318** `icon(name)`: `span.ic` + `dataset.icon` + `img`/`mask`
+  - Magpie `app.js` **L22407** / **L22463** / **L22488**: empty Codex pick → `icon("openai")`; selected → `icon(model.icon || "generic")`
+  - Magpie `app.css` **L628–645** `.ag-install*` (no `.ag-install-body`)
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; skip oauth Approve wall; Magpie `.ag-install-*` CSS already vendored; routing tip extras / led-tools-extra / GroupEditor deferred unchanged.
+- **WHAT changed:**
+  - `AgentsView.tsx`: invent `div.ag-install-body` → Magpie fragment siblings (`ag-install-note` + `ag-install-row`).
+  - `NestedBlocks.tsx`: invent `OpenAIIcon` / `openai-mark` → Magpie `MagpieIcon` (`span.ic[data-icon]` + `img` via `iconSrc`); Codex empty → `openai`, selected → model icon; SideModelPick selected → model icon.
+  - `shell-patch.css`: drop invent `.ic.openai-mark`.
+- **Remaining invent (intentional skip):** oauth Approve wall; `rt-flier-demo`; `win-caption*`; `lib-hook*` / `pref-anchor` React bridges. **Deferred (not 1:1 this tip):** routing.css tip extras `rt-info`/`rt-cond-*`/`rt-pause-*`/`rt-rule-more`/`rt-arrow`/`rt-effort-row` (GroupEditor rewrite); `led-tools-extra`.
+- **Guard:** `npm run chrome-guard`. No portable. No manual Vercel.
+
 ## v0.1.189 · AG_DIFF_LINE_OSS · 2026-10-16 Asia/Shanghai
 
 - **WHY:** Hard invent leftover — AgentsView connected "View" diff still painted invent `pre.ag-diff-body` with a raw `+` blob. Magpie OSS builds each preview row as `div.ag-diff-line` (`del` / `back`) via `changesList` / `line()`.

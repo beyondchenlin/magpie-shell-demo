@@ -1,3 +1,10 @@
+## v0.1.190 · AG_INSTALL_OPENAI_ICON_OSS · 2026-10-16 Asia/Shanghai
+- Agents invent `div.ag-install-body` → Magpie siblings `ag-install-note` + `ag-install-row` under `section.ag-install` (paintInstalls; no body wrapper).
+- NestedBlocks invent `openai-mark` / ◉ → Magpie `icon("openai")` = `span.ic[data-icon]` + `img`; Codex/Side selected use model icon.
+- **Cite:** Magpie `app.js` **L2348–2392** paintInstalls; **L284–318** `icon()`; **L22407+** Codex picks; `app.css` **L628–645** `.ag-install*`.
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; skip oauth; Magpie `.ag-install-*` CSS already vendored; GroupEditor / led-tools-extra deferred.
+- No portable / Vercel.
+
 ## v0.1.189 · AG_DIFF_LINE_OSS · 2026-10-16 Asia/Shanghai
 - AgentsView invent `pre.ag-diff-body` (+ blob) → Magpie `div.ag-diff-line.back` with `.op` / `code>.ind+.t` / `.ag-tag` (changesList line()).
 - **Cite:** Magpie `app.js` **L1959–1991** `changesList`; **L1970–1977** `line()` → `ag-diff-line` + `del`/`back`; `app.css` **L3867–3876** `.ag-diff-line` (already vendored).

@@ -1614,7 +1614,7 @@ export function AgentsView({
             </span>
           </button>
           {installsOpen ? (
-            <div className="ag-install-body">
+            <>
               <p className="ag-install-note">{ZH.installNote}</p>
               {INSTALLS.map((x) => (
                 <div key={x.id} className="ag-install-row" data-id={x.id}>
@@ -1654,7 +1654,7 @@ export function AgentsView({
                   </div>
                 </div>
               ))}
-            </div>
+            </>
           ) : null}
         </section>
 
