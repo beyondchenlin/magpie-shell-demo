@@ -422,3 +422,59 @@ Routing, scrolled to **ROUTING GROUPS**, no group row, templates showing, **Acco
 - New group editor: empty top/mid/foot · templates · Effort tip · model pop (No matches / use as typed / Favorites) · reasoning Follow the group · Down/Up · name `group/{name}` · two members → **+ Add a rule** (body not opened).
 - Cancel/Escape dirty → **Discard**; Add → **{name} added** card (Smart · no member ready · switch tip); Edit footer Remove/Cancel/Save; **Remove {name}?** → removed toast; Import tip; 616 head note hidden · templates two-up.
 - Find-groups / names segments write not nested this tip. Day pills N/A. No portable / Vercel.
+
+## Add a rule (145–171)
+
+Same window, pid **1871993**, magpie **0.1.1247**, **752×652 at +200+40** (id 85983247). Shots are ffmpeg x11grab of that rect (`-framerate 25`). Close was not used. Gateway was not restarted. No request was sent. No OAuth. Find-groups was not toggled (still **on**). The names segments were not clicked (still **On**). P1 bird hop: **N/A**.
+
+**+ New group** in the groups head opens the editor under the templates and does not scroll to it (145 is the editor top after a scroll). Two typed members, `opus` and `haiku`, make **+ Add a rule** and the info dot. The dot's tip (147): "Checked top first when you send a message: the first that matches sends that turn to its model first; the rest stay behind it if it fails. A turn under way is never moved."
+
+The rule is not a When row of every chip. **+ Add a rule** inserts rule **1** already on **asks for** (placeholder "what it asks for, e.g. writing tests") and shows **Intent told by** / **choose a model** under Effort. A **+** on the rule opens **Add a condition**. A condition already on the rule leaves that menu. The arrow under the conditions is the member it sends to (haiku, the last member).
+
+| shot | what |
+|---|---|
+| 145 | Editor open under the templates. Name placeholder, **+ Add a model**. |
+| 146 | Two members. Rules is **+ Add a rule** and the info dot. Footer **Cancel** and blue **Add**. |
+| 147 | Info tip, the "checked top first…" sentence. |
+| 148 | Rule 1 opened: **asks for** field, **+**, arrow **haiku**. **Intent told by** / **choose a model**. |
+| 149 | **+** menu, clipped at the window foot: Conversation length, has an image, Reasoning level, compacting, Agents, in folder. |
+| 150 | Same menu with room: also **not in folder** and **Hours and days**. Tip on **+** is **Add a condition**. |
+| 151 | **Conversation length** becomes **≥** [field] **tokens**, with an ×. |
+| 152 | Menu again. Conversation length has left it. |
+| 153 | Arrow opens **Filter member…** with **opus** and **haiku**. Escape closes it and leaves the rule. |
+| 154 | **Reasoning level** opens at once: **Filter reasoning…**, **any reasoning** checked ("not a condition"), **reasoning on** ("thinking or any effort level"), then **reasoning ≥** low / medium / high / xhigh / max. |
+| 155 | Chip **reasoning ≥ high**. |
+| 156 | **compacting** tip: "The agent summarizes the conversation to go on in less room (Claude Code's /compact, Codex, OpenCode…): a cheaper, faster model can do it." |
+| 157 | **Agents**. **Filter agent…**, **any agent** ("not a condition"), then Claude Code, Claude Desktop, Claude Science, Codex, Gemini CLI, Antigravity CLI, OpenCode, OpenChamber, MiMo Code. The list scrolls. |
+| 158 | Foot of that list: Mister Morph, Kimi Code, Qwen Code, Muse Code, Empyro, Ante, AstrBot, jcode, MiniMax Code, **Droid**. Between 157 and 158, also DevEco Code, Pi, StepCode, Aside, OmO, Prime Agent, Goose, Cursor, Cursor Private Inference, Zed, VS Code, VS Code Insiders, VSCodium, Copilot (JetBrains), JetBrains Air, Copilot CLI, Crush, DeepSeek Harness, Reasonix Studio, Command Code, fx, omp, Devin, Hermes Agent. Picking **Droid** renames the chip. |
+| 159 | **in folder**, placeholder `~/work/acme, ~/oss`. |
+| 160 | **not in folder**, placeholder `~/big-task`. The label truncates ("not in folde…"); hover says **not in folder**. |
+| 161 | **Hours and days**: **from** `09:00` **to** `18:00` (placeholders) and **every day**. |
+| 162 | **every day** menu: **Filter days…**, **every day** ("not a condition"), **weekdays** (Mon–Fri), **weekends** (Sat, Sun), then Mon Tue Wed Thu Fri Sat Sun. |
+| 163 | **weekdays** renames the chip **Mon–Fri**. |
+| 164 | Whole rule above **Cancel** / **Add**. Escape here, focus not in the name field, does nothing: no Discard. |
+| 165 | **Cancel** on the dirty draft. **Discard** — "Discard unsaved changes? Your changes will be lost." **Cancel** and red **Discard**. Dialog **Cancel** stays. |
+| 166 | **Add** with the name left empty. Toast **group added**. Card **group** `group/group`, `opus · haiku`, **Smart**, **1 rule**, red **no member ready**, **Edit**, switch on. Templates become a **Templates** menu. |
+| 167 | **…** on the rule. Tip **Actions for rule 1**. Menu: **Move up** and **Move down** (both disabled; one rule, already first), **Pause the model instead**, **Remove rule**. |
+| 168 | Pause. Request chips (asks for, image, reasoning, compacting, tokens) hide. Left: **Droid**, **from 00:00 to 00:00**, **Mon–Fri**. The arrow reads **pause** **haiku**. Orange: "left out of the group then: not tried, not a fallback." |
+| 169 | Saved-group footer: **Remove**, **Cancel**, blue **Save**. |
+| 170 | **Remove group?** "This routing group will no longer be available to agents." **Cancel** and red **Remove**. |
+| 171 | Red Remove. Toast **group removed**. Template cards return. No group row. Find-groups still **on**, names still **On**. |
+
+What **Add** actually kept, from the bak before it was cleared: members `opus`, `haiku`; one rule `use: haiku` with `images`, `effort: high`, `agents: ["droid"]`, `compact`, and `time` `00:00`–`00:00` on mon–fri. The token field, the asks-for text, and both folder fields were still placeholders, so they were not stored. Days with no typed hours became the whole day. The pause in 168 was not saved.
+
+`providers.json` is `{"providers": []}` again. The `.bak` held this `group` after the remove; it was rewritten to the same empty file so a restore does not bring it back. `settings.json` `window` was not touched. `plugins.yml` `groups.enabled` is still `true`.
+
+### Not in this slice
+
+Find-groups and the names segments (both write immediately; left **on** / **On**). A second rule, so Move up / Move down never enabled. **Remove rule** was not clicked. The classifier was not picked (**choose a model** stayed). Import box. Template Add (still **Add a provider first**). Day pills, By request / By session, Replay (still **Waiting for a request**, 0 / 0 / 0).
+
+## Left state
+
+Routing, **ROUTING GROUPS**, no group row, templates showing. Groups plugin **on**. Find-groups **on**. Names **On**. Gateway **running** on this pid, 0 models. No group, no key. Magpie still running, pid 1871993, window 752×652 at +200+40. Close was not used.
+
+## demo 对齐（145–171）· v0.1.94 ADD_A_RULE_DONE
+- **+ Add a rule** → rule 1 on **asks for** (+ ×) · Intent told by / choose a model; **+** Add a condition (items leave once added).
+- Conditions: tokens · member Filter · reasoning ≥ high · compacting tip · agents through Droid · in folder / not in folder · hours placeholders · weekdays → **Mon–Fri**.
+- Cancel → Discard; Add empty name → **group** / `group/group` · 1 rule card; … Actions for rule 1 (Move up/down disabled) · Pause hides request chips · whole-day 00:00–00:00; Save footer; Remove group → templates.
+- Find-groups/names not flipped; day pills N/A; P1 N/A. No portable / Vercel.

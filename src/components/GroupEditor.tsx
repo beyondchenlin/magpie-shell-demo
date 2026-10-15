@@ -109,6 +109,7 @@ const DAY_NAMES: Record<(typeof WEEK)[number], string> = {
   sun: "Sun",
 };
 
+/** Magpie agent list order (routing 157–158); Droid is the last of the recorded scroll. */
 const DEMO_AGENTS = [
   { id: "claude-code", name: "Claude Code" },
   { id: "claude-desktop", name: "Claude Desktop" },
@@ -119,6 +120,11 @@ const DEMO_AGENTS = [
   { id: "opencode", name: "OpenCode" },
   { id: "openchamber", name: "OpenChamber" },
   { id: "mimo-code", name: "MiMo Code" },
+  { id: "deveco-code", name: "DevEco Code" },
+  { id: "pi", name: "Pi" },
+  { id: "stepcode", name: "StepCode" },
+  { id: "aside", name: "Aside" },
+  { id: "omo", name: "OmO" },
   { id: "prime-agent", name: "Prime Agent" },
   { id: "goose", name: "Goose" },
   { id: "cursor", name: "Cursor" },
@@ -129,6 +135,9 @@ const DEMO_AGENTS = [
   { id: "vscodium", name: "VSCodium" },
   { id: "copilot-jetbrains", name: "Copilot (JetBrains)" },
   { id: "jetbrains-air", name: "JetBrains Air" },
+  { id: "copilot-cli", name: "Copilot CLI" },
+  { id: "crush", name: "Crush" },
+  { id: "deepseek-harness", name: "DeepSeek Harness" },
   { id: "reasonix-studio", name: "Reasonix Studio" },
   { id: "command-code", name: "Command Code" },
   { id: "fx", name: "fx" },
@@ -139,7 +148,7 @@ const DEMO_AGENTS = [
   { id: "kimi-code", name: "Kimi Code" },
   { id: "qwen-code", name: "Qwen Code" },
   { id: "muse-code", name: "Muse Code" },
-  { id: "empryo", name: "Empryo" },
+  { id: "empyro", name: "Empyro" },
   { id: "ante", name: "Ante" },
   { id: "astrbot", name: "AstrBot" },
   { id: "jcode", name: "jcode" },
@@ -688,7 +697,19 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
       warn(t("A group needs a model in it"));
       return;
     }
-    const rules = draft.rules.map((r) => ({ ...r, intent: (r.intent || "").trim() }));
+    const rules = draft.rules.map((r) => {
+      const intent = (r.intent || "").trim();
+      let time = r.time;
+      // Empty hour placeholders → whole day (NOTES bak: 00:00–00:00)
+      if (time && time.days?.length) {
+        time = {
+          ...time,
+          from: clockOf(time.from) || "00:00",
+          to: clockOf(time.to) || "00:00",
+        };
+      }
+      return { ...r, intent, time };
+    });
     const bare = rules.findIndex(
       (r) =>
         !r.pause &&
@@ -1240,6 +1261,20 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
                               }}
                               onKeyDown={(e) => e.stopPropagation()}
                             />
+                            <button
+                              type="button"
+                              className="rt-cond-x"
+                              aria-label={t("Remove")}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setDraft((d) => ({
+                                  ...d,
+                                  rules: d.rules.map((x, j) => (j === ri ? { ...x, intent: "" } : x)),
+                                }));
+                              }}
+                            >
+                              ×
+                            </button>
                           </span>
                           {showTokens ? (
                             <span className={`rt-cond tk${r.tokens ? " on" : ""}`}>
@@ -1609,7 +1644,8 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
                         ref={(el) => {
                           condBtnRefs.current[`more${ri}`] = el;
                         }}
-                        aria-label={t("Rule actions")}
+                        title={t("Actions for rule {n}", { n: ri + 1 })}
+                        aria-label={t("Actions for rule {n}", { n: ri + 1 })}
                         aria-haspopup="menu"
                         aria-expanded={ruleMenuFor === ri}
                         onClick={(e) => {
@@ -2061,20 +2097,25 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
             const ri = ruleMenuFor;
             setDraft((d) => ({
               ...d,
-              rules: d.rules.map((x, j) =>
-                j === ri
-                  ? {
-                      ...x,
-                      pause: true,
-                      tokens: 0,
-                      images: false,
-                      effort: "",
-                      intent: "",
-                      compact: false,
-                      pins: x.pins.filter((p) => p === "folders" || p === "exceptFolders" || p === "agents" || p === "time"),
-                    }
-                  : x,
-              ),
+              rules: d.rules.map((x, j) => {
+                if (j !== ri) return x;
+                let time = x.time;
+                // Magpie: days with no typed hours become the whole day (00:00–00:00)
+                if (time && time.days?.length && !clockOf(time.from) && !clockOf(time.to)) {
+                  time = { ...time, from: "00:00", to: "00:00" };
+                }
+                return {
+                  ...x,
+                  pause: true,
+                  tokens: 0,
+                  images: false,
+                  effort: "",
+                  intent: "",
+                  compact: false,
+                  time,
+                  pins: x.pins.filter((p) => p === "folders" || p === "exceptFolders" || p === "agents" || p === "time"),
+                };
+              }),
             }));
           }}
           onRemove={() => {

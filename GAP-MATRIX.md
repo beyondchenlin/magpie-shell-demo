@@ -380,3 +380,8 @@
 - Native routing 118–144: Plugins Routing groups on → Saved · + New group · editor Discard/Add/Remove · card · Import tip · 616 groups head.
 - Gaps: Add-a-rule body not opened this slice (prior nest still present); find-groups / names segments not nested; day pills / Replay N/A; P1 bird hop N/A.
 - Portable/release skipped. No Vercel.
+
+## v0.1.94 ADD_A_RULE_DONE
+- Native routing 145–171: Add-a-rule conditions · Pause · Discard · empty-name group/group · Remove group.
+- Gaps: Find-groups / names segments not flipped this slice; day pills / Replay N/A; P1 bird hop N/A; second rule Move up/down not exercised.
+- Portable/release skipped. No Vercel.
