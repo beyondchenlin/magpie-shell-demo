@@ -4,6 +4,17 @@
 
 ---
 
+## v0.1.109 · CIS_LIBRARY_REMAINING_CONFIRMS · 2026-10-15 Asia/Shanghai
+
+- **WHY:** CIS §10 — finish Library LibModal danger confirms onto Magpie `ActionConfirm` (skill/project/MCP remove + Turn all off).
+- **WHAT kept:** `SIDE_AT=1024`; no `WEB_SIDE_AT`; Win chrome / 752 frame; Providers OAuth/folder pickers skipped; non-confirm LibModals (How/by-agent sheets) kept.
+- **WHAT changed:**
+  - `ActionConfirm` gains optional `extra` slot; Keep-skills uses `Tick.keep` under `.action-confirm .extra` (shell-patch tokens).
+  - Library: skill remove · project remove (keep-skills) · Turn all off · single MCP remove · MCP project remove → `ActionConfirm`.
+  - Project remove hides while discard overlay open (`!projectDiscard`).
+- **Guard:** `npm run chrome-guard`. No portable. No push/Vercel.
+
+---
 ## v0.1.108 · CIS_ACTIONCONFIRM_LIBRARY_GROUP · 2026-10-15 Asia/Shanghai
 
 - **WHY:** CIS §10 — migrate Library LibModal discard/remove-all/remove-selected (+ project discard) and GroupEditor `#modal` discard/remove onto Magpie `ActionConfirm`.

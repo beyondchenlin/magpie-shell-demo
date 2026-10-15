@@ -1090,3 +1090,27 @@ label.tick input { margin: 0; }
 #view-providers .find.pv-find { width: 180px; }
 #view-providers .none.pv-none { padding: 12px 2px; color: var(--muted); font-size: 13px; }
 #view-providers .rt-gadd.pv-gap { margin-top: 8px; }
+
+/* Magpie action-confirm extra slot (Library Keep-skills) — tokens only */
+.action-confirm .extra { margin: -4px 0 16px; }
+.action-confirm .extra label.tick.keep {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--pill);
+  color: var(--fg);
+  cursor: pointer;
+}
+.action-confirm .extra label.tick.keep .name {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+}
+.action-confirm .extra label.tick.keep .sub {
+  display: block;
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 2px;
+}

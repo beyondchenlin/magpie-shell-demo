@@ -1,3 +1,7 @@
+## v0.1.109 CIS_LIBRARY_REMAINING_CONFIRMS
+- Library skill remove / project remove (Keep-skills Tick) / Turn all off / single MCP remove / MCP project remove → `ActionConfirm` (+ `extra` slot).
+- Non-confirm LibModals (How skills / by-agent sheets) and Providers OAuth/folder pickers still Open. SIDE_AT=1024. No portable / Vercel.
+
 ## v0.1.108 CIS_ACTIONCONFIRM_LIBRARY_GROUP
 - Library discard / Instructions discard / project discard / MCP remove-all / remove-selected → `ActionConfirm`.
 - GroupEditor discard + remove → `ActionConfirm` (Magpie `.action-confirm`).

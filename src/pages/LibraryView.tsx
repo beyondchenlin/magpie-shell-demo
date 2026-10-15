@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState, type ClipboardEvent, type ReactNode } from "react";
 import { ActionConfirm } from "../components/ActionConfirm";
+import { Tick } from "../components/Tick";
 import { Bird } from "../components/Bird";
 import { useSegThumb } from "../components/SegThumb";
 import { t } from "../i18n";
@@ -1702,13 +1703,6 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
           onStatus?.(t("Saved — the agents already had it"), "ok");
         }
       }
-      if (e.key === "Escape" && mcpTurnAllOffAsk) {
-        // NOTES 214: Escape closes ask; servers stay on for the agent
-        e.preventDefault();
-        e.stopPropagation();
-        setMcpTurnAllOffAsk(false);
-        return;
-      }
       if (e.key === "Escape" && mcpCopyMenu) {
         e.preventDefault();
         e.stopPropagation();
@@ -1725,7 +1719,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
     };
     window.addEventListener("keydown", onKey, true);
     return () => window.removeEventListener("keydown", onKey, true);
-  }, [instDirty, tab, mcpTurnAllOffAsk, mcpCopyMenu, mcpEditor, mcpOauthWall, mcpSignWaiting, onStatus]);
+  }, [instDirty, tab, mcpCopyMenu, mcpEditor, mcpOauthWall, mcpSignWaiting, onStatus]);
 
   const openSet = sets.find((s) => s.id === openId);
   const mcpHits = useMemo(() => {
@@ -4331,32 +4325,21 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
       ) : null}
 
 
-      {skillRemoveConfirm ? (
-        <LibModal onBg={() => setSkillRemoveConfirm(null)} sm>
-          <div className="ehead" style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
-            <b style={{ fontSize: 15 }}>{t("Remove {name}?", { name: skillRemoveConfirm.name })}</b>
-          </div>
-          <p className="lib-confirm" style={{ margin: "0 0 14px", fontSize: 13, color: "var(--fg-2)", lineHeight: 1.45 }}>
-            {t("It is taken out of every agent it was given to, and its folder is moved to magpie's backups.")}
-          </p>
-          <div className="bar" style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
-            <button type="button" className="text" onClick={() => setSkillRemoveConfirm(null)}>{t("Cancel")}</button>
-            <button
-              type="button"
-              className="text primary danger-fill"
-              style={{ background: "var(--red)", color: "#fff", borderColor: "transparent" }}
-              onClick={() => {
-                const { id, name } = skillRemoveConfirm;
-                setSkills((list) => list.filter((x) => x.id !== id));
-                setSkillRemoveConfirm(null);
-                onStatus?.(t("{name} removed", { name }), "ok");
-              }}
-            >
-              {t("Remove")}
-            </button>
-          </div>
-        </LibModal>
-      ) : null}
+      <ActionConfirm
+        open={!!skillRemoveConfirm}
+        title={skillRemoveConfirm ? t("Remove {name}?", { name: skillRemoveConfirm.name }) : ""}
+        message={t("It is taken out of every agent it was given to, and its folder is moved to magpie's backups.")}
+        cancelLabel={t("Cancel")}
+        acceptLabel={t("Remove")}
+        onCancel={() => setSkillRemoveConfirm(null)}
+        onAccept={() => {
+          if (!skillRemoveConfirm) return;
+          const { id, name } = skillRemoveConfirm;
+          setSkills((list) => list.filter((x) => x.id !== id));
+          setSkillRemoveConfirm(null);
+          onStatus?.(t("{name} removed", { name }), "ok");
+        }}
+      />
 
       {skillHowOpen ? (
         <LibModal onBg={() => setSkillHowOpen(false)}>
@@ -4475,83 +4458,54 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
         onAccept={discardInstructions}
       />
 
-      {projectRemove ? (
-        <LibModal
-          onBg={() => {
-            if (projectRemove.dirty) setProjectDiscard(true);
-            else setProjectRemove(null);
-          }}
-        >
-          <div className="ehead" style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
-            <span aria-hidden>🗑</span>
-            <b style={{ fontSize: 15 }}>{t("Remove {name}?", { name: projectRemove.name })}</b>
-          </div>
-          <p style={{ margin: "0 0 12px", fontSize: 13, color: "var(--fg-2)", lineHeight: 1.45 }}>
-            {projectRemove.keep
-              ? t("magpie forgets the project. The skills and MCP servers it put in the folder stay there as they are, with their lines in its .gitignore, and are yours from then on; a linked skill still follows the library's.")
-              : t("The skills and MCP servers magpie put in it are taken away, with their lines in its .gitignore. Nothing else in the folder is touched.")}
-          </p>
-          {(() => {
-            const pr = projects.find((p) => p.dir === projectRemove.dir);
-            const hasPlaced = pr ? Object.values(pr.placed).some((a) => a.length > 0) : false;
-            return hasPlaced ? (
-              <label
-                style={{
-                  display: "flex",
-                  gap: 10,
-                  alignItems: "flex-start",
-                  padding: "10px 12px",
-                  borderRadius: 10,
-                  background: "var(--pill)",
-                  marginBottom: 14,
-                  cursor: "pointer",
-                }}
-              >
-                <input
-                  type="checkbox"
-                  checked={projectRemove.keep}
-                  onChange={(e) =>
-                    setProjectRemove({ ...projectRemove, keep: e.target.checked, dirty: true })
-                  }
-                  style={{ marginTop: 3, accentColor: "var(--accent)" }}
-                />
-                <span>
-                  <span style={{ display: "block", fontSize: 13, fontWeight: 500 }}>{t("Keep its skills and MCP servers")}</span>
-                  <span style={{ display: "block", fontSize: 12, color: "var(--muted)", marginTop: 2 }}>
-                    {t("Remove the project from magpie only, leaving what magpie wrote into it")}
-                  </span>
+      <ActionConfirm
+        open={!!projectRemove && !projectDiscard}
+        title={projectRemove ? t("Remove {name}?", { name: projectRemove.name }) : ""}
+        message={
+          projectRemove?.keep
+            ? t("magpie forgets the project. The skills and MCP servers it put in the folder stay there as they are, with their lines in its .gitignore, and are yours from then on; a linked skill still follows the library's.")
+            : t("The skills and MCP servers magpie put in it are taken away, with their lines in its .gitignore. Nothing else in the folder is touched.")
+        }
+        cancelLabel={t("Cancel")}
+        acceptLabel={t("Remove")}
+        onCancel={() => {
+          if (!projectRemove) return;
+          if (projectRemove.dirty) setProjectDiscard(true);
+          else setProjectRemove(null);
+        }}
+        onAccept={() => {
+          if (!projectRemove) return;
+          const { dir, name } = projectRemove;
+          setProjects((list) => list.filter((x) => x.dir !== dir));
+          setProjectRemove(null);
+          setProjectDiscard(false);
+          onStatus?.(t("{name} removed", { name }), "ok");
+        }}
+        extra={(() => {
+          if (!projectRemove) return null;
+          const pr = projects.find((p) => p.dir === projectRemove.dir);
+          const hasPlaced = pr ? Object.values(pr.placed).some((a) => a.length > 0) : false;
+          if (!hasPlaced) return null;
+          return (
+            <Tick
+              className="keep"
+              checked={projectRemove.keep}
+              onChange={(e) =>
+                setProjectRemove({ ...projectRemove, keep: e.target.checked, dirty: true })
+              }
+            >
+              <span>
+                <span className="name">{t("Keep its skills and MCP servers")}</span>
+                <span className="sub">
+                  {t("Remove the project from magpie only, leaving what magpie wrote into it")}
                 </span>
-              </label>
-            ) : null;
-          })()}
-          <div className="bar" style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
-            <button
-              type="button"
-              className="text"
-              onClick={() => {
-                if (projectRemove.dirty) setProjectDiscard(true);
-                else setProjectRemove(null);
-              }}
-            >
-              {t("Cancel")}
-            </button>
-            <button
-              type="button"
-              className="text"
-              style={{ background: "var(--red)", color: "#fff", borderColor: "transparent" }}
-              onClick={() => {
-                const { dir, name } = projectRemove;
-                setProjects((list) => list.filter((x) => x.dir !== dir));
-                setProjectRemove(null);
-                setProjectDiscard(false);
-                onStatus?.(t("{name} removed", { name }), "ok");
-              }}
-            >
-              {t("Remove")}
-            </button>
-          </div>
-        </LibModal>
-      ) : null}
+              </span>
+            </Tick>
+          );
+        })()}
+      />
+
+      
 
       <ActionConfirm
         open={!!(projectDiscard && projectRemove)}
@@ -4616,42 +4570,26 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
         </LibModal>
       ) : null}
 
-      {mcpTurnAllOffAsk ? (
-        <LibModal
-          onBg={() => setMcpTurnAllOffAsk(false)}
-          sm
-        >
-          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
-            <span aria-hidden>{">_"}</span>
-            <b style={{ fontSize: 15 }}>{t("Turn off all {n} servers?", { n: mcpServers.length })}</b>
-          </div>
-          <p style={{ margin: "0 0 14px", fontSize: 13, color: "var(--fg-2)", lineHeight: 1.45 }}>
-            {t("Every server is taken out of Cursor. They stay in the library, to turn on again.")}
-          </p>
-          <div className="bar" style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
-            <button type="button" className="text" onClick={() => setMcpTurnAllOffAsk(false)}>{t("Cancel")}</button>
-            <button
-              type="button"
-              className="text"
-              style={{ background: "var(--red)", color: "#fff", borderColor: "transparent" }}
-              onClick={() => {
-                setMcpServers((list) =>
-                  list.map((x) => ({
-                    ...x,
-                    agents: x.agents.filter((a) => a !== "cursor"),
-                    toolsOpen: false,
-                    health: "idle" as McpHealth,
-                  })),
-                );
-                setMcpTurnAllOffAsk(false);
-                onStatus?.(t("Removed from Cursor"), "ok");
-              }}
-            >
-              {t("Turn all off")}
-            </button>
-          </div>
-        </LibModal>
-      ) : null}
+      <ActionConfirm
+        open={mcpTurnAllOffAsk}
+        title={t("Turn off all {n} servers?", { n: mcpServers.length })}
+        message={t("Every server is taken out of Cursor. They stay in the library, to turn on again.")}
+        cancelLabel={t("Cancel")}
+        acceptLabel={t("Turn all off")}
+        onCancel={() => setMcpTurnAllOffAsk(false)}
+        onAccept={() => {
+          setMcpServers((list) =>
+            list.map((x) => ({
+              ...x,
+              agents: x.agents.filter((a) => a !== "cursor"),
+              toolsOpen: false,
+              health: "idle" as McpHealth,
+            })),
+          );
+          setMcpTurnAllOffAsk(false);
+          onStatus?.(t("Removed from Cursor"), "ok");
+        }}
+      />
 
       {mcpOauthWall ? (
         <div
@@ -4765,58 +4703,42 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
         }}
       />
 
-      {mcpRemoveAsk ? (
-        <LibModal onBg={() => setMcpRemoveAsk(null)} sm>
-          <b style={{ display: "block", fontSize: 15, marginBottom: 8 }}>{t("Remove {name}?", { name: mcpRemoveAsk.name })}</b>
-          <p style={{ margin: "0 0 14px", fontSize: 13, color: "var(--fg-2)", lineHeight: 1.45 }}>
-            {t("It will be removed from the library and the agents it was given to.")}
-          </p>
-          <div className="bar" style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
-            <button type="button" className="text" onClick={() => setMcpRemoveAsk(null)}>{t("Cancel")}</button>
-            <button
-              type="button"
-              className="text"
-              style={{ background: "var(--red)", color: "#fff", borderColor: "transparent" }}
-              onClick={() => {
-                const { id, name } = mcpRemoveAsk;
-                setMcpServers((list) => list.filter((x) => x.id !== id));
-                setMcpRemoveAsk(null);
-                setMcpEditor(null);
-                setMcpEditId(null);
-                setMcpSignWaiting(false);
-                onStatus?.(t("{name} is out of the library and the agents it was given to", { name }), "ok");
-              }}
-            >
-              {t("Remove")}
-            </button>
-          </div>
-        </LibModal>
-      ) : null}
+      <ActionConfirm
+        open={!!mcpRemoveAsk}
+        title={mcpRemoveAsk ? t("Remove {name}?", { name: mcpRemoveAsk.name }) : ""}
+        message={t("It will be removed from the library and the agents it was given to.")}
+        cancelLabel={t("Cancel")}
+        acceptLabel={t("Remove")}
+        onCancel={() => setMcpRemoveAsk(null)}
+        onAccept={() => {
+          if (!mcpRemoveAsk) return;
+          const { id, name } = mcpRemoveAsk;
+          setMcpServers((list) => list.filter((x) => x.id !== id));
+          setMcpRemoveAsk(null);
+          setMcpEditor(null);
+          setMcpEditId(null);
+          setMcpSignWaiting(false);
+          onStatus?.(t("{name} is out of the library and the agents it was given to", { name }), "ok");
+        }}
+      />
 
-      {mcpProjectRemove ? (
-        <LibModal onBg={() => setMcpProjectRemove(null)} sm>
-          <b style={{ display: "block", fontSize: 15, marginBottom: 8 }}>{t("Remove {name}?", { name: mcpProjectRemove.name })}</b>
-          <p style={{ margin: "0 0 14px", fontSize: 13, color: "var(--fg-2)", lineHeight: 1.45 }}>
-            {t("The skills and MCP servers magpie put in it are taken away, with their lines in its .gitignore. Nothing else in the folder is touched.")}
-          </p>
-          <div className="bar" style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
-            <button type="button" className="text" onClick={() => setMcpProjectRemove(null)}>{t("Cancel")}</button>
-            <button
-              type="button"
-              className="text"
-              style={{ background: "var(--red)", color: "#fff", borderColor: "transparent" }}
-              onClick={() => {
-                const { dir, name } = mcpProjectRemove;
-                setMcpProjects((list) => list.filter((x) => x.dir !== dir));
-                setMcpProjectRemove(null);
-                onStatus?.(t("{name} removed", { name }), "ok");
-              }}
-            >
-              {t("Remove")}
-            </button>
-          </div>
-        </LibModal>
-      ) : null}
+      <ActionConfirm
+        open={!!mcpProjectRemove}
+        title={mcpProjectRemove ? t("Remove {name}?", { name: mcpProjectRemove.name }) : ""}
+        message={t("The skills and MCP servers magpie put in it are taken away, with their lines in its .gitignore. Nothing else in the folder is touched.")}
+        cancelLabel={t("Cancel")}
+        acceptLabel={t("Remove")}
+        onCancel={() => setMcpProjectRemove(null)}
+        onAccept={() => {
+          if (!mcpProjectRemove) return;
+          const { dir, name } = mcpProjectRemove;
+          setMcpProjects((list) => list.filter((x) => x.dir !== dir));
+          setMcpProjectRemove(null);
+          onStatus?.(t("{name} removed", { name }), "ok");
+        }}
+      />
+
+      
 
       {thunarKind ? <LibThunar kind={thunarKind} onClose={() => setThunarKind(null)} /> : null}
 
