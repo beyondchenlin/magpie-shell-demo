@@ -381,3 +381,28 @@ Not in this window: Observability tab (still hidden). Allowances quota body stil
 
 Shots 161 and 164 were dropped (a missed favorite click and a duplicate of the Off-sorted picker). The favorite star was left alone.
 Demo v0.1.81: SETTINGS_GENERAL_135_177 — tray Saved; silent dedicated endpoints; Compact nope/180k/Full window; Codex pickers empty catalog preferUp; Login autostart LS; Lightweight tip; Prevent sleep subtitle; Observability/Allowances/Codex memories skipped.
+
+## GENERAL Colorblind mode (shots 178–183)
+
+Native Linux, magpie pid 560329, window **752×652**. The row is on General between Appearance and Language, above the fonts. It was **Off** and had not been opened. It is not nested: two segments, no popover, no extra rows. Escape while **On** changes nothing (the frame matched the On shot pixel for pixel, so it was not kept). Restored **Off**. Allowances not opened. textSize **110**, appearance System, language System. Both font rows still **System default**.
+
+`savePrefs` row: green **Saved**, bottom left. On writes `colorblind: true`. Off removes the key. The Settings page does not recolor. The mode only swaps the chart series (`--c1`–`--c7`, Okabe–Ito) and gives each allowance window its own dash; those curves are not on this page.
+
+The explanation is the segment's `title`, not a subtitle. It is one line and it is clipped by the window's right edge. It tracks the pointer: further left, more of the line fits. The full title is "Colorblind-safe chart colors, and each allowance window's line in a dash of its own".
+
+| shot | seen |
+|---|---|
+| 178 | General top. Colorblind **Off** (white thumb). Appearance System. Language System. Text size 110%. Both fonts System default. Tray quick panel at the bottom of the frame. |
+| 179 | Pointer on **On**, before the tip. The unselected label darkens. No row fill. |
+| 180 | Tip under the pointer on On. Visible: "Colorblind-safe chart colors, and each allowance windo". Clipped at the right edge. Covers the Language pick. |
+| 181 | Pointer further left on the segment. Visible through "…allowance window's line in". Still clipped; "a dash of its own" is past the edge. |
+| 182 | **On**. Thumb on On. **Saved**. No new rows. Chrome colors unchanged. |
+| 183 | **Off** restored. **Saved**. `colorblind` key gone. |
+
+Hovering the row name (not a separate frame) shows a small tip that only repeats **Colorblind mode**. That is the ellipsis title on the label, not the chart explanation.
+
+## Left state after this pass
+
+Settings on General, top of the page (Appearance through the tray row). Colorblind **Off**. Tray **Open the quick panel**. Provider in model names **On**. Codex subagents **Off**. Long conversations **Compact at 272K**. All four Codex chips on Codex's own. Open at login **Off**. Lightweight **Off**. Prevent sleep **Off**. Fonts System default. textSize 110, theme system, language system. Gateway still `http://127.0.0.1:3425`. magpie pid 560329 still running.
+
+Visible Settings controls are exercised. Still not in this window: Observability tab (hidden unless the otel feature is on), Allowances quota body (N/A; not opened this pass), Codex memories row (hidden). Colorblind chart dashes were not shown, because Allowances was skipped.

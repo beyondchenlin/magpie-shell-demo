@@ -10,7 +10,7 @@ import { RoutingView } from "./pages/RoutingView";
 import { GatewayView } from "./pages/GatewayView";
 import { PluginsView, UsageView } from "./pages/SimpleViews";
 import { LibraryView } from "./pages/LibraryView";
-import { SettingsView } from "./pages/SettingsView";
+import { SettingsView, applyColorblind } from "./pages/SettingsView";
 import { TrayPanel, wantPanelMode } from "./pages/TrayPanel";
 
 const SIDE_AT = 1024;
@@ -140,6 +140,17 @@ export default function App() {
   useEffect(() => {
     applyChrome();
   }, [applyChrome]);
+
+  // NOTES 178–183: colorblind chart palette survives leaving Settings
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem("magpie.demoPrefs");
+      const p = raw ? (JSON.parse(raw) as { colorblind?: boolean }) : {};
+      applyColorblind(!!p.colorblind);
+    } catch {
+      applyColorblind(false);
+    }
+  }, []);
 
   useEffect(() => {
     const sync = () => setLibFeat(libraryOn());

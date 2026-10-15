@@ -1,3 +1,8 @@
+## v0.1.82 SETTINGS_COLORBLIND_178_183
+- Consumed native `settings/178–183` NOTES: Colorblind mode between Appearance and Language; **Off/On** only (no popover); hover darkens On label; segment `title` tip clipped ("Colorblind-safe chart colors, and each allowance windo…"); On → green **Saved** + `data-colorblind` (chart `--c1`–`--c7` / allowance dashes only — Settings chrome unchanged); Off restores **Saved** and removes `colorblind` key; Escape no-op while On.
+- Visible Settings nest largely done. Still out of scope: Observability tab, Allowances quota body, Codex memories row.
+- **No portable / GitHub release / Vercel** (user freeze).
+
 ## v0.1.81 SETTINGS_GENERAL_135_177
 - Consumed native `settings/135–177` (161/164 dropped) NOTES: tray two-way + **Saved** → restored Open the quick panel; Provider **On** / Subagents **Off** / Compact at **272K** / four Codex chips own / Login **Off** / Lightweight **Off** / Prevent sleep **Off**.
 - Dedicated endpoints (provider / subagents / compact / Codex pickers / login) **no toast**; Compact rejects `nope` (red), accepts `180k`, clears→272K, Full window hides field; titles menu **up**, use as typed, Escape no save; Descriptions **no Off**; predictions Off copy; auto-review **Codex's own pick**; Login On→demo autostart desktop, Off deletes; Lightweight tip ~100MB; Prevent sleep Screen on too changes subtitle.

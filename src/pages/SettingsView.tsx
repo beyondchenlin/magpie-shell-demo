@@ -310,9 +310,18 @@ function loadPrefs(): DemoPrefs {
   }
 }
 
+export function applyColorblind(on: boolean) {
+  // Chart series (--c1–c7 Okabe–Ito) + allowance dashes only; Settings chrome stays put.
+  if (on) document.documentElement.setAttribute("data-colorblind", "1");
+  else document.documentElement.removeAttribute("data-colorblind");
+}
+
 function savePrefs(p: DemoPrefs) {
   try {
-    localStorage.setItem(PREFS_LS, JSON.stringify(p));
+    // NOTES 178–183: On writes colorblind:true; Off removes the key.
+    const out: Record<string, unknown> = { ...p };
+    if (!p.colorblind) delete out.colorblind;
+    localStorage.setItem(PREFS_LS, JSON.stringify(out));
   } catch {
     /* ignore */
   }
@@ -346,7 +355,8 @@ function PrefRow({
   return (
     <div className={`row pref${className ? ` ${className}` : ""}`} id={id}>
       <div className="who">
-        <div className="name">{name}</div>
+        {/* ellipsis title on the label (NOTES colorblind 178–183: tip repeats the name) */}
+        <div className="name" title={name}>{name}</div>
         {sub ? <div className="sub" title={subTitle ?? (typeof sub === "string" ? sub : undefined)}>{sub}</div> : null}
       </div>
       {children != null ? (
@@ -487,6 +497,10 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus, onHeade
   useEffect(() => {
     applyTextSize(prefs.textSize);
   }, [prefs.textSize]);
+
+  useEffect(() => {
+    applyColorblind(prefs.colorblind);
+  }, [prefs.colorblind]);
 
   useEffect(() => {
     onHeaderUpdate?.(!prefs.noUpdatePill);
@@ -678,6 +692,9 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus, onHeade
           )}
           {gRows.colorblind && (
             <PrefRow name={t("Colorblind mode")} id="colorblindRow">
+              {/* NOTES 178–183: between Appearance and Language; Off/On only, no popover.
+                  Segment title tip (clipped at window edge); hover darkens On via .opt:hover:not(.on).
+                  On → Saved + data-colorblind (charts only); Off restores + key gone; Escape no-op. */}
               <Segs
                 value={prefs.colorblind ? "on" : "off"}
                 onChange={(v) => setPrefs({ colorblind: v === "on" })}

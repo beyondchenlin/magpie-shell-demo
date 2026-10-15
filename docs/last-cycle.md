@@ -1,13 +1,12 @@
 # last-cycle · 2026-10-15 Asia/Shanghai
 
-## v0.1.81 SETTINGS_GENERAL_135_177
+## v0.1.82 SETTINGS_COLORBLIND_178_183
 
-Consumed settings/135–177 (161/164 dropped) into magpie-shell-demo:
-- Tray toggle + Saved; dedicated endpoints silent
-- Compact nope/180k/Full window; Codex pickers (titles Off / Descriptions no Off / predictions / auto-review)
-- Login autostart mock; Lightweight tip; Prevent sleep Screen on too
-- Observability / Allowances / Codex memories skipped
+Consumed settings/178–183 into magpie-shell-demo:
+- Colorblind between Appearance and Language; Off/On only; hover darkens On
+- Segment title tip clipped at window edge; label ellipsis tip = name
+- On → Saved + data-colorblind (charts); Off → Saved + key gone; Escape no-op
+- Visible Settings nest largely done; Observability / Allowances / Codex memories still out of scope
 
 No portable / GitHub release / Vercel (user freeze).
 P1 N/A.
-

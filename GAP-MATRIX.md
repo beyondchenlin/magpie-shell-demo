@@ -1,3 +1,8 @@
+## v0.1.82 SETTINGS_COLORBLIND_178_183
+- settings/178–183 Colorblind mode landed 1:1: Off/On segs + clipped segment title tip; Saved toast; `colorblind:true` / key omitted on Off; `data-colorblind` for chart series only (no Settings recolor); Escape no-op (no nest).
+- Visible Settings controls exercised. Still out of scope / N/A: Observability (hidden unless otel), Allowances quota body, Codex memories (hidden). Colorblind chart dashes not shown (Allowances skipped).
+- Allowances **N/A**. P1 bird hop **N/A**. No portable / Vercel this cycle.
+
 ## v0.1.81 SETTINGS_GENERAL_135_177
 - settings/135–177 General below fonts landed 1:1: tray Saved toast; silent dedicated endpoints; Compact parse/reject/180k/Full-window hide; Codex pickers empty-catalog + preferUp + Off star; Login autostart LS mock; Lightweight tip; Prevent sleep subtitle.
 - Still mock: true `~/.config/autostart/magpie.desktop` write; true keep-awake / lightweight OS hooks; live Codex titleModels catalog.
