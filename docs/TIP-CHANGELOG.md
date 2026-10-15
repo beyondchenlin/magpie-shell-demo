@@ -4,6 +4,26 @@
 
 ---
 
+## v0.1.119 · APPEARANCE_THEMING_TOP_SEG · 2026-10-15 Asia/Shanghai
+
+- **WHY:** After CIS + Settings clip (v0.1.118), close two user-visible shell gaps: Appearance theme crossfade timing, and top-bar selected pill backgrounds at nest widths (top tabs under `SIDE_AT=1024`).
+- **CAUSE:** Theme `data-theme` was applied in `applyChrome` React effect (one frame after Settings added `html.theming`); Magpie `applyPrefs` sets `dataset.theme` **synchronously** with the theming class (app.js ~20581–20590). Top `#nav.seg` thumb tokens already Magpie-shaped; shell-patch clarified `.seg > .thumb` vs `.segs > .thumb` so Appearance segs never steal `--seg-thumb`.
+- **Gold cites:**
+  - Magpie `internal/gui/assets/app.css` **3233–3236** `html.theming` transitions **.35s** `--ease`
+  - Magpie `internal/gui/assets/app.js` **20585–20587** add `theming`, clear at **450ms**; **20589** sync `dataset.theme`
+  - Magpie `app.css` **227–232** `.seg` / `.seg > .thumb` → `--seg-thumb` / `--seg-edge` (no grey track)
+  - Magpie `app.css` **2798–2804** `.thumb` base for in-page `.segs` (`--card` + light edge)
+  - Magpie `app.js` `slide()` / demo `useSegThumb` **280ms** for thumb glide
+- **WHAT kept:** `SIDE_AT=1024`; no `WEB_SIDE_AT`; Win chrome / 752 frame; Settings Appearance Segs UI; CIS components.
+- **WHAT changed:**
+  - New `src/applyTheme.ts` `applyDocumentTheme` (Magpie applyPrefs theme slice)
+  - `App.tsx` theme effect owns DOM theme; `applyChrome` no longer sets `data-theme`
+  - `SettingsView` Appearance onChange calls `applyDocumentTheme` **sync** then `setTheme` (Magpie same-turn); App theme effect no-ops when already applied
+  - `shell-patch.css` top-bar / Appearance thumb comments + `.segs > .thumb` child selector
+  - `app.css` theming block cite
+- **Guard:** `npm run chrome-guard`. No portable. No push/Vercel.
+
+---
 ## v0.1.118 · SETTINGS_LEFT_CLIP_THUMB · 2026-10-15 Asia/Shanghai
 
 - **WHY:** tip-0117 preview `01-settings.png` — Settings left gutter clipped 「常规」tab + row labels (外观→见) at nest ~752 / textSize 110%.

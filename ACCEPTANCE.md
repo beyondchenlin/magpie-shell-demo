@@ -1,3 +1,8 @@
+## v0.1.119 APPEARANCE_THEMING + TOP_SEG_THUMB
+- Appearance theme switch: Magpie `html.theming` **.35s** / clear **450ms** via `applyDocumentTheme` (sync `data-theme` same turn as Magpie `applyPrefs` app.js ~20581–20590; CSS app.css ~3233–3236).
+- Top-bar `#nav.seg > .thumb` selected pill: `--seg-thumb` / `--seg-edge` (Magpie app.css ~227–232); Appearance `.segs > .thumb` keeps Magpie `.thumb` base `--card` (~2798–2804). SIDE_AT=1024 top tabs.
+- chrome-guard pass. Local tip only (no push/Vercel/portable).
+
 ## v0.1.118 SETTINGS_LEFT_CLIP_THUMB
 - Settings set-tabs / PrefRow labels fully visible at nest ~752 + textSize 110% (no left white thumb overlay).
 - Magpie-faithful: warm-tabs/set-tabs use `.on` pill, not sliding thumb (`app.css` ~3009–3012).

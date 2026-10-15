@@ -6,6 +6,7 @@ import { TextBtn } from "../components/TextBtn";
 import { WordsField } from "../components/WordsField";
 import { GATEWAY_ADDR } from "../data/mock";
 import { demoCopy, t, type Lang } from "../i18n";
+import { applyDocumentTheme, type DemoTheme } from "../applyTheme";
 import {
   AlertNumField,
   AboutVersionRow,
@@ -55,7 +56,6 @@ function otelFeatureOn(): boolean {
 }
 
 const DEMO_APP_VERSION = "0.1.1240";
-const applyThemeFlash: { t?: number } = {};
 const IS_MAC = /\bMac\b|Macintosh/i.test(navigator.platform || navigator.userAgent);
 
 /** Magpie REDACT_KINDS — nested under Mask personal data (shots 64–66). */
@@ -636,10 +636,8 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus, onHeade
               <Segs
                 value={theme}
                 onChange={(v) => {
-                  const root = document.documentElement;
-                  root.classList.add("theming");
-                  window.clearTimeout((applyThemeFlash as { t?: number }).t);
-                  (applyThemeFlash as { t?: number }).t = window.setTimeout(() => root.classList.remove("theming"), 450);
+                  // Magpie applyPrefs (app.js ~20581–20590): theming + data-theme in the same turn
+                  applyDocumentTheme(v as DemoTheme);
                   setTheme(v as Theme);
                   onStatus?.(t("Saved"), "ok", 1500);
                 }}

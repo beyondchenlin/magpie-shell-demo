@@ -14,6 +14,7 @@ import { SettingsView, applyColorblind } from "./pages/SettingsView";
 import { TrayPanel, wantPanelMode } from "./pages/TrayPanel";
 import { StatusToast } from "./components/StatusToast";
 import { WinCaption } from "./components/WinCaption";
+import { applyDocumentTheme } from "./applyTheme";
 
 const SIDE_AT = 1024;
 const NAV_LS = "magpie.navLayout";
@@ -142,14 +143,17 @@ export default function App() {
     // Phone Magpie web has no OS caption; desktop preview simulates Win.
     if (onPhone) delete document.body.dataset.simPlatform;
     else document.body.dataset.simPlatform = "win";
-    const root = document.documentElement;
-    if (theme === "system") root.removeAttribute("data-theme");
-    else root.setAttribute("data-theme", theme);
-  }, [sideOn, theme]);
+    // Theme: Magpie applyPrefs — applyDocumentTheme (separate effect; sync theming)
+  }, [sideOn]);
 
   useEffect(() => {
     applyChrome();
   }, [applyChrome]);
+
+  // Magpie applyPrefs theme: html.theming .35s / clear 450ms (app.js ~20581–20590)
+  useEffect(() => {
+    applyDocumentTheme(theme);
+  }, [theme]);
 
   // NOTES 178–183: colorblind chart palette survives leaving Settings
   // NOTES responsive: textSize 110% is Magpie default — apply before Settings mounts

@@ -3235,7 +3235,8 @@ input.words.search-key, input.words.search-url { flex: 1 1 120px; width: auto; m
 .status { transition: opacity .2s var(--ease); }
 .status.err, .status.warn { user-select: text; -webkit-user-select: text; cursor: text; }
 
-/* the theme crossfades instead of snapping */
+/* Magpie theme crossfade (app.css ~3233–3236): html.theming .35s; JS clears at 450ms (app.js ~20585–20587).
+   Demo: applyDocumentTheme in src/applyTheme.ts — Settings Appearance segs drive App theme effect. */
 html.theming, html.theming *, html.theming *::before, html.theming *::after {
   transition: background-color .35s var(--ease), background .35s var(--ease), color .35s var(--ease), border-color .35s var(--ease), box-shadow .35s var(--ease) !important;
 }

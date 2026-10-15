@@ -53,7 +53,7 @@ footer.foot                 ← #status toast 胶囊
 - `.font-row` + `.font-controls` grid (family | style, preview full width).
 - Family menu: System default + catalogue + Refresh; `Search fonts…` (`sc-q`); style disabled when System default.
 - Apply: `--ui-font/weight/style/stretch` and `--code-*`; `html[data-fonts]`.
-- Appearance theme: `html.theming` **.35s** then clear at **450ms**.
+- Appearance theme: `html.theming` **.35s** then clear at **450ms** (Magpie app.css ~3233–3236; app.js ~20585–20587). Demo: `src/applyTheme.ts` + App theme effect (v0.1.119).
 
 ## 3b. Settings nest (v0.1.40)
 
