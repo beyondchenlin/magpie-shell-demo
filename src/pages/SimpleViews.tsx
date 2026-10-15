@@ -939,17 +939,16 @@ export function UsageView() {
           {t("Gateway calls only; session-log calls are in Requests. Local rejections are excluded from totals.")}
         </p>
         {!demoFilled || !overview ? (
-          <div className="card empty-state us-empty">
-            <b>{noCallsIn(period)}</b>
-            <span>
-              {t("Point an agent at a catalog model and use it; every call through the gateway is counted here.")}
-            </span>
-            <div>
-              <TextBtn variant="primary" onClick={() => setDemoFilled(true)}>
-                {demoCopy("显示演示有数据", "Show demo with data")}
-              </TextBtn>
+          /* Magpie Usage empty: #stats.stats.empty > .none (app.js renderUsage L17250–55;
+             app.css L1020–21). Drop invent card.empty-state.us-empty + shell-patch pad. */
+          <section className="stats empty" id="stats">
+            <div className="none">
+              {`${noCallsIn(period)} ${t("Point an agent at a catalog model and use it; every call through the gateway is counted here.")}`}
             </div>
-          </div>
+            <TextBtn variant="primary" onClick={() => setDemoFilled(true)}>
+              {demoCopy("显示演示有数据", "Show demo with data")}
+            </TextBtn>
+          </section>
         ) : (
           <>
             <section className="stats" id="stats">

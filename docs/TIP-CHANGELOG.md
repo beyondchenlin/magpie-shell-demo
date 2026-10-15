@@ -1,3 +1,21 @@
+## v0.1.171 · US_EMPTY_STATS_NONE_OSS · 2026-10-16 Asia/Shanghai
+
+- **WHY:** Drop invent Usage empty `card empty-state us-empty` + shell-patch pad; restore Magpie Usage empty `#stats.stats.empty > .none`.
+- **CAUSE:** Tip invented a card/`us-empty` empty block (22px pad, bold title). Magpie OSS puts the empty copy inside `#stats` with `.empty` + child `.none` (same pattern as Sessions empty).
+- **Cite:**
+  - Magpie `app.js` **17250–55** `renderUsage` empty → `stats.classList.add("empty")` + `el("div","none", none + " " + tip)`
+  - Magpie `app.css` **1020–21** `.stats.empty` / `.stats .none`
+  - Magpie `app.js` **14434–37** `noCallsIn(period)`
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; demo "Show demo with data" TextBtn (demo affordance, Magpie text-btn family); skip oauth Approve wall.
+- **WHAT changed:**
+  - `SimpleViews.tsx` Usage empty → `<section class="stats empty">` + `.none` concatenated copy (drop invent `us-empty` / card / split b+span).
+  - `shell-patch.css` delete `#view-usage .us-empty*`.
+- **Chrome:** none (Usage nest slice only).
+- **Remaining invent (weak/skip):** oauth Approve wall (nest=browser); `sess-show-more` vs Magpie `sess-show-history`; pm-headrow/pm-folder-row; rt-flier-demo; win-caption*; intentional React bridges.
+- **Guard:** `npm run chrome-guard`. No portable. No Vercel.
+
+---
+
 ## v0.1.170 · RT_GEDIT_DROP_INVENT_SHEET · 2026-10-16 Asia/Shanghai
 
 - **WHY:** Broader invent audit (Usage queue exhausted except oauth Approve wall nest=browser). Clear Magpie-faithful invent in Routing GroupEditor chrome: tip invented `card ge-add-sheet` + `ge-full-row` + pop-in sheet CSS; Magpie OSS is plain `editor rt-gedit` + `.bar`.

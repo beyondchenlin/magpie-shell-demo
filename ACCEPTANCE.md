@@ -1,3 +1,10 @@
+## v0.1.171 · US_EMPTY_STATS_NONE_OSS · 2026-10-16 Asia/Shanghai
+
+- **WHY:** Drop invent Usage empty `us-empty` / card; restore Magpie `#stats.stats.empty > .none`.
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; skip oauth Approve wall.
+- **Cite:** Magpie app.js renderUsage **L17250–55**; app.css **L1020–21**.
+- **chrome-guard:** pass. Push/PR #1. No portable/Vercel.
+
 ## v0.1.170 · RT_GEDIT_DROP_INVENT_SHEET · 2026-10-16 Asia/Shanghai
 
 - **WHY:** Broader invent audit — drop GroupEditor invent `ge-add-sheet` / `ge-full-row`; restore Magpie `editor.rt-gedit` + `.bar`.
