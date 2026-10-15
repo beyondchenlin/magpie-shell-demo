@@ -8,5 +8,5 @@ Consumed plugins/91–103 NOTES 1:1:
 - Tab Cancel → red Remove; commit → empty Installed (no count) + green pill **Think Tags removed** (no Removing… frame)
 - Bun footer **1.4.3**; empty copy + Discover plugins unchanged
 
-Portable: (pending release)
+Portable: https://github.com/beyondchenlin/magpie-shell-demo/releases/download/v0.1.70/Magpie-Shell-Demo-0.1.70-portable.exe
 P1 N/A. Skip Vercel 402.
