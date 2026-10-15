@@ -463,3 +463,76 @@ Not shown, because Cursor has no instructions file: an agent row, its switch, th
 - 非在用套的 Remove 是两次点击，不是对话框：第二次红字 **Remove {name} and its text** + **Cancel**。Cancel 不删。红字删除，toast **{name} removed**。180 点在按钮下方，未进入确认。
 - 仍无 agent 行（Cursor 没有 magpie 认识的用户级指令文件）。未做：真正保存在文件里的套（Your file）、提交改名、Enter 创建、Discard 点遮罩。ask-matt 仍在。MCP / Hooks / RTK 未打开。
 - demo 消费（v0.1.86）：sticky **Not saved yet / Discard / Save**；名字 Escape 撤回；正文 Escape 不丢；折起才改副标题+琥珀标；Discard Cancel/Escape 留字；Ctrl+S toast **Saved — the agents already had it**；空 Add no-op；Keep in a file 内联路径；空在用时 Add 接管；Remove 两步红字；未做 agent 行 / Your file / Enter 创建 / Discard 遮罩
+
+## MCP servers deeper (shots 184–219)
+
+Running magpie pid **560329**. Window still **752×652 at +200+40** (id 27262991, DISPLAY=:6). Not resized. Close (X) was not clicked. **ask-matt** was not touched. RTK Install was not clicked. No Vercel or package action.
+
+06–26 already had the empty list, Discover, new Command/HTTP/SSE, the OAuth-app fields, search, and Discard. This pass is an installed row, health, the tool list, chips, In projects for servers, and a sign-in that is stopped on the vendor wall. Two probe servers were added and then removed. `magpie library` afterwards: MCP servers **none yet**, Skills **ask-matt → cursor**.
+
+The local server was a stdio stub (`/usr/bin/python3` plus a script that answered `initialize` and `tools/list` with `echo_note` and `noop`). Magpie reads one JSON object per line, not `Content-Length`. The first check used the wrong framing and timed out; the script was switched to a line and checked again. The script is not on disk now. The remote probe was `https://mcp.linear.app/mcp`. Linear's **Approve** was not clicked. `~/.cursor/mcp.json` did not exist before this pass; magpie created it, then left `{"mcpServers":{}}` after the last removal, and that empty file was deleted.
+
+Tips that leave the window: **196** is **900×700 from +120+20**. **197** is **980×652 from +200+40**. **202** and **205** are **1000×652 from +180+40**. **213** is **980×700 from +80+20**. **209** is the Linear card only, **640×780 from +680+220** (Chrome was fullscreen; the address bar is not in the shot). **210** is the callback sentence only, **560×80**, with the URL cropped off.
+
+| shot | what |
+|---|---|
+| 184-mcp-empty-paste | MCP tab, still empty. Copy is newer than 06: **Paste a server's JSON from its README, or fill it in.** and **＋ Add a server** inside the dashed card. |
+| 185-mcp-new-paste-hint | **New MCP server**. Head note **or paste its JSON anywhere here** (not in 15). Name placeholder **e.g. github**. Cursor chip starts on. |
+| 186-mcp-chip-off-tip | Chip clicked off before Add. Tip **Give it to Cursor**. |
+| 187-mcp-checking-toast | Add still wrote it to Cursor (chip was on again by Add). Tab **MCP servers · 1**. Row **probe-mcp** **checking…**. Toast **Written to Cursor**. **IN PROJECTS** aside names **.cursor/mcp.json**. |
+| 188-mcp-health-timeout | Health **no answer to initialize** (red). The stub had answered with `Content-Length`, which this check does not read. |
+| 189-mcp-health-timeout-tip | Tip **No answer to initialize in 30 seconds** / **Click to check again**. |
+| 191-mcp-two-tools | After the stub answered one JSON line per message: green **2 tools** and a chevron. |
+| 190-mcp-tool-list | Click opens the list. **echo_note** / **noop**, each with its description and a switch on. Note **Cursor can't turn off single tools: they get every tool of the server.** Foot **Check again**. |
+| 192-mcp-tool-off-toast | echo_note switch off (row grey). Toast **Tools of probe-mcp saved**. |
+| 193-mcp-tool-on-toast | Switch back on. Same toast. `disabledTools` empty afterwards. |
+| 194-mcp-tools-hide-tip | Tip **It started and listed its tools** / **Click to hide them**. |
+| 195-mcp-by-agent | **By agent**. Sheet **MCP servers by agent**. **Every server on or off for one agent…** Cursor **1 of 1 servers**. **Turn all on** is pale (nothing left to give). **Turn all off** and **Done**. |
+| 196-mcp-by-agent-off-tip | Tip **Take every server from Cursor**, past the window's right edge. Not clicked. |
+| 197-mcp-chip-on-tip | Row chip on. Tip **Cursor has it — click to take it away**, past the right edge. |
+| 198-mcp-chip-off-toast | Click. Chip pale. Tip **Give it to Cursor**. Toast **Removed from Cursor**. The "can't turn off single tools" line goes away with the chip. `~/.cursor/mcp.json` became `{"mcpServers":{}}`. |
+| 199-mcp-in-projects-sheet | **Add a project** on the MCP tab. Same path row as Skills: placeholder, **Choose…**, **Add**, **Cancel**. Choose… was not opened. |
+| 200-mcp-project-added-toast | Path typed **/workspace/magpie-probe-project**, **Add**. Toast **magpie-probe-project added — pick the servers it gets**. |
+| 201-mcp-project-row | Open card. Server **probe-mcp**, chip off. Foot: **Written into .cursor/mcp.json of the project…** and **Claude Code asks before it starts a project's servers; Codex reads .codex/config.toml, and Pi .pi/mcp.json, only in a project you trust.** |
+| 202-mcp-project-chip-off-tip | Tip **Give it to Cursor**, past the right edge. |
+| 203-mcp-project-placed-toast | Click. Toast **probe-mcp is in magpie-probe-project for Cursor**. Wrote `.cursor/mcp.json` and a `.gitignore` block. |
+| 205-mcp-project-chip-on-tip | Tip **Cursor has it — click to take it away**. |
+| 204-mcp-project-out-toast | Click off. Toast **probe-mcp is out of magpie-probe-project**. Magpie deleted `.cursor/mcp.json` and the `.gitignore`. Folder is README.txt only. |
+| 206-mcp-project-remove | Trash. **Remove magpie-probe-project?** Same "taken away" body. **No keep checkbox** (nothing placed). |
+| 207-mcp-project-removed-toast | **Remove**. Toast **magpie-probe-project removed**. |
+| 208-mcp-signin-waiting | New HTTP server **probe-oauth**, URL `https://mcp.linear.app/mcp`, **Save and sign in**. Line becomes **Finish signing in in your browser…** and **Cancel**. Toast **Written to Cursor** (chip was still on). Button under the dialog is **Save**, not Add. |
+| 209-mcp-oauth-linear-wall | Chrome, Linear. **Magpie is requesting access.** Name Magpie, website usemagpie.ai, redirect `http://127.0.0.1:41671/callback`, access Read, Write. **Cancel** and **Approve**. Approve was not clicked. |
+| 210-mcp-signin-refused | Linear **Cancel**. Callback page: **The sign-in was refused: access_denied**. Address bar cropped (it carries the state). |
+| 211-mcp-signin-refused-dialog | Dialog still open. **Sign in** again, red **the sign-in was refused (access_denied)**. |
+| 212-mcp-two-servers | Both rows. Head, because there are two: **A→Z**, **Z→A**, **Select**, **Turn all on**, **Turn all off**, **By agent**, and red **Remove all**. probe-oauth health **needs sign-in**. |
+| 213-mcp-needs-signin-tip | Hover on **needs sign-in** shows that phrase only, not the longer "open it to sign in once" sentence. |
+| 214-mcp-turn-all-off-ask | **Turn off all 2 servers?** **Every server is taken out of Cursor. They stay in the library, to turn on again.** Cancel and red **Turn all off**. Escape closed it; nothing was turned off. |
+| 215-mcp-edit-oauth | Row opens the saved server, not "New MCP server". Linear mark, **Sign in**, the refused line, **Remove from the library**, **Copy config…**. |
+| 216-mcp-remove-one-ask | **Remove probe-oauth?** **It will be removed from the library and the agents it was given to.** Cancel and red **Remove**. |
+| 217-mcp-oauth-removed-toast | **Remove**. Toast **probe-oauth is out of the library and the agents it was given to**. |
+| 218-mcp-edit-stdio | probe-mcp's editor. Command line, chip off, **Remove from the library**, **Copy config…**. A tip **Edit probe-mcp** sat on the command label. |
+| 219-mcp-empty-again-toast | Same remove confirm, then **Remove**. Empty card is back. Toast **probe-mcp is out of the library and the agents it was given to**. |
+
+**Health.** A server given to an agent is checked on its own (**checking…**, tip while it runs was not caught; 187 is the word). Failure: **no answer to initialize**, tip **No answer to initialize in 30 seconds** / **Click to check again**. Success: **2 tools**, tip **It started and listed its tools** / **Click to see them** or **Click to hide them**. A remote 401: **needs sign-in**. **Check again** under the list re-ran the check; it finished before a second **checking…** frame. The idle **not checked** / **Click to check it** state was not seen: the first server was on for Cursor, so magpie checked it without a click.
+
+**Tools.** Switches have no hover tip (aria-label only). Off greys the row and toasts **Tools of {name} saved**. Cursor, while it has the server, is told it gets every tool anyway.
+
+**Chips and By agent.** On tip **{agent} has it — click to take it away**. Off tip **Give it to {agent}**. Toasts **Written to Cursor** and **Removed from Cursor**. **By agent** lists **{n} of {m} servers**, **Turn all on** / **Turn all off** (off tip **Take every server from Cursor**). **Turn all off** asks; Escape leaves the servers on for the agent.
+
+**In projects.** The aside is the server one, naming **.cursor/mcp.json**, once any server exists. Add by a typed path (Choose… already shot on Skills). Open row lists each library server and a chip. On writes `.cursor/mcp.json` and a `.gitignore` block; off deletes both. Toasts **{server} is in {name} for {agents}** and **{server} is out of {name}**. Remove with nothing placed has no keep checkbox. Toast **{name} removed**.
+
+**Sign-in.** Deeper than 17: **Finish signing in in your browser…** / **Cancel**, then the vendor wall (Cancel / Approve), then **the sign-in was refused (access_denied)** on the dialog. No account was used. The saved server was removed. Not seen: **Signed in** tag, **Sign out**, **Opening the sign-in…**, or the "couldn't open your browser" link.
+
+`library.json` mcp afterwards is `[]`. Applied cursor is skills **ask-matt** only. No project. Probe folder is README.txt only. No `~/.cursor/mcp.json`. Window still 752×652 at +200+40.
+
+Not opened: **Select**, a sort that changes order, **Remove all**, **Copy config…** (no tip in the hover that was tried), paste-JSON fill, a `${NAME}` that is unset, an SSE row, and the idle **not checked** chip. Hooks and Agents were not opened. Hooks already have 32–46. Agents is still outside this library nest.
+
+## demo 对齐（184–219）· v0.1.87 MCP_NEST_DONE
+- 空列表文案比 06 多一句 **Paste a server's JSON…** 和卡内 **＋ Add a server**。新服务器头注 **or paste its JSON anywhere here**。芯片默认开。
+- 已装行：健康 **checking…** / **no answer to initialize**（tip 30 秒 + Click to check again）/ **2 tools**（tip It started and listed its tools，Click to see/hide them）/ **needs sign-in**。点 **2 tools** 出工具列表、开关、**Check again**。Cursor 在用时注 **can't turn off single tools**。关开关 toast **Tools of {name} saved**。
+- 行芯片：开 tip **Cursor has it — click to take it away**，关 **Give it to Cursor**。toast **Written to Cursor** / **Removed from Cursor**。
+- **By agent**：MCP servers by agent，**1 of 1 servers**，Turn all on 灰、Turn all off tip **Take every server from Cursor**。Turn all off 会问 **Turn off all {n} servers?**；Escape 不关服务器。
+- In projects（MCP）：aside 写 **.cursor/mcp.json**。行展开列出库里的服务器和芯片。开 toast **{server} is in {name} for Cursor**，写入项目 `.cursor/mcp.json` 和 `.gitignore`；关 toast **is out of**，两样都删。未放入时移除无 Keep 勾选。
+- 登录比 17 深：HTTP **Save and sign in** → **Finish signing in in your browser…** + Cancel。Linear 墙 **Magpie is requesting access**（Cancel / Approve）。点了 Linear 的 Cancel，没有点 Approve。对话框红字 **the sign-in was refused (access_denied)**。随后从库里移除。
+- 两个探针服务器都已移除。ask-matt 仍在。`~/.cursor/mcp.json` 本轮之前不存在，空文件已删。未做：Select、排序、Remove all、Copy config 菜单、粘贴 JSON、未检查的 not checked、签到成功。Hooks / Agents 本轮未打开。
+- demo 消费（v0.1.87）：健康 checking/timeout/2 tools/needs-signin；工具开关 toast；By agent + Turn all off Escape 取消；MCP In projects 芯片 place/out；OAuth Finish signing… + Linear 墙 Cancel → access_denied；默认空列表可交互。未做 Select/排序/Remove all/Copy config/not checked/签到成功

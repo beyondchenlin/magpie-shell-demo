@@ -4,7 +4,7 @@ import { useSegThumb } from "../components/SegThumb";
 import { t } from "../i18n";
 
 /**
- * Magpie Library plugin (native-linux/library nests through 148–183 Instructions + projects/Choose/folder).
+ * Magpie Library plugin (native-linux/library nests through 184–219 MCP health/tools/OAuth + Instructions/projects).
  * Feature-gated: Plugins › Built-in › Library.
  * Motion: view-in .24s; modal pop-in .42s; Discard .28s; segs .18s; lib-switch; lib-bob/lib-probe/mk-spin (v0.1.44).
  */
@@ -1323,7 +1323,34 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
   const [newName, setNewName] = useState("");
   const [fileMode, setFileMode] = useState(false);
   const [filePath, setFilePath] = useState("~/.agents/AGENTS.md");
-  const [mcpServers, setMcpServers] = useState<{ id: string; name: string }[]>([]);
+  type McpHealth = "checking" | "timeout" | "tools" | "needs-signin" | "idle";
+  type McpTool = { id: string; name: string; desc: string; on: boolean };
+  type McpServer = {
+    id: string;
+    name: string;
+    transport: Transport;
+    command?: string;
+    url?: string;
+    agents: string[];
+    health: McpHealth;
+    toolsOpen: boolean;
+    tools: McpTool[];
+    /** first auto-check timed out; Check again → tools */
+    checkedOnce?: boolean;
+    oauthRefused?: string;
+  };
+  const [mcpServers, setMcpServers] = useState<McpServer[]>([]);
+  const [mcpByAgentOpen, setMcpByAgentOpen] = useState(false);
+  const [mcpTurnAllOffAsk, setMcpTurnAllOffAsk] = useState(false);
+  const [mcpRemoveAsk, setMcpRemoveAsk] = useState<{ id: string; name: string } | null>(null);
+  const [mcpOauthWall, setMcpOauthWall] = useState(false);
+  const [mcpSignWaiting, setMcpSignWaiting] = useState(false);
+  const [mcpEditId, setMcpEditId] = useState<string | null>(null);
+  /** MCP In projects (separate from Skills projects) */
+  type McpProject = { dir: string; name: string; open: boolean; placed: Record<string, string[]> };
+  const [mcpProjects, setMcpProjects] = useState<McpProject[]>([]);
+  const [mcpAddingProject, setMcpAddingProject] = useState<{ dir: string; busy?: boolean } | null>(null);
+  const [mcpProjectRemove, setMcpProjectRemove] = useState<{ dir: string; name: string } | null>(null);
   const [mcpQ, setMcpQ] = useState("");
   const [mcpEditor, setMcpEditor] = useState<McpDraft | null>(null);
   const [mcpSnap, setMcpSnap] = useState("");
@@ -1415,18 +1442,86 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
     const d = emptyMcp();
     setMcpEditor(d);
     setMcpSnap(JSON.stringify(d));
+    setMcpEditId(null);
+    setMcpSignWaiting(false);
     setDiscardOpen(false);
   };
   const tryCloseMcp = () => {
+    if (mcpSignWaiting) return; // finishing sign-in — Cancel on waiting line or wall
     if (mcpDirty) setDiscardOpen(true);
-    else setMcpEditor(null);
+    else {
+      setMcpEditor(null);
+      setMcpEditId(null);
+      setMcpSignWaiting(false);
+    }
   };
-  const saveMcp = () => {
+  const PROBE_TOOLS: McpTool[] = [
+    { id: "echo_note", name: "echo_note", desc: "Echo a short note. Probe only, not a real tool.", on: true },
+    { id: "noop", name: "noop", desc: "Do nothing. Probe only.", on: true },
+  ];
+
+  const runMcpHealth = (id: string, forceTools?: boolean) => {
+    setMcpServers((list) =>
+      list.map((x) => (x.id === id ? { ...x, health: "checking" as McpHealth } : x)),
+    );
+    window.setTimeout(() => {
+      setMcpServers((list) =>
+        list.map((x) => {
+          if (x.id !== id) return x;
+          if (x.transport === "http" || x.transport === "sse") {
+            return { ...x, health: "needs-signin" as McpHealth, checkedOnce: true };
+          }
+          // stdio: first check times out; Check again / force → 2 tools
+          if (!forceTools && !x.checkedOnce) {
+            return { ...x, health: "timeout" as McpHealth, checkedOnce: true };
+          }
+          return {
+            ...x,
+            health: "tools" as McpHealth,
+            tools: x.tools.length ? x.tools : PROBE_TOOLS.map((t) => ({ ...t })),
+            checkedOnce: true,
+          };
+        }),
+      );
+    }, forceTools ? 480 : 900);
+  };
+
+  const saveMcp = (opts?: { signIn?: boolean }) => {
     if (!mcpEditor) return;
     const name = mcpEditor.name.trim() || "custom-server";
-    setMcpServers((s) => [...s, { id: `mcp-${Date.now()}`, name }]);
+    const agents = [...mcpEditor.agents];
+    const id = mcpEditId || `mcp-${Date.now()}`;
+    const next: McpServer = {
+      id,
+      name,
+      transport: mcpEditor.transport,
+      command: mcpEditor.transport === "stdio" ? mcpEditor.command.trim() || undefined : undefined,
+      url: mcpEditor.transport !== "stdio" ? mcpEditor.url.trim() || undefined : undefined,
+      agents,
+      health: agents.length ? "checking" : "idle",
+      toolsOpen: false,
+      tools: [],
+      checkedOnce: false,
+      oauthRefused: opts?.signIn ? undefined : mcpEditor.url.includes("linear") ? undefined : undefined,
+    };
+    if (mcpEditId) {
+      setMcpServers((list) => list.map((x) => (x.id === mcpEditId ? { ...next, tools: x.tools, health: x.health, checkedOnce: x.checkedOnce, oauthRefused: x.oauthRefused } : x)));
+    } else {
+      setMcpServers((list) => [...list, next]);
+    }
+    if (agents.includes("cursor")) onStatus?.(t("Written to Cursor"), "ok");
+    if (opts?.signIn) {
+      setMcpEditId(id);
+      setMcpSignWaiting(true);
+      setMcpOauthWall(true);
+      setMcpServers((list) =>
+        list.map((x) => (x.id === id ? { ...x, health: "needs-signin" as McpHealth, checkedOnce: true } : x)),
+      );
+      return;
+    }
     setMcpEditor(null);
-    onStatus?.(t("{name} added", { name }), "ok");
+    setMcpEditId(null);
+    if (agents.length) runMcpHealth(id);
   };
   const openHookEditor = () => {
     const d = emptyHook();
@@ -1549,10 +1644,16 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
         e.stopPropagation();
         setInstDiscardOpen(false);
       }
+      if (e.key === "Escape" && mcpTurnAllOffAsk) {
+        // NOTES 214: Escape closes ask; servers stay on for the agent
+        e.preventDefault();
+        e.stopPropagation();
+        setMcpTurnAllOffAsk(false);
+      }
     };
     window.addEventListener("keydown", onKey, true);
     return () => window.removeEventListener("keydown", onKey, true);
-  }, [instDirty, tab, instDiscardOpen, onStatus]);
+  }, [instDirty, tab, instDiscardOpen, mcpTurnAllOffAsk, onStatus]);
 
   const openSet = sets.find((s) => s.id === openId);
   const mcpHits = useMemo(() => {
@@ -2118,7 +2219,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                   lineHeight: 1.45,
                 }}
               >
-                <p style={{ margin: "0 0 12px" }}>{t("No servers in the library yet. Paste a server's JSON from its README, or fill it in.")}</p>
+                <p style={{ margin: "0 0 12px" }}>{t("Paste a server's JSON from its README, or fill it in.")}</p>
                 <button type="button" className="rt-gadd" style={{ margin: "0 auto" }} onClick={openMcpEditor}>
                   <svg viewBox="0 0 16 16" width={11} height={11} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden>
                     <path d="M8 3.5v9M3.5 8h9" />
@@ -2128,18 +2229,329 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
               </div>
             ) : (
               <div style={{ marginBottom: 16 }}>
-                {mcpServers.map((s) => (
-                  <div key={s.id} className="row" style={{ display: "flex", alignItems: "center", gap: 8, padding: "8px 4px", borderBottom: "1px solid var(--line)" }}>
-                    <b style={{ fontSize: 13 }}>{s.name}</b>
-                    <span className="grow" />
-                    <button type="button" className="text" onClick={() => setMcpServers((list) => list.filter((x) => x.id !== s.id))}>
-                      {t("Remove")}
-                    </button>
-                  </div>
-                ))}
-                <button type="button" className="rt-gadd" style={{ marginTop: 8 }} onClick={openMcpEditor}>
+                <div className="row-head" style={{ marginBottom: 8, display: "flex", alignItems: "center", gap: 8 }}>
+                  <span className="label" style={{ letterSpacing: ".04em", fontSize: 11, color: "var(--muted)", fontWeight: 600 }}>{t("In the library")}</span>
+                  <span className="grow" />
+                  <button type="button" className="text action lib-updall" onClick={() => setMcpByAgentOpen(true)}>{t("By agent")}</button>
+                </div>
+                {mcpServers.map((s) => {
+                  const hasCursor = s.agents.includes("cursor");
+                  const healthTitle =
+                    s.health === "timeout"
+                      ? t("No answer to initialize in 30 seconds") + "\n" + t("Click to check again")
+                      : s.health === "tools"
+                        ? t("It started and listed its tools") + "\n" + (s.toolsOpen ? t("Click to hide them") : t("Click to see them"))
+                        : s.health === "needs-signin"
+                          ? t("needs sign-in")
+                          : undefined;
+                  const healthLabel =
+                    s.health === "checking"
+                      ? t("checking…")
+                      : s.health === "timeout"
+                        ? t("no answer to initialize")
+                        : s.health === "tools"
+                          ? t("{n} tools", { n: s.tools.filter((x) => x.on).length || s.tools.length })
+                          : s.health === "needs-signin"
+                            ? t("needs sign-in")
+                            : null;
+                  const healthColor =
+                    s.health === "timeout" || s.health === "needs-signin"
+                      ? "var(--red)"
+                      : s.health === "tools"
+                        ? "var(--green)"
+                        : "var(--muted)";
+                  return (
+                    <div
+                      key={s.id}
+                      className="card"
+                      style={{ border: "1px solid var(--line)", borderRadius: 12, padding: "10px 12px", marginBottom: 8 }}
+                    >
+                      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                        <span aria-hidden style={{ fontSize: 14, color: "var(--muted)" }}>{s.transport === "stdio" ? ">_ " : "🌐"}</span>
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+                            <b
+                              style={{ fontSize: 13, cursor: "pointer" }}
+                              onClick={() => {
+                                // open edit
+                                setMcpEditId(s.id);
+                                const d = emptyMcp();
+                                d.name = s.name;
+                                d.transport = s.transport;
+                                d.command = s.command || "";
+                                d.url = s.url || "";
+                                d.agents = [...s.agents];
+                                setMcpEditor(d);
+                                setMcpSnap(JSON.stringify(d));
+                                setMcpSignWaiting(false);
+                                if (s.oauthRefused) setMcpSignWaiting(false);
+                              }}
+                            >
+                              {s.name}
+                            </b>
+                            {healthLabel ? (
+                              <button
+                                type="button"
+                                className="text"
+                                title={healthTitle}
+                                onClick={() => {
+                                  if (s.health === "tools") {
+                                    setMcpServers((list) => list.map((x) => (x.id === s.id ? { ...x, toolsOpen: !x.toolsOpen } : x)));
+                                  } else if (s.health === "timeout" || s.health === "idle" || s.health === "needs-signin") {
+                                    runMcpHealth(s.id, s.health === "timeout");
+                                  }
+                                }}
+                                style={{
+                                  display: "inline-flex",
+                                  alignItems: "center",
+                                  gap: 5,
+                                  height: 22,
+                                  padding: "0 2px",
+                                  border: 0,
+                                  background: "transparent",
+                                  color: healthColor,
+                                  font: "inherit",
+                                  fontSize: 12,
+                                  cursor: "pointer",
+                                }}
+                              >
+                                <span
+                                  style={{
+                                    width: 7,
+                                    height: 7,
+                                    borderRadius: "50%",
+                                    background: healthColor,
+                                    opacity: s.health === "checking" ? 0.55 : 1,
+                                    animation: s.health === "checking" ? "pm-pulse 1s ease-in-out infinite" : undefined,
+                                  }}
+                                />
+                                {healthLabel}
+                                {s.health === "tools" ? (
+                                  <span style={{ display: "inline-block", transform: s.toolsOpen ? "rotate(-90deg)" : "rotate(90deg)", transition: "transform .15s" }}>›</span>
+                                ) : null}
+                              </button>
+                            ) : null}
+                          </div>
+                          <div style={{ fontSize: 12, color: "var(--muted)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                            {s.transport === "stdio" ? s.command || "—" : s.url || "—"}
+                          </div>
+                        </div>
+                        <LibChip
+                          iconOnly
+                          on={hasCursor}
+                          label="Cursor"
+                          title={
+                            hasCursor
+                              ? t("{agent} has it — click to take it away", { agent: "Cursor" })
+                              : t("Give it to {agent}", { agent: "Cursor" })
+                          }
+                          onClick={() => {
+                            setMcpServers((list) =>
+                              list.map((x) => {
+                                if (x.id !== s.id) return x;
+                                const on = x.agents.includes("cursor");
+                                const agents = on ? x.agents.filter((a) => a !== "cursor") : [...x.agents, "cursor"];
+                                return { ...x, agents, toolsOpen: on ? false : x.toolsOpen };
+                              }),
+                            );
+                            onStatus?.(hasCursor ? t("Removed from Cursor") : t("Written to Cursor"), "ok");
+                            if (!hasCursor) runMcpHealth(s.id, true);
+                          }}
+                        />
+                      </div>
+                      {s.toolsOpen && s.health === "tools" ? (
+                        <div
+                          style={{
+                            marginTop: 10,
+                            padding: "10px 12px",
+                            borderRadius: 10,
+                            border: "1px solid var(--line)",
+                            background: "var(--card-2, var(--bg))",
+                          }}
+                        >
+                          {s.tools.map((tool) => (
+                            <div
+                              key={tool.id}
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: 10,
+                                padding: "8px 0",
+                                borderBottom: "1px solid var(--line)",
+                                opacity: tool.on ? 1 : 0.55,
+                              }}
+                            >
+                              <div style={{ flex: 1, minWidth: 0 }}>
+                                <b style={{ fontSize: 13 }}>{tool.name}</b>
+                                <div style={{ fontSize: 12, color: "var(--muted)" }}>{tool.desc}</div>
+                              </div>
+                              <button
+                                type="button"
+                                className={`lib-switch${tool.on ? " on" : ""}`}
+                                role="switch"
+                                aria-checked={tool.on}
+                                aria-label={tool.name}
+                                onClick={() => {
+                                  setMcpServers((list) =>
+                                    list.map((x) =>
+                                      x.id !== s.id
+                                        ? x
+                                        : {
+                                            ...x,
+                                            tools: x.tools.map((tt) => (tt.id === tool.id ? { ...tt, on: !tt.on } : tt)),
+                                          },
+                                    ),
+                                  );
+                                  onStatus?.(t("Tools of {name} saved", { name: s.name }), "ok");
+                                }}
+                              >
+                                <i />
+                              </button>
+                            </div>
+                          ))}
+                          {hasCursor ? (
+                            <p style={{ margin: "8px 0 0", fontSize: 12, color: "var(--muted)", lineHeight: 1.4 }}>
+                              {t("Cursor can't turn off single tools: they get every tool of the server.")}
+                            </p>
+                          ) : null}
+                          <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 8 }}>
+                            <button type="button" className="text" onClick={() => runMcpHealth(s.id, true)}>
+                              {t("Check again")}
+                            </button>
+                          </div>
+                        </div>
+                      ) : null}
+                    </div>
+                  );
+                })}
+                <button type="button" className="rt-gadd" style={{ marginTop: 4 }} onClick={openMcpEditor}>
+                  <svg viewBox="0 0 16 16" width={11} height={11} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden>
+                    <path d="M8 3.5v9M3.5 8h9" />
+                  </svg>
                   <span>{t("＋ Add server")}</span>
                 </button>
+
+                {/* MCP In projects */}
+                <div style={{ marginTop: 18 }}>
+                  <div className="row-head" style={{ marginBottom: 6, display: "flex", alignItems: "center", gap: 8 }}>
+                    <span className="label" style={{ letterSpacing: ".04em", fontSize: 11, color: "var(--muted)", fontWeight: 600 }}>{t("In projects")}</span>
+                    <span className="grow" />
+                    {!mcpAddingProject ? (
+                      <button type="button" className="text action lib-updall" onClick={() => setMcpAddingProject({ dir: "" })}>
+                        {t("Add a project")}
+                      </button>
+                    ) : null}
+                  </div>
+                  {mcpAddingProject ? (
+                    <div className="list lib-card" style={{ padding: "10px 8px", border: "1px solid var(--line)", borderRadius: 12, marginBottom: 8 }}>
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center" }}>
+                        <span aria-hidden>📁</span>
+                        <input
+                          type="text"
+                          spellCheck={false}
+                          placeholder={t("The project's folder, like ~/code/app")}
+                          value={mcpAddingProject.dir}
+                          disabled={!!mcpAddingProject.busy}
+                          onChange={(e) => setMcpAddingProject({ ...mcpAddingProject, dir: e.target.value })}
+                          onKeyDown={(e) => {
+                            e.stopPropagation();
+                            if (e.key === "Escape") setMcpAddingProject(null);
+                          }}
+                          style={{ flex: "1 1 180px", minWidth: 0 }}
+                        />
+                        <button type="button" className="text" disabled>{t("Choose…")}</button>
+                        <button
+                          type="button"
+                          className="text action"
+                          disabled={!!mcpAddingProject.busy}
+                          onClick={() => {
+                            const dir = mcpAddingProject.dir.trim();
+                            if (!dir || mcpAddingProject.busy) return;
+                            setMcpAddingProject({ ...mcpAddingProject, busy: true });
+                            window.setTimeout(() => {
+                              const name = dir.split("/").filter(Boolean).pop() || dir;
+                              setMcpProjects((list) =>
+                                list.some((x) => x.dir === dir)
+                                  ? list.map((x) => (x.dir === dir ? { ...x, open: true } : x))
+                                  : [...list, { dir, name, open: true, placed: {} }],
+                              );
+                              setMcpAddingProject(null);
+                              onStatus?.(t("{name} added — pick the servers it gets", { name }), "ok");
+                            }, 350);
+                          }}
+                        >
+                          {t("Add")}
+                        </button>
+                        <button type="button" className="text" onClick={() => setMcpAddingProject(null)}>{t("Cancel")}</button>
+                      </div>
+                    </div>
+                  ) : null}
+                  {mcpProjects.length ? (
+                    mcpProjects.map((pr) => (
+                      <div key={pr.dir} className="card" style={{ border: "1px solid var(--line)", borderRadius: 12, padding: "10px 12px", marginBottom: 8 }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                          <button type="button" className="text" onClick={() => setMcpProjects((list) => list.map((x) => (x.dir === pr.dir ? { ...x, open: !x.open } : x)))} style={{ border: 0, background: "transparent", padding: 0, font: "inherit", textAlign: "left", flex: 1, cursor: "pointer" }}>
+                            <b style={{ fontSize: 13 }}>{pr.name}</b>
+                            <div style={{ fontSize: 12, color: "var(--muted)" }}>{pr.dir}</div>
+                          </button>
+                          <button
+                            type="button"
+                            className="text"
+                            title={t("Remove the project")}
+                            onClick={() => setMcpProjectRemove({ dir: pr.dir, name: pr.name })}
+                            style={{ width: 28, height: 28, padding: 0 }}
+                          >
+                            🗑
+                          </button>
+                        </div>
+                        {pr.open ? (
+                          <div style={{ marginTop: 10 }}>
+                            {mcpServers.map((srv) => {
+                              const on = (pr.placed[srv.id] || []).includes("cursor");
+                              return (
+                                <div key={srv.id} style={{ display: "flex", alignItems: "center", gap: 8, padding: "6px 0", borderTop: "1px solid var(--line)" }}>
+                                  <b style={{ flex: 1, fontSize: 13 }}>{srv.name}</b>
+                                  <LibChip
+                                    iconOnly
+                                    on={on}
+                                    label="Cursor"
+                                    title={on ? t("{agent} has it — click to take it away", { agent: "Cursor" }) : t("Give it to {agent}", { agent: "Cursor" })}
+                                    onClick={() => {
+                                      setMcpProjects((list) =>
+                                        list.map((x) => {
+                                          if (x.dir !== pr.dir) return x;
+                                          const cur = x.placed[srv.id] || [];
+                                          const has = cur.includes("cursor");
+                                          const placed = { ...x.placed };
+                                          if (has) delete placed[srv.id];
+                                          else placed[srv.id] = ["cursor"];
+                                          return { ...x, placed };
+                                        }),
+                                      );
+                                      onStatus?.(
+                                        on
+                                          ? t("{server} is out of {name}", { server: srv.name, name: pr.name })
+                                          : t("{server} is in {name} for {agent}", { server: srv.name, name: pr.name, agent: "Cursor" }),
+                                        "ok",
+                                      );
+                                    }}
+                                  />
+                                </div>
+                              );
+                            })}
+                            <p style={{ margin: "8px 0 0", fontSize: 12, color: "var(--muted)", lineHeight: 1.45 }}>
+                              {t("Written into .cursor/mcp.json of the project, leaving the rest of each file as it is. Claude Code asks before it starts a project's servers; Codex reads .codex/config.toml, and Pi .pi/mcp.json, only in a project you trust.")}
+                            </p>
+                          </div>
+                        ) : null}
+                      </div>
+                    ))
+                  ) : !mcpAddingProject ? (
+                    <p style={{ margin: 0, fontSize: 12.5, color: "var(--muted)", lineHeight: 1.45 }}>
+                      {t("Give a project's agents some of these servers as the project's own: magpie writes them into its .cursor/mcp.json, leaving the rest of each file as it is.")}
+                    </p>
+                  ) : null}
+                </div>
               </div>
             )}
 
@@ -2180,8 +2592,22 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                             onStatus?.(t("Already in the library"), "warn");
                             return;
                           }
-                          setMcpServers((s) => [...s, { id: c.id, name: c.name }]);
-                          onStatus?.(t("{name} added", { name: c.name }), "ok");
+                          const id = c.id;
+                          setMcpServers((s) => [
+                            ...s,
+                            {
+                              id,
+                              name: c.name,
+                              transport: "stdio" as Transport,
+                              command: `npx -y ${c.id}`,
+                              agents: ["cursor"],
+                              health: "checking" as McpHealth,
+                              toolsOpen: false,
+                              tools: [],
+                            },
+                          ]);
+                          onStatus?.(t("Written to Cursor"), "ok");
+                          window.setTimeout(() => runMcpHealth(id, true), 0);
                         }}
                       >
                         {c.addDots ? t("Add…") : t("Add")}
@@ -3108,7 +3534,17 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
               const names = found.filter((f) => f.name).map((f) => f.name);
               setMcpServers((s) => [
                 ...s,
-                ...names.filter((n) => !s.some((x) => x.name === n)).map((n) => ({ id: `mcp-${n}`, name: n })),
+                ...names
+                  .filter((n) => !s.some((x) => x.name === n))
+                  .map((n) => ({
+                    id: `mcp-${n}`,
+                    name: n,
+                    transport: "stdio" as Transport,
+                    agents: ["cursor"] as string[],
+                    health: "checking" as McpHealth,
+                    toolsOpen: false,
+                    tools: [] as McpTool[],
+                  })),
               ]);
               setMcpEditor(null);
               onStatus?.(t("Added {n} servers", { n: names.length }), "ok");
@@ -3119,7 +3555,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
             <svg viewBox="0 0 16 16" width={16} height={16} fill="none" stroke="currentColor" strokeWidth="1.3" aria-hidden>
               <path d={mcpEditor.transport === "stdio" ? CMD_PATH : WEB_PATH} />
             </svg>
-            <b style={{ fontSize: 14 }}>{t("New MCP server")}</b>
+            <b style={{ fontSize: 14 }}>{mcpEditId ? t("Edit {name}", { name: mcpEditor.name || "server" }) : t("New MCP server")}</b>
             <span className="grow" />
             <span style={{ fontSize: 12, color: "var(--muted)" }}>{t("or paste its JSON anywhere here")}</span>
           </div>
@@ -3217,7 +3653,34 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                   </div>
                   <div style={{ marginBottom: 12 }}>
                     <span style={{ fontSize: 12, fontWeight: 500, display: "block", marginBottom: 6 }}>{t("Sign-in")}</span>
-                    <button type="button" className="text action" onClick={() => onStatus?.(t("Demo: sign-in was not started"), "ok")}>{t("Save and sign in")}</button>
+                    {mcpSignWaiting ? (
+                      <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
+                        <span style={{ fontSize: 13, color: "var(--fg-2)" }}>{t("Finish signing in in your browser…")}</span>
+                        <button
+                          type="button"
+                          className="text"
+                          onClick={() => {
+                            setMcpSignWaiting(false);
+                            setMcpOauthWall(false);
+                          }}
+                        >
+                          {t("Cancel")}
+                        </button>
+                      </div>
+                    ) : (
+                      <button
+                        type="button"
+                        className="text action"
+                        onClick={() => saveMcp({ signIn: true })}
+                      >
+                        {t(mcpEditId ? "Sign in" : "Save and sign in")}
+                      </button>
+                    )}
+                    {mcpEditId && mcpServers.find((x) => x.id === mcpEditId)?.oauthRefused ? (
+                      <div style={{ marginTop: 6, fontSize: 12.5, color: "var(--red)" }}>
+                        {t("the sign-in was refused (access_denied)")}
+                      </div>
+                    ) : null}
                     <small style={{ display: "block", marginTop: 4, color: "var(--muted)", fontSize: 11.5 }}>{t("For a server that asks you to sign in (OAuth): magpie signs in once, and every agent given it uses that sign-in")}</small>
                   </div>
                 </>
@@ -3232,6 +3695,11 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                   key={a.id}
                   on={mcpEditor.agents.includes(a.id)}
                   label={a.name}
+                  title={
+                    mcpEditor.agents.includes(a.id)
+                      ? t("{agent} has it — click to take it away", { agent: a.name })
+                      : t("Give it to {agent}", { agent: a.name })
+                  }
                   onClick={() => {
                     const agents = mcpEditor.agents.includes(a.id) ? mcpEditor.agents.filter((x) => x !== a.id) : [...mcpEditor.agents, a.id];
                     setMcpEditor({ ...mcpEditor, agents });
@@ -3240,10 +3708,32 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
               ))}
             </div>
           </div>
+          {mcpEditId ? (
+            <div style={{ display: "flex", gap: 8, marginBottom: 10, flexWrap: "wrap" }}>
+              <button
+                type="button"
+                className="text"
+                style={{ color: "var(--red)" }}
+                onClick={() => {
+                  const s = mcpServers.find((x) => x.id === mcpEditId);
+                  if (s) setMcpRemoveAsk({ id: s.id, name: s.name });
+                }}
+              >
+                {t("Remove from the library")}
+              </button>
+            </div>
+          ) : null}
           <div className="bar" style={{ display: "flex", gap: 8 }}>
             <span className="grow" />
-            <button type="button" className="text" onClick={tryCloseMcp}>{t("Cancel")}</button>
-            <button type="button" className="text primary" onClick={saveMcp}>{t("Add")}</button>
+            <button type="button" className="text" onClick={tryCloseMcp} disabled={mcpSignWaiting}>{t("Cancel")}</button>
+            <button
+              type="button"
+              className="text primary"
+              disabled={mcpSignWaiting}
+              onClick={() => saveMcp()}
+            >
+              {t(mcpEditId || mcpSignWaiting ? "Save" : "Add")}
+            </button>
           </div>
         </LibModal>
       ) : null}
@@ -3276,7 +3766,20 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
               type="button"
               className="text primary"
               onClick={() => {
-                if (!mcpServers.some((s) => s.id === "magpie-image")) setMcpServers((s) => [...s, { id: "magpie-image", name: "Magpie Image" }]);
+                if (!mcpServers.some((s) => s.id === "magpie-image"))
+                  setMcpServers((s) => [
+                    ...s,
+                    {
+                      id: "magpie-image",
+                      name: "Magpie Image",
+                      transport: "stdio",
+                      command: "magpie-image",
+                      agents: imageAgents.length ? [...imageAgents] : [],
+                      health: imageAgents.length ? "checking" : "idle",
+                      toolsOpen: false,
+                      tools: [],
+                    },
+                  ]);
                 setImageSheet(false);
                 onStatus?.(t("{name} added", { name: "Magpie Image" }), "ok");
               }}
@@ -3726,6 +4229,211 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
               }}
             >
               {t("Discard")}
+            </button>
+          </div>
+        </LibModal>
+      ) : null}
+
+
+      {mcpByAgentOpen ? (
+        <LibModal onBg={() => setMcpByAgentOpen(false)}>
+          <div className="ehead" style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+            <b style={{ fontSize: 15 }}>{t("MCP servers by agent")}</b>
+          </div>
+          <p style={{ margin: "0 0 12px", fontSize: 13, color: "var(--fg-2)", lineHeight: 1.45 }}>
+            {t("Every server on or off for one agent; the others keep theirs. Turned off, they stay in the library.")}
+          </p>
+          <div className="list" style={{ marginBottom: 12 }}>
+            <div className="row" style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 4px", borderBottom: "1px solid var(--line)" }}>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontWeight: 500, fontSize: 13 }}>Cursor</div>
+                <div style={{ fontSize: 12, color: "var(--muted)" }}>
+                  {t("{n} of {m} servers", {
+                    n: mcpServers.filter((s) => s.agents.includes("cursor")).length,
+                    m: mcpServers.length,
+                  })}
+                </div>
+              </div>
+              <button
+                type="button"
+                className="text action"
+                disabled={mcpServers.every((s) => s.agents.includes("cursor"))}
+                title={t("Give {agent} every server", { agent: "Cursor" })}
+                onClick={() => {
+                  setMcpServers((list) => list.map((x) => ({ ...x, agents: x.agents.includes("cursor") ? x.agents : [...x.agents, "cursor"] })));
+                  onStatus?.(t("Written to Cursor"), "ok");
+                }}
+              >
+                {t("Turn all on")}
+              </button>
+              <button
+                type="button"
+                className="text action"
+                title={t("Take every server from Cursor")}
+                onClick={() => setMcpTurnAllOffAsk(true)}
+              >
+                {t("Turn all off")}
+              </button>
+            </div>
+          </div>
+          <div className="bar" style={{ display: "flex", gap: 8 }}>
+            <span className="grow" />
+            <button type="button" className="text primary" onClick={() => setMcpByAgentOpen(false)}>{t("Done")}</button>
+          </div>
+        </LibModal>
+      ) : null}
+
+      {mcpTurnAllOffAsk ? (
+        <LibModal
+          onBg={() => setMcpTurnAllOffAsk(false)}
+          sm
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+            <span aria-hidden>{">_"}</span>
+            <b style={{ fontSize: 15 }}>{t("Turn off all {n} servers?", { n: mcpServers.length })}</b>
+          </div>
+          <p style={{ margin: "0 0 14px", fontSize: 13, color: "var(--fg-2)", lineHeight: 1.45 }}>
+            {t("Every server is taken out of Cursor. They stay in the library, to turn on again.")}
+          </p>
+          <div className="bar" style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
+            <button type="button" className="text" onClick={() => setMcpTurnAllOffAsk(false)}>{t("Cancel")}</button>
+            <button
+              type="button"
+              className="text"
+              style={{ background: "var(--red)", color: "#fff", borderColor: "transparent" }}
+              onClick={() => {
+                setMcpServers((list) => list.map((x) => ({ ...x, agents: x.agents.filter((a) => a !== "cursor"), toolsOpen: false })));
+                setMcpTurnAllOffAsk(false);
+                onStatus?.(t("Removed from Cursor"), "ok");
+              }}
+            >
+              {t("Turn all off")}
+            </button>
+          </div>
+        </LibModal>
+      ) : null}
+
+      {mcpOauthWall ? (
+        <div
+          className="modal open"
+          role="dialog"
+          aria-modal
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 120,
+            display: "grid",
+            placeItems: "center",
+            background: "rgba(20,22,30,.45)",
+            animation: "fade-in .18s var(--ease)",
+          }}
+        >
+          <div
+            className="dialog"
+            style={{
+              width: "min(420px, 92vw)",
+              background: "#fff",
+              borderRadius: 12,
+              padding: "20px 22px 16px",
+              boxShadow: "0 18px 48px rgba(20,22,30,.28)",
+              animation: "pop-in .42s cubic-bezier(.16,1,.3,1)",
+            }}
+          >
+            <b style={{ display: "block", fontSize: 16, marginBottom: 12, textAlign: "center" }}>{t("Magpie is requesting access")}</b>
+            <div style={{ border: "1px solid #e5e5e5", borderRadius: 8, padding: "10px 12px", fontSize: 13, marginBottom: 12, lineHeight: 1.6 }}>
+              <div><b>{t("Name")}</b> · Magpie</div>
+              <div><b>{t("Website")}</b> · https://usemagpie.ai</div>
+              <div><b>Redirect</b> · http://127.0.0.1:41671/callback</div>
+              <div><b>{t("Access")}</b> · Read, Write</div>
+            </div>
+            <p style={{ margin: "0 0 14px", fontSize: 12.5, color: "#555", lineHeight: 1.45 }}>
+              {t("This MCP client is requesting access to your Linear workspace. Approve was not used in the nest — Cancel refuses with access_denied.")}
+            </p>
+            <div style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
+              <button
+                type="button"
+                className="text"
+                onClick={() => {
+                  setMcpOauthWall(false);
+                  setMcpSignWaiting(false);
+                  const name = mcpEditor?.name.trim() || "";
+                  const hit = mcpServers.find((x) => x.id === mcpEditId || x.name === name);
+                  if (hit && !mcpEditId) setMcpEditId(hit.id);
+                  setMcpServers((list) =>
+                    list.map((x) =>
+                      x.id === mcpEditId || x.name === name
+                        ? { ...x, oauthRefused: "access_denied", health: "needs-signin" as McpHealth }
+                        : x,
+                    ),
+                  );
+                  onStatus?.(t("the sign-in was refused (access_denied)"), "err");
+                }}
+                style={{ height: 32, padding: "0 14px", border: "1px solid #ccc", borderRadius: 6, background: "#fff" }}
+              >
+                {t("Cancel")}
+              </button>
+              <button
+                type="button"
+                className="text"
+                disabled
+                title={t("Approve was not clicked in the nest")}
+                style={{ height: 32, padding: "0 14px", borderRadius: 6, background: "#5b4cdb", color: "#fff", opacity: 0.55 }}
+              >
+                {t("Approve")}
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
+
+      {mcpRemoveAsk ? (
+        <LibModal onBg={() => setMcpRemoveAsk(null)} sm>
+          <b style={{ display: "block", fontSize: 15, marginBottom: 8 }}>{t("Remove {name}?", { name: mcpRemoveAsk.name })}</b>
+          <p style={{ margin: "0 0 14px", fontSize: 13, color: "var(--fg-2)", lineHeight: 1.45 }}>
+            {t("It will be removed from the library and the agents it was given to.")}
+          </p>
+          <div className="bar" style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
+            <button type="button" className="text" onClick={() => setMcpRemoveAsk(null)}>{t("Cancel")}</button>
+            <button
+              type="button"
+              className="text"
+              style={{ background: "var(--red)", color: "#fff", borderColor: "transparent" }}
+              onClick={() => {
+                const { id, name } = mcpRemoveAsk;
+                setMcpServers((list) => list.filter((x) => x.id !== id));
+                setMcpRemoveAsk(null);
+                setMcpEditor(null);
+                setMcpEditId(null);
+                setMcpSignWaiting(false);
+                onStatus?.(t("{name} is out of the library and the agents it was given to", { name }), "ok");
+              }}
+            >
+              {t("Remove")}
+            </button>
+          </div>
+        </LibModal>
+      ) : null}
+
+      {mcpProjectRemove ? (
+        <LibModal onBg={() => setMcpProjectRemove(null)} sm>
+          <b style={{ display: "block", fontSize: 15, marginBottom: 8 }}>{t("Remove {name}?", { name: mcpProjectRemove.name })}</b>
+          <p style={{ margin: "0 0 14px", fontSize: 13, color: "var(--fg-2)", lineHeight: 1.45 }}>
+            {t("The skills and MCP servers magpie put in it are taken away, with their lines in its .gitignore. Nothing else in the folder is touched.")}
+          </p>
+          <div className="bar" style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
+            <button type="button" className="text" onClick={() => setMcpProjectRemove(null)}>{t("Cancel")}</button>
+            <button
+              type="button"
+              className="text"
+              style={{ background: "var(--red)", color: "#fff", borderColor: "transparent" }}
+              onClick={() => {
+                const { dir, name } = mcpProjectRemove;
+                setMcpProjects((list) => list.filter((x) => x.dir !== dir));
+                setMcpProjectRemove(null);
+                onStatus?.(t("{name} removed", { name }), "ok");
+              }}
+            >
+              {t("Remove")}
             </button>
           </div>
         </LibModal>
