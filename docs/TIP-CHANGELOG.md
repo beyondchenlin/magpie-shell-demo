@@ -1,3 +1,16 @@
+## v0.1.133 · GW_KEYS_TILE_SETTINGS_OSS_FIDELITY · 2026-10-15 Asia/Shanghai
+- **WHY:** Continue Magpie 1:1 after 0.1.132 — delete tip invent Gateway keys PrefRow + Providers `.tile` / Settings pref gap / badge.off invents that covered Magpie OSS.
+- **CAUSE:** Demo painted `#gatewayKeys` as invent `list prefs` + `row pref` instead of Magpie `accts`/`acc`; shell-patch re-owned `.tile` (gap 8 / width 100%) against Magpie app.css; invent Settings `.row.pref` gap 10/16 fought Magpie gap:14px; invent `.badge.off` redeclared Magpie badge tokens.
+- **Gold:**
+  - Magpie `plugins/gateway/keys.js` **171–192** `div.accts` → `div.acc` (+ tick / rename / plan.mono / grow / copy / Rotate / Remove); empty `.none`
+  - Magpie `plugins/gateway/client.js` **661–666** `#gatewayKeys` bare section (no `list prefs`)
+  - Magpie `app.css` **2318–2370** `.accts`/`.acc`; **2463–2464** `#gatewayKeys .acc`
+  - Magpie `app.css` **2676–2682** `.tile` gap:10px / min-width:0 / transition; `.tile .ic` 18×18
+  - Magpie `app.css` **3052** `.row.pref` gap:14px; **3026** set-head wrap; **2261/2266** `.badge` / `.badge.off`
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; set-head/ptabs wrap nest bridge; React `.tile img.ic-img` fill bridge; Settings name/val min-width framed-web bridges.
+- **WHAT changed:** `GatewayView.tsx` keys → Magpie accts/acc; `shell-patch.css` drop invent `.tile` geometry, invent Settings row.pref gap, invent `#view-providers .badge.off`.
+- SIDE_AT=1024. Push/PR #1. No portable / Vercel.
+
 ## v0.1.132 · RT_GROUPS_CARD_OSS_FIDELITY · 2026-10-15 Asia/Shanghai
 - **WHY:** Continue Magpie 1:1 after 0.1.131 — delete tip invent Default groups card + shell-patch group/tpl invents that covered Magpie OSS list chrome.
 - **CAUSE:** Demo painted empty groups as bordered `rt-group card` + invent `rt-ghead` / Conditions PrefRow; shell-patch forced flex-gap cards and invent `.rt-group.row`/`.who` against Magpie flat list + `.main`/`.nm`.

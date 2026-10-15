@@ -306,9 +306,12 @@ export function GatewayView({ onStatus, onGoNetwork }: Props) {
   const [demoPrefs, setDemoPrefs] = useState(readDemoPrefs);
   const [exampleModel, setExampleModel] = useState(() => lsGet("magpie.model", DEMO_MODELS[0].id));
   const [expandedCalls, setExpandedCalls] = useState<Set<string>>(() => new Set());
-  const [gwKeys, setGwKeys] = useState<{ name: string; key: string }[]>([
-    { name: "laptop", key: "mgk_demo_laptop_••••••••" },
-    { name: "ci", key: "mgk_demo_ci_••••••••" },
+  /** Magpie plugins/gateway/keys.js L171–192: accts → acc (not invent row.pref) */
+  const [gwKeys, setGwKeys] = useState<
+    { id: string; name: string; masked: string; secret: string; off?: boolean }[]
+  >([
+    { id: "laptop", name: "laptop", masked: "mgk_…••••laptop", secret: "mgk_demo_laptop_x7k9m2p4", off: false },
+    { id: "ci", name: "ci", masked: "mgk_…••••ci", secret: "mgk_demo_ci_x7k9m2p4", off: false },
   ]);
   useEffect(() => {
     const tick = () => setDemoPrefs(readDemoPrefs());
@@ -330,7 +333,7 @@ export function GatewayView({ onStatus, onGoNetwork }: Props) {
   const f = FLAVORS.find((x) => x.id === flavor) || FLAVORS[0];
   const base = f.base(GW_URL);
   const modelPlaceholder = f.decide ? "provider/jev_latest" : (exampleModel || "provider/model");
-  const secret = lanOn && gwKeys.length ? gwKeys[0].key.replace("••••••••", "x7k9m2p4") : "magpie";
+  const secret = lanOn && gwKeys.filter((k) => !k.off).length ? (gwKeys.find((k) => !k.off)?.secret || "magpie") : lanOn ? "" : "magpie";
   const win = snipOS === "windows";
 
   // Escape does not clear the red port line (native 35 = 34)
@@ -561,27 +564,89 @@ export function GatewayView({ onStatus, onGoNetwork }: Props) {
               id="addGatewayKey"
               onClick={() => {
                 const n = `key-${gwKeys.length + 1}`;
-                setGwKeys((ks) => [...ks, { name: n, key: `mgk_demo_${n}_••••••••` }]);
-                onStatus(t("Saved"), "ok");
+                const secret = `mgk_demo_${n}_${Math.random().toString(36).slice(2, 10)}`;
+                setGwKeys((ks) => [
+                  ...ks,
+                  { id: n, name: n, masked: `mgk_…••••${n}`, secret, off: false },
+                ]);
+                onStatus(t("Gateway key created. Use Copy on its row to connect a client."), "ok");
               }}
             >
               {t("Add gateway key")}
             </TextBtn>
           </div>
           <p className="usage-note">{t("Create a gateway key for each client. Usage is counted separately for each key.")}</p>
-          <section id="gatewayKeys" className="list prefs">
-            {gwKeys.map((k) => (
-              <div className="row pref" key={k.name}>
-                <div className="who">
-                  <div className="name">{k.name}</div>
-                  <div className="sub"><code>{k.key}</code></div>
+          {/* Magpie keys.js L171–192 + app.css L2318–2370 / L2463–2464: #gatewayKeys > .accts > .acc */}
+          <section id="gatewayKeys">
+            <div className="accts">
+              {gwKeys.map((k) => (
+                <div
+                  className={`acc${k.off ? " off" : " in-use"}`}
+                  key={k.id}
+                  data-key={k.id}
+                >
+                  <button
+                    type="button"
+                    className="dot tick"
+                    title={t(k.off ? "Enable key" : "Disable key")}
+                    aria-label={t(k.off ? "Enable key" : "Disable key")}
+                    onClick={() =>
+                      setGwKeys((ks) =>
+                        ks.map((x) => (x.id === k.id ? { ...x, off: !x.off } : x)),
+                      )
+                    }
+                  >
+                    {!k.off ? (
+                      <svg viewBox="0 0 16 16" width={10} height={10} aria-hidden>
+                        <path
+                          d="m3.5 8.5 3 3 6-7"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2.2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    ) : null}
+                  </button>
+                  <button type="button" className="n rename" title={t("Rename")}>
+                    {k.name}
+                  </button>
+                  <span className="plan mono">{k.masked}</span>
+                  <span className="grow" />
+                  <CopyBtn
+                    text={k.secret}
+                    what={t("Gateway key")}
+                    onStatus={onStatus}
+                  />
+                  <TextBtn
+                    className="quiet"
+                    onClick={() => {
+                      const next = `mgk_demo_${k.name}_${Math.random().toString(36).slice(2, 10)}`;
+                      setGwKeys((ks) =>
+                        ks.map((x) =>
+                          x.id === k.id
+                            ? { ...x, secret: next, masked: `mgk_…••••${k.name}` }
+                            : x,
+                        ),
+                      );
+                      onStatus(t("Gateway key rotated. Update clients on other computers."), "ok");
+                    }}
+                  >
+                    {t("Rotate key")}
+                  </TextBtn>
+                  <TextBtn
+                    className="quiet"
+                    onClick={() => setGwKeys((ks) => ks.filter((x) => x.id !== k.id))}
+                  >
+                    {t("Remove")}
+                  </TextBtn>
                 </div>
-                <div className="val">
-                  <CopyBtn text={k.key.replace("••••••••", "x7k9m2p4")} what={t("Key")} onStatus={onStatus} />
-                  <TextBtn className="quiet" onClick={() => setGwKeys((ks) => ks.filter((x) => x.name !== k.name))}>{t("Remove")}</TextBtn>
-                </div>
-              </div>
-            ))}
+              ))}
+              {!gwKeys.length ? (
+                <div className="none">{t("No gateway keys yet")}</div>
+              ) : null}
+            </div>
           </section>
         </section>
       ) : (

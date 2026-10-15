@@ -78,7 +78,9 @@ body.web .segs > .thumb,
   background: var(--card);
   box-shadow: 0 1px 2px rgba(0, 0, 0, .12), 0 0 0 .5px rgba(0, 0, 0, .06);
 }
-/* Settings section nav wraps at narrow (shot 10) */
+/* Settings section nav wraps at narrow (shot 10).
+   Magpie app.css L3026 already #view-settings .set-head { flex-wrap: wrap; gap: 6px }.
+   .ptabs wrap is nest bridge (Magpie L1558 .ptabs has no wrap). */
 #view-settings .set-head,
 #view-settings .ptabs {
   flex-wrap: wrap;
@@ -86,9 +88,8 @@ body.web .segs > .thumb,
 #view-settings .list.prefs {
   min-width: 0;
 }
-#view-settings .row.pref {
-  gap: 10px 16px;
-}
+/* v0.1.133: drop invent #view-settings .row.pref gap 10px 16px —
+   Magpie app.css L3052 .row.pref gap:14px. Keep min-width bridges for framed web: */
 #view-settings .row.pref .name {
   min-width: 0;
 }
@@ -278,13 +279,10 @@ body.window:not(.side-nav) .top.tight .brand > span:not(.logo) { display: none; 
 
 #view-providers .sheet { display: block; }
 #view-providers .sheet[hidden] { display: none !important; }
-.tile .ic, .tile img.ic-img {
-  width: 18px; height: 18px; flex: none; object-fit: contain;
-}
-.tile {
-  display: flex; align-items: center; gap: 8px; width: 100%;
-  height: 34px; padding: 0 8px; border-radius: 8px; text-align: left;
-}
+/* v0.1.133: drop invent .tile gap:8 / width:100% / missing transition —
+   Magpie app.css L2676–2682 owns .tile (gap:10px; min-width:0; transition background .12s)
+   + L2682 .tile .ic 18×18. React img fill only: */
+.tile img.ic-img { width: 18px; height: 18px; object-fit: contain; }
 .row.agent .ic img { width: 100%; height: 100%; object-fit: contain; }
 
 .signing .mark {
@@ -866,14 +864,9 @@ body.web.side-nav {
   }
 }
 
-/* Providers Turned off fold (NOTES 109–113) */
-#view-providers .badge.off {
-  text-transform: uppercase;
-  letter-spacing: .04em;
-  font-size: 10px;
-  font-weight: 600;
-  margin-left: 6px;
-}
+/* v0.1.133: drop invent #view-providers .badge.off uppercase/size/margin —
+   Magpie app.css L2261 .badge + L2266 .badge.off (pill/muted only).
+   .provider .name .badge margin: Magpie L2256. */
 
 
 /* —— v0.1.104 CIS P0: Settings / Tick / WordsField helpers (no chrome) —— */

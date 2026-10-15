@@ -1,3 +1,9 @@
+## v0.1.133 GW_KEYS_TILE_SETTINGS_OSS_FIDELITY
+- Gateway keys: drop tip invent `list prefs` / `row pref` — restore Magpie `accts` / `acc` (plugins/gateway/keys.js L171–192; app.css L2318–2370 / L2463–2464). Bare `#gatewayKeys` (client.js L661–664).
+- Providers tiles: drop invent shell-patch `.tile` gap:8 / width:100% — Magpie app.css L2676–2682 (gap:10; min-width:0; transition). Keep React img.ic-img fill bridge.
+- Settings: drop invent `#view-settings .row.pref` gap 10/16 (Magpie L3052 gap:14px); drop invent `#view-providers .badge.off` token fight (Magpie L2261/2266).
+- SIDE_AT=1024. No portable / Vercel.
+
 ## v0.1.132 RT_GROUPS_CARD_OSS_FIDELITY
 - Routing groups empty: drop tip invent `rt-group card` / `rt-ghead` / Conditions PrefRow demo — restore Magpie `list rt-groups` + `.none.rt-gnone` (routing.js L3597–3599; routing.css L414–416 / L472).
 - shell-patch: drop invent `.rt-groups` gap/card margin, `.rt-group.card*`, `.rt-ghead`, invent `#view-routing .rt-tpl*` / `.rt-group.row` / `.who`, dead `rt-dim` / `rt-pick-empty|title|gap` / `rt-ic.sm` / `modal.rt-confirm`, invent `.rt-group-by` inline-flex (Magpie L316/L667).
