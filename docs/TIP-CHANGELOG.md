@@ -1,3 +1,18 @@
+## v0.1.188 · FEAT_WHY_OSS · 2026-10-16 Asia/Shanghai
+
+- **WHY:** Hard invent audit — Plugins Built-in still painted invent `div.sub.feat-use` for "1 gateway key", plus a second invent visible `div.sub.feat-why` with "In use, so it stays on". Magpie OSS uses only `sub feat-why` for `f.use` (e.g. "1 gateway key") and puts "In use, so it stays on" on the switch `title` only.
+- **CAUSE:** Tip coined `feat-use` and duplicated the locked phrase as a visible sub instead of Magpie `renderBuiltins`.
+- **Cite:**
+  - Magpie `app.js` **L24450**: `who.append(el("div", "sub feat-why", t(f.use, { n: f.inUse })))`
+  - Magpie `app.js` **L24458**: `if (f.inUse > 0) b.title = t("In use, so it stays on")`
+  - Magpie `app.css` **L3042**: `.row.pref .sub.feat-why` (already vendored)
+  - Magpie `builtins.test.cjs`: gateway `one: "1 gateway key"`
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; skip oauth Approve wall; Magpie `.feat-why` / `.feat-say` / `.feat-row` gold already in tip; LibSwitch title when locked unchanged; routing tip extras / led-tools-extra / ag-diff-body / ag-install-body / openai-mark deferred or next.
+- **WHAT changed:**
+  - `SimpleViews.tsx` Built-in: invent `feat-use` + invent visible locked sub → Magpie single `sub feat-why` ("1 gateway key") when locked; drop invent second sub.
+- **Remaining invent (intentional skip):** oauth Approve wall; `rt-flier-demo`; `win-caption*`; `lib-hook*` / `pref-anchor` React bridges. **Deferred (not 1:1 this tip):** routing.css tip extras `rt-info`/`rt-cond-*`/`rt-pause-*`/`rt-rule-more`/`rt-arrow`/`rt-effort-row` (GroupEditor rewrite); `led-tools-extra`. Live weak leftovers for later: `ag-diff-body` (→ Magpie `ag-diff-line`), `ag-install-body` (no Magpie wrapper), `openai-mark` (→ Magpie `icon("openai")`).
+- **Guard:** `npm run chrome-guard`. No portable. No manual Vercel.
+
 ## v0.1.187 · OUTPUT_COMPACT_CXFIELD_OSS · 2026-10-16 Asia/Shanghai
 
 - **WHY:** Invent leftover — Providers editor Max output / Compact at still used invent `input.max-output` / `input.compact-at` + generic `.chips`/`.chip`. Magpie OSS builds `input.outputs` / `input.compacts` wrapped in `div.cxfield` with `div.cxpicks` / `button.cxpick` (same pattern as contextPicks).

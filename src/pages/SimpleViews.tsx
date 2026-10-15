@@ -2537,14 +2537,11 @@ export function PluginsView({
                     dataId={b.id}
                     wrapVal={false}
                     afterWho={
-                      <>
-                        {b.on && b.id === "gateway" ? (
-                          <div className="sub feat-use">{t("1 gateway key")}</div>
-                        ) : null}
-                        {b.locked ? (
-                          <div className="sub feat-why">{t("In use, so it stays on")}</div>
-                        ) : null}
-                      </>
+                      /* Magpie renderBuiltins app.js L24450: when f.inUse>0 → sub.feat-why with f.use
+                         (builtins.test "1 gateway key"); L24458 title only for "In use, so it stays on". */
+                      b.locked ? (
+                        <div className="sub feat-why">{t("1 gateway key")}</div>
+                      ) : null
                     }>
                     <LibSwitch
                       on={!!b.on}

@@ -1,3 +1,9 @@
+## v0.1.188 · FEAT_WHY_OSS · 2026-10-16 Asia/Shanghai
+- Plugins Built-in invent `sub feat-use` (+ invent visible "In use…" sub) → Magpie `sub feat-why` with f.use ("1 gateway key"); "In use, so it stays on" stays on switch title only.
+- **Cite:** Magpie `app.js` **L24450** `el("div","sub feat-why", t(f.use,…))`; **L24458** `b.title = t("In use, so it stays on")`; `app.css` **L3042** `.row.pref .sub.feat-why`; builtins.test `one: "1 gateway key"`.
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; skip oauth; Magpie `.feat-why` CSS already vendored; routing tip extras / led-tools-extra deferred.
+- Routing tip extras / led-tools-extra left (skip unless clear).
+
 ## v0.1.187 · OUTPUT_COMPACT_CXFIELD_OSS · 2026-10-16 Asia/Shanghai
 - Providers Max output / Compact at invent `max-output`/`compact-at` + `.chips`/`.chip` → Magpie `input.outputs`/`input.compacts` in `.cxfield` + `.cxpicks`/`.cxpick` (app.js outputField / compactField).
 - **Cite:** Magpie `app.js` **L9312–9331** `outputField`; **L9339–9358** `compactField`; `app.css` **L3464–3473** `.cxpicks`/`.cxpick` (already vendored).
