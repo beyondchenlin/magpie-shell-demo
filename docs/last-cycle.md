@@ -1,12 +1,12 @@
 # last-cycle · 2026-10-15 Asia/Shanghai
 
-## v0.1.82 SETTINGS_COLORBLIND_178_183
+## v0.1.99 CHROME_GOLD_RESTORE
 
-Consumed settings/178–183 into magpie-shell-demo:
-- Colorblind between Appearance and Language; Off/On only; hover darkens On
-- Segment title tip clipped at window edge; label ellipsis tip = name
-- On → Saved + data-colorblind (charts); Off → Saved + key gone; Escape no-op
-- Visible Settings nest largely done; Observability / Allowances / Codex memories still out of scope
+Appearance regression audit (nest/consume still PAUSED):
+- Reverted v0.1.98 `WEB_SIDE_AT=800` (forced side-nav ~900px — worse than Magpie gold).
+- Restored `wantSide` → `SIDE_AT=1024` only; shell-patch side-nav expand behind `@media (min-width: 1024px)`.
+- Kept v0.1.91 web frame 752×652 + 110% zoom (nest responsive intentional).
+- Added `docs/TIP-CYCLE.md`, `docs/TIP-CHANGELOG.md`, `npm run chrome-guard`.
 
-No portable / GitHub release / Vercel (user freeze).
-P1 N/A.
+Widths check: 390 top-tabs phoneWeb; 752/900 top-tabs framed; ≥1024 side-nav OK.
+No portable. Push for Vercel.

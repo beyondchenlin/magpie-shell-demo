@@ -1,3 +1,9 @@
+## v0.1.99 CHROME_GOLD_RESTORE
+- Reverted v0.1.98 `WEB_SIDE_AT` (side-nav from 800px). Gold again: **top tabs under SIDE_AT 1024**; side-nav only ≥1024 / user toggle.
+- Kept nest web frame **752×652** + text 110% from v0.1.91.
+- Tip cycle: `docs/TIP-CYCLE.md` + `npm run chrome-guard` (blocks WEB_SIDE_AT, guards SIDE_AT/752/1024 gate).
+- Nest/consume still paused. Vercel sync for verify. No portable.
+
 ## v0.1.82 SETTINGS_COLORBLIND_178_183
 - Consumed native `settings/178–183` NOTES: Colorblind mode between Appearance and Language; **Off/On** only (no popover); hover darkens On label; segment `title` tip clipped ("Colorblind-safe chart colors, and each allowance windo…"); On → green **Saved** + `data-colorblind` (chart `--c1`–`--c7` / allowance dashes only — Settings chrome unchanged); Off restores **Saved** and removes `colorblind` key; Escape no-op while On.
 - Visible Settings nest largely done. Still out of scope: Observability tab, Allowances quota body, Codex memories row.
