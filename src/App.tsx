@@ -76,7 +76,19 @@ function readNavPick(): "" | "side" | "top" {
   }
 }
 
+/** Magpie phoneWeb(): web + narrow (or coarse tablet ≤1024). Forces top tabs. */
+const PHONE_WEB_MQ = "(max-width: 760px), (pointer: coarse) and (max-width: 1024px)";
+
+function isPhoneWebViewport(): boolean {
+  return window.matchMedia(PHONE_WEB_MQ).matches;
+}
+
+function phoneWeb(): boolean {
+  return !isElectron() && isPhoneWebViewport();
+}
+
 function wantSide(navPick: "" | "side" | "top"): boolean {
+  if (phoneWeb()) return false;
   if (navPick === "side") return true;
   if (navPick === "top") return false;
   return window.matchMedia(`(min-width: ${SIDE_AT}px)`).matches;
@@ -92,7 +104,11 @@ export default function App() {
   const [spinning, setSpinning] = useState(false);
   const [refreshNonce, setRefreshNonce] = useState(0);
   const [sideOn, setSideOn] = useState(() => wantSide(readNavPick()));
+  const [phone, setPhone] = useState(() => phoneWeb());
+  /** Magpie fitTop classes: tight → cramped → inrow → crowded → packed */
+  const [topFit, setTopFit] = useState("inrow tight");
   const [libFeat, setLibFeat] = useState(libraryOn);
+  const topRef = useRef<HTMLElement | null>(null);
   const statusTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const syncRef = useRef<HTMLButtonElement>(null);
   const brandRef = useRef<HTMLDivElement>(null);
@@ -108,9 +124,11 @@ export default function App() {
 
   const applyChrome = useCallback(() => {
     const electron = isElectron();
+    const onPhone = !electron && isPhoneWebViewport();
     document.body.classList.add("window");
     document.body.classList.remove("linux", "mac");
-    document.body.classList.toggle("side-nav", sideOn);
+    document.body.classList.toggle("side-nav", sideOn && !onPhone);
+    document.body.classList.toggle("phone-web", onPhone);
     if (electron) document.body.classList.remove("web");
     else document.body.classList.add("web");
     const root = document.documentElement;
@@ -147,16 +165,90 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    const mq = window.matchMedia(`(min-width: ${SIDE_AT}px)`);
-    const onChange = () => {
-      if (readNavPick()) return;
-      setSideOn(mq.matches);
+    const sideMq = window.matchMedia(`(min-width: ${SIDE_AT}px)`);
+    const phoneMq = window.matchMedia(PHONE_WEB_MQ);
+    const sync = () => {
+      const onPhone = phoneWeb();
+      setPhone(onPhone);
+      if (onPhone) {
+        setSideOn(false);
+        return;
+      }
+      setSideOn(wantSide(readNavPick()));
     };
-    mq.addEventListener("change", onChange);
-    return () => mq.removeEventListener("change", onChange);
+    sync();
+    sideMq.addEventListener("change", sync);
+    phoneMq.addEventListener("change", sync);
+    return () => {
+      sideMq.removeEventListener("change", sync);
+      phoneMq.removeEventListener("change", sync);
+    };
   }, []);
 
+  // Magpie fitTop — progressive header compression for desktop chrome (not phoneWeb / side-nav)
+  useEffect(() => {
+    if (sideOn || phone) {
+      setTopFit("");
+      return;
+    }
+    const top = topRef.current || document.querySelector<HTMLElement>("header.top");
+    const nav = document.getElementById("nav");
+    const brand = document.querySelector<HTMLElement>(".brand");
+    const actions = document.querySelector<HTMLElement>(".actions");
+    if (!top || !actions) return;
+
+    const fits = () => {
+      const a = actions.getBoundingClientRect();
+      const padR = parseFloat(getComputedStyle(top).paddingRight) || 0;
+      if (a.right > top.getBoundingClientRect().right - padR + 0.5) return false;
+      const toggle = document.getElementById("sideToggle");
+      const lead =
+        toggle && toggle.offsetParent ? toggle : brand;
+      const left = lead?.offsetParent
+        ? lead.getBoundingClientRect().right
+        : top.getBoundingClientRect().left + (parseFloat(getComputedStyle(top).paddingLeft) || 0);
+      if (!nav?.offsetParent) return left + 8 <= a.left;
+      const n = nav.getBoundingClientRect();
+      return left + 8 <= n.left && n.right + 8 <= a.left;
+    };
+
+    const run = () => {
+      const steps = ["", "tight", "tight cramped", "tight cramped inrow", "tight cramped inrow crowded", "tight cramped inrow crowded packed"];
+      let chosen = steps[steps.length - 1];
+      for (const cls of steps) {
+        top.className = `top${cls ? ` ${cls}` : ""}`;
+        if (fits()) {
+          chosen = cls;
+          break;
+        }
+      }
+      setTopFit(chosen);
+      // Magpie navInSight: keep active tab visible when packed / scrollable
+      const on = nav?.querySelector<HTMLElement>("button.on");
+      if (nav && on && nav.scrollWidth > nav.clientWidth + 1) {
+        const l = on.offsetLeft - 16;
+        const r = on.offsetLeft + on.offsetWidth + 16 - nav.clientWidth;
+        if (nav.scrollLeft > l) nav.scrollLeft = l;
+        else if (nav.scrollLeft < r) nav.scrollLeft = r;
+      }
+    };
+
+    run();
+    const ro = new ResizeObserver(() => run());
+    ro.observe(top);
+    if (brand) ro.observe(brand);
+    ro.observe(actions);
+    if (nav) ro.observe(nav);
+    document.fonts?.ready.then(run);
+    window.addEventListener("resize", run);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", run);
+    };
+  }, [sideOn, phone, view, libFeat]);
+
   const toggleSideNav = useCallback(() => {
+    if (phoneWeb()) return;
     setSideOn((prev) => {
       const next = !prev;
       try {
@@ -479,7 +571,12 @@ export default function App() {
         />
       </aside>
 
-      <header className={`top${sideOn ? "" : " inrow tight"}`}>
+      <header
+        ref={(el) => {
+          topRef.current = el;
+        }}
+        className={`top${sideOn || phone ? "" : topFit ? ` ${topFit}` : ""}`}
+      >
         {!sideOn ? brand : null}
         <h1 className="sr-only" id="pageTitle">
           {t(VIEW_EN[view])}
@@ -488,6 +585,7 @@ export default function App() {
           type="button"
           className="icon side-toggle"
           id="sideToggle"
+          hidden={phone}
           title={sideTitle}
           aria-label={sideToggleLabel}
           aria-pressed={sideOn}

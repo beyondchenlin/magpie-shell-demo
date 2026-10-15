@@ -346,6 +346,113 @@ function draftSnapshot(d: Draft) {
   return JSON.stringify(d);
 }
 
+
+/** Magpie rule ⋯ menu (shots 94–95): Move up/down, Pause the model instead, Remove rule */
+function RuleMoreMenu({
+  anchor,
+  index,
+  count,
+  onMove,
+  onPause,
+  onRemove,
+  onClose,
+}: {
+  anchor: HTMLElement;
+  index: number;
+  count: number;
+  onMove: (to: number) => void;
+  onPause: () => void;
+  onRemove: () => void;
+  onClose: () => void;
+}) {
+  const boxRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const box = boxRef.current;
+    if (!box) return;
+    const r = anchor.getBoundingClientRect();
+    const pad = 8;
+    const w = box.offsetWidth || 200;
+    const h = box.offsetHeight || 120;
+    let y = r.bottom + 5;
+    if (y + h > window.innerHeight - pad && r.top - 5 - h >= pad) {
+      y = r.top - 5 - h;
+      box.classList.add("up");
+    }
+    const left = Math.max(pad, Math.min(r.right - w, window.innerWidth - w - pad));
+    box.style.left = `${left}px`;
+    box.style.top = `${Math.max(pad, y)}px`;
+    const outside = (e: MouseEvent) => {
+      if (!box.contains(e.target as Node) && !anchor.contains(e.target as Node)) onClose();
+    };
+    const keys = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        e.stopPropagation();
+        onClose();
+        anchor.focus({ preventScroll: true });
+      }
+    };
+    document.addEventListener("mousedown", outside, true);
+    document.addEventListener("keydown", keys, true);
+    return () => {
+      document.removeEventListener("mousedown", outside, true);
+      document.removeEventListener("keydown", keys, true);
+    };
+  }, [anchor, onClose]);
+
+  const items: { name: string; icon: string; off?: boolean; sep?: boolean; run: () => void }[] = [
+    {
+      name: t("Move up"),
+      icon: "M8 12V4M5 7l3-3 3 3",
+      off: index <= 0,
+      run: () => onMove(index - 1),
+    },
+    {
+      name: t("Move down"),
+      icon: "M8 4v8M5 9l3 3 3-3",
+      off: index >= count - 1,
+      run: () => onMove(index + 1),
+    },
+    {
+      name: t("Pause the model instead"),
+      icon: "M5 3.5h2.2v9H5zM8.8 3.5H11v9H8.8z",
+      sep: true,
+      run: () => onPause(),
+    },
+    {
+      name: t("Remove rule"),
+      icon: "M3.5 3.5 12.5 12.5M12.5 3.5 3.5 12.5",
+      run: () => onRemove(),
+    },
+  ];
+
+  return (
+    <div className="pop row-menu" role="menu" ref={boxRef} style={{ position: "fixed", zIndex: 50 }}>
+      {items.map((o) => (
+        <span key={o.name} style={{ display: "contents" }}>
+          {o.sep ? <div className="rm-sep" /> : null}
+          <button
+            type="button"
+            className="rm-item"
+            role="menuitem"
+            disabled={!!o.off}
+            onClick={(e) => {
+              e.stopPropagation();
+              onClose();
+              o.run();
+            }}
+          >
+            <svg viewBox="0 0 16 16" width={13} height={13} aria-hidden>
+              <path d={o.icon} fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+            <span className="rm-name">{o.name}</span>
+          </button>
+        </span>
+      ))}
+    </div>
+  );
+}
+
 export type SavedGroupDraft = {
   name: string;
   slug: string;
@@ -391,6 +498,7 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
   const [popKind, setPopKind] = useState<null | { kind: string; rule: number }>(null);
   const [clsOpen, setClsOpen] = useState(false);
   const [askingRule, setAskingRule] = useState<number | null>(null);
+  const [ruleMenuFor, setRuleMenuFor] = useState<number | null>(null);
   const addBtnRef = useRef<HTMLButtonElement>(null);
   const reasonBtnRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const weightBtnRefs = useRef<Record<string, HTMLButtonElement | null>>({});
@@ -445,6 +553,7 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
     setPopKind(null);
     setClsOpen(false);
     setAskingRule(null);
+    setRuleMenuFor(null);
     const tmr = window.setTimeout(() => nameRef.current?.focus({ preventScroll: true }), 0);
     return () => clearTimeout(tmr);
   }, [open, templateSeed, editGroup]);
@@ -531,7 +640,7 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
     : draft.firstToken
       ? t(
           "A member that hasn't begun answering after {n} — no text, reasoning or tool call yet — is let go and the next one asked, before any of it reaches the agent. It doesn't rest; the last one left is always waited for. Only for streamed requests.",
-          { n: draft.firstToken >= 60 ? `${Math.round(draft.firstToken / 60)} min` : `${draft.firstToken} s` },
+          { n: `${draft.firstToken} s` },
         )
       : t("Every member is waited for, however long it takes to begin answering.");
 
@@ -543,11 +652,24 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
           { n: patienceWord(draft.patience) },
         );
 
+  const formatCtxTokens = (raw: string) => {
+    const m = String(raw || "")
+      .trim()
+      .toLowerCase()
+      .replace(/_/g, "")
+      .match(/^(\d+(?:\.\d+)?)\s*([km]?)$/);
+    if (!m) return raw.trim() || "…";
+    let n = parseFloat(m[1]);
+    if (m[2] === "k") n *= 1000;
+    if (m[2] === "m") n *= 1_000_000;
+    return Math.round(n).toLocaleString("en-US");
+  };
+
   const ctxHint = ctxErr
     ? ctxErr
     : draft.context === "custom"
       ? t("Agents are told the group takes {n} tokens; a longer conversation still goes on to a member with room for it.", {
-          n: draft.contextTokens || "…",
+          n: formatCtxTokens(draft.contextTokens),
         })
       : draft.context === "smallest"
         ? t("Agents are told its smallest model's window, so they compact before any member would turn the conversation away.")
@@ -963,7 +1085,8 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
                 setDraft((d) => ({
                   ...d,
                   firstCustom: true,
-                  firstToken: d.firstToken > 0 ? d.firstToken : 300,
+                  // Magpie prefills from the last pill (shot 61: 2 from 2 min)
+                  firstToken: d.firstToken > 0 ? d.firstToken : 120,
                 }));
               } else {
                 setDraft((d) => ({ ...d, firstCustom: false, firstToken: v as number }));
@@ -1095,15 +1218,10 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
                               placeholder={t("what it asks for, e.g. writing tests")}
                               onChange={(e) => {
                                 const intent = e.target.value;
-                                setDraft((d) => {
-                                  let classifier = d.classifier;
-                                  if (intent.trim() && !classifier) classifier = DEMO_CLASSIFIERS[0]?.value || "";
-                                  return {
-                                    ...d,
-                                    classifier,
-                                    rules: d.rules.map((x, j) => (j === ri ? { ...x, intent } : x)),
-                                  };
-                                });
+                                setDraft((d) => ({
+                                  ...d,
+                                  rules: d.rules.map((x, j) => (j === ri ? { ...x, intent } : x)),
+                                }));
                               }}
                               onKeyDown={(e) => e.stopPropagation()}
                             />
@@ -1253,9 +1371,6 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
                       {showFolders ? (
                         <span
                           className={`rt-cond fd${r.folders.length ? " on" : ""}`}
-                          title={t(
-                            "The agent works in one of these folders or a folder inside one, as it tells the model (Claude Code, Codex, OpenCode, Pi); an agent that doesn't say isn't matched",
-                          )}
                         >
                           <span>{t("in folder")}</span>
                           <input
@@ -1292,11 +1407,9 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
                       {showExcept ? (
                         <span
                           className={`rt-cond xf${r.exceptFolders.length ? " on" : ""}`}
-                          title={t(
-                            "The agent works in none of these folders, nor a folder inside one, as it tells the model; an agent that doesn't say counts as outside them",
-                          )}
+                          title={t("not in folder")}
                         >
-                          <span>{t("not in folder")}</span>
+                          <span title={t("not in folder")}>{t("not in folder")}</span>
                           <input
                             type="text"
                             value={r.exceptFolders.join(", ")}
@@ -1444,6 +1557,18 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
                       <span className="rt-arrow" aria-hidden>
                         →
                       </span>
+                      {r.pause ? (
+                        <button
+                          type="button"
+                          className="rt-cond on rt-pause-chip"
+                          ref={(el) => {
+                            condBtnRefs.current[`act${ri}`] = el;
+                          }}
+                          onClick={() => setPopKind((cur) => (cur?.kind === "action" && cur.rule === ri ? null : { kind: "action", rule: ri }))}
+                        >
+                          {t("pause")}
+                        </button>
+                      ) : null}
                       <button
                         type="button"
                         className="rt-cond on"
@@ -1458,14 +1583,28 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
                         </svg>
                         <span>{useMember ? memberDisplay(useMember) : r.use}</span>
                       </button>
+                      {r.pause ? (
+                        <div className="rt-pause-note">{t("left out of the group then: not tried, not a fallback")}</div>
+                      ) : null}
                     </div>
                     <span className="ctl">
                       <button
                         type="button"
-                        className="text"
-                        onClick={() => setDraft((d) => ({ ...d, rules: d.rules.filter((_, j) => j !== ri) }))}
+                        className={`text rt-rule-more${ruleMenuFor === ri ? " open" : ""}`}
+                        ref={(el) => {
+                          condBtnRefs.current[`more${ri}`] = el;
+                        }}
+                        aria-label={t("Rule actions")}
+                        aria-haspopup="menu"
+                        aria-expanded={ruleMenuFor === ri}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setRuleMenuFor((cur) => (cur === ri ? null : ri));
+                          setCondMenuFor(null);
+                          setPopKind(null);
+                        }}
                       >
-                        {t("Remove")}
+                        ⋯
                       </button>
                     </span>
                   </div>
@@ -1544,7 +1683,7 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
           </div>
         </div>
 
-        {draft.effort === "auto" || draft.rules.length > 0 ? (
+        {draft.effort === "auto" || draft.rules.some((r) => !r.pause) ? (
           <>
             <label>{t(draft.effort === "auto" && !draft.rules.some((r) => r.intent.trim()) ? "Decided by" : "Intent told by")}</label>
             <div>
@@ -1558,18 +1697,29 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
                   <span>
                     {draft.classifier
                       ? (() => {
-                          const m = DEMO_CLASSIFIERS.find((x) => x.value === draft.classifier);
-                          return m ? `${m.label} · ${m.group}` : draft.classifier;
+                          const m = DEMO_CLASSIFIERS.find((x) => x.value === draft.classifier || x.label === draft.classifier);
+                          // Shots 76–78: typed id shows as the id alone (opus)
+                          return m ? m.label : draft.classifier;
                         })()
                       : t("choose a model")}
                   </span>
+                </button>
+                <button
+                  type="button"
+                  className="rt-info"
+                  title={t(
+                    "As a turn begins, this model is asked which of the intents the message is — once; a small, fast one without reasoning is best. If it fails or can't say, no intent matches. Its calls show in the usage as magpie’s own.",
+                  )}
+                  aria-label={t("About intent")}
+                >
+                  i
                 </button>
                 <ModelPop
                   open={clsOpen}
                   anchor={clsBtnRef.current}
                   value={draft.classifier}
                   modelPicker
-                  options={DEMO_CLASSIFIERS}
+                  options={[]}
                   onPick={(id) => {
                     if (id) setDraft((d) => ({ ...d, classifier: id }));
                     setClsOpen(false);
@@ -1777,6 +1927,7 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
           anchor={condBtnRefs.current[`act${popKind.rule}`] || null}
           value={draft.rules[popKind.rule]?.pause ? "pause" : "send"}
           modelPicker={false}
+          placeholder={t("Filter action…")}
           options={[
             { value: "send", label: t("send to"), note: t("goes first; the others stay behind it") },
             { value: "pause", label: t("pause"), note: t("left out of the group: not tried, not a fallback") },
@@ -1788,7 +1939,16 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
               rules: d.rules.map((x, j) =>
                 j === ri
                   ? v === "pause"
-                    ? { ...x, pause: true, tokens: 0, images: false, effort: "", intent: "", compact: false }
+                    ? {
+                        ...x,
+                        pause: true,
+                        tokens: 0,
+                        images: false,
+                        effort: "",
+                        intent: "",
+                        compact: false,
+                        pins: x.pins.filter((p) => p === "folders" || p === "exceptFolders" || p === "agents" || p === "time"),
+                      }
                     : { ...x, pause: false }
                   : x,
               ),
@@ -1865,6 +2025,48 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
             }
           }}
           onClose={() => setCondMenuFor(null)}
+        />
+      ) : null}
+
+      {ruleMenuFor != null && condBtnRefs.current[`more${ruleMenuFor}`] ? (
+        <RuleMoreMenu
+          anchor={condBtnRefs.current[`more${ruleMenuFor}`]!}
+          index={ruleMenuFor}
+          count={draft.rules.length}
+          onMove={(to) => {
+            const from = ruleMenuFor;
+            setDraft((d) => {
+              if (to < 0 || to >= d.rules.length) return d;
+              const rules = [...d.rules];
+              rules.splice(to, 0, rules.splice(from, 1)[0]);
+              return { ...d, rules };
+            });
+          }}
+          onPause={() => {
+            const ri = ruleMenuFor;
+            setDraft((d) => ({
+              ...d,
+              rules: d.rules.map((x, j) =>
+                j === ri
+                  ? {
+                      ...x,
+                      pause: true,
+                      tokens: 0,
+                      images: false,
+                      effort: "",
+                      intent: "",
+                      compact: false,
+                      pins: x.pins.filter((p) => p === "folders" || p === "exceptFolders" || p === "agents" || p === "time"),
+                    }
+                  : x,
+              ),
+            }));
+          }}
+          onRemove={() => {
+            const ri = ruleMenuFor;
+            setDraft((d) => ({ ...d, rules: d.rules.filter((_, j) => j !== ri) }));
+          }}
+          onClose={() => setRuleMenuFor(null)}
         />
       ) : null}
 

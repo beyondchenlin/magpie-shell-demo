@@ -150,3 +150,12 @@
 - **Add** → green toast **group added**; row `group` / `group/group` · members · Smart · 1 rule · red **no member ready** · Edit · switch. Templates collapses to menu.
 - Edit footer **Remove / Cancel / Save**; **Remove group?** → red Remove → toast **group removed**; templates cards return.
 - P1 live bird hop: **N/A**. Skip Vercel 402.
+
+## v0.1.74 ROUTING_SEGMENTS_55_98
+
+- Consumed native `interactions/native-linux/routing/55–98` + NOTES into GroupEditor.
+- Rate limited Keeps/Goes to the back; Slow Wait/30s/1min/2min/Custom (hints in **seconds**; Custom prefills last pill; 5 min → 300 s); Every member busy Off/1/2/4 min; Context largest/smallest/Custom **200,000**; Stays Auto/Session/Within a turn/Off/Strict.
+- Intent **choose a model**: empty No matches → typed opus; info tip; Intent hidden when rule is pause-only.
+- Other conditions: Conversation length · has image · compacting · in/not in folder (short tips).
+- Rule **⋯**: Move up/down · Pause the model instead · Remove rule → pause chip + orange note; Filter action send/pause.
+- Cancel→Discard 98 unchanged. Day pills **N/A**. P1 bird hop **N/A**. No portable/Vercel this cycle (user freeze).

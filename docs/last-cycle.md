@@ -1,13 +1,13 @@
 # last-cycle · 2026-10-15 Asia/Shanghai
 
-## v0.1.73 ROUTING_RULES_31_54
+## v0.1.74 ROUTING_SEGMENTS_55_98
 
-Consumed routing/31–54 NOTES 1:1:
-- Two typed members → Rules = + Add a rule (+ info tip)
-- Condition menu: Conversation length · has an image · Reasoning level · compacting · Agents · in/not in folder · Hours and days
-- reasoning ≥ high · agent list through PI-Desktop · filter grok/zzzz · Escape leaves any agent · hours/days · member filter · Effort tip · Named chips
-- Add → toast group added · row group/group · Smart · 1 rule · red no member ready · Edit/switch; Templates menu
-- Remove group? → red Remove → toast group removed; templates return
-- P1 N/A. Skip Vercel 402.
+Consumed routing/55–98 NOTES 1:1:
+- Rate limited · Slow (s-hints, Custom/300 s) · Busy · Context 200,000 · Stays
+- choose a model empty No matches → typed opus · Intent tip; hidden on pause-only
+- Conditions: length / image / compacting / in|not in folder
+- Rule ⋯ → Pause → pause chip + orange note · Filter action send/pause
+- Discard 98; Day pills N/A; P1 N/A
+- **No portable.exe / GitHub release / Vercel** (user freeze this cycle)
 
-Portable: https://github.com/beyondchenlin/magpie-shell-demo/releases/download/v0.1.73/Magpie-Shell-Demo-0.1.73-portable.exe
+Code+docs+version only.

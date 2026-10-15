@@ -168,3 +168,121 @@ Next: those remaining Routing nests, not tray.
 
 ## demo 对齐
 - **v0.1.73**: Rules with two models 31–54（+ Add a rule · condition menu · agents through PI-Desktop · Hours and days · Named · group added/removed · no member ready）
+
+
+## Segments and the rest of a rule (55–98)
+
+Same window, pid 560329, **752×652 at +200+40**, magpie 0.1.1240. Groups was off; the Built-in **Routing groups** switch was turned on for the editor and off again at the end. Two typed ids, `opus` and `haiku`. Nothing was saved: **Cancel** on the dirty draft raised **Discard** (98, same box as 22) and Discard was clicked. `providers.json` is still `{"providers": null}`. Find-groups and the names segments were not clicked. No request was sent. P1 bird hop: **N/A**.
+
+Walk is top to bottom. A pill writes only the draft. Hints under the row are what was on screen.
+
+### Rate limited (55–56)
+
+| shot | selected | hint |
+|---|---|---|
+| 55 | **Keeps its place** | One rate limited while it still has quota rests as long as the vendor asks, then takes its place in the order again. |
+| 56 | **Goes to the back** | One rate limited (429) while it still has quota goes to the back of the order, behind every one not rate limited since, and comes round again once those ahead of it are rate limited in turn — so the load goes round rather than back to the first each time. Out of quota, it rests as usual. Kept until magpie restarts. |
+
+### Slow to start (57–62)
+
+Pills **Wait**, **30 s**, **1 min**, **2 min**, **Custom**. The hint counts seconds, not the pill's label.
+
+| shot | selected | hint starts |
+|---|---|---|
+| 57 | Wait | Every member is waited for, however long it takes to begin answering. |
+| 58 | 30 s | A member that hasn't begun answering after **30 s** — no text, reasoning or tool call yet — is let go and the next one asked, before any of it reaches the agent. It doesn't rest; the last one left is always waited for. Only for streamed requests. |
+| 59 | 1 min | same, after **60 s** |
+| 60 | 2 min | same, after **120 s** |
+| 61 | Custom | Field appears, prefilled **2** from the 2 min pill, unit **min**. Hint still 120 s. |
+| 62 | Custom, typed 5 | Hint after **300 s**. |
+
+### Every member busy (63–66)
+
+Sits between Slow and Context. Was still the default **1 min** in 57–62.
+
+| shot | selected | hint |
+|---|---|---|
+| 63 | Off | When every member has failed, the agent gets the last one's error at once. |
+| 64 | 2 min | When every member has failed with an error that may pass — overloaded, unavailable, rate limited for a moment — and nothing of the reply has reached the agent, each is asked again after a pause, longer each time and never shorter than the vendor asks, for up to **2 min** more. A streaming agent is kept waiting meanwhile. |
+| 65 | 4 min | same, up to **4 min** more |
+| 66 | 1 min | same, up to **1 min** more |
+
+### Context (67–69)
+
+Typed ids have no known window, so the hints stay general. Custom's field came up **200k** on its own.
+
+| shot | selected | hint |
+|---|---|---|
+| 67 | Largest model's | Agents are told its largest model's window; a conversation too long for one member goes on to one with room for it. |
+| 68 | Smallest model's | Agents are told its smallest model's window, so they compact before any member would turn the conversation away. |
+| 69 | Custom | Agents are told the group takes **200,000** tokens; a longer conversation still goes on to a member with room for it. |
+
+### Stays (70–74)
+
+| shot | selected | hint |
+|---|---|---|
+| 70 | Auto | A conversation stays with the account or key that answered it while what the vendor cached of it is worth keeping — within a turn always, across turns while it's fresh. |
+| 71 | Session | …for the whole session, while it can answer. |
+| 72 | Within a turn | A conversation stays put within a turn, while the agent sends tool results back; when you speak again, routing decides afresh. |
+| 73 | Off | Every request is routed afresh, whoever answered its conversation before. |
+| 74 | Strict | …and never moves to another, even past its usage cap: when that one is rate limited or out of quota, the error goes to the agent. New conversations are routed as usual. |
+
+### Intent, choose a model (75–79)
+
+**+ Add a rule** (75) opens row **1** with **asks for** (placeholder "what it asks for, e.g. writing tests"), a **+**, and **→ haiku**. Under Effort, **Intent told by** and a dashed **choose a model**.
+
+| shot | what |
+|---|---|
+| 76 | choose a model. Pop: **Filter, or type any model id…** and **No matches.** |
+| 77 | Typed `opus`. One row **Opus · use as typed**. |
+| 78 | That row picked. The chip is **opus**. No provider model was in the list. |
+| 79 | Info dot beside it. Tip is clipped on the window's left edge. Visible: "…a turn begins, this model is asked which of the intents the message is — once; a small, …st one without reasoning is best. If it fails or can't say, no intent matches. Its calls show in …e usage as magpie's own." |
+
+### Other conditions (80–91)
+
+The **+** tip is **Add a condition**. A condition already on the rule leaves the menu. Reasoning, Agents, and Hours and days were already shot (36–48); they were still in the menu and were not added again.
+
+| shot | what |
+|---|---|
+| 80 | Pointer on **+**, menu open. |
+| 81 | Menu: Conversation length, has an image, Reasoning level, compacting, Agents, in folder. Lower rows cut off. |
+| 82 | **Conversation length**. Chip **≥** and an empty **tokens** field, focused. |
+| 83 | Menu again, upward: has an image, Reasoning level, compacting, Agents, in folder, **not in folder**. |
+| 84 | **has an image** chip. |
+| 85 | Menu to the side, through **Hours and days**. |
+| 86 | **compacting** chip. |
+| 87 | **in folder**, placeholder **~/work/acme, ~/oss**. |
+| 88 | **not in folder**, placeholder **~/big-task**. |
+| 89 | Hover compacting. Tip: "The agent summarizes the conversation to go on in less room (Claude Code's /compact, Codex, OpenCode…): a cheaper, faster model can do it". |
+| 90 | Hover the in-folder label. No long tip. The placeholder is the copy on screen. |
+| 91 | Hover not in folder. Only a short tip, the words **not in folder**. |
+
+### Pause, separate from the member chip (92–97)
+
+The **→** before **haiku** is not the pause control. Clicking it (92, pointer on the arrow; 93 after moving off) opened nothing. The member chip is still the filter from 49 (opus / haiku).
+
+Pause is on the rule's **⋯**, hidden until the row is hovered, at the top right of the rule.
+
+| shot | what |
+|---|---|
+| 94 | ⋯ clicked. |
+| 95 | Menu: **Move up** (gray, this is rule 1), **Move down**, **Pause the model instead**, **Remove rule**. |
+| 96 | Pause the model instead. asks for, tokens, has an image, and compacting are gone, and **Intent told by** with them. **in folder** and **not in folder** stay. A **pause** chip sits in front of **haiku**. Orange line: "left out of the group then: not tried, not a fallback". |
+| 97 | The pause chip opens **Filter action…**. **send to** — goes first; the others stay behind it. **pause** — left out of the group: not tried, not a fallback (checked). Not the member list. |
+
+Remove rule was not clicked. Escape closed the picker. Cancel, then Discard (98).
+
+### Day pills
+
+**N/A.** The stage is still **Waiting for a request**, 0 / 0 / 0. No day bar, no By request / By session, no Replay. No request was sent to make them appear.
+
+## Left state
+
+Routing tab, empty live stage, **Accounts hidden**. Groups plugin **off** (Plugins switch and `plugins.yml`). Gateway and Library still on, as found. No group, no key. Magpie still running, pid 560329, window 752×652 at +200+40. Close was not used.
+
+Not in this slice: routing-mode hints other than Smart (the row was on screen in 55–56; Smart stayed selected). Day pills and replay still need gateway history. P1 N/A.
+
+Next: those routing-mode hints, still Routing, not tray.
+
+## demo 对齐
+- **v0.1.74**: Segments + rest of a rule 55–98（Rate limited · Slow s-hints/Custom · Busy · Context 200,000 · Stays · choose a model No matches/typed · other conditions · ⋯ Pause · Discard 98；Day pills N/A；P1 N/A）

@@ -4344,5 +4344,10 @@
   "Update from GitHub": "从 GitHub 更新",
   "Turn every skill on or off for one agent": "为某个代理开关全部技能",
   "Change the options it runs with": "更改它运行时的选项",
-  "Gateway middleware: onEvent, onResponse": "网关中间件：onEvent、onResponse"
+  "Gateway middleware: onEvent, onResponse": "网关中间件：onEvent、onResponse",
+  "Pause the model instead": "改为暂停该模型",
+  "Remove rule": "删除规则",
+  "Filter action…": "筛选动作…",
+  "Rule actions": "规则操作",
+  "About intent": "关于意图判断"
 }

@@ -319,3 +319,9 @@
 ## v0.1.73 ROUTING_RULES_31_54
 - Routing rules nest 31–54 consumed (progressive + condition · full agent list · save/remove group row).
 - P1 unchanged: true gateway bird hop · true OAuth/key · Allowances quota body N/A.
+
+## v0.1.74 ROUTING_SEGMENTS_55_98
+- Native routing 55–98 segments/conditions/pause consumed 1:1 into GroupEditor.
+- Day pills / Replay still **N/A** (empty gateway history).
+- P1 unchanged: true gateway bird hop · true OAuth/key · Allowances quota body N/A.
+- Portable/release skipped this cycle (user freeze). No Vercel.
