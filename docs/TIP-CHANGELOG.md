@@ -4,6 +4,17 @@
 
 ---
 
+## v0.1.111 · CIS_LIBRARY_EDITOR_FIELDS · 2026-10-15 Asia/Shanghai
+
+- **WHY:** CIS §10 — Library MCP/skill/hook/image editors drop field-level `style={{…}}`; Magpie classes + WordsField/Segs/PrefPick.
+- **WHAT kept:** `SIDE_AT=1024`; no `WEB_SIDE_AT`; Win chrome / 752 frame; Thunar/Choose-project OS chrome mocks untouched; Providers OAuth skipped.
+- **WHAT changed:**
+  - LibChip → CSS `button.lib-ag` (no inline).
+  - MCP / Image / Skill / Hook editors: `.ehead` / `.stack` / `label.field` / `.pair` / `.hint` / `.agents` / `.pop.menu`; WordsField (+ mono/full/port/timeout); Segs transport; PrefPick hook menus.
+  - WordsField forwardRef (MCP name focus).
+- **Guard:** `npm run chrome-guard`. No portable. No push/Vercel.
+
+---
 ## v0.1.110 · CIS_LIBRARY_SHEET_MODALS · 2026-10-15 Asia/Shanghai
 
 - **WHY:** CIS §10 — Library non-confirm LibModals (How skills / by-agent sheets) drop page-local `style={{…}}`; Magpie `.modal` / `.dialog.lib-editor`.

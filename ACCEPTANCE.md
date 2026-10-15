@@ -1,3 +1,7 @@
+## v0.1.111 CIS_LIBRARY_EDITOR_FIELDS
+- Library MCP / Image / Skill / Hook editors: Magpie field classes + WordsField/Segs/PrefPick; LibChip CSS; 0 field-level `style` in editor region.
+- Thunar / Choose-project GTK mocks and Providers OAuth/folder pickers still Open. SIDE_AT=1024. No portable / Vercel.
+
 ## v0.1.110 CIS_LIBRARY_SHEET_MODALS
 - LibModal → Magpie `.modal` / `.dialog.lib-editor` (shell-patch; no inline chrome).
 - How skills / Skills by agent / MCP by agent sheets: Magpie ehead/list/row/bar + Segs; no local styles.

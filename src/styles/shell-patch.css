@@ -1129,6 +1129,261 @@ label.tick input { margin: 0; }
   /* Magpie .row already flex; keep list hairline */
 }
 
+
+/* Magpie Library agent chips — was LibChip inline */
+button.lib-ag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  height: 26px;
+  padding: 0 10px 0 8px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--muted);
+  opacity: 0.45;
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background .14s, border-color .14s, color .14s, opacity .14s;
+}
+button.lib-ag.on {
+  border-color: var(--line);
+  background: var(--card);
+  color: var(--fg);
+  opacity: 1;
+}
+button.lib-ag.icon {
+  gap: 0;
+  height: 28px;
+  width: 28px;
+  padding: 0;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+/* Magpie Library editor fields inside .dialog.lib-editor */
+.modal .dialog.lib-editor .stack {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+.modal .dialog.lib-editor label.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  text-align: left;
+  margin: 0;
+  color: var(--fg);
+}
+.modal .dialog.lib-editor label.field > .k {
+  font-size: 12px;
+  font-weight: 500;
+}
+.modal .dialog.lib-editor .hint {
+  font-size: 11.5px;
+  color: var(--muted);
+  margin: 0;
+  line-height: 1.4;
+}
+.modal .dialog.lib-editor .hint.err { color: var(--red); }
+.modal .dialog.lib-editor .pair {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  margin-bottom: 6px;
+}
+.modal .dialog.lib-editor .pair .words {
+  flex: 1;
+  min-width: 0;
+  width: auto;
+}
+.modal .dialog.lib-editor .words.port { flex: none; width: 110px; }
+.modal .dialog.lib-editor .words.timeout { flex: none; width: 160px; max-width: 100%; }
+.modal .dialog.lib-editor .words.mono,
+.modal .dialog.lib-editor input.mono.words {
+  font-family: var(--code-font, var(--code));
+}
+.modal .dialog.lib-editor textarea.words {
+  width: 100%;
+  max-width: 100%;
+  min-height: 64px;
+  padding: 7px 9px;
+  border-radius: 7px;
+  border: 1px solid var(--line);
+  background: var(--card);
+  color: var(--fg);
+  font: inherit;
+  font-size: 12.5px;
+  line-height: 1.45;
+  resize: vertical;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color .12s, box-shadow .12s;
+}
+.modal .dialog.lib-editor textarea.words:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent);
+}
+.modal .dialog.lib-editor .ehead .ic {
+  width: 16px;
+  height: 16px;
+  flex: none;
+}
+.modal .dialog.lib-editor .ehead .note {
+  font-size: 12px;
+  color: var(--muted);
+  margin-left: auto;
+}
+.modal .dialog.lib-editor .ehead.detail {
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.modal .dialog.lib-editor .ehead.detail .mark {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  display: grid;
+  place-items: center;
+  flex: none;
+}
+.modal .dialog.lib-editor .ehead.detail .who { flex: 1; min-width: 0; }
+.modal .dialog.lib-editor .ehead.detail .who .name { display: block; font-size: 15px; font-weight: 600; }
+.modal .dialog.lib-editor .ehead.detail .who .sub { font-size: 12.5px; color: var(--muted); }
+.modal .dialog.lib-editor .ehead.detail .who .pill {
+  margin-left: 8px;
+  padding: 1px 7px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  font-size: 11px;
+}
+.modal .dialog.lib-editor .blurb {
+  margin: 0 0 8px;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--fg);
+}
+.modal .dialog.lib-editor .blurb.muted {
+  margin: 0 0 12px;
+  font-size: 12.5px;
+  color: var(--muted);
+}
+.modal .dialog.lib-editor .agents {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.modal .dialog.lib-editor .agents > .k {
+  display: block;
+  width: 100%;
+  font-size: 12px;
+  font-weight: 500;
+  margin-bottom: 2px;
+}
+.modal .dialog.lib-editor .bar .note {
+  font-size: 12px;
+  color: var(--muted);
+}
+.modal .dialog.lib-editor .hrow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+.modal .dialog.lib-editor .hrow .k {
+  font-size: 12px;
+  font-weight: 500;
+}
+.modal .dialog.lib-editor .acts {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 10px;
+  position: relative;
+}
+.modal .dialog.lib-editor .pop.menu {
+  position: absolute;
+  z-index: 8;
+  min-width: 180px;
+  max-height: 320px;
+  overflow: auto;
+  padding: 4px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: var(--card);
+  box-shadow: 0 10px 28px rgba(20, 22, 30, .16);
+  animation: pop-in .28s var(--ease);
+}
+.modal .dialog.lib-editor .pop.menu.up {
+  bottom: 100%;
+  left: 0;
+  margin-bottom: 6px;
+  min-width: 220px;
+  padding: 6px 0;
+}
+.modal .dialog.lib-editor .pop.menu .words {
+  width: calc(100% - 8px);
+  max-width: none;
+  margin: 0 4px 4px;
+}
+.modal .dialog.lib-editor .pop.menu.down {
+  top: 100%;
+  left: 0;
+  margin-top: 4px;
+}
+.modal .dialog.lib-editor .pop.menu .gl {
+  padding: 4px 12px 6px;
+  font-size: 11px;
+  color: var(--muted);
+  font-weight: 600;
+}
+.modal .dialog.lib-editor .pop.menu .text.item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 7px 10px;
+  border-radius: 7px;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+.modal .dialog.lib-editor .pop.menu .text.item .v { display: block; font-size: 12.5px; }
+.modal .dialog.lib-editor .pop.menu .text.item .n { color: var(--muted); font-size: 11px; }
+.modal .dialog.lib-editor .field-block {
+  margin-bottom: 12px;
+  position: relative;
+}
+.modal .dialog.lib-editor .field-block > .k {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  margin-bottom: 6px;
+}
+.modal .dialog.lib-editor .oauth-pair {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.modal .dialog.lib-editor .oauth-pair .words {
+  flex: 1 1 120px;
+  width: auto;
+  min-width: 0;
+}
+.modal .dialog.lib-editor .sign-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
 /* Magpie action-confirm extra slot (Library Keep-skills) — tokens only */
 .action-confirm .extra { margin: -4px 0 16px; }
 .action-confirm .extra label.tick.keep {

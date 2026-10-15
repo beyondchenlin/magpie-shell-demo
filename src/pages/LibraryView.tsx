@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useRef, useState, type ClipboardEvent, type ReactNode } from "react";
 import { ActionConfirm } from "../components/ActionConfirm";
+import { PrefPick } from "../components/PrefPick";
 import { Segs } from "../components/Segs";
+import { WordsField } from "../components/WordsField";
 import { Tick } from "../components/Tick";
 import { Bird } from "../components/Bird";
 import { useSegThumb } from "../components/SegThumb";
@@ -192,29 +194,11 @@ function LibChip({
   return (
     <button
       type="button"
-      className={`lib-ag${on ? " on" : ""}`}
+      className={`lib-ag${on ? " on" : ""}${iconOnly ? " icon" : ""}`}
       aria-pressed={on}
       aria-label={label}
       title={title}
       onClick={onClick}
-      style={{
-        display: "inline-flex",
-        alignItems: "center",
-        justifyContent: "center",
-        gap: iconOnly ? 0 : 5,
-        height: iconOnly ? 28 : 26,
-        width: iconOnly ? 28 : undefined,
-        padding: iconOnly ? 0 : "0 10px 0 8px",
-        borderRadius: iconOnly ? 8 : 999,
-        border: `1px solid ${on ? "var(--line)" : "transparent"}`,
-        background: on ? "var(--card)" : "transparent",
-        color: on ? "var(--fg)" : "var(--muted)",
-        opacity: on ? 1 : 0.45,
-        font: "inherit",
-        fontSize: iconOnly ? 14 : 12,
-        cursor: "pointer",
-        transition: "background .14s, border-color .14s, color .14s, opacity .14s",
-      }}
     >
       {iconOnly ? "▦" : label}
     </button>
@@ -3841,145 +3825,151 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
             }
           }}
         >
-          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
-            <svg viewBox="0 0 16 16" width={16} height={16} fill="none" stroke="currentColor" strokeWidth="1.3" aria-hidden>
+          <div className="ehead">
+            <svg className="ic" viewBox="0 0 16 16" width={16} height={16} fill="none" stroke="currentColor" strokeWidth="1.3" aria-hidden>
               <path d={mcpEditor.transport === "stdio" ? CMD_PATH : WEB_PATH} />
             </svg>
-            <b style={{ fontSize: 14 }}>{mcpEditId ? t("Edit {name}", { name: mcpEditor.name || "server" }) : t("New MCP server")}</b>
-            <span className="grow" />
-            <span style={{ fontSize: 12, color: "var(--muted)" }}>{t("or paste its JSON anywhere here")}</span>
+            <b>{mcpEditId ? t("Edit {name}", { name: mcpEditor.name || "server" }) : t("New MCP server")}</b>
+            <span className="note">{t("or paste its JSON anywhere here")}</span>
           </div>
-          <label style={{ display: "grid", gap: 4, marginBottom: 12 }}>
-            <span style={{ fontSize: 12, fontWeight: 500 }}>{t("Name")}</span>
-            <input ref={mcpNameRef} type="text" value={mcpEditor.name} placeholder={t("e.g. github")} onChange={(e) => setMcpEditor({ ...mcpEditor, name: e.target.value })} onKeyDown={(e) => e.stopPropagation()} />
-            <small style={{ color: "var(--muted)", fontSize: 11.5 }}>{t("Letters, digits, - and _ — what the agents call it")}</small>
-          </label>
-          <div style={{ marginBottom: 12 }}>
-            <span style={{ fontSize: 12, fontWeight: 500, display: "block", marginBottom: 6 }}>{t("Runs as")}</span>
-            <div className="segs" style={{ display: "inline-flex", gap: 2, padding: 2, borderRadius: 9, background: "var(--bg)", border: "1px solid var(--line)" }}>
-              {([["stdio", t("Command")], ["http", "HTTP"], ["sse", "SSE"]] as const).map(([id, label]) => (
-                <button
-                  key={id}
-                  type="button"
-                  className={`opt${mcpEditor.transport === id ? " on" : ""}`}
-                  onClick={() => setMcpEditor({ ...mcpEditor, transport: id })}
-                  style={{
-                    height: 28, padding: "0 12px", borderRadius: 7,
-                    border: mcpEditor.transport === id ? "1px solid var(--line)" : "1px solid transparent",
-                    background: mcpEditor.transport === id ? "var(--card)" : "transparent",
-                    font: "inherit", fontSize: 12.5, cursor: "pointer",
-                    transition: "color .18s, background .18s, border-color .18s",
-                  }}
-                >
-                  {label}
-                </button>
-              ))}
+          <div className="stack">
+            <label className="field">
+              <span className="k">{t("Name")}</span>
+              <WordsField
+                className="full"
+                ref={mcpNameRef}
+                value={mcpEditor.name}
+                placeholder={t("e.g. github")}
+                onChange={(e) => setMcpEditor({ ...mcpEditor, name: e.target.value })}
+                onKeyDown={(e) => e.stopPropagation()}
+              />
+              <span className="hint">{t("Letters, digits, - and _ — what the agents call it")}</span>
+            </label>
+            <div className="field-block">
+              <span className="k">{t("Runs as")}</span>
+              <Segs
+                value={mcpEditor.transport}
+                items={[
+                  { id: "stdio" as const, label: t("Command") },
+                  { id: "http" as const, label: "HTTP" },
+                  { id: "sse" as const, label: "SSE" },
+                ]}
+                onChange={(id) => setMcpEditor({ ...mcpEditor, transport: id })}
+              />
             </div>
-          </div>
-          {mcpEditor.transport === "stdio" ? (
-            <>
-              <label style={{ display: "grid", gap: 4, marginBottom: 12 }}>
-                <span style={{ fontSize: 12, fontWeight: 500 }}>{t("Command")}</span>
-                <input className="mono" type="text" value={mcpEditor.command} placeholder="npx -y @modelcontextprotocol/server-github" onChange={(e) => setMcpEditor({ ...mcpEditor, command: e.target.value })} onKeyDown={(e) => e.stopPropagation()} />
-                <small style={{ color: "var(--muted)", fontSize: 11.5 }}>{t("The command and its arguments, as you'd type them")}</small>
-              </label>
-              <div style={{ marginBottom: 12 }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
-                  <span style={{ fontSize: 12, fontWeight: 500 }}>{t("Environment")}</span>
-                  <button type="button" className="text" onClick={() => setMcpEditor({ ...mcpEditor, envRows: [...mcpEditor.envRows, ["", ""]] })}>{t("＋ Add")}</button>
-                </div>
-                {mcpEditor.envRows.map((row, i) => (
-                  <div key={i} style={{ display: "flex", gap: 6, marginBottom: 6 }}>
-                    <input placeholder="TOKEN" value={row[0]} onChange={(e) => { const envRows = mcpEditor.envRows.map((r, j) => (j === i ? [e.target.value, r[1]] as [string, string] : r)); setMcpEditor({ ...mcpEditor, envRows }); }} onKeyDown={(e) => e.stopPropagation()} />
-                    <input placeholder={t("value")} value={row[1]} onChange={(e) => { const envRows = mcpEditor.envRows.map((r, j) => (j === i ? [r[0], e.target.value] as [string, string] : r)); setMcpEditor({ ...mcpEditor, envRows }); }} onKeyDown={(e) => e.stopPropagation()} />
+            {mcpEditor.transport === "stdio" ? (
+              <>
+                <label className="field">
+                  <span className="k">{t("Command")}</span>
+                  <WordsField
+                    className="full mono"
+                    value={mcpEditor.command}
+                    placeholder="npx -y @modelcontextprotocol/server-github"
+                    onChange={(e) => setMcpEditor({ ...mcpEditor, command: e.target.value })}
+                    onKeyDown={(e) => e.stopPropagation()}
+                  />
+                  <span className="hint">{t("The command and its arguments, as you'd type them")}</span>
+                </label>
+                <div className="field-block">
+                  <div className="hrow">
+                    <span className="k">{t("Environment")}</span>
+                    <button type="button" className="text" onClick={() => setMcpEditor({ ...mcpEditor, envRows: [...mcpEditor.envRows, ["", ""]] })}>{t("＋ Add")}</button>
                   </div>
-                ))}
-                <small style={{ color: "var(--muted)", fontSize: 11.5 }}>{t("A value can name a variable, as ${NAME}: each agent is given it in its own way, so the token stays out of its settings")}</small>
-              </div>
-            </>
-          ) : (
-            <>
-              <label style={{ display: "grid", gap: 4, marginBottom: 12 }}>
-                <span style={{ fontSize: 12, fontWeight: 500 }}>URL</span>
-                <input className="mono" type="text" value={mcpEditor.url} placeholder="https://example.com/mcp" onChange={(e) => setMcpEditor({ ...mcpEditor, url: e.target.value })} onKeyDown={(e) => e.stopPropagation()} />
-              </label>
-              <div style={{ marginBottom: 12 }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
-                  <span style={{ fontSize: 12, fontWeight: 500 }}>{t("Headers")}</span>
-                  <button type="button" className="text" onClick={() => setMcpEditor({ ...mcpEditor, headerRows: [...mcpEditor.headerRows, ["", ""]] })}>{t("＋ Add")}</button>
+                  {mcpEditor.envRows.map((row, i) => (
+                    <div key={i} className="pair">
+                      <WordsField placeholder="TOKEN" value={row[0]} onChange={(e) => { const envRows = mcpEditor.envRows.map((r, j) => (j === i ? [e.target.value, r[1]] as [string, string] : r)); setMcpEditor({ ...mcpEditor, envRows }); }} onKeyDown={(e) => e.stopPropagation()} />
+                      <WordsField placeholder={t("value")} value={row[1]} onChange={(e) => { const envRows = mcpEditor.envRows.map((r, j) => (j === i ? [r[0], e.target.value] as [string, string] : r)); setMcpEditor({ ...mcpEditor, envRows }); }} onKeyDown={(e) => e.stopPropagation()} />
+                    </div>
+                  ))}
+                  <span className="hint">{t("A value can name a variable, as ${NAME}: each agent is given it in its own way, so the token stays out of its settings")}</span>
                 </div>
-                {mcpEditor.headerRows.map((row, i) => (
-                  <div key={i} style={{ display: "flex", gap: 6, marginBottom: 6 }}>
-                    <input placeholder="Authorization" value={row[0]} onChange={(e) => { const headerRows = mcpEditor.headerRows.map((r, j) => (j === i ? [e.target.value, r[1]] as [string, string] : r)); setMcpEditor({ ...mcpEditor, headerRows }); }} onKeyDown={(e) => e.stopPropagation()} />
-                    <input placeholder="Bearer …" value={row[1]} onChange={(e) => { const headerRows = mcpEditor.headerRows.map((r, j) => (j === i ? [r[0], e.target.value] as [string, string] : r)); setMcpEditor({ ...mcpEditor, headerRows }); }} onKeyDown={(e) => e.stopPropagation()} />
+              </>
+            ) : (
+              <>
+                <label className="field">
+                  <span className="k">URL</span>
+                  <WordsField
+                    className="full mono"
+                    value={mcpEditor.url}
+                    placeholder="https://example.com/mcp"
+                    onChange={(e) => setMcpEditor({ ...mcpEditor, url: e.target.value })}
+                    onKeyDown={(e) => e.stopPropagation()}
+                  />
+                </label>
+                <div className="field-block">
+                  <div className="hrow">
+                    <span className="k">{t("Headers")}</span>
+                    <button type="button" className="text" onClick={() => setMcpEditor({ ...mcpEditor, headerRows: [...mcpEditor.headerRows, ["", ""]] })}>{t("＋ Add")}</button>
                   </div>
-                ))}
-                <small style={{ color: "var(--muted)", fontSize: 11.5 }}>{t("A value can name a variable, as ${NAME}: each agent is given it in its own way, so the token stays out of its settings")}</small>
-              </div>
-              {mcpEditor.transport === "http" ? (
-                <>
-                  <div style={{ marginBottom: 12 }}>
-                    <span style={{ fontSize: 12, fontWeight: 500, display: "block", marginBottom: 6 }}>{t("OAuth app")}</span>
-                    {!mcpEditor.oauthOpen ? (
-                      <>
-                        <button type="button" className="text" onClick={() => setMcpEditor({ ...mcpEditor, oauthOpen: true })}>{t("Use your own OAuth app")}</button>
-                        <small style={{ display: "block", marginTop: 4, color: "var(--muted)", fontSize: 11.5 }}>{t("For a server whose sign-in doesn't let magpie register itself, as GitHub's")}</small>
-                      </>
-                    ) : (
-                      <>
-                        <div style={{ display: "flex", gap: 6, flexWrap: "wrap", alignItems: "center" }}>
-                          <input placeholder={t("Client ID")} aria-label={t("Client ID")} value={mcpEditor.clientId} onChange={(e) => setMcpEditor({ ...mcpEditor, clientId: e.target.value })} onKeyDown={(e) => e.stopPropagation()} style={{ flex: "1 1 120px" }} />
-                          <input type="password" placeholder={t("Client secret")} aria-label={t("Client secret")} value={mcpEditor.clientSecret} onChange={(e) => setMcpEditor({ ...mcpEditor, clientSecret: e.target.value })} onKeyDown={(e) => e.stopPropagation()} style={{ flex: "1 1 120px" }} />
-                          <input placeholder={t("Callback port")} aria-label={t("Callback port")} inputMode="numeric" value={mcpEditor.callbackPort} onChange={(e) => setMcpEditor({ ...mcpEditor, callbackPort: e.target.value.replace(/\D/g, "").slice(0, 5) })} onKeyDown={(e) => e.stopPropagation()} style={{ width: 110 }} />
-                          <button type="button" className="text" title={t("Remove")} onClick={() => setMcpEditor({ ...mcpEditor, oauthOpen: false, clientId: "", clientSecret: "", callbackPort: "" })}>×</button>
+                  {mcpEditor.headerRows.map((row, i) => (
+                    <div key={i} className="pair">
+                      <WordsField placeholder="Authorization" value={row[0]} onChange={(e) => { const headerRows = mcpEditor.headerRows.map((r, j) => (j === i ? [e.target.value, r[1]] as [string, string] : r)); setMcpEditor({ ...mcpEditor, headerRows }); }} onKeyDown={(e) => e.stopPropagation()} />
+                      <WordsField placeholder="Bearer …" value={row[1]} onChange={(e) => { const headerRows = mcpEditor.headerRows.map((r, j) => (j === i ? [r[0], e.target.value] as [string, string] : r)); setMcpEditor({ ...mcpEditor, headerRows }); }} onKeyDown={(e) => e.stopPropagation()} />
+                    </div>
+                  ))}
+                  <span className="hint">{t("A value can name a variable, as ${NAME}: each agent is given it in its own way, so the token stays out of its settings")}</span>
+                </div>
+                {mcpEditor.transport === "http" ? (
+                  <>
+                    <div className="field-block">
+                      <span className="k">{t("OAuth app")}</span>
+                      {!mcpEditor.oauthOpen ? (
+                        <>
+                          <button type="button" className="text" onClick={() => setMcpEditor({ ...mcpEditor, oauthOpen: true })}>{t("Use your own OAuth app")}</button>
+                          <span className="hint">{t("For a server whose sign-in doesn't let magpie register itself, as GitHub's")}</span>
+                        </>
+                      ) : (
+                        <>
+                          <div className="oauth-pair">
+                            <WordsField placeholder={t("Client ID")} aria-label={t("Client ID")} value={mcpEditor.clientId} onChange={(e) => setMcpEditor({ ...mcpEditor, clientId: e.target.value })} onKeyDown={(e) => e.stopPropagation()} />
+                            <WordsField type="password" placeholder={t("Client secret")} aria-label={t("Client secret")} value={mcpEditor.clientSecret} onChange={(e) => setMcpEditor({ ...mcpEditor, clientSecret: e.target.value })} onKeyDown={(e) => e.stopPropagation()} />
+                            <WordsField className="port" placeholder={t("Callback port")} aria-label={t("Callback port")} inputMode="numeric" value={mcpEditor.callbackPort} onChange={(e) => setMcpEditor({ ...mcpEditor, callbackPort: e.target.value.replace(/\D/g, "").slice(0, 5) })} onKeyDown={(e) => e.stopPropagation()} />
+                            <button type="button" className="text" title={t("Remove")} onClick={() => setMcpEditor({ ...mcpEditor, oauthOpen: false, clientId: "", clientSecret: "", callbackPort: "" })}>×</button>
+                          </div>
+                          <span className="hint">
+                            {t("Made with its vendor (GitHub's under Settings › Developer settings › OAuth Apps), with {url} as its callback URL", {
+                              url: `http://localhost${mcpEditor.callbackPort ? ":" + mcpEditor.callbackPort : ""}/callback`,
+                            })}
+                          </span>
+                        </>
+                      )}
+                    </div>
+                    <div className="field-block">
+                      <span className="k">{t("Sign-in")}</span>
+                      {mcpSignWaiting ? (
+                        <div className="sign-row">
+                          <span className="hint">{t("Finish signing in in your browser…")}</span>
+                          <button
+                            type="button"
+                            className="text"
+                            onClick={() => {
+                              setMcpSignWaiting(false);
+                              setMcpOauthWall(false);
+                            }}
+                          >
+                            {t("Cancel")}
+                          </button>
                         </div>
-                        <small style={{ display: "block", marginTop: 4, color: "var(--muted)", fontSize: 11.5 }}>
-                          {t("Made with its vendor (GitHub's under Settings › Developer settings › OAuth Apps), with {url} as its callback URL", {
-                            url: `http://localhost${mcpEditor.callbackPort ? ":" + mcpEditor.callbackPort : ""}/callback`,
-                          })}
-                        </small>
-                      </>
-                    )}
-                  </div>
-                  <div style={{ marginBottom: 12 }}>
-                    <span style={{ fontSize: 12, fontWeight: 500, display: "block", marginBottom: 6 }}>{t("Sign-in")}</span>
-                    {mcpSignWaiting ? (
-                      <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
-                        <span style={{ fontSize: 13, color: "var(--fg-2)" }}>{t("Finish signing in in your browser…")}</span>
+                      ) : (
                         <button
                           type="button"
-                          className="text"
-                          onClick={() => {
-                            setMcpSignWaiting(false);
-                            setMcpOauthWall(false);
-                          }}
+                          className="text action"
+                          onClick={() => saveMcp({ signIn: true })}
                         >
-                          {t("Cancel")}
+                          {t(mcpEditId ? "Sign in" : "Save and sign in")}
                         </button>
-                      </div>
-                    ) : (
-                      <button
-                        type="button"
-                        className="text action"
-                        onClick={() => saveMcp({ signIn: true })}
-                      >
-                        {t(mcpEditId ? "Sign in" : "Save and sign in")}
-                      </button>
-                    )}
-                    {mcpEditId && mcpServers.find((x) => x.id === mcpEditId)?.oauthRefused ? (
-                      <div style={{ marginTop: 6, fontSize: 12.5, color: "var(--red)" }}>
-                        {t("the sign-in was refused (access_denied)")}
-                      </div>
-                    ) : null}
-                    <small style={{ display: "block", marginTop: 4, color: "var(--muted)", fontSize: 11.5 }}>{t("For a server that asks you to sign in (OAuth): magpie signs in once, and every agent given it uses that sign-in")}</small>
-                  </div>
-                </>
-              ) : null}
-            </>
-          )}
-          <div style={{ marginBottom: 14 }}>
-            <span style={{ fontSize: 12, fontWeight: 500, display: "block", marginBottom: 6 }}>{t("Agents")}</span>
-            <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+                      )}
+                      {mcpEditId && mcpServers.find((x) => x.id === mcpEditId)?.oauthRefused ? (
+                        <span className="hint err">{t("the sign-in was refused (access_denied)")}</span>
+                      ) : null}
+                      <span className="hint">{t("For a server that asks you to sign in (OAuth): magpie signs in once, and every agent given it uses that sign-in")}</span>
+                    </div>
+                  </>
+                ) : null}
+              </>
+            )}
+            <div className="field-block agents">
+              <span className="k">{t("Agents")}</span>
               {DEMO_AGENTS.map((a) => (
                 <LibChip
                   key={a.id}
@@ -3999,11 +3989,10 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
             </div>
           </div>
           {mcpEditId ? (
-            <div style={{ display: "flex", gap: 8, marginBottom: 10, flexWrap: "wrap", alignItems: "center" }}>
+            <div className="acts">
               <button
                 type="button"
-                className="text"
-                style={{ color: "var(--red)" }}
+                className="text danger"
                 onClick={() => {
                   const s = mcpServers.find((x) => x.id === mcpEditId);
                   if (s) setMcpRemoveAsk({ id: s.id, name: s.name });
@@ -4011,48 +4000,30 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
               >
                 {t("Remove from the library")}
               </button>
-              <div style={{ position: "relative" }}>
-                <button
-                  type="button"
-                  className="text action"
-                  title={t("Copy {name} as an agent's project file has it, to paste into a project yourself", {
-                    name: mcpEditor.name || "server",
-                  })}
-                  onClick={() => setMcpCopyMenu((m) => (m === "editor" ? null : "editor"))}
-                >
-                  {mcpCopyFlash && mcpCopyMenu !== "editor" ? "✓ " : ""}
-                  {t("Copy config…")}
-                </button>
-                {mcpCopyMenu === "editor" ? (
-                  <div
-                    style={{
-                      position: "absolute",
-                      bottom: "100%",
-                      left: 0,
-                      marginBottom: 6,
-                      minWidth: 220,
-                      padding: "6px 0",
-                      borderRadius: 10,
-                      border: "1px solid var(--line)",
-                      background: "var(--card)",
-                      boxShadow: "0 10px 28px rgba(20,22,30,.16)",
-                      zIndex: 8,
-                    }}
+              <button
+                type="button"
+                className="text action"
+                title={t("Copy {name} as an agent's project file has it, to paste into a project yourself", {
+                  name: mcpEditor.name || "server",
+                })}
+                onClick={() => setMcpCopyMenu((m) => (m === "editor" ? null : "editor"))}
+              >
+                {mcpCopyFlash && mcpCopyMenu !== "editor" ? "✓ " : ""}
+                {t("Copy config…")}
+              </button>
+              {mcpCopyMenu === "editor" ? (
+                <div className="pop menu up" role="menu">
+                  <div className="gl">{t("Copy as an agent's project file")}</div>
+                  <button
+                    type="button"
+                    className="text item"
+                    role="menuitem"
+                    onClick={() => mcpEditId && copyMcpConfig([mcpEditId])}
                   >
-                    <div style={{ padding: "4px 12px 6px", fontSize: 11, color: "var(--muted)", fontWeight: 600 }}>
-                      {t("Copy as an agent's project file")}
-                    </div>
-                    <button
-                      type="button"
-                      className="text"
-                      style={{ display: "block", width: "100%", textAlign: "left", padding: "8px 12px", border: 0, background: "transparent", font: "inherit", fontSize: 13, cursor: "pointer" }}
-                      onClick={() => mcpEditId && copyMcpConfig([mcpEditId])}
-                    >
-                      Cursor
-                    </button>
-                  </div>
-                ) : null}
-              </div>
+                    Cursor
+                  </button>
+                </div>
+              ) : null}
             </div>
           ) : null}
           <div className="bar">
@@ -4072,26 +4043,26 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
 
       {imageSheet ? (
         <LibModal onBg={() => setImageSheet(false)}>
-          <div style={{ display: "flex", alignItems: "flex-start", gap: 10, marginBottom: 10 }}>
-            <span aria-hidden style={{ width: 36, height: 36, borderRadius: "50%", background: "var(--bg)", border: "1px solid var(--line)", display: "grid", placeItems: "center", flex: "none" }}>🐦</span>
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <b style={{ display: "block", fontSize: 15 }}>Magpie Image</b>
-              <span style={{ fontSize: 12.5, color: "var(--muted)" }}>Magpie <code style={{ fontSize: 11.5 }}>magpie</code></span>
+          <div className="ehead detail">
+            <span className="mark" aria-hidden>🐦</span>
+            <div className="who">
+              <span className="name">Magpie Image</span>
+              <span className="sub">Magpie <code>magpie</code></span>
             </div>
             <button type="button" className="text" onClick={() => window.open("https://github.com/beyondchenlin/magpie-shell-demo", "_blank", "noopener,noreferrer")}>{t("Homepage")} ↗</button>
           </div>
-          <p style={{ margin: "0 0 8px", fontSize: 13, lineHeight: 1.45 }}>
+          <p className="blurb">
             {t("Generate and edit images with the image model set in Magpie (Settings → Images), and make short videos with a video model set up in Magpie (Grok Imagine, Seedance), saved in the project.")}
           </p>
-          <p style={{ margin: "0 0 12px", fontSize: 12.5, color: "var(--muted)", lineHeight: 1.45 }}>
+          <p className="blurb muted">
             {t("Pick the agents that may generate images: each image costs what the model set in Settings → Images charges.")}
           </p>
-          <div style={{ marginBottom: 14 }}>
-            <span style={{ fontSize: 12, fontWeight: 500, display: "block", marginBottom: 6 }}>{t("Agents")}</span>
+          <div className="field-block agents">
+            <span className="k">{t("Agents")}</span>
             <LibChip on={imageAgents.includes("cursor")} label="Cursor" onClick={() => setImageAgents((list) => (list.includes("cursor") ? list.filter((x) => x !== "cursor") : [...list, "cursor"]))} />
           </div>
           <div className="bar">
-            <span style={{ fontSize: 12, color: "var(--muted)" }}>magpie-image</span>
+            <span className="note">magpie-image</span>
             <span className="grow" />
             <button type="button" className="text" onClick={() => setImageSheet(false)}>{t("Cancel")}</button>
             <button
@@ -4125,22 +4096,22 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
 
       {skillSheet ? (
         <LibModal onBg={() => setSkillSheet(null)}>
-          <div style={{ display: "flex", alignItems: "flex-start", gap: 10, marginBottom: 10 }}>
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <b style={{ display: "block", fontSize: 15 }}>{skillSheet.name}</b>
-              <span style={{ fontSize: 12.5, color: "var(--muted)" }}>
+          <div className="ehead detail">
+            <div className="who">
+              <span className="name">{skillSheet.name}</span>
+              <span className="sub">
                 {skillSheet.by}
                 {skillSheet.installs ? (
-                  <span style={{ marginLeft: 8, padding: "1px 7px", borderRadius: 999, border: "1px solid var(--line)", fontSize: 11 }}>{skillSheet.installs} installs</span>
+                  <span className="pill">{skillSheet.installs} installs</span>
                 ) : null}
               </span>
             </div>
             <button type="button" className="text" onClick={() => window.open("https://skills.sh", "_blank", "noopener,noreferrer")}>skills.sh ↗</button>
           </div>
-          <p style={{ margin: "0 0 6px", fontSize: 13, lineHeight: 1.45 }}>{skillSheet.desc}</p>
-          <p style={{ margin: "0 0 12px", fontSize: 12, color: "var(--muted)" }}>From github.com/{skillSheet.by}</p>
-          <div style={{ marginBottom: 14 }}>
-            <span style={{ fontSize: 12, fontWeight: 500, display: "block", marginBottom: 6 }}>{t("Agents")}</span>
+          <p className="blurb">{skillSheet.desc}</p>
+          <p className="blurb muted">From github.com/{skillSheet.by}</p>
+          <div className="field-block agents">
+            <span className="k">{t("Agents")}</span>
             <LibChip on label="Cursor" onClick={() => {}} />
           </div>
           <div className="bar">
@@ -4164,137 +4135,165 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
 
       {hookEditor ? (
         <LibModal onBg={tryCloseHook}>
-          <div style={{ marginBottom: 12 }}><b style={{ fontSize: 14 }}>{t("New hook")}</b></div>
-          <label style={{ display: "grid", gap: 4, marginBottom: 10 }}>
-            <span style={{ fontSize: 12, fontWeight: 500 }}>{t("Name")}</span>
-            <input type="text" value={hookEditor.name} placeholder={t("e.g. notify")} onChange={(e) => setHookEditor({ ...hookEditor, name: e.target.value })} onKeyDown={(e) => e.stopPropagation()} />
-            <small style={{ color: "var(--muted)", fontSize: 11.5 }}>{t("Letters, digits, - and _")}</small>
-          </label>
-          <label style={{ display: "grid", gap: 4, marginBottom: 10 }}>
-            <span style={{ fontSize: 12, fontWeight: 500 }}>{t("Description")}</span>
-            <textarea rows={3} maxLength={200} value={hookEditor.description} placeholder={t("e.g. Tell me when a turn ends")} onChange={(e) => setHookEditor({ ...hookEditor, description: e.target.value })} onKeyDown={(e) => e.stopPropagation()} style={{ resize: "vertical", minHeight: 64 }} />
-            <small style={{ color: "var(--muted)", fontSize: 11.5 }}>{t("Optional: what it's for, in any language. Only the library keeps it")}</small>
-          </label>
-          <div style={{ marginBottom: 10, position: "relative" }}>
-            <span style={{ fontSize: 12, fontWeight: 500, display: "block", marginBottom: 4 }}>{t("When it runs")}</span>
-            <button type="button" className="sess-pick" aria-haspopup="menu" aria-expanded={eventMenu} onClick={() => { setEventMenu((v) => !v); setToolMenu(false); }}
-              style={{ display: "inline-flex", alignItems: "center", gap: 6, height: 30, padding: "0 10px", borderRadius: 8, border: "1px solid var(--line)", background: "var(--card)", font: "inherit", fontSize: 12.5, cursor: "pointer" }}>
-              {hookEditor.event.includes(":")
-                ? `Cursor · ${hookEditor.event.split(":")[1]}`
-                : t(HOOK_EVENTS.find(([v]) => v === hookEditor.event)?.[1] || hookEditor.event)}
-              <svg viewBox="0 0 12 12" width={11} height={11} aria-hidden style={{ transform: eventMenu ? "rotate(180deg)" : undefined, transition: "transform .15s var(--ease)" }}>
-                <path d="M3 4.5 6 7.5 9 4.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-              </svg>
-            </button>
-            {eventMenu ? (
-              <div role="menu" style={{ position: "absolute", zIndex: 2, top: "100%", left: 0, marginTop: 4, minWidth: 280, maxHeight: 320, overflow: "auto", background: "var(--card)", border: "1px solid var(--line)", borderRadius: 10, boxShadow: "0 10px 28px rgba(20,22,30,.16)", padding: 4, animation: "pop-in .28s var(--ease)" }}>
-                <div style={{ padding: "4px 8px 2px", fontSize: 11, color: "var(--muted)", fontWeight: 500 }}>{t("When it runs")}</div>
-                <input
-                  type="search"
-                  value={eventFilter}
-                  placeholder={t("Find an event")}
-                  onChange={(e) => setEventFilter(e.target.value)}
-                  onKeyDown={(e) => e.stopPropagation()}
-                  style={{ width: "100%", marginBottom: 4, height: 28, fontSize: 12.5 }}
-                  autoFocus
-                />
-                {/* Magpie: shared events always:true — never hidden by Find an event */}
-                {HOOK_EVENTS.map(([v, n]) => (
-                  <button
-                    key={v}
-                    type="button"
-                    role="menuitem"
-                    className="text"
-                    style={{ display: "block", width: "100%", textAlign: "left", padding: "7px 10px", borderRadius: 7 }}
-                    onClick={() => {
-                      setHookEditor({ ...hookEditor, event: v, matcher: toolEvent(v) ? hookEditor.matcher : "", agents: DEMO_AGENTS.map((a) => a.id) });
-                      setEventMenu(false);
-                      setEventFilter("");
-                    }}
-                  >
-                    <span style={{ display: "block", fontSize: 12.5 }}>{t(n)}{hookEditor.event === v ? " ✓" : ""}</span>
-                    <small style={{ color: "var(--muted)", fontSize: 11 }}>{t("every agent, in its own name for it")}</small>
-                  </button>
-                ))}
-                {CURSOR_HOOK_EVENTS.filter((ev) => {
-                  const q = eventFilter.trim().toLowerCase();
-                  if (!q) return true;
-                  return (`cursor ${ev}`).toLowerCase().includes(q);
-                }).map((ev) => {
-                  const v = `cursor:${ev}`;
-                  return (
+          <div className="ehead">
+            <b>{t("New hook")}</b>
+          </div>
+          <div className="stack">
+            <label className="field">
+              <span className="k">{t("Name")}</span>
+              <WordsField
+                className="full"
+                value={hookEditor.name}
+                placeholder={t("e.g. notify")}
+                onChange={(e) => setHookEditor({ ...hookEditor, name: e.target.value })}
+                onKeyDown={(e) => e.stopPropagation()}
+              />
+              <span className="hint">{t("Letters, digits, - and _")}</span>
+            </label>
+            <label className="field">
+              <span className="k">{t("Description")}</span>
+              <textarea
+                className="words"
+                rows={3}
+                maxLength={200}
+                value={hookEditor.description}
+                placeholder={t("e.g. Tell me when a turn ends")}
+                onChange={(e) => setHookEditor({ ...hookEditor, description: e.target.value })}
+                onKeyDown={(e) => e.stopPropagation()}
+              />
+              <span className="hint">{t("Optional: what it's for, in any language. Only the library keeps it")}</span>
+            </label>
+            <div className="field-block">
+              <span className="k">{t("When it runs")}</span>
+              <PrefPick
+                label={
+                  hookEditor.event.includes(":")
+                    ? `Cursor · ${hookEditor.event.split(":")[1]}`
+                    : t(HOOK_EVENTS.find(([v]) => v === hookEditor.event)?.[1] || hookEditor.event)
+                }
+                open={eventMenu}
+                onClick={() => { setEventMenu((v) => !v); setToolMenu(false); }}
+                aria-haspopup="menu"
+              />
+              {eventMenu ? (
+                <div role="menu" className="pop menu down">
+                  <div className="gl">{t("When it runs")}</div>
+                  <WordsField
+                    className="full"
+                    type="search"
+                    value={eventFilter}
+                    placeholder={t("Find an event")}
+                    onChange={(e) => setEventFilter(e.target.value)}
+                    onKeyDown={(e) => e.stopPropagation()}
+                    autoFocus
+                  />
+                  {/* Magpie: shared events always:true — never hidden by Find an event */}
+                  {HOOK_EVENTS.map(([v, n]) => (
                     <button
                       key={v}
                       type="button"
                       role="menuitem"
-                      className="text"
-                      style={{ display: "block", width: "100%", textAlign: "left", padding: "7px 10px", borderRadius: 7 }}
+                      className="text item"
                       onClick={() => {
-                        setHookEditor({ ...hookEditor, event: v, matcher: "", agents: ["cursor"] });
+                        setHookEditor({ ...hookEditor, event: v, matcher: toolEvent(v) ? hookEditor.matcher : "", agents: DEMO_AGENTS.map((a) => a.id) });
                         setEventMenu(false);
                         setEventFilter("");
                       }}
                     >
-                      <span style={{ display: "block", fontSize: 12.5 }}>Cursor · {ev}{hookEditor.event === v ? " ✓" : ""}</span>
-                      <small style={{ color: "var(--muted)", fontSize: 11 }}>{t("{agent}'s own event", { agent: "Cursor" })}</small>
-                    </button>
-                  );
-                })}
-              </div>
-            ) : null}
-          </div>
-          {hookEditor.event.includes(":") ? (
-            <label style={{ display: "grid", gap: 4, marginBottom: 10 }}>
-              <span style={{ fontSize: 12, fontWeight: 500 }}>{t("Matcher")}</span>
-              <input
-                className="mono lib-hookmatcher"
-                type="text"
-                value={hookEditor.matcher}
-                placeholder={t("every tool")}
-                onChange={(e) => setHookEditor({ ...hookEditor, matcher: e.target.value })}
-                onKeyDown={(e) => e.stopPropagation()}
-              />
-              <small style={{ color: "var(--muted)", fontSize: 11.5 }}>
-                {t("The agent's own matcher, as its hooks file has it; empty for all")}
-              </small>
-            </label>
-          ) : toolEvent(hookEditor.event) ? (
-            <div style={{ marginBottom: 10, position: "relative" }}>
-              <span style={{ fontSize: 12, fontWeight: 500, display: "block", marginBottom: 4 }}>{t("For which tools")}</span>
-              <button type="button" className="sess-pick lib-hooktool" aria-haspopup="menu" aria-expanded={toolMenu}
-                title={t(HOOK_TOOLS.find(([v]) => v === hookEditor.matcher)?.[1] || "Any tool")}
-                onClick={() => { setToolMenu((v) => !v); setEventMenu(false); }}
-                style={{ display: "inline-flex", alignItems: "center", gap: 6, height: 30, padding: "0 10px", borderRadius: 8, border: "1px solid var(--line)", background: "var(--card)", font: "inherit", fontSize: 12.5, cursor: "pointer" }}>
-                <span>{t(HOOK_TOOLS.find(([v]) => v === hookEditor.matcher)?.[1] || "Any tool")}</span>
-                <svg viewBox="0 0 12 12" width={11} height={11} aria-hidden style={{ transform: toolMenu ? "rotate(180deg)" : undefined, transition: "transform .15s var(--ease)" }}>
-                  <path d="M3 4.5 6 7.5 9 4.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-                </svg>
-              </button>
-              {toolMenu ? (
-                <div role="menu" style={{ position: "absolute", zIndex: 2, top: "100%", left: 0, marginTop: 4, minWidth: 180, background: "var(--card)", border: "1px solid var(--line)", borderRadius: 10, boxShadow: "0 10px 28px rgba(20,22,30,.16)", padding: 4, animation: "pop-in .28s var(--ease)" }}>
-                  {HOOK_TOOLS.map(([v, n]) => (
-                    <button key={v || "any"} type="button" role="menuitem" className="text" style={{ display: "block", width: "100%", textAlign: "left", padding: "7px 10px", borderRadius: 7 }}
-                      onClick={() => { setHookEditor({ ...hookEditor, matcher: v }); setToolMenu(false); }}>
-                      {t(n)}{hookEditor.matcher === v ? " ✓" : ""}
+                      <span className="v">{t(n)}{hookEditor.event === v ? " ✓" : ""}</span>
+                      <small className="n">{t("every agent, in its own name for it")}</small>
                     </button>
                   ))}
+                  {CURSOR_HOOK_EVENTS.filter((ev) => {
+                    const q = eventFilter.trim().toLowerCase();
+                    if (!q) return true;
+                    return (`cursor ${ev}`).toLowerCase().includes(q);
+                  }).map((ev) => {
+                    const v = `cursor:${ev}`;
+                    return (
+                      <button
+                        key={v}
+                        type="button"
+                        role="menuitem"
+                        className="text item"
+                        onClick={() => {
+                          setHookEditor({ ...hookEditor, event: v, matcher: "", agents: ["cursor"] });
+                          setEventMenu(false);
+                          setEventFilter("");
+                        }}
+                      >
+                        <span className="v">Cursor · {ev}{hookEditor.event === v ? " ✓" : ""}</span>
+                        <small className="n">{t("{agent}'s own event", { agent: "Cursor" })}</small>
+                      </button>
+                    );
+                  })}
                 </div>
               ) : null}
-              <small style={{ display: "block", marginTop: 4, color: "var(--muted)", fontSize: 11.5 }}>{t("Each agent's own names for them")}</small>
             </div>
-          ) : null}
-          <label style={{ display: "grid", gap: 4, marginBottom: 10 }}>
-            <span style={{ fontSize: 12, fontWeight: 500 }}>{t("Command")}</span>
-            <input className="mono" type="text" value={hookEditor.command} placeholder="curl -s https://api.day.app/KEY/done" onChange={(e) => setHookEditor({ ...hookEditor, command: e.target.value })} onKeyDown={(e) => e.stopPropagation()} />
-            <small style={{ color: "var(--muted)", fontSize: 11.5 }}>{t("Run by the agent's shell, in the session's folder; the agent passes what happened as JSON on its input")}</small>
-          </label>
-          <label style={{ display: "grid", gap: 4, marginBottom: 10 }}>
-            <span style={{ fontSize: 12, fontWeight: 500 }}>{t("Timeout (seconds)")}</span>
-            <input type="text" inputMode="numeric" value={hookEditor.timeout} placeholder={t("the agent's own")} onChange={(e) => setHookEditor({ ...hookEditor, timeout: e.target.value.replace(/\D/g, "") })} onKeyDown={(e) => e.stopPropagation()} style={{ maxWidth: 160 }} />
-          </label>
-          <div style={{ marginBottom: 14 }}>
-            <span style={{ fontSize: 12, fontWeight: 500, display: "block", marginBottom: 6 }}>{t("Agents")}</span>
-            <LibChip on={hookEditor.agents.includes("cursor")} label="Cursor" onClick={() => setHookEditor({ ...hookEditor, agents: hookEditor.agents.includes("cursor") ? hookEditor.agents.filter((x) => x !== "cursor") : [...hookEditor.agents, "cursor"] })} />
+            {hookEditor.event.includes(":") ? (
+              <label className="field">
+                <span className="k">{t("Matcher")}</span>
+                <WordsField
+                  className="full mono lib-hookmatcher"
+                  value={hookEditor.matcher}
+                  placeholder={t("every tool")}
+                  onChange={(e) => setHookEditor({ ...hookEditor, matcher: e.target.value })}
+                  onKeyDown={(e) => e.stopPropagation()}
+                />
+                <span className="hint">
+                  {t("The agent's own matcher, as its hooks file has it; empty for all")}
+                </span>
+              </label>
+            ) : toolEvent(hookEditor.event) ? (
+              <div className="field-block">
+                <span className="k">{t("For which tools")}</span>
+                <PrefPick
+                  className="lib-hooktool"
+                  label={t(HOOK_TOOLS.find(([v]) => v === hookEditor.matcher)?.[1] || "Any tool")}
+                  open={toolMenu}
+                  title={t(HOOK_TOOLS.find(([v]) => v === hookEditor.matcher)?.[1] || "Any tool")}
+                  onClick={() => { setToolMenu((v) => !v); setEventMenu(false); }}
+                  aria-haspopup="menu"
+                />
+                {toolMenu ? (
+                  <div role="menu" className="pop menu down">
+                    {HOOK_TOOLS.map(([v, n]) => (
+                      <button key={v || "any"} type="button" role="menuitem" className="text item"
+                        onClick={() => { setHookEditor({ ...hookEditor, matcher: v }); setToolMenu(false); }}>
+                        {t(n)}{hookEditor.matcher === v ? " ✓" : ""}
+                      </button>
+                    ))}
+                  </div>
+                ) : null}
+                <span className="hint">{t("Each agent's own names for them")}</span>
+              </div>
+            ) : null}
+            <label className="field">
+              <span className="k">{t("Command")}</span>
+              <WordsField
+                className="full mono"
+                value={hookEditor.command}
+                placeholder="curl -s https://api.day.app/KEY/done"
+                onChange={(e) => setHookEditor({ ...hookEditor, command: e.target.value })}
+                onKeyDown={(e) => e.stopPropagation()}
+              />
+              <span className="hint">{t("Run by the agent's shell, in the session's folder; the agent passes what happened as JSON on its input")}</span>
+            </label>
+            <label className="field">
+              <span className="k">{t("Timeout (seconds)")}</span>
+              <WordsField
+                className="timeout"
+                inputMode="numeric"
+                value={hookEditor.timeout}
+                placeholder={t("the agent's own")}
+                onChange={(e) => setHookEditor({ ...hookEditor, timeout: e.target.value.replace(/\D/g, "") })}
+                onKeyDown={(e) => e.stopPropagation()}
+              />
+            </label>
+            <div className="field-block agents">
+              <span className="k">{t("Agents")}</span>
+              <LibChip on={hookEditor.agents.includes("cursor")} label="Cursor" onClick={() => setHookEditor({ ...hookEditor, agents: hookEditor.agents.includes("cursor") ? hookEditor.agents.filter((x) => x !== "cursor") : [...hookEditor.agents, "cursor"] })} />
+            </div>
           </div>
           <div className="bar">
             <span className="grow" />
