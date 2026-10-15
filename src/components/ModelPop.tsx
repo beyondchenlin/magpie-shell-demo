@@ -9,6 +9,7 @@ export type PopOption = {
   reset?: boolean;
   group?: string;
   ref?: string;
+  custom?: boolean;
 };
 
 type Props = {
@@ -22,6 +23,8 @@ type Props = {
   onClose: () => void;
   /** Magpie multi member picker: stay open after pick */
   keepOpen?: boolean;
+  /** Prefer opening above the chip (settings Codex pickers at scroll bottom). */
+  preferUp?: boolean;
 };
 
 const FAV_KEY = "magpie.modelFavorites";
@@ -50,6 +53,7 @@ export function ModelPop({
   onPick,
   onClose,
   keepOpen = false,
+  preferUp = false,
 }: Props) {
   const popRef = useRef<HTMLDivElement>(null);
   const railRef = useRef<HTMLElement>(null);
@@ -78,13 +82,13 @@ export function ModelPop({
     let left = Math.min(Math.max(8, r.left), window.innerWidth - w - 8);
     let top = r.bottom + 6;
     let up = false;
-    if (top + Math.min(h, 280) > window.innerHeight - 8) {
+    if (preferUp || top + Math.min(h, 280) > window.innerHeight - 8) {
       top = Math.max(8, r.top - 6);
       up = true;
     }
     const ox = Math.min(Math.max(16, r.left + r.width / 2 - left), w - 16);
     setPos({ top: up ? top - h : top, left, ox, up, w, h });
-  }, [open, anchor, modelPicker, options.length]);
+  }, [open, anchor, modelPicker, options.length, preferUp]);
 
   useLayoutEffect(() => {
     if (!shown || !modelPicker || !railRef.current || !thumbRef.current) return;
@@ -291,7 +295,7 @@ export function ModelPop({
                     <span className="v">{o.label}</span>
                     {o.note ? <span className="n">{o.note}</span> : null}
                   </span>
-                  {modelPicker && o.value && !o.reset ? (
+                  {modelPicker && o.value && !o.custom ? (
                     <button
                       type="button"
                       className={`favorite${isFav(o) ? " on" : ""}`}

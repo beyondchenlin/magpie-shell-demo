@@ -4349,5 +4349,6 @@
   "Remove rule": "删除规则",
   "Filter action…": "筛选动作…",
   "Rule actions": "规则操作",
-  "About intent": "关于意图判断"
+  "About intent": "关于意图判断",
+  "A closed window frees about 100 MB after a minute; the gateway and tasks keep running, only the page reloads": "关闭窗口约一分钟后释放约 100 MB；网关和任务继续跑，只有页面会重新加载"
 }

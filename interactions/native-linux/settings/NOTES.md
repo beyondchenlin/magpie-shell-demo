@@ -273,3 +273,111 @@ Settings on General, font rows in view. Interface font and Code font both **Syst
 Not in this window: Observability tab (still hidden). Allowances quota body still N/A.
 
 Next General rows still unopened below the fonts: Provider in model names, Codex subagents, Long conversations, Codex thread titles / descriptions / composer predictions / auto-review pickers, Open at login, Lightweight mode, Prevent sleep. Tray row was on screen (`Open the quick panel`) and not toggled.
+
+## GENERAL below the fonts (shots 135–177)
+
+Native Linux, magpie pid 560329, window **752×652**. Continued from the font rows (both still **System default**). Every control exercised here was put back. textSize **110**, appearance System, language System. Observability still not in the tab row. Allowances quota not touched. No Codex memories row (hidden). Colorblind mode is above the fonts (Off) and was not part of this pass.
+
+Green **Saved** only on `savePrefs` rows (tray, lightweight, prevent sleep). The dedicated endpoints — provider names, Codex subagents, long conversations, the four Codex pickers, open at login — change the control and do **not** toast.
+
+### Tray (135–138)
+
+Not nested. Two segments, no extra rows. Toggled and restored.
+
+| shot | control | seen |
+|---|---|---|
+| 135 | rows under the fonts | Tray through Open at login. Code-font preview clipped at the top. Provider **On**. Subagents **Off**. Compact at **272K** with placeholder `272k`. Four Codex chips on Codex's own. Login **Off**. |
+| 136 | hover Open the main window | Unselected label darkens. No row fill, no tooltip. |
+| 137 | Open the main window | Thumb on that segment. **Saved**. |
+| 138 | Open the quick panel | Restored. **Saved**. `tray` back to `panel`. |
+
+### Provider in model names (139–142)
+
+LTR: Off / Not on names I set / **On**. No nested line (no connected agent whose list ignores the setting). No toast.
+
+| shot | seen |
+|---|---|
+| 139 | Pointer on Off before the click. |
+| 140 | **Off** selected. |
+| 141 | **Not on names I set** selected. |
+| 142 | **On** restored. |
+
+### Codex subagents (143–145)
+
+| shot | seen |
+|---|---|
+| 143 | Truncated subtitle tooltip: "A GPT lead spawns subagents on magpie's other models. New threads only; Codex's own multi_agent_v2 still wins". |
+| 144 | **On**. No warning line, no toast. |
+| 145 | **Off** restored. |
+
+### Long conversations (146–153)
+
+LTR: segment **Compact at 272K** / Full window, then a number field (placeholder `272k`, tooltip **Compact at**). The subtitle is static (it keeps saying 272K even after a custom threshold). Full window hides the field and the subtitle column widens, so more of the line shows before the ellipsis.
+
+| shot | seen |
+|---|---|
+| 146 | Subtitle tooltip, whole: "Codex and Claude Code compact at 272K or the size typed; a full window makes turns slower and costlier". |
+| 147 | Field tooltip **Compact at**. |
+| 148 | Typed `nope`, blurred. Field keeps `nope`. Red toast "Compact at: nope is not a number of tokens like 272k". Segment stays Compact at 272K. Not saved. |
+| 149 | `180k` committed. Segment **Compact at 180K**, field `180k`. |
+| 150 | Field focused: blue ring around `180k`. |
+| 151 | Field cleared. Placeholder `272k`, segment **Compact at 272K**. |
+| 152 | **Full window**. Number field gone. Subtitle reads through "or the size typed;". |
+| 153 | **Compact at 272K** restored, field back. `fullContext` and `compactAt` absent again. |
+
+### Codex pickers (154–168)
+
+Empty catalog on this machine: no provider rail, no model rows. Each menu opens **up** (above the row) at this scroll. Search is focused, placeholder `Filter, or type any model id…`. Escape closes without saving. A typed id that matches nothing is offered as **use as typed**, not "No matches." That row was not clicked. A favorite star (Add to favorites) appears on hover of a row that has a value — Off has one, Codex's own (empty value) does not. The star was not clicked.
+
+**Thread titles**
+
+| shot | seen |
+|---|---|
+| 154 | Checked **Codex's own (ChatGPT)** · as Codex sends them. Then **Off** · no title, nothing sent. |
+| 155 | Off row hover fill. Star on the right of Off. |
+| 156 | Arrow Down from Off wraps the cursor back onto Codex's own. Star stays while the pointer is still on Off. |
+| 157 | Search `zzzznone` → one row, `zzzznone` · use as typed. |
+| 158 | Search `off` → only the Off row. |
+| 159 | Escape. Chip still Codex's own (ChatGPT). |
+| 160 | Hovering the Off note tooltips **no title, nothing sent**. |
+| 162 | Off picked. Chip is the word **Off**, no icon. `codexTitles=off`. No toast. |
+| 163 | Reopened: the current value is sorted first. **Off** checked, then Codex's own. |
+| 165 | Codex's own picked again. Chip restored. Key absent. |
+
+**The other three** (opened, Escape, not changed)
+
+| shot | seen |
+|---|---|
+| 166 | Descriptions. Only **Codex's own (ChatGPT)** · as Codex sends them. No Off. |
+| 167 | Predictions. Codex's own, then **Off** · no prediction, nothing sent. Star on the Off hover. |
+| 168 | Auto-review. **Codex's own pick** · as Codex picks it. No Off. |
+
+### Open at login (169–170)
+
+Not nested. No Saved toast. On writes `~/.config/autostart/magpie.desktop` (Type=Application, Name=magpie, Exec this binary plus `tray`). Off deletes that file.
+
+| shot | seen |
+|---|---|
+| 169 | **On**. Desktop file present. |
+| 170 | **Off** restored. File gone. |
+
+### Bottom (171–177)
+
+| shot | seen |
+|---|---|
+| 171 | Scrolled to the end of General. Lightweight **Off**. Prevent sleep **Off** / On / Screen on too. Subtitle "Keeps this computer awake while magpie runs tasks" fits, not truncated. |
+| 172 | Lightweight subtitle tooltip: "A closed window frees about 100 MB after a minute; the gateway and tasks keep running, only the page reloads". |
+| 173 | Lightweight **On**. **Saved**. |
+| 174 | Lightweight **Off**. **Saved**. |
+| 175 | Prevent sleep **On**. Subtitle unchanged. **Saved**. |
+| 176 | **Screen on too**. Subtitle becomes "Keeps this computer and its screen awake while magpie runs tasks". **Saved**. |
+| 177 | Prevent sleep **Off**. Subtitle back. **Saved**. |
+
+## Left state after this pass
+
+Settings on General, scrolled to the bottom (lightweight and prevent sleep in view). Tray **Open the quick panel**. Provider in model names **On**. Codex subagents **Off**. Long conversations **Compact at 272K** (placeholder, not a saved threshold). All four Codex chips on Codex's own. Open at login **Off** (no autostart file). Lightweight **Off**. Prevent sleep **Off**. Fonts still System default. textSize 110, theme system, language system. Gateway still `http://127.0.0.1:3425`. magpie pid 560329 still running.
+
+Not in this window: Observability tab (still hidden). Allowances quota body still N/A. Codex memories row still hidden. Colorblind mode (above the fonts) was on screen earlier and was not exercised.
+
+Shots 161 and 164 were dropped (a missed favorite click and a duplicate of the Off-sorted picker). The favorite star was left alone.
+Demo v0.1.81: SETTINGS_GENERAL_135_177 — tray Saved; silent dedicated endpoints; Compact nope/180k/Full window; Codex pickers empty catalog preferUp; Login autostart LS; Lightweight tip; Prevent sleep subtitle; Observability/Allowances/Codex memories skipped.

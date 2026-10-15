@@ -1,3 +1,8 @@
+## v0.1.81 SETTINGS_GENERAL_135_177
+- settings/135–177 General below fonts landed 1:1: tray Saved toast; silent dedicated endpoints; Compact parse/reject/180k/Full-window hide; Codex pickers empty-catalog + preferUp + Off star; Login autostart LS mock; Lightweight tip; Prevent sleep subtitle.
+- Still mock: true `~/.config/autostart/magpie.desktop` write; true keep-awake / lightweight OS hooks; live Codex titleModels catalog.
+- Allowances **N/A**. P1 bird hop **N/A**. No portable / Vercel this cycle.
+
 ## v0.1.80 SETTINGS_FONTS_107_134
 - settings/107–134 Interface/Code font menus landed 1:1: Search/✓/own-face list/Refresh always; empty query keeps System default; zzzznone → Refresh only; style disabled+no tip on System default; CJK Bold → `--ui-*` chrome; DejaVu Mono Oblique → code preview only; Escape discard; Saved toast via setPrefs.
 - Still mock: true desktop `fonts` API / hundreds of OS faces (demo catalogue covers NOTES search paths).

@@ -177,7 +177,7 @@ const DEFAULTS: DemoPrefs = {
   plainNames: "on",
   codexAgentsV1: false,
   fullContext: false,
-  compactAt: "272k",
+  compactAt: "",
   login: false,
   keepAwake: "off",
   lightweight: false,
@@ -302,6 +302,8 @@ function loadPrefs(): DemoPrefs {
     const te = String((parsed as { trayEvery?: string }).trayEvery || "");
     if (te === "15") next.trayEvery = "10";
     else if (!["1", "3", "5", "10", "30"].includes(te)) next.trayEvery = "3";
+    // v0.1.81: unset compactAt is empty (placeholder 272k); old demo wrote "272k"
+    if (next.compactAt === "272k" || next.compactAt === "272K") next.compactAt = "";
     return next;
   } catch {
     return { ...DEFAULTS };
@@ -345,7 +347,7 @@ function PrefRow({
     <div className={`row pref${className ? ` ${className}` : ""}`} id={id}>
       <div className="who">
         <div className="name">{name}</div>
-        {sub ? <div className="sub" title={subTitle}>{sub}</div> : null}
+        {sub ? <div className="sub" title={subTitle ?? (typeof sub === "string" ? sub : undefined)}>{sub}</div> : null}
       </div>
       {children != null ? (
         <div className={`val${valClassName ? ` ${valClassName}` : ""}`}>{children}</div>
@@ -417,6 +419,25 @@ type SettingsProps = {
   onHeaderUpdate?: (show: boolean) => void;
 };
 
+
+/** Magpie parseContexts for a single * size (settings Compact at). */
+function parseCompactTokens(text: string): number | null {
+  const v = text.trim().toLowerCase().replace(/_/g, "");
+  if (!v) return 0;
+  const m = /^(\d+(?:\.\d+)?)([km]?)$/.exec(v);
+  if (!m) return null;
+  const n = Math.round(parseFloat(m[1]) * (m[2] === "m" ? 1e6 : m[2] === "k" ? 1e3 : 1));
+  return n > 0 ? n : null;
+}
+
+function formatCompactTokens(n: number): string {
+  if (n % 1e6 === 0) return `${n / 1e6}m`;
+  if (n % 1e3 === 0) return `${n / 1e3}k`;
+  return String(n);
+}
+
+const AUTOSTART_LS = "magpie.demoAutostart";
+
 export function SettingsView({ theme, setTheme, lang, setLang, onStatus, onHeaderUpdate }: SettingsProps) {
   const [tab, setTab] = useState<SetTabId>(() => {
     try {
@@ -428,6 +449,8 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus, onHeade
   });
   const [q, setQ] = useState("");
   const [prefs, setPrefsState] = useState<DemoPrefs>(() => loadPrefs());
+  /** Compact field draft: invalid "nope" stays typed; null = show prefs.compactAt / placeholder. */
+  const [compactDraft, setCompactDraft] = useState<string | null>(null);
   const [langOpen, setLangOpen] = useState(false);
   const [localePick, setLocalePick] = useState<string>(() => (lang === "zh" ? "zh" : lang === "en" ? "en" : "system"));
   const [warmTab, setWarmTab] = useState<"codex" | "claude">("codex");
@@ -446,13 +469,16 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus, onHeade
   const searching = q.trim().length > 0;
 
   const setPrefs = useCallback(
-    (patch: Partial<DemoPrefs>, toast?: string) => {
+    (patch: Partial<DemoPrefs>, toast?: string | false) => {
       setPrefsState((prev) => {
         const next = { ...prev, ...patch };
         savePrefs(next);
         return next;
       });
-      if (toast) onStatus?.(toast, "ok", 1500);
+      // NOTES 135–177: Saved only on savePrefs rows (tray / lightweight / prevent sleep…).
+      // Dedicated endpoints (plain names, subagents, compact, Codex pickers, login) stay silent.
+      if (toast === false) return;
+      if (typeof toast === "string") onStatus?.(toast, "ok", 1500);
       else onStatus?.(t("Saved"), "ok", 1500);
     },
     [onStatus],
@@ -748,7 +774,7 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus, onHeade
             <PrefRow name={t("Provider in model names")} id="plainNamesRow">
               <Segs
                 value={prefs.plainNames}
-                onChange={(v) => setPrefs({ plainNames: v as DemoPrefs["plainNames"] })}
+                onChange={(v) => setPrefs({ plainNames: v as DemoPrefs["plainNames"] }, false)}
                 items={[
                   { id: "off", label: t("Off") },
                   { id: "own", label: t("Not on names I set") },
@@ -764,7 +790,7 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus, onHeade
             >
               <Segs
                 value={prefs.codexAgentsV1 ? "on" : "off"}
-                onChange={(v) => setPrefs({ codexAgentsV1: v === "on" })}
+                onChange={(v) => setPrefs({ codexAgentsV1: v === "on" }, false)}
                 items={[
                   { id: "off", label: t("Off") },
                   { id: "on", label: t("On") },
@@ -780,20 +806,47 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus, onHeade
               <div className="compact-at" style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
                 <Segs
                   value={prefs.fullContext ? "on" : "off"}
-                  onChange={(v) => setPrefs({ fullContext: v === "on" })}
+                  onChange={(v) => {
+                    setCompactDraft(null);
+                    setPrefs({ fullContext: v === "on" }, false);
+                  }}
                   items={[
-                    { id: "off", label: t("Compact at {n}", { n: prefs.compactAt.toUpperCase() }) },
+                    { id: "off", label: t("Compact at {n}", { n: (prefs.compactAt || "272k").toUpperCase() }) },
                     { id: "on", label: t("Full window") },
                   ]}
                 />
                 {!prefs.fullContext ? (
                   <input
                     className="words compact-num"
-                    value={prefs.compactAt}
+                    value={compactDraft !== null ? compactDraft : prefs.compactAt}
+                    placeholder="272k"
                     aria-label={t("Compact at")}
                     title={t("Compact at")}
-                    onChange={(e) => setPrefsState((p) => ({ ...p, compactAt: e.target.value }))}
-                    onBlur={() => setPrefs({ compactAt: prefs.compactAt })}
+                    onChange={(e) => setCompactDraft(e.target.value)}
+                    onBlur={() => {
+                      const raw = (compactDraft !== null ? compactDraft : prefs.compactAt) ?? "";
+                      const trimmed = raw.trim();
+                      if (!trimmed) {
+                        setCompactDraft(null);
+                        setPrefs({ compactAt: "", fullContext: false }, false);
+                        return;
+                      }
+                      const n = parseCompactTokens(trimmed);
+                      if (n === null) {
+                        onStatus?.(t("Compact at: {v} is not a number of tokens like 272k", { v: trimmed }), "err");
+                        return;
+                      }
+                      if (n === 0) {
+                        setCompactDraft(null);
+                        setPrefs({ compactAt: "", fullContext: false }, false);
+                        return;
+                      }
+                      setCompactDraft(null);
+                      setPrefs({ compactAt: formatCompactTokens(n), fullContext: false }, false);
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") (e.target as HTMLInputElement).blur();
+                    }}
                   />
                 ) : null}
               </div>
@@ -801,29 +854,49 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus, onHeade
           )}
           {gRows.codexTitles && (
             <PrefRow name={t("Codex thread titles")} id="codexTitlesRow">
-              <CodexModelPick field="codexTitles" value={prefs.codexTitles} label={t("Codex thread titles")} onChange={(v) => setPrefs({ codexTitles: v })} />
+              <CodexModelPick field="codexTitles" value={prefs.codexTitles} label={t("Codex thread titles")} onChange={(v) => setPrefs({ codexTitles: v }, false)} />
             </PrefRow>
           )}
           {gRows.codexDesc && (
             <PrefRow name={t("Codex thread descriptions")} id="codexDescriptionsRow">
-              <CodexModelPick field="codexDescriptions" value={prefs.codexDescriptions} label={t("Codex thread descriptions")} onChange={(v) => setPrefs({ codexDescriptions: v })} />
+              <CodexModelPick field="codexDescriptions" value={prefs.codexDescriptions} label={t("Codex thread descriptions")} onChange={(v) => setPrefs({ codexDescriptions: v }, false)} />
             </PrefRow>
           )}
           {gRows.codexPred && (
             <PrefRow name={t("Codex composer predictions")} id="codexPredictionsRow">
-              <CodexModelPick field="codexPredictions" value={prefs.codexPredictions} label={t("Codex composer predictions")} onChange={(v) => setPrefs({ codexPredictions: v })} />
+              <CodexModelPick field="codexPredictions" value={prefs.codexPredictions} label={t("Codex composer predictions")} onChange={(v) => setPrefs({ codexPredictions: v }, false)} />
             </PrefRow>
           )}
           {gRows.codexReview && (
             <PrefRow name={t("Codex auto-review model")} id="codexAutoReviewRow">
-              <CodexModelPick field="codexAutoReview" value={prefs.codexAutoReview} label={t("Codex auto-review model")} onChange={(v) => setPrefs({ codexAutoReview: v })} />
+              <CodexModelPick field="codexAutoReview" value={prefs.codexAutoReview} label={t("Codex auto-review model")} onChange={(v) => setPrefs({ codexAutoReview: v }, false)} />
             </PrefRow>
           )}
           {gRows.login && (
             <PrefRow name={t("Open at login")}>
               <Segs
                 value={prefs.login ? "on" : "off"}
-                onChange={(v) => setPrefs({ login: v === "on" })}
+                onChange={(v) => {
+                  const on = v === "on";
+                  try {
+                    if (on) {
+                      localStorage.setItem(
+                        AUTOSTART_LS,
+                        JSON.stringify({
+                          Type: "Application",
+                          Name: "magpie",
+                          Exec: "magpie tray",
+                          path: "~/.config/autostart/magpie.desktop",
+                        }),
+                      );
+                    } else {
+                      localStorage.removeItem(AUTOSTART_LS);
+                    }
+                  } catch {
+                    /* ignore */
+                  }
+                  setPrefs({ login: on }, false);
+                }}
                 items={[
                   { id: "off", label: t("Off") },
                   { id: "on", label: t("On") },
@@ -834,7 +907,7 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus, onHeade
           {gRows.lightweight && (
             <PrefRow
               name={t("Lightweight mode")}
-              sub={t("A closed panel frees about 100 MB after a minute; opening it loads it again")}
+              sub={t("A closed window frees about 100 MB after a minute; the gateway and tasks keep running, only the page reloads")}
               id="lightweightRow"
             >
               <Segs

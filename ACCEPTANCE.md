@@ -1,3 +1,8 @@
+## v0.1.81 SETTINGS_GENERAL_135_177
+- Consumed native `settings/135–177` (161/164 dropped) NOTES: tray two-way + **Saved** → restored Open the quick panel; Provider **On** / Subagents **Off** / Compact at **272K** / four Codex chips own / Login **Off** / Lightweight **Off** / Prevent sleep **Off**.
+- Dedicated endpoints (provider / subagents / compact / Codex pickers / login) **no toast**; Compact rejects `nope` (red), accepts `180k`, clears→272K, Full window hides field; titles menu **up**, use as typed, Escape no save; Descriptions **no Off**; predictions Off copy; auto-review **Codex's own pick**; Login On→demo autostart desktop, Off deletes; Lightweight tip ~100MB; Prevent sleep Screen on too changes subtitle.
+- Observability hidden; Allowances **N/A**; Codex memories hidden. **No portable / GitHub release / Vercel** (user freeze).
+
 ## v0.1.80 SETTINGS_FONTS_107_134
 - Consumed native `settings/107–134` NOTES: Interface/Code font family menus — **Search fonts…**, **✓ System default**, faces in own type, **Refresh fonts** (zzzznone → only Refresh; System default filtered out when query set); style menu shut on System default (no tooltip); after family pick style enables (Regular/Book); **Noto Sans CJK SC Bold** restyles chrome; **DejaVu Sans Mono Oblique** changes Aa preview only; Escape closes without change; green **Saved** on pick; both restored System default; textSize **110**; Observability hidden; Allowances **N/A**.
 - Still mock: true OS font enumeration API (demo catalogue).

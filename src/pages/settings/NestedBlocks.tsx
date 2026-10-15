@@ -54,15 +54,28 @@ export function CodexModelPick({ field, value, label, onChange }: CodexPickProps
   const [anchor, setAnchor] = useState<HTMLElement | null>(null);
   const chipRef = useRef<HTMLButtonElement | null>(null);
 
+  // settings/154–168: empty catalog on this machine — reset rows only (no DEMO_MODELS).
   const isReview = field === "codexAutoReview";
+  const isPred = field === "codexPredictions";
+  const isTitles = field === "codexTitles";
   const ownLabel = isReview ? t("Codex’s own pick") : t("Codex’s own (ChatGPT)");
   const ownNote = isReview ? t("as Codex picks it") : t("as Codex sends them");
+  // Descriptions: no Off. Predictions Off note ≠ titles Off note.
+  const hasOff = isTitles || isPred;
+  const offNote = isPred ? t("no prediction, nothing sent") : t("no title, nothing sent");
 
-  const options: PopOption[] = [
+  let options: PopOption[] = [
     { value: "", label: ownLabel, note: ownNote, icon: "openai", reset: true },
-    ...(isReview ? [] : [{ value: "off", label: t("Off"), note: t("no title, nothing sent"), icon: "openai", reset: true } as PopOption]),
-    ...DEMO_MODELS,
+    ...(hasOff ? [{ value: "off", label: t("Off"), note: offNote, reset: true } as PopOption] : []),
   ];
+  // Current value sorted first (titles Off → Off checked on top).
+  const i = options.findIndex((o) => o.value === value);
+  if (i > 0) {
+    const [cur] = options.splice(i, 1);
+    options = [cur, ...options];
+  } else if (i < 0 && value) {
+    options = [{ value, label: value, note: t("use as typed"), reset: true }, ...options];
+  }
 
   let display: ReactNode;
   if (value === "off") display = <span>{t("Off")}</span>;
@@ -87,6 +100,7 @@ export function CodexModelPick({ field, value, label, onChange }: CodexPickProps
         options={options}
         value={value}
         modelPicker
+        preferUp
         onPick={(v) => { onChange(v); setOpen(false); }}
         onClose={() => setOpen(false)}
       />
