@@ -4,6 +4,24 @@
 
 ---
 
+## v0.1.124 · CIS_AROWN_ABOUT_SYNC_TEXTBTN · 2026-10-15 Asia/Shanghai
+
+- **WHY:** Continue CIS on 0.1.123 leftovers that Magpie maps to PrefRow/TextBtn without inventing parallel CSS.
+- **CAUSE:** AutoResetOwn / AboutVersionRow / SyncForms still hand-rolled `.row.pref` / `<button class="text">` after NestedBlocks PrefRow wave.
+- **Gold cites:**
+  - Magpie `app.js` **22249–22280** `renderAutoResetOwn`: `div.row.pref.ar-own` → `.who` + `.ar-own-cases` (no `.val`); `dataset.user`
+  - Magpie `app.css` **1771–1774** `.ar-own-cases` / `.ar-own-case` / `.ar-own-say`
+  - Magpie `app.js` **21118–21130** About `row("Version","",version)` + **23730–23768** `renderUpdate` ready → `.sub` "{v} is downloaded" + `.text` Restart
+  - Magpie `app.js` **21603–21605** / **21641–21648** / **21668–21695** davForm/export/import: `el("button","text"|"text primary"|"text danger")`
+- **WHAT kept:** `SIDE_AT=1024`; no `WEB_SIDE_AT`; FontRow pop/fontFamily `style={{` (geometry); Providers Field grids; Magpie-distinct `.ar-own-cases` CSS (not forced into `.val`).
+- **WHAT changed:**
+  - `PrefRow`: optional `dataUser` → `data-user`
+  - `AutoResetOwn` → PrefRow `wrapVal={false}` + `className="ar-own"`
+  - `AboutVersionRow` → PrefRow + TextBtn (adds Magpie `.name` Version the demo had dropped)
+  - SyncForms / RestoreModal / WhatsNewModal → TextBtn
+- **Guard:** `npm run chrome-guard`. Push/PR required. No portable / Vercel.
+
+---
 ## v0.1.123 · CIS_NESTEDBLOCKS_PREFROW · 2026-10-15 Asia/Shanghai
 
 - **WHY:** Continue CIS unification: NestedBlocks still hand-rolled `.row.pref` for LAN / OTel / CLI / Font / Redact / Download source / Disable models / Search APIs — duplicate PrefRow / TextBtn / WordsField / PrefPick DOM.

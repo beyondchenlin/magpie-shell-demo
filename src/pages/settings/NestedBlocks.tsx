@@ -127,11 +127,9 @@ export function AutoResetOwn({
     <>
       {users.map((user) => {
         const was = map[user.toLowerCase()] || { week: false, expiring: false };
+        // Magpie app.js 22249–22280: .row.pref.ar-own → .who + .ar-own-cases (no .val)
         return (
-          <div className="row pref ar-own" key={user} data-user={user}>
-            <div className="who">
-              <div className="name" title={user}>{user}</div>
-            </div>
+          <PrefRow key={user} name={user} className="ar-own" dataUser={user} wrapVal={false}>
             <div className="ar-own-cases">
               {AUTO_RESET_CASES.map((c) => (
                 <div className="ar-own-case" key={c.id} data-case={c.id}>
@@ -150,7 +148,7 @@ export function AutoResetOwn({
                 </div>
               ))}
             </div>
-          </div>
+          </PrefRow>
         );
       })}
     </>
@@ -649,22 +647,23 @@ export function SyncForms({
     </div>
   );
 
+  // Magpie app.js 21603–21605: el("button","text danger"|"text"|"text primary")
   const formBar = (
     <div className="bar">
-      {onOff ? <button type="button" className="text danger" onClick={onOff}>{t("Turn off")}</button> : <span />}
+      {onOff ? <TextBtn variant="danger" onClick={onOff}>{t("Turn off")}</TextBtn> : <span />}
       <span className="grow" />
-      <button type="button" className="text" onClick={onClose}>{t("Cancel")}</button>
-      <button
-        type="button"
-        className="text primary"
+      <TextBtn onClick={onClose}>{t("Cancel")}</TextBtn>
+      <TextBtn
+        variant="primary"
         onClick={() => {
           if (!phrase) { setErr(t("Pick a passphrase: the file is sealed with it")); return; }
           setErr("");
           onSave();
           onStatus?.(t("Saved"), "ok");
-        }}>
+        }}
+      >
         {t("Turn on")}
-      </button>
+      </TextBtn>
     </div>
   );
 
@@ -685,13 +684,13 @@ export function SyncForms({
               ["workspace", "workspace"],
               ["other", t("Other Locations")],
             ] as const).map(([id, label]) => (
-              <button
+              <TextBtn
                 key={id}
-                type="button"
-                className={`text${chooserPlace === id ? " on" : ""}`}
-                onClick={() => setChooserPlace(id)}>
+                className={chooserPlace === id ? "on" : undefined}
+                onClick={() => setChooserPlace(id)}
+              >
                 {label}
-              </button>
+              </TextBtn>
             ))}
           </nav>
           <div className="pane">
@@ -700,8 +699,8 @@ export function SyncForms({
         </div>
         <div className="bar">
           <span className="grow" />
-          <button type="button" className="text" onClick={() => setChooser(false)}>{t("Cancel")}</button>
-          <button type="button" className="text primary" disabled title={t("No file chosen")}>{t("Open")}</button>
+          <TextBtn onClick={() => setChooser(false)}>{t("Cancel")}</TextBtn>
+          <TextBtn variant="primary" disabled title={t("No file chosen")}>{t("Open")}</TextBtn>
         </div>
       </div>
     </div>
@@ -818,19 +817,19 @@ export function SyncForms({
         {err ? <p className="editor-error">{err}</p> : null}
         <div className="bar">
           <span className="grow" />
-          <button type="button" className="text" onClick={onClose}>{t("Cancel")}</button>
-          <button
-            type="button"
-            className="text primary"
+          <TextBtn onClick={onClose}>{t("Cancel")}</TextBtn>
+          <TextBtn
+            variant="primary"
             onClick={() => {
               if (!p1) { setErr(t("Pick a passphrase: the file is sealed with it")); return; }
               if (p1 !== p2) { setErr(t("The two passphrases differ")); return; }
               setErr("");
               onStatus?.(demoCopy("演示：导出已模拟完成", "Demo: export simulated"), "ok");
               onClose();
-            }}>
+            }}
+          >
             {t("Export")}
-          </button>
+          </TextBtn>
         </div>
       </div>
     );
@@ -843,7 +842,7 @@ export function SyncForms({
           <label>{t("File")}</label>
           <div className="pair">
             <span className="fname">{fname}</span>
-            <button type="button" className="text" onClick={() => { setChooserPlace("home"); setChooser(true); }}>{t("Choose…")}</button>
+            <TextBtn onClick={() => { setChooserPlace("home"); setChooser(true); }}>{t("Choose…")}</TextBtn>
           </div>
           <label>{t("Passphrase")}</label>
           <div><WordsField className="full" type="password" placeholder={t("passphrase")} /></div>
@@ -855,17 +854,17 @@ export function SyncForms({
           </div>
           <div className="bar">
             <span className="grow" />
-            <button type="button" className="text" onClick={onClose}>{t("Cancel")}</button>
-            <button
-              type="button"
-              className="text primary"
+            <TextBtn onClick={onClose}>{t("Cancel")}</TextBtn>
+            <TextBtn
+              variant="primary"
               onClick={() => {
                 if (fname === t("No file chosen")) { setErr(t("Choose a file first")); return; }
                 onStatus?.(demoCopy("演示：导入已模拟完成", "Demo: import simulated"), "ok");
                 onClose();
-              }}>
+              }}
+            >
               {t("Import")}
-            </button>
+            </TextBtn>
           </div>
           {err ? <p className="editor-error">{err}</p> : null}
         </div>
@@ -886,8 +885,8 @@ export function RestoreModal({ onClose, onConfirm }: { onClose: () => void; onCo
           <p className="lib-confirm">{t("What is here now is sealed into the sync folder first, and Undo puts it back.")}</p>
           <div className="bar">
             <span className="grow" />
-            <button type="button" className="text" onClick={onClose}>{t("Cancel")}</button>
-            <button type="button" className="text primary danger-fill" onClick={onConfirm}>{t("Restore setup")}</button>
+            <TextBtn onClick={onClose}>{t("Cancel")}</TextBtn>
+            <TextBtn variant="primary" className="danger-fill" onClick={onConfirm}>{t("Restore setup")}</TextBtn>
           </div>
         </div>
       </div>
@@ -929,7 +928,7 @@ export function WhatsNewModal({ onClose }: { onClose: () => void }) {
           </div>
           <div className="bar">
             <span className="grow" />
-            <button type="button" className="text primary" onClick={onClose}>{t("Close")}</button>
+            <TextBtn variant="primary" onClick={onClose}>{t("Close")}</TextBtn>
           </div>
         </div>
       </div>
@@ -1600,25 +1599,25 @@ export function AboutVersionRow({
   void st;
   void onStatus;
 
+  // Magpie app.js 21118–21130 row("Version","",version) + renderUpdate 23730–23768 ready:
+  // .who > .name "Version" + .sub "{v} is downloaded"; .val > code + .text Restart
   return (
-    <div className="row pref" id="aboutVersionRow">
-      <div className="who">
-        <div className="sub">{t("{v} is downloaded", { v: downloaded })}</div>
-      </div>
-      <div className="val">
-        <code>{current}</code>
-        <button
-          type="button"
-          className="text"
-          title={t("Restart to update")}
-          onClick={(e) => {
-            // NOTES: Restart hovered only — demo keeps ready; no install.
-            e.preventDefault();
-          }}>
-          {t("Restart to update")}
-        </button>
-      </div>
-    </div>
+    <PrefRow
+      id="aboutVersionRow"
+      name={t("Version")}
+      sub={t("{v} is downloaded", { v: downloaded })}
+    >
+      <code>{current}</code>
+      <TextBtn
+        title={t("Restart to update")}
+        onClick={(e) => {
+          // NOTES: Restart hovered only — demo keeps ready; no install.
+          e.preventDefault();
+        }}
+      >
+        {t("Restart to update")}
+      </TextBtn>
+    </PrefRow>
   );
 }
 

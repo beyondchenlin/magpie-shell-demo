@@ -1,3 +1,10 @@
+## v0.1.124 CIS_AROWN_ABOUT_SYNC_TEXTBTN
+- AutoResetOwn → PrefRow `wrapVal={false}` + `className="ar-own"` + `dataUser` (Magpie `.who` + `.ar-own-cases`, no `.val`).
+- AboutVersionRow → PrefRow name=Version + sub downloaded + TextBtn Restart (Magpie row+renderUpdate ready).
+- SyncForms / RestoreModal / WhatsNewModal editor `.text` → TextBtn (Magpie davForm/export/import chrome).
+- Skipped: FontRow pop/fontFamily `style={{` (geometry tokens); Providers Field grids (Magpie `field()`, not PrefRow).
+- `SIDE_AT=1024` only; no `WEB_SIDE_AT`. chrome-guard pass. Push/PR; no portable / Vercel.
+
 ## v0.1.123 CIS_NESTEDBLOCKS_PREFROW
 - NestedBlocks LAN / OTel / CLI / Font / Redact / Download source / Disable models / Search APIs → shared `PrefRow` / `TextBtn` / `WordsField` / `PrefPick` (Magpie-faithful; PrefRow `wrapVal` for font-row, `afterWho` for CLI/mirror).
 - PrefRow: `wrapVal` / `subClassName` / `dataPattern`; TextBtn `forwardRef`.

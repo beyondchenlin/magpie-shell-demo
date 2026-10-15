@@ -17,6 +17,7 @@ export function PrefRow({
   valClassName,
   wrapVal = true,
   dataPattern,
+  dataUser,
 }: {
   name: string;
   sub?: ReactNode;
@@ -37,6 +38,8 @@ export function PrefRow({
   wrapVal?: boolean;
   /** Magpie `data-pattern` on disabled-model rows. */
   dataPattern?: string;
+  /** Magpie AutoResetOwn `dataset.user` on `.ar-own` rows (app.js ~22250). */
+  dataUser?: string;
 }) {
   if (hidden) return null;
   const body =
@@ -50,6 +53,7 @@ export function PrefRow({
       className={`row pref${className ? ` ${className}` : ""}`}
       id={id}
       data-pattern={dataPattern}
+      data-user={dataUser}
     >
       <div className="who">
         <div className="name" title={name}>
