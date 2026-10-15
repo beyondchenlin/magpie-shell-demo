@@ -1091,6 +1091,44 @@ label.tick input { margin: 0; }
 #view-providers .none.pv-none { padding: 12px 2px; color: var(--muted); font-size: 13px; }
 #view-providers .rt-gadd.pv-gap { margin-top: 8px; }
 
+/* Magpie Library sheet dialog — .modal/.dialog (no page-local inline chrome) */
+.modal .dialog.lib-editor {
+  width: min(520px, 100%);
+  padding: 16px 18px 14px;
+  animation: pop-in .42s cubic-bezier(.16, 1, .3, 1);
+}
+.modal .dialog.lib-editor.sm {
+  width: min(360px, 100%);
+  animation: pop-in .28s var(--ease);
+}
+.modal .dialog.lib-editor > .ehead {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.modal .dialog.lib-editor > .ehead b {
+  font-size: 15px;
+  font-weight: 600;
+}
+.modal .dialog.lib-editor > .bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+.modal .dialog.lib-editor > .list,
+.modal .dialog.lib-editor > .lib-confirm,
+.modal .dialog.lib-editor > .stack {
+  margin-bottom: 12px;
+}
+.modal .dialog.lib-editor .lib-byagent-list {
+  margin-bottom: 12px;
+}
+.modal .dialog.lib-editor .lib-byagent-row {
+  /* Magpie .row already flex; keep list hairline */
+}
+
 /* Magpie action-confirm extra slot (Library Keep-skills) — tokens only */
 .action-confirm .extra { margin: -4px 0 16px; }
 .action-confirm .extra label.tick.keep {

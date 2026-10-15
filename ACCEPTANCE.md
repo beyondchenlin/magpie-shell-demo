@@ -1,3 +1,8 @@
+## v0.1.110 CIS_LIBRARY_SHEET_MODALS
+- LibModal → Magpie `.modal` / `.dialog.lib-editor` (shell-patch; no inline chrome).
+- How skills / Skills by agent / MCP by agent sheets: Magpie ehead/list/row/bar + Segs; no local styles.
+- Library MCP/skill/hook/image editors still have field-level `style`. Providers OAuth/folder pickers Open. SIDE_AT=1024. No portable / Vercel.
+
 ## v0.1.109 CIS_LIBRARY_REMAINING_CONFIRMS
 - Library skill remove / project remove (Keep-skills Tick) / Turn all off / single MCP remove / MCP project remove → `ActionConfirm` (+ `extra` slot).
 - Non-confirm LibModals (How skills / by-agent sheets) and Providers OAuth/folder pickers still Open. SIDE_AT=1024. No portable / Vercel.

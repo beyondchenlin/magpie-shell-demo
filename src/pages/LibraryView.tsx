@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState, type ClipboardEvent, type ReactNode } from "react";
 import { ActionConfirm } from "../components/ActionConfirm";
+import { Segs } from "../components/Segs";
 import { Tick } from "../components/Tick";
 import { Bird } from "../components/Bird";
 import { useSegThumb } from "../components/SegThumb";
@@ -231,6 +232,7 @@ function LibModal({
   sm?: boolean;
   onPaste?: (e: ClipboardEvent) => void;
 }) {
+  /** Magpie `.modal` > `.dialog` (+ `.lib-editor` / `.sm`) — chrome in app.css + shell-patch. */
   return (
     <div
       className="modal"
@@ -238,33 +240,11 @@ function LibModal({
       onMouseDown={(e) => {
         if (e.target === e.currentTarget) onBg();
       }}
-      style={{
-        position: "fixed",
-        inset: 0,
-        zIndex: 80,
-        display: "grid",
-        placeItems: "center",
-        background: "rgba(20,22,30,.42)",
-        backdropFilter: "blur(2px)",
-        animation: "fade-in .18s var(--ease)",
-      }}
     >
       <div
-        className={`dialog${sm ? " sm" : ""} lib-editor`}
+        className={`dialog lib-editor${sm ? " sm" : ""}`}
         role="dialog"
         aria-modal
-        style={{
-          animation: sm ? "pop-in .28s var(--ease)" : "pop-in .42s cubic-bezier(.16,1,.3,1)",
-          maxWidth: sm ? 360 : 520,
-          width: "min(520px, calc(100vw - 32px))",
-          maxHeight: "min(90vh, 720px)",
-          overflow: "auto",
-          background: "var(--card)",
-          borderRadius: 14,
-          border: "1px solid var(--line)",
-          boxShadow: "0 18px 48px rgba(20,22,30,.22)",
-          padding: "16px 18px 14px",
-        }}
         onMouseDown={(e) => e.stopPropagation()}
         onPaste={onPaste}
       >
@@ -2178,7 +2158,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                       }}
                     />
                   ) : null}
-                  <div className="bar" style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                  <div className="bar">
                     <button
                       type="button"
                       className="text"
@@ -4075,7 +4055,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
               </div>
             </div>
           ) : null}
-          <div className="bar" style={{ display: "flex", gap: 8 }}>
+          <div className="bar">
             <span className="grow" />
             <button type="button" className="text" onClick={tryCloseMcp} disabled={mcpSignWaiting}>{t("Cancel")}</button>
             <button
@@ -4110,7 +4090,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
             <span style={{ fontSize: 12, fontWeight: 500, display: "block", marginBottom: 6 }}>{t("Agents")}</span>
             <LibChip on={imageAgents.includes("cursor")} label="Cursor" onClick={() => setImageAgents((list) => (list.includes("cursor") ? list.filter((x) => x !== "cursor") : [...list, "cursor"]))} />
           </div>
-          <div className="bar" style={{ display: "flex", gap: 8, alignItems: "center" }}>
+          <div className="bar">
             <span style={{ fontSize: 12, color: "var(--muted)" }}>magpie-image</span>
             <span className="grow" />
             <button type="button" className="text" onClick={() => setImageSheet(false)}>{t("Cancel")}</button>
@@ -4163,7 +4143,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
             <span style={{ fontSize: 12, fontWeight: 500, display: "block", marginBottom: 6 }}>{t("Agents")}</span>
             <LibChip on label="Cursor" onClick={() => {}} />
           </div>
-          <div className="bar" style={{ display: "flex", gap: 8, alignItems: "center" }}>
+          <div className="bar">
             <span className="grow" />
             <button type="button" className="text" onClick={() => setSkillSheet(null)}>{t("Cancel")}</button>
             <button
@@ -4316,7 +4296,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
             <span style={{ fontSize: 12, fontWeight: 500, display: "block", marginBottom: 6 }}>{t("Agents")}</span>
             <LibChip on={hookEditor.agents.includes("cursor")} label="Cursor" onClick={() => setHookEditor({ ...hookEditor, agents: hookEditor.agents.includes("cursor") ? hookEditor.agents.filter((x) => x !== "cursor") : [...hookEditor.agents, "cursor"] })} />
           </div>
-          <div className="bar" style={{ display: "flex", gap: 8 }}>
+          <div className="bar">
             <span className="grow" />
             <button type="button" className="text" onClick={tryCloseHook}>{t("Cancel")}</button>
             <button type="button" className="text primary" onClick={saveHook}>{t("Add")}</button>
@@ -4343,58 +4323,44 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
 
       {skillHowOpen ? (
         <LibModal onBg={() => setSkillHowOpen(false)}>
-          <div className="ehead" style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
-            <b style={{ fontSize: 15 }}>{t("How each agent gets its skills")}</b>
+          <div className="ehead">
+            <b>{t("How each agent gets its skills")}</b>
           </div>
-          <p className="lib-confirm" style={{ margin: "0 0 12px", fontSize: 13, color: "var(--fg-2)", lineHeight: 1.45 }}>
+          <p className="lib-confirm">
             {skillHow === "copy"
               ? t("An agent can have its own way; the others get copies, as the library gives them.")
               : t("An agent can have its own way; the others get links, as the library gives them.")}
           </p>
-          <div className="list lib-list lib-byagent-list" style={{ marginBottom: 12 }}>
-            <div className="row lib-row lib-byagent-row lib-how-row" style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 4px", borderBottom: "1px solid var(--line)" }}>
-              <div className="who" style={{ flex: 1, minWidth: 0 }}>
-                <div className="name" style={{ fontWeight: 500, fontSize: 13 }}>Cursor</div>
-                <div className="sub" style={{ fontSize: 12, color: "var(--muted)" }}>
+          <div className="list lib-list lib-byagent-list">
+            <div className="row lib-row lib-byagent-row lib-how-row">
+              <div className="who">
+                <div className="name">Cursor</div>
+                <div className="sub">
                   {agentHow === "copy" ? t("Gets copies") : agentHow === "link" ? t("Gets links") : (skillHow === "copy" ? t("Gets copies") : t("Gets links"))}
                 </div>
               </div>
-              <div className="segs" style={{ display: "inline-flex", gap: 2, padding: 2, borderRadius: 999, border: "1px solid var(--line)", background: "var(--bg)" }}>
-                {([["", "Library's way"], ["link", "Links"], ["copy", "Copies"]] as const).map(([id, lab]) => (
-                  <button
-                    key={id || "lib"}
-                    type="button"
-                    className={`opt${agentHow === id ? " on" : ""}`}
-                    onClick={() => {
-                      if (agentHow === id) return;
-                      setAgentHow(id);
-                      // Magpie report after skills/how (CU 81–83)
-                      onStatus?.(
-                        id === "copy" || (id === "" && skillHow === "copy")
-                          ? t("{agent} gets copies of its skills now", { agent: "Cursor" })
-                          : t("{agent} gets links to its skills now", { agent: "Cursor" }),
-                        "ok",
-                      );
-                    }}
-                    style={{
-                      height: 26,
-                      padding: "0 10px",
-                      borderRadius: 999,
-                      border: 0,
-                      background: agentHow === id ? "var(--card)" : "transparent",
-                      color: agentHow === id ? "var(--fg)" : "var(--muted)",
-                      font: "inherit",
-                      fontSize: 12,
-                      cursor: "pointer",
-                    }}
-                  >
-                    {t(lab)}
-                  </button>
-                ))}
-              </div>
+              <Segs
+                value={agentHow}
+                items={[
+                  { id: "" as const, label: t("Library's way") },
+                  { id: "link" as const, label: t("Links") },
+                  { id: "copy" as const, label: t("Copies") },
+                ]}
+                onChange={(id) => {
+                  if (agentHow === id) return;
+                  setAgentHow(id);
+                  // Magpie report after skills/how (CU 81–83)
+                  onStatus?.(
+                    id === "copy" || (id === "" && skillHow === "copy")
+                      ? t("{agent} gets copies of its skills now", { agent: "Cursor" })
+                      : t("{agent} gets links to its skills now", { agent: "Cursor" }),
+                    "ok",
+                  );
+                }}
+              />
             </div>
           </div>
-          <div className="bar" style={{ display: "flex", gap: 8 }}>
+          <div className="bar">
             <span className="grow" />
             <button type="button" className="text primary" onClick={() => setSkillHowOpen(false)}>{t("Done")}</button>
           </div>
@@ -4404,17 +4370,17 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
 
       {skillsByAgentOpen ? (
         <LibModal onBg={() => setSkillsByAgentOpen(false)}>
-          <div className="ehead" style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
-            <b style={{ fontSize: 15 }}>{t("Skills by agent")}</b>
+          <div className="ehead">
+            <b>{t("Skills by agent")}</b>
           </div>
-          <p className="lib-confirm" style={{ margin: "0 0 12px", fontSize: 13, color: "var(--fg-2)", lineHeight: 1.45 }}>
+          <p className="lib-confirm">
             {t("Every skill on or off for one agent; the others keep theirs. Turned off, they stay in the library.")}
           </p>
-          <div className="list lib-list lib-byagent-list" style={{ marginBottom: 12 }}>
-            <div className="row lib-row lib-byagent-row" style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 4px", borderBottom: "1px solid var(--line)" }}>
-              <div className="who" style={{ flex: 1, minWidth: 0 }}>
-                <div className="name" style={{ fontWeight: 500, fontSize: 13 }}>Cursor</div>
-                <div className="sub" style={{ fontSize: 12, color: "var(--muted)" }}>
+          <div className="list lib-list lib-byagent-list">
+            <div className="row lib-row lib-byagent-row">
+              <div className="who">
+                <div className="name">Cursor</div>
+                <div className="sub">
                   {t("{n} of {m} skills", { n: skills.length, m: skills.length })}
                 </div>
               </div>
@@ -4422,7 +4388,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
               <button type="button" className="text action lib-updall" title={t("Take every skill from {agent}", { agent: "Cursor" })} onClick={() => onStatus?.(t("Every skill is off for {agent}", { agent: "Cursor" }), "ok")}>{t("Turn all off")}</button>
             </div>
           </div>
-          <div className="bar" style={{ display: "flex", gap: 8 }}>
+          <div className="bar">
             <span className="grow" />
             <button type="button" className="text primary" onClick={() => setSkillsByAgentOpen(false)}>{t("Done")}</button>
           </div>
@@ -4524,17 +4490,17 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
 
       {mcpByAgentOpen ? (
         <LibModal onBg={() => setMcpByAgentOpen(false)}>
-          <div className="ehead" style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
-            <b style={{ fontSize: 15 }}>{t("MCP servers by agent")}</b>
+          <div className="ehead">
+            <b>{t("MCP servers by agent")}</b>
           </div>
-          <p style={{ margin: "0 0 12px", fontSize: 13, color: "var(--fg-2)", lineHeight: 1.45 }}>
+          <p className="lib-confirm">
             {t("Every server on or off for one agent; the others keep theirs. Turned off, they stay in the library.")}
           </p>
-          <div className="list" style={{ marginBottom: 12 }}>
-            <div className="row" style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 4px", borderBottom: "1px solid var(--line)" }}>
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontWeight: 500, fontSize: 13 }}>Cursor</div>
-                <div style={{ fontSize: 12, color: "var(--muted)" }}>
+          <div className="list lib-list lib-byagent-list">
+            <div className="row lib-row lib-byagent-row">
+              <div className="who">
+                <div className="name">Cursor</div>
+                <div className="sub">
                   {t("{n} of {m} servers", {
                     n: mcpServers.filter((s) => s.agents.includes("cursor")).length,
                     m: mcpServers.length,
@@ -4543,7 +4509,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
               </div>
               <button
                 type="button"
-                className="text action"
+                className="text action lib-updall"
                 disabled={mcpServers.every((s) => s.agents.includes("cursor"))}
                 title={t("Give {agent} every server", { agent: "Cursor" })}
                 onClick={() => {
@@ -4555,7 +4521,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
               </button>
               <button
                 type="button"
-                className="text action"
+                className="text action lib-updall"
                 title={t("Take every server from Cursor")}
                 onClick={() => setMcpTurnAllOffAsk(true)}
               >
@@ -4563,7 +4529,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
               </button>
             </div>
           </div>
-          <div className="bar" style={{ display: "flex", gap: 8 }}>
+          <div className="bar">
             <span className="grow" />
             <button type="button" className="text primary" onClick={() => setMcpByAgentOpen(false)}>{t("Done")}</button>
           </div>

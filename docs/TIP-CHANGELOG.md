@@ -4,6 +4,17 @@
 
 ---
 
+## v0.1.110 · CIS_LIBRARY_SHEET_MODALS · 2026-10-15 Asia/Shanghai
+
+- **WHY:** CIS §10 — Library non-confirm LibModals (How skills / by-agent sheets) drop page-local `style={{…}}`; Magpie `.modal` / `.dialog.lib-editor`.
+- **WHAT kept:** `SIDE_AT=1024`; no `WEB_SIDE_AT`; Win chrome / 752 frame; no new features; Providers OAuth/folder pickers skipped.
+- **WHAT changed:**
+  - `LibModal` chrome → Magpie `.modal` > `.dialog.lib-editor` (+ `.sm`); sizing/animation in shell-patch (no inline).
+  - How skills / Skills by agent / MCP by agent: Magpie `.ehead` / `.lib-confirm` / `.list` / `.row` / `.who` / `.bar`; How uses `Segs`.
+  - Light: other LibModal `.bar` flex inlines stripped (CSS owns layout).
+- **Guard:** `npm run chrome-guard`. No portable. No push/Vercel.
+
+---
 ## v0.1.109 · CIS_LIBRARY_REMAINING_CONFIRMS · 2026-10-15 Asia/Shanghai
 
 - **WHY:** CIS §10 — finish Library LibModal danger confirms onto Magpie `ActionConfirm` (skill/project/MCP remove + Turn all off).
