@@ -1,3 +1,10 @@
+## v0.1.178 · PM_FIND_NATIVE_CANCEL · 2026-10-16 Asia/Shanghai
+
+- **WHY:** Drop invent Plugins search clear `pm-find-clear`; restore Magpie native `type="search"` cancel (`::-webkit-search-cancel-button`) + Escape.
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; skip oauth Approve wall; Magpie `.pm-find` width/focus + Escape → Discover; `pm-ghfind` already bare.
+- **Cite:** Magpie plugins.js **L637–55** `label.pm-find` + `input type=search` + Escape (no clear button); plugins.css **L10–19** `.pm-find` / `::-webkit-search-cancel-button { cursor: default }`.
+- **chrome-guard:** pass. Push/PR #1. No portable/Vercel.
+
 ## v0.1.177 · PERIOD_LEDQ_OSS · 2026-10-16 Asia/Shanghai
 
 - **WHY:** Drop invent Usage wrappers `period-wrap` + `led-q-wrap` / invent `led-q-clear`; restore Magpie plain `#period.segs` and bare `#ledQ.sess-filter` (Escape clears).

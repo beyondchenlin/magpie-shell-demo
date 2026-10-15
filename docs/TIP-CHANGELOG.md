@@ -1,3 +1,18 @@
+## v0.1.178 · PM_FIND_NATIVE_CANCEL · 2026-10-16 Asia/Shanghai
+
+- **WHY:** Hard invent audit — Plugins head search stacked invent `button.pm-find-clear` (×) + shell-patch styles on Magpie `.pm-find`. Magpie OSS uses bare `input type="search"` inside `.pm-find` and styles the **native** webkit cancel (`cursor: default`); Escape clears and re-runs oninput (Discover if needed). No custom clear control.
+- **CAUSE:** Tip invented a React clear button (and previously hid webkit cancel) instead of Magpie native search cancel.
+- **Cite:**
+  - Magpie `plugins.js` **L637–55** `el("label","pm-find")` + `q.type = "search"` + glyph + Escape → clear/oninput (no clear button)
+  - Magpie `plugins.css` **L10–19** `.pm-find` / `input::-webkit-search-cancel-button { cursor: default }`
+  - Magpie `plugins.js` **L575–81** `pm-ghfind` same pattern (tip already bare)
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; skip oauth Approve wall; Magpie Escape + onChange → Discover when leaving Installed with leftover query; `.pm-find` gold in plugins.css.
+- **WHAT changed:**
+  - `SimpleViews.tsx`: drop invent `pm-find-clear` button + `searchInputRef` focus bridge; keep Magpie `type="search"` + Escape.
+  - `shell-patch.css`: delete invent `.pm-find-clear` / `:hover`.
+- **Remaining invent (weak/skip):** oauth Approve wall (nest=browser); `rt-flier-demo`; `win-caption*`; intentional `lib-hook*` / `pref-anchor` React bridges; weak: `ic-img` vs Magpie `span.ic>img`; `rt-peer` / `rt-fade` extras; residual `.usage-head .range-opt > span` max-width ellipsis bridge.
+- **Guard:** `npm run chrome-guard`. No portable. No manual Vercel.
+
 ## v0.1.177 · PERIOD_LEDQ_OSS · 2026-10-16 Asia/Shanghai
 
 - **WHY:** Hard invent audit — Usage period picker stacked invent `period-wrap` on Magpie `#period.segs`, and Requests search wrapped `#ledQ` in invent `led-q-wrap` plus invent `icon led-q-clear` with paddingRight. Magpie OSS uses plain `.segs#period` and a bare `.sess-filter#ledQ`; Escape clears the query (no clear button). Gold already gives `.segs` `position:relative` and `body.web .usage-head > .segs` wrap/max-width.

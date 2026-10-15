@@ -2277,7 +2277,6 @@ export function PluginsView({
   /** Magpie plugins/134–137 Clear options confirm; Escape cancels, editor stays. */
   const [clearConfirm, setClearConfirm] = useState<{ pkg: string; name: string } | null>(null);
   const clearFocusRef = useRef<HTMLButtonElement | null>(null);
-  const searchInputRef = useRef<HTMLInputElement | null>(null);
   /** Bun on disk (footer 1.4.3); after first install → Installing… (104–113), not Getting Bun…. */
   const [bunReady, setBunReady] = useState(() => {
     try {
@@ -2497,7 +2496,6 @@ export function PluginsView({
               <path d="m10.5 10.5 3 3" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
             </svg>
             <input
-              ref={searchInputRef}
               type="search"
               spellCheck={false}
               autoComplete="off"
@@ -2505,6 +2503,7 @@ export function PluginsView({
               aria-label={t("Search plugins")}
               value={query}
               onChange={(e) => {
+                /* Magpie plugins.js L642–54: oninput + Escape; native webkit cancel (no invent clear) */
                 setQuery(e.target.value);
                 if (tab !== "discover") setTab("discover");
               }}
@@ -2516,21 +2515,6 @@ export function PluginsView({
                 }
               }}
             />
-            {query ? (
-              <button
-                type="button"
-                className="pm-find-clear"
-                aria-label={t("Clear")}
-                title={t("Clear")}
-                onClick={() => {
-                  /* Magpie 116: clear × from Installed leftover query → Discover landing, search focused */
-                  setQuery("");
-                  setTab("discover");
-                  requestAnimationFrame(() => searchInputRef.current?.focus({ preventScroll: true }));
-                }}>
-                ×
-              </button>
-            ) : null}
           </label>
         ) : null}
       </div>

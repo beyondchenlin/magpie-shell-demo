@@ -342,20 +342,14 @@ body.web.side-nav {
    L1369–1374 sess-pick; L1366–1367 sess-filter; L2506+ range-menu.
    React pop anchor: #view-usage .usage-refresh { position:relative } in CIS bridge. */
 
-/* —— Plugins: Magpie plugins.css gold (v0.1.130) ——
+/* —— Plugins: Magpie plugins.css gold (v0.1.130 / v0.1.178) ——
    Drop tip invent duplicates that fought Magpie: pm-mirror color transition,
    pm-find min/max-width + hide webkit cancel, invent pm-card:active scale,
    invent pm-act fg/black + height 28, invent pm-mlabel weight 600,
-   invent row-ish pm-card / first pm-intro flex-start, duplicate nest pm-*.
+   invent row-ish pm-card / first pm-intro flex-start, duplicate nest pm-*,
+   invent .pm-find-clear (v0.1.178 → Magpie native type=search cancel).
    Gold: plugins.css L3–19 pm-mirror/pm-find; L23–38 pm-intro; L58–64 pm-card
-   (column, no :active scale); L114–131 pm-act; L149–150 pm-mlabel 12px muted.
-   React-only bridges Magpie lacks (custom clear + tip host): */
-.pm-find-clear {
-  flex: none; width: 18px; height: 18px; padding: 0; border: 0; border-radius: 5px;
-  background: transparent; color: var(--muted); font-size: 14px; line-height: 1; cursor: pointer;
-  display: inline-flex; align-items: center; justify-content: center;
-}
-.pm-find-clear:hover { background: var(--pill-hover); color: var(--fg); }
+   (column, no :active scale); L114–131 pm-act; L149–150 pm-mlabel 12px muted. */
 .update-mirror-input { min-width: 180px; }
 
 /* v0.1.144: drop invent .pm-opts* / .pm-mw / .pm-act.get|busy|go|done|.spin /
