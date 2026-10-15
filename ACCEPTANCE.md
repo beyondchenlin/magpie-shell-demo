@@ -1,3 +1,9 @@
+## v0.1.153 · PROVIDERS_MOVE_ROW_MENU_OSS_FIDELITY · 2026-10-15 Asia/Shanghai
+
+- **WHY:** Providers invent `.pop.move` / `.scrim` → Magpie `openProviderMenu` → `openRowMenu` `.pop.row-menu`.
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; CIS PrefRow; Library invent `field-block` later.
+- **Cite:** app.js L5713–5726 / L3497–3538; app.css L694–700.
+
 ## v0.1.152 · LIBRARY_HOOK_PROTO_MENU_OSS_FIDELITY · 2026-10-15 Asia/Shanghai
 
 - **WHY:** Hook editor When-it-runs / For-which-tools invent `.pop.menu` / `.gl` / `.text.item` → Magpie `openProtoMenu` `.pop.proto-menu`.

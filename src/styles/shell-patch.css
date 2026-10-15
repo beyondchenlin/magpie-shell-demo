@@ -946,46 +946,8 @@ label.tick input { margin: 0; }
   border-top: 1px solid var(--line-2);
 }
 
-.scrim {
-  position: fixed;
-  inset: 0;
-  z-index: 90;
-}
-.pop.move {
-  position: fixed;
-  z-index: 91;
-  left: var(--pop-x, 0);
-  top: var(--pop-y, 0);
-  min-width: 200px;
-  padding: 4px 0;
-  border-radius: 10px;
-  border: 1px solid var(--line);
-  background: var(--card);
-  box-shadow: 0 10px 28px rgba(20, 22, 30, .16);
-}
-.pop.move .text.item {
-  display: flex;
-  width: 100%;
-  align-items: center;
-  gap: 12px;
-  padding: 7px 12px;
-  border: 0;
-  background: transparent;
-  font: inherit;
-  font-size: 13px;
-  cursor: pointer;
-  text-align: left;
-  border-radius: 0;
-}
-.pop.move .text.item:hover {
-  background: var(--pill);
-  color: var(--fg);
-}
-.pop.move .lab { flex: 1; }
-.pop.move .kbd {
-  font-size: 11px;
-  color: var(--muted);
-}
+/* v0.1.153: drop invent .scrim / .pop.move — Providers use Magpie openRowMenu
+   .pop.row-menu (app.js L3497–3538 / L5713–5726; app.css L694–700). */
 
 /* v0.1.149: drop invent .lib-thunar* / .modal.lib-thunar-scrim / .modal.lib-choose-scrim /
    .dialog.gtk-choose-project* — Magpie has no in-app Thunar/GTK chooser.

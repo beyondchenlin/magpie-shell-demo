@@ -3,7 +3,6 @@ import {
   useMemo,
   useRef,
   useState,
-  type CSSProperties,
   type FormEvent,
   type ReactNode,
 } from "react";
@@ -2202,6 +2201,148 @@ function ProviderEditorModal({ state, onClose, onAdd, onStatus, saved, onRemove,
   );
 }
 
+/** Magpie app.js L2670–2675 + openProviderMenu L5713–5726 → openRowMenu L3497–3538. */
+const ALT = typeof navigator !== "undefined" && /^Mac/.test(navigator.platform) ? "⌥" : "Alt+";
+const SHIFT = typeof navigator !== "undefined" && /^Mac/.test(navigator.platform) ? "⇧" : "Shift+";
+const MOVE_UP = "M8 12.5v-9M4 7.25l4-3.75 4 3.75";
+const MOVE_DOWN = "M8 3.5v9M4 8.75l4 3.75 4-3.75";
+const MOVE_TOP = "M8 13v-7.5M4.5 9l3.5-3.5 3.5 3.5M3.5 2.75h9";
+const MOVE_BOTTOM = "M8 3v7.5M4.5 7l3.5 3.5 3.5-3.5M3.5 13.25h9";
+
+type ProvMoveMenuProps = {
+  anchor: HTMLElement;
+  /** index among providers that are on */
+  onIndex: number;
+  onCount: number;
+  /** index among currently shown (search-filtered) on rows */
+  shownIndex: number;
+  shownCount: number;
+  onArrange: (toAmongOn: number) => void;
+  onStep: (by: -1 | 1) => void;
+  onClose: () => void;
+};
+
+/** Magpie openRowMenu DOM: .pop.row-menu + .rm-item / .rm-name / .rm-key (not invent .pop.move). */
+function ProviderMoveMenu({
+  anchor,
+  onIndex,
+  onCount,
+  shownIndex,
+  shownCount,
+  onArrange,
+  onStep,
+  onClose,
+}: ProvMoveMenuProps) {
+  const boxRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const box = boxRef.current;
+    if (!box) return;
+    const r = anchor.getBoundingClientRect();
+    const pad = 8;
+    const w = box.offsetWidth || 176;
+    const h = box.offsetHeight || 120;
+    let y = r.bottom + 5;
+    if (y + h > window.innerHeight - pad && r.top - 5 - h >= pad) {
+      y = r.top - 5 - h;
+      box.classList.add("up");
+    }
+    const left = Math.max(pad, Math.min(r.left - 4, window.innerWidth - w - pad));
+    box.style.left = `${left}px`;
+    box.style.top = `${Math.max(pad, y)}px`;
+    anchor.classList.add("open");
+    const outside = (e: MouseEvent) => {
+      if (!box.contains(e.target as Node) && !anchor.contains(e.target as Node)) onClose();
+    };
+    const keys = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        e.stopPropagation();
+        onClose();
+        anchor.focus({ preventScroll: true });
+      } else if (e.key === "Tab") onClose();
+    };
+    document.addEventListener("mousedown", outside, true);
+    document.addEventListener("keydown", keys, true);
+    const first = box.querySelector<HTMLButtonElement>("button.rm-item:not(:disabled)");
+    first?.focus({ preventScroll: true });
+    return () => {
+      anchor.classList.remove("open");
+      document.removeEventListener("mousedown", outside, true);
+      document.removeEventListener("keydown", keys, true);
+    };
+  }, [anchor, onClose]);
+
+  const items: {
+    name: string;
+    icon: string;
+    key: string;
+    off: boolean;
+    run: () => void;
+  }[] = [
+    {
+      name: t("Move to top"),
+      icon: MOVE_TOP,
+      key: ALT + SHIFT + "↑",
+      off: onIndex === 0,
+      run: () => onArrange(0),
+    },
+    {
+      name: t("Move up"),
+      icon: MOVE_UP,
+      key: ALT + "↑",
+      off: shownIndex <= 0,
+      run: () => onStep(-1),
+    },
+    {
+      name: t("Move down"),
+      icon: MOVE_DOWN,
+      key: ALT + "↓",
+      off: shownIndex < 0 || shownIndex >= shownCount - 1,
+      run: () => onStep(1),
+    },
+    {
+      name: t("Move to bottom"),
+      icon: MOVE_BOTTOM,
+      key: ALT + SHIFT + "↓",
+      off: onIndex === onCount - 1,
+      run: () => onArrange(onCount - 1),
+    },
+  ];
+
+  return (
+    <div className="pop row-menu" role="menu" ref={boxRef}>
+      {items.map((o) => (
+        <button
+          type="button"
+          key={o.name}
+          className="rm-item"
+          role="menuitem"
+          disabled={o.off}
+          onClick={(e) => {
+            e.stopPropagation();
+            onClose();
+            o.run();
+          }}
+        >
+          <svg viewBox="0 0 16 16" width={13} height={13} aria-hidden>
+            <path
+              d={o.icon}
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+          <span className="rm-name">{o.name}</span>
+          <span className="rm-key">{o.key}</span>
+        </button>
+      ))}
+    </div>
+  );
+}
+
 export function ProvidersView({ onStatus, onGoPlugins }: Props) {
   const [q, setQ] = useState("");
   const [importOpen, setImportOpen] = useState(false);
@@ -2361,7 +2502,7 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
     return true;
   });
   const [listQ, setListQ] = useState("");
-  const [moveMenu, setMoveMenu] = useState<{ id: string; x: number; y: number } | null>(null);
+  const [moveMenu, setMoveMenu] = useState<{ id: string; anchor: HTMLElement } | null>(null);
   const [removeAsk, setRemoveAsk] = useState<{ id: string; name: string } | null>(null);
   /** NOTES 118: drag-in-motion; Escape cancels (no order change) */
   const [dragId, setDragId] = useState<string | null>(null);
@@ -2679,6 +2820,18 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
                       });
                     }
                   }}
+                  onContextMenu={(e) => {
+                    // Magpie app.js L5635: row right-click → openProviderMenu(handle)
+                    e.preventDefault();
+                    if (dragId) return;
+                    const handle = (e.currentTarget as HTMLElement).querySelector(
+                      ".pv-handle",
+                    ) as HTMLElement | null;
+                    if (!handle) return;
+                    setMoveMenu((cur) =>
+                      cur?.anchor === handle ? null : { id: pv.id, anchor: handle },
+                    );
+                  }}
                 >
                   <button
                     type="button"
@@ -2720,7 +2873,10 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
                       e.preventDefault();
                       e.stopPropagation();
                       if (dragId) return;
-                      setMoveMenu({ id: pv.id, x: e.clientX, y: e.clientY });
+                      const handle = e.currentTarget as HTMLElement;
+                      setMoveMenu((cur) =>
+                        cur?.anchor === handle ? null : { id: pv.id, anchor: handle },
+                      );
                     }}
                   >
                     <img className="ic" src={iconSrc(pv.icon)} alt="" />
@@ -4060,71 +4216,56 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
           </div>
         </div>
       ) : null}
-      {moveMenu ? (
-        <div
-          className="scrim"
-          role="presentation"
-          onClick={() => setMoveMenu(null)}
-          onContextMenu={(e) => {
-            e.preventDefault();
-            setMoveMenu(null);
-          }}
-          onKeyDown={(e) => {
-            if (e.key === "Escape") setMoveMenu(null);
-          }}
-        >
-          <div
-            className="pop move"
-            role="menu"
-            style={
-              {
-                ["--pop-x" as string]: `${moveMenu.x}px`,
-                ["--pop-y" as string]: `${moveMenu.y}px`,
-              } as CSSProperties
-            }
-            onClick={(e) => e.stopPropagation()}
-          >
-            {(
-              [
-                ["top", t("Move to top"), "Alt+Shift+↑"],
-                ["up", t("Move up"), "Alt+↑"],
-                ["down", t("Move down"), "Alt+↓"],
-                ["bottom", t("Move to bottom"), "Alt+Shift+↓"],
-              ] as const
-            ).map(([act, lab, kbd]) => (
-              <button
-                key={act}
-                type="button"
-                role="menuitem"
-                className="text item"
-                onClick={() => {
-                  const id = moveMenu.id;
-                  setDemoProvs((list) => {
-                    const i = list.findIndex((x) => x.id === id);
-                    if (i < 0) return list;
-                    const next = [...list];
-                    const [row] = next.splice(i, 1);
-                    if (act === "top") next.unshift(row);
-                    else if (act === "bottom") next.push(row);
-                    else if (act === "up") next.splice(Math.max(0, i - 1), 0, row);
-                    else next.splice(Math.min(next.length, i + 1), 0, row);
-                    const changed = next.map((x) => x.id).join() !== list.map((x) => x.id).join();
-                    if (changed) {
-                      // NOTES 108: toast after Move down (or any reorder)
-                      queueMicrotask(() => onStatus(t("Provider order saved"), "ok"));
-                    }
-                    return changed ? next : list;
-                  });
-                  setMoveMenu(null);
-                }}
-              >
-                <span className="lab">{lab}</span>
-                <span className="kbd">{kbd}</span>
-              </button>
-            ))}
-          </div>
-        </div>
-      ) : null}
+      {moveMenu ? (() => {
+        // Magpie app.js L5701–5726: on = providers !off; shown = search-visible on rows
+        const onIds = demoProvs.filter((p) => !p.off).map((p) => p.id);
+        const shownIds = demoProvs
+          .filter((p) => !p.off)
+          .filter(
+            (p) =>
+              !lf ||
+              p.name.toLowerCase().includes(lf) ||
+              p.id.toLowerCase().includes(lf),
+          )
+          .map((p) => p.id);
+        const onIndex = onIds.indexOf(moveMenu.id);
+        const shownIndex = shownIds.indexOf(moveMenu.id);
+        if (onIndex < 0) return null;
+        const arrangeAmongOn = (to: number) => {
+          setDemoProvs((list) => {
+            const on = list.filter((p) => !p.off).map((p) => p.id);
+            const from = on.indexOf(moveMenu.id);
+            if (from < 0 || to < 0 || to >= on.length || to === from) return list;
+            on.splice(to, 0, ...on.splice(from, 1));
+            let k = 0;
+            const order = list.map((p) => (p.off ? p.id : on[k++]));
+            const byId = new Map(list.map((x) => [x.id, x]));
+            const next = order.map((id) => byId.get(id)!).filter(Boolean);
+            queueMicrotask(() => onStatus(t("Provider order saved"), "ok"));
+            return next;
+          });
+        };
+        const stepAmongShown = (by: -1 | 1) => {
+          const k = shownIds.indexOf(moveMenu.id);
+          if (k < 0 || k + by < 0 || k + by >= shownIds.length) return;
+          const targetShown = shownIds[k + by];
+          const to = onIds.indexOf(targetShown);
+          if (to < 0) return;
+          arrangeAmongOn(to);
+        };
+        return (
+          <ProviderMoveMenu
+            anchor={moveMenu.anchor}
+            onIndex={onIndex}
+            onCount={onIds.length}
+            shownIndex={shownIndex}
+            shownCount={shownIds.length}
+            onArrange={arrangeAmongOn}
+            onStep={stepAmongShown}
+            onClose={() => setMoveMenu(null)}
+          />
+        );
+      })() : null}
 
       <ActionConfirm
         open={!!removeAsk}

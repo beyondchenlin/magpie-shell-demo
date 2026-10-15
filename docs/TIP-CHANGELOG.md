@@ -1,3 +1,16 @@
+## v0.1.153 · PROVIDERS_MOVE_ROW_MENU_OSS_FIDELITY · 2026-10-15 Asia/Shanghai
+
+- **WHY:** Continue Magpie 1:1 after 0.1.152 — cut Providers invent `.pop.move` / `.scrim` / `.text.item` / `.lab`/`.kbd` / `--pop-x`/`--pop-y` that covered Magpie `openProviderMenu` → `openRowMenu` gold.
+- **CAUSE:** Demo painted provider arrange as invent fixed pop at click coords under a full-screen scrim instead of Magpie `openRowMenu(anchor, acts)` → `.pop.row-menu` + `.rm-item` / `.rm-name` / `.rm-key` + MOVE_* icons, placed under `.pv-handle` (app.js **L3497–3538**, **L5713–5726**; app.css **L694–700**). Items never disabled at list ends; arrange ignored Magpie on/shown split.
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; CIS PrefRow/Segs/TextBtn/LibSwitch; Magpie Agents/Routing/Usage `.pop.row-menu` already; Library invent `field-block` (not Magpie — later tip when editor DOM is gold).
+- **Cite:**
+  - Magpie `app.js` **5713–5726** `openProviderMenu` → `openRowMenu` with Move to top/up/down/bottom + ALT/SHIFT keys + `off` at ends
+  - Magpie `app.js` **3497–3538** `openRowMenu` (`.pop.row-menu` / `.rm-item` / `.rm-name` / `.rm-key` / icons; `placeMenu` under handle)
+  - Magpie `app.js` **5635** row `oncontextmenu` → handle anchor; **5701–5708** `onProviderIds` / `shownProviderIds` / `stepProvider`; **5794–5811** `arrangeProvider`
+  - Magpie `app.css` **694–700** `.pop.row-menu` / `.rm-*`; **1922+** `.pop` fixed + animation
+- **WHAT changed:** `ProvidersView.tsx` invent menu → `ProviderMoveMenu` Magpie row-menu DOM; row+handle contextmenu toggle on handle anchor; arrange/step Magpie on/shown; `shell-patch.css` drop invent `.scrim` / `.pop.move*`.
+- **chrome-guard:** pass (SIDE_AT=1024). Push/PR #1. No portable/Vercel.
+
 ## v0.1.152 · LIBRARY_HOOK_PROTO_MENU_OSS_FIDELITY · 2026-10-15 Asia/Shanghai
 
 - **WHY:** Continue Magpie 1:1 after 0.1.151 — cut Hook editor invent `.pop.menu` / `.gl` / `.text.item` that covered Magpie `openProtoMenu` gold for When-it-runs / For-which-tools.
