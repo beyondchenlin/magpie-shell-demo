@@ -255,10 +255,7 @@ body.window:not(.side-nav) .top.tight .brand > span:not(.logo) { display: none; 
   width: 9px; height: 9px; border-radius: 2px; background: var(--seg-track, #e6e6eb);
 }
 .profiles .chips .hint { color: var(--muted); font-size: 12.5px; line-height: 30px; }
-.rt-accts li.idle {
-  justify-content: center; color: var(--muted); font-size: 12.5px;
-  border-style: dashed; cursor: default;
-}
+/* v0.1.128: idle row uses Magpie routing.css L74 (display:block + text-align:center) — no tip invent */
 .rt-flier-demo { pointer-events: none; }
 
 #view-agents .row.agent.conn {
@@ -704,15 +701,8 @@ body.web.side-nav {
 }
 .sub.ask { color: var(--fg-2); font-size: 12px; line-height: 1.45; }
 
-.rt-accts li.on .bar,
-.rt-accts li .bar {
-  display: block;
-  height: 3px;
-  margin-top: 4px;
-  border-radius: 2px;
-  background: color-mix(in srgb, var(--agent, var(--accent)) 55%, var(--pill));
-  transition: width .35s var(--ease);
-}
+/* v0.1.128: drop invent .rt-accts .bar-as-fill — Magpie routing.css L84–90:
+   .bar = track (card-2), .bar i = fill (muted → fg when li.on), width on i. */
 /* v0.1.127: removed invented .rt-livedot.on 7px glow — Magpie routing.css L405
    is always-green 6px + rtlive (no .on / no ring). Tip JSX may keep class "on" harmlessly. */
 
@@ -765,8 +755,8 @@ body.web.side-nav {
 .ctx-empty-dash b { display: block; font-weight: 600; }
 .led-q-wrap .sess-filter { min-width: 180px; }
 
-/* v0.1.43 MOTION — Magpie control transitions still unmatched */
-.guide-x { transition: background .12s var(--ease, ease), color .12s var(--ease, ease); }
+/* v0.1.43 MOTION — Magpie control transitions still unmatched
+   v0.1.128: drop invent .guide-x transition (Magpie app.css L3728–3729: snap hover) */
 .ag-install-head .chev { transition: transform .3s cubic-bezier(.22, 1, .36, 1); }
 @media (prefers-reduced-motion: reduce) {
   .agent-more .chev,
@@ -774,7 +764,6 @@ body.web.side-nav {
   .agent-fold .row,
   .agent-fold .agent-fold-cap,
   .ag-install-head .chev,
-  .guide-x,
   .guide-agent { transition: none !important; }
   .agent-fold.open .row,
   .agent-fold.open .agent-fold-cap { transition: none !important; }
@@ -2572,16 +2561,10 @@ button.lib-ag.icon {
   display: flex; flex-direction: column;
 }
 #view-routing .rt-act.enter { animation: rtin .4s ease-out; }
-#view-routing .rt-accts > li > .bar {
-  width: var(--bar, 0%);
-  background: var(--muted);
-}
+/* v0.1.128: .rt-accts bar uses Magpie routing.css track+i (no tip --bar fill invent).
+   rt-act still maps --bar → i width for demo rows that keep the token. */
 #view-routing .rt-act .bar i {
   width: var(--bar, 0%);
-}
-#view-routing .rt-accts .bar { /* Magpie bar is track; demo uses bar as fill */
-  display: block; height: 3px; border-radius: 2px;
-  background: var(--muted); max-width: 100%;
 }
 #view-routing .rt-tpl-head { margin: 8px 0 4px; }
 #view-routing .rt-tpl-list { padding: 4px 4px 8px; }

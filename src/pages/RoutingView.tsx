@@ -895,15 +895,26 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
             <ol className="rt-accts">
               {demoLive ? (
                 <>
+                  {/* Magpie makeRow: i.dot + b + em + div.bar>i width (routing.js ~1315–1317, 1587) */}
                   <li className="on" ref={idleRef} style={{ ["--agent" as string]: "#d97706" }}>
-                    <span className="dot" />
-                    <span className="nm">Anthropic · work@…</span>
-                    <span className="bar" style={{ ["--bar" as string]: "72%" }} />
+                    <i className="dot" />
+                    <b>
+                      <span className="who">Anthropic · work@…</span>
+                    </b>
+                    <em>{t("answering…")}</em>
+                    <div className="bar">
+                      <i style={{ width: "72%" }} />
+                    </div>
                   </li>
                   <li style={{ ["--agent" as string]: "#10a37f" }}>
-                    <span className="dot" />
-                    <span className="nm">OpenAI · sk-…demo</span>
-                    <span className="bar" style={{ ["--bar" as string]: "28%" }} />
+                    <i className="dot" />
+                    <b>
+                      <span className="who">OpenAI · sk-…demo</span>
+                    </b>
+                    <em>{t("API key")}</em>
+                    <div className="bar">
+                      <i style={{ width: "28%" }} />
+                    </div>
                   </li>
                 </>
               ) : (

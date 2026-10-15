@@ -1,3 +1,17 @@
+## v0.1.128 · RT_ACCTS_BAR_GUIDE_X_FIDELITY · 2026-10-15 Asia/Shanghai
+- **WHY:** Continue Magpie 1:1 fidelity after 0.1.127 — remove tip invents on Routing live accounts bar and Agents guide-x hover.
+- **CAUSE:** Tip painted `.rt-accts .bar` as the fill (`--bar` width + agent color-mix + shell-patch overrides) instead of Magpie track+`i`; invented `.guide-x` transition Magpie does not have; idle row tip override fought Magpie L74.
+- **Gold:**
+  - Magpie `routing.css` **84–90**: `.bar` track `var(--card-2)`; `.bar i` fill `var(--muted)` → `var(--fg)` when `li.on`; `transition: width .4s` on `i`
+  - Magpie `routing.js` **1315–1317** `makeRow`: `i.dot` + `b` + `em` + `div.bar>i`; **1587** `row.bi.style.width = fill(w)`
+  - Magpie `app.css` **3728–3729** `.guide-x` / `:hover` — **no** transition
+  - Magpie `routing.css` **74** `.rt-accts li.idle { display: block; … text-align: center; }`
+- **WHAT kept:** `SIDE_AT=1024`; no `WEB_SIDE_AT`; 752×652 frame; CIS PrefRow/Segs/TextBtn; livedot always-green (0.1.127); guide hide instant (0.1.127); no PrefRow on Magpie `.acc` / `pm-row`.
+- **WHAT changed:**
+  - `RoutingView.tsx`: live stage Magpie makeRow DOM + inner `i` width
+  - `shell-patch.css`: remove invent `.rt-accts` bar-as-fill / `#view-routing` bar fill / idle override / `.guide-x` transition
+- **Guard:** chrome-guard. Push/PR. No portable / Vercel.
+
 ## v0.1.127 · RT_LIVEDOT_GUIDE_HIDE_FIDELITY · 2026-10-15 Asia/Shanghai
 - **WHY:** Next 1:1 visual/interaction tip after CIS chrome wave closed at 0.1.126 — pick Magpie-faithful CSS/motion on pages users check (Routing empty/live stage, Agents guide).
 - **CAUSE:** Tip had diverged `.rt-livedot` to faint + `.on` and invented shell-patch 7px glow (not Magpie); Agents `guide-x` invent fade not in Magpie `hideGuide`.

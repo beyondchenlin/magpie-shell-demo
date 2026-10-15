@@ -1,3 +1,9 @@
+## v0.1.128 RT_ACCTS_BAR_GUIDE_X_FIDELITY
+- Routing live `.rt-accts`: Magpie track+fill (`div.bar > i` width; routing.css L84–90 / routing.js ~1315–1587) — drop tip invent bar-as-fill (`--bar` on outer bar, agent color-mix, shell-patch overrides).
+- Live row DOM: `i.dot` + `b>who` + `em` + `div.bar>i` (Magpie makeRow); idle uses Magpie routing.css L74 (drop tip invent).
+- Agents `.guide-x`: drop invent `.12s` transition (Magpie app.css L3728–3729 snap hover).
+- SIDE_AT=1024. No portable / Vercel.
+
 ## v0.1.127 RT_LIVEDOT_GUIDE_HIDE_FIDELITY
 - Routing `.rt-livedot`: restore Magpie always-green 6px + `rtlive` (routing.css L405); drop tip invent faint/`.on` + shell-patch 7px glow ring.
 - Agents Get started `guide-x`: Magpie `hideGuide` instant (app.js ~1682) — remove invent `.22s` opacity fade.
