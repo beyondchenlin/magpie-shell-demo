@@ -1,5 +1,8 @@
-import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { PrefRow } from "../components/PrefRow";
 import { Segs } from "../components/Segs";
+import { TextBtn } from "../components/TextBtn";
+import { WordsField } from "../components/WordsField";
 import { useSegThumb } from "../components/SegThumb";
 import { GATEWAY_ADDR } from "../data/mock";
 import { demoCopy, t, type Lang } from "../i18n";
@@ -330,40 +333,6 @@ function savePrefs(p: DemoPrefs) {
 function applyTextSize(n: number) {
   document.documentElement.style.setProperty("--zoom", String(n / 100));
   document.documentElement.style.zoom = String(n / 100);
-}
-
-function PrefRow({
-  name,
-  sub,
-  subTitle,
-  children,
-  id,
-  hidden,
-  className,
-  valClassName,
-}: {
-  name: string;
-  sub?: ReactNode;
-  subTitle?: string;
-  children?: ReactNode;
-  id?: string;
-  hidden?: boolean;
-  className?: string;
-  valClassName?: string;
-}) {
-  if (hidden) return null;
-  return (
-    <div className={`row pref${className ? ` ${className}` : ""}`} id={id}>
-      <div className="who">
-        {/* ellipsis title on the label (NOTES colorblind 178–183: tip repeats the name) */}
-        <div className="name" title={name}>{name}</div>
-        {sub ? <div className="sub" title={subTitle ?? (typeof sub === "string" ? sub : undefined)}>{sub}</div> : null}
-      </div>
-      {children != null ? (
-        <div className={`val${valClassName ? ` ${valClassName}` : ""}`}>{children}</div>
-      ) : null}
-    </div>
-  );
 }
 
 function Label({ en }: { en: string }) {
@@ -1324,16 +1293,14 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus, onHeade
               sub={t("Agents magpie connected move with it. Now {url}", { url: `http://127.0.0.1:${prefs.port}` })}
               className="port-row"
             >
-              <input
-                className="words gateway-port"
+              <WordsField
+                className="gateway-port"
                 inputMode="numeric"
                 value={prefs.port}
                 aria-label={t("Gateway port")}
                 onChange={(e) => setPrefsState((p) => ({ ...p, port: e.target.value }))}
               />
-              <button
-                type="button"
-                className="text"
+              <TextBtn
                 onClick={() => {
                   const p = Number(prefs.port.trim());
                   if (!Number.isInteger(p) || p < 1024 || p > 65535) {
@@ -1344,7 +1311,7 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus, onHeade
                 }}
               >
                 {t("Apply")}
-              </button>
+              </TextBtn>
             </PrefRow>
           </div>
         )}

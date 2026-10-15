@@ -4,6 +4,18 @@
 
 ---
 
+## v0.1.103 · CIS_COMPONENTS_ROUTING_WIRES · 2026-10-15 Asia/Shanghai
+
+- **WHY:** User: nest/1:1 is to learn Magpie into a **unified CIS + reusable components** — not feature stuffing. Gaps: Routing live stage weak adaptive; Settings/add-model unfit controls.
+- **WHAT kept:** `SIDE_AT=1024`; no `WEB_SIDE_AT`; Win chrome / 752 nest frame; no new Magpie features.
+- **WHAT changed:**
+  - CIS `/workspace/magpie-shell-cis-2026-10-15.md` §10 component contract (Segs/TextBtn/WordsField/LibSwitch/PrefRow; Routing max560 + fromHub wires; Settings mismatch list).
+  - Routing live wires: Magpie `layout()` side vs under-hub paths; `viewBox`; redraw on `mainNarrow` (nest 116–117 / max560).
+  - Extract `PrefRow` `TextBtn` `WordsField` `LibSwitch`; Settings Gateway port + Providers list switches consume them.
+- **Nest:** routing NOTES 116–117 + Magpie `routing.js` layout/fromHub; Mac click tour reference only for nav/Appearance (not Linux chrome gold).
+- **Guard:** `npm run chrome-guard`. No portable. No Vercel.
+
+---
 ## v0.1.102 · DUPLICATE_MOVE_FILTER_205_222 · 2026-10-15 Asia/Shanghai
 
 - **WHY:** Consume nest `routing/205–222` Duplicate / Move / Filter into RoutingView (slice only).

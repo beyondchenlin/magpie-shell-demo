@@ -515,6 +515,8 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
   }, [gImportOpen, importResult]);
 
 
+  // Magpie routing.js layout(): side wires when nodes are beside hub;
+  // when accounts sit under (max560), a lane down the left from hub bottom.
   useEffect(() => {
     const draw = () => {
       const stage = stageRef.current;
@@ -523,39 +525,74 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
       const idle = idleRef.current;
       if (!stage || !hub) return;
       const sr = stage.getBoundingClientRect();
-      const hr = hub.getBoundingClientRect();
-      const hx = hr.left + hr.width / 2 - sr.left;
-      const hy = hr.top + hr.height / 2 - sr.top;
+      if (!sr.width) return;
+      const box = (e: HTMLElement) => {
+        const x = e.getBoundingClientRect();
+        return {
+          l: x.left - sr.left,
+          r: x.right - sr.left,
+          t: x.top - sr.top,
+          b: x.bottom - sr.top,
+          cx: (x.left + x.right) / 2 - sr.left,
+          cy: (x.top + x.bottom) / 2 - sr.top,
+        };
+      };
+      const h = box(hub);
       const next: Wire[] = [];
+      let low = h.b;
       if (src) {
-        const r = src.getBoundingClientRect();
-        const x = r.right - sr.left;
-        const y = r.top + r.height / 2 - sr.top;
-        next.push({
-          d: `M ${x} ${y} C ${x + 36} ${y}, ${hx - 36} ${hy}, ${hx} ${hy}`,
-          live: demoLive,
-        });
+        const s = box(src);
+        low = s.b;
+        if (h.l > s.r) {
+          const mx = (s.r + h.l) / 2;
+          next.push({
+            d: `M${s.r} ${s.cy} C${mx} ${s.cy} ${mx} ${h.cy} ${h.l} ${h.cy}`,
+            live: demoLive,
+          });
+        } else {
+          next.push({
+            d: `M${s.cx} ${s.b} L${h.cx} ${h.t}`,
+            live: demoLive,
+          });
+        }
       }
       if (idle) {
-        const r = idle.getBoundingClientRect();
-        const x = r.left - sr.left;
-        const y = r.top + r.height / 2 - sr.top;
-        next.push({
-          d: `M ${hx} ${hy} C ${hx + 40} ${hy}, ${x - 40} ${y}, ${x} ${y}`,
-          live: false,
-        });
+        const a = box(idle);
+        if (a.l > h.r) {
+          const mx = (h.r + a.l) / 2;
+          next.push({
+            d: `M${h.r} ${h.cy} C${mx} ${h.cy} ${mx} ${a.cy} ${a.l} ${a.cy}`,
+            live: false,
+          });
+        } else {
+          // under hub (max560 / nest 117): Magpie fromHub vertical lane
+          const x = a.l - 12;
+          const y = Math.max(h.b, low - 8);
+          next.push({
+            d: `M${h.cx} ${h.b} L${h.cx} ${y} C${h.cx} ${y + 22} ${x} ${y + 2} ${x} ${y + 24} L${x} ${a.cy - 10} Q${x} ${a.cy} ${a.l} ${a.cy}`,
+            live: false,
+          });
+        }
+      }
+      const svg = stage.querySelector(".rt-wires") as SVGSVGElement | null;
+      const sky = stage.querySelector(".rt-sky") as SVGSVGElement | null;
+      for (const el of [svg, sky]) {
+        if (el) el.setAttribute("viewBox", `0 0 ${sr.width} ${sr.height}`);
       }
       setWires(next);
     };
-    draw();
-    const ro = new ResizeObserver(draw);
+    // after max560 class toggles, wait a frame so grid reflow is measured
+    const kick = () => requestAnimationFrame(draw);
+    kick();
+    const ro = new ResizeObserver(kick);
     if (stageRef.current) ro.observe(stageRef.current);
-    window.addEventListener("resize", draw);
+    if (mainRef.current) ro.observe(mainRef.current);
+    window.addEventListener("resize", kick);
     return () => {
       ro.disconnect();
-      window.removeEventListener("resize", draw);
+      window.removeEventListener("resize", kick);
     };
-  }, [demoLive]);
+  }, [demoLive, mainNarrow]);
 
   // Optional mock flier along first wire when demo live is on
   useEffect(() => {

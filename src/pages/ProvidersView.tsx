@@ -10,6 +10,7 @@ import presets from "../data/presets.json";
 import { SUB_TILES, iconSrc } from "../data/mock";
 import { ZH, t, demoCopy } from "../i18n";
 import { ProtoMultiMenu } from "../components/ProtoMultiMenu";
+import { LibSwitch } from "../components/LibSwitch";
 
 type Preset = { id: string; name: string; icon: string; kind: string };
 const PRESETS = presets as Preset[];
@@ -2786,11 +2787,9 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
                   >
                     <span>{pv.keyLabel}</span>
                   </span>
-                  <button
-                    type="button"
-                    className={`lib-switch pswitch${pv.off ? "" : " on"}`}
-                    role="switch"
-                    aria-checked={!pv.off}
+                  <LibSwitch
+                    kind="pswitch"
+                    on={!pv.off}
                     aria-label={t("Use {name}", { name: pv.name })}
                     title={
                       pv.off
@@ -2811,9 +2810,7 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
                         "ok",
                       );
                     }}
-                  >
-                    <i />
-                  </button>
+                  />
                   <span className="chev" aria-hidden>
                     <svg viewBox="0 0 12 12" width={11} height={11}>
                       <path
@@ -2919,11 +2916,9 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
                 <span className={`key ${pv.keyKind}`}>
                   <span>{pv.keyLabel}</span>
                 </span>
-                <button
-                  type="button"
-                  className="lib-switch pswitch"
-                  role="switch"
-                  aria-checked={false}
+                <LibSwitch
+                  kind="pswitch"
+                  on={false}
                   title={t("Off · switch it on and agents get its models again")}
                   onClick={(e) => {
                     e.stopPropagation();
@@ -2932,9 +2927,7 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
                     );
                     onStatus(t("{name} is on", { name: pv.name }), "ok");
                   }}
-                >
-                  <i />
-                </button>
+                />
                 <span className="chev" aria-hidden>
                   <svg viewBox="0 0 12 12" width={11} height={11}>
                     <path d="M4.5 2.5 8 6l-3.5 3.5" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />

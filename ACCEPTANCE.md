@@ -1,3 +1,8 @@
+## v0.1.103 CIS_COMPONENTS_ROUTING_WIRES
+- CIS §10: Magpie-class component contract + React wrappers (`PrefRow` `TextBtn` `WordsField` `LibSwitch`); Settings/add-model mismatch prioritized; consume rule — no one-off styles.
+- Routing live stage: Magpie-faithful wires (horizontal beside hub; vertical lane when `.rt-main.max560` / nest 117); viewBox + redraw on narrow. CSS max560 grid unchanged (agent‖magpie, No request yet full width).
+- Shared extraction landed; Gateway port + Providers On/Off switches use wrappers. SIDE_AT=1024 kept. No portable / Vercel.
+
 ## v0.1.102 DUPLICATE_MOVE_FILTER_205_222
 - Consumed native `routing/205–222` NOTES: Duplicate → **{name} copy** / **{name} copy 2** after original + toast **Duplicated {name}**; Move up/down gray at ends + toast **Group order saved**; handle tip **Drag to reorder — agents' model lists show the groups in this order · Alt+↑/↓ to move** (+ Alt+↑/↓); Filter every-word, empty **No group or model matches “{q}”**, Escape clears; Select hides Templates/Import/Select/New group (filter stays).
 - Win chrome from v0.1.101 **kept** (`html.win` / caption / brand hide). SIDE_AT=1024; no WEB_SIDE_AT. No portable.
