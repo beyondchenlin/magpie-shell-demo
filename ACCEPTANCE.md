@@ -1,3 +1,10 @@
+## v0.1.166 · LED_RAIL_SCROLLBAR_OSS_FIDELITY · 2026-10-16 Asia/Shanghai
+
+- **WHY:** Magpie Usage `#ledRail` custom slim scrollbar beside `#ledRank` was missing — restore gold.
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; drawLedRank + emphasize (0.1.165); skip oauth Approve wall.
+- **Cite:** Magpie app.js ledRankEdges **L18193–18206**; ledRail **L18209–18229**; wired **L18324**; app.css **L1172–1178** / **L1182**; index.html **L197**.
+- **chrome-guard:** pass. Push/PR #1. No portable/Vercel.
+
 ## v0.1.165 · LED_RANK_EMPHASIZE_OSS_FIDELITY · 2026-10-16 Asia/Shanghai
 
 - **WHY:** Magpie `#ledRank` was empty — restore `drawLedRank` + hover emphasize gold.

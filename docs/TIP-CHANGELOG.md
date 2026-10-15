@@ -1,3 +1,18 @@
+## v0.1.166 · LED_RAIL_SCROLLBAR_OSS_FIDELITY · 2026-10-16 Asia/Shanghai
+
+- **WHY:** Continue Magpie led-chart after 0.1.165 — restore Magpie custom `#ledRail` slim scrollbar that tracks `#ledRank` scroll (native bar hidden; thumb drag / rail click).
+- **CAUSE:** v0.1.165 restored `drawLedRank` + edge fades but deferred Magpie `ledRail($("#ledRail"), rank)` + rail sync inside `ledRankEdges` (app.js **L18193–18229**, wired **L18324**; HTML **L197**; CSS **L1172–1178**). Tip had CSS for `.led-rail` but no DOM/handlers.
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; Magpie led-chart day-pick + speed marks + drawLedRank emphasize (0.1.163–165); skip oauth Approve wall.
+- **Cite:**
+  - Magpie `index.html` **197** `.led-rail#ledRail` sibling of `#ledRank` inside `.led-body`
+  - Magpie `app.js` **18193–18206** `ledRankEdges`: more-above/below + `rail.hidden` / thumb height / `translateY`
+  - Magpie `app.js` **18209–18229** `ledRail`: pointerdown thumb drag + click-on-rail jump
+  - Magpie `app.js` **18324** `if (!rank.rail) ledRail($("#ledRail"), rank)`
+  - Magpie `app.css` **1172–1178** `.led-rail` / thumb; **1182** hide ≤860px
+- **WHAT changed:** `LedChart.tsx` `LedRank` renders `#ledRail` sibling; syncs rail in edges effect; wires Magpie drag/click.
+- **chrome-guard:** pass. Push/PR #1. No portable/Vercel.
+
+---
 ## v0.1.165 · LED_RANK_EMPHASIZE_OSS_FIDELITY · 2026-10-16 Asia/Shanghai
 
 - **WHY:** Continue Magpie led-chart after 0.1.164 — restore empty `#ledRank` with Magpie `drawLedRank` + hover `box.emphasize` that dims non-matching chart columns.

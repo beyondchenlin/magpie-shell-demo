@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { Fragment, useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import {
   buildDemoLedTrend,
   fmtCost,
@@ -511,9 +511,11 @@ export function LedChart({
 }
 
 /**
- * Magpie Usage `#ledRank` — drawLedRank L18126–18189
+ * Magpie Usage `#ledRank` + `#ledRail` — drawLedRank L18126–18189,
+ * ledRankEdges L18193–18206, ledRail L18209–18229
  * (+ hover → chart.emphasize L18174–75; click → choose filter L18327–39).
  * Structure: .led-rank > button.rk[.on|.plain] > .rk-a / .rk-bar / .rk-b
+ *            + sibling .led-rail#ledRail > i (custom scrollbar)
  */
 export function LedRank({
   metric,
@@ -539,27 +541,91 @@ export function LedRank({
 
   const { top, rest, list } = useMemo(() => ledCategories(l, split, m), [l, split, m]);
 
-  // Magpie ledRankEdges L18193–96 — fade when more rows above/below
-  useEffect(() => {
+  const railRef = useRef<HTMLDivElement>(null);
+
+  // Magpie ledRankEdges L18193–18206 + ledRail L18209–18229
+  // — fade edges; custom #ledRail thumb tracks scroll / drag / rail click
+  // useLayoutEffect: avoid paint flash; do not put `hidden` in JSX (React would
+  // re-apply it on picked/metric re-renders and stick the rail closed).
+  useLayoutEffect(() => {
     const box = boxRef.current;
-    if (!box) return;
+    const rail = railRef.current;
+    if (!box || !rail) return;
+
     const sync = () => {
       const end = box.scrollHeight - box.clientHeight;
       box.classList.toggle("more-above", end > 1 && box.scrollTop > 1);
       box.classList.toggle("more-below", end > 1 && box.scrollTop < end - 1);
+      rail.hidden = !(end > 1) || !box.offsetParent;
+      if (rail.hidden) return;
+      const h = box.clientHeight;
+      const thumb = Math.max(24, (h * h) / box.scrollHeight);
+      const tip = rail.firstElementChild as HTMLElement | null;
+      rail.style.top = box.offsetTop + "px";
+      rail.style.height = h + "px";
+      if (tip) {
+        tip.style.height = thumb + "px";
+        tip.style.transform = `translateY(${((h - thumb) * box.scrollTop) / end}px)`;
+      }
     };
+
+    // Magpie ledRail — thumb drag + click-on-rail jumps
+    const onPointerDown = (e: PointerEvent) => {
+      if (e.button !== 0) return;
+      e.preventDefault();
+      const end = box.scrollHeight - box.clientHeight;
+      const thumbEl = rail.firstElementChild as HTMLElement | null;
+      if (!thumbEl) return;
+      const thumb = thumbEl.offsetHeight;
+      const room = rail.clientHeight - thumb;
+      if (end <= 0 || room <= 0) return;
+      if (e.target !== thumbEl) {
+        const y = e.clientY - rail.getBoundingClientRect().top - thumb / 2;
+        box.scrollTop = (Math.max(0, Math.min(room, y)) / room) * end;
+      }
+      const y0 = e.clientY;
+      const top0 = box.scrollTop;
+      rail.setPointerCapture(e.pointerId);
+      rail.classList.add("drag");
+      const onMove = (m: PointerEvent) => {
+        box.scrollTop = top0 + ((m.clientY - y0) / room) * end;
+      };
+      const onUp = () => {
+        rail.classList.remove("drag");
+        rail.removeEventListener("pointermove", onMove);
+        rail.removeEventListener("pointerup", onUp);
+        rail.removeEventListener("pointercancel", onUp);
+      };
+      rail.addEventListener("pointermove", onMove);
+      rail.addEventListener("pointerup", onUp);
+      rail.addEventListener("pointercancel", onUp);
+    };
+    rail.addEventListener("pointerdown", onPointerDown);
+
     sync();
     box.addEventListener("scroll", sync, { passive: true });
     const ro = new ResizeObserver(sync);
     ro.observe(box);
     return () => {
       box.removeEventListener("scroll", sync);
+      rail.removeEventListener("pointerdown", onPointerDown);
       ro.disconnect();
     };
   }, [top, rest, list.length]);
 
+  const railEl = (
+    <div className="led-rail" id="ledRail" ref={railRef}>
+      <i />
+    </div>
+  );
+
   if (!list.length) {
-    return <div className="led-rank" id="ledRank" ref={boxRef} />;
+    return (
+      <Fragment>
+        <div className="led-rank" id="ledRank" ref={boxRef} />
+        {railEl}
+      </Fragment>
+    );
   }
 
   const sum = list.reduce((a, x) => a + ledValue(m, x), 0) || 1;
@@ -640,9 +706,12 @@ export function LedRank({
   }
 
   return (
-    <div className="led-rank" id="ledRank" ref={boxRef}>
-      {top.map((x) => one(x, x.color, false))}
-      {other ? one(other, "var(--faint)", true) : null}
-    </div>
+    <Fragment>
+      <div className="led-rank" id="ledRank" ref={boxRef}>
+        {top.map((x) => one(x, x.color, false))}
+        {other ? one(other, "var(--faint)", true) : null}
+      </div>
+      {railEl}
+    </Fragment>
   );
 }
