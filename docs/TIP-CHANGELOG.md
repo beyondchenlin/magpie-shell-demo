@@ -1,3 +1,16 @@
+## v0.1.139 · LIB_MODAL_EDITOR_AG_CONFIRM_OSS_FIDELITY · 2026-10-15 Asia/Shanghai
+
+- **WHY:** Continue Magpie 1:1 after 0.1.138 — delete tip invent Library sheet chrome (`.dialog.lib-editor` / unused `.sm` / invent ehead-bar padding) + invent `.lib-confirm` / pill `button.lib-ag` that covered Magpie OSS.
+- **CAUSE:** Demo painted Library modals as invent `.modal` > `.dialog.lib-editor` (lib-editor on dialog) instead of Magpie openLib `.modal.lib` > `.dialog` > `.editor.lib-editor`; shell-patch re-owned `.lib-confirm` at line-height 1.5 and invent pill chips against Magpie library.css.
+- **Magpie cites:**
+  - Magpie `plugins/library/client.js` **4944** `openLib` → `openModal` + `$("#modal").classList.add("lib")`
+  - Magpie `app.js` **8062+** `openModal` → `.modal` > `.dialog` > content (`.editor.lib-editor`)
+  - Magpie `app.css` **2693–2706** `.editor` / `.ehead`; **2847** `.editor .bar`; **3250–3275** `.modal` / `.dialog` / framed bars
+  - Magpie `plugins/library/library.css` **330+** `.lib-editor`; **346** `.lib-confirm` (line-height **1.55**); **187–217** `.lib-ag` (radius 7, not invent 999 pill)
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; Usage row-menu (0.1.138); CIS PrefRow/Segs/TextBtn; demo-only editor field bridges under `.modal .editor.lib-editor` (oauth-pair / field-block / pop.menu).
+- **WHAT changed:** `LibraryView.tsx` LibModal → Magpie DOM; `shell-patch.css` drop invents above.
+- **Guard:** `npm run chrome-guard`. No portable. Push/PR #1. No Vercel.
+
 ## v0.1.138 · USAGE_AGENT_ROW_MENU_HID_OSS_FIDELITY · 2026-10-15 Asia/Shanghai
 
 - **WHY:** Continue Magpie 1:1 after 0.1.137 — delete tip invent Usage Agents ⋯ menu (`proto-menu`/`proto-item`) + shell-patch `.us-more-pop` / `.us-hidline` that covered Magpie OSS row-menu + us-hid.

@@ -1,8 +1,7 @@
 # last-cycle · 2026-10-15 Asia/Shanghai
 
-## v0.1.138 USAGE_AGENT_ROW_MENU_HID_OSS_FIDELITY
+## v0.1.139 LIB_MODAL_EDITOR_AG_CONFIRM_OSS_FIDELITY
 
-- Usage Agents ⋯: Magpie openRowMenu `.pop.row-menu` + `.rm-item` + EYE_OFF (drop invent proto-menu/proto-item).
-- usageAgentsHid: Magpie `.us-hid` + `.list` (drop bare id wrapper).
-- shell-patch: drop invent `.us-more-pop` + invent `#view-usage .us-hidline` geometry.
+- Library LibModal: Magpie openLib `.modal.lib` > `.dialog` > `.editor.lib-editor` (drop invent `.dialog.lib-editor` / `.sm`).
+- shell-patch: drop invent `.lib-confirm` + invent pill `button.lib-ag` (library.css L346 / L187–217).
 - SIDE_AT=1024. Push/PR #1. No portable / Vercel.

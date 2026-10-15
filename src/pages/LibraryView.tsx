@@ -209,28 +209,27 @@ function LibChip({
 function LibModal({
   onBg,
   children,
-  sm,
   onPaste,
 }: {
   onBg: () => void;
   children: ReactNode;
-  sm?: boolean;
   onPaste?: (e: ClipboardEvent) => void;
 }) {
-  /** Magpie `.modal` > `.dialog` (+ `.lib-editor` / `.sm`) — chrome in app.css + shell-patch. */
+  /** Magpie openLib: `.modal.lib` > `.dialog` > `.editor.lib-editor` (client.js openLib / openModal). */
   return (
     <div
-      className="modal" role="presentation"
+      className="modal lib" role="presentation"
       onMouseDown={(e) => {
         if (e.target === e.currentTarget) onBg();
       }}>
       <div
-        className={`dialog lib-editor${sm ? " sm" : ""}`}
+        className="dialog"
         role="dialog"
         aria-modal
-        onMouseDown={(e) => e.stopPropagation()}
-        onPaste={onPaste}>
-        {children}
+        onMouseDown={(e) => e.stopPropagation()}>
+        <div className="editor lib-editor" onPaste={onPaste}>
+          {children}
+        </div>
       </div>
     </div>
   );

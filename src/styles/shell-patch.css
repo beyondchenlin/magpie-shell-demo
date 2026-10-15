@@ -263,13 +263,8 @@ body.window:not(.side-nav) .top.tight .brand > span:not(.logo) { display: none; 
    Magpie app.css L3774–3776 body.window .row.agent.conn flex-wrap + min-height;
    Magpie L3786 .who + .ag-cant { margin-left: auto } (not tip re-layout). */
 
-.lib-confirm {
-  margin: 0;
-  font-size: 12.5px;
-  line-height: 1.5;
-  color: var(--fg-2);
-  grid-column: 1 / -1;
-}
+/* v0.1.139: drop invent .lib-confirm (line-height 1.5) —
+   Magpie plugins/library/library.css L346 owns it (line-height 1.55). */
 .ag-manage-row .ic img,
 .ag-install-who .ic img {
   width: 100%;
@@ -851,86 +846,15 @@ label.tick input { margin: 0; }
    Magpie index.html L112–120 + app.css L2113–2115 / L1366 / L3036 / L2611–2617
    (.pv-head > .sess-filter.pv-q; .set-none.pv-none; .after-list > #addProvider.text) */
 
-/* Magpie Library sheet dialog — .modal/.dialog (no page-local inline chrome) */
-.modal .dialog.lib-editor {
-  width: min(520px, 100%);
-  padding: 16px 18px 14px;
-  animation: pop-in .42s cubic-bezier(.16, 1, .3, 1);
-}
-.modal .dialog.lib-editor.sm {
-  width: min(360px, 100%);
-  animation: pop-in .28s var(--ease);
-}
-.modal .dialog.lib-editor > .ehead {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 8px;
-}
-.modal .dialog.lib-editor > .ehead b {
-  font-size: 15px;
-  font-weight: 600;
-}
-.modal .dialog.lib-editor > .bar {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 4px;
-}
-.modal .dialog.lib-editor > .list,
-.modal .dialog.lib-editor > .lib-confirm,
-.modal .dialog.lib-editor > .stack {
-  margin-bottom: 12px;
-}
-.modal .dialog.lib-editor .lib-byagent-list {
-  margin-bottom: 12px;
-}
-.modal .dialog.lib-editor .lib-byagent-row {
-  /* Magpie .row already flex; keep list hairline */
-}
-
-
-/* Magpie Library agent chips — was LibChip inline */
-button.lib-ag {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
-  height: 26px;
-  padding: 0 10px 0 8px;
-  border-radius: 999px;
-  border: 1px solid transparent;
-  background: transparent;
-  color: var(--muted);
-  opacity: 0.45;
-  font: inherit;
-  font-size: 12px;
-  cursor: pointer;
-  transition: background .14s, border-color .14s, color .14s, opacity .14s;
-}
-button.lib-ag.on {
-  border-color: var(--line);
-  background: var(--card);
-  color: var(--fg);
-  opacity: 1;
-}
-button.lib-ag.icon {
-  gap: 0;
-  height: 28px;
-  width: 28px;
-  padding: 0;
-  border-radius: 8px;
-  font-size: 14px;
-}
-
-/* Magpie Library editor fields inside .dialog.lib-editor */
-.modal .dialog.lib-editor .stack {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  margin-bottom: 12px;
-}
-.modal .dialog.lib-editor label.field {
+/* v0.1.139: drop invent `.modal .dialog.lib-editor` (+ `.sm` / dialog padding /
+   invent ehead/bar) + invent pill `button.lib-ag` —
+   Magpie: openLib → `.modal.lib` > `.dialog` > `.editor.lib-editor`
+   (plugins/library/client.js L4944 openLib; app.js openModal L8062+);
+   Magpie `.editor` app.css L2693–2706 / L2847 bar; library.css L330+ / L346;
+   Magpie `.lib-ag` library.css L187–217 (radius 7, not invent 999 pill).
+   Demo-only field bridges (not Magpie `.editor` grid labels) stay under
+   `.modal .editor.lib-editor`: */
+.modal .editor.lib-editor label.field {
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -938,35 +862,22 @@ button.lib-ag.icon {
   margin: 0;
   color: var(--fg);
 }
-.modal .dialog.lib-editor label.field > .k {
+.modal .editor.lib-editor label.field > .k {
   font-size: 12px;
   font-weight: 500;
 }
-.modal .dialog.lib-editor .hint {
-  font-size: 11.5px;
-  color: var(--muted);
-  margin: 0;
-  line-height: 1.4;
-}
-.modal .dialog.lib-editor .hint.err { color: var(--red); }
-.modal .dialog.lib-editor .pair {
-  display: flex;
-  gap: 6px;
-  align-items: center;
-  margin-bottom: 6px;
-}
-.modal .dialog.lib-editor .pair .words {
+.modal .editor.lib-editor .pair .words {
   flex: 1;
   min-width: 0;
   width: auto;
 }
-.modal .dialog.lib-editor .words.port { flex: none; width: 110px; }
-.modal .dialog.lib-editor .words.timeout { flex: none; width: 160px; max-width: 100%; }
-.modal .dialog.lib-editor .words.mono,
-.modal .dialog.lib-editor input.mono.words {
+.modal .editor.lib-editor .words.port { flex: none; width: 110px; }
+.modal .editor.lib-editor .words.timeout { flex: none; width: 160px; max-width: 100%; }
+.modal .editor.lib-editor .words.mono,
+.modal .editor.lib-editor input.mono.words {
   font-family: var(--code-font, var(--code));
 }
-.modal .dialog.lib-editor textarea.words {
+.modal .editor.lib-editor textarea.words {
   width: 100%;
   max-width: 100%;
   min-height: 64px;
@@ -983,26 +894,16 @@ button.lib-ag.icon {
   box-sizing: border-box;
   transition: border-color .12s, box-shadow .12s;
 }
-.modal .dialog.lib-editor textarea.words:focus {
+.modal .editor.lib-editor textarea.words:focus {
   border-color: var(--accent);
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent);
 }
-.modal .dialog.lib-editor .ehead .ic {
-  width: 16px;
-  height: 16px;
-  flex: none;
-}
-.modal .dialog.lib-editor .ehead .note {
-  font-size: 12px;
-  color: var(--muted);
-  margin-left: auto;
-}
-.modal .dialog.lib-editor .ehead.detail {
+.modal .editor.lib-editor .ehead.detail {
   align-items: flex-start;
   gap: 10px;
   margin-bottom: 10px;
 }
-.modal .dialog.lib-editor .ehead.detail .mark {
+.modal .editor.lib-editor .ehead.detail .mark {
   width: 36px;
   height: 36px;
   border-radius: 50%;
@@ -1012,54 +913,54 @@ button.lib-ag.icon {
   place-items: center;
   flex: none;
 }
-.modal .dialog.lib-editor .ehead.detail .who { flex: 1; min-width: 0; }
-.modal .dialog.lib-editor .ehead.detail .who .name { display: block; font-size: 15px; font-weight: 600; }
-.modal .dialog.lib-editor .ehead.detail .who .sub { font-size: 12.5px; color: var(--muted); }
-.modal .dialog.lib-editor .ehead.detail .who .pill {
+.modal .editor.lib-editor .ehead.detail .who { flex: 1; min-width: 0; }
+.modal .editor.lib-editor .ehead.detail .who .name { display: block; font-size: 15px; font-weight: 600; }
+.modal .editor.lib-editor .ehead.detail .who .sub { font-size: 12.5px; color: var(--muted); }
+.modal .editor.lib-editor .ehead.detail .who .pill {
   margin-left: 8px;
   padding: 1px 7px;
   border-radius: 999px;
   border: 1px solid var(--line);
   font-size: 11px;
 }
-.modal .dialog.lib-editor .blurb {
+.modal .editor.lib-editor .blurb {
   margin: 0 0 8px;
   font-size: 13px;
   line-height: 1.45;
   color: var(--fg);
 }
-.modal .dialog.lib-editor .blurb.muted {
+.modal .editor.lib-editor .blurb.muted {
   margin: 0 0 12px;
   font-size: 12.5px;
   color: var(--muted);
 }
-.modal .dialog.lib-editor .agents {
+.modal .editor.lib-editor .agents {
   display: flex;
   gap: 6px;
   flex-wrap: wrap;
 }
-.modal .dialog.lib-editor .agents > .k {
+.modal .editor.lib-editor .agents > .k {
   display: block;
   width: 100%;
   font-size: 12px;
   font-weight: 500;
   margin-bottom: 2px;
 }
-.modal .dialog.lib-editor .bar .note {
+.modal .editor.lib-editor .bar .note {
   font-size: 12px;
   color: var(--muted);
 }
-.modal .dialog.lib-editor .hrow {
+.modal .editor.lib-editor .hrow {
   display: flex;
   align-items: center;
   gap: 8px;
   margin-bottom: 4px;
 }
-.modal .dialog.lib-editor .hrow .k {
+.modal .editor.lib-editor .hrow .k {
   font-size: 12px;
   font-weight: 500;
 }
-.modal .dialog.lib-editor .acts {
+.modal .editor.lib-editor .acts {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
@@ -1067,7 +968,7 @@ button.lib-ag.icon {
   margin-bottom: 10px;
   position: relative;
 }
-.modal .dialog.lib-editor .pop.menu {
+.modal .editor.lib-editor .pop.menu {
   position: absolute;
   z-index: 8;
   min-width: 180px;
@@ -1080,30 +981,30 @@ button.lib-ag.icon {
   box-shadow: 0 10px 28px rgba(20, 22, 30, .16);
   animation: pop-in .28s var(--ease);
 }
-.modal .dialog.lib-editor .pop.menu.up {
+.modal .editor.lib-editor .pop.menu.up {
   bottom: 100%;
   left: 0;
   margin-bottom: 6px;
   min-width: 220px;
   padding: 6px 0;
 }
-.modal .dialog.lib-editor .pop.menu .words {
+.modal .editor.lib-editor .pop.menu .words {
   width: calc(100% - 8px);
   max-width: none;
   margin: 0 4px 4px;
 }
-.modal .dialog.lib-editor .pop.menu.down {
+.modal .editor.lib-editor .pop.menu.down {
   top: 100%;
   left: 0;
   margin-top: 4px;
 }
-.modal .dialog.lib-editor .pop.menu .gl {
+.modal .editor.lib-editor .pop.menu .gl {
   padding: 4px 12px 6px;
   font-size: 11px;
   color: var(--muted);
   font-weight: 600;
 }
-.modal .dialog.lib-editor .pop.menu .text.item {
+.modal .editor.lib-editor .pop.menu .text.item {
   display: block;
   width: 100%;
   text-align: left;
@@ -1115,30 +1016,30 @@ button.lib-ag.icon {
   font-size: 13px;
   cursor: pointer;
 }
-.modal .dialog.lib-editor .pop.menu .text.item .v { display: block; font-size: 12.5px; }
-.modal .dialog.lib-editor .pop.menu .text.item .n { color: var(--muted); font-size: 11px; }
-.modal .dialog.lib-editor .field-block {
+.modal .editor.lib-editor .pop.menu .text.item .v { display: block; font-size: 12.5px; }
+.modal .editor.lib-editor .pop.menu .text.item .n { color: var(--muted); font-size: 11px; }
+.modal .editor.lib-editor .field-block {
   margin-bottom: 12px;
   position: relative;
 }
-.modal .dialog.lib-editor .field-block > .k {
+.modal .editor.lib-editor .field-block > .k {
   display: block;
   font-size: 12px;
   font-weight: 500;
   margin-bottom: 6px;
 }
-.modal .dialog.lib-editor .oauth-pair {
+.modal .editor.lib-editor .oauth-pair {
   display: flex;
   gap: 6px;
   flex-wrap: wrap;
   align-items: center;
 }
-.modal .dialog.lib-editor .oauth-pair .words {
+.modal .editor.lib-editor .oauth-pair .words {
   flex: 1 1 120px;
   width: auto;
   min-width: 0;
 }
-.modal .dialog.lib-editor .sign-row {
+.modal .editor.lib-editor .sign-row {
   display: flex;
   align-items: center;
   gap: 10px;
