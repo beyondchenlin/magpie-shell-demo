@@ -849,3 +849,12 @@ body.web.side-nav {
     max-height: min(720px, calc(100vh - 48px));
   }
 }
+
+/* Providers Turned off fold (NOTES 109–113) */
+#view-providers .badge.off {
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  font-size: 10px;
+  font-weight: 600;
+  margin-left: 6px;
+}

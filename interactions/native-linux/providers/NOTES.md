@@ -287,3 +287,47 @@ Providers tab, empty list, + Add provider. No provider, no key, no OAuth finishe
 - 有供应商后：Find a provider、拖动手柄 title、右键 Move 菜单、On 开关 tip；本地 Ollama 空 key 添加再 Remove；默认空 `providers` OK。
 - 跳过仍薄：Copilot device-code 加深、两行排序、Turned off fold — 留给后巢。
 - demo 消费（v0.1.89）：ProvidersView；无 portable、无 Vercel。
+
+## Copilot device code, sort, turned off (94–116)
+
+Same Magpie, pid **1871993**. Window still **752×652 at +200+40** (id 85983247). Not resized, not quit. Shots are ffmpeg x11grab of that rect. **106**, **110**, and **112** are widened past the window so a tooltip that draws outside the frame is whole. No key was typed. GitHub Sign in, Continue, Finish sign-in, Sign in through it, and the GHE Sign in were not clicked. The device code is on the frames and is not copied into this note.
+
+| shot | what |
+|---|---|
+| 94 | Copilot, no risk card. One frame of the card while the tile is still highlighted: spinner, **Finish signing in to Copilot in your browser**, "magpie opened GitHub's device page. Enter this code there…", a code box, `https://github.com/login/device`, Open again, Account on GHE.com?, Proxy: Global proxy, Cancel. |
+| 95 | Chrome, **1280×800**, `github.com/login?return_to=…/login/device`. Sign in to GitHub. Username and password empty. Sign in, Google, Apple, passkey not used. Tab closed with Ctrl+W. |
+| 96 | Chrome gone. Same card, code still waiting, pointer on the code. Copilot row stays highlighted. |
+| 97 | Copy control on the code. Tip **Copy**. |
+| 98 | Copy control on the link. Tip **Copy link**. |
+| 99 | Account on GHE.com? Tip: "An account of an enterprise on GitHub Enterprise Cloud with data residency signs in at its \<name\>.ghe.com". |
+| 100 | Proxy: Global proxy. Tip: **Global proxy** / "The sign-in goes through this proxy, as the account's requests will. One picked here is kept as the account's." |
+| 101 | Menu **Sign in through**: Global proxy (checked, "Follows the proxy in Settings"), Direct ("Through no proxy"), Custom… ("http://, https:// or socks5://"). |
+| 102 | Custom… Form placeholder `http://127.0.0.1:7890`, purple **Sign in through it** (disabled, empty). Not submitted. The code card stays above it. |
+| 103 | Account on GHE.com? ends that device wait and asks **Your enterprise on GHE.com**. "The address you sign in to GitHub at, like acme.ghe.com." Empty field placeholder `acme.ghe.com`, Sign in disabled, Cancel, **github.com**. Nothing typed. |
+| 104 | Cancel. Catalog again, **ADD YOUR FIRST PROVIDER**. No provider, no GitHub window. |
+| 105 | Two local rows, keys still empty. Ollama `localhost:11434`, LM Studio `localhost:1234`, both **no key**, switches on. Toast **LM Studio added**. |
+| 106 | Handle tip, widened to the left of the window: "Drag to reorder — a model several providers serve goes to the higher one first · Alt+↑/↓ to move · right-click to move it to the top or the bottom". |
+| 107 | Right-click the handle. **Move to top** Alt+Shift+↑, **Move up** Alt+↑, **Move down** Alt+↓, **Move to bottom** Alt+Shift+↓. |
+| 108 | Move down. LM Studio is first, Ollama second. Toast **Provider order saved**. `providers.json` keeps insertion order and adds `"order": ["lmstudio", "ollama"]`. |
+| 109 | LM Studio's switch off. Ollama stays on. Fold **TURNED OFF 1**, collapsed. Toast **LM Studio is off: agents no longer get its models**. The On tip is cut at the window's right edge. |
+| 110 | Same On tip, grab widened to the right: "On · switch it off and agents no longer get its models; its keys and settings are kept". |
+| 111 | Fold opened. LM Studio row under it, badge **SWITCHED OFF**, switch off (knob left). |
+| 112 | Off tip, widened past the right edge: "Off · switch it on and agents get its models again". |
+| 113 | Fold tip, expanded: **Fold the providers turned off away**. |
+| 114 | LM Studio editor. Note: "Switched off: agents aren't given its models and no request goes to it. Its keys and settings are kept; switch it on to use it again." ID `lmstudio`. Key still empty. Footer Remove / Add another / Duplicate / Cancel / Save. |
+| 115 | Remove. **Remove LM Studio?** "Its saved configuration will be removed. Agents using it may switch to another provider or their default model." Red Remove. |
+| 116 | Ollama removed the same way. Toast **Ollama removed**. Page is only **+ Add provider**. |
+
+`lmstudio` is stored `"off": true` while it is off. Both keys were `""`. After the two Removes the file still held `"order": ["lmstudio", "ollama"]` with `"providers": []`. That leftover id list was deleted on disk so the file ends `{ "providers": [] }`. No `providers` key in `settings.json`. No OAuth finished.
+
+## Left state (after 116)
+
+Providers tab, empty list, + Add provider. No provider, no key, no GitHub window. Magpie still pid **1871993**, window **752×652 at +200+40** (id 85983247). Not resized, not quit.
+
+## demo 对齐（94–116）· v0.1.90 COPILOT_SORT_OFF_DONE
+- Copilot device-code：code 盒、`github.com/login/device`、Copy / Copy link、GHE tip、Proxy 菜单（Global / Direct / Custom… `http://127.0.0.1:7890` 表单未提交）。演示码占位，不写入 NOTES 里的真码。
+- 两行：Ollama + LM Studio 空 key；手柄 tip；Move down → toast **Provider order saved**（`order` 数组）。
+- Turned off：折叠 **TURNED OFF N**，展开 **SWITCHED OFF**；On/Off tip；fold tip **Fold the providers turned off away**；编辑器 note 密钥保留。
+- 删光后默认空列表 + Add provider。
+- 跳过仍薄：collapsed tip「Show the providers turned off」打磨、拖拽动效、需真登录的账号折层。
+- demo 消费（v0.1.90）：无 portable、无 Vercel。

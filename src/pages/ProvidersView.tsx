@@ -186,18 +186,22 @@ function SignCopy({
   text,
   what,
   onStatus,
+  tip,
 }: {
   text: string;
   what: string;
   onStatus: (msg: string, kind?: string) => void;
+  /** NOTES 97–98: code → Copy; link → Copy link */
+  tip?: string;
 }) {
   const [done, setDone] = useState(false);
+  const tipTitle = tip || t("Copy");
   return (
     <button
       type="button"
       className={`copy${done ? " done" : ""}`}
-      title={t("Copy")}
-      aria-label={t("Copy")}
+      title={tipTitle}
+      aria-label={tipTitle}
       onClick={(e) => {
         e.stopPropagation();
         void navigator.clipboard?.writeText(text).catch(() => {});
@@ -2370,7 +2374,7 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
     return [];
   });
   const [listEditId, setListEditId] = useState<string | null>(null);
-  const [offFolded, setOffFolded] = useState(false);
+  const [offFolded, setOffFolded] = useState(true); // NOTES 109: fold starts collapsed
   /** Magpie: empty → add sheet open; after first provider, sheet closes until + Add provider */
   const [sheetOpen, setSheetOpen] = useState(() => {
     try {
@@ -2399,10 +2403,14 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
   useEffect(() => {
     try {
       localStorage.setItem("magpie.demoProviders", JSON.stringify(demoProvs));
+      // NOTES 108/321: order id list alongside providers (empty providers may still clear order on last remove)
+      const order = demoProvs.map((p) => p.id);
+      if (order.length) localStorage.setItem("magpie.demoProviderOrder", JSON.stringify(order));
+      else localStorage.removeItem("magpie.demoProviderOrder");
     } catch {
       /* ignore */
     }
-    // NOTES 93: after last Remove, stay on empty list (+ Add provider) — do not reopen first-provider sheet
+    // NOTES 93/116: after last Remove, stay on empty list (+ Add provider) — do not reopen first-provider sheet
   }, [demoProvs]);
   useEffect(() => {
     if (!moveMenu && !removeAsk) return;
@@ -2672,7 +2680,7 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
                     className="ag-handle pv-handle"
                     aria-label={t("Arrange {agent}", { agent: pv.name })}
                     title={t(
-                      "Drag to reorder — a model several providers serve goes to the higher one first · Alt+↑/↓ to move one step · right-click to the top or the bottom",
+                      "Drag to reorder — a model several providers serve goes to the higher one first · Alt+↑/↓ to move · right-click to move it to the top or the bottom",
                     )}
                     onClick={(e) => e.stopPropagation()}
                     onContextMenu={(e) => {
@@ -2726,13 +2734,15 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
                     }
                     onClick={(e) => {
                       e.stopPropagation();
+                      const turningOff = !pv.off;
                       setDemoProvs((list) =>
                         list.map((x) => (x.id === pv.id ? { ...x, off: !x.off } : x)),
                       );
+                      if (turningOff) setOffFolded(true); // NOTES 109: fold collapsed when first off
                       onStatus(
-                        pv.off
-                          ? t("{name} is on", { name: pv.name })
-                          : t("{name} is off: agents no longer get its models", { name: pv.name }),
+                        turningOff
+                          ? t("{name} is off: agents no longer get its models", { name: pv.name })
+                          : t("{name} is on", { name: pv.name }),
                         "ok",
                       );
                     }}
@@ -2783,8 +2793,16 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
             id="foldOff"
             aria-expanded={!offFolded}
             aria-controls="offProviders"
+            title={
+              offFolded
+                ? t("Show the providers turned off")
+                : t("Fold the providers turned off away")
+            }
             onClick={() => setOffFolded((f) => !f)}
           >
+            <svg viewBox="0 0 12 12" width={10} height={10} aria-hidden>
+              <path d="M4.5 2.5 8 6l-3.5 3.5" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+            </svg>
             <span className="label">{t("Turned off")}</span>
             <span className="note" id="offCount">
               {demoProvs.filter((p) => p.off).length || ""}
@@ -2794,8 +2812,35 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
         <div className="list" id="offProviders" hidden={sheetOpen || !demoProvs.some((p) => p.off) || offFolded}>
           {demoProvs
             .filter((pv) => pv.off)
-            .map((pv) => (
-              <div className="row provider off" key={pv.id} data-id={pv.id} onClick={() => setListEditId(pv.id)}>
+            .map((pv) => {
+              const n = pv.models.length;
+              const modelsLabel =
+                n === 1
+                  ? t("{n} model", { n })
+                  : n
+                    ? t("{n} models", { n })
+                    : t("no models exposed");
+              const sub = (pv.host || "") + (pv.host ? " · " : "") + modelsLabel;
+              return (
+              <div
+                className="row provider off"
+                key={pv.id}
+                data-id={pv.id}
+                onClick={() => {
+                  setListEditId(pv.id);
+                  const loc = LOCAL_PRESETS[pv.id];
+                  setEditor({
+                    form: loc ? "local" : "generic",
+                    id: pv.id,
+                    name: pv.name,
+                    icon: pv.icon,
+                    site: loc?.site,
+                    note: t(
+                      "Switched off: agents aren't given its models and no request goes to it. Its keys and settings are kept; switch it on to use it again.",
+                    ),
+                  });
+                }}
+              >
                 <span className="ic">
                   <img src={iconSrc(pv.icon)} alt="" />
                 </span>
@@ -2804,7 +2849,7 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
                     {pv.name}
                     <span className="badge off">{t("Switched off")}</span>
                   </div>
-                  <div className="sub">{t("{n} models", { n: pv.models.length })}</div>
+                  <div className="sub">{sub}</div>
                 </div>
                 <span className={`key ${pv.keyKind}`}>
                   <span>{pv.keyLabel}</span>
@@ -2814,6 +2859,7 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
                   className="lib-switch pswitch"
                   role="switch"
                   aria-checked={false}
+                  title={t("Off · switch it on and agents get its models again")}
                   onClick={(e) => {
                     e.stopPropagation();
                     setDemoProvs((list) =>
@@ -2830,7 +2876,8 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
                   </svg>
                 </span>
               </div>
-            ))}
+              );
+            })}
         </div>
         <section className="sheet" id="addSheet" hidden={!sheetOpen}>
           <div className="row-head">
@@ -3460,6 +3507,7 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
                         <SignCopy
                           text={copilotSign.code}
                           what={t("Code")}
+                          tip={t("Copy")}
                           onStatus={onStatus}
                         />
                       </span>
@@ -3470,6 +3518,7 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
                         <SignCopy
                           text={copilotSign.url}
                           what={t("Sign-in link")}
+                          tip={t("Copy link")}
                           onStatus={onStatus}
                         />
                       </span>
@@ -3655,9 +3704,7 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
                     <span className="tt">
                       <span className="n">{t("Your enterprise on GHE.com")}</span>
                       <span className="s">
-                        {t(
-                          "The address you sign in to GitHub at, like acme.ghe.com. An account on github.com doesn't need it.",
-                        )}
+                        {t("The address you sign in to GitHub at, like acme.ghe.com.")}
                       </span>
                       <form
                         className="callback-form"
@@ -4117,7 +4164,12 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
                     else if (act === "bottom") next.push(row);
                     else if (act === "up") next.splice(Math.max(0, i - 1), 0, row);
                     else next.splice(Math.min(next.length, i + 1), 0, row);
-                    return next;
+                    const changed = next.map((x) => x.id).join() !== list.map((x) => x.id).join();
+                    if (changed) {
+                      // NOTES 108: toast after Move down (or any reorder)
+                      queueMicrotask(() => onStatus(t("Provider order saved"), "ok"));
+                    }
+                    return changed ? next : list;
                   });
                   setMoveMenu(null);
                 }}
