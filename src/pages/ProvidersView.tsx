@@ -3,6 +3,7 @@ import {
   useMemo,
   useRef,
   useState,
+  type CSSProperties,
   type FormEvent,
   type ReactNode,
 } from "react";
@@ -3502,7 +3503,7 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
                         ) : null}
                       </span>
                       {browserSign.id === "codex" ? (
-                        <span className="s" style={{ display: "block", marginTop: 6 }}>
+                        <span className="s note">
                           {t("Note for a server or Docker: copy the address the browser ends on.")}
                         </span>
                       ) : null}
@@ -3512,7 +3513,6 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
                       className="text"
                       title={t("Stop waiting for this sign-in")}
                       onClick={() => setBrowserSign(null)}
-                      style={{ alignSelf: "flex-start" }}
                     >
                       {t("Cancel")}
                     </button>
@@ -3985,47 +3985,10 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
           }}
         >
           {/* Magpie uses OS file input; NOTES 24 = GTK Select Files (Recent). Demo sheet mirrors that chrome. */}
-          <div
-            className="dialog gtk-select-files"
-            style={{
-              width: "min(560px, 92vw)",
-              maxHeight: "min(480px, 82vh)",
-              display: "flex",
-              flexDirection: "column",
-              animation: "pop-in .42s cubic-bezier(.16,1,.3,1)",
-            }}
-          >
-            <div
-              className="ehead"
-              style={{
-                padding: "10px 14px",
-                borderBottom: "1px solid var(--line)",
-                fontWeight: 600,
-                fontSize: 13,
-              }}
-            >
-              {t("Select Files")}
-            </div>
-            <div
-              className="ebody"
-              style={{
-                display: "grid",
-                gridTemplateColumns: "148px 1fr",
-                gap: 0,
-                minHeight: 300,
-                padding: 0,
-                flex: 1,
-              }}
-            >
-              <nav
-                style={{
-                  borderRight: "1px solid var(--line)",
-                  padding: "10px 8px",
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 2,
-                }}
-              >
+          <div className="dialog gtk-select-files">
+            <div className="ehead">{t("Select Files")}</div>
+            <div className="ebody">
+              <nav className="places">
                 {(
                   [
                     ["recent", t("Recent")],
@@ -4038,44 +4001,18 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
                   <button
                     key={id}
                     type="button"
-                    className="text"
-                    style={{
-                      justifyContent: "flex-start",
-                      padding: "7px 10px",
-                      borderRadius: 8,
-                      background:
-                        claudeFileLoc === id ? "var(--accent-soft, #dbe4ff)" : "transparent",
-                      color: claudeFileLoc === id ? "var(--accent)" : "var(--fg)",
-                      fontWeight: claudeFileLoc === id ? 600 : 450,
-                    }}
+                    className={`text${claudeFileLoc === id ? " on" : ""}`}
                     onClick={() => setClaudeFileLoc(id)}
                   >
                     {id === "other" ? `+ ${label}` : label}
                   </button>
                 ))}
               </nav>
-              <div
-                style={{
-                  padding: 12,
-                  overflow: "auto",
-                  margin: 10,
-                  borderRadius: 8,
-                  minHeight: 220,
-                  background: "var(--card)",
-                }}
-              >
-                <p
-                  style={{
-                    color: "var(--muted)",
-                    fontSize: 12.5,
-                    textAlign: "center",
-                    padding: "48px 12px",
-                    margin: 0,
-                  }}
-                >
+              <div className="pane">
+                <p className="empty">
                   {demoCopy("此文件夹为空", "This folder is empty")}
                 </p>
-                <p style={{ textAlign: "center", margin: "0 0 8px" }}>
+                <p className="demo">
                   <button
                     type="button"
                     className="link"
@@ -4112,15 +4049,7 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
                 </p>
               </div>
             </div>
-            <div
-              className="bar"
-              style={{
-                display: "flex",
-                gap: 8,
-                justifyContent: "flex-end",
-                padding: "10px 14px",
-              }}
-            >
+            <div className="bar">
               <button
                 type="button"
                 className="text"
@@ -4145,8 +4074,8 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
       ) : null}
       {moveMenu ? (
         <div
+          className="scrim"
           role="presentation"
-          style={{ position: "fixed", inset: 0, zIndex: 90 }}
           onClick={() => setMoveMenu(null)}
           onContextMenu={(e) => {
             e.preventDefault();
@@ -4157,19 +4086,14 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
           }}
         >
           <div
+            className="pop move"
             role="menu"
-            style={{
-              position: "fixed",
-              left: moveMenu.x,
-              top: moveMenu.y,
-              minWidth: 200,
-              padding: "4px 0",
-              borderRadius: 10,
-              border: "1px solid var(--line)",
-              background: "var(--card)",
-              boxShadow: "0 10px 28px rgba(20,22,30,.16)",
-              zIndex: 91,
-            }}
+            style={
+              {
+                ["--pop-x" as string]: `${moveMenu.x}px`,
+                ["--pop-y" as string]: `${moveMenu.y}px`,
+              } as CSSProperties
+            }
             onClick={(e) => e.stopPropagation()}
           >
             {(
@@ -4184,20 +4108,7 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
                 key={act}
                 type="button"
                 role="menuitem"
-                className="text"
-                style={{
-                  display: "flex",
-                  width: "100%",
-                  alignItems: "center",
-                  gap: 12,
-                  padding: "7px 12px",
-                  border: 0,
-                  background: "transparent",
-                  font: "inherit",
-                  fontSize: 13,
-                  cursor: "pointer",
-                  textAlign: "left",
-                }}
+                className="text item"
                 onClick={() => {
                   const id = moveMenu.id;
                   setDemoProvs((list) => {
@@ -4219,58 +4130,35 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
                   setMoveMenu(null);
                 }}
               >
-                <span style={{ flex: 1 }}>{lab}</span>
-                <span style={{ fontSize: 11, color: "var(--muted)" }}>{kbd}</span>
+                <span className="lab">{lab}</span>
+                <span className="kbd">{kbd}</span>
               </button>
             ))}
           </div>
         </div>
       ) : null}
 
-      {removeAsk ? (
-        <div
-          className="modal open"
-          role="alertdialog"
-          aria-modal="true"
-          onClick={(e) => {
-            if (e.target === e.currentTarget) setRemoveAsk(null);
-          }}
-        >
-          <div className="dialog sm" style={{ maxWidth: 380, padding: "16px 18px", animation: "pop-in .28s var(--ease)" }}>
-            <b style={{ display: "block", fontSize: 15, marginBottom: 8 }}>
-              {t("Remove {name}?", { name: removeAsk.name })}
-            </b>
-            <p style={{ margin: "0 0 14px", fontSize: 13, color: "var(--fg-2)", lineHeight: 1.45 }}>
-              {t(
-                "Its saved configuration will be removed. Agents using it may switch to another provider or their default model.",
-              )}
-            </p>
-            <div className="bar" style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
-              <button type="button" className="text" autoFocus onClick={() => setRemoveAsk(null)}>
-                {t("Cancel")}
-              </button>
-              <button
-                type="button"
-                className="text"
-                style={{ background: "var(--red)", color: "#fff", borderColor: "transparent" }}
-                onClick={() => {
-                  const { id, name } = removeAsk;
-                  setDemoProvs((list) => list.filter((x) => x.id !== id));
-                  setRemoveAsk(null);
-                  setListEditId(null);
-                  setEditor(null);
-                  // NOTES 93: empty list stays on + Add provider — do not force first-provider sheet… length===0 effect opens sheet; Magpie keeps sheet closed
-                  // Override: after remove-to-empty, Magpie does NOT reopen first sheet
-                  window.setTimeout(() => setSheetOpen(false), 0);
-                  onStatus(t("{name} removed", { name }), "ok");
-                }}
-              >
-                {t("Remove")}
-              </button>
-            </div>
-          </div>
-        </div>
-      ) : null}
+      <ActionConfirm
+        open={!!removeAsk}
+        title={removeAsk ? t("Remove {name}?", { name: removeAsk.name }) : ""}
+        message={t(
+          "Its saved configuration will be removed. Agents using it may switch to another provider or their default model.",
+        )}
+        cancelLabel={t("Cancel")}
+        acceptLabel={t("Remove")}
+        onCancel={() => setRemoveAsk(null)}
+        onAccept={() => {
+          if (!removeAsk) return;
+          const { id, name } = removeAsk;
+          setDemoProvs((list) => list.filter((x) => x.id !== id));
+          setRemoveAsk(null);
+          setListEditId(null);
+          setEditor(null);
+          // NOTES 93: empty list stays on + Add provider — Magpie does NOT reopen first sheet
+          window.setTimeout(() => setSheetOpen(false), 0);
+          onStatus(t("{name} removed", { name }), "ok");
+        }}
+      />
 
       {editor ? (
         <ProviderEditorModal

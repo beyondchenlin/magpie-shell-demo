@@ -4,6 +4,18 @@
 
 ---
 
+## v0.1.112 · CIS_PROVIDERS_OAUTH_WALLS · 2026-10-15 Asia/Shanghai
+
+- **WHY:** CIS §10 — Providers OAuth walls / GTK Select Files / Move menu / remove confirm drop page-local `style={{…}}` for Magpie classes (+ ActionConfirm).
+- **WHAT kept:** `SIDE_AT=1024`; no `WEB_SIDE_AT`; Win chrome / 752 frame; no new OAuth product behavior; Library Thunar/GTK mocks skipped; `--detect-n` token kept.
+- **WHAT changed:**
+  - Signing: `.s.note`; Cancel relies on Magpie `.signing` flex-start (drop alignSelf inline).
+  - GTK Select Files → `.dialog.gtk-select-files` + `.places` / `.pane` / `.empty` (shell-patch).
+  - Move menu → `.scrim` + `.pop.move` with `--pop-x`/`--pop-y` only for coordinates.
+  - Provider Remove → `ActionConfirm`.
+- **Guard:** `npm run chrome-guard`. No portable. No push/Vercel.
+
+---
 ## v0.1.111 · CIS_LIBRARY_EDITOR_FIELDS · 2026-10-15 Asia/Shanghai
 
 - **WHY:** CIS §10 — Library MCP/skill/hook/image editors drop field-level `style={{…}}`; Magpie classes + WordsField/Segs/PrefPick.

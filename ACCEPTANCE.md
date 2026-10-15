@@ -1,3 +1,7 @@
+## v0.1.112 CIS_PROVIDERS_OAUTH_WALLS
+- Providers: signing note Magpie class; GTK Select Files `.gtk-select-files`; Move `.scrim`/`.pop.move`; Remove → ActionConfirm. Only `--detect-n` style token left.
+- Library Thunar / Choose-project GTK mocks still Open. SIDE_AT=1024. No portable / Vercel.
+
 ## v0.1.111 CIS_LIBRARY_EDITOR_FIELDS
 - Library MCP / Image / Skill / Hook editors: Magpie field classes + WordsField/Segs/PrefPick; LibChip CSS; 0 field-level `style` in editor region.
 - Thunar / Choose-project GTK mocks and Providers OAuth/folder pickers still Open. SIDE_AT=1024. No portable / Vercel.
