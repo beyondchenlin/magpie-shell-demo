@@ -787,7 +787,7 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
 
   return (
     <>
-      <div className="editor rt-gedit card ge-add-sheet">
+      <div className="editor rt-gedit">
         <div className="ehead">
           <b>{t(editGroup ? "Edit group" : "New group")}</b>
         </div>
@@ -1821,9 +1821,9 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
           </div>
         </div>
 
-        <div className="bar ge-full-row">
+        <div className="bar">
           {editGroup ? (
-            <button type="button" className="text" onClick={() => setRemoveOpen(true)}>
+            <button type="button" className="text danger" onClick={() => setRemoveOpen(true)}>
               {t("Remove")}
             </button>
           ) : null}

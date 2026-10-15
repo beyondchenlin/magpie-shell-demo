@@ -851,10 +851,6 @@ label.tick input { margin: 0; }
 
 /* leftovers — v0.1.161: drop dead invent .led-heat-legend / .model-pop .hint-sm */
 .pop.row-menu.fixed-z50 { position: fixed; z-index: 50; }
-.ge-add-sheet {
-  margin-top: 8px; animation: pop-in .42s cubic-bezier(.16, 1, .3, 1);
-}
-.ge-full-row { grid-column: 1 / -1; }
-.am-pop .empty {
-  padding: 16px 12px; color: var(--muted); font-size: 12.5px;
-}
+/* v0.1.170: drop invent .ge-add-sheet / .ge-full-row / dead .am-pop .empty —
+   Magpie groupEditor is editor.rt-gedit + .bar (routing.js L4097 / L4888;
+   app.css L2847 .editor .bar already grid-column 1/-1). am-pop empty = .am-none. */

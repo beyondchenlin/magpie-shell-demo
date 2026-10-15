@@ -1,3 +1,17 @@
+## v0.1.170 · RT_GEDIT_DROP_INVENT_SHEET · 2026-10-16 Asia/Shanghai
+
+- **WHY:** Broader invent audit (Usage queue exhausted except oauth Approve wall nest=browser). Clear Magpie-faithful invent in Routing GroupEditor chrome: tip invented `card ge-add-sheet` + `ge-full-row` + pop-in sheet CSS; Magpie OSS is plain `editor rt-gedit` + `.bar`.
+- **WHAT kept:** `SIDE_AT=1024`; no `WEB_SIDE_AT`; nest 752 frame; ledFit/heatmap tips; skip oauth Approve wall.
+- **WHAT changed:**
+  - GroupEditor: `editor rt-gedit` only (drop invent `card ge-add-sheet`).
+  - Footer: Magpie `.bar` only (drop invent `ge-full-row`; app.css `.editor .bar` already `grid-column: 1 / -1`).
+  - Remove → Magpie `text danger` (routing.js L4891; `.editor .bar .danger` margin).
+  - shell-patch: delete invent `.ge-add-sheet` / `.ge-full-row` / dead `.am-pop .empty` (Magpie am-pop empty = `.am-none`).
+- **Cite:** Magpie `routing.js` groupEditor L4097 (`editor rt-gedit`), L4888–4938 (`.bar` + `text danger`); `app.css` L2847–2848.
+- **Guard:** `npm run chrome-guard`. No portable. No Vercel.
+
+---
+
 ## v0.1.169 · LED_HEAT_TIP_OSS_FIDELITY · 2026-10-16 Asia/Shanghai
 
 - **WHY:** Continue Magpie Usage after 0.1.168 — optional heatmap tip polish to Magpie gold (invent CSS out; tip behavior + metric segs id + cost format).

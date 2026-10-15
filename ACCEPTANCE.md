@@ -1,3 +1,10 @@
+## v0.1.170 · RT_GEDIT_DROP_INVENT_SHEET · 2026-10-16 Asia/Shanghai
+
+- **WHY:** Broader invent audit — drop GroupEditor invent `ge-add-sheet` / `ge-full-row`; restore Magpie `editor.rt-gedit` + `.bar`.
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; skip oauth Approve wall.
+- **Cite:** Magpie routing.js groupEditor **L4097** / bar **L4888–4938**; app.css **L2847–2848**.
+- **chrome-guard:** pass. Push/PR #1. No portable/Vercel.
+
 ## v0.1.169 · LED_HEAT_TIP_OSS_FIDELITY · 2026-10-16 Asia/Shanghai
 
 - **WHY:** Magpie Usage heatmap tip polish — drop invent shell-patch `.heat-tip` / `.heat-grid i` transition; align tip DOM/handlers + `#ledHeatMetric` + tip cost `≈` with Magpie gold.
