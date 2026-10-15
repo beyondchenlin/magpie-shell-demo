@@ -1,3 +1,10 @@
+## v0.1.186 · CTX_WINDOW_CXFIELD_OSS · 2026-10-16 Asia/Shanghai
+- Providers Context window invent `ctx-window` + `.chips`/`.chip` → Magpie plain input in `.cxfield` + `.cxpicks`/`.cxpick` (app.js contextPicks).
+- **Cite:** Magpie `app.js` **L8586–8587** / **L9264–9304** `contextPicks`; `app.css` **L3464–3473** `.cxpicks`/`.cxpick`.
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; skip oauth; Magpie `.cxpicks` CSS already vendored.
+- Max output / Compact at / routing tip extras / led-tools-extra left (next or skip).
+- No portable / Vercel.
+
 ## v0.1.185 · LIB_SKILLHOW_NOTE_OSS · 2026-10-16 Asia/Shanghai
 - Library skill-how bar invent `lib-skillhow-note` → Magpie `.note` inside `.lib-skillhow` (library.css L361 / client.js skillHowBar).
 - **Cite:** Magpie `plugins/library/client.js` skillHowBar `el("span","note",…)`; `library.css` L361 `.lib-skillhow .note`.

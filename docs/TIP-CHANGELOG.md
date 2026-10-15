@@ -1,3 +1,17 @@
+## v0.1.186 · CTX_WINDOW_CXFIELD_OSS · 2026-10-16 Asia/Shanghai
+
+- **WHY:** Invent leftover — Providers editor Context window still used invent `input.ctx-window` + generic `.chips`/`.chip`. Magpie OSS builds a plain `input()` wrapped in `div.cxfield` with `div.cxpicks` / `button.cxpick` (contextPicks).
+- **CAUSE:** Tip mirrored profile `.chips` instead of Magpie Providers contextPicks (app.js #120).
+- **Cite:**
+  - Magpie `app.js` **L8586–8587** / **L9007–9008**: `const cx = input(…); field(t("Context window"), contextPicks(p, cx), …)` — plain input, no invent class
+  - Magpie `app.js` **L9264–9304** `contextPicks`: `el("div","cxpicks")` + `el("button","cxpick"+…)` → `el("div","cxfield").append(cx, row)`
+  - Magpie `app.css` **L3464–3473** `.cxpicks` / `.cxpick` / `.cxpick.on` (already vendored in tip `app.css` L3473–3482)
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; skip oauth Approve wall; Magpie `.cxpicks`/`.cxpick` CSS already in tip; Max output / Compact at still invent `max-output`/`compact-at` + `.chips` (next tips); routing tip extras / led-tools-extra unchanged.
+- **WHAT changed:**
+  - `ProvidersView.tsx`: Context window `input.ctx-window` + `.chips`/`.chip` → Magpie plain `input` inside `.cxfield` + `.cxpicks`/`.cxpick`.
+- **Remaining invent (intentional skip):** oauth Approve wall; `rt-flier-demo`; `win-caption*`; `lib-hook*` / `pref-anchor` React bridges. Live weak leftovers (not this tip): routing.css tip extras `rt-info`/`rt-cond-*`/`rt-pause-*`/`rt-rule-more`/`rt-arrow`/`rt-effort-row`; `led-tools-extra`; Providers `max-output`/`compact-at` + `.chips` (Magpie `input.outputs`/`input.compacts` in `.cxfield`+`.cxpicks`).
+- **Guard:** `npm run chrome-guard`. No portable. No manual Vercel.
+
 ## v0.1.185 · LIB_SKILLHOW_NOTE_OSS · 2026-10-16 Asia/Shanghai
 
 - **WHY:** Weak invent leftover — skill-how note still carried invent class `lib-skillhow-note` beside Magpie `.note`. Magpie OSS paints `el("span","note",…)` only; layout is `.lib-skillhow .note`.

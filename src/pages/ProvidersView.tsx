@@ -1691,13 +1691,15 @@ function ProviderEditorModal({ state, onClose, onAdd, onStatus, saved, onRemove,
                     "How long a request the models take, told to the agents; empty leaves it to the vendor and models.dev",
                   )}
                 >
-                  <input type="text" className="ctx-window" placeholder={t("e.g. 128k · or gpt-6=1m, comma separated")} />
-                  <div className="chips">
-                    {CTX_CHIPS.map((c) => (
-                      <button key={c} type="button" className="chip">
-                        {c}
-                      </button>
-                    ))}
+                  <div className="cxfield">
+                    <input type="text" placeholder={t("e.g. 128k · or gpt-6=1m, comma separated")} />
+                    <div className="cxpicks">
+                      {CTX_CHIPS.map((c) => (
+                        <button key={c} type="button" className="cxpick">
+                          {c}
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 </Field>
                 <Field
