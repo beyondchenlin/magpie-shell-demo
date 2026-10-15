@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { AgentModelsPop, type AmModel } from "../components/AgentModelsPop";
 import { FieldPill } from "../components/FieldPill";
+import { TextBtn } from "../components/TextBtn";
 import { ModelPop, type PopOption } from "../components/ModelPop";
 import installsData from "../data/installs.json";
 import { VIA_LABEL, iconSrc } from "../data/mock";
@@ -355,17 +356,13 @@ function ManageAgentsModal({
               onChange={(e) => setQ(e.target.value)}
             />
             <div className="ag-manage-actions">
-              <button
-                type="button"
-                className="text"
+              <TextBtn
                 onClick={() =>
                   setSelected(new Set(matching.map((a) => a.id)))
                 }>
                 {t("Select search results")}
-              </button>
-              <button
-                type="button"
-                className="text"
+              </TextBtn>
+              <TextBtn
                 onClick={() => {
                   setSelected((prev) => {
                     const n = new Set(prev);
@@ -377,10 +374,8 @@ function ManageAgentsModal({
                   });
                 }}>
                 {t("Invert search selection")}
-              </button>
-              <button
-                type="button"
-                className="text"
+              </TextBtn>
+              <TextBtn
                 onClick={() => {
                   // Magpie: clear then add matching !onMagpie(a)
                   setSelected(
@@ -390,13 +385,11 @@ function ManageAgentsModal({
                   );
                 }}>
                 {t("Select unconnected agents")}
-              </button>
-              <button
-                type="button"
-                className="text"
+              </TextBtn>
+              <TextBtn
                 onClick={() => setSelected(new Set())}>
                 {t("Clear selection")}
-              </button>
+              </TextBtn>
             </div>
             <span className="ag-manage-count">
               {ZH.agentsSelected.replace("{n}", String(selected.size))}
@@ -433,24 +426,20 @@ function ManageAgentsModal({
             </p>
           </div>
           <div className="bar">
-            <button
-              type="button"
-              className="text"
+            <TextBtn
               disabled={!canHide}
               onClick={() => applyVisibility(true)}>
               {ZH.hideSelected}
-            </button>
-            <button
-              type="button"
-              className="text"
+            </TextBtn>
+            <TextBtn
               disabled={!canUnhide}
               onClick={() => applyVisibility(false)}>
               {ZH.unhideSelected}
-            </button>
+            </TextBtn>
             <span className="grow" />
-            <button type="button" className="text" onClick={close}>
+            <TextBtn onClick={close}>
               {ZH.done}
-            </button>
+            </TextBtn>
           </div>
         </div>
       </div>

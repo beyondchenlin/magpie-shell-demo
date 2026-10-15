@@ -1,3 +1,7 @@
+## v0.1.125 CIS_GATEWAY_LIBRARY_ROUTING_AGENTS
+- Gateway Connect Segs/TextBtn; Library MCP Segs/LibSwitch/TextBtn; Routing Conditions PrefRow + found LibSwitch + names Segs; Agents Manage TextBtn.
+- Skipped: Gateway keys Magpie `.acc` (not PrefRow); skillHow busy Segs; agent/rt-gfound Magpie-distinct DOM; CSS-var style={{.
+- `SIDE_AT=1024` only; no `WEB_SIDE_AT`. chrome-guard pass. Push/PR; no portable / Vercel.
 ## v0.1.124 CIS_AROWN_ABOUT_SYNC_TEXTBTN
 - AutoResetOwn → PrefRow `wrapVal={false}` + `className="ar-own"` + `dataUser` (Magpie `.who` + `.ar-own-cases`, no `.val`).
 - AboutVersionRow → PrefRow name=Version + sub downloaded + TextBtn Restart (Magpie row+renderUpdate ready).

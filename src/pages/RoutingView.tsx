@@ -2,6 +2,9 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { GroupEditor, type SavedGroupDraft } from "../components/GroupEditor";
 import { ModelPop } from "../components/ModelPop";
 import { Segs } from "../components/Segs";
+import { PrefRow } from "../components/PrefRow";
+import { LibSwitch } from "../components/LibSwitch";
+import { TextBtn } from "../components/TextBtn";
 import { ProtoMultiMenu } from "../components/ProtoMultiMenu";
 import { GATEWAY_ADDR } from "../data/mock";
 import { ZH, t } from "../i18n";
@@ -1689,11 +1692,8 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                     )}
               </small>
             </div>
-            <button
-              type="button"
-              className={`lib-switch${foundOn ? " on" : ""}`}
-              role="switch"
-              aria-checked={foundOn}
+            <LibSwitch
+              on={foundOn}
               aria-label={t("Find groups on their own")}
               onClick={() => {
                 const next = !foundOn;
@@ -1706,9 +1706,8 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                     : t("Found groups are off: only yours are listed and served"),
                   "ok",
                 );
-              }}>
-              <i />
-            </button>
+              }}
+            />
           </div>
           <div className="rt-gnames row pref">
             <div className="txt">
@@ -1719,29 +1718,20 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                 )}
               </small>
             </div>
-            <div className="segs" role="radiogroup" aria-label={t("Names in agents’ lists")}>
-              {(
-                [
-                  ["off", "Off"],
-                  ["skip", "Not on names I set"],
-                  ["on", "On"],
-                ] as const
-              ).map(([v, label]) => (
-                <button
-                  key={v}
-                  type="button"
-                  className={`opt${nameSuffix === v ? " on" : ""}`}
-                  role="radio"
-                  aria-checked={nameSuffix === v}
-                  onClick={() => {
-                    setNameSuffix(v);
-                    persistNameSuffix(v);
-                    // Magpie settings/plain-names: write at once, no toast (176–178)
-                  }}>
-                  {t(label)}
-                </button>
-              ))}
-            </div>
+            <Segs
+              value={nameSuffix}
+              onChange={(v) => {
+                setNameSuffix(v);
+                persistNameSuffix(v);
+                // Magpie settings/plain-names: write at once, no toast (176–178)
+              }}
+              items={[
+                { id: "off" as const, label: t("Off") },
+                { id: "skip" as const, label: t("Not on names I set") },
+                { id: "on" as const, label: t("On") },
+              ]}
+              aria-label={t("Names in agents’ lists")}
+            />
           </div>
           {/* Magpie templateCards — only while user has no own group (shots 23–24) */}
           {!savedGroups.length ? (
@@ -2490,23 +2480,13 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                 </button>
                 {condOpen ? (
                   <div className="rt-conds">
-                    <div className="row pref">
-                      <div className="who">
-                        <div className="name">{t("When agent is")}</div>
-                        <div className="sub">Claude Code · Codex</div>
-                      </div>
-                      <button type="button" className="text">{t("Edit")}</button>
-                    </div>
-                    <div className="row pref">
-                      <div className="who">
-                        <div className="name">{t("When model matches")}</div>
-                        <div className="sub">*sonnet* · gpt-*</div>
-                      </div>
-                      <button type="button" className="text">{t("Edit")}</button>
-                    </div>
-                    <button type="button" className="text">
-                      + {t("Condition")}
-                    </button>
+                    <PrefRow name={t("When agent is")} sub="Claude Code · Codex">
+                      <TextBtn>{t("Edit")}</TextBtn>
+                    </PrefRow>
+                    <PrefRow name={t("When model matches")} sub="*sonnet* · gpt-*">
+                      <TextBtn>{t("Edit")}</TextBtn>
+                    </PrefRow>
+                    <TextBtn>+ {t("Condition")}</TextBtn>
                   </div>
                 ) : null}
               </div>

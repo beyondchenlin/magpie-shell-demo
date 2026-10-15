@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { Fold, FoldChev } from "../components/Fold";
-import { useSegThumb } from "../components/SegThumb";
+import { Segs } from "../components/Segs";
+import { TextBtn } from "../components/TextBtn";
 import { GATEWAY_ADDR } from "../data/mock";
 import { demoCopy, t, useLang } from "../i18n";
 
@@ -343,10 +344,6 @@ export function GatewayView({ onStatus, onGoNetwork }: Props) {
     return () => window.removeEventListener("keydown", onKey, true);
   }, [gwErr]);
 
-  const flavorSeg = useSegThumb(flavor);
-  const snipSeg = useSegThumb(snipLang);
-  const osSeg = useSegThumb(snipOS);
-
   const langs: [SnipLang, string][] = f.baseEnv
     ? [
         ["shell", win ? "PowerShell" : "Shell"],
@@ -526,14 +523,14 @@ export function GatewayView({ onStatus, onGoNetwork }: Props) {
             <div className={`sub${older ? " old" : ""}`}>{sub}</div>
             {/* another magpie (same/newer): no button — native 36 */}
             {!other ? (
-              <button
-                type="button"
-                className="text action gw-fix"
+              <TextBtn
+                variant="action"
+                className="gw-fix"
                 disabled={restartBusy}
                 onClick={onRestart}
               >
                 {fixLabel}
-              </button>
+              </TextBtn>
             ) : null}
             {errText && !restartBusy ? (
               <div className="sub err" role="alert">
@@ -560,9 +557,7 @@ export function GatewayView({ onStatus, onGoNetwork }: Props) {
           <div className="row-head">
             <span className="label">{t("Gateway keys")}</span>
             <span className="grow" />
-            <button
-              type="button"
-              className="text"
+            <TextBtn
               id="addGatewayKey"
               onClick={() => {
                 const n = `key-${gwKeys.length + 1}`;
@@ -571,7 +566,7 @@ export function GatewayView({ onStatus, onGoNetwork }: Props) {
               }}
             >
               {t("Add gateway key")}
-            </button>
+            </TextBtn>
           </div>
           <p className="usage-note">{t("Create a gateway key for each client. Usage is counted separately for each key.")}</p>
           <section id="gatewayKeys" className="list prefs">
@@ -583,7 +578,7 @@ export function GatewayView({ onStatus, onGoNetwork }: Props) {
                 </div>
                 <div className="val">
                   <CopyBtn text={k.key.replace("••••••••", "x7k9m2p4")} what={t("Key")} onStatus={onStatus} />
-                  <button type="button" className="text" onClick={() => setGwKeys((ks) => ks.filter((x) => x.name !== k.name))}>{t("Remove")}</button>
+                  <TextBtn className="quiet" onClick={() => setGwKeys((ks) => ks.filter((x) => x.name !== k.name))}>{t("Remove")}</TextBtn>
                 </div>
               </div>
             ))}
@@ -596,9 +591,9 @@ export function GatewayView({ onStatus, onGoNetwork }: Props) {
               "Gateway keys are for other computers, and for a tunnel to this one such as Cloudflare Tunnel: they are added here once Share on local network is on. Agents on this computer need none.",
             )}
           </span>{" "}
-          <button type="button" className="text" id="openLanSettings" onClick={onGoNetwork}>
+          <TextBtn id="openLanSettings" onClick={onGoNetwork}>
             {t("Network and sharing")}
-          </button>
+          </TextBtn>
         </p>
       )}
 
@@ -631,19 +626,12 @@ export function GatewayView({ onStatus, onGoNetwork }: Props) {
       <section className="list connect" id="connect" hidden={connectFolded}>
           <label>API</label>
           <div>
-            <div className="segs" ref={flavorSeg} data-kind="flavor">
-              {FLAVORS.map((x) => (
-                <button
-                  key={x.id}
-                  type="button"
-                  className={`opt${flavor === x.id ? " on" : ""}`}
-                  aria-pressed={flavor === x.id}
-                  onClick={() => pickFlavor(x.id)}
-                >
-                  {x.name}
-                </button>
-              ))}
-            </div>
+            <Segs
+              value={flavor}
+              onChange={pickFlavor}
+              items={FLAVORS.map((x) => ({ id: x.id, label: x.name }))}
+              aria-label="API"
+            />
             <div className="hint">{t(f.note)}</div>
           </div>
 
@@ -701,45 +689,24 @@ export function GatewayView({ onStatus, onGoNetwork }: Props) {
           <div>
             <div className="stack">
               <div className="snip-tabs">
-                <div className="segs" ref={snipSeg} data-kind="snip">
-                  {langs.map(([id, name]) => (
-                    <button
-                      key={id}
-                      type="button"
-                      className={`opt${activeSnip === id ? " on" : ""}`}
-                      aria-pressed={activeSnip === id}
-                      onClick={() => pickSnip(id)}
-                    >
-                      {name}
-                    </button>
-                  ))}
-                </div>
+                <Segs
+                  value={activeSnip}
+                  onChange={pickSnip}
+                  items={langs.map(([id, name]) => ({ id, label: name }))}
+                  aria-label={t("Example")}
+                />
                 {(activeSnip === "shell" || activeSnip === "curl") && (
-                  <div
-                    className="segs snip-os"
-                    ref={osSeg}
-                    role="group"
+                  <Segs
+                    className="snip-os"
+                    value={snipOS}
+                    onChange={pickOS}
+                    items={[
+                      { id: "windows" as const, label: t("Windows") },
+                      { id: "unix" as const, label: t("macOS · Linux") },
+                    ]}
                     aria-label={t("Where the snippet runs")}
                     title={t("Where the snippet runs")}
-                    data-kind="os"
-                  >
-                    {(
-                      [
-                        ["windows", "Windows"],
-                        ["unix", "macOS · Linux"],
-                      ] as const
-                    ).map(([id, name]) => (
-                      <button
-                        key={id}
-                        type="button"
-                        className={`opt${snipOS === id ? " on" : ""}`}
-                        aria-pressed={snipOS === id}
-                        onClick={() => pickOS(id)}
-                      >
-                        {t(name)}
-                      </button>
-                    ))}
-                  </div>
+                  />
                 )}
               </div>
               <div className="snip-wrap">
@@ -781,9 +748,7 @@ export function GatewayView({ onStatus, onGoNetwork }: Props) {
           }}
         />
         <span className="grow" />
-        <button
-          type="button"
-          className="text"
+        <TextBtn
           id="copyModels"
           hidden={!models || modelsFolded}
           onClick={() => {
@@ -792,7 +757,7 @@ export function GatewayView({ onStatus, onGoNetwork }: Props) {
           }}
         >
           {t("Copy all ids")}
-        </button>
+        </TextBtn>
       </div>
       <div className="list" id="gwModels" hidden={!!(modelsFolded && models > 0)}>
         {!catalog.length ? (

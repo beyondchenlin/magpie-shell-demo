@@ -4,6 +4,8 @@ import { PrefPick } from "../components/PrefPick";
 import { Segs } from "../components/Segs";
 import { WordsField } from "../components/WordsField";
 import { Tick } from "../components/Tick";
+import { LibSwitch } from "../components/LibSwitch";
+import { TextBtn } from "../components/TextBtn";
 import { Bird } from "../components/Bird";
 import { useSegThumb } from "../components/SegThumb";
 import { t } from "../i18n";
@@ -1682,20 +1684,18 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                   <span className="grow" />
                   {mcpServers.length >= 2 ? (
                     <>
-                      <div className="segs">
-                        {([["az", "A→Z"], ["za", "Z→A"]] as const).map(([id, lab]) => (
-                          <button
-                            key={id}
-                            type="button"
-                            className={`opt${mcpSort === id ? " on" : ""}`}
-                            onClick={() => setMcpSort(id)}>
-                            {lab}
-                          </button>
-                        ))}
-                      </div>
-                      <button
-                        type="button"
-                        className="text action" title={t("Pick some servers and turn them on or off together")}
+                      <Segs
+                        value={mcpSort}
+                        onChange={setMcpSort}
+                        items={[
+                          { id: "az" as const, label: "A→Z" },
+                          { id: "za" as const, label: "Z→A" },
+                        ]}
+                        aria-label="A→Z"
+                      />
+                      <TextBtn
+                        variant="action"
+                        title={t("Pick some servers and turn them on or off together")}
                         onClick={() => {
                           if (mcpSelectMode) {
                             setMcpSelectMode(false);
@@ -1707,10 +1707,10 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                           }
                         }}>
                         {mcpSelectMode ? t("Done") : t("Select")}
-                      </button>
-                      <button
-                        type="button"
-                        className="text action" onClick={() => {
+                      </TextBtn>
+                      <TextBtn
+                        variant="action"
+                        onClick={() => {
                           setMcpServers((list) =>
                             list.map((x) => ({
                               ...x,
@@ -1723,20 +1723,19 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                           });
                         }}>
                         {t("Turn all on")}
-                      </button>
-                      <button type="button" className="text action" onClick={() => setMcpTurnAllOffAsk(true)}>
+                      </TextBtn>
+                      <TextBtn variant="action" onClick={() => setMcpTurnAllOffAsk(true)}>
                         {t("Turn all off")}
-                      </button>
+                      </TextBtn>
                     </>
                   ) : null}
-                  <button type="button" className="text action lib-updall" onClick={() => setMcpByAgentOpen(true)}>{t("By agent")}</button>
+                  <TextBtn variant="action" className="lib-updall" onClick={() => setMcpByAgentOpen(true)}>{t("By agent")}</TextBtn>
                   {mcpServers.length >= 2 ? (
-                    <button
-                      type="button"
-                      className="text" title={t("Take all {n} servers out of the library", { n: mcpServers.length })}
+                    <TextBtn
+                      title={t("Take all {n} servers out of the library", { n: mcpServers.length })}
                       onClick={() => setMcpRemoveAllAsk(true)}>
                       {t("Remove all")}
-                    </button>
+                    </TextBtn>
                   ) : null}
                 </div>
                 {[...mcpServers]
@@ -1887,11 +1886,8 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                                 <b>{tool.name}</b>
                                 <div>{tool.desc}</div>
                               </div>
-                              <button
-                                type="button"
-                                className={`lib-switch${tool.on ? " on" : ""}`}
-                                role="switch"
-                                aria-checked={tool.on}
+                              <LibSwitch
+                                on={tool.on}
                                 aria-label={tool.name}
                                 onClick={() => {
                                   setMcpServers((list) =>
@@ -1905,9 +1901,8 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                                     ),
                                   );
                                   onStatus?.(t("Tools of {name} saved", { name: s.name }), "ok");
-                                }}>
-                                <i />
-                              </button>
+                                }}
+                              />
                             </div>
                           ))}
                           {hasCursor ? (
@@ -2676,11 +2671,8 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                             {pr.open ? (
                               <div>
                                 <div>
-                                  <button
-                                    type="button"
-                                    className={`lib-switch${pr.copy ? " on" : ""}`}
-                                    role="switch"
-                                    aria-checked={pr.copy}
+                                  <LibSwitch
+                                    on={pr.copy}
                                     aria-label={t("Copy files instead of linking")}
                                     onClick={() => {
                                       const next = !pr.copy;
@@ -2693,9 +2685,8 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                                           : t("{name} gets links now", { name: pr.name }),
                                         "ok",
                                       );
-                                    }}>
-                                    <i />
-                                  </button>
+                                    }}
+                                  />
                                   <span>{t("Copy files instead of linking")}</span>
                                   <span>
                                     {pr.copy
@@ -2933,11 +2924,8 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                     <img src="/icons/cursor.svg" alt="" width={18} height={18} />
                     <b>{a.name}</b>
                     <span className="grow" />
-                    <button
-                      type="button"
-                      className={`lib-switch${on ? " on" : ""}`}
-                      role="switch"
-                      aria-checked={on}
+                    <LibSwitch
+                      on={on}
                       aria-label={t("{agent} runs its commands through RTK", { agent: a.name })}
                       disabled={disabled}
                       title={disabled && !on ? t("RTK isn't installed. magpie can install it for you, or get it from its site.") : undefined}
@@ -2949,9 +2937,8 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                           next ? t("RTK is on for {agent} — restart it to use it", { agent: a.name }) : t("RTK is off for {agent} — restart it to see it", { agent: a.name }),
                           "ok",
                         );
-                      }}>
-                      <i />
-                    </button>
+                      }}
+                    />
                   </div>
                 );
               })}

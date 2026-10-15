@@ -4,6 +4,27 @@
 
 ---
 
+## v0.1.125 · CIS_GATEWAY_LIBRARY_ROUTING_AGENTS · 2026-10-15 Asia/Shanghai
+
+- **WHY:** Continue CIS unification outside Settings: Gateway / Library / Routing / Agents still hand-rolled Magpie-mapped `.text` / `.segs` / `.lib-switch` / Conditions `.row.pref`.
+- **CAUSE:** PrefRow wave closed for Settings (0.1.122–124); scan found clear wins elsewhere that Magpie already maps to shared CIS.
+- **Gold cites:**
+  - Magpie `plugins/gateway/client.js` **97** `text action gw-fix`; **418** `segs(FLAVORS)`; **452–460** snip + `.snip-os` `segs()`; **661–669** Add gateway key / openLanSettings / copyModels `.text`
+  - Magpie `plugins/gateway/keys.js` **180** Remove `text quiet` (keys themselves stay Magpie `.acc`, **not** PrefRow)
+  - Magpie `app.js` **6174–6202** `segs()` + `slide()` thumb
+  - Magpie `plugins/library/client.js` **98** `lib-switch`; MCP sort A→Z / toolbar `.text.action` (library.css Select/Done)
+  - Magpie Routing Conditions = `.row.pref` + `.text`; found groups `.lib-switch`; names list `segs()`
+  - Magpie Agents manage modal = `.text` actions / Done bar
+- **WHAT kept:** `SIDE_AT=1024`; no `WEB_SIDE_AT`; Gateway keys demo `.row.pref` simplification (Magpie `.acc` — do not fake PrefRow contract); Library skillHow busy opts (Segs has no busy); Agents `row agent conn` / Routing `.rt-gfound .txt` Magpie-distinct; CSS-var/pop `style={{`.
+- **WHAT changed:**
+  - `GatewayView`: Restart / Add key / Remove / Network / Copy all ids → `TextBtn`; Connect flavor + snip + snip-os → shared `Segs` (drop page `useSegThumb`)
+  - `LibraryView`: MCP A→Z `Segs`; tool/project/RTK → `LibSwitch`; MCP toolbar Select/Turn all on|off/By agent/Remove all → `TextBtn`
+  - `RoutingView`: Conditions → `PrefRow`+`TextBtn`; found → `LibSwitch`; names → `Segs`
+  - `AgentsView`: Manage Agents search actions + Hide/Unhide/Done → `TextBtn`
+  - CIS md: PrefRow API `wrapVal`/`afterWho`/`dataUser`/`dataPattern`/`subClassName`; snapshot 0.1.125
+- **Guard:** `npm run chrome-guard`. Push/PR required. No portable / Vercel.
+
+---
 ## v0.1.124 · CIS_AROWN_ABOUT_SYNC_TEXTBTN · 2026-10-15 Asia/Shanghai
 
 - **WHY:** Continue CIS on 0.1.123 leftovers that Magpie maps to PrefRow/TextBtn without inventing parallel CSS.
