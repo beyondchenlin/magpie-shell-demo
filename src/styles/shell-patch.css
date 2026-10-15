@@ -64,7 +64,9 @@ body.web #root {
 /* Top-bar / Appearance selected thumbs — Magpie gold (SIDE_AT=1024 → top tabs).
    Magpie app.css:227–232 .seg (no grey track) + .seg > .thumb → --seg-thumb / --seg-edge;
    app.css:2798–2804 .thumb base (Appearance .segs use --card + light edge);
-   app.js slide() / demo useSegThumb 280ms. Nest widths < SIDE_AT keep top #nav.seg. */
+   app.js slide() 8168–8267 / demo useSegThumb: 280ms + .still + thumbNow + ResizeObserver;
+   prefers-reduced-motion: Magpie slide() keeps WAAPI 280ms; CSS global zeros transitions.
+   Nest widths < SIDE_AT keep top #nav.seg. */
 body.web .seg > .thumb,
 .seg > .thumb {
   background: var(--seg-thumb);

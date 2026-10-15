@@ -1,5 +1,7 @@
 /** Magpie applyPrefs theme crossfade — app.js ~20581–20590 + app.css html.theming ~3233–3236.
  *  Crossfade .35s via html.theming; clear class at 450ms. Skip animate on first paint.
+ *  prefers-reduced-motion: Magpie does not calm()-skip applyPrefs; app.css ~3305–3308 zeros
+ *  transition-duration to .01ms (covers html.theming). Demo mirrors that CSS path.
  *
  *  Persist: Magpie saves theme via savePrefs → settings JSON (app.js ~20999, prefsKeep ~23926).
  *  Demo has no backend — store theme on magpie.demoPrefs (same key as colorblind/textSize).

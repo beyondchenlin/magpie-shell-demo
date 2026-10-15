@@ -4,6 +4,23 @@
 
 ---
 
+## v0.1.121 · SEG_THUMB_SLIDE_FIDELITY · 2026-10-15 Asia/Shanghai
+
+- **WHY:** Close SHELL-APPEARANCE-LOGIC motion re-scan for Settings Appearance `.segs` + top `#nav.seg` (pages users check often): tip already had 280ms, but `useSegThumb` lacked Magpie `slide()` mid-glide / `.still` / ResizeObserver fit.
+- **CAUSE:** Demo hook stored last *target* only and skipped Magpie `thumbPut`/`thumbNow`/`thumbFit`; interrupting a glide or resizing the nest left the thumb off Magpie gold.
+- **Gold cites:**
+  - Magpie `app.js` **8168–8267** `slide()` / `thumbPut` / `thumbNow` / `thumbFit`; **8185** `THUMB_MS=280`, `THUMB_EASE=cubic-bezier(.2,.8,.2,1)`
+  - Magpie `app.css` **2798–2804** `.thumb` base; **2836** `.thumb.still`; **227–232** `#nav.seg` / `.seg > .thumb`
+  - Magpie `app.css` **~3305–3308** `prefers-reduced-motion` zeros CSS transitions (covers `html.theming`); Magpie `slide()` does **not** call `calm()`
+  - Magpie `app.js` **20999** Appearance `#themeSegs` → `segs()` + `slide`; demo `Segs` + `useSegThumb`
+- **WHAT kept:** `SIDE_AT=1024`; no `WEB_SIDE_AT`; Win chrome / 752 frame; theme persist + applyTheme `.35s`/`450ms` (v0.1.119–120); warm-tabs/set-tabs without SegThumb (v0.1.118).
+- **WHAT changed:**
+  - `SegThumb.tsx`: Magpie-faithful `slide()` — `.still` put, mid-glide `thumbNow`, ResizeObserver fit, wrap y/h
+  - `applyTheme.ts` / `shell-patch.css` cites for reduced-motion + slide fidelity
+  - `SHELL-APPEARANCE-LOGIC.md` §4 + motion re-scan note closed for this path
+- **Guard:** `npm run chrome-guard`. No portable. No push/Vercel.
+
+---
 ## v0.1.120 · THEME_PERSIST_BODY_WEB_DARK · 2026-10-15 Asia/Shanghai
 
 - **WHY:** Close two leftovers from v0.1.119: Appearance reload reset to light; nest preview `body.web` canvas stayed `#e8e8ec` in dark (light strip around `#root`).

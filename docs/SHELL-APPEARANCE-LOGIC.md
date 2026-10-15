@@ -70,7 +70,7 @@ footer.foot                 ← #status toast 胶囊
 |----------------|-------------|------|
 | `view-in` | **.24s** `--ease`；from `opacity 0` + `translateY(5px)` | 每次进入 `.view` |
 | `fade-in`（reduced / side-nav 页） | opacity only | `prefers-reduced-motion` 时 `.view` 改名 |
-| `.segs` thumb（JS `slide` / demo `useSegThumb`） | **280ms** `cubic-bezier(.2,.8,.2,1)` | API / Shell / OS 等分段钮 |
+| `.segs` / `#nav.seg` thumb（JS `slide` / demo `useSegThumb`） | **280ms** `cubic-bezier(.2,.8,.2,1)`；`.still` + mid-glide `thumbNow` + ResizeObserver `thumbFit`（Magpie app.js ~8168–8267 / 8185）；**不** calm()-跳过 WAAPI | Appearance / 顶栏 `#nav` / in-page `.segs` |
 | `.opt` color/transform | **.18s / .14s** `--ease` | 分段选项 hover/选中 |
 | `.fold svg` | **transform .15s ease-out**；展开 `rotate(90deg)` | Connect / Models 折叠 |
 | `.copy` hover | background/color **.12s** | 复制钮 |
@@ -235,11 +235,17 @@ footer.foot                 ← #status toast 胶囊
 
 - Install `pm-act` / `.get` accent soft→fill; Options = `.pm-opts` textarea + err + bar (Clear/Cancel/Save JSON object) + middleware hooks note.
 
-### Motion tokens re-scan (still required)
+### Motion tokens re-scan
 
-Same as §4; added: `.pm-opts textarea` focus .12s; `.range-menu .rm-day` background .12s; `.search-vendor.open` chevron .15s; led-chart bar height .28s.
+**v0.1.121 closed** for Settings Appearance `.segs` + top `#nav.seg` path (user-checked often):
+- Magpie `slide()` **280ms** / `cubic-bezier(.2,.8,.2,1)` (app.js **8185**, **8240–8267**)
+- Demo `useSegThumb` matches: `.still` put, mid-glide `thumbNow`, ResizeObserver fit (wrap y/h)
+- `html.theming` **.35s** / clear **450ms** kept (v0.1.119–120); `prefers-reduced-motion` via Magpie app.css **~3305–3308** global `.01ms` (covers theming). Magpie `slide()` does **not** calm()-skip WAAPI — tip matches.
+- Settings warm-tabs / set-tabs stay `.on` only (no SegThumb; v0.1.118)
 
-*文档版本：v0.1.14*
+Still open elsewhere (not this tip): `.pm-opts textarea` focus .12s; `.range-menu .rm-day`; `.search-vendor.open` chevron; led-chart bar height .28s — when those surfaces are touched.
+
+*文档版本：v0.1.121*
 
 
 ---
