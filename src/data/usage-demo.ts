@@ -165,7 +165,7 @@ export const DEMO_SESSIONS: SessRow[] = [
     icon: "claude",
     cwd: "magpie-shell-demo",
     models: "claude-sonnet-4-5",
-    last: Date.now() - 12 * 60_000,
+    last: Date.now() - 30 * 3600_000, // outside Today → empty-range sess-show-history
     input: 420_000,
     output: 88_000,
     cache_read: 210_000,
@@ -178,7 +178,7 @@ export const DEMO_SESSIONS: SessRow[] = [
     icon: "codex",
     cwd: "internal/gui",
     models: "gpt-5 → claude-sonnet-4-5",
-    last: Date.now() - 2 * 3600_000,
+    last: Date.now() - 40 * 3600_000,
     input: 190_000,
     output: 41_000,
     cache_read: 0,

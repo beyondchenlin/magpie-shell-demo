@@ -1,3 +1,22 @@
+## v0.1.173 · SESS_SHOW_HISTORY_EMPTY_RANGE · 2026-10-16 Asia/Shanghai
+
+- **WHY:** Wire Magpie Sessions empty-range control `text sess-show-history` ("All sessions") when the picked range has no rows but history exists under the same filters.
+- **CAUSE:** v0.1.172 restored list pager `sess-page-more` and noted empty-range cousin still unwired. Magpie OSS (app.js L19607–18) overrides empty copy to "No sessions in this range" and appends `button.text.sess-show-history` → sets `sessRange=all`.
+- **Cite:**
+  - Magpie `app.js` **19607–18** `from && all.some(…)` → `t("No sessions in this range")` + `el("button", "text sess-show-history", t("All sessions"))` → `sessRange = "all"`
+  - Magpie `app.js` **19564 / 19020** range `from` via `SESS_RANGES` days; **19401** `sessDate`
+  - Magpie test `sessions-empty-range.test.cjs` L38 `#sessStats .sess-show-history`
+  - Magpie i18n `"No sessions in this range"` / `"All sessions"`
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; `sess-page-more`; `#sessAll.sess-all` head; skip oauth Approve wall.
+- **WHAT changed:**
+  - `SimpleViews.tsx`: filter Sessions by `sessRange` (Magpie day floor); empty `#sessStats` Magpie messages; wire `TextBtn.sess-show-history` → `setSessRange("all")`.
+  - `usage-demo.ts`: shift s1/s2 `last` outside Today so Today → empty-range is demonstrable (default 30d still filled).
+- **Chrome:** none (Sessions nest slice only).
+- **Remaining invent (weak/skip):** oauth Approve wall (nest=browser); pm-headrow/pm-folder-row wrappers; rt-flier-demo; win-caption*; intentional React bridges; lib-hook* demo extras; pref-anchor React bridge.
+- **Guard:** `npm run chrome-guard`. No portable. No Vercel.
+
+---
+
 ## v0.1.172 · SESS_PAGE_MORE_OSS · 2026-10-16 Asia/Shanghai
 
 - **WHY:** Drop invent Sessions pager class `sess-show-more` + invent copy/Show less; restore Magpie list pager `sess-page-more`.

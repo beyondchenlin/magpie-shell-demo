@@ -148,6 +148,25 @@ const SESS_RANGES = [
   ["all", "All"],
 ] as const;
 
+/** Magpie SESS_RANGES days (app.js L19020): today=1 … all=0. */
+const SESS_RANGE_DAYS: Record<(typeof SESS_RANGES)[number][0], number> = {
+  today: 1,
+  "7d": 7,
+  "30d": 30,
+  "90d": 90,
+  all: 0,
+};
+
+/** Magpie sessDate(st.from) floor for list filter (app.js L19564 / L19401). */
+function sessRangeStartMs(range: string): number | null {
+  const days = SESS_RANGE_DAYS[range as keyof typeof SESS_RANGE_DAYS] ?? 0;
+  if (!days) return null;
+  const start = new Date();
+  start.setHours(0, 0, 0, 0);
+  if (days > 1) start.setDate(start.getDate() - (days - 1));
+  return start.getTime();
+}
+
 const USAGE_EVERY = [
   [0, "Off"],
   [5, "5 s"],
@@ -777,19 +796,31 @@ export function UsageView() {
   const ledPageRows = ledRows.slice(ledPage * pageSize, ledPage * pageSize + pageSize);
   const ledPages = Math.max(1, Math.ceil(ledRows.length / pageSize) || 1);
 
+  /** Magpie renderSessions list filters (app.js L19560–70) + empty-range history (L19607–18). */
+  const sessMatchNonRange = (s: (typeof DEMO_SESSIONS)[number]) => {
+    if (sessAgent !== "all" && s.agent !== sessAgent) return false;
+    const q = sessQ.trim().toLowerCase();
+    if (q && !`${s.title} ${s.cwd} ${s.models} ${s.agent}`.toLowerCase().includes(q)) return false;
+    return true;
+  };
+  const sessInRange = (s: (typeof DEMO_SESSIONS)[number]) => {
+    const from = sessRangeStartMs(sessRange);
+    return from == null || s.last >= from;
+  };
   const sessRows = useMemo(() => {
     if (!demoFilled) return [];
-    let rows = sessMore ? [...DEMO_SESSIONS, ...DEMO_SESSIONS_MORE] : [...DEMO_SESSIONS];
-    if (sessAgent !== "all") rows = rows.filter((s) => s.agent === sessAgent);
-    const q = sessQ.trim().toLowerCase();
-    if (q) {
-      rows = rows.filter((s) =>
-        `${s.title} ${s.cwd} ${s.models} ${s.agent}`.toLowerCase().includes(q),
-      );
-    }
-    return rows;
-  }, [demoFilled, sessAgent, sessQ, sessMore]);
-  const sessHidden = demoFilled && !sessMore ? DEMO_SESSIONS_MORE.length : 0;
+    const pool = sessMore ? [...DEMO_SESSIONS, ...DEMO_SESSIONS_MORE] : [...DEMO_SESSIONS];
+    return pool.filter((s) => sessMatchNonRange(s) && sessInRange(s));
+  }, [demoFilled, sessAgent, sessQ, sessMore, sessRange]);
+  const sessHidden = useMemo(() => {
+    if (!demoFilled || sessMore) return 0;
+    return DEMO_SESSIONS_MORE.filter((s) => sessMatchNonRange(s) && sessInRange(s)).length;
+  }, [demoFilled, sessMore, sessAgent, sessQ, sessRange]);
+  /** Magpie: from && all.some(byAgent/folder/model/q) → empty-range sess-show-history (app.js L19607–18). */
+  const sessHasHistory = useMemo(() => {
+    if (!demoFilled || sessRange === "all") return false;
+    return [...DEMO_SESSIONS, ...DEMO_SESSIONS_MORE].some((s) => sessMatchNonRange(s));
+  }, [demoFilled, sessRange, sessAgent, sessQ]);
 
   const ctxAgents = demoFilled ? DEMO_CTX_AGENTS : [];
   const overview = useMemo(
@@ -1820,14 +1851,26 @@ export function UsageView() {
           </>
         ) : (
           <>
+            {/* Magpie app.js L19602–18: stats.empty + .none; empty-range → sess-show-history */}
             <section className="stats empty" id="sessStats">
               <div className="none">
-                {sessAgent !== "all" || sessQ.trim()
-                  ? t("No session matches.")
-                  : t(
+                {!demoFilled
+                  ? t(
                       "No sessions yet. Claude Code's, Codex's, OpenCode's and Pi's sessions on this computer show up here, with what each cost and the command that resumes it.",
-                    )}
+                    )
+                  : sessHasHistory
+                    ? t("No sessions in this range")
+                    : sessAgent !== "all" || sessQ.trim()
+                      ? t("No session matches.")
+                      : t("Nothing in this range.")}
               </div>
+              {demoFilled && sessHasHistory ? (
+                <TextBtn
+                  className="sess-show-history"
+                  onClick={() => setSessRange("all")}>
+                  {t("All sessions")}
+                </TextBtn>
+              ) : null}
               <p className="usage-note">
                 {t("Totals count native sessions and gateway requests with a session ID")}
                 {" · 0 "}

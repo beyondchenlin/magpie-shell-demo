@@ -1,3 +1,10 @@
+## v0.1.173 · SESS_SHOW_HISTORY_EMPTY_RANGE · 2026-10-16 Asia/Shanghai
+
+- **WHY:** Wire Magpie empty-range `text sess-show-history` ("All sessions") on Sessions `#sessStats` when range is empty but history matches filters.
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; skip oauth Approve wall; `sess-page-more`; `#sessAll`.
+- **Cite:** Magpie app.js **L19607–18** / **L19611** `sess-show-history`; **L19564** `from`; sessions-empty-range.test.cjs **L38**; i18n "No sessions in this range".
+- **chrome-guard:** pass. Push/PR #1. No portable/Vercel.
+
 ## v0.1.172 · SESS_PAGE_MORE_OSS · 2026-10-16 Asia/Shanghai
 
 - **WHY:** Drop invent Sessions list pager `sess-show-more` (+ invent Show less / "Show more · {n} left"); restore Magpie `text sess-page-more` + `Show {n} more`.

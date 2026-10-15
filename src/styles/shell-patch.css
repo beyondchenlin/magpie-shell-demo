@@ -404,8 +404,8 @@ body.web.side-nav {
 /* v0.1.136: drop invent sess-item.open redeclare (Magpie L1515) + sess-detail fade +
    sess-go.open rotate (Magpie sess-go L1526–1527 is color only, no .open rotate). */
 /* v0.1.172: drop invent .sess-show-more — Magpie list pager is .sess-page-more
-   (app.css L1392; app.js L19681; sessions/client.js L656). Empty-range
-   "All sessions" is .sess-show-history (app.js L19611), not this invent. */
+   (app.css L1392; app.js L19681; sessions/client.js L656).
+   v0.1.173: empty-range "All sessions" wired as .sess-show-history (app.js L19611). */
 
 /* v0.1.144: drop invent .pm-chip height20/pill999 + .moved/.dot + invent .sub.ask
    (fg-2/12px) — Magpie plugins.css L79–87 / L88 .pm-row .sub.ask = var(--fg).
