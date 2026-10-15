@@ -1,4 +1,4 @@
-import type { ButtonHTMLAttributes, ReactNode } from "react";
+import { forwardRef, type ButtonHTMLAttributes, type ReactNode } from "react";
 
 type Variant = "text" | "action" | "primary" | "danger";
 
@@ -12,15 +12,18 @@ type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
  * Magpie text button: `.text` (+ `.action` / `.primary` / `.danger`).
  * CIS: use for footers, Restart-style bordered actions, accent CTAs — not Ant/shadcn Button.
  */
-export function TextBtn({
-  variant = "text",
-  busy,
-  className,
-  children,
-  disabled,
-  type = "button",
-  ...rest
-}: Props) {
+export const TextBtn = forwardRef<HTMLButtonElement, Props>(function TextBtn(
+  {
+    variant = "text",
+    busy,
+    className,
+    children,
+    disabled,
+    type = "button",
+    ...rest
+  },
+  ref,
+) {
   const mods = [
     "text",
     variant !== "text" ? variant : "",
@@ -30,8 +33,8 @@ export function TextBtn({
     .filter(Boolean)
     .join(" ");
   return (
-    <button type={type} className={mods} disabled={disabled || busy} {...rest}>
+    <button type={type} className={mods} disabled={disabled || busy} ref={ref} {...rest}>
       {children}
     </button>
   );
-}
+});

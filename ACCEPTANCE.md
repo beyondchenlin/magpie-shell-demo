@@ -1,3 +1,9 @@
+## v0.1.123 CIS_NESTEDBLOCKS_PREFROW
+- NestedBlocks LAN / OTel / CLI / Font / Redact / Download source / Disable models / Search APIs → shared `PrefRow` / `TextBtn` / `WordsField` / `PrefPick` (Magpie-faithful; PrefRow `wrapVal` for font-row, `afterWho` for CLI/mirror).
+- PrefRow: `wrapVal` / `subClassName` / `dataPattern`; TextBtn `forwardRef`.
+- Leftovers: AutoResetOwn `.ar-own`, AboutVersionRow sub-only who; FontRow pop `style={{`.
+- `SIDE_AT=1024` only; no `WEB_SIDE_AT`. chrome-guard pass. Push/PR; no portable / Vercel.
+
 ## v0.1.122 CIS_PROVIDERS_SEGS_PREFROW
 - Providers editor Region / API / Proxy / Key header use shared `Segs` + Magpie thumb (`useSegThumb`), not page-local `.opt` strip.
 - NestedBlocks Proxy + Daily warm-up use CIS `PrefRow` / `TextBtn` (`PrefRow.afterWho` for `#proxyCheck`).

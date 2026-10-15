@@ -4,6 +4,25 @@
 
 ---
 
+## v0.1.123 · CIS_NESTEDBLOCKS_PREFROW · 2026-10-15 Asia/Shanghai
+
+- **WHY:** Continue CIS unification: NestedBlocks still hand-rolled `.row.pref` for LAN / OTel / CLI / Font / Redact / Download source / Disable models / Search APIs — duplicate PrefRow / TextBtn / WordsField / PrefPick DOM.
+- **CAUSE:** v0.1.122 only migrated Proxy + Daily warm-up; specialized Settings blocks kept raw row markup.
+- **Gold cites:**
+  - Magpie `app.js` **23630–23657** LAN Address `row()` + `lan-address-controls` / `lan-address-row`
+  - Magpie `app.js` **23212–23220** OTel `row()` + `otel-stacked` (endpoint/headers/bodies)
+  - Magpie `app.js` **20883–20914** CLI `cli-row` — shells/note under `.who` (`afterWho`)
+  - Magpie `index.html` **285–298** font-row: `.font-controls` sibling of `.who` (no `.val`) → PrefRow `wrapVal={false}`
+  - Magpie `app.js` **20940–20978** / **21166** Download source `update-mirror-row` + `.words.update-mirror-input`
+  - Magpie Settings Masking rules / Disable a model / Search APIs = `.row.pref` + `.text` / `.words`
+- **WHAT kept:** `SIDE_AT=1024`; no `WEB_SIDE_AT`; Providers Field() grids; intentional `style={{` (FontRow pop geometry / fontFamily); AutoResetOwn `.ar-own` (not `.val`); AboutVersionRow specialized (sub-only who).
+- **WHAT changed:**
+  - `PrefRow`: `wrapVal` (font-row), `subClassName`, `dataPattern`; `afterWho` for CLI / mirror err sub
+  - `TextBtn`: `forwardRef` (Disable… anchor)
+  - NestedBlocks → PrefRow / TextBtn: LanAddressRow, RedactRulesBlock, OtelFull, CliRow, UpdateMirrorRow, DisableModelsBlock, SearchApisBlock, FontRow
+- **Guard:** `npm run chrome-guard`. Push/PR required. No portable / Vercel.
+
+---
 ## v0.1.122 · CIS_PROVIDERS_SEGS_PREFROW · 2026-10-15 Asia/Shanghai
 
 - **WHY:** Continue CIS unification: Providers editor local `Segs` had no Magpie `slide()` thumb; Settings NestedBlocks still hand-rolled `.row.pref` for Proxy / Daily warm-up instead of shared PrefRow/TextBtn.

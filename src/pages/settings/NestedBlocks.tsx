@@ -305,11 +305,7 @@ export function LanAddressRow({
   }, [menu]);
 
   return (
-    <div className={`row pref lan-address-row${urls.length > 1 ? " multi" : ""}`}>
-      <div className="who">
-        <div className="name">{t("Address")}</div>
-      </div>
-      <div className="val">
+    <PrefRow name={t("Address")} className={`lan-address-row${urls.length > 1 ? " multi" : ""}`}>
         <div className="lan-address-controls">
           <Segs
             value={protocol}
@@ -368,8 +364,7 @@ export function LanAddressRow({
             </div>
           ) : null}
         </div>
-      </div>
-    </div>
+    </PrefRow>
   );
 }
 
@@ -401,12 +396,12 @@ export function RedactRulesBlock({
 
   return (
     <>
-      <div className="row pref rule-row">
-        <div className="who">
-          <div className="name">{t("Masking rules")}</div>
-          <div className="sub">{t("Secrets magpie doesn't know, such as a gateway's own keys: what they start with, or a regular expression. Masked while Mask secrets is on")}</div>
-        </div>
-        <div className="val rule-add">
+      <PrefRow
+        name={t("Masking rules")}
+        sub={t("Secrets magpie doesn't know, such as a gateway's own keys: what they start with, or a regular expression. Masked while Mask secrets is on")}
+        className="rule-row"
+        valClassName="rule-add"
+      >
           <WordsField className="rule-kind" value={kind} placeholder="API_KEY" onChange={(e) => setKind(e.target.value)} />
           <Segs
             value={by}
@@ -428,17 +423,17 @@ export function RedactRulesBlock({
             onChange={(e) => setMatch(e.target.value)}
             onKeyDown={(e) => { if (e.key === "Enter") add(); }}
           />
-          <button type="button" className="text" onClick={add}>{t("Add")}</button>
-        </div>
-      </div>
+          <TextBtn onClick={add}>{t("Add")}</TextBtn>
+      </PrefRow>
       {rules.map((r, n) =>
         editAt === n ? (
-          <div className="row pref rule-row rule-editing" key={n}>
-            <div className="who">
-              <div className="name">{r.kind || t("Rule")}</div>
-              <div className="sub">{r.prefix ? t("Starts with {p}", { p: r.prefix }) : t("Matches {re}", { re: r.regex || "" })}</div>
-            </div>
-            <div className="val rule-add">
+          <PrefRow
+            key={n}
+            name={r.kind || t("Rule")}
+            sub={r.prefix ? t("Starts with {p}", { p: r.prefix }) : t("Matches {re}", { re: r.regex || "" })}
+            className="rule-row rule-editing"
+            valClassName="rule-add"
+          >
               <WordsField className="rule-kind editing" value={ekind} onChange={(e) => setEkind(e.target.value)} aria-label={t("Name")} />
               <Segs value={eby} onChange={(v) => {
                 const next = v as "prefix" | "regex";
@@ -464,34 +459,31 @@ export function RedactRulesBlock({
                     }
                   }}
                 />
-                <button type="button" className="text rule-save" onClick={() => {
+                <TextBtn className="rule-save" onClick={() => {
                   const m = ematch.trim();
                   if (!m) return;
                   const next = rules.slice();
                   next[n] = { kind: ekind.trim(), ...(eby === "prefix" ? { prefix: m } : { regex: m }) };
                   onChange(next);
                   setEditAt(null);
-                }}>{t("Save")}</button>
-                <button type="button" className="text rule-cancel" onClick={() => setEditAt(null)}>{t("Cancel")}</button>
+                }}>{t("Save")}</TextBtn>
+                <TextBtn className="rule-cancel" onClick={() => setEditAt(null)}>{t("Cancel")}</TextBtn>
               </div>
-            </div>
-          </div>
+          </PrefRow>
         ) : (
-          <div className="row pref" key={n}>
-            <div className="who">
-              <div className="name">{r.kind || "—"}</div>
-              <div className="sub">{r.prefix ? t("Starts with {p}", { p: r.prefix }) : t("Matches {re}", { re: r.regex || "" })}</div>
-            </div>
-            <div className="val">
-              <button type="button" className="text rule-edit" onClick={() => {
+          <PrefRow
+            key={n}
+            name={r.kind || "—"}
+            sub={r.prefix ? t("Starts with {p}", { p: r.prefix }) : t("Matches {re}", { re: r.regex || "" })}
+          >
+              <TextBtn className="rule-edit" onClick={() => {
                 setEditAt(n);
                 setEkind(r.kind || "");
                 setEby(r.regex ? "regex" : "prefix");
                 setEmatch(r.regex || r.prefix || "");
-              }}>{t("Edit")}</button>
-              <button type="button" className="text" onClick={() => onChange(rules.filter((_, i) => i !== n))}>{t("Remove")}</button>
-            </div>
-          </div>
+              }}>{t("Edit")}</TextBtn>
+              <TextBtn onClick={() => onChange(rules.filter((_, i) => i !== n))}>{t("Remove")}</TextBtn>
+          </PrefRow>
         ),
       )}
     </>
@@ -521,63 +513,55 @@ export function OtelFull({ config, onChange }: { config: OtelConfig; onChange: (
     <div id="otelList">
       <div className="row-head"><span className="label">{t("Collector connection")}</span></div>
       <div className="list prefs">
-        <div className="row pref" id="otelExportRow">
-          <div className="who">
-            <div className="name">{t("OTLP export")}</div>
-            <div className="sub">{t("Send traces to your collector. Choose what to include below; account credentials stay local")}</div>
-          </div>
-          <div className="val">
-            <Segs value={config.enabled ? "on" : "off"} onChange={(v) => save({ enabled: v === "on" })} items={[{ id: "off", label: t("Off") }, { id: "on", label: t("On") }]} />
-          </div>
-        </div>
-        <div className="row pref otel-stacked" id="otelEndpointRow">
-          <div className="who">
-            <div className="name">{t("OTLP endpoint")}</div>
-            <div className="sub">{t("Base URL of your collector, or Langfuse's /api/public/otel endpoint")}</div>
-          </div>
-          <div className="val">
-            <WordsField className="full" value={config.endpoint} placeholder="http://localhost:4318" aria-label={t("OTLP endpoint")} onChange={(e) => save({ endpoint: e.target.value })} />
-          </div>
-        </div>
-        <div className="row pref otel-stacked" id="otelHeadersRow">
-          <div className="who">
-            <div className="name">{t("OTLP headers")}</div>
-            <div className="sub">{t("Comma-separated name=value pairs; percent-encode spaces and commas in values")}</div>
-          </div>
-          <div className="val">
-            <WordsField className="full" type="password" autoComplete="off" value={config.headers} placeholder="Authorization=Bearer%20token" aria-label={t("OTLP headers")} onChange={(e) => save({ headers: e.target.value })} />
-          </div>
-        </div>
+        <PrefRow
+          id="otelExportRow"
+          name={t("OTLP export")}
+          sub={t("Send traces to your collector. Choose what to include below; account credentials stay local")}
+        >
+          <Segs value={config.enabled ? "on" : "off"} onChange={(v) => save({ enabled: v === "on" })} items={[{ id: "off", label: t("Off") }, { id: "on", label: t("On") }]} />
+        </PrefRow>
+        <PrefRow
+          id="otelEndpointRow"
+          name={t("OTLP endpoint")}
+          sub={t("Base URL of your collector, or Langfuse's /api/public/otel endpoint")}
+          className="otel-stacked"
+        >
+          <WordsField className="full" value={config.endpoint} placeholder="http://localhost:4318" aria-label={t("OTLP endpoint")} onChange={(e) => save({ endpoint: e.target.value })} />
+        </PrefRow>
+        <PrefRow
+          id="otelHeadersRow"
+          name={t("OTLP headers")}
+          sub={t("Comma-separated name=value pairs; percent-encode spaces and commas in values")}
+          className="otel-stacked"
+        >
+          <WordsField className="full" type="password" autoComplete="off" value={config.headers} placeholder="Authorization=Bearer%20token" aria-label={t("OTLP headers")} onChange={(e) => save({ headers: e.target.value })} />
+        </PrefRow>
       </div>
       <div className="row-head"><span className="label">{t("Export scope")}</span></div>
       <div className="list prefs">
-        <div className="row pref" id="otelMetricsRow">
-          <div className="who">
-            <div className="name">{t("Export metrics")}</div>
-            <div className="sub">{t("Also send duration and token histograms. Leave off for a traces-only service such as Langfuse")}</div>
-          </div>
-          <div className="val">
-            <Segs value={config.metrics ? "on" : "off"} onChange={(v) => save({ metrics: v === "on" })} items={[{ id: "off", label: t("Off") }, { id: "on", label: t("On") }]} />
-          </div>
-        </div>
-        <div className="row pref" id="otelSessionsRow">
-          <div className="who">
-            <div className="name">{t("Trace agent conversations")}</div>
-            <div className="sub">{t("Reads all local sessions from Codex, Pi, Oh My Pi, Claude Code, Cowork, OpenCode and Gemini CLI, including calls not routed through Magpie. When content is included below, exports prompts, replies, tool arguments and tool output (including file contents and command output), with secrets masked")}</div>
-          </div>
-          <div className="val">
-            <Segs value={config.sessions ? "on" : "off"} onChange={(v) => save({ sessions: v === "on" })} items={[{ id: "off", label: t("Off") }, { id: "on", label: t("On") }]} />
-          </div>
-        </div>
+        <PrefRow
+          id="otelMetricsRow"
+          name={t("Export metrics")}
+          sub={t("Also send duration and token histograms. Leave off for a traces-only service such as Langfuse")}
+        >
+          <Segs value={config.metrics ? "on" : "off"} onChange={(v) => save({ metrics: v === "on" })} items={[{ id: "off", label: t("Off") }, { id: "on", label: t("On") }]} />
+        </PrefRow>
+        <PrefRow
+          id="otelSessionsRow"
+          name={t("Trace agent conversations")}
+          sub={t("Reads all local sessions from Codex, Pi, Oh My Pi, Claude Code, Cowork, OpenCode and Gemini CLI, including calls not routed through Magpie. When content is included below, exports prompts, replies, tool arguments and tool output (including file contents and command output), with secrets masked")}
+        >
+          <Segs value={config.sessions ? "on" : "off"} onChange={(v) => save({ sessions: v === "on" })} items={[{ id: "off", label: t("Off") }, { id: "on", label: t("On") }]} />
+        </PrefRow>
       </div>
       <div className="row-head"><span className="label">{t("Trace content")}</span></div>
       <div className="list prefs">
-        <div className="row pref otel-stacked" id="otelBodiesRow">
-          <div className="who">
-            <div className="name">{t("Request and response content")}</div>
-            <div className="sub">{t(descriptions[mode])}</div>
-          </div>
-          <div className="val">
+        <PrefRow
+          id="otelBodiesRow"
+          name={t("Request and response content")}
+          sub={t(descriptions[mode])}
+          className="otel-stacked"
+        >
             <Segs
               value={mode}
               onChange={(v) => save({ bodies: v !== "metadata", bodiesWhole: v === "full" })}
@@ -587,8 +571,7 @@ export function OtelFull({ config, onChange }: { config: OtelConfig; onChange: (
                 { id: "full", label: t("Full content") },
               ]}
             />
-          </div>
-        </div>
+        </PrefRow>
       </div>
     </div>
   );
@@ -957,20 +940,23 @@ export function WhatsNewModal({ onClose }: { onClose: () => void }) {
 export function CliRow() {
   const [copied, setCopied] = useState(false);
   return (
-    <div className="row pref cli-row">
-      <div className="who">
-        <div className="name">{t("Command line")}</div>
-        <div className="sub">{t("A new terminal can't find the magpie command")}</div>
-        <div className="cli-shells">
-          <div className="cli-shell on" data-shell="bash">
-            <span className="cli-dot" />
-            <span className="cli-sh">bash</span>
-            <span className="cli-state">{t("runs this app")}</span>
+    <PrefRow
+      name={t("Command line")}
+      sub={t("A new terminal can't find the magpie command")}
+      className="cli-row"
+      afterWho={
+        <>
+          <div className="cli-shells">
+            <div className="cli-shell on" data-shell="bash">
+              <span className="cli-dot" />
+              <span className="cli-sh">bash</span>
+              <span className="cli-state">{t("runs this app")}</span>
+            </div>
           </div>
-        </div>
-        <div className="cli-note">{t("A change reaches terminals opened after it")}</div>
-      </div>
-      <div className="val">
+          <div className="cli-note">{t("A change reaches terminals opened after it")}</div>
+        </>
+      }
+    >
         <button
           type="button"
           className={`copy${copied ? " done" : ""}`}
@@ -993,8 +979,7 @@ export function CliRow() {
             </svg>
           )}
         </button>
-      </div>
-    </div>
+    </PrefRow>
   );
 }
 
@@ -1097,51 +1082,52 @@ export function UpdateMirrorRow({
       : t("Updates are downloaded from GitHub; a mirror can be used where GitHub is slow");
 
   return (
-    <div className="row pref update-mirror-row">
-      <div className="who">
-        <div className="name">{t("Download source")}</div>
-        <div className={`sub${err ? " err" : ""}`} title={t("The update and its checksum always come from usemagpie.ai; a file from the mirror that doesn't match it is not installed.")}>
+    <PrefRow
+      name={t("Download source")}
+      className="update-mirror-row"
+      afterWho={
+        <div
+          className={`sub${err ? " err" : ""}`}
+          title={t("The update and its checksum always come from usemagpie.ai; a file from the mirror that doesn't match it is not installed.")}
+        >
           {sub}
         </div>
-      </div>
-      <div className="val">
+      }
+    >
         {!editing ? (
           mirror ? (
             <>
               <code>{mirror}</code>
-              <button
-                type="button"
-                className="text"
+              <TextBtn
                 onClick={() => {
                   setEditing(true);
                   setDraft(mirror);
                   setErr("");
-                }}>
+                }}
+              >
                 {t("Change")}
-              </button>
-              <button
-                type="button"
-                className="text"
+              </TextBtn>
+              <TextBtn
                 onClick={() => {
                   onChange("");
                   onStatus?.(t("Saved"), "ok");
-                }}>
+                }}
+              >
                 {t("Use GitHub")}
-              </button>
+              </TextBtn>
             </>
           ) : (
             <>
               <code>GitHub</code>
-              <button
-                type="button"
-                className="text"
+              <TextBtn
                 onClick={() => {
                   setEditing(true);
                   setDraft("");
                   setErr("");
-                }}>
+                }}
+              >
                 {t("Use a mirror…")}
-              </button>
+              </TextBtn>
             </>
           )
         ) : (
@@ -1171,18 +1157,15 @@ export function UpdateMirrorRow({
                 }
               }}
             />
-            <button
-              type="button"
-              className="text"
+            <TextBtn
               onClick={() => {
                 setEditing(false);
                 setErr("");
-              }}>
+              }}
+            >
               {t("Cancel")}
-            </button>
-            <button
-              type="button"
-              className="text"
+            </TextBtn>
+            <TextBtn
               onClick={() => {
                 const v = draft.trim();
                 if (!v) return;
@@ -1194,13 +1177,13 @@ export function UpdateMirrorRow({
                 setEditing(false);
                 setErr("");
                 onStatus?.(t("Saved"), "ok");
-              }}>
+              }}
+            >
               {t("Save")}
-            </button>
+            </TextBtn>
           </>
         )}
-      </div>
-    </div>
+    </PrefRow>
   );
 }
 
@@ -1300,47 +1283,45 @@ export function DisableModelsBlock({
 
   return (
     <>
-      <div className="row pref wraps" id="disabledAddRow">
-        <div className="who">
-          <div className="name">{t("Disable a model")}</div>
-          <div className="sub wraps">
-            {t("A disabled model is refused on every route through magpie (a request, a session, a routing group, a fallback, a sub-agent, a decision model) and left out of magpie's lists and agents' pickers. Only requests through magpie are covered. Type a pattern such as *fable* to disable every model it matches")}
-          </div>
-        </div>
-        <div className="val">
-          <button
-            type="button"
-            className="text action"
+      <PrefRow
+        id="disabledAddRow"
+        name={t("Disable a model")}
+        className="wraps"
+        subClassName="wraps"
+        sub={t("A disabled model is refused on every route through magpie (a request, a session, a routing group, a fallback, a sub-agent, a decision model) and left out of magpie's lists and agents' pickers. Only requests through magpie are covered. Type a pattern such as *fable* to disable every model it matches")}
+      >
+          <TextBtn
+            variant="action"
             id="disabledAdd"
             ref={btnRef}
             onClick={(e) => {
               setAnchor(e.currentTarget);
               setOpen(true);
-            }}>
+            }}
+          >
             {t("Disable…")}
-          </button>
-        </div>
-      </div>
+          </TextBtn>
+      </PrefRow>
       {models.map((pat) => (
-        <div className="row pref disabled-model" key={pat} data-pattern={pat}>
-          <div className="who">
-            <div className="name">{pat}</div>
-            <div className="sub wraps">
-              {DEMO_MODELS.some((m) => m.value === pat || m.label === pat)
-                ? t("Matches {n}: {list}", { n: 1, list: pat })
-                : t("Matches no model now; it is refused if one appears")}
-            </div>
-          </div>
-          <div className="val">
-            <button
-              type="button"
-              className="text"
+        <PrefRow
+          key={pat}
+          name={pat}
+          className="disabled-model"
+          dataPattern={pat}
+          subClassName="wraps"
+          sub={
+            DEMO_MODELS.some((m) => m.value === pat || m.label === pat)
+              ? t("Matches {n}: {list}", { n: 1, list: pat })
+              : t("Matches no model now; it is refused if one appears")
+          }
+        >
+            <TextBtn
               aria-label={t("Enable {model}", { model: pat })}
-              onClick={() => onChange(models.filter((p) => p !== pat))}>
+              onClick={() => onChange(models.filter((p) => p !== pat))}
+            >
               {t("Enable")}
-            </button>
-          </div>
-        </div>
+            </TextBtn>
+        </PrefRow>
       ))}
       {!models.length ? (
         <div className="empty-state">
@@ -1423,17 +1404,18 @@ export function SearchApisBlock({
 
   return (
     <>
-      <div className={`row pref rule-row search-add${err ? " err" : ""}`}>
-        <div className="who">
-          <div className="name">{t("Search APIs")}</div>
-          <div className={`sub${err ? " err" : ""}`}>
-            {err ||
-              t("When a model can't search the web, magpie searches for it with these, in this order, and gives it what they found") +
-                " · " +
-                t("No provider can search, so these are asked")}
-          </div>
-        </div>
-        <div className="val rule-add">
+      <PrefRow
+        name={t("Search APIs")}
+        className={`rule-row search-add${err ? " err" : ""}`}
+        subClassName={err ? "err" : undefined}
+        sub={
+          err ||
+          t("When a model can't search the web, magpie searches for it with these, in this order, and gives it what they found") +
+            " · " +
+            t("No provider can search, so these are asked")
+        }
+        valClassName="rule-add"
+      >
           <button
             type="button"
             className={`proto pick search-vendor${menu ? " open" : ""}`}
@@ -1472,9 +1454,7 @@ export function SearchApisBlock({
               {t("Get a key ↗")}
             </button>
           ) : null}
-          <button type="button" className="text" onClick={add}>
-            {t("Add")}
-          </button>
+          <TextBtn onClick={add}>{t("Add")}</TextBtn>
           <WordsField
             className="search-url"
             value={url}
@@ -1504,30 +1484,25 @@ export function SearchApisBlock({
               ))}
             </div>
           ) : null}
-        </div>
-      </div>
+      </PrefRow>
       {apis.map((a, n) => (
-        <div className="row pref search-api" key={a.vendor}>
-          <div className="who">
-            <div className="name">
-              {n + 1}. {a.name}
-            </div>
-            <div className={`sub${showKey[a.vendor] ? " revealed" : ""}`}>
-              {[showKey[a.vendor] ? a.key : a.key ? a.key.slice(0, 4) + "…" : "", a.url].filter(Boolean).join(" · ") || t("needs its key")}
-            </div>
-          </div>
-          <div className="val">
+        <PrefRow
+          key={a.vendor}
+          name={`${n + 1}. ${a.name}`}
+          className="search-api"
+          subClassName={showKey[a.vendor] ? "revealed" : undefined}
+          sub={[showKey[a.vendor] ? a.key : a.key ? a.key.slice(0, 4) + "…" : "", a.url].filter(Boolean).join(" · ") || t("needs its key")}
+        >
             {a.key ? (
               <>
-                <button
-                  type="button"
-                  className="text search-eye"
-                  onClick={() => setShowKey((s) => ({ ...s, [a.vendor]: !s[a.vendor] }))}>
+                <TextBtn
+                  className="search-eye"
+                  onClick={() => setShowKey((s) => ({ ...s, [a.vendor]: !s[a.vendor] }))}
+                >
                   {showKey[a.vendor] ? t("Hide") : t("Show")}
-                </button>
-                <button
-                  type="button"
-                  className="text search-copy"
+                </TextBtn>
+                <TextBtn
+                  className="search-copy"
                   onClick={async () => {
                     try {
                       await navigator.clipboard.writeText(a.key);
@@ -1535,16 +1510,16 @@ export function SearchApisBlock({
                       /* */
                     }
                     onStatus?.(t("{what} copied", { what: t("API key") }), "ok");
-                  }}>
+                  }}
+                >
                   {t("Copy")}
-                </button>
+                </TextBtn>
               </>
             ) : null}
-            <button type="button" className="text" onClick={() => onChange(apis.filter((x) => x.vendor !== a.vendor))}>
+            <TextBtn onClick={() => onChange(apis.filter((x) => x.vendor !== a.vendor))}>
               {t("Remove")}
-            </button>
-          </div>
-        </div>
+            </TextBtn>
+        </PrefRow>
       ))}
     </>
   );
@@ -2031,10 +2006,7 @@ export function FontRow({
   ) : null;
 
   return (
-    <div className="row pref font-row" id={`${kind}FontRow`}>
-      <div className="who">
-        <div className="name">{t(label)}</div>
-      </div>
+    <PrefRow name={t(label)} className="font-row" id={`${kind}FontRow`} wrapVal={false}>
       <div className="font-controls">
         <PrefPick
           ref={famRef}
@@ -2075,6 +2047,6 @@ export function FontRow({
         <div className="font-preview">{t("Aa 0123 · 中文")}</div>
         {menu && createPortal(menu, document.body)}
       </div>
-    </div>
+    </PrefRow>
   );
 }
