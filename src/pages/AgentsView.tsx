@@ -1034,8 +1034,11 @@ export function AgentsView({
                     </span>
                   </div>
                 ) : (
-                  <div className="sub faint">
-                    {demoCopy("演示：可接入 Magpie 模型列表", "Demo: can connect Magpie models")}
+                  <div className="ag-st">
+                    <span className="ag-dot" aria-hidden />
+                    <span className="ag-st-t">
+                      {t("Not connected · {agent} uses its own settings", { agent: a.name })}
+                    </span>
                   </div>
                 )}
               </div>
@@ -1263,7 +1266,7 @@ export function AgentsView({
                       <div className="ag-k">{t("New sessions")}</div>
                       <div className="ag-v">
                         <div className="ag-vl">
-                          <div className="fields inline">
+                          <div className="fields">
                             {(() => {
                               const fk = `${a.id}:model`;
                               const val = fieldVals[fk] || "claude-sonnet-4-5";
@@ -1385,8 +1388,11 @@ export function AgentsView({
                           </button>
                           <div className="who">
                             <div className="name">{a.name}</div>
-                            <div className="sub faint">
-                              {demoCopy("演示：可接入 Magpie 模型列表", "Demo: can connect Magpie models")}
+                            <div className="ag-st">
+                              <span className="ag-dot" aria-hidden />
+                              <span className="ag-st-t">
+                                {t("Not connected · {agent} uses its own settings", { agent: a.name })}
+                              </span>
                             </div>
                           </div>
                           <button

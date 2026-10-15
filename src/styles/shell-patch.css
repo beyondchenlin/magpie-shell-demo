@@ -723,16 +723,10 @@ label.tick input { margin: 0; }
 
 
 /* —— v0.1.106 CIS P2: PrefPick / FieldPill helpers —— */
-.ag-vl > .field { width: min(220px, 100%); }
-.ag-open .fields.inline .field.main { min-width: 170px; }
-.fields.inline {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  width: auto;
-  margin-left: 0;
-  grid-template-columns: none;
-}
+/* v0.1.147: drop invent .ag-vl > .field / .ag-open .fields.inline / .fields.inline —
+   Magpie New sessions is line(fields) → .ag-vl > .fields (app.js L1903);
+   #agents .ag-exp .ag-vl > .fields flex wrap + .field min-width 170 (app.css L3814–3820);
+   .ag-vl .field.ag-pick width 220 (app.css L3840). No invent "inline" class. */
 .font-controls { position: relative; display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 /* v0.1.134: drop invent pv-tools / find.pv-find / none.pv-none / rt-gadd.pv-gap —
    Magpie index.html L112–120 + app.css L2113–2115 / L1366 / L3036 / L2611–2617
@@ -2047,8 +2041,9 @@ label.tick input { margin: 0; }
 
 /* ── CIS v0.1.117 AgentsView + NestedBlocks chrome bridge ── */
 .display-contents { display: contents; }
-#view-agents .sub.faint { font-size: 12px; color: var(--faint); }
-#view-agents .ag-cant { cursor: default; user-select: none; }
+/* v0.1.147: drop invent #view-agents .sub.faint + .ag-cant cursor/user-select —
+   Magpie connectLine unplugged is .ag-st/.ag-dot/.ag-st-t (app.js L1234–1272);
+   Magpie .ag-cant is flex/font/color only (app.css L3800). */
 #view-agents .row.agent .val.acts {
   display: flex; gap: 6px; flex-wrap: wrap; align-items: center;
 }

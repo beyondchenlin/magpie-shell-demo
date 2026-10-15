@@ -1,3 +1,17 @@
+## v0.1.147 · AGENTS_FIELDS_UNPLUGGED_OSS_FIDELITY · 2026-10-15 Asia/Shanghai
+
+- **WHY:** Continue Magpie 1:1 after 0.1.146 — delete tip invent Agents New-sessions fields chrome + unplugged status that covered Magpie OSS connectLine.
+- **CAUSE:** Demo painted New sessions as invent `div.fields.inline` (+ shell-patch flex/min-width re-owns) instead of Magpie `line(fields)` → `.ag-vl > .fields`; unplugged rows used invent `sub faint` demo copy instead of Magpie `ag-st`/`ag-dot`/`ag-st-t`; shell-patch re-owned `.ag-cant` with invent cursor/user-select Magpie does not have.
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; Routing/Settings invent drops (0.1.146); CIS PrefRow/Segs/TextBtn/FieldPill; Magpie `app.css` agents import; remaining `.val.acts` Connect/Relocate demo bridge (later tip).
+- **Cite:**
+  - Magpie `app.js` **1903** `kv(… "New sessions", line(fields))` → `.ag-vl > .fields`
+  - Magpie `app.css` **3814–3820** `.ag-vl > .fields` + `#agents .ag-exp .ag-vl > .fields` flex wrap / `.field` min-width **170**; **3840** `.ag-vl .field.ag-pick` width **220**
+  - Magpie `app.js` **1234–1272** `connectLine` unplugged → `.ag-st` + `.ag-dot` + `.ag-st-t` ("Not connected · {agent} uses its own settings")
+  - Magpie `app.css` **3800** `.ag-cant` flex/font/color only (no cursor/user-select)
+- **WHAT changed:** `AgentsView.tsx` fields + unplugged ag-st; `shell-patch.css` drop invents above.
+- **chrome-guard:** pass. Push/PR #1. No portable/Vercel.
+
+---
 ## v0.1.146 · ROUTING_REQ_MIN1150_SETTINGS_DEAD_INVENT_OSS_FIDELITY · 2026-10-15 Asia/Shanghai
 
 - **WHY:** Continue Magpie 1:1 after 0.1.145 — delete tip invent Routing selected-req / min1150-on-cols + dead Settings invent chrome that covered Magpie OSS.

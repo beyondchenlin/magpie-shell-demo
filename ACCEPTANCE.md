@@ -1,3 +1,9 @@
+## v0.1.147 AGENTS_FIELDS_UNPLUGGED_OSS_FIDELITY
+- Agents New sessions: invent `fields inline` → Magpie `fields` (app.js L1903 line(fields)).
+- Agents unplugged status: invent `sub faint` demo copy → Magpie `ag-st` / `ag-dot` / `ag-st-t` connectLine (app.js L1234–1272).
+- shell-patch: drop invent `.ag-vl > .field` / `.fields.inline` / `#view-agents .sub.faint` / `.ag-cant` cursor — Magpie app.css L3814–3820 / L3840 / L3800.
+- SIDE_AT=1024. No portable / Vercel.
+
 ## v0.1.146 ROUTING_REQ_MIN1150_SETTINGS_DEAD_INVENT_OSS_FIDELITY
 - Routing selected request: drop invent class `on` + shell-patch `.rt-req.on` pill — Magpie `aria-pressed` only (routing.css L251).
 - Routing hist cols: drop invent `.rt-cols.min1150*` + purpose/metric re-owns — Magpie min1150 on `.rt-more` (routing.js L260; routing.css L237–239 / L324–335); cols keep Magpie `solo` only.
