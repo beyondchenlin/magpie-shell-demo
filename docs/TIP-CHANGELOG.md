@@ -4,6 +4,26 @@
 
 ---
 
+## v0.1.120 · THEME_PERSIST_BODY_WEB_DARK · 2026-10-15 Asia/Shanghai
+
+- **WHY:** Close two leftovers from v0.1.119: Appearance reload reset to light; nest preview `body.web` canvas stayed `#e8e8ec` in dark (light strip around `#root`).
+- **CAUSE:** Theme lived only in React state (default `"light"`); Magpie persists via `savePrefs({ theme })` (app.js ~20999) and early-applies with `theme.js` from `bootPrefs`. Demo `body.web` hard-coded light canvas while Magpie body uses `background: var(--bg)` (app.css L118) → dark `#1a1a1e` (L46/L81).
+- **Gold cites:**
+  - Magpie `app.js` **20999** Appearance segs → `savePrefs({ ...keep, theme })`
+  - Magpie `app.js` **23926** `prefsKeep` includes `theme`
+  - Magpie `theme.js` **5–10** early `dataset.theme` from `bootPrefs.theme` (before first paint)
+  - Magpie `app.js` **20581–20590** applyPrefs theming `.35s` / clear **450ms** (unchanged; still `applyTheme.ts`)
+  - Magpie `app.css` **L3** `--bg: #f4f4f6`; **L46/L81** dark `--bg: #1a1a1e`; **L118** `body { background: var(--bg) }`
+- **WHAT kept:** `SIDE_AT=1024`; no `WEB_SIDE_AT`; Win chrome / 752 frame; `.35s`/`450ms` theming; CIS components.
+- **WHAT changed:**
+  - `applyTheme.ts`: `readDemoTheme` / `persistDemoTheme` / `bootDemoTheme` on **`magpie.demoPrefs.theme`**
+  - `main.tsx` calls `bootDemoTheme()` before React (Magpie theme.js)
+  - `App.tsx` theme state inits from `readDemoTheme()`
+  - `SettingsView` Appearance onChange → `persistDemoTheme` after sync apply
+  - `shell-patch.css` `body.web` dark canvas `#1a1a1e` under `data-theme="dark"` + system dark
+- **Guard:** `npm run chrome-guard`. No portable. No push/Vercel.
+
+---
 ## v0.1.119 · APPEARANCE_THEMING_TOP_SEG · 2026-10-15 Asia/Shanghai
 
 - **WHY:** After CIS + Settings clip (v0.1.118), close two user-visible shell gaps: Appearance theme crossfade timing, and top-bar selected pill backgrounds at nest widths (top tabs under `SIDE_AT=1024`).

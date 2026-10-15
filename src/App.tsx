@@ -14,7 +14,7 @@ import { SettingsView, applyColorblind } from "./pages/SettingsView";
 import { TrayPanel, wantPanelMode } from "./pages/TrayPanel";
 import { StatusToast } from "./components/StatusToast";
 import { WinCaption } from "./components/WinCaption";
-import { applyDocumentTheme } from "./applyTheme";
+import { applyDocumentTheme, readDemoTheme } from "./applyTheme";
 
 const SIDE_AT = 1024;
 const NAV_LS = "magpie.navLayout";
@@ -101,7 +101,7 @@ function wantSide(navPick: "" | "side" | "top"): boolean {
 export default function App() {
   const lang = useLang();
   const [view, setView] = useState<ViewId>(() => viewFromHash());
-  const [theme, setTheme] = useState<"system" | "light" | "dark">("light");
+  const [theme, setTheme] = useState<"system" | "light" | "dark">(() => readDemoTheme());
   const [status, setStatus] = useState<{ msg: string; kind: string } | null>(
     null,
   );

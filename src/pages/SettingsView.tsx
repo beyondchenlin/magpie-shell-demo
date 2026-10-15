@@ -6,7 +6,7 @@ import { TextBtn } from "../components/TextBtn";
 import { WordsField } from "../components/WordsField";
 import { GATEWAY_ADDR } from "../data/mock";
 import { demoCopy, t, type Lang } from "../i18n";
-import { applyDocumentTheme, type DemoTheme } from "../applyTheme";
+import { applyDocumentTheme, persistDemoTheme, type DemoTheme } from "../applyTheme";
 import {
   AlertNumField,
   AboutVersionRow,
@@ -637,7 +637,9 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus, onHeade
                 value={theme}
                 onChange={(v) => {
                   // Magpie applyPrefs (app.js ~20581–20590): theming + data-theme in the same turn
+                  // Magpie savePrefs({ theme }) (app.js ~20999); demo → magpie.demoPrefs.theme
                   applyDocumentTheme(v as DemoTheme);
+                  persistDemoTheme(v as DemoTheme);
                   setTheme(v as Theme);
                   onStatus?.(t("Saved"), "ok", 1500);
                 }}

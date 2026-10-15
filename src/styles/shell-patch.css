@@ -15,11 +15,22 @@ body { margin: 0; }
 /* Web preview: Magpie nest footprint 752×652 (NOTES responsive).
    At text size 110%, Magpie clamps to min ~616 wide (windowMinW 560 × 1.10).
    CSS width uses un-zoomed px; html { zoom } scales the frame. */
+/* Nest preview canvas around #root card.
+   Light: #e8e8ec (slightly deeper than Magpie --bg #f4f4f6, app.css L3).
+   Dark: Magpie --bg #1a1a1e (app.css L46 / L81) so the frame is not a light strip. */
 body.web {
   background: #e8e8ec;
   min-height: 100%;
   /* html { zoom } scales #root; never let the card spill sideways */
   overflow-x: hidden;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) body.web {
+    background: #1a1a1e;
+  }
+}
+:root[data-theme="dark"] body.web {
+  background: #1a1a1e;
 }
 body.web #root {
   /* Magpie nest 752×652 CSS; visual = CSS × --zoom (default 1.1).
