@@ -1,3 +1,12 @@
+## v0.1.183 · AGENTS_IC_SPAN_IMG_OSS · 2026-10-16 Asia/Shanghai
+
+- **WHY:** AgentsView still had bare `img.ic` on Relocate `ehead` (class on `<img>`); other Agents rows were `span.ic>img` missing Magpie `data-icon` + `draggable=false`. Magpie `icon()` / `askRelocate` / `pickRow` wrap `span.ic[data-icon]>img`.
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; skip oauth; Magpie `.ic` / `.ic img` / `.editor .ehead .ic` gold.
+- **Cite:** Magpie app.js **L284–322** `icon()`; **L7040–46** `pickRow`; sessions `askRelocate` **L903** `h.append(icon("claude"),…)`; app.css **L156–157** / **L2695**.
+- **WHAT changed:** AgentsView Relocate bare `img.ic` + Agents manage/row/install `span.ic>img` → Magpie `span.ic[data-icon]>img` (`draggable={false}`). Repo `rg` bare `img.ic` / `img className="ic"` = 0.
+- **Remaining invent (intentional skip):** oauth Approve wall; `rt-flier-demo`; `win-caption*`; `lib-hook*` / `pref-anchor` React bridges.
+- **Guard:** `npm run chrome-guard`. No portable. No manual Vercel.
+
 ## v0.1.182 · ROW_IC_SPAN_IMG_OSS · 2026-10-16 Asia/Shanghai
 
 - **WHY:** Bare `img.ic` on TrayPanel / GatewayView / Providers rows — Magpie `icon()` wraps `span.ic[data-icon]>img` (`draggable=false`).

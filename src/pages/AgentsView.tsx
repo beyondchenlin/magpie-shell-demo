@@ -413,8 +413,8 @@ function ManageAgentsModal({
                       aria-label={a.name}
                       onChange={(e) => toggle(a.id, e.target.checked)}
                     />
-                    <span className="ic">
-                      <img src={iconSrc(a.icon)} alt="" />
+                    <span className="ic" data-icon={a.icon} aria-hidden>
+                      <img src={iconSrc(a.icon)} alt="" draggable={false} />
                     </span>
                     <span className="ag-manage-name">{a.name}</span>
                     <span className="ag-manage-state">
@@ -1008,8 +1008,8 @@ export function AgentsView({
                   window.addEventListener("blur", cancel);
                   window.addEventListener("resize", cancel);
                 }}>
-                <span className="ic">
-                  <img src={iconSrc(a.icon)} alt="" />
+                <span className="ic" data-icon={a.icon} aria-hidden>
+                  <img src={iconSrc(a.icon)} alt="" draggable={false} />
                 </span>
               </button>
               <div className="who">
@@ -1417,8 +1417,8 @@ export function AgentsView({
                           title={a.name}
                           style={{ ["--i" as string]: i + 1 }}>
                           <button type="button" className="ag-handle" aria-label={a.name}>
-                            <span className="ic">
-                              <img src={iconSrc(a.icon)} alt="" />
+                            <span className="ic" data-icon={a.icon} aria-hidden>
+                              <img src={iconSrc(a.icon)} alt="" draggable={false} />
                             </span>
                           </button>
                           <div className="who">
@@ -1467,8 +1467,8 @@ export function AgentsView({
                           title={a.name}
                           style={{ ["--i" as string]: i + 1 }}>
                           <button type="button" className="ag-handle" aria-label={a.name}>
-                            <span className="ic">
-                              <img src={iconSrc(a.icon)} alt="" />
+                            <span className="ic" data-icon={a.icon} aria-hidden>
+                              <img src={iconSrc(a.icon)} alt="" draggable={false} />
                             </span>
                           </button>
                           <div className="who">
@@ -1509,8 +1509,8 @@ export function AgentsView({
                         ? hidden.map((a) => (
                             <div key={a.id} className="row agent conn hid put-away" data-id={a.id} title={a.name}>
                               <button type="button" className="ag-handle" aria-label={a.name}>
-                                <span className="ic">
-                                  <img src={iconSrc(a.icon)} alt="" />
+                                <span className="ic" data-icon={a.icon} aria-hidden>
+                                  <img src={iconSrc(a.icon)} alt="" draggable={false} />
                                 </span>
                               </button>
                               <div className="who">
@@ -1607,10 +1607,11 @@ export function AgentsView({
               {INSTALLS.map((x) => (
                 <div key={x.id} className="ag-install-row" data-id={x.id}>
                   <div className="ag-install-who">
-                    <span className="ic">
+                    <span className="ic" data-icon={x.icon || x.id} aria-hidden>
                       <img
                         src={iconSrc(x.icon || x.id)}
                         alt=""
+                        draggable={false}
                         onError={(e) => {
                           const el = e.currentTarget;
                           if (!el.dataset.fallback) {
@@ -1699,7 +1700,9 @@ export function AgentsView({
           <div className="dialog" role="dialog" aria-modal onMouseDown={(e) => e.stopPropagation()}>
             <div className="editor sm-ask">
               <div className="ehead">
-                <img src={iconSrc("claude-color")} alt="" className="ic" width={20} height={20} />
+                <span className="ic" data-icon="claude-color" aria-hidden>
+                  <img src={iconSrc("claude-color")} alt="" draggable={false} />
+                </span>
                 <b>{t("Relocate Claude Code project")}</b>
               </div>
               <p className="sub sm-ask-path">{relFrom || "~/code/magpie"}</p>

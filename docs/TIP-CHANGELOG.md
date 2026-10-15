@@ -1,3 +1,20 @@
+## v0.1.183 · AGENTS_IC_SPAN_IMG_OSS · 2026-10-16 Asia/Shanghai
+
+- **WHY:** Hard invent audit — AgentsView Relocate `editor.sm-ask` `.ehead` still painted bare `img.ic` (class on the `<img>`, invent width attrs). Magpie OSS `askRelocate` does `h.append(icon("claude"), el("b",…))`; `icon()` builds `span.ic` + `dataset.icon` + `img.draggable=false`. Other AgentsView rows already used `span.ic>img` but omitted `data-icon` / `draggable` (incomplete vs Magpie `icon()` / `pickRow`).
+- **CAUSE:** Tip put Magpie `.ic` on the Relocate header `<img>` instead of wrapping like Magpie `icon()`; row wraps lacked `dataset.icon` / `draggable`.
+- **Cite:**
+  - Magpie `app.js` **L284–322** `function icon(name)` → `el("span","ic")` + `dataset.icon` + append `img` (`draggable=false`) or mask/svg
+  - Magpie `app.js` **L7040–46** `pickRow` → `b.append(icon(ic), nm)` on `button.tile`
+  - Magpie `plugins/sessions/client.js` **L900–903** `askRelocate` → `editor.sm-ask` / `ehead` + `icon("claude")`
+  - Magpie `app.css` **L156–157** `.ic` / `.ic img`; **L2695** `.editor .ehead .ic { width:20px; height:20px }`
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; skip oauth Approve wall; Tray/Gateway/Providers already Magpie span.ic (v0.1.182); Magpie `.ic` gold in tip CSS.
+- **WHAT changed:**
+  - `AgentsView.tsx`: Relocate ehead bare `img.ic` → Magpie `span.ic[data-icon="claude-color"]>img` (`draggable={false}`).
+  - `AgentsView.tsx`: manage / row handle / install-who `span.ic>img` → add `data-icon` + `draggable={false}` (Magpie `icon()`).
+  - Repo-wide `rg`: no remaining bare `img.ic` / `img className="ic"`.
+- **Remaining invent (intentional skip):** oauth Approve wall (nest=browser); `rt-flier-demo`; `win-caption*`; intentional `lib-hook*` / `pref-anchor` React bridges. Bare `img.ic` invent queue empty.
+- **Guard:** `npm run chrome-guard`. No portable. No manual Vercel.
+
 ## v0.1.182 · ROW_IC_SPAN_IMG_OSS · 2026-10-16 Asia/Shanghai
 
 - **WHY:** Hard invent audit — TrayPanel agent handle / FieldPill trailing, Gateway model rows, and Providers list handle + `.use` chips still painted bare `img.ic` (class on the `<img>`). Magpie OSS `icon(name)` builds `span.ic` with `dataset.icon`, then appends `img` with `draggable = false` (file:/color/png); sizing is gold `.ic` + `.ic img`, not invent class on the image.
