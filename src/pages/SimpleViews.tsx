@@ -29,6 +29,25 @@ import { demoCopy, t } from "../i18n";
 const EYE_OFF =
   "M6.6 3.7A6.9 6.9 0 0 1 8 3.5c3.75 0 6.25 4.5 6.25 4.5a11 11 0 0 1-1.5 2M4.4 4.4C2.7 5.55 1.75 8 1.75 8S4.25 12.5 8 12.5c1.2 0 2.25-.45 3.1-1.05M6.75 6.75a1.75 1.75 0 0 0 2.5 2.5M2 2l12 12";
 
+/** Magpie LED_COLS (app.js L18561–64): third flag = lc-opt collapsed by ledFit. */
+const LED_COLS: [string, string?, boolean?][] = [
+  ["Time"],
+  ["Agent"],
+  ["Requested"],
+  ["Provider · account"],
+  ["Sent", "", true],
+  ["Served"],
+  ["Effort", "", true],
+  ["In", "n"],
+  ["Out", "n"],
+  ["Cache write", "n", true],
+  ["Cache read", "n", true],
+  ["Cost", "n"],
+  ["Duration", "n"],
+  ["Speed", "n"],
+  ["Status"],
+];
+
 /** Magpie openRowMenu (app.js L3497–3518 / L17375–17379): .pop.row-menu + .rm-item. */
 function UsageAgentMenu({
   anchor,
@@ -553,14 +572,37 @@ export function UsageView() {
   const ledHScrollRef = useRef<HTMLDivElement>(null);
 
 
-  // Magpie ledHScroll (app.js L18513–18537 / L18521–22): sticky bottom bar
-  // stands in for the table's own scrollbar (hidden via .led-wrap::-webkit-scrollbar).
+  // Magpie ledFit (app.js L18629–48) + ledHScroll (L18513–37 / L18521–22).
+  // tight → hide .lc-opt columns; still over → .tighter (price-reference + shorter names).
+  // #ledTight hint after #ledSum. Sticky #ledHScroll stands in for height:0 native bar.
   useEffect(() => {
     const wrap = ledWrapRef.current;
     const bar = ledHScrollRef.current;
     if (!wrap || !bar || tab !== "usage") return;
 
+    const ledFit = () => {
+      const table = wrap.querySelector("table.led");
+      const hint = document.getElementById("ledTight") as HTMLElement | null;
+      if (!table) {
+        if (hint) hint.hidden = true;
+        return;
+      }
+      table.classList.remove("tight", "tighter");
+      const over = () => wrap.scrollWidth > wrap.clientWidth + 1;
+      const tight = over();
+      table.classList.toggle("tight", tight);
+      // still too wide (#860): price reference goes; names cut shorter
+      if (tight && over()) table.classList.add("tighter");
+      if (hint) {
+        const msg = t("Sent, Effort and the cache are in each row's details");
+        hint.textContent = msg;
+        hint.title = msg;
+        hint.hidden = !tight;
+      }
+    };
+
     const sync = () => {
+      ledFit();
       const over = !!wrap.querySelector("table") && wrap.scrollWidth > wrap.clientWidth + 1;
       bar.hidden = !over;
       wrap.style.setProperty("--ledw", `${wrap.clientWidth}px`);
@@ -581,16 +623,31 @@ export function UsageView() {
     wrap.addEventListener("scroll", onWrapScroll, { passive: true });
     bar.addEventListener("scroll", onBarScroll, { passive: true });
 
+    let fitW = 0;
     let frame = 0;
     const ro = new ResizeObserver(() => {
       if (frame) return;
       frame = requestAnimationFrame(() => {
         frame = 0;
+        if (wrap.clientWidth !== fitW) {
+          fitW = wrap.clientWidth;
+          ledFit();
+        }
+        // Magpie ledGrow: table grew past wrap without width change → fit again
+        const table = wrap.querySelector("table.led");
+        if (
+          table &&
+          !table.classList.contains("tighter") &&
+          wrap.clientWidth &&
+          wrap.scrollWidth > wrap.clientWidth + 1
+        ) {
+          ledFit();
+        }
         sync();
       });
     });
     ro.observe(wrap);
-    const table = wrap.querySelector("table");
+    const table = wrap.querySelector("table.led");
     if (table) ro.observe(table);
     sync();
 
@@ -1331,26 +1388,17 @@ export function UsageView() {
                 {t("{n} out", { n: fmtN(ledTotals.output) })}
                 {ledTotals.errors ? ` · ${t("{n} failed", { n: String(ledTotals.errors) })}` : ""}
               </p>
+              {/* Magpie #ledTight after #ledSum (app.js ledFit L18641–47) */}
+              <span className="led-tight" id="ledTight" hidden />
               <span className="grow" />
             </div>
             <div className="led-wrap" id="ledWrap" ref={ledWrapRef}>
               <table className="led">
                 <thead>
                   <tr>
-                    {[
-                      "Time",
-                      "Agent",
-                      "Requested",
-                      "Provider · account",
-                      "Served",
-                      "In",
-                      "Out",
-                      "Cost",
-                      "Duration",
-                      "Status",
-                    ].map((h) => (
-                      <th key={h} className={["In", "Out", "Cost", "Duration"].includes(h) ? "n" : undefined}>
-                        {t(h)}
+                    {LED_COLS.map(([name, cls, opt]) => (
+                      <th key={name} className={[cls || "", opt ? "lc-opt" : ""].filter(Boolean).join(" ") || undefined}>
+                        {t(name)}
                       </th>
                     ))}
                   </tr>
@@ -1406,11 +1454,27 @@ export function UsageView() {
                               </div>
                             ) : null}
                           </td>
+                          <td className={`model lc-opt${r.model ? "" : " faint"}`} title={r.model || t("Not kept for requests before this version")}>
+                            {r.model || "—"}
+                          </td>
                           <td className="model">{r.served || "—"}</td>
+                          <td className={`lc-opt${r.effort ? "" : " faint"}`}>{r.effort || "—"}</td>
                           <td className="n">{fmtN(r.in)}</td>
                           <td className="n">{fmtN(r.out)}</td>
-                          <td className={`n cost${r.cost ? "" : " faint"}`}>{fmtCost(r.cost)}</td>
+                          <td className={`n lc-opt${r.cache_write ? "" : " faint"}`}>{fmtN(r.cache_write)}</td>
+                          <td className={`n lc-opt${r.cache_read ? "" : " faint"}`}>{fmtN(r.cache_read)}</td>
+                          <td className={`n cost${r.cost ? "" : " faint"}`}>
+                            {fmtCost(r.cost)}
+                            {r.cost && r.pricing_model ? (
+                              <div className="price-reference" title={t("API price reference") + ": " + r.pricing_model}>
+                                {t("Price reference: {model}", { model: r.pricing_model })}
+                              </div>
+                            ) : null}
+                          </td>
                           <td className="n">{(r.ms / 1000).toFixed(1)}s</td>
+                          <td className={`n${r.speed ? "" : " faint"}`}>
+                            {r.speed ? t("{n} tok/s", { n: String(r.speed) }) : "—"}
+                          </td>
                           <td>
                             <span className="st">
                               <i className="dot" />
@@ -1420,23 +1484,30 @@ export function UsageView() {
                         </tr>
                         {open ? (
                           <tr className="led-detail">
-                            <td colSpan={10}>
+                            <td colSpan={LED_COLS.length}>
                               <div className="led-box">
                                 <dl className="led-dl">
-                                  <dt>{t("Cache write")}</dt>
-                                  <dd>{fmtN(r.cache_write)}</dd>
-                                  <dt>{t("Cache read")}</dt>
-                                  <dd>{fmtN(r.cache_read)}</dd>
-                                  {r.speed ? (
+                                  {/* Magpie ledDetail opt() — lc-opt shown only while .led.tight (app.js L17673–80) */}
+                                  {r.model ? (
                                     <>
-                                      <dt>{t("Speed")}</dt>
-                                      <dd>{r.speed} tok/s</dd>
+                                      <dt className="lc-opt">{t("Sent")}</dt>
+                                      <dd className="lc-opt">{r.model}</dd>
                                     </>
                                   ) : null}
                                   {r.effort ? (
                                     <>
-                                      <dt>{t("Effort")}</dt>
-                                      <dd>{r.effort}</dd>
+                                      <dt className="lc-opt">{t("Effort")}</dt>
+                                      <dd className="lc-opt">{r.effort}</dd>
+                                    </>
+                                  ) : null}
+                                  <dt className="lc-opt">{t("Cache write")}</dt>
+                                  <dd className="lc-opt">{fmtN(r.cache_write)}</dd>
+                                  <dt className="lc-opt">{t("Cache read")}</dt>
+                                  <dd className="lc-opt">{fmtN(r.cache_read)}</dd>
+                                  {r.speed ? (
+                                    <>
+                                      <dt>{t("Speed")}</dt>
+                                      <dd>{t("{n} tok/s", { n: String(r.speed) })}</dd>
                                     </>
                                   ) : null}
                                   <dt>{t("Data source")}</dt>

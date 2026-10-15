@@ -1,3 +1,10 @@
+## v0.1.168 · LED_FIT_TIGHT_OSS_FIDELITY · 2026-10-16 Asia/Shanghai
+
+- **WHY:** Magpie Usage `ledFit` tight/tighter column collapse was missing — restore gold (optional cols → details + #ledTight).
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; #ledHScroll (0.1.167); skip oauth Approve wall.
+- **Cite:** Magpie app.js `ledFit` **L18629–48**; `LED_COLS` **L18561–64**; RO/ledGrow **L18528–51**; ledDetail opt **L17673–80**; app.css **L1281–1296**.
+- **chrome-guard:** pass. Push/PR #1. No portable/Vercel.
+
 ## v0.1.167 · LED_HSCROLL_OSS_FIDELITY · 2026-10-16 Asia/Shanghai
 
 - **WHY:** Magpie Usage `#ledHScroll` sticky bottom h-scrollbar was missing — CSS gold already in app.css but no DOM/sync; native `.led-wrap` scrollbar is height:0 so overflow was unreachable.

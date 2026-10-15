@@ -1,3 +1,17 @@
+## v0.1.168 · LED_FIT_TIGHT_OSS_FIDELITY · 2026-10-16 Asia/Shanghai
+
+- **WHY:** Continue Magpie Usage after 0.1.167 — restore `ledFit` tight/tighter column collapse so a narrow wrap hides `.lc-opt` (Sent / Effort / cache) into row details and can still drop `.price-reference` + shorten names.
+- **CAUSE:** Tip table omitted Magpie optional columns + `ledFit()`; CSS gold (`.led.tight` / `.led.tighter` / `.led-tight`) was unused; overflow relied only on `#ledHScroll`.
+- **Cite:**
+  - Magpie `app.js` **18561–64** `LED_COLS` (opt → `lc-opt`)
+  - Magpie `app.js` **18629–48** `ledFit`: remove tight/tighter → measure overflow → `.tight` → still over → `.tighter`; `#ledTight` after `#ledSum`
+  - Magpie `app.js` **18528–37** ResizeObserver width → `ledFit`; **18544–51** `ledGrow` when table overflows without width change
+  - Magpie `app.js` **17673–80** `ledDetail` `opt()` marks Sent/Effort as `.lc-opt` (shown only while `.led.tight`)
+  - Magpie `app.css` **1281–1296** `.led.tight` / `.led.tighter` / `.led-tight`
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; Magpie `#ledHScroll` (0.1.167); skip oauth Approve wall.
+- **WHAT changed:** `SimpleViews.tsx` mounts Magpie `LED_COLS` + `ledFit` inside wrap RO; `#ledTight` hint; Sent/Effort/Cache/Speed columns + `price-reference`; detail `lc-opt`. `usage-demo.ts` adds `model` / `pricing_model`.
+- **Chrome:** none (nest Usage slice only).
+
 ## v0.1.167 · LED_HSCROLL_OSS_FIDELITY · 2026-10-16 Asia/Shanghai
 
 - **WHY:** Continue Magpie Usage after 0.1.166 — restore sticky `#ledHScroll` that stands in for the Requests table's own horizontal scrollbar (native bar hidden).

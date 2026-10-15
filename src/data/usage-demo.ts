@@ -7,6 +7,8 @@ export type LedRow = {
   agentName: string;
   icon: string;
   req: string;
+  /** Magpie Sent column (outbound model). */
+  model?: string;
   providerName: string;
   host?: string;
   in: number;
@@ -19,6 +21,8 @@ export type LedRow = {
   status: "ok" | "err" | "rej";
   effort?: string;
   served?: string;
+  /** Magpie cost cell price-reference line (hidden under .led.tighter). */
+  pricing_model?: string;
   source?: "gateway" | "log";
 };
 
@@ -30,6 +34,7 @@ export const DEMO_LEDGER: LedRow[] = [
     agentName: "Claude Code",
     icon: "claude",
     req: "claude-sonnet-4-5",
+    model: "claude-sonnet-4-5",
     providerName: "Anthropic",
     host: "api.anthropic.com",
     in: 12_400,
@@ -42,6 +47,7 @@ export const DEMO_LEDGER: LedRow[] = [
     status: "ok",
     effort: "high",
     served: "claude-sonnet-4-5",
+    pricing_model: "claude-sonnet-4-5",
     source: "gateway",
   },
   {
@@ -51,6 +57,7 @@ export const DEMO_LEDGER: LedRow[] = [
     agentName: "Codex",
     icon: "codex",
     req: "gpt-5",
+    model: "gpt-5",
     providerName: "OpenAI",
     host: "api.openai.com",
     in: 6_100,
@@ -62,6 +69,7 @@ export const DEMO_LEDGER: LedRow[] = [
     speed: 72,
     status: "ok",
     served: "gpt-5",
+    pricing_model: "gpt-5",
     source: "gateway",
   },
   {
@@ -89,6 +97,7 @@ export const DEMO_LEDGER: LedRow[] = [
     agentName: "OpenCode",
     icon: "generic",
     req: "gemini-2.5-pro",
+    model: "gemini-2.5-pro",
     providerName: "Google",
     in: 18_900,
     out: 2_400,
@@ -99,6 +108,7 @@ export const DEMO_LEDGER: LedRow[] = [
     speed: 54,
     status: "ok",
     served: "gemini-2.5-pro",
+    pricing_model: "gemini-2.5-pro",
     source: "log",
   },
   {
@@ -108,6 +118,7 @@ export const DEMO_LEDGER: LedRow[] = [
     agentName: "Codex",
     icon: "codex",
     req: "o4-mini",
+    model: "o4-mini",
     providerName: "OpenAI",
     in: 2_100,
     out: 410,
@@ -118,6 +129,7 @@ export const DEMO_LEDGER: LedRow[] = [
     speed: 98,
     status: "ok",
     served: "o4-mini",
+    pricing_model: "o4-mini",
     source: "gateway",
   },
 ];
