@@ -1,4 +1,8 @@
 
+## Consumed in demo v0.1.72 (GATEWAY_STATUS_27_42)
+Shots **27–42** status machine: Restarting… → orange not running / Start; Starting… clears red; port-in-use python red (Escape no-op); another magpie green · no button; older **0.1.550** take-over (+ hover no tip); take-over refused when Python (red, button stays); Quitting… → this magpie + Restart; Copy URL tip; models/recent empty; no confirm/Cancel; P1 bird **N/A**.
+Demo: `?gw=on|off|older|other` · `?gwHold=python` (or `magpie.demoGwHold`) for fail paths.
+
 ## Consumed in demo v0.1.36+ (GATEWAY_NATIVE)
 Default demo now matches native **empty** catalog (`showGwDemo` default false): status running · 0 models · Connect API tabs · Models empty card stays when folded · Recent empty · Restart busy label · copy pills · Network and sharing link.
 Filled models/calls remain opt-in via `localStorage magpie.demoPrefs.showGwDemo=true` (or Settings demo toggle if present).
@@ -124,3 +128,38 @@ Side-toggle was used only to reach top-tab chrome. Gateway controls, reading ord
 default → scroll to examples/models/calls → Shell/curl/Python/Node → Windows (PowerShell snippet) + tooltip → snippet copy → Models fold (empty card stays) → expand → API Responses, Anthropic, Gemini, System One → copy base / key / model → status URL copy → Restart hover → Network and sharing (settings, then Gateway tab back) → Connect fold (address stays in the head) → expand → Restart (busy frame).
 
 Left on Gateway, Connect expanded, gateway **running**. API tab may still be System One (in-memory). Models fold expanded. Example language may still be Shell/Windows. No port, share, proxy, or key was edited.
+
+## Status button — not running, Start, take-over, Restart (shots 27–42)
+
+Same window as the plugins pass: **752×652 at +200+40**, pid 560329, not relaunched. Close was not used. The binary on disk is `magpie 0.1.1241`; the gateway this process serves answers `"version":"0.1.1240"` (it was started before that file was replaced). Connect stayed expanded on **System One** (left from 01–26). Share on local network stayed off, so the keys block stayed the note. Port stayed **3425**. No provider was added. No confirm dialog exists on Start, Restart, or take-over, and there is no Cancel. Escape does not clear the red error (35 is the same pixels as 34; Escape on the not-magpie error also changed nothing, so it is not a second file).
+
+The button's busy line is painted before the request returns. A restart that only stops and starts this process is one short frame (30). Holding the port open (a partial POST keeps shutdown from finishing at once, then something else binds 3425) leaves the busy line up long enough to read, and is what the card is built for: not running, another magpie, an older magpie. Those holders were quit. pid 560329 serves 3425 again.
+
+P1 live bird hop: **N/A**. The header bird did not hop or play another animation on Start, Restart, or take-over.
+
+| shot | what |
+|---|---|
+| 27 | Gateway, this magpie. Green dot, **running**, `0 models · no agent routed through it yet · five APIs, one URL`, URL `http://127.0.0.1:3425`, **Restart gateway**. |
+| 28 | Pointer on the URL chip. Dark tip, inside the card: **Copy the gateway URL**. |
+| 29 | Pointer on **Restart gateway**. Light fill. No tooltip. |
+| 30 | **Restarting the gateway...** Green dot and **running** stay. The port was taken while it restarted. |
+| 31 | After that. Orange dot, **not running** (orange), sub **start it with magpie serve, or open magpie at login**. Button **Start gateway**. URL still there. No red line: the failure was a different state, so the error is not kept. |
+| 32 | Pointer on **Start gateway** (light fill, no tooltip) after a Start that failed. Red, under the button: **Port 3425 is in use by /usr/bin/python3.13 (pid 1477758): quit it, or move the gateway to another port in Settings.** |
+| 33 | **Starting the gateway...** Orange **not running** stays. The red line is gone while it is busy. |
+| 34 | Busy over. **Start gateway** again. Same red sentence, pid **1479377** (the holder that was listening then). |
+| 35 | **Escape**. No dialog. Pixels match 34. The red line stays. |
+| 36 | A magpie that is not older answered (stub said 0.1.1241, this process 0.1.1240). Green dot. **running · served by another magpie**. The counts line stays. **No button.** URL stays. |
+| 37 | Older magpie, stub **0.1.550**. Orange dot. **running · served by magpie 0.1.550, older than this one**. Sub: **Agents' requests go through magpie 0.1.550 and are sent as it sends them, without this version's fixes. Quit it here and this one serves the gateway at once.** Button **Quit magpie 0.1.550 and take over**. |
+| 38 | Pointer on that button. Light fill. No tooltip. |
+| 39 | Take-over clicked while the listener was Python, not a magpie. Button stays **Quit magpie 0.1.550 and take over**. Red: **Port 3425 is held by /usr/bin/python3.13 (pid 1482438), which isn't magpie, so magpie leaves it alone. Quit it yourself, or move the gateway to another port in Settings.** Python was not killed. |
+| 40 | Take-over of the 0.1.550 stub (a magpie, by its program name). **Quitting magpie 0.1.550...** The older line stays during the busy label. |
+| 41 | Stub quit, this magpie serves. Green **running**, **Restart gateway**, 0 models. Same card as 27. |
+| 42 | Scrolled. **MODELS** still **No models exposed yet**. **RECENT CALLS** still **No requests yet.** No filled list appeared. The probes did not leave a call row. |
+
+## Left state
+
+Gateway tab, top of the page. **running**, **Restart gateway**, 0 models, no agent, URL `http://127.0.0.1:3425`. Connect expanded, API **System One**. Models fold still expanded, empty card. Recent calls empty. LAN off, no gateway key added, port not edited. Magpie left running (752×652 at +200+40, pid 560329). Close was not used. No holder left on 3425.
+
+Not in this slice: a filled models list or an opened call (nothing to list), Gateway keys (Share on local network still off), a confirm or Cancel (the card has neither). The not-magpie take-over's **Quitting…** line was gone inside one 80ms frame; the successful one is 40. P1 N/A.
+
+Next: Routing (stops at 30) or tray (14). Gateway keys and call rows need a share or a real request; neither was turned on.

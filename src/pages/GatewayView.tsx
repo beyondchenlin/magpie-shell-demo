@@ -35,16 +35,46 @@ function readDemoPrefs(): { lan: boolean; showGwDemo: boolean; port: string } {
   }
 }
 
-/** Magpie gateway status chip: on (default) · off · older (take-over). `?gw=` or localStorage magpie.demoGw */
-type GwMode = "on" | "off" | "older";
+/** Magpie gateway status: on · off · older (take-over) · other (no button). `?gw=` / localStorage magpie.demoGw */
+type GwMode = "on" | "off" | "older" | "other";
+/** Native shots 37–40 use stub 0.1.550 */
+const OLDER_VER = "0.1.550";
+const HOLD_PATH = "/usr/bin/python3.13";
+
+type GwErr =
+  | { kind: "port"; pid: number }
+  | { kind: "notmagpie"; pid: number }
+  | null;
+
 function readGwMode(): GwMode {
   try {
     const q = new URLSearchParams(location.search).get("gw");
-    if (q === "off" || q === "older" || q === "on") return q;
+    if (q === "off" || q === "older" || q === "on" || q === "other") return q;
     const v = localStorage.getItem("magpie.demoGw") || "on";
-    return v === "off" || v === "older" ? v : "on";
+    return v === "off" || v === "older" || v === "other" ? v : "on";
   } catch {
     return "on";
+  }
+}
+
+/** Port held by python (Start fail / take-over refuse). `?gwHold=python` or magpie.demoGwHold */
+function readGwHold(): boolean {
+  try {
+    const q = new URLSearchParams(location.search).get("gwHold");
+    if (q === "python" || q === "1") return true;
+    if (q === "0" || q === "off" || q === "") return false;
+    const v = localStorage.getItem("magpie.demoGwHold") || "";
+    return v === "python" || v === "1";
+  } catch {
+    return false;
+  }
+}
+
+function persistGwMode(m: GwMode) {
+  try {
+    localStorage.setItem("magpie.demoGw", m);
+  } catch {
+    /* ignore */
   }
 }
 
@@ -299,18 +329,32 @@ export function GatewayView({ onStatus, onGoNetwork }: Props) {
     return () => { window.removeEventListener("storage", tick); window.clearInterval(id); };
   }, []);
   const [gwMode, setGwMode] = useState<GwMode>(() => readGwMode());
+  const [gwErr, setGwErr] = useState<GwErr>(null);
   const running = gwMode !== "off";
   const older = gwMode === "older";
+  const other = gwMode === "other";
   const showFilled = demoPrefs.showGwDemo && gwMode === "on";
   const lanOn = demoPrefs.lan;
   const catalog = showFilled ? DEMO_MODELS : [];
   const models = catalog.length;
   const calls = showFilled ? DEMO_CALLS : [];
+  const port = demoPrefs.port || "3425";
   const f = FLAVORS.find((x) => x.id === flavor) || FLAVORS[0];
   const base = f.base(GW_URL);
   const modelPlaceholder = f.decide ? "provider/jev_latest" : (exampleModel || "provider/model");
   const secret = lanOn && gwKeys.length ? gwKeys[0].key.replace("••••••••", "x7k9m2p4") : "magpie";
   const win = snipOS === "windows";
+
+  // Escape does not clear the red port line (native 35 = 34)
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== "Escape" || !gwErr) return;
+      // Magpie: no dialog; Escape leaves the red line
+      e.stopPropagation();
+    };
+    window.addEventListener("keydown", onKey, true);
+    return () => window.removeEventListener("keydown", onKey, true);
+  }, [gwErr]);
 
   const flavorSeg = useSegThumb(flavor);
   const snipSeg = useSegThumb(snipLang);
@@ -352,54 +396,113 @@ export function GatewayView({ onStatus, onGoNetwork }: Props) {
     snippet = `curl ${base}/systemone \\\n  -H "Authorization: Bearer ${secret}" \\\n  -H "Content-Type: application/json" \\\n  -d '{"model": "${modelPlaceholder}", "state": {}, "questions": {}}'`;
   }
 
+  const countsSub = [
+    t("{n} models", { n: models }),
+    t("no agent routed through it yet"),
+    t("five APIs, one URL"),
+  ].join(" · ");
+
   const sub = older
     ? t(
         "Agents' requests go through magpie {v} and are sent as it sends them, without this version's fixes. Quit it here and this one serves the gateway at once.",
-        { v: "0.1.1000" },
+        { v: OLDER_VER },
       )
     : running
-      ? [
-          t("{n} models", { n: models }),
-          t("no agent routed through it yet"),
-          t("five APIs, one URL"),
-        ].join(" · ")
+      ? countsSub
       : t("start it with magpie serve, or open magpie at login");
 
+  const stateLabel = older
+    ? t("running · served by magpie {v}, older than this one", { v: OLDER_VER })
+    : other
+      ? t("running · served by another magpie")
+      : t(running ? "running" : "not running");
+
+  /** Dot green only when this magpie or another same/newer serves; older/off = amber */
+  const dotOn = gwMode === "on" || gwMode === "other";
+
+  const fixLabel = (() => {
+    if (restartBusy) {
+      if (older) return t("Quitting magpie {v}…", { v: OLDER_VER });
+      if (running) return t("Restarting the gateway…");
+      return t("Starting the gateway…");
+    }
+    if (older) return t("Quit magpie {v} and take over", { v: OLDER_VER });
+    if (running) return t("Restart gateway");
+    return t("Start gateway");
+  })();
+
+  const errText =
+    gwErr?.kind === "port"
+      ? t(
+          "Port {port} is in use by {path} (pid {pid}): quit it, or move the gateway to another port in Settings.",
+          { port, path: HOLD_PATH, pid: gwErr.pid },
+        )
+      : gwErr?.kind === "notmagpie"
+        ? t(
+            "Port {port} is held by {path} (pid {pid}), which isn't magpie, so magpie leaves it alone. Quit it yourself, or move the gateway to another port in Settings.",
+            { port, path: HOLD_PATH, pid: gwErr.pid },
+          )
+        : null;
+
   const onRestart = () => {
-    if (restartBusy) return;
+    if (restartBusy || other) return;
     setRestartBusy(true);
-    // Magpie awaits gateway/restart or take-over; demo: brief busy then toast
+    // Busy paint clears the red line (native 33); no confirm / Cancel
+    setGwErr(null);
+    const hold = readGwHold();
     window.setTimeout(() => {
       setRestartBusy(false);
       if (older) {
-        setGwMode("on");
-        try {
-          localStorage.setItem("magpie.demoGw", "on");
-        } catch {
-          /* ignore */
+        if (hold) {
+          // 39: take-over refused — Python, not magpie; button stays
+          setGwErr({ kind: "notmagpie", pid: 1482438 });
+          onStatus(
+            demoCopy("演示：端口被非 magpie 占用，未接管", "Demo: port held by non-magpie — take-over refused"),
+            "err",
+          );
+          return;
         }
+        setGwMode("on");
+        persistGwMode("on");
+        setGwErr(null);
         onStatus(
           demoCopy("演示：已接管网关（无真实进程）", "Demo: took over gateway (no real process)"),
           "ok",
         );
       } else if (!running) {
-        setGwMode("on");
-        try {
-          localStorage.setItem("magpie.demoGw", "on");
-        } catch {
-          /* ignore */
+        if (hold) {
+          // 34: Start fails — port in use by python; Escape leaves red
+          setGwErr({ kind: "port", pid: 1479377 });
+          onStatus(
+            demoCopy("演示：端口被占用，未启动", "Demo: port in use — start failed"),
+            "err",
+          );
+          return;
         }
+        setGwMode("on");
+        persistGwMode("on");
+        setGwErr(null);
         onStatus(
           demoCopy("演示：已启动网关（无真实进程）", "Demo: started gateway (no real process)"),
           "ok",
         );
+      } else if (hold) {
+        // 30→31: Restart while port taken → orange not running; error not kept
+        setGwMode("off");
+        persistGwMode("off");
+        setGwErr(null);
+        onStatus(
+          demoCopy("演示：重启后端口被占，网关未运行", "Demo: after restart port held — not running"),
+          "warn",
+        );
       } else {
+        // Short busy then still running (native success flash)
         onStatus(
           demoCopy("演示壳 · 无真实网关进程", "Demo shell · no real gateway process"),
           "ok",
         );
       }
-    }, 700);
+    }, hold || older || !running ? 720 : 80);
   };
 
   const pickFlavor = (id: FlavorId) => {
@@ -419,31 +522,29 @@ export function GatewayView({ onStatus, onGoNetwork }: Props) {
     <main className="view" id="view-gateway">
       <div className="list gwcard">
         <div className="row gw" id="gateway">
-          <span className={`dot${older ? " old" : running ? " on" : ""}`} aria-hidden />
+          <span className={`dot${dotOn ? " on" : ""}`} aria-hidden />
           <div className="who">
             <div className="name">
               {t("Gateway")}
-              <span className="state">
-                {older
-                  ? t("running · served by magpie {v}, older than this one", { v: "0.1.1000" })
-                  : t(running ? "running" : "not running")}
-              </span>
+              <span className="state">{stateLabel}</span>
             </div>
             <div className={`sub${older ? " old" : ""}`}>{sub}</div>
-            <button
-              type="button"
-              className="text action gw-fix"
-              disabled={restartBusy}
-              onClick={onRestart}
-            >
-              {restartBusy
-                ? older
-                  ? t("Quitting magpie {v}…", { v: "0.1.1000" })
-                  : t(running ? "Restarting the gateway…" : "Starting the gateway…")
-                : older
-                  ? t("Quit magpie {v} and take over", { v: "0.1.1000" })
-                  : t(running ? "Restart gateway" : "Start gateway")}
-            </button>
+            {/* another magpie (same/newer): no button — native 36 */}
+            {!other ? (
+              <button
+                type="button"
+                className="text action gw-fix"
+                disabled={restartBusy}
+                onClick={onRestart}
+              >
+                {fixLabel}
+              </button>
+            ) : null}
+            {errText && !restartBusy ? (
+              <div className="sub err" role="alert">
+                {errText}
+              </div>
+            ) : null}
           </div>
           <button
             type="button"

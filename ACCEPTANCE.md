@@ -1,3 +1,8 @@
+## v0.1.72 GATEWAY_STATUS_27_42
+- Consumed native `gateway/27–42` NOTES: Restarting… → orange **not running** / Start (login tip, no red kept); Starting… clears red; port held by python3.13 red (Escape unchanged); **another magpie** green · no button; older **0.1.550** Quit… and take over (hover, no tip); take-over refused when Python (red, button stays); Quitting… → this magpie + Restart gateway; Copy gateway URL tip; models/recent empty; no confirm/Cancel; P1 bird **N/A**.
+- Demo: `?gw=on|off|older|other` + `?gwHold=python` / `magpie.demoGwHold`. Still mock: real POST gateway/restart|take-over.
+- Allowances **N/A**. Skip Vercel 402. P1 unchanged.
+
 ## v0.1.71 PLUGINS_OPTIONS_SORT
 - Consumed native `plugins/104–138` NOTES: reinstall Think Tags + Word Guard → Installed · 2; sort A→Z/Z→A tips; search clear × → Discover; Options Save nest (unsaved tip, example JSON, Not JSON on `{`, Escape discard, toast **Think Tags's options saved**, tip **The options it runs with**, Applied + Clear confirm Escape, Editor Cancel).
 - Busy label **Installing…** when Bun on disk. Seed left state matches NOTES.

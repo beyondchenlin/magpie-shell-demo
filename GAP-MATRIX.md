@@ -1,3 +1,8 @@
+## v0.1.72 GATEWAY_STATUS_27_42
+- gateway/27–42 status nest landed: off/Start, other (no button), older 0.1.550 take-over, port/not-magpie red lines, busy labels, Escape no-op on red.
+- Still mock: true `POST gateway/restart` / `gateway/take-over`, live port probe. P1 bird hop **N/A** (native header bird did not hop).
+- Allowances **N/A**. Skip Vercel 402. P1: live gateway bird, true OAuth/key persist.
+
 ## v0.1.71 PLUGINS_104_138
 - plugins/104–138: Discover reinstall Think Tags + Word Guard; sort header tips/reorder; search clear × → Discover; Options Save/Escape/Not JSON/Clear confirm Escape; tip **The options it runs with**.
 - Demo: optsDraft discard; Save toast `{name}'s options saved`; Installing… when bunReady; Clear confirm mirrors Remove confirmAction.
