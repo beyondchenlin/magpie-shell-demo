@@ -1864,6 +1864,12 @@ const BUILTINS_DEFAULT: Builtin[] = [
     feature: "otel",
   },
   {
+    id: "routing-strategies",
+    name: "Routing strategies",
+    sub: "The routings besides Smart: In order, In turn, Least used first, Weekly pace, By weight, and Manual",
+    on: true,
+  },
+  {
     id: "sessions",
     name: "Sessions",
     sub: "Your agents' past conversations: read, search, resume and export them",
@@ -2429,6 +2435,8 @@ export function PluginsView({
                             } catch { /* */ }
                             return next;
                           });
+                          // Magpie plugins.yml write → toast Saved (routing 119)
+                          onStatus?.(t("Saved"), "ok", 2200);
                         }}
                       >
                         <i />

@@ -375,3 +375,8 @@
 - Groups still **off** — no + New group / groups chrome invented.
 - Day pills / Replay still **N/A** (0 requests). P1 bird hop **N/A**.
 - Portable/release skipped (user freeze). No Vercel.
+
+## v0.1.93 ROUTING_GROUPS_DONE
+- Native routing 118–144: Plugins Routing groups on → Saved · + New group · editor Discard/Add/Remove · card · Import tip · 616 groups head.
+- Gaps: Add-a-rule body not opened this slice (prior nest still present); find-groups / names segments not nested; day pills / Replay N/A; P1 bird hop N/A.
+- Portable/release skipped. No Vercel.

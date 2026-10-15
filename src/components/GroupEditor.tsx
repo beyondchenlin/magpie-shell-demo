@@ -2128,7 +2128,7 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
         >
           <div className="dialog sm" role="alertdialog" aria-labelledby="rtRemoveGroupTitle" style={{ animation: "pop-in .28s var(--ease)", maxWidth: 360 }}>
             <div className="ehead" style={{ padding: "14px 16px 0" }}>
-              <b id="rtRemoveGroupTitle">{t("Remove group?")}</b>
+              <b id="rtRemoveGroupTitle">{t("Remove {name}?", { name: draft.name.trim() || idOf() })}</b>
             </div>
             <p style={{ margin: "10px 16px 0", fontSize: 13, color: "var(--fg-2)", lineHeight: 1.45 }}>
               {t("This routing group will no longer be available to agents.")}

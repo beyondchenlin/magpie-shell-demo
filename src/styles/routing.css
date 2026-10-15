@@ -556,6 +556,22 @@ button.rt-session { cursor: pointer; }
 :where(.rt-more.max520) .rt-gedit { grid-template-columns: minmax(0, 1fr); gap: 4px; }
 :where(.rt-more.max520) .rt-gedit label { text-align: left; padding-top: 8px; }
 :where(.rt-more.max520) .rt-gedit .segs .opt { padding-left: 9px; padding-right: 9px; }
+/* 143: groups head note gone; find/names copy wraps; templates stay two-up */
+:where(.rt-more.max520) .rt-gfound,
+:where(.rt-more.max520) .rt-gnames {
+  flex-wrap: nowrap;
+}
+:where(.rt-more.max520) .rt-gfound .txt,
+:where(.rt-more.max520) .rt-gnames .txt {
+  min-width: 0;
+}
+:where(.rt-more.max520) .rt-gnames .segs {
+  flex: none;
+  flex-wrap: nowrap;
+}
+:where(.rt-more.max520) .rt-gtpl-cards {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
 .rt-gedit .fbrow .n { display: flex; align-items: baseline; gap: 6px; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .rt-gedit .fbrow .n small { color: var(--muted); font-size: 11.5px; }
 .rt-gedit .fbrow.off .n { color: var(--muted); text-decoration: line-through; }

@@ -171,7 +171,9 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
   /** Plugins → Routing groups; off in live 115–117 / responsive 11–12. */
   const [groupsOn, setGroupsOn] = useState(readGroupsOn);
   const mainRef = useRef<HTMLDivElement>(null);
+  const moreRef = useRef<HTMLDivElement>(null);
   const [mainNarrow, setMainNarrow] = useState(false);
+  const [moreNarrow, setMoreNarrow] = useState(false);
   const stageRef = useRef<HTMLDivElement>(null);
   const hubRef = useRef<HTMLDivElement>(null);
   const srcRef = useRef<HTMLDivElement>(null);
@@ -261,6 +263,21 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
     ro.observe(el);
     return () => ro.disconnect();
   }, [peerServes]);
+
+  // Magpie: max520 on #rtMore — hide groups head note at ~616 (shot 143)
+  useEffect(() => {
+    if (peerServes || !groupsOn) {
+      setMoreNarrow(false);
+      return;
+    }
+    const el = moreRef.current;
+    if (!el) return;
+    const apply = () => setMoreNarrow(el.clientWidth <= 520);
+    apply();
+    const ro = new ResizeObserver(apply);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [peerServes, groupsOn, savedGroups.length, groupEditorOpen]);
 
   useEffect(() => {
     const draw = () => {
@@ -1325,7 +1342,7 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
 
       {/* Magpie #rtMore — only when Routing groups plugin is on */}
       {groupsOn ? (
-      <div className="rt-more" id="rtMore">
+      <div className={`rt-more${moreNarrow ? " max520" : ""}`} id="rtMore" ref={moreRef}>
         <div className="rt-gsec">
           <div className="row-head">
             <span className="label">{t("Routing groups")}</span>
@@ -1363,6 +1380,7 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
             <button
               type="button"
               className="text rt-gnew"
+              title={t("Make a routing group of any models you like — agents pick it as one model")}
               onClick={() => {
                 setTemplateSeed(null);
                 setEditGroup(null);
@@ -1725,10 +1743,10 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                     aria-label={g.name}
                     title={
                       g.on
-                        ? t("On: agents may pick {name}. Click to switch it off and keep it as it is", {
+                        ? t("On: agents may pick {name}. Click to switch it off.", {
                             name: g.name || g.slug,
                           })
-                        : t("Off: agents aren't offered {name} and a request to it is turned away. Click to switch it on", {
+                        : t("Off: agents aren't offered {name} and a request to it is turned away. Click to switch it on.", {
                             name: g.name || g.slug,
                           })
                     }

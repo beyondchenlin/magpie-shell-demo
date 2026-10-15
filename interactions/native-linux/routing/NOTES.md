@@ -369,3 +369,56 @@ Routing tab, empty live stage, **Accounts hidden**. Groups plugin **off**. Gatew
 
 ## demo 对齐
 - **v0.1.92**: Live stage after take-over 115–117（this magpie green **running** + Restart · Waiting / three nodes at 752 · 616 wrap: No request yet under the pair, counts under the sentence；Groups off so no + New group / mode/rules chrome；day pills N/A；peer card still when gw older/other）. No portable / Vercel.
+
+
+## Groups on, New group (118–144)
+
+Same window, pid **1871993**, magpie **0.1.1247**, **752×652 at +200+40** (id 85983247). Shots are ffmpeg x11grab of that rect (`-framerate 25`). Close was not used. Gateway was not restarted. No request was sent. No OAuth. Find-groups was not toggled (still **on**). The names segments were not clicked (still **On**). P1 bird hop: **N/A**.
+
+There is no Groups switch on the Routing page. `+ New group` is `data-feature="groups"` and stays out of the header while the plugin is off. The control is **Plugins → Built-in → Routing groups** (a separate row, **Routing strategies**, was already on and was not touched). The switch writes at once. It was left **on**.
+
+| shot | what |
+|---|---|
+| 118 | Built-in, pointer on **Routing groups**, switch off. |
+| 119 | Click. Switch on. Green toast **Saved**. `plugins.yml` `groups.enabled: true`. |
+| 120 | Routing. Header gains **+ New group** beside **Accounts hidden**. Under the stage: **ROUTING GROUPS**, "models agents pick as one", **Import**, **+ New group**, **Find groups on their own** (on), **Names in agents' lists** (**On**). |
+| 121 | Header **+ New group**. Tip: "Make a routing group of any models you like — agents pick it as one model." |
+| 122 | Empty editor, mid. **Model lists** **Its models too**. **Routing** **Smart** and the long quota sentence plus the nested-group sentence. **Rate limited** **Keeps its place**. **Slow to start** **Wait**. **Every member busy** **1 min**. **Context** starts **Largest model's**. |
+| 123 | Empty editor, top. **New group**. Name placeholder "e.g. Opus anywhere", hint "Agents pick it as group/group". **+ Add a model**. Patterns field and **Add pattern**. |
+| 124 | Templates above the editor. "Start from a template…". **Hard to strong, easy to cheap**, **Cheap first**, **Never stuck**. Each ends **Add a provider first**. |
+| 125 | Empty editor, foot. **Stays** **Auto**. Rules is only the sentence "With two models or more, a rule can send some turns to one of them first." **Effort** **Agent's**. **Levels** **Its models' shared**. **Cancel** and blue **Add**. |
+| 126 | Effort info dot. Tip: "Each request reasons as much as the agent asked." |
+| 127 | **+ Add a model**. Pop: "Filter, or type any model id…", grid, star, **No matches.** |
+| 128 | Typed `opus`. Row **opus · use as typed**. |
+| 129 | Star. Tip is **Favorites** (not the old "use as typed"). |
+| 130 | Row added. Switch on, **1**, `opus`, **Group's reasoning**, **Remove**, **+ Add another model**. Pop stayed open and was closed by a click outside. |
+| 131 | Chip tip: "Reasons as the group's effort says." |
+| 132 | Chip click. Pop: "Filter reasoning…", **Follow the group** checked ("as the group's effort says"), then low / medium / high / xhigh / max, each "whatever the agent asks". Escape closes the pop and leaves the editor. Not changed. |
+| 133 | Second member `haiku`. Rows grow **Down** / **Up**. |
+| 134 | Name `nest`. Hint **group/nest**. Lists line: "nest · routing group". |
+| 135 | With two members, Rules is **+ Add a rule** and the info dot. **Cancel** and **Add** still the footer. The rule editor was not opened. |
+| 136 | **Cancel** on the dirty draft. **Discard** — "Discard unsaved changes? Your changes will be lost." **Cancel** and red **Discard**. Dialog **Cancel** stays in the editor. |
+| 137 | Escape in the name field raises the same **Discard**. Dialog **Cancel** again. |
+| 138 | **Add** saved. Green toast **nest added**. Card: **nest** `group/nest`, `opus · haiku`, **Smart**, red **no member ready**, **Edit**, switch on. Tip on the switch: "On: agents may pick nest. Click to switch it off." Templates collapse to a **Templates** menu. |
+| 139 | **Edit**. Footer of a saved group is **Remove**, **Cancel**, blue **Save** (not Add). |
+| 140 | **Remove**. **Remove nest?** "This routing group will no longer be available to agents." **Cancel** and red **Remove**. |
+| 141 | Red Remove. Green toast **nest removed**. Template cards return. No group row. |
+| 142 | **Import** tip: "Add a routing group someone shared from their magpie." The box was not opened. Nothing pasted. |
+| 143 | A 390-wide request clamps to **616×652**. Bird mark gives way to the side toggle; tabs stay one row, Routing selected. Groups head is **ROUTING GROUPS**, **Import**, **+ New group** — the note "models agents pick as one" is not on that row. Find-groups copy wraps to three lines, switch stays on the right. Names copy wraps; **Off / Not on names I set / On** stay one row. Template cards stay two-up and wrap inside. |
+| 144 | Put back to **752×652**. Same groups list: note returns on the head row, templates, no group. |
+
+`providers.json` is `{"providers": []}` again. The `.bak` still held `nest` after the remove; it was rewritten to the same empty file so a restore does not bring the group back. `settings.json` `window` is still `[700, 600]`. `plugins.yml.bak` is still the pre-switch file (`groups.enabled: false`); the live file is `true`.
+
+### Not in this slice
+
+Add a rule's When / conditions (the row is there in 135; it was not opened). Mode pills other than the Smart default on screen (recorded on 0.1.1240 in 99–114). Import box. Find-groups and the names segments (both write immediately). Template Add (still **Add a provider first**). Day pills, By request / By session, Replay (still **Waiting for a request**, 0 / 0 / 0).
+
+## Left state
+
+Routing, scrolled to **ROUTING GROUPS**, no group row, templates showing, **Accounts** not on this scroll. Groups plugin **on** (Plugins switch and `plugins.yml`). Find-groups **on**. Names **On**. Gateway **running** on this pid, 0 models. No group, no key. Magpie still running, pid 1871993, window 752×652 at +200+40. Close was not used.
+
+## demo 对齐（118–144）· v0.1.93 ROUTING_GROUPS_DONE
+- Plugins Built-in **Routing groups** toggle → toast **Saved**; `+ New group` / groups chrome only when on (`data-feature="groups"`).
+- New group editor: empty top/mid/foot · templates · Effort tip · model pop (No matches / use as typed / Favorites) · reasoning Follow the group · Down/Up · name `group/{name}` · two members → **+ Add a rule** (body not opened).
+- Cancel/Escape dirty → **Discard**; Add → **{name} added** card (Smart · no member ready · switch tip); Edit footer Remove/Cancel/Save; **Remove {name}?** → removed toast; Import tip; 616 head note hidden · templates two-up.
+- Find-groups / names segments write not nested this tip. Day pills N/A. No portable / Vercel.
