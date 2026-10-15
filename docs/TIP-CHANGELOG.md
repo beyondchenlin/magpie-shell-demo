@@ -1,3 +1,15 @@
+## v0.1.150 · LIBRARY_TIP_BRIDGES_OSS_FIDELITY · 2026-10-15 Asia/Shanghai
+
+- **WHY:** Continue Magpie 1:1 after 0.1.149 — cut remaining Library tip invent bridges (`lib-setrow` / `lib-chev` / `lib-mcp.*` / `lib-savebar` pill / `lib-tag.agents` / invent `mk-card` / `pm-mirror-tip`) that re-owned Magpie `library.css` + client.js DOM.
+- **CAUSE:** Demo Instructions used invent `lib-setrow`+`lib-chev`+`lib-tag.agents` instead of Magpie `row lib-row click lib-set` + `who`/`lib-tags` + `span.chev` (client.js **L1172–1198**); MCP used invent `card.lib-mcp` instead of `row lib-row click lib-server` (**L1463–1480**); Discover used invent card/`mk-card` who/tag/by instead of Magpie `mk-card click` + `mk-top`/`mk-who`/`mk-desc`/`mk-foot` (**L4762–4783**, **L4861–4888**); savebar tip pill999 fought library.css **L72–79**; Plugins invent `.pm-mirror-tip` fade-in instead of Magpie native `title` (plugins.js **L695**).
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; CIS PrefRow/Segs/TextBtn; Magpie `library.css`/`plugins.css` import; true web-demo bridges: `.lib-intro` title, `.lib-addmenu` Copy-config pop, `.lib-mini` head glyphs, `.grow-min`/`.lib-find .words`, demo `.lib-project`/`.lib-hook`/oauth modal chrome (later tip).
+- **Cite:**
+  - Magpie `plugins/library/client.js` **1172–1252** `setRow`; **1463–1480** `serverRow`; **3134+** `pickBar`; **4762–4783** `serverCard`; **4861–4888** `skillCard`
+  - Magpie `plugins/library/library.css` **72–79** `.lib-savebar`; **96–97** `.lib-row .chev`; **117–118** `.lib-tag`; **148–169** sets; **347** `.text.danger-fill`; **393–432** `.mk-grid`/`.mk-card`; **473–476** `.lib-srvwho`; **586** `.lib-pickbar`
+  - Magpie `plugins.js` **695** `b.title` (no invent tip)
+- **WHAT changed:** `LibraryView.tsx` Magpie set/MCP/mk-card/pickbar/savebar DOM; `SimpleViews.tsx` drop invent mirror tip; `shell-patch.css` drop ~80 invent `#view-library` / `pm-mirror-tip` rules.
+- **chrome-guard:** pass (SIDE_AT=1024). Push/PR #1. No portable/Vercel.
+
 ## v0.1.149 · LIBRARY_THUNAR_GTK_CHOOSE_OSS_FIDELITY · 2026-10-15 Asia/Shanghai
 
 - **WHY:** Continue Magpie 1:1 after 0.1.148 — delete tip invent Library in-app Thunar + GTK “Choose a project” + view-scoped lib-card/tag/acts/text re-owns that covered Magpie OSS.

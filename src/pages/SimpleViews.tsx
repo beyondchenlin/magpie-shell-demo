@@ -2015,7 +2015,6 @@ export function PluginsView({
   const [folderPicker, setFolderPicker] = useState(false);
   const [folderLoc, setFolderLoc] = useState<"recent" | "home" | "other">("recent");
   const [mirror, setMirror] = useState(false);
-  const [mirrorTip, setMirrorTip] = useState(false);
   const [mirrorSaving, setMirrorSaving] = useState(false);
   /** Magpie drawGh: kind segs + Filter by name (shots 76–80); only when GitHub list > 6 */
   const [ghKind, setGhKind] = useState<"" | "Provider" | "Middleware" | "Agent">("");
@@ -2289,10 +2288,6 @@ export function PluginsView({
             aria-checked={mirror}
             disabled={mirrorSaving}
             title={t("Download the plugin list, plugins and Bun from mirrors in China first (npmmirror, jsDelivr), their official addresses after. Each is a copy of the very file, checked as the original is")}
-            onMouseEnter={() => setMirrorTip(true)}
-            onMouseLeave={() => setMirrorTip(false)}
-            onFocus={() => setMirrorTip(true)}
-            onBlur={() => setMirrorTip(false)}
             onClick={() => {
               if (mirrorSaving) return;
               setMirrorSaving(true);
@@ -2308,11 +2303,6 @@ export function PluginsView({
             <span className={`lib-switch${mirror ? " on" : ""}`}>
               <i />
             </span>
-            {mirrorTip ? (
-              <span className="pm-mirror-tip" role="tooltip" >
-                {t("Download the plugin list, plugins and Bun from mirrors in China first (npmmirror, jsDelivr), their official addresses after. Each is a copy of the very file, checked as the original is")}
-              </span>
-            ) : null}
           </button>
         ) : null}
         {tab !== "builtin" ? (

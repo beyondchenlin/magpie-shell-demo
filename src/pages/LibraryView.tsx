@@ -198,7 +198,10 @@ function LibChip({
       aria-pressed={on}
       aria-label={label}
       title={title}
-      onClick={onClick}>
+      onClick={(e) => {
+        e.stopPropagation();
+        onClick();
+      }}>
       {iconOnly ? "▦" : label}
     </button>
   );
@@ -747,7 +750,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
               </p>
             </div>
 
-            <div className="card lib-card">
+            <div className="list lib-list lib-sets">
               <div className="row-head lib-cardhead">
                 <svg viewBox="0 0 16 16" width={16} height={16} fill="none" stroke="currentColor" strokeWidth="1.3" aria-hidden>
                   <path d={DOC} />
@@ -770,12 +773,18 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                         ? firstLine(s.savedBody)
                         : t("Empty");
                 return (
-                  <div key={s.id} className={`lib-set${open ? " open" : ""}${s.inUse ? " on" : ""}`}>
-                    <div className="lib-setrow">
+                  <div key={s.id}>
+                    <div
+                      className={`row lib-row click lib-set${open ? " open" : ""}${s.inUse ? " on" : ""}`}
+                      onClick={() => {
+                        setOpenId(open ? null : s.id);
+                        setInstRemoveAsk(null);
+                      }}>
                       <button
                         type="button"
                         className={`lib-radio${s.inUse ? " on" : ""}`}
-                        disabled={s.inUse}
+                        role="radio"
+                        aria-checked={s.inUse}
                         title={
                           s.inUse
                             ? t("The agents switched on below read this set")
@@ -787,48 +796,36 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                           if (!s.inUse) switchAgentsTo(s.id);
                         }}
                       />
-                      <button
-                        type="button"
-                        className="lib-setname"
-                        title={s.name}
-                        onClick={() => {
-                          setOpenId(open ? null : s.id);
-                          setInstRemoveAsk(null);
-                        }}
-                        aria-expanded={open}>
-                        <b>{s.name}</b>
-                        <small>{rowSub}</small>
-                      </button>
-                      {setDirtyLocal && !open ? (
-                        <span className="lib-tag warn">{t("Not saved yet")}</span>
-                      ) : null}
-                      {s.inUse ? (
-                        <span className="lib-tag agents" title={t("The agents switched on below read this set")}>
-                          {t("In use")}
-                        </span>
-                      ) : null}
-                      <button
-                        type="button"
-                        className="lib-chev"
-                        aria-label={open ? t("Collapse") : t("Expand")}
-                        onClick={() => {
-                          setOpenId(open ? null : s.id);
-                          setInstRemoveAsk(null);
-                        }}>
-                        <svg viewBox="0 0 12 12" width={11} height={11} aria-hidden>
-                          <path d="M3 4.5 6 7.5 9 4.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                      <div className="who">
+                        <div className="name">{s.name}</div>
+                        <div className="sub">{rowSub}</div>
+                      </div>
+                      <div className="lib-tags">
+                        {s.inUse ? (
+                          <span className="lib-tag" title={t("The agents switched on below read this set")}>
+                            {t("In use")}
+                          </span>
+                        ) : null}
+                        {setDirtyLocal ? (
+                          <span className="lib-tag warn">{t("Not saved yet")}</span>
+                        ) : null}
+                      </div>
+                      <span className="chev" aria-hidden>
+                        <svg viewBox="0 0 16 16" width={11} height={11} fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="m6.5 4.5 3 3.5-3 3.5" />
                         </svg>
-                      </button>
+                      </span>
                     </div>
                     {open ? (
-                      <div className="lib-detail">
+                      <div className="lib-detail" onClick={(e) => e.stopPropagation()}>
                         {s.file ? (
-                          <div className="note">
+                          <div className="note lib-setfile">
                             {t("Kept in")} <code>{s.file}</code>
                           </div>
                         ) : null}
                         <input
                           type="text"
+                          className="lib-setname"
                           value={s.name}
                           aria-label={t("Set name")}
                           onChange={(e) => {
@@ -868,11 +865,11 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                           }}
                           
                         />
-                        <div>
+                        <div className="lib-acts">
                           {!s.inUse ? (
                             <button
                               type="button"
-                              className="text" onClick={() => switchAgentsTo(s.id)}>
+                              className="text action lib-use" onClick={() => switchAgentsTo(s.id)}>
                               {t("Switch the agents to this set")}
                             </button>
                           ) : null}
@@ -881,7 +878,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                               <>
                                 <button
                                   type="button"
-                                  className="text" disabled={s.inUse}
+                                  className="text primary danger-fill" disabled={s.inUse}
                                   onClick={() => {
                                     if (s.inUse) return;
                                     setSets((list) => list.filter((x) => x.id !== s.id));
@@ -898,7 +895,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                             ) : (
                               <button
                                 type="button"
-                                className="text" disabled={s.inUse}
+                                className="text action danger" disabled={s.inUse}
                                 title={
                                   s.inUse
                                     ? t("Switch the agents to another set before removing this one")
@@ -920,10 +917,11 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
               })}
 
               {addingSet ? (
-                <div>
+                <div className="row lib-row lib-set lib-setnew">
                   <input
                     ref={newNameRef}
                     type="text"
+                    className="lib-setname grow"
                     value={newName}
                     placeholder={t("Name, e.g. Work")}
                     onChange={(e) => setNewName(e.target.value)}
@@ -941,6 +939,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                   {fileMode ? (
                     <input
                       type="text"
+                      className="lib-setname lib-setfile-in grow"
                       value={filePath}
                       placeholder={t("Full path of a Markdown file")}
                       onChange={(e) => setFilePath(e.target.value)}
@@ -958,7 +957,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                   <div className="bar">
                     <button
                       type="button"
-                      className="text" onClick={() => {
+                      className="text action lib-setlink" onClick={() => {
                         // Keep in a file… fills AGENTS.md + path (inline, not a picker)
                         setFileMode(true);
                         setNewName("AGENTS.md");
@@ -983,20 +982,17 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                   </div>
                 </div>
               ) : (
-                <button type="button" className="rt-gadd" onClick={() => setAddingSet(true)}>
-                  <svg viewBox="0 0 16 16" width={11} height={11} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden>
-                    <path d="M8 3.5v9M3.5 8h9" />
-                  </svg>
-                  <span>{t("New set")}</span>
-                </button>
+                <div className="lib-acts lib-setadd">
+                  <button type="button" className="text action" onClick={() => setAddingSet(true)}>
+                    {t("New set")}
+                  </button>
+                </div>
               )}
             </div>
 
             {instDirty && tab === "instructions" ? (
-              <div
-                className="lib-savebar lib-inst-bar">
-                <span />
-                <span>{t("Not saved yet")}</span>
+              <div className="lib-savebar">
+                <span className="note">{t("Not saved yet")}</span>
                 <span className="grow" />
                 <button type="button" className="text" onClick={() => setInstDiscardOpen(true)}>
                   {t("Discard")}
@@ -1040,7 +1036,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                 </button>
               </div>
             ) : (
-              <div>
+              <div className="list lib-list">
                 <div className="row-head lib-cardhead">
                   <span className="label">{t("In the library")}</span>
                   <span className="grow" />
@@ -1147,98 +1143,66 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                           : displayHealth === "timeout" || displayHealth === "unset"
                             ? "lib-health err"
                             : "lib-health idle";
+                  const openEditor = () => {
+                    if (mcpSelectMode) return;
+                    setMcpEditId(s.id);
+                    const d = emptyMcp();
+                    d.name = s.name;
+                    d.transport = s.transport;
+                    d.command = s.command || "";
+                    d.url = s.url || "";
+                    d.agents = [...s.agents];
+                    d.envRows = (s.envRows || []).map((r) => [r[0], r[1]] as [string, string]);
+                    setMcpEditor(d);
+                    setMcpSnap(JSON.stringify(d));
+                    setMcpSignWaiting(false);
+                  };
                   return (
                     <div
                       key={s.id}
-                      className={`card lib-mcp${mcpSelectMode && selected ? " selected" : ""}`} >
-                      <div>
-                        {mcpSelectMode ? (
-                          <input
-                            type="checkbox"
-                            checked={selected}
-                            onChange={() => {
-                              setMcpSelected((prev) => {
-                                const next = new Set(prev);
-                                if (next.has(s.id)) next.delete(s.id);
-                                else next.add(s.id);
-                                return next;
-                              });
-                            }}
-                           
-                          />
-                        ) : null}
-                        <span aria-hidden>{s.transport === "stdio" ? ">_ " : "🌐"}</span>
-                        <div>
-                          <div>
-                            <b
-                              className={`name${mcpSelectMode ? " plain" : " click"}`}
-                              onClick={() => {
-                                if (mcpSelectMode) return;
-                                setMcpEditId(s.id);
-                                const d = emptyMcp();
-                                d.name = s.name;
-                                d.transport = s.transport;
-                                d.command = s.command || "";
-                                d.url = s.url || "";
-                                d.agents = [...s.agents];
-                                d.envRows = (s.envRows || []).map((r) => [r[0], r[1]] as [string, string]);
-                                setMcpEditor(d);
-                                setMcpSnap(JSON.stringify(d));
-                                setMcpSignWaiting(false);
-                              }}>
-                              {s.name}
-                            </b>
-                            <button
-                                type="button"
-                                title={healthTitle}
-                                className={healthCls}
-                                aria-expanded={displayHealth === "tools" ? s.toolsOpen : undefined}
-                                onClick={() => {
-                                  if (displayHealth === "tools") {
-                                    setMcpServers((list) => list.map((x) => (x.id === s.id ? { ...x, toolsOpen: !x.toolsOpen } : x)));
-                                  } else {
-                                    runMcpHealth(s.id, displayHealth === "timeout" || displayHealth === "unset" || displayHealth === "idle");
-                                  }
-                                }}>
-                                <span>{healthLabel}</span>
-                              </button>
-                          </div>
-                          <div>
-                            {s.transport === "stdio" ? s.command || "—" : s.url || "—"}
-                          </div>
-                        </div>
-                        {!mcpSelectMode ? (
-                        <LibChip
-                          iconOnly
-                          on={hasCursor}
-                          label="Cursor"
-                          title={
-                            hasCursor
-                              ? t("{agent} has it — click to take it away", { agent: "Cursor" })
-                              : t("Give it to {agent}", { agent: "Cursor" })
-                          }
-                          onClick={() => {
-                            setMcpServers((list) =>
-                              list.map((x) => {
-                                if (x.id !== s.id) return x;
-                                const on = x.agents.includes("cursor");
-                                const agents = on ? x.agents.filter((a) => a !== "cursor") : [...x.agents, "cursor"];
-                                return {
-                                  ...x,
-                                  agents,
-                                  toolsOpen: on ? false : x.toolsOpen,
-                                  health: on && agents.length === 0 ? ("idle" as McpHealth) : x.health,
-                                };
-                              }),
-                            );
-                            onStatus?.(hasCursor ? t("Removed from Cursor") : t("Written to Cursor"), "ok");
-                            if (!hasCursor) runMcpHealth(s.id, true);
+                      className={`row lib-row click lib-server${mcpSelectMode && selected ? " selected" : ""}`}
+                      title={mcpSelectMode ? undefined : t("Edit {name}", { name: s.name })}
+                      onClick={() => openEditor()}>
+                      {mcpSelectMode ? (
+                        <input
+                          type="checkbox"
+                          className="lib-pickbox"
+                          checked={selected}
+                          onClick={(e) => e.stopPropagation()}
+                          onChange={() => {
+                            setMcpSelected((prev) => {
+                              const next = new Set(prev);
+                              if (next.has(s.id)) next.delete(s.id);
+                              else next.add(s.id);
+                              return next;
+                            });
                           }}
                         />
-                        ) : null}
-                      </div>
+                      ) : (
+                        <span className="lib-glyph" aria-hidden>{s.transport === "stdio" ? ">_" : "🌐"}</span>
+                      )}
+                      <div className="who lib-srvwho">
+                        <div className="name mono">{s.name}</div>
+                        <button
+                          type="button"
+                          title={healthTitle}
+                          className={healthCls}
+                          aria-expanded={displayHealth === "tools" ? s.toolsOpen : undefined}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (displayHealth === "tools") {
+                              setMcpServers((list) => list.map((x) => (x.id === s.id ? { ...x, toolsOpen: !x.toolsOpen } : x)));
+                            } else {
+                              runMcpHealth(s.id, displayHealth === "timeout" || displayHealth === "unset" || displayHealth === "idle");
+                            }
+                          }}>
+                          <span>{healthLabel}</span>
+                        </button>
+                        <div className="sub mono" title={s.transport === "stdio" ? s.command || "—" : s.url || "—"}>
+                          {s.transport === "stdio" ? s.command || "—" : s.url || "—"}
+                        </div>
                       {s.toolsOpen && displayHealth === "tools" ? (
-                        <div className="lib-tools">
+                        <div className="lib-tools" onClick={(e) => e.stopPropagation()}>
                           <ul className="lib-toollist">
                             {s.tools.map((tool) => (
                               <li
@@ -1281,12 +1245,42 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                           </div>
                         </div>
                       ) : null}
+                      </div>
+                      {!mcpSelectMode ? (
+                        <LibChip
+                          iconOnly
+                          on={hasCursor}
+                          label="Cursor"
+                          title={
+                            hasCursor
+                              ? t("{agent} has it — click to take it away", { agent: "Cursor" })
+                              : t("Give it to {agent}", { agent: "Cursor" })
+                          }
+                          onClick={() => {
+                            setMcpServers((list) =>
+                              list.map((x) => {
+                                if (x.id !== s.id) return x;
+                                const on = x.agents.includes("cursor");
+                                const agents = on ? x.agents.filter((a) => a !== "cursor") : [...x.agents, "cursor"];
+                                return {
+                                  ...x,
+                                  agents,
+                                  toolsOpen: on ? false : x.toolsOpen,
+                                  health: on && agents.length === 0 ? ("idle" as McpHealth) : x.health,
+                                };
+                              }),
+                            );
+                            onStatus?.(hasCursor ? t("Removed from Cursor") : t("Written to Cursor"), "ok");
+                            if (!hasCursor) runMcpHealth(s.id, true);
+                          }}
+                        />
+                      ) : null}
                     </div>
                   );
                 })}
                 {mcpSelectMode ? (
-                  <div>
-                    <label>
+                  <div className="row lib-row lib-pickbar">
+                    <label className="lib-pickall">
                       <input
                         type="checkbox"
                         checked={mcpSelected.size === mcpServers.length && mcpServers.length > 0}
@@ -1294,14 +1288,13 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                           if (mcpSelected.size === mcpServers.length) setMcpSelected(new Set());
                           else setMcpSelected(new Set(mcpServers.map((x) => x.id)));
                         }}
-                       
                       />
                       {mcpSelected.size === 0
                         ? t("All {n}", { n: mcpServers.length })
                         : t("{n} selected", { n: mcpSelected.size })}
                     </label>
                     {mcpSelected.size === 0 ? (
-                      <span>{t("Pick servers to turn them on or off together")}</span>
+                      <span className="lib-pickn none">{t("Pick servers to turn them on or off together")}</span>
                     ) : (
                       <>
                         <LibChip
@@ -1322,7 +1315,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                             ids.forEach((id) => runMcpHealth(id, true));
                           }}
                         />
-                        <div>
+                        <div className="lib-addmenu">
                           <button
                             type="button"
                             className="text action" title={t("Copy these servers as an agent's project file has them, to paste into a project yourself")}
@@ -1331,11 +1324,8 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                             {t("Copy config…")}
                           </button>
                           {mcpCopyMenu === "bar" ? (
-                            <div
-                              className="pop">
-                              <div>
-                                {t("Copy as an agent's project file")}
-                              </div>
+                            <div className="pop">
+                              <div className="lab">{t("Copy as an agent's project file")}</div>
                               <button
                                 type="button"
                                 className="text"
@@ -1347,7 +1337,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                         </div>
                         <button
                           type="button"
-                          className="text" onClick={() => setMcpRemoveSelectedAsk(true)}>
+                          className="text lib-pickrm" onClick={() => setMcpRemoveSelectedAsk(true)}>
                           {t("Remove…")}
                         </button>
                         <button
@@ -1508,20 +1498,35 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                 onChange={(e) => setMcpQ(e.target.value)}
                
               />
-              <div>
+              <div className="mk-grid">
                 {mcpHits.map((c) => (
-                  <div key={c.id} className="card">
-                    <div>
-                      <b>{c.name}</b>
-                      <span className="grow" />
-                      <span>{c.tag}</span>
+                  <div
+                    key={c.id}
+                    className="mk-card click"
+                    title={t("About {name}", { name: c.name })}
+                    onClick={() => {
+                      if ((c as { sheet?: boolean }).sheet) setImageSheet(true);
+                    }}>
+                    <div className="mk-top">
+                      <div className="mk-who">
+                        <div className="mk-name">
+                          <span className="mk-title">{c.name}</span>
+                        </div>
+                        <div className="mk-meta">
+                          {c.by ? <span className="mk-pub">{c.by}</span> : null}
+                          {c.tag ? <span className="mk-badge">{c.tag}</span> : null}
+                        </div>
+                      </div>
                     </div>
-                    <small>By {c.by}</small>
-                    <p>{c.desc}</p>
-                    <div>
+                    <p className="mk-desc" title={c.desc}>{c.desc}</p>
+                    <div className="mk-foot">
+                      <span className="mk-id mono">{c.id}</span>
+                      <span className="grow" />
                       <button
                         type="button"
-                        className="text primary" onClick={() => {
+                        className="text action mk-add"
+                        onClick={(e) => {
+                          e.stopPropagation();
                           if ((c as { sheet?: boolean }).sheet) {
                             setImageSheet(true);
                             return;
@@ -2142,24 +2147,42 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                 onChange={(e) => setSkillQ(e.target.value)}
                
               />
-              <div>
+              <div className="mk-grid">
                 {DEMO_SKILLS_MARKET.filter((c) => {
                   const q = skillQ.trim().toLowerCase();
                   if (!q) return true;
                   return `${c.name} ${c.by} ${c.desc}`.toLowerCase().includes(q);
                 }).map((c) => (
-                  <div key={c.id} className="card mk-card">
-                    <div>
-                      <b>{c.name}</b>
-                      <span className="grow" />
-                      {c.installs ? <span>{c.installs}</span> : null}
+                  <div
+                    key={c.id}
+                    className="mk-card click"
+                    title={t("About {name}", { name: c.name })}
+                    onClick={() => {
+                      if ((c as { sheet?: boolean }).sheet) setSkillSheet(c);
+                    }}>
+                    <div className="mk-top">
+                      <div className="mk-who">
+                        <div className="mk-name">
+                          <span className="mk-title">{c.name}</span>
+                        </div>
+                        <div className="mk-meta">
+                          <span className="mk-pub">{c.by}</span>
+                        </div>
+                      </div>
                     </div>
-                    <small>{c.by}</small>
-                    <p>{c.desc}</p>
-                    <div>
+                    <p className="mk-desc" title={c.desc}>{c.desc}</p>
+                    <div className="mk-foot">
+                      {c.installs ? (
+                        <span className="mk-installs" title={t("{n} installs", { n: c.installs })}>
+                          <span>{c.installs}</span>
+                        </span>
+                      ) : null}
+                      <span className="grow" />
                       <button
                         type="button"
-                        className="text primary" onClick={() => {
+                        className="text action mk-add"
+                        onClick={(e) => {
+                          e.stopPropagation();
                           if ((c as { sheet?: boolean }).sheet) setSkillSheet(c);
                           else {
                             setSkills((list) => (list.some((x) => x.id === c.id) ? list : [...list, { id: c.id, name: c.name, desc: c.desc, agents: ["cursor"] }]));
