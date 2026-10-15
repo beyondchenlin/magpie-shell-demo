@@ -82,6 +82,55 @@ const HOOK_TOOLS = [
 const DEMO_AGENTS = [{ id: "cursor", name: "Cursor" }];
 const CMD_PATH = "M3 4.5 6.5 8 3 11.5 M8 12h5";
 const WEB_PATH = "M8 2.5a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11z M2.5 8h11";
+/** Magpie plugins/library/client.js GLYPH (L34–52) + CHEV_R (app.js L218) */
+const DOC = "M4 2.5h5.5L12 5v8.5H4z M9.5 2.5V5H12";
+const FOLDER = "M2.5 4.5h4l1.2 1.3h5.8v6.7h-11z";
+const BACKUP = "M3.2 8a4.8 4.8 0 1 0 1.4-3.4 M2.8 2.6v2.4h2.4 M8 5.3V8l1.9 1.2";
+const SEARCH = "M7 3a4 4 0 1 0 0 8 4 4 0 0 0 0-8z M10 10l3 3";
+const HOOK_GLYPH = "M10.5 2.5v6.5a3 3 0 0 1-6 0V7.5 M3 9l1.5-1.5L6 9";
+const TRASH_GLYPH = "M3.5 4.5h9 M6.5 4.5V3h3v1.5 M4.5 4.5l.6 8.5h5.8l.6-8.5";
+const CHEV_R = "m6.5 4.5 3 3.5-3 3.5";
+const SKILL_GLYPH = "M4 2.5h6.5L12 4v9.5H4z M6 6h4 M6 8.5h4 M6 11h2.5";
+const DEMO_MCP = [
+  { id: "magpie-image", name: "Magpie Image", by: "Magpie", tag: "magpie", desc: "Generate and edit images with the image model set in Magpie (Settings → Images), and make short videos with a video model set up in Magpie (Grok Imagine, Seedance), saved in the project.", addDots: true, sheet: true as const },
+  { id: "context7", name: "Context7", by: "Upstash", tag: "Remote", desc: "Up-to-date documentation and code examples for any library, straight into the…" },
+  { id: "playwright", name: "Playwright", by: "Microsoft", tag: "npx", desc: "Drive a real browser: open pages, click, type and read them through the accessibility tree." },
+  { id: "chrome-devtools", name: "Chrome DevTools", by: "Google", tag: "npx", desc: "Control and inspect a live Chrome: console, network, performance traces…" },
+  { id: "github", name: "GitHub", by: "GitHub", tag: "Remote", desc: "Repositories, issues, pull requests, Actions and code search on GitHub.", addDots: true },
+  { id: "deepwiki", name: "DeepWiki", by: "Cognition", tag: "Remote", desc: "Ask questions about any public GitHub repository and read its generated wiki." },
+  { id: "exa", name: "Exa", by: "Exa", tag: "Remote", desc: "Web search and contents for agents via Exa." },
+  { id: "fetch", name: "Fetch", by: "Model Context Protocol", tag: "npx", desc: "Fetch URL contents as markdown for the model." },
+  { id: "sentry", name: "Sentry", by: "Sentry", tag: "Remote", desc: "Issues and performance from your Sentry projects." },
+  { id: "stripe", name: "Stripe", by: "Stripe", tag: "Remote", desc: "Payments, customers and products through Stripe." },
+  { id: "neon", name: "Neon", by: "Neon", tag: "Remote", desc: "Serverless Postgres: branches, SQL and connection strings." },
+  { id: "brave", name: "Brave Search", by: "Brave", tag: "Remote", desc: "Web search with the Brave Search API." },
+];
+
+const DEMO_SKILLS_MARKET = [
+  { id: "magpie-quota", name: "magpie-quota", by: "magpie-community/plugins", installs: "", desc: "Check how much is left of the user's AI subscriptions, coding plans and API key…", verified: true },
+  { id: "find-skills", name: "find-skills", by: "vercel-labs/skills", installs: "3.9M", desc: "Helps users discover and install agent skills when they ask questions like 'how do I do X…", verified: true },
+  { id: "grill-me", name: "grill-me", by: "mattpocock/skills", installs: "1.4M", desc: "A relentless interview to sharpen a plan or design.", sheet: true },
+  { id: "grill-with-docs", name: "grill-with-docs", by: "mattpocock/skills", installs: "1.2M", desc: "Grill a design with the docs open beside you.", sheet: true },
+  { id: "agent-browser", name: "agent-browser", by: "vercel-labs/agent-browser", installs: "1.1M", desc: "Browser automation CLI for AI agents. Use when the user needs to interact with…" },
+  { id: "improve-codebase-architecture", name: "improve-codebase-architecture", by: "mattpocock/skills", installs: "1.1M", desc: "Scan a codebase for deepening opportunities, present them as a visual HTML report, then…", sheet: true },
+  { id: "tdd", name: "tdd", by: "mattpocock/skills", installs: "1.1M", desc: "Test-driven development. Use when the user wants to build features or fix bugs test-first,…", sheet: true },
+  { id: "hyperframes-cli", name: "hyperframes-cli", by: "heygen-com/hyperframes", installs: "1M", desc: "Use the HyperFrames CLI development loop: init, add, catalog, capture, lint, check,…" },
+];
+
+/** Native probe list sample (mattpocock/skills) — Magpie library/skills/probe mock */
+const DEMO_PROBE_SKILLS = [
+  { path: "ask-matt", name: "ask-matt", desc: "Ask which skill or flow fits your situation. A router over the skills in this repo." },
+  { path: "chief-of-staff", name: "chief-of-staff", desc: "Pursue a long-running goal in a single session by co-ordinating subagents." },
+  { path: "claude-handoff", name: "claude-handoff", desc: "Hand the current conversation off to a fresh background agent that picks up the work immediately." },
+  { path: "code-review", name: "code-review", desc: "Review the changes since a fixed point (commit, branch, tag, or merge-base) along two axes: Standards and Spec…" },
+  { path: "domain-map", name: "domain-map", desc: "Map a domain and its bounded contexts before you code." },
+  { path: "git-worktree", name: "git-worktree", desc: "Isolate work in a git worktree so experiments stay out of main." },
+  { path: "migrate-to-effect", name: "migrate-to-effect", desc: "Migrate a codebase toward Effect with a clear plan." },
+  { path: "mock-types", name: "mock-types", desc: "Use when someone mentions shoehorn, wants to replace `as` in tests, or needs partial test data." },
+  { path: "pr", name: "pr", desc: "Use when writing a PR body." },
+  { path: "grill-me", name: "grill-me", desc: "A relentless interview to sharpen a plan or design." },
+];
+
 
 const emptyMcp = (): McpDraft => ({
   name: "",
@@ -709,9 +758,11 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                   .getElementById(tab === "skills" ? "libSkillDiscover" : "libDiscover")
                   ?.scrollIntoView({ behavior: "smooth", block: "start" })
               }>
-              <svg viewBox="0 0 16 16" width={14} height={14} fill="none" stroke="currentColor" strokeWidth="1.3" aria-hidden className="lib-mini">
+              <span className="lib-mini" aria-hidden>
+                <svg viewBox="0 0 16 16" width={16} height={16} fill="none" stroke="currentColor" strokeWidth="1.3">
                 <path d={SEARCH} />
-              </svg>
+                </svg>
+              </span>
               {t("Discover")}
             </button>
           ) : null}
@@ -719,9 +770,11 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
             type="button"
             className="text lib-more" title="~/.config/magpie/library"
             onClick={() => onStatus?.("~/.config/magpie/library", "ok")}>
-            <svg viewBox="0 0 16 16" width={14} height={14} fill="none" stroke="currentColor" strokeWidth="1.3" aria-hidden className="lib-mini">
+            <span className="lib-mini" aria-hidden>
+              <svg viewBox="0 0 16 16" width={16} height={16} fill="none" stroke="currentColor" strokeWidth="1.3">
               <path d={FOLDER} />
-            </svg>
+              </svg>
+            </span>
             {t("Library folder")}
           </button>
           <button
@@ -732,9 +785,11 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
               // NOTES 88–100: right-click on Backups opens no menu
               e.preventDefault();
             }}>
-            <svg viewBox="0 0 16 16" width={14} height={14} fill="none" stroke="currentColor" strokeWidth="1.3" aria-hidden className="lib-mini">
+            <span className="lib-mini" aria-hidden>
+              <svg viewBox="0 0 16 16" width={16} height={16} fill="none" stroke="currentColor" strokeWidth="1.3">
               <path d={BACKUP} />
-            </svg>
+              </svg>
+            </span>
             {t("Backups")}
           </button>
         </div>
@@ -743,12 +798,9 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
       <div className="lib-body">
         {tab === "instructions" ? (
           <>
-            <div className="lib-intro">
-              <b>{t("Instructions")}</b>
-              <p>
-                {t("Write it once: every agent switched on below reads it before each conversation, in its own instructions file.")}
-              </p>
-            </div>
+            <p className="lib-intro">
+              {t("Write it once: every agent switched on below reads it before each conversation, in its own instructions file.")}
+            </p>
 
             <div className="list lib-list lib-sets">
               <div className="row-head lib-cardhead">
@@ -1315,26 +1367,33 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                             ids.forEach((id) => runMcpHealth(id, true));
                           }}
                         />
-                        <div className="lib-addmenu">
+                        <span className="pref-anchor">
                           <button
                             type="button"
-                            className="text action" title={t("Copy these servers as an agent's project file has them, to paste into a project yourself")}
+                            className="text action lib-updall lib-copyconfig"
+                            title={t("Copy these servers as an agent's project file has them, to paste into a project yourself")}
+                            aria-expanded={mcpCopyMenu === "bar"}
                             onClick={() => setMcpCopyMenu((m) => (m === "bar" ? null : "bar"))}>
                             {mcpCopyFlash && mcpCopyMenu === null ? "✓ " : ""}
                             {t("Copy config…")}
                           </button>
                           {mcpCopyMenu === "bar" ? (
-                            <div className="pop">
-                              <div className="lab">{t("Copy as an agent's project file")}</div>
+                            <div className="pop proto-menu" role="menu" aria-label={t("Copy as an agent's project file")}>
+                              <div className="pm-head">{t("Copy as an agent's project file")}</div>
                               <button
                                 type="button"
-                                className="text"
+                                className="pm-item"
+                                role="menuitem"
                                 onClick={() => copyMcpConfig([...mcpSelected])}>
-                                Cursor
+                                <span className="pm-tick" aria-hidden />
+                                <span className="pm-words">
+                                  <span className="pm-name">Cursor</span>
+                                  <span className="pm-note" />
+                                </span>
                               </button>
                             </div>
                           ) : null}
-                        </div>
+                        </span>
                         <button
                           type="button"
                           className="text lib-pickrm" onClick={() => setMcpRemoveSelectedAsk(true)}>
@@ -1381,7 +1440,11 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                   {mcpAddingProject ? (
                     <div className="list lib-card lib-install">
                       <div className="lib-find">
-                        <span aria-hidden className="lib-mini">📁</span>
+                        <span className="lib-mini" aria-hidden>
+                          <svg viewBox="0 0 16 16" width={13} height={13} fill="none" stroke="currentColor" strokeWidth="1.3">
+                            <path d={FOLDER} />
+                          </svg>
+                        </span>
                         <input
                           type="text"
                           spellCheck={false}
@@ -1420,62 +1483,126 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                     </div>
                   ) : null}
                   {mcpProjects.length ? (
-                    mcpProjects.map((pr) => (
-                      <div key={pr.dir} className="card">
-                        <div>
-                          <button type="button" className="text" onClick={() => setMcpProjects((list) => list.map((x) => (x.dir === pr.dir ? { ...x, open: !x.open } : x)))}>
-                            <b>{pr.name}</b>
-                            <div>{pr.dir}</div>
-                          </button>
-                          <button
-                            type="button"
-                            className="text" title={t("Remove the project")}
-                            onClick={() => setMcpProjectRemove({ dir: pr.dir, name: pr.name })}>
-                            🗑
-                          </button>
+                    mcpProjects.map((pr) => {
+                      const placedIds = Object.keys(pr.placed).filter((id) => (pr.placed[id] || []).length > 0);
+                      const hasPlaced = placedIds.length > 0;
+                      return (
+                      <div key={pr.dir} className="list lib-card lib-project">
+                        <div
+                          className={`row lib-row click lib-projhead${pr.open ? " open" : ""}`}
+                          title={pr.open ? t("Hide its servers") : t("Pick the servers it gets")}
+                          onClick={() => setMcpProjects((list) => list.map((x) => (x.dir === pr.dir ? { ...x, open: !x.open } : x)))}>
+                          <span className="lib-glyph" aria-hidden>
+                            <svg viewBox="0 0 16 16" width={16} height={16} fill="none" stroke="currentColor" strokeWidth="1.3">
+                              <path d={FOLDER} />
+                            </svg>
+                          </span>
+                          <div className="who">
+                            <div className="name">{pr.name}</div>
+                            <div className="lib-src">
+                              <button
+                                type="button"
+                                className="lib-path"
+                                title={t("Show in {fm}", { fm: t("the file manager") })}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  onStatus?.(pr.dir, "ok");
+                                }}>
+                                {pr.dir}
+                              </button>
+                            </div>
+                          </div>
+                          {!pr.open ? (
+                            <div className="lib-tags">
+                              {hasPlaced
+                                ? placedIds.slice(0, 4).map((sid) => {
+                                    const srv = mcpServers.find((s) => s.id === sid);
+                                    return srv ? (
+                                      <span key={sid} className="lib-tag lib-dot">{srv.name}</span>
+                                    ) : null;
+                                  })
+                                : (
+                                  <span className="lib-tag lib-unchecked">{t("No servers yet")}</span>
+                                )}
+                              {placedIds.length > 4 ? (
+                                <span className="lib-tag">+{placedIds.length - 4}</span>
+                              ) : null}
+                            </div>
+                          ) : null}
+                          <div className="lib-rowacts" onClick={(e) => e.stopPropagation()}>
+                            <button
+                              type="button"
+                              className="text lib-icon danger"
+                              title={t("Remove the project")}
+                              aria-label={t("Remove the project")}
+                              onClick={() => setMcpProjectRemove({ dir: pr.dir, name: pr.name })}>
+                              <svg viewBox="0 0 16 16" width={13} height={13} fill="none" stroke="currentColor" strokeWidth="1.4">
+                                <path d={TRASH_GLYPH} />
+                              </svg>
+                            </button>
+                          </div>
+                          <span className="chev" aria-hidden>
+                            <svg viewBox="0 0 16 16" width={11} height={11} fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+                              <path d={CHEV_R} />
+                            </svg>
+                          </span>
                         </div>
                         {pr.open ? (
-                          <div>
-                            {mcpServers.map((srv) => {
-                              const on = (pr.placed[srv.id] || []).includes("cursor");
-                              return (
-                                <div key={srv.id}>
-                                  <b>{srv.name}</b>
-                                  <LibChip
-                                    iconOnly
-                                    on={on}
-                                    label="Cursor"
-                                    title={on ? t("{agent} has it — click to take it away", { agent: "Cursor" }) : t("Give it to {agent}", { agent: "Cursor" })}
-                                    onClick={() => {
-                                      setMcpProjects((list) =>
-                                        list.map((x) => {
-                                          if (x.dir !== pr.dir) return x;
-                                          const cur = x.placed[srv.id] || [];
-                                          const has = cur.includes("cursor");
-                                          const placed = { ...x.placed };
-                                          if (has) delete placed[srv.id];
-                                          else placed[srv.id] = ["cursor"];
-                                          return { ...x, placed };
-                                        }),
-                                      );
-                                      onStatus?.(
-                                        on
-                                          ? t("{server} is out of {name}", { server: srv.name, name: pr.name })
-                                          : t("{server} is in {name} for {agent}", { server: srv.name, name: pr.name, agent: "Cursor" }),
-                                        "ok",
-                                      );
-                                    }}
-                                  />
-                                </div>
-                              );
-                            })}
-                            <p>
+                          <>
+                            {mcpServers.length === 0 ? (
+                              <p className="lib-aside lib-projfoot">{t("No servers in the library yet")}</p>
+                            ) : (
+                              mcpServers.map((srv) => {
+                                const on = (pr.placed[srv.id] || []).includes("cursor");
+                                const line = srv.transport === "stdio" ? (srv.command || "") : (srv.url || "");
+                                return (
+                                  <div key={srv.id} className="row lib-row lib-projskill lib-projserver">
+                                    <span className="lib-glyph" aria-hidden>
+                                      <svg viewBox="0 0 16 16" width={16} height={16} fill="none" stroke="currentColor" strokeWidth="1.3">
+                                        <path d={srv.transport === "stdio" ? CMD_PATH : WEB_PATH} />
+                                      </svg>
+                                    </span>
+                                    <div className="who">
+                                      <div className="name mono">{srv.name}</div>
+                                      <div className="sub mono" title={line}>{line}</div>
+                                    </div>
+                                    <LibChip
+                                      iconOnly
+                                      on={on}
+                                      label="Cursor"
+                                      title={on ? t("{agent} has it — click to take it away", { agent: "Cursor" }) : t("Give it to {agent}", { agent: "Cursor" })}
+                                      onClick={() => {
+                                        setMcpProjects((list) =>
+                                          list.map((x) => {
+                                            if (x.dir !== pr.dir) return x;
+                                            const cur = x.placed[srv.id] || [];
+                                            const has = cur.includes("cursor");
+                                            const placed = { ...x.placed };
+                                            if (has) delete placed[srv.id];
+                                            else placed[srv.id] = ["cursor"];
+                                            return { ...x, placed };
+                                          }),
+                                        );
+                                        onStatus?.(
+                                          on
+                                            ? t("{server} is out of {name}", { server: srv.name, name: pr.name })
+                                            : t("{server} is in {name} for {agent}", { server: srv.name, name: pr.name, agent: "Cursor" }),
+                                          "ok",
+                                        );
+                                      }}
+                                    />
+                                  </div>
+                                );
+                              })
+                            )}
+                            <p className="lib-aside lib-projfoot">
                               {t("Written into .cursor/mcp.json of the project, leaving the rest of each file as it is. Claude Code asks before it starts a project's servers; Codex reads .codex/config.toml, and Pi .pi/mcp.json, only in a project you trust.")}
                             </p>
-                          </div>
+                          </>
                         ) : null}
                       </div>
-                    ))
+                      );
+                    })
                   ) : !mcpAddingProject ? (
                     <p>
                       {t("Give a project's agents some of these servers as the project's own: magpie writes them into its .cursor/mcp.json, leaving the rest of each file as it is.")}
@@ -1563,10 +1690,10 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
 
         ) : tab === "skills" ? (
           <>
-            <p>
+            <p className="lib-intro">
               {t("A skill is a folder with a SKILL.md an agent loads when it's needed. The library keeps each one once and links it into the agents you pick.")}
             </p>
-            <div className="card lib-card lib-install">
+            <div className="list lib-card lib-install">
               <div className="lib-find">
                 <span className={`lib-icon${skillLooking ? " busy" : ""}`} aria-hidden>
                   <svg viewBox="0 0 16 16" width={14} height={14} fill="none" stroke="currentColor" strokeWidth="1.3">
@@ -1889,7 +2016,11 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                   {addingProject ? (
                     <div className="list lib-card lib-install">
                       <div className="lib-find">
-                        <span aria-hidden>📁</span>
+                        <span className="lib-mini" aria-hidden>
+                          <svg viewBox="0 0 16 16" width={13} height={13} fill="none" stroke="currentColor" strokeWidth="1.3">
+                            <path d={FOLDER} />
+                          </svg>
+                        </span>
                         <input
                           ref={projectPathRef}
                           type="text"
@@ -1964,162 +2095,178 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                         return (
                           <div
                             key={pr.dir}
-                            className={`card lib-project${pr.open ? " open" : ""}`} onContextMenu={(e) => e.preventDefault()}>
+                            className={`list lib-card lib-project`}
+                            onContextMenu={(e) => e.preventDefault()}>
                             <div
-                              className="lib-project-head">
-                              <button
-                                type="button"
-                                className="text" title={pr.open ? t("Hide its skills") : t("Pick the skills it gets")}
-                                aria-label={pr.open ? t("Hide its skills") : t("Pick the skills it gets")}
-                                onClick={() =>
-                                  setProjects((list) => list.map((x) => (x.dir === pr.dir ? { ...x, open: !x.open } : x)))
-                                }>
-                                📁
-                              </button>
-                              <button
-                                type="button"
-                                className="text" title={pr.name}
-                                onClick={() =>
-                                  setProjects((list) => list.map((x) => (x.dir === pr.dir ? { ...x, open: !x.open } : x)))
-                                }>
-                                <span>
-                                  <b>{pr.name}</b>
-                                  {pr.copy ? (
-                                    <span>
-                                      {t("Copies")}
-                                    </span>
-                                  ) : null}
-                                </span>
-                                <div>
-                                  {pr.dir}
+                              className={`row lib-row click lib-projhead${pr.open ? " open" : ""}`}
+                              title={pr.open ? t("Hide its skills") : t("Pick the skills it gets")}
+                              onClick={() =>
+                                setProjects((list) => list.map((x) => (x.dir === pr.dir ? { ...x, open: !x.open } : x)))
+                              }>
+                              <span className="lib-glyph" aria-hidden>
+                                <svg viewBox="0 0 16 16" width={16} height={16} fill="none" stroke="currentColor" strokeWidth="1.3">
+                                  <path d={FOLDER} />
+                                </svg>
+                              </span>
+                              <div className="who">
+                                <div className="name">
+                                  {pr.name}
+                                  {pr.copy ? <span className="lib-tag">{t("Copies")}</span> : null}
                                 </div>
-                              </button>
-                              {!pr.open && hasPlaced
-                                ? placedIds.map((sid) => {
-                                    const sk = skills.find((s) => s.id === sid);
-                                    return sk ? (
-                                      <span
-                                        key={sid}>
-                                        <span />
-                                        {sk.name}
-                                      </span>
-                                    ) : null;
-                                  })
-                                : null}
-                              <button
-                                type="button"
-                                className="text lib-icon" title={t("Remove the project")}
-                                aria-label={t("Remove the project")}
-                                onMouseEnter={(e) => {
-                                  e.currentTarget.style.color = "var(--red)";
-                                }}
-                                onMouseLeave={(e) => {
-                                  e.currentTarget.style.color = "";
-                                }}
-                                onClick={() =>
-                                  setProjectRemove({ dir: pr.dir, name: pr.name, keep: false })
-                                }>
-                                🗑
-                              </button>
-                              <button
-                                type="button"
-                                className="text" aria-label={pr.open ? t("Hide its skills") : t("Pick the skills it gets")}
-                                onClick={() =>
-                                  setProjects((list) => list.map((x) => (x.dir === pr.dir ? { ...x, open: !x.open } : x)))
-                                }>
-                                <span className={`chev${pr.open ? " open" : ""}`}>›</span>
-                              </button>
+                                <div className="lib-src">
+                                  <button
+                                    type="button"
+                                    className="lib-path"
+                                    title={t("Show in {fm}", { fm: t("the file manager") })}
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      onStatus?.(pr.dir, "ok");
+                                    }}>
+                                    {pr.dir}
+                                  </button>
+                                </div>
+                              </div>
+                              {!pr.open ? (
+                                <div className="lib-tags">
+                                  {hasPlaced
+                                    ? placedIds.slice(0, 4).map((sid) => {
+                                        const sk = skills.find((s) => s.id === sid);
+                                        return sk ? (
+                                          <span key={sid} className="lib-tag lib-dot">
+                                            {sk.name}
+                                          </span>
+                                        ) : null;
+                                      })
+                                    : (
+                                      <span className="lib-tag lib-unchecked">{t("No skills yet")}</span>
+                                    )}
+                                  {placedIds.length > 4 ? (
+                                    <span className="lib-tag">+{placedIds.length - 4}</span>
+                                  ) : null}
+                                </div>
+                              ) : null}
+                              <div className="lib-rowacts" onClick={(e) => e.stopPropagation()}>
+                                <button
+                                  type="button"
+                                  className="text lib-icon danger"
+                                  title={t("Remove the project")}
+                                  aria-label={t("Remove the project")}
+                                  onClick={() => setProjectRemove({ dir: pr.dir, name: pr.name, keep: false })}>
+                                  <svg viewBox="0 0 16 16" width={13} height={13} fill="none" stroke="currentColor" strokeWidth="1.4">
+                                    <path d={TRASH_GLYPH} />
+                                  </svg>
+                                </button>
+                              </div>
+                              <span className="chev" aria-hidden>
+                                <svg viewBox="0 0 16 16" width={11} height={11} fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+                                  <path d={CHEV_R} />
+                                </svg>
+                              </span>
                             </div>
 
                             {pr.open ? (
-                              <div>
-                                <div>
-                                  <LibSwitch
-                                    on={pr.copy}
-                                    aria-label={t("Copy files instead of linking")}
-                                    onClick={() => {
-                                      const next = !pr.copy;
-                                      setProjects((list) =>
-                                        list.map((x) => (x.dir === pr.dir ? { ...x, copy: next } : x)),
-                                      );
-                                      onStatus?.(
-                                        next
-                                          ? t("{name} gets copies now", { name: pr.name })
-                                          : t("{name} gets links now", { name: pr.name }),
-                                        "ok",
-                                      );
-                                    }}
-                                  />
-                                  <span>{t("Copy files instead of linking")}</span>
-                                  <span>
+                              <>
+                                <div className="lib-projopts">
+                                  <label className="lib-projcopy">
+                                    <LibSwitch
+                                      on={pr.copy}
+                                      aria-label={t("Copy files instead of linking")}
+                                      onClick={() => {
+                                        const next = !pr.copy;
+                                        setProjects((list) =>
+                                          list.map((x) => (x.dir === pr.dir ? { ...x, copy: next } : x)),
+                                        );
+                                        onStatus?.(
+                                          next
+                                            ? t("{name} gets copies now", { name: pr.name })
+                                            : t("{name} gets links now", { name: pr.name }),
+                                          "ok",
+                                        );
+                                      }}
+                                    />
+                                    <span
+                                      onClick={(e) => {
+                                        e.preventDefault();
+                                        const next = !pr.copy;
+                                        setProjects((list) =>
+                                          list.map((x) => (x.dir === pr.dir ? { ...x, copy: next } : x)),
+                                        );
+                                        onStatus?.(
+                                          next
+                                            ? t("{name} gets copies now", { name: pr.name })
+                                            : t("{name} gets links now", { name: pr.name }),
+                                          "ok",
+                                        );
+                                      }}>
+                                      {t("Copy files instead of linking")}
+                                    </span>
+                                  </label>
+                                  <span className="note">
                                     {pr.copy
                                       ? t("Copies are made again whenever the library's skill changes; edits made to them are replaced.")
                                       : t("Links follow the library's skill: an update reaches the project at once.")}
                                   </span>
                                 </div>
 
-                                <div className="list">
-                                  {skills.length === 0 ? (
-                                    <p>
-                                      {t("No skills in the library yet.")}
-                                    </p>
-                                  ) : (
-                                    skills.map((s) => {
-                                      const on = (pr.placed[s.id] || []).includes("cursor");
-                                      return (
-                                        <div
-                                          key={s.id}
-                                          className="row">
-                                          <div>
-                                            <b>{s.name}</b>
-                                            <div>
-                                              {s.desc}
-                                            </div>
-                                          </div>
-                                          <LibChip
-                                            iconOnly
-                                            on={on}
-                                            label="Cursor"
-                                            title={
-                                              on
-                                                ? t("{agent} has it — click to take it away", { agent: "Cursor" })
-                                                : t("Give it to {agent}", { agent: "Cursor" })
-                                            }
-                                            onClick={() => {
-                                              setProjects((list) =>
-                                                list.map((x) => {
-                                                  if (x.dir !== pr.dir) return x;
-                                                  const cur = x.placed[s.id] || [];
-                                                  const has = cur.includes("cursor");
-                                                  const nextAgents = has ? cur.filter((a) => a !== "cursor") : [...cur, "cursor"];
-                                                  const placed = { ...x.placed };
-                                                  if (nextAgents.length) placed[s.id] = nextAgents;
-                                                  else delete placed[s.id];
-                                                  return { ...x, placed };
-                                                }),
-                                              );
-                                              onStatus?.(
-                                                on
-                                                  ? t("{skill} is out of {name}", { skill: s.name, name: pr.name })
-                                                  : t("{skill} is in {name} for {agent}", {
-                                                      skill: s.name,
-                                                      name: pr.name,
-                                                      agent: "Cursor",
-                                                    }),
-                                                "ok",
-                                              );
-                                            }}
-                                          />
+                                {skills.length === 0 ? (
+                                  <p className="lib-aside lib-projfoot">{t("No skills in the library yet.")}</p>
+                                ) : (
+                                  skills.map((s) => {
+                                    const on = (pr.placed[s.id] || []).includes("cursor");
+                                    return (
+                                      <div key={s.id} className="row lib-row lib-projskill">
+                                        <span className="lib-glyph" aria-hidden>
+                                          <svg viewBox="0 0 16 16" width={16} height={16} fill="none" stroke="currentColor" strokeWidth="1.3">
+                                            <path d={SKILL_GLYPH} />
+                                          </svg>
+                                        </span>
+                                        <div className="who">
+                                          <div className="name">{s.name}</div>
+                                          <div className="sub" title={s.desc}>{s.desc}</div>
                                         </div>
-                                      );
-                                    })
-                                  )}
-                                </div>
+                                        <LibChip
+                                          iconOnly
+                                          on={on}
+                                          label="Cursor"
+                                          title={
+                                            on
+                                              ? t("{agent} has it — click to take it away", { agent: "Cursor" })
+                                              : t("Give it to {agent}", { agent: "Cursor" })
+                                          }
+                                          onClick={() => {
+                                            setProjects((list) =>
+                                              list.map((x) => {
+                                                if (x.dir !== pr.dir) return x;
+                                                const cur = x.placed[s.id] || [];
+                                                const has = cur.includes("cursor");
+                                                const nextAgents = has ? cur.filter((a) => a !== "cursor") : [...cur, "cursor"];
+                                                const placed = { ...x.placed };
+                                                if (nextAgents.length) placed[s.id] = nextAgents;
+                                                else delete placed[s.id];
+                                                return { ...x, placed };
+                                              }),
+                                            );
+                                            onStatus?.(
+                                              on
+                                                ? t("{skill} is out of {name}", { skill: s.name, name: pr.name })
+                                                : t("{skill} is in {name} for {agent}", {
+                                                    skill: s.name,
+                                                    name: pr.name,
+                                                    agent: "Cursor",
+                                                  }),
+                                              "ok",
+                                            );
+                                          }}
+                                        />
+                                      </div>
+                                    );
+                                  })
+                                )}
 
-                                <p>
+                                <p className="lib-aside lib-projfoot">
                                   {t("Placed in .agents/skills of the project and listed in its .gitignore. A folder there that isn't magpie's is left as it is.")}
                                 </p>
-                              </div>
+                              </>
                             ) : null}
                           </div>
                         );
@@ -2199,39 +2346,68 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
           </>
         ) : tab === "hooks" ? (
           <>
-            <p>
+            <p className="lib-intro">
               {t("A hook is a command an agent runs at a point of its turn — a notification when it ends, a formatter after it edits a file. Add it once and magpie writes it into each agent you pick, in the shape that agent reads.")}
             </p>
             {hooks.length === 0 ? (
-              <div>
+              <div className="lib-empty">
                 <b>{t("No hooks in the library yet")}</b>
                 <p>{t("Add one, and pick the agents that run it.")}</p>
-                <button type="button" className="rt-gadd" onClick={openHookEditor}><span>{t("＋ Add a hook")}</span></button>
+                <button type="button" className="text action" onClick={openHookEditor}>{t("＋ Add a hook")}</button>
               </div>
             ) : (
-              <div>
-                {hooks.map((h) => (
-                  <div key={h.id} className="row">
-                    <div>
-                      <b className="mono">{h.name}</b>
-                      {h.description ? <div>{h.description}</div> : null}
-                      <div>
-                        {t(HOOK_EVENTS.find(([v]) => v === h.event)?.[1] || h.event)}
-                        {h.matcher ? ` · ${HOOK_TOOLS.find(([v]) => v === h.matcher)?.[1] || h.matcher}` : ""}
+              <>
+                <div className="list lib-list">
+                  {[...hooks].sort((a, b) => a.name.localeCompare(b.name)).map((h) => {
+                    const ev =
+                      t(HOOK_EVENTS.find(([v]) => v === h.event)?.[1] || h.event) +
+                      (h.matcher ? ` · ${HOOK_TOOLS.find(([v]) => v === h.matcher)?.[1] || h.matcher}` : "");
+                    return (
+                      <div
+                        key={h.id}
+                        className="row lib-row click lib-hook"
+                        title={t("Edit {name}", { name: h.name })}
+                        onClick={() => {
+                          const d = {
+                            name: h.name,
+                            description: h.description || "",
+                            event: h.event,
+                            matcher: h.matcher || "",
+                            command: h.command,
+                            timeout: "",
+                            agents: [...h.agents],
+                          };
+                          setHookEditor(d);
+                          setHookSnap(JSON.stringify(d));
+                          setEventMenu(false);
+                          setEventFilter("");
+                          setToolMenu(false);
+                        }}>
+                        <span className="lib-glyph" aria-hidden>
+                          <svg viewBox="0 0 16 16" width={16} height={16} fill="none" stroke="currentColor" strokeWidth="1.3">
+                            <path d={HOOK_GLYPH} />
+                          </svg>
+                        </span>
+                        <div className="who">
+                          <div className="name mono">{h.name}</div>
+                          {h.description ? <div className="lib-hookdesc">{h.description}</div> : null}
+                          <div className="sub lib-hookev">{ev}</div>
+                          <div className="sub mono lib-hookcmd" title={h.command}>{h.command}</div>
+                        </div>
+                        <LibChip on={h.agents.includes("cursor")} label="Cursor" onClick={() => {}} />
                       </div>
-                      <code>{h.command}</code>
-                    </div>
-                    <LibChip on label="Cursor" onClick={() => {}} />
-                    <button type="button" className="text" onClick={() => setHooks((list) => list.filter((x) => x.id !== h.id))}>{t("Remove")}</button>
-                  </div>
-                ))}
-                <button type="button" className="rt-gadd" onClick={openHookEditor}><span>{t("＋ Add hook")}</span></button>
-              </div>
+                    );
+                  })}
+                </div>
+                <div className="after-list">
+                  <button type="button" className="text" onClick={openHookEditor}>{t("＋ Add hook")}</button>
+                </div>
+              </>
             )}
           </>
         ) : tab === "rtk" ? (
           <>
-            <p>
+            <p className="lib-intro">
               {t("RTK rewrites the shell commands an agent runs — git status, cargo test, ls… — to print only what the model needs, so they cost fewer tokens. Switch it on for an agent and magpie runs RTK's own installer for it.")}
             </p>
             {rtkPhase === "checking" ? (
@@ -2557,26 +2733,35 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                 }}>
                 {t("Remove from the library")}
               </button>
-              <button
-                type="button"
-                className="text action" title={t("Copy {name} as an agent's project file has it, to paste into a project yourself", {
-                  name: mcpEditor.name || "server",
-                })}
-                onClick={() => setMcpCopyMenu((m) => (m === "editor" ? null : "editor"))}>
-                {mcpCopyFlash && mcpCopyMenu !== "editor" ? "✓ " : ""}
-                {t("Copy config…")}
-              </button>
-              {mcpCopyMenu === "editor" ? (
-                <div className="pop menu up" role="menu">
-                  <div className="gl">{t("Copy as an agent's project file")}</div>
-                  <button
-                    type="button"
-                    className="text item" role="menuitem"
-                    onClick={() => mcpEditId && copyMcpConfig([mcpEditId])}>
-                    Cursor
-                  </button>
-                </div>
-              ) : null}
+              <span className="pref-anchor">
+                <button
+                  type="button"
+                  className="text action lib-updall lib-copyconfig"
+                  title={t("Copy {name} as an agent's project file has it, to paste into a project yourself", {
+                    name: mcpEditor.name || "server",
+                  })}
+                  aria-expanded={mcpCopyMenu === "editor"}
+                  onClick={() => setMcpCopyMenu((m) => (m === "editor" ? null : "editor"))}>
+                  {mcpCopyFlash && mcpCopyMenu !== "editor" ? "✓ " : ""}
+                  {t("Copy config…")}
+                </button>
+                {mcpCopyMenu === "editor" ? (
+                  <div className="pop proto-menu" role="menu" aria-label={t("Copy as an agent's project file")}>
+                    <div className="pm-head">{t("Copy as an agent's project file")}</div>
+                    <button
+                      type="button"
+                      className="pm-item"
+                      role="menuitem"
+                      onClick={() => mcpEditId && copyMcpConfig([mcpEditId])}>
+                      <span className="pm-tick" aria-hidden />
+                      <span className="pm-words">
+                        <span className="pm-name">Cursor</span>
+                        <span className="pm-note" />
+                      </span>
+                    </button>
+                  </div>
+                ) : null}
+              </span>
             </div>
           ) : null}
           <div className="bar">
@@ -3091,47 +3276,52 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
       />
 
       {mcpOauthWall ? (
-        <div
-          className="modal open lib-oauth" role="dialog"
-          aria-modal>
-          <div
-            className="dialog" >
-            <b className="lib-oauth-title">{t("Magpie is requesting access")}</b>
-            <div className="lib-oauth-facts">
-              <div><b>{t("Name")}</b> · Magpie</div>
-              <div><b>{t("Website")}</b> · https://usemagpie.ai</div>
-              <div><b>Redirect</b> · http://127.0.0.1:41671/callback</div>
-              <div><b>{t("Access")}</b> · Read, Write</div>
-            </div>
-            <p>
-              {t("This MCP client is requesting access to your Linear workspace. Approve was not used in the nest — Cancel refuses with access_denied.")}
-            </p>
-            <div className="lib-oauth-acts">
-              <button
-                type="button"
-                className="text" onClick={() => {
-                  setMcpOauthWall(false);
-                  setMcpSignWaiting(false);
-                  const name = mcpEditor?.name.trim() || "";
-                  const hit = mcpServers.find((x) => x.id === mcpEditId || x.name === name);
-                  if (hit && !mcpEditId) setMcpEditId(hit.id);
-                  setMcpServers((list) =>
-                    list.map((x) =>
-                      x.id === mcpEditId || x.name === name
-                        ? { ...x, oauthRefused: "access_denied", health: "needs-signin" as McpHealth }
-                        : x,
-                    ),
-                  );
-                  onStatus?.(t("the sign-in was refused (access_denied)"), "err");
-                }}>
-                {t("Cancel")}
-              </button>
-              <button
-                type="button"
-                className="text primary" disabled
-                title={t("Approve was not clicked in the nest")}>
-                {t("Approve")}
-              </button>
+        /* Nest oauth is the system browser; demo wall uses Magpie modal/dialog/editor/bar only (app.css L3250+ / L2847) — no invent lib-oauth-* */
+        <div className="modal open" role="dialog" aria-modal>
+          <div className="dialog">
+            <div className="editor">
+              <div className="ehead">
+                <b>{t("Magpie is requesting access")}</b>
+              </div>
+              <div className="note">
+                <div><b>{t("Name")}</b> · Magpie</div>
+                <div><b>{t("Website")}</b> · https://usemagpie.ai</div>
+                <div><b>Redirect</b> · http://127.0.0.1:41671/callback</div>
+                <div><b>{t("Access")}</b> · Read, Write</div>
+              </div>
+              <p>
+                {t("This MCP client is requesting access to your Linear workspace. Approve was not used in the nest — Cancel refuses with access_denied.")}
+              </p>
+              <div className="bar">
+                <span className="grow" />
+                <button
+                  type="button"
+                  className="text"
+                  onClick={() => {
+                    setMcpOauthWall(false);
+                    setMcpSignWaiting(false);
+                    const name = mcpEditor?.name.trim() || "";
+                    const hit = mcpServers.find((x) => x.id === mcpEditId || x.name === name);
+                    if (hit && !mcpEditId) setMcpEditId(hit.id);
+                    setMcpServers((list) =>
+                      list.map((x) =>
+                        x.id === mcpEditId || x.name === name
+                          ? { ...x, oauthRefused: "access_denied", health: "needs-signin" as McpHealth }
+                          : x,
+                      ),
+                    );
+                    onStatus?.(t("the sign-in was refused (access_denied)"), "err");
+                  }}>
+                  {t("Cancel")}
+                </button>
+                <button
+                  type="button"
+                  className="text primary"
+                  disabled
+                  title={t("Approve was not clicked in the nest")}>
+                  {t("Approve")}
+                </button>
+              </div>
             </div>
           </div>
         </div>

@@ -1035,94 +1035,17 @@ label.tick input { margin: 0; }
    Choose… only when !web via library/projects/choose (client.js L3500–3508).
    Web demo: path input only; reveal toasts path (no invent file-manager UI). */
 
-/* ── CIS v0.1.150 LibraryView: drop invent bridges; Magpie library.css owns chrome ──
-   Deleted tip invent (0.1.149 leftovers):
-   - #view-library .lib-set / .lib-setrow / .lib-setname-as-button / .lib-chev / .lib-tag.agents
-   - #view-library .lib-savebar pill999 + note/primary re-owns (library.css L72–79)
-   - #view-library .lib-mcp.* / .lib-selbar pill / .mk-card invent who/tag/by/p
-   - #view-library .lib-acts .text.danger-fill re-own (library.css L347)
-   - #view-library .mk-grid re-own (library.css L393)
-   Magpie gold: client.js setRow L1172–1252 (row lib-row click lib-set + who + lib-tags + span.chev);
-   serverRow L1463–1480 (row lib-row click lib-server + who.lib-srvwho);
-   skillCard/serverCard L4762+/L4861+ (mk-card click + mk-top/mk-who/mk-desc/mk-foot);
-   pickBar L3134– (row lib-row lib-pickbar); library.css L72–79 / L96–97 / L117–118 / L148–169 / L393–432 / L586.
-   Kept true web-demo bridges Magpie has no twin for: */
-#view-library .lib-intro b { display: block; font-size: 14px; font-weight: 600; }
-#view-library .lib-intro p { margin: 4px 0 0; }
-/* Magpie intro() is a plain lead line — demo still titles the section; thin bridge. */
-#view-library .lib-addmenu { position: relative; }
-#view-library .lib-addmenu .pop {
-  position: absolute; bottom: 100%; left: 0; margin-bottom: 6px; min-width: 220px;
-  padding: 6px 0; border-radius: 10px; border: 1px solid var(--line); background: var(--card);
-  box-shadow: var(--shadow); z-index: 8;
-}
-#view-library .lib-addmenu .pop .lab {
-  padding: 4px 12px 6px; font-size: 11px; color: var(--muted); font-weight: 600;
-}
-#view-library .lib-addmenu .pop button {
-  display: block; width: 100%; text-align: left; padding: 8px 12px; border: 0;
-  background: transparent; font: inherit; font-size: 13px; cursor: pointer;
-}
-#view-library .lib-addmenu .pop button:hover { background: var(--pill); }
-/* Head glyph size for Library folder / Backups / Discover text buttons (web demo). */
-#view-library .lib-mini { display: inline-grid; place-items: center; color: var(--muted); }
-#view-library .lib-mini svg { width: 13px; height: 13px; }
-#view-library .grow-min { flex: 1; min-width: 0; }
-#view-library .lib-find .words,
-#view-library .lib-find input.words { flex: 1; min-width: 0; }
-/* Demo project / hook row chrome still invent vs Magpie lib-project / lib-hook — later tip. */
-#view-library .lib-project {
-  border: 1px solid var(--line); border-radius: 12px; padding: 8px 10px; background: var(--card);
-  margin-bottom: 8px; display: flex; flex-direction: column; gap: 8px;
-}
-#view-library .lib-project.open { padding: 10px 12px 12px; }
-#view-library .lib-project .lib-prow {
-  display: flex; align-items: center; gap: 8px; min-width: 0;
-}
-#view-library .lib-project .lib-prow .who {
-  flex: 1; min-width: 0; text-align: left; border: 0; background: transparent;
-  padding: 0; font: inherit; cursor: pointer;
-}
-#view-library .lib-project .nm { font-size: 13px; font-weight: 560; }
-#view-library .lib-project .chip {
-  font-size: 11px; font-weight: 560; padding: 1px 7px; border-radius: 999px;
-  border: 1px solid var(--line); color: var(--fg-2);
-}
-#view-library .lib-project .agent-chip {
-  font-size: 11.5px; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--line);
-  color: var(--fg-2); display: inline-flex; align-items: center; gap: 5px; flex: none;
-}
-#view-library .lib-project .agent-chip i {
-  width: 6px; height: 6px; border-radius: 50%; background: var(--muted);
-}
-#view-library .lib-project .lib-detail { margin-top: 10px; }
-#view-library .lib-project .lib-detail .lib-prow { margin-bottom: 10px; flex-wrap: wrap; gap: 10px; }
-#view-library .lib-project .chev { transform: none; }
-#view-library .lib-project .chev.open { transform: rotate(90deg); }
-#view-library .lib-hook.row {
-  display: flex; gap: 8px; padding: 10px 4px; border-bottom: 1px solid var(--line);
-}
-#view-library .lib-hook code { font-size: 11.5px; }
-#view-library .lib-oauth-title {
-  display: block; font-size: 16px; margin-bottom: 12px; text-align: center;
-}
-#view-library .lib-oauth-facts,
-.modal .lib-oauth-facts {
-  border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px;
-  font-size: 13px; margin-bottom: 12px; line-height: 1.6;
-}
-.modal .lib-oauth-title { display: block; font-size: 16px; margin-bottom: 12px; text-align: center; }
-.modal .lib-oauth-acts { display: flex; gap: 8px; justify-content: flex-end; }
-.modal.lib-oauth .dialog {
-  width: min(420px, 92vw); padding: 20px 22px 16px;
-}
-.modal .lib-oauth-acts .text { height: 32px; padding: 0 14px; border-radius: 6px; }
-.modal .lib-oauth-acts .text.primary {
-  background: var(--accent); color: var(--accent-fg, #fff); opacity: .55;
-}
-#view-library .lib-rowacts .lib-icon { width: 28px; height: 28px; padding: 0; font-size: 14px; line-height: 1; }
-#view-library .lib-rowacts .lib-icon.danger { color: var(--red); }
-
+/* ── CIS v0.1.151 LibraryView: Magpie projectCard / hookRow / oauth modal / intro ──
+   Deleted tip invent (0.1.150 leftovers):
+   - #view-library .lib-intro b/p (Magpie intro() is plain <p class="lib-intro"> client.js L810)
+   - #view-library .lib-addmenu.* (Magpie copyConfigButton → openProtoMenu / .pop.proto-menu L3183–3205)
+   - #view-library .lib-mini / .grow-min / .lib-find .words (library.css L42–43 / L288–291 already own)
+   - #view-library .lib-project* invent card/prow/chip/agent-chip/detail/chev (Magpie list.lib-card.lib-project + row.lib-row.lib-projhead L3535–3565; library.css L468–517)
+   - #view-library .lib-hook.row invent (Magpie row.lib-row.click.lib-hook L2247–2262; library.css L616–618)
+   - .lib-oauth-* / .modal.lib-oauth invent (nest oauth = browser; Magpie modal.dialog.editor.bar app.css L3250+ / L2847)
+   Magpie gold: client.js projectCard L3535–3605; projectServers L3643–3665; hookRow L2247–2262;
+   empty L803–808; intro L810; copyConfigButton L3183–3205; library.css L42–48 / L288–291 / L310–312 / L468–517 / L616–618.
+   No remaining Library invent bridges in this block. */
 /* ── CIS v0.1.115 SimpleViews (Usage + Plugins) chrome bridge ── */
 #view-usage .usage-refresh,
 #view-usage .period-wrap,

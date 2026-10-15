@@ -1,3 +1,15 @@
+## v0.1.151 · LIBRARY_PROJECT_HOOK_OAUTH_OSS_FIDELITY · 2026-10-15 Asia/Shanghai
+
+- **WHY:** Continue Magpie 1:1 after 0.1.150 — cut remaining Library invent bridges for projects / hooks / oauth modal / intro / Copy-config / lib-mini / grow-min / lib-find.words that re-owned Magpie `library.css` + client.js DOM.
+- **CAUSE:** Demo painted projects as invent `card.lib-project` + `lib-project-head` / shell-patch border-card chrome instead of Magpie `list.lib-card.lib-project` + `row.lib-row.click.lib-projhead` (client.js **L3535–3565**); hooks as bare `.row` instead of `row.lib-row.click.lib-hook` (**L2247–2262**); oauth wall invent `.lib-oauth-*` instead of Magpie `modal`/`dialog`/`editor`/`bar` (app.css **L3250+** / **L2847**; nest oauth = browser); invent `#view-library .lib-intro b/p` / `.lib-addmenu` / `.lib-mini` / `.grow-min` / `.lib-find .words` against Magpie `intro()` **L810**, `copyConfigButton`→`openProtoMenu` **L3183–3205**, library.css **L42–43** / **L288–291**.
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; CIS PrefRow/Segs/TextBtn; Magpie `library.css`/`plugins.css` import; Magpie `pref-anchor`+`.pop.proto-menu` for Copy config (React nest of openProtoMenu); demo oauth wall still refuses Approve (nest); editor event/tool invent `.pop.menu` still used by hook When-it-runs (later tip).
+- **Cite:**
+  - Magpie `plugins/library/client.js` **3535–3605** `projectCard`; **3643–3665** `projectServers`; **2247–2262** `hookRow`; **803–808** `empty`; **810** `intro`; **3183–3205** `copyConfigButton` / openProtoMenu
+  - Magpie `plugins/library/library.css` **42–48** `.lib-mini` / `.lib-intro` / `.lib-aside`; **288–291** `.lib-find`; **310–312** `.lib-empty`; **468–517** `.lib-project` / `.lib-proj*`; **616–618** `.lib-hook*`
+  - Magpie `app.css` **3250+** `.modal`/`.dialog`; **2847** `.editor .bar`; **2500+** `.proto-menu .pm-*`
+- **WHAT changed:** `LibraryView.tsx` Magpie project/hook/oauth/intro/copy-config/lib-mini DOM + restore GLYPH + `DEMO_MCP`/`DEMO_SKILLS_MARKET`/`DEMO_PROBE_SKILLS` consts lost in 0.1.149/150; `shell-patch.css` drop invent `#view-library` lib-intro/addmenu/mini/grow-min/find.words/lib-project/lib-hook/oauth rules.
+- **chrome-guard:** pass (SIDE_AT=1024). Push/PR #1. No portable/Vercel.
+
 ## v0.1.150 · LIBRARY_TIP_BRIDGES_OSS_FIDELITY · 2026-10-15 Asia/Shanghai
 
 - **WHY:** Continue Magpie 1:1 after 0.1.149 — cut remaining Library tip invent bridges (`lib-setrow` / `lib-chev` / `lib-mcp.*` / `lib-savebar` pill / `lib-tag.agents` / invent `mk-card` / `pm-mirror-tip`) that re-owned Magpie `library.css` + client.js DOM.

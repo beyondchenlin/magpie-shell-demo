@@ -1,3 +1,11 @@
+## v0.1.151 · LIBRARY_PROJECT_HOOK_OAUTH_OSS_FIDELITY · 2026-10-15 Asia/Shanghai
+
+- **WHY:** Cut Library invent project/hook/oauth/intro/Copy-config/lib-mini bridges → Magpie OSS DOM.
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; CIS PrefRow/Segs/TextBtn; Magpie library.css; pref-anchor proto-menu Copy config; oauth wall Cancel-only nest sim.
+- **Cite:** client.js L3535–3605 / L2247–2262 / L810 / L3183–3205; library.css L42–48 / L288–291 / L468–517 / L616–618; app.css L3250+ / L2847.
+- **chrome-guard:** pass (SIDE_AT=1024).
+- **No portable / Vercel.**
+
 ## v0.1.150 · LIBRARY_TIP_BRIDGES_OSS_FIDELITY · 2026-10-15 Asia/Shanghai
 
 - **WHY:** Continue Magpie 1:1 after 0.1.149 — cut remaining Library tip invent bridges (`lib-setrow` / `lib-chev` / `lib-mcp.*` / `lib-savebar` pill / `lib-tag.agents` / invent `mk-card` / `pm-mirror-tip`) that re-owned Magpie `library.css` + client.js DOM.
