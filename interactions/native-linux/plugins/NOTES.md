@@ -286,3 +286,33 @@ Skipped: Switch off/on (41–54), Remove, sort handle (only one plugin), row ove
 - Think Tags seeded; Options strip example Cancel (no Clear unsaved); Options tip
 - Check → brief Checking… → Up to date chip + toast Every plugin is up to date; Last checked tip
 - P1 N/A. No invent install/OAuth/keys.
+
+## Installed — Think Tags Remove confirm (shots 91–103)
+
+Window was not on Plugins: a Library skill preview (ask-matt, `~/.config/magpie/library/sk…`, Close) covered the page. Escape closed it (same as Close). Plugins → **Installed · 1**. Think Tags v0.1.0 still installed, chip **Up to date**, subtitle **Gateway middleware: onEvent, onResponse**, chip **Middleware**. Footer **Plugins run on Bun 1.4.3** (was 1.4.2 in 81–90) and **Check for updates**. Mirror **Off**. Search empty. No sort header (one row). No overflow menu. Switch off not used (41–54). Options not reopened (83–85).
+
+Row **Remove** is a pale text button. Hover fills a light pill. Tooltip is a separate native window (514×55 at +613+256), dark, one line, clipped by the Magpie window's right edge and drawn over **Check for updates**. Full string: **Removes the plugin and what it installed; its sign-ins are kept until you sign out**.
+
+Click (or Enter while the row Remove has the blue focus ring) opens an in-window confirm, page dimmed, not a second window. Title **Remove Think Tags?** Body is the tooltip sentence, wrapped to two lines. **Cancel** (blue focus ring) and a red **Remove**. No other buttons.
+
+| shot | what |
+|---|---|
+| 91 | Installed · 1, pointer in the empty list. Remove has no focus ring. |
+| 92 | Pointer on **Remove**. Pale hover pill. Tooltip clipped; full line as above. |
+| 93 | Click. Confirm open. Pointer still over the row button behind the dim. Cancel focused. |
+| 94 | **Escape** closes the confirm. Plugin stays. Focus ring returns to the row **Remove**. |
+| 95 | **Enter** on that focused Remove reopens the same confirm. Cancel focused again. |
+| 96 | Pointer on **Cancel**. Ring stays on Cancel. No tooltip. |
+| 97 | **Cancel**. Dialog gone. Think Tags still installed. Focus ring stays on row Remove. |
+| 98 | Reopened, then **Tab**. Focus ring moves from Cancel onto the red **Remove**. Cancel is plain text. |
+| 99 | Pointer on the red **Remove** (already focused). No tooltip. No color change beyond the ring. |
+| 100 | Click on the dimmed page (lower left, off the card). Confirm closes. Plugin stays. Focus ring back on row Remove. |
+| 101 | Reopened. Pointer on the red **Remove** while **Cancel** still has the focus ring (click path, before the commit). |
+| 102 | Red **Remove** clicked. Dialog gone in the same 8 fps step as the empty page (no **Removing…** frame; under ~125ms). Tab is **Installed** with no count. Empty: tray mark, **No plugins yet**, **Install a subscription or a middleware from Discover; a subscription signs in from here.**, pill **Discover plugins** (not clicked). Green pill toast, lower left, no buttons: **Think Tags removed**. No Bun line, no Check for updates. |
+| 103 | Toast gone by itself (still up through a 3s grab, gone on the next still; no dismiss control). Empty state remains. |
+
+## Left state
+
+Plugins, **Installed** with no count. Empty: No plugins yet / Discover plugins. Search empty. Mirror **Off**. Think Tags removed. Options were never saved. Discover plugins not clicked. No credential. Magpie left running (752×652 at +200+40, pid 560329). Close was not used.
+
+Not frozen: **Removing…** (row already gone by the next 8 fps frame). Not in this slice: Options **Save** (editor only Cancelled in 83; plugin now gone), sort header (needs more than one plugin), Switch off (41–54). P1 N/A.

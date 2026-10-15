@@ -1927,6 +1927,9 @@ const DEMO_ON_NPM_MIRROR = [
 ];
 
 
+/** Magpie Installed footer after plugins/91–103 (was 1.4.2 in 81–90). */
+const BUN_VER = "1.4.3";
+
 export function PluginsView({
   onStatus,
 }: {
@@ -2003,6 +2006,9 @@ export function PluginsView({
     const [asking, setAsking] = useState<{ pkg: string; op: "remove" | "off" | "move" } | null>(null);
   /** Magpie confirmRemoval when Remove with no moved accounts (shot 40 not clicked; Magpie source) */
   const [removeConfirm, setRemoveConfirm] = useState<{ pkg: string; name: string } | null>(null);
+  /** Magpie confirmAction: restore focus to the row Remove that opened it (shots 94/97/100). */
+  const removeFocusRef = useRef<HTMLButtonElement | null>(null);
+  const removeDialogRef = useRef<HTMLDialogElement | null>(null);
   const [checkingUpdates, setCheckingUpdates] = useState(false);
   const [lastCheckedAt, setLastCheckedAt] = useState<string | null>(null);
   const [pluginDetail, setPluginDetail] = useState<(typeof DEMO_MARKET)[number]["cards"][number] | null>(null);
@@ -2040,6 +2046,33 @@ export function PluginsView({
     document.addEventListener("keydown", onKey, true);
     return () => document.removeEventListener("keydown", onKey, true);
   }, [pluginDetail]);
+
+  // Magpie confirmAction (app.js): showModal, Cancel focused, Tab cycles Cancel↔Remove, restore focus (91–103)
+  useEffect(() => {
+    if (!removeConfirm) return;
+    const dialog = removeDialogRef.current;
+    if (!dialog) return;
+    const cancelBtn = dialog.querySelector<HTMLButtonElement>("button.text:not(.primary)");
+    const acceptBtn = dialog.querySelector<HTMLButtonElement>("button.danger-fill");
+    const onKey = (event: KeyboardEvent) => {
+      event.stopPropagation();
+      if (event.key !== "Tab") return;
+      const boundary = event.shiftKey ? cancelBtn : acceptBtn;
+      if (document.activeElement !== boundary) return;
+      event.preventDefault();
+      (event.shiftKey ? acceptBtn : cancelBtn)?.focus();
+    };
+    dialog.addEventListener("keydown", onKey);
+    const raf = requestAnimationFrame(() => {
+      if (!dialog.open) dialog.showModal();
+      cancelBtn?.focus({ preventScroll: true });
+    });
+    return () => {
+      cancelAnimationFrame(raf);
+      dialog.removeEventListener("keydown", onKey);
+      if (dialog.open) dialog.close();
+    };
+  }, [removeConfirm]);
 
   // Magpie askNPM: 350ms debounce, then brief plugins/search loading (hits.loading → skeleton)
   useEffect(() => {
@@ -2506,7 +2539,7 @@ export function PluginsView({
                           <button
                             type="button"
                             className={pmActClass(c.pkg, has)}
-                            title={busy === c.pkg ? t("Plugins run on Bun {v}, downloaded once", { v: "1.4.2" }) : undefined}
+                            title={busy === c.pkg ? t("Plugins run on Bun {v}, downloaded once", { v: BUN_VER }) : undefined}
                             disabled={busy === c.pkg || (has && !pluginNeedsSignIn(c.pkg))}
                             onClick={(e) => {
                               e.stopPropagation();
@@ -2549,7 +2582,7 @@ export function PluginsView({
                         <button
                           type="button"
                           className={pmActClass(c.pkg, has)}
-                          title={busy === c.pkg ? t("Plugins run on Bun {v}, downloaded once", { v: "1.4.2" }) : undefined}
+                          title={busy === c.pkg ? t("Plugins run on Bun {v}, downloaded once", { v: BUN_VER }) : undefined}
                             disabled={busy === c.pkg || (has && !pluginNeedsSignIn(c.pkg))}
                           onClick={(e) => {
                             e.stopPropagation();
@@ -2605,7 +2638,7 @@ export function PluginsView({
                             <button
                               type="button"
                               className={pmActClass(c.pkg, has)}
-                              title={busy === c.pkg ? t("Plugins run on Bun {v}, downloaded once", { v: "1.4.2" }) : undefined}
+                              title={busy === c.pkg ? t("Plugins run on Bun {v}, downloaded once", { v: BUN_VER }) : undefined}
                             disabled={busy === c.pkg || (has && !pluginNeedsSignIn(c.pkg))}
                               onClick={(e) => {
                                 e.stopPropagation();
@@ -3059,9 +3092,12 @@ export function PluginsView({
                               })
                             : t("Removes the plugin and what it installed; its sign-ins are kept until you sign out")
                         }
-                        onClick={() => {
+                        onClick={(ev) => {
                           if (e.moved?.length) setAsking({ pkg: e.pkg, op: "remove" });
-                          else setRemoveConfirm({ pkg: e.pkg, name: e.name });
+                          else {
+                            removeFocusRef.current = ev.currentTarget;
+                            setRemoveConfirm({ pkg: e.pkg, name: e.name });
+                          }
                         }}
                       >
                         {busy === "remove:" + e.pkg ? t("Removing…") : t("Remove")}
@@ -3071,7 +3107,7 @@ export function PluginsView({
                 ))}
               </div>
               <div className="pm-foot" style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 12 }}>
-                <span style={{ fontSize: 12, color: "var(--muted)" }}>{t("Plugins run on Bun {v}", { v: "1.4.2" })}</span>
+                <span style={{ fontSize: 12, color: "var(--muted)" }}>{t("Plugins run on Bun {v}", { v: BUN_VER })}</span>
                 <span className="grow" />
                 <button
                   type="button"
@@ -3111,25 +3147,37 @@ export function PluginsView({
 
       {removeConfirm ? (
         <dialog
+          ref={removeDialogRef}
           className="action-confirm"
-          open
           role="alertdialog"
           aria-labelledby="pluginRemoveTitle"
           aria-describedby="pluginRemoveMsg"
           style={{ zIndex: 50 }}
-          ref={(el) => {
-            /* Magpie confirmAction: Cancel focused (shot 45) */
-            if (el) {
-              const c = el.querySelector<HTMLButtonElement>("button.text:not(.primary)");
-              requestAnimationFrame(() => c?.focus({ preventScroll: true }));
-            }
-          }}
           onCancel={(e) => {
+            /* Escape — Magpie finish(false); focus returns to row Remove (shot 94) */
             e.preventDefault();
+            const prev = removeFocusRef.current;
             setRemoveConfirm(null);
+            requestAnimationFrame(() => {
+              if (prev?.isConnected) prev.focus({ preventScroll: true });
+              removeFocusRef.current = null;
+            });
           }}
           onClick={(e) => {
-            if (e.target === e.currentTarget) setRemoveConfirm(null);
+            /* Magpie backdropClick: ::backdrop is the dialog itself outside its box (shot 100) */
+            const dialog = e.currentTarget;
+            const rect = dialog.getBoundingClientRect();
+            if (
+              e.target === dialog &&
+              (e.clientX < rect.left || e.clientX > rect.right || e.clientY < rect.top || e.clientY > rect.bottom)
+            ) {
+              const prev = removeFocusRef.current;
+              setRemoveConfirm(null);
+              requestAnimationFrame(() => {
+                if (prev?.isConnected) prev.focus({ preventScroll: true });
+                removeFocusRef.current = null;
+              });
+            }
           }}
         >
           <h2 id="pluginRemoveTitle">{t("Remove {name}?", { name: removeConfirm.name })}</h2>
@@ -3138,7 +3186,19 @@ export function PluginsView({
           </p>
           <div className="bar">
             <span className="grow" />
-            <button type="button" className="text" autoFocus onClick={() => setRemoveConfirm(null)}>
+            <button
+              type="button"
+              className="text"
+              onClick={() => {
+                /* Cancel — shot 97: stay installed, focus back on row Remove */
+                const prev = removeFocusRef.current;
+                setRemoveConfirm(null);
+                requestAnimationFrame(() => {
+                  if (prev?.isConnected) prev.focus({ preventScroll: true });
+                  removeFocusRef.current = null;
+                });
+              }}
+            >
               {t("Cancel")}
             </button>
             <button
@@ -3149,13 +3209,10 @@ export function PluginsView({
                 const pkg = removeConfirm.pkg;
                 const name = removeConfirm.name;
                 setRemoveConfirm(null);
-                setBusy("remove:" + pkg);
-                // Magpie act remove → Removing… then toast (shots 52–53)
-                window.setTimeout(() => {
-                  setInstalled((list) => list.filter((x) => x.pkg !== pkg));
-                  setBusy(null);
-                  onStatus?.(t("{name} removed", { name }), "ok", 2500);
-                }, 420);
+                removeFocusRef.current = null;
+                // Magpie 91–103: Removing… under ~125ms / not frozen — empty + toast same step
+                setInstalled((list) => list.filter((x) => x.pkg !== pkg));
+                onStatus?.(t("{name} removed", { name }), "ok", 3200);
               }}
             >
               {t("Remove")}
@@ -3331,7 +3388,7 @@ export function PluginsView({
                   className={pmActClass(pluginDetail.pkg, installed.some((x) => x.pkg === pluginDetail.pkg))}
                   title={
                     busy === pluginDetail.pkg
-                      ? t("Plugins run on Bun {v}, downloaded once", { v: "1.4.2" })
+                      ? t("Plugins run on Bun {v}, downloaded once", { v: BUN_VER })
                       : installed.some((x) => x.pkg === pluginDetail.pkg) && pluginNeedsSignIn(pluginDetail.pkg)
                         ? undefined
                         : installed.some((x) => x.pkg === pluginDetail.pkg)

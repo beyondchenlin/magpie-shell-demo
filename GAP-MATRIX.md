@@ -1,3 +1,8 @@
+## v0.1.70 PLUGINS_91_103
+- plugins/91–103 Think Tags Remove confirm: tip → confirm → Escape/Cancel/dim dismiss + focus return; Tab to red Remove; commit → empty + **Think Tags removed** toast; Bun 1.4.3.
+- Demo: Magpie `confirmAction` (`showModal` + Tab trap + backdropClick + previousFocus); no Removing… delay on middleware path.
+- Allowances **N/A**. Skip Vercel 402. P1: live gateway bird, true OAuth/key persist.
+
 ## v0.1.69 PLUGINS_71_90
 - plugins/71–90 Mirror + GitHub kinds/filter + Think Tags Options/Check updates.
 

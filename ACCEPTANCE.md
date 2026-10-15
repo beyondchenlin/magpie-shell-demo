@@ -1,3 +1,11 @@
+## v0.1.70 PLUGINS_REMOVE_NEST
+
+- Consumed native `interactions/native-linux/plugins/91–103` + NOTES into `PluginsView` Installed Remove.
+- Magpie `confirmAction`: `showModal`, Cancel focused, Tab cycles Cancel↔danger Remove, Escape/Cancel/backdrop dismiss restores focus to row Remove; Enter on focused Remove reopens.
+- Commit: empty Installed (no · N) + toast `{name} removed` same step — **Removing…** too brief on native (not frozen).
+- Bun footer **1.4.3**. Empty: No plugins yet / Discover plugins.
+- **Allowances:** still **N/A**. Skip Vercel 402. P1 unchanged.
+
 - **v0.1.68** AGENTS_NEST_DONE — agents/19-42 Arrange / Cant connect / Manage / Install / Profiles Escape.
 - **v0.1.67** SKILLS_HOW_DONE — library/72–85 chip re-on + Give skills as Saving… / By-agent Links·Copies.\n- **v0.1.66** MANUAL_INSTALL_DONE — plugins/66–72 Installing… / bun 404 err toast / field clear.\n## v0.1.55 FETCH_MODELS_DONE
 - **v0.1.65** SKILLS_POST_DONE — library 63–71 Check/By agent/Add project/Remove + manual github Installing…

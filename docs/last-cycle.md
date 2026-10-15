@@ -1,11 +1,12 @@
-# last-cycle · 2026-10-15 ~07:16 Asia/Shanghai
+# last-cycle · 2026-10-15 ~10:05 Asia/Shanghai
 
-## v0.1.69 PLUGINS_71_90
+## v0.1.70 PLUGINS_91_103
 
-Consumed plugins/71–90 NOTES 1:1:
-- Mirror Off→On→Off (`--fg` On track, tip, mirrorSaving)
-- GitHub kinds + Filter + Show all empty
-- Think Tags Options strip / Cancel / tip; Check → Up to date + Every plugin is up to date toast
+Consumed plugins/91–103 NOTES 1:1:
+- Remove tip (native tooltip string) → confirm **Remove Think Tags?** + tip body
+- Cancel focused; Escape / Cancel / dim-click dismiss → focus back on row Remove; Enter reopens
+- Tab Cancel → red Remove; commit → empty Installed (no count) + green pill **Think Tags removed** (no Removing… frame)
+- Bun footer **1.4.3**; empty copy + Discover plugins unchanged
 
-Portable: https://github.com/beyondchenlin/magpie-shell-demo/releases/download/v0.1.69/Magpie-Shell-Demo-0.1.69-portable.exe
+Portable: (pending release)
 P1 N/A. Skip Vercel 402.
