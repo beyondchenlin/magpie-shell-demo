@@ -428,7 +428,6 @@ body.web.side-nav {
 .usage-head .range-opt.on > span { max-width: 220px; white-space: normal; }
 .usage-refresh .pop.proto-menu.sess-menu { width: 148px; min-width: 148px; }
 .ctx-tune-note { margin: 0 0 10px; }
-.ctx-empty-dash b { display: block; font-weight: 600; }
 .led-q-wrap .sess-filter { min-width: 180px; }
 
 /* v0.1.43 MOTION — Magpie control transitions still unmatched

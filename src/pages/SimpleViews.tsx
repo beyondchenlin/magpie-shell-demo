@@ -2038,7 +2038,7 @@ export function UsageView() {
             })}
           </div>
         ) : (
-          <div className="ctx-none ctx-empty-dash">
+          <div className="ctx-none">
             <b>{t("No prompts read yet")}</b>
             <span>{t("Requests your agents send through magpie show here.")}</span>
           </div>

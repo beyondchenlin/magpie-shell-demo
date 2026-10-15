@@ -1,3 +1,10 @@
+## v0.1.176 · CTX_EMPTY_DASH_OSS · 2026-10-16 Asia/Shanghai
+
+- **WHY:** Drop invent Context empty class `ctx-empty-dash` on Magpie `ctx-none`; Magpie OSS already styles title via `.ctx-none b`.
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; skip oauth Approve wall; Magpie `.ctx-none` dashed empty card + `b`/`span` copy.
+- **Cite:** Magpie context.js **L1269–70** `el("div","ctx-none")` + `b`/`span`; context.css **L236–237** `.ctx-none` / `.ctx-none b` (font-weight 600).
+- **chrome-guard:** pass. Push/PR #1. No portable/Vercel.
+
 ## v0.1.175 · DETECT_GRID_FLAT_OSS · 2026-10-16 Asia/Shanghai
 
 - **WHY:** Drop invent Providers Detect APIs row wrapper `dg-row` (+ shell-patch `display: contents`); restore Magpie flat `detect-grid` children (`dg-model` + `dg-cell`).

@@ -1,3 +1,18 @@
+## v0.1.176 · CTX_EMPTY_DASH_OSS · 2026-10-16 Asia/Shanghai
+
+- **WHY:** Hard invent audit — Context "Through magpie" empty state stacked invent `ctx-empty-dash` on Magpie `ctx-none`, with shell-patch `.ctx-empty-dash b { display:block; font-weight:600 }`. Magpie OSS uses only `div.ctx-none` with `b` + `span`; `.ctx-none` is already column flex and `.ctx-none b` already sets weight 600.
+- **CAUSE:** Tip duplicated Magpie title styling under an invent modifier instead of relying on gold `.ctx-none b`.
+- **Cite:**
+  - Magpie `context.js` **L1269–70** `el("div","ctx-none")` → append `b` ("No prompts read yet") + `span`
+  - Magpie `context.css` **L236–237** `.ctx-none` / `.ctx-none b` (color, 13.5px, font-weight 600)
+  - Tip already mirrors gold in `app.css` / `context.css` `.ctx-none b`
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; skip oauth Approve wall; Magpie dashed empty card markup (`b` + `span`).
+- **WHAT changed:**
+  - `SimpleViews.tsx`: `ctx-none ctx-empty-dash` → Magpie `ctx-none`.
+  - `shell-patch.css`: delete invent `.ctx-empty-dash b`.
+- **Remaining invent (weak/skip):** oauth Approve wall (nest=browser); `rt-flier-demo`; `win-caption*`; intentional `lib-hook*` / `pref-anchor` React bridges; weak: `period-wrap` / `led-q-wrap`; `pm-find-clear` vs Magpie native search cancel; `ic-img` vs Magpie `span.ic>img`; `rt-peer` / `rt-fade` extras.
+- **Guard:** `npm run chrome-guard`. No portable. No manual Vercel.
+
 ## v0.1.175 · DETECT_GRID_FLAT_OSS · 2026-10-16 Asia/Shanghai
 
 - **WHY:** Hard invent audit — clear Magpie-faithful invent in Providers Detect APIs: tip wrapped each model in invent `div.dg-row` + shell-patch `.detect-grid .dg-row { display: contents }`. Magpie OSS appends `code.dg-model` and `span.dg-cell` **directly** onto `div.detect-grid` (no row wrapper).
