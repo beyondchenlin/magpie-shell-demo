@@ -1,3 +1,9 @@
+## v0.1.141 GATEWAY_DOT_ERR_STATUSTOAST_OSS_FIDELITY
+- Gateway status card: restore Magpie `dot old` when older (plugins/gateway/client.js L141) — demo only used `.on`/amber.
+- Gateway fix error: restore Magpie `sub old err` (client.js L159; app.css L2095–2096) — drop invent bare `sub err` + invent `role="alert"` on the card line.
+- StatusToast / showStatus: restore Magpie `status()` defaults — kind `""`, err timeout **8000**ms else 3500 (app.js L324–335); lift via `#modal` not invent `.modal:not(.out)`; drop invent `aria-atomic`.
+- SIDE_AT=1024. No portable / Vercel.
+
 ## v0.1.140 PROJECT_REMOVE_LIBKEEP_AGENTS_SMASK_OSS_FIDELITY
 - Library project remove: drop invent ActionConfirm.extra / Tick.keep / Discard-on-cancel — restore Magpie confirmRemoveProject openLib `.editor.lib-editor` + `label.lib-pick.lib-keep` (plugins/library/client.js L3668–3703; library.css L345).
 - Agents relocate: drop invent inline `ag-relocate` / ag-settings / ag-quiet bar — restore Magpie askRelocate `.modal.lib` > `.editor.sm-ask` (plugins/sessions/client.js L901–959; sessions.css sm-ask-*).

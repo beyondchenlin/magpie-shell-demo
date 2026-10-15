@@ -1,5 +1,18 @@
 ## v0.1.140 · PROJECT_REMOVE_LIBKEEP_AGENTS_SMASK_OSS_FIDELITY · 2026-10-15 Asia/Shanghai
 
+## v0.1.141 GATEWAY_DOT_ERR_STATUSTOAST_OSS_FIDELITY
+
+- **WHY:** Continue Magpie 1:1 after 0.1.140 — delete tip invent Gateway fix-error / older-dot chrome + StatusToast timing/lift that covered Magpie OSS.
+- **CAUSE:** Demo painted Gateway take-over/start errors as invent `sub err` (+ invent `role=alert`) instead of Magpie `sub old err`; older mode never set Magpie `dot old`. Foot toast defaulted invent kind=`ok` / always 3500ms and lifted on any `.modal:not(.out)` instead of Magpie `status()` kind default `""` / err 8000ms / `#modal` lift.
+- **WHAT kept:** SIDE_AT=1024; Web 752×652; StatusToast CIS DOM (`#status.status`); Gateway TextBtn `gw-fix` CIS; no portable/Vercel.
+- **Cite:**
+  - Magpie `plugins/gateway/client.js` **141** `dot` + older/`on`; **159** `sub old err`
+  - Magpie `app.css` **2095–2096** `.gw .sub.old` / `.gw .sub.err`
+  - Magpie `app.js` **324–335** `status(msg, kind="", ms=err?8000:3500)` + `#modal` lift
+- **WHAT changed:** `GatewayView.tsx` dot/err → Magpie; `App.tsx` showStatus + lift; `StatusToast.tsx` drop invent aria-atomic.
+- **chrome-guard:** pass. Push/PR #1.
+
+
 - **WHY:** Continue Magpie 1:1 after 0.1.139 — delete tip invent Library project-remove ActionConfirm.extra / Tick.keep and Agents inline ag-relocate that covered Magpie OSS.
 - **CAUSE:** Demo painted Keep-skills as invent `ActionConfirm` + `extra`/`Tick.keep` (+ invent Discard on cancel) instead of Magpie `confirmRemoveProject` openLib sheet; Agents relocate painted invent inline `ag-relocate`/`ag-settings`/`ag-quiet` instead of Magpie `askRelocate` `editor.sm-ask` modal.
 - **Magpie cites:**

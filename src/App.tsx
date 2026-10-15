@@ -121,10 +121,12 @@ export default function App() {
   useLogoWag(brandRef);
   const setNavBox = useSegThumb(sideOn || view === "settings" ? null : view);
 
-  const showStatus = (msg: string, kind = "ok", ms = 3500) => {
+  /** Magpie app.js L324–335 status(): kind default ""; err 8000ms else 3500 */
+  const showStatus = (msg: string, kind = "", ms?: number) => {
+    const timeout = ms ?? (kind === "err" ? 8000 : 3500);
     setStatus({ msg, kind });
     if (statusTimer.current) clearTimeout(statusTimer.current);
-    statusTimer.current = setTimeout(() => setStatus(null), ms);
+    statusTimer.current = setTimeout(() => setStatus(null), timeout);
   };
 
   const applyChrome = useCallback(() => {
@@ -783,11 +785,12 @@ export default function App() {
         <StatusToast
           msg={status?.msg}
           kind={status?.kind}
-          lift={
-            !!status &&
-            typeof document !== "undefined" &&
-            !!document.querySelector(".modal:not(.out)")
-          }
+          lift={(() => {
+            /* Magpie app.js L331–332: #modal not hidden and not .out */
+            if (!status || typeof document === "undefined") return false;
+            const m = document.getElementById("modal");
+            return !!m && !m.hidden && !m.classList.contains("out");
+          })()}
         />
         <span className="grow" />
         <span className="sr-only">{GATEWAY_ADDR}</span>

@@ -424,8 +424,8 @@ export function GatewayView({ onStatus, onGoNetwork }: Props) {
       ? t("running · served by another magpie")
       : t(running ? "running" : "not running");
 
-  /** Dot green only when this magpie or another same/newer serves; older/off = amber */
-  const dotOn = gwMode === "on" || gwMode === "other";
+  /** Magpie plugins/gateway/client.js L141: older → "old", running → "on", else amber */
+  const dotCls = older ? " old" : gwMode === "on" || gwMode === "other" ? " on" : "";
 
   const fixLabel = (() => {
     if (restartBusy) {
@@ -537,7 +537,7 @@ export function GatewayView({ onStatus, onGoNetwork }: Props) {
     <main className="view" id="view-gateway">
       <div className="list gwcard">
         <div className="row gw" id="gateway">
-          <span className={`dot${dotOn ? " on" : ""}`} aria-hidden />
+          <span className={`dot${dotCls}`} aria-hidden />
           <div className="who">
             <div className="name">
               {t("Gateway")}
@@ -556,7 +556,7 @@ export function GatewayView({ onStatus, onGoNetwork }: Props) {
               </TextBtn>
             ) : null}
             {errText && !restartBusy ? (
-              <div className="sub err" role="alert">
+              <div className="sub old err">
                 {errText}
               </div>
             ) : null}

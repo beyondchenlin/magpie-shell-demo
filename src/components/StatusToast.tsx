@@ -13,7 +13,7 @@ type Props = Omit<HTMLAttributes<HTMLSpanElement>, "children" | "id"> & {
 
 /**
  * Magpie foot toast: `span#status.status` (+ kind / `.lift`).
- * CIS §2.6 / §10 — shell owns show/hide timing; this only maps DOM.
+ * CIS §2.6 / §10 — shell owns show/hide timing (App showStatus ≈ Magpie status()); this only maps DOM.
  */
 export function StatusToast({ msg, kind, lift, className, role, title, ...rest }: Props) {
   const text = msg || "";
@@ -25,12 +25,12 @@ export function StatusToast({ msg, kind, lift, className, role, title, ...rest }
   ]
     .filter(Boolean)
     .join(" ");
+  /* Magpie app.js L324–335: id=status, class status[+kind][+lift], role alert|status */
   return (
     <span
       id="status"
       className={cls}
       role={role ?? (kind === "err" ? "alert" : "status")}
-      aria-atomic="true"
       title={title ?? (text || undefined)}
       {...rest}
     >
