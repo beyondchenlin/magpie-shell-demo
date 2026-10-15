@@ -780,13 +780,15 @@ label.tick input { margin: 0; }
    v0.1.171: drop invent #view-usage .us-empty — Magpie Usage empty is
    #stats.stats.empty > .none (app.js L17250–55; app.css L1020–21), not
    card.empty-state.us-empty. Keep nest bridges: period-wrap/usage-refresh
-   relative for pops, pm-headrow wrap. */
+   relative for pops. */
 #view-usage .usage-refresh,
 #view-usage .period-wrap { position: relative; }
 /* v0.1.162: drop invent #view-usage .us-miniplot — Magpie app.css .led-chart SVG */
-#view-plugins .pm-headrow {
-  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
-}
+/* v0.1.174: drop invent #view-plugins .pm-headrow wrap + ProtoMenu pm-headrow /
+   invent Plugins folderPicker .pm-folder-row dialog —
+   Magpie openProtoMenu/openSessCombo use .pm-head only (app.js L13806 / L19442;
+   app.css L2495); Magpie browse is .pm-browse → api("plugins/choose")
+   (plugins.js L853–868 / plugins.css L153–156), no in-app folder rows. */
 /* v0.1.150: drop invent .pm-mirror-tip fade-in — Magpie plugins.js L695 native title only;
    plugins.css L4–9 owns .pm-mirror. */
 /* v0.1.148: drop invent #view-plugins .pm-ghbar margin / .pm-ghkinds* seg-track /

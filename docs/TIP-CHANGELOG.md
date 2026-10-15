@@ -1,3 +1,24 @@
+## v0.1.174 · PM_HEAD_FOLDER_ROW_OSS · 2026-10-16 Asia/Shanghai
+
+- **WHY:** Drop invent Plugins/ProtoMenu wrappers `pm-headrow` + invent folder-picker `pm-folder-row` dialog; restore Magpie `pm-head` / system `.pm-browse` choose.
+- **CAUSE:** Tip stacked `pm-head pm-headrow` + dead `#view-plugins .pm-headrow` flex wrap, and painted an in-app Recent/Home/Other folder dialog with invent `.pm-folder-row` rows over Magpie gold. Magpie OSS proto/sess menus use `.pm-head` only; folder install uses native `plugins/choose` beside `.pm-browse` (no in-app folder list). Same invent class as gtk-select-files (0.1.156).
+- **Cite:**
+  - Magpie `app.js` **13806** `el("div", "pm-head", t(head))` in `openProtoMenu`
+  - Magpie `app.js` **19442** `top.append(el("div", "pm-head", t(head)), q)` in `openSessCombo`
+  - Magpie `app.css` **2495** `.proto-menu .pm-head`
+  - Magpie `plugins.js` **853–868** `browse` → `api("plugins/choose")` fills `pm-minput`; **846–847** web has no picker
+  - Magpie `plugins.css` **153–156** `.pm-browse`
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; Magpie `.pm-browse` / `.pm-manual` / `.pm-minput`; skip oauth Approve wall.
+- **WHAT changed:**
+  - `SimpleViews.tsx` ProtoMenu: `pm-head pm-headrow` → Magpie `pm-head`.
+  - `SimpleViews.tsx` Plugins: drop invent `folderPicker` / `folderLoc` / `folderHint` / `.pm-folder-row` modal; `pm-browse` fills field via `showDirectoryPicker` when available else demo path (Magpie choose).
+  - `shell-patch.css`: delete invent `#view-plugins .pm-headrow`.
+- **Chrome:** none (Plugins/proto-menu nest slice only).
+- **Remaining invent (weak/skip):** oauth Approve wall (nest=browser); rt-flier-demo; win-caption*; intentional React bridges; lib-hook* demo extras; pref-anchor React bridge.
+- **Guard:** `npm run chrome-guard`. No portable. No Vercel.
+
+---
+
 ## v0.1.173 · SESS_SHOW_HISTORY_EMPTY_RANGE · 2026-10-16 Asia/Shanghai
 
 - **WHY:** Wire Magpie Sessions empty-range control `text sess-show-history` ("All sessions") when the picked range has no rows but history exists under the same filters.

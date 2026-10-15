@@ -1,3 +1,10 @@
+## v0.1.174 · PM_HEAD_FOLDER_ROW_OSS · 2026-10-16 Asia/Shanghai
+
+- **WHY:** invent `pm-headrow` / `pm-folder-row` → Magpie `pm-head` + `.pm-browse`/`plugins/choose`.
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; skip oauth Approve wall; Magpie `.pm-manual`/`.pm-browse`.
+- **Cite:** Magpie app.js **L13806** / **L19442** `pm-head`; app.css **L2495**; plugins.js **L853–868** browse/choose; plugins.css **L153–156** `.pm-browse`.
+- **chrome-guard:** pass. Push/PR #1. No portable/Vercel.
+
 ## v0.1.173 · SESS_SHOW_HISTORY_EMPTY_RANGE · 2026-10-16 Asia/Shanghai
 
 - **WHY:** Wire Magpie empty-range `text sess-show-history` ("All sessions") on Sessions `#sessStats` when range is empty but history matches filters.

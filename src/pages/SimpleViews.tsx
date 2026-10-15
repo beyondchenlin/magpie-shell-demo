@@ -300,7 +300,7 @@ function ProtoMenu({
       role="menu"
       aria-label={title}
     >
-      {title ? <div className="pm-head pm-headrow">{t(title)}</div> : null}
+      {title ? <div className="pm-head">{t(title)}</div> : null}
       {items.map((it) => {
         const on = it.v === value;
         return (
@@ -2217,9 +2217,6 @@ export function PluginsView({
   const [debouncedQ, setDebouncedQ] = useState("");
   const [searchBusy, setSearchBusy] = useState(false);
   const [manualSpec, setManualSpec] = useState("");
-  const [folderHint, setFolderHint] = useState("");
-  const [folderPicker, setFolderPicker] = useState(false);
-  const [folderLoc, setFolderLoc] = useState<"recent" | "home" | "other">("recent");
   const [mirror, setMirror] = useState(false);
   const [mirrorSaving, setMirrorSaving] = useState(false);
   /** Magpie drawGh: kind segs + Filter by name (shots 76–80); only when GitHub list > 6 */
@@ -3005,9 +3002,22 @@ export function PluginsView({
                   title={t("Choose a folder on this computer")}
                   aria-label={t("Choose a folder")}
                   disabled={busy === "__manual__"}
-                  onClick={() => {
-                    setFolderLoc("recent");
-                    setFolderPicker(true);
+                  onClick={async () => {
+                    /* Magpie plugins.js L853–868 browse → api("plugins/choose"); fill pm-minput */
+                    try {
+                      const w = window as Window & {
+                        showDirectoryPicker?: () => Promise<{ name: string }>;
+                      };
+                      if (typeof w.showDirectoryPicker === "function") {
+                        const handle = await w.showDirectoryPicker();
+                        setManualSpec(`/home/box/${handle.name}`);
+                        return;
+                      }
+                    } catch {
+                      return; /* cancel */
+                    }
+                    /* Magpie web has no picker (plugins.js L846–847); demo fills a path */
+                    setManualSpec("/home/box/plugins");
                   }}>
                   <svg viewBox="0 0 16 16" width={14} height={14} aria-hidden>
                     <path d="M2 4.5h4l1.2 1.5H14v7H2z" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round" />
@@ -3021,7 +3031,6 @@ export function PluginsView({
                   {/* Magpie manual busy: text only — no spinner (Bun on disk; CU 68) */}
                   {busy === "__manual__" ? t("Installing…") : t("Install")}
                 </TextBtn>
-                {folderHint ? <span>{folderHint}</span> : null}
               </form>
             </div>
           </>
@@ -3497,112 +3506,6 @@ export function PluginsView({
           );
         }}
       />
-
-      {folderPicker ? (
-        <div
-          className="modal open"
-          role="dialog"
-          aria-modal="true"
-          aria-label={t("Choose a plugin folder")}
-          onClick={(e) => {
-            if (e.target === e.currentTarget) setFolderPicker(false);
-          }}>
-          <div
-            className="dialog"
-          >
-            <div className="ehead">
-              <b id="folderTitle">{t("Choose a plugin folder")}</b>
-            </div>
-            <div className="ebody">
-              <nav>
-                {(
-                  [
-                    ["recent", t("Recent")],
-                    ["home", t("Home")],
-                    ["other", t("Other Locations")],
-                  ] as const
-                ).map(([id, label]) => (
-                  <button
-                    key={id}
-                    type="button"
-                    className={`opt text${folderLoc === id ? " on" : ""}`}
-                    onClick={() => setFolderLoc(id)}>
-                    {label}
-                  </button>
-                ))}
-              </nav>
-              <div>
-                {folderLoc === "recent" ? (
-                  <p>
-                    {demoCopy("最近为空", "Recent is empty")}
-                  </p>
-                ) : null}
-                {folderLoc === "home" ? (
-                  <ul>
-                    {["agent-data", "chrome-profile", "cli-config", "reference", "sand-data", "plugins"].map((name) => (
-                      <li
-                        key={name}
-                       
-                        className="pm-folder-row"
-                        onDoubleClick={() => {
-                          setManualSpec(`/home/box/${name}`);
-                          setFolderPicker(false);
-                          setFolderHint("");
-                        }}>
-                        <span>📁 {name}</span>
-                        <span>—</span>
-                      </li>
-                    ))}
-                  </ul>
-                ) : null}
-                {folderLoc === "other" ? (
-                  <div>
-                    <b>{t("On This Computer")}</b>
-                    <div
-                     
-                      onDoubleClick={() => {
-                        setManualSpec("/");
-                        setFolderPicker(false);
-                      }}>
-                      <div>Computer</div>
-                      <div>
-                        107.4 GB / 134.2 GB available · /
-                      </div>
-                    </div>
-                  </div>
-                ) : null}
-              </div>
-            </div>
-            <div className="bar">
-              <TextBtn
-                onClick={() => {
-                  /* Magpie Cancel: field unchanged (shot 33) */
-                  setFolderPicker(false);
-                  setFolderHint("");
-                }}>
-                {t("Cancel")}
-              </TextBtn>
-              <TextBtn
-                variant="primary"
-                disabled={folderLoc === "recent"}
-                onClick={() => {
-                  const path =
-                    folderLoc === "home"
-                      ? "/home/box/plugins"
-                      : folderLoc === "other"
-                        ? "/"
-                        : "";
-                  if (!path) return;
-                  setManualSpec(path);
-                  setFolderPicker(false);
-                  setFolderHint("");
-                }}>
-                {t("Open")}
-              </TextBtn>
-            </div>
-          </div>
-        </div>
-      ) : null}
 
       {pluginDetail ? (
         <div className="modal open" role="dialog" aria-modal="true" aria-label={pluginDetail.name}>
