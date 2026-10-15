@@ -547,3 +547,45 @@ Routing, **ROUTING GROUPS**, no group row, templates showing, Import box closed.
 - Header **Import** toggles inline box under templates (not a sheet; no path/file). Sentence + placeholder **Paste a group copied with Copy to share**; blue **Import** + **Cancel** (no tips).
 - Cancel / Escape / header Import again close and drop text. Empty Import only refocuses. Invalid paste → red toast, box stays, nothing added.
 - Successful shared paste out of scope. Day pills N/A. No portable / Vercel.
+
+## Copy to share (190–204)
+
+Same window, pid **1871993**, magpie **0.1.1247**, **752×652 at +200+40** (id 85983247). Shots are ffmpeg x11grab of that rect (`-framerate 25`, cursor drawn). **197** is widened to **900×720 from +70+20** so the title tip that draws past the window's left edge is whole. Close was not used. Gateway was not restarted. No request was sent. No OAuth. Find-groups was not toggled (still **on**). The names segments were not clicked (still **On**). P1 bird hop: **N/A**.
+
+A group named **share** was added with one typed member **opus** and one pattern **probe/*** (matches nothing now). The pattern is what lets Import add the group: with no provider here, a members-only paste would be refused as none of the models being in this magpie. The handle (or a right-click on the card) opens the row menu. **Copy to share** is the last item. Its title tip is native and draws as a black bar that starts left of the window.
+
+| shot | what |
+|---|---|
+| 190 | **+ New group**. Editor under the templates, name field focused, placeholder "e.g. Opus anywhere". |
+| 191 | Model pop, typed `opus`. Row **opus · use as typed**. |
+| 192 | Member in. Switch on, **1**, `opus`, **Group's reasoning**, **Remove**. Pop closed with Escape. |
+| 193 | Pattern **probe/*** added. "matches nothing now", **Remove**. |
+| 194 | **Add**. Green toast **share added**. Card **share** `group/share`, `opus`, `probe/* · matches nothing now` (orange), **Smart**, red **no member ready**, **Edit**, switch on. Templates collapse to a **Templates** menu. |
+| 195 | Row menu. **Move up** (Alt+↑) and **Move down** (Alt+↓) disabled — one group, already first and last. **Duplicate**. **Copy to share** lit. |
+| 196 | Pointer on **Copy to share**. Tip, clipped at the window's left edge: "paste into another magpie: its models, routing and rules, no key". |
+| 197 | Same tip, whole: **share as text to paste into another magpie: its models, routing and rules, no key**. |
+| 198 | Click. Menu closes. Green toast **share copied: paste it into Import on another magpie's Routing page**. The card is unchanged. |
+| 199 | Header **Import**. Box open. Ctrl+V into the focused field. The clipboard held `{"magpie":"routing-group","version":1,"group":{"id":"share","name":"share","members":["opus"],"match":["probe/*"]}}`. |
+| 200 | Blue **Import**. The box becomes the result: **Added share 2**, red **Not in your magpie, left out: opus**, **Done**. Green toast **Added share 2**. Two cards: **share** `group/share` still has `opus` and the pattern; **share 2** `group/share-2` has only `probe/* · matches nothing now` (opus left out). Both **Smart**, **no member ready**, switch on. Header gains **Filter groups and models** and **Select**. No "same model from your own provider" line and no rules line (nothing to substitute, no rules). |
+| 201 | **Done**. The result box closes. Both cards stay. Find-groups **on**, names **On**. |
+| 202 | **Select**, both checked (**2 selected**). **Remove**. **Remove share, share 2?** "These routing groups will no longer be available to agents." **Cancel** and red **Remove**. |
+| 203 | Red Remove. Green toast **2 groups removed**. Template cards return. No group row. **Select** and the filter leave. Find-groups **on**, names **On**. |
+| 204 | Pointer on the first template's **Add a provider first** (Hard to strong, easy to cheap). The line is the text itself. No further tip after a still hover. Cheap first and Never stuck say the same line. |
+
+`providers.json` is `{"providers": []}` again. The `.bak` held `share 2` (`probe/*`, members null) after the remove; it was rewritten to the same empty file so a restore does not bring the group back. `settings.json` was not rewritten (`window` still `[700, 600]`; no `plainNames` / `plainOwnNames`). `plugins.yml` `groups.enabled` is still `true`.
+
+### Not in this slice
+
+Day pills, By request / By session, Replay (still **Waiting for a request**, 0 / 0 / 0). A paste where a member is kept, or swapped for the same model from a provider here ("The same model from your own provider"), or a rule left out with it — there is no provider, so the only kept piece was the pattern and the only left-out piece was **opus**. The textarea grip was not dragged. No OAuth. No Vercel, no package.
+
+## Left state
+
+Routing, **ROUTING GROUPS**, no group row, templates showing, Import box closed. Groups plugin **on**. Find-groups **on**. Names **On**. Gateway **running** on this pid, 0 models. No group, no key. Magpie still running, pid 1871993, window 752×652 at +200+40. Close was not used.
+
+## demo 对齐（190–204）· v0.1.97 COPY_TO_SHARE_DONE
+- Row menu: Move up/down disabled when one group · Duplicate · **Copy to share** native tip **{name} as text to paste into another magpie: its models, routing and rules, no key** (clips at left unless grab widened)
+- Toast **{name} copied: paste it into Import on another magpie's Routing page** · clipboard routing-group JSON
+- Import success: result box **Added {name}** · red **Not in your magpie, left out: …** · blue **Done** · toast **Added {name}** · kept patterns only when no provider; no instead/rules lines
+- ≥2 groups: **Filter groups and models** + **Select** · multi-remove **Remove share, share 2?** · toast **{n} groups removed** · templates return
+- Template **Add a provider first** is the line itself (no further tip)
+- Day pills / Replay N/A · provider-kept / instead / rules-left-out paths N/A · P1 bird N/A · no portable / Vercel

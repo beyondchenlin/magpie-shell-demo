@@ -467,6 +467,8 @@ export type SavedGroupDraft = {
   slug: string;
   members: string[];
   memberNames: string[];
+  /** Model-id patterns (e.g. probe/*); card shows "matches nothing now" with no providers. */
+  patterns: string[];
   routing: string;
   /** Manual mode: member id currently picked on the card (shots 110–112). */
   pick: string;
@@ -532,6 +534,7 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
         return { id, name: name.includes(":") ? name.split(":")[0] : name, on: true, fixed };
       });
       d.routing = editGroup.routing;
+      d.patterns = editGroup.patterns ? [...editGroup.patterns] : [];
       d.weights = editGroup.weights ? { ...editGroup.weights } : {};
       d.levelsOwn = true;
       d.levels = editGroup.levels.length ? [...editGroup.levels] : ["low", "medium", "high"];
@@ -760,6 +763,7 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
       slug: idOf(),
       members: memberIds,
       memberNames: draft.members.map((m) => memberDisplay(m)),
+      patterns: [...draft.patterns],
       routing: draft.routing,
       pick: keepPick,
       weights: { ...draft.weights },
@@ -1031,10 +1035,11 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
           <div className="fallback rt-pats">
             <div className="fbl">
               {draft.patterns.map((p) => (
-                <div key={p} className="fbrow">
+                <div key={p} className="fbrow none">
                   <span className="n">
                     <code>{p}</code>
                   </span>
+                  <small>{t("matches nothing now")}</small>
                   <span className="grow" />
                   <button
                     type="button"

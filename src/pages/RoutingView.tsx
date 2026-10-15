@@ -103,6 +103,36 @@ const GROUP_TEMPLATES: { title: string; desc: string }[] = [
 const CHEV = "M3 4.5 6 7.5 9 4.5";
 const CROSS = "M3.5 3.5 8.5 8.5M8.5 3.5 3.5 8.5";
 
+const ALT = typeof navigator !== "undefined" && /^Mac/.test(navigator.platform) ? "⌥" : "Alt+";
+const MOVE_UP = "M8 12.5v-9M4 7.25l4-3.75 4 3.75";
+const MOVE_DOWN = "M8 3.5v9M4 8.75l4 3.75 4-3.75";
+const DUP_ICON = "M5.5 3.5h6.5v6.5H5.5zM3.5 5.5H3v7.5h7.5v-.5";
+const SHARE_ICON = "M8 2.5v7M5.25 5l2.75-2.75L10.75 5M3.5 9v3.5h9V9";
+
+function slugify(s: string): string {
+  return s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "") || "group";
+}
+
+/** Magpie: name taken → "share 2", "share 3", … */
+function uniqueGroupName(base: string, existing: SavedGroupDraft[]): { name: string; slug: string } {
+  const takenSlug = new Set(existing.map((g) => g.slug));
+  const takenName = new Set(existing.map((g) => g.name.toLowerCase()));
+  let name = base.trim() || "group";
+  let slug = slugify(name);
+  let n = 2;
+  while (takenSlug.has(slug) || takenName.has(name.toLowerCase())) {
+    name = `${base.trim() || "group"} ${n}`;
+    slug = slugify(name);
+    n += 1;
+  }
+  return { name, slug };
+}
+
+/** Demo has no providers: typed ids are not "in this magpie". */
+function memberInMagpie(_id: string): boolean {
+  return demoHasProviders();
+}
+
 
 function readMasked(): boolean {
   try {
@@ -211,6 +241,146 @@ function persistNameSuffix(v: "off" | "skip" | "on") {
   } catch { /* */ }
 }
 
+type GroupRowMenuProps = {
+  anchor: HTMLElement;
+  canMove: boolean;
+  index: number;
+  count: number;
+  group: SavedGroupDraft;
+  onClose: () => void;
+  onMoveUp: () => void;
+  onMoveDown: () => void;
+  onDuplicate: () => void;
+  onCopyShare: () => void;
+};
+
+/** Magpie group row menu (shots 195–198): Move up/down · Duplicate · Copy to share. */
+function GroupRowMenu({
+  anchor,
+  canMove,
+  index,
+  count,
+  group,
+  onClose,
+  onMoveUp,
+  onMoveDown,
+  onDuplicate,
+  onCopyShare,
+}: GroupRowMenuProps) {
+  const boxRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const box = boxRef.current;
+    if (!box) return;
+    const r = anchor.getBoundingClientRect();
+    const pad = 8;
+    const w = box.offsetWidth || 200;
+    const h = box.offsetHeight || 120;
+    let y = r.bottom + 5;
+    if (y + h > window.innerHeight - pad && r.top - 5 - h >= pad) {
+      y = r.top - 5 - h;
+      box.classList.add("up");
+    }
+    const left = Math.max(pad, Math.min(r.left - 4, window.innerWidth - w - pad));
+    box.style.left = `${left}px`;
+    box.style.top = `${Math.max(pad, y)}px`;
+    anchor.classList.add("open");
+    const outside = (e: MouseEvent) => {
+      if (!box.contains(e.target as Node) && !anchor.contains(e.target as Node)) onClose();
+    };
+    const keys = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        e.stopPropagation();
+        onClose();
+        anchor.focus({ preventScroll: true });
+      } else if (e.key === "Tab") onClose();
+    };
+    document.addEventListener("mousedown", outside, true);
+    document.addEventListener("keydown", keys, true);
+    const first = box.querySelector<HTMLButtonElement>("button.rm-item:not(:disabled)");
+    first?.focus({ preventScroll: true });
+    return () => {
+      anchor.classList.remove("open");
+      document.removeEventListener("mousedown", outside, true);
+      document.removeEventListener("keydown", keys, true);
+    };
+  }, [anchor, onClose]);
+
+  const items: {
+    name: string;
+    icon: string;
+    key?: string;
+    off?: boolean;
+    title?: string;
+    run: () => void;
+  }[] = [
+    {
+      name: t("Move up"),
+      icon: MOVE_UP,
+      key: ALT + "↑",
+      off: !canMove || index <= 0,
+      run: onMoveUp,
+    },
+    {
+      name: t("Move down"),
+      icon: MOVE_DOWN,
+      key: ALT + "↓",
+      off: !canMove || index < 0 || index >= count - 1,
+      run: onMoveDown,
+    },
+    {
+      name: t("Duplicate"),
+      icon: DUP_ICON,
+      title: t("A copy of {name} with its models, routing and rules, listed after it", {
+        name: group.name,
+      }),
+      run: onDuplicate,
+    },
+    {
+      name: t("Copy to share"),
+      icon: SHARE_ICON,
+      title: t("{name} as text to paste into another magpie: its models, routing and rules, no key", {
+        name: group.name,
+      }),
+      run: onCopyShare,
+    },
+  ];
+
+  return (
+    <div className="pop row-menu" role="menu" ref={boxRef} style={{ position: "fixed", zIndex: 80 }}>
+      {items.map((o) => (
+        <button
+          type="button"
+          key={o.name}
+          className="rm-item"
+          role="menuitem"
+          disabled={!!o.off}
+          title={o.title}
+          onClick={(e) => {
+            e.stopPropagation();
+            onClose();
+            o.run();
+          }}
+        >
+          <svg viewBox="0 0 16 16" width={13} height={13} aria-hidden>
+            <path
+              d={o.icon}
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+          <span className="rm-name">{o.name}</span>
+          {o.key ? <span className="rm-key">{o.key}</span> : null}
+        </button>
+      ))}
+    </div>
+  );
+}
+
 /** Empty routing stage matching official Magpie R-00…R-09. */
 export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: string) => void } = {}) {
   /** tray/20 + responsive 05/09: peer card when another magpie holds the gateway. */
@@ -228,7 +398,7 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
   const maskTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [wires, setWires] = useState<Wire[]>([]);
   /** Explicit demo-only control (not Magpie Live UI on empty). */
-  const [demoLive, setDemoLive] = useState(false);
+  const [demoLive] = useState(false);
   const [demoTurn, setDemoTurn] = useState(0);
   const [flier, setFlier] = useState<{ x: number; y: number; rot: number } | null>(
     null,
@@ -244,12 +414,22 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
   const [savedGroups, setSavedGroups] = useState<SavedGroupDraft[]>([]);
   const [gImportOpen, setGImportOpen] = useState(false);
   const [importPaste, setImportPaste] = useState("");
-  const [importNote, setImportNote] = useState("");
+  const [importResult, setImportResult] = useState<null | {
+    name: string;
+    leftOut: string[];
+    instead: string[];
+    rulesLeft: number;
+  }>(null);
   const importTextRef = useRef<HTMLTextAreaElement>(null);
   const [templateSeed, setTemplateSeed] = useState<{ name: string; memberIds: string[] } | null>(null);
   const [editGroup, setEditGroup] = useState<SavedGroupDraft | null>(null);
   const [tplMenuOpen, setTplMenuOpen] = useState(false);
   const tplBtnRef = useRef<HTMLButtonElement>(null);
+  const [groupFilter, setGroupFilter] = useState("");
+  const [selecting, setSelecting] = useState(false);
+  const [pickedSlugs, setPickedSlugs] = useState<Set<string>>(() => new Set());
+  const [removeAsk, setRemoveAsk] = useState<SavedGroupDraft[] | null>(null);
+  const [rowMenu, setRowMenu] = useState<{ slug: string; el: HTMLElement } | null>(null);
 
   const [groupModel, setGroupModel] = useState("claude-sonnet-4-5");
   const [popOpen, setPopOpen] = useState(false);
@@ -329,10 +509,10 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
 
   // Magpie Import box: focus the textarea when it opens (routing 181)
   useEffect(() => {
-    if (!gImportOpen) return;
+    if (!gImportOpen || importResult) return;
     const tmr = window.setTimeout(() => importTextRef.current?.focus({ preventScroll: true }), 0);
     return () => clearTimeout(tmr);
-  }, [gImportOpen]);
+  }, [gImportOpen, importResult]);
 
 
   useEffect(() => {
@@ -1404,6 +1584,16 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
             <span className="label">{t("Routing groups")}</span>
             <span className="grow" />
             <span className="note">{t("models agents pick as one")}</span>
+            {savedGroups.length >= 2 ? (
+              <input
+                type="search"
+                className="rt-gfilter"
+                value={groupFilter}
+                placeholder={t("Filter groups and models")}
+                onChange={(e) => setGroupFilter(e.target.value)}
+                onKeyDown={(e) => e.stopPropagation()}
+              />
+            ) : null}
             {savedGroups.length ? (
               <button
                 type="button"
@@ -1428,13 +1618,28 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                   const next = !o;
                   // 186 / 189: closing drops the text; opening starts empty
                   setImportPaste("");
-                  setImportNote("");
+                  setImportResult(null);
                   return next;
                 });
               }}
             >
               {t("Import")}
             </button>
+            {savedGroups.length >= 2 ? (
+              <button
+                type="button"
+                className="text"
+                aria-pressed={selecting}
+                onClick={() => {
+                  setSelecting((s) => {
+                    if (s) setPickedSlugs(new Set());
+                    return !s;
+                  });
+                }}
+              >
+                {t("Select")}
+              </button>
+            ) : null}
             <button
               type="button"
               className="text rt-gnew"
@@ -1556,7 +1761,7 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                             {t("Add")}
                           </button>
                         ) : (
-                          <span className="text quiet" style={{ opacity: 0.55, pointerEvents: "none" }}>
+                          <span className="text quiet" style={{ opacity: 0.55 }}>
                             {t("Add a provider first")}
                           </span>
                         )}
@@ -1569,127 +1774,224 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
           ) : null}
           {gImportOpen ? (
             <div className="rt-gimport">
-              <div className="rt-gtpl-head">
-                {t(
-                  "Paste a routing group someone shared from their magpie: its models, routing and rules come with it, never a key",
-                )}
-              </div>
-              <textarea
-                ref={importTextRef}
-                className="rt-gimport-text"
-                rows={3}
-                value={importPaste}
-                placeholder={t("Paste a group copied with Copy to share")}
-                onChange={(e) => setImportPaste(e.target.value)}
-                onKeyDown={(e) => {
-                  e.stopPropagation();
-                  // 187: Escape in the field closes and drops text
-                  if (e.key === "Escape") {
-                    e.preventDefault();
-                    setGImportOpen(false);
-                    setImportPaste("");
-                    setImportNote("");
-                  }
-                }}
-              />
-              <div className="acts">
-                <button
-                  type="button"
-                  className="text primary"
-                  onClick={() => {
-                    const raw = importPaste.trim();
-                    // 188: empty Import only refocuses — no toast
-                    if (!raw) {
-                      importTextRef.current?.focus({ preventScroll: true });
-                      return;
-                    }
-                    // Magpie share blob: JSON with members (+ name/id). Junk → refuse (185).
-                    // Successful shared paste is out of scope this tip — still wire a strict check.
-                    let parsed: { name?: string; id?: string; members?: unknown; rules?: unknown[] } | null = null;
-                    try {
-                      const j = JSON.parse(raw) as {
-                        name?: string;
-                        id?: string;
-                        members?: unknown;
-                        rules?: unknown[];
-                        group?: { name?: string; members?: unknown };
-                      };
-                      const g = j.group && typeof j.group === "object" ? j.group : j;
-                      if (Array.isArray(g.members) && g.members.length > 0) {
-                        parsed = {
-                          name: (g.name || j.name || j.id || "").toString(),
-                          members: g.members,
-                          rules: Array.isArray(j.rules) ? j.rules : undefined,
-                        };
+              {importResult ? (
+                <>
+                  <div className="rt-gimport-done">{t("Added {name}", { name: importResult.name })}</div>
+                  {importResult.leftOut.length ? (
+                    <div className="rt-gimport-missing">
+                      {t("Not in your magpie, left out: {models}", {
+                        models: importResult.leftOut.join(", "),
+                      })}
+                    </div>
+                  ) : null}
+                  {importResult.instead.length ? (
+                    <div className="rt-gimport-note">
+                      {t("The same model from your own provider: {models}", {
+                        models: importResult.instead.join(", "),
+                      })}
+                    </div>
+                  ) : null}
+                  {importResult.rulesLeft > 0 ? (
+                    <div className="rt-gimport-note">
+                      {t(
+                        importResult.rulesLeft === 1
+                          ? "1 rule left out with them"
+                          : "{n} rules left out with them",
+                        { n: importResult.rulesLeft },
+                      )}
+                    </div>
+                  ) : null}
+                  <div className="acts">
+                    <button
+                      type="button"
+                      className="text primary"
+                      onClick={() => {
+                        setGImportOpen(false);
+                        setImportPaste("");
+                        setImportResult(null);
+                      }}
+                    >
+                      {t("Done")}
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="rt-gtpl-head">
+                    {t(
+                      "Paste a routing group someone shared from their magpie: its models, routing and rules come with it, never a key",
+                    )}
+                  </div>
+                  <textarea
+                    ref={importTextRef}
+                    className="rt-gimport-text"
+                    rows={3}
+                    value={importPaste}
+                    placeholder={t("Paste a group copied with Copy to share")}
+                    onChange={(e) => setImportPaste(e.target.value)}
+                    onKeyDown={(e) => {
+                      e.stopPropagation();
+                      // 187: Escape in the field closes and drops text
+                      if (e.key === "Escape") {
+                        e.preventDefault();
+                        setGImportOpen(false);
+                        setImportPaste("");
+                        setImportResult(null);
                       }
-                    } catch {
-                      parsed = null;
-                    }
-                    if (!parsed || !Array.isArray(parsed.members) || parsed.members.length < 1) {
-                      onStatus?.(
-                        t(
-                          "This is not a routing group shared from magpie: copy one with Copy to share in a group's menu",
-                        ),
-                        "err",
-                      );
-                      // text stays; box stays open
-                      return;
-                    }
-                    const members = parsed.members.map(String);
-                    const name = (parsed.name || "").trim() || t("Imported group");
-                    let rulesLeft = 0;
-                    if (Array.isArray(parsed.rules) && parsed.rules.length && members.length < 2) {
-                      rulesLeft = parsed.rules.length;
-                    }
-                    const slug =
-                      name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "") || "group";
-                    setSavedGroups((gs) => [
-                      ...gs,
-                      {
-                        name,
-                        slug,
-                        members,
-                        memberNames: members,
-                        routing: "",
-                        pick: "",
-                        weights: {},
-                        rules: 0,
-                        levels: ["low", "medium", "high"],
-                        on: true,
-                      },
-                    ]);
-                    setDemoGroups(true);
-                    setGImportOpen(false);
-                    setImportPaste("");
-                    setImportNote(
-                      rulesLeft
-                        ? t(rulesLeft === 1 ? "1 rule left out with them" : "{n} rules left out with them", {
-                            n: rulesLeft,
-                          })
-                        : "",
-                    );
-                    onStatus?.(t("{name} imported", { name }), "ok");
-                  }}
-                >
-                  {t("Import")}
-                </button>
-                <button
-                  type="button"
-                  className="text"
-                  onClick={() => {
-                    setGImportOpen(false);
-                    setImportPaste("");
-                    setImportNote("");
-                  }}
-                >
-                  {t("Cancel")}
-                </button>
-              </div>
-            </div>
-          ) : null}
-          {importNote ? (
-            <div className="rt-gimport-note" style={{ marginTop: 6, fontSize: 12.5, color: "var(--muted)" }}>
-              {importNote}
+                    }}
+                  />
+                  <div className="acts">
+                    <button
+                      type="button"
+                      className="text primary"
+                      onClick={() => {
+                        const raw = importPaste.trim();
+                        // 188: empty Import only refocuses — no toast
+                        if (!raw) {
+                          importTextRef.current?.focus({ preventScroll: true });
+                          return;
+                        }
+                        const refuse = () => {
+                          onStatus?.(
+                            t(
+                              "This is not a routing group shared from magpie: copy one with Copy to share in a group's menu",
+                            ),
+                            "err",
+                          );
+                        };
+                        let blob: {
+                          magpie?: string;
+                          version?: number;
+                          group?: {
+                            id?: string;
+                            name?: string;
+                            members?: unknown;
+                            match?: unknown;
+                            rules?: unknown[];
+                          };
+                          name?: string;
+                          members?: unknown;
+                          match?: unknown;
+                          rules?: unknown[];
+                        };
+                        try {
+                          blob = JSON.parse(raw);
+                        } catch {
+                          refuse();
+                          return;
+                        }
+                        if (!blob || typeof blob !== "object") {
+                          refuse();
+                          return;
+                        }
+                        if (blob.magpie !== "routing-group") {
+                          refuse();
+                          return;
+                        }
+                        if (blob.version == null) {
+                          onStatus?.(
+                            t("This shared group says no format it is in: copy it again with Copy to share"),
+                            "err",
+                          );
+                          return;
+                        }
+                        if (typeof blob.version === "number" && blob.version > 1) {
+                          onStatus?.(
+                            t("This group was shared from a newer magpie (format {n}): update magpie to import it", {
+                              n: blob.version,
+                            }),
+                            "err",
+                          );
+                          return;
+                        }
+                        const g =
+                          blob.group && typeof blob.group === "object" ? blob.group : blob;
+                        const rawMembers = Array.isArray(g.members) ? g.members.map(String) : [];
+                        const rawMatch = Array.isArray(g.match)
+                          ? g.match.map(String)
+                          : Array.isArray((blob as { match?: unknown }).match)
+                            ? ((blob as { match: unknown[] }).match).map(String)
+                            : [];
+                        const rawRules = Array.isArray(g.rules)
+                          ? g.rules
+                          : Array.isArray(blob.rules)
+                            ? blob.rules
+                            : [];
+                        if (!rawMembers.length && !rawMatch.length) {
+                          refuse();
+                          return;
+                        }
+                        const kept: string[] = [];
+                        const leftOut: string[] = [];
+                        for (const m of rawMembers) {
+                          if (memberInMagpie(m)) kept.push(m);
+                          else leftOut.push(m);
+                        }
+                        // Patterns always travel; with no provider they match nothing now.
+                        const patterns = [...rawMatch];
+                        if (!kept.length && !patterns.length) {
+                          onStatus?.(
+                            t("None of the group's models is in your magpie: {models}", {
+                              models: leftOut.join(", ") || "—",
+                            }),
+                            "err",
+                          );
+                          return;
+                        }
+                        const gRec = g as { id?: string; name?: string };
+                        const baseName =
+                          (typeof gRec.name === "string" && gRec.name.trim()) ||
+                          (typeof gRec.id === "string" && gRec.id.trim()) ||
+                          (typeof blob.name === "string" && blob.name.trim()) ||
+                          t("Imported group");
+                        const { name, slug } = uniqueGroupName(baseName, savedGroups);
+                        let rulesLeft = 0;
+                        if (rawRules.length && kept.length < 2) {
+                          rulesLeft = rawRules.length;
+                        }
+                        setSavedGroups((gs) => [
+                          ...gs,
+                          {
+                            name,
+                            slug,
+                            members: kept,
+                            memberNames: kept,
+                            patterns,
+                            routing: "",
+                            pick: "",
+                            weights: {},
+                            rules: 0,
+                            levels: ["low", "medium", "high"],
+                            on: true,
+                          },
+                        ]);
+                        setDemoGroups(true);
+                        setImportPaste("");
+                        setImportResult({
+                          name,
+                          leftOut,
+                          instead: [],
+                          rulesLeft,
+                        });
+                        onStatus?.(t("Added {name}", { name }), "ok");
+                      }}
+                    >
+                      {t("Import")}
+                    </button>
+                    <button
+                      type="button"
+                      className="text"
+                      onClick={() => {
+                        setGImportOpen(false);
+                        setImportPaste("");
+                        setImportResult(null);
+                      }}
+                    >
+                      {t("Cancel")}
+                    </button>
+                  </div>
+                </>
+              )}
             </div>
           ) : null}
           <GroupEditor
@@ -1765,20 +2067,113 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                 : t("No group yet. New group makes one of any models you like.")}
             </div>
           ) : null}
+          {selecting && savedGroups.length >= 2 ? (
+            <div className="rt-gsel">
+              <span style={{ fontSize: 12.5, fontWeight: 600 }}>
+                {t("{n} selected", { n: pickedSlugs.size })}
+              </span>
+              <span className="grow" />
+              <button
+                type="button"
+                className="text"
+                style={{ color: pickedSlugs.size ? "var(--red)" : undefined }}
+                disabled={!pickedSlugs.size}
+                onClick={() => {
+                  const list = savedGroups.filter((g) => pickedSlugs.has(g.slug));
+                  if (!list.length) return;
+                  setRemoveAsk(list);
+                }}
+              >
+                {t("Remove")}
+              </button>
+              <button
+                type="button"
+                className="text"
+                onClick={() => {
+                  setSelecting(false);
+                  setPickedSlugs(new Set());
+                }}
+              >
+                {t("Done")}
+              </button>
+            </div>
+          ) : null}
+
           {savedGroups.length ? (
             <div className="rt-groups" style={{ marginTop: 8 }}>
-              {savedGroups.map((g) => (
+              {savedGroups
+                .filter((g) => {
+                  const q = groupFilter.trim().toLowerCase();
+                  if (!q) return true;
+                  const hay = [
+                    g.name,
+                    g.slug,
+                    ...g.members,
+                    ...g.memberNames,
+                    ...(g.patterns || []),
+                  ]
+                    .join(" ")
+                    .toLowerCase();
+                  return hay.includes(q);
+                })
+                .map((g) => {
+                  const picked = pickedSlugs.has(g.slug);
+                  return (
                 <div
                   key={g.slug}
-                  className={`rt-group${g.on ? "" : " disabled"}`}
+                  className={`rt-group${g.on ? "" : " disabled"}${selecting ? " rt-gpick" : ""}${selecting && picked ? " on" : ""}`}
                   style={{ animation: "fade-in .18s var(--ease)" }}
+                  onContextMenu={(e) => {
+                    if (selecting) return;
+                    e.preventDefault();
+                    const handle = (e.currentTarget as HTMLElement).querySelector(".rt-ghandle") as HTMLElement | null;
+                    if (handle) setRowMenu({ slug: g.slug, el: handle });
+                  }}
+                  onClick={() => {
+                    if (!selecting) return;
+                    setPickedSlugs((set) => {
+                      const next = new Set(set);
+                      if (next.has(g.slug)) next.delete(g.slug);
+                      else next.add(g.slug);
+                      return next;
+                    });
+                  }}
                 >
-                  <div className="ics rt-ghandle ag-handle" aria-hidden>
-                    <svg className="ic" viewBox="0 0 16 16" width={16} height={16}>
+                  {selecting ? (
+                    <input
+                      type="checkbox"
+                      checked={picked}
+                      onChange={() => {
+                        setPickedSlugs((set) => {
+                          const next = new Set(set);
+                          if (next.has(g.slug)) next.delete(g.slug);
+                          else next.add(g.slug);
+                          return next;
+                        });
+                      }}
+                      onClick={(e) => e.stopPropagation()}
+                      style={{ width: 16, height: 16, flex: "none" }}
+                      aria-label={g.name}
+                    />
+                  ) : (
+                  <button
+                    type="button"
+                    className={`ics rt-ghandle ag-handle${rowMenu?.slug === g.slug ? " open" : ""}`}
+                    aria-label={g.name}
+                    aria-haspopup="menu"
+                    aria-expanded={rowMenu?.slug === g.slug}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      const el = e.currentTarget;
+                      setRowMenu((m) => (m?.slug === g.slug ? null : { slug: g.slug, el }));
+                    }}
+                  >
+                    <svg className="ic" viewBox="0 0 16 16" width={16} height={16} aria-hidden>
                       <rect x="3" y="3" width="10" height="10" rx="2" fill="none" stroke="currentColor" strokeWidth="1.4" />
                       <path d="M6 8h4M8 6v4" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
                     </svg>
-                  </div>
+                  </button>
+                  )}
                   <div className="main">
                     <div className="nm">
                       <b>{g.name}</b>
@@ -1816,11 +2211,18 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                           );
                         })}
                       </div>
-                    ) : (
+                    ) : g.memberNames.length || g.members.length ? (
                       <div className="mem">
-                        {(g.memberNames.length ? g.memberNames : g.members).join(" · ") || t("no models")}
+                        {(g.memberNames.length ? g.memberNames : g.members).join(" · ")}
                       </div>
-                    )}
+                    ) : null}
+                    {(g.patterns || []).map((pat) => (
+                      <div key={pat} className="mem pat none">
+                        <code>{pat}</code>
+                        {" · "}
+                        {t("matches nothing now")}
+                      </div>
+                    ))}
                   </div>
                   <div className="tags">
                     <span className="tag">{t(g.routing === "" || g.routing === "smart" ? "Smart" : g.routing === "order" ? "In order" : g.routing === "rotate" ? "In turn" : g.routing === "usage" ? "Least used" : g.routing === "pace" ? "Weekly pace" : g.routing === "weight" ? "By weight" : g.routing === "manual" ? "Manual" : "Smart")}</span>
@@ -1829,6 +2231,7 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                     ) : null}
                     <span className="tag bad">{t("no member ready")}</span>
                   </div>
+                  {!selecting ? (
                   <button
                     type="button"
                     className="text"
@@ -1841,6 +2244,8 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                   >
                     {t("Edit")}
                   </button>
+                  ) : null}
+                  {!selecting ? (
                   <button
                     type="button"
                     className={`lib-switch rt-gon${g.on ? " on" : ""}`}
@@ -1863,10 +2268,148 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                   >
                     <i />
                   </button>
+                  ) : null}
                 </div>
-              ))}
+                  );
+                })}
             </div>
           ) : null}
+
+          {rowMenu ? (
+            <GroupRowMenu
+              anchor={rowMenu.el}
+              canMove={savedGroups.length > 1}
+              index={savedGroups.findIndex((x) => x.slug === rowMenu.slug)}
+              count={savedGroups.length}
+              group={savedGroups.find((x) => x.slug === rowMenu.slug)!}
+              onClose={() => setRowMenu(null)}
+              onMoveUp={() => {
+                const i = savedGroups.findIndex((x) => x.slug === rowMenu.slug);
+                if (i <= 0) return;
+                setSavedGroups((gs) => {
+                  const next = [...gs];
+                  [next[i - 1], next[i]] = [next[i], next[i - 1]];
+                  return next;
+                });
+              }}
+              onMoveDown={() => {
+                const i = savedGroups.findIndex((x) => x.slug === rowMenu.slug);
+                if (i < 0 || i >= savedGroups.length - 1) return;
+                setSavedGroups((gs) => {
+                  const next = [...gs];
+                  [next[i], next[i + 1]] = [next[i + 1], next[i]];
+                  return next;
+                });
+              }}
+              onDuplicate={() => {
+                const src = savedGroups.find((x) => x.slug === rowMenu.slug);
+                if (!src) return;
+                const { name, slug } = uniqueGroupName(t("Copy of {name}", { name: src.name }), savedGroups);
+                setSavedGroups((gs) => {
+                  const i = gs.findIndex((x) => x.slug === src.slug);
+                  const copy: SavedGroupDraft = {
+                    ...src,
+                    name,
+                    slug,
+                    members: [...src.members],
+                    memberNames: [...src.memberNames],
+                    patterns: [...(src.patterns || [])],
+                    weights: { ...src.weights },
+                    levels: [...src.levels],
+                  };
+                  const next = [...gs];
+                  next.splice(i + 1, 0, copy);
+                  return next;
+                });
+                onStatus?.(t("Duplicated {name}", { name: src.name }), "ok");
+              }}
+              onCopyShare={() => {
+                const src = savedGroups.find((x) => x.slug === rowMenu.slug);
+                if (!src) return;
+                const payload = {
+                  magpie: "routing-group",
+                  version: 1,
+                  group: {
+                    id: src.slug,
+                    name: src.name,
+                    members: src.members,
+                    match: src.patterns || [],
+                  },
+                };
+                const textBlob = JSON.stringify(payload);
+                const done = () =>
+                  onStatus?.(
+                    t("{name} copied: paste it into Import on another magpie's Routing page", {
+                      name: src.name,
+                    }),
+                    "ok",
+                  );
+                if (navigator.clipboard?.writeText) {
+                  navigator.clipboard.writeText(textBlob).then(done, done);
+                } else {
+                  done();
+                }
+              }}
+            />
+          ) : null}
+
+          {removeAsk ? (
+            <div
+              className="modal"
+              style={{ zIndex: 40, background: "rgba(20,22,30,.35)" }}
+              onClick={(e) => {
+                if (e.target === e.currentTarget) setRemoveAsk(null);
+              }}
+            >
+              <div
+                className="dialog sm"
+                role="alertdialog"
+                aria-labelledby="rtRemoveGroupsTitle"
+                style={{ animation: "pop-in .28s var(--ease)", maxWidth: 360 }}
+              >
+                <div className="ehead" style={{ padding: "14px 16px 0" }}>
+                  <b id="rtRemoveGroupsTitle">
+                    {t("Remove {name}?", {
+                      name: removeAsk.map((g) => g.name).join(", "),
+                    })}
+                  </b>
+                </div>
+                <p style={{ margin: "10px 16px 0", fontSize: 13, color: "var(--fg-2)", lineHeight: 1.45 }}>
+                  {removeAsk.length === 1
+                    ? t("This routing group will no longer be available to agents.")
+                    : t("These routing groups will no longer be available to agents.")}
+                </p>
+                <div className="bar" style={{ padding: "14px 16px" }}>
+                  <span className="grow" />
+                  <button type="button" className="text" onClick={() => setRemoveAsk(null)}>
+                    {t("Cancel")}
+                  </button>
+                  <button
+                    type="button"
+                    className="text"
+                    style={{ background: "var(--red)", color: "#fff", borderColor: "var(--red)" }}
+                    onClick={() => {
+                      const n = removeAsk.length;
+                      const slugs = new Set(removeAsk.map((g) => g.slug));
+                      setSavedGroups((gs) => gs.filter((g) => !slugs.has(g.slug)));
+                      setRemoveAsk(null);
+                      setSelecting(false);
+                      setPickedSlugs(new Set());
+                      onStatus?.(
+                        n === 1
+                          ? t("{name} removed", { name: removeAsk[0].name })
+                          : t("{n} groups removed", { n }),
+                        "ok",
+                      );
+                    }}
+                  >
+                    {t("Remove")}
+                  </button>
+                </div>
+              </div>
+            </div>
+          ) : null}
+
           {demoGroups && !savedGroups.length && !groupEditorOpen ? (
             <div className="rt-groups" style={{ marginTop: 8 }}>
               <div className="rt-group card">

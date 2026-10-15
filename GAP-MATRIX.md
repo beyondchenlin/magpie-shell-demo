@@ -395,3 +395,8 @@
 - Native routing 180–189: Import inline paste box · Escape/Cancel/header close · empty refocus · invalid red toast.
 - Gaps: successful Magpie share paste / Done left-out copy not nested; day pills / Replay N/A; P1 bird hop N/A.
 - Portable/release skipped. No Vercel.
+
+## v0.1.97 COPY_TO_SHARE_DONE
+- Native routing 190–204: Copy to share JSON · Import result (left out / Done) · Select multi-remove · pattern "matches nothing now" on cards.
+- Gaps: provider-kept / instead / rules-left-out import paths not nested; day pills / Replay N/A; P1 bird hop N/A.
+- Portable/release skipped. No Vercel.
