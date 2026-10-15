@@ -1,3 +1,10 @@
+## v0.1.167 · LED_HSCROLL_OSS_FIDELITY · 2026-10-16 Asia/Shanghai
+
+- **WHY:** Magpie Usage `#ledHScroll` sticky bottom h-scrollbar was missing — CSS gold already in app.css but no DOM/sync; native `.led-wrap` scrollbar is height:0 so overflow was unreachable.
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; #ledRail (0.1.166); heatmap (LedHeat); skip oauth Approve wall.
+- **Cite:** Magpie app.js `ledHScroll` **L18513–18520**; scroll sync **L18521–22**; ResizeObserver **L18528–37** / **L18544–51**; index.html **L214**; app.css **L1247–1259**.
+- **chrome-guard:** pass. Push/PR #1. No portable/Vercel.
+
 ## v0.1.166 · LED_RAIL_SCROLLBAR_OSS_FIDELITY · 2026-10-16 Asia/Shanghai
 
 - **WHY:** Magpie Usage `#ledRail` custom slim scrollbar beside `#ledRank` was missing — restore gold.

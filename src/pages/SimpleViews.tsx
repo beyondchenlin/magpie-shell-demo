@@ -548,7 +548,59 @@ export function UsageView() {
   const [sessOpen, setSessOpen] = useState<string | null>(null);
   const [sessMore, setSessMore] = useState(false);
   const [heatMetricRemember] = useState(true); // heatmap mounts with Magpie localStorage metric
+  /** Magpie #ledWrap / #ledHScroll — sticky table h-scrollbar (app.js ledHScroll). */
+  const ledWrapRef = useRef<HTMLDivElement>(null);
+  const ledHScrollRef = useRef<HTMLDivElement>(null);
 
+
+  // Magpie ledHScroll (app.js L18513–18537 / L18521–22): sticky bottom bar
+  // stands in for the table's own scrollbar (hidden via .led-wrap::-webkit-scrollbar).
+  useEffect(() => {
+    const wrap = ledWrapRef.current;
+    const bar = ledHScrollRef.current;
+    if (!wrap || !bar || tab !== "usage") return;
+
+    const sync = () => {
+      const over = !!wrap.querySelector("table") && wrap.scrollWidth > wrap.clientWidth + 1;
+      bar.hidden = !over;
+      wrap.style.setProperty("--ledw", `${wrap.clientWidth}px`);
+      if (!over) return;
+      const inner = bar.firstElementChild as HTMLElement | null;
+      if (inner) {
+        inner.style.width = `${wrap.scrollWidth - wrap.clientWidth + bar.clientWidth}px`;
+      }
+      if (bar.scrollLeft !== wrap.scrollLeft) bar.scrollLeft = wrap.scrollLeft;
+    };
+
+    const onWrapScroll = () => {
+      if (bar.scrollLeft !== wrap.scrollLeft) bar.scrollLeft = wrap.scrollLeft;
+    };
+    const onBarScroll = () => {
+      if (wrap.scrollLeft !== bar.scrollLeft) wrap.scrollLeft = bar.scrollLeft;
+    };
+    wrap.addEventListener("scroll", onWrapScroll, { passive: true });
+    bar.addEventListener("scroll", onBarScroll, { passive: true });
+
+    let frame = 0;
+    const ro = new ResizeObserver(() => {
+      if (frame) return;
+      frame = requestAnimationFrame(() => {
+        frame = 0;
+        sync();
+      });
+    });
+    ro.observe(wrap);
+    const table = wrap.querySelector("table");
+    if (table) ro.observe(table);
+    sync();
+
+    return () => {
+      wrap.removeEventListener("scroll", onWrapScroll);
+      bar.removeEventListener("scroll", onBarScroll);
+      ro.disconnect();
+      if (frame) cancelAnimationFrame(frame);
+    };
+  }, [tab, demoFilled, ledPage, ledDay, ledRankPick, ledQ, ledStatus, period]);
 
   const everyLabel = USAGE_EVERY.find(([n]) => n === every)?.[1] || "5 s";
 
@@ -1281,7 +1333,7 @@ export function UsageView() {
               </p>
               <span className="grow" />
             </div>
-            <div className="led-wrap" id="ledWrap">
+            <div className="led-wrap" id="ledWrap" ref={ledWrapRef}>
               <table className="led">
                 <thead>
                   <tr>
@@ -1401,6 +1453,10 @@ export function UsageView() {
                   })}
                 </tbody>
               </table>
+            </div>
+            {/* Magpie index.html L214 + app.js ledHScroll L18513–22 */}
+            <div className="led-hscroll" id="ledHScroll" ref={ledHScrollRef} hidden>
+              <div />
             </div>
             <div className="led-pager" id="ledPager" hidden={ledRows.length <= pageSize}>
               <TextBtn disabled={ledPage <= 0} onClick={() => setLedPage((p) => Math.max(0, p - 1))}>

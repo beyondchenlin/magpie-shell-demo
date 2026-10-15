@@ -1,3 +1,17 @@
+## v0.1.167 · LED_HSCROLL_OSS_FIDELITY · 2026-10-16 Asia/Shanghai
+
+- **WHY:** Continue Magpie Usage after 0.1.166 — restore sticky `#ledHScroll` that stands in for the Requests table's own horizontal scrollbar (native bar hidden).
+- **CAUSE:** Tip had Magpie `.led-hscroll` CSS (app.css L1253–1259) + `.led-wrap::-webkit-scrollbar { height: 0 }` but no `#ledHScroll` DOM or `ledHScroll()` sync — table overflow could not be scrolled on WebKit.
+- **Cite:**
+  - Magpie `index.html` **214** `.led-hscroll#ledHScroll` sibling under `#ledWrap`
+  - Magpie `app.js` **18513–18520** `ledHScroll`: show when table overflows; size inner div; mirror scrollLeft
+  - Magpie `app.js` **18521–22** bidirectional scroll listeners
+  - Magpie `app.js` **18528–37** / **18544–51** ResizeObserver → `--ledw` + `ledHScroll()`
+  - Magpie `app.css` **1247–1259** `.led-wrap` / `.led-hscroll`
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; Magpie #ledRail (0.1.166); heatmap already faithful; skip oauth Approve wall; `ledFit` tight/tighter deferred.
+- **WHAT changed:** `SimpleViews.tsx` `UsageView` mounts `#ledHScroll` after filled `#ledWrap`; wires Magpie sync + ResizeObserver + `--ledw`.
+- **Chrome:** none (nest Usage slice only).
+
 ## v0.1.166 · LED_RAIL_SCROLLBAR_OSS_FIDELITY · 2026-10-16 Asia/Shanghai
 
 - **WHY:** Continue Magpie led-chart after 0.1.165 — restore Magpie custom `#ledRail` slim scrollbar that tracks `#ledRank` scroll (native bar hidden; thumb drag / rail click).
