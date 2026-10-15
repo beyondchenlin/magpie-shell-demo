@@ -1,3 +1,9 @@
+## v0.1.142 ROUTING_EMPTY_GSEL_LANPOP_OSS_FIDELITY
+- Routing: drop invent live-stage `<p className="rt-req-head note">` under `.rt-top` — Magpie `rt-top` is only `.rt-what` + `.rt-mode` (routing.js L26–29 / L115 child `span.note` on Requests head only).
+- Routing groups select bar: drop invent `text rt-pick-clear` — restore Magpie `selectBar` checkbox + `span.note` + `text danger rt-gremove` (routing.js L3773–3814).
+- shell-patch: drop invent `#view-routing .rt-req-head.note` / `.rt-filters`+mb / `.rt-days` / `.empty-state` re-own / `.rt-cols` margin-top / `.rt-pick-clear` / `.rt-add-stack`; drop dead `.lan-pop*` (LAN already openProtoMenu 0.1.137). Magpie gold: routing.css L314–315 / L340 / L352–353; app.css L521–522.
+- SIDE_AT=1024. No portable / Vercel.
+
 ## v0.1.141 GATEWAY_DOT_ERR_STATUSTOAST_OSS_FIDELITY
 - Gateway status card: restore Magpie `dot old` when older (plugins/gateway/client.js L141) — demo only used `.on`/amber.
 - Gateway fix error: restore Magpie `sub old err` (client.js L159; app.css L2095–2096) — drop invent bare `sub err` + invent `role="alert"` on the card line.

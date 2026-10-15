@@ -782,13 +782,6 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                   "Send one from any agent routed through magpie and it plays here as it happens: who routing put first and why, each try, and what each answered.",
                 )}
             </p>
-            {demoLive ? (
-              <p className="rt-req-head note">
-                {t("A live request would fly here")}
-                {" · "}
-                claude-sonnet-4-5 → Anthropic
-              </p>
-            ) : null}
           </div>
 
           {replaying && demoLive ? (
@@ -1244,7 +1237,18 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
             </div>
           </div>
 
-          <div className={`list rt-reqs${demoLive ? "" : " none"}`} id="rtReqs">
+          <div
+            className={`list rt-reqs${
+              !demoLive ||
+              (purposes.length > 0 &&
+                !["unmarked", "kind:compact", "kind:thread_title", "kind:web_search"].some((p) =>
+                  purposes.includes(p),
+                ))
+                ? " none"
+                : ""
+            }`}
+            id="rtReqs"
+          >
             {(() => {
               type Req = {
                 id: string;
@@ -2067,13 +2071,28 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
 
           {selecting && savedGroups.length >= 2 ? (
             <div className="rt-gsel">
-              <span>
-                {t("{n} selected", { n: pickedSlugs.size })}
+              <input
+                type="checkbox"
+                aria-label={t("Select every group")}
+                checked={pickedSlugs.size > 0 && pickedSlugs.size === savedGroups.length}
+                ref={(el) => {
+                  if (el) el.indeterminate = pickedSlugs.size > 0 && pickedSlugs.size < savedGroups.length;
+                }}
+                onChange={(e) => {
+                  setPickedSlugs(
+                    e.target.checked ? new Set(savedGroups.map((g) => g.slug)) : new Set(),
+                  );
+                }}
+              />
+              <span className="note">
+                {pickedSlugs.size
+                  ? t("{n} selected", { n: pickedSlugs.size })
+                  : t("Pick the groups to remove")}
               </span>
               <span className="grow" />
               <button
                 type="button"
-                className={`text rt-pick-clear${pickedSlugs.size ? " on" : ""}`}
+                className="text danger rt-gremove"
                 disabled={!pickedSlugs.size}
                 onClick={() => {
                   const list = savedGroups.filter((g) => pickedSlugs.has(g.slug));

@@ -2146,26 +2146,17 @@ label.tick input { margin: 0; }
 
 
 /* ── CIS v0.1.116 RoutingView chrome bridge ── */
+/* v0.1.142: drop invent .rt-req-head.note / .rt-filters+mb / .rt-days /
+   .empty-state re-own / .rt-cols margin-top / .rt-pick-clear / .rt-add-stack —
+   Magpie routing.css L314–315 filters; L340 .rt-req-head .note child;
+   app.css L521–522 + routing.css L352–353 empty-state; routing.js L3778
+   text danger rt-gremove (no tip rt-pick-clear). */
 .pop.row-menu.fixed { position: fixed; z-index: 80; }
-#view-routing .rt-req-head.note {
-  margin: 4px 0 0; font-size: 11.5px; color: var(--muted);
-}
 #view-routing .rt-fade { animation: fade-in .2s var(--ease); }
 #view-routing .rt-fade.fast { animation: fade-in .18s var(--ease); }
-#view-routing .rt-cols { margin-top: 10px; }
-#view-routing .rt-filters {
-  display: flex; margin-bottom: 6px; align-items: center; gap: 8px; flex-wrap: wrap;
-}
 #view-routing .rt-filters[hidden],
 #view-routing .rt-col-live[hidden] { display: none !important; }
-#view-routing .rt-days { flex: 1; min-width: 0; }
 /* v0.1.132: drop invent #view-routing .rt-group-by inline-flex — Magpie routing.css L316/L667 */
-#view-routing .empty-state {
-  padding: 14px 8px; color: var(--muted); font-size: 12.5px;
-}
-#view-routing .empty-state b {
-  display: block; margin-bottom: 4px; color: var(--fg-2);
-}
 #view-routing .rt-col-live {
   display: flex; flex-direction: column;
 }
@@ -2177,13 +2168,6 @@ label.tick input { margin: 0; }
 }
 /* v0.1.132: drop invent rt-tpl / rt-group.row.who / rt-dim / rt-pick-empty|title|gap /
    rt-ic.sm / modal.rt-confirm — Magpie has none; groups use .main/.nm (routing.css L442–444). */
-#view-routing .rt-pick-clear { color: var(--muted); }
-#view-routing .rt-pick-clear.on { color: var(--red); }
-#view-routing .rt-add-stack {
-  margin-top: 8px; display: flex; flex-direction: column; gap: 6px;
-}
-#view-routing .rt-add-stack .text { padding: 6px 8px; }
-#view-routing .rt-add-stack .text.aside { align-self: flex-start; }
 
 
 /* ── CIS v0.1.117 AgentsView + NestedBlocks chrome bridge ── */
@@ -2214,18 +2198,8 @@ label.tick input { margin: 0; }
   display: inline-flex; width: 14px; height: 14px; align-items: center;
   justify-content: center; font-size: 11px;
 }
-#view-settings .lan-pop {
-  position: absolute; top: 44px; right: 8px; z-index: 30;
-}
-#view-settings .lan-pop ul {
-  list-style: none; margin: 0; padding: 4px;
-}
-#view-settings .lan-pop li {
-  padding: 6px 8px; border-radius: 7px; cursor: pointer;
-  display: flex; align-items: center; gap: 8px;
-}
-#view-settings .lan-pop li .grow { flex: 1; }
-#view-settings .lan-pop li .check { color: var(--accent); }
+/* v0.1.142: drop invent .lan-pop* — Magpie LAN is openProtoMenu
+   lan-address-menu (app.js L23639–23640; NestedBlocks 0.1.137). */
 #view-settings .sync-row {
   display: flex; gap: 8px; align-items: center;
 }
