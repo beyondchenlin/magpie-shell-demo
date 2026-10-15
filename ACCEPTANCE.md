@@ -1,3 +1,10 @@
+## v0.1.134 PV_SEARCH_ADD_IMPORTAPPS_OSS_FIDELITY
+- Providers search: drop invent `row-head.pv-tools` / `find.pv-find` — restore Magpie `pv-head` > `sess-filter.pv-q` (index.html L112; app.css L2113–2114 / L1366).
+- Providers none: Magpie `p.set-none.pv-none` (index.html L113; app.css L3036 / L2115).
+- Providers add: drop invent `rt-gadd.pv-gap` — restore Magpie `.after-list` > `#addProvider.text` `＋ Add provider` (index.html L118–120; app.css L2611 / L2616).
+- ImportApps: drop invent `framed`/`ebody` + shell-patch `.importapps*` — Magpie `editor.new.importapps` (app.js L9489–9490; app.css L3435–3464).
+- SIDE_AT=1024. No portable / Vercel.
+
 ## v0.1.133 GW_KEYS_TILE_SETTINGS_OSS_FIDELITY
 - Gateway keys: drop tip invent `list prefs` / `row pref` — restore Magpie `accts` / `acc` (plugins/gateway/keys.js L171–192; app.css L2318–2370 / L2463–2464). Bare `#gatewayKeys` (client.js L661–664).
 - Providers tiles: drop invent shell-patch `.tile` gap:8 / width:100% — Magpie app.css L2676–2682 (gap:10; min-width:0; transition). Keep React img.ic-img fill bridge.

@@ -1,3 +1,17 @@
+## v0.1.134 · PV_SEARCH_ADD_IMPORTAPPS_OSS_FIDELITY · 2026-10-15 Asia/Shanghai
+- **WHY:** Continue Magpie 1:1 after 0.1.133 — delete tip invent Providers search/add chrome + shell-patch `.importapps` that covered Magpie OSS.
+- **CAUSE:** Demo painted Providers find as invent `row-head.pv-tools` + `find.pv-find` and add as invent `rt-gadd.pv-gap` (Routing add chrome); ImportApps used invent `framed`/`ebody` + shell-patch `.importapps` geometry against Magpie `.editor.importapps`.
+- **Gold:**
+  - Magpie `index.html` **112–113** `.pv-head#pvHead` > `input.sess-filter.pv-q#pvQ`; `p.set-none.pv-none#pvNone`
+  - Magpie `index.html` **118–120** `.after-list` > `button.text#addProvider` (`＋ Add provider`)
+  - Magpie `app.css` **2113–2115** `.pv-head` / `.pv-q` / `.pv-none`; **1366–1367** `.sess-filter`; **3036** `.set-none`
+  - Magpie `app.css` **2611 / 2616–2617** `.after-list` sticky bar
+  - Magpie `app.js` **9489–9490** `renderImportApps` → `editor.new.importapps` (no framed/ebody)
+  - Magpie `app.css` **3435–3464** `.editor.importapps` apptabs / applist / appempty
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; Gateway keys accts/acc (0.1.133); React detect-grid `.dg-row` display:contents bridge; CIS PrefRow/Segs/TextBtn.
+- **WHAT changed:** `ProvidersView.tsx` search/add → Magpie DOM; ImportApps drop framed/ebody; `shell-patch.css` drop invent `.importapps*` + invent pv-tools/pv-find/pv-none/pv-gap.
+- SIDE_AT=1024. Push/PR #1. No portable / Vercel.
+
 ## v0.1.133 · GW_KEYS_TILE_SETTINGS_OSS_FIDELITY · 2026-10-15 Asia/Shanghai
 - **WHY:** Continue Magpie 1:1 after 0.1.132 — delete tip invent Gateway keys PrefRow + Providers `.tile` / Settings pref gap / badge.off invents that covered Magpie OSS.
 - **CAUSE:** Demo painted `#gatewayKeys` as invent `list prefs` + `row pref` instead of Magpie `accts`/`acc`; shell-patch re-owned `.tile` (gap 8 / width 100%) against Magpie app.css; invent Settings `.row.pref` gap 10/16 fought Magpie gap:14px; invent `.badge.off` redeclared Magpie badge tokens.

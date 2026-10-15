@@ -403,42 +403,41 @@ function ImportAppsModal({ onClose }: { onClose: () => void }) {
         aria-labelledby="modalTitle"
         tabIndex={-1}
       >
-        <div className="editor new importapps framed">
+        {/* Magpie app.js L9489–9490 renderImportApps: editor.new.importapps (no framed/ebody) */}
+        <div className="editor new importapps">
           <div className="ehead">
             <b id="modalTitle">{t("Import from other apps")}</b>
           </div>
-          <div className="ebody">
-            <div className="appnote">
-              {t(
-                "magpie reads these apps' settings and changes nothing in them. Pick the providers to bring over.",
-              )}
-            </div>
-            <div className="apptabs" role="tablist">
-              {IMPORT_APPS.map((a) => (
-                <button
-                  key={a.id}
-                  type="button"
-                  role="tab"
-                  className={`apptab missing${tab === a.id ? " on" : ""}`}
-                  aria-selected={tab === a.id}
-                  title={miss}
-                  onClick={() => setTab(a.id)}
-                >
-                  <img className="applogo" src={iconSrc(a.icon)} alt="" />
-                  <span>{a.name}</span>
-                  <span className="count">–</span>
-                </button>
-              ))}
-            </div>
-            <div className="applist">
-              <div className="appsrc">
-                <div className="apphead">
-                  <img className="applogo" src={iconSrc(cur.icon)} alt="" />
-                  <b>{cur.name}</b>
-                  <code>{cur.path}</code>
-                </div>
-                <div className="appempty">{miss}</div>
+          <div className="appnote">
+            {t(
+              "magpie reads these apps' settings and changes nothing in them. Pick the providers to bring over.",
+            )}
+          </div>
+          <div className="apptabs" role="tablist">
+            {IMPORT_APPS.map((a) => (
+              <button
+                key={a.id}
+                type="button"
+                role="tab"
+                className={`apptab missing${tab === a.id ? " on" : ""}`}
+                aria-selected={tab === a.id}
+                title={miss}
+                onClick={() => setTab(a.id)}
+              >
+                <img className="applogo" src={iconSrc(a.icon)} alt="" />
+                <span>{a.name}</span>
+                <span className="count">–</span>
+              </button>
+            ))}
+          </div>
+          <div className="applist">
+            <div className="appsrc">
+              <div className="apphead">
+                <img className="applogo" src={iconSrc(cur.icon)} alt="" />
+                <b>{cur.name}</b>
+                <code>{cur.path}</code>
               </div>
+              <div className="appempty">{miss}</div>
             </div>
           </div>
           <div className="bar">
@@ -2596,28 +2595,27 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
   return (
     <>
       <main className="view" id="view-providers">
-        {!sheetOpen && demoProvs.length > 0 ? (
-          <div className="row-head pv-tools">
-            <input
-              ref={listFindRef}
-              className="find pv-find"
-              type="search"
-              spellCheck={false}
-              autoComplete="off"
-              placeholder={t("Find a provider")}
-              aria-label={t("Find a provider")}
-              value={listQ}
-              onChange={(e) => setListQ(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key !== "Escape") return;
-                e.preventDefault();
-                e.stopPropagation();
-                if (listQ) setListQ("");
-              }}
-            />
-            <span className="grow" />
-          </div>
-        ) : null}
+        {/* Magpie index.html L112–113: .pv-head > .sess-filter.pv-q; .set-none.pv-none */}
+        <div className="pv-head" id="pvHead" hidden={sheetOpen || demoProvs.length === 0}>
+          <input
+            ref={listFindRef}
+            className="sess-filter pv-q"
+            id="pvQ"
+            type="search"
+            spellCheck={false}
+            autoComplete="off"
+            placeholder={t("Find a provider")}
+            aria-label={t("Find a provider")}
+            value={listQ}
+            onChange={(e) => setListQ(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key !== "Escape") return;
+              e.preventDefault();
+              e.stopPropagation();
+              if (listQ) setListQ("");
+            }}
+          />
+        </div>
         <div
           className={`list${dragId ? " sorting" : ""}`}
           id="providers"
@@ -2796,26 +2794,42 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
               );
             })}
         </div>
-        {!sheetOpen && demoProvs.length > 0 && lf && !demoProvs.some((pv) => !pv.off && (pv.name.toLowerCase().includes(lf) || pv.id.toLowerCase().includes(lf))) ? (
-          <div className="none pv-none">
-            {t("No provider matches “{q}”", { q: listQ.trim() })}
-          </div>
-        ) : null}
+        {/* Magpie index.html L113 + app.css L3036 / L2115: p.set-none.pv-none */}
+        <p
+          className="set-none pv-none"
+          id="pvNone"
+          role="status"
+          hidden={
+            !(
+              !sheetOpen &&
+              demoProvs.length > 0 &&
+              !!lf &&
+              !demoProvs.some(
+                (pv) =>
+                  !pv.off &&
+                  (pv.name.toLowerCase().includes(lf) || pv.id.toLowerCase().includes(lf)),
+              )
+            )
+          }
+        >
+          {t("No provider matches “{q}”", { q: listQ.trim() })}
+        </p>
+        {/* Magpie index.html L118–120 + app.css L2611/L2616: .after-list > #addProvider.text */}
         {!sheetOpen ? (
-          <button
-            type="button"
-            className="rt-gadd pv-gap"
-            onClick={() => {
-              setSheetOpen(true);
-              setQ("");
-              window.setTimeout(() => findRef.current?.focus(), 0);
-            }}
-          >
-            <svg viewBox="0 0 16 16" width={11} height={11} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden>
-              <path d="M8 3.5v9M3.5 8h9" />
-            </svg>
-            <span>{t("+ Add provider")}</span>
-          </button>
+          <div className="after-list">
+            <button
+              type="button"
+              className="text"
+              id="addProvider"
+              onClick={() => {
+                setSheetOpen(true);
+                setQ("");
+                window.setTimeout(() => findRef.current?.focus(), 0);
+              }}
+            >
+              {t("＋ Add provider")}
+            </button>
+          </div>
         ) : null}
         <div className="row-head off-head" id="offHead" hidden={sheetOpen || !demoProvs.some((p) => p.off)}>
           <Fold

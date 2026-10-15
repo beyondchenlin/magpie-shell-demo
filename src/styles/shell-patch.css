@@ -301,23 +301,8 @@ body.window:not(.side-nav) .top.tight .brand > span:not(.logo) { display: none; 
    .inner grid minmax(72px,max-content) minmax(0,1fr) (no tip card chrome) */
 /* v0.1.131: drop invent .editor .chips .chip height 24 / radius 6 —
    Magpie app.css L1848–1858 .chip height 25 / radius 999px */
-.importapps .appnote { font-size: 12.5px; color: var(--fg-2); line-height: 1.45; margin-bottom: 8px; }
-.importapps .apptabs { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 8px; }
-.importapps .apptab {
-  display: inline-flex; align-items: center; gap: 6px; height: 30px;
-  padding: 0 10px; border-radius: 8px; border: 1px solid transparent;
-  background: var(--card-2, var(--pill)); font-size: 12px;
-}
-.importapps .apptab.on {
-  background: var(--card); border-color: var(--line);
-  box-shadow: 0 1px 2px rgba(0,0,0,.04);
-}
-.importapps .apptab.missing { color: var(--muted); }
-.importapps .apptab .count { color: var(--faint); font-variant-numeric: tabular-nums; }
-.importapps .applogo { width: 16px; height: 16px; object-fit: contain; }
-.importapps .apphead { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
-.importapps .apphead code { font-size: 11.5px; color: var(--muted); }
-.importapps .appempty { font-size: 13px; color: var(--fg-2); padding: 18px 4px; }
+/* v0.1.134: drop invent .importapps* (apptabs height/border/logo 16) —
+   Magpie app.css L3435–3464 .editor.importapps owns tabs/list/empty */
 
 /* Settings search beside set-tabs */
 #view-settings .set-q {
@@ -923,11 +908,9 @@ label.tick input { margin: 0; }
   grid-template-columns: none;
 }
 .font-controls { position: relative; display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-/* Providers list chrome (outside editor) */
-#view-providers > .row-head.pv-tools { margin-bottom: 8px; gap: 8px; }
-#view-providers .find.pv-find { width: 180px; }
-#view-providers .none.pv-none { padding: 12px 2px; color: var(--muted); font-size: 13px; }
-#view-providers .rt-gadd.pv-gap { margin-top: 8px; }
+/* v0.1.134: drop invent pv-tools / find.pv-find / none.pv-none / rt-gadd.pv-gap —
+   Magpie index.html L112–120 + app.css L2113–2115 / L1366 / L3036 / L2611–2617
+   (.pv-head > .sess-filter.pv-q; .set-none.pv-none; .after-list > #addProvider.text) */
 
 /* Magpie Library sheet dialog — .modal/.dialog (no page-local inline chrome) */
 .modal .dialog.lib-editor {
