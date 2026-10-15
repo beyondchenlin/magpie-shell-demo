@@ -46,8 +46,8 @@ npm run chrome-guard
 
 **人工清单（对照 nest `responsive/01–10` + CIS）：**
 
-- [ ] **~752 / ~900 宽：** 默认 **顶栏 tabs**（白 pill `.on`），**不是**自动侧栏
-- [ ] **≥1024 宽：** 可侧栏；选中行白底 + `seg-edge`（非 accent）
+- [ ] **~752 / ~900 宽：** 默认 **顶栏 tabs**（白 pill `.on`），**不是**自动侧栏；卡框不横向溢出 / 不裁右缘按钮
+- [ ] **≥1024 宽：** 可侧栏；选中行白底 + `seg-edge`（非 accent）；110% 下卡仍完整入视口
 - [ ] **~390 窄屏：** phoneWeb 顶栏 tabs，全幅（无卡框）
 - [ ] 侧栏开关（`#sideToggle` / `magpie.navLayout`）仍可用
 - [ ] 本 tip **没有**改无关页的壳 chrome
@@ -70,3 +70,4 @@ npm run chrome-guard
 3. App 仍渲染 `aside.sidebar` / `#side`
 4. `app.css` 仍有 `body.side-nav … .on` + `seg-edge` / `--card`
 5. `shell-patch`：非 side-nav 时 `#root` 仍有 **752** 框；`@media (min-width: 1024px)` 才扩 side-nav 卡
+6. Web `#root` 宽高必须对 `--zoom` 敏感（`calc((100vw|vh - …) / var(--zoom, …))`），禁止再用裸 `100vw` 把 110% 卡撑出视口

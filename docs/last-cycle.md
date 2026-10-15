@@ -1,12 +1,10 @@
 # last-cycle · 2026-10-15 Asia/Shanghai
 
-## v0.1.99 CHROME_GOLD_RESTORE
+## v0.1.100 WEB_FRAME_ZOOM_FIT
 
-Appearance regression audit (nest/consume still PAUSED):
-- Reverted v0.1.98 `WEB_SIDE_AT=800` (forced side-nav ~900px — worse than Magpie gold).
-- Restored `wantSide` → `SIDE_AT=1024` only; shell-patch side-nav expand behind `@media (min-width: 1024px)`.
-- Kept v0.1.91 web frame 752×652 + 110% zoom (nest responsive intentional).
-- Added `docs/TIP-CYCLE.md`, `docs/TIP-CHANGELOG.md`, `npm run chrome-guard`.
-
-Widths check: 390 top-tabs phoneWeb; 752/900 top-tabs framed; ≥1024 side-nav OK.
-No portable. Push for Vercel.
+Chrome audit overflow fix (nest/consume still PAUSED):
+- CAUSE: html zoom 1.1 × #root CSS width > viewport → left shift / right clip at 752–1100.
+- FIX: zoom-aware `calc((100vw - 48px) / var(--zoom, 1.1))` on web #root + side-nav card; body.web overflow-x hidden; phone nav scroll padding.
+- KEPT: SIDE_AT=1024, no WEB_SIDE_AT, 752 nest footprint, 1024 side-nav gate.
+- chrome-guard: now also requires zoom-aware width. Passed.
+- No portable. Push + one Vercel try.

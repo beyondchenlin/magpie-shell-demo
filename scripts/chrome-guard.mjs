@@ -50,10 +50,20 @@ if (!/body\.side-nav[\s\S]{0,200}\.on[\s\S]{0,120}seg-edge/.test(css) &&
 }
 ok("side-nav .on graphite in app.css");
 
-if (!/max-width:\s*752px/.test(patch) || !/width:\s*min\(752px/.test(patch)) {
+// Nest web frame: width min(752px, …) — may be zoom-aware calc
+if (!/width:\s*min\(752px/.test(patch)) {
   fail("shell-patch must keep web #root 752 frame (nest responsive)");
 }
+if (!/max-width:\s*min\(752px/.test(patch) && !/max-width:\s*752px/.test(patch)) {
+  fail("shell-patch must keep web #root max-width 752 (or min(752px,…))");
+}
 ok("web #root 752 frame");
+
+// Overflow fix: CSS width must divide by --zoom so html{zoom} does not clip
+if (!/body\.web\s+#root\s*\{[\s\S]*?100vw[\s\S]*?\/\s*var\(--zoom/.test(patch)) {
+  fail("body.web #root width must be zoom-aware: calc((100vw - …) / var(--zoom, …))");
+}
+ok("web #root zoom-aware width");
 
 if (!/@media\s*\(\s*min-width:\s*1024px\s*\)\s*\{[\s\S]*?body\.web\.side-nav\s+#root/.test(patch)) {
   fail("side-nav card expand must stay behind @media (min-width: 1024px)");

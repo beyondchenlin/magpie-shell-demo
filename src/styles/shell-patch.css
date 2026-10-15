@@ -17,15 +17,19 @@ body { margin: 0; }
 body.web {
   background: #e8e8ec;
   min-height: 100%;
+  /* html { zoom } scales #root; never let the card spill sideways */
+  overflow-x: hidden;
 }
 body.web #root {
-  /* Magpie windowMinW 560 CSS px — visual ≈ 616 at 110% zoom */
-  width: min(752px, calc(100vw - 48px));
-  min-width: 560px;
-  height: min(652px, calc(100vh - 48px));
-  min-height: 520px;
-  max-width: 752px;
-  margin: 24px auto;
+  /* Magpie nest 752×652 CSS; visual = CSS × --zoom (default 1.1).
+     Cap CSS by viewport/zoom so gray canvas + right actions stay in frame
+     (audit 2026-10-15: 752/900/1100 clipped when width ignored zoom). */
+  width: min(752px, calc((100vw - 48px) / var(--zoom, 1.1)));
+  max-width: min(752px, calc((100vw - 48px) / var(--zoom, 1.1)));
+  min-width: 0;
+  height: min(652px, calc((100vh - 48px) / var(--zoom, 1.1)));
+  min-height: min(520px, calc((100vh - 48px) / var(--zoom, 1.1)));
+  margin: calc(24px / var(--zoom, 1.1)) auto;
   border: 1px solid var(--line);
   border-radius: 12px;
   box-shadow: 0 8px 28px rgba(0,0,0,.08);
@@ -236,10 +240,10 @@ body.web .editor details.more .inner { grid-template-columns: minmax(0, 1fr); }
 
 /* Side-nav inside web frame: Magpie uses fixed sidebar; pin it to #root. */
 body.web.side-nav #root {
-  width: min(1100px, calc(100vw - 24px));
-  max-width: min(1100px, calc(100vw - 24px));
-  height: min(720px, calc(100vh - 48px));
-  max-height: min(720px, calc(100vh - 48px));
+  width: min(1100px, calc((100vw - 48px) / var(--zoom, 1.1)));
+  max-width: min(1100px, calc((100vw - 48px) / var(--zoom, 1.1)));
+  height: min(720px, calc((100vh - 48px) / var(--zoom, 1.1)));
+  max-height: min(720px, calc((100vh - 48px) / var(--zoom, 1.1)));
   position: relative;
 }
 body.web .sidebar {
@@ -799,6 +803,9 @@ body.web.side-nav {
     overflow-y: hidden;
     overscroll-behavior-x: contain;
     scrollbar-width: none;
+    /* phone-web: let last tab (插件) scroll fully into view */
+    padding-inline-end: 12px;
+    scroll-padding-inline-end: 12px;
   }
   body.web:not(.side-nav) .top.inrow .seg::-webkit-scrollbar,
   body.web:not(.side-nav) .top.inrow #nav::-webkit-scrollbar { display: none; }
@@ -890,11 +897,12 @@ body.web.side-nav {
    Web framed card stays 752 until viewport past SIDE_AT with side layout. */
 @media (min-width: 1024px) {
   body.web.side-nav #root {
-    /* Wide web with side-nav: use more of the viewport, keep card chrome soft */
-    width: min(1100px, calc(100vw - 48px));
-    max-width: min(1100px, calc(100vw - 48px));
-    height: min(720px, calc(100vh - 48px));
-    max-height: min(720px, calc(100vh - 48px));
+    /* Wide web with side-nav: use more of the viewport, keep card chrome soft.
+       Still divide by --zoom so 1100 CSS × 1.1 never exceeds the viewport. */
+    width: min(1100px, calc((100vw - 48px) / var(--zoom, 1.1)));
+    max-width: min(1100px, calc((100vw - 48px) / var(--zoom, 1.1)));
+    height: min(720px, calc((100vh - 48px) / var(--zoom, 1.1)));
+    max-height: min(720px, calc((100vh - 48px) / var(--zoom, 1.1)));
   }
 }
 

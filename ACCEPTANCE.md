@@ -1,3 +1,8 @@
+## v0.1.100 WEB_FRAME_ZOOM_FIT
+- Web card at text 110%: CSS width/height divide by `--zoom` so visual frame fits viewport (no left-shift / right clip at ~752–1100).
+- SIDE_AT=1024 gold; no WEB_SIDE_AT; chrome-guard + zoom-aware check pass.
+- Nest/routing consume still paused. No portable.
+
 ## v0.1.99 CHROME_GOLD_RESTORE
 - Reverted v0.1.98 `WEB_SIDE_AT` (side-nav from 800px). Gold again: **top tabs under SIDE_AT 1024**; side-nav only ≥1024 / user toggle.
 - Kept nest web frame **752×652** + text 110% from v0.1.91.
