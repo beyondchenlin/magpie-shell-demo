@@ -1,3 +1,9 @@
+## v0.1.137 TRAY_LAN_SEARCH_PROTO_MENU_OSS_FIDELITY
+- TrayUsagePick: drop invent bare `sess-pick` + `.sess-menu` button list — restore Magpie `proto pick` + `openProtoMenu` `.pop.proto-menu` + `pm-head` "Shown beside the icon" / `pm-item` / `pm-tick` / `pm-words` + TRAY_TOTALS notes (app.js L21873 / L21910 / L21946 / L13799–13828; app.css L2494–2497).
+- LAN Address menu: drop invent `<ul><li class="sel">` + ✓ — restore Magpie `openProtoMenu` → `.pop.proto-menu.lan-address-menu` + `pm-head` "Address" / `pm-item` (app.js L23639–23640; app.css L3180–3181).
+- Search APIs vendor: drop invent bare `button.on` + loose `pm-name` — restore Magpie `openProtoMenu` head "Search API" / `pm-item` (app.js L22732–22733).
+- SIDE_AT=1024. No portable / Vercel.
+
 ## v0.1.136 SETTINGS_LANG_USAGE_LED_OSS_FIDELITY
 - Settings Language: drop invent `<ul class="sess-menu">` button list — restore Magpie `openProtoMenu` → `.pop.proto-menu.sess-menu` + `pm-head` / `pm-item` / `pm-tick` / `pm-words` (app.js L21217–21229 / L13799–13808; app.css L2499–2506 / L1375–1377).
 - shell-patch: drop invent `#view-settings .set-q` height 27 / font 12.5 (Magpie L3027 flex only + `.sess-filter` L1366); drop invent `.pref-pick` pill re-paint (Magpie `.sess-pick` L1369–1374 + `.pref-pick` L3080); drop invent bare `.sess-menu` + invent `#view-settings.set-searching` duplicates (Magpie L3028–3035).

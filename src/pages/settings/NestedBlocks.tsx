@@ -10,6 +10,8 @@ import { WordsField } from "../../components/WordsField";
 import { WarmAt } from "../../components/WarmAt";
 import { demoCopy, t } from "../../i18n";
 
+const PM_CHECK = "M3.2 8.2 6.4 11.4 12.8 4.2";
+
 export const DEMO_MODELS: PopOption[] = [
   { value: "codex/gpt-5.4", label: "gpt-5.4", note: "OpenAI", group: "OpenAI", icon: "openai" },
   { value: "codex/gpt-5.4-mini", label: "gpt-5.4-mini", note: "OpenAI", group: "OpenAI", icon: "openai" },
@@ -292,14 +294,24 @@ export function LanAddressRow({
   const shown = cur + suffix;
   const [menu, setMenu] = useState(false);
   const btnRef = useRef<HTMLButtonElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!menu) return;
     const onDoc = (e: MouseEvent) => {
-      if (!btnRef.current?.contains(e.target as Node)) setMenu(false);
+      const n = e.target as Node;
+      if (btnRef.current?.contains(n) || menuRef.current?.contains(n)) return;
+      setMenu(false);
     };
-    document.addEventListener("mousedown", onDoc);
-    return () => document.removeEventListener("mousedown", onDoc);
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setMenu(false);
+    };
+    document.addEventListener("mousedown", onDoc, true);
+    document.addEventListener("keydown", onKey, true);
+    return () => {
+      document.removeEventListener("mousedown", onDoc, true);
+      document.removeEventListener("keydown", onKey, true);
+    };
   }, [menu]);
 
   return (
@@ -345,20 +357,32 @@ export function LanAddressRow({
             </button>
           </span>
           {menu ? (
-            <div className="pop proto-menu lan-address-menu" role="menu">
-              <ul>
-                {urls.map((u) => (
-                  <li
+            <div className="pop proto-menu lan-address-menu" ref={menuRef} role="menu" aria-label={t("Address")}>
+              <div className="pm-head">{t("Address")}</div>
+              {urls.map((u) => {
+                const on = u === cur;
+                return (
+                  <button
+                    type="button"
                     key={u}
-                    className={u === cur ? "sel" : ""}
-                    role="menuitem"
-                   
+                    className={`pm-item${on ? " on" : ""}`}
+                    role="menuitemradio"
+                    aria-checked={on}
                     onClick={() => { onSelect(u); setMenu(false); }}>
-                    <span className="pm-name">{u}{suffix}</span>
-                    {u === cur ? <span aria-hidden>✓</span> : null}
-                  </li>
-                ))}
-              </ul>
+                    <span className="pm-tick" aria-hidden>
+                      {on ? (
+                        <svg viewBox="0 0 16 16" width={12} height={12} fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+                          <path d={PM_CHECK} />
+                        </svg>
+                      ) : null}
+                    </span>
+                    <span className="pm-words">
+                      <span className="pm-name">{u}{suffix}</span>
+                      <span className="pm-note" />
+                    </span>
+                  </button>
+                );
+              })}
             </div>
           ) : null}
         </div>
@@ -1186,7 +1210,7 @@ export function UpdateMirrorRow({
   );
 }
 
-/** Allowances › menu bar: Off ▾ / Today / 7 days (NOTES 20–23). */
+/** Allowances › menu bar — Magpie openProtoMenu (app.js L21910 / L13799–13828). */
 export function TrayUsagePick({
   value,
   onChange,
@@ -1197,10 +1221,11 @@ export function TrayUsagePick({
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLButtonElement | null>(null);
   const menuRef = useRef<HTMLDivElement | null>(null);
+  // Magpie TRAY_TOTALS (app.js L21946) + Off; demo single-select stand-in for multi ids
   const opts = [
-    { v: "", name: "Off" },
-    { v: "usage:today", name: "Tokens and cost today" },
-    { v: "usage:7d", name: "Tokens and cost, last 7 days" },
+    { v: "", name: "Off", note: "" },
+    { v: "usage:today", name: "Tokens and cost today", note: "Every agent's, as the Usage page counts them" },
+    { v: "usage:7d", name: "Tokens and cost, last 7 days", note: "Every agent's, as the Usage page counts them" },
   ];
   const label =
     opts.find((o) => o.v === value)?.name ||
@@ -1224,11 +1249,11 @@ export function TrayUsagePick({
   }, [open]);
 
   return (
-    <div id="trayUsagePick">
+    <div id="trayUsagePick" className="pref-anchor">
       <button
         type="button"
         ref={ref}
-        className={`sess-pick proto pick${value ? " set" : ""}${open ? " open" : ""}`}
+        className={`proto pick${value ? " set" : ""}${open ? " open" : ""}`}
         aria-haspopup="menu"
         aria-expanded={open}
         onClick={() => setOpen((o) => !o)}>
@@ -1238,20 +1263,35 @@ export function TrayUsagePick({
         </svg>
       </button>
       {open ? (
-        <div className="pop proto-menu sess-menu" ref={menuRef} role="menu">
-          {opts.map((o) => (
-            <button
-              type="button"
-              key={o.v || "off"}
-              className={o.v === value ? "on" : ""}
-              role="menuitem"
-              onClick={() => {
-                onChange(o.v);
-                setOpen(false);
-              }}>
-              {t(o.name)}
-            </button>
-          ))}
+        <div className="pop proto-menu" ref={menuRef} role="menu" aria-label={t("Shown beside the icon")}>
+          <div className="pm-head">{t("Shown beside the icon")}</div>
+          {opts.map((o) => {
+            const on = o.v === value;
+            return (
+              <button
+                type="button"
+                key={o.v || "off"}
+                className={`pm-item${on ? " on" : ""}`}
+                role="menuitemradio"
+                aria-checked={on}
+                onClick={() => {
+                  onChange(o.v);
+                  setOpen(false);
+                }}>
+                <span className="pm-tick" aria-hidden>
+                  {on ? (
+                    <svg viewBox="0 0 16 16" width={12} height={12} fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+                      <path d={PM_CHECK} />
+                    </svg>
+                  ) : null}
+                </span>
+                <span className="pm-words">
+                  <span className="pm-name">{t(o.name)}</span>
+                  {o.note ? <span className="pm-note">{t(o.note)}</span> : <span className="pm-note" />}
+                </span>
+              </button>
+            );
+          })}
         </div>
       ) : null}
     </div>
@@ -1372,14 +1412,24 @@ export function SearchApisBlock({
   const [err, setErr] = useState("");
   const [showKey, setShowKey] = useState<Record<string, boolean>>({});
   const pickRef = useRef<HTMLButtonElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!menu) return;
     const onDoc = (e: MouseEvent) => {
-      if (!pickRef.current?.contains(e.target as Node)) setMenu(false);
+      const n = e.target as Node;
+      if (pickRef.current?.contains(n) || menuRef.current?.contains(n)) return;
+      setMenu(false);
     };
-    document.addEventListener("mousedown", onDoc);
-    return () => document.removeEventListener("mousedown", onDoc);
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setMenu(false);
+    };
+    document.addEventListener("mousedown", onDoc, true);
+    document.addEventListener("keydown", onKey, true);
+    return () => {
+      document.removeEventListener("mousedown", onDoc, true);
+      document.removeEventListener("keydown", onKey, true);
+    };
   }, [menu]);
 
   const v = SEARCH_VENDORS.find((x) => x.id === vendor) || SEARCH_VENDORS[0];
@@ -1465,22 +1515,36 @@ export function SearchApisBlock({
             }}
           />
           {menu ? (
-            <div className="pop proto-menu" role="menu">
-              {SEARCH_VENDORS.map((x) => (
-                <button
-                  type="button"
-                  key={x.id}
-                  className={x.id === vendor ? "on" : ""}
-                  role="menuitem"
-                  onClick={() => {
-                    setVendor(x.id);
-                    setMenu(false);
-                    setErr("");
-                  }}>
-                  <span className="pm-name">{x.name}</span>
-                  {x.needURL ? <span className="pm-note">{t("your own")}</span> : null}
-                </button>
-              ))}
+            <div className="pop proto-menu" ref={menuRef} role="menu" aria-label={t("Search API")}>
+              <div className="pm-head">{t("Search API")}</div>
+              {SEARCH_VENDORS.map((x) => {
+                const on = x.id === vendor;
+                return (
+                  <button
+                    type="button"
+                    key={x.id}
+                    className={`pm-item${on ? " on" : ""}`}
+                    role="menuitemradio"
+                    aria-checked={on}
+                    onClick={() => {
+                      setVendor(x.id);
+                      setMenu(false);
+                      setErr("");
+                    }}>
+                    <span className="pm-tick" aria-hidden>
+                      {on ? (
+                        <svg viewBox="0 0 16 16" width={12} height={12} fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+                          <path d={PM_CHECK} />
+                        </svg>
+                      ) : null}
+                    </span>
+                    <span className="pm-words">
+                      <span className="pm-name">{x.name}</span>
+                      {x.needURL ? <span className="pm-note">{t("your own")}</span> : <span className="pm-note" />}
+                    </span>
+                  </button>
+                );
+              })}
             </div>
           ) : null}
       </PrefRow>

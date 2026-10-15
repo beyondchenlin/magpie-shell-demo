@@ -1,3 +1,14 @@
+## v0.1.137 · TRAY_LAN_SEARCH_PROTO_MENU_OSS_FIDELITY · 2026-10-15 Asia/Shanghai
+- **WHY:** Continue Magpie 1:1 after 0.1.136 — delete tip invent PrefPick/other menus (TrayUsage / LAN Address / Search APIs) that painted bare button lists instead of Magpie `openProtoMenu`.
+- **CAUSE:** TrayUsage invent `sess-pick` + bare `.sess-menu` buttons (no pm-head/pm-item); LAN invent `<ul><li.sel>`; Search invent bare `button.on` — all fought Magpie openProtoMenu DOM.
+- **Gold:**
+  - Magpie `app.js` **21873** tray pill `proto pick` (+set); **21910** `openProtoMenu(..., "Shown beside the icon")`; **21946** TRAY_TOTALS; **13799–13828** pm-head/pm-item/pm-tick/pm-words
+  - Magpie `app.js` **23639–23640** LAN `openProtoMenu(..., "Address", "lan-address-menu")`; `app.css` **3180–3181**
+  - Magpie `app.js` **22732–22733** Search `openProtoMenu(..., "Search API")`
+  - Magpie `app.css` **2494–2497** `.pop.proto-menu` / `.pm-head` / `.pm-item`
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; Settings Language / Usage led (0.1.136); CIS PrefPick/PrefRow/Segs/TextBtn; FontRow portal menu.
+- **WHAT changed:** `NestedBlocks.tsx` TrayUsagePick / LanAddressRow / SearchApisBlock menus → Magpie openProtoMenu DOM.
+
 ## v0.1.136 · SETTINGS_LANG_USAGE_LED_OSS_FIDELITY · 2026-10-15 Asia/Shanghai
 - **WHY:** Continue Magpie 1:1 after 0.1.135 — delete tip invent Settings Language menu + set-q/pref-pick chrome + Usage ledger/sess invents that covered Magpie OSS.
 - **CAUSE:** Demo painted Language as invent `<ul.sess-menu>` + shell-patch `.pref-pick`/`.sess-menu`/`.set-q` geometry against Magpie `openProtoMenu` + `.sess-pick`/`.sess-filter`; Usage invent `led-detail-inner` + sess grid/sess-go fought Magpie `.led-box`/`.led-dl` and flex `.row.sess`.
