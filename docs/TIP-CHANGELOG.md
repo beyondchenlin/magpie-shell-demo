@@ -1,3 +1,17 @@
+## v0.1.160 · LIBRARY_MK_OFFICIAL_INSTALLS_OSS_FIDELITY · 2026-10-16 Asia/Shanghai
+
+- **WHY:** Continue Magpie 1:1 after 0.1.159 — restore Discover skill `mk-card` Magpie `mk-official` + installs `GLYPH.down` that demo omitted (text-only installs / invent `verified` flag).
+- **CAUSE:** Demo skill market cards painted `mk-title` alone and `mk-installs` as bare text, covering Magpie `skillCard` gold where `official` → `span.mk-official` + CHECK svg (title "Official — from the team that makes it") and installs → `svg(GLYPH.down)` + compact count (library/client.js **L4868–4882**; library.css **L423** / **L428**). Sheet meta also missed Magpie `mk-badge` "Official" (**L4909**).
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; CIS PrefPick/WordsField/Segs/TextBtn/LibSwitch; Magpie mk-icon (0.1.158) + Agents ag-conn (0.1.159); demo oauth Approve wall (nest=browser by design).
+- **Cite:**
+  - Magpie `plugins/library/client.js` **4868** `mk-official` + `svg(CHECK, 9, 2.2)` + title
+  - Magpie `plugins/library/client.js` **4878–4882** `mk-installs` + `svg(GLYPH.down, 11, 1.5)` + compact
+  - Magpie `plugins/library/client.js` **4908–4909** skillSheet meta installs badge + Official badge
+  - Magpie `plugins/library/library.css` **423** `.mk-official`; **428** `.mk-installs`
+  - Magpie `app.js` **219** `CHECK`; library/client.js **41** `GLYPH.down`
+- **WHAT changed:** `LibraryView.tsx` DEMO `verified`→`official`; Discover skill cards restore Magpie `mk-official` + `GLYPH.down` installs; skillSheet meta adds Magpie Official `mk-badge`; zh Official title + `{n} installs`.
+- **chrome-guard:** pass (SIDE_AT=1024). Push/PR #1. No portable/Vercel.
+
 ## v0.1.159 · AGENTS_CONN_SWITCH_OSS_FIDELITY · 2026-10-16 Asia/Shanghai
 
 - **WHY:** Continue Magpie 1:1 after 0.1.158 — cut Agents invent `#view-agents .row.agent .val.acts` Connect/Relocate text buttons that covered Magpie `connectSwitch` / `expandLink` gold.

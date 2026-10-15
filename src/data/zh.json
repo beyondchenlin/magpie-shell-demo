@@ -4441,5 +4441,7 @@
   "ID": "ID",
   "Note for a server or Docker: copy the address the browser ends on.": "服务器或 Docker：把浏览器最终停在的地址复制过来。",
   "The address you sign in to GitHub at, like acme.ghe.com.": "你登录 GitHub 企业版的地址，例如 acme.ghe.com。",
-  "Drag to reorder — a model several providers serve goes to the higher one first · Alt+↑/↓ to move · right-click to move it to the top or the bottom": "拖动排序 — 多个供应商都有的模型优先用排在上面的 · Alt+↑/↓ 挪动 · 右键移到顶或底"
+  "Drag to reorder — a model several providers serve goes to the higher one first · Alt+↑/↓ to move · right-click to move it to the top or the bottom": "拖动排序 — 多个供应商都有的模型优先用排在上面的 · Alt+↑/↓ 挪动 · 右键移到顶或底",
+  "Official — from the team that makes it": "官方 — 来自其开发团队",
+  "{n} installs": "{n} 次安装"
 }

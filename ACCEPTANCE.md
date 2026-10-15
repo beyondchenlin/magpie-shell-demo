@@ -1,3 +1,12 @@
+## v0.1.160 · LIBRARY_MK_OFFICIAL_INSTALLS_OSS_FIDELITY · 2026-10-16 Asia/Shanghai
+
+- **WHY:** invent skill `verified` / text-only installs → Magpie `mk-official` + `GLYPH.down` (library client/css).
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; CIS PrefPick/WordsField; Magpie mk-icon / ag-conn; skip oauth Approve wall.
+- **Cite:** library/client.js L4868–4882 / L4908–4909; library.css L423 / L428; app.js CHECK L219; GLYPH.down L41.
+- **chrome-guard:** pass (SIDE_AT=1024).
+- **No portable / Vercel.**
+- **Handoff remaining invent (light):** demo oauth Approve wall (nest=browser by design); leftover shell-patch tip comments / invent CSS without live selectors (audit drop).
+
 ## v0.1.159 · AGENTS_CONN_SWITCH_OSS_FIDELITY · 2026-10-16 Asia/Shanghai
 
 - **WHY:** invent Agents `.val.acts` Connect/Relocate → Magpie `lib-switch.ag-conn` + `.ag-link` (Relocate = Sessions).

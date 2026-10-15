@@ -95,6 +95,10 @@ const CHEV_R = "m6.5 4.5 3 3.5-3 3.5";
 const SKILL_GLYPH = "M4 2.5h6.5L12 4v9.5H4z M6 6h4 M6 8.5h4 M6 11h2.5";
 /** Magpie library/client.js GLYPH.out L44 — mk-ext external link. */
 const OUT_GLYPH = "M9.5 3.5h3v3 M12.5 3.5 7.5 8.5 M11 9.5v3H3.5V5h3";
+/** Magpie app.js CHECK L219 — mk-official badge. */
+const CHECK_GLYPH = "m3.5 8.5 3 3 6-7";
+/** Magpie library/client.js GLYPH.down L41 — mk-installs count. */
+const DOWN_GLYPH = "M8 3.5v9 M4.5 9 8 12.5 11.5 9";
 const DEMO_MCP = [
   { id: "magpie-image", name: "Magpie Image", by: "Magpie", tag: "magpie", desc: "Generate and edit images with the image model set in Magpie (Settings → Images), and make short videos with a video model set up in Magpie (Grok Imagine, Seedance), saved in the project.", addDots: true, sheet: true as const },
   { id: "context7", name: "Context7", by: "Upstash", tag: "Remote", desc: "Up-to-date documentation and code examples for any library, straight into the…" },
@@ -111,8 +115,8 @@ const DEMO_MCP = [
 ];
 
 const DEMO_SKILLS_MARKET = [
-  { id: "magpie-quota", name: "magpie-quota", by: "magpie-community/plugins", installs: "", desc: "Check how much is left of the user's AI subscriptions, coding plans and API key…", verified: true },
-  { id: "find-skills", name: "find-skills", by: "vercel-labs/skills", installs: "3.9M", desc: "Helps users discover and install agent skills when they ask questions like 'how do I do X…", verified: true },
+  { id: "magpie-quota", name: "magpie-quota", by: "magpie-community/plugins", installs: "", desc: "Check how much is left of the user's AI subscriptions, coding plans and API key…", official: true },
+  { id: "find-skills", name: "find-skills", by: "vercel-labs/skills", installs: "3.9M", desc: "Helps users discover and install agent skills when they ask questions like 'how do I do X…", official: true },
   { id: "grill-me", name: "grill-me", by: "mattpocock/skills", installs: "1.4M", desc: "A relentless interview to sharpen a plan or design.", sheet: true },
   { id: "grill-with-docs", name: "grill-with-docs", by: "mattpocock/skills", installs: "1.2M", desc: "Grill a design with the docs open beside you.", sheet: true },
   { id: "agent-browser", name: "agent-browser", by: "vercel-labs/agent-browser", installs: "1.1M", desc: "Browser automation CLI for AI agents. Use when the user needs to interact with…" },
@@ -2437,6 +2441,15 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                       <div className="mk-who">
                         <div className="mk-name">
                           <span className="mk-title">{c.name}</span>
+                          {(c as { official?: boolean }).official ? (
+                            <span
+                              className="mk-official"
+                              title={t("Official — from the team that makes it")}>
+                              <svg width="9" height="9" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                                <path d={CHECK_GLYPH} />
+                              </svg>
+                            </span>
+                          ) : null}
                         </div>
                         <div className="mk-meta">
                           <span className="mk-pub">{c.by}</span>
@@ -2447,6 +2460,9 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                     <div className="mk-foot">
                       {c.installs ? (
                         <span className="mk-installs" title={t("{n} installs", { n: c.installs })}>
+                          <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                            <path d={DOWN_GLYPH} />
+                          </svg>
                           <span>{c.installs}</span>
                         </span>
                       ) : null}
@@ -2995,6 +3011,9 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                 <span className="mk-pub">{skillSheet.by}</span>
                 {skillSheet.installs ? (
                   <span className="mk-badge">{t("{n} installs", { n: skillSheet.installs })}</span>
+                ) : null}
+                {(skillSheet as { official?: boolean }).official ? (
+                  <span className="mk-badge">{t("Official")}</span>
                 ) : null}
               </div>
             </div>
