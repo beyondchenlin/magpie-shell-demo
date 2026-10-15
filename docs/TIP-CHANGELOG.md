@@ -4,6 +4,25 @@
 
 ---
 
+## v0.1.122 · CIS_PROVIDERS_SEGS_PREFROW · 2026-10-15 Asia/Shanghai
+
+- **WHY:** Continue CIS unification: Providers editor local `Segs` had no Magpie `slide()` thumb; Settings NestedBlocks still hand-rolled `.row.pref` for Proxy / Daily warm-up instead of shared PrefRow/TextBtn.
+- **CAUSE:** ProvidersView kept a page-local Segs (`.opt` only) while Settings already used `components/Segs` + `useSegThumb`; NestedBlocks Proxy/DailyWarm duplicated PrefRow DOM.
+- **Gold cites:**
+  - Magpie `app.js` **6174–6202** `segs()` → always `slide(box, key)` (thumb)
+  - Magpie `app.js` **7410** provider Proxy Global/Direct/Custom segs
+  - Magpie `app.js` **8827** Key header Both/x-api-key/Bearer segs
+  - Magpie `app.js` **8983–8990** Region segs + `slide(seg, "regions")`
+  - Magpie `app.js` **10611** model API segs + slide
+  - Magpie Settings Proxy / Daily warm-up = `.row.pref` + `.text` (CIS PrefRow / TextBtn)
+- **WHAT kept:** `SIDE_AT=1024`; no `WEB_SIDE_AT`; Providers editor `Field` label+hint grid (Magpie `field()`, not Settings PrefRow); leftover `style={{` CSS vars / pop geometry; NestedBlocks specialized rows (LAN/OTel/font…) still raw until next tips.
+- **WHAT changed:**
+  - `ProvidersView.tsx`: delete local Segs; import shared `Segs` (useSegThumb) for Region / API / Proxy / Key header
+  - `PrefRow.tsx`: optional `afterWho` for Magpie sibling `.sub` (`#proxyCheck`)
+  - `NestedBlocks.tsx`: `DailyWarmRow` + `ProxyBlock` → PrefRow; Proxy Test/Save → TextBtn
+- **Guard:** `npm run chrome-guard`. Push/PR required. No portable / Vercel.
+
+---
 ## v0.1.121 · SEG_THUMB_SLIDE_FIDELITY · 2026-10-15 Asia/Shanghai
 
 - **WHY:** Close SHELL-APPEARANCE-LOGIC motion re-scan for Settings Appearance `.segs` + top `#nav.seg` (pages users check often): tip already had 280ms, but `useSegThumb` lacked Magpie `slide()` mid-glide / `.still` / ResizeObserver fit.

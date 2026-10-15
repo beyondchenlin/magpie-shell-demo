@@ -15,6 +15,7 @@ import { Fold } from "../components/Fold";
 import { ProtoMultiMenu } from "../components/ProtoMultiMenu";
 import { LibSwitch } from "../components/LibSwitch";
 import { Tick } from "../components/Tick";
+import { Segs } from "../components/Segs";
 
 type Preset = { id: string; name: string; icon: string; kind: string };
 const PRESETS = presets as Preset[];
@@ -265,32 +266,6 @@ function Section({
       </div>
       <div className="grid">{children}</div>
     </>
-  );
-}
-
-function Segs({
-  value,
-  options,
-  onChange,
-}: {
-  value: string;
-  options: { v: string; label: string; title?: string }[];
-  onChange: (v: string) => void;
-}) {
-  return (
-    <div className="segs">
-      {options.map((o) => (
-        <button
-          key={o.v}
-          type="button"
-          className={`opt${value === o.v ? " on" : ""}`}
-          title={o.title}
-          onClick={() => onChange(o.v)}
-        >
-          {o.label}
-        </button>
-      ))}
-    </div>
   );
 }
 
@@ -702,14 +677,14 @@ function ProviderEditorModal({ state, onClose, onAdd, onStatus, saved, onRemove,
                 <Segs
                   value={region}
                   onChange={setRegion}
-                  options={[
+                  items={[
                     {
-                      v: "global",
+                      id: "global",
                       label: t("Global"),
                       title: "api.moonshot.ai",
                     },
                     {
-                      v: "china",
+                      id: "china",
                       label: t("China"),
                       title: "api.moonshot.cn",
                     },
@@ -796,12 +771,12 @@ function ProviderEditorModal({ state, onClose, onAdd, onStatus, saved, onRemove,
                       setDetectHint("");
                       setDetectView(null);
                     }}
-                    options={[
-                      { v: "openai", label: ZH.openaiCompat, title: t(API_HINTS.openai) },
-                      { v: "responses", label: ZH.openaiResponses, title: t(API_HINTS.responses) },
-                      { v: "anthropic", label: ZH.anthropicCompat, title: t(API_HINTS.anthropic) },
-                      { v: "gemini", label: ZH.geminiCompat, title: t(API_HINTS.gemini) },
-                      { v: "decide", label: ZH.systemOne, title: t(API_HINTS.decide) },
+                    items={[
+                      { id: "openai", label: ZH.openaiCompat, title: t(API_HINTS.openai) },
+                      { id: "responses", label: ZH.openaiResponses, title: t(API_HINTS.responses) },
+                      { id: "anthropic", label: ZH.anthropicCompat, title: t(API_HINTS.anthropic) },
+                      { id: "gemini", label: ZH.geminiCompat, title: t(API_HINTS.gemini) },
+                      { id: "decide", label: ZH.systemOne, title: t(API_HINTS.decide) },
                     ]}
                   />
                   <input
@@ -1622,10 +1597,10 @@ function ProviderEditorModal({ state, onClose, onAdd, onStatus, saved, onRemove,
                 <Segs
                   value={proxy}
                   onChange={setProxy}
-                  options={[
-                    { v: "", label: t("Global proxy") },
-                    { v: "direct", label: t("Direct") },
-                    { v: "custom", label: t("Custom") },
+                  items={[
+                    { id: "", label: t("Global proxy") },
+                    { id: "direct", label: t("Direct") },
+                    { id: "custom", label: t("Custom") },
                   ]}
                 />
                 {proxy === "custom" ? (
@@ -1669,11 +1644,11 @@ function ProviderEditorModal({ state, onClose, onAdd, onStatus, saved, onRemove,
                 <Segs
                   value={authHdr}
                   onChange={setAuthHdr}
-                  options={[
-                    { v: "", label: ZH.both },
-                    { v: "x-api-key", label: "x-api-key" },
+                  items={[
+                    { id: "", label: ZH.both },
+                    { id: "x-api-key", label: "x-api-key" },
                     {
-                      v: "bearer",
+                      id: "bearer",
                       label: "Authorization: Bearer",
                     },
                   ]}

@@ -1,3 +1,8 @@
+## v0.1.122 CIS_PROVIDERS_SEGS_PREFROW
+- Providers editor Region / API / Proxy / Key header use shared `Segs` + Magpie thumb (`useSegThumb`), not page-local `.opt` strip.
+- NestedBlocks Proxy + Daily warm-up use CIS `PrefRow` / `TextBtn` (`PrefRow.afterWho` for `#proxyCheck`).
+- `SIDE_AT=1024` only; no `WEB_SIDE_AT`. chrome-guard pass. Push/PR; no portable / Vercel.
+
 ## v0.1.119 APPEARANCE_THEMING + TOP_SEG_THUMB
 - Appearance theme switch: Magpie `html.theming` **.35s** / clear **450ms** via `applyDocumentTheme` (sync `data-theme` same turn as Magpie `applyPrefs` app.js ~20581–20590; CSS app.css ~3233–3236).
 - Top-bar `#nav.seg > .thumb` selected pill: `--seg-thumb` / `--seg-edge` (Magpie app.css ~227–232); Appearance `.segs > .thumb` keeps Magpie `.thumb` base `--card` (~2798–2804). SIDE_AT=1024 top tabs.

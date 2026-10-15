@@ -8,6 +8,7 @@ export function PrefRow({
   name,
   sub,
   subTitle,
+  afterWho,
   children,
   id,
   hidden,
@@ -17,6 +18,8 @@ export function PrefRow({
   name: string;
   sub?: ReactNode;
   subTitle?: string;
+  /** Extra sibling nodes under `.who` (e.g. Magpie `#proxyCheck` second `.sub`). */
+  afterWho?: ReactNode;
   children?: ReactNode;
   id?: string;
   hidden?: boolean;
@@ -35,6 +38,7 @@ export function PrefRow({
             {sub}
           </div>
         ) : null}
+        {afterWho}
       </div>
       {children != null ? (
         <div className={`val${valClassName ? ` ${valClassName}` : ""}`}>{children}</div>

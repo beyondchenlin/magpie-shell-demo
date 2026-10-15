@@ -2,6 +2,8 @@ import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "re
 import { createPortal } from "react-dom";
 import { ModelPop, PrefPickChip, type PopOption } from "../../components/ModelPop";
 import { PrefPick } from "../../components/PrefPick";
+import { PrefRow } from "../../components/PrefRow";
+import { TextBtn } from "../../components/TextBtn";
 import { Segs } from "../../components/Segs";
 import { Tick } from "../../components/Tick";
 import { WordsField } from "../../components/WordsField";
@@ -165,15 +167,9 @@ export function DailyWarmRow({
   sub: string;
 }) {
   return (
-    <div className="row pref">
-      <div className="who">
-        <div className="name">{t("Daily warm-up")}</div>
-        <div className="sub" title={sub}>{sub}</div>
-      </div>
-      <div className="val">
-        <WarmAt ats={ats} onChange={onChange} />
-      </div>
-    </div>
+    <PrefRow name={t("Daily warm-up")} sub={sub} subTitle={sub}>
+      <WarmAt ats={ats} onChange={onChange} />
+    </PrefRow>
   );
 }
 
@@ -215,18 +211,16 @@ export function ProxyBlock({
         : t("No system proxy found; requests to vendors without a proxy of their own, and update checks, go direct");
 
   return (
-    <div className="row pref">
-      <div className="who">
-        <div className="name">{t("Proxy")}</div>
-        <div className="sub">{sub}</div>
-        {testLine ? <div className="sub" id="proxyCheck">{testLine}</div> : null}
-      </div>
-      <div className="val">
+    <PrefRow
+      name={t("Proxy")}
+      sub={sub}
+      afterWho={testLine ? <div className="sub" id="proxyCheck">{testLine}</div> : null}
+    >
         <div className="proxy-segs" id="proxySegs">
           <div className="proxy-controls">
-            <button type="button" className="text proxy-test" title={t("Ask Cloudflare through the proxy and direct, and compare the addresses the two leave from")} onClick={onTest}>
+            <TextBtn className="proxy-test" title={t("Ask Cloudflare through the proxy and direct, and compare the addresses the two leave from")} onClick={onTest}>
               {t("Test")}
-            </button>
+            </TextBtn>
             {mode === "custom" ? (
               <input
                 className="proxy"
@@ -269,12 +263,11 @@ export function ProxyBlock({
                 onChange={(e) => onPass(e.target.value)}
                 onBlur={onSave}
               />
-              <button type="button" className="text" onClick={onSave}>{t("Save")}</button>
+              <TextBtn onClick={onSave}>{t("Save")}</TextBtn>
             </div>
           ) : null}
         </div>
-      </div>
-    </div>
+    </PrefRow>
   );
 }
 
