@@ -316,3 +316,80 @@ Click (or Enter while the row Remove has the blue focus ring) opens an in-window
 Plugins, **Installed** with no count. Empty: No plugins yet / Discover plugins. Search empty. Mirror **Off**. Think Tags removed. Options were never saved. Discover plugins not clicked. No credential. Magpie left running (752×652 at +200+40, pid 560329). Close was not used.
 
 Not frozen: **Removing…** (row already gone by the next 8 fps frame). Not in this slice: Options **Save** (editor only Cancelled in 83; plugin now gone), sort header (needs more than one plugin), Switch off (41–54). P1 N/A.
+
+
+## Installed — reinstall, sort, Options Save (shots 104–138)
+
+Same window as 91–103: still **752×652 at +200+40**, pid 560329. Not relaunched. Started on Plugins, **Installed** empty (103). Search empty. Mirror **Off**. No credential. Switch off not used. Remove not used. Check for updates not clicked. Clear was opened and **not** committed.
+
+Think Tags came back from Discover's Suggested card (search `think`), not the detail dialog (61–65) and not the manual row. Word Guard was installed the same way so the sort header would show (it is absent with one plugin). Bun was already on disk: the busy label is **Installing…** with a spinner on the card, not Getting Bun…. No confirm, no second window. The card then shows a green check **Installed**. Toast is a green pill, no buttons, lower left, and it leaves by itself.
+
+| shot | what |
+|---|---|
+| 104 | Empty Installed. Pointer on **Discover plugins** (purple pill). |
+| 105 | **Discover** selected. Intro "Subscriptions and gateway middleware". Subscriptions: OpenCode Zen Free, ZCode. Search empty. **Installed** has no count. |
+| 106 | Search `think` (purple ring, clear ×). **Suggested**: Think Tags, magpie community, Middleware, 159/week, v0.1.0. **Install** is a pale pill. |
+| 107 | Pointer on **Install**. Pill fills solid purple. No tooltip. |
+| 108 | **Installing…** pale pill with a spinner. Field still `think`. Tab still no count. |
+| 109 | Tab **Installed · 1**. Card **Installed** (green check). Green toast, no buttons: **Think Tags is installed**. |
+| 110 | Search replaced with `word`. **Suggested**: Word Guard, Middleware, 403/week, v0.1.1. Install pale. Tab **Installed · 1**. |
+| 111 | Pointer on Word Guard **Install**. Solid purple. No tooltip. |
+| 112 | **Installing…** with spinner. |
+| 113 | Tab **Installed · 2**. Card **Installed**. Green toast: **Word Guard is installed**. |
+| 114 | Toast gone. Card stays **Installed**. Discover, search still `word`. |
+
+## Sort header (shots 115–121)
+
+Two rows, so the header is there: a segmented control on the right, **A→Z** (white pill, selected) and **Z→A** (plain). Tips are native windows, one line, fully inside the Magpie window, drawn over the first row's **Switch off** / **Remove**.
+
+The Installed list was not filtered by the leftover Discover query: both rows showed while the field still said `word`. Clicking that field's clear × emptied it and the tab became **Discover** (intro back, search focused). Installed · 2 was opened again from the tab; search empty.
+
+| shot | what |
+|---|---|
+| 115 | Installed · 2. Search still `word`. **A→Z** selected. Order: Think Tags v0.1.0 (chip **Up to date**, Middleware, onEvent, onResponse), then Word Guard v0.1.1 (no chip, Middleware, onRequest, onEvent, onResponse). Footer **Plugins run on Bun 1.4.3**, **Check for updates**. |
+| 116 | Clear ×. Discover landing. Search empty and focused. Tab **Installed · 2** not selected. |
+| 117 | Installed · 2 again. Search empty. **A→Z**. Same two rows. |
+| 118 | Pointer on **A→Z**. Tip: **Names from A to Z**. |
+| 119 | Pointer on **Z→A**. Tip: **Names from Z to A**. |
+| 120 | **Z→A** selected (white pill). Order flips: Word Guard, then Think Tags. |
+| 121 | **A→Z** clicked again. Think Tags, then Word Guard. |
+
+## Options Save (shots 122–138)
+
+Think Tags only. Word Guard's Options was not opened. Save has no tooltip. Unsaved editor matches 83, plus the second row and the sort header: JSON `{ "mode": "strip" }`, note **Not set: these are its package's example**, **Cancel**, purple **Save**. No **Clear** until something is saved.
+
+| shot | what |
+|---|---|
+| 122 | Pointer on **Options**. Hover pill. Tip: **It runs with no options; its package suggests some**. |
+| 123 | Editor open. Example JSON. Note as above. No Clear. |
+| 124 | Pointer on **Save**. No tooltip. |
+| 125 | Field replaced with `{` only. Note unchanged. Save not yet clicked. |
+| 126 | **Save**. Editor stays. Red line under the field: **Not JSON: JSON Parse error: Expected '}'**. Note still **Not set: these are its package's example**. |
+| 127 | **Escape** (field focused). Editor gone. **Options** is back. No toast. Nothing saved. |
+| 128 | Options opened again. Example JSON is back, not `{`. |
+| 129 | **Save** on that example. Editor gone in the same step (no Saving… label). Green toast, no buttons: **Think Tags's options saved**. Rows back. Sort still **A→Z**. |
+| 130 | Toast gone. Row unchanged (chip **Up to date** stays). |
+| 131 | Pointer on **Options**. Tip is now **The options it runs with**. |
+| 132 | Editor again. Same JSON. Note **Applied to the next request**. **Clear** sits between the note and **Cancel**. |
+| 133 | Pointer on **Clear**. Tip: **Runs it with no options** (over Word Guard's subtitle; full string inside the window). |
+| 134 | Click. In-window confirm, page dimmed, not a second window. Title **Clear**. Body: **Saved middleware options will be removed. The plugin will run with no options.** **Cancel** (blue focus ring) and a red **Clear**. |
+| 135 | Pointer on **Cancel**. Ring stays on Cancel. No tooltip. |
+| 136 | Pointer on the red **Clear**. Ring stays on Cancel. No tooltip. Not clicked. |
+| 137 | **Escape**. Confirm gone. Options not cleared. Editor still open, note still **Applied to the next request**. Focus ring is on the row **Clear**. |
+| 138 | Editor **Cancel**. Editor gone. No toast. Installed · 2, **A→Z**, both plugins. |
+
+## Left state
+
+Plugins, **Installed · 2**. Think Tags v0.1.0 (middleware, on, chip **Up to date**) and Word Guard v0.1.1 (middleware, on, no chip). Sort **A→Z**. Think Tags options saved as the example `{ "mode": "strip" }` (reopen said **Applied to the next request**). Clear was not committed. Search empty. Mirror **Off**. Switch off not used. Remove not used. Check for updates not clicked. No credential. Magpie left running (752×652 at +200+40, pid 560329). Close was not used.
+
+Not in this slice: Clear's red button (confirm only; Escape), Ctrl+Enter save (not pressed), Switch off (41–54), Remove (91–103), Word Guard's own Options, Check for updates. P1 N/A.
+
+
+## demo 对齐（v0.1.71 PLUGINS_104_138）
+- Reinstall Think Tags + Word Guard via Discover Suggested (search think/word) → Installed · 2; busy **Installing…** (Bun on disk)
+- Sort A→Z / Z→A tips + reorder; search clear × → Discover focused
+- Options: unsaved tip / example JSON / `{` → **Not JSON: JSON Parse error: Expected '}'** / Escape discard / Save toast **{name}'s options saved** / tip **The options it runs with** / reopen Applied + Clear
+- Clear confirm Escape cancel; Editor Cancel; Clear red commit not frozen (left uncommitted in native)
+- Seed left state: Think Tags optsSaved strip + Word Guard; P1 N/A
+
+Next: Gateway deep. Plugins Options Save is recorded; Clear remains uncommitted on purpose.

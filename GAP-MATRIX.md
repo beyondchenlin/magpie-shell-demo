@@ -1,3 +1,8 @@
+## v0.1.71 PLUGINS_104_138
+- plugins/104–138: Discover reinstall Think Tags + Word Guard; sort header tips/reorder; search clear × → Discover; Options Save/Escape/Not JSON/Clear confirm Escape; tip **The options it runs with**.
+- Demo: optsDraft discard; Save toast `{name}'s options saved`; Installing… when bunReady; Clear confirm mirrors Remove confirmAction.
+- Allowances **N/A**. Skip Vercel 402. P1: live gateway bird, true OAuth/key persist.
+
 ## v0.1.70 PLUGINS_91_103
 - plugins/91–103 Think Tags Remove confirm: tip → confirm → Escape/Cancel/dim dismiss + focus return; Tab to red Remove; commit → empty + **Think Tags removed** toast; Bun 1.4.3.
 - Demo: Magpie `confirmAction` (`showModal` + Tab trap + backdropClick + previousFocus); no Removing… delay on middleware path.

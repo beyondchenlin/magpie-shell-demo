@@ -1867,6 +1867,7 @@ const DEMO_MARKET = [
     note: "runs in magpie's gateway on what every agent sends and gets back, whichever provider serves it",
     cards: [
       { pkg: "@magpie-community/middleware-think-tags", name: "Think Tags", summary: "Take a model's <think>...</think> out of its reply's text, or put a Chat reply's reasoning into it.", downloads: "159/week", ver: "v0.1.0", community: true, kind: "Middleware", updated: "Oct 6, 2026", readme: "Magpie gateway middleware for <think> tags.\n\n## Install\n```\nmagpie plugin add @magpie-community/middleware-think-tags\n```\n\n## Options\n```\n{ \"mode\": \"strip\" }\n```" },
+      { pkg: "@magpie-community/middleware-word-guard", name: "Word Guard", summary: "Block or rewrite words in what every agent sends and gets back.", downloads: "403/week", ver: "v0.1.1", community: true, kind: "Middleware", updated: "Oct 8, 2026", readme: "Magpie gateway middleware word guard.\n\n## Install\n```\nmagpie plugin add @magpie-community/middleware-word-guard\n```" },
       { pkg: "@magpie-community/demo-request-log", name: "Request logger", summary: "Logs each gateway call's request and reply — demo fold for options JSON.", downloads: "1.4k/week", ver: "v0.1.0", community: true, kind: "Middleware" },
     ],
   },
@@ -1902,6 +1903,8 @@ const DEMO_MARKET = [
 
 /** Magpie searchNPM Suggested hits (shots 20–24) — demo filter, 350ms debounce. */
 const DEMO_NPM = [
+  { pkg: "@magpie-community/middleware-think-tags", name: "Think Tags", summary: "Take a model's <think>...</think> out of its reply's text, or put a Chat reply's reasoning into it.", downloads: "159/week", ver: "v0.1.0", kind: "Middleware", q: "think tags", community: true, updated: "Oct 6, 2026" },
+  { pkg: "@magpie-community/middleware-word-guard", name: "Word Guard", summary: "Block or rewrite words in what every agent sends and gets back.", downloads: "403/week", ver: "v0.1.1", kind: "Middleware", q: "word guard", community: true, updated: "Oct 8, 2026" },
   { pkg: "@magpie-community/opencode-zen-free", name: "OpenCode Zen Free", summary: "OpenCode Zen's free models with the public credential, automatic discovery and native streaming protocols.", downloads: "3.0k/week", ver: "v0.1.1", kind: "Provider", q: "opencode", signsIn: "opencode-zen-free", updated: "Oct 10, 2026" },
   { pkg: "@magpie-community/opencode-zcode-auth", name: "ZCode", summary: "Z.ai and BigModel GLM Coding Plan, team seats and ZCode's free Start Plan.", downloads: "9.0k/week", ver: "v0.1.18", kind: "Provider", builtin: true, q: "opencode zcode" },
   { pkg: "@magpie-community/opencode-qoder-auth", name: "Qoder", summary: "Your Qoder subscription, international (qoder.com) or Qoder CN (qoder.cn).", downloads: "5.6k/week", ver: "v0.2.15", kind: "Provider", builtin: true, q: "opencode qoder" },
@@ -1976,6 +1979,8 @@ export function PluginsView({
       checkStatus?: "current" | "update" | "unknown";
       optsOpen?: boolean;
       opts?: string;
+      /** Editor draft while Options open; Escape/Cancel discards (shots 125–128). */
+      optsDraft?: string;
       optsErr?: string;
       optsSaved?: boolean;
       /** Magpie movable: built-in subscription names this plugin can/does serve */
@@ -1983,13 +1988,24 @@ export function PluginsView({
       moved?: string[];
     }[]
   >([
-    /* CU 71+: Think Tags left installed (middleware Options nest 81–83). Shot 18 empty was pre-install. */
+    /* plugins/104–138 left: Installed · 2, Think Tags options saved as example, Word Guard on, A→Z */
     {
       pkg: "@magpie-community/middleware-think-tags",
       name: "Think Tags",
       ver: "v0.1.0",
       kind: "Middleware",
       opts: '{\n  "mode": "strip"\n}',
+      optsOpen: false,
+      optsSaved: true,
+      checkStatus: "current",
+      optsDraft: undefined,
+    },
+    {
+      pkg: "@magpie-community/middleware-word-guard",
+      name: "Word Guard",
+      ver: "v0.1.1",
+      kind: "Middleware",
+      opts: "",
       optsOpen: false,
       optsSaved: false,
     },
@@ -2009,6 +2025,19 @@ export function PluginsView({
   /** Magpie confirmAction: restore focus to the row Remove that opened it (shots 94/97/100). */
   const removeFocusRef = useRef<HTMLButtonElement | null>(null);
   const removeDialogRef = useRef<HTMLDialogElement | null>(null);
+  /** Magpie plugins/134–137 Clear options confirm; Escape cancels, editor stays. */
+  const [clearConfirm, setClearConfirm] = useState<{ pkg: string; name: string } | null>(null);
+  const clearFocusRef = useRef<HTMLButtonElement | null>(null);
+  const clearDialogRef = useRef<HTMLDialogElement | null>(null);
+  const searchInputRef = useRef<HTMLInputElement | null>(null);
+  /** Bun on disk (footer 1.4.3); after first install → Installing… (104–113), not Getting Bun…. */
+  const [bunReady, setBunReady] = useState(() => {
+    try {
+      if (localStorage.getItem("magpie.bunReady") === "1") return true;
+    } catch { /* */ }
+    /* Seeded Installed · 2 (104–138) ⇒ Bun already present */
+    return true;
+  });
   const [checkingUpdates, setCheckingUpdates] = useState(false);
   const [lastCheckedAt, setLastCheckedAt] = useState<string | null>(null);
   const [pluginDetail, setPluginDetail] = useState<(typeof DEMO_MARKET)[number]["cards"][number] | null>(null);
@@ -2073,6 +2102,33 @@ export function PluginsView({
       if (dialog.open) dialog.close();
     };
   }, [removeConfirm]);
+
+  // Magpie Clear options confirm (shots 134–137): Cancel focused; Escape keeps editor
+  useEffect(() => {
+    if (!clearConfirm) return;
+    const dialog = clearDialogRef.current;
+    if (!dialog) return;
+    const cancelBtn = dialog.querySelector<HTMLButtonElement>("button.text:not(.danger-fill)");
+    const acceptBtn = dialog.querySelector<HTMLButtonElement>("button.danger-fill");
+    const onKey = (event: KeyboardEvent) => {
+      event.stopPropagation();
+      if (event.key !== "Tab") return;
+      const boundary = event.shiftKey ? cancelBtn : acceptBtn;
+      if (document.activeElement !== boundary) return;
+      event.preventDefault();
+      (event.shiftKey ? acceptBtn : cancelBtn)?.focus();
+    };
+    dialog.addEventListener("keydown", onKey);
+    const raf = requestAnimationFrame(() => {
+      if (!dialog.open) dialog.showModal();
+      cancelBtn?.focus({ preventScroll: true });
+    });
+    return () => {
+      cancelAnimationFrame(raf);
+      dialog.removeEventListener("keydown", onKey);
+      if (dialog.open) dialog.close();
+    };
+  }, [clearConfirm]);
 
   // Magpie askNPM: 350ms debounce, then brief plugins/search loading (hits.loading → skeleton)
   useEffect(() => {
@@ -2147,6 +2203,8 @@ export function PluginsView({
           : [...list, { pkg, name, ver: meta.ver, kind: meta.kind, opts: "", optsOpen: false }],
       );
       setBusy(null);
+      setBunReady(true);
+      try { localStorage.setItem("magpie.bunReady", "1"); } catch { /* */ }
       const signToast = pluginNeedsSignIn(pkg);
       onStatus?.(
         signToast ? t("{name} is installed — sign in to use it", { name }) : t("{name} is installed", { name }),
@@ -2158,10 +2216,11 @@ export function PluginsView({
 
   const installAct = (pkg: string, has: boolean) => {
     if (busy === pkg) {
+      /* Magpie 104–113: Bun on disk → Installing… + spinner on card (not Getting Bun…). */
       return (
         <>
           <span className="spin" aria-hidden />
-          <span>{t("Getting Bun…")}</span>
+          <span>{bunReady ? t("Installing…") : t("Getting Bun…")}</span>
         </>
       );
     }
@@ -2255,6 +2314,7 @@ export function PluginsView({
               <path d="m10.5 10.5 3 3" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
             </svg>
             <input
+              ref={searchInputRef}
               type="search"
               spellCheck={false}
               autoComplete="off"
@@ -2267,9 +2327,28 @@ export function PluginsView({
               }}
               onKeyDown={(e) => {
                 e.stopPropagation();
-                if (e.key === "Escape" && query) setQuery("");
+                if (e.key === "Escape" && query) {
+                  setQuery("");
+                  setTab("discover");
+                }
               }}
             />
+            {query ? (
+              <button
+                type="button"
+                className="pm-find-clear"
+                aria-label={t("Clear")}
+                title={t("Clear")}
+                onClick={() => {
+                  /* Magpie 116: clear × from Installed leftover query → Discover landing, search focused */
+                  setQuery("");
+                  setTab("discover");
+                  requestAnimationFrame(() => searchInputRef.current?.focus({ preventScroll: true }));
+                }}
+              >
+                ×
+              </button>
+            ) : null}
           </label>
         ) : null}
       </div>
@@ -2573,10 +2652,17 @@ export function PluginsView({
                         <div className="pm-words" style={{ flex: 1, minWidth: 0 }}>
                           <b style={{ fontSize: 13 }}>{c.name}</b>
                           {c.builtin ? <span className="pm-chip" style={{ marginLeft: 6, fontSize: 10.5 }}>{t("Also built in")}</span> : null}
+                          {"community" in c && (c as { community?: boolean }).community ? (
+                            <div className="pm-by" style={{ fontSize: 11, color: "var(--green)", marginTop: 2 }}>
+                              {t("magpie community")}
+                            </div>
+                          ) : null}
                           <p style={{ margin: "4px 0 0", fontSize: 12, color: "var(--muted)", lineHeight: 1.45 }}>{c.summary}</p>
-                          <div style={{ marginTop: 6, fontSize: 11, color: "var(--faint)" }}>
-                            {c.kind} · {c.downloads} · {c.ver}
-                            {mirror ? ` · ${t("via China mirrors")}` : ""}
+                          <div style={{ marginTop: 6, fontSize: 11, color: "var(--faint)", display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
+                            {c.kind ? <span className="pm-chip">{t(c.kind)}</span> : null}
+                            <span>{c.downloads}</span>
+                            <span className="pm-ver">{c.ver}</span>
+                            {mirror ? <span>{t("via China mirrors")}</span> : null}
                           </div>
                         </div>
                         <button
@@ -2859,24 +2945,40 @@ export function PluginsView({
                                     </span>
                                   )
                                 : e.kind === "Middleware"
-                                  ? t("Gateway middleware: onEvent, onResponse")
+                                  ? t("Gateway middleware: {hooks}", {
+                                      hooks: e.pkg.includes("word-guard")
+                                        ? "onRequest, onEvent, onResponse"
+                                        : "onEvent, onResponse",
+                                    })
                                   : null}
                       </div>
                       {e.optsOpen ? (
                         <div className="pm-opts">
                           <textarea
                             aria-label={t("Options")}
-                            rows={Math.min(10, Math.max(4, (e.opts || "").split("\n").length + 1))}
+                            rows={Math.min(10, Math.max(4, ((e.optsDraft ?? e.opts) || "").split("\n").length + 1))}
                             placeholder={e.pkg.includes("think-tags") ? '{\n  "mode": "strip"\n}' : '{\n  "hooks": ["request", "response"],\n  "onEvent": ["error"]\n}'}
-                            value={e.opts || (e.pkg.includes("think-tags") ? '{\n  "mode": "strip"\n}' : '{\n  "hooks": ["request", "response"],\n  "onEvent": ["error"]\n}')}
+                            value={
+                              e.optsDraft ??
+                              (e.opts ||
+                                (e.pkg.includes("think-tags")
+                                  ? '{\n  "mode": "strip"\n}'
+                                  : '{\n  "hooks": ["request", "response"],\n  "onEvent": ["error"]\n}'))
+                            }
                             onChange={(ev) =>
                               setInstalled((list) =>
-                                list.map((x) => (x.pkg === e.pkg ? { ...x, opts: ev.target.value, optsErr: "" } : x)),
+                                list.map((x) => (x.pkg === e.pkg ? { ...x, optsDraft: ev.target.value, optsErr: "" } : x)),
                               )
                             }
                             onKeyDown={(ev) => {
                               if (ev.key === "Escape") {
-                                setInstalled((list) => list.map((x) => (x.pkg === e.pkg ? { ...x, optsOpen: false } : x)));
+                                /* Magpie 127: Escape discards draft; no toast; reopen shows example again */
+                                if (clearConfirm) return;
+                                setInstalled((list) =>
+                                  list.map((x) =>
+                                    x.pkg === e.pkg ? { ...x, optsOpen: false, optsDraft: undefined, optsErr: "" } : x,
+                                  ),
+                                );
                               }
                             }}
                           />
@@ -2891,11 +2993,11 @@ export function PluginsView({
                             <button
                               type="button"
                               className="text quiet"
-                              onClick={() =>
-                                setInstalled((list) =>
-                                  list.map((x) => (x.pkg === e.pkg ? { ...x, opts: "", optsSaved: false, optsErr: "" } : x)),
-                                )
-                              }
+                              title={t("Runs it with no options")}
+                              onClick={(ev) => {
+                                clearFocusRef.current = ev.currentTarget;
+                                setClearConfirm({ pkg: e.pkg, name: e.name });
+                              }}
                             >
                               {t("Clear")}
                             </button>
@@ -2904,7 +3006,11 @@ export function PluginsView({
                               type="button"
                               className="text"
                               onClick={() =>
-                                setInstalled((list) => list.map((x) => (x.pkg === e.pkg ? { ...x, optsOpen: false } : x)))
+                                setInstalled((list) =>
+                                  list.map((x) =>
+                                    x.pkg === e.pkg ? { ...x, optsOpen: false, optsDraft: undefined, optsErr: "" } : x,
+                                  ),
+                                )
                               }
                             >
                               {t("Cancel")}
@@ -2914,19 +3020,45 @@ export function PluginsView({
                               className="text primary"
                               onClick={() => {
                                 try {
-                                  const raw = e.opts || "{}";
+                                  const raw =
+                                    e.optsDraft ??
+                                    (e.opts ||
+                                      (e.pkg.includes("think-tags") ? '{\n  "mode": "strip"\n}' : "{}"));
                                   const v = JSON.parse(raw);
-                                  if (!v || typeof v !== "object" || Array.isArray(v)) throw new Error(t("Options are a JSON object"));
+                                  if (!v || typeof v !== "object" || Array.isArray(v)) {
+                                    throw new Error("JSON Parse error: Expected '}'");
+                                  }
                                   setInstalled((list) =>
                                     list.map((x) =>
-                                      x.pkg === e.pkg ? { ...x, optsSaved: true, optsErr: "", optsOpen: false } : x,
+                                      x.pkg === e.pkg
+                                        ? {
+                                            ...x,
+                                            opts: raw,
+                                            optsSaved: true,
+                                            optsErr: "",
+                                            optsOpen: false,
+                                            optsDraft: undefined,
+                                          }
+                                        : x,
                                     ),
                                   );
+                                  /* Magpie 129: editor gone same step; toast Think Tags's options saved */
+                                  onStatus?.(t("{name}'s options saved", { name: e.name }), "ok", 3200);
                                 } catch (err) {
                                   const msg = err instanceof Error ? err.message : String(err);
+                                  /* Magpie 126: Not JSON: JSON Parse error: Expected '}' */
+                                  let detail = msg;
+                                  const draft = (e.optsDraft ?? e.opts ?? "").trim();
+                                  if (!detail.startsWith("JSON Parse error:")) {
+                                    if (msg.includes("Expected") || draft === "{") {
+                                      detail = "JSON Parse error: Expected '}'";
+                                    } else {
+                                      detail = `JSON Parse error: ${msg}`;
+                                    }
+                                  }
                                   setInstalled((list) =>
                                     list.map((x) =>
-                                      x.pkg === e.pkg ? { ...x, optsErr: t("Not JSON: {error}", { error: msg }) } : x,
+                                      x.pkg === e.pkg ? { ...x, optsErr: t("Not JSON: {error}", { error: detail }) } : x,
                                     ),
                                   );
                                 }
@@ -2936,7 +3068,11 @@ export function PluginsView({
                             </button>
                           </div>
                           <div className="sub pm-mw" style={{ marginTop: 2 }}>
-                            {t("Gateway middleware: {hooks}", { hooks: "request, response" })}
+                            {t("Gateway middleware: {hooks}", {
+                              hooks: e.pkg.includes("word-guard")
+                                ? "onRequest, onEvent, onResponse"
+                                : "onEvent, onResponse",
+                            })}
                             {" · "}
                             {t("{n} calls, {us} µs each", { n: "0", us: "0" })}
                           </div>
@@ -3049,10 +3185,21 @@ export function PluginsView({
                         <button
                           type="button"
                           className="text"
-                          title={e.optsSaved ? t("Change the options it runs with") : t("It runs with no options; its package suggests some")}
+                          title={e.optsSaved ? t("The options it runs with") : t("It runs with no options; its package suggests some")}
                           onClick={() =>
                             setInstalled((list) =>
-                              list.map((x) => (x.pkg === e.pkg ? { ...x, optsOpen: true } : x)),
+                              list.map((x) => {
+                                if (x.pkg !== e.pkg) return x;
+                                const example = x.pkg.includes("think-tags")
+                                  ? '{\n  "mode": "strip"\n}'
+                                  : '{\n  "hooks": ["request", "response"],\n  "onEvent": ["error"]\n}';
+                                return {
+                                  ...x,
+                                  optsOpen: true,
+                                  optsDraft: x.optsSaved && x.opts ? x.opts : example,
+                                  optsErr: "",
+                                };
+                              }),
                             )
                           }
                         >
@@ -3216,6 +3363,81 @@ export function PluginsView({
               }}
             >
               {t("Remove")}
+            </button>
+          </div>
+        </dialog>
+      ) : null}
+
+      {clearConfirm ? (
+        <dialog
+          ref={clearDialogRef}
+          className="action-confirm"
+          role="alertdialog"
+          aria-labelledby="pluginClearTitle"
+          aria-describedby="pluginClearMsg"
+          style={{ zIndex: 50 }}
+          onCancel={(e) => {
+            /* Magpie 137: Escape — confirm gone; Options not cleared; editor still open; focus on Clear */
+            e.preventDefault();
+            const prev = clearFocusRef.current;
+            setClearConfirm(null);
+            requestAnimationFrame(() => {
+              if (prev?.isConnected) prev.focus({ preventScroll: true });
+            });
+          }}
+          onClick={(e) => {
+            const dialog = e.currentTarget;
+            const rect = dialog.getBoundingClientRect();
+            if (
+              e.target === dialog &&
+              (e.clientX < rect.left || e.clientX > rect.right || e.clientY < rect.top || e.clientY > rect.bottom)
+            ) {
+              const prev = clearFocusRef.current;
+              setClearConfirm(null);
+              requestAnimationFrame(() => {
+                if (prev?.isConnected) prev.focus({ preventScroll: true });
+              });
+            }
+          }}
+        >
+          <h2 id="pluginClearTitle">{t("Clear")}</h2>
+          <p id="pluginClearMsg">
+            {t("Saved middleware options will be removed. The plugin will run with no options.")}
+          </p>
+          <div className="bar">
+            <span className="grow" />
+            <button
+              type="button"
+              className="text"
+              onClick={() => {
+                const prev = clearFocusRef.current;
+                setClearConfirm(null);
+                requestAnimationFrame(() => {
+                  if (prev?.isConnected) prev.focus({ preventScroll: true });
+                });
+              }}
+            >
+              {t("Cancel")}
+            </button>
+            <button
+              type="button"
+              className="text primary danger-fill"
+              onClick={() => {
+                const pkg = clearConfirm.pkg;
+                const example = pkg.includes("think-tags")
+                  ? '{\n  "mode": "strip"\n}'
+                  : '{\n  "hooks": ["request", "response"],\n  "onEvent": ["error"]\n}';
+                setClearConfirm(null);
+                setInstalled((list) =>
+                  list.map((x) =>
+                    x.pkg === pkg
+                      ? { ...x, opts: "", optsSaved: false, optsDraft: example, optsErr: "", optsOpen: true }
+                      : x,
+                  ),
+                );
+              }}
+            >
+              {t("Clear")}
             </button>
           </div>
         </dialog>

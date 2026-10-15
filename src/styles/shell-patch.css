@@ -325,6 +325,14 @@ body.web.side-nav {
 .pm-find { display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 10px; border-radius: 8px; background: var(--pill); min-width: 180px; max-width: 260px; transition: background .12s var(--ease), box-shadow .12s var(--ease); }
 .pm-find:focus-within { background: var(--card); box-shadow: inset 0 0 0 1px var(--accent), 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent); }
 .pm-find input { flex: 1; min-width: 0; border: 0; outline: none; background: none; color: var(--fg); font: inherit; font-size: 12.5px; }
+.pm-find input[type="search"]::-webkit-search-cancel-button { -webkit-appearance: none; appearance: none; display: none; }
+.pm-find-clear {
+  flex: none; width: 18px; height: 18px; padding: 0; border: 0; border-radius: 5px;
+  background: transparent; color: var(--muted); font-size: 14px; line-height: 1; cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center;
+  transition: background .12s var(--ease), color .12s var(--ease);
+}
+.pm-find-clear:hover { background: var(--pill-hover); color: var(--fg); }
 .pm-body { display: flex; flex-direction: column; gap: 18px; padding: 10px 0 18px; }
 .pm-body.enter { animation: view-in .24s var(--ease); }
 .pm-intro { display: flex; gap: 14px; align-items: flex-start; padding: 4px 2px 2px; }
@@ -694,4 +702,150 @@ body.web.side-nav {
 .lib-skillhow .opt .spin {
   width: 11px; height: 11px; border: 1.5px solid color-mix(in srgb, var(--fg) 35%, transparent);
   border-top-color: var(--fg); border-radius: 50%; animation: spin .7s linear infinite; box-sizing: border-box;
+}
+
+
+/* —— RESPONSIVE WEB (phoneWeb + framed 660) ——
+   Magpie app.css already has phoneWeb @ 760 / coarse×1024.
+   Demo shell-patch inrow + framed #root must not fight it. */
+
+/* Desktop web marketing chrome: 660×600 card (window_rule). Keep. */
+/* Below 720: full viewport (Magpie phoneWeb). */
+@media (max-width: 719px) {
+  body.web {
+    background: var(--bg);
+  }
+  body.web #root {
+    width: 100% !important;
+    height: 100% !important;
+    max-width: none !important;
+    max-height: none !important;
+    margin: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+  }
+}
+
+/* Phone / narrow browser: override demo inrow so Magpie #nav row wraps */
+@media (max-width: 760px), (pointer: coarse) and (max-width: 1024px) {
+  body.web:not(.side-nav) .top.inrow {
+    height: auto;
+    min-height: 48px;
+    flex-wrap: wrap;
+    gap: 4px 8px;
+    align-items: center;
+  }
+  body.web:not(.side-nav) .top.inrow .seg,
+  body.web:not(.side-nav) .top.inrow #nav {
+    position: relative !important;
+    left: auto !important;
+    top: auto !important;
+    transform: none !important;
+    order: 3;
+    flex: 0 0 100% !important;
+    margin: 0 !important;
+    min-width: 0;
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+  }
+  body.web:not(.side-nav) .top.inrow .seg::-webkit-scrollbar,
+  body.web:not(.side-nav) .top.inrow #nav::-webkit-scrollbar { display: none; }
+  body.web:not(.side-nav) .top.inrow .seg button,
+  body.web:not(.side-nav) .top.inrow #nav button {
+    flex: none;
+    height: 40px;
+    padding: 0 14px;
+    font-size: 14px;
+  }
+  body.web:not(.side-nav) .top.inrow .brand,
+  body.web:not(.side-nav) .top.inrow .actions {
+    min-height: 40px;
+    align-items: center;
+  }
+  body.web:not(.side-nav) .top.tight .brand > span:not(.logo) { display: none; }
+
+  /* Demo toolbars that used fixed mins */
+  body.web .pm-find,
+  body.web .pm-ghfind {
+    min-width: 0;
+    max-width: 100%;
+    flex: 1 1 140px;
+  }
+  body.web .pm-minput { min-width: 0; flex: 1 1 120px; }
+  body.web .pm-manual { flex-wrap: wrap; }
+  body.web .pm-head,
+  body.web .lib-head {
+    flex-wrap: wrap;
+    height: auto;
+    min-height: 36px;
+    gap: 6px 8px;
+  }
+  body.web .lib-tabs,
+  body.web .pm-tabs,
+  body.web .lib-headacts {
+    flex-wrap: wrap;
+    max-width: 100%;
+    min-width: 0;
+  }
+  body.web .lib-headacts {
+    display: flex;
+    gap: 4px 10px;
+    width: 100%;
+    justify-content: flex-start;
+  }
+  body.web .pm-ghbar {
+    flex-direction: column;
+    align-items: stretch !important;
+  }
+  body.web .pm-ghkinds {
+    max-width: 100%;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  body.web .pm-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+  body.web .pm-intro {
+    flex-direction: column;
+  }
+  body.web .pm-art { display: none; }
+  body.web .sess-filter { min-width: 0; width: 100%; }
+  body.web .usage-head .period-wrap { max-width: 100%; }
+  body.web .ag-install-cmds { flex-wrap: wrap; }
+  body.web .row.agent.conn { flex-wrap: wrap; }
+  body.web .modal .editor,
+  body.web .editor.pm-detail {
+    max-width: calc(100vw - 16px);
+    max-height: calc(100dvh - 24px);
+  }
+}
+
+/* Very small phones */
+@media (max-width: 420px) {
+  body.web .top.inrow #nav button,
+  body.web .top.inrow .seg button {
+    padding: 0 10px;
+    font-size: 13px;
+  }
+  body.web .pm-mirror span:first-child {
+    max-width: 7em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+/* Tablet / short side-nav (Magpie --side-w: 184 @ ≤859) already in app.css.
+   Web framed card stays 660 until user widens past SIDE_AT with side layout. */
+@media (min-width: 1024px) {
+  body.web.side-nav #root {
+    /* Wide web with side-nav: use more of the viewport, keep card chrome soft */
+    width: min(1100px, calc(100vw - 48px));
+    max-width: min(1100px, calc(100vw - 48px));
+    height: min(720px, calc(100vh - 48px));
+    max-height: min(720px, calc(100vh - 48px));
+  }
 }
