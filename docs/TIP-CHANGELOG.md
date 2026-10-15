@@ -1,3 +1,18 @@
+## v0.1.163 · LED_DAY_PICK_OSS_FIDELITY · 2026-10-16 Asia/Shanghai
+
+- **WHY:** Continue Magpie 1:1 after 0.1.162 SVG `led-chart` — restore Magpie day-column pick that was deferred (`.led-day` / selected hot / dim non-picked days).
+- **CAUSE:** v0.1.162 restored stacked `rect.col` + `.tip` but skipped Magpie `chooseDay` path where day-bucket charts get transparent `.led-day` hit targets, a persistent selected `.hot`, and `box.emphasize(null)` dimming columns whose `data-day !== l.day` (app.js **L17981**, **L18013–14**, **L18062–69**, **L18107–18**; wired at **L18318–21**).
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; Magpie SVG led-chart grid/axis/hot/col/tip (0.1.162); dead-invent CSS audit (0.1.161); oauth Approve wall skip (nest=browser). Speed marks/stems (`metric===speed`) and `drawLedRank` hover emphasize (rank list) still deferred.
+- **Cite:**
+  - Magpie `app.js` **17981** `selectable = l.bucket === "day" && !!box.chooseDay`
+  - Magpie `app.js` **18013–14** selected-day `.hot` rect
+  - Magpie `app.js` **18062–69** `.led-day` role=button / tabindex / aria-pressed / chooseDay
+  - Magpie `app.js` **18107–18** `box.emphasize`: dimDay → opacity `.22` + faint fill; focus restore
+  - Magpie `app.js` **18318–21** Usage `chooseDay`: toggle `ledDay`, reset offset, reload ledger
+  - Magpie `app.css` **1136–1137** `.led-chart .led-day` cursor / focus-visible stroke
+- **WHAT changed:** `LedChart.tsx` day/`onChooseDay` props, `.led-day` hits, selected hot, dim non-picked cols; `SimpleViews` `ledDay` state + ledger day filter + period clears day.
+- **chrome-guard:** pass (SIDE_AT=1024). Push/PR #1. No portable/Vercel.
+
 ## v0.1.162 · LED_CHART_SVG_OSS_FIDELITY · 2026-10-16 Asia/Shanghai
 
 - **WHY:** Continue Magpie 1:1 after 0.1.161 — replace invent Usage `us-miniplot` div-bar stand-in with Magpie SVG `led-chart` gold (partial restore of `drawLedColumns`).

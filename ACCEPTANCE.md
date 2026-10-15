@@ -1,3 +1,10 @@
+## v0.1.163 · LED_DAY_PICK_OSS_FIDELITY · 2026-10-16 Asia/Shanghai
+
+- **WHY:** Continue Magpie led-chart after 0.1.162 — restore day-column pick (`.led-day`) + selected `.hot` + dim other days (`emphasize(null)` when `l.day` set).
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; Magpie SVG led-chart columns/tip (0.1.162); skip oauth Approve wall; speed marks/stems + drawLedRank hover emphasize deferred.
+- **Cite:** Magpie app.js drawLedColumns **L17981** selectable; **L18013–14** selected hot; **L18062–69** `.led-day` hits; **L18107–18** emphasize dimDay; **L18318–21** chooseDay toggle + reload; app.css **L1136–1137** `.led-day`.
+- **chrome-guard:** pass. Push/PR #1. No portable/Vercel.
+
 ## v0.1.162 · LED_CHART_SVG_OSS_FIDELITY · 2026-10-16 Asia/Shanghai
 
 - **WHY:** invent `us-miniplot` div bars → Magpie SVG `led-chart` (partial `drawLedColumns`).

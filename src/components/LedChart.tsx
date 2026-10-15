@@ -79,15 +79,27 @@ function ledCategories(l: LedTrend, split: string, metric: Metric): { top: (LedT
   return { top };
 }
 
-type Seg = { key: string; color: string; x: number; y: number; w: number; h: number };
+type Seg = { key: string; color: string; day: string; x: number; y: number; w: number; h: number };
 type TipRow = { name: string; color: string; v: number };
 
 /**
- * Magpie Usage `#ledChart` — partial of app.js drawLedColumns L17962–18118.
- * Structure/classes: .led-chart > .plot > svg (.grid/.axis/.hot/.col) + .tip
- * Skipped this tip: day pick (.led-day), speed marks/stems, rank emphasize.
+ * Magpie Usage `#ledChart` — drawLedColumns L17962–18118 (+ day-pick L18013–14 / L18062–69 / L18107–18).
+ * Structure: .led-chart > .plot > svg (.grid/.axis/.hot/.col/.led-day) + .tip
+ * Deferred: speed marks/stems; drawLedRank hover emphasize (rank list).
  */
-export function LedChart({ metric, split }: { metric: string; split: string }) {
+export function LedChart({
+  metric,
+  split,
+  day = "",
+  onChooseDay,
+}: {
+  metric: string;
+  split: string;
+  /** Magpie `l.day` / ledDay — YYYY-MM-DD when a column is picked. */
+  day?: string;
+  /** Magpie `box.chooseDay` — toggle day; omit → chart not selectable. */
+  onChooseDay?: (day: string) => void;
+}) {
   const l = useMemo(() => buildDemoLedTrend(), []);
   const plotRef = useRef<HTMLDivElement>(null);
   const [size, setSize] = useState({ w: 0, h: 0 });
@@ -100,6 +112,8 @@ export function LedChart({ metric, split }: { metric: string; split: string }) {
   } | null>(null);
 
   const m = (metric === "cost" || metric === "calls" || metric === "tokens" ? metric : "tokens") as Metric;
+  // Magpie: selectable when bucket===day && chooseDay (app.js L17981)
+  const selectable = l.bucket === "day" && !!onChooseDay;
 
   useEffect(() => {
     const el = plotRef.current;
@@ -155,11 +169,12 @@ export function LedChart({ metric, split }: { metric: string; split: string }) {
     const segs: Seg[] = [];
     pts.forEach((p, i) => {
       const x = M.l + slot * (i + 0.5) - bw / 2;
+      const dayKey = p.time.slice(0, 10);
       let y0 = 0;
       const draw = (key: string, color: string, v: number) => {
         if (!(v > 0)) return;
         const h = Math.max(0.5, Y(y0) - Y(y0 + v));
-        segs.push({ key, color, x, y: Y(y0 + v), w: bw, h });
+        segs.push({ key, color, day: dayKey, x, y: Y(y0 + v), w: bw, h });
         y0 += v;
       };
       const by = p.by?.[split] || {};
@@ -175,6 +190,9 @@ export function LedChart({ metric, split }: { metric: string; split: string }) {
       draw("\0other", top.length ? "var(--faint)" : "var(--c1)", rest);
     });
 
+    // Magpie L18013: selected day index for persistent .hot
+    const selected = day ? pts.findIndex((p) => p.time.slice(0, 10) === day) : -1;
+
     return {
       empty: false as const,
       W,
@@ -189,8 +207,10 @@ export function LedChart({ metric, split }: { metric: string; split: string }) {
       top,
       totals,
       pts,
+      selected,
+      selectable,
     };
-  }, [size, l, split, m]);
+  }, [size, l, split, m, day, selectable]);
 
   const onMove = (e: React.PointerEvent<SVGSVGElement>) => {
     if (!drawn || drawn.empty) return;
@@ -225,7 +245,7 @@ export function LedChart({ metric, split }: { metric: string; split: string }) {
           <>
             <svg
               viewBox={`0 0 ${drawn.W} ${drawn.H}`}
-              role="img"
+              role={drawn.selectable ? "group" : "img"}
               aria-label={t("Usage trend")}
               onPointerMove={onMove}
               onPointerLeave={() => setHover(null)}
@@ -253,19 +273,68 @@ export function LedChart({ metric, split }: { metric: string; split: string }) {
                   width={drawn.slot}
                 />
               ) : null}
-              {drawn.segs.map((s, i) => (
+              {/* Magpie L18013–14: selected day keeps a .hot under the columns */}
+              {drawn.selectable && drawn.selected >= 0 ? (
                 <rect
-                  key={i}
-                  x={s.x}
-                  y={s.y}
-                  width={s.w}
-                  height={s.h}
-                  rx={1}
-                  className="col"
-                  data-k={s.key}
-                  style={{ fill: s.color }}
+                  className="hot"
+                  x={drawn.M.l + drawn.slot * drawn.selected}
+                  y={drawn.M.t}
+                  height={drawn.ph}
+                  rx={3}
+                  width={drawn.slot}
                 />
-              ))}
+              ) : null}
+              {drawn.segs.map((s, i) => {
+                // Magpie box.emphasize(null) L18107–17: dim non-picked days
+                const dimDay = !!(day && s.day !== day);
+                return (
+                  <rect
+                    key={i}
+                    x={s.x}
+                    y={s.y}
+                    width={s.w}
+                    height={s.h}
+                    rx={1}
+                    className="col"
+                    data-k={s.key}
+                    data-day={s.day}
+                    data-color={s.color}
+                    style={{
+                      fill: dimDay ? "var(--faint)" : s.color,
+                      opacity: dimDay ? 0.22 : undefined,
+                    }}
+                  />
+                );
+              })}
+              {/* Magpie L18062–69: transparent .led-day hit targets */}
+              {drawn.selectable
+                ? drawn.pts.map((p, i) => {
+                    const d = p.time.slice(0, 10);
+                    return (
+                      <rect
+                        key={"day-" + d}
+                        className="led-day"
+                        x={drawn.M.l + drawn.slot * i}
+                        y={drawn.M.t}
+                        width={drawn.slot}
+                        height={drawn.ph}
+                        fill="transparent"
+                        role="button"
+                        tabIndex={0}
+                        aria-label={ledWhen(p, l.bucket)}
+                        aria-pressed={d === day}
+                        data-day={d}
+                        onClick={() => onChooseDay?.(d)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" || e.key === " ") {
+                            e.preventDefault();
+                            onChooseDay?.(d);
+                          }
+                        }}
+                      />
+                    );
+                  })
+                : null}
             </svg>
             <div className="tip" hidden={!hover} style={hover ? { left: hover.left } : undefined}>
               {hover ? (

@@ -519,6 +519,8 @@ export function UsageView() {
   const [ledStatus, setLedStatus] = useState("");
   const [ledMetric, setLedMetric] = useState("calls");
   const [ledSplit, setLedSplit] = useState("none");
+  /** Magpie ledDay — chart column pick filters the Requests list (app.js L18318–21). */
+  const [ledDay, setLedDay] = useState("");
   const [ledQ, setLedQ] = useState("");
   const [sessAgent, setSessAgent] = useState("all");
   const [sessQ, setSessQ] = useState("");
@@ -580,6 +582,12 @@ export function UsageView() {
     }
   }, [ctxDays]);
 
+  // Magpie L14414: changing period clears the chart day pick
+  useEffect(() => {
+    setLedDay("");
+    setLedPage(0);
+  }, [period]);
+
   useEffect(() => {
     if (!every) return;
     const id = window.setInterval(() => {
@@ -599,6 +607,15 @@ export function UsageView() {
     let rows = DEMO_LEDGER;
     if (ledStatus === "failed") rows = rows.filter((r) => r.status === "err");
     else if (ledStatus === "retried") rows = rows.filter((r) => r.id === "r3" || r.status === "err"); // demo: r3 + errors as retried set
+    // Magpie /api/usage?day=… — demo filters ledger by local calendar day
+    if (ledDay) {
+      rows = rows.filter((r) => {
+        const d = new Date(r.t);
+        const iso =
+          `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+        return iso === ledDay;
+      });
+    }
     const q = ledQ.trim().toLowerCase();
     if (q) {
       rows = rows.filter((r) =>
@@ -606,7 +623,7 @@ export function UsageView() {
       );
     }
     return rows;
-  }, [demoFilled, ledStatus, ledQ]);
+  }, [demoFilled, ledStatus, ledQ, ledDay]);
 
   const ledTotals = useMemo(() => {
     const rows = ledRows;
@@ -1208,7 +1225,16 @@ export function UsageView() {
                   </span>
                 </div>
                 <div className="led-body">
-                  <LedChart metric={ledMetric} split={ledSplit} />
+                  <LedChart
+                    metric={ledMetric}
+                    split={ledSplit}
+                    day={ledDay}
+                    onChooseDay={(d) => {
+                      // Magpie L18318–21: toggle day, reset pager
+                      setLedDay((cur) => (cur === d ? "" : d));
+                      setLedPage(0);
+                    }}
+                  />
                   <div className="led-rank" id="ledRank" />
                 </div>
               </section>
