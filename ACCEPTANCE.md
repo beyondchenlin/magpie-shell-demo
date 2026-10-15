@@ -1,3 +1,11 @@
+## v0.1.131 PROVIDERS_EDITOR_AGENTS_CONN_OSS_FIDELITY
+- Providers editor: drop tip invent `details.more` bordered card / summary / inner / body.web 1-col — restore Magpie `app.css` L2834–2843 plain `.editor .more` disclosure (`summary` margin-left:86px; `.inner` grid).
+- Drop invent `.extra-body textarea.json` padding/radius fight (Magpie L2775), duplicate `.stack` (L2757), invent `.chips .chip` height/radius (L1848–1858), invent `.more > .inner` flex-column / `.chips` margin-top.
+- Icon pick: drop invent fade-in + icon-grid column + `.n` label CSS/DOM — Magpie L2696–2704 34×34 + `app.js` ~7948–7953 `icon(n)` only (`title` = name without `-color`).
+- Drop invent `.bar .text.danger` always-red — Magpie L1842 hover-only; L2848 `.danger` margin only.
+- Agents conn: drop invent `#view-agents .row.agent.conn` display:flex/gap + body.web flex-wrap — Magpie L3774–3776 / L3786 / L3329.
+- SIDE_AT=1024. No portable / Vercel.
+
 ## v0.1.130 USAGE_PLUGINS_FOLD_OSS_FIDELITY
 - Usage: drop tip invent `.usage-head` always-wrap / invent `.usage-refresh .icon` button chrome / wrong `.usage-note` / invent sess-pick transitions — restore Magpie `app.css` L773 / L984–985 / L1074 / L1369–1374 / L3589–3591 (shared `.icon` L240–246).
 - Plugins: drop tip invent shell-patch duplicates that stuck over Magpie `plugins.css` (pm-mirror color transition; pm-find min/max-width + hide webkit cancel; invent pm-card:active scale; invent pm-mlabel weight; invent row-ish pm-card / first pm-intro) — gold plugins.css L3–19 / L23–38 / L58–64 / L114–131 / L149–150. Keep React-only `.pm-find-clear`.

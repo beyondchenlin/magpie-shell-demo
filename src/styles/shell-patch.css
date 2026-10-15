@@ -258,12 +258,9 @@ body.window:not(.side-nav) .top.tight .brand > span:not(.logo) { display: none; 
 /* v0.1.128: idle row uses Magpie routing.css L74 (display:block + text-align:center) — no tip invent */
 .rt-flier-demo { pointer-events: none; }
 
-#view-agents .row.agent.conn {
-  display: flex; align-items: flex-start; gap: 10px;
-  flex-wrap: wrap;
-}
-#view-agents .row.agent.conn .who { flex: 1; min-width: 0; }
-#view-agents .row.agent.conn .ag-cant { margin-left: auto; align-self: center; }
+/* v0.1.131: drop invent #view-agents .row.agent.conn display:flex / gap / who flex —
+   Magpie app.css L3774–3776 body.window .row.agent.conn flex-wrap + min-height;
+   Magpie L3786 .who + .ag-cant { margin-left: auto } (not tip re-layout). */
 
 .lib-confirm {
   margin: 0;
@@ -296,30 +293,16 @@ body.window:not(.side-nav) .top.tight .brand > span:not(.logo) { display: none; 
   background: color-mix(in srgb, var(--amber, #d97706) 22%, transparent);
   color: var(--amber, #b45309);
 }
+/* React bridge: Magpie .editor .ehead .ic is 20×20 (app.css L2695); img fill */
 .editor .ehead .ic img { width: 20px; height: 20px; object-fit: contain; }
-.editor .extra-body textarea.json {
-  width: 100%; box-sizing: border-box; padding: 8px 10px;
-  border: 1px solid var(--line); border-radius: 8px; background: var(--card);
-  color: var(--fg);
-  font: var(--code-style, normal) var(--code-weight, 400) 12px/1.45 var(--code-font, var(--code));
-  resize: vertical;
-}
-.editor .stack { display: flex; flex-direction: column; gap: 6px; }
-.editor details.more {
-  grid-column: 1 / -1; border: 1px solid var(--line); border-radius: 10px;
-  padding: 6px 10px; background: var(--card);
-}
-.editor details.more summary { cursor: pointer; font-size: 12.5px; color: var(--fg-2); }
-.editor details.more .inner {
-  display: grid; grid-template-columns: 72px minmax(0, 1fr);
-  gap: 10px 14px; margin-top: 8px;
-}
-body.web .editor details.more .inner { grid-template-columns: minmax(0, 1fr); }
-.editor .chips .chip, .editor button.chip {
-  height: 24px; padding: 0 8px; border-radius: 6px; border: 1px solid var(--line);
-  background: var(--card); font-size: 11.5px; color: var(--fg-2);
-  margin-right: 4px; margin-bottom: 4px;
-}
+/* v0.1.131: drop invent .editor .extra-body textarea.json (padding 8/radius 8) —
+   Magpie app.css L2775 padding 7px 9px / radius 7px + transition / white-space:pre */
+/* v0.1.131: drop invent duplicate .editor .stack — Magpie app.css L2757 */
+/* v0.1.131: drop invent details.more bordered card / summary / inner / body.web 1-col —
+   Magpie app.css L2834–2843: plain .editor .more disclosure; summary margin-left:86px;
+   .inner grid minmax(72px,max-content) minmax(0,1fr) (no tip card chrome) */
+/* v0.1.131: drop invent .editor .chips .chip height 24 / radius 6 —
+   Magpie app.css L1848–1858 .chip height 25 / radius 999px */
 .importapps .appnote { font-size: 12.5px; color: var(--fg-2); line-height: 1.45; margin-bottom: 8px; }
 .importapps .apptabs { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 8px; }
 .importapps .apptab {
@@ -851,7 +834,7 @@ body.web.side-nav {
   body.web .sess-filter { min-width: 0; width: 100%; }
   body.web .usage-head .period-wrap { max-width: 100%; }
   body.web .ag-install-cmds { flex-wrap: wrap; }
-  body.web .row.agent.conn { flex-wrap: wrap; }
+  /* v0.1.131: drop invent body.web .row.agent.conn flex-wrap — Magpie app.css L3329 body.web .row.agent */
   body.web .modal .editor,
   body.web .editor.pm-detail {
     max-width: calc(100vw - 16px);
@@ -919,13 +902,9 @@ label.tick input { margin: 0; }
 .github-token-input { width: 160px; max-width: 100%; }
 .words.full { width: 100%; max-width: 100%; }
 .row.pref.redact-kind { animation: fade-in .2s var(--ease); }
-.editor .more > .inner {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding-top: 8px;
-}
-.editor .chips { margin-top: 6px; }
+/* v0.1.131: drop invent .editor .more > .inner flex-column —
+   Magpie app.css L2842 grid minmax(72px,max-content) minmax(0,1fr) */
+/* v0.1.131: drop invent .editor .chips { margin-top: 6px } — Magpie L1848 chips padding only */
 
 
 /* —— v0.1.105 CIS P1: Providers editor layout (Magpie classes) —— */
@@ -935,28 +914,11 @@ label.tick input { margin: 0; }
 .detect-grid .dg-row { display: contents; }
 .hint.fade { animation: fade-in .15s var(--ease); }
 .hint.err { color: var(--red); }
-.editor .icon-pick { animation: fade-in .18s var(--ease); }
-.editor .icon-pick .icon-grid button .n {
-  display: block;
-  max-width: 34px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  font-size: 9px;
-  line-height: 1.1;
-  color: var(--muted);
-  text-align: center;
-}
-.editor .icon-pick .icon-grid button {
-  width: auto;
-  min-width: 34px;
-  height: auto;
-  padding: 4px;
-  flex-direction: column;
-  gap: 2px;
-}
-.editor .bar .text.danger { color: var(--red); }
-.editor .bar .text.danger:hover { background: var(--red-soft); }
+/* v0.1.131: drop invent .icon-pick fade-in .18s — Magpie app.css L2696 no animation */
+/* v0.1.131: drop invent icon-grid button column + .n label —
+   Magpie app.css L2701–2704 34×34 place-items; app.js ~7948–7953 icon(n) only (title=name) */
+/* v0.1.131: drop invent .bar .text.danger always-red —
+   Magpie app.css L1842 .text.danger:hover only; L2848 .editor .bar .danger margin-left:-7px */
 
 
 /* —— v0.1.106 CIS P2: PrefPick / FieldPill helpers —— */

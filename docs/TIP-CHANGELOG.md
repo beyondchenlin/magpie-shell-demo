@@ -1,3 +1,18 @@
+## v0.1.131 · PROVIDERS_EDITOR_AGENTS_CONN_OSS_FIDELITY · 2026-10-15 Asia/Shanghai
+- **WHY:** Continue Magpie 1:1 after 0.1.130 — delete tip invents on Providers editor (more/chips/icon-pick/danger) + Agents conn row layout that covered Magpie OSS.
+- **CAUSE:** shell-patch painted `details.more` as a bordered card and forced `.more > .inner` flex-column against Magpie disclosure grid; invent icon-grid `.n` labels + always-red danger; invent Agents `.conn` flex re-layout against Magpie window/web rules.
+- **Gold:**
+  - Magpie `app.css` **2834–2843** `.editor .more` / `summary` / `[open]::before` / `.inner` grid
+  - Magpie `app.css` **2775** `.extra-body textarea.json` padding 7px 9px / radius 7px
+  - Magpie `app.css` **2757** `.editor .stack`
+  - Magpie `app.css` **1848–1858** `.chip` height 25 / radius 999px
+  - Magpie `app.css` **2696–2704** `.icon-pick` / `.icon-grid button` 34×34; **app.js ~7948–7953** icon only
+  - Magpie `app.css` **1842** `.text.danger:hover`; **2848** `.editor .bar .danger` margin-left:-7px
+  - Magpie `app.css` **3774–3776** `body.window .row.agent.conn`; **3786** who+ag-cant; **3329** `body.web .row.agent`
+- **WHAT kept:** `SIDE_AT=1024`; no `WEB_SIDE_AT`; 752×652; CIS PrefRow/Segs/TextBtn; React `.ehead .ic img` bridge; detect-grid / hint.fade|err; Usage/Plugins/Library fidelity 0.1.129–130.
+- **WHAT changed:** `shell-patch.css` drop Providers editor + Agents conn invents; `ProvidersView.tsx` icon-grid drop `<span class="n">`, title Magpie strip `-color`.
+- **Guard:** chrome-guard. Push/PR. No portable / Vercel.
+
 ## v0.1.130 · USAGE_PLUGINS_FOLD_OSS_FIDELITY · 2026-10-15 Asia/Shanghai
 - **WHY:** Continue Magpie 1:1 after 0.1.129 — delete tip invents on Usage chrome + Plugins shell-patch fight + Providers fold rotate that covered Magpie OSS.
 - **CAUSE:** shell-patch overrode Magpie `app.css` Usage (load order); Plugins invent properties Magpie `plugins.css` never redeclared stuck (transition / min-max width / :active / font-weight); tip invent `.fold.open` rotate fought Magpie default-open chevron.

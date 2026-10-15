@@ -1356,13 +1356,12 @@ function ProviderEditorModal({ state, onClose, onAdd, onStatus, saved, onRemove,
                             key={id}
                             type="button"
                             className={pickedIcon === id ? "on" : undefined}
-                            title={id}
+                            title={id.replace(/-color$/, "")}
                             onClick={() => setPickedIcon(id)}
                           >
                             <span className="ic">
                               <img src={iconSrc(id)} alt="" />
                             </span>
-                            <span className="n">{id.split("-")[0]}</span>
                           </button>
                         ))}
                       </div>
