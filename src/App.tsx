@@ -14,6 +14,9 @@ import { SettingsView, applyColorblind } from "./pages/SettingsView";
 import { TrayPanel, wantPanelMode } from "./pages/TrayPanel";
 
 const SIDE_AT = 1024;
+/** Web framed preview: show side-nav once the viewport can hold side + content.
+ *  Magpie native Win/Mac gold stays SIDE_AT (top tabs under 1024). */
+const WEB_SIDE_AT = 800;
 const NAV_LS = "magpie.navLayout";
 const SIDE_W_LS = "magpie.sideWidth";
 const SIDE_MIN = 168;
@@ -91,7 +94,10 @@ function wantSide(navPick: "" | "side" | "top"): boolean {
   if (phoneWeb()) return false;
   if (navPick === "side") return true;
   if (navPick === "top") return false;
-  return window.matchMedia(`(min-width: ${SIDE_AT}px)`).matches;
+  // Browser demo: prefer Magpie side-nav chrome (graphite .on) so Vercel
+  // viewers are not stuck on top-tabs-only under SIDE_AT. Electron keeps gold.
+  const at = isElectron() ? SIDE_AT : WEB_SIDE_AT;
+  return window.matchMedia(`(min-width: ${at}px)`).matches;
 }
 
 export default function App() {
@@ -184,6 +190,7 @@ export default function App() {
 
   useEffect(() => {
     const sideMq = window.matchMedia(`(min-width: ${SIDE_AT}px)`);
+    const webSideMq = window.matchMedia(`(min-width: ${WEB_SIDE_AT}px)`);
     const phoneMq = window.matchMedia(PHONE_WEB_MQ);
     const sync = () => {
       const onPhone = phoneWeb();
@@ -196,9 +203,11 @@ export default function App() {
     };
     sync();
     sideMq.addEventListener("change", sync);
+    webSideMq.addEventListener("change", sync);
     phoneMq.addEventListener("change", sync);
     return () => {
       sideMq.removeEventListener("change", sync);
+      webSideMq.removeEventListener("change", sync);
       phoneMq.removeEventListener("change", sync);
     };
   }, []);

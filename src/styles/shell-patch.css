@@ -234,29 +234,42 @@ body.web .editor details.more .inner { grid-template-columns: minmax(0, 1fr); }
 }
 
 
-/* Side-nav inside web frame: Magpie uses fixed sidebar; pin it to #root. */
+/* Side-nav inside web frame: Magpie uses fixed sidebar; pin it to #root.
+   Expand the card whenever side-nav is on (WEB_SIDE_AT ~800), not only past SIDE_AT. */
 body.web.side-nav #root {
   width: min(1100px, calc(100vw - 24px));
   max-width: min(1100px, calc(100vw - 24px));
+  min-width: min(780px, calc(100vw - 24px));
   height: min(720px, calc(100vh - 48px));
   max-height: min(720px, calc(100vh - 48px));
   position: relative;
+  padding-left: var(--side-w, 212px);
+  overflow: hidden;
 }
 body.web .sidebar {
   position: absolute;
+  z-index: 10;
 }
 body.web.side-nav {
-  padding-left: 0; /* padding lives on #root children via Magpie body.side-nav rule — override */
-}
-body.web.side-nav #root {
-  padding-left: var(--side-w, 212px);
+  /* Magpie body.side-nav pads the body; in framed web that would push #root. */
+  padding-left: 0 !important;
 }
 body.web.side-nav .sidebar {
   left: 0; top: 0; bottom: 0;
+  width: var(--side-w, 212px);
+  display: flex;
+  background: var(--bg);
+  border-right: .5px solid var(--line);
 }
-/* Magpie body.side-nav pads the body; in framed web that would push #root. */
-body.web.side-nav {
-  padding-left: 0 !important;
+/* Graphite selected row (CIS §1 / §2) — white card + seg-edge, not accent */
+body.web.side-nav :is(#nav button[data-view], #prefs).on {
+  background: var(--card);
+  color: var(--fg);
+  box-shadow: var(--seg-edge);
+  font-weight: 500;
+}
+body.web.side-nav :is(#nav button.on .nav-ic, #prefs.on svg) {
+  color: var(--fg);
 }
 
 /* Settings: language pref-pick menu (demo popover; Magpie uses .pop.proto-menu.sess-menu) */
@@ -887,16 +900,7 @@ body.web.side-nav {
 }
 
 /* Tablet / short side-nav (Magpie --side-w: 184 @ ≤859) already in app.css.
-   Web framed card stays 660 until user widens past SIDE_AT with side layout. */
-@media (min-width: 1024px) {
-  body.web.side-nav #root {
-    /* Wide web with side-nav: use more of the viewport, keep card chrome soft */
-    width: min(1100px, calc(100vw - 48px));
-    max-width: min(1100px, calc(100vw - 48px));
-    height: min(720px, calc(100vh - 48px));
-    max-height: min(720px, calc(100vh - 48px));
-  }
-}
+   Side-nav card sizing lives with body.web.side-nav #root above (any width). */
 
 /* Providers Turned off fold (NOTES 109–113) */
 #view-providers .badge.off {
