@@ -38,7 +38,10 @@ const calm = () =>
 const EXTRA_BODY_PLACEHOLDER = '{\n  "prompt_cache_key": "${sessionId}"\n}';
 
 const CTX_CHIPS = ["128K", "200K", "256K", "400K", "512K", "1M"];
+/** Magpie outputField sizes (app.js L9315). */
 const OUT_CHIPS = ["8K", "16K", "32K", "64K", "128K"];
+/** Magpie compactField sizes (app.js L9342). */
+const COMPACT_CHIPS = ["128K", "200K", "272K", "500K", "1M"];
 
 const IMPORT_APPS = [
   {
@@ -1708,13 +1711,16 @@ function ProviderEditorModal({ state, onClose, onAdd, onStatus, saved, onRemove,
                     "The most a reply may hold, told to the agents as their max tokens and sent as max_tokens on Anthropic's API when the agent names none; empty leaves it to the vendor and models.dev",
                   )}
                 >
-                  <input type="text" className="max-output" placeholder={t("e.g. 32k · or gpt-6=128k, comma separated")} />
-                  <div className="chips">
-                    {OUT_CHIPS.map((c) => (
-                      <button key={c} type="button" className="chip">
-                        {c}
-                      </button>
-                    ))}
+                  {/* Magpie outputField: input.outputs in .cxfield + .cxpicks/.cxpick (app.js L9312–9331) */}
+                  <div className="cxfield">
+                    <input type="text" className="outputs" placeholder={t("e.g. 32k · or gpt-6=128k, comma separated")} />
+                    <div className="cxpicks">
+                      {OUT_CHIPS.map((c) => (
+                        <button key={c} type="button" className="cxpick">
+                          {c}
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 </Field>
                 <Field
@@ -1723,13 +1729,16 @@ function ProviderEditorModal({ state, onClose, onAdd, onStatus, saved, onRemove,
                     "Where Codex and Claude Code compact a long conversation on these models; empty follows Settings → Long conversations, and a size at or above a model's window runs it to its whole window",
                   )}
                 >
-                  <input type="text" className="compact-at" placeholder={t("e.g. 500k · or deepseek-v4-flash=272k, comma separated")} />
-                  <div className="chips">
-                    {["128K", "200K", "272K", "500K", "1M"].map((c) => (
-                      <button key={c} type="button" className="chip">
-                        {c}
-                      </button>
-                    ))}
+                  {/* Magpie compactField: input.compacts in .cxfield + .cxpicks/.cxpick (app.js L9339–9358) */}
+                  <div className="cxfield">
+                    <input type="text" className="compacts" placeholder={t("e.g. 500k · or deepseek-v4-flash=272k, comma separated")} />
+                    <div className="cxpicks">
+                      {COMPACT_CHIPS.map((c) => (
+                        <button key={c} type="button" className="cxpick">
+                          {c}
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 </Field>
 

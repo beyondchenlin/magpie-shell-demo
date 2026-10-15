@@ -1,3 +1,10 @@
+## v0.1.187 · OUTPUT_COMPACT_CXFIELD_OSS · 2026-10-16 Asia/Shanghai
+- Providers Max output / Compact at invent `max-output`/`compact-at` + `.chips`/`.chip` → Magpie `input.outputs`/`input.compacts` in `.cxfield` + `.cxpicks`/`.cxpick` (app.js outputField / compactField).
+- **Cite:** Magpie `app.js` **L9312–9331** `outputField`; **L9339–9358** `compactField`; `app.css` **L3464–3473** `.cxpicks`/`.cxpick` (already vendored).
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; skip oauth; Context window `.cxfield` from v0.1.186; Settings `.compact-at` segs untouched.
+- Routing tip extras / led-tools-extra left (skip unless clear).
+- No portable / Vercel.
+
 ## v0.1.186 · CTX_WINDOW_CXFIELD_OSS · 2026-10-16 Asia/Shanghai
 - Providers Context window invent `ctx-window` + `.chips`/`.chip` → Magpie plain input in `.cxfield` + `.cxpicks`/`.cxpick` (app.js contextPicks).
 - **Cite:** Magpie `app.js` **L8586–8587** / **L9264–9304** `contextPicks`; `app.css` **L3464–3473** `.cxpicks`/`.cxpick`.

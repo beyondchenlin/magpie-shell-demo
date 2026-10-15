@@ -1,3 +1,18 @@
+## v0.1.187 · OUTPUT_COMPACT_CXFIELD_OSS · 2026-10-16 Asia/Shanghai
+
+- **WHY:** Invent leftover — Providers editor Max output / Compact at still used invent `input.max-output` / `input.compact-at` + generic `.chips`/`.chip`. Magpie OSS builds `input.outputs` / `input.compacts` wrapped in `div.cxfield` with `div.cxpicks` / `button.cxpick` (same pattern as contextPicks).
+- **CAUSE:** Tip mirrored profile `.chips` instead of Magpie Providers `outputField` / `compactField` (app.js #875 / #876).
+- **Cite:**
+  - Magpie `app.js` **L8588–8589** / **L9009–9010**: `ed.append(...outputField())` / `ed.append(...compactField())`
+  - Magpie `app.js` **L9312–9331** `outputField`: `ox.classList.add("outputs")` → `el("div","cxpicks")` + `el("button","cxpick")` → `el("div","cxfield").append(ox, row)`
+  - Magpie `app.js` **L9339–9358** `compactField`: `cp.classList.add("compacts")` + same `.cxfield`/`.cxpicks`/`.cxpick`
+  - Magpie `app.css` **L3464–3473** `.cxpicks` / `.cxpick` / `.cxpick.on` (already vendored in tip `app.css`)
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; skip oauth Approve wall; Context window `.cxfield` from v0.1.186; Settings Long conversations `.compact-at` segs (app.js L21840+) untouched; Magpie `.cxpicks` CSS already in tip; routing tip extras / led-tools-extra unchanged.
+- **WHAT changed:**
+  - `ProvidersView.tsx`: Max output `input.max-output` + `.chips`/`.chip` → Magpie `input.outputs` inside `.cxfield` + `.cxpicks`/`.cxpick`; Compact at `input.compact-at` + `.chips` → Magpie `input.compacts` + same; add `COMPACT_CHIPS` matching Magpie L9342 sizes.
+- **Remaining invent (intentional skip):** oauth Approve wall; `rt-flier-demo`; `win-caption*`; `lib-hook*` / `pref-anchor` React bridges. Live weak leftovers (not this tip): routing.css tip extras `rt-info`/`rt-cond-*`/`rt-pause-*`/`rt-rule-more`/`rt-arrow`/`rt-effort-row`; `led-tools-extra`.
+- **Guard:** `npm run chrome-guard`. No portable. No manual Vercel.
+
 ## v0.1.186 · CTX_WINDOW_CXFIELD_OSS · 2026-10-16 Asia/Shanghai
 
 - **WHY:** Invent leftover — Providers editor Context window still used invent `input.ctx-window` + generic `.chips`/`.chip`. Magpie OSS builds a plain `input()` wrapped in `div.cxfield` with `div.cxpicks` / `button.cxpick` (contextPicks).
