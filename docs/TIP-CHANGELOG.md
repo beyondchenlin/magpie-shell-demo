@@ -1,3 +1,18 @@
+## v0.1.130 · USAGE_PLUGINS_FOLD_OSS_FIDELITY · 2026-10-15 Asia/Shanghai
+- **WHY:** Continue Magpie 1:1 after 0.1.129 — delete tip invents on Usage chrome + Plugins shell-patch fight + Providers fold rotate that covered Magpie OSS.
+- **CAUSE:** shell-patch overrode Magpie `app.css` Usage (load order); Plugins invent properties Magpie `plugins.css` never redeclared stuck (transition / min-max width / :active / font-weight); tip invent `.fold.open` rotate fought Magpie default-open chevron.
+- **Gold:**
+  - Magpie `app.css` **773** `.usage-head` `height: 34px; flex: none` (wrap only `@media max-width:640` / `.tight`)
+  - Magpie `app.css` **3589–3591** `.usage-refresh` / `.icon` width + busy spin only; hover = shared `.icon` **240–246**
+  - Magpie `app.css` **984–985** `.usage-cost` overflow/ellipsis; **1074** `.usage-note` `11px` / `--faint`
+  - Magpie `app.css` **1369–1374** `.sess-pick`; **1366–1367** `.sess-filter` (no invent focus ring / transitions)
+  - Magpie `plugins.css` **3–19** `.pm-mirror` (no color transition) / `.pm-find` `width: min(280px, 46%)` + webkit cancel `cursor: default`
+  - Magpie `plugins.css` **23–38** `.pm-intro` bordered card; **58–64** `.pm-card` column (no `:active` scale); **114–131** `.pm-act`; **149–150** `.pm-mlabel` `12px` muted
+  - Magpie `app.css` **2121–2122** `.fold svg` default `rotate(90deg)`; `[aria-expanded=false]` none
+- **WHAT kept:** `SIDE_AT=1024`; no `WEB_SIDE_AT`; 752×652; CIS PrefRow/Segs/TextBtn; Library fidelity 0.1.129; React `#view-usage .usage-refresh` position + `.pm-find-clear` bridge.
+- **WHAT changed:** `shell-patch.css` drop Usage invent block; drop Plugins duplicate invent block; drop `.provider`/`.rt-group` fold invent.
+- **Guard:** chrome-guard. Push/PR. No portable / Vercel.
+
 ## v0.1.129 · LIB_HEALTH_TOOL_RADIO_FIDELITY · 2026-10-15 Asia/Shanghai
 - **WHY:** Continue Magpie 1:1 after 0.1.128 — remove tip invents on Library MCP health / tools / instructions radio (and shell-patch lib-switch fight).
 - **CAUSE:** Tip invented `.lib-health .dot` + `›` chevron + inline colors instead of Magpie `::before`/`::after`+class states; tools used invent whole-row opacity without Magpie `lib-tooltxt` DOM; radio used nested `<i>` accent fill; shell-patch re-sized `.lib-switch` against Magpie library.css.

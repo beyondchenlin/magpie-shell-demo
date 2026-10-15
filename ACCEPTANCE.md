@@ -1,3 +1,9 @@
+## v0.1.130 USAGE_PLUGINS_FOLD_OSS_FIDELITY
+- Usage: drop tip invent `.usage-head` always-wrap / invent `.usage-refresh .icon` button chrome / wrong `.usage-note` / invent sess-pick transitions — restore Magpie `app.css` L773 / L984–985 / L1074 / L1369–1374 / L3589–3591 (shared `.icon` L240–246).
+- Plugins: drop tip invent shell-patch duplicates that stuck over Magpie `plugins.css` (pm-mirror color transition; pm-find min/max-width + hide webkit cancel; invent pm-card:active scale; invent pm-mlabel weight; invent row-ish pm-card / first pm-intro) — gold plugins.css L3–19 / L23–38 / L58–64 / L114–131 / L149–150. Keep React-only `.pm-find-clear`.
+- Providers/Routing fold: drop invent `.provider`/`.rt-group .fold.open` rotate + display/margin — Magpie `app.css` L2121–2122 + Fold.tsx `aria-expanded`.
+- SIDE_AT=1024. No portable / Vercel.
+
 ## v0.1.129 LIB_HEALTH_TOOL_RADIO_FIDELITY
 - Library MCP health: Magpie `paintHealth` DOM — `lib-health idle|checking|ok|auth|err` + `has-list`/`aria-expanded`; label in `<span>` only; drop invent `.dot` child + `›` chevron + inline color (library.css L477–510 / client.js L1679–1698).
 - Library MCP tools: Magpie `lib-tools` / `ul.lib-toollist` / `li.lib-tool` + `lib-tooltxt` / `lib-toolname` / `lib-tooldesc` / `lib-toolcant` / `lib-toolfoot` (client.js L1540–1559); drop invent whole-row `.off` opacity (library.css L500–501 dims text + strikes name only).

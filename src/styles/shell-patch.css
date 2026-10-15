@@ -430,114 +430,29 @@ body.web.side-nav {
   .lib-switch i, .pref-pick svg, .copy.done { transition: none !important; animation: none !important; }
 }
 
-/* —— Usage deep shell —— */
-.usage-head { display: flex; align-items: center; gap: 10px; min-height: 34px; margin: 4px 0 6px; flex-wrap: wrap; }
-.usage-head > .grow { flex: 1; }
-.usage-refresh { display: inline-flex; align-items: center; gap: 2px; margin-right: 10px; position: relative; }
-.usage-refresh .icon { width: 24px; height: 24px; display: inline-grid; place-items: center; border: 0; background: none; color: var(--muted); border-radius: 7px; cursor: pointer; transition: background .12s var(--ease), color .12s var(--ease); }
-.usage-refresh .icon:hover { background: var(--pill); color: var(--fg); }
-.usage-cost { display: inline-flex; align-items: baseline; gap: 6px; font-variant-numeric: tabular-nums; color: var(--muted); font-size: 12px; }
-.usage-cost b { font-size: 15px; font-weight: 600; color: var(--fg); }
-.usage-note { margin: 6px 2px 10px; font-size: 12px; color: var(--muted); line-height: 1.45; }
-.sess-pick { flex: none; display: inline-flex; align-items: center; gap: 4px; max-width: 180px; height: 26px; padding: 0 7px 0 9px; border-radius: 7px; border: 1px solid var(--line); background: var(--card); color: var(--muted); font: inherit; font-size: 12px; cursor: default; transition: background .12s var(--ease), color .12s var(--ease), border-color .12s var(--ease); }
-.sess-pick span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.sess-pick svg { flex: none; opacity: .7; transition: transform .15s var(--ease); }
-.sess-pick:hover { background: var(--pill); }
-.sess-pick.set { color: var(--fg); border-color: var(--line-2); background: var(--pill); }
-.sess-pick.open svg { transform: rotate(180deg); }
-.sess-filter { height: 26px; padding: 0 10px; border-radius: 7px; border: 1px solid var(--line); background: var(--card); color: var(--fg); font: inherit; font-size: 12.5px; min-width: 160px; transition: border-color .12s var(--ease), box-shadow .12s var(--ease); }
-.sess-filter:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent); }
-.rm-span { font-size: 12px !important; }
-.range-menu { box-shadow: 0 8px 28px rgba(20,22,30,.12), 0 0 0 1px var(--line); border-radius: 12px; background: var(--card); }
+/* —— Usage: Magpie app.css gold (v0.1.130) ——
+   Drop tip invent always-wrap head / invent icon button chrome / wrong note.
+   Gold: app.css L773 usage-head height:34px flex:none (wrap only @640/.tight);
+   L3589–3591 usage-refresh + .icon width/busy only (shared .icon L240–246 hover);
+   L984–985 usage-cost overflow; L1074 usage-note 11px faint;
+   L1369–1374 sess-pick; L1366–1367 sess-filter; L2506+ range-menu.
+   React pop anchor: #view-usage .usage-refresh { position:relative } in CIS bridge. */
 
-/* —— Plugins deep shell —— */
-.pm-head { gap: 10px; }
-.pm-mirror { display: inline-flex; align-items: center; gap: 7px; padding: 2px 0; background: none; border: 0; font: inherit; font-size: 12px; color: var(--muted); cursor: pointer; white-space: nowrap; transition: color .12s var(--ease); }
-.pm-mirror:hover, .pm-mirror.on { color: var(--fg); }
-.pm-mirror:disabled { opacity: .6; cursor: default; }
-.pm-mirror .lib-switch { width: 28px; height: 16px; }
-.pm-mirror .lib-switch i { width: 12px; height: 12px; }
-.pm-mirror .lib-switch.on i { transform: translateX(12px); }
-.pm-find { display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 10px; border-radius: 8px; background: var(--pill); min-width: 180px; max-width: 260px; transition: background .12s var(--ease), box-shadow .12s var(--ease); }
-.pm-find:focus-within { background: var(--card); box-shadow: inset 0 0 0 1px var(--accent), 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent); }
-.pm-find input { flex: 1; min-width: 0; border: 0; outline: none; background: none; color: var(--fg); font: inherit; font-size: 12.5px; }
-.pm-find input[type="search"]::-webkit-search-cancel-button { -webkit-appearance: none; appearance: none; display: none; }
+/* —— Plugins: Magpie plugins.css gold (v0.1.130) ——
+   Drop tip invent duplicates that fought Magpie: pm-mirror color transition,
+   pm-find min/max-width + hide webkit cancel, invent pm-card:active scale,
+   invent pm-act fg/black + height 28, invent pm-mlabel weight 600,
+   invent row-ish pm-card / first pm-intro flex-start, duplicate nest pm-*.
+   Gold: plugins.css L3–19 pm-mirror/pm-find; L23–38 pm-intro; L58–64 pm-card
+   (column, no :active scale); L114–131 pm-act; L149–150 pm-mlabel 12px muted.
+   React-only bridges Magpie lacks (custom clear + tip host): */
 .pm-find-clear {
   flex: none; width: 18px; height: 18px; padding: 0; border: 0; border-radius: 5px;
   background: transparent; color: var(--muted); font-size: 14px; line-height: 1; cursor: pointer;
   display: inline-flex; align-items: center; justify-content: center;
-  transition: background .12s var(--ease), color .12s var(--ease);
 }
 .pm-find-clear:hover { background: var(--pill-hover); color: var(--fg); }
-.pm-body { display: flex; flex-direction: column; gap: 18px; padding: 10px 0 18px; }
-.pm-body.enter { animation: view-in .24s var(--ease); }
-.pm-intro { display: flex; gap: 14px; align-items: flex-start; padding: 4px 2px 2px; }
-.pm-introtext { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 5px; }
-.pm-intro h2 { margin: 0; font-size: 15px; font-weight: 650; letter-spacing: -.01em; }
-.pm-intro p { margin: 0; font-size: 12px; line-height: 1.55; color: var(--fg-2); max-width: 560px; }
-.pm-intro .pm-trust { display: flex; align-items: center; gap: 6px; margin-top: 3px; font-size: 11.5px; color: var(--muted); }
-.pm-intro .pm-trust svg { flex: none; color: var(--green); }
-.pm-sec { display: flex; flex-direction: column; gap: 9px; }
-.pm-sechead { display: flex; align-items: baseline; gap: 8px; padding: 0 2px; flex-wrap: wrap; }
-.pm-sechead h3 { margin: 0; font-size: 12.5px; font-weight: 650; }
-.pm-sechead span { font-size: 11.5px; color: var(--muted); }
-.pm-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(262px, 1fr)); gap: 10px; }
-.pm-card { display: flex; gap: 10px; align-items: flex-start; padding: 12px; border-radius: 12px; border: 1px solid var(--line); background: var(--card); transition: border-color .16s var(--ease), box-shadow .16s var(--ease), transform .16s var(--ease); }
-.pm-card:hover { border-color: color-mix(in srgb, var(--fg) 16%, var(--line)); box-shadow: 0 4px 14px rgba(20, 22, 30, .07); }
-.pm-card:active { transform: scale(.98); }
-.pm-logo { flex: none; width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center; background: var(--pill); color: var(--fg-2); font-size: 14px; }
-.pm-logo.big { width: 44px; height: 44px; border-radius: 12px; }
-.pm-act { flex: none; height: 28px; padding: 0 12px; border-radius: 8px; border: 1px solid var(--line); background: var(--fg); color: var(--card); font: inherit; font-size: 12px; font-weight: 600; cursor: pointer; transition: background .12s var(--ease), opacity .12s var(--ease), transform .12s var(--ease); }
-.pm-act:hover { filter: brightness(1.05); }
-.pm-act:active { transform: scale(.96); }
-.pm-act:disabled { opacity: .55; cursor: default; }
-.pm-act.get { background: var(--card); color: var(--fg); }
-.pm-none { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 36px 16px; text-align: center; color: var(--muted); }
-.pm-none b { color: var(--fg); font-size: 14px; }
-.pm-none p { margin: 0; font-size: 12.5px; max-width: 360px; line-height: 1.5; }
-.pm-ghnone { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 22px 12px; border-radius: 12px; border: 1px dashed var(--line); font-size: 12px; color: var(--muted); text-align: center; }
-.pm-foot { font-size: 12px; }
-.link { background: none; border: 0; color: var(--accent); font: inherit; font-size: 12px; cursor: pointer; padding: 0; text-decoration: underline; text-underline-offset: 2px; }
-.link:hover { filter: brightness(1.1); }
 .update-mirror-input { min-width: 180px; }
-@keyframes spin { to { transform: rotate(360deg); } }
-
-
-/* —— Plugins nest v0.1.38 (native 01–34) —— */
-.pm-intro {
-  position: relative; overflow: hidden; display: flex; align-items: center; gap: 18px;
-  padding: 16px 18px; border-radius: 14px; border: 1px solid var(--line);
-  background:
-    radial-gradient(120% 140% at 100% 0%, color-mix(in srgb, var(--accent) 11%, transparent), transparent 60%),
-    var(--card);
-}
-.pm-art { flex: none; display: grid; grid-template-columns: repeat(3, 34px); gap: 8px; transform: rotate(-6deg); margin-right: 6px; }
-.pm-art .pm-logo { width: 34px; height: 34px; border-radius: 10px; box-shadow: 0 1px 2px rgba(0, 0, 0, .06), 0 0 0 1px var(--line-2, var(--line)); background: var(--card); font-size: 13px; }
-.pm-art .pm-logo:nth-child(4) { grid-column: 2; }
-.pm-art .pm-logo:nth-child(odd) { transform: translateY(4px); }
-.pm-manual { display: flex; align-items: center; gap: 8px; padding: 10px 12px; border-radius: 12px; border: 1px dashed var(--line); flex-wrap: wrap; }
-.pm-mlabel { font-size: 12.5px; font-weight: 600; }
-.pm-minput { flex: 1; min-width: 180px; height: 26px; padding: 0 9px; border-radius: 7px; border: 1px solid var(--line); background: var(--card); color: var(--fg); font: inherit; font-size: 12px; outline: none; }
-.pm-minput:focus { border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent); }
-.pm-browse { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; flex: none; padding: 0; border-radius: 7px; border: 1px solid var(--line); background: var(--card); color: var(--muted); cursor: pointer; transition: color .14s var(--ease), border-color .14s var(--ease); }
-.pm-browse:hover:not(:disabled) { color: var(--fg); border-color: var(--faint); }
-.pm-browse:disabled { opacity: .5; cursor: default; }
-.pm-manual .text.primary:disabled { opacity: 1; cursor: default; filter: none; }
-.pm-manual .text.primary:disabled:hover { filter: none; }
-.pm-link { display: inline-flex; align-items: center; gap: 4px; height: 24px; padding: 0 9px; border-radius: 7px; border: 0; background: var(--pill); color: var(--fg-2); font: inherit; font-size: 11.5px; cursor: pointer; text-decoration: none; }
-.pm-link:hover { background: var(--pill-hover, color-mix(in srgb, var(--fg) 6%, var(--pill))); color: var(--fg); }
-.pm-chip.warn { gap: 5px; background: none; box-shadow: inset 0 0 0 1px var(--line); color: var(--fg-2); font-weight: 400; }
-.pm-chip.warn .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--amber, #d97706); flex: none; }
-.pm-facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 1px; border-radius: 10px; overflow: hidden; background: var(--line-2, var(--line)); border: 1px solid var(--line-2, var(--line)); }
-.pm-fact { display: flex; flex-direction: column; gap: 2px; padding: 8px 11px; background: var(--card); min-width: 0; }
-.pm-fact .k { font-size: 10.5px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); }
-.pm-fact .v { font-size: 12.5px; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
-.pm-mirror-tip { position: absolute; top: 100%; right: 0; margin-top: 6px; z-index: 30; max-width: 280px; padding: 8px 10px; border-radius: 8px; background: var(--fg); color: var(--card); font-size: 11.5px; line-height: 1.4; box-shadow: 0 8px 24px color-mix(in srgb, var(--fg) 25%, transparent); animation: fade-in .12s var(--ease); pointer-events: none; }
-.feat-say { margin: 8px 2px 10px; font-size: 12.5px; color: var(--fg-2); line-height: 1.5; }
-.pm-note.warn { color: var(--fg); }
-@media (max-width: 560px) {
-  .pm-art { display: none; }
-}
 
 /* —— Plugins Options (Magpie pm-opts) —— */
 .pm-opts { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; width: 100%; }
@@ -619,11 +534,9 @@ body.web.side-nav {
 .rt-group.card.muted { opacity: .85; }
 .rt-ghead { display: flex; align-items: center; gap: 8px; min-width: 0; }
 .rt-ghead b { font-size: 13px; }
-.rt-group .fold svg { transition: transform .15s ease-out; }
-.rt-group .fold.open svg, .rt-group .fold[aria-expanded="true"] svg { transform: rotate(90deg); }
-.provider .fold svg { transition: transform .15s ease-out; display: inline-block; vertical-align: -1px; margin-right: 4px; }
-.provider .fold.open svg, .provider .fold[aria-expanded="true"] svg { transform: rotate(90deg); }
-.provider .who .fold { margin-top: 6px; }
+/* v0.1.130: drop invent .provider/.rt-group .fold.open rotate —
+   Magpie app.css L2121–2122: .fold svg default rotate(90deg); [aria-expanded=false] none.
+   Fold.tsx sets aria-expanded; no tip invent display/margin/open class. */
 
 /* ---- v0.1.17 heatmap / sess detail / plugins movable / routing live ---- */
 .heat-tip {
