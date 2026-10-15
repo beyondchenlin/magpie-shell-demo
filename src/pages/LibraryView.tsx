@@ -258,6 +258,87 @@ function LibChip({
   );
 }
 
+
+/** Magpie app.js field() L7219–7238: bare <label> + wrap <div> as .editor 2-col grid children (not invent field-block / label.field). */
+function LibField({
+  label,
+  hint,
+  children,
+}: {
+  label: string;
+  hint?: ReactNode;
+  children: ReactNode;
+}) {
+  return (
+    <>
+      <label>{label}</label>
+      <div>
+        {children}
+        {hint != null && hint !== false ? (
+          typeof hint === "string" ? <div className="hint">{hint}</div> : hint
+        ) : null}
+      </div>
+    </>
+  );
+}
+
+/** Magpie library/client.js pairs() L1900–1919 → .lib-pairs / .lib-pair / .lib-addpair / .lib-x (not invent .pair / .hrow). */
+function LibPairs({
+  rows,
+  keyHint,
+  valHint,
+  onChange,
+}: {
+  rows: [string, string][];
+  keyHint: string;
+  valHint: string;
+  onChange: (rows: [string, string][]) => void;
+}) {
+  return (
+    <div className="lib-pairs">
+      {rows.map((row, i) => (
+        <div key={i} className="lib-pair">
+          <WordsField
+            placeholder={keyHint}
+            value={row[0]}
+            onChange={(e) => {
+              const next = rows.map((r, j) => (j === i ? [e.target.value, r[1]] as [string, string] : r));
+              onChange(next);
+            }}
+            onKeyDown={(e) => e.stopPropagation()}
+          />
+          <WordsField
+            placeholder={valHint}
+            value={row[1]}
+            onChange={(e) => {
+              const next = rows.map((r, j) => (j === i ? [r[0], e.target.value] as [string, string] : r));
+              onChange(next);
+            }}
+            onKeyDown={(e) => e.stopPropagation()}
+          />
+          <button
+            type="button"
+            className="text lib-x"
+            title={t("Remove")}
+            onClick={() => onChange(rows.filter((_, j) => j !== i))}
+          >
+            <svg width="11" height="11" viewBox="0 0 16 16" fill="none" aria-hidden>
+              <path d="M4.5 4.5l7 7M11.5 4.5l-7 7" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+            </svg>
+          </button>
+        </div>
+      ))}
+      <button
+        type="button"
+        className="text lib-addpair"
+        onClick={() => onChange([...rows, ["", ""]])}
+      >
+        {t("＋ Add")}
+      </button>
+    </div>
+  );
+}
+
 function LibModal({
   onBg,
   children,
@@ -2589,151 +2670,153 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
             <b>{mcpEditId ? t("Edit {name}", { name: mcpEditor.name || "server" }) : t("New MCP server")}</b>
             <span className="note">{t("or paste its JSON anywhere here")}</span>
           </div>
-          <div className="stack">
-            <label className="field">
-              <span className="k">{t("Name")}</span>
-              <WordsField
-                className="full" ref={mcpNameRef}
-                value={mcpEditor.name}
-                placeholder={t("e.g. github")}
-                onChange={(e) => setMcpEditor({ ...mcpEditor, name: e.target.value })}
-                onKeyDown={(e) => e.stopPropagation()}
-              />
-              <span className="hint">{t("Letters, digits, - and _ — what the agents call it")}</span>
-            </label>
-            <div className="field-block">
-              <span className="k">{t("Runs as")}</span>
-              <Segs
-                value={mcpEditor.transport}
-                items={[
-                  { id: "stdio" as const, label: t("Command") },
-                  { id: "http" as const, label: "HTTP" },
-                  { id: "sse" as const, label: "SSE" },
-                ]}
-                onChange={(id) => setMcpEditor({ ...mcpEditor, transport: id })}
-              />
-            </div>
-            {mcpEditor.transport === "stdio" ? (
-              <>
-                <label className="field">
-                  <span className="k">{t("Command")}</span>
-                  <WordsField
-                    className="full mono" value={mcpEditor.command}
-                    placeholder="npx -y @modelcontextprotocol/server-github"
-                    onChange={(e) => setMcpEditor({ ...mcpEditor, command: e.target.value })}
-                    onKeyDown={(e) => e.stopPropagation()}
-                  />
-                  <span className="hint">{t("The command and its arguments, as you'd type them")}</span>
-                </label>
-                <div className="field-block">
-                  <div className="hrow">
-                    <span className="k">{t("Environment")}</span>
-                    <button type="button" className="text" onClick={() => setMcpEditor({ ...mcpEditor, envRows: [...mcpEditor.envRows, ["", ""]] })}>{t("＋ Add")}</button>
-                  </div>
-                  {mcpEditor.envRows.map((row, i) => (
-                    <div key={i} className="pair">
-                      <WordsField placeholder="TOKEN" value={row[0]} onChange={(e) => { const envRows = mcpEditor.envRows.map((r, j) => (j === i ? [e.target.value, r[1]] as [string, string] : r)); setMcpEditor({ ...mcpEditor, envRows }); }} onKeyDown={(e) => e.stopPropagation()} />
-                      <WordsField placeholder={t("value")} value={row[1]} onChange={(e) => { const envRows = mcpEditor.envRows.map((r, j) => (j === i ? [r[0], e.target.value] as [string, string] : r)); setMcpEditor({ ...mcpEditor, envRows }); }} onKeyDown={(e) => e.stopPropagation()} />
-                    </div>
-                  ))}
-                  <span className="hint">{t("A value can name a variable, as ${NAME}: each agent is given it in its own way, so the token stays out of its settings")}</span>
-                </div>
-              </>
-            ) : (
-              <>
-                <label className="field">
-                  <span className="k">URL</span>
-                  <WordsField
-                    className="full mono" value={mcpEditor.url}
-                    placeholder="https://example.com/mcp"
-                    onChange={(e) => setMcpEditor({ ...mcpEditor, url: e.target.value })}
-                    onKeyDown={(e) => e.stopPropagation()}
-                  />
-                </label>
-                <div className="field-block">
-                  <div className="hrow">
-                    <span className="k">{t("Headers")}</span>
-                    <button type="button" className="text" onClick={() => setMcpEditor({ ...mcpEditor, headerRows: [...mcpEditor.headerRows, ["", ""]] })}>{t("＋ Add")}</button>
-                  </div>
-                  {mcpEditor.headerRows.map((row, i) => (
-                    <div key={i} className="pair">
-                      <WordsField placeholder="Authorization" value={row[0]} onChange={(e) => { const headerRows = mcpEditor.headerRows.map((r, j) => (j === i ? [e.target.value, r[1]] as [string, string] : r)); setMcpEditor({ ...mcpEditor, headerRows }); }} onKeyDown={(e) => e.stopPropagation()} />
-                      <WordsField placeholder="Bearer …" value={row[1]} onChange={(e) => { const headerRows = mcpEditor.headerRows.map((r, j) => (j === i ? [r[0], e.target.value] as [string, string] : r)); setMcpEditor({ ...mcpEditor, headerRows }); }} onKeyDown={(e) => e.stopPropagation()} />
-                    </div>
-                  ))}
-                  <span className="hint">{t("A value can name a variable, as ${NAME}: each agent is given it in its own way, so the token stays out of its settings")}</span>
-                </div>
-                {mcpEditor.transport === "http" ? (
-                  <>
-                    <div className="field-block">
-                      <span className="k">{t("OAuth app")}</span>
-                      {/* Magpie drawApp: lib-app + field2 inputs + lib-x; closed = lib-addpair (client.js L1971–2031; library.css L133–135 / L341–343) */}
-                      <div className="lib-app">
-                        {!mcpEditor.oauthOpen ? (
-                          <button type="button" className="lib-addpair" onClick={() => setMcpEditor({ ...mcpEditor, oauthOpen: true })}>{t("Use your own OAuth app")}</button>
-                        ) : (
-                          <>
-                            <input type="text" placeholder={t("Client ID")} aria-label={t("Client ID")} spellCheck={false} autoComplete="off" value={mcpEditor.clientId} onChange={(e) => setMcpEditor({ ...mcpEditor, clientId: e.target.value })} onKeyDown={(e) => e.stopPropagation()} />
-                            <input type="password" placeholder={t("Client secret")} aria-label={t("Client secret")} spellCheck={false} autoComplete="off" value={mcpEditor.clientSecret} onChange={(e) => setMcpEditor({ ...mcpEditor, clientSecret: e.target.value })} onKeyDown={(e) => e.stopPropagation()} />
-                            <input type="text" className="port" placeholder={t("Callback port")} aria-label={t("Callback port")} inputMode="numeric" spellCheck={false} autoComplete="off" value={mcpEditor.callbackPort} onChange={(e) => setMcpEditor({ ...mcpEditor, callbackPort: e.target.value.replace(/\D/g, "").slice(0, 5) })} onKeyDown={(e) => e.stopPropagation()} />
-                            <button
-                              type="button"
-                              className="lib-x"
-                              title={t("Remove")}
-                              onClick={() => setMcpEditor({ ...mcpEditor, oauthOpen: false, clientId: "", clientSecret: "", callbackPort: "" })}
-                            >
-                              <svg width="11" height="11" viewBox="0 0 16 16" fill="none" aria-hidden>
-                                <path d="M4.5 4.5l7 7M11.5 4.5l-7 7" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-                              </svg>
-                            </button>
-                          </>
-                        )}
-                      </div>
-                      <span className="hint">
-                        {!mcpEditor.oauthOpen
-                          ? t("For a server whose sign-in doesn't let magpie register itself, as GitHub's")
-                          : t("Made with its vendor (GitHub's under Settings › Developer settings › OAuth Apps), with {url} as its callback URL", {
-                              url: `http://localhost${mcpEditor.callbackPort ? ":" + mcpEditor.callbackPort : ""}/callback`,
-                            })}
-                      </span>
-                    </div>
-                    <div className="field-block">
-                      <span className="k">{t("Sign-in")}</span>
-                      {/* Magpie signInBox → .lib-signin > .lib-signin-line + .note (client.js L1714–1733; library.css L131–132) */}
-                      <div className="lib-signin">
-                        <div className="lib-signin-line">
-                          {mcpSignWaiting ? (
+          <LibField label={t("Name")} hint={t("Letters, digits, - and _ — what the agents call it")}>
+            <WordsField
+              className="full" ref={mcpNameRef}
+              value={mcpEditor.name}
+              placeholder={t("e.g. github")}
+              onChange={(e) => setMcpEditor({ ...mcpEditor, name: e.target.value })}
+              onKeyDown={(e) => e.stopPropagation()}
+            />
+          </LibField>
+          <LibField label={t("Runs as")}>
+            <Segs
+              value={mcpEditor.transport}
+              items={[
+                { id: "stdio" as const, label: t("Command") },
+                { id: "http" as const, label: "HTTP" },
+                { id: "sse" as const, label: "SSE" },
+              ]}
+              onChange={(id) => setMcpEditor({ ...mcpEditor, transport: id })}
+            />
+          </LibField>
+          {/* Magpie editServer: lib-slot + lib-grid display:contents (client.js L2004–2038; library.css L332–333) */}
+          <div className="lib-slot">
+            <div className="lib-grid">
+              {mcpEditor.transport === "stdio" ? (
+                <>
+                  <LibField label={t("Command")} hint={t("The command and its arguments, as you'd type them")}>
+                    <WordsField
+                      className="full mono" value={mcpEditor.command}
+                      placeholder="npx -y @modelcontextprotocol/server-github"
+                      onChange={(e) => setMcpEditor({ ...mcpEditor, command: e.target.value })}
+                      onKeyDown={(e) => e.stopPropagation()}
+                    />
+                  </LibField>
+                  <LibField
+                    label={t("Environment")}
+                    hint={t("A value can name a variable, as ${NAME}: each agent is given it in its own way, so the token stays out of its settings")}
+                  >
+                    <LibPairs
+                      rows={mcpEditor.envRows}
+                      keyHint="TOKEN"
+                      valHint={t("value")}
+                      onChange={(envRows) => setMcpEditor({ ...mcpEditor, envRows })}
+                    />
+                  </LibField>
+                </>
+              ) : (
+                <>
+                  <LibField label="URL">
+                    <WordsField
+                      className="full mono" value={mcpEditor.url}
+                      placeholder="https://example.com/mcp"
+                      onChange={(e) => setMcpEditor({ ...mcpEditor, url: e.target.value })}
+                      onKeyDown={(e) => e.stopPropagation()}
+                    />
+                  </LibField>
+                  <LibField
+                    label={t("Headers")}
+                    hint={t("A value can name a variable, as ${NAME}: each agent is given it in its own way, so the token stays out of its settings")}
+                  >
+                    <LibPairs
+                      rows={mcpEditor.headerRows}
+                      keyHint="Authorization"
+                      valHint="Bearer …"
+                      onChange={(headerRows) => setMcpEditor({ ...mcpEditor, headerRows })}
+                    />
+                  </LibField>
+                  {mcpEditor.transport === "http" ? (
+                    <>
+                      <LibField
+                        label={t("OAuth app")}
+                        hint={
+                          <div className="hint">
+                            {!mcpEditor.oauthOpen
+                              ? t("For a server whose sign-in doesn't let magpie register itself, as GitHub's")
+                              : t("Made with its vendor (GitHub's under Settings › Developer settings › OAuth Apps), with {url} as its callback URL", {
+                                  url: `http://localhost${mcpEditor.callbackPort ? ":" + mcpEditor.callbackPort : ""}/callback`,
+                                })}
+                          </div>
+                        }
+                      >
+                        {/* Magpie drawApp: lib-app + field2 inputs + lib-x; closed = lib-addpair (client.js L1971–2031; library.css L133–135 / L341–343) */}
+                        <div className="lib-app">
+                          {!mcpEditor.oauthOpen ? (
+                            <button type="button" className="text lib-addpair" onClick={() => setMcpEditor({ ...mcpEditor, oauthOpen: true })}>{t("Use your own OAuth app")}</button>
+                          ) : (
                             <>
-                              <span className="note">{t("Finish signing in in your browser…")}</span>
+                              <input type="text" placeholder={t("Client ID")} aria-label={t("Client ID")} spellCheck={false} autoComplete="off" value={mcpEditor.clientId} onChange={(e) => setMcpEditor({ ...mcpEditor, clientId: e.target.value })} onKeyDown={(e) => e.stopPropagation()} />
+                              <input type="password" placeholder={t("Client secret")} aria-label={t("Client secret")} spellCheck={false} autoComplete="off" value={mcpEditor.clientSecret} onChange={(e) => setMcpEditor({ ...mcpEditor, clientSecret: e.target.value })} onKeyDown={(e) => e.stopPropagation()} />
+                              <input type="text" className="port" placeholder={t("Callback port")} aria-label={t("Callback port")} inputMode="numeric" spellCheck={false} autoComplete="off" value={mcpEditor.callbackPort} onChange={(e) => setMcpEditor({ ...mcpEditor, callbackPort: e.target.value.replace(/\D/g, "").slice(0, 5) })} onKeyDown={(e) => e.stopPropagation()} />
                               <button
                                 type="button"
-                                className="text"
-                                onClick={() => {
-                                  setMcpSignWaiting(false);
-                                  setMcpOauthWall(false);
-                                }}
+                                className="text lib-x"
+                                title={t("Remove")}
+                                onClick={() => setMcpEditor({ ...mcpEditor, oauthOpen: false, clientId: "", clientSecret: "", callbackPort: "" })}
                               >
-                                {t("Cancel")}
+                                <svg width="11" height="11" viewBox="0 0 16 16" fill="none" aria-hidden>
+                                  <path d="M4.5 4.5l7 7M11.5 4.5l-7 7" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                                </svg>
                               </button>
                             </>
-                          ) : (
-                            <button type="button" className="text action" onClick={() => saveMcp({ signIn: true })}>
-                              {t(mcpEditId ? "Sign in" : "Save and sign in")}
-                            </button>
                           )}
                         </div>
-                      </div>
-                      {mcpEditId && mcpServers.find((x) => x.id === mcpEditId)?.oauthRefused ? (
-                        <span className="hint err">{t("the sign-in was refused (access_denied)")}</span>
-                      ) : null}
-                      <span className="hint">{t("For a server that asks you to sign in (OAuth): magpie signs in once, and every agent given it uses that sign-in")}</span>
-                    </div>
-                  </>
-                ) : null}
-              </>
-            )}
-            <div className="field-block agents">
-              <span className="k">{t("Agents")}</span>
+                      </LibField>
+                      <LibField
+                        label={t("Sign-in")}
+                        hint={
+                          <>
+                            {mcpEditId && mcpServers.find((x) => x.id === mcpEditId)?.oauthRefused ? (
+                              <div className="hint err">{t("the sign-in was refused (access_denied)")}</div>
+                            ) : null}
+                            <div className="hint">{t("For a server that asks you to sign in (OAuth): magpie signs in once, and every agent given it uses that sign-in")}</div>
+                          </>
+                        }
+                      >
+                        {/* Magpie signInBox → .lib-signin > .lib-signin-line + .note (client.js L1714–1733; library.css L131–132) */}
+                        <div className="lib-signin">
+                          <div className="lib-signin-line">
+                            {mcpSignWaiting ? (
+                              <>
+                                <span className="note">{t("Finish signing in in your browser…")}</span>
+                                <button
+                                  type="button"
+                                  className="text"
+                                  onClick={() => {
+                                    setMcpSignWaiting(false);
+                                    setMcpOauthWall(false);
+                                  }}
+                                >
+                                  {t("Cancel")}
+                                </button>
+                              </>
+                            ) : (
+                              <button type="button" className="text action" onClick={() => saveMcp({ signIn: true })}>
+                                {t(mcpEditId ? "Sign in" : "Save and sign in")}
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                      </LibField>
+                    </>
+                  ) : null}
+                </>
+              )}
+            </div>
+          </div>
+          <LibField label={t("Agents")}>
+            <div className="lib-agents">
               {DEMO_AGENTS.map((a) => (
                 <LibChip
                   key={a.id}
@@ -2751,7 +2834,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                 />
               ))}
             </div>
-          </div>
+          </LibField>
           {mcpEditId ? (
             <div className="acts">
               <button
@@ -2822,10 +2905,11 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
           <p className="blurb muted">
             {t("Pick the agents that may generate images: each image costs what the model set in Settings → Images charges.")}
           </p>
-          <div className="field-block agents">
-            <span className="k">{t("Agents")}</span>
-            <LibChip on={imageAgents.includes("cursor")} label="Cursor" onClick={() => setImageAgents((list) => (list.includes("cursor") ? list.filter((x) => x !== "cursor") : [...list, "cursor"]))} />
-          </div>
+          <LibField label={t("Agents")}>
+            <div className="lib-agents">
+              <LibChip on={imageAgents.includes("cursor")} label="Cursor" onClick={() => setImageAgents((list) => (list.includes("cursor") ? list.filter((x) => x !== "cursor") : [...list, "cursor"]))} />
+            </div>
+          </LibField>
           <div className="bar">
             <span className="note">magpie-image</span>
             <span className="grow" />
@@ -2873,10 +2957,11 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
           </div>
           <p className="blurb">{skillSheet.desc}</p>
           <p className="blurb muted">From github.com/{skillSheet.by}</p>
-          <div className="field-block agents">
-            <span className="k">{t("Agents")}</span>
-            <LibChip on label="Cursor" onClick={() => {}} />
-          </div>
+          <LibField label={t("Agents")}>
+            <div className="lib-agents">
+              <LibChip on label="Cursor" onClick={() => {}} />
+            </div>
+          </LibField>
           <div className="bar">
             <span className="grow" />
             <button type="button" className="text" onClick={() => setSkillSheet(null)}>{t("Cancel")}</button>
@@ -2899,80 +2984,161 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
           <div className="ehead">
             <b>{t("New hook")}</b>
           </div>
-          <div className="stack">
-            <label className="field">
-              <span className="k">{t("Name")}</span>
-              <WordsField
-                className="full" value={hookEditor.name}
-                placeholder={t("e.g. notify")}
-                onChange={(e) => setHookEditor({ ...hookEditor, name: e.target.value })}
-                onKeyDown={(e) => e.stopPropagation()}
-              />
-              <span className="hint">{t("Letters, digits, - and _")}</span>
-            </label>
-            <label className="field">
-              <span className="k">{t("Description")}</span>
-              <textarea className="lib-text words" rows={3}
-                maxLength={200}
-                value={hookEditor.description}
-                placeholder={t("e.g. Tell me when a turn ends")}
-                onChange={(e) => setHookEditor({ ...hookEditor, description: e.target.value })}
-                onKeyDown={(e) => e.stopPropagation()}
-              />
-              <span className="hint">{t("Optional: what it's for, in any language. Only the library keeps it")}</span>
-            </label>
+          <LibField label={t("Name")} hint={t("Letters, digits, - and _")}>
+            <WordsField
+              className="full" value={hookEditor.name}
+              placeholder={t("e.g. notify")}
+              onChange={(e) => setHookEditor({ ...hookEditor, name: e.target.value })}
+              onKeyDown={(e) => e.stopPropagation()}
+            />
+          </LibField>
+          <LibField label={t("Description")} hint={t("Optional: what it's for, in any language. Only the library keeps it")}>
+            <textarea className="lib-text small lib-hookdescin" rows={3}
+              maxLength={200}
+              value={hookEditor.description}
+              placeholder={t("e.g. Tell me when a turn ends")}
+              onChange={(e) => setHookEditor({ ...hookEditor, description: e.target.value })}
+              onKeyDown={(e) => e.stopPropagation()}
+            />
+          </LibField>
             {/* Magpie client.js L2291–2313: sess-pick.lib-menu + openProtoMenu(..., "When it runs", "", "left", false, "Find an event") */}
-            <label className="field">
-              <span className="k">{t("When it runs")}</span>
+          <LibField label={t("When it runs")}>
+            <span className="pref-anchor lib-hookpick">
+              <PrefPick
+                className="lib-menu lib-hookevent"
+                label={
+                  hookEditor.event.includes(":")
+                    ? `Cursor · ${hookEditor.event.split(":")[1]}`
+                    : t(HOOK_EVENTS.find(([v]) => v === hookEditor.event)?.[1] || hookEditor.event)
+                }
+                open={eventMenu}
+                onClick={() => { setEventMenu((v) => !v); setToolMenu(false); }}
+                aria-haspopup="menu"
+              />
+              {eventMenu ? (
+                <div className="pop proto-menu" role="menu" aria-label={t("When it runs")}>
+                  <div className="pm-head">{t("When it runs")}</div>
+                  <div className="sc-top">
+                    <input
+                      className="sc-q"
+                      type="search"
+                      value={eventFilter}
+                      placeholder={t("Find an event")}
+                      aria-label={t("Find an event")}
+                      autoFocus
+                      onChange={(e) => setEventFilter(e.target.value)}
+                      onKeyDown={(e) => e.stopPropagation()}
+                    />
+                  </div>
+                  {HOOK_EVENTS.map(([v, n]) => {
+                    const on = hookEditor.event === v;
+                    return (
+                      <button
+                        key={v}
+                        type="button"
+                        role="menuitemradio"
+                        aria-checked={on}
+                        className={`pm-item${on ? " on" : ""}`}
+                        onClick={() => {
+                          let matcher = hookEditor.matcher;
+                          if (!toolEvent(v)) matcher = "";
+                          if (!HOOK_TOOLS.some(([m]) => m === matcher)) matcher = "";
+                          setHookEditor({
+                            ...hookEditor,
+                            event: v,
+                            matcher,
+                            agents: DEMO_AGENTS.map((a) => a.id),
+                          });
+                          setEventMenu(false);
+                          setEventFilter("");
+                        }}>
+                        <span className="pm-tick" aria-hidden>
+                          {on ? (
+                            <svg viewBox="0 0 16 16" width={12} height={12} fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+                              <path d={PM_CHECK} />
+                            </svg>
+                          ) : null}
+                        </span>
+                        <span className="pm-words">
+                          <span className="pm-name">{t(n)}</span>
+                          <span className="pm-note">{t("every agent, in its own name for it")}</span>
+                        </span>
+                      </button>
+                    );
+                  })}
+                  {CURSOR_HOOK_EVENTS.filter((ev) => {
+                    const q = eventFilter.trim().toLocaleLowerCase();
+                    if (!q) return true;
+                    return (`Cursor · ${ev}`).toLocaleLowerCase().includes(q);
+                  }).map((ev) => {
+                    const v = `cursor:${ev}`;
+                    const on = hookEditor.event === v;
+                    return (
+                      <button
+                        key={v}
+                        type="button"
+                        role="menuitemradio"
+                        aria-checked={on}
+                        className={`pm-item${on ? " on" : ""}`}
+                        onClick={() => {
+                          setHookEditor({ ...hookEditor, event: v, matcher: "", agents: ["cursor"] });
+                          setEventMenu(false);
+                          setEventFilter("");
+                        }}>
+                        <span className="pm-tick" aria-hidden>
+                          {on ? (
+                            <svg viewBox="0 0 16 16" width={12} height={12} fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+                              <path d={PM_CHECK} />
+                            </svg>
+                          ) : null}
+                        </span>
+                        <span className="pm-words">
+                          <span className="pm-name">Cursor · {ev}</span>
+                          <span className="pm-note">{t("{agent}'s own event", { agent: "Cursor" })}</span>
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              ) : null}
+            </span>
+          </LibField>
+          <div className="lib-slot">
+            <div className="lib-grid">
+            {hookEditor.event.includes(":") ? (
+              <LibField label={t("Matcher")} hint={t("The agent's own matcher, as its hooks file has it; empty for all")}>
+                <WordsField
+                  className="full mono lib-hookmatcher" value={hookEditor.matcher}
+                  placeholder={t("every tool")}
+                  onChange={(e) => setHookEditor({ ...hookEditor, matcher: e.target.value })}
+                  onKeyDown={(e) => e.stopPropagation()}
+                />
+              </LibField>
+            ) : toolEvent(hookEditor.event) ? (
+              /* Magpie client.js L2337–2347: openProtoMenu(..., "For which tools") */
+              <LibField label={t("For which tools")} hint={t("Each agent's own names for them")}>
               <span className="pref-anchor lib-hookpick">
                 <PrefPick
-                  className="lib-menu lib-hookevent"
-                  label={
-                    hookEditor.event.includes(":")
-                      ? `Cursor · ${hookEditor.event.split(":")[1]}`
-                      : t(HOOK_EVENTS.find(([v]) => v === hookEditor.event)?.[1] || hookEditor.event)
-                  }
-                  open={eventMenu}
-                  onClick={() => { setEventMenu((v) => !v); setToolMenu(false); }}
+                  className="lib-menu lib-hooktool"
+                  label={t(HOOK_TOOLS.find(([v]) => v === hookEditor.matcher)?.[1] || "Any tool")}
+                  open={toolMenu}
+                  title={t(HOOK_TOOLS.find(([v]) => v === hookEditor.matcher)?.[1] || "Any tool")}
+                  onClick={() => { setToolMenu((v) => !v); setEventMenu(false); }}
                   aria-haspopup="menu"
                 />
-                {eventMenu ? (
-                  <div className="pop proto-menu" role="menu" aria-label={t("When it runs")}>
-                    <div className="pm-head">{t("When it runs")}</div>
-                    <div className="sc-top">
-                      <input
-                        className="sc-q"
-                        type="search"
-                        value={eventFilter}
-                        placeholder={t("Find an event")}
-                        aria-label={t("Find an event")}
-                        autoFocus
-                        onChange={(e) => setEventFilter(e.target.value)}
-                        onKeyDown={(e) => e.stopPropagation()}
-                      />
-                    </div>
-                    {HOOK_EVENTS.map(([v, n]) => {
-                      const on = hookEditor.event === v;
+                {toolMenu ? (
+                  <div className="pop proto-menu" role="menu" aria-label={t("For which tools")}>
+                    <div className="pm-head">{t("For which tools")}</div>
+                    {HOOK_TOOLS.map(([v, n]) => {
+                      const on = hookEditor.matcher === v;
                       return (
                         <button
-                          key={v}
+                          key={v || "any"}
                           type="button"
                           role="menuitemradio"
                           aria-checked={on}
                           className={`pm-item${on ? " on" : ""}`}
-                          onClick={() => {
-                            let matcher = hookEditor.matcher;
-                            if (!toolEvent(v)) matcher = "";
-                            if (!HOOK_TOOLS.some(([m]) => m === matcher)) matcher = "";
-                            setHookEditor({
-                              ...hookEditor,
-                              event: v,
-                              matcher,
-                              agents: DEMO_AGENTS.map((a) => a.id),
-                            });
-                            setEventMenu(false);
-                            setEventFilter("");
-                          }}>
+                          onClick={() => { setHookEditor({ ...hookEditor, matcher: v }); setToolMenu(false); }}>
                           <span className="pm-tick" aria-hidden>
                             {on ? (
                               <svg viewBox="0 0 16 16" width={12} height={12} fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
@@ -2982,40 +3148,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                           </span>
                           <span className="pm-words">
                             <span className="pm-name">{t(n)}</span>
-                            <span className="pm-note">{t("every agent, in its own name for it")}</span>
-                          </span>
-                        </button>
-                      );
-                    })}
-                    {CURSOR_HOOK_EVENTS.filter((ev) => {
-                      const q = eventFilter.trim().toLocaleLowerCase();
-                      if (!q) return true;
-                      return (`Cursor · ${ev}`).toLocaleLowerCase().includes(q);
-                    }).map((ev) => {
-                      const v = `cursor:${ev}`;
-                      const on = hookEditor.event === v;
-                      return (
-                        <button
-                          key={v}
-                          type="button"
-                          role="menuitemradio"
-                          aria-checked={on}
-                          className={`pm-item${on ? " on" : ""}`}
-                          onClick={() => {
-                            setHookEditor({ ...hookEditor, event: v, matcher: "", agents: ["cursor"] });
-                            setEventMenu(false);
-                            setEventFilter("");
-                          }}>
-                          <span className="pm-tick" aria-hidden>
-                            {on ? (
-                              <svg viewBox="0 0 16 16" width={12} height={12} fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
-                                <path d={PM_CHECK} />
-                              </svg>
-                            ) : null}
-                          </span>
-                          <span className="pm-words">
-                            <span className="pm-name">Cursor · {ev}</span>
-                            <span className="pm-note">{t("{agent}'s own event", { agent: "Cursor" })}</span>
+                            <span className="pm-note" />
                           </span>
                         </button>
                       );
@@ -3023,91 +3156,32 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                   </div>
                 ) : null}
               </span>
-            </label>
-            {hookEditor.event.includes(":") ? (
-              <label className="field">
-                <span className="k">{t("Matcher")}</span>
-                <WordsField
-                  className="full mono lib-hookmatcher" value={hookEditor.matcher}
-                  placeholder={t("every tool")}
-                  onChange={(e) => setHookEditor({ ...hookEditor, matcher: e.target.value })}
-                  onKeyDown={(e) => e.stopPropagation()}
-                />
-                <span className="hint">
-                  {t("The agent's own matcher, as its hooks file has it; empty for all")}
-                </span>
-              </label>
-            ) : toolEvent(hookEditor.event) ? (
-              /* Magpie client.js L2337–2347: openProtoMenu(..., "For which tools") */
-              <label className="field">
-                <span className="k">{t("For which tools")}</span>
-                <span className="pref-anchor lib-hookpick">
-                  <PrefPick
-                    className="lib-menu lib-hooktool"
-                    label={t(HOOK_TOOLS.find(([v]) => v === hookEditor.matcher)?.[1] || "Any tool")}
-                    open={toolMenu}
-                    title={t(HOOK_TOOLS.find(([v]) => v === hookEditor.matcher)?.[1] || "Any tool")}
-                    onClick={() => { setToolMenu((v) => !v); setEventMenu(false); }}
-                    aria-haspopup="menu"
-                  />
-                  {toolMenu ? (
-                    <div className="pop proto-menu" role="menu" aria-label={t("For which tools")}>
-                      <div className="pm-head">{t("For which tools")}</div>
-                      {HOOK_TOOLS.map(([v, n]) => {
-                        const on = hookEditor.matcher === v;
-                        return (
-                          <button
-                            key={v || "any"}
-                            type="button"
-                            role="menuitemradio"
-                            aria-checked={on}
-                            className={`pm-item${on ? " on" : ""}`}
-                            onClick={() => { setHookEditor({ ...hookEditor, matcher: v }); setToolMenu(false); }}>
-                            <span className="pm-tick" aria-hidden>
-                              {on ? (
-                                <svg viewBox="0 0 16 16" width={12} height={12} fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
-                                  <path d={PM_CHECK} />
-                                </svg>
-                              ) : null}
-                            </span>
-                            <span className="pm-words">
-                              <span className="pm-name">{t(n)}</span>
-                              <span className="pm-note" />
-                            </span>
-                          </button>
-                        );
-                      })}
-                    </div>
-                  ) : null}
-                </span>
-                <span className="hint">{t("Each agent's own names for them")}</span>
-              </label>
+              </LibField>
             ) : null}
-            <label className="field">
-              <span className="k">{t("Command")}</span>
-              <WordsField
-                className="full mono" value={hookEditor.command}
-                placeholder="curl -s https://api.day.app/KEY/done"
-                onChange={(e) => setHookEditor({ ...hookEditor, command: e.target.value })}
-                onKeyDown={(e) => e.stopPropagation()}
-              />
-              <span className="hint">{t("Run by the agent's shell, in the session's folder; the agent passes what happened as JSON on its input")}</span>
-            </label>
-            <label className="field">
-              <span className="k">{t("Timeout (seconds)")}</span>
-              <WordsField
-                className="timeout" inputMode="numeric"
-                value={hookEditor.timeout}
-                placeholder={t("the agent's own")}
-                onChange={(e) => setHookEditor({ ...hookEditor, timeout: e.target.value.replace(/\D/g, "") })}
-                onKeyDown={(e) => e.stopPropagation()}
-              />
-            </label>
-            <div className="field-block agents">
-              <span className="k">{t("Agents")}</span>
-              <LibChip on={hookEditor.agents.includes("cursor")} label="Cursor" onClick={() => setHookEditor({ ...hookEditor, agents: hookEditor.agents.includes("cursor") ? hookEditor.agents.filter((x) => x !== "cursor") : [...hookEditor.agents, "cursor"] })} />
             </div>
           </div>
+          <LibField label={t("Command")} hint={t("Run by the agent's shell, in the session's folder; the agent passes what happened as JSON on its input")}>
+            <WordsField
+              className="full mono" value={hookEditor.command}
+              placeholder="curl -s https://api.day.app/KEY/done"
+              onChange={(e) => setHookEditor({ ...hookEditor, command: e.target.value })}
+              onKeyDown={(e) => e.stopPropagation()}
+            />
+          </LibField>
+          <LibField label={t("Timeout (seconds)")}>
+            <WordsField
+              className="lib-hooktimeout" inputMode="numeric"
+              value={hookEditor.timeout}
+              placeholder={t("the agent's own")}
+              onChange={(e) => setHookEditor({ ...hookEditor, timeout: e.target.value.replace(/\D/g, "") })}
+              onKeyDown={(e) => e.stopPropagation()}
+            />
+          </LibField>
+          <LibField label={t("Agents")}>
+            <div className="lib-agents">
+              <LibChip on={hookEditor.agents.includes("cursor")} label="Cursor" onClick={() => setHookEditor({ ...hookEditor, agents: hookEditor.agents.includes("cursor") ? hookEditor.agents.filter((x) => x !== "cursor") : [...hookEditor.agents, "cursor"] })} />
+            </div>
+          </LibField>
           <div className="bar">
             <span className="grow" />
             <button type="button" className="text" onClick={tryCloseHook}>{t("Cancel")}</button>

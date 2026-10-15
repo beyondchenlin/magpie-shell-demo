@@ -1,3 +1,16 @@
+## v0.1.154 · LIBRARY_FIELD_OSS_FIDELITY · 2026-10-15 Asia/Shanghai
+
+- **WHY:** Continue Magpie 1:1 after 0.1.153 — cut Library invent `field-block` / `label.field` / invent `.stack` / invent `.pair`+`.hrow` that covered Magpie `field()` gold in MCP / hook / image / skill editors.
+- **CAUSE:** Demo painted editor rows as invent column `label.field` + `.k` / invent `field-block` (+ shell-patch re-own) instead of Magpie `field(label, control, hint)` → bare `<label>` + wrap `<div>` as `.editor` 2-col grid children (app.js **L7219–7238**); env/headers used invent `.pair`/`.hrow` instead of Magpie `pairs()` → `.lib-pairs` / `.lib-pair` / `.lib-addpair` / `.lib-x` (library/client.js **L1900–1919**; library.css **L336–343**); agents used invent `field-block.agents` instead of Magpie `field(Agents)` + `.lib-agents`; transport/matcher slots lacked Magpie `lib-slot`/`lib-grid` (`display:contents`).
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; CIS PrefPick/WordsField/Segs/TextBtn/LibSwitch; Magpie proto-menu hook picks (0.1.152); invent `.acts` MCP Remove (Magpie `.bar`) + invent gtk-select-files + image/skill `.ehead.detail`/`.blurb` bridges — later tips.
+- **Cite:**
+  - Magpie `app.js` **7219–7238** `field()` → `[label, wrap]` (+ `.hint`)
+  - Magpie `app.css` **2693–2708** `.editor` grid 72px|1fr + `.editor label` / `.editor .hint`
+  - Magpie `plugins/library/client.js` **1900–1919** `pairs`; **1998–2038** `editServer` (+ lib-slot/lib-grid); **2270–2348** `editHook` (+ lib-hookdescin / lib-hooktimeout / lib-hookmatcher)
+  - Magpie `plugins/library/library.css` **332–343** lib-slot/lib-grid/lib-pairs; **610/618** hook timeout/desc
+- **WHAT changed:** `LibraryView.tsx` LibField/LibPairs + Magpie field DOM for MCP/hook/image/skill editors; `shell-patch.css` drop invent `label.field` / `field-block` / `.pair` / `.hrow` / `.agents`.
+- **chrome-guard:** pass (SIDE_AT=1024). Push/PR #1. No portable/Vercel.
+
 ## v0.1.153 · PROVIDERS_MOVE_ROW_MENU_OSS_FIDELITY · 2026-10-15 Asia/Shanghai
 
 - **WHY:** Continue Magpie 1:1 after 0.1.152 — cut Providers invent `.pop.move` / `.scrim` / `.text.item` / `.lab`/`.kbd` / `--pop-x`/`--pop-y` that covered Magpie `openProviderMenu` → `openRowMenu` gold.

@@ -731,52 +731,11 @@ label.tick input { margin: 0; }
    (plugins/library/client.js L4944 openLib; app.js openModal L8062+);
    Magpie `.editor` app.css L2693–2706 / L2847 bar; library.css L330+ / L346;
    Magpie `.lib-ag` library.css L187–217 (radius 7, not invent 999 pill).
-   Demo-only field bridges (not Magpie `.editor` grid labels) stay under
-   `.modal .editor.lib-editor`: */
-.modal .editor.lib-editor label.field {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  text-align: left;
-  margin: 0;
-  color: var(--fg);
-}
-.modal .editor.lib-editor label.field > .k {
-  font-size: 12px;
-  font-weight: 500;
-}
-.modal .editor.lib-editor .pair .words {
-  flex: 1;
-  min-width: 0;
-  width: auto;
-}
-.modal .editor.lib-editor .words.port { flex: none; width: 110px; }
-.modal .editor.lib-editor .words.timeout { flex: none; width: 160px; max-width: 100%; }
-.modal .editor.lib-editor .words.mono,
-.modal .editor.lib-editor input.mono.words {
-  font-family: var(--code-font, var(--code));
-}
-.modal .editor.lib-editor textarea.words {
-  width: 100%;
-  max-width: 100%;
-  min-height: 64px;
-  padding: 7px 9px;
-  border-radius: 7px;
-  border: 1px solid var(--line);
-  background: var(--card);
-  color: var(--fg);
-  font: inherit;
-  font-size: 12.5px;
-  line-height: 1.45;
-  resize: vertical;
-  outline: none;
-  box-sizing: border-box;
-  transition: border-color .12s, box-shadow .12s;
-}
-.modal .editor.lib-editor textarea.words:focus {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent);
-}
+   v0.1.154: drop invent label.field / field-block / .pair / .hrow / .agents —
+   Magpie app.js field() L7219–7238 + library/client.js editServer/editHook
+   (bare <label> + wrap <div> on .editor 2-col grid; lib-slot/lib-grid;
+   lib-pairs/lib-pair/lib-addpair). WordsField = Magpie field2 input.words. */
+/* Image/skill sheet ehead.detail + blurb bridges (not Magpie field()) — later tip if gold differs. */
 .modal .editor.lib-editor .ehead.detail {
   align-items: flex-start;
   gap: 10px;
@@ -803,6 +762,7 @@ label.tick input { margin: 0; }
   font-size: 11px;
 }
 .modal .editor.lib-editor .blurb {
+  grid-column: 1 / -1;
   margin: 0 0 8px;
   font-size: 13px;
   line-height: 1.45;
@@ -813,33 +773,13 @@ label.tick input { margin: 0; }
   font-size: 12.5px;
   color: var(--muted);
 }
-.modal .editor.lib-editor .agents {
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-}
-.modal .editor.lib-editor .agents > .k {
-  display: block;
-  width: 100%;
-  font-size: 12px;
-  font-weight: 500;
-  margin-bottom: 2px;
-}
 .modal .editor.lib-editor .bar .note {
   font-size: 12px;
   color: var(--muted);
 }
-.modal .editor.lib-editor .hrow {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 4px;
-}
-.modal .editor.lib-editor .hrow .k {
-  font-size: 12px;
-  font-weight: 500;
-}
+/* MCP Remove still invent .acts (Magpie puts Remove in .bar) — later tip. */
 .modal .editor.lib-editor .acts {
+  grid-column: 1 / -1;
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
@@ -855,16 +795,7 @@ label.tick input { margin: 0; }
   left: 0;
   right: auto;
 }
-.modal .editor.lib-editor .field-block {
-  margin-bottom: 12px;
-  position: relative;
-}
-.modal .editor.lib-editor .field-block > .k {
-  display: block;
-  font-size: 12px;
-  font-weight: 500;
-  margin-bottom: 6px;
-}
+/* v0.1.154: drop invent .field-block / .field-block > .k — Magpie field() + lib-agents. */
 /* v0.1.145: drop invent .oauth-pair / .sign-row —
    Magpie OAuth app = .lib-app (+ .lib-x / .lib-addpair) library.css L133–135 / L341–343
    (client.js drawApp L1971–2031); Sign-in = .lib-signin > .lib-signin-line (L131–132;

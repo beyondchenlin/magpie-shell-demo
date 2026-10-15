@@ -1,3 +1,11 @@
+## v0.1.154 · LIBRARY_FIELD_OSS_FIDELITY · 2026-10-15 Asia/Shanghai
+
+- **WHY:** Library invent `field-block` / `label.field` / `.stack` / `.pair`+`.hrow` → Magpie `field()` + `lib-pairs` / `lib-slot`.
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; CIS PrefPick/WordsField; invent `.acts` / gtk-select-files / ehead.detail later.
+- **Cite:** app.js L7219–7238; client.js L1900–2038 / L2270–2348; app.css L2693–2708; library.css L332–343.
+- **chrome-guard:** pass (SIDE_AT=1024).
+- **No portable / Vercel.**
+
 ## v0.1.153 · PROVIDERS_MOVE_ROW_MENU_OSS_FIDELITY · 2026-10-15 Asia/Shanghai
 
 - **WHY:** Providers invent `.pop.move` / `.scrim` → Magpie `openProviderMenu` → `openRowMenu` `.pop.row-menu`.
