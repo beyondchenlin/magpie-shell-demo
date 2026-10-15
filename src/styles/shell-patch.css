@@ -248,13 +248,8 @@ body.window:not(.side-nav) .top.inrow .seg {
 body.window:not(.side-nav) .top.inrow .actions { margin-left: 0; }
 body.window:not(.side-nav) .top.tight .brand > span:not(.logo) { display: none; }
 
-.ag-native-note {
-  display: flex; align-items: center; gap: 6px;
-  margin-top: 2px; font-size: 12px; color: var(--muted);
-}
-.ag-native-note .sq {
-  width: 9px; height: 9px; border-radius: 2px; background: var(--seg-track, #e6e6eb);
-}
+/* v0.1.143: drop invent .ag-native-note + .sq — Magpie connectLine kind "no"
+   is .ag-st > .ag-dot + .ag-st-t (app.js L1234–1240; app.css L3762–3765). */
 .profiles .chips .hint { color: var(--muted); font-size: 12.5px; line-height: 30px; }
 /* v0.1.128: idle row uses Magpie routing.css L74 (display:block + text-align:center) — no tip invent */
 .rt-flier-demo { pointer-events: none; }
@@ -2178,20 +2173,9 @@ label.tick input { margin: 0; }
   display: flex; gap: 6px; flex-wrap: wrap; align-items: center;
 }
 /* v0.1.140: drop invent #view-agents .ag-relocate* — Magpie askRelocate is editor.sm-ask modal (sessions/client.js L901–959) */
-#view-agents .ag-exp.enter { animation: fade-in .22s var(--ease); }
-#view-agents .ag-exp .mt6 { margin-top: 6px; }
-#view-agents .ag-exp .mt2 { margin-top: 2px; }
-#view-agents .ag-tick {
-  display: inline-flex; align-items: center; gap: 8px; font-size: 11.5px;
-  color: var(--muted); cursor: pointer;
-}
-#view-agents .ag-json-preview {
-  margin-top: 8px; animation: fade-in .15s var(--ease);
-}
-#view-agents .ag-json-preview pre {
-  margin: 6px 0 0; padding: 10px; border-radius: 8px; background: var(--pill);
-  font-size: 11.5px; line-height: 1.45; overflow: auto;
-}
+/* v0.1.143: drop invent #view-agents .ag-exp.enter / .mt6 / .mt2 / .ag-tick /
+   .ag-json-preview — Magpie ag-exp has none (app.css L3804+); longest tick is
+   label.ag-vl.ag-longest (app.js L1713). */
 
 /* Settings NestedBlocks */
 .ic.openai-mark {
@@ -2203,9 +2187,8 @@ label.tick input { margin: 0; }
 #view-settings .sync-row {
   display: flex; gap: 8px; align-items: center;
 }
-#view-settings .whatsnew-body {
-  padding: 12px 18px; max-height: 360px; overflow: auto;
-}
+/* v0.1.143: drop invent #view-settings .whatsnew-body — Magpie showWhatsNew
+   uses .modal .editor.whatsnew > .ebody (app.js L4144; app.css L3279 / framed L3268). */
 #view-settings .mirror-row {
   display: flex; gap: 6px; align-items: center; flex-wrap: wrap;
 }

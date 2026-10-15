@@ -1014,10 +1014,9 @@ export function AgentsView({
               <div className="who">
                 <div className="name">{a.name}</div>
                 {a.id === "cursor" ? (
-                  <div className="ag-native-note" title="~/.cursor/cli-config.json">
-                    <span className="sq" aria-hidden />
-                    <span className="sq" aria-hidden />
-                    <span>{t("Only Cursor's own models")}</span>
+                  <div className="ag-st">
+                    <span className="ag-dot" />
+                    <span className="ag-st-t">{t("Only Cursor's own models")}</span>
                   </div>
                 ) : wired[a.id] ? (
                   <div

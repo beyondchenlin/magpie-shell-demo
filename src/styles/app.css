@@ -3286,14 +3286,8 @@ html.theming, html.theming *, html.theming *::before, html.theming *::after {
 .whatsnew .wn-rel, .whatsnew .wn-list { grid-column: 1 / -1; min-width: 0; }
 .whatsnew .wn-rel + .wn-rel { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--line-2); }
 .whatsnew .wn-ver { display: flex; align-items: center; gap: 8px; font-size: 13px; }
-.whatsnew .wn-badge {
-  display: inline-flex; align-items: center; flex: none;
-  margin-left: 2px; font-size: 9.5px; font-weight: 650; letter-spacing: .02em;
-  line-height: 16px; padding: 0 7px; border-radius: 5px; text-transform: uppercase;
-  color: #8a4b00; background: color-mix(in srgb, #f0a020 28%, var(--card));
-  border: 1px solid color-mix(in srgb, #e08a10 45%, transparent);
-}
-.whatsnew .wn-ref { color: var(--muted); font-variant-numeric: tabular-nums; }
+/* v0.1.143: drop invent .wn-badge / .wn-ref — Magpie pending uses span.badge
+   "Not installed yet" (app.js L4152); issues use a.wn-link (app.js L4240–4246). */
 
 .whatsnew .wn-ver b { font-weight: 600; }
 .whatsnew .wn-since { margin-left: 10px; font-size: 12px; color: var(--muted); }

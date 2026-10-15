@@ -1,3 +1,9 @@
+## v0.1.143 AGENTS_NATIVE_WHATSNEW_OSS_FIDELITY
+- Agents Cursor native-only line: drop invent `ag-native-note` + square `.sq` — restore Magpie `connectLine` kind `"no"` → `.ag-st` > `.ag-dot` + `.ag-st-t` (app.js L1234–1240 / NATIVE_ONLY L1107; app.css L3762–3765).
+- Settings What's new: drop invent `whatsnew-body` / `wn-badge` / `wn-ref` — restore Magpie `showWhatsNew` `.ebody` + `span.badge` "Not installed yet" + `a.wn-link` issues (app.js L4144–4152 / L4240–4246; app.css L3279).
+- shell-patch: drop invent `.ag-native-note*` + dead `#view-agents .ag-exp.enter` / `.mt6` / `.mt2` / `.ag-tick` / `.ag-json-preview` + invent `.whatsnew-body`.
+- SIDE_AT=1024. No portable / Vercel.
+
 ## v0.1.142 ROUTING_EMPTY_GSEL_LANPOP_OSS_FIDELITY
 - Routing: drop invent live-stage `<p className="rt-req-head note">` under `.rt-top` — Magpie `rt-top` is only `.rt-what` + `.rt-mode` (routing.js L26–29 / L115 child `span.note` on Requests head only).
 - Routing groups select bar: drop invent `text rt-pick-clear` — restore Magpie `selectBar` checkbox + `span.note` + `text danger rt-gremove` (routing.js L3773–3814).

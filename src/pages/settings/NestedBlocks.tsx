@@ -923,24 +923,24 @@ export function WhatsNewModal({ onClose }: { onClose: () => void }) {
     <div className="modal lib" id="modal" onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}>
       <div className="dialog">
         <div className="editor whatsnew framed">
-          <div className="ehead"><b>{t("What's new in v{v}", { v: "0.1.1244" })}</b></div>
-          <div className="ebody whatsnew-body">
-            <div className="wn-rel">
+          <div className="ehead"><b>{t("What's new in {v}", { v: "v0.1.1244" })}</b></div>
+          <div className="ebody">
+            <section className="wn-rel">
               <div className="wn-ver">
                 <b>v0.1.1244</b>
-                <span className="wn-badge">{t("NOT INSTALLED YET")}</span>
+                <span className="badge">{t("Not installed yet")}</span>
               </div>
               <div className="wn-notes">
                 <ul>
-                  <li><b>sessions:</b> Each reply in a session's conversation names the model its own line in the agent's file names (<span className="wn-ref">#2253</span>, cnlove7777777-art).</li>
-                  <li><b>library:</b> An agent whose CLI is gone (only its config folder left) is no Library write target, and nothing it already has is removed (<span className="wn-ref">#2254</span>, ggbdpq).</li>
-                  <li><b>provider:</b> magpie://import links take gemini=, and its host is named before adding (<span className="wn-ref">#2251</span>, ggbdpq).</li>
-                  <li><b>agent:</b> A Claude Code tier set to a model keeps it when the main model moves onto that model, not "Same as main model" (<span className="wn-ref">#2257</span>, luokinging).</li>
-                  <li><b>provider:</b> TestCopilotSecretToolUsername's fake secret-tool answers a loaded Mac's suite, not 'token ""' after two 5s waits (<span className="wn-ref">#1627</span>).</li>
+                  <li><b>sessions:</b> Each reply in a session's conversation names the model its own line in the agent's file names (<a className="wn-link" href="https://github.com/yetone/magpie/issues/2253">#2253</a>, cnlove7777777-art).</li>
+                  <li><b>library:</b> An agent whose CLI is gone (only its config folder left) is no Library write target, and nothing it already has is removed (<a className="wn-link" href="https://github.com/yetone/magpie/issues/2254">#2254</a>, ggbdpq).</li>
+                  <li><b>provider:</b> magpie://import links take gemini=, and its host is named before adding (<a className="wn-link" href="https://github.com/yetone/magpie/issues/2251">#2251</a>, ggbdpq).</li>
+                  <li><b>agent:</b> A Claude Code tier set to a model keeps it when the main model moves onto that model, not "Same as main model" (<a className="wn-link" href="https://github.com/yetone/magpie/issues/2257">#2257</a>, luokinging).</li>
+                  <li><b>provider:</b> TestCopilotSecretToolUsername's fake secret-tool answers a loaded Mac's suite, not 'token ""' after two 5s waits (<a className="wn-link" href="https://github.com/yetone/magpie/issues/1627">#1627</a>).</li>
                 </ul>
               </div>
-            </div>
-            <div className="wn-rel">
+            </section>
+            <section className="wn-rel">
               <div className="wn-ver"><b>v0.1.1240</b></div>
               <div className="wn-notes">
                 <ul>
@@ -948,7 +948,7 @@ export function WhatsNewModal({ onClose }: { onClose: () => void }) {
                   <li><b>proc, agent:</b> Asking Cline's version no longer starts an npm update of Cline (新v学员 on Discord).</li>
                 </ul>
               </div>
-            </div>
+            </section>
           </div>
           <div className="bar">
             <span className="grow" />
