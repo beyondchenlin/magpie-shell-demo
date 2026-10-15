@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
+import { Fold, FoldChev } from "../components/Fold";
 import { useSegThumb } from "../components/SegThumb";
 import { GATEWAY_ADDR } from "../data/mock";
 import { demoCopy, t, useLang } from "../i18n";
@@ -196,20 +197,6 @@ function CopyIcon({ check }: { check?: boolean }) {
   );
 }
 
-function FoldChev() {
-  return (
-    <svg viewBox="0 0 16 16" width={11} height={11} aria-hidden>
-      <path
-        d="M6 3.5 10.5 8 6 12.5"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.6"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
 
 function CopyBtn({
   text,
@@ -616,22 +603,18 @@ export function GatewayView({ onStatus, onGoNetwork }: Props) {
       )}
 
       <div className="row-head">
-        <button
-          type="button"
-          className="fold"
+        <Fold
           id="foldConnect"
-          aria-expanded={!connectFolded}
+          expanded={!connectFolded}
           aria-controls="connect"
+          label={t("Connect")}
           title={t(connectFolded ? "Show how to connect" : "Fold Connect away")}
           onClick={() => {
             const next = !connectFolded;
             setConnectFolded(next);
             lsSet("magpie.gwConnectFolded", next ? "1" : "0");
           }}
-        >
-          <FoldChev />
-          <span className="label">{t("Connect")}</span>
-        </button>
+        />
         <span className="grow" />
         <span className={`note${connectFolded ? " brief" : ""}`} id="connectNote">
           {connectFolded ? (
@@ -783,23 +766,20 @@ export function GatewayView({ onStatus, onGoNetwork }: Props) {
         </section>
 
       <div className="row-head">
-        <button
-          type="button"
-          className="fold"
+        <Fold
           id="foldModels"
-          aria-expanded={!modelsFolded}
+          expanded={!modelsFolded}
           aria-controls="gwModels"
+          label={t("Models")}
+          note={models ? String(models) : ""}
+          noteId="modelsCount"
           title={t(modelsFolded ? "Show the models" : "Fold the models away")}
           onClick={() => {
             const next = !modelsFolded;
             setModelsFolded(next);
             lsSet("magpie.gwModelsFolded", next ? "1" : "0");
           }}
-        >
-          <FoldChev />
-          <span className="label">{t("Models")}</span>
-          <span className="note" id="modelsCount">{models ? String(models) : ""}</span>
-        </button>
+        />
         <span className="grow" />
         <button
           type="button"

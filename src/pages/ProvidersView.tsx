@@ -9,6 +9,8 @@ import {
 import presets from "../data/presets.json";
 import { SUB_TILES, iconSrc } from "../data/mock";
 import { ZH, t, demoCopy } from "../i18n";
+import { ActionConfirm } from "../components/ActionConfirm";
+import { Fold } from "../components/Fold";
 import { ProtoMultiMenu } from "../components/ProtoMultiMenu";
 import { LibSwitch } from "../components/LibSwitch";
 import { Tick } from "../components/Tick";
@@ -557,18 +559,6 @@ function ProviderEditorModal({ state, onClose, onAdd, onStatus, saved, onRemove,
   const [pickedIcon, setPickedIcon] = useState(state.icon || "aside");
   const [hdrs, setHdrs] = useState<{ name: string; value: string; json?: boolean }[]>([{ name: "", value: "" }]);
   const [discardOpen, setDiscardOpen] = useState(false);
-  const discardRef = useRef<HTMLDialogElement>(null);
-  useEffect(() => {
-    const d = discardRef.current;
-    if (!d) return;
-    if (discardOpen) {
-      if (!d.open) d.showModal();
-      const cancelBtn = d.querySelector("button.text:not(.danger-fill)") as HTMLButtonElement | null;
-      cancelBtn?.focus({ preventScroll: true });
-    } else if (d.open) {
-      d.close();
-    }
-  }, [discardOpen]);
   const API_HINTS: Record<string, string> = {
     openai: "…/v1 — chat completions, and responses when the vendor has it",
     responses: "…/v1 — for a vendor that serves only the Responses API, not chat completions",
@@ -2220,47 +2210,20 @@ function ProviderEditorModal({ state, onClose, onAdd, onStatus, saved, onRemove,
           </div>
         </form>
       </div>
-      {discardOpen ? (
-        <dialog
-          ref={discardRef}
-          className="action-confirm"
-          role="alertdialog"
-          aria-labelledby="discardTitle"
-          aria-describedby="discardMsg"
-          onCancel={(e) => {
-            e.preventDefault();
-            setDiscardOpen(false);
-          }}
-          onClick={(e) => {
-            const r = e.currentTarget.getBoundingClientRect();
-            if (
-              e.target === e.currentTarget &&
-              (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom)
-            ) {
-              setDiscardOpen(false);
-            }
-          }}
-        >
-          <h2 id="discardTitle">{t("Discard")}</h2>
-          <p id="discardMsg">{t("Discard unsaved changes? Your changes will be lost.")}</p>
-          <div className="bar">
-            <span className="grow" />
-            <button type="button" className="text" onClick={() => setDiscardOpen(false)}>
-              {ZH.cancel}
-            </button>
-            <button
-              type="button"
-              className="text primary danger-fill"
-              onClick={() => {
-                setDiscardOpen(false);
-                close();
-              }}
-            >
-              {t("Discard")}
-            </button>
-          </div>
-        </dialog>
-      ) : null}
+      <ActionConfirm
+        open={discardOpen}
+        titleId="discardTitle"
+        messageId="discardMsg"
+        title={t("Discard")}
+        message={t("Discard unsaved changes? Your changes will be lost.")}
+        cancelLabel={ZH.cancel}
+        acceptLabel={t("Discard")}
+        onCancel={() => setDiscardOpen(false)}
+        onAccept={() => {
+          setDiscardOpen(false);
+          close();
+        }}
+      />
     </div>
   );
 }
@@ -2880,27 +2843,20 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
           </button>
         ) : null}
         <div className="row-head off-head" id="offHead" hidden={sheetOpen || !demoProvs.some((p) => p.off)}>
-          <button
-            type="button"
-            className="fold"
+          <Fold
             id="foldOff"
-            aria-expanded={!offFolded}
+            expanded={!offFolded}
             aria-controls="offProviders"
+            label={t("Turned off")}
+            note={demoProvs.filter((p) => p.off).length || ""}
+            noteId="offCount"
             title={
               offFolded
                 ? t("Show the providers turned off")
                 : t("Fold the providers turned off away")
             }
             onClick={() => setOffFolded((f) => !f)}
-          >
-            <svg viewBox="0 0 12 12" width={10} height={10} aria-hidden>
-              <path d="M4.5 2.5 8 6l-3.5 3.5" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
-            </svg>
-            <span className="label">{t("Turned off")}</span>
-            <span className="note" id="offCount">
-              {demoProvs.filter((p) => p.off).length || ""}
-            </span>
-          </button>
+          />
         </div>
         <div className="list" id="offProviders" hidden={sheetOpen || !demoProvs.some((p) => p.off) || offFolded}>
           {demoProvs

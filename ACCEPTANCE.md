@@ -1,3 +1,9 @@
+## v0.1.107 CIS_FOLD_TOAST_CONFIRM
+- Extracted `Fold` / `FoldChev` — Gateway Connect+Models, Providers Turned off.
+- Extracted `StatusToast` — App `#status` foot toast.
+- Extracted `ActionConfirm` — Providers discard + Plugins Remove/Clear (Magpie confirmAction).
+- CIS §10 Fold/StatusToast/ActionConfirm Done. Library LibModal discard/remove-all + GroupEditor modal still one-offs. SIDE_AT=1024. No portable / Vercel.
+
 ## v0.1.106 CIS_P2_PREFPICK_FIELDPILL
 - Extracted `PrefPick` (`.sess-pick.pref-pick`) — Settings Language + FontRow.
 - Extracted `FieldPill` (`.field` + k/v/chev) — Agents tiers / New sessions + Tray solo; removed one-off field border/height styles.

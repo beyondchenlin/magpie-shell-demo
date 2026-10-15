@@ -12,6 +12,7 @@ import { PluginsView, UsageView } from "./pages/SimpleViews";
 import { LibraryView } from "./pages/LibraryView";
 import { SettingsView, applyColorblind } from "./pages/SettingsView";
 import { TrayPanel, wantPanelMode } from "./pages/TrayPanel";
+import { StatusToast } from "./components/StatusToast";
 import { WinCaption } from "./components/WinCaption";
 
 const SIDE_AT = 1024;
@@ -774,21 +775,15 @@ export default function App() {
       )}
 
       <footer className="foot">
-        <span
-          id="status"
-          className={`status${status ? ` ${status.kind}` : ""}${
-            status &&
+        <StatusToast
+          msg={status?.msg}
+          kind={status?.kind}
+          lift={
+            !!status &&
             typeof document !== "undefined" &&
             !!document.querySelector(".modal:not(.out)")
-              ? " lift"
-              : ""
-          }`}
-          role={status?.kind === "err" ? "alert" : "status"}
-          aria-atomic="true"
-          title={status?.msg || undefined}
-        >
-          {status?.msg || ""}
-        </span>
+          }
+        />
         <span className="grow" />
         <span className="sr-only">{GATEWAY_ADDR}</span>
       </footer>

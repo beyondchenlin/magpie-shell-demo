@@ -1,4 +1,5 @@
 import { Fragment, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { ActionConfirm } from "../components/ActionConfirm";
 import { LedHeat } from "../components/LedHeat";
 import { Segs } from "../components/Segs";
 import { useSegThumb } from "../components/SegThumb";
@@ -2064,11 +2065,9 @@ export function PluginsView({
   const [removeConfirm, setRemoveConfirm] = useState<{ pkg: string; name: string } | null>(null);
   /** Magpie confirmAction: restore focus to the row Remove that opened it (shots 94/97/100). */
   const removeFocusRef = useRef<HTMLButtonElement | null>(null);
-  const removeDialogRef = useRef<HTMLDialogElement | null>(null);
   /** Magpie plugins/134–137 Clear options confirm; Escape cancels, editor stays. */
   const [clearConfirm, setClearConfirm] = useState<{ pkg: string; name: string } | null>(null);
   const clearFocusRef = useRef<HTMLButtonElement | null>(null);
-  const clearDialogRef = useRef<HTMLDialogElement | null>(null);
   const searchInputRef = useRef<HTMLInputElement | null>(null);
   /** Bun on disk (footer 1.4.3); after first install → Installing… (104–113), not Getting Bun…. */
   const [bunReady, setBunReady] = useState(() => {
@@ -2115,60 +2114,6 @@ export function PluginsView({
     document.addEventListener("keydown", onKey, true);
     return () => document.removeEventListener("keydown", onKey, true);
   }, [pluginDetail]);
-
-  // Magpie confirmAction (app.js): showModal, Cancel focused, Tab cycles Cancel↔Remove, restore focus (91–103)
-  useEffect(() => {
-    if (!removeConfirm) return;
-    const dialog = removeDialogRef.current;
-    if (!dialog) return;
-    const cancelBtn = dialog.querySelector<HTMLButtonElement>("button.text:not(.primary)");
-    const acceptBtn = dialog.querySelector<HTMLButtonElement>("button.danger-fill");
-    const onKey = (event: KeyboardEvent) => {
-      event.stopPropagation();
-      if (event.key !== "Tab") return;
-      const boundary = event.shiftKey ? cancelBtn : acceptBtn;
-      if (document.activeElement !== boundary) return;
-      event.preventDefault();
-      (event.shiftKey ? acceptBtn : cancelBtn)?.focus();
-    };
-    dialog.addEventListener("keydown", onKey);
-    const raf = requestAnimationFrame(() => {
-      if (!dialog.open) dialog.showModal();
-      cancelBtn?.focus({ preventScroll: true });
-    });
-    return () => {
-      cancelAnimationFrame(raf);
-      dialog.removeEventListener("keydown", onKey);
-      if (dialog.open) dialog.close();
-    };
-  }, [removeConfirm]);
-
-  // Magpie Clear options confirm (shots 134–137): Cancel focused; Escape keeps editor
-  useEffect(() => {
-    if (!clearConfirm) return;
-    const dialog = clearDialogRef.current;
-    if (!dialog) return;
-    const cancelBtn = dialog.querySelector<HTMLButtonElement>("button.text:not(.danger-fill)");
-    const acceptBtn = dialog.querySelector<HTMLButtonElement>("button.danger-fill");
-    const onKey = (event: KeyboardEvent) => {
-      event.stopPropagation();
-      if (event.key !== "Tab") return;
-      const boundary = event.shiftKey ? cancelBtn : acceptBtn;
-      if (document.activeElement !== boundary) return;
-      event.preventDefault();
-      (event.shiftKey ? acceptBtn : cancelBtn)?.focus();
-    };
-    dialog.addEventListener("keydown", onKey);
-    const raf = requestAnimationFrame(() => {
-      if (!dialog.open) dialog.showModal();
-      cancelBtn?.focus({ preventScroll: true });
-    });
-    return () => {
-      cancelAnimationFrame(raf);
-      dialog.removeEventListener("keydown", onKey);
-      if (dialog.open) dialog.close();
-    };
-  }, [clearConfirm]);
 
   // Magpie askNPM: 350ms debounce, then brief plugins/search loading (hits.loading → skeleton)
   useEffect(() => {
@@ -3336,156 +3281,70 @@ export function PluginsView({
         ) : null}
       </div>
 
-      {removeConfirm ? (
-        <dialog
-          ref={removeDialogRef}
-          className="action-confirm"
-          role="alertdialog"
-          aria-labelledby="pluginRemoveTitle"
-          aria-describedby="pluginRemoveMsg"
-          style={{ zIndex: 50 }}
-          onCancel={(e) => {
-            /* Escape — Magpie finish(false); focus returns to row Remove (shot 94) */
-            e.preventDefault();
-            const prev = removeFocusRef.current;
-            setRemoveConfirm(null);
-            requestAnimationFrame(() => {
-              if (prev?.isConnected) prev.focus({ preventScroll: true });
-              removeFocusRef.current = null;
-            });
-          }}
-          onClick={(e) => {
-            /* Magpie backdropClick: ::backdrop is the dialog itself outside its box (shot 100) */
-            const dialog = e.currentTarget;
-            const rect = dialog.getBoundingClientRect();
-            if (
-              e.target === dialog &&
-              (e.clientX < rect.left || e.clientX > rect.right || e.clientY < rect.top || e.clientY > rect.bottom)
-            ) {
-              const prev = removeFocusRef.current;
-              setRemoveConfirm(null);
-              requestAnimationFrame(() => {
-                if (prev?.isConnected) prev.focus({ preventScroll: true });
-                removeFocusRef.current = null;
-              });
-            }
-          }}
-        >
-          <h2 id="pluginRemoveTitle">{t("Remove {name}?", { name: removeConfirm.name })}</h2>
-          <p id="pluginRemoveMsg">
-            {t("Removes the plugin and what it installed; its sign-ins are kept until you sign out")}
-          </p>
-          <div className="bar">
-            <span className="grow" />
-            <button
-              type="button"
-              className="text"
-              onClick={() => {
-                /* Cancel — shot 97: stay installed, focus back on row Remove */
-                const prev = removeFocusRef.current;
-                setRemoveConfirm(null);
-                requestAnimationFrame(() => {
-                  if (prev?.isConnected) prev.focus({ preventScroll: true });
-                  removeFocusRef.current = null;
-                });
-              }}
-            >
-              {t("Cancel")}
-            </button>
-            <button
-              type="button"
-              className="text primary danger-fill"
-              disabled={!!busy}
-              onClick={() => {
-                const pkg = removeConfirm.pkg;
-                const name = removeConfirm.name;
-                setRemoveConfirm(null);
-                removeFocusRef.current = null;
-                // Magpie 91–103: Removing… under ~125ms / not frozen — empty + toast same step
-                setInstalled((list) => list.filter((x) => x.pkg !== pkg));
-                onStatus?.(t("{name} removed", { name }), "ok", 3200);
-              }}
-            >
-              {t("Remove")}
-            </button>
-          </div>
-        </dialog>
-      ) : null}
+      <ActionConfirm
+        open={!!removeConfirm}
+        titleId="pluginRemoveTitle"
+        messageId="pluginRemoveMsg"
+        style={{ zIndex: 50 }}
+        title={removeConfirm ? t("Remove {name}?", { name: removeConfirm.name }) : ""}
+        message={t("Removes the plugin and what it installed; its sign-ins are kept until you sign out")}
+        cancelLabel={t("Cancel")}
+        acceptLabel={t("Remove")}
+        acceptDisabled={!!busy}
+        onCancel={() => {
+          /* Escape / Cancel / backdrop — Magpie finish(false); focus back on row Remove */
+          const prev = removeFocusRef.current;
+          setRemoveConfirm(null);
+          requestAnimationFrame(() => {
+            if (prev?.isConnected) prev.focus({ preventScroll: true });
+            removeFocusRef.current = null;
+          });
+        }}
+        onAccept={() => {
+          if (!removeConfirm) return;
+          const pkg = removeConfirm.pkg;
+          const name = removeConfirm.name;
+          setRemoveConfirm(null);
+          removeFocusRef.current = null;
+          // Magpie 91–103: Removing… under ~125ms / not frozen — empty + toast same step
+          setInstalled((list) => list.filter((x) => x.pkg !== pkg));
+          onStatus?.(t("{name} removed", { name }), "ok", 3200);
+        }}
+      />
 
-      {clearConfirm ? (
-        <dialog
-          ref={clearDialogRef}
-          className="action-confirm"
-          role="alertdialog"
-          aria-labelledby="pluginClearTitle"
-          aria-describedby="pluginClearMsg"
-          style={{ zIndex: 50 }}
-          onCancel={(e) => {
-            /* Magpie 137: Escape — confirm gone; Options not cleared; editor still open; focus on Clear */
-            e.preventDefault();
-            const prev = clearFocusRef.current;
-            setClearConfirm(null);
-            requestAnimationFrame(() => {
-              if (prev?.isConnected) prev.focus({ preventScroll: true });
-            });
-          }}
-          onClick={(e) => {
-            const dialog = e.currentTarget;
-            const rect = dialog.getBoundingClientRect();
-            if (
-              e.target === dialog &&
-              (e.clientX < rect.left || e.clientX > rect.right || e.clientY < rect.top || e.clientY > rect.bottom)
-            ) {
-              const prev = clearFocusRef.current;
-              setClearConfirm(null);
-              requestAnimationFrame(() => {
-                if (prev?.isConnected) prev.focus({ preventScroll: true });
-              });
-            }
-          }}
-        >
-          <h2 id="pluginClearTitle">{t("Clear")}</h2>
-          <p id="pluginClearMsg">
-            {t("Saved middleware options will be removed. The plugin will run with no options.")}
-          </p>
-          <div className="bar">
-            <span className="grow" />
-            <button
-              type="button"
-              className="text"
-              onClick={() => {
-                const prev = clearFocusRef.current;
-                setClearConfirm(null);
-                requestAnimationFrame(() => {
-                  if (prev?.isConnected) prev.focus({ preventScroll: true });
-                });
-              }}
-            >
-              {t("Cancel")}
-            </button>
-            <button
-              type="button"
-              className="text primary danger-fill"
-              onClick={() => {
-                const pkg = clearConfirm.pkg;
-                const example = pkg.includes("think-tags")
-                  ? '{\n  "mode": "strip"\n}'
-                  : '{\n  "hooks": ["request", "response"],\n  "onEvent": ["error"]\n}';
-                setClearConfirm(null);
-                setInstalled((list) =>
-                  list.map((x) =>
-                    x.pkg === pkg
-                      ? { ...x, opts: "", optsSaved: false, optsDraft: example, optsErr: "", optsOpen: true }
-                      : x,
-                  ),
-                );
-              }}
-            >
-              {t("Clear")}
-            </button>
-          </div>
-        </dialog>
-      ) : null}
+      <ActionConfirm
+        open={!!clearConfirm}
+        titleId="pluginClearTitle"
+        messageId="pluginClearMsg"
+        style={{ zIndex: 50 }}
+        title={t("Clear")}
+        message={t("Saved middleware options will be removed. The plugin will run with no options.")}
+        cancelLabel={t("Cancel")}
+        acceptLabel={t("Clear")}
+        onCancel={() => {
+          /* Magpie 137: Escape — confirm gone; Options not cleared; editor still open; focus on Clear */
+          const prev = clearFocusRef.current;
+          setClearConfirm(null);
+          requestAnimationFrame(() => {
+            if (prev?.isConnected) prev.focus({ preventScroll: true });
+          });
+        }}
+        onAccept={() => {
+          if (!clearConfirm) return;
+          const pkg = clearConfirm.pkg;
+          const example = pkg.includes("think-tags")
+            ? '{\n  "mode": "strip"\n}'
+            : '{\n  "hooks": ["request", "response"],\n  "onEvent": ["error"]\n}';
+          setClearConfirm(null);
+          setInstalled((list) =>
+            list.map((x) =>
+              x.pkg === pkg
+                ? { ...x, opts: "", optsSaved: false, optsDraft: example, optsErr: "", optsOpen: true }
+                : x,
+            ),
+          );
+        }}
+      />
 
       {folderPicker ? (
         <div

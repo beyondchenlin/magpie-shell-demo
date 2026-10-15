@@ -4,6 +4,18 @@
 
 ---
 
+## v0.1.107 · CIS_FOLD_TOAST_CONFIRM · 2026-10-15 Asia/Shanghai
+
+- **WHY:** CIS §10 next knife — extract Fold / StatusToast / ActionConfirm; wire existing Magpie-class call sites only (no feature stuffing).
+- **WHAT kept:** `SIDE_AT=1024`; no `WEB_SIDE_AT`; Win chrome / 752 frame; no new Magpie features.
+- **WHAT changed:**
+  - `Fold` (+ `FoldChev`) → Gateway Connect/Models + Providers Turned off (drop page-local fold markup / chevron).
+  - `StatusToast` → App foot `#status` (kind + `.lift`).
+  - `ActionConfirm` → Providers editor discard + Plugins Remove/Clear confirms (showModal, Cancel focus, Tab cycle, Escape/backdrop).
+  - CIS §10 marks Fold / StatusToast / ActionConfirm Done.
+- **Guard:** `npm run chrome-guard`. No portable. No push/Vercel.
+
+---
 ## v0.1.106 · CIS_P2_PREFPICK_FIELDPILL · 2026-10-15 Asia/Shanghai
 
 - **WHY:** CIS P2 — extract PrefPick (Language/font `.pref-pick`) + FieldPill (Agents/tray `.field`); wire existing call sites only.
