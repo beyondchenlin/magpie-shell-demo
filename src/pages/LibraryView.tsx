@@ -2486,8 +2486,11 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                           }}>
                           {saving ? (
                             <>
-                              <span className="spin" aria-hidden />
-                              {t("Saving…")}
+                              {/* Magpie CLI_SPIN app.js L2094 + saving() L14058–14062 */}
+                              <svg viewBox="0 0 16 16" width={11} height={11} fill="none" aria-hidden>
+                                <path d="M13.5 8a5.5 5.5 0 1 1-5.5-5.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+                              </svg>
+                              <span>{t("Saving…")}</span>
                             </>
                           ) : (
                             t(lab)
@@ -2856,10 +2859,13 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                 <div className="row skeleton" />
               </div>
             ) : (
-              <div className="card lib-rtk-card">
-                <div className="row-head lib-cardhead">
-                  <span className="lib-glyph lib-rtk-logo" aria-hidden>
-                    <img src="/icons/rtk.png" alt="" width={20} height={20} />
+              <div className="list lib-card">{/* Magpie renderRTK client.js L839–843 */}
+                <div className="lib-cardhead">
+                  <span
+                    className="lib-glyph lib-rtk-logo"
+                    aria-hidden
+                    style={{ ["--i" as string]: "url(/icons/rtk.png)" }}>
+                    <span className="mask" />
                   </span>
                   <b>RTK</b>
                   <span className="grow" />

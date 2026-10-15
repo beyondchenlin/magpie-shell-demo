@@ -1,3 +1,11 @@
+## v0.1.148 PLUGINS_GHKINDS_LIBRARY_RTK_OSS_FIDELITY
+- Plugins GitHub kinds: invent button track → Magpie `segs.pm-ghkinds` (plugins.js L609; Segs CIS).
+- Plugins installed row: invent `pm-name-row` → Magpie `pm-name` (plugins.css L67).
+- shell-patch: drop invent Plugins ghkinds/ghnone/who/sum/meta/detail.dialog/pm-plugin/note.warn re-owns — Magpie plugins.css L48–76 / L144 / L191–207.
+- Library RTK: invent `card.lib-rtk-card` + img + shell-patch gain/cmd/logo → Magpie `list.lib-card` + `.mask` (client.js L839–843; library.css L51–53 / L452 / L465).
+- Library skillHow: invent `.opt .spin` CSS → Magpie `saving()` `.busy.saving` + CLI_SPIN SVG (app.js L14058 / L2094; app.css L2852).
+- SIDE_AT=1024. No portable / Vercel.
+
 ## v0.1.147 AGENTS_FIELDS_UNPLUGGED_OSS_FIDELITY
 - Agents New sessions: invent `fields inline` → Magpie `fields` (app.js L1903 line(fields)).
 - Agents unplugged status: invent `sub faint` demo copy → Magpie `ag-st` / `ag-dot` / `ag-st-t` connectLine (app.js L1234–1272).

@@ -1,7 +1,8 @@
 # last-cycle · 2026-10-15 Asia/Shanghai
 
-## v0.1.147 AGENTS_FIELDS_UNPLUGGED_OSS_FIDELITY
+## v0.1.148 PLUGINS_GHKINDS_LIBRARY_RTK_OSS_FIDELITY
 
-- Agents: invent `fields inline` → Magpie `fields`; unplugged invent `sub faint` → Magpie `ag-st` connectLine.
-- shell-patch: drop invent `.ag-vl > .field` / `.fields.inline` / `.sub.faint` / `.ag-cant` cursor.
+- Plugins: invent ghkinds track → Magpie segs.pm-ghkinds; invent pm-name-row → pm-name.
+- Library RTK: invent card/logo/gain/cmd → Magpie list.lib-card + .mask; skillHow invent spin → Magpie saving() SVG.
+- shell-patch: drop Plugins/Library RTK invent re-owns (plugins.css L48–76/L191; library.css L452/L465).
 - SIDE_AT=1024. Push/PR #1. No portable / Vercel.

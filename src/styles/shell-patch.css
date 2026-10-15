@@ -510,21 +510,14 @@ body.web.side-nav {
    .pm-act.busy min-width / .pm-dhead* — Magpie plugins.css L102–110 / L163 /
    L130 / L193–203 / L191. Keep Magpie .modal .editor.pm-detail framed path. */
 
-/* v0.1.61 RTK card — Magpie library.css lib-rtk-* (NOTES 38 + renderRTK) */
-.lib-rtk-logo { display: inline-flex; align-items: center; flex: none; }
-.lib-rtk-logo img { width: 20px; height: 20px; }
-.lib-rtk-gain { margin: 6px 0 10px; font-size: 12.5px; line-height: 1.5; color: var(--muted); }
-.lib-rtk-cmd { margin: -4px 0 10px; font-size: 11.5px; color: var(--muted); user-select: text; word-break: break-all; }
-.lib-rtk-card .text.action:disabled { opacity: .55; cursor: default; }
+/* v0.1.148: drop invent .lib-rtk-logo / img / gain / cmd / .lib-rtk-card .text.action:disabled —
+   Magpie library.css L51–53 .lib-glyph + .lib-rtk-logo .mask; L452 .lib-rtk-gain
+   (margin 6px 12px 10px, font-size 12px); L465 .lib-rtk-cmd (margin -4px 12px 10px). */
 
 
-/* Magpie skillHow change() — pressed seg says Saving… (CU 76) */
-.lib-skillhow .opt.saving { opacity: 1; cursor: default; gap: 5px; }
-.lib-skillhow .opt:disabled { cursor: default; }
-.lib-skillhow .opt .spin {
-  width: 11px; height: 11px; border: 1.5px solid color-mix(in srgb, var(--fg) 35%, transparent);
-  border-top-color: var(--fg); border-radius: 50%; animation: spin .7s linear infinite; box-sizing: border-box;
-}
+/* v0.1.148: drop invent .lib-skillhow .opt.saving / :disabled / .spin —
+   Magpie saving() → .busy.saving + SVG (app.js L14058–14062; app.css L2852–2855);
+   library.css L357–361 owns .lib-skillhow layout only. */
 
 
 /* —— RESPONSIVE WEB (phoneWeb + framed 752 / min 560) ——
@@ -1879,138 +1872,22 @@ label.tick input { margin: 0; }
   animation: fade-in .12s var(--ease); pointer-events: none;
 }
 #view-plugins .pm-body-rel { position: relative; }
-#view-plugins .pm-ghbar {
-  display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin: 8px 0 10px;
-}
-#view-plugins .pm-ghkinds {
-  display: inline-flex; gap: 2px; padding: 2px; border-radius: 8px; background: var(--seg-track);
-}
-#view-plugins .pm-ghkinds .opt {
-  border: 0; background: transparent; border-radius: 6px; padding: 4px 10px;
-  font: inherit; font-size: 12px; color: var(--muted); cursor: pointer;
-}
-#view-plugins .pm-ghkinds .opt.on {
-  background: var(--seg-thumb); box-shadow: var(--seg-edge); color: var(--fg);
-}
-#view-plugins .pm-ghfind { flex: 0 1 220px; min-width: 140px; }
-#view-plugins .pm-ghnone {
-  padding: 18px 14px; border: 1px dashed var(--line); border-radius: 10px;
-  text-align: center; color: var(--muted); font-size: 13px;
-}
-#view-plugins .pm-ghnone .text { margin-top: 8px; }
-#view-plugins .pm-who { flex: 1; min-width: 0; }
-#view-plugins .pm-name-row {
-  display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
-}
-#view-plugins .pm-name-row b { font-size: 13px; }
-#view-plugins .pm-name-row .ver { margin-left: 6px; font-size: 10.5px; }
-#view-plugins .pm-verified { font-size: 11px; color: var(--green); margin-top: 2px; }
-#view-plugins .pm-byline { font-size: 11px; color: var(--muted); margin-top: 2px; }
-#view-plugins .pm-sum {
-  margin: 4px 0 0; font-size: 12px; color: var(--muted); line-height: 1.45;
-}
-#view-plugins .pm-meta {
-  margin-top: 6px; font-size: 11px; color: var(--faint);
-  display: flex; gap: 8px; flex-wrap: wrap; align-items: center;
-}
-#view-plugins .pm-meta.plain { display: block; }
-#view-plugins .pm-card.enter { animation: fade-in .2s var(--ease); }
-#view-plugins .pm-card.enter.late { animation: fade-in .2s var(--ease); margin-top: 10px; }
-#view-plugins .pm-manual-hint {
-  flex-basis: 100%; font-size: 11.5px; color: var(--muted); animation: fade-in .15s var(--ease);
-}
-#view-plugins .pm-gap { margin-top: 8px; }
-#view-plugins .pm-mb { margin-bottom: 6px; }
-#view-plugins .pm-logo.sm { width: 32px; height: 32px; flex: none; }
-#view-plugins .pm-tags { display: flex; gap: 6px; flex-wrap: wrap; }
-#view-plugins .pm-inst-row {
-  display: flex; align-items: center; gap: 8px; margin-top: 12px;
-}
-#view-plugins .pm-inst-row .muted { font-size: 12px; color: var(--muted); }
-#view-plugins .pm-dot {
-  display: inline-block; width: 10px; height: 10px; margin-right: 6px; vertical-align: -1px;
-  border-radius: 50%; background: currentColor;
-}
-
-/* Plugin detail / folder picker modals (demo Magpie dialog chrome) */
-.modal .pm-detail.dialog {
-  width: min(640px, 92vw); max-height: min(520px, 85vh);
-  display: flex; flex-direction: column; animation: pop-in .42s cubic-bezier(.16,1,.3,1);
-}
-.modal .pm-detail .ehead { display: flex; align-items: center; gap: 8px; }
-.modal .pm-detail .ebody {
-  display: grid; grid-template-columns: 140px 1fr; gap: 0; min-height: 280px; padding: 0;
-}
-.modal .pm-detail .side {
-  border-right: 1px solid var(--line); padding: 8px 6px;
-  display: flex; flex-direction: column; gap: 2px;
-}
-.modal .pm-detail .side .opt {
-  justify-content: flex-start; padding: 6px 8px; border-radius: 6px;
-  background: transparent; color: var(--muted); border: 0; font: inherit; text-align: left; cursor: pointer;
-}
-.modal .pm-detail .side .opt.on { background: var(--pill); color: var(--fg); }
-.modal .pm-detail .pane { padding: 10px 12px; overflow: auto; }
-.modal .pm-detail .pane .empty {
-  color: var(--muted); font-size: 12.5px; padding: 24px 8px; text-align: center;
-}
-.modal .pm-detail .files { list-style: none; margin: 0; padding: 0; font-size: 12.5px; }
-.modal .pm-detail .files li {
-  display: grid; grid-template-columns: 1fr 80px; gap: 8px; padding: 6px 8px;
-  border-radius: 6px; cursor: pointer;
-}
-.modal .pm-detail .files li:hover { background: var(--pill); }
-.modal .pm-detail .files .sz { color: var(--muted); text-align: right; }
-.modal .pm-detail .readme { padding: 8px; font-size: 12.5px; }
-.modal .pm-detail .path-pick {
-  margin-top: 8px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px;
-  font-size: 12.5px; cursor: pointer; width: 100%; text-align: left; background: var(--card); color: var(--fg);
-}
-.modal .pm-detail .path-pick .sub { color: var(--muted); font-size: 11.5px; margin-top: 2px; }
-.modal .pm-detail .bar {
-  display: flex; gap: 8px; justify-content: flex-end; padding: 10px 12px;
-}
-.modal .pm-plugin.dialog {
-  max-width: 520px; width: min(520px, 94vw); max-height: 86vh; overflow: auto; padding: 0;
-}
-.modal .pm-plugin .ehead {
-  display: flex; gap: 12px; align-items: center; min-height: 76px;
-  padding: 14px 18px; border-bottom: 1px solid var(--line-2, var(--line));
-}
-.modal .pm-plugin .ehead .who { flex: 1; min-width: 0; }
-.modal .pm-plugin .ebody {
-  display: flex; flex-direction: column; gap: 12px; padding: 14px 18px 18px;
-}
-.modal .pm-plugin .ebody > p { margin: 0; font-size: 13px; line-height: 1.5; }
-.modal .pm-plugin .tags { display: flex; gap: 6px; flex-wrap: wrap; }
-.modal .pm-plugin .warn {
-  margin: 0; display: flex; gap: 6px; align-items: flex-start; padding: 8px 10px;
-  border-radius: 8px; background: color-mix(in srgb, var(--amber, #d97706) 12%, var(--card));
-  font-size: 12.5px; line-height: 1.45;
-}
-.modal .pm-plugin .warn .ic { flex: none; margin-top: 2px; }
-.modal .pm-plugin .readme-block {
-  border-top: 1px solid var(--line-2, var(--line)); padding-top: 12px; min-height: 60px;
-  font-size: 12.5px; line-height: 1.5; color: var(--fg-2);
-}
-.modal .pm-plugin .bar {
-  display: flex; align-items: center; gap: 8px; padding: 12px 18px 16px;
-  border-top: 1px solid var(--line-2, var(--line));
-}
-.modal .pm-plugin .bar .note { font-size: 11.5px; color: var(--muted); flex: 1; }
-.modal.z50 { z-index: 50; }
+/* v0.1.148: drop invent #view-plugins .pm-ghbar margin / .pm-ghkinds* seg-track /
+   .pm-ghfind / .pm-ghnone / .pm-who / .pm-name-row* / .pm-verified / .pm-byline /
+   .pm-sum / .pm-meta* / .pm-card.enter* / .pm-manual-hint / .pm-gap / .pm-mb /
+   .pm-logo.sm / .pm-tags / .pm-inst-row* / .pm-dot —
+   Magpie plugins.css L48–76 (.pm-ghbar / .segs / .pm-ghfind / .pm-ghnone / .pm-who /
+   .pm-name / .pm-by / .pm-verified / .pm-sum / .pm-meta); ghkinds is class on Magpie
+   segs (plugins.js L609). Drop invent .modal .pm-detail.dialog* + .modal .pm-plugin* —
+   Magpie .modal .editor.pm-detail.framed (plugins.css L191–192) + .pm-d* L193–207. */
 
 /* CIS v0.1.115 — Magpie chart/share consume CSS vars (replaces inline %) */
 .chart .bar i { height: var(--h, 0%); transition: height .28s var(--ease); }
 .row.stat .share i,
 .meter > i { width: var(--bar, 0%); }
 #view-usage .us-miniplot .col { opacity: var(--op, .7); }
-#view-plugins .pm-ghkinds .opt { color: var(--ctl-fg, var(--muted)); }
-#view-plugins .pm-note.warn {
-  margin: 0; display: flex; gap: 6px; align-items: flex-start; padding: 8px 10px;
-  border-radius: 8px; background: color-mix(in srgb, var(--amber, #d97706) 12%, var(--pill));
-  font-size: 12px; line-height: 1.45;
-}
+/* v0.1.148: drop invent #view-plugins .pm-ghkinds .opt --ctl-fg + invent .pm-note.warn
+   recolor — Magpie segs .opt + plugins.css L144 .pm-note.warn (--amber-soft). */
 .pop.anchored-tr { position: absolute; top: 100%; right: 0; z-index: 40; min-width: 160px; }
 
 

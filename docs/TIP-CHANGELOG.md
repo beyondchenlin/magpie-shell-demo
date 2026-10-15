@@ -1,3 +1,18 @@
+## v0.1.148 · PLUGINS_GHKINDS_LIBRARY_RTK_OSS_FIDELITY · 2026-10-15 Asia/Shanghai
+
+- **WHY:** Continue Magpie 1:1 after 0.1.147 — delete tip invent Plugins GitHub kinds / detail chrome + Library RTK/skillHow that covered Magpie OSS.
+- **CAUSE:** Demo painted GitHub kinds as invent `#view-plugins .pm-ghkinds` seg-track buttons instead of Magpie `segs().classList.add("pm-ghkinds")`; shell-patch re-owned Magpie `.pm-ghnone`/`.pm-who`/`.pm-sum`/`.pm-meta` and invent `.modal .pm-detail.dialog` / `.pm-plugin` against Magpie `.modal .editor.pm-detail.framed`; Library RTK used invent `card.lib-rtk-card` + tip gain/cmd margins + img logo instead of Magpie `list.lib-card` + `.mask`; skillHow invent `.opt .spin` fought Magpie `saving()` SVG.
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; Agents fields/unplugged (0.1.147); CIS PrefRow/Segs/TextBtn; Magpie `plugins.css` / `library.css` import; demo pm-mirror-tip / lib-thunar bridges (later tip).
+- **Cite:**
+  - Magpie `plugins.js` **609** `pick.classList.add("pm-ghkinds")` on Magpie `segs`
+  - Magpie `plugins.css` **48–76** `.pm-ghbar` / `.segs` / `.pm-ghfind` / `.pm-ghnone` / `.pm-who` / `.pm-name` / `.pm-by` / `.pm-verified` / `.pm-sum` / `.pm-meta`; **144** `.pm-note.warn`; **191–207** `.modal .editor.pm-detail.framed` + `.pm-d*`
+  - Magpie `plugins/library/client.js` **839–843** `list.lib-card` + `lib-glyph.lib-rtk-logo` + `maskSpan`
+  - Magpie `plugins/library/library.css` **51–53** / **452** `.lib-rtk-gain` / **465** `.lib-rtk-cmd`
+  - Magpie `app.js` **14058–14062** `saving()`; **2094** `CLI_SPIN`; `app.css` **2852–2855** `.saving`
+- **WHAT changed:** `SimpleViews.tsx` ghkinds→Segs + pm-name; `LibraryView.tsx` RTK mask + skillHow SVG; `shell-patch.css` drop invents above.
+- **chrome-guard:** pass. Push/PR #1. No portable/Vercel.
+
+---
 ## v0.1.147 · AGENTS_FIELDS_UNPLUGGED_OSS_FIDELITY · 2026-10-15 Asia/Shanghai
 
 - **WHY:** Continue Magpie 1:1 after 0.1.146 — delete tip invent Agents New-sessions fields chrome + unplugged status that covered Magpie OSS connectLine.

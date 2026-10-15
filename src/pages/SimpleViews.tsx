@@ -2521,17 +2521,20 @@ export function PluginsView({
                   </div>
                   {isGh && cards.length > 6 && kindsPresent.length > 1 ? (
                     <div className="pm-ghbar">
-                      <div className="pm-ghkinds" role="group" aria-label={t("Kind of plugin")}>
-                        {([["", t("All")] as const, ...kindsPresent.map((k) => [k, t(k)] as const)]).map(([id, lab]) => (
-                          <button
-                            key={id || "all"}
-                            type="button"
-                            className={`opt${ghKind === id ? " on" : ""}`}
-                            onClick={() => setGhKind(id as typeof ghKind)}>
-                            {lab} · {nKind(id)}
-                          </button>
-                        ))}
-                      </div>
+                      {/* Magpie plugins.js L609: segs(...).classList.add("pm-ghkinds") */}
+                      <Segs
+                        className="pm-ghkinds"
+                        aria-label={t("Kind of plugin")}
+                        value={ghKind}
+                        onChange={(id) => setGhKind(id as typeof ghKind)}
+                        items={[
+                          { id: "" as typeof ghKind, label: `${t("All")} · ${nKind("")}` },
+                          ...kindsPresent.map((k) => ({
+                            id: k as typeof ghKind,
+                            label: `${t(k)} · ${nKind(k)}`,
+                          })),
+                        ]}
+                      />
                       <span className="grow" />
                       <label className="pm-find pm-ghfind">
                         <svg viewBox="0 0 16 16" width={13} height={13} aria-hidden>
@@ -2873,7 +2876,7 @@ export function PluginsView({
                       ◆
                     </div>
                     <div className="who">
-                      <div className="name pm-name-row">
+                      <div className="name pm-name">
                         <span>{e.name}</span>
                         {e.ver ? <span className="pm-ver">{e.ver.startsWith("v") ? e.ver : `v${e.ver}`}</span> : null}
                         {e.checkStatus === "current" && e.ver ? (
