@@ -1,3 +1,10 @@
+## v0.1.172 · SESS_PAGE_MORE_OSS · 2026-10-16 Asia/Shanghai
+
+- **WHY:** Drop invent Sessions list pager `sess-show-more` (+ invent Show less / "Show more · {n} left"); restore Magpie `text sess-page-more` + `Show {n} more`.
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; skip oauth Approve wall; `#sessAll.sess-all` head control.
+- **Cite:** Magpie app.js **L19681–83** `text sess-page-more` / `Show {n} more`; sessions/client.js **L656** `text sess-page-more sm-more`; app.css **L1392** `.sess-page-more`. (Empty-range Magpie `sess-show-history` = app.js **L19611** — different control; tip range→empty-with-history not wired yet.)
+- **chrome-guard:** pass. Push/PR #1. No portable/Vercel.
+
 ## v0.1.171 · US_EMPTY_STATS_NONE_OSS · 2026-10-16 Asia/Shanghai
 
 - **WHY:** Drop invent Usage empty `us-empty` / card; restore Magpie `#stats.stats.empty > .none`.

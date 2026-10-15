@@ -1808,20 +1808,12 @@ export function UsageView() {
                   </div>
                 );
               })}
+              {/* Magpie app.js L19681–83 / sessions/client.js L656: text sess-page-more + Show {n} more (no invent Show less) */}
               {sessHidden > 0 ? (
                 <TextBtn
-                  className="sess-show-more"
+                  className="sess-page-more"
                   onClick={() => setSessMore(true)}>
-                  {t("Show more · {n} left", { n: String(sessHidden) })}
-                </TextBtn>
-              ) : sessMore && DEMO_SESSIONS_MORE.length ? (
-                <TextBtn
-                  className="sess-show-more"
-                  onClick={() => {
-                    setSessMore(false);
-                    setSessOpen(null);
-                  }}>
-                  {t("Show less")}
+                  {t("Show {n} more", { n: String(sessHidden) })}
                 </TextBtn>
               ) : null}
             </div>

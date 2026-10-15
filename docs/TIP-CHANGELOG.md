@@ -1,3 +1,22 @@
+## v0.1.172 · SESS_PAGE_MORE_OSS · 2026-10-16 Asia/Shanghai
+
+- **WHY:** Drop invent Sessions pager class `sess-show-more` + invent copy/Show less; restore Magpie list pager `sess-page-more`.
+- **CAUSE:** Tip invented `.sess-show-more` + "Show more · {n} left" / "Show less". Magpie OSS pages the Sessions list with `button.text.sess-page-more` and `Show {n} more` only (no collapse). Magpie `sess-show-history` is the empty-range "All sessions" control, not this invent.
+- **Cite:**
+  - Magpie `app.js` **19681–83** `el("button", "text sess-page-more")` + `t("Show {n} more", …)`
+  - Magpie `plugins/sessions/client.js` **656** `text sess-page-more sm-more`
+  - Magpie `app.css` **1392** `.sess-page-more`
+  - Magpie `app.js` **19611** `text sess-show-history` (empty-range cousin; not this invent)
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; demo fill; `#sessAll`; skip oauth Approve wall.
+- **WHAT changed:**
+  - `SimpleViews.tsx`: pager → `className="sess-page-more"` + `t("Show {n} more")`; drop invent Show less branch.
+  - `shell-patch.css`: delete invent `.sess-show-more` rule.
+- **Chrome:** none (Sessions nest slice only).
+- **Remaining invent (weak/skip):** oauth Approve wall (nest=browser); empty-range `sess-show-history` not yet wired (needs range→empty-with-history); pm-headrow/pm-folder-row; rt-flier-demo; win-caption*; intentional React bridges.
+- **Guard:** `npm run chrome-guard`. No portable. No Vercel.
+
+---
+
 ## v0.1.171 · US_EMPTY_STATS_NONE_OSS · 2026-10-16 Asia/Shanghai
 
 - **WHY:** Drop invent Usage empty `card empty-state us-empty` + shell-patch pad; restore Magpie Usage empty `#stats.stats.empty > .none`.
