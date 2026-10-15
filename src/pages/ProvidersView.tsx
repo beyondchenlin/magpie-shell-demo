@@ -475,11 +475,16 @@ function ImportAppsModal({ onClose }: { onClose: () => void }) {
 type EditorProps = {
   state: NonNullable<EditorState>;
   onClose: () => void;
-  onAdd: () => void;
+  onAdd: (info?: { key: string }) => void;
   onStatus?: (msg: string, kind?: string) => void;
+  /** When editing a saved provider (NOTES 91) */
+  saved?: boolean;
+  onRemove?: () => void;
+  onDuplicate?: () => void;
+  onAddAnother?: () => void;
 };
 
-function ProviderEditorModal({ state, onClose, onAdd, onStatus }: EditorProps) {
+function ProviderEditorModal({ state, onClose, onAdd, onStatus, saved, onRemove, onDuplicate, onAddAnother }: EditorProps) {
   const kind = state.form;
   const isLocal = kind === "local" || kind === "ollama" || !!LOCAL_PRESETS[state.id];
   const localMeta = LOCAL_PRESETS[state.id] || LOCAL_PRESETS.ollama;
@@ -637,7 +642,7 @@ function ProviderEditorModal({ state, onClose, onAdd, onStatus }: EditorProps) {
 
   const onSubmit = (e: FormEvent) => {
     e.preventDefault();
-    onAdd();
+    onAdd({ key });
     close();
   };
 
@@ -665,6 +670,11 @@ function ProviderEditorModal({ state, onClose, onAdd, onStatus }: EditorProps) {
             </span>
             <b id="modalTitle">{meta.title}</b>
             {meta.note ? <span className="note">{meta.note}</span> : null}
+            {saved ? (
+              <span className="note" title={t("Agents pick its models as {id}/…", { id: state.id })}>
+                {t("ID")} <code>{state.id}</code>
+              </span>
+            ) : null}
             <span className="grow" />
             {meta.site ? (
               <button type="button" className="link site" tabIndex={-1}>
@@ -2141,13 +2151,40 @@ function ProviderEditorModal({ state, onClose, onAdd, onStatus }: EditorProps) {
             ) : null}
 
                     <div className="bar">
-            <span className="grow" />
-            <button type="button" className="text" onClick={requestClose}>
-              {ZH.cancel}
-            </button>
-            <button type="submit" className="text primary">
-              {ZH.add}
-            </button>
+            {saved ? (
+              <>
+                <button type="button" className="text" style={{ color: "var(--red)" }} onClick={() => onRemove?.()}>
+                  {t("Remove")}
+                </button>
+                {onAddAnother ? (
+                  <button type="button" className="text" onClick={() => onAddAnother()}>
+                    {t("Add another {name}", { name: state.name })}
+                  </button>
+                ) : null}
+                {onDuplicate ? (
+                  <button type="button" className="text" onClick={() => onDuplicate()}>
+                    {t("Duplicate")}
+                  </button>
+                ) : null}
+                <span className="grow" />
+                <button type="button" className="text" onClick={requestClose}>
+                  {ZH.cancel}
+                </button>
+                <button type="submit" className="text primary">
+                  {t("Save")}
+                </button>
+              </>
+            ) : (
+              <>
+                <span className="grow" />
+                <button type="button" className="text" onClick={requestClose}>
+                  {ZH.cancel}
+                </button>
+                <button type="submit" className="text primary">
+                  {ZH.add}
+                </button>
+              </>
+            )}
           </div>
         </form>
       </div>
@@ -2312,13 +2349,11 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
       host: raw.host ? String(raw.host) : undefined,
       keyKind,
       keyLabel: String(raw.keyLabel || (keyKind === "acct" ? "Pro" : accounts[0]?.label || "needs a key")),
-      accounts: accounts.length
-        ? accounts
-        : [{ id: "a1", label: "default", plan: "Pro", on: true, using: "In use" }],
-      models: models.length ? models : ["model-a"],
+      accounts,
+      models,
       agentsUsing: Array.isArray(raw.agentsUsing)
         ? (raw.agentsUsing as DemoProv["agentsUsing"])
-        : [{ id: "cursor", name: "Cursor", icon: "cursor" }],
+        : [],
     };
   };
   const [demoProvs, setDemoProvs] = useState<DemoProv[]>(() => {
@@ -2326,40 +2361,65 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
       const raw = localStorage.getItem("magpie.demoProviders");
       if (raw) {
         const parsed = JSON.parse(raw) as Record<string, unknown>[];
-        if (Array.isArray(parsed) && parsed.length) return parsed.map(normalizeProv);
+        // NOTES 61–93: empty default OK; keep a previously added demo list if present
+        if (Array.isArray(parsed)) return parsed.map(normalizeProv);
       }
     } catch {
       /* ignore */
     }
-    return [
-      normalizeProv({
-        id: "anthropic",
-        name: "Anthropic",
-        icon: "claude-color",
-        user: "work@example.com",
-        keyKind: "acct",
-        keyLabel: "Pro",
-        accounts: [
-          { id: "acct-1", label: "work@example.com", plan: "Pro", on: true, using: "In use" },
-          { id: "acct-2", label: "api-key · sk-…demo", plan: "API", on: false },
-        ],
-        models: ["claude-sonnet-4-5", "claude-haiku-4-5", "claude-opus-4"],
-        agentsUsing: [{ id: "cursor", name: "Cursor", icon: "cursor" }],
-      }),
-    ];
+    return [];
   });
   const [listEditId, setListEditId] = useState<string | null>(null);
   const [offFolded, setOffFolded] = useState(false);
-  const [addStep, setAddStep] = useState(0); // nested add-provider wizard on sheet foot
+  /** Magpie: empty → add sheet open; after first provider, sheet closes until + Add provider */
+  const [sheetOpen, setSheetOpen] = useState(() => {
+    try {
+      const raw = localStorage.getItem("magpie.demoProviders");
+      if (raw) {
+        const parsed = JSON.parse(raw) as unknown[];
+        if (Array.isArray(parsed) && parsed.length === 0) return true;
+        if (Array.isArray(parsed) && parsed.length > 0) return false;
+      }
+    } catch {
+      /* */
+    }
+    return true;
+  });
+  const [listQ, setListQ] = useState("");
+  const [moveMenu, setMoveMenu] = useState<{ id: string; x: number; y: number } | null>(null);
+  const [removeAsk, setRemoveAsk] = useState<{ id: string; name: string } | null>(null);
+  /** ChatGPT / ChatGPT API / Gemini CLI — no risk card; browser wall (NOTES 74–79) */
+  type BrowserSign = null | {
+    id: "codex" | "chatgpt-api" | "gemini-cli";
+    name: string;
+    url: string;
+    proxy: "" | "direct" | string;
+  };
+  const [browserSign, setBrowserSign] = useState<BrowserSign>(null);
   useEffect(() => {
     try {
       localStorage.setItem("magpie.demoProviders", JSON.stringify(demoProvs));
     } catch {
       /* ignore */
     }
+    // NOTES 93: after last Remove, stay on empty list (+ Add provider) — do not reopen first-provider sheet
   }, [demoProvs]);
+  useEffect(() => {
+    if (!moveMenu && !removeAsk) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== "Escape") return;
+      e.preventDefault();
+      e.stopPropagation();
+      setMoveMenu(null);
+      setRemoveAsk(null);
+    };
+    document.addEventListener("keydown", onKey, true);
+    return () => document.removeEventListener("keydown", onKey, true);
+  }, [moveMenu, removeAsk]);
   const findRef = useRef<HTMLInputElement>(null);
+  const listFindRef = useRef<HTMLInputElement>(null);
   const f = q.trim().toLowerCase();
+  const lf = listQ.trim().toLowerCase();
 
   const hit = (name: string, id: string) =>
     !f || name.toLowerCase().includes(f) || id.toLowerCase().includes(f);
@@ -2399,6 +2459,7 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
       setClaudeSign({ state: "risk" });
       setAgySign(null);
       setCopilotSign(null);
+      setBrowserSign(null);
       setProxyMenuOpen(false);
       setEditor(null);
       return;
@@ -2406,6 +2467,7 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
     if (id === "copilot") {
       setClaudeSign(null);
       setAgySign(null);
+      setBrowserSign(null);
       setEditor(null);
       setProxyMenuOpen(false);
       setCopilotSign({
@@ -2419,6 +2481,7 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
     if (id === "antigravity") {
       setCopilotSign(null);
       setClaudeSign(null);
+      setBrowserSign(null);
       setProxyMenuOpen(false);
       setEditor(null);
       setAgySign({ state: "risk" });
@@ -2428,6 +2491,20 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
     setAgySign(null);
     setCopilotSign(null);
     setProxyMenuOpen(false);
+    // NOTES 74–79: ChatGPT / ChatGPT API / Gemini CLI — sign-in at once, no risk card
+    if (id === "codex" || id === "chatgpt-api" || id === "gemini-cli") {
+      const name = id === "codex" ? "ChatGPT" : id === "chatgpt-api" ? "ChatGPT API" : "Gemini CLI";
+      const url =
+        id === "gemini-cli"
+          ? "https://accounts.google.com/o/oauth2/v2/auth?…"
+          : id === "chatgpt-api"
+            ? "https://auth.openai.com/api/accounts/authorize?agent_name_hint=magp…"
+            : "https://auth.openai.com/oauth/authorize?client_id=…";
+      setBrowserSign({ id, name, url, proxy: "" });
+      setEditor(null);
+      return;
+    }
+    setBrowserSign(null);
     if (id === "custom") {
       setEditor({
         form: "custom",
@@ -2522,9 +2599,33 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
   return (
     <>
       <main className="view" id="view-providers">
-        <div className="list" id="providers" hidden={!demoProvs.some((p) => !p.off)}>
+        {!sheetOpen && demoProvs.length > 0 ? (
+          <div className="row-head" style={{ marginBottom: 8, gap: 8 }}>
+            <input
+              ref={listFindRef}
+              className="find"
+              type="search"
+              spellCheck={false}
+              autoComplete="off"
+              placeholder={t("Find a provider")}
+              aria-label={t("Find a provider")}
+              value={listQ}
+              onChange={(e) => setListQ(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key !== "Escape") return;
+                e.preventDefault();
+                e.stopPropagation();
+                if (listQ) setListQ("");
+              }}
+              style={{ width: 180 }}
+            />
+            <span className="grow" />
+          </div>
+        ) : null}
+        <div className="list" id="providers" hidden={sheetOpen || !demoProvs.some((p) => !p.off)}>
           {demoProvs
             .filter((pv) => !pv.off)
+            .filter((pv) => !lf || pv.name.toLowerCase().includes(lf) || pv.id.toLowerCase().includes(lf))
             .map((pv) => {
               const n = pv.models.length;
               const modelsLabel =
@@ -2542,14 +2643,43 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
                   className={`row provider${selected ? " selected" : ""}`}
                   key={pv.id}
                   data-id={pv.id}
-                  onClick={() => setListEditId(selected ? null : pv.id)}
+                  onClick={() => {
+                    // NOTES 91: row opens saved editor
+                    setListEditId(pv.id);
+                    if (LOCAL_PRESETS[pv.id] || pv.keyKind === "none" || pv.keyKind === "free") {
+                      const loc = LOCAL_PRESETS[pv.id];
+                      setEditor({
+                        form: "local",
+                        id: pv.id,
+                        name: pv.name,
+                        icon: pv.icon,
+                        site: loc?.site,
+                        note: loc?.note,
+                      });
+                    } else {
+                      setEditor({
+                        form: "generic",
+                        id: pv.id,
+                        name: pv.name,
+                        icon: pv.icon,
+                        site: pv.host,
+                      });
+                    }
+                  }}
                 >
                   <button
                     type="button"
                     className="ag-handle pv-handle"
                     aria-label={t("Arrange {agent}", { agent: pv.name })}
-                    title={t("Drag to reorder — a model several providers serve goes to the higher one first · Alt+↑/↓ to move")}
+                    title={t(
+                      "Drag to reorder — a model several providers serve goes to the higher one first · Alt+↑/↓ to move one step · right-click to the top or the bottom",
+                    )}
                     onClick={(e) => e.stopPropagation()}
+                    onContextMenu={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setMoveMenu({ id: pv.id, x: e.clientX, y: e.clientY });
+                    }}
                   >
                     <img className="ic" src={iconSrc(pv.icon)} alt="" />
                   </button>
@@ -2624,7 +2754,29 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
               );
             })}
         </div>
-        <div className="row-head off-head" id="offHead" hidden={!demoProvs.some((p) => p.off)}>
+        {!sheetOpen && demoProvs.length > 0 && lf && !demoProvs.some((pv) => !pv.off && (pv.name.toLowerCase().includes(lf) || pv.id.toLowerCase().includes(lf))) ? (
+          <div className="none" style={{ padding: "12px 2px", color: "var(--muted)", fontSize: 13 }}>
+            {t("No provider matches “{q}”", { q: listQ.trim() })}
+          </div>
+        ) : null}
+        {!sheetOpen ? (
+          <button
+            type="button"
+            className="rt-gadd"
+            style={{ marginTop: 8 }}
+            onClick={() => {
+              setSheetOpen(true);
+              setQ("");
+              window.setTimeout(() => findRef.current?.focus(), 0);
+            }}
+          >
+            <svg viewBox="0 0 16 16" width={11} height={11} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden>
+              <path d="M8 3.5v9M3.5 8h9" />
+            </svg>
+            <span>{t("+ Add provider")}</span>
+          </button>
+        ) : null}
+        <div className="row-head off-head" id="offHead" hidden={sheetOpen || !demoProvs.some((p) => p.off)}>
           <button
             type="button"
             className="fold"
@@ -2639,7 +2791,7 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
             </span>
           </button>
         </div>
-        <div className="list" id="offProviders" hidden={!demoProvs.some((p) => p.off) || offFolded}>
+        <div className="list" id="offProviders" hidden={sheetOpen || !demoProvs.some((p) => p.off) || offFolded}>
           {demoProvs
             .filter((pv) => pv.off)
             .map((pv) => (
@@ -2680,9 +2832,11 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
               </div>
             ))}
         </div>
-        <section className="sheet" id="addSheet">
+        <section className="sheet" id="addSheet" hidden={!sheetOpen}>
           <div className="row-head">
-            <span className="label">{ZH.addFirstProvider}</span>
+            <span className="label">
+              {demoProvs.length === 0 ? t("ADD YOUR FIRST PROVIDER") : t("ADD A PROVIDER")}
+            </span>
             <span className="grow" />
             <input
               ref={findRef}
@@ -2698,6 +2852,7 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
                 if (e.key !== "Escape") return;
                 e.preventDefault();
                 e.stopPropagation();
+                // NOTES 69: Escape clears query; does not close empty add sheet
                 if (q) setQ("");
               }}
             />
@@ -2709,6 +2864,11 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
             >
               {t("Import…")}
             </button>
+            {demoProvs.length > 0 ? (
+              <button type="button" className="text" onClick={() => setSheetOpen(false)}>
+                {t("Close")}
+              </button>
+            ) : null}
           </div>
           <div className="tiles">
             {subs.length > 0 && (
@@ -2723,7 +2883,8 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
                       on={
                         (!!claudeSign && s.id === "claude") ||
                         (!!agySign && s.id === "antigravity") ||
-                        (!!copilotSign && s.id === "copilot")
+                        (!!copilotSign && s.id === "copilot") ||
+                        (!!browserSign && s.id === browserSign.id)
                       }
                       onPick={pickTile}
                     />
@@ -3213,6 +3374,70 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
                     ) : null}
                   </div>
                 ) : null}
+                {browserSign ? (
+                  <div className="signing">
+                    <span className="spinner" aria-hidden />
+                    <span className="tt">
+                      <span className="n">
+                        {t("Finish signing in to {name} in your browser", { name: browserSign.name })}
+                      </span>
+                      <span className="s">
+                        {t("magpie opened the sign-in page. The account shows up here as soon as you're done.")}
+                      </span>
+                      <span className="signlink">
+                        <code title={browserSign.url}>{browserSign.url}</code>
+                      </span>
+                      <span className="acts">
+                        <button
+                          type="button"
+                          className="link"
+                          onClick={() =>
+                            onStatus(
+                              demoCopy("演示：重新打开登录页（无真 OAuth）", "Demo: reopen sign-in (no real OAuth)"),
+                              "ok",
+                            )
+                          }
+                        >
+                          {t("Open again")}
+                        </button>
+                        <button type="button" className="link" title={t("Global proxy")}>
+                          {t("Proxy: {proxy}", { proxy: t("Global proxy") })}
+                        </button>
+                        {browserSign.id === "codex" ? (
+                          <button type="button" className="link">
+                            {t("Import from a file instead…")}
+                          </button>
+                        ) : null}
+                      </span>
+                      {browserSign.id === "codex" ? (
+                        <span className="s" style={{ display: "block", marginTop: 6 }}>
+                          {t("Note for a server or Docker: copy the address the browser ends on.")}
+                        </span>
+                      ) : null}
+                    </span>
+                    <button
+                      type="button"
+                      className="text"
+                      title={t("Stop waiting for this sign-in")}
+                      onClick={() => setBrowserSign(null)}
+                      style={{ alignSelf: "flex-start" }}
+                    >
+                      {t("Cancel")}
+                    </button>
+                    <button
+                      type="button"
+                      className="text primary"
+                      onClick={() =>
+                        onStatus(
+                          demoCopy("演示：未完成浏览器登录", "Demo: Finish sign-in not completed"),
+                          "ok",
+                        )
+                      }
+                    >
+                      {t("Finish sign-in")}
+                    </button>
+                  </div>
+                ) : null}
                 {copilotSign?.state === "waiting" ? (
                   <div className="signing">
                     <span className="spinner" aria-hidden />
@@ -3647,81 +3872,6 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
                 <span className="hint">{ZH.anyCompatible}</span>
               </div>
             )}
-            <div className="pv-add-steps card" style={{ marginTop: 12, padding: "12px 14px", borderRadius: 12, border: "1px solid var(--line)", background: "var(--card)" }}>
-              <div className="row-head" style={{ margin: 0 }}>
-                <span className="label">{t("Add account step")}</span>
-                <span className="grow" />
-                <span style={{ fontSize: 11.5, color: "var(--muted)" }}>
-                  {addStep + 1} / 3
-                </span>
-              </div>
-              <div className="pv-step-body" style={{ marginTop: 8, minHeight: 52 }}>
-                {addStep === 0 ? (
-                  <div className="row pref" style={{ padding: "6px 0" }}>
-                    <div className="who">
-                      <div className="name">{t("API key")}</div>
-                      <div className="sub">sk-… · demo nested step 1</div>
-                    </div>
-                    <input className="words" placeholder="sk-…" style={{ minWidth: 140 }} />
-                  </div>
-                ) : null}
-                {addStep === 1 ? (
-                  <div className="row pref" style={{ padding: "6px 0" }}>
-                    <div className="who">
-                      <div className="name">{t("Base URL")}</div>
-                      <div className="sub">https://api.example.com/v1</div>
-                    </div>
-                    <input className="words" defaultValue="https://api.anthropic.com" style={{ minWidth: 160 }} />
-                  </div>
-                ) : null}
-                {addStep === 2 ? (
-                  <div className="row pref" style={{ padding: "6px 0" }}>
-                    <div className="who">
-                      <div className="name">{t("Confirm models")}</div>
-                      <div className="sub">claude-sonnet-4-5 · claude-haiku-4-5</div>
-                    </div>
-                  </div>
-                ) : null}
-              </div>
-              <div className="bar" style={{ display: "flex", gap: 8, marginTop: 8 }}>
-                <button type="button" className="text" disabled={addStep <= 0} onClick={() => setAddStep((s) => Math.max(0, s - 1))}>
-                  {t("Back")}
-                </button>
-                <span className="grow" />
-                {addStep < 2 ? (
-                  <button type="button" className="text primary" onClick={() => setAddStep((s) => s + 1)}>
-                    {t("Next step")}
-                  </button>
-                ) : (
-                  <button
-                    type="button"
-                    className="text primary"
-                    onClick={() => {
-                      setDemoProvs((list) => {
-                        if (list.some((x) => x.id === "demo-nested")) return list;
-                        return [
-                          ...list,
-                          {
-                            id: "demo-nested",
-                            name: "Nested demo",
-                            icon: "generic",
-                            keyKind: "on" as const,
-                            keyLabel: "sk-…nested",
-                            accounts: [{ id: "n1", label: "sk-…nested", on: true, using: "In use" }],
-                            models: ["claude-sonnet-4-5", "claude-haiku-4-5"],
-                            agentsUsing: [{ id: "cursor", name: "Cursor", icon: "cursor" }],
-                          },
-                        ];
-                      });
-                      setAddStep(0);
-                      onStatus(ZH.providerAddedDemo, "ok");
-                    }}
-                  >
-                    {t("Save provider")}
-                  </button>
-                )}
-              </div>
-            </div>
           </div>
         </section>
       </main>
@@ -3901,169 +4051,217 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
           </div>
         </div>
       ) : null}
-      {listEditId ? (() => {
-        const pv = demoProvs.find((x) => x.id === listEditId);
-        if (!pv) return null;
-        return (
+      {moveMenu ? (
+        <div
+          role="presentation"
+          style={{ position: "fixed", inset: 0, zIndex: 90 }}
+          onClick={() => setMoveMenu(null)}
+          onContextMenu={(e) => {
+            e.preventDefault();
+            setMoveMenu(null);
+          }}
+          onKeyDown={(e) => {
+            if (e.key === "Escape") setMoveMenu(null);
+          }}
+        >
           <div
-            className="modal open"
-            role="dialog"
-            aria-modal="true"
-            aria-label={pv.name}
-            onClick={(e) => {
-              if (e.target === e.currentTarget) setListEditId(null);
+            role="menu"
+            style={{
+              position: "fixed",
+              left: moveMenu.x,
+              top: moveMenu.y,
+              minWidth: 200,
+              padding: "4px 0",
+              borderRadius: 10,
+              border: "1px solid var(--line)",
+              background: "var(--card)",
+              boxShadow: "0 10px 28px rgba(20,22,30,.16)",
+              zIndex: 91,
             }}
+            onClick={(e) => e.stopPropagation()}
           >
-            <div
-              className="dialog editor"
-              style={{
-                width: "min(520px, 94vw)",
-                maxHeight: "min(640px, 88vh)",
-                display: "flex",
-                flexDirection: "column",
-                animation: "pop-in .42s cubic-bezier(.16,1,.3,1)",
-              }}
-            >
-              <div className="ehead" style={{ display: "flex", alignItems: "center", gap: 10, padding: "14px 16px 8px" }}>
-                <img className="ic" src={iconSrc(pv.icon)} alt="" width={22} height={22} />
-                <div className="who" style={{ flex: 1, minWidth: 0 }}>
-                  <div className="name">{pv.name}</div>
-                  <div className="sub">{pv.user ? t("signed in as {user}", { user: pv.user }) : pv.host || ""}</div>
-                </div>
-                <button type="button" className="text" onClick={() => setListEditId(null)}>{t("Done")}</button>
-              </div>
-              <div className="ebody" style={{ padding: "8px 16px 16px", overflow: "auto" }}>
-                <div className="label" style={{ marginBottom: 6 }}>{t("Accounts")}</div>
-                <div className="accts">
-                  {pv.accounts.map((a) => (
-                    <div
-                      className={`acc${a.on !== false ? " in-use" : " off"}`}
-                      key={a.id}
-                      data-account-id={a.id}
-                    >
-                      <button
-                        type="button"
-                        className={`dot tick${a.on !== false ? "" : ""}`}
-                        title={a.on !== false ? t("Stop using this account") : t("Use this account too")}
-                        onClick={() => {
-                          setDemoProvs((list) =>
-                            list.map((x) =>
-                              x.id !== pv.id
-                                ? x
-                                : {
-                                    ...x,
-                                    accounts: x.accounts.map((ac) =>
-                                      ac.id === a.id ? { ...ac, on: !(ac.on !== false) } : ac,
-                                    ),
-                                  },
-                            ),
-                          );
-                        }}
-                      >
-                        {a.on !== false ? (
-                          <svg viewBox="0 0 12 12" width={10} height={10}>
-                            <path d="M2.5 6.2 5 8.7 9.5 3.5" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
-                          </svg>
-                        ) : null}
-                      </button>
-                      <span className="n">{a.label}</span>
-                      {a.plan ? <span className="plan">{a.plan}</span> : null}
-                      <span className="grow" />
-                      {a.using ? <span className="using">{t(a.using)}</span> : null}
-                      <button
-                        type="button"
-                        className="text quiet"
-                        onClick={() => {
-                          setDemoProvs((list) =>
-                            list.map((x) =>
-                              x.id !== pv.id
-                                ? x
-                                : { ...x, accounts: x.accounts.filter((ac) => ac.id !== a.id) },
-                            ),
-                          );
-                          onStatus(t("{user} removed", { user: a.label }), "ok");
-                        }}
-                      >
-                        {t("Remove")}
-                      </button>
-                    </div>
-                  ))}
-                  <button
-                    type="button"
-                    className="acc add"
-                    onClick={() => {
-                      const id = "acct-" + Date.now();
-                      setDemoProvs((list) =>
-                        list.map((x) =>
-                          x.id !== pv.id
-                            ? x
-                            : {
-                                ...x,
-                                accounts: [
-                                  ...x.accounts,
-                                  { id, label: "demo+" + (x.accounts.length + 1) + "@example.com", plan: "Pro", on: true, using: "In use" },
-                                ],
-                              },
-                        ),
-                      );
-                      onStatus(t("Account added"), "ok");
-                    }}
-                  >
-                    <span className="dot" />
-                    <span className="n">{t("Add an account")}</span>
-                  </button>
-                </div>
-                <div className="label" style={{ margin: "14px 0 6px" }}>{t("Models")}</div>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-                  {pv.models.map((m) => (
-                    <code key={m} style={{ fontSize: 11, padding: "3px 7px", borderRadius: 6, background: "var(--pill)" }}>
-                      {m}
-                    </code>
-                  ))}
-                </div>
-                <div className="bar" style={{ display: "flex", gap: 8, marginTop: 16, justifyContent: "flex-end" }}>
-                  <button
-                    type="button"
-                    className="text"
-                    onClick={() => {
-                      setDemoProvs((list) => list.filter((x) => x.id !== pv.id));
-                      setListEditId(null);
-                      onStatus(t("{name} removed", { name: pv.name }), "ok");
-                    }}
-                  >
-                    {t("Remove")}
-                  </button>
-                </div>
-              </div>
+            {(
+              [
+                ["top", t("Move to top"), "Alt+Shift+↑"],
+                ["up", t("Move up"), "Alt+↑"],
+                ["down", t("Move down"), "Alt+↓"],
+                ["bottom", t("Move to bottom"), "Alt+Shift+↓"],
+              ] as const
+            ).map(([act, lab, kbd]) => (
+              <button
+                key={act}
+                type="button"
+                role="menuitem"
+                className="text"
+                style={{
+                  display: "flex",
+                  width: "100%",
+                  alignItems: "center",
+                  gap: 12,
+                  padding: "7px 12px",
+                  border: 0,
+                  background: "transparent",
+                  font: "inherit",
+                  fontSize: 13,
+                  cursor: "pointer",
+                  textAlign: "left",
+                }}
+                onClick={() => {
+                  const id = moveMenu.id;
+                  setDemoProvs((list) => {
+                    const i = list.findIndex((x) => x.id === id);
+                    if (i < 0) return list;
+                    const next = [...list];
+                    const [row] = next.splice(i, 1);
+                    if (act === "top") next.unshift(row);
+                    else if (act === "bottom") next.push(row);
+                    else if (act === "up") next.splice(Math.max(0, i - 1), 0, row);
+                    else next.splice(Math.min(next.length, i + 1), 0, row);
+                    return next;
+                  });
+                  setMoveMenu(null);
+                }}
+              >
+                <span style={{ flex: 1 }}>{lab}</span>
+                <span style={{ fontSize: 11, color: "var(--muted)" }}>{kbd}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      ) : null}
+
+      {removeAsk ? (
+        <div
+          className="modal open"
+          role="alertdialog"
+          aria-modal="true"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setRemoveAsk(null);
+          }}
+        >
+          <div className="dialog sm" style={{ maxWidth: 380, padding: "16px 18px", animation: "pop-in .28s var(--ease)" }}>
+            <b style={{ display: "block", fontSize: 15, marginBottom: 8 }}>
+              {t("Remove {name}?", { name: removeAsk.name })}
+            </b>
+            <p style={{ margin: "0 0 14px", fontSize: 13, color: "var(--fg-2)", lineHeight: 1.45 }}>
+              {t(
+                "Its saved configuration will be removed. Agents using it may switch to another provider or their default model.",
+              )}
+            </p>
+            <div className="bar" style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
+              <button type="button" className="text" autoFocus onClick={() => setRemoveAsk(null)}>
+                {t("Cancel")}
+              </button>
+              <button
+                type="button"
+                className="text"
+                style={{ background: "var(--red)", color: "#fff", borderColor: "transparent" }}
+                onClick={() => {
+                  const { id, name } = removeAsk;
+                  setDemoProvs((list) => list.filter((x) => x.id !== id));
+                  setRemoveAsk(null);
+                  setListEditId(null);
+                  setEditor(null);
+                  // NOTES 93: empty list stays on + Add provider — do not force first-provider sheet… length===0 effect opens sheet; Magpie keeps sheet closed
+                  // Override: after remove-to-empty, Magpie does NOT reopen first sheet
+                  window.setTimeout(() => setSheetOpen(false), 0);
+                  onStatus(t("{name} removed", { name }), "ok");
+                }}
+              >
+                {t("Remove")}
+              </button>
             </div>
           </div>
-        );
-      })() : null}
+        </div>
+      ) : null}
+
       {editor ? (
         <ProviderEditorModal
           state={editor}
-          onClose={() => setEditor(null)}
+          saved={!!listEditId && listEditId === editor.id}
+          onClose={() => {
+            setEditor(null);
+            setListEditId(null);
+          }}
           onStatus={onStatus}
-          onAdd={() => {
-            if (editor) {
-              setDemoProvs((list) => {
-                if (list.some((x) => x.id === editor.id)) return list;
-                return [
-                  ...list,
-                  {
-                    id: editor.id,
-                    name: editor.name,
-                    icon: editor.icon,
-                    keyKind: "on" as const,
-                    keyLabel: "sk-…demo",
-                    accounts: [{ id: "a1", label: "default", on: true, using: "In use" }],
-                    models: ["model-a", "model-b"],
-                    agentsUsing: [{ id: "cursor", name: "Cursor", icon: "cursor" }],
-                  },
-                ];
-              });
+          onRemove={() => {
+            if (!editor) return;
+            setRemoveAsk({ id: editor.id, name: editor.name });
+          }}
+          onDuplicate={() => {
+            if (!editor) return;
+            const base = editor.id;
+            let n = 2;
+            let id = `${base}-${n}`;
+            while (demoProvs.some((x) => x.id === id)) {
+              n += 1;
+              id = `${base}-${n}`;
             }
-            onStatus(ZH.providerAddedDemo, "ok");
+            setDemoProvs((list) => {
+              const src = list.find((x) => x.id === editor.id);
+              if (!src) return list;
+              return [...list, { ...src, id, name: src.name + " " + n, accounts: src.accounts.map((a) => ({ ...a })) }];
+            });
+            onStatus(t("{name} added", { name: editor.name }), "ok");
+            setEditor(null);
+            setListEditId(null);
+          }}
+          onAddAnother={() => {
+            if (!editor) return;
+            setListEditId(null);
+            const loc = LOCAL_PRESETS[editor.id];
+            setEditor({
+              form: "local",
+              id: editor.id,
+              name: editor.name,
+              icon: editor.icon,
+              site: loc?.site,
+              note: loc?.note,
+            });
+          }}
+          onAdd={(info) => {
+            if (!editor) return;
+            const keyEmpty = !(info?.key || "").trim();
+            const isLocal = !!LOCAL_PRESETS[editor.id] || editor.form === "local";
+            const host = isLocal
+              ? (LOCAL_PRESETS[editor.id]?.address || "http://localhost:11434").replace(/^https?:\/\//, "")
+              : undefined;
+            if (listEditId && listEditId === editor.id) {
+              // Save existing
+              setDemoProvs((list) =>
+                list.map((x) =>
+                  x.id === editor.id
+                    ? {
+                        ...x,
+                        keyKind: keyEmpty && isLocal ? ("none" as const) : x.keyKind,
+                        keyLabel: keyEmpty && isLocal ? t("no key") : x.keyLabel,
+                      }
+                    : x,
+                ),
+              );
+              onStatus(t("{name} saved", { name: editor.name }), "ok");
+              setListEditId(null);
+              return;
+            }
+            setDemoProvs((list) => {
+              if (list.some((x) => x.id === editor.id)) return list;
+              return [
+                ...list,
+                {
+                  id: editor.id,
+                  name: editor.name,
+                  icon: editor.icon,
+                  host: host ? host.replace(/\/v1$/, "") : undefined,
+                  keyKind: keyEmpty && isLocal ? ("none" as const) : ("on" as const),
+                  keyLabel: keyEmpty && isLocal ? t("no key") : keyEmpty ? t("no key") : "sk-…",
+                  accounts: [],
+                  models: [],
+                  agentsUsing: [],
+                },
+              ];
+            });
+            setSheetOpen(false);
+            onStatus(t("{name} added", { name: editor.name }), "ok");
           }}
         />
       ) : null}

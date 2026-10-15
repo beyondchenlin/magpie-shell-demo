@@ -4430,5 +4430,13 @@
   "{n} servers removed": "已移除 {n} 个服务器",
   "Remove {n} servers?": "移除 {n} 个服务器？",
   "They are taken out of the library and the agents they were given to.": "它们会从资料库和已给予的 agent 中移除。",
-  "No servers in the library yet": "资料库里还没有服务器"
+  "No servers in the library yet": "资料库里还没有服务器",
+  "ADD YOUR FIRST PROVIDER": "添加第一个供应商",
+  "ADD A PROVIDER": "添加供应商",
+  "+ Add provider": "＋ 添加供应商",
+  "Agents pick its models as {id}/…": "Agent 以 {id}/… 选用它的模型",
+  "Drag to reorder — a model several providers serve goes to the higher one first · Alt+↑/↓ to move one step · right-click to the top or the bottom": "拖动排序 — 多个供应商都有的模型优先用排在上面的 · Alt+↑/↓ 挪一步 · 右键移到顶或底",
+  "For a server or Docker: copy the address the browser ends on.": "服务器或 Docker：复制浏览器最终停在的地址。",
+  "ID": "ID",
+  "Note for a server or Docker: copy the address the browser ends on.": "服务器或 Docker：把浏览器最终停在的地址复制过来。"
 }

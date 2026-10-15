@@ -118,7 +118,7 @@ body.window:not(.side-nav) .top.tight .brand > span:not(.logo) { display: none; 
 }
 
 #view-providers .sheet { display: block; }
-#view-providers .sheet[hidden] { display: block; }
+#view-providers .sheet[hidden] { display: none !important; }
 .tile .ic, .tile img.ic-img {
   width: 18px; height: 18px; flex: none; object-fit: contain;
 }

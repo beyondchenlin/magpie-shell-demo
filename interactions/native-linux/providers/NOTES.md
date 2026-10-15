@@ -220,3 +220,70 @@ Providers tab, add sheet, foot of the catalog (relays, On this machine, Remote m
 ## demo 对齐（v0.1.56 EACH_MODEL_DONE）
 - System One Each（07）：decide warn；picks 不含 model-to-try；ids 仅按逗号/换行切
 - Each 成功壳：detect-grid + ep 行 + Use these（无真探测）
+
+## Deep nest (61–83)
+
+Relaunched Magpie, pid **1871993**. Window **752×652 at +200+40** (id 85983247, DISPLAY=:6). Not resized. Started on Library → MCP servers (no What's new sheet; it had already been closed). Providers in the top chrome opens the empty add sheet. Shots are ffmpeg x11grab of that rect, except **75**, which is the Chrome login page. No key was typed. Sign in anyway, Finish sign-in, Open again, Choose files, and every purple Import were not clicked. `providers.json` stayed `{"providers": null}` through 81.
+
+| shot | what |
+|---|---|
+| 61 | Landing. **ADD YOUR FIRST PROVIDER**, search "Find a vendor…", Import…. Subscriptions: Claude, ChatGPT, ChatGPT API, Copilot, Gemini CLI, Antigravity, More in Plugins. Vendors start: Anthropic, OpenAI, Google Gemini, Vertex AI, DeepSeek, xAI, Kimi, Kimi Code, Zhipu GLM, Z.ai. |
+| 62 | Query **open**. Vendors: OpenAI, Zhipu GLM, Azure OpenAI. Relays: OpenRouter, OpenCode Go, ClinePass, OpenCode Zen, CherryIN. Subscriptions and On this machine drop out. (Keys sent with `xdotool --window` never reached the field; a normal type did.) |
+| 63 | Hover OpenRouter. Tooltip **openrouter.ai**. |
+| 64 | Hover Import… with the query still `open`. Tooltip **Bring over providers set up in ot…**, cut off at the window's right edge. A 1s hover did not paint it; about 2s did. |
+| 65 | Import from other apps, Alma. `~/.config/alma/chat_threads.db`. **Not found on this computer**. Import not clicked. |
+| 66 | CC Switch. `~/.cc-switch/cc-switch.db`. Not found. |
+| 67 | Claude Code. `~/.claude/settings.json`. Not found. |
+| 68 | Cancel. Back on the filtered catalog, query still `open`. |
+| 69 | Escape in the search field clears `open` and restores the full catalog. It does not close the empty sheet. |
+| 70 | Antigravity. Risk card, plus the tile tooltip **Antigravity** over the row. Sign in anyway not clicked. |
+| 71 | Pointer moved onto the note. **Antigravity accounts can be suspended.** "Google may suspend an Antigravity account it sees used outside Antigravity. Use one you can afford to lose." Cancel, Import instead…, Sign in anyway. |
+| 72 | Import instead…. **Import Antigravity accounts.** A hover tip covers the body: "Bring in accounts exported from Antigravity Cockpit, Antigravity Manager or CLIP…". |
+| 73 | Tip gone. Choose or paste an export from Antigravity Cockpit, Antigravity Manager or CLIProxyAPI (JSON, or refresh tokens one a line; each account is checked with Google before it is added). Same Google risk line. Choose files…, empty "…or paste it here". Header Cancel and purple Import. Neither Choose files nor Import was used. Paste left empty. Cancel closed it (between 73 and 74). |
+| 74-chatgpt-wall | ChatGPT tile starts sign-in at once (no risk card) and Chrome covers Magpie. This grab is the 752×652 rect while Chrome is fullscreen, so it is a sparse crop of the login page, not the Magpie card. |
+| 74-chatgpt-signin-card | Login tab closed with Ctrl+W. Nothing typed, Continue not clicked. Card **Finish signing in to ChatGPT in your browser**, with the tile tip **ChatGPT subscription · Plus · Pro · Business**. |
+| 75 | The Chrome page itself, **1280×800**, `auth.openai.com/log-in`. Welcome back, empty Email address, Continue, Sign up, Continue with Google / Apple / Microsoft / phone. Not submitted. Tab then closed. |
+| 76 | Same card, tip gone. "magpie opened the sign-in page. The account shows up here as soon as you're done." Truncated `https://auth.openai.com/oauth/authorize?client_id=…`. Open again, Proxy: Global proxy, Import from a file instead…. Note for a server or Docker: copy the address the browser ends on. Empty Callback URL. Purple **Finish sign-in**. Cancel is the text button at the card's top right. Finish sign-in, Open again, and Import from a file were not clicked. |
+| 77 | Cancel. Catalog back. A leftover title **Stop waiting for this sign-in** (the Cancel button's tip) sat over the vendors until the pointer moved. No provider saved. |
+| 78 | ChatGPT API, same wall: **Finish signing in to ChatGPT API in your browser.** Link `auth.openai.com/api/accounts/authorize?agent_name_hint=magp…`. Open again, Proxy: Global proxy. Its Chrome login (Welcome back) was closed with Ctrl+W before this frame. No email, no Continue. |
+| 79 | Gemini CLI. **Finish signing in to Gemini CLI in your browser.** Link `accounts.google.com/o/oauth2/v2/auth?…`. The Google login window (登录 - Google 账号) was closed with Ctrl+W before this frame. Cancel not yet clicked in the frame; it was clicked next, and the catalog returned. |
+| 80 | After that Cancel, query **ollama**. Vendors: **Ollama Cloud**. On this machine: **Ollama**. Two tiles. |
+| 81 | Local Ollama, not Ollama Cloud. API key empty, placeholder "optional for local servers", Show. "Kept in ~/.config/magpie/providers.json, readable by you alone." Server address folded. + Add header. Extra body shows `prompt_cache_key` / `${sessionId}`. Proxy Global proxy / Direct / Custom. Concurrency No limit. Cancel and Add. Hover tip **your local models**. No key typed. |
+| 82 | Add, with the key still empty. The sheet gives way to the list. **Find a provider**. Row: Ollama, `localhost:11434 · no models exposed`, **no key**, switch on. **+ Add provider**. Toast **Ollama added**. `providers.json` has that one provider, `"key": ""`, chat `http://localhost:11434/v1`. Not a secret. |
+| 83 | + Add provider. Sheet title is now **ADD A PROVIDER** (a provider exists), with **Close** beside Import…. Catalog top is the same subscriptions and the start of the vendors. Ollama stays saved under the sheet. Nothing else was added. |
+
+ChatGPT, ChatGPT API, and Gemini CLI each opened a real login page and were cancelled. No account was approved. Antigravity never got past the risk card and the import sheet.
+
+## Left state (after 83)
+
+Providers tab, add sheet open (**ADD A PROVIDER**), catalog scrolled a little (a Claude subscription tip can show if the pointer rests on Claude). One local provider, Ollama, empty key. No OAuth finished. Magpie still pid 1871993, window 752×652 at +200+40 (id 85983247). Not quit.
+
+## List, once a provider exists (84–93)
+
+Ollama from 82 was still saved, key empty. The add sheet was closed. No second provider was added. Add another, Duplicate, and Save were not clicked. The switch was not toggled.
+
+| shot | what |
+|---|---|
+| 84 | Sheet closed. List: **Find a provider**, one row Ollama `localhost:11434 · no models exposed`, **no key**, switch on, **+ Add provider**. The "Ollama added" toast is gone. |
+| 85 | Hover the row handle. Tooltip cut off at the left: "…veral providers serve goes to the higher one first · Alt+↑/↓" and "…to the top or the bottom". Full title is drag-to-reorder, higher provider wins a shared model, Alt+↑/↓, right-click moves to top or bottom. |
+| 86 | Pointer on the switch knob. The On tip had not painted yet. |
+| 87 | Right-click the handle. Menu: **Move to top** Alt+Shift+↑, **Move up** Alt+↑, **Move down** Alt+↓, **Move to bottom** Alt+Shift+↓. None chosen. One row, so they would not reorder it. Escape dismissed the menu. |
+| 88 | Pointer just left of the switch. Still no tip. |
+| 89 | **Find a provider** query `zzz`. **No provider matches "zzz"**. The row hides. + Add provider stays. A clear control sits in the field. Escape then emptied it and the row came back. |
+| 90 | Switch tip, clipped at the right: **On · switch it off and agents no longer get its models;** (the rest is "its keys and settings are kept"). Switch stayed on. |
+| 91 | Row opens the saved editor, not the add form. ID `ollama`, hint "Agents pick its models as ollama/…". API key still the empty placeholder. Same local fields as 81. Footer: **Remove**, **Add another Ollama**, **Duplicate**, Cancel, **Save**. |
+| 92 | Remove. **Remove Ollama?** "Its saved configuration will be removed. Agents using it may switch to another provider or their default model." Cancel (focus) and red Remove. |
+| 93 | Red Remove. Toast **Ollama removed**. The page is only **+ Add provider**. The first-provider sheet does not open again. `providers.json` is `{"providers": []}`, not null. The key was `""` the whole time. |
+
+## Left state (after 93)
+
+Providers tab, empty list, + Add provider. No provider, no key, no OAuth finished. Magpie still pid **1871993**, window **752×652 at +200+40** (id 85983247). Not resized, not quit.
+
+## demo 对齐（61–93）· v0.1.89 PROVIDERS_NEST_DONE
+- Catalog search **open**：OpenAI、Zhipu、Azure OpenAI、Open* relays；Escape 清查询，不关空添加页。
+- Import：CC Switch `~/.cc-switch/cc-switch.db`、Claude Code `~/.claude/settings.json` — Not found；Import 不必成功。
+- Antigravity：risk 卡 + Import（Cockpit / Manager / CLIProxyAPI）；Sign in anyway / Import 不强制。
+- ChatGPT / ChatGPT API / Gemini CLI：无 risk 卡，浏览器墙 + Cancel。
+- 有供应商后：Find a provider、拖动手柄 title、右键 Move 菜单、On 开关 tip；本地 Ollama 空 key 添加再 Remove；默认空 `providers` OK。
+- 跳过仍薄：Copilot device-code 加深、两行排序、Turned off fold — 留给后巢。
+- demo 消费（v0.1.89）：ProvidersView；无 portable、无 Vercel。
