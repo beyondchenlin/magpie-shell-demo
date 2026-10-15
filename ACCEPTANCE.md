@@ -1,3 +1,6 @@
+## v0.1.114 CIS_LIBRARYVIEW_LAYOUT_CHROME
+- LibraryView layout/field chrome → Magpie `library.css` + CIS Segs/WordsField/Tick + bridge classes. `style={{` 232 → 1 (health color). SIDE_AT=1024. No portable / Vercel.
+
 ## v0.1.113 CIS_LIBRARY_THUNAR_CHOOSE
 - Library `LibThunar` / `LibChooseProject`: Magpie/demo GTK classes (`.lib-thunar*`, `.dialog.gtk-choose-project`); 0 `style={{` in those regions. Behavior kept.
 - CIS listed knife empty for shell demo (aside from future nest). SIDE_AT=1024. No portable / Vercel.

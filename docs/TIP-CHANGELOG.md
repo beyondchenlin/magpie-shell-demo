@@ -4,6 +4,19 @@
 
 ---
 
+## v0.1.114 · CIS_LIBRARYVIEW_LAYOUT_CHROME · 2026-10-15 Asia/Shanghai
+
+- **WHY:** CIS continuous — LibraryView still held ~232 `style={{…}}` after Thunar/Choose; cut layout/field chrome to Magpie classes + existing CIS wrappers.
+- **WHAT kept:** `SIDE_AT=1024`; no `WEB_SIDE_AT`; Win chrome / 752 frame; behavior unchanged; no new Magpie features.
+- **WHAT changed:**
+  - Import Magpie `library.css` (`src/styles/library.css`).
+  - Bridge tokens in `shell-patch.css` (`#view-library` lib-set/radio/savebar/mcp/mk-card/oauth…).
+  - Tabs → `Segs` + `.lib-tabs`; head acts → `.lib-discover` / `.lib-more` / `.lib-backups` + `.lib-mini`.
+  - Sets / MCP / skills / projects / OAuth wall → Magpie class chrome; CSS-var color on health dot kept (1 token).
+  - LibraryView `style={{` **232 → 1** (~99.6%).
+- **Guard:** `npm run chrome-guard`. No portable. No push/Vercel.
+
+---
 ## v0.1.113 · CIS_LIBRARY_THUNAR_CHOOSE · 2026-10-15 Asia/Shanghai
 
 - **WHY:** CIS §10 — Library Thunar / Choose-project GTK OS chrome mocks drop page-local `style={{…}}` for Magpie/demo GTK dialog classes (same pattern as Providers `.dialog.gtk-select-files`).

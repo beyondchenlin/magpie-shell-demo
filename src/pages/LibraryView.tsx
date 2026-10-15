@@ -198,8 +198,7 @@ function LibChip({
       aria-pressed={on}
       aria-label={label}
       title={title}
-      onClick={onClick}
-    >
+      onClick={onClick}>
       {iconOnly ? "▦" : label}
     </button>
   );
@@ -219,19 +218,16 @@ function LibModal({
   /** Magpie `.modal` > `.dialog` (+ `.lib-editor` / `.sm`) — chrome in app.css + shell-patch. */
   return (
     <div
-      className="modal"
-      role="presentation"
+      className="modal" role="presentation"
       onMouseDown={(e) => {
         if (e.target === e.currentTarget) onBg();
-      }}
-    >
+      }}>
       <div
         className={`dialog lib-editor${sm ? " sm" : ""}`}
         role="dialog"
         aria-modal
         onMouseDown={(e) => e.stopPropagation()}
-        onPaste={onPaste}
-      >
+        onPaste={onPaste}>
         {children}
       </div>
     </div>
@@ -345,21 +341,17 @@ function LibThunar({
 
   return (
     <div
-      className="modal open lib-thunar-scrim"
-      role="presentation"
+      className="modal open lib-thunar-scrim" role="presentation"
       onMouseDown={(e) => {
         // Outside click does not close — Magpie leaves Thunar until window close.
         if (e.target === e.currentTarget) setFileMenu(false);
-      }}
-    >
+      }}>
       <div
-        className="lib-thunar"
-        role="dialog"
+        className="lib-thunar" role="dialog"
         aria-modal
         aria-label={`${titleName} - Thunar`}
         onMouseDown={(e) => e.stopPropagation()}
-        onContextMenu={(e) => e.preventDefault()}
-      >
+        onContextMenu={(e) => e.preventDefault()}>
         <div className="titlebar">
           <svg viewBox="0 0 16 16" width={14} height={14} aria-hidden>
             <path fill="#5b9bd5" d="M2 3.5h5l1.2 1.2H14V13H2z" />
@@ -376,8 +368,7 @@ function LibThunar({
               key={m}
               type="button"
               className={`text mb${m === "File" && fileMenu ? " on" : ""}`}
-              onClick={() => (m === "File" ? setFileMenu((v) => !v) : setFileMenu(false))}
-            >
+              onClick={() => (m === "File" ? setFileMenu((v) => !v) : setFileMenu(false))}>
               {m}
             </button>
           ))}
@@ -391,13 +382,11 @@ function LibThunar({
                     key={it.label}
                     type="button"
                     role="menuitem"
-                    className="mi"
-                    disabled={it.disabled}
+                    className="mi" disabled={it.disabled}
                     onClick={() => {
                       if (it.close) onClose();
                       else setFileMenu(false);
-                    }}
-                  >
+                    }}>
                     <span className="lab">{it.label}</span>
                     {it.accel && it.accel !== "▸" ? (
                       <span className="acc">{it.accel}</span>
@@ -414,42 +403,36 @@ function LibThunar({
         <div className="lib-thunar-toolbar">
           <button
             type="button"
-            className="text nav back"
-            disabled={!canBack}
+            className="text nav back" disabled={!canBack}
             aria-label="Back"
             onClick={() => {
               if (!canBack) return;
               const i = histI - 1;
               setHistI(i);
               setSegs(hist[i]);
-            }}
-          >
+            }}>
             ←
           </button>
           <button
             type="button"
-            className="text nav fwd"
-            disabled={!canFwd}
+            className="text nav fwd" disabled={!canFwd}
             aria-label="Forward"
             onClick={() => {
               if (!canFwd) return;
               const i = histI + 1;
               setHistI(i);
               setSegs(hist[i]);
-            }}
-          >
+            }}>
             →
           </button>
           <button
             type="button"
-            className="text nav"
-            disabled={!canUp}
+            className="text nav" disabled={!canUp}
             aria-label="Up"
             onClick={() => {
               if (!canUp) return;
               go(segs.slice(0, -1));
-            }}
-          >
+            }}>
             ↑
           </button>
           <button type="button" className="text nav" aria-label="Home" onClick={() => go([])}>⌂</button>
@@ -474,11 +457,9 @@ function LibThunar({
               <button
                 key={k.name}
                 type="button"
-                className="icon"
-                onDoubleClick={() => go([...segs, k.name])}
+                className="icon" onDoubleClick={() => go([...segs, k.name])}
                 onClick={() => go([...segs, k.name])}
-                title={k.name}
-              >
+                title={k.name}>
                 {folderIcon}
                 <span className="nm">{k.name}</span>
               </button>
@@ -667,8 +648,7 @@ function LibChooseProject({
         setLocOpen(false);
         setComplete(null);
         setLocVal("");
-      }}
-    >
+      }}>
       {id === "recent" ? "◷" : id === "home" ? "⌂" : id === "other" ? "+" : "📁"}
       <span>{id === "other" ? `+ ${label}` : label}</span>
       {id === "desktop" && deskTip ? (
@@ -679,21 +659,17 @@ function LibChooseProject({
 
   return (
     <div
-      className="modal open lib-choose-scrim"
-      role="presentation"
+      className="modal open lib-choose-scrim" role="presentation"
       onMouseDown={(e) => {
         if (e.target === e.currentTarget) {
           /* Magpie Escape/Cancel close; outside click not documented — leave open */
         }
-      }}
-    >
+      }}>
       <div
-        className="dialog gtk-choose-project"
-        role="dialog"
+        className="dialog gtk-choose-project" role="dialog"
         aria-modal
         aria-label={t("Choose a project")}
-        onMouseDown={(e) => e.stopPropagation()}
-      >
+        onMouseDown={(e) => e.stopPropagation()}>
         <div className="titlebar">
           <span className="mark">
             <Bird size={16} />
@@ -814,8 +790,7 @@ function LibChooseProject({
                       type="button"
                       className={`row files${selected === name ? " on" : ""}`}
                       onClick={() => setSelected(name)}
-                      onDoubleClick={() => onOpen(`/workspace/${name}`)}
-                    >
+                      onDoubleClick={() => onOpen(`/workspace/${name}`)}>
                       <span className="who">
                         <span aria-hidden>📁</span>
                         {name}
@@ -839,8 +814,7 @@ function LibChooseProject({
                       key={name}
                       type="button"
                       className={`row files${selected === name ? " on" : ""}`}
-                      onClick={() => setSelected(name)}
-                    >
+                      onClick={() => setSelected(name)}>
                       <span className="who">
                         <span aria-hidden>📁</span>
                         {name}
@@ -861,8 +835,7 @@ function LibChooseProject({
                       setBrowse("computer");
                       setSelected("bin");
                     }}
-                    onClick={() => setSelected("Computer")}
-                  >
+                    onClick={() => setSelected("Computer")}>
                     <span className="ic" aria-hidden>💾</span>
                     <div className="who">
                       <div className="name">{t("Computer")}</div>
@@ -989,8 +962,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
   const [projectRemove, setProjectRemove] = useState<{ dir: string; name: string; keep: boolean; dirty: boolean } | null>(null);
   const [projectDiscard, setProjectDiscard] = useState(false);
   const [hooks, setHooks] = useState<
-    { id: string; name: string; description: string; event: string; matcher: string; command: string; agents: string[] }[]
-  >([]);
+    { id: string; name: string; description: string; event: string; matcher: string; command: string; agents: string[] }[]>([]);
   const [hookEditor, setHookEditor] = useState<HookDraft | null>(null);
   const [hookSnap, setHookSnap] = useState("");
   const [eventMenu, setEventMenu] = useState(false);
@@ -1347,53 +1319,29 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
   };
 
   return (
-    <main className="view" id="view-library" style={{ animation: "view-in .24s var(--ease)" }}>
-      <div className="lib-head row-head" style={{ display: "flex", flexDirection: "column", alignItems: "stretch", gap: 6 }}>
-        <div className="lib-tabs" role="tablist" aria-label={t("Library")} style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
-          {LIB_TABS.map(([id, label]) => {
-            // Magpie libHead: Skills · N / MCP · N / Hooks · N when count > 0
+    <main className="view" id="view-library">
+      <div className="lib-head">
+        <Segs
+          className="lib-tabs" aria-label={t("Library")}
+          value={tab}
+          onChange={(id) => setTab(id)}
+          items={LIB_TABS.map(([id, label]) => {
             const n =
               id === "skills" ? skills.length : id === "mcp" ? mcpServers.length : id === "hooks" ? hooks.length : 0;
-            const shown = n ? `${t(label)} · ${n}` : t(label);
-            return (
-            <button
-              key={id}
-              type="button"
-              role="tab"
-              aria-selected={tab === id}
-              className={`opt${tab === id ? " on" : ""}`}
-              onClick={() => setTab(id)}
-              style={{
-                height: 28,
-                padding: "0 12px",
-                borderRadius: 999,
-                border: "1px solid var(--line)",
-                background: tab === id ? "var(--card)" : "transparent",
-                color: tab === id ? "var(--fg)" : "var(--muted)",
-                font: "inherit",
-                fontSize: 12.5,
-                cursor: "pointer",
-                transition: "color .15s, background .15s, border-color .15s",
-              }}
-            >
-              {shown}
-            </button>
-            );
+            return { id, label: n ? `${t(label)} · ${n}` : t(label) };
           })}
-        </div>
-        <div className="lib-headacts" style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: 4, flexWrap: "wrap" }}>
+        />
+        <div className="lib-headacts">
           {tab === "mcp" || tab === "skills" ? (
             <button
               type="button"
-              className="text"
-              title={tab === "skills" ? t("Go to the skills you can add, under the list") : t("Go to the MCP servers you can add, under the list")}
+              className="text lib-discover" title={tab === "skills" ? t("Go to the skills you can add, under the list") : t("Go to the MCP servers you can add, under the list")}
               onClick={() =>
                 document
                   .getElementById(tab === "skills" ? "libSkillDiscover" : "libDiscover")
                   ?.scrollIntoView({ behavior: "smooth", block: "start" })
-              }
-            >
-              <svg viewBox="0 0 16 16" width={14} height={14} fill="none" stroke="currentColor" strokeWidth="1.3" aria-hidden style={{ marginRight: 4, verticalAlign: -2 }}>
+              }>
+              <svg viewBox="0 0 16 16" width={14} height={14} fill="none" stroke="currentColor" strokeWidth="1.3" aria-hidden className="lib-mini">
                 <path d={SEARCH} />
               </svg>
               {t("Discover")}
@@ -1401,26 +1349,22 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
           ) : null}
           <button
             type="button"
-            className="text"
-            title="~/.config/magpie/library"
-            onClick={() => setThunarKind("library")}
-          >
-            <svg viewBox="0 0 16 16" width={14} height={14} fill="none" stroke="currentColor" strokeWidth="1.3" aria-hidden style={{ marginRight: 4, verticalAlign: -2 }}>
+            className="text lib-more" title="~/.config/magpie/library"
+            onClick={() => setThunarKind("library")}>
+            <svg viewBox="0 0 16 16" width={14} height={14} fill="none" stroke="currentColor" strokeWidth="1.3" aria-hidden className="lib-mini">
               <path d={FOLDER} />
             </svg>
             {t("Library folder")}
           </button>
           <button
             type="button"
-            className="text"
-            title={t("magpie keeps a copy of every file before it writes it.") + "\n~/.config/magpie/backups"}
+            className="text lib-backups" title={t("magpie keeps a copy of every file before it writes it.") + "\n~/.config/magpie/backups"}
             onClick={() => setThunarKind("backups")}
             onContextMenu={(e) => {
               // NOTES 88–100: right-click on Backups opens no menu
               e.preventDefault();
-            }}
-          >
-            <svg viewBox="0 0 16 16" width={14} height={14} fill="none" stroke="currentColor" strokeWidth="1.3" aria-hidden style={{ marginRight: 4, verticalAlign: -2 }}>
+            }}>
+            <svg viewBox="0 0 16 16" width={14} height={14} fill="none" stroke="currentColor" strokeWidth="1.3" aria-hidden className="lib-mini">
               <path d={BACKUP} />
             </svg>
             {t("Backups")}
@@ -1428,24 +1372,24 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
         </div>
       </div>
 
-      <div className="lib-body" style={{ padding: "8px 4px 24px" }}>
+      <div className="lib-body">
         {tab === "instructions" ? (
           <>
-            <div style={{ marginBottom: 12 }}>
-              <b style={{ display: "block", fontSize: 14 }}>{t("Instructions")}</b>
-              <p style={{ margin: "4px 0 0", fontSize: 12.5, color: "var(--muted)", lineHeight: 1.45 }}>
+            <div className="lib-intro">
+              <b>{t("Instructions")}</b>
+              <p>
                 {t("Write it once: every agent switched on below reads it before each conversation, in its own instructions file.")}
               </p>
             </div>
 
-            <div className="card" style={{ padding: "12px 14px", border: "1px solid var(--line)", borderRadius: 12 }}>
-              <div className="row-head" style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
+            <div className="card lib-card">
+              <div className="row-head lib-cardhead">
                 <svg viewBox="0 0 16 16" width={16} height={16} fill="none" stroke="currentColor" strokeWidth="1.3" aria-hidden>
                   <path d={DOC} />
                 </svg>
-                <b style={{ fontSize: 13 }}>{t("Shared instructions")}</b>
+                <b>{t("Shared instructions")}</b>
                 <span className="grow" />
-                <span style={{ fontSize: 11.5, color: "var(--muted)" }}>{t("Markdown · Ctrl+S")}</span>
+                <span className="note">{t("Markdown · Ctrl+S")}</span>
               </div>
 
               {sets.map((s) => {
@@ -1461,19 +1405,12 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                         ? firstLine(s.savedBody)
                         : t("Empty");
                 return (
-                  <div key={s.id} style={{ borderTop: "1px solid var(--line)", padding: "10px 0" }}>
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 10,
-                        width: "100%",
-                        padding: "4px 2px",
-                      }}
-                    >
+                  <div key={s.id} className={`lib-set${open ? " open" : ""}${s.inUse ? " on" : ""}`}>
+                    <div className="lib-setrow">
                       <button
                         type="button"
-                        className="text"
+                        className={`lib-radio${s.inUse ? " on" : ""}`}
+                        disabled={s.inUse}
                         title={
                           s.inUse
                             ? t("The agents switched on below read this set")
@@ -1483,105 +1420,46 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                         onClick={(e) => {
                           e.stopPropagation();
                           if (!s.inUse) switchAgentsTo(s.id);
-                        }}
-                        style={{
-                          width: 18,
-                          height: 18,
-                          padding: 0,
-                          border: 0,
-                          background: "transparent",
-                          cursor: s.inUse ? "default" : "pointer",
-                          flex: "none",
-                          display: "grid",
-                          placeItems: "center",
-                        }}
-                      >
-                        <span
-                          aria-hidden
-                          style={{
-                            width: 14,
-                            height: 14,
-                            borderRadius: "50%",
-                            border: `2px solid ${s.inUse ? "var(--accent)" : "var(--line)"}`,
-                            boxShadow: s.inUse ? "inset 0 0 0 3px var(--card)" : undefined,
-                            background: s.inUse ? "var(--accent)" : "transparent",
-                            display: "block",
-                          }}
-                        />
+                        }}>
+                        <i aria-hidden />
                       </button>
                       <button
                         type="button"
-                        className="text"
+                        className="lib-setname"
                         title={s.name}
                         onClick={() => {
                           setOpenId(open ? null : s.id);
                           setInstRemoveAsk(null);
                         }}
-                        aria-expanded={open}
-                        style={{
-                          flex: 1,
-                          minWidth: 0,
-                          textAlign: "left",
-                          padding: 0,
-                          background: "transparent",
-                          border: 0,
-                          cursor: "pointer",
-                          font: "inherit",
-                        }}
-                      >
-                        <b style={{ display: "block", fontSize: 13, fontWeight: 560 }}>{s.name}</b>
-                        <small style={{ color: "var(--muted)" }}>{rowSub}</small>
+                        aria-expanded={open}>
+                        <b>{s.name}</b>
+                        <small>{rowSub}</small>
                       </button>
                       {setDirtyLocal && !open ? (
-                        <span
-                          style={{
-                            fontSize: 11,
-                            fontWeight: 560,
-                            padding: "1px 8px",
-                            borderRadius: 999,
-                            background: "var(--amber-soft, #fbf0df)",
-                            color: "var(--amber, #b45309)",
-                            flex: "none",
-                          }}
-                        >
-                          {t("Not saved yet")}
-                        </span>
+                        <span className="lib-tag warn">{t("Not saved yet")}</span>
                       ) : null}
                       {s.inUse ? (
-                        <span
-                          title={t("The agents switched on below read this set")}
-                          style={{
-                            fontSize: 11,
-                            fontWeight: 560,
-                            padding: "1px 8px",
-                            borderRadius: 999,
-                            border: "1px solid var(--line)",
-                            color: "var(--fg-2)",
-                            flex: "none",
-                          }}
-                        >
+                        <span className="lib-tag agents" title={t("The agents switched on below read this set")}>
                           {t("In use")}
                         </span>
                       ) : null}
                       <button
                         type="button"
-                        className="text"
+                        className="lib-chev"
                         aria-label={open ? t("Collapse") : t("Expand")}
                         onClick={() => {
                           setOpenId(open ? null : s.id);
                           setInstRemoveAsk(null);
-                        }}
-                        style={{ width: 24, height: 24, padding: 0, border: 0, background: "transparent", color: "var(--muted)", flex: "none" }}
-                      >
-                        <svg viewBox="0 0 12 12" width={11} height={11} aria-hidden style={{ transform: open ? "rotate(180deg)" : undefined, transition: "transform .15s var(--ease)" }}>
+                        }}>
+                        <svg viewBox="0 0 12 12" width={11} height={11} aria-hidden>
                           <path d="M3 4.5 6 7.5 9 4.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
                         </svg>
                       </button>
                     </div>
                     {open ? (
-                      <div style={{ marginTop: 8, display: "grid", gap: 8, animation: "fade-in .18s var(--ease)" }}>
+                      <div className="lib-detail">
                         {s.file ? (
-                          <div className="note" style={{ fontSize: 12, color: "var(--muted)" }}>
+                          <div className="note">
                             {t("Kept in")} <code>{s.file}</code>
                           </div>
                         ) : null}
@@ -1610,9 +1488,9 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                           onFocus={(e) => {
                             e.currentTarget.setAttribute("data-saved-name", s.name);
                           }}
-                          style={{ maxWidth: 220 }}
+                         
                         />
-                        <textarea
+                        <textarea className="lib-text"
                           rows={6}
                           value={s.body}
                           placeholder={t("What every agent should know — how you like code written, the stack you work in, the commands that run your tests…")}
@@ -1624,36 +1502,13 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                             e.stopPropagation();
                             // NOTES 153: Escape in textarea does NOT discard
                           }}
-                          style={{
-                            width: "100%",
-                            resize: "vertical",
-                            minHeight: 120,
-                            font: "inherit",
-                            fontSize: 13,
-                            lineHeight: 1.45,
-                            padding: "10px 12px",
-                            borderRadius: 10,
-                            border: "1px solid var(--line)",
-                            background: "var(--bg)",
-                            color: "var(--fg)",
-                          }}
+                          
                         />
-                        <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
+                        <div>
                           {!s.inUse ? (
                             <button
                               type="button"
-                              className="text"
-                              onClick={() => switchAgentsTo(s.id)}
-                              style={{
-                                height: 28,
-                                padding: "0 12px",
-                                borderRadius: 8,
-                                border: "1px solid var(--line)",
-                                background: "var(--card)",
-                                font: "inherit",
-                                fontSize: 12.5,
-                              }}
-                            >
+                              className="text" onClick={() => switchAgentsTo(s.id)}>
                               {t("Switch the agents to this set")}
                             </button>
                           ) : null}
@@ -1662,26 +1517,14 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                               <>
                                 <button
                                   type="button"
-                                  className="text"
-                                  disabled={s.inUse}
+                                  className="text" disabled={s.inUse}
                                   onClick={() => {
                                     if (s.inUse) return;
                                     setSets((list) => list.filter((x) => x.id !== s.id));
                                     setInstRemoveAsk(null);
                                     if (openId === s.id) setOpenId(null);
                                     onStatus?.(t("{name} removed", { name: s.name }), "ok");
-                                  }}
-                                  style={{
-                                    height: 28,
-                                    padding: "0 12px",
-                                    borderRadius: 8,
-                                    border: "1px solid transparent",
-                                    background: "var(--red)",
-                                    color: "#fff",
-                                    font: "inherit",
-                                    fontSize: 12.5,
-                                  }}
-                                >
+                                  }}>
                                   {t("Remove {name} and its text", { name: s.name })}
                                 </button>
                                 <button type="button" className="text" onClick={() => setInstRemoveAsk(null)}>
@@ -1691,8 +1534,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                             ) : (
                               <button
                                 type="button"
-                                className="text"
-                                disabled={s.inUse}
+                                className="text" disabled={s.inUse}
                                 title={
                                   s.inUse
                                     ? t("Switch the agents to another set before removing this one")
@@ -1701,20 +1543,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                                 onClick={() => {
                                   if (s.inUse) return;
                                   setInstRemoveAsk(s.id);
-                                }}
-                                style={{
-                                  height: 28,
-                                  padding: "0 12px",
-                                  borderRadius: 8,
-                                  border: "1px solid var(--line)",
-                                  background: s.inUse ? "color-mix(in srgb, var(--red) 12%, var(--card))" : "var(--card)",
-                                  color: s.inUse ? "color-mix(in srgb, var(--red) 70%, var(--fg))" : "var(--fg)",
-                                  font: "inherit",
-                                  fontSize: 12.5,
-                                  cursor: s.inUse ? "default" : "pointer",
-                                  opacity: s.inUse ? 0.85 : 1,
-                                }}
-                              >
+                                }}>
                                 {t("Remove")}
                               </button>
                             )
@@ -1727,7 +1556,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
               })}
 
               {addingSet ? (
-                <div style={{ marginTop: 10, display: "grid", gap: 8, animation: "pop-in .28s var(--ease)" }}>
+                <div>
                   <input
                     ref={newNameRef}
                     type="text"
@@ -1765,27 +1594,23 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                   <div className="bar">
                     <button
                       type="button"
-                      className="text"
-                      onClick={() => {
+                      className="text" onClick={() => {
                         // Keep in a file… fills AGENTS.md + path (inline, not a picker)
                         setFileMode(true);
                         setNewName("AGENTS.md");
                         setFilePath("~/.agents/AGENTS.md");
-                      }}
-                    >
+                      }}>
                       {t("Keep in a file…")}
                     </button>
                     <span className="grow" />
                     <button
                       type="button"
-                      className="text"
-                      onClick={() => {
+                      className="text" onClick={() => {
                         setAddingSet(false);
                         setFileMode(false);
                         setNewName("");
                         setFilePath("~/.agents/AGENTS.md");
-                      }}
-                    >
+                      }}>
                       {t("Cancel")}
                     </button>
                     <button type="button" className="text primary" onClick={addSet}>
@@ -1794,7 +1619,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                   </div>
                 </div>
               ) : (
-                <button type="button" className="rt-gadd" style={{ marginTop: 8 }} onClick={() => setAddingSet(true)}>
+                <button type="button" className="rt-gadd" onClick={() => setAddingSet(true)}>
                   <svg viewBox="0 0 16 16" width={11} height={11} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden>
                     <path d="M8 3.5v9M3.5 8h9" />
                   </svg>
@@ -1805,73 +1630,45 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
 
             {instDirty && tab === "instructions" ? (
               <div
-                className="lib-inst-bar"
-                style={{
-                  position: "sticky",
-                  bottom: 8,
-                  zIndex: 5,
-                  marginTop: 12,
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 10,
-                  padding: "8px 12px",
-                  borderRadius: 999,
-                  border: "1px solid var(--line)",
-                  background: "var(--card)",
-                  boxShadow: "0 6px 20px rgba(20,22,30,.12)",
-                }}
-              >
-                <span style={{ width: 7, height: 7, borderRadius: "50%", background: "var(--fg)", flex: "none" }} />
-                <span style={{ fontSize: 12.5, fontWeight: 500 }}>{t("Not saved yet")}</span>
+                className="lib-savebar lib-inst-bar">
+                <span />
+                <span>{t("Not saved yet")}</span>
                 <span className="grow" />
                 <button type="button" className="text" onClick={() => setInstDiscardOpen(true)}>
                   {t("Discard")}
                 </button>
                 <button
                   type="button"
-                  className="text primary"
-                  onClick={saveInstructions}
-                  style={{ background: "var(--accent)", color: "var(--accent-fg, #fff)", borderColor: "transparent", borderRadius: 999, padding: "0 14px", height: 28 }}
-                >
+                  className="text primary" onClick={saveInstructions}>
                   {t("Save")}
                 </button>
               </div>
             ) : null}
 
-            <div style={{ marginTop: 22 }}>
-              <div className="row-head" style={{ marginBottom: 6 }}>
-                <span className="label" style={{ letterSpacing: ".04em", fontSize: 11, color: "var(--muted)", fontWeight: 600 }}>
+            <div>
+              <div className="row-head lib-cardhead">
+                <span className="label">
                   {t("AGENTS")}
                 </span>
               </div>
-              <p style={{ margin: "0 0 8px", fontSize: 12.5, color: "var(--muted)", lineHeight: 1.45 }}>
+              <p>
                 {t("They read {name} · magpie writes its part between two marker lines — the rest of each file stays yours.", {
                   name: sets.find((x) => x.inUse)?.name || openSet?.name || "Default",
                 })}
               </p>
-              <div className="card" style={{ padding: "14px 16px", border: "1px solid var(--line)", borderRadius: 10, background: "var(--card-2, var(--bg))", color: "var(--muted)", fontSize: 13, lineHeight: 1.45 }}>
+              <div className="card lib-card">
                 {t("None of your agents reads a user-wide instructions file magpie knows.")}
               </div>
-              <p style={{ margin: "8px 0 0", fontSize: 12, color: "var(--faint, var(--muted))" }}>{t("Cursor keeps no user-wide instructions file.")}</p>
+              <p>{t("Cursor keeps no user-wide instructions file.")}</p>
             </div>
           </>
         ) : tab === "mcp" ? (
           <>
             {mcpServers.length === 0 ? (
-              <div
-                style={{
-                  border: "1px dashed var(--line)",
-                  borderRadius: 12,
-                  padding: "28px 16px",
-                  textAlign: "center",
-                  color: "var(--muted)",
-                  fontSize: 13,
-                  lineHeight: 1.45,
-                }}
-              >
-                <p style={{ margin: "0 0 6px", fontWeight: 500, color: "var(--fg)" }}>{t("No servers in the library yet")}</p>
-                <p style={{ margin: "0 0 12px" }}>{t("Paste a server's JSON from its README, or fill it in.")}</p>
-                <button type="button" className="rt-gadd" style={{ margin: "0 auto" }} onClick={openMcpEditor}>
+              <div>
+                <p>{t("No servers in the library yet")}</p>
+                <p>{t("Paste a server's JSON from its README, or fill it in.")}</p>
+                <button type="button" className="rt-gadd" onClick={openMcpEditor}>
                   <svg viewBox="0 0 16 16" width={11} height={11} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden>
                     <path d="M8 3.5v9M3.5 8h9" />
                   </svg>
@@ -1879,38 +1676,26 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                 </button>
               </div>
             ) : (
-              <div style={{ marginBottom: 16 }}>
-                <div className="row-head" style={{ marginBottom: 8, display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-                  <span className="label" style={{ letterSpacing: ".04em", fontSize: 11, color: "var(--muted)", fontWeight: 600 }}>{t("In the library")}</span>
+              <div>
+                <div className="row-head lib-cardhead">
+                  <span className="label">{t("In the library")}</span>
                   <span className="grow" />
                   {mcpServers.length >= 2 ? (
                     <>
-                      <div className="segs" style={{ display: "inline-flex", gap: 2, padding: 2, borderRadius: 9, background: "var(--bg)", border: "1px solid var(--line)" }}>
+                      <div className="segs">
                         {([["az", "A→Z"], ["za", "Z→A"]] as const).map(([id, lab]) => (
                           <button
                             key={id}
                             type="button"
                             className={`opt${mcpSort === id ? " on" : ""}`}
-                            onClick={() => setMcpSort(id)}
-                            style={{
-                              height: 26,
-                              padding: "0 10px",
-                              borderRadius: 7,
-                              border: mcpSort === id ? "1px solid var(--line)" : "1px solid transparent",
-                              background: mcpSort === id ? "var(--card)" : "transparent",
-                              font: "inherit",
-                              fontSize: 12,
-                              cursor: "pointer",
-                            }}
-                          >
+                            onClick={() => setMcpSort(id)}>
                             {lab}
                           </button>
                         ))}
                       </div>
                       <button
                         type="button"
-                        className="text action"
-                        title={t("Pick some servers and turn them on or off together")}
+                        className="text action" title={t("Pick some servers and turn them on or off together")}
                         onClick={() => {
                           if (mcpSelectMode) {
                             setMcpSelectMode(false);
@@ -1920,14 +1705,12 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                             setMcpSelectMode(true);
                             setMcpSelected(new Set());
                           }
-                        }}
-                      >
+                        }}>
                         {mcpSelectMode ? t("Done") : t("Select")}
                       </button>
                       <button
                         type="button"
-                        className="text action"
-                        onClick={() => {
+                        className="text action" onClick={() => {
                           setMcpServers((list) =>
                             list.map((x) => ({
                               ...x,
@@ -1938,8 +1721,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                           mcpServers.forEach((s) => {
                             if (!s.agents.includes("cursor")) runMcpHealth(s.id, true);
                           });
-                        }}
-                      >
+                        }}>
                         {t("Turn all on")}
                       </button>
                       <button type="button" className="text action" onClick={() => setMcpTurnAllOffAsk(true)}>
@@ -1951,11 +1733,8 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                   {mcpServers.length >= 2 ? (
                     <button
                       type="button"
-                      className="text"
-                      title={t("Take all {n} servers out of the library", { n: mcpServers.length })}
-                      onClick={() => setMcpRemoveAllAsk(true)}
-                      style={{ color: "var(--red)" }}
-                    >
+                      className="text" title={t("Take all {n} servers out of the library", { n: mcpServers.length })}
+                      onClick={() => setMcpRemoveAllAsk(true)}>
                       {t("Remove all")}
                     </button>
                   ) : null}
@@ -2005,16 +1784,8 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                   return (
                     <div
                       key={s.id}
-                      className="card"
-                      style={{
-                        border: "1px solid var(--line)",
-                        borderRadius: 12,
-                        padding: "10px 12px",
-                        marginBottom: 8,
-                        background: mcpSelectMode && selected ? "color-mix(in srgb, var(--accent) 8%, var(--card))" : "var(--card)",
-                      }}
-                    >
-                      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                      className={`card lib-mcp${mcpSelectMode && selected ? " selected" : ""}`} >
+                      <div>
                         {mcpSelectMode ? (
                           <input
                             type="checkbox"
@@ -2027,14 +1798,14 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                                 return next;
                               });
                             }}
-                            style={{ width: 16, height: 16, accentColor: "var(--accent)" }}
+                           
                           />
                         ) : null}
-                        <span aria-hidden style={{ fontSize: 14, color: "var(--muted)" }}>{s.transport === "stdio" ? ">_ " : "🌐"}</span>
-                        <div style={{ flex: 1, minWidth: 0 }}>
-                          <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+                        <span aria-hidden>{s.transport === "stdio" ? ">_ " : "🌐"}</span>
+                        <div>
+                          <div>
                             <b
-                              style={{ fontSize: 13, cursor: mcpSelectMode ? "default" : "pointer" }}
+                              className={`name${mcpSelectMode ? " plain" : " click"}`}
                               onClick={() => {
                                 if (mcpSelectMode) return;
                                 setMcpEditId(s.id);
@@ -2048,52 +1819,31 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                                 setMcpEditor(d);
                                 setMcpSnap(JSON.stringify(d));
                                 setMcpSignWaiting(false);
-                              }}
-                            >
+                              }}>
                               {s.name}
                             </b>
                             <button
                                 type="button"
-                                className="text"
                                 title={healthTitle}
+                                className={`lib-health${displayHealth === "checking" ? " checking" : ""}`}
+                                style={{ color: healthColor }}
                                 onClick={() => {
                                   if (displayHealth === "tools") {
                                     setMcpServers((list) => list.map((x) => (x.id === s.id ? { ...x, toolsOpen: !x.toolsOpen } : x)));
                                   } else {
                                     runMcpHealth(s.id, displayHealth === "timeout" || displayHealth === "unset" || displayHealth === "idle");
                                   }
-                                }}
-                                style={{
-                                  display: "inline-flex",
-                                  alignItems: "center",
-                                  gap: 5,
-                                  height: 22,
-                                  padding: "0 2px",
-                                  border: 0,
-                                  background: "transparent",
-                                  color: healthColor,
-                                  font: "inherit",
-                                  fontSize: 12,
-                                  cursor: "pointer",
-                                }}
-                              >
+                                }}>
                                 <span
-                                  style={{
-                                    width: 7,
-                                    height: 7,
-                                    borderRadius: "50%",
-                                    background: healthColor,
-                                    opacity: displayHealth === "checking" ? 0.55 : 1,
-                                    animation: displayHealth === "checking" ? "pm-pulse 1s ease-in-out infinite" : undefined,
-                                  }}
+                                  className="dot" aria-hidden
                                 />
                                 {healthLabel}
                                 {displayHealth === "tools" ? (
-                                  <span style={{ display: "inline-block", transform: s.toolsOpen ? "rotate(-90deg)" : "rotate(90deg)", transition: "transform .15s" }}>›</span>
+                                  <span className={`chev${s.toolsOpen ? " open" : ""}`}>›</span>
                                 ) : null}
                               </button>
                           </div>
-                          <div style={{ fontSize: 12, color: "var(--muted)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                          <div>
                             {s.transport === "stdio" ? s.command || "—" : s.url || "—"}
                           </div>
                         </div>
@@ -2128,30 +1878,14 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                         ) : null}
                       </div>
                       {s.toolsOpen && displayHealth === "tools" ? (
-                        <div
-                          style={{
-                            marginTop: 10,
-                            padding: "10px 12px",
-                            borderRadius: 10,
-                            border: "1px solid var(--line)",
-                            background: "var(--card-2, var(--bg))",
-                          }}
-                        >
+                        <div>
                           {s.tools.map((tool) => (
                             <div
                               key={tool.id}
-                              style={{
-                                display: "flex",
-                                alignItems: "center",
-                                gap: 10,
-                                padding: "8px 0",
-                                borderBottom: "1px solid var(--line)",
-                                opacity: tool.on ? 1 : 0.55,
-                              }}
-                            >
-                              <div style={{ flex: 1, minWidth: 0 }}>
-                                <b style={{ fontSize: 13 }}>{tool.name}</b>
-                                <div style={{ fontSize: 12, color: "var(--muted)" }}>{tool.desc}</div>
+                              className={`lib-tool${tool.on ? "" : " off"}`}>
+                              <div>
+                                <b>{tool.name}</b>
+                                <div>{tool.desc}</div>
                               </div>
                               <button
                                 type="button"
@@ -2171,18 +1905,17 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                                     ),
                                   );
                                   onStatus?.(t("Tools of {name} saved", { name: s.name }), "ok");
-                                }}
-                              >
+                                }}>
                                 <i />
                               </button>
                             </div>
                           ))}
                           {hasCursor ? (
-                            <p style={{ margin: "8px 0 0", fontSize: 12, color: "var(--muted)", lineHeight: 1.4 }}>
+                            <p>
                               {t("Cursor can't turn off single tools: they get every tool of the server.")}
                             </p>
                           ) : null}
-                          <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 8 }}>
+                          <div>
                             <button type="button" className="text" onClick={() => runMcpHealth(s.id, true)}>
                               {t("Check again")}
                             </button>
@@ -2193,24 +1926,8 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                   );
                 })}
                 {mcpSelectMode ? (
-                  <div
-                    style={{
-                      position: "sticky",
-                      bottom: 8,
-                      zIndex: 6,
-                      marginTop: 10,
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 10,
-                      flexWrap: "wrap",
-                      padding: "8px 12px",
-                      borderRadius: 999,
-                      border: "1px solid var(--line)",
-                      background: "var(--card)",
-                      boxShadow: "0 6px 20px rgba(20,22,30,.12)",
-                    }}
-                  >
-                    <label style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 12.5, cursor: "pointer" }}>
+                  <div>
+                    <label>
                       <input
                         type="checkbox"
                         checked={mcpSelected.size === mcpServers.length && mcpServers.length > 0}
@@ -2218,14 +1935,14 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                           if (mcpSelected.size === mcpServers.length) setMcpSelected(new Set());
                           else setMcpSelected(new Set(mcpServers.map((x) => x.id)));
                         }}
-                        style={{ width: 16, height: 16, accentColor: "var(--accent)" }}
+                       
                       />
                       {mcpSelected.size === 0
                         ? t("All {n}", { n: mcpServers.length })
                         : t("{n} selected", { n: mcpSelected.size })}
                     </label>
                     {mcpSelected.size === 0 ? (
-                      <span style={{ fontSize: 12.5, color: "var(--muted)" }}>{t("Pick servers to turn them on or off together")}</span>
+                      <span>{t("Pick servers to turn them on or off together")}</span>
                     ) : (
                       <>
                         <LibChip
@@ -2246,41 +1963,24 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                             ids.forEach((id) => runMcpHealth(id, true));
                           }}
                         />
-                        <div style={{ position: "relative" }}>
+                        <div>
                           <button
                             type="button"
-                            className="text action"
-                            title={t("Copy these servers as an agent's project file has them, to paste into a project yourself")}
-                            onClick={() => setMcpCopyMenu((m) => (m === "bar" ? null : "bar"))}
-                          >
+                            className="text action" title={t("Copy these servers as an agent's project file has them, to paste into a project yourself")}
+                            onClick={() => setMcpCopyMenu((m) => (m === "bar" ? null : "bar"))}>
                             {mcpCopyFlash && mcpCopyMenu === null ? "✓ " : ""}
                             {t("Copy config…")}
                           </button>
                           {mcpCopyMenu === "bar" ? (
                             <div
-                              style={{
-                                position: "absolute",
-                                bottom: "100%",
-                                left: 0,
-                                marginBottom: 6,
-                                minWidth: 220,
-                                padding: "6px 0",
-                                borderRadius: 10,
-                                border: "1px solid var(--line)",
-                                background: "var(--card)",
-                                boxShadow: "0 10px 28px rgba(20,22,30,.16)",
-                                zIndex: 8,
-                              }}
-                            >
-                              <div style={{ padding: "4px 12px 6px", fontSize: 11, color: "var(--muted)", fontWeight: 600 }}>
+                              className="pop">
+                              <div>
                                 {t("Copy as an agent's project file")}
                               </div>
                               <button
                                 type="button"
                                 className="text"
-                                style={{ display: "block", width: "100%", textAlign: "left", padding: "8px 12px", border: 0, background: "transparent", font: "inherit", fontSize: 13, cursor: "pointer" }}
-                                onClick={() => copyMcpConfig([...mcpSelected])}
-                              >
+                                onClick={() => copyMcpConfig([...mcpSelected])}>
                                 Cursor
                               </button>
                             </div>
@@ -2288,17 +1988,12 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                         </div>
                         <button
                           type="button"
-                          className="text"
-                          style={{ color: "var(--red)" }}
-                          onClick={() => setMcpRemoveSelectedAsk(true)}
-                        >
+                          className="text" onClick={() => setMcpRemoveSelectedAsk(true)}>
                           {t("Remove…")}
                         </button>
                         <button
                           type="button"
-                          className="text"
-                          onClick={() => setMcpSelected(new Set())}
-                        >
+                          className="text" onClick={() => setMcpSelected(new Set())}>
                           {t("Clear")}
                         </button>
                       </>
@@ -2306,19 +2001,17 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                     <span className="grow" />
                     <button
                       type="button"
-                      className="text"
-                      onClick={() => {
+                      className="text" onClick={() => {
                         setMcpSelectMode(false);
                         setMcpSelected(new Set());
                         setMcpCopyMenu(null);
-                      }}
-                    >
+                      }}>
                       {t("Done")}
                     </button>
                   </div>
                 ) : null}
 
-                <button type="button" className="rt-gadd" style={{ marginTop: 4 }} onClick={openMcpEditor}>
+                <button type="button" className="rt-gadd" onClick={openMcpEditor}>
                   <svg viewBox="0 0 16 16" width={11} height={11} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden>
                     <path d="M8 3.5v9M3.5 8h9" />
                   </svg>
@@ -2326,9 +2019,9 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                 </button>
 
                 {/* MCP In projects */}
-                <div style={{ marginTop: 18 }}>
-                  <div className="row-head" style={{ marginBottom: 6, display: "flex", alignItems: "center", gap: 8 }}>
-                    <span className="label" style={{ letterSpacing: ".04em", fontSize: 11, color: "var(--muted)", fontWeight: 600 }}>{t("In projects")}</span>
+                <div>
+                  <div className="row-head lib-cardhead">
+                    <span className="label">{t("In projects")}</span>
                     <span className="grow" />
                     {!mcpAddingProject ? (
                       <button type="button" className="text action lib-updall" onClick={() => setMcpAddingProject({ dir: "" })}>
@@ -2337,8 +2030,8 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                     ) : null}
                   </div>
                   {mcpAddingProject ? (
-                    <div className="list lib-card" style={{ padding: "10px 8px", border: "1px solid var(--line)", borderRadius: 12, marginBottom: 8 }}>
-                      <div style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center" }}>
+                    <div className="list lib-card">
+                      <div>
                         <span aria-hidden>📁</span>
                         <input
                           type="text"
@@ -2351,13 +2044,12 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                             e.stopPropagation();
                             if (e.key === "Escape") setMcpAddingProject(null);
                           }}
-                          style={{ flex: "1 1 180px", minWidth: 0 }}
+                         
                         />
                         <button type="button" className="text" disabled>{t("Choose…")}</button>
                         <button
                           type="button"
-                          className="text action"
-                          disabled={!!mcpAddingProject.busy}
+                          className="text action" disabled={!!mcpAddingProject.busy}
                           onClick={() => {
                             const dir = mcpAddingProject.dir.trim();
                             if (!dir || mcpAddingProject.busy) return;
@@ -2372,8 +2064,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                               setMcpAddingProject(null);
                               onStatus?.(t("{name} added — pick the servers it gets", { name }), "ok");
                             }, 350);
-                          }}
-                        >
+                          }}>
                           {t("Add")}
                         </button>
                         <button type="button" className="text" onClick={() => setMcpAddingProject(null)}>{t("Cancel")}</button>
@@ -2382,29 +2073,26 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                   ) : null}
                   {mcpProjects.length ? (
                     mcpProjects.map((pr) => (
-                      <div key={pr.dir} className="card" style={{ border: "1px solid var(--line)", borderRadius: 12, padding: "10px 12px", marginBottom: 8 }}>
-                        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                          <button type="button" className="text" onClick={() => setMcpProjects((list) => list.map((x) => (x.dir === pr.dir ? { ...x, open: !x.open } : x)))} style={{ border: 0, background: "transparent", padding: 0, font: "inherit", textAlign: "left", flex: 1, cursor: "pointer" }}>
-                            <b style={{ fontSize: 13 }}>{pr.name}</b>
-                            <div style={{ fontSize: 12, color: "var(--muted)" }}>{pr.dir}</div>
+                      <div key={pr.dir} className="card">
+                        <div>
+                          <button type="button" className="text" onClick={() => setMcpProjects((list) => list.map((x) => (x.dir === pr.dir ? { ...x, open: !x.open } : x)))}>
+                            <b>{pr.name}</b>
+                            <div>{pr.dir}</div>
                           </button>
                           <button
                             type="button"
-                            className="text"
-                            title={t("Remove the project")}
-                            onClick={() => setMcpProjectRemove({ dir: pr.dir, name: pr.name })}
-                            style={{ width: 28, height: 28, padding: 0 }}
-                          >
+                            className="text" title={t("Remove the project")}
+                            onClick={() => setMcpProjectRemove({ dir: pr.dir, name: pr.name })}>
                             🗑
                           </button>
                         </div>
                         {pr.open ? (
-                          <div style={{ marginTop: 10 }}>
+                          <div>
                             {mcpServers.map((srv) => {
                               const on = (pr.placed[srv.id] || []).includes("cursor");
                               return (
-                                <div key={srv.id} style={{ display: "flex", alignItems: "center", gap: 8, padding: "6px 0", borderTop: "1px solid var(--line)" }}>
-                                  <b style={{ flex: 1, fontSize: 13 }}>{srv.name}</b>
+                                <div key={srv.id}>
+                                  <b>{srv.name}</b>
                                   <LibChip
                                     iconOnly
                                     on={on}
@@ -2433,7 +2121,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                                 </div>
                               );
                             })}
-                            <p style={{ margin: "8px 0 0", fontSize: 12, color: "var(--muted)", lineHeight: 1.45 }}>
+                            <p>
                               {t("Written into .cursor/mcp.json of the project, leaving the rest of each file as it is. Claude Code asks before it starts a project's servers; Codex reads .codex/config.toml, and Pi .pi/mcp.json, only in a project you trust.")}
                             </p>
                           </div>
@@ -2441,7 +2129,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                       </div>
                     ))
                   ) : !mcpAddingProject ? (
-                    <p style={{ margin: 0, fontSize: 12.5, color: "var(--muted)", lineHeight: 1.45 }}>
+                    <p>
                       {t("Give a project's agents some of these servers as the project's own: magpie writes them into its .cursor/mcp.json, leaving the rest of each file as it is.")}
                     </p>
                   ) : null}
@@ -2449,9 +2137,9 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
               </div>
             )}
 
-            <div id="libDiscover" style={{ marginTop: 18 }}>
-              <div className="row-head" style={{ marginBottom: 8 }}>
-                <span className="label" style={{ letterSpacing: ".04em", fontSize: 11, color: "var(--muted)", fontWeight: 600 }}>
+            <div id="libDiscover">
+              <div className="row-head lib-cardhead">
+                <span className="label">
                   {t("DISCOVER")}
                 </span>
               </div>
@@ -2460,24 +2148,22 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                 value={mcpQ}
                 placeholder={t("Search MCP servers — GitHub, Postgres, Figma…")}
                 onChange={(e) => setMcpQ(e.target.value)}
-                style={{ width: "100%", maxWidth: 420, marginBottom: 12 }}
+               
               />
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: 10 }}>
+              <div>
                 {mcpHits.map((c) => (
-                  <div key={c.id} className="card" style={{ padding: "12px 12px 10px", border: "1px solid var(--line)", borderRadius: 12, animation: "fade-in .18s var(--ease)", display: "flex", flexDirection: "column", gap: 6, minHeight: 128 }}>
-                    <div style={{ display: "flex", alignItems: "baseline", gap: 6 }}>
-                      <b style={{ fontSize: 13 }}>{c.name}</b>
+                  <div key={c.id} className="card">
+                    <div>
+                      <b>{c.name}</b>
                       <span className="grow" />
-                      <span style={{ fontSize: 10.5, padding: "1px 7px", borderRadius: 999, border: "1px solid var(--line)", color: "var(--muted)" }}>{c.tag}</span>
+                      <span>{c.tag}</span>
                     </div>
-                    <small style={{ color: "var(--muted)", fontSize: 11.5 }}>By {c.by}</small>
-                    <p style={{ margin: 0, fontSize: 12, color: "var(--fg-2)", lineHeight: 1.4, flex: 1 }}>{c.desc}</p>
+                    <small>By {c.by}</small>
+                    <p>{c.desc}</p>
                     <div>
                       <button
                         type="button"
-                        className="text primary"
-                        style={{ height: 26, fontSize: 12 }}
-                        onClick={() => {
+                        className="text primary" onClick={() => {
                           if ((c as { sheet?: boolean }).sheet) {
                             setImageSheet(true);
                             return;
@@ -2502,8 +2188,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                           ]);
                           onStatus?.(t("Written to Cursor"), "ok");
                           window.setTimeout(() => runMcpHealth(id, true), 0);
-                        }}
-                      >
+                        }}>
                         {c.addDots ? t("Add…") : t("Add")}
                       </button>
                     </div>
@@ -2515,11 +2200,11 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
 
         ) : tab === "skills" ? (
           <>
-            <p style={{ margin: "0 0 12px", fontSize: 12.5, color: "var(--muted)", lineHeight: 1.45 }}>
+            <p>
               {t("A skill is a folder with a SKILL.md an agent loads when it's needed. The library keeps each one once and links it into the agents you pick.")}
             </p>
-            <div className="card lib-install" style={{ padding: "12px 14px", border: "1px solid var(--line)", borderRadius: 12, marginBottom: 16 }}>
-              <div className="lib-find" style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <div className="card lib-card lib-install">
+              <div className="lib-find">
                 <span className={`lib-icon${skillLooking ? " busy" : ""}`} aria-hidden>
                   <svg viewBox="0 0 16 16" width={14} height={14} fill="none" stroke="currentColor" strokeWidth="1.3">
                     <path d={SEARCH} />
@@ -2538,20 +2223,20 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                       setSkillPick(new Set());
                     }
                   }}
-                  style={{ flex: 1, minWidth: 0 }}
+                 
                 />
                 <button type="button" className={`text action${skillLooking ? " busy" : ""}`} disabled={skillLooking || !skillSource.trim()} onClick={findSkills}>
                   {skillLooking ? t("Looking…") : t("Find skills")}
                 </button>
               </div>
               {skillProbe?.empty ? (
-                <div style={{ marginTop: 10, fontSize: 12.5, color: "var(--muted)" }}>
+                <div>
                   {t("No skills there — a skill is a folder with a SKILL.md in it.")}
                 </div>
               ) : null}
               {skillProbe?.mock ? (
-                <div className="lib-probe" style={{ marginTop: 12 }}>
-                  <div className="row-head" style={{ marginBottom: 8, fontSize: 12, color: "var(--muted)", display: "flex", alignItems: "center", gap: 8 }}>
+                <div className="lib-probe">
+                  <div className="row-head lib-cardhead">
                     <span>
                       {skillProbe.mock.length === 1
                         ? t("1 skill in {src}", { src: skillProbe.source })
@@ -2571,16 +2256,14 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                       return (
                         <button
                           type="button"
-                          className="text"
-                          onClick={() => {
+                          className="text" onClick={() => {
                             setSkillPick((prev) => {
                               const next = new Set(prev);
                               if (allOn) freshVis.forEach((m) => next.delete(m.path));
                               else freshVis.forEach((m) => next.add(m.path));
                               return next;
                             });
-                          }}
-                        >
+                          }}>
                           {allOn ? t("Select none") : t("Select all")}
                         </button>
                       );
@@ -2593,11 +2276,11 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                       placeholder={t("Filter…")}
                       onChange={(e) => setProbeFilter(e.target.value)}
                       onKeyDown={(e) => e.stopPropagation()}
-                      style={{ width: "100%", maxWidth: 320, marginBottom: 8 }}
+                     
                     />
                   ) : null}
                   {(skillProbe.left || []).map((x) => (
-                    <div key={x.path} className="lib-none lib-left" style={{ marginBottom: 8, fontSize: 12.5, color: "var(--muted)" }}>
+                    <div key={x.path} className="lib-none lib-left">
                       {t("{name} is too big to install: {size}, over the {limit} a skill may be", {
                         name: x.path.split("/").pop() || skillProbe.source,
                         size: `${Math.round(x.size / 1048576)} MB`,
@@ -2605,7 +2288,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                       })}
                     </div>
                   ))}
-                  <div className="lib-picks" style={{ maxHeight: 220, overflow: "auto" }}>
+                  <div className="lib-picks">
                     {skillProbe.mock
                       .filter((m) => {
                         const q = probeFilter.trim().toLowerCase();
@@ -2615,17 +2298,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                       .map((m) => (
                         <label
                           key={m.path}
-                          className={`lib-pick${m.have ? " dim" : ""}`}
-                          style={{
-                            display: "flex",
-                            gap: 8,
-                            alignItems: "flex-start",
-                            padding: "6px 0",
-                            borderTop: "1px solid var(--line)",
-                            cursor: m.have ? "default" : "pointer",
-                            opacity: m.have ? 0.55 : 1,
-                          }}
-                        >
+                          className={`lib-pick${m.have ? " dim" : ""}`}>
                           <input
                             type="checkbox"
                             checked={skillPick.has(m.path)}
@@ -2640,41 +2313,38 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                               });
                             }}
                           />
-                          <span className="who" style={{ flex: 1, minWidth: 0 }}>
-                            <b className="name" style={{ display: "block", fontSize: 13 }}>{m.name}</b>
-                            <small className="sub" style={{ color: "var(--muted)" }}>{m.desc}</small>
+                          <span className="who">
+                            <b className="name">{m.name}</b>
+                            <small className="sub">{m.desc}</small>
                           </span>
                           {m.have ? (
-                            <span className="tag" style={{ fontSize: 10.5, color: "var(--muted)", whiteSpace: "nowrap", marginTop: 2 }}>
+                            <span className="tag">
                               {t("in the library")}
                             </span>
                           ) : null}
                         </label>
                       ))}
                   </div>
-                  <div className="bar" style={{ display: "flex", gap: 8, marginTop: 10, alignItems: "center" }}>
-                    <span style={{ fontSize: 12, color: "var(--muted)" }}>{t("for")}</span>
+                  <div className="bar">
+                    <span>{t("for")}</span>
                     <LibChip on label="Cursor" onClick={() => {}} />
                     <span className="grow" />
                     <button
                       type="button"
-                      className="text"
-                      disabled={skillInstalling}
+                      className="text" disabled={skillInstalling}
                       onClick={() => {
                         if (skillInstalling) return;
                         setSkillProbe(null);
                         setSkillPick(new Set());
                         setProbeFilter("");
-                      }}
-                    >
+                      }}>
                       {t("Cancel")}
                     </button>
                     <button
                       type="button"
                       className={`text primary${skillInstalling ? " busy" : ""}`}
                       disabled={!skillPick.size || skillInstalling}
-                      onClick={installSkills}
-                    >
+                      onClick={installSkills}>
                       {skillInstalling
                         ? t("Installing…")
                         : skillPick.size === 0
@@ -2689,19 +2359,17 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
             </div>
 
             {skills.length === 0 ? (
-              <div style={{ padding: "8px 2px", color: "var(--muted)", fontSize: 13 }}>{t("No skills in the library yet — find some above.")}</div>
+              <div>{t("No skills in the library yet — find some above.")}</div>
             ) : (
               <>
-                <div style={{ marginTop: 14 }}>
-                  <div className="row-head" style={{ marginBottom: 6, display: "flex", alignItems: "center", gap: 8 }}>
-                    <span className="label" style={{ letterSpacing: ".04em", fontSize: 11, color: "var(--muted)", fontWeight: 600 }}>{t("In the library")}</span>
+                <div>
+                  <div className="row-head lib-cardhead">
+                    <span className="label">{t("In the library")}</span>
                     <span className="grow" />
                     <button
                       type="button"
-                      className="text action lib-updall lib-byagent"
-                      title={t("Turn every skill on or off for one agent")}
-                      onClick={() => setSkillsByAgentOpen(true)}
-                    >
+                      className="text action lib-updall lib-byagent" title={t("Turn every skill on or off for one agent")}
+                      onClick={() => setSkillsByAgentOpen(true)}>
                       {t("By agent")}
                     </button>
                     {skills.some((s) => s.kind === "github") ? (
@@ -2716,36 +2384,31 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                           setSkillChecking(false);
                           onStatus?.(t("Every skill is up to date"), "ok");
                         }, 680);
-                      }}
-                    >
+                      }}>
                       {skillChecking ? t("Checking…") : t("Check for updates")}
                     </button>
                     ) : null}
                   </div>
                   {skills.map((s) => (
-                    <div key={s.id} className="row lib-row lib-skill" style={{ display: "flex", gap: 8, alignItems: "flex-start", padding: "10px 4px", borderBottom: "1px solid var(--line)" }}>
-                      <div className="who" style={{ flex: 1, minWidth: 0 }}>
-                        <b className="name" style={{ fontSize: 13 }}>{s.name}</b>
-                        <div className="sub" style={{ fontSize: 12, color: "var(--muted)", lineHeight: 1.4 }}>{s.desc}</div>
+                    <div key={s.id} className="row lib-row lib-skill">
+                      <div className="who">
+                        <b className="name">{s.name}</b>
+                        <div className="sub">{s.desc}</div>
                         {s.kind === "github" ? (
-                          <div className="lib-src" style={{ fontSize: 11.5, marginTop: 2 }}>
+                          <div className="lib-src">
                             <a
-                              className="lib-srclink"
-                              href={`https://github.com/mattpocock/skills/tree/HEAD/skills/engineering/${s.name}`}
-                              onClick={(e) => { e.preventDefault(); onStatus?.(t("Demo: open GitHub"), "ok"); }}
-                              style={{ color: "var(--accent)", textDecoration: "none" }}
-                            >
+                              className="lib-srclink" href={`https://github.com/mattpocock/skills/tree/HEAD/skills/engineering/${s.name}`}
+                              onClick={(e) => { e.preventDefault(); onStatus?.(t("Demo: open GitHub"), "ok"); }}>
                               {`mattpocock/skills/tree/HEAD/skills/engineering/${s.name}`}
                             </a>
                           </div>
                         ) : null}
                       </div>
-                      <div className="lib-rowacts" style={{ display: "flex", gap: 4, alignItems: "center", flexShrink: 0 }}>
+                      <div className="lib-rowacts">
                         {s.kind === "github" ? (
                           <button
                             type="button"
-                            className="lib-icon text"
-                            title={
+                            className="lib-icon text" title={
                               t("Update from GitHub") +
                               "\n" +
                               t("Up to date with GitHub") +
@@ -2755,20 +2418,15 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                               "10/7/2026 · 954ee7f"
                             }
                             aria-label={t("Update from GitHub")}
-                            onClick={() => onStatus?.(t("{name} is up to date", { name: s.name }), "ok")}
-                            style={{ width: 28, height: 28, padding: 0, fontSize: 14, lineHeight: 1 }}
-                          >
+                            onClick={() => onStatus?.(t("{name} is up to date", { name: s.name }), "ok")}>
                             ↑
                           </button>
                         ) : null}
                         <button
                           type="button"
-                          className="lib-icon danger text"
-                          title={t("Remove")}
+                          className="lib-icon danger text" title={t("Remove")}
                           aria-label={t("Remove")}
-                          onClick={() => setSkillRemoveConfirm({ id: s.id, name: s.name })}
-                          style={{ width: 28, height: 28, padding: 0, fontSize: 14, lineHeight: 1, color: "var(--red)" }}
-                        >
+                          onClick={() => setSkillRemoveConfirm({ id: s.id, name: s.name })}>
                           🗑
                         </button>
                         <LibChip
@@ -2805,13 +2463,10 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                   ))}
                 </div>
                 {/* Magpie skillHowBar — CU 75–78 Links↔Copies + Saving… */}
-                <div className="lib-skillhow" style={{ marginTop: 14, display: "flex", flexWrap: "wrap", alignItems: "center", gap: 8 }}>
-                  <span className="label" style={{ letterSpacing: ".04em", fontSize: 11, color: "var(--muted)", fontWeight: 600 }}>{t("Give skills as")}</span>
+                <div className="lib-skillhow">
+                  <span className="label">{t("Give skills as")}</span>
                   <div
-                    className="segs"
-                    ref={setSkillHowSeg}
-                    style={{ display: "inline-flex", gap: 2, padding: 2, borderRadius: 999, border: "1px solid var(--line)", background: "var(--bg)", position: "relative" }}
-                  >
+                    className="segs" ref={setSkillHowSeg}>
                     {([["link", "Links"], ["copy", "Copies"]] as const).map(([id, lab]) => {
                       const saving = skillHowBusy === id;
                       const on = !skillHowBusy && skillHow === id;
@@ -2835,26 +2490,10 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                                 "ok",
                               );
                             }, 450);
-                          }}
-                          style={{
-                            height: 26,
-                            padding: "0 10px",
-                            borderRadius: 999,
-                            border: 0,
-                            background: on || saving ? "var(--card)" : "transparent",
-                            color: on || saving ? "var(--fg)" : "var(--muted)",
-                            font: "inherit",
-                            fontSize: 12,
-                            cursor: skillHowBusy ? "default" : "pointer",
-                            display: "inline-flex",
-                            alignItems: "center",
-                            gap: 5,
-                            zIndex: 1,
-                          }}
-                        >
+                          }}>
                           {saving ? (
                             <>
-                              <span className="spin" aria-hidden style={{ width: 11, height: 11, display: "inline-block" }} />
+                              <span className="spin" aria-hidden />
                               {t("Saving…")}
                             </>
                           ) : (
@@ -2867,24 +2506,24 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                   <button type="button" className="text action lib-updall lib-howagent" title={t("Give an agent its skills its own way")} disabled={!!skillHowBusy} onClick={() => { setAgentHow(""); setSkillHowOpen(true); }}>
                     {t("By agent")}
                   </button>
-                  <span style={{ fontSize: 12, color: "var(--muted)", flex: "1 1 220px" }}>
+                  <span className="note lib-skillhow-note">
                     {skillHow === "copy"
                       ? t("Each agent gets a folder of its own, made again when the library's skill changes; edits made in a copy are replaced.")
                       : t("Links follow the library's skill: an update reaches the agents at once.")}
                   </span>
                 </div>
-                <div style={{ marginTop: 16 }}>
-                  <div className="row-head" style={{ marginBottom: 6, display: "flex", alignItems: "center", gap: 8 }}>
-                    <span className="label" style={{ letterSpacing: ".04em", fontSize: 11, color: "var(--muted)", fontWeight: 600 }}>{t("In projects")}</span>
+                <div>
+                  <div className="row-head lib-cardhead">
+                    <span className="label">{t("In projects")}</span>
                     <span className="grow" />
                     {!addingProject ? (
                       <button type="button" className="text action lib-updall" onClick={() => setAddingProject({ dir: "" })}>{t("Add a project")}</button>
                     ) : null}
                   </div>
                   {addingProject ? (
-                    <div className="list lib-card lib-install" style={{ padding: "10px 8px", border: "1px solid var(--line)", borderRadius: 12, marginBottom: 8 }}>
-                      <div className="lib-find" style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center" }}>
-                        <span aria-hidden style={{ fontSize: 14, color: "var(--muted)" }}>📁</span>
+                    <div className="list lib-card lib-install">
+                      <div className="lib-find">
+                        <span aria-hidden>📁</span>
                         <input
                           ref={projectPathRef}
                           type="text"
@@ -2918,20 +2557,17 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                               }, 400);
                             }
                           }}
-                          style={{ flex: "1 1 180px", minWidth: 0 }}
+                         
                         />
                         <button
                           type="button"
-                          className="text"
-                          disabled={!!addingProject.busy}
-                          onClick={() => setChooseProjectOpen(true)}
-                        >
+                          className="text" disabled={!!addingProject.busy}
+                          onClick={() => setChooseProjectOpen(true)}>
                           {t("Choose…")}
                         </button>
                         <button
                           type="button"
-                          className="text action"
-                          disabled={!!addingProject.busy}
+                          className="text action" disabled={!!addingProject.busy}
                           onClick={() => {
                             const dir = addingProject.dir.trim();
                             // NOTES 112: empty Add = no-op
@@ -2947,93 +2583,56 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                               setAddingProject(null);
                               onStatus?.(t("{name} added — pick the skills it gets", { name }), "ok");
                             }, 400);
-                          }}
-                        >
+                          }}>
                           {addingProject.busy ? t("Adding…") : t("Add")}
                         </button>
                         <button
                           type="button"
-                          className="text"
-                          disabled={!!addingProject.busy}
+                          className="text" disabled={!!addingProject.busy}
                           onClick={() => {
                             setAddingProject(null);
                             setChooseProjectOpen(false);
-                          }}
-                        >
+                          }}>
                           {t("Cancel")}
                         </button>
                       </div>
                     </div>
                   ) : null}
                   {projects.length ? (
-                    <div style={{ marginBottom: 8, display: "flex", flexDirection: "column", gap: 8 }}>
+                    <div>
                       {projects.map((pr) => {
                         const placedIds = Object.keys(pr.placed).filter((id) => (pr.placed[id] || []).length > 0);
                         const hasPlaced = placedIds.length > 0;
                         return (
                           <div
                             key={pr.dir}
-                            className="card lib-project"
-                            onContextMenu={(e) => e.preventDefault()}
-                            style={{
-                              border: "1px solid var(--line)",
-                              borderRadius: 12,
-                              padding: pr.open ? "10px 12px 12px" : "8px 10px",
-                              background: "var(--card)",
-                            }}
-                          >
+                            className={`card lib-project${pr.open ? " open" : ""}`} onContextMenu={(e) => e.preventDefault()}>
                             <div
-                              className="lib-project-head"
-                              style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0 }}
-                            >
+                              className="lib-project-head">
                               <button
                                 type="button"
-                                className="text"
-                                title={pr.open ? t("Hide its skills") : t("Pick the skills it gets")}
+                                className="text" title={pr.open ? t("Hide its skills") : t("Pick the skills it gets")}
                                 aria-label={pr.open ? t("Hide its skills") : t("Pick the skills it gets")}
                                 onClick={() =>
                                   setProjects((list) => list.map((x) => (x.dir === pr.dir ? { ...x, open: !x.open } : x)))
-                                }
-                                style={{ width: 28, height: 28, padding: 0, flex: "none", border: 0, background: "transparent", fontSize: 14 }}
-                              >
+                                }>
                                 📁
                               </button>
                               <button
                                 type="button"
-                                className="text"
-                                title={pr.name}
+                                className="text" title={pr.name}
                                 onClick={() =>
                                   setProjects((list) => list.map((x) => (x.dir === pr.dir ? { ...x, open: !x.open } : x)))
-                                }
-                                style={{
-                                  flex: 1,
-                                  minWidth: 0,
-                                  textAlign: "left",
-                                  border: 0,
-                                  background: "transparent",
-                                  padding: 0,
-                                  font: "inherit",
-                                  cursor: "pointer",
-                                }}
-                              >
-                                <span style={{ display: "inline-flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
-                                  <b style={{ fontSize: 13, fontWeight: 560 }}>{pr.name}</b>
+                                }>
+                                <span>
+                                  <b>{pr.name}</b>
                                   {pr.copy ? (
-                                    <span
-                                      style={{
-                                        fontSize: 11,
-                                        fontWeight: 560,
-                                        padding: "1px 7px",
-                                        borderRadius: 999,
-                                        border: "1px solid var(--line)",
-                                        color: "var(--fg-2)",
-                                      }}
-                                    >
+                                    <span>
                                       {t("Copies")}
                                     </span>
                                   ) : null}
                                 </span>
-                                <div style={{ fontSize: 12, color: "var(--muted)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                                <div>
                                   {pr.dir}
                                 </div>
                               </button>
@@ -3042,20 +2641,8 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                                     const sk = skills.find((s) => s.id === sid);
                                     return sk ? (
                                       <span
-                                        key={sid}
-                                        style={{
-                                          fontSize: 11.5,
-                                          padding: "2px 8px",
-                                          borderRadius: 999,
-                                          border: "1px solid var(--line)",
-                                          color: "var(--fg-2)",
-                                          display: "inline-flex",
-                                          alignItems: "center",
-                                          gap: 5,
-                                          flex: "none",
-                                        }}
-                                      >
-                                        <span style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--muted)" }} />
+                                        key={sid}>
+                                        <span />
                                         {sk.name}
                                       </span>
                                     ) : null;
@@ -3063,8 +2650,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                                 : null}
                               <button
                                 type="button"
-                                className="text lib-icon"
-                                title={t("Remove the project")}
+                                className="text lib-icon" title={t("Remove the project")}
                                 aria-label={t("Remove the project")}
                                 onMouseEnter={(e) => {
                                   e.currentTarget.style.color = "var(--red)";
@@ -3074,27 +2660,22 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                                 }}
                                 onClick={() =>
                                   setProjectRemove({ dir: pr.dir, name: pr.name, keep: false, dirty: false })
-                                }
-                                style={{ width: 28, height: 28, padding: 0, flex: "none", fontSize: 14 }}
-                              >
+                                }>
                                 🗑
                               </button>
                               <button
                                 type="button"
-                                className="text"
-                                aria-label={pr.open ? t("Hide its skills") : t("Pick the skills it gets")}
+                                className="text" aria-label={pr.open ? t("Hide its skills") : t("Pick the skills it gets")}
                                 onClick={() =>
                                   setProjects((list) => list.map((x) => (x.dir === pr.dir ? { ...x, open: !x.open } : x)))
-                                }
-                                style={{ width: 24, height: 28, padding: 0, flex: "none", border: 0, background: "transparent", color: "var(--muted)" }}
-                              >
-                                <span style={{ display: "inline-block", transform: pr.open ? "rotate(90deg)" : "none", transition: "transform .15s var(--ease)" }}>›</span>
+                                }>
+                                <span className={`chev${pr.open ? " open" : ""}`}>›</span>
                               </button>
                             </div>
 
                             {pr.open ? (
-                              <div style={{ marginTop: 10, animation: "fade-in .18s var(--ease)" }}>
-                                <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", marginBottom: 10 }}>
+                              <div>
+                                <div>
                                   <button
                                     type="button"
                                     className={`lib-switch${pr.copy ? " on" : ""}`}
@@ -3112,21 +2693,20 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                                           : t("{name} gets links now", { name: pr.name }),
                                         "ok",
                                       );
-                                    }}
-                                  >
+                                    }}>
                                     <i />
                                   </button>
-                                  <span style={{ fontSize: 12.5, color: "var(--fg)" }}>{t("Copy files instead of linking")}</span>
-                                  <span style={{ fontSize: 12, color: "var(--muted)", flex: "1 1 180px" }}>
+                                  <span>{t("Copy files instead of linking")}</span>
+                                  <span>
                                     {pr.copy
                                       ? t("Copies are made again whenever the library's skill changes; edits made to them are replaced.")
                                       : t("Links follow the library's skill: an update reaches the project at once.")}
                                   </span>
                                 </div>
 
-                                <div className="list" style={{ marginBottom: 8 }}>
+                                <div className="list">
                                   {skills.length === 0 ? (
-                                    <p style={{ margin: "4px 0", fontSize: 12.5, color: "var(--muted)" }}>
+                                    <p>
                                       {t("No skills in the library yet.")}
                                     </p>
                                   ) : (
@@ -3135,18 +2715,10 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                                       return (
                                         <div
                                           key={s.id}
-                                          className="row"
-                                          style={{
-                                            display: "flex",
-                                            alignItems: "center",
-                                            gap: 10,
-                                            padding: "8px 2px",
-                                            borderBottom: "1px solid var(--line)",
-                                          }}
-                                        >
-                                          <div style={{ flex: 1, minWidth: 0 }}>
-                                            <b style={{ fontSize: 13 }}>{s.name}</b>
-                                            <div style={{ fontSize: 12, color: "var(--muted)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                                          className="row">
+                                          <div>
+                                            <b>{s.name}</b>
+                                            <div>
                                               {s.desc}
                                             </div>
                                           </div>
@@ -3190,7 +2762,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                                   )}
                                 </div>
 
-                                <p style={{ margin: 0, fontSize: 12, color: "var(--muted)", lineHeight: 1.45 }}>
+                                <p>
                                   {t("Placed in .agents/skills of the project and listed in its .gitignore. A folder there that isn't magpie's is left as it is.")}
                                 </p>
                               </div>
@@ -3200,7 +2772,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                       })}
                     </div>
                   ) : !addingProject ? (
-                    <p style={{ margin: 0, fontSize: 12.5, color: "var(--muted)", lineHeight: 1.45 }}>
+                    <p>
                       {t("Give a project's agents some of these skills as the project's own: magpie links them into its .claude/skills and .agents/skills and keeps them out of git.")}
                     </p>
                   ) : null}
@@ -3208,46 +2780,43 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
               </>
             )}
 
-            <div id="libSkillDiscover" style={{ marginTop: 18 }}>
-              <div className="row-head" style={{ marginBottom: 8, display: "flex", alignItems: "center", gap: 8 }}>
-                <span className="label" style={{ letterSpacing: ".04em", fontSize: 11, color: "var(--muted)", fontWeight: 600 }}>{t("DISCOVER")}</span>
+            <div id="libSkillDiscover">
+              <div className="row-head">
+                <span className="label">{t("DISCOVER")}</span>
                 <span className="grow" />
-                <span style={{ fontSize: 12, color: "var(--muted)" }}>{t("Popular on skills.sh")}</span>
+                <span>{t("Popular on skills.sh")}</span>
               </div>
               <input
                 type="search"
                 value={skillQ}
                 placeholder={t("Search skills on skills.sh — react, pdf, testing…")}
                 onChange={(e) => setSkillQ(e.target.value)}
-                style={{ width: "100%", maxWidth: 420, marginBottom: 12 }}
+               
               />
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: 10 }}>
+              <div>
                 {DEMO_SKILLS_MARKET.filter((c) => {
                   const q = skillQ.trim().toLowerCase();
                   if (!q) return true;
                   return `${c.name} ${c.by} ${c.desc}`.toLowerCase().includes(q);
                 }).map((c) => (
-                  <div key={c.id} className="card" style={{ padding: "12px 12px 10px", border: "1px solid var(--line)", borderRadius: 12, animation: "fade-in .18s var(--ease)", display: "flex", flexDirection: "column", gap: 6, minHeight: 120 }}>
-                    <div style={{ display: "flex", alignItems: "baseline", gap: 6 }}>
-                      <b style={{ fontSize: 13 }}>{c.name}</b>
+                  <div key={c.id} className="card mk-card">
+                    <div>
+                      <b>{c.name}</b>
                       <span className="grow" />
-                      {c.installs ? <span style={{ fontSize: 10.5, color: "var(--muted)" }}>{c.installs}</span> : null}
+                      {c.installs ? <span>{c.installs}</span> : null}
                     </div>
-                    <small style={{ color: "var(--muted)", fontSize: 11.5 }}>{c.by}</small>
-                    <p style={{ margin: 0, fontSize: 12, color: "var(--fg-2)", lineHeight: 1.4, flex: 1 }}>{c.desc}</p>
+                    <small>{c.by}</small>
+                    <p>{c.desc}</p>
                     <div>
                       <button
                         type="button"
-                        className="text primary"
-                        style={{ height: 26, fontSize: 12 }}
-                        onClick={() => {
+                        className="text primary" onClick={() => {
                           if ((c as { sheet?: boolean }).sheet) setSkillSheet(c);
                           else {
                             setSkills((list) => (list.some((x) => x.id === c.id) ? list : [...list, { id: c.id, name: c.name, desc: c.desc, agents: ["cursor"] }]));
                             onStatus?.(t("{name} added", { name: c.name }), "ok");
                           }
-                        }}
-                      >
+                        }}>
                         {(c as { sheet?: boolean }).sheet ? t("Add…") : t("Add")}
                       </button>
                     </div>
@@ -3258,69 +2827,68 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
           </>
         ) : tab === "hooks" ? (
           <>
-            <p style={{ margin: "0 0 12px", fontSize: 12.5, color: "var(--muted)", lineHeight: 1.45 }}>
+            <p>
               {t("A hook is a command an agent runs at a point of its turn — a notification when it ends, a formatter after it edits a file. Add it once and magpie writes it into each agent you pick, in the shape that agent reads.")}
             </p>
             {hooks.length === 0 ? (
-              <div style={{ border: "1px dashed var(--line)", borderRadius: 12, padding: "28px 16px", textAlign: "center", color: "var(--muted)", fontSize: 13, lineHeight: 1.45 }}>
-                <b style={{ display: "block", color: "var(--fg)", fontWeight: 500, marginBottom: 4 }}>{t("No hooks in the library yet")}</b>
-                <p style={{ margin: "0 0 12px" }}>{t("Add one, and pick the agents that run it.")}</p>
-                <button type="button" className="rt-gadd" style={{ margin: "0 auto" }} onClick={openHookEditor}><span>{t("＋ Add a hook")}</span></button>
+              <div>
+                <b>{t("No hooks in the library yet")}</b>
+                <p>{t("Add one, and pick the agents that run it.")}</p>
+                <button type="button" className="rt-gadd" onClick={openHookEditor}><span>{t("＋ Add a hook")}</span></button>
               </div>
             ) : (
               <div>
                 {hooks.map((h) => (
-                  <div key={h.id} className="row" style={{ display: "flex", gap: 8, padding: "10px 4px", borderBottom: "1px solid var(--line)" }}>
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <b className="mono" style={{ fontSize: 13 }}>{h.name}</b>
-                      {h.description ? <div style={{ fontSize: 12, color: "var(--muted)" }}>{h.description}</div> : null}
-                      <div style={{ fontSize: 12, color: "var(--muted)" }}>
+                  <div key={h.id} className="row">
+                    <div>
+                      <b className="mono">{h.name}</b>
+                      {h.description ? <div>{h.description}</div> : null}
+                      <div>
                         {t(HOOK_EVENTS.find(([v]) => v === h.event)?.[1] || h.event)}
                         {h.matcher ? ` · ${HOOK_TOOLS.find(([v]) => v === h.matcher)?.[1] || h.matcher}` : ""}
                       </div>
-                      <code style={{ fontSize: 11.5 }}>{h.command}</code>
+                      <code>{h.command}</code>
                     </div>
                     <LibChip on label="Cursor" onClick={() => {}} />
                     <button type="button" className="text" onClick={() => setHooks((list) => list.filter((x) => x.id !== h.id))}>{t("Remove")}</button>
                   </div>
                 ))}
-                <button type="button" className="rt-gadd" style={{ marginTop: 10 }} onClick={openHookEditor}><span>{t("＋ Add hook")}</span></button>
+                <button type="button" className="rt-gadd" onClick={openHookEditor}><span>{t("＋ Add hook")}</span></button>
               </div>
             )}
           </>
         ) : tab === "rtk" ? (
           <>
-            <p style={{ margin: "0 0 12px", fontSize: 12.5, color: "var(--muted)", lineHeight: 1.45 }}>
+            <p>
               {t("RTK rewrites the shell commands an agent runs — git status, cargo test, ls… — to print only what the model needs, so they cost fewer tokens. Switch it on for an agent and magpie runs RTK's own installer for it.")}
             </p>
             {rtkPhase === "checking" ? (
-              <div className="lib-skel" style={{ marginBottom: 16 }}>
-                <div className="row skeleton" style={{ height: 88, borderRadius: 12 }} />
+              <div className="lib-skel">
+                <div className="row skeleton" />
               </div>
             ) : (
-              <div className="card lib-rtk-card" style={{ padding: "12px 14px", border: "1px solid var(--line)", borderRadius: 12, marginBottom: 16 }}>
-                <div className="row-head lib-cardhead" style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+              <div className="card lib-rtk-card">
+                <div className="row-head lib-cardhead">
                   <span className="lib-glyph lib-rtk-logo" aria-hidden>
-                    <img src="/icons/rtk.png" alt="" width={20} height={20} style={{ display: "block", objectFit: "contain" }} />
+                    <img src="/icons/rtk.png" alt="" width={20} height={20} />
                   </span>
-                  <b style={{ fontSize: 14 }}>RTK</b>
+                  <b>RTK</b>
                   <span className="grow" />
                 </div>
-                <p className="lib-rtk-gain" style={{ margin: "0 0 10px", fontSize: 12.5, color: "var(--muted)", lineHeight: 1.5 }}>
+                <p className="lib-rtk-gain">
                   {rtkPhase === "installing"
                     ? t("Installing RTK… this can take a minute.")
                     : t("RTK isn't installed. magpie can install it for you, or get it from its site.")}
                 </p>
                 {rtkPhase !== "installing" ? (
-                  <p className="lib-rtk-cmd mono" style={{ margin: "0 0 10px", fontSize: 11.5, color: "var(--muted)", userSelect: "text", wordBreak: "break-all" }}>
+                  <p className="lib-rtk-cmd mono">
                     curl -fsSL https://raw.githubusercontent.com/rtk-ai/rtk/refs/heads/master/install.sh | sh
                   </p>
                 ) : null}
-                <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                <div>
                   <button
                     type="button"
-                    className="text action"
-                    disabled={rtkPhase === "installing"}
+                    className="text action" disabled={rtkPhase === "installing"}
                     onClick={() => {
                       // Magpie installRTK busy → API; demo does not run the binary installer
                       setRtkPhase("installing");
@@ -3328,37 +2896,32 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                         setRtkPhase("missing");
                         onStatus?.(t("Demo shell: RTK installer not run — still not installed"), "warn");
                       }, 1100);
-                    }}
-                  >
+                    }}>
                     {rtkPhase === "installing" ? t("Installing…") : t("Install RTK")}
                   </button>
                   <button
                     type="button"
-                    className="text"
-                    disabled={rtkPhase === "installing"}
-                    onClick={() => window.open("https://rtk-ai.app", "_blank", "noopener,noreferrer")}
-                  >
+                    className="text" disabled={rtkPhase === "installing"}
+                    onClick={() => window.open("https://rtk-ai.app", "_blank", "noopener,noreferrer")}>
                     {t("Get RTK")}
                   </button>
                   <button
                     type="button"
-                    className="text"
-                    disabled={rtkPhase === "installing"}
+                    className="text" disabled={rtkPhase === "installing"}
                     onClick={() => {
                       // Magpie: rtk = null; render() → skeleton + loadRTK
                       setRtkPhase("checking");
                       window.setTimeout(() => setRtkPhase("missing"), 480);
-                    }}
-                  >
+                    }}>
                     {t("Check again")}
                   </button>
                 </div>
               </div>
             )}
-            <div className="row-head" style={{ marginBottom: 6, display: "flex", alignItems: "center", gap: 8 }}>
-              <span className="label" style={{ letterSpacing: ".04em", fontSize: 11, color: "var(--muted)", fontWeight: 600 }}>{t("Agents")}</span>
+            <div className="row-head lib-cardhead">
+              <span className="label">{t("Agents")}</span>
               <span className="grow" />
-              <span style={{ fontSize: 11.5, color: "var(--muted)" }}>{t("restart an agent after switching it")}</span>
+              <span>{t("restart an agent after switching it")}</span>
             </div>
             <div className="list">
               {DEMO_AGENTS.map((a) => {
@@ -3366,9 +2929,9 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                 // Magpie: (!rtk.path && !a.on) || rtkInstalling → disabled
                 const disabled = rtkPhase === "installing" || rtkPhase === "checking" || !on;
                 return (
-                  <div key={a.id} className="row" style={{ display: "flex", alignItems: "center", gap: 8, padding: "10px 4px", borderBottom: "1px solid var(--line)" }}>
-                    <img src="/icons/cursor.svg" alt="" width={18} height={18} style={{ flex: "none", borderRadius: 4 }} />
-                    <b style={{ fontSize: 13 }}>{a.name}</b>
+                  <div key={a.id} className="row">
+                    <img src="/icons/cursor.svg" alt="" width={18} height={18} />
+                    <b>{a.name}</b>
                     <span className="grow" />
                     <button
                       type="button"
@@ -3386,8 +2949,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                           next ? t("RTK is on for {agent} — restart it to use it", { agent: a.name }) : t("RTK is off for {agent} — restart it to see it", { agent: a.name }),
                           "ok",
                         );
-                      }}
-                    >
+                      }}>
                       <i />
                     </button>
                   </div>
@@ -3443,8 +3005,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
               setMcpEditor(null);
               onStatus?.(t("Added {n} servers", { n: names.length }), "ok");
             }
-          }}
-        >
+          }}>
           <div className="ehead">
             <svg className="ic" viewBox="0 0 16 16" width={16} height={16} fill="none" stroke="currentColor" strokeWidth="1.3" aria-hidden>
               <path d={mcpEditor.transport === "stdio" ? CMD_PATH : WEB_PATH} />
@@ -3456,8 +3017,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
             <label className="field">
               <span className="k">{t("Name")}</span>
               <WordsField
-                className="full"
-                ref={mcpNameRef}
+                className="full" ref={mcpNameRef}
                 value={mcpEditor.name}
                 placeholder={t("e.g. github")}
                 onChange={(e) => setMcpEditor({ ...mcpEditor, name: e.target.value })}
@@ -3482,8 +3042,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                 <label className="field">
                   <span className="k">{t("Command")}</span>
                   <WordsField
-                    className="full mono"
-                    value={mcpEditor.command}
+                    className="full mono" value={mcpEditor.command}
                     placeholder="npx -y @modelcontextprotocol/server-github"
                     onChange={(e) => setMcpEditor({ ...mcpEditor, command: e.target.value })}
                     onKeyDown={(e) => e.stopPropagation()}
@@ -3509,8 +3068,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                 <label className="field">
                   <span className="k">URL</span>
                   <WordsField
-                    className="full mono"
-                    value={mcpEditor.url}
+                    className="full mono" value={mcpEditor.url}
                     placeholder="https://example.com/mcp"
                     onChange={(e) => setMcpEditor({ ...mcpEditor, url: e.target.value })}
                     onKeyDown={(e) => e.stopPropagation()}
@@ -3561,21 +3119,17 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                           <span className="hint">{t("Finish signing in in your browser…")}</span>
                           <button
                             type="button"
-                            className="text"
-                            onClick={() => {
+                            className="text" onClick={() => {
                               setMcpSignWaiting(false);
                               setMcpOauthWall(false);
-                            }}
-                          >
+                            }}>
                             {t("Cancel")}
                           </button>
                         </div>
                       ) : (
                         <button
                           type="button"
-                          className="text action"
-                          onClick={() => saveMcp({ signIn: true })}
-                        >
+                          className="text action" onClick={() => saveMcp({ signIn: true })}>
                           {t(mcpEditId ? "Sign in" : "Save and sign in")}
                         </button>
                       )}
@@ -3612,22 +3166,18 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
             <div className="acts">
               <button
                 type="button"
-                className="text danger"
-                onClick={() => {
+                className="text danger" onClick={() => {
                   const s = mcpServers.find((x) => x.id === mcpEditId);
                   if (s) setMcpRemoveAsk({ id: s.id, name: s.name });
-                }}
-              >
+                }}>
                 {t("Remove from the library")}
               </button>
               <button
                 type="button"
-                className="text action"
-                title={t("Copy {name} as an agent's project file has it, to paste into a project yourself", {
+                className="text action" title={t("Copy {name} as an agent's project file has it, to paste into a project yourself", {
                   name: mcpEditor.name || "server",
                 })}
-                onClick={() => setMcpCopyMenu((m) => (m === "editor" ? null : "editor"))}
-              >
+                onClick={() => setMcpCopyMenu((m) => (m === "editor" ? null : "editor"))}>
                 {mcpCopyFlash && mcpCopyMenu !== "editor" ? "✓ " : ""}
                 {t("Copy config…")}
               </button>
@@ -3636,10 +3186,8 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                   <div className="gl">{t("Copy as an agent's project file")}</div>
                   <button
                     type="button"
-                    className="text item"
-                    role="menuitem"
-                    onClick={() => mcpEditId && copyMcpConfig([mcpEditId])}
-                  >
+                    className="text item" role="menuitem"
+                    onClick={() => mcpEditId && copyMcpConfig([mcpEditId])}>
                     Cursor
                   </button>
                 </div>
@@ -3651,10 +3199,8 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
             <button type="button" className="text" onClick={tryCloseMcp} disabled={mcpSignWaiting}>{t("Cancel")}</button>
             <button
               type="button"
-              className="text primary"
-              disabled={mcpSignWaiting}
-              onClick={() => saveMcp()}
-            >
+              className="text primary" disabled={mcpSignWaiting}
+              onClick={() => saveMcp()}>
               {t(mcpEditId || mcpSignWaiting ? "Save" : "Add")}
             </button>
           </div>
@@ -3687,8 +3233,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
             <button type="button" className="text" onClick={() => setImageSheet(false)}>{t("Cancel")}</button>
             <button
               type="button"
-              className="text primary"
-              onClick={() => {
+              className="text primary" onClick={() => {
                 if (!mcpServers.some((s) => s.id === "magpie-image"))
                   setMcpServers((s) => [
                     ...s,
@@ -3705,8 +3250,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                   ]);
                 setImageSheet(false);
                 onStatus?.(t("{name} added", { name: "Magpie Image" }), "ok");
-              }}
-            >
+              }}>
               {t("Add to the library")}
             </button>
           </div>
@@ -3739,14 +3283,12 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
             <button type="button" className="text" onClick={() => setSkillSheet(null)}>{t("Cancel")}</button>
             <button
               type="button"
-              className="text primary"
-              onClick={() => {
+              className="text primary" onClick={() => {
                 const c = skillSheet;
                 setSkills((list) => (list.some((x) => x.id === c.id) ? list : [...list, { id: c.id, name: c.name, desc: c.desc, agents: ["cursor"] }]));
                 setSkillSheet(null);
                 onStatus?.(t("{name} added", { name: c.name }), "ok");
-              }}
-            >
+              }}>
               {t("Add to the library")}
             </button>
           </div>
@@ -3762,8 +3304,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
             <label className="field">
               <span className="k">{t("Name")}</span>
               <WordsField
-                className="full"
-                value={hookEditor.name}
+                className="full" value={hookEditor.name}
                 placeholder={t("e.g. notify")}
                 onChange={(e) => setHookEditor({ ...hookEditor, name: e.target.value })}
                 onKeyDown={(e) => e.stopPropagation()}
@@ -3772,9 +3313,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
             </label>
             <label className="field">
               <span className="k">{t("Description")}</span>
-              <textarea
-                className="words"
-                rows={3}
+              <textarea className="lib-text words" rows={3}
                 maxLength={200}
                 value={hookEditor.description}
                 placeholder={t("e.g. Tell me when a turn ends")}
@@ -3799,8 +3338,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                 <div role="menu" className="pop menu down">
                   <div className="gl">{t("When it runs")}</div>
                   <WordsField
-                    className="full"
-                    type="search"
+                    className="full" type="search"
                     value={eventFilter}
                     placeholder={t("Find an event")}
                     onChange={(e) => setEventFilter(e.target.value)}
@@ -3813,13 +3351,11 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                       key={v}
                       type="button"
                       role="menuitem"
-                      className="text item"
-                      onClick={() => {
+                      className="text item" onClick={() => {
                         setHookEditor({ ...hookEditor, event: v, matcher: toolEvent(v) ? hookEditor.matcher : "", agents: DEMO_AGENTS.map((a) => a.id) });
                         setEventMenu(false);
                         setEventFilter("");
-                      }}
-                    >
+                      }}>
                       <span className="v">{t(n)}{hookEditor.event === v ? " ✓" : ""}</span>
                       <small className="n">{t("every agent, in its own name for it")}</small>
                     </button>
@@ -3835,13 +3371,11 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                         key={v}
                         type="button"
                         role="menuitem"
-                        className="text item"
-                        onClick={() => {
+                        className="text item" onClick={() => {
                           setHookEditor({ ...hookEditor, event: v, matcher: "", agents: ["cursor"] });
                           setEventMenu(false);
                           setEventFilter("");
-                        }}
-                      >
+                        }}>
                         <span className="v">Cursor · {ev}{hookEditor.event === v ? " ✓" : ""}</span>
                         <small className="n">{t("{agent}'s own event", { agent: "Cursor" })}</small>
                       </button>
@@ -3854,8 +3388,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
               <label className="field">
                 <span className="k">{t("Matcher")}</span>
                 <WordsField
-                  className="full mono lib-hookmatcher"
-                  value={hookEditor.matcher}
+                  className="full mono lib-hookmatcher" value={hookEditor.matcher}
                   placeholder={t("every tool")}
                   onChange={(e) => setHookEditor({ ...hookEditor, matcher: e.target.value })}
                   onKeyDown={(e) => e.stopPropagation()}
@@ -3868,8 +3401,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
               <div className="field-block">
                 <span className="k">{t("For which tools")}</span>
                 <PrefPick
-                  className="lib-hooktool"
-                  label={t(HOOK_TOOLS.find(([v]) => v === hookEditor.matcher)?.[1] || "Any tool")}
+                  className="lib-hooktool" label={t(HOOK_TOOLS.find(([v]) => v === hookEditor.matcher)?.[1] || "Any tool")}
                   open={toolMenu}
                   title={t(HOOK_TOOLS.find(([v]) => v === hookEditor.matcher)?.[1] || "Any tool")}
                   onClick={() => { setToolMenu((v) => !v); setEventMenu(false); }}
@@ -3878,8 +3410,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                 {toolMenu ? (
                   <div role="menu" className="pop menu down">
                     {HOOK_TOOLS.map(([v, n]) => (
-                      <button key={v || "any"} type="button" role="menuitem" className="text item"
-                        onClick={() => { setHookEditor({ ...hookEditor, matcher: v }); setToolMenu(false); }}>
+                      <button key={v || "any"} type="button" role="menuitem" className="text item" onClick={() => { setHookEditor({ ...hookEditor, matcher: v }); setToolMenu(false); }}>
                         {t(n)}{hookEditor.matcher === v ? " ✓" : ""}
                       </button>
                     ))}
@@ -3891,8 +3422,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
             <label className="field">
               <span className="k">{t("Command")}</span>
               <WordsField
-                className="full mono"
-                value={hookEditor.command}
+                className="full mono" value={hookEditor.command}
                 placeholder="curl -s https://api.day.app/KEY/done"
                 onChange={(e) => setHookEditor({ ...hookEditor, command: e.target.value })}
                 onKeyDown={(e) => e.stopPropagation()}
@@ -3902,8 +3432,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
             <label className="field">
               <span className="k">{t("Timeout (seconds)")}</span>
               <WordsField
-                className="timeout"
-                inputMode="numeric"
+                className="timeout" inputMode="numeric"
                 value={hookEditor.timeout}
                 placeholder={t("the agent's own")}
                 onChange={(e) => setHookEditor({ ...hookEditor, timeout: e.target.value.replace(/\D/g, "") })}
@@ -4073,12 +3602,10 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
           if (!hasPlaced) return null;
           return (
             <Tick
-              className="keep"
-              checked={projectRemove.keep}
+              className="keep" checked={projectRemove.keep}
               onChange={(e) =>
                 setProjectRemove({ ...projectRemove, keep: e.target.checked, dirty: true })
-              }
-            >
+              }>
               <span>
                 <span className="name">{t("Keep its skills and MCP servers")}</span>
                 <span className="sub">
@@ -4128,22 +3655,18 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
               </div>
               <button
                 type="button"
-                className="text action lib-updall"
-                disabled={mcpServers.every((s) => s.agents.includes("cursor"))}
+                className="text action lib-updall" disabled={mcpServers.every((s) => s.agents.includes("cursor"))}
                 title={t("Give {agent} every server", { agent: "Cursor" })}
                 onClick={() => {
                   setMcpServers((list) => list.map((x) => ({ ...x, agents: x.agents.includes("cursor") ? x.agents : [...x.agents, "cursor"] })));
                   onStatus?.(t("Written to Cursor"), "ok");
-                }}
-              >
+                }}>
                 {t("Turn all on")}
               </button>
               <button
                 type="button"
-                className="text action lib-updall"
-                title={t("Take every server from Cursor")}
-                onClick={() => setMcpTurnAllOffAsk(true)}
-              >
+                className="text action lib-updall" title={t("Take every server from Cursor")}
+                onClick={() => setMcpTurnAllOffAsk(true)}>
                 {t("Turn all off")}
               </button>
             </div>
@@ -4178,45 +3701,24 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
 
       {mcpOauthWall ? (
         <div
-          className="modal open"
-          role="dialog"
-          aria-modal
-          style={{
-            position: "fixed",
-            inset: 0,
-            zIndex: 120,
-            display: "grid",
-            placeItems: "center",
-            background: "rgba(20,22,30,.45)",
-            animation: "fade-in .18s var(--ease)",
-          }}
-        >
+          className="modal open lib-oauth" role="dialog"
+          aria-modal>
           <div
-            className="dialog"
-            style={{
-              width: "min(420px, 92vw)",
-              background: "#fff",
-              borderRadius: 12,
-              padding: "20px 22px 16px",
-              boxShadow: "0 18px 48px rgba(20,22,30,.28)",
-              animation: "pop-in .42s cubic-bezier(.16,1,.3,1)",
-            }}
-          >
-            <b style={{ display: "block", fontSize: 16, marginBottom: 12, textAlign: "center" }}>{t("Magpie is requesting access")}</b>
-            <div style={{ border: "1px solid #e5e5e5", borderRadius: 8, padding: "10px 12px", fontSize: 13, marginBottom: 12, lineHeight: 1.6 }}>
+            className="dialog" >
+            <b className="lib-oauth-title">{t("Magpie is requesting access")}</b>
+            <div className="lib-oauth-facts">
               <div><b>{t("Name")}</b> · Magpie</div>
               <div><b>{t("Website")}</b> · https://usemagpie.ai</div>
               <div><b>Redirect</b> · http://127.0.0.1:41671/callback</div>
               <div><b>{t("Access")}</b> · Read, Write</div>
             </div>
-            <p style={{ margin: "0 0 14px", fontSize: 12.5, color: "#555", lineHeight: 1.45 }}>
+            <p>
               {t("This MCP client is requesting access to your Linear workspace. Approve was not used in the nest — Cancel refuses with access_denied.")}
             </p>
-            <div style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
+            <div className="lib-oauth-acts">
               <button
                 type="button"
-                className="text"
-                onClick={() => {
+                className="text" onClick={() => {
                   setMcpOauthWall(false);
                   setMcpSignWaiting(false);
                   const name = mcpEditor?.name.trim() || "";
@@ -4230,18 +3732,13 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                     ),
                   );
                   onStatus?.(t("the sign-in was refused (access_denied)"), "err");
-                }}
-                style={{ height: 32, padding: "0 14px", border: "1px solid #ccc", borderRadius: 6, background: "#fff" }}
-              >
+                }}>
                 {t("Cancel")}
               </button>
               <button
                 type="button"
-                className="text"
-                disabled
-                title={t("Approve was not clicked in the nest")}
-                style={{ height: 32, padding: "0 14px", borderRadius: 6, background: "#5b4cdb", color: "#fff", opacity: 0.55 }}
-              >
+                className="text primary" disabled
+                title={t("Approve was not clicked in the nest")}>
                 {t("Approve")}
               </button>
             </div>
