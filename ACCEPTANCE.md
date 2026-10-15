@@ -1,3 +1,9 @@
+## v0.1.180 · RT_PEER_FADE_OSS · 2026-10-16 Asia/Shanghai
+
+- **WHY:** Drop invent `rt-peer` / `rt-fade`; restore Magpie `none rt-off` + plain `rt-replay` / `rt-log`.
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; skip oauth Approve wall; Magpie `.rt-off` gold.
+- **Cite:** Magpie routing.js **L97** / **L3129–34** `offline()`; **L71**/`L100` rt-log/rt-replay; routing.css **L182** `.rt-off`; app.css fade-in not on those nodes.
+
 ## v0.1.179 · TILE_IC_SPAN_IMG_OSS · 2026-10-16 Asia/Shanghai
 
 - **WHY:** Drop invent tile `img.ic-img`; restore Magpie `span.ic>img` (pickRow / icon()).

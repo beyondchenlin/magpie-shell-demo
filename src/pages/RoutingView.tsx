@@ -673,7 +673,7 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
     .filter(Boolean)
     .join(" ");
 
-  // tray/20 + routing NOTES: another process holds the gateway — only the peer card
+  // tray/20 + Magpie routing.js offline(): another process holds the gateway — .none.rt-off
   if (peerServes) {
     return (
       <main className={viewClass} id="view-routing">
@@ -705,9 +705,11 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
           </button>
         </div>
         <section className="rt" id="rt">
-          <p className="pr-none rt-peer">
-            {t("Another magpie serves the gateway; its routing plays live in that magpie's window.")}
-          </p>
+          <div className="rt-main">
+            <div className="none rt-off">
+              {t("Another magpie serves the gateway; its routing plays live in that magpie's window.")}
+            </div>
+          </div>
         </section>
       </main>
     );
@@ -785,7 +787,7 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
           </div>
 
           {replaying && demoLive ? (
-            <div className="rt-replay rt-fade" id="rtReplay">
+            <div className="rt-replay" id="rtReplay">
               <div className="rp-top">
                 <span className="rp-tag">{t("Replaying")}</span>
                 <b className="rp-clock">{replayClock}</b>
@@ -961,7 +963,7 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
 
           {/* Gateway trace story — Magpie .rt-log / .rt-steps */}
           {demoLive && (pickedReq || replaying) ? (
-            <div className="rt-log rt-fade" id="rtLog">
+            <div className="rt-log" id="rtLog">
               <div className="rt-log-head">
                 <span>
                   {t("How the request at {time} was routed", {

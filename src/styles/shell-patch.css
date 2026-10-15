@@ -97,12 +97,6 @@ body.web .segs > .thumb,
   min-width: 0;
   max-width: 100%;
 }
-/* Routing peer card readable when narrow (09) */
-.rt-peer.pr-none {
-  max-width: 100%;
-  overflow-wrap: anywhere;
-}
-
 .sr-only {
   position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
   overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
@@ -801,8 +795,7 @@ label.tick input { margin: 0; }
    app.css L521–522 + routing.css L352–353 empty-state; routing.js L3778
    text danger rt-gremove (no tip rt-pick-clear). */
 .pop.row-menu.fixed { position: fixed; z-index: 80; }
-#view-routing .rt-fade { animation: fade-in .2s var(--ease); }
-#view-routing .rt-fade.fast { animation: fade-in .18s var(--ease); }
+/* v0.1.180: drop invent .rt-fade — Magpie rt-replay/rt-log have no fade class (routing.js L71/L100). */
 #view-routing .rt-filters[hidden] { display: none !important; }
 /* v0.1.132: drop invent #view-routing .rt-group-by inline-flex — Magpie routing.css L316/L667 */
 /* v0.1.161: drop dead invent .rt-col-live + --bar fill — demo uses .rt-col +

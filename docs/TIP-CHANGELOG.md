@@ -1,3 +1,21 @@
+## v0.1.180 · RT_PEER_FADE_OSS · 2026-10-16 Asia/Shanghai
+
+- **WHY:** Hard invent audit — Routing peer/offline used invent `pr-none rt-peer` plus shell-patch/routing `.rt-peer` margin/wrap; replay/log stacked invent `rt-fade` animation. Magpie OSS main view uses `div.none.rt-off` via `offline()`; tray panel alone uses bare `pr-none`. Magpie builds `rt-replay` / `rt-log` with no fade class (`fade-in` is for `.view` / status etc.).
+- **CAUSE:** Tip borrowed tray `pr-none` into the main window and invented `rt-peer`/`rt-fade` bridges instead of Magpie `offline()` + plain stage nodes.
+- **Cite:**
+  - Magpie `routing.js` **L97** `el("div","none rt-off")`; **L3129–3134** `offline(msg)` hides top/stage/foot/log
+  - Magpie `routing.js` **L3175–3179** peer copy when `gw.window`; **L5295** tray panel `el("p","pr-none",…)` only
+  - Magpie `routing.css` **L182** `.rt-off { padding:18px 4px; text-align:center; color:var(--muted); font-size:13px }`
+  - Magpie `routing.js` **L71** `el("div","rt-log")`; **L100** `el("div","rt-replay")` — no fade class
+  - Magpie `app.css` **L3302** `@keyframes fade-in` (not bound to rt-replay/log)
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; skip oauth Approve wall; Magpie `.rt-off` / `.rt-replay` / `.rt-log` gold in routing.css; demo peerServes early return.
+- **WHAT changed:**
+  - `RoutingView.tsx`: peer card `p.pr-none.rt-peer` → Magpie `div.rt-main > div.none.rt-off`; drop `rt-fade` from `#rtReplay` / `#rtLog`.
+  - `routing.css`: delete invent `.rt-peer.pr-none`.
+  - `shell-patch.css`: delete invent `.rt-peer.pr-none` wrap + `#view-routing .rt-fade` / `.fast`.
+- **Remaining invent (weak/skip):** oauth Approve wall (nest=browser); `rt-flier-demo`; `win-caption*`; intentional `lib-hook*` / `pref-anchor` React bridges; residual `.usage-head .range-opt > span` max-width ellipsis bridge; some rows still bare `img.ic` (not invent class `ic-img`).
+- **Guard:** `npm run chrome-guard`. No portable. No manual Vercel.
+
 ## v0.1.179 · TILE_IC_SPAN_IMG_OSS · 2026-10-16 Asia/Shanghai
 
 - **WHY:** Hard invent audit — Providers add-sheet tiles used invent `img.ic-img.ic` plus shell-patch `.tile img.ic-img { 18×18; object-fit }`. Magpie OSS `pickRow` appends `icon(ic)` → `span.ic` with child `img` (or mask/svg); sizing is gold `.tile .ic` + `.ic img`.
