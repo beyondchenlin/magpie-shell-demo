@@ -4,6 +4,19 @@
 
 ---
 
+## v0.1.105 · CIS_P1_PROVIDERS_EDITOR · 2026-10-15 Asia/Shanghai
+
+- **WHY:** CIS P1 — Providers editor remaining layout `style={{…}}` → Magpie `.icon-pick` / `.headers` / `.pair` / `.action-confirm` (no feature stuffing; PrefPick/.field skipped).
+- **WHAT kept:** `SIDE_AT=1024`; no `WEB_SIDE_AT`; Win chrome / 752 frame; P2 deferred.
+- **WHAT changed:**
+  - Icon: Magpie `.icon-pick` + `.icon-now` + `.icon-grid` (drop flex/grid inline styles).
+  - Headers: `.headers` / `.pair` / `.pair.col` / `.hhead` / `.side` / `textarea.json` (no gap/width inline).
+  - Discard: `.action-confirm` dialog + `showModal` + `.text.primary.danger-fill` (Magpie confirmAction).
+  - Remove → `.text.danger`; detect-grid → `--detect-n` + `.dg-row`; hint → `.hint.fade`/`.err`.
+  - CIS §10.5 P1 editor rows marked done.
+- **Guard:** `npm run chrome-guard`. No portable. No push/Vercel.
+
+---
 ## v0.1.104 · CIS_P0_SETTINGS_TICK · 2026-10-15 Asia/Shanghai
 
 - **WHY:** Bring Settings / add-model onto CIS — replace bare inputs + native checkbox chrome (P0 only; no feature stuffing).

@@ -557,6 +557,18 @@ function ProviderEditorModal({ state, onClose, onAdd, onStatus, saved, onRemove,
   const [pickedIcon, setPickedIcon] = useState(state.icon || "aside");
   const [hdrs, setHdrs] = useState<{ name: string; value: string; json?: boolean }[]>([{ name: "", value: "" }]);
   const [discardOpen, setDiscardOpen] = useState(false);
+  const discardRef = useRef<HTMLDialogElement>(null);
+  useEffect(() => {
+    const d = discardRef.current;
+    if (!d) return;
+    if (discardOpen) {
+      if (!d.open) d.showModal();
+      const cancelBtn = d.querySelector("button.text:not(.danger-fill)") as HTMLButtonElement | null;
+      cancelBtn?.focus({ preventScroll: true });
+    } else if (d.open) {
+      d.close();
+    }
+  }, [discardOpen]);
   const API_HINTS: Record<string, string> = {
     openai: "…/v1 — chat completions, and responses when the vendor has it",
     responses: "…/v1 — for a vendor that serves only the Responses API, not chat completions",
@@ -1137,9 +1149,7 @@ function ProviderEditorModal({ state, onClose, onAdd, onStatus, saved, onRemove,
                             ))}
                             <div
                               className="detect-grid"
-                              style={{
-                                gridTemplateColumns: `minmax(0, 1.3fr) repeat(${detectView.asked.length}, minmax(0, 1fr))`,
-                              }}
+                              style={{ ["--detect-n" as string]: detectView.asked.length }}
                             >
                               <span className="dg-head">{t("Model")}</span>
                               {detectView.asked.map((a) => (
@@ -1148,7 +1158,7 @@ function ProviderEditorModal({ state, onClose, onAdd, onStatus, saved, onRemove,
                                 </span>
                               ))}
                               {detectView.models.map((md) => (
-                                <div key={md.model} style={{ display: "contents" }}>
+                                <div key={md.model} className="dg-row">
                                   <code className="dg-model" title={md.model}>
                                     {md.model}
                                   </code>
@@ -1245,17 +1255,13 @@ function ProviderEditorModal({ state, onClose, onAdd, onStatus, saved, onRemove,
                     {/* favicon / file-picker demo hints still use detectHint */}
                     {detectHint ? (
                       <div
-                        className="hint"
-                        style={{
-                          color:
-                            detectHint.includes("base URL first") ||
-                            detectHint.includes("先填写") ||
-                            detectHint.includes("type the provider")
-                              ? "var(--red)"
-                              : "var(--muted)",
-                          fontSize: 11.5,
-                          animation: "fade-in .15s var(--ease)",
-                        }}
+                        className={`hint fade${
+                          detectHint.includes("base URL first") ||
+                          detectHint.includes("先填写") ||
+                          detectHint.includes("type the provider")
+                            ? " err"
+                            : ""
+                        }`}
                       >
                         {detectHint}
                       </div>
@@ -1338,62 +1344,63 @@ function ProviderEditorModal({ state, onClose, onAdd, onStatus, saved, onRemove,
 
             {kind === "custom" ? (
               <Field label={t("Icon")}>
-                <div className="stack" style={{ gap: 8 }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
-                    <span className="ic" style={{ width: 36, height: 36, display: "inline-flex", border: "1px solid var(--line)", borderRadius: 8, alignItems: "center", justifyContent: "center" }}>
-                      <img src={iconSrc(pickedIcon)} alt="" width={22} height={22} />
+                <div className="icon-pick">
+                  <span className="icon-now" aria-hidden>
+                    <span className="ic">
+                      <img src={iconSrc(pickedIcon)} alt="" />
                     </span>
-                    <button type="button" className="text" onClick={() => setDetectHint(demoCopy("演示：未打开文件选择器", "Demo: no file picker"))}>
-                      {t("Choose a picture…")}
-                    </button>
-                    <button
-                      type="button"
-                      className="text"
-                      title={t("Look for the icon of the site the base URL is on.")}
-                      onClick={() => {
-                        if (!baseUrl.trim()) {
-                          setDetectHint(t("type the provider's base URL first: its site's icon is looked for there."));
-                          return;
-                        }
-                        setDetectHint(demoCopy("演示：未从网站拉取图标", "Demo: fetched favicon skipped (local)"));
-                      }}
-                    >
-                      {t("From the website")}
-                    </button>
-                    <button
-                      type="button"
-                      className={`text${iconsOpen ? " on" : ""}`}
-                      aria-pressed={iconsOpen}
-                      onClick={() => setIconsOpen((o) => !o)}
-                    >
-                      {t("Built-in icons")}
-                    </button>
-                  </div>
+                  </span>
+                  <button type="button" className="text" onClick={() => setDetectHint(demoCopy("演示：未打开文件选择器", "Demo: no file picker"))}>
+                    {t("Choose a picture…")}
+                  </button>
+                  <button
+                    type="button"
+                    className="text"
+                    title={t("Look for the icon of the site the base URL is on.")}
+                    onClick={() => {
+                      if (!baseUrl.trim()) {
+                        setDetectHint(t("type the provider's base URL first: its site's icon is looked for there."));
+                        return;
+                      }
+                      setDetectHint(demoCopy("演示：未从网站拉取图标", "Demo: fetched favicon skipped (local)"));
+                    }}
+                  >
+                    {t("From the website")}
+                  </button>
+                  <button
+                    type="button"
+                    className={`text${iconsOpen ? " on" : ""}`}
+                    aria-pressed={iconsOpen}
+                    onClick={() => setIconsOpen((o) => !o)}
+                  >
+                    {t("Built-in icons")}
+                  </button>
                   {iconsOpen ? (
-                    <div className="icon-pick" style={{ animation: "fade-in .18s var(--ease)" }}>
+                    <>
                       <input
                         type="search"
                         placeholder={t("Find an icon…")}
                         value={iconQ}
                         onChange={(e) => setIconQ(e.target.value)}
-                        style={{ width: "100%", marginBottom: 8 }}
+                        aria-label={t("Find an icon…")}
                       />
-                      <div className="grid" style={{ gridTemplateColumns: "repeat(auto-fill, minmax(72px, 1fr))", gap: 6, maxHeight: 160, overflow: "auto" }}>
+                      <div className="icon-grid">
                         {BUILTIN_ICONS.filter((id) => !iconQ.trim() || id.toLowerCase().includes(iconQ.trim().toLowerCase())).map((id) => (
                           <button
                             key={id}
                             type="button"
-                            className={`tile${pickedIcon === id ? " on" : ""}`}
+                            className={pickedIcon === id ? "on" : undefined}
                             title={id}
                             onClick={() => setPickedIcon(id)}
-                            style={{ padding: 8 }}
                           >
-                            <img className="ic-img ic" src={iconSrc(id)} alt="" />
-                            <span className="nm"><span className="n" style={{ fontSize: 10 }}>{id.split("-")[0]}</span></span>
+                            <span className="ic">
+                              <img src={iconSrc(id)} alt="" />
+                            </span>
+                            <span className="n">{id.split("-")[0]}</span>
                           </button>
                         ))}
                       </div>
-                    </div>
+                    </>
                   ) : null}
                 </div>
               </Field>
@@ -1412,29 +1419,72 @@ function ProviderEditorModal({ state, onClose, onAdd, onStatus, saved, onRemove,
               }
             >
               {kind === "custom" ? (
-                <div className="stack headers" style={{ gap: 6 }}>
+                <div className="headers">
                   {hdrs.map((h, i) => (
-                    <div
-                      key={i}
-                      className={`pair${h.json ? " col" : ""}`}
-                      style={
-                        h.json
-                          ? { gap: 6, flexDirection: "column", alignItems: "stretch" }
-                          : { gap: 6 }
-                      }
-                    >
-                      <div className="pair" style={{ gap: 6, width: "100%" }}>
-                        <input
-                          type="text"
-                          placeholder={t("Header-Name")}
-                          value={h.name}
-                          onChange={(e) =>
-                            setHdrs((rows) =>
-                              rows.map((r, j) => (j === i ? { ...r, name: e.target.value } : r)),
-                            )
-                          }
-                        />
-                        {!h.json ? (
+                    <div key={i} className={`pair${h.json ? " col" : ""}`}>
+                      {h.json ? (
+                        <div className="hhead">
+                          <input
+                            type="text"
+                            placeholder={t("Header-Name")}
+                            value={h.name}
+                            onChange={(e) =>
+                              setHdrs((rows) =>
+                                rows.map((r, j) => (j === i ? { ...r, name: e.target.value } : r)),
+                              )
+                            }
+                          />
+                          <div className="side">
+                            <button
+                              type="button"
+                              className="text on"
+                              title={t("Collapse to one line")}
+                              onClick={() =>
+                                setHdrs((rows) =>
+                                  rows.map((r, j) => {
+                                    if (j !== i) return r;
+                                    let v = r.value;
+                                    try {
+                                      v = JSON.stringify(JSON.parse(r.value));
+                                    } catch {
+                                      v = r.value.replace(/\s+/g, " ").trim();
+                                    }
+                                    return { ...r, json: false, value: v };
+                                  }),
+                                )
+                              }
+                            >
+                              {"{ }"}
+                            </button>
+                            <button
+                              type="button"
+                              className="text danger"
+                              title={t("Remove header")}
+                              aria-label="Remove"
+                              onClick={() =>
+                                setHdrs((rows) =>
+                                  rows.length <= 1
+                                    ? [{ name: "", value: "" }]
+                                    : rows.filter((_, j) => j !== i),
+                                )
+                              }
+                            >
+                              ×
+                            </button>
+                          </div>
+                        </div>
+                      ) : (
+                        <>
+                          <input
+                            type="text"
+                            placeholder={t("Header-Name")}
+                            value={h.name}
+                            onChange={(e) =>
+                              setHdrs((rows) =>
+                                rows.map((r, j) => (j === i ? { ...r, name: e.target.value } : r)),
+                              )
+                            }
+                          />
                           <input
                             type="text"
                             placeholder={t("value")}
@@ -1445,56 +1495,46 @@ function ProviderEditorModal({ state, onClose, onAdd, onStatus, saved, onRemove,
                               )
                             }
                           />
-                        ) : null}
-                        <div className="side" style={{ display: "flex", gap: 4 }}>
-                          <button
-                            type="button"
-                            className={`text${h.json ? " on" : ""}`}
-                            title={h.json ? t("Collapse to one line") : t("Edit as JSON")}
-                            onClick={() =>
-                              setHdrs((rows) =>
-                                rows.map((r, j) => {
-                                  if (j !== i) return r;
-                                  if (r.json) {
-                                    /* minify: collapse whitespace like Magpie minifyJSON */
+                          <div className="side">
+                            <button
+                              type="button"
+                              className="text"
+                              title={t("Edit as JSON")}
+                              onClick={() =>
+                                setHdrs((rows) =>
+                                  rows.map((r, j) => {
+                                    if (j !== i) return r;
                                     let v = r.value;
                                     try {
-                                      v = JSON.stringify(JSON.parse(r.value));
+                                      v = JSON.stringify(JSON.parse(r.value || "{}"), null, 2);
                                     } catch {
-                                      v = r.value.replace(/\s+/g, " ").trim();
+                                      /* keep as typed */
                                     }
-                                    return { ...r, json: false, value: v };
-                                  }
-                                  let v = r.value;
-                                  try {
-                                    v = JSON.stringify(JSON.parse(r.value || "{}"), null, 2);
-                                  } catch {
-                                    /* keep as typed */
-                                  }
-                                  return { ...r, json: true, value: v };
-                                }),
-                              )
-                            }
-                          >
-                            {"{ }"}
-                          </button>
-                          <button
-                            type="button"
-                            className="text danger"
-                            title={t("Remove header")}
-                            aria-label="Remove"
-                            onClick={() =>
-                              setHdrs((rows) =>
-                                rows.length <= 1
-                                  ? [{ name: "", value: "" }]
-                                  : rows.filter((_, j) => j !== i),
-                              )
-                            }
-                          >
-                            ×
-                          </button>
-                        </div>
-                      </div>
+                                    return { ...r, json: true, value: v };
+                                  }),
+                                )
+                              }
+                            >
+                              {"{ }"}
+                            </button>
+                            <button
+                              type="button"
+                              className="text danger"
+                              title={t("Remove header")}
+                              aria-label="Remove"
+                              onClick={() =>
+                                setHdrs((rows) =>
+                                  rows.length <= 1
+                                    ? [{ name: "", value: "" }]
+                                    : rows.filter((_, j) => j !== i),
+                                )
+                              }
+                            >
+                              ×
+                            </button>
+                          </div>
+                        </>
+                      )}
                       {h.json ? (
                         <textarea
                           className="json"
@@ -1508,7 +1548,6 @@ function ProviderEditorModal({ state, onClose, onAdd, onStatus, saved, onRemove,
                               rows.map((r, j) => (j === i ? { ...r, value: e.target.value } : r)),
                             )
                           }
-                          style={{ width: "100%", fontFamily: "var(--code-font, ui-monospace, monospace)", fontSize: 12 }}
                         />
                       ) : null}
                     </div>
@@ -1522,7 +1561,7 @@ function ProviderEditorModal({ state, onClose, onAdd, onStatus, saved, onRemove,
                   </button>
                 </div>
               ) : (
-                <div className="stack" style={{ gap: 4 }}>
+                <div className="stack">
                   <button type="button" className="text">
                     {t("+ Add header")}
                   </button>
@@ -2146,7 +2185,7 @@ function ProviderEditorModal({ state, onClose, onAdd, onStatus, saved, onRemove,
                     <div className="bar">
             {saved ? (
               <>
-                <button type="button" className="text" style={{ color: "var(--red)" }} onClick={() => onRemove?.()}>
+                <button type="button" className="text danger" onClick={() => onRemove?.()}>
                   {t("Remove")}
                 </button>
                 {onAddAnother ? (
@@ -2182,39 +2221,45 @@ function ProviderEditorModal({ state, onClose, onAdd, onStatus, saved, onRemove,
         </form>
       </div>
       {discardOpen ? (
-        <div
-          className="modal"
-          style={{ zIndex: 40, background: "rgba(20,22,30,.35)" }}
+        <dialog
+          ref={discardRef}
+          className="action-confirm"
+          role="alertdialog"
+          aria-labelledby="discardTitle"
+          aria-describedby="discardMsg"
+          onCancel={(e) => {
+            e.preventDefault();
+            setDiscardOpen(false);
+          }}
           onClick={(e) => {
-            if (e.target === e.currentTarget) setDiscardOpen(false);
+            const r = e.currentTarget.getBoundingClientRect();
+            if (
+              e.target === e.currentTarget &&
+              (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom)
+            ) {
+              setDiscardOpen(false);
+            }
           }}
         >
-          <div className="dialog sm" role="alertdialog" aria-labelledby="discardTitle" style={{ animation: "pop-in .28s var(--ease)", maxWidth: 360 }}>
-            <div className="ehead" style={{ padding: "14px 16px 0" }}>
-              <b id="discardTitle">{t("Discard")}</b>
-            </div>
-            <p style={{ margin: "10px 16px 0", fontSize: 13, color: "var(--fg-2)", lineHeight: 1.45 }}>
-              {t("Discard unsaved changes? Your changes will be lost.")}
-            </p>
-            <div className="bar" style={{ padding: "14px 16px" }}>
-              <span className="grow" />
-              <button type="button" className="text" onClick={() => setDiscardOpen(false)}>
-                {ZH.cancel}
-              </button>
-              <button
-                type="button"
-                className="text"
-                style={{ background: "var(--red)", color: "#fff", borderColor: "var(--red)" }}
-                onClick={() => {
-                  setDiscardOpen(false);
-                  close();
-                }}
-              >
-                {t("Discard")}
-              </button>
-            </div>
+          <h2 id="discardTitle">{t("Discard")}</h2>
+          <p id="discardMsg">{t("Discard unsaved changes? Your changes will be lost.")}</p>
+          <div className="bar">
+            <span className="grow" />
+            <button type="button" className="text" onClick={() => setDiscardOpen(false)}>
+              {ZH.cancel}
+            </button>
+            <button
+              type="button"
+              className="text primary danger-fill"
+              onClick={() => {
+                setDiscardOpen(false);
+                close();
+              }}
+            >
+              {t("Discard")}
+            </button>
           </div>
-        </div>
+        </dialog>
       ) : null}
     </div>
   );

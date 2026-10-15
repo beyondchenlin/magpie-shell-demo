@@ -1040,3 +1040,34 @@ label.tick input { margin: 0; }
   padding-top: 8px;
 }
 .editor .chips { margin-top: 6px; }
+
+
+/* —— v0.1.105 CIS P1: Providers editor layout (Magpie classes) —— */
+.detect-grid {
+  grid-template-columns: minmax(0, 1.3fr) repeat(var(--detect-n, 1), minmax(0, 1fr));
+}
+.detect-grid .dg-row { display: contents; }
+.hint.fade { animation: fade-in .15s var(--ease); }
+.hint.err { color: var(--red); }
+.editor .icon-pick { animation: fade-in .18s var(--ease); }
+.editor .icon-pick .icon-grid button .n {
+  display: block;
+  max-width: 34px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 9px;
+  line-height: 1.1;
+  color: var(--muted);
+  text-align: center;
+}
+.editor .icon-pick .icon-grid button {
+  width: auto;
+  min-width: 34px;
+  height: auto;
+  padding: 4px;
+  flex-direction: column;
+  gap: 2px;
+}
+.editor .bar .text.danger { color: var(--red); }
+.editor .bar .text.danger:hover { background: var(--red-soft); }

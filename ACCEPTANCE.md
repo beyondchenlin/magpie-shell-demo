@@ -1,3 +1,7 @@
+## v0.1.105 CIS_P1_PROVIDERS_EDITOR
+- ProviderEditorModal: icon-pick / headers / discard use Magpie classes (`.icon-pick`, `.headers` `.pair` `.hhead`, `.action-confirm` + showModal + danger-fill). Editor layout inline styles cleared (only `--detect-n` CSS var remains).
+- CIS §10.5 P1 marked done. P2 PrefPick / `.field` open. Outside-editor Providers styles deferred. SIDE_AT=1024. No portable / Vercel.
+
 ## v0.1.104 CIS_P0_SETTINGS_TICK
 - Settings prefs: bare `input.words` / page-local flex styles → `WordsField` + Magpie classes (`.pref-anchor`, `.rule-add`, `.github-token-input`, `.words.full`); redact kinds use `PrefRow`.
 - add-model + Sync/Export: native checkbox + inline `label.tick` styles → `Tick` (Magpie styled checkbox). Editor numeric fields get Magpie class names (`concurrency`, `queue-limit`, …).
