@@ -125,10 +125,16 @@ function demoHasProviders(): boolean {
 
 function readPeerServes(): boolean {
   try {
-    if (new URLSearchParams(location.search).get("rtPeer") === "1") return true;
-    return localStorage.getItem("magpie.routingPeerServes") === "1";
+    const q = new URLSearchParams(location.search).get("rtPeer");
+    if (q === "0") return false;
+    if (q === "1") return true;
+    const ls = localStorage.getItem("magpie.routingPeerServes");
+    if (ls === "0") return false;
+    if (ls === "1") return true;
+    // NOTES responsive 05/09: another magpie serves the gateway (take-over not clicked)
+    return true;
   } catch {
-    return false;
+    return true;
   }
 }
 

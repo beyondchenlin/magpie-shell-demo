@@ -2392,6 +2392,11 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
   const [listQ, setListQ] = useState("");
   const [moveMenu, setMoveMenu] = useState<{ id: string; x: number; y: number } | null>(null);
   const [removeAsk, setRemoveAsk] = useState<{ id: string; name: string } | null>(null);
+  /** NOTES 118: drag-in-motion; Escape cancels (no order change) */
+  const [dragId, setDragId] = useState<string | null>(null);
+  const dragOriginRef = useRef<string[] | null>(null);
+  const dragCurRef = useRef<string[] | null>(null);
+  const dragPtrRef = useRef<number | null>(null);
   /** ChatGPT / ChatGPT API / Gemini CLI — no risk card; browser wall (NOTES 74–79) */
   type BrowserSign = null | {
     id: "codex" | "chatgpt-api" | "gemini-cli";
@@ -2413,17 +2418,29 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
     // NOTES 93/116: after last Remove, stay on empty list (+ Add provider) — do not reopen first-provider sheet
   }, [demoProvs]);
   useEffect(() => {
-    if (!moveMenu && !removeAsk) return;
+    if (!moveMenu && !removeAsk && !dragId) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== "Escape") return;
       e.preventDefault();
       e.stopPropagation();
       setMoveMenu(null);
       setRemoveAsk(null);
+      if (dragId && dragOriginRef.current) {
+        // NOTES 118: Escape cancels drop — restore insertion order
+        const origin = dragOriginRef.current;
+        setDemoProvs((list) => {
+          const byId = new Map(list.map((x) => [x.id, x]));
+          return origin.map((id) => byId.get(id)).filter(Boolean) as typeof list;
+        });
+        setDragId(null);
+        dragOriginRef.current = null;
+        dragCurRef.current = null;
+        dragPtrRef.current = null;
+      }
     };
     document.addEventListener("keydown", onKey, true);
     return () => document.removeEventListener("keydown", onKey, true);
-  }, [moveMenu, removeAsk]);
+  }, [moveMenu, removeAsk, dragId]);
   const findRef = useRef<HTMLInputElement>(null);
   const listFindRef = useRef<HTMLInputElement>(null);
   const f = q.trim().toLowerCase();
@@ -2630,7 +2647,11 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
             <span className="grow" />
           </div>
         ) : null}
-        <div className="list" id="providers" hidden={sheetOpen || !demoProvs.some((p) => !p.off)}>
+        <div
+          className={`list${dragId ? " sorting" : ""}`}
+          id="providers"
+          hidden={sheetOpen || !demoProvs.some((p) => !p.off)}
+        >
           {demoProvs
             .filter((pv) => !pv.off)
             .filter((pv) => !lf || pv.name.toLowerCase().includes(lf) || pv.id.toLowerCase().includes(lf))
@@ -2648,10 +2669,25 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
               const selected = listEditId === pv.id;
               return (
                 <div
-                  className={`row provider${selected ? " selected" : ""}`}
+                  className={`row provider${selected ? " selected" : ""}${dragId === pv.id ? " dragging" : ""}`}
                   key={pv.id}
                   data-id={pv.id}
+                  onPointerEnter={() => {
+                    if (!dragId || dragId === pv.id) return;
+                    // Live reorder under the lifted row while dragging
+                    setDemoProvs((list) => {
+                      const from = list.findIndex((x) => x.id === dragId);
+                      const to = list.findIndex((x) => x.id === pv.id);
+                      if (from < 0 || to < 0 || from === to) return list;
+                      const next = [...list];
+                      const [row] = next.splice(from, 1);
+                      next.splice(to, 0, row);
+                      dragCurRef.current = next.map((x) => x.id);
+                      return next;
+                    });
+                  }}
                   onClick={() => {
+                    if (dragId) return;
                     // NOTES 91: row opens saved editor
                     setListEditId(pv.id);
                     if (LOCAL_PRESETS[pv.id] || pv.keyKind === "none" || pv.keyKind === "free") {
@@ -2677,15 +2713,44 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
                 >
                   <button
                     type="button"
-                    className="ag-handle pv-handle"
+                    className={`ag-handle pv-handle${dragId === pv.id ? " open" : ""}`}
                     aria-label={t("Arrange {agent}", { agent: pv.name })}
                     title={t(
                       "Drag to reorder — a model several providers serve goes to the higher one first · Alt+↑/↓ to move · right-click to move it to the top or the bottom",
                     )}
                     onClick={(e) => e.stopPropagation()}
+                    onPointerDown={(e) => {
+                      if (e.button !== 0) return;
+                      e.preventDefault();
+                      e.stopPropagation();
+                      (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+                      dragPtrRef.current = e.pointerId;
+                      const ids = demoProvs.map((x) => x.id);
+                      dragOriginRef.current = ids;
+                      dragCurRef.current = ids;
+                      setDragId(pv.id);
+                      setMoveMenu(null);
+                    }}
+                    onPointerUp={(e) => {
+                      if (dragPtrRef.current !== e.pointerId) return;
+                      try {
+                        (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
+                      } catch {
+                        /* */
+                      }
+                      const origin = dragOriginRef.current;
+                      const cur = dragCurRef.current;
+                      const changed = !!origin && !!cur && origin.join() !== cur.join();
+                      setDragId(null);
+                      dragOriginRef.current = null;
+                      dragCurRef.current = null;
+                      dragPtrRef.current = null;
+                      if (changed) onStatus(t("Provider order saved"), "ok");
+                    }}
                     onContextMenu={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
+                      if (dragId) return;
                       setMoveMenu({ id: pv.id, x: e.clientX, y: e.clientY });
                     }}
                   >

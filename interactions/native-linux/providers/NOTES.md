@@ -331,3 +331,28 @@ Providers tab, empty list, + Add provider. No provider, no key, no GitHub window
 - 删光后默认空列表 + Add provider。
 - 跳过仍薄：collapsed tip「Show the providers turned off」打磨、拖拽动效、需真登录的账号折层。
 - demo 消费（v0.1.90）：无 portable、无 Vercel。
+
+## Collapsed fold tip and drag (117–118)
+
+Same Magpie, pid **1871993**. Window **752×652 at +200+40** (id 85983247). Shots are ffmpeg x11grab. **117** is widened to the left (980×690 from +120+10) so the tooltip that draws outside the frame is whole, same as 106 / 110 / 112. Probes were local Ollama and LM Studio, keys still `""`. No OAuth. Save, Add, and Sign in were not clicked.
+
+The fold remembered open (`magpie.offProvidersOpen`), so turning LM Studio off showed the row under **TURNED OFF 1**. One click on the fold collapsed it (chevron points right, the row hides).
+
+| shot | what |
+|---|---|
+| 117 | Collapsed fold, pointer on **TURNED OFF 1**. Tooltip **Show the providers turned off**. A 752×652 grab clips the leading S; this frame includes it. Ollama stays on above the fold. |
+| 118 | Drag in motion. Pointer on LM Studio's handle, grip showing, that row lifted above Ollama. Escape cancelled the drop, so `providers.json` kept insertion order and no `"order"` key. The click that ends a drag opened the LM Studio editor once; nothing was typed. Escape closed it clean (no Discard). |
+
+Both probes were then removed (`magpie provider rm`). The file ends `{ "providers": [] }`. No order leftover, no key.
+
+## Left state (after 118)
+
+Providers tab. Opening it again with nothing saved shows **ADD YOUR FIRST PROVIDER** (the empty add sheet). Search empty. No provider, no key, no sign-in. Magpie still pid **1871993**, window **752×652 at +200+40**. Not resized at the end, not quit.
+
+## Still thin
+
+Account fold (a signed-in subscription's accounts row) needs a finished sign-in. Approve / Finish sign-in was not clicked. Copilot device-code, ChatGPT, and Gemini CLI stay cancelled from 74–104.
+
+## demo 对齐（117–118）· v0.1.91 FOLD_TIP_DRAG_DONE
+- 收起 TURNED OFF tip：**Show the providers turned off**（752 左缘可裁）。
+- 拖动中：手柄抬起、行间插入；Escape 取消落点（不改 order）。

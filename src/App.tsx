@@ -142,13 +142,19 @@ export default function App() {
   }, [applyChrome]);
 
   // NOTES 178–183: colorblind chart palette survives leaving Settings
+  // NOTES responsive: textSize 110% is Magpie default — apply before Settings mounts
   useEffect(() => {
     try {
       const raw = localStorage.getItem("magpie.demoPrefs");
-      const p = raw ? (JSON.parse(raw) as { colorblind?: boolean }) : {};
+      const p = raw ? (JSON.parse(raw) as { colorblind?: boolean; textSize?: number }) : {};
       applyColorblind(!!p.colorblind);
+      const n = typeof p.textSize === "number" ? p.textSize : 110;
+      document.documentElement.style.setProperty("--zoom", String(n / 100));
+      document.documentElement.style.zoom = String(n / 100);
     } catch {
       applyColorblind(false);
+      document.documentElement.style.setProperty("--zoom", "1.1");
+      document.documentElement.style.zoom = "1.1";
     }
   }, []);
 
