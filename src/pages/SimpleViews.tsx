@@ -147,6 +147,8 @@ const LED_METRIC = [
   ["calls", "Calls"],
   ["tokens", "Tokens"],
   ["cost", "Cost"],
+  // Magpie LED_TREND app.js L17866–68 — window chart includes Speed (#860)
+  ["speed", "Speed"],
 ] as const;
 
 const LED_SPLIT = [

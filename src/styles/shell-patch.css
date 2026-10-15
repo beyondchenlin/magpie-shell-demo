@@ -791,6 +791,7 @@ label.tick input { margin: 0; }
    context.js shareBar L834–844 / score bar L865–868).
    Restore Magpie context.css k-* (not invent c1… palette).
    v0.1.162: drop invent us-miniplot → Magpie led-chart SVG (app.js drawLedColumns).
+   v0.1.164: LedChart speed marks/stems (metric===speed; Magpie L18030–55).
    Keep nest bridges still live: us-empty pad, period-wrap/usage-refresh relative
    for pops, pm-headrow wrap. */
 #view-usage .usage-refresh,

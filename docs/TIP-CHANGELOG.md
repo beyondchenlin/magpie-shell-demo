@@ -1,3 +1,13 @@
+## v0.1.164 · LED_SPEED_MARKS_STEMS_OSS_FIDELITY · 2026-10-16 Asia/Shanghai
+
+- **WHY:** Continue Magpie led-chart after 0.1.163 day-pick — restore Speed metric marks/stems that Magpie draws when `metric===speed` (speeds don't stack; pill track + per-category marks; leader stems when a mark is above the day's aggregate).
+- **CAUSE:** v0.1.162–163 restored stacked columns + day-pick but deferred Magpie drawLedColumns **L17974–76** / **L18030–55** (`rect.col.all` track, `rect.col.mark`, `line.stem`) and LED_TREND Speed seg (**L17866–68**).
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; Magpie SVG led-chart + `.led-day` pick (0.1.162–163); skip oauth Approve wall. `drawLedRank` hover emphasize (empty `#ledRank` list) still deferred.
+- **Cite:** Magpie app.js `ledSpeed` **L17884**; `drawLedColumns` speed branch **L17974–76**, **L18030–55**; tip All/TTFT **L18084–96**; app.css **L1130–1135** `.col.all` / `line.stem`.
+- **WHAT changed:** demo trend parts/points get `decode_*` / `ttft_*`; `LedChart` speed path; Usage metric Segs + `Speed`.
+- **chrome-guard:** pass. Push/PR #1. No portable/Vercel.
+
+---
 ## v0.1.163 · LED_DAY_PICK_OSS_FIDELITY · 2026-10-16 Asia/Shanghai
 
 - **WHY:** Continue Magpie 1:1 after 0.1.162 SVG `led-chart` — restore Magpie day-column pick that was deferred (`.led-day` / selected hot / dim non-picked days).

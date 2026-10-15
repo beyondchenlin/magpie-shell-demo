@@ -641,20 +641,52 @@ export function tokensOf(u: { input: number; output: number }): number {
 }
 
 /** Magpie ledger trend series point — app.js drawLedColumns `l.series` shape (demo). */
-export type LedTrendPart = { calls: number; tokens: number; cost: number; name?: string };
+export type LedTrendPart = {
+  calls: number;
+  tokens: number;
+  cost: number;
+  name?: string;
+  /** Magpie usage.Totals.Speed fields — ledSpeed (app.js L17884). */
+  decode_out?: number;
+  decode_ms?: number;
+  timed?: number;
+  ttft_ms?: number;
+};
 export type LedTrendPoint = {
   time: string; // ISO day or hour
   calls: number;
   tokens: number;
   cost: number;
+  decode_out?: number;
+  decode_ms?: number;
+  timed?: number;
+  ttft_ms?: number;
   by: Record<string, Record<string, LedTrendPart>>;
 };
-export type LedTrendCat = { id: string; name: string; calls: number; tokens: number; cost: number };
+export type LedTrendCat = {
+  id: string;
+  name: string;
+  calls: number;
+  tokens: number;
+  cost: number;
+  decode_out?: number;
+  decode_ms?: number;
+};
 export type LedTrend = {
   bucket: "hour" | "day";
   series: LedTrendPoint[];
   by: Record<string, LedTrendCat[]>;
 };
+
+/** Magpie app.js ledSpeed L17884 — tok/s after first token; 0 if none timed. */
+export function ledSpeed(x: { decode_ms?: number; decode_out?: number } | undefined): number {
+  return x && x.decode_ms && x.decode_ms > 0 ? (1000 * (x.decode_out || 0)) / x.decode_ms : 0;
+}
+
+/** Magpie app.js ledTTFT L17910 */
+export function ledTTFT(x: { timed?: number; ttft_ms?: number } | undefined): number {
+  return x && x.timed && x.timed > 0 ? (x.ttft_ms || 0) / x.timed : 0;
+}
 
 const emptyPart = (): LedTrendPart => ({ calls: 0, tokens: 0, cost: 0 });
 
@@ -674,11 +706,15 @@ export function buildDemoLedTrend(): LedTrend {
     calls: number,
     tokens: number,
     cost: number,
+    decode_out: number,
+    decode_ms: number,
   ) => {
-    const g = map.get(id) || { id, name, calls: 0, tokens: 0, cost: 0 };
+    const g = map.get(id) || { id, name, calls: 0, tokens: 0, cost: 0, decode_out: 0, decode_ms: 0 };
     g.calls += calls;
     g.tokens += tokens;
     g.cost += cost;
+    g.decode_out = (g.decode_out || 0) + decode_out;
+    g.decode_ms = (g.decode_ms || 0) + decode_ms;
     map.set(id, g);
   };
 
@@ -702,16 +738,25 @@ export function buildDemoLedTrend(): LedTrend {
       calls: number,
       tokens: number,
       cost: number,
+      decode_out: number,
+      decode_ms: number,
+      ttft_ms: number,
+      timed: number,
     ) => {
       const p = bag[id] || emptyPart();
       p.calls += calls;
       p.tokens += tokens;
       p.cost += cost;
+      p.decode_out = (p.decode_out || 0) + decode_out;
+      p.decode_ms = (p.decode_ms || 0) + decode_ms;
+      p.ttft_ms = (p.ttft_ms || 0) + ttft_ms;
+      p.timed = (p.timed || 0) + timed;
       p.name = name;
       bag[id] = p;
     };
 
     // 2–3 synthetic slices per day so stacked columns match Magpie split gold
+    // speedTok: varied so some marks sit above the day's aggregate (stems, #860)
     const slices = [
       {
         agent: hit?.agent || "claude",
@@ -719,6 +764,7 @@ export function buildDemoLedTrend(): LedTrend {
         model: hit?.served || hit?.req || "claude-sonnet-4-5",
         provider: hit?.providerName || "Anthropic",
         w: 0.55 + (seed % 3) * 0.05,
+        speedTok: 72 + (seed % 5) * 4,
       },
       {
         agent: "codex",
@@ -726,6 +772,7 @@ export function buildDemoLedTrend(): LedTrend {
         model: "gpt-5",
         provider: "OpenAI",
         w: 0.28 + (seed % 2) * 0.04,
+        speedTok: 95 + (seed % 4) * 8,
       },
       {
         agent: "opencode",
@@ -733,11 +780,16 @@ export function buildDemoLedTrend(): LedTrend {
         model: "gemini-2.5-pro",
         provider: "Google",
         w: 0.12,
+        speedTok: 130 + (seed % 3) * 18,
       },
     ];
     let calls = 0;
     let tokens = 0;
     let cost = 0;
+    let decode_out = 0;
+    let decode_ms = 0;
+    let ttft_ms = 0;
+    let timed = 0;
     const baseCalls = Math.max(1, Math.round((2 + (seed % 4)) * scale));
     const baseTok = Math.round((hit ? hit.in + hit.out : 8000) * scale * (0.5 + (seed % 5) * 0.1));
     const baseCost = (hit?.cost || 0.04) * scale * (0.6 + (seed % 4) * 0.12);
@@ -746,21 +798,34 @@ export function buildDemoLedTrend(): LedTrend {
       const tok = Math.max(0, Math.round(baseTok * s.w));
       const $ = Math.round(baseCost * s.w * 10000) / 10000;
       if (!(c || tok || $)) continue;
-      addPart(agents, s.agent, s.agentName, c, tok, $);
-      addPart(models, s.model, s.model, c, tok, $);
-      addPart(providers, s.provider, s.provider, c, tok, $);
-      bump(byAgent, s.agent, s.agentName, c, tok, $);
-      bump(byModel, s.model, s.model, c, tok, $);
-      bump(byProvider, s.provider, s.provider, c, tok, $);
+      // Magpie decode_out ≈ streamed completion tokens; ms from target tok/s
+      const dout = Math.max(1, Math.round(tok * 0.22));
+      const dms = Math.max(1, Math.round((1000 * dout) / s.speedTok));
+      const tms = Math.round((180 + (seed % 7) * 40) * c);
+      const tn = Math.max(1, c);
+      addPart(agents, s.agent, s.agentName, c, tok, $, dout, dms, tms, tn);
+      addPart(models, s.model, s.model, c, tok, $, dout, dms, tms, tn);
+      addPart(providers, s.provider, s.provider, c, tok, $, dout, dms, tms, tn);
+      bump(byAgent, s.agent, s.agentName, c, tok, $, dout, dms);
+      bump(byModel, s.model, s.model, c, tok, $, dout, dms);
+      bump(byProvider, s.provider, s.provider, c, tok, $, dout, dms);
       calls += c;
       tokens += tok;
       cost += $;
+      decode_out += dout;
+      decode_ms += dms;
+      ttft_ms += tms;
+      timed += tn;
     }
     series.push({
       time: iso + "T12:00:00",
       calls,
       tokens,
       cost: Math.round(cost * 10000) / 10000,
+      decode_out,
+      decode_ms,
+      ttft_ms,
+      timed,
       by: { agent: agents, model: models, provider: providers },
     });
   }

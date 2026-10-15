@@ -1,3 +1,10 @@
+## v0.1.164 · LED_SPEED_MARKS_STEMS_OSS_FIDELITY · 2026-10-16 Asia/Shanghai
+
+- **WHY:** Magpie led-chart Speed metric — pill track + category marks + leader stems (`metric===speed`).
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; day-pick (0.1.163); skip oauth Approve wall; drawLedRank emphasize deferred.
+- **Cite:** Magpie app.js drawLedColumns **L17974–76** / **L18030–55**; ledSpeed **L17884**; app.css **L1130–1135**.
+- **chrome-guard:** pass. Push/PR #1. No portable/Vercel.
+
 ## v0.1.163 · LED_DAY_PICK_OSS_FIDELITY · 2026-10-16 Asia/Shanghai
 
 - **WHY:** Continue Magpie led-chart after 0.1.162 — restore day-column pick (`.led-day`) + selected `.hot` + dim other days (`emphasize(null)` when `l.day` set).
