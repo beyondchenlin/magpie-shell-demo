@@ -1,3 +1,17 @@
+## v0.1.175 · DETECT_GRID_FLAT_OSS · 2026-10-16 Asia/Shanghai
+
+- **WHY:** Hard invent audit — clear Magpie-faithful invent in Providers Detect APIs: tip wrapped each model in invent `div.dg-row` + shell-patch `.detect-grid .dg-row { display: contents }`. Magpie OSS appends `code.dg-model` and `span.dg-cell` **directly** onto `div.detect-grid` (no row wrapper).
+- **CAUSE:** React map convenience invented a per-model row; Magpie CSS grid places cells as direct children (`gridTemplateColumns` inline from asked APIs).
+- **Cite:**
+  - Magpie `app.js` **L10023–45** `el("div","detect-grid")` → append `dg-head`s, then per model `dg-model` + cells
+  - Magpie `app.css` **L2902–09** `.detect-grid` / `.dg-head` / `.dg-model` / `.dg-cell*` — **no** `.dg-row`
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; skip oauth Approve wall; tip `--detect-n` CSS var (app.css) as React stand-in for Magpie inline columns.
+- **WHAT changed:**
+  - `ProvidersView.tsx`: Fragment flatten — drop invent `dg-row`.
+  - `shell-patch.css`: delete invent `.detect-grid` column override + `.dg-row { display: contents }` (columns already in app.css via `--detect-n`).
+- **Remaining invent (weak/skip):** oauth Approve wall (nest=browser); `rt-flier-demo`; `win-caption*`; intentional `lib-hook*` / `pref-anchor` React bridges; weak: `ctx-empty-dash` on Magpie `ctx-none`; `period-wrap` / `led-q-wrap`; `pm-find-clear` vs Magpie native search cancel; `ic-img` vs Magpie `span.ic>img`; `rt-peer` / `rt-fade` extras.
+- **Guard:** `npm run chrome-guard`. No portable. No manual Vercel.
+
 ## v0.1.174 · PM_HEAD_FOLDER_ROW_OSS · 2026-10-16 Asia/Shanghai
 
 - **WHY:** Drop invent Plugins/ProtoMenu wrappers `pm-headrow` + invent folder-picker `pm-folder-row` dialog; restore Magpie `pm-head` / system `.pm-browse` choose.

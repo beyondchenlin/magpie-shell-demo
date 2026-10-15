@@ -681,10 +681,8 @@ label.tick input { margin: 0; }
 
 
 /* —— v0.1.105 CIS P1: Providers editor layout (Magpie classes) —— */
-.detect-grid {
-  grid-template-columns: minmax(0, 1.3fr) repeat(var(--detect-n, 1), minmax(0, 1fr));
-}
-.detect-grid .dg-row { display: contents; }
+/* Magpie sets detect-grid columns inline (app.js L10024); tip keeps --detect-n in app.css.
+   v0.1.175: drop invent .dg-row display:contents — Magpie flattens dg-model/dg-cell onto grid. */
 .hint.fade { animation: fade-in .15s var(--ease); }
 .hint.err { color: var(--red); }
 /* v0.1.131: drop invent .icon-pick fade-in .18s — Magpie app.css L2696 no animation */

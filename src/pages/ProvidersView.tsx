@@ -1,4 +1,5 @@
 import {
+  Fragment,
   useEffect,
   useMemo,
   useRef,
@@ -1121,8 +1122,9 @@ function ProviderEditorModal({ state, onClose, onAdd, onStatus, saved, onRemove,
                                   {a.label}
                                 </span>
                               ))}
+                              {/* Magpie app.js L10034–45: flat dg-model + dg-cell on detect-grid (no invent dg-row) */}
                               {detectView.models.map((md) => (
-                                <div key={md.model} className="dg-row">
+                                <Fragment key={md.model}>
                                   <code className="dg-model" title={md.model}>
                                     {md.model}
                                   </code>
@@ -1167,7 +1169,7 @@ function ProviderEditorModal({ state, onClose, onAdd, onStatus, saved, onRemove,
                                       </span>
                                     </span>
                                   ))}
-                                </div>
+                                </Fragment>
                               ))}
                             </div>
                             {detectView.truncated ? (

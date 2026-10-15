@@ -1,3 +1,10 @@
+## v0.1.175 · DETECT_GRID_FLAT_OSS · 2026-10-16 Asia/Shanghai
+
+- **WHY:** Drop invent Providers Detect APIs row wrapper `dg-row` (+ shell-patch `display: contents`); restore Magpie flat `detect-grid` children (`dg-model` + `dg-cell`).
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; skip oauth Approve wall; `--detect-n` column count (React stand-in for Magpie inline `gridTemplateColumns`).
+- **Cite:** Magpie app.js **L10023–45** `detect-grid` append name then cells (no row); app.css **L2902–09** `.detect-grid` / `.dg-head` / `.dg-model` / `.dg-cell` (no `.dg-row`).
+- **chrome-guard:** pass. Push/PR #1. No portable/Vercel.
+
 ## v0.1.174 · PM_HEAD_FOLDER_ROW_OSS · 2026-10-16 Asia/Shanghai
 
 - **WHY:** invent `pm-headrow` / `pm-folder-row` → Magpie `pm-head` + `.pm-browse`/`plugins/choose`.
