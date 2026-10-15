@@ -1,3 +1,20 @@
+## v0.1.165 · LED_RANK_EMPHASIZE_OSS_FIDELITY · 2026-10-16 Asia/Shanghai
+
+- **WHY:** Continue Magpie led-chart after 0.1.164 — restore empty `#ledRank` with Magpie `drawLedRank` + hover `box.emphasize` that dims non-matching chart columns.
+- **CAUSE:** v0.1.162–164 restored SVG columns / day-pick / speed marks but left `<div id="ledRank" />` empty and deferred Magpie rank list + `box.chart?.emphasize?.(id)` (app.js **L18126–18189**, **L18174–75**, **L18107–17**; wired at **L18323–39**).
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; Magpie led-chart day-pick + speed marks/stems (0.1.163–164); skip oauth Approve wall. Custom `#ledRail` scrollbar deferred.
+- **Cite:**
+  - Magpie `app.js` **17490** `ledSplit = "model"` default
+  - Magpie `app.js` **17915** `ledRankValue`; **17932–17936** `ledCategories` top/rest/list + `LED_SHOWN=7`
+  - Magpie `app.js` **18107–17** `box.emphasize(key)` — dimDay faint + opacity `.22` when day|key miss
+  - Magpie `app.js` **18126–18189** `drawLedRank`: `.rk` / `.rk-a` / `.rk-bar` / `.rk-b` / Other plain
+  - Magpie `app.js` **18174–75** pointerenter/leave → `emphasize(id|null)`
+  - Magpie `app.js` **18323–39** `rank.chart = chart`; choose toggles provider/agent/model filter
+  - Magpie `app.css` **1147–1171** `.led-rank` / `.rk` / more-above|below masks
+- **WHAT changed:** `LedChart.tsx` `emphasizeKey` + export `LedRank`; `SimpleViews` wire rank + pick filter + Magpie default split `model`; `ledCategories` returns rest/list.
+- **chrome-guard:** pass. Push/PR #1. No portable/Vercel.
+
+---
 ## v0.1.164 · LED_SPEED_MARKS_STEMS_OSS_FIDELITY · 2026-10-16 Asia/Shanghai
 
 - **WHY:** Continue Magpie led-chart after 0.1.163 day-pick — restore Speed metric marks/stems that Magpie draws when `metric===speed` (speeds don't stack; pill track + per-category marks; leader stems when a mark is above the day's aggregate).

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import {
   buildDemoLedTrend,
   fmtCost,
@@ -84,15 +84,28 @@ function ledTick(p: LedTrendPoint, bucket: LedTrend["bucket"]): string {
   return d.toLocaleDateString(undefined, { month: "numeric", day: "numeric" });
 }
 
+/** Magpie app.js ledGroupSpeed L17890 — demo: measured tok/s only (no floor_n). */
+function ledGroupSpeed(x: { decode_ms?: number; decode_out?: number } | undefined): { v: number; text: string; title: string } | null {
+  const v = ledSpeed(x);
+  if (!v) return null;
+  return { v, text: t("{n} tok/s", { n: fmtN(Math.round(v)) }), title: "" };
+}
+
+/** Magpie app.js ledRankValue L17915 */
+function ledRankValue(m: Metric, x: LedTrendCat): number {
+  return m === "speed" ? ledGroupSpeed(x)?.v || 0 : ledValue(m, x);
+}
+
+type RankCat = LedTrendCat & { color: string };
+
 /** Magpie app.js ledCategories L17932–17936 */
-function ledCategories(l: LedTrend, split: string, metric: Metric): { top: (LedTrendCat & { color: string })[] } {
+function ledCategories(l: LedTrend, split: string, metric: Metric): { top: RankCat[]; rest: LedTrendCat[]; list: LedTrendCat[] } {
   if (split === "none" || !l.by[split]) {
-    return { top: [] };
+    return { top: [], rest: [], list: [] };
   }
-  // Magpie ledCategories L17932 — ledRankValue; demo uses ledValue (speed→ledSpeed)
-  const list = (l.by[split] || []).slice().sort((a, b) => ledValue(metric, b) - ledValue(metric, a) || b.tokens - a.tokens);
+  const list = (l.by[split] || []).slice().sort((a, b) => ledRankValue(metric, b) - ledRankValue(metric, a) || b.tokens - a.tokens);
   const top = list.slice(0, LED_SHOWN).map((x, i) => ({ ...x, color: `var(--c${i + 1})` }));
-  return { top };
+  return { top, rest: list.slice(LED_SHOWN), list };
 }
 
 type Seg = {
@@ -112,15 +125,16 @@ type TipRow = { name: string; color: string; v: number; ttft?: number };
 
 /**
  * Magpie Usage `#ledChart` — drawLedColumns L17962–18118
- * (+ day-pick L18013–14 / L18062–69 / L18107–18; speed marks/stems L18030–55).
+ * (+ day-pick L18013–14 / L18062–69 / L18107–18; speed marks/stems L18030–55;
+ *  box.emphasize from drawLedRank L18107–17 / L18174–75).
  * Structure: .led-chart > .plot > svg (.grid/.axis/.hot/.col/.mark/.stem/.led-day) + .tip
- * Deferred: drawLedRank hover emphasize (rank list).
  */
 export function LedChart({
   metric,
   split,
   day = "",
   onChooseDay,
+  emphasizeKey = null,
 }: {
   metric: string;
   split: string;
@@ -128,6 +142,8 @@ export function LedChart({
   day?: string;
   /** Magpie `box.chooseDay` — toggle day; omit → chart not selectable. */
   onChooseDay?: (day: string) => void;
+  /** Magpie `box.emphasize(key)` from rank hover — dim non-matching `data-k` (app.js L18107–17). */
+  emphasizeKey?: string | null;
 }) {
   const l = useMemo(() => buildDemoLedTrend(), []);
   const plotRef = useRef<HTMLDivElement>(null);
@@ -386,10 +402,11 @@ export function LedChart({
                 />
               ) : null}
               {drawn.segs.map((s, i) => {
-                // Magpie box.emphasize(null) L18107–17: dim non-picked days (stem→stroke)
+                // Magpie box.emphasize L18107–17: dimDay → faint fill; day|key miss → opacity .22
                 const dimDay = !!(day && s.day !== day);
+                const dimKey = emphasizeKey != null && s.key !== emphasizeKey;
                 const color = dimDay ? "var(--faint)" : s.color;
-                const opacity = dimDay ? 0.22 : undefined;
+                const opacity = dimDay || dimKey ? 0.22 : undefined;
                 if (s.kind === "stem") {
                   return (
                     <line
@@ -489,6 +506,143 @@ export function LedChart({
           </>
         ) : null}
       </div>
+    </div>
+  );
+}
+
+/**
+ * Magpie Usage `#ledRank` — drawLedRank L18126–18189
+ * (+ hover → chart.emphasize L18174–75; click → choose filter L18327–39).
+ * Structure: .led-rank > button.rk[.on|.plain] > .rk-a / .rk-bar / .rk-b
+ */
+export function LedRank({
+  metric,
+  split,
+  picked = "",
+  onChoose,
+  onEmphasize,
+}: {
+  metric: string;
+  split: string;
+  /** Magpie `picked` — filter id currently listed (provider / agent / model). */
+  picked?: string;
+  /** Magpie `choose(x)` — toggle that category in the Requests list. */
+  onChoose?: (id: string) => void;
+  /** Magpie `box.chart?.emphasize?.(id|null)` on rank pointer enter/leave. */
+  onEmphasize?: (id: string | null) => void;
+}) {
+  const l = useMemo(() => buildDemoLedTrend(), []);
+  const boxRef = useRef<HTMLDivElement>(null);
+  const m = (
+    metric === "cost" || metric === "calls" || metric === "tokens" || metric === "speed" ? metric : "tokens"
+  ) as Metric;
+
+  const { top, rest, list } = useMemo(() => ledCategories(l, split, m), [l, split, m]);
+
+  // Magpie ledRankEdges L18193–96 — fade when more rows above/below
+  useEffect(() => {
+    const box = boxRef.current;
+    if (!box) return;
+    const sync = () => {
+      const end = box.scrollHeight - box.clientHeight;
+      box.classList.toggle("more-above", end > 1 && box.scrollTop > 1);
+      box.classList.toggle("more-below", end > 1 && box.scrollTop < end - 1);
+    };
+    sync();
+    box.addEventListener("scroll", sync, { passive: true });
+    const ro = new ResizeObserver(sync);
+    ro.observe(box);
+    return () => {
+      box.removeEventListener("scroll", sync);
+      ro.disconnect();
+    };
+  }, [top, rest, list.length]);
+
+  if (!list.length) {
+    return <div className="led-rank" id="ledRank" ref={boxRef} />;
+  }
+
+  const sum = list.reduce((a, x) => a + ledValue(m, x), 0) || 1;
+  const leader = Math.max(1, ledRankValue(m, top[0]));
+
+  const one = (x: LedTrendCat & { color?: string }, color: string, plain: boolean) => {
+    const v = ledRankValue(m, x);
+    const gs = ledGroupSpeed(x);
+    const on = !!(picked && picked === x.id);
+    const more: ReactNode[] = [];
+    if (m !== "calls") more.push(t(x.calls === 1 ? "{n} request" : "{n} requests", { n: fmtN(x.calls) }));
+    if (m !== "tokens") more.push(t("{n} tokens", { n: fmtN(x.tokens) }));
+    if (m !== "cost" && x.cost) more.push(fmtCost(x.cost));
+    if (m !== "speed" && gs) {
+      more.push(
+        <span key="spd" className="rk-speed" title={gs.title || undefined}>
+          {gs.text}
+        </span>,
+      );
+    }
+    if (m !== "speed") more.push(Math.round((100 * v) / sum) + "%");
+
+    return (
+      <button
+        key={x.id}
+        type="button"
+        className={"rk" + (plain ? " plain" : "") + (on ? " on" : "")}
+        onClick={plain ? undefined : () => onChoose?.(x.id)}
+        onPointerEnter={plain ? undefined : () => onEmphasize?.(x.id)}
+        onPointerLeave={plain ? undefined : () => onEmphasize?.(null)}
+      >
+        <div className="rk-a">
+          <i className="rk-sw" style={{ background: color }} />
+          <span className="rk-nm" title={t(x.name || x.id || "")}>
+            {t(x.name || x.id || "—")}
+          </span>
+          <span className="rk-val" title={m === "speed" && gs?.title ? gs.title : undefined}>
+            {m === "speed" ? gs?.text || "—" : ledFormatLong(m, v)}
+          </span>
+        </div>
+        <div className="rk-bar">
+          <i style={{ width: Math.max(1.5, (100 * v) / leader).toFixed(1) + "%", background: color }} />
+        </div>
+        <div className="rk-b">
+          {more.map((part, i) => (
+            <span key={i}>
+              {i ? " · " : null}
+              {part}
+            </span>
+          ))}
+        </div>
+      </button>
+    );
+  };
+
+  let other: (LedTrendCat & { color?: string }) | null = null;
+  if (rest.length) {
+    const tot = rest.reduce(
+      (acc, x) => {
+        acc.calls += x.calls || 0;
+        acc.tokens += x.tokens || 0;
+        acc.cost += x.cost || 0;
+        acc.decode_out = (acc.decode_out || 0) + (x.decode_out || 0);
+        acc.decode_ms = (acc.decode_ms || 0) + (x.decode_ms || 0);
+        return acc;
+      },
+      {
+        id: "\0other",
+        name: t("Other ({n})", { n: rest.length }),
+        calls: 0,
+        tokens: 0,
+        cost: 0,
+        decode_out: 0,
+        decode_ms: 0,
+      } as LedTrendCat,
+    );
+    other = tot;
+  }
+
+  return (
+    <div className="led-rank" id="ledRank" ref={boxRef}>
+      {top.map((x) => one(x, x.color, false))}
+      {other ? one(other, "var(--faint)", true) : null}
     </div>
   );
 }

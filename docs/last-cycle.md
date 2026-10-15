@@ -1,7 +1,7 @@
 # last-cycle
-- tip: v0.1.164 LED_SPEED_MARKS_STEMS_OSS_FIDELITY
-- WHY: Magpie led-chart speed marks/stems (metric===speed)
-- WHAT kept: SIDE_AT=1024; nest 752; skip oauth Approve wall; drawLedRank hover emphasize deferred
-- Cite: app.js ledSpeed L17884; drawLedColumns L17974–76 / L18030–55; tip L18084–96; app.css L1130–1135
-- Remaining invent: drawLedRank hover emphasize (#ledRank empty); oauth Approve wall (nest=browser)
+- tip: v0.1.165 LED_RANK_EMPHASIZE_OSS_FIDELITY
+- WHY: Magpie drawLedRank + hover emphasize for empty #ledRank
+- WHAT kept: SIDE_AT=1024; nest 752; skip oauth Approve wall; #ledRail deferred
+- Cite: app.js drawLedRank L18126–18189; emphasize L18107–17 / L18174–75; choose L18327–39; ledSplit default L17490
+- Remaining invent: #ledRail custom scrollbar; oauth Approve wall (nest=browser)
 - chrome-guard: pass; push PR#1; no portable/Vercel

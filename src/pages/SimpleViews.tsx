@@ -1,6 +1,6 @@
 import { Fragment, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { ActionConfirm } from "../components/ActionConfirm";
-import { LedChart } from "../components/LedChart";
+import { LedChart, LedRank } from "../components/LedChart";
 import { LedHeat } from "../components/LedHeat";
 import { LibSwitch } from "../components/LibSwitch";
 import { PrefRow } from "../components/PrefRow";
@@ -520,9 +520,14 @@ export function UsageView() {
   const [customLabel, setCustomLabel] = useState("");
   const [ledStatus, setLedStatus] = useState("");
   const [ledMetric, setLedMetric] = useState("calls");
-  const [ledSplit, setLedSplit] = useState("none");
+  /** Magpie ledSplit default "model" (app.js L17490). */
+  const [ledSplit, setLedSplit] = useState("model");
   /** Magpie ledDay — chart column pick filters the Requests list (app.js L18318–21). */
   const [ledDay, setLedDay] = useState("");
+  /** Magpie drawLedRank picked — provider/agent/model filter from rank click (app.js L18327–39). */
+  const [ledRankPick, setLedRankPick] = useState("");
+  /** Magpie box.emphasize from rank hover (app.js L18174–75). */
+  const [ledEmph, setLedEmph] = useState<string | null>(null);
   const [ledQ, setLedQ] = useState("");
   const [sessAgent, setSessAgent] = useState("all");
   const [sessQ, setSessQ] = useState("");
@@ -590,6 +595,12 @@ export function UsageView() {
     setLedPage(0);
   }, [period]);
 
+  // Magpie: changing split redraws rank; clear pick + emphasize
+  useEffect(() => {
+    setLedRankPick("");
+    setLedEmph(null);
+  }, [ledSplit]);
+
   useEffect(() => {
     if (!every) return;
     const id = window.setInterval(() => {
@@ -618,6 +629,12 @@ export function UsageView() {
         return iso === ledDay;
       });
     }
+    // Magpie drawLedRank choose — filter Requests by split category (app.js L18327–39)
+    if (ledRankPick) {
+      if (ledSplit === "agent") rows = rows.filter((r) => r.agent === ledRankPick);
+      else if (ledSplit === "model") rows = rows.filter((r) => (r.served || r.req) === ledRankPick);
+      else if (ledSplit === "provider") rows = rows.filter((r) => r.providerName === ledRankPick);
+    }
     const q = ledQ.trim().toLowerCase();
     if (q) {
       rows = rows.filter((r) =>
@@ -625,7 +642,7 @@ export function UsageView() {
       );
     }
     return rows;
-  }, [demoFilled, ledStatus, ledQ, ledDay]);
+  }, [demoFilled, ledStatus, ledQ, ledDay, ledRankPick, ledSplit]);
 
   const ledTotals = useMemo(() => {
     const rows = ledRows;
@@ -1231,13 +1248,24 @@ export function UsageView() {
                     metric={ledMetric}
                     split={ledSplit}
                     day={ledDay}
+                    emphasizeKey={ledEmph}
                     onChooseDay={(d) => {
                       // Magpie L18318–21: toggle day, reset pager
                       setLedDay((cur) => (cur === d ? "" : d));
                       setLedPage(0);
                     }}
                   />
-                  <div className="led-rank" id="ledRank" />
+                  <LedRank
+                    metric={ledMetric}
+                    split={ledSplit}
+                    picked={ledRankPick}
+                    onEmphasize={setLedEmph}
+                    onChoose={(id) => {
+                      // Magpie L18327–39: toggle category filter, reset pager
+                      setLedRankPick((cur) => (cur === id ? "" : id));
+                      setLedPage(0);
+                    }}
+                  />
                 </div>
               </section>
             </div>

@@ -1,3 +1,10 @@
+## v0.1.165 · LED_RANK_EMPHASIZE_OSS_FIDELITY · 2026-10-16 Asia/Shanghai
+
+- **WHY:** Magpie `#ledRank` was empty — restore `drawLedRank` + hover emphasize gold.
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; day-pick + speed marks (0.1.163–164); skip oauth Approve wall; `#ledRail` deferred.
+- **Cite:** Magpie app.js drawLedRank **L18126–18189**; emphasize **L18107–17** / **L18174–75**; choose **L18327–39**; ledSplit default **L17490**; app.css **L1147–1171**.
+- **chrome-guard:** pass. Push/PR #1. No portable/Vercel.
+
 ## v0.1.164 · LED_SPEED_MARKS_STEMS_OSS_FIDELITY · 2026-10-16 Asia/Shanghai
 
 - **WHY:** Magpie led-chart Speed metric — pill track + category marks + leader stems (`metric===speed`).
