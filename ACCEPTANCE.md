@@ -1,3 +1,10 @@
+## v0.1.185 · LIB_SKILLHOW_NOTE_OSS · 2026-10-16 Asia/Shanghai
+- Library skill-how bar invent `lib-skillhow-note` → Magpie `.note` inside `.lib-skillhow` (library.css L361 / client.js skillHowBar).
+- **Cite:** Magpie `plugins/library/client.js` skillHowBar `el("span","note",…)`; `library.css` L361 `.lib-skillhow .note`.
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; skip oauth; Magpie `.lib-skillhow` layout already vendored.
+- Routing tip extras / led-tools-extra / ctx-window left (no clear 1:1 Magpie class swap this tip).
+- No portable / Vercel.
+
 ## v0.1.184 · AM_MR_N_CK_OSS · 2026-10-16 Asia/Shanghai
 
 - **WHY:** AgentModelsPop invent `.am-tick` / `.am-name` (+ invent `.am-mr.on` / `.am-ord`) vs Magpie `am-mr` row: `span.n` + `span.ck` (SVG check) + hidden → `.off`; order uses `.am-or` + `.ix`.

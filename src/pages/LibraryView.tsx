@@ -2127,7 +2127,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                   <button type="button" className="text action lib-updall lib-howagent" title={t("Give an agent its skills its own way")} disabled={!!skillHowBusy} onClick={() => { setAgentHow(""); setSkillHowOpen(true); }}>
                     {t("By agent")}
                   </button>
-                  <span className="note lib-skillhow-note">
+                  <span className="note">
                     {skillHow === "copy"
                       ? t("Each agent gets a folder of its own, made again when the library's skill changes; edits made in a copy are replaced.")
                       : t("Links follow the library's skill: an update reaches the agents at once.")}

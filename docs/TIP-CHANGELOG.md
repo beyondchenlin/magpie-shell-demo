@@ -1,3 +1,16 @@
+## v0.1.185 · LIB_SKILLHOW_NOTE_OSS · 2026-10-16 Asia/Shanghai
+
+- **WHY:** Weak invent leftover — skill-how note still carried invent class `lib-skillhow-note` beside Magpie `.note`. Magpie OSS paints `el("span","note",…)` only; layout is `.lib-skillhow .note`.
+- **CAUSE:** Tip stacked a redundant invent class; CSS already matched Magpie `.lib-skillhow .note` (library.css L361).
+- **Cite:**
+  - Magpie `plugins/library/client.js` **skillHowBar**: `bar.append(by, el("span", "note", how === "copy" ? … : …))`
+  - Magpie `plugins/library/library.css` **L361** `.lib-skillhow .note { font-size:11px; color:var(--faint); … flex:1 0 100%; margin-top:-4px }`
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; skip oauth Approve wall; Magpie `.lib-skillhow` / `.segs` / `.lib-updall` gold already in tip CSS; routing tip extras unchanged (Magpie uses `rt-rwarn` / `rt-cond.rt-act` / `.ctl` Remove — not a 1:1 class swap).
+- **WHAT changed:**
+  - `LibraryView.tsx`: `className="note lib-skillhow-note"` → Magpie `className="note"`.
+- **Remaining invent (intentional skip):** oauth Approve wall; `rt-flier-demo`; `win-caption*`; `lib-hook*` / `pref-anchor` React bridges. Live weak leftovers (not this tip): routing.css tip extras `rt-info`/`rt-cond-*`/`rt-pause-*`/`rt-rule-more`/`rt-arrow`/`rt-effort-row`; `led-tools-extra`; `ctx-window` input class (Magpie plain input in `.cxfield` + `.cxpicks`).
+- **Guard:** `npm run chrome-guard`. No portable. No manual Vercel.
+
 ## v0.1.184 · AM_MR_N_CK_OSS · 2026-10-16 Asia/Shanghai
 
 - **WHY:** Hard invent audit — `AgentModelsPop` still painted invent checkbox `.am-tick.on` + `.am-name` (and invent `.am-mr.on` / `.am-ord`). Magpie OSS builds `button.am-mr` (+ `off` when hidden) with `span.n` / `span.ck` (stroke check SVG when shown); order rows are `.am-mr.am-or` with `.ix`.
