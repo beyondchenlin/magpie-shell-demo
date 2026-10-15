@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { AgentModelsPop, type AmModel } from "../components/AgentModelsPop";
 import { FieldPill } from "../components/FieldPill";
+import { LibSwitch } from "../components/LibSwitch";
 import { TextBtn } from "../components/TextBtn";
 import { ModelPop, type PopOption } from "../components/ModelPop";
 import installsData from "../data/installs.json";
@@ -845,7 +846,7 @@ export function AgentsView({
           {visible.map((a) => (
             <div
               key={a.id}
-              className={`row agent conn${draggingId === a.id ? " dragging" : ""}`}
+              className={`row agent conn${a.connectable && !wired[a.id] ? " unplugged" : ""}${draggingId === a.id ? " dragging" : ""}`}
               data-id={a.id}
               title={a.id === "cursor" ? "~/.cursor/cli-config.json" : a.name}
               style={draggingId === a.id ? { transition: "none" } : undefined}>
@@ -1045,41 +1046,63 @@ export function AgentsView({
               {a.id === "cursor" || !a.connectable ? (
                 <span className="ag-cant">{t("Can't connect")}</span>
               ) : (
-                <div className="val acts">{a.id === "claude" ? (
+                <>
+                  {/* Magpie connectRow: expandLink + connectSwitch (app.js L1067–1094 / L1308–1344 / L1406–1423) — not invent .val.acts */}
+                  {wired[a.id] ? (
                     <button
                       type="button"
-                      className="text"
-                      aria-expanded={relocateFor === a.id}
-                      onClick={() => {
-                        setRelocateFor((cur) => {
-                          const next = cur === a.id ? null : a.id;
-                          if (next) {
-                            setRelPhase("edit");
-                            setRelPreview(null);
-                            if (!relFrom) setRelFrom("~/code/magpie");
-                            if (!relTo) setRelTo("~/code/magpie-moved");
-                          }
-                          return next;
-                        });
+                      className={`ag-link${expandOpen === a.id ? " open" : ""}`}
+                      aria-expanded={expandOpen === a.id}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setExpandOpen((cur) => (cur === a.id ? null : a.id));
                       }}>
-                      {t("Relocate")}
+                      <span>
+                        {expandOpen === a.id
+                          ? t("Collapse")
+                          : a.id === "claude"
+                            ? t("Tiers")
+                            : t("Details")}
+                      </span>
+                      {expandOpen === a.id ? null : (
+                        <span className="chev">
+                          <svg viewBox="0 0 12 12" width={10} height={10} aria-hidden>
+                            <path
+                              d="M4.5 3 7.5 6 4.5 9"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="1.6"
+                              strokeLinecap="round"
+                            />
+                          </svg>
+                        </span>
+                      )}
                     </button>
                   ) : null}
-                  <button
-                    type="button"
-                    className={`text${wired[a.id] ? "" : " primary"}${connectBusy === a.id ? " busy" : ""}`}
-                    aria-pressed={!!wired[a.id]}
-                    aria-expanded={expandOpen === a.id}
+                  <LibSwitch
+                    kind="ag-conn"
+                    on={!!wired[a.id]}
+                    disabled={connectBusy === a.id}
                     aria-label={t("Connect {agent} to magpie", { agent: a.name })}
                     title={
                       wired[a.id]
-                        ? t("Connected · new sessions take it")
-                        : t("Connect {agent}", { agent: a.name })
+                        ? t("Connected · switch off to put back what {agent} had before magpie", {
+                            agent: a.name,
+                          })
+                        : t("Switch on and {agent}'s model list gets magpie's models", {
+                            agent: a.name,
+                          })
                     }
-                    disabled={connectBusy === a.id}
-                    onClick={() => {
+                    onClick={(e) => {
+                      e.stopPropagation();
                       if (wired[a.id]) {
-                        setExpandOpen((cur) => (cur === a.id ? null : a.id));
+                        /* Magpie connectSwitch → askDisconnect; demo: restore like foot */
+                        setWired((w) => ({ ...w, [a.id]: false }));
+                        setExpandOpen(null);
+                        setDiffOpen(null);
+                        setFieldPop(null);
+                        setAmPop(null);
+                        onStatus(demoCopy("演示：已断开并还原", "Demo: disconnected and restored"), "ok");
                         return;
                       }
                       setConnectBusy(a.id);
@@ -1089,16 +1112,9 @@ export function AgentsView({
                         setConnectBusy(null);
                         onStatus(t("Connected · new sessions take it"), "ok");
                       }, 380);
-                    }}>
-                    {connectBusy === a.id
-                      ? "…"
-                      : wired[a.id]
-                        ? expandOpen === a.id
-                          ? t("Connected · new sessions take it")
-                          : t("Connected · new sessions take it")
-                        : demoCopy("接入", "Connect")}
-                  </button>
-                </div>
+                    }}
+                  />
+                </>
               )}
               {wired[a.id] && expandOpen === a.id && a.connectable ? (
                 <div className="ag-exp" onClick={(e) => e.stopPropagation()}>
@@ -1314,6 +1330,25 @@ export function AgentsView({
                       </div>
                     ) : null}
                   </div>
+                  {a.id === "claude" ? (
+                    <div className="ag-kv">
+                      <div className="ag-k" />
+                      <div className="ag-v">
+                        <button
+                          type="button"
+                          className="text"
+                          onClick={() => {
+                            setRelPhase("edit");
+                            setRelPreview(null);
+                            if (!relFrom) setRelFrom("~/code/magpie");
+                            if (!relTo) setRelTo("~/code/magpie-moved");
+                            setRelocateFor(a.id);
+                          }}>
+                          {t("Relocate project")}
+                        </button>
+                      </div>
+                    </div>
+                  ) : null}
                   <div className="ag-foot">
                     <span className="ag-files">
                       {t("Changed ")}
@@ -1395,11 +1430,16 @@ export function AgentsView({
                               </span>
                             </div>
                           </div>
-                          <button
-                            type="button"
-                            className={`text primary${connectBusy === a.id ? " busy" : ""}`}
+                          <LibSwitch
+                            kind="ag-conn"
+                            on={false}
                             disabled={connectBusy === a.id}
-                            onClick={() => {
+                            aria-label={t("Connect {agent} to magpie", { agent: a.name })}
+                            title={t("Switch on and {agent}'s model list gets magpie's models", {
+                              agent: a.name,
+                            })}
+                            onClick={(e) => {
+                              e.stopPropagation();
                               setConnectBusy(a.id);
                               window.setTimeout(() => {
                                 setWired((w) => ({ ...w, [a.id]: true }));
@@ -1408,9 +1448,8 @@ export function AgentsView({
                                 setShowAllAgents(false);
                                 onStatus(t("Connected · new sessions take it"), "ok");
                               }, 380);
-                            }}>
-                            {connectBusy === a.id ? "…" : demoCopy("接入", "Connect")}
-                          </button>
+                            }}
+                          />
                         </div>
                       ))}
                     </>

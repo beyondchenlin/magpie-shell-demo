@@ -926,9 +926,10 @@ label.tick input { margin: 0; }
 /* v0.1.147: drop invent #view-agents .sub.faint + .ag-cant cursor/user-select —
    Magpie connectLine unplugged is .ag-st/.ag-dot/.ag-st-t (app.js L1234–1272);
    Magpie .ag-cant is flex/font/color only (app.css L3800). */
-#view-agents .row.agent .val.acts {
-  display: flex; gap: 6px; flex-wrap: wrap; align-items: center;
-}
+/* v0.1.159: drop invent #view-agents .row.agent .val.acts — Magpie connectRow
+   appends expandLink (.ag-link) + connectSwitch (lib-switch.ag-conn), never
+   .val.acts (app.js L1067–1094 / L1308–1344 / L1389–1423; app.css L3780–3794).
+   Relocate is Sessions askRelocate (sessions/client.js L633 / L900+), not Agents. */
 /* v0.1.140: drop invent #view-agents .ag-relocate* — Magpie askRelocate is editor.sm-ask modal (sessions/client.js L901–959) */
 /* v0.1.143: drop invent #view-agents .ag-exp.enter / .mt6 / .mt2 / .ag-tick /
    .ag-json-preview — Magpie ag-exp has none (app.css L3804+); longest tick is

@@ -1,3 +1,12 @@
+## v0.1.159 · AGENTS_CONN_SWITCH_OSS_FIDELITY · 2026-10-16 Asia/Shanghai
+
+- **WHY:** invent Agents `.val.acts` Connect/Relocate → Magpie `lib-switch.ag-conn` + `.ag-link` (Relocate = Sessions).
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; CIS PrefPick/WordsField; Magpie mk-icon (0.1.158).
+- **Cite:** app.js L1067–1094 / L1308–1344 / L1389–1423; sessions/client.js L633 / L900+; app.css L3780–3794.
+- **chrome-guard:** pass (SIDE_AT=1024).
+- **No portable / Vercel.**
+- **Handoff remaining invent (light):** demo oauth Approve wall (nest=browser by design); skill grid `mk-official` / installs GLYPH.down polish; any leftover shell-patch tip comments without live invent selectors.
+
 ## v0.1.158 · LIBRARY_MK_ICON_OSS_FIDELITY · 2026-10-16 Asia/Shanghai
 
 - **WHY:** Discover `mk-card` grid omitted Magpie `mk-icon` → restore `logo()` gold.

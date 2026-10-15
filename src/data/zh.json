@@ -4201,6 +4201,7 @@
   "To folder": "目标文件夹",
   "Preview": "预览",
   "Relocate": "迁移",
+  "Relocate project": "迁移项目会话",
   "Connect {agent}": "接入 {agent}",
   "Waiting for a request…": "等待请求…",
   "A live request would fly here": "真实请求会从这里飞过",

@@ -1,3 +1,17 @@
+## v0.1.159 · AGENTS_CONN_SWITCH_OSS_FIDELITY · 2026-10-16 Asia/Shanghai
+
+- **WHY:** Continue Magpie 1:1 after 0.1.158 — cut Agents invent `#view-agents .row.agent .val.acts` Connect/Relocate text buttons that covered Magpie `connectSwitch` / `expandLink` gold.
+- **CAUSE:** Demo painted Connect + Relocate as invent `.val.acts` flex (shell-patch display/gap) with `button.text` / `text primary` labels, covering Magpie `connectRow` where a wired row gets `expandLink` (`.ag-link` Collapse/Tiers/Details) + `connectSwitch` (`button.lib-switch.ag-conn` role=switch) and Relocate lives only in Sessions as `button.text` "Relocate project" → `askRelocate` (app.js **L1067–1094** / **L1308–1344** / **L1389–1423**; sessions/client.js **L633** / **L900+**; app.css **L3780–3794**).
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; CIS PrefPick/WordsField/Segs/TextBtn/LibSwitch; Magpie mk-icon (0.1.158); demo oauth Approve wall (nest=browser by design); Magpie askRelocate `editor.sm-ask` modal already (0.1.140).
+- **Cite:**
+  - Magpie `app.js` **1067–1094** `connectSwitch`: `lib-switch ag-conn` + role=switch; wired → `askDisconnect`
+  - Magpie `app.js` **1308–1344** `expandLink`: `.ag-link` / Collapse · Tiers · Models · Details + chev
+  - Magpie `app.js` **1389–1423** `connectRow`: append expandLink + start/menu + `sw`; else `ag-cant`
+  - Magpie `app.css` **3780–3794** `.ag-link` / `.row.agent.conn > .ag-conn` margins
+  - Magpie `plugins/sessions/client.js` **633–635** Relocate project; **900+** `askRelocate` sm-ask modal
+- **WHAT changed:** `AgentsView.tsx` drop invent `.val.acts` → Magpie `ag-link` + `LibSwitch` `ag-conn` (fold Not-set-up too); Claude Relocate → Magpie Sessions `text` "Relocate project" inside `ag-exp`; row `unplugged` when connectable && !wired; `shell-patch.css` drop invent `.val.acts`; zh `Relocate project`.
+- **chrome-guard:** pass (SIDE_AT=1024). Push/PR #1. No portable/Vercel.
+
 ## v0.1.158 · LIBRARY_MK_ICON_OSS_FIDELITY · 2026-10-16 Asia/Shanghai
 
 - **WHY:** Continue Magpie 1:1 after 0.1.157 — restore Discover `mk-card` Magpie `mk-icon` that 0.1.150 DOM still omitted on the grid.
