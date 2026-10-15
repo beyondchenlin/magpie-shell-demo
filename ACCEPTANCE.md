@@ -1,3 +1,12 @@
+## v0.1.158 · LIBRARY_MK_ICON_OSS_FIDELITY · 2026-10-16 Asia/Shanghai
+
+- **WHY:** Discover `mk-card` grid omitted Magpie `mk-icon` → restore `logo()` gold.
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; CIS PrefPick/WordsField; Magpie mk-sheet (0.1.157).
+- **Cite:** library/client.js L4709–4728 / L4775 / L4873; library.css L402–413.
+- **chrome-guard:** pass (SIDE_AT=1024).
+- **No portable / Vercel.**
+- **Handoff remaining invent (light):** Agents `#view-agents .val.acts` Connect/Relocate bridge (`shell-patch` ~L929); demo oauth Approve wall (nest=browser by design); skill grid `mk-official` / installs GLYPH.down polish; any leftover shell-patch tip comments without live invent selectors.
+
 ## v0.1.157 · LIBRARY_MK_SHEET_OSS_FIDELITY · 2026-10-16 Asia/Shanghai
 
 - **WHY:** invent image/skill `.ehead.detail` / `.blurb` → Magpie `mk-sheet` / `mk-sheethead` / `mk-about` / `mk-hint`.

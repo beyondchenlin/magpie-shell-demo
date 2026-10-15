@@ -1,6 +1,7 @@
-v0.1.157 LIBRARY_MK_SHEET_OSS_FIDELITY
-- WHY: invent ehead.detail/blurb → Magpie mk-sheet/mk-sheethead/mk-about/mk-hint
-- Cite: library/client.js L4795–4849 / L4899–4939; library.css L441–451
-- WHAT kept: SIDE_AT=1024; nest 752; field()/bar/OS file input
+v0.1.158 LIBRARY_MK_ICON_OSS_FIDELITY
+- WHY: Discover mk-card omitted mk-icon → Magpie logo() beside mk-who
+- Cite: library/client.js L4709–4728 / L4775 / L4873; library.css L402–413
+- WHAT kept: SIDE_AT=1024; nest 752; mk-sheet; skip oauth Approve wall
+- Remaining: Agents .val.acts Connect/Relocate bridge
 - chrome-guard: pass
 - Push/PR #1. No portable/Vercel.

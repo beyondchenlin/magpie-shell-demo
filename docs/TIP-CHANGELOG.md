@@ -1,3 +1,16 @@
+## v0.1.158 · LIBRARY_MK_ICON_OSS_FIDELITY · 2026-10-16 Asia/Shanghai
+
+- **WHY:** Continue Magpie 1:1 after 0.1.157 — restore Discover `mk-card` Magpie `mk-icon` that 0.1.150 DOM still omitted on the grid.
+- **CAUSE:** Demo MCP/Skills Discover cards painted `mk-top` → `mk-who` only, covering Magpie `serverCard` / `skillCard` gold where `top.append(logo(x.icon, …), who)` puts `span.mk-icon` (img via `/api/library/icon`, or mono initial) beside the title (library/client.js **L4709–4728**, **L4775**, **L4873**; library.css **L402–413**).
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; CIS PrefPick/WordsField/Segs/TextBtn/LibSwitch; Magpie mk-sheet (0.1.157); demo oauth Approve wall (nest=browser by design); Agents `#view-agents .val.acts` Connect/Relocate bridge — later tip.
+- **Cite:**
+  - Magpie `plugins/library/client.js` **4709–4728** `logo(url, name)` → `span.mk-icon` / `.mono` + `span.mk-mono` initial
+  - Magpie `plugins/library/client.js` **4762–4783** `serverCard`: `top.append(logo(x.icon, title||name), who)`
+  - Magpie `plugins/library/client.js` **4861–4888** `skillCard`: `top.append(logo(x.icon, x.source), who)`
+  - Magpie `plugins/library/library.css` **402–413** `.mk-top` / `.mk-icon` / `.mk-mono`
+- **WHAT changed:** `LibraryView.tsx` `MkLogo` + Discover MCP/Skills `mk-card` grids restore Magpie `mk-icon` (demo mono fallback; skill initial from `by` = Magpie `source`).
+- **chrome-guard:** pass (SIDE_AT=1024). Push/PR #1. No portable/Vercel.
+
 ## v0.1.157 · LIBRARY_MK_SHEET_OSS_FIDELITY · 2026-10-16 Asia/Shanghai
 
 - **WHY:** Continue Magpie 1:1 after 0.1.156 — cut invent image/skill sheet `.ehead.detail` / `.mark` / `.who` / `.blurb` / `.bar .note` that painted a fake editor-head over Magpie market sheet gold.

@@ -230,6 +230,16 @@ function serversIn(text: string): Array<{
     : null;
 }
 
+/** Magpie library/client.js logo() L4709–4728 → span.mk-icon (+ img via /api/library/icon, or mono initial). Demo market cards have no icon URL — always Magpie !url mono fallback. */
+function MkLogo({ name }: { name: string }) {
+  const initial = (name || "?").replace(/^[^a-z0-9]+/i, "").charAt(0).toUpperCase() || "?";
+  return (
+    <span className="mk-icon mono" aria-hidden>
+      <span className="mk-mono">{initial}</span>
+    </span>
+  );
+}
+
 function LibChip({
   on,
   label,
@@ -1747,6 +1757,8 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                       if ((c as { sheet?: boolean }).sheet) setImageSheet(true);
                     }}>
                     <div className="mk-top">
+                      {/* Magpie serverCard: top.append(logo(x.icon, title||name), who) — client.js L4775 */}
+                      <MkLogo name={c.name} />
                       <div className="mk-who">
                         <div className="mk-name">
                           <span className="mk-title">{c.name}</span>
@@ -2420,6 +2432,8 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                       if ((c as { sheet?: boolean }).sheet) setSkillSheet(c);
                     }}>
                     <div className="mk-top">
+                      {/* Magpie skillCard: top.append(logo(x.icon, x.source), who) — client.js L4873 */}
+                      <MkLogo name={c.by} />
                       <div className="mk-who">
                         <div className="mk-name">
                           <span className="mk-title">{c.name}</span>
