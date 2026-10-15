@@ -1,3 +1,7 @@
+## v0.1.149 · LIBRARY_THUNAR_GTK_CHOOSE_OSS_FIDELITY · 2026-10-15 Asia/Shanghai
+- Drop invent in-app Thunar + GTK Choose-a-project (Magpie OSS: reveal + !web Choose).
+- SIDE_AT=1024; nest 752×652; no portable / Vercel.
+
 ## v0.1.148 PLUGINS_GHKINDS_LIBRARY_RTK_OSS_FIDELITY
 - Plugins GitHub kinds: invent button track → Magpie `segs.pm-ghkinds` (plugins.js L609; Segs CIS).
 - Plugins installed row: invent `pm-name-row` → Magpie `pm-name` (plugins.css L67).

@@ -5,7 +5,6 @@ import { Segs } from "../components/Segs";
 import { WordsField } from "../components/WordsField";
 import { LibSwitch } from "../components/LibSwitch";
 import { TextBtn } from "../components/TextBtn";
-import { Bird } from "../components/Bird";
 import { useSegThumb } from "../components/SegThumb";
 import { t } from "../i18n";
 
@@ -235,635 +234,6 @@ function LibModal({
 }
 
 
-/** Demo Thunar for Library folder / Backups (native-linux/library 88–100).
- * Escape does not close and does not go up (NOTES 92/94/98). Close via title X or File → Close Window.
- * Real Magpie shells out to the OS file manager; Escape N/A for external Thunar. */
-type FmNode = { name: string; kids?: FmNode[] };
-
-const LIB_FM_ROOT: FmNode = {
-  name: "library",
-  kids: [{ name: "skills" }],
-};
-const BACKUPS_FM_ROOT: FmNode = {
-  name: "backups",
-  kids: [
-    {
-      name: "2026-10-15_06-08-50.641",
-      kids: [{ name: "skills", kids: [{ name: "git-guardrails-claude-code" }] }],
-    },
-    {
-      name: "2026-10-15_06-12-16.936",
-      kids: [{ name: "skills", kids: [{ name: "ask-matt" }] }],
-    },
-  ],
-};
-
-function fmAt(root: FmNode, segs: string[]): FmNode {
-  let n = root;
-  for (const s of segs) {
-    const next = n.kids?.find((k) => k.name === s);
-    if (!next) break;
-    n = next;
-  }
-  return n;
-}
-
-function LibThunar({
-  kind,
-  onClose,
-}: {
-  kind: "library" | "backups";
-  onClose: () => void;
-}) {
-  const root = kind === "library" ? LIB_FM_ROOT : BACKUPS_FM_ROOT;
-  const base = kind === "library" ? "/home/box/.config/magpie/library" : "/home/box/.config/magpie/backups";
-  const [segs, setSegs] = useState<string[]>([]);
-  const [hist, setHist] = useState<string[][]>([[]]);
-  const [histI, setHistI] = useState(0);
-  const [fileMenu, setFileMenu] = useState(false);
-  const node = fmAt(root, segs);
-  const kids = node.kids || [];
-  const titleName = segs.length ? segs[segs.length - 1] : root.name;
-  const loc = segs.length ? `${base}/${segs.join("/")}/` : `${base}/`;
-  const canBack = histI > 0;
-  const canFwd = histI < hist.length - 1;
-  const canUp = segs.length > 0;
-
-  const go = (next: string[]) => {
-    const cut = hist.slice(0, histI + 1);
-    cut.push(next);
-    setHist(cut);
-    setHistI(cut.length - 1);
-    setSegs(next);
-    setFileMenu(false);
-  };
-
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        // NOTES 92/94/98: Escape never closes Thunar and never moves up.
-        // Escape only dismisses an open File menu (NOTES 95).
-        e.preventDefault();
-        e.stopPropagation();
-        setFileMenu(false);
-        return;
-      }
-      if (e.altKey && (e.key === "f" || e.key === "F")) {
-        e.preventDefault();
-        setFileMenu((v) => !v);
-      }
-    };
-    window.addEventListener("keydown", onKey, true);
-    return () => window.removeEventListener("keydown", onKey, true);
-  }, []);
-
-  const folderIcon = (
-    <svg viewBox="0 0 48 48" width={48} height={48} aria-hidden>
-      <path fill="#e8b84a" d="M6 14h14l3 3h19v22H6z" />
-      <path fill="#f5d57a" d="M6 17h36v19H6z" />
-    </svg>
-  );
-
-  const FILE_ITEMS: { label: string; accel?: string; disabled?: boolean; sep?: boolean; close?: boolean }[] = [
-    { label: "New Tab", accel: "Ctrl+T" },
-    { label: "New Window", accel: "Ctrl+N" },
-    { label: "Create Folder…", accel: "Shift+Ctrl+N" },
-    { label: "Create Document", accel: "▸" },
-    { sep: true, label: "" },
-    { label: "Open Terminal Here" },
-    { label: "Properties…", accel: "Alt+Return" },
-    { sep: true, label: "" },
-    { label: "Detach Tab", disabled: true },
-    { label: "Close All Windows", accel: "Shift+Ctrl+W" },
-    { label: "Close Tab", accel: "Ctrl+W" },
-    { label: "Close Window", accel: "Ctrl+Q", close: true },
-  ];
-
-  return (
-    <div
-      className="modal open lib-thunar-scrim" role="presentation"
-      onMouseDown={(e) => {
-        // Outside click does not close — Magpie leaves Thunar until window close.
-        if (e.target === e.currentTarget) setFileMenu(false);
-      }}>
-      <div
-        className="lib-thunar" role="dialog"
-        aria-modal
-        aria-label={`${titleName} - Thunar`}
-        onMouseDown={(e) => e.stopPropagation()}
-        onContextMenu={(e) => e.preventDefault()}>
-        <div className="titlebar">
-          <svg viewBox="0 0 16 16" width={14} height={14} aria-hidden>
-            <path fill="#5b9bd5" d="M2 3.5h5l1.2 1.2H14V13H2z" />
-          </svg>
-          <span className="ttl">{titleName} - Thunar</span>
-          <button type="button" className="text winbtn" aria-label="Minimize" title="Minimize">─</button>
-          <button type="button" className="text winbtn max" aria-label="Maximize" title="Maximize">□</button>
-          <button type="button" className="text winbtn close" aria-label="Close" onClick={onClose} title="Close">×</button>
-        </div>
-
-        <div className="lib-thunar-menubar">
-          {(["File", "Edit", "View", "Go", "Bookmarks", "Help"] as const).map((m) => (
-            <button
-              key={m}
-              type="button"
-              className={`text mb${m === "File" && fileMenu ? " on" : ""}`}
-              onClick={() => (m === "File" ? setFileMenu((v) => !v) : setFileMenu(false))}>
-              {m}
-            </button>
-          ))}
-          {fileMenu ? (
-            <div role="menu" className="menu">
-              {FILE_ITEMS.map((it, i) =>
-                it.sep ? (
-                  <div key={`sep-${i}`} className="sep" />
-                ) : (
-                  <button
-                    key={it.label}
-                    type="button"
-                    role="menuitem"
-                    className="mi" disabled={it.disabled}
-                    onClick={() => {
-                      if (it.close) onClose();
-                      else setFileMenu(false);
-                    }}>
-                    <span className="lab">{it.label}</span>
-                    {it.accel && it.accel !== "▸" ? (
-                      <span className="acc">{it.accel}</span>
-                    ) : it.accel === "▸" ? (
-                      <span className="acc">▸</span>
-                    ) : null}
-                  </button>
-                ),
-              )}
-            </div>
-          ) : null}
-        </div>
-
-        <div className="lib-thunar-toolbar">
-          <button
-            type="button"
-            className="text nav back" disabled={!canBack}
-            aria-label="Back"
-            onClick={() => {
-              if (!canBack) return;
-              const i = histI - 1;
-              setHistI(i);
-              setSegs(hist[i]);
-            }}>
-            ←
-          </button>
-          <button
-            type="button"
-            className="text nav fwd" disabled={!canFwd}
-            aria-label="Forward"
-            onClick={() => {
-              if (!canFwd) return;
-              const i = histI + 1;
-              setHistI(i);
-              setSegs(hist[i]);
-            }}>
-            →
-          </button>
-          <button
-            type="button"
-            className="text nav" disabled={!canUp}
-            aria-label="Up"
-            onClick={() => {
-              if (!canUp) return;
-              go(segs.slice(0, -1));
-            }}>
-            ↑
-          </button>
-          <button type="button" className="text nav" aria-label="Home" onClick={() => go([])}>⌂</button>
-          <div className="path">
-            <svg className="ic" viewBox="0 0 16 16" width={14} height={14} aria-hidden>
-              <path fill="#5b9bd5" d="M2 3.5h5l1.2 1.2H14V13H2z" />
-            </svg>
-            <span className="loc">{loc}</span>
-          </div>
-          <button type="button" className="text nav" aria-label="Search">⌕</button>
-        </div>
-
-        <div className="body">
-          <nav className="side">
-            <div className="gl">Places</div>
-            <div className="row"><span aria-hidden>🏠</span> box</div>
-            <div className="gl">Devices</div>
-            <div className="row"><span aria-hidden>💾</span> File System</div>
-          </nav>
-          <div className="icons">
-            {kids.map((k) => (
-              <button
-                key={k.name}
-                type="button"
-                className="icon" onDoubleClick={() => go([...segs, k.name])}
-                onClick={() => go([...segs, k.name])}
-                title={k.name}>
-                {folderIcon}
-                <span className="nm">{k.name}</span>
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div className="status">
-          {kids.length} folder{kids.length === 1 ? "" : "s"} | Free space: 104.5 GiB
-        </div>
-      </div>
-    </div>
-  );
-}
-
-const DOC = "M4 2.5h5.5L12 5v8.5H4z M9.5 2.5V5H12";
-const FOLDER = "M2.5 4.5h4l1.2 1.3h5.8v6.7h-11z";
-const BACKUP = "M3.2 8a4.8 4.8 0 1 0 1.4-3.4 M2.8 2.6v2.4h2.4 M8 5.3V8l1.9 1.2";
-const SEARCH = "M7 3a4 4 0 1 0 0 8 4 4 0 0 0 0-8z M10 10l3 3";
-
-const DEMO_MCP = [
-  { id: "magpie-image", name: "Magpie Image", by: "Magpie", tag: "magpie", desc: "Generate and edit images with the image model set in Magpie (Settings → Images), and make short videos with a video model set up in Magpie (Grok Imagine, Seedance), saved in the project.", addDots: true, sheet: true as const },
-  { id: "context7", name: "Context7", by: "Upstash", tag: "Remote", desc: "Up-to-date documentation and code examples for any library, straight into the…" },
-  { id: "playwright", name: "Playwright", by: "Microsoft", tag: "npx", desc: "Drive a real browser: open pages, click, type and read them through the accessibility tree." },
-  { id: "chrome-devtools", name: "Chrome DevTools", by: "Google", tag: "npx", desc: "Control and inspect a live Chrome: console, network, performance traces…" },
-  { id: "github", name: "GitHub", by: "GitHub", tag: "Remote", desc: "Repositories, issues, pull requests, Actions and code search on GitHub.", addDots: true },
-  { id: "deepwiki", name: "DeepWiki", by: "Cognition", tag: "Remote", desc: "Ask questions about any public GitHub repository and read its generated wiki." },
-  { id: "exa", name: "Exa", by: "Exa", tag: "Remote", desc: "Web search and contents for agents via Exa." },
-  { id: "fetch", name: "Fetch", by: "Model Context Protocol", tag: "npx", desc: "Fetch URL contents as markdown for the model." },
-  { id: "sentry", name: "Sentry", by: "Sentry", tag: "Remote", desc: "Issues and performance from your Sentry projects." },
-  { id: "stripe", name: "Stripe", by: "Stripe", tag: "Remote", desc: "Payments, customers and products through Stripe." },
-  { id: "neon", name: "Neon", by: "Neon", tag: "Remote", desc: "Serverless Postgres: branches, SQL and connection strings." },
-  { id: "brave", name: "Brave Search", by: "Brave", tag: "Remote", desc: "Web search with the Brave Search API." },
-];
-
-const DEMO_SKILLS_MARKET = [
-  { id: "magpie-quota", name: "magpie-quota", by: "magpie-community/plugins", installs: "", desc: "Check how much is left of the user's AI subscriptions, coding plans and API key…", verified: true },
-  { id: "find-skills", name: "find-skills", by: "vercel-labs/skills", installs: "3.9M", desc: "Helps users discover and install agent skills when they ask questions like 'how do I do X…", verified: true },
-  { id: "grill-me", name: "grill-me", by: "mattpocock/skills", installs: "1.4M", desc: "A relentless interview to sharpen a plan or design.", sheet: true },
-  { id: "grill-with-docs", name: "grill-with-docs", by: "mattpocock/skills", installs: "1.2M", desc: "Grill a design with the docs open beside you.", sheet: true },
-  { id: "agent-browser", name: "agent-browser", by: "vercel-labs/agent-browser", installs: "1.1M", desc: "Browser automation CLI for AI agents. Use when the user needs to interact with…" },
-  { id: "improve-codebase-architecture", name: "improve-codebase-architecture", by: "mattpocock/skills", installs: "1.1M", desc: "Scan a codebase for deepening opportunities, present them as a visual HTML report, then…", sheet: true },
-  { id: "tdd", name: "tdd", by: "mattpocock/skills", installs: "1.1M", desc: "Test-driven development. Use when the user wants to build features or fix bugs test-first,…", sheet: true },
-  { id: "hyperframes-cli", name: "hyperframes-cli", by: "heygen-com/hyperframes", installs: "1M", desc: "Use the HyperFrames CLI development loop: init, add, catalog, capture, lint, check,…" },
-];
-
-/** Native probe list sample (mattpocock/skills) — Magpie library/skills/probe mock */
-const DEMO_PROBE_SKILLS = [
-  { path: "ask-matt", name: "ask-matt", desc: "Ask which skill or flow fits your situation. A router over the skills in this repo." },
-  { path: "chief-of-staff", name: "chief-of-staff", desc: "Pursue a long-running goal in a single session by co-ordinating subagents." },
-  { path: "claude-handoff", name: "claude-handoff", desc: "Hand the current conversation off to a fresh background agent that picks up the work immediately." },
-  { path: "code-review", name: "code-review", desc: "Review the changes since a fixed point (commit, branch, tag, or merge-base) along two axes: Standards and Spec…" },
-  { path: "domain-map", name: "domain-map", desc: "Map a domain and its bounded contexts before you code." },
-  { path: "git-worktree", name: "git-worktree", desc: "Isolate work in a git worktree so experiments stay out of main." },
-  { path: "migrate-to-effect", name: "migrate-to-effect", desc: "Migrate a codebase toward Effect with a clear plan." },
-  { path: "mock-types", name: "mock-types", desc: "Use when someone mentions shoehorn, wants to replace `as` in tests, or needs partial test data." },
-  { path: "pr", name: "pr", desc: "Use when writing a PR body." },
-  { path: "grill-me", name: "grill-me", desc: "A relentless interview to sharpen a plan or design." },
-];
-
-
-/** Magpie library/projects/choose — GTK "Choose a project" (library 101–119). Not Thunar. */
-type ChoosePlace = "recent" | "home" | "desktop" | "workspace" | "other";
-
-const HOME_FOLDERS = [
-  { name: "agent-data", modified: "13:35" },
-  { name: "chrome-profile", modified: "Yesterday" },
-  { name: "cli-config", modified: "Mon" },
-  { name: "Reference", modified: "08:42" },
-  { name: "sand-data", modified: "13:35" },
-];
-
-const USR_COMPLETE = [
-  "bin/",
-  "games/",
-  "i686-w64-mingw32/",
-  "include/",
-  "lib/",
-  "lib64/",
-  "libexec/",
-  "local/",
-  "sbin/",
-  "share/",
-  "src/",
-  "x86_64-w64-mingw32/",
-  "x86_64-w64-mingw32ucrt/",
-];
-
-function LibChooseProject({
-  onClose,
-  onOpen,
-}: {
-  onClose: () => void;
-  onOpen: (path: string) => void;
-}) {
-  const [place, setPlace] = useState<ChoosePlace>("recent");
-  const [locOpen, setLocOpen] = useState(false);
-  const [locVal, setLocVal] = useState("");
-  const [complete, setComplete] = useState<string[] | null>(null);
-  const [deskTip, setDeskTip] = useState(false);
-  /** workspace list / Computer root browse (120–126) */
-  const [browse, setBrowse] = useState<"place" | "computer">("place");
-  const [selected, setSelected] = useState<string | null>(null);
-  const locRef = useRef<HTMLInputElement>(null);
-
-  const WORKSPACE_FOLDERS = [
-    "DrawMotion",
-    "agent-ui",
-    "magpie-probe-project",
-    "magpie-shell-demo",
-    "uploads",
-  ];
-  const ROOT_FOLDERS = ["bin", "boot", "dev", "etc", "home", "proc", "tmp", "usr", "var", "workspace"];
-
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "l" && (e.ctrlKey || e.metaKey)) {
-        e.preventDefault();
-        setLocOpen(true);
-        setLocVal("");
-        setComplete(null);
-        window.setTimeout(() => locRef.current?.focus(), 0);
-        return;
-      }
-      if (e.key === "Escape") {
-        e.preventDefault();
-        e.stopPropagation();
-        // NOTES: Escape first dismisses location field (+ completion); second closes dialog.
-        if (locOpen || complete) {
-          setLocOpen(false);
-          setComplete(null);
-          setLocVal("");
-          return;
-        }
-        onClose();
-      }
-    };
-    window.addEventListener("keydown", onKey, true);
-    return () => window.removeEventListener("keydown", onKey, true);
-  }, [locOpen, complete, onClose]);
-
-  const openCurrent = () => {
-    // NOTES 115: Open while Home is current place (no location field) → /home/box
-    if (locOpen && locVal.trim()) {
-      // Typed path still open: NOTES does not claim acceptance; keep dialog (pointer edge miss).
-      return;
-    }
-    if (place === "workspace" && selected) {
-      onOpen(`/workspace/${selected}`);
-      return;
-    }
-    if (browse === "computer" && selected) {
-      onOpen(`/${selected}`);
-      return;
-    }
-    if (place === "home") {
-      onOpen("/home/box");
-      return;
-    }
-    if (place === "desktop") {
-      onOpen("/home/box/Desktop");
-      return;
-    }
-    if (place === "workspace") {
-      onOpen("/workspace");
-      return;
-    }
-    if (place === "other" || browse === "computer") {
-      onOpen("/");
-      return;
-    }
-    // Recent empty — Open still dark/clickable; no path to accept
-  };
-
-  const sideBtn = (id: ChoosePlace, label: string, tip?: string) => (
-    <button
-      key={id}
-      type="button"
-      className={`text pb${place === id ? " on" : ""}`}
-      onMouseEnter={() => setDeskTip(id === "desktop" && !!tip)}
-      onMouseLeave={() => setDeskTip(false)}
-      onClick={() => {
-        setPlace(id);
-        setBrowse("place");
-        setSelected(null);
-        setLocOpen(false);
-        setComplete(null);
-        setLocVal("");
-      }}>
-      {id === "recent" ? "◷" : id === "home" ? "⌂" : id === "other" ? "+" : "📁"}
-      <span>{id === "other" ? `+ ${label}` : label}</span>
-      {id === "desktop" && deskTip ? (
-        <span className="tip">{t("Open the contents of your desktop in a folder")}</span>
-      ) : null}
-    </button>
-  );
-
-  return (
-    <div
-      className="modal open lib-choose-scrim" role="presentation"
-      onMouseDown={(e) => {
-        if (e.target === e.currentTarget) {
-          /* Magpie Escape/Cancel close; outside click not documented — leave open */
-        }
-      }}>
-      <div
-        className="dialog gtk-choose-project" role="dialog"
-        aria-modal
-        aria-label={t("Choose a project")}
-        onMouseDown={(e) => e.stopPropagation()}>
-        <div className="titlebar">
-          <span className="mark">
-            <Bird size={16} />
-          </span>
-          <span className="ttl">{t("Choose a project")}</span>
-          <button type="button" className="winbtn" aria-label="Minimize">─</button>
-          <button type="button" className="winbtn max" aria-label="Maximize">□</button>
-          <button type="button" className="winbtn close" aria-label="Close" onClick={onClose}>×</button>
-        </div>
-
-        <div className="body">
-          <nav className="places">
-            {sideBtn("recent", t("Recent"))}
-            {sideBtn("home", t("Home"))}
-            {sideBtn("desktop", t("Desktop"), t("Open the contents of your desktop in a folder"))}
-            {sideBtn("workspace", "workspace")}
-            <div className="sep" />
-            {sideBtn("other", t("Other Locations"))}
-          </nav>
-
-          <div className="main">
-            {(place === "home" || place === "workspace" || browse === "computer") && !locOpen ? (
-              <div className="crumb">
-                <button type="button" className="text nav" disabled>←</button>
-                <button type="button" className="text pill">
-                  {place === "home" ? "⌂ box" : place === "workspace" || browse === "computer" ? "📁 workspace" : "⌂"}
-                </button>
-                <button type="button" className="text nav" disabled>→</button>
-                <span className="grow" />
-                <button type="button" className="text mk" title={t("Create Folder…")} aria-label={t("Create Folder…")}>📁+</button>
-              </div>
-            ) : null}
-
-            {locOpen ? (
-              <div className="locbar">
-                <input
-                  ref={locRef}
-                  type="text"
-                  value={locVal}
-                  spellCheck={false}
-                  autoComplete="off"
-                  onChange={(e) => {
-                    setLocVal(e.target.value);
-                    setComplete(null);
-                  }}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      e.preventDefault();
-                      const v = locVal.trim() || "/";
-                      const norm = v.endsWith("/") ? v : `${v}/`;
-                      setLocVal(norm);
-                      if (norm === "/usr/" || locVal.trim() === "/usr") {
-                        setComplete(USR_COMPLETE);
-                      } else {
-                        setComplete([]);
-                      }
-                    }
-                    if (e.key === "Escape") {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      setLocOpen(false);
-                      setComplete(null);
-                      setLocVal("");
-                    }
-                  }}
-                />
-              </div>
-            ) : null}
-
-            <div className={`pane${place === "other" ? " pad" : ""}`}>
-              {complete ? (
-                <div className="complete">
-                  {complete.map((c) => (
-                    <div key={c}>{c}</div>
-                  ))}
-                </div>
-              ) : place === "recent" ? (
-                <div>
-                  <div className="cols recent">
-                    <span>{t("Name")}</span>
-                    <span>{t("Location")}</span>
-                    <span>{t("Size")}</span>
-                    <span>{t("Type")}</span>
-                    <span>{t("Accessed")}</span>
-                  </div>
-                </div>
-              ) : place === "home" ? (
-                <div>
-                  <div className="cols files">
-                    <span>{t("Name")} ↓</span>
-                    <span>{t("Size")}</span>
-                    <span>{t("Type")}</span>
-                    <span>{t("Modified")}</span>
-                  </div>
-                  {HOME_FOLDERS.map((f) => (
-                    <div key={f.name} className="row files">
-                      <span className="who">
-                        <span aria-hidden>📁</span>
-                        {f.name}
-                      </span>
-                      <span className="faint">—</span>
-                      <span className="muted">{t("Folder")}</span>
-                      <span className="muted">{f.modified}</span>
-                    </div>
-                  ))}
-                </div>
-              ) : place === "workspace" && browse === "place" ? (
-                <div>
-                  <div className="cols files">
-                    <span>{t("Name")} ↓</span>
-                    <span>{t("Size")}</span>
-                    <span>{t("Type")}</span>
-                    <span>{t("Modified")}</span>
-                  </div>
-                  {WORKSPACE_FOLDERS.map((name) => (
-                    <button
-                      key={name}
-                      type="button"
-                      className={`row files${selected === name ? " on" : ""}`}
-                      onClick={() => setSelected(name)}
-                      onDoubleClick={() => onOpen(`/workspace/${name}`)}>
-                      <span className="who">
-                        <span aria-hidden>📁</span>
-                        {name}
-                      </span>
-                      <span className="faint">—</span>
-                      <span className="muted">{t("Folder")}</span>
-                      <span className="muted">—</span>
-                    </button>
-                  ))}
-                </div>
-              ) : browse === "computer" ? (
-                <div>
-                  <div className="cols files">
-                    <span>{t("Name")} ↓</span>
-                    <span>{t("Size")}</span>
-                    <span>{t("Type")}</span>
-                    <span>{t("Modified")}</span>
-                  </div>
-                  {ROOT_FOLDERS.map((name) => (
-                    <button
-                      key={name}
-                      type="button"
-                      className={`row files${selected === name ? " on" : ""}`}
-                      onClick={() => setSelected(name)}>
-                      <span className="who">
-                        <span aria-hidden>📁</span>
-                        {name}
-                      </span>
-                      <span className="faint">—</span>
-                      <span className="muted">{t("Folder")}</span>
-                      <span className="muted">—</span>
-                    </button>
-                  ))}
-                </div>
-              ) : place === "other" ? (
-                <div>
-                  <div className="other-h">{t("On This Computer")}</div>
-                  <button
-                    type="button"
-                    className={`computer${selected === "Computer" ? " on" : ""}`}
-                    onDoubleClick={() => {
-                      setBrowse("computer");
-                      setSelected("bin");
-                    }}
-                    onClick={() => setSelected("Computer")}>
-                    <span className="ic" aria-hidden>💾</span>
-                    <div className="who">
-                      <div className="name">{t("Computer")}</div>
-                      <div className="sub">112.2 GB / 134.2 GB available</div>
-                    </div>
-                    <span className="slash">/</span>
-                  </button>
-                </div>
-              ) : (
-                <p className="empty">{t("This folder is empty")}</p>
-              )}
-            </div>
-          </div>
-        </div>
-
-        <div className="bar">
-          <button type="button" className="text gtk" onClick={onClose}>
-            {t("Cancel")}
-          </button>
-          <button type="button" className="text gtk" onClick={openCurrent}>
-            {t("Open")}
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: string, ms?: number) => void }) {
   const [tab, setTab] = useState<string>(() => {
     try {
@@ -977,10 +347,6 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
   const [skillHowBusy, setSkillHowBusy] = useState<"link" | "copy" | null>(null);
   const setSkillHowSeg = useSegThumb(skillHowBusy ? `busy-${skillHowBusy}` : skillHow);
   const [skillChecking, setSkillChecking] = useState(false);
-  /** Magpie Library folder / Backups → OS Thunar (library 88–100) */
-  const [thunarKind, setThunarKind] = useState<"library" | "backups" | null>(null);
-  /** Magpie library/projects/choose — GTK Choose a project (101–119) */
-  const [chooseProjectOpen, setChooseProjectOpen] = useState(false);
   const newNameRef = useRef<HTMLInputElement>(null);
   const projectPathRef = useRef<HTMLInputElement>(null);
   const mcpNameRef = useRef<HTMLInputElement>(null);
@@ -1349,7 +715,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
           <button
             type="button"
             className="text lib-more" title="~/.config/magpie/library"
-            onClick={() => setThunarKind("library")}>
+            onClick={() => onStatus?.("~/.config/magpie/library", "ok")}>
             <svg viewBox="0 0 16 16" width={14} height={14} fill="none" stroke="currentColor" strokeWidth="1.3" aria-hidden className="lib-mini">
               <path d={FOLDER} />
             </svg>
@@ -1358,7 +724,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
           <button
             type="button"
             className="text lib-backups" title={t("magpie keeps a copy of every file before it writes it.") + "\n~/.config/magpie/backups"}
-            onClick={() => setThunarKind("backups")}
+            onClick={() => onStatus?.("~/.config/magpie/backups", "ok")}
             onContextMenu={(e) => {
               // NOTES 88–100: right-click on Backups opens no menu
               e.preventDefault();
@@ -2023,12 +1389,13 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                     ) : null}
                   </div>
                   {mcpAddingProject ? (
-                    <div className="list lib-card">
-                      <div>
-                        <span aria-hidden>📁</span>
+                    <div className="list lib-card lib-install">
+                      <div className="lib-find">
+                        <span aria-hidden className="lib-mini">📁</span>
                         <input
                           type="text"
                           spellCheck={false}
+                          autoComplete="off"
                           placeholder={t("The project's folder, like ~/code/app")}
                           value={mcpAddingProject.dir}
                           disabled={!!mcpAddingProject.busy}
@@ -2037,9 +1404,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                             e.stopPropagation();
                             if (e.key === "Escape") setMcpAddingProject(null);
                           }}
-                         
                         />
-                        <button type="button" className="text" disabled>{t("Choose…")}</button>
                         <button
                           type="button"
                           className="text action" disabled={!!mcpAddingProject.busy}
@@ -2058,9 +1423,9 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                               onStatus?.(t("{name} added — pick the servers it gets", { name }), "ok");
                             }, 350);
                           }}>
-                          {t("Add")}
+                          {mcpAddingProject.busy ? t("Adding…") : t("Add")}
                         </button>
-                        <button type="button" className="text" onClick={() => setMcpAddingProject(null)}>{t("Cancel")}</button>
+                        <button type="button" className="text" disabled={!!mcpAddingProject.busy} onClick={() => setMcpAddingProject(null)}>{t("Cancel")}</button>
                       </div>
                     </div>
                   ) : null}
@@ -2530,11 +1895,10 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                           disabled={!!addingProject.busy}
                           onChange={(e) => setAddingProject({ ...addingProject, dir: e.target.value })}
                           onKeyDown={(e) => {
-                            // NOTES 117–118: Escape closes sheet only when path field focused
+                            // Magpie addProjectCard: Escape clears addingProject (client.js L3498)
                             e.stopPropagation();
                             if (e.key === "Escape") {
                               setAddingProject(null);
-                              setChooseProjectOpen(false);
                               return;
                             }
                             if (e.key === "Enter") {
@@ -2555,12 +1919,6 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                           }}
                          
                         />
-                        <button
-                          type="button"
-                          className="text" disabled={!!addingProject.busy}
-                          onClick={() => setChooseProjectOpen(true)}>
-                          {t("Choose…")}
-                        </button>
                         <button
                           type="button"
                           className="text action" disabled={!!addingProject.busy}
@@ -2587,7 +1945,6 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                           className="text" disabled={!!addingProject.busy}
                           onClick={() => {
                             setAddingProject(null);
-                            setChooseProjectOpen(false);
                           }}>
                           {t("Cancel")}
                         </button>
@@ -3830,21 +3187,6 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
           onStatus?.(t("{name} removed", { name }), "ok");
         }}
       />
-
-      
-
-      {thunarKind ? <LibThunar kind={thunarKind} onClose={() => setThunarKind(null)} /> : null}
-
-      {chooseProjectOpen ? (
-        <LibChooseProject
-          onClose={() => setChooseProjectOpen(false)}
-          onOpen={(p) => {
-            setChooseProjectOpen(false);
-            if (addingProject) setAddingProject({ ...addingProject, dir: p });
-            else setAddingProject({ dir: p });
-          }}
-        />
-      ) : null}
 
     </main>
   );

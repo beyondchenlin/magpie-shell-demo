@@ -1,3 +1,16 @@
+## v0.1.149 · LIBRARY_THUNAR_GTK_CHOOSE_OSS_FIDELITY · 2026-10-15 Asia/Shanghai
+
+- **WHY:** Continue Magpie 1:1 after 0.1.148 — delete tip invent Library in-app Thunar + GTK “Choose a project” + view-scoped lib-card/tag/acts/text re-owns that covered Magpie OSS.
+- **CAUSE:** Demo painted Library folder/Backups as invent `LibThunar` (`.lib-thunar*` / `.modal.lib-thunar-scrim`) and Add-project Choose… as invent `LibChooseProject` (`.dialog.gtk-choose-project` / `.modal.lib-choose-scrim`) instead of Magpie `reveal()` (`library/reveal`, client.js **L88–94**, **L750–757**) and web path-only `addProjectCard` (`if (!web)` Choose…, client.js **L3500–3508**). shell-patch also re-owned Magpie `.lib-card` / `.lib-tag` / `.lib-acts` / `.lib-text` against library.css **L58** / **L117–118** / **L169** / **L62–69**.
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; CIS PrefRow/Segs/TextBtn; Magpie `library.css` import; demo leftover `#view-library` bridges (lib-setrow / lib-chev / lib-mcp.* / lib-savebar pill / lib-tag.agents) — Magpie uses different Instructions/MCP DOM in places; no invent parallel mp-* file-manager CSS.
+- **Magpie gold cited:**
+  - `plugins/library/client.js` **88–94** `reveal(p)` → `api("library/reveal")`; **750–757** Library folder / Backups buttons
+  - `plugins/library/client.js` **3486–3532** `addProjectCard` — web: path input only; app: Choose… → `library/projects/choose`
+  - `plugins/library/library.css` **58** `.lib-card`; **117–118** `.lib-tag`; **169** `.lib-acts`; **287–291** `.lib-install` / `.lib-find`
+- **WHAT changed:** `LibraryView.tsx` drop LibThunar/LibChooseProject; reveal → status toast path (web has no reveal API); Add-project drop Choose…; MCP install card → Magpie `lib-install`/`lib-find`; `shell-patch.css` drop ~522 lines thunar/gtk invent + invent view lib-card/tag/acts/text.
+- **chrome-guard:** pass (SIDE_AT=1024).
+- **No portable / Vercel.**
+
 ## v0.1.148 · PLUGINS_GHKINDS_LIBRARY_RTK_OSS_FIDELITY · 2026-10-15 Asia/Shanghai
 
 - **WHY:** Continue Magpie 1:1 after 0.1.147 — delete tip invent Plugins GitHub kinds / detail chrome + Library RTK/skillHow that covered Magpie OSS.
