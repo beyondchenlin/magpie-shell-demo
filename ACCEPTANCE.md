@@ -1,3 +1,8 @@
+## v0.1.118 SETTINGS_LEFT_CLIP_THUMB
+- Settings set-tabs / PrefRow labels fully visible at nest ~752 + textSize 110% (no left white thumb overlay).
+- Magpie-faithful: warm-tabs/set-tabs use `.on` pill, not sliding thumb (`app.css` ~3009–3012).
+- `SIDE_AT=1024` only; no `WEB_SIDE_AT`. chrome-guard pass. Local tip only (no push/Vercel/portable).
+
 ## v0.1.117 CIS_AGENTS_SETTINGS_LEFTOVERS
 - AgentsView 29→6 (`--n`/`--i`); NestedBlocks 24→2 (FontRow pos/fontFamily); GroupEditor 0; LedHeat/ModelPop tokens. SIDE_AT=1024. No portable / Vercel.
 

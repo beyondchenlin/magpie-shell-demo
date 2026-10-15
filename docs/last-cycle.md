@@ -1,3 +1,9 @@
+## v0.1.118 SETTINGS_LEFT_CLIP_THUMB
+- WHY: Settings left clip at nest 752 / 110% (常规 + PrefRow labels).
+- CAUSE: useSegThumb on warm-tabs/set-tabs → orphan .thumb vs #root.
+- FIX: remove SegThumb from SettingsView; Magpie .on pill only.
+- SIDE_AT=1024. chrome-guard. No portable / Vercel.
+
 # Last tip cycle · v0.1.117
 
 - **WHY:** CIS AgentsView + NestedBlocks (+ GroupEditor/ModelPop leftovers) layout chrome

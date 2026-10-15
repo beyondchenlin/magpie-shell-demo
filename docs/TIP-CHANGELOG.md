@@ -4,6 +4,16 @@
 
 ---
 
+## v0.1.118 · SETTINGS_LEFT_CLIP_THUMB · 2026-10-15 Asia/Shanghai
+
+- **WHY:** tip-0117 preview `01-settings.png` — Settings left gutter clipped 「常规」tab + row labels (外观→见) at nest ~752 / textSize 110%.
+- **CAUSE:** Demo `useSegThumb` on `.warm-tabs.set-tabs` / `#warmTabs` injected `.thumb` (`position:absolute; top/bottom:2px`) without a `position:relative` host. Nearest positioned ancestor is `#root` (`shell-patch.css`), so the white card thumb stretched ~full card height over the left edge.
+- **Gold:** Magpie `app.css` `.warm-tabs button.on { background: var(--pill) }` — no `slide()` on set-tabs/warm-tabs (`app.js` only wires click/tabKeys). Cite: `magpie-src/internal/gui/assets/app.css` ~3009–3012; `app.js` ~20769–20780.
+- **WHAT kept:** `SIDE_AT=1024`; no `WEB_SIDE_AT`; Win chrome / 752 frame; PrefRow / set-tabs DOM; `.warm-tabs` −7px optical align.
+- **WHAT changed:** Drop `useSegThumb` + refs from `SettingsView` set-tabs and warm-tabs; selection stays `.on` pill.
+- **Guard:** `npm run chrome-guard`. No portable. No push/Vercel.
+
+---
 ## v0.1.117 · CIS_AGENTS_SETTINGS_LEFTOVERS · 2026-10-15 Asia/Shanghai
 
 - **WHY:** CIS continuous — AgentsView (~29) + NestedBlocks (~24) layout `style={{…}}`; also knock GroupEditor / ModelPop / AgentModelsPop / LedHeat legend chrome.

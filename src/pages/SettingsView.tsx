@@ -4,7 +4,6 @@ import { PrefRow } from "../components/PrefRow";
 import { Segs } from "../components/Segs";
 import { TextBtn } from "../components/TextBtn";
 import { WordsField } from "../components/WordsField";
-import { useSegThumb } from "../components/SegThumb";
 import { GATEWAY_ADDR } from "../data/mock";
 import { demoCopy, t, type Lang } from "../i18n";
 import {
@@ -438,8 +437,6 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus, onHeade
   useEffect(() => {
     applyDemoFonts(prefs.uiFont, prefs.codeFont);
   }, [prefs.uiFont, prefs.codeFont]);
-  const setTabsBox = useSegThumb(tab);
-  const warmBox = useSegThumb(warmTab);
   const langBtn = useRef<HTMLButtonElement>(null);
   const searching = q.trim().length > 0;
 
@@ -587,7 +584,6 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus, onHeade
           id="setTabs"
           role="tablist"
           aria-label={t("Settings")}
-          ref={setTabsBox}
           hidden={searching}
         >
           {SET_TABS.filter((x) => x.id !== "otel" || otelFeatureOn()).map((x) => (
@@ -1148,7 +1144,7 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus, onHeade
         {uRows.warm && (
           <>
             <div className="row-head warm-head" data-feature="warmups">
-              <div className="warm-tabs" id="warmTabs" role="tablist" aria-label={t("Warm-up and check-in")} ref={warmBox}>
+              <div className="warm-tabs" id="warmTabs" role="tablist" aria-label={t("Warm-up and check-in")}>
                 <button type="button" role="tab" id="warmTab-codex" data-warm="codex" className={warmTab === "codex" ? "on" : ""} aria-selected={warmTab === "codex"} onClick={() => setWarmTab("codex")}>
                   Codex
                 </button>
