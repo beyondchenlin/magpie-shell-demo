@@ -48,10 +48,12 @@ footer.foot                 ← #status toast 胶囊
 
 ---
 
-### Font menus (v0.1.41)
+### Font menus (v0.1.41 → v0.1.80 / settings 107–134)
 
 - `.font-row` + `.font-controls` grid (family | style, preview full width).
-- Family menu: System default + catalogue + Refresh; `Search fonts…` (`sc-q`); style disabled when System default.
+- Family menu card titled Interface/Code font: `Search fonts…` (`sc-q`), **✓ System default**, faces in own type, **Refresh fonts** last (`always` — survives empty search / zzzznone). Query filters System default out. No Cancel; Escape discards.
+- Style menu titled **Font style**; disabled + no tooltip while System default; enables after a family pick (Regular/Book…).
+- ui face → `--ui-*` restyles chrome; code face → `#codeFontRow .font-preview` (+ `--code-*`) only. Still mock: OS font enum.
 - Apply: `--ui-font/weight/style/stretch` and `--code-*`; `html[data-fonts]`.
 - Appearance theme: `html.theming` **.35s** then clear at **450ms**.
 

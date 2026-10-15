@@ -3068,7 +3068,7 @@ body.window .ag-sk-icon { width: 22px; height: 22px; border-radius: 6px; }
 .font-preview { grid-column: 1 / -1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--fg-2); padding: 2px 9px; user-select: text; }
 #uiFontRow .font-preview { font: var(--ui-style, normal) var(--ui-weight, 400) 13px/1.5 var(--ui-font, var(--font)); font-stretch: var(--ui-stretch, 100%); }
 #codeFontRow .font-preview { font: var(--code-style, normal) var(--code-weight, 400) 13px/1.5 var(--code-font, var(--code)); font-stretch: var(--code-stretch, 100%); }
-.pop.font-menu { width: min(330px, calc(100vw - 16px)); max-width: calc(100vw - 16px); }
+.pop.font-menu { width: min(330px, calc(100vw - 16px)); max-width: calc(100vw - 16px); max-height: min(360px, 70vh); overflow-y: auto; overscroll-behavior: contain; }
 .font-menu .sc-top { top: -4px; }
 .font-menu .pm-head { white-space: normal; }
 .font-menu .pm-name { white-space: normal; overflow-wrap: anywhere; }

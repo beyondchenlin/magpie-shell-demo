@@ -223,3 +223,53 @@ Native Linux, magpie pid 560329, window **752×652**. Running **0.1.1240**; Abou
 Settings on About (community row). Sync off (Set up). Export and import panels closed. No file chosen, nothing exported. Update button Off, automatic updates On, check every 6 h, restart automatically Off, download source GitHub. theme system, textSize 110. Gateway still `http://127.0.0.1:3425`. magpie pid 560329 still running. Restart to update not clicked.
 
 Not in this window: Observability tab (still hidden). Allowances quota body still N/A. P1 N/A.
+
+## GENERAL font menus (shots 107–134)
+
+Native Linux, magpie pid 560329, window **752×652**. General was still on System default for both font rows (the earlier table's "menus not opened"). Menus opened, exercised, then both rows restored to **System default**. Green **Saved** toast on every committed change. Escape closes a menu without changing the value. No Cancel button. Observability still not in the tab row. Allowances quota not touched. textSize still 110, theme system, language system.
+
+Each row is LTR: family menu (left) then style menu (right), preview `Aa 0123 · 中文` under the pair. Family menu is a card titled with the row name. Style menu is a smaller card titled **Font style**, and it does not open while the family is System default.
+
+### Interface font (108–125)
+
+| shot | control | seen |
+|---|---|---|
+| 107 | both rows closed | Family + style both `System default`. Preview `Aa 0123 · 中文`. |
+| 108 | family menu | Title **Interface font**. Search field focused, placeholder `Search fonts…`, blue ring. **✓ System default**. List in each face, A–: ABeeZee, Abel, Abhaya Libre, Abhaya Libre ExtraBold, Medium, SemiBold. Chevron on the family button points up. Button tooltip `System default`. |
+| 109 | hover System default | Gray row fill on the checked item. |
+| 110–112 | search `Noto` | Substring filter. Hits include Monoton (contains "noto"), Noto Color Emoji, Noto Kufi Arabic, Noto Naskh Arabic, Noto Sans, Noto Sans Arabic, Noto Sans CJK HK/JP/KR/SC/TC, Devanagari, Malayalam, Mono + Mono CJK, Symbols, Serif + Serif CJK, Serif Devanagari, Serif Display, Ethiopic, Gujarati. Scrollbar. System default is not pinned once the query is set. |
+| 112–113 | end of that list | Last rows then **Refresh fonts**. Hover fills the row under the pointer (Noto Serif Display, then Refresh fonts). |
+| 114 | Refresh fonts click | Menu closes immediately. No loading line and no toast in the frame. Selection still System default. |
+| 115–116 | style button while default | Hover shows no tooltip and no menu. Click is a no-op (same pixels). Style stays disabled on System default. |
+| 117 | search `zzzznone` | No "no matches" copy. The list is only **Refresh fonts**. System default is filtered out. |
+| 118 | Escape | Menu closes. Query discarded. Still System default. |
+| 119–120 | search `Noto Sans CJK SC` → pick | Menu closes. Family button reads `Noto Sans CJK SC`, style button enables and reads **Regular**. Whole settings chrome takes that face. **Saved**. |
+| 121–122 | style menu | Title **Font style**, opens **down**. ✓ Regular (hover fill), Bold. Button tooltip `Regular`. Hover fills Bold. |
+| 123 | Bold | Style button **Bold**. Chrome and preview go bold. **Saved**. |
+| 124 | family menu again | Opens at the top of the catalogue. **No check** on System default, and the selected family is not scrolled into view. |
+| 125 | System default | Both interface buttons back to System default. Chrome weight back. **Saved**. |
+
+### Code font (126–134)
+
+Same menu chrome. Title **Code font**. Picking a code face does **not** restyle the settings chrome; only the code preview `Aa 0123 · 中文` changes.
+
+| shot | control | seen |
+|---|---|---|
+| 126 | family menu | ✓ System default. Same A– list (through Aboreto in the first screen). Search focused. Menu sits **above** the row. |
+| 127 | search `Deja` | DejaVu Sans, **DejaVu Sans Mono**, DejaVu Serif, then Refresh fonts. |
+| 128 | DejaVu Sans Mono | Family `DejaVu Sans Mono`, style **Book**. Preview goes monospace. Interface row still System default. **Saved**. |
+| 129–130 | style menu | Opens **up** (row is low). **Font style**: ✓ Book, Oblique, Bold, Bold Oblique. Tooltip `Book`. Hover fills Oblique. |
+| 131 | Escape | Menu closes. Still Book. Style button keeps a blue focus ring. |
+| 132 | Oblique | Style button **Oblique**. Preview italic. Chrome unchanged. **Saved**. |
+| 133 | family menu while set | Title Code font, search focused, list at top with **no check** on System default (selection not scrolled in). Button tooltip `DejaVu Sans Mono`. |
+| 134 | System default | Both code buttons System default. Preview proportional again. **Saved**. |
+
+Family list is the installed desktop catalogue (hundreds of families; this machine has on the order of 900). Names draw in their own face. Refresh fonts is the last row, not a separate footer outside the scroll. There is no Cancel; Escape dismisses family and style menus.
+
+## Left state after this pass
+
+Settings on General, font rows in view. Interface font and Code font both **System default** (style menus disabled again). textSize **110**, appearance System, language System. Nothing else in General toggled. Gateway still `http://127.0.0.1:3425`. magpie pid 560329 still running.
+
+Not in this window: Observability tab (still hidden). Allowances quota body still N/A.
+
+Next General rows still unopened below the fonts: Provider in model names, Codex subagents, Long conversations, Codex thread titles / descriptions / composer predictions / auto-review pickers, Open at login, Lightweight mode, Prevent sleep. Tray row was on screen (`Open the quick panel`) and not toggled.

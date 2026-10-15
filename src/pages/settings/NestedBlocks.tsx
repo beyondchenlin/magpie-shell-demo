@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
+import { createPortal } from "react-dom";
 import { ModelPop, PrefPickChip, type PopOption } from "../../components/ModelPop";
 import { Segs } from "../../components/Segs";
 import { WarmAt } from "../../components/WarmAt";
@@ -1684,41 +1685,93 @@ export type FontFace = {
 
 type FontFamily = { name: string; styles: FontFace[] };
 
-/** Demo catalogue — Magpie reads desktop fonts; web/demo uses a fixed list. */
+function face(
+  family: string,
+  name: string,
+  weight: number,
+  style: FontFace["style"] = "normal",
+  stretch = 100,
+): FontFace {
+  return { family, name, weight, style, stretch };
+}
+
+function fam(name: string, styles: FontFace[]): FontFamily {
+  return { name, styles };
+}
+
+/** Demo catalogue — Magpie reads desktop fonts; web/demo mirrors NOTES 107–134 faces. */
 export const DEMO_FONT_LIST: FontFamily[] = [
-  {
-    name: "Inter",
-    styles: [
-      { family: "Inter", name: "Regular", weight: 400, style: "normal", stretch: 100 },
-      { family: "Inter", name: "Medium", weight: 500, style: "normal", stretch: 100 },
-      { family: "Inter", name: "Bold", weight: 700, style: "normal", stretch: 100 },
-    ],
-  },
-  {
-    name: "Noto Sans CJK SC",
-    styles: [
-      { family: "Noto Sans CJK SC", name: "Regular", weight: 400, style: "normal", stretch: 100 },
-      { family: "Noto Sans CJK SC", name: "Medium", weight: 500, style: "normal", stretch: 100 },
-    ],
-  },
-  {
-    name: "JetBrains Mono",
-    styles: [
-      { family: "JetBrains Mono", name: "Regular", weight: 400, style: "normal", stretch: 100 },
-      { family: "JetBrains Mono", name: "Bold", weight: 700, style: "normal", stretch: 100 },
-    ],
-  },
-  {
-    name: "Fira Code",
-    styles: [
-      { family: "Fira Code", name: "Regular", weight: 400, style: "normal", stretch: 100 },
-      { family: "Fira Code", name: "Medium", weight: 500, style: "normal", stretch: 100 },
-    ],
-  },
-  {
-    name: "Source Code Pro",
-    styles: [{ family: "Source Code Pro", name: "Regular", weight: 400, style: "normal", stretch: 100 }],
-  },
+  fam("ABeeZee", [face("ABeeZee", "Regular", 400)]),
+  fam("Abel", [face("Abel", "Regular", 400)]),
+  fam("Abhaya Libre", [
+    face("Abhaya Libre", "Regular", 400),
+    face("Abhaya Libre", "Medium", 500),
+    face("Abhaya Libre", "SemiBold", 600),
+    face("Abhaya Libre", "Bold", 700),
+  ]),
+  fam("Abhaya Libre ExtraBold", [face("Abhaya Libre ExtraBold", "Regular", 800)]),
+  fam("Abhaya Libre Medium", [face("Abhaya Libre Medium", "Regular", 500)]),
+  fam("Abhaya Libre SemiBold", [face("Abhaya Libre SemiBold", "Regular", 600)]),
+  fam("Aboreto", [face("Aboreto", "Regular", 400)]),
+  fam("DejaVu Sans", [
+    face("DejaVu Sans", "Book", 400),
+    face("DejaVu Sans", "Oblique", 400, "oblique"),
+    face("DejaVu Sans", "Bold", 700),
+    face("DejaVu Sans", "Bold Oblique", 700, "oblique"),
+  ]),
+  fam("DejaVu Sans Mono", [
+    face("DejaVu Sans Mono", "Book", 400),
+    face("DejaVu Sans Mono", "Oblique", 400, "oblique"),
+    face("DejaVu Sans Mono", "Bold", 700),
+    face("DejaVu Sans Mono", "Bold Oblique", 700, "oblique"),
+  ]),
+  fam("DejaVu Serif", [
+    face("DejaVu Serif", "Book", 400),
+    face("DejaVu Serif", "Italic", 400, "italic"),
+    face("DejaVu Serif", "Bold", 700),
+  ]),
+  fam("Fira Code", [
+    face("Fira Code", "Regular", 400),
+    face("Fira Code", "Medium", 500),
+  ]),
+  fam("Inter", [
+    face("Inter", "Regular", 400),
+    face("Inter", "Medium", 500),
+    face("Inter", "Bold", 700),
+  ]),
+  fam("JetBrains Mono", [
+    face("JetBrains Mono", "Regular", 400),
+    face("JetBrains Mono", "Bold", 700),
+  ]),
+  fam("Monoton", [face("Monoton", "Regular", 400)]),
+  fam("Noto Color Emoji", [face("Noto Color Emoji", "Regular", 400)]),
+  fam("Noto Kufi Arabic", [face("Noto Kufi Arabic", "Regular", 400)]),
+  fam("Noto Naskh Arabic", [face("Noto Naskh Arabic", "Regular", 400)]),
+  fam("Noto Sans", [
+    face("Noto Sans", "Regular", 400),
+    face("Noto Sans", "Bold", 700),
+  ]),
+  fam("Noto Sans Arabic", [face("Noto Sans Arabic", "Regular", 400)]),
+  fam("Noto Sans CJK HK", [face("Noto Sans CJK HK", "Regular", 400), face("Noto Sans CJK HK", "Bold", 700)]),
+  fam("Noto Sans CJK JP", [face("Noto Sans CJK JP", "Regular", 400), face("Noto Sans CJK JP", "Bold", 700)]),
+  fam("Noto Sans CJK KR", [face("Noto Sans CJK KR", "Regular", 400), face("Noto Sans CJK KR", "Bold", 700)]),
+  fam("Noto Sans CJK SC", [
+    face("Noto Sans CJK SC", "Regular", 400),
+    face("Noto Sans CJK SC", "Bold", 700),
+  ]),
+  fam("Noto Sans CJK TC", [face("Noto Sans CJK TC", "Regular", 400), face("Noto Sans CJK TC", "Bold", 700)]),
+  fam("Noto Sans Devanagari", [face("Noto Sans Devanagari", "Regular", 400)]),
+  fam("Noto Sans Gujarati", [face("Noto Sans Gujarati", "Regular", 400)]),
+  fam("Noto Sans Malayalam", [face("Noto Sans Malayalam", "Regular", 400)]),
+  fam("Noto Sans Mono", [face("Noto Sans Mono", "Regular", 400)]),
+  fam("Noto Sans Mono CJK SC", [face("Noto Sans Mono CJK SC", "Regular", 400)]),
+  fam("Noto Sans Symbols", [face("Noto Sans Symbols", "Regular", 400)]),
+  fam("Noto Serif", [face("Noto Serif", "Regular", 400), face("Noto Serif", "Bold", 700)]),
+  fam("Noto Serif CJK SC", [face("Noto Serif CJK SC", "Regular", 400)]),
+  fam("Noto Serif Devanagari", [face("Noto Serif Devanagari", "Regular", 400)]),
+  fam("Noto Serif Display", [face("Noto Serif Display", "Regular", 400)]),
+  fam("Noto Serif Ethiopic", [face("Noto Serif Ethiopic", "Regular", 400)]),
+  fam("Source Code Pro", [face("Source Code Pro", "Regular", 400)]),
 ];
 
 function sameFace(a: FontFace | null | undefined, b: FontFace | null | undefined) {
@@ -1727,7 +1780,20 @@ function sameFace(a: FontFace | null | undefined, b: FontFace | null | undefined
 }
 
 function closestFont(styles: FontFace[], prev: FontFace | null): FontFace {
-  if (!prev) return styles[0];
+  if (!prev) {
+    return [...styles].sort(
+      (a, b) =>
+        Number(a.style !== "normal") - Number(b.style !== "normal") ||
+        Math.abs(a.weight - 400) - Math.abs(b.weight - 400) ||
+        Math.abs(a.stretch - 100) - Math.abs(b.stretch - 100),
+    )[0];
+  }
+  const exact = styles.find(
+    (f) => f.name === prev.name && f.weight === prev.weight && f.style === prev.style && f.stretch === prev.stretch,
+  );
+  if (exact) return exact;
+  const matching = styles.find((f) => f.weight === prev.weight && f.style === prev.style && f.stretch === prev.stretch);
+  if (matching) return matching;
   return styles.find((s) => s.name === prev.name) || styles.find((s) => s.weight === prev.weight) || styles[0];
 }
 
@@ -1736,6 +1802,8 @@ const CHEV_PATH = (
     <path d="M3 4.5 6 7.5 9 4.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
   </svg>
 );
+
+const CHECK_PATH = "M3.2 8.2 6.4 11.4 12.8 4.2";
 
 /** Apply Magpie desktopFonts CSS vars (fonts.js). */
 export function applyDemoFonts(ui: FontFace | null, code: FontFace | null) {
@@ -1773,12 +1841,12 @@ export function applyDemoFonts(ui: FontFace | null, code: FontFace | null) {
   else root.removeAttribute("data-fonts");
 }
 
-/** Settings › General › Interface/Code font — Magpie renderFonts (shots 01/08). */
+/** Settings › General › Interface/Code font — Magpie renderFonts (shots 107–134). */
 export function FontRow({
   kind,
   value,
   onChange,
-  onStatus,
+  onStatus: _onStatus,
 }: {
   kind: "ui" | "code";
   value: FontFace | null;
@@ -1788,26 +1856,34 @@ export function FontRow({
   const [open, setOpen] = useState<"" | "family" | "style">("");
   const [q, setQ] = useState("");
   const [list, setList] = useState(DEMO_FONT_LIST);
-  const [loading, setLoading] = useState(false);
+  const [pos, setPos] = useState<{ top: number; left: number; up: boolean; maxH?: number } | null>(null);
   const famRef = useRef<HTMLButtonElement | null>(null);
   const styleRef = useRef<HTMLButtonElement | null>(null);
   const menuRef = useRef<HTMLDivElement | null>(null);
+  const searchRef = useRef<HTMLInputElement | null>(null);
   const label = kind === "ui" ? "Interface font" : "Code font";
   const family = list.find((f) => f.name === value?.family);
-  const note = loading ? t("Loading…") : list.length === 0 ? t("No installed fonts found") : "";
+  const styleEnabled = !!family?.styles.length;
+
+  const closeMenu = () => {
+    setOpen("");
+    setQ("");
+    setPos(null);
+  };
 
   useEffect(() => {
     if (!open) return;
     const onDown = (e: MouseEvent) => {
       const n = e.target as Node;
       if (famRef.current?.contains(n) || styleRef.current?.contains(n) || menuRef.current?.contains(n)) return;
-      setOpen("");
-      setQ("");
+      closeMenu();
     };
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
-        setOpen("");
-        setQ("");
+        e.preventDefault();
+        e.stopPropagation();
+        closeMenu();
+        (open === "style" ? styleRef.current : famRef.current)?.focus({ preventScroll: true });
       }
     };
     document.addEventListener("mousedown", onDown, true);
@@ -1818,25 +1894,179 @@ export function FontRow({
     };
   }, [open]);
 
-  const filtered = list.filter((f) => !q.trim() || f.name.toLowerCase().includes(q.trim().toLowerCase()));
+  useLayoutEffect(() => {
+    if (!open) return;
+    const anchor = open === "family" ? famRef.current : styleRef.current;
+    const box = menuRef.current;
+    if (!anchor || !box) return;
+    const r = anchor.getBoundingClientRect();
+    const pad = 8;
+    const h = box.offsetHeight;
+    const w = box.offsetWidth;
+    let y = r.bottom + 5;
+    const below = window.innerHeight - pad - y;
+    const above = r.top - 5 - pad;
+    let up = false;
+    let maxH: number | undefined;
+    if (h > below && above >= h) {
+      y = r.top - 5 - h;
+      up = true;
+    } else if (h > below && above > below) {
+      maxH = above;
+      y = pad;
+      up = true;
+    } else if (h > below) {
+      maxH = Math.max(below, 0);
+    }
+    const left = Math.max(pad, Math.min(r.right - w, window.innerWidth - w - pad));
+    setPos({ top: Math.max(pad, y), left, up, maxH });
+    box.scrollTop = 0;
+    if (open === "family") searchRef.current?.focus({ preventScroll: true });
+  }, [open, q, list.length]);
+
+  const qLower = q.trim().toLocaleLowerCase();
+  const defaultLabel = t("System default");
+  const showDefault = !qLower || defaultLabel.toLocaleLowerCase().includes(qLower);
+  const filtered = list.filter((f) => !qLower || f.name.toLocaleLowerCase().includes(qLower));
 
   const refresh = () => {
-    setLoading(true);
-    setOpen("");
-    window.setTimeout(() => {
-      setList([...DEMO_FONT_LIST]);
-      setLoading(false);
-      onStatus?.(demoCopy("演示：已刷新字体列表", "Demo: font list refreshed"), "ok");
-    }, 420);
+    // Magpie loadFonts(true): menu already closed; no toast (NOTES 114).
+    closeMenu();
+    setList([...DEMO_FONT_LIST]);
   };
+
+  const menu = open ? (
+    <div
+      className={`pop proto-menu sess-menu font-menu${pos?.up ? " up" : ""}`}
+      ref={menuRef}
+      role="menu"
+      style={{
+        position: "fixed",
+        top: pos ? pos.top : -9999,
+        left: pos ? pos.left : 0,
+        zIndex: 80,
+        maxHeight: pos?.maxH,
+        visibility: pos ? "visible" : "hidden",
+      }}
+    >
+      <div className="pm-head">{open === "family" ? t(label) : t("Font style")}</div>
+      {open === "family" ? (
+        <>
+          <div className="sc-top">
+            <input
+              ref={searchRef}
+              className="sc-q"
+              type="search"
+              placeholder={t("Search fonts…")}
+              value={q}
+              aria-label={t("Search fonts…")}
+              onChange={(e) => setQ(e.target.value)}
+              onKeyDown={(e) => e.stopPropagation()}
+            />
+          </div>
+          {showDefault ? (
+            <button
+              type="button"
+              role="menuitemradio"
+              aria-checked={!value}
+              className={`pm-item${!value ? " on" : ""}`}
+              onMouseEnter={(e) => (e.currentTarget as HTMLButtonElement).focus({ preventScroll: true })}
+              onClick={() => {
+                onChange(null);
+                closeMenu();
+              }}
+            >
+              <span className="pm-tick" aria-hidden>
+                {!value ? (
+                  <svg viewBox="0 0 16 16" width={12} height={12} fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+                    <path d={CHECK_PATH} />
+                  </svg>
+                ) : null}
+              </span>
+              <span className="pm-words">
+                <span className="pm-name">{defaultLabel}</span>
+              </span>
+            </button>
+          ) : null}
+          {filtered.map((f) => {
+            const on = value?.family === f.name;
+            return (
+              <button
+                type="button"
+                key={f.name}
+                role="menuitemradio"
+                aria-checked={on}
+                className={`pm-item${on ? " on" : ""}`}
+                style={{ fontFamily: `"${f.name.replace(/\\/g, "\\\\").replace(/"/g, '\\"')}", var(--font)` }}
+                onMouseEnter={(e) => (e.currentTarget as HTMLButtonElement).focus({ preventScroll: true })}
+                onClick={() => {
+                  onChange(closestFont(f.styles, value));
+                  closeMenu();
+                }}
+              >
+                <span className="pm-tick" aria-hidden>
+                  {on ? (
+                    <svg viewBox="0 0 16 16" width={12} height={12} fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+                      <path d={CHECK_PATH} />
+                    </svg>
+                  ) : null}
+                </span>
+                <span className="pm-words">
+                  <span className="pm-name">{f.name}</span>
+                </span>
+              </button>
+            );
+          })}
+          <button
+            type="button"
+            role="menuitem"
+            className="pm-item always"
+            onMouseEnter={(e) => (e.currentTarget as HTMLButtonElement).focus({ preventScroll: true })}
+            onClick={refresh}
+          >
+            <span className="pm-tick" aria-hidden />
+            <span className="pm-words">
+              <span className="pm-name">{t("Refresh fonts")}</span>
+            </span>
+          </button>
+        </>
+      ) : family ? (
+        family.styles.map((s, i) => {
+          const on = sameFace(s, value);
+          return (
+            <button
+              type="button"
+              key={s.name + i}
+              role="menuitemradio"
+              aria-checked={on}
+              className={`pm-item${on ? " on" : ""}`}
+              onMouseEnter={(e) => (e.currentTarget as HTMLButtonElement).focus({ preventScroll: true })}
+              onClick={() => {
+                onChange(s);
+                closeMenu();
+              }}
+            >
+              <span className="pm-tick" aria-hidden>
+                {on ? (
+                  <svg viewBox="0 0 16 16" width={12} height={12} fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+                    <path d={CHECK_PATH} />
+                  </svg>
+                ) : null}
+              </span>
+              <span className="pm-words">
+                <span className="pm-name">{s.name}</span>
+              </span>
+            </button>
+          );
+        })
+      ) : null}
+    </div>
+  ) : null;
 
   return (
     <div className="row pref font-row" id={`${kind}FontRow`}>
       <div className="who">
         <div className="name">{t(label)}</div>
-        <div className={`sub font-note${note ? "" : ""}`} hidden={!note}>
-          {note}
-        </div>
       </div>
       <div className="font-controls" style={{ position: "relative" }}>
         <button
@@ -1846,14 +2076,17 @@ export function FontRow({
           aria-haspopup="menu"
           aria-expanded={open === "family"}
           aria-label={`${t(label)}: ${t("Font family")}`}
-          title={value?.family || t("System default")}
+          title={value?.family || defaultLabel}
           onClick={(e) => {
             e.stopPropagation();
-            setOpen((o) => (o === "family" ? "" : "family"));
-            setQ("");
+            if (open === "family") closeMenu();
+            else {
+              setQ("");
+              setOpen("family");
+            }
           }}
         >
-          <span>{value?.family || t("System default")}</span>
+          <span>{value?.family || defaultLabel}</span>
           {CHEV_PATH}
         </button>
         <button
@@ -1863,81 +2096,20 @@ export function FontRow({
           aria-haspopup="menu"
           aria-expanded={open === "style"}
           aria-label={`${t(label)}: ${t("Font style")}`}
-          title={value?.name || t("System default")}
-          disabled={!family?.styles.length}
+          title={styleEnabled ? value?.name || defaultLabel : undefined}
+          disabled={!styleEnabled}
           onClick={(e) => {
             e.stopPropagation();
-            if (!family?.styles.length) return;
-            setOpen((o) => (o === "style" ? "" : "style"));
+            if (!styleEnabled) return;
+            if (open === "style") closeMenu();
+            else setOpen("style");
           }}
         >
-          <span>{value?.name || t("System default")}</span>
+          <span>{value?.name || defaultLabel}</span>
           {CHEV_PATH}
         </button>
         <div className="font-preview">{t("Aa 0123 · 中文")}</div>
-        {open === "family" ? (
-          <div className="pop proto-menu sess-menu font-menu" ref={menuRef} role="menu" style={{ position: "absolute", right: 0, top: "100%", zIndex: 50 }}>
-            <div className="sc-top" style={{ padding: "6px 8px" }}>
-              <input
-                className="sc-q"
-                type="search"
-                placeholder={t("Search fonts…")}
-                value={q}
-                autoFocus
-                aria-label={t("Search fonts…")}
-                onChange={(e) => setQ(e.target.value)}
-                onKeyDown={(e) => e.stopPropagation()}
-              />
-            </div>
-            <button
-              type="button"
-              role="menuitem"
-              className={!value ? "on" : ""}
-              onClick={() => {
-                onChange(null);
-                setOpen("");
-              }}
-            >
-              {t("System default")}
-            </button>
-            {filtered.map((f) => (
-              <button
-                type="button"
-                key={f.name}
-                role="menuitem"
-                className={value?.family === f.name ? "on" : ""}
-                style={{ fontFamily: `"${f.name}", var(--font)` }}
-                onClick={() => {
-                  onChange(closestFont(f.styles, value));
-                  setOpen("");
-                }}
-              >
-                {f.name}
-              </button>
-            ))}
-            <button type="button" role="menuitem" className="always" onClick={refresh}>
-              {t("Refresh fonts")}
-            </button>
-          </div>
-        ) : null}
-        {open === "style" && family ? (
-          <div className="pop proto-menu sess-menu font-menu" ref={menuRef} role="menu" style={{ position: "absolute", right: 0, top: "100%", zIndex: 50 }}>
-            {family.styles.map((s, i) => (
-              <button
-                type="button"
-                key={s.name + i}
-                role="menuitem"
-                className={sameFace(s, value) ? "on" : ""}
-                onClick={() => {
-                  onChange(s);
-                  setOpen("");
-                }}
-              >
-                {s.name}
-              </button>
-            ))}
-          </div>
-        ) : null}
+        {menu && createPortal(menu, document.body)}
       </div>
     </div>
   );

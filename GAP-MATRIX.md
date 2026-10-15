@@ -1,3 +1,8 @@
+## v0.1.80 SETTINGS_FONTS_107_134
+- settings/107–134 Interface/Code font menus landed 1:1: Search/✓/own-face list/Refresh always; empty query keeps System default; zzzznone → Refresh only; style disabled+no tip on System default; CJK Bold → `--ui-*` chrome; DejaVu Mono Oblique → code preview only; Escape discard; Saved toast via setPrefs.
+- Still mock: true desktop `fonts` API / hundreds of OS faces (demo catalogue covers NOTES search paths).
+- Allowances **N/A**. P1 bird hop **N/A**. No portable / Vercel this cycle.
+
 ## v0.1.79 SETTINGS_SYNC_ABOUT_71_106
 - settings/71–106 Sync+About deep nest landed: full WebDAV/S3/GitHub forms, export/import Cancel, GTK Select File Escape, About downloaded/What's new badge, Update pill ↔ header arrow, mirror Cancel, CLI/config/gateway copy, community tip-only.
 - Still mock: true Turn on sync / export write / import apply / Restart install / open Discord·GitHub / Open config folder.

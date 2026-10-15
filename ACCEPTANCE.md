@@ -1,3 +1,8 @@
+## v0.1.80 SETTINGS_FONTS_107_134
+- Consumed native `settings/107–134` NOTES: Interface/Code font family menus — **Search fonts…**, **✓ System default**, faces in own type, **Refresh fonts** (zzzznone → only Refresh; System default filtered out when query set); style menu shut on System default (no tooltip); after family pick style enables (Regular/Book); **Noto Sans CJK SC Bold** restyles chrome; **DejaVu Sans Mono Oblique** changes Aa preview only; Escape closes without change; green **Saved** on pick; both restored System default; textSize **110**; Observability hidden; Allowances **N/A**.
+- Still mock: true OS font enumeration API (demo catalogue).
+- **No portable / GitHub release / Vercel** (user freeze).
+
 ## v0.1.79 SETTINGS_SYNC_ABOUT_71_106
 - Consumed native `settings/71–106` NOTES: Sync Set up WebDAV/S3/GitHub forms (Prefix/Region/Path-style, Branch/Folder/token hints, Usage day-file hint); Cancel / Turn on shown — **Turn on not required**; Export/Import Cancel; Import Choose… → GTK **Select File** (Home/Desktop/workspace/Other Locations, empty `.magpie-backup` list, Escape → No file chosen); Sync stays off.
 - About: running **0.1.1240**, **0.1.1244 is downloaded**, Restart hover-only; What's new → **NOT INSTALLED YET** + Close (issue # as text); Update button Off→On→header purple arrow + Saved→Off; Automatic updates Off dims Check every / Restart automatically then On; Check every 30 min then **6 h**; Restart automatically On then Off; Mirror tip + editor Cancel; Config path copy → Path copied; CLI bash tip + Copy; Gateway URL copy; Discord/GitHub tips **not opened**.
