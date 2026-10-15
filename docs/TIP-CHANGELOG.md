@@ -1,3 +1,17 @@
+## v0.1.138 · USAGE_AGENT_ROW_MENU_HID_OSS_FIDELITY · 2026-10-15 Asia/Shanghai
+
+- **WHY:** Continue Magpie 1:1 after 0.1.137 — delete tip invent Usage Agents ⋯ menu (`proto-menu`/`proto-item`) + shell-patch `.us-more-pop` / `.us-hidline` that covered Magpie OSS row-menu + us-hid.
+- **CAUSE:** Demo painted Hide-from-list as invent inline `proto-menu open` + bare `proto-item` (no icon) instead of Magpie `openRowMenu` → `.pop.row-menu` / `.rm-item` + EYE_OFF; `#usageAgentsHid` missing `.us-hid`/`.list`; shell-patch re-owned hidline margin/font and invented absolute `.us-more-pop`.
+- **Magpie cites:**
+  - Magpie `app.js` **3497–3518** `openRowMenu` → `el("div", "pop row-menu")` + `rm-item` / `rm-name` / `rm-sep`
+  - Magpie `app.js` **17375–17379** Usage Agents menu: Hide from this list + EYE_OFF via openRowMenu
+  - Magpie `app.js` **3518** `placeMenu(box, anchor, "left", -4)`; **13784–13797** placeMenu
+  - Magpie `app.css` **694–704** `.pop.row-menu` / `.rm-item`; **1065–1072** `.us-hid` / `.us-hidline`
+  - Magpie `index.html` `div.us-hid#usageAgentsHid` + `button.us-hidline` + `div.list`
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; Tray/LAN/Search proto menus (0.1.137); CIS PrefRow/Segs/TextBtn; other Usage chrome.
+- **WHAT changed:** `SimpleViews.tsx` Usage Agents menu → Magpie row-menu; hid → `.us-hid`+`.list`; `shell-patch.css` drop invents above.
+- **Guard:** `npm run chrome-guard`. No portable. Push/PR #1. No Vercel.
+
 ## v0.1.137 · TRAY_LAN_SEARCH_PROTO_MENU_OSS_FIDELITY · 2026-10-15 Asia/Shanghai
 - **WHY:** Continue Magpie 1:1 after 0.1.136 — delete tip invent PrefPick/other menus (TrayUsage / LAN Address / Search APIs) that painted bare button lists instead of Magpie `openProtoMenu`.
 - **CAUSE:** TrayUsage invent `sess-pick` + bare `.sess-menu` buttons (no pm-head/pm-item); LAN invent `<ul><li.sel>`; Search invent bare `button.on` — all fought Magpie openProtoMenu DOM.

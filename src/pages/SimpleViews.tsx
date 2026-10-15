@@ -24,6 +24,88 @@ import {
 } from "../data/usage-demo";
 import { demoCopy, t } from "../i18n";
 
+/** Magpie app.js L2676 EYE_OFF — Usage Agents openRowMenu hide act. */
+const EYE_OFF =
+  "M6.6 3.7A6.9 6.9 0 0 1 8 3.5c3.75 0 6.25 4.5 6.25 4.5a11 11 0 0 1-1.5 2M4.4 4.4C2.7 5.55 1.75 8 1.75 8S4.25 12.5 8 12.5c1.2 0 2.25-.45 3.1-1.05M6.75 6.75a1.75 1.75 0 0 0 2.5 2.5M2 2l12 12";
+
+/** Magpie openRowMenu (app.js L3497–3518 / L17375–17379): .pop.row-menu + .rm-item. */
+function UsageAgentMenu({
+  anchor,
+  onHide,
+  onClose,
+}: {
+  anchor: HTMLElement;
+  onHide: () => void;
+  onClose: () => void;
+}) {
+  const boxRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const box = boxRef.current;
+    if (!box) return;
+    const r = anchor.getBoundingClientRect();
+    const pad = 8;
+    const w = box.offsetWidth || 176;
+    const h = box.offsetHeight || 40;
+    let y = r.bottom + 5;
+    if (y + h > window.innerHeight - pad && r.top - 5 - h >= pad) {
+      y = r.top - 5 - h;
+      box.classList.add("up");
+    }
+    // Magpie placeMenu(box, anchor, "left", -4) — app.js L13784–13797 / L3518
+    const left = Math.max(pad, Math.min(r.left - 4, window.innerWidth - w - pad));
+    box.style.left = `${left}px`;
+    box.style.top = `${Math.max(pad, y)}px`;
+    anchor.classList.add("open");
+    const outside = (e: MouseEvent) => {
+      if (!box.contains(e.target as Node) && !anchor.contains(e.target as Node)) onClose();
+    };
+    const keys = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        e.stopPropagation();
+        onClose();
+        anchor.focus({ preventScroll: true });
+      } else if (e.key === "Tab") onClose();
+    };
+    document.addEventListener("mousedown", outside, true);
+    document.addEventListener("keydown", keys, true);
+    const first = box.querySelector<HTMLButtonElement>("button.rm-item:not(:disabled)");
+    first?.focus({ preventScroll: true });
+    return () => {
+      anchor.classList.remove("open");
+      document.removeEventListener("mousedown", outside, true);
+      document.removeEventListener("keydown", keys, true);
+    };
+  }, [anchor, onClose]);
+
+  return (
+    <div className="pop row-menu fixed" role="menu" ref={boxRef}>
+      <button
+        type="button"
+        className="rm-item"
+        role="menuitem"
+        onClick={(e) => {
+          e.stopPropagation();
+          onClose();
+          onHide();
+        }}>
+        <svg viewBox="0 0 16 16" width={13} height={13} aria-hidden>
+          <path
+            d={EYE_OFF}
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+        <span className="rm-name">{t("Hide from this list")}</span>
+      </button>
+    </div>
+  );
+}
+
 const USAGE_TABS = [
   ["usage", "Overview"],
   ["requests", "Requests"],
@@ -568,7 +650,7 @@ export function UsageView() {
     () => (demoFilled ? buildDemoOverview(period) : null),
     [demoFilled, period],
   );
-  const [agentMenuFor, setAgentMenuFor] = useState<string | null>(null);
+  const [agentMenuFor, setAgentMenuFor] = useState<{ id: string; el: HTMLElement } | null>(null);
   const [hiddenUsageAgents, setHiddenUsageAgents] = useState<Set<string>>(() => new Set());
   const [usageHidOpen, setUsageHidOpen] = useState(false);
 
@@ -833,12 +915,13 @@ export function UsageView() {
                       </div>
                       <button
                         type="button"
-                        className={`icon us-more${agentMenuFor === g.id ? " open" : ""}`}
+                        className={`icon us-more${agentMenuFor?.id === g.id ? " open" : ""}`}
                         aria-haspopup="menu"
                         aria-label={t("Actions for {name}", { name: g.name })}
                         onClick={(e) => {
                           e.stopPropagation();
-                          setAgentMenuFor((cur) => (cur === g.id ? null : g.id));
+                          const el = e.currentTarget;
+                          setAgentMenuFor((cur) => (cur?.id === g.id ? null : { id: g.id, el }));
                         }}>
                         <svg viewBox="0 0 16 16" width={14} height={14} aria-hidden>
                           <circle cx="3.5" cy="8" r="1.2" fill="currentColor" />
@@ -846,20 +929,6 @@ export function UsageView() {
                           <circle cx="12.5" cy="8" r="1.2" fill="currentColor" />
                         </svg>
                       </button>
-                      {agentMenuFor === g.id ? (
-                        <div className="proto-menu open" role="menu">
-                          <button
-                            type="button"
-                            className="proto-item"
-                            role="menuitem"
-                            onClick={() => {
-                              setHiddenUsageAgents((s) => new Set(s).add(g.id));
-                              setAgentMenuFor(null);
-                            }}>
-                            {t("Hide from this list")}
-                          </button>
-                        </div>
-                      ) : null}
                       <div className="num">
                         <b>{fmtN(tokensOf(g))}</b>
                         <small>
@@ -874,7 +943,7 @@ export function UsageView() {
                 })}
             </div>
             {overview.agents.some((g) => hiddenUsageAgents.has(g.id)) ? (
-              <div id="usageAgentsHid">
+              <div className="us-hid" id="usageAgentsHid">
                 <TextBtn
                   className="us-hidline"
                   aria-expanded={usageHidOpen}
@@ -886,33 +955,44 @@ export function UsageView() {
                     <path d="M3 4.5 6 7.5 9 4.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
                   </svg>
                 </TextBtn>
-                {usageHidOpen
-                  ? overview.agents
-                      .filter((g) => hiddenUsageAgents.has(g.id))
-                      .map((g) => (
-                        <div className="row stat hid acts" key={`hid-${g.id}`} data-id={g.id}>
-                          <span className="ic">
-                            <img src={iconSrc(g.icon)} alt="" />
-                          </span>
-                          <div className="who">
-                            <div className="name">{g.name}</div>
-                            <div className="sub">{t(g.calls === 1 ? "{n} call" : "{n} calls", { n: String(g.calls) })}</div>
+                <div className="list" hidden={!usageHidOpen}>
+                  {usageHidOpen
+                    ? overview.agents
+                        .filter((g) => hiddenUsageAgents.has(g.id))
+                        .map((g) => (
+                          <div className="row stat hid acts" key={`hid-${g.id}`} data-id={g.id}>
+                            <span className="ic">
+                              <img src={iconSrc(g.icon)} alt="" />
+                            </span>
+                            <div className="who">
+                              <div className="name">{g.name}</div>
+                              <div className="sub">{t(g.calls === 1 ? "{n} call" : "{n} calls", { n: String(g.calls) })}</div>
+                            </div>
+                            <TextBtn
+                              className="us-unhide"
+                              onClick={() =>
+                                setHiddenUsageAgents((s) => {
+                                  const n = new Set(s);
+                                  n.delete(g.id);
+                                  return n;
+                                })
+                              }>
+                              {t("Unhide")}
+                            </TextBtn>
                           </div>
-                          <TextBtn
-                            className="us-unhide"
-                            onClick={() =>
-                              setHiddenUsageAgents((s) => {
-                                const n = new Set(s);
-                                n.delete(g.id);
-                                return n;
-                              })
-                            }>
-                            {t("Unhide")}
-                          </TextBtn>
-                        </div>
-                      ))
-                  : null}
+                        ))
+                    : null}
+                </div>
               </div>
+            ) : null}
+            {agentMenuFor ? (
+              <UsageAgentMenu
+                anchor={agentMenuFor.el}
+                onClose={() => setAgentMenuFor(null)}
+                onHide={() => {
+                  setHiddenUsageAgents((s) => new Set(s).add(agentMenuFor.id));
+                }}
+              />
             ) : null}
             <div className="row-head">
               <span className="label">{t("Models")}</span>

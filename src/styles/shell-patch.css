@@ -2061,13 +2061,10 @@ button.lib-ag.icon {
 #view-usage .us-col { height: var(--h, 0%); flex: 1; }
 #view-usage .share > i { width: var(--bar, 0%); display: block; height: 100%; }
 #view-usage .meter > i { width: var(--bar, 0%); }
-#view-usage .us-more-pop {
-  position: absolute; right: 8px; top: 36px; z-index: 20; min-width: 180px;
-  animation: fade-in .15s var(--ease);
-}
-#view-usage .us-hidline { display: inline-flex; align-items: center; gap: 4px; margin: 6px 0; font-size: 12px; }
-#view-usage .us-hidline svg { transition: transform .15s ease-out; }
-#view-usage .us-hidline[aria-expanded="true"] svg { transform: rotate(180deg); }
+/* v0.1.138: drop invent #view-usage .us-more-pop absolute pop —
+   Magpie openRowMenu → .pop.row-menu (app.js L3497–3518 / L17375–17379; app.css L694).
+   Drop invent #view-usage .us-hidline margin/font — Magpie .us-hid .us-hidline
+   app.css L1067–1070 (margin 4px 0 0 2px / 11.5px / faint). */
 #view-usage .us-acts { margin-top: 10px; display: flex; gap: 8px; flex-wrap: wrap; }
 #view-usage .us-tools {
   display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 8px;
