@@ -18,13 +18,16 @@ export function PrefRow({
   wrapVal = true,
   dataPattern,
   dataUser,
+  dataId,
+  dataFeature,
+  dataOf,
 }: {
   name: string;
   sub?: ReactNode;
   subTitle?: string;
   /** Extra class on `.sub` (Magpie `.sub.wraps` / `.sub.err` / `.sub.revealed`). */
   subClassName?: string;
-  /** Extra sibling nodes under `.who` (e.g. Magpie `#proxyCheck` / CLI shells). */
+  /** Extra sibling nodes under `.who` (e.g. Magpie `#proxyCheck` / CLI shells / feat-why). */
   afterWho?: ReactNode;
   children?: ReactNode;
   id?: string;
@@ -33,13 +36,20 @@ export function PrefRow({
   valClassName?: string;
   /**
    * Magpie default: children in `.val`.
-   * Set false for Magpie font-row (`.font-controls` sibling of `.who`, no `.val`).
+   * Set false for Magpie font-row (`.font-controls` sibling of `.who`, no `.val`)
+   * and Magpie builtins feat-row (`r.append(who, switch)` app.js ~24473).
    */
   wrapVal?: boolean;
   /** Magpie `data-pattern` on disabled-model rows. */
   dataPattern?: string;
   /** Magpie AutoResetOwn `dataset.user` on `.ar-own` rows (app.js ~22250). */
   dataUser?: string;
+  /** Magpie builtins `dataset.id` on feat-row (app.js ~24447). */
+  dataId?: string;
+  /** Demo/nav feature gate on feat-row (Magpie nav `data-feature`). */
+  dataFeature?: string;
+  /** Magpie builtins settings `dataset.of` on feat-set (app.js ~24489). */
+  dataOf?: string;
 }) {
   if (hidden) return null;
   const body =
@@ -54,6 +64,9 @@ export function PrefRow({
       id={id}
       data-pattern={dataPattern}
       data-user={dataUser}
+      data-id={dataId}
+      data-feature={dataFeature}
+      data-of={dataOf}
     >
       <div className="who">
         <div className="name" title={name}>

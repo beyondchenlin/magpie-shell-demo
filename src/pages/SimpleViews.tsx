@@ -1,8 +1,11 @@
 import { Fragment, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { ActionConfirm } from "../components/ActionConfirm";
 import { LedHeat } from "../components/LedHeat";
+import { LibSwitch } from "../components/LibSwitch";
+import { PrefRow } from "../components/PrefRow";
 import { Segs } from "../components/Segs";
 import { useSegThumb } from "../components/SegThumb";
+import { TextBtn } from "../components/TextBtn";
 import { iconSrc } from "../data/mock";
 import {
   DEMO_CTX_AGENTS,
@@ -694,15 +697,14 @@ export function UsageView() {
         <div className="row-head quota-head" id="quotaHead" hidden>
           <span className="label">{t("Allowances")}</span>
           <span className="grow" />
-          <button
-            type="button"
-            className="text rt-mask"
+          <TextBtn
+            className="rt-mask"
             id="usageMask"
             aria-pressed={mask}
             title={t("Mask the accounts on this page — email addresses and account names — for a screenshot to share")}
             onClick={() => setMask((m) => !m)}>
             <span>{t("Hide accounts")}</span>
-          </button>
+          </TextBtn>
         </div>
         <section className="subscription-usage" id="subscriptionUsage" />
         <p className="usage-note" id="usageScope">
@@ -715,9 +717,9 @@ export function UsageView() {
               {t("Point an agent at a catalog model and use it; every call through the gateway is counted here.")}
             </span>
             <div>
-              <button type="button" className="text primary" onClick={() => setDemoFilled(true)}>
+              <TextBtn variant="primary" onClick={() => setDemoFilled(true)}>
                 {demoCopy("显示演示有数据", "Show demo with data")}
-              </button>
+              </TextBtn>
             </div>
           </div>
         ) : (
@@ -873,9 +875,8 @@ export function UsageView() {
             </div>
             {overview.agents.some((g) => hiddenUsageAgents.has(g.id)) ? (
               <div id="usageAgentsHid">
-                <button
-                  type="button"
-                  className="us-hidline text"
+                <TextBtn
+                  className="us-hidline"
                   aria-expanded={usageHidOpen}
                   title={t("Hidden from this list only: their calls still count in the totals and the chart. Click to see them.")}
                   onClick={() => setUsageHidOpen((o) => !o)}
@@ -884,7 +885,7 @@ export function UsageView() {
                   <svg viewBox="0 0 12 12" width={11} height={11} aria-hidden >
                     <path d="M3 4.5 6 7.5 9 4.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
                   </svg>
-                </button>
+                </TextBtn>
                 {usageHidOpen
                   ? overview.agents
                       .filter((g) => hiddenUsageAgents.has(g.id))
@@ -897,9 +898,8 @@ export function UsageView() {
                             <div className="name">{g.name}</div>
                             <div className="sub">{t(g.calls === 1 ? "{n} call" : "{n} calls", { n: String(g.calls) })}</div>
                           </div>
-                          <button
-                            type="button"
-                            className="text us-unhide"
+                          <TextBtn
+                            className="us-unhide"
                             onClick={() =>
                               setHiddenUsageAgents((s) => {
                                 const n = new Set(s);
@@ -908,7 +908,7 @@ export function UsageView() {
                               })
                             }>
                             {t("Unhide")}
-                          </button>
+                          </TextBtn>
                         </div>
                       ))
                   : null}
@@ -975,14 +975,12 @@ export function UsageView() {
               </>
             ) : null}
             <div>
-              <button
-                type="button"
-                className="text"
+              <TextBtn
                 aria-pressed={demoFilled}
                 onClick={() => setDemoFilled(false)}
                 title={demoCopy("关演示数据看真空态", "Turn off demo data for Magpie empty")}>
                 {demoCopy("演示数据开 · 点此关", "Demo data on · click to clear")}
-              </button>
+              </TextBtn>
             </div>
           </>
         )}
@@ -1005,9 +1003,7 @@ export function UsageView() {
             }))}
           />
           <span className="grow" />
-          <button
-            type="button"
-            className="text"
+          <TextBtn
             aria-pressed={demoFilled}
             title={demoCopy("切换演示 ledger 数据", "Toggle demo ledger data")}
             onClick={() => {
@@ -1016,7 +1012,7 @@ export function UsageView() {
               setDemoChart(false);
             }}>
             {demoFilled ? demoCopy("演示数据开", "Demo data on") : demoCopy("演示数据关", "Demo data off")}
-          </button>
+          </TextBtn>
           <span className="led-q-wrap">
             <input
               className="sess-filter"
@@ -1056,9 +1052,7 @@ export function UsageView() {
               </button>
             ) : null}
           </span>
-          <button
-            type="button"
-            className="text"
+          <TextBtn
             id="ledExport"
             disabled={!ledRows.length}
             title={t("Save every request listed, all pages, as a CSV file in Downloads")}
@@ -1066,7 +1060,7 @@ export function UsageView() {
               /* demo: no export when empty — Magpie click does nothing */
             }}>
             <span>{t("Export CSV")}</span>
-          </button>
+          </TextBtn>
         </div>
         <p className="usage-note" id="ledScope">
           {t("Gateway and session-log calls; local rejections excluded from totals.")}
@@ -1270,32 +1264,28 @@ export function UsageView() {
               </table>
             </div>
             <div className="led-pager" id="ledPager" hidden={ledRows.length <= pageSize}>
-              <button type="button" className="text" disabled={ledPage <= 0} onClick={() => setLedPage((p) => Math.max(0, p - 1))}>
+              <TextBtn disabled={ledPage <= 0} onClick={() => setLedPage((p) => Math.max(0, p - 1))}>
                 {t("Previous")}
-              </button>
+              </TextBtn>
               <span>
                 {ledPage + 1} / {ledPages}
               </span>
-              <button
-                type="button"
-                className="text"
+              <TextBtn
                 disabled={ledPage + 1 >= ledPages}
                 onClick={() => setLedPage((p) => p + 1)}>
                 {t("Next")}
-              </button>
+              </TextBtn>
             </div>
           </>
         ) : (
           <>
             <div className="led-tools-extra">
-              <button
-                type="button"
-                className="text"
+              <TextBtn
                 aria-pressed={demoChart}
                 onClick={() => setDemoChart((d) => !d)}
                 title={demoCopy("官方空态隐藏 ledDash；点此预览演示柱图壳", "Magpie hides ledDash when empty; preview demo chart shell")}>
                 {demoChart ? demoCopy("隐藏演示图", "Hide demo chart") : demoCopy("显示演示图", "Show demo chart")}
-              </button>
+              </TextBtn>
             </div>
             <div className="led-dash" id="ledDash" hidden={!demoChart}>
               <div className="led-strip" id="ledKpi">
@@ -1369,19 +1359,17 @@ export function UsageView() {
           <button className="sess-pick" id="sessModel" type="button" hidden />
           <button className="sess-pick" id="sessFolder" type="button" hidden />
           <span className="grow" />
-          <button
-            type="button"
-            className="text"
+          <TextBtn
             aria-pressed={demoFilled}
             onClick={() => setDemoFilled((d) => !d)}>
             {demoFilled ? demoCopy("演示数据开", "Demo data on") : demoCopy("演示数据关", "Demo data off")}
-          </button>
+          </TextBtn>
         </div>
         {!demoFilled ? (
           <div>
-            <button type="button" className="text" aria-pressed={false} onClick={() => setDemoFilled(true)}>
+            <TextBtn aria-pressed={false} onClick={() => setDemoFilled(true)}>
               {demoCopy("演示数据关 · 点此填充", "Demo data off · fill")}
-            </button>
+            </TextBtn>
           </div>
         ) : null}
         {demoFilled && sessRows.length ? (
@@ -1411,9 +1399,9 @@ export function UsageView() {
             <div className="row-head" id="sessListHead">
               <span className="label">{t("Latest sessions")}</span>
               <span className="grow" />
-              <button className="text sess-all" id="sessAll" type="button" data-feature="sessions">
+              <TextBtn className="sess-all" id="sessAll" data-feature="sessions">
                 {t("All sessions")}
-              </button>
+              </TextBtn>
               <input
                 className="sess-filter"
                 id="sessQ"
@@ -1556,24 +1544,20 @@ export function UsageView() {
                 );
               })}
               {sessHidden > 0 ? (
-                <button
-                  type="button"
-                  className="text sess-show-more"
-                 
+                <TextBtn
+                  className="sess-show-more"
                   onClick={() => setSessMore(true)}>
                   {t("Show more · {n} left", { n: String(sessHidden) })}
-                </button>
+                </TextBtn>
               ) : sessMore && DEMO_SESSIONS_MORE.length ? (
-                <button
-                  type="button"
-                  className="text sess-show-more"
-                 
+                <TextBtn
+                  className="sess-show-more"
                   onClick={() => {
                     setSessMore(false);
                     setSessOpen(null);
                   }}>
                   {t("Show less")}
-                </button>
+                </TextBtn>
               ) : null}
             </div>
           </>
@@ -1605,13 +1589,11 @@ export function UsageView() {
         <div className="row-head">
           <span className="label">{t("Tuned for you")}</span>
           <span className="grow" />
-          <button
-            type="button"
-            className="text"
+          <TextBtn
             aria-pressed={demoFilled}
             onClick={() => setDemoFilled((d) => !d)}>
             {demoFilled ? demoCopy("演示数据开", "Demo data on") : demoCopy("演示数据关", "Demo data off")}
-          </button>
+          </TextBtn>
         </div>
         <p className="usage-note ctx-tune-note">
           {t(
@@ -1747,9 +1729,9 @@ export function UsageView() {
                       ))}
                     </span>
                     <span className="grow" />
-                    <button type="button" className="text">
+                    <TextBtn>
                       {t("Latest request")}
-                    </button>
+                    </TextBtn>
                   </div>
                 </div>
               );
@@ -2293,80 +2275,79 @@ export function PluginsView({
             <div className="list prefs" id="builtinList">
               {builtins.map((b) => (
                 <div key={b.id}>
-                  <div className="row pref feat-row" data-feature={b.feature} data-id={b.id}>
-                    <div className="who">
-                      <div className="name">{t(b.name)}</div>
-                      <div className="sub">{t(b.sub)}</div>
-                      {b.on && b.id === "gateway" ? (
-                        <div className="sub feat-use">{t("1 gateway key")}</div>
-                      ) : null}
-                      {b.locked ? (
-                        <div className="sub feat-why">{t("In use, so it stays on")}</div>
-                      ) : null}
-                    </div>
-                    <div className="val">
+                  {/* Magpie renderBuiltins app.js ~24446–24473: row.pref.feat-row + lib-switch use-credits (no .val) */}
+                  <PrefRow
+                    name={t(b.name)}
+                    sub={t(b.sub)}
+                    className="feat-row"
+                    dataFeature={b.feature}
+                    dataId={b.id}
+                    wrapVal={false}
+                    afterWho={
+                      <>
+                        {b.on && b.id === "gateway" ? (
+                          <div className="sub feat-use">{t("1 gateway key")}</div>
+                        ) : null}
+                        {b.locked ? (
+                          <div className="sub feat-why">{t("In use, so it stays on")}</div>
+                        ) : null}
+                      </>
+                    }>
+                    <LibSwitch
+                      on={!!b.on}
+                      kind="use-credits"
+                      aria-label={t(b.name)}
+                      disabled={!!b.locked}
+                      title={b.locked ? t("In use, so it stays on") : undefined}
+                      onClick={() => {
+                        if (b.locked) return;
+                        setBuiltins((list) => {
+                          const next = list.map((x) => (x.id === b.id ? { ...x, on: !x.on } : x));
+                          const lib = next.find((x) => x.id === "library");
+                          const groups = next.find((x) => x.id === "routing-groups");
+                          try {
+                            localStorage.setItem("magpie.feature.library", lib?.on ? "1" : "0");
+                            localStorage.setItem("magpie.feature.groups", groups?.on ? "1" : "0");
+                            window.dispatchEvent(new Event("magpie-feature"));
+                          } catch { /* */ }
+                          return next;
+                        });
+                        // Magpie plugins.yml write → toast Saved (routing 119)
+                        onStatus?.(t("Saved"), "ok", 2200);
+                      }}
+                    />
+                  </PrefRow>
+                  {b.on && b.id === "gateway" ? (
+                    /* Magpie feat-set under builtin (app.js ~24487–24489 dataset.of) */
+                    <PrefRow
+                      name={t("Recent calls at a time")}
+                      sub={t("How many of the gateway's recent calls the page shows, and how many more each Show more adds")}
+                      className="feat-set"
+                      dataOf="gateway">
                       <button
                         type="button"
-                        className={`lib-switch use-credits${b.on ? " on" : ""}`}
-                        role="switch"
-                        aria-checked={b.on}
-                        aria-label={t(b.name)}
-                        disabled={!!b.locked}
-                        title={b.locked ? t("In use, so it stays on") : undefined}
-                        onClick={() => {
-                          if (b.locked) return;
-                          setBuiltins((list) => {
-                            const next = list.map((x) => (x.id === b.id ? { ...x, on: !x.on } : x));
-                            const lib = next.find((x) => x.id === "library");
-                            const groups = next.find((x) => x.id === "routing-groups");
-                            try {
-                              localStorage.setItem("magpie.feature.library", lib?.on ? "1" : "0");
-                              localStorage.setItem("magpie.feature.groups", groups?.on ? "1" : "0");
-                              window.dispatchEvent(new Event("magpie-feature"));
-                            } catch { /* */ }
-                            return next;
-                          });
-                          // Magpie plugins.yml write → toast Saved (routing 119)
-                          onStatus?.(t("Saved"), "ok", 2200);
-                        }}>
-                        <i />
+                        className={`sess-pick set${gwCallsOpen ? " open" : ""}`}
+                        aria-haspopup="menu"
+                        aria-expanded={gwCallsOpen}
+                        onClick={() => setGwCallsOpen((o) => !o)}>
+                        <span>{b.callsPage ?? 20}</span>
+                        <svg viewBox="0 0 12 12" width={11} height={11} aria-hidden>
+                          <path d="M3 4.5 6 7.5 9 4.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                        </svg>
                       </button>
-                    </div>
-                  </div>
-                  {b.on && b.id === "gateway" ? (
-                    <div className="row pref feat-set" data-of="gateway">
-                      <div className="who">
-                        <div className="name">{t("Recent calls at a time")}</div>
-                        <div className="sub">
-                          {t("How many of the gateway's recent calls the page shows, and how many more each Show more adds")}
-                        </div>
-                      </div>
-                      <div className="val">
-                        <button
-                          type="button"
-                          className={`sess-pick set${gwCallsOpen ? " open" : ""}`}
-                          aria-haspopup="menu"
-                          aria-expanded={gwCallsOpen}
-                          onClick={() => setGwCallsOpen((o) => !o)}>
-                          <span>{b.callsPage ?? 20}</span>
-                          <svg viewBox="0 0 12 12" width={11} height={11} aria-hidden>
-                            <path d="M3 4.5 6 7.5 9 4.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-                          </svg>
-                        </button>
-                        <ProtoMenu
-                          open={gwCallsOpen}
-                          onClose={() => setGwCallsOpen(false)}
-                          value={String(b.callsPage ?? 20)}
-                          title={t("Recent calls at a time")}
-                          items={[10, 20, 50, 100].map((n) => ({ v: String(n), name: String(n) }))}
-                          onPick={(v) =>
-                            setBuiltins((list) =>
-                              list.map((x) => (x.id === "gateway" ? { ...x, callsPage: Number(v) } : x)),
-                            )
-                          }
-                        />
-                      </div>
-                    </div>
+                      <ProtoMenu
+                        open={gwCallsOpen}
+                        onClose={() => setGwCallsOpen(false)}
+                        value={String(b.callsPage ?? 20)}
+                        title={t("Recent calls at a time")}
+                        items={[10, 20, 50, 100].map((n) => ({ v: String(n), name: String(n) }))}
+                        onPick={(v) =>
+                          setBuiltins((list) =>
+                            list.map((x) => (x.id === "gateway" ? { ...x, callsPage: Number(v) } : x)),
+                          )
+                        }
+                      />
+                    </PrefRow>
                   ) : null}
                 </div>
               ))}
@@ -2482,9 +2463,9 @@ export function PluginsView({
                   {isGh && shown.length === 0 ? (
                     <div className="pm-ghnone">
                       <div>{t("No plugin on GitHub matches")}</div>
-                      <button type="button" className="text" onClick={() => { setGhKind(""); setGhFilter(""); }}>
+                      <TextBtn onClick={() => { setGhKind(""); setGhFilter(""); }}>
                         {t("Show all")}
-                      </button>
+                      </TextBtn>
                     </div>
                   ) : (
                   <div className="pm-grid">
@@ -2739,14 +2720,14 @@ export function PluginsView({
                     <path d="M2 4.5h4l1.2 1.5H14v7H2z" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round" />
                   </svg>
                 </button>
-                <button
+                <TextBtn
                   type="submit"
-                  className="text primary"
+                  variant="primary"
                   disabled={busy === "__manual__"}
                   aria-busy={busy === "__manual__" || undefined}>
                   {/* Magpie manual busy: text only — no spinner (Bun on disk; CU 68) */}
                   {busy === "__manual__" ? t("Installing…") : t("Install")}
-                </button>
+                </TextBtn>
                 {folderHint ? <span>{folderHint}</span> : null}
               </form>
             </div>
@@ -2770,21 +2751,20 @@ export function PluginsView({
               {installed.length > 1 ? (
                 <div className="row-head pm-listhead">
                   <span className="grow" />
-                  <div className="segs sortby" data-sort="plugins" role="group" aria-label={t("Names from A to Z")}>
-                    {([["az", "A→Z"], ["za", "Z→A"]] as const).map(([id, label]) => (
-                      <button
-                        key={id}
-                        type="button"
-                        className={`opt${pluginsSort === id ? " on" : ""}`}
-                        title={id === "az" ? t("Names from A to Z") : t("Names from Z to A")}
-                        onClick={() => {
-                          setPluginsSort(id);
-                          try { localStorage.setItem("magpie.sort.plugins", id); } catch { /* */ }
-                        }}>
-                        {label}
-                      </button>
-                    ))}
-                  </div>
+                  <Segs
+                    className="sortby"
+                    dataSort="plugins"
+                    value={pluginsSort}
+                    aria-label={t("Names from A to Z")}
+                    items={[
+                      { id: "az" as const, label: "A→Z", title: t("Names from A to Z") },
+                      { id: "za" as const, label: "Z→A", title: t("Names from Z to A") },
+                    ]}
+                    onChange={(id) => {
+                      setPluginsSort(id);
+                      try { localStorage.setItem("magpie.sort.plugins", id); } catch { /* */ }
+                    }}
+                  />
                 </div>
               ) : null}
               <div className="list pm-list">
@@ -2899,20 +2879,17 @@ export function PluginsView({
                           <div className="pm-opts-bar">
                             <span>{e.optsSaved ? t("Applied to the next request") : t("Not set: these are its package's example")}</span>
                             {e.optsSaved ? (
-                            <button
-                              type="button"
-                              className="text quiet"
+                            <TextBtn
+                              className="quiet"
                               title={t("Runs it with no options")}
                               onClick={(ev) => {
                                 clearFocusRef.current = ev.currentTarget;
                                 setClearConfirm({ pkg: e.pkg, name: e.name });
                               }}>
                               {t("Clear")}
-                            </button>
+                            </TextBtn>
                             ) : null}
-                            <button
-                              type="button"
-                              className="text"
+                            <TextBtn
                               onClick={() =>
                                 setInstalled((list) =>
                                   list.map((x) =>
@@ -2921,10 +2898,9 @@ export function PluginsView({
                                 )
                               }>
                               {t("Cancel")}
-                            </button>
-                            <button
-                              type="button"
-                              className="text primary"
+                            </TextBtn>
+                            <TextBtn
+                              variant="primary"
                               onClick={() => {
                                 try {
                                   const raw =
@@ -2971,7 +2947,7 @@ export function PluginsView({
                                 }
                               }}>
                               {t("Save")}
-                            </button>
+                            </TextBtn>
                           </div>
                           <div className="sub pm-mw">
                             {t("Gateway middleware: {hooks}", {
@@ -3028,9 +3004,8 @@ export function PluginsView({
                                     )}
                           </p>
                           <div className="pm-ask-acts">
-                            <button
-                              type="button"
-                              className="text primary"
+                            <TextBtn
+                              variant="primary"
                               onClick={() => {
                                 if (asking.op === "remove") setInstalled((list) => list.filter((x) => x.pkg !== e.pkg));
                                 else if (asking.op === "move")
@@ -3045,19 +3020,18 @@ export function PluginsView({
                                 setAsking(null);
                               }}>
                               {asking.op === "move" ? t("Move") : asking.op === "remove" ? t("Remove") : t("Switch off")}
-                            </button>
-                            <button type="button" className="text" onClick={() => setAsking(null)}>
+                            </TextBtn>
+                            <TextBtn onClick={() => setAsking(null)}>
                               {asking.op === "move" ? t("Not now") : t("Cancel")}
-                            </button>
+                            </TextBtn>
                           </div>
                         </div>
                       ) : null}
                     </div>
                     <div className="val">
                       {!e.off && e.kind === "Provider" && !e.signedIn && asking?.pkg !== e.pkg ? (
-                        <button
-                          type="button"
-                          className="text primary"
+                        <TextBtn
+                          variant="primary"
                           onClick={() =>
                             onStatus?.(
                               demoCopy(
@@ -3069,24 +3043,21 @@ export function PluginsView({
                             )
                           }>
                           {t("Sign in")}
-                        </button>
+                        </TextBtn>
                       ) : null}
                       {e.movable?.length && !e.off && !(e.moved && e.moved.length) && asking?.pkg !== e.pkg ? (
-                        <button
-                          type="button"
-                          className="text primary"
+                        <TextBtn
+                          variant="primary"
                           title={t(
                             "Runs {name} on this plugin in place of the built-in, with the same accounts; nothing changes if one doesn't work through it",
                             { name: e.movable[0] },
                           )}
                           onClick={() => setAsking({ pkg: e.pkg, op: "move" })}>
                           {busy === e.pkg ? t("Moving…") : t("Move {name} here", { name: e.movable[0] })}
-                        </button>
+                        </TextBtn>
                       ) : null}
                       {e.kind === "Middleware" && !e.off && !e.optsOpen ? (
-                        <button
-                          type="button"
-                          className="text"
+                        <TextBtn
                           title={e.optsSaved ? t("The options it runs with") : t("It runs with no options; its package suggests some")}
                           onClick={() =>
                             setInstalled((list) =>
@@ -3105,11 +3076,9 @@ export function PluginsView({
                             )
                           }>
                           {t("Options")}
-                        </button>
+                        </TextBtn>
                       ) : null}
-                      <button
-                        type="button"
-                        className="text"
+                      <TextBtn
                         onClick={() => {
                           if (e.off) {
                             setInstalled((list) =>
@@ -3127,10 +3096,9 @@ export function PluginsView({
                           }
                         }}>
                         {e.off ? t("Switch on") : t("Switch off")}
-                      </button>
-                      <button
-                        type="button"
-                        className="text quiet"
+                      </TextBtn>
+                      <TextBtn
+                        className="quiet"
                         disabled={busy === "remove:" + e.pkg || busy === e.pkg}
                         title={
                           e.moved?.length
@@ -3147,7 +3115,7 @@ export function PluginsView({
                           }
                         }}>
                         {busy === "remove:" + e.pkg ? t("Removing…") : t("Remove")}
-                      </button>
+                      </TextBtn>
                     </div>
                   </div>
                 ))}
@@ -3155,10 +3123,10 @@ export function PluginsView({
               <div className="pm-foot">
                 <span>{t("Plugins run on Bun {v}", { v: BUN_VER })}</span>
                 <span className="grow" />
-                <button
-                  type="button"
-                  className={`text pm-check${checkingUpdates ? " busy" : ""}`}
-                  disabled={checkingUpdates || !!busy}
+                <TextBtn
+                  className="pm-check"
+                  busy={checkingUpdates}
+                  disabled={!!busy}
                   title={
                     t("Ask npm now for each plugin's newest version") +
                     (lastCheckedAt ? "\n" + t("Last checked {time}", { time: lastCheckedAt }) : "")
@@ -3183,7 +3151,7 @@ export function PluginsView({
                   ) : (
                     t("Check for updates")
                   )}
-                </button>
+                </TextBtn>
               </div>
             </>
           )
@@ -3331,19 +3299,16 @@ export function PluginsView({
               </div>
             </div>
             <div className="bar">
-              <button
-                type="button"
-                className="text"
+              <TextBtn
                 onClick={() => {
                   /* Magpie Cancel: field unchanged (shot 33) */
                   setFolderPicker(false);
                   setFolderHint("");
                 }}>
                 {t("Cancel")}
-              </button>
-              <button
-                type="button"
-                className="text primary"
+              </TextBtn>
+              <TextBtn
+                variant="primary"
                 disabled={folderLoc === "recent"}
                 onClick={() => {
                   const path =
@@ -3358,7 +3323,7 @@ export function PluginsView({
                   setFolderHint("");
                 }}>
                 {t("Open")}
-              </button>
+              </TextBtn>
             </div>
           </div>
         </div>
@@ -3492,9 +3457,9 @@ export function PluginsView({
               <span className="note">
                 {t("Plugins are other people's code: they sign in and make the requests, or see them as middleware.")}
               </span>
-              <button type="button" className="text" onClick={() => setPluginDetail(null)}>
+              <TextBtn onClick={() => setPluginDetail(null)}>
                 {t("Close")}
-              </button>
+              </TextBtn>
             </div>
           </div>
         </div>

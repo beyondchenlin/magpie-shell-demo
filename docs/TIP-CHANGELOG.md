@@ -4,6 +4,25 @@
 
 ---
 
+## v0.1.126 · CIS_SIMPLEVIEWS_FEAT_USAGE_PLUGINS · 2026-10-15 Asia/Shanghai
+
+- **WHY:** Continue CIS — SimpleViews feat-row / Usage / Plugins still hand-rolled Magpie-mapped `.row.pref` / `.lib-switch` / `.text` / sort segs (deferred after 0.1.125).
+- **CAUSE:** PrefRow wave closed Settings + Gateway/Library/Routing/Agents; builtins feat-row was the named leftover.
+- **Gold cites:**
+  - Magpie `app.js` **24446–24473** `renderBuiltins`: `div.row.pref.feat-row` + `lib-switch use-credits` appended beside `.who` (**no** `.val`)
+  - Magpie `app.js` **24487–24489** settings rows `.feat-set` + `dataset.of`
+  - Magpie `plugins.js` **893–898** `feat-say` + `#builtinList`; **921–923** `sortBy("plugins")` → `segs` + `.sortby`
+  - Magpie `plugins.js` **835 / 934 / 1072–1178** Install / Check / Options / Sign in / Remove `.text` (+ primary/quiet)
+  - Magpie `app.js` **17400** `text us-unhide`; Usage Hide accounts / sess-all `.text`
+- **WHAT kept:** `SIDE_AT=1024`; no `WEB_SIDE_AT`; pm-mirror nested `.lib-switch` (Magpie-distinct outer button); installed `row pm-row` (Magpie **not** `.pref` — do not PrefRow); Gateway keys Magpie `.acc`; feat-set `sess-pick` (ui.form); CSS-var/pop `style={{`.
+- **WHAT changed:**
+  - `PrefRow`: `dataId` / `dataFeature` / `dataOf`; feat-row uses `wrapVal={false}`
+  - `Segs`: optional `dataSort` (Magpie sortBy `dataset.sort`)
+  - `SimpleViews`: builtins → PrefRow + LibSwitch; Usage/Plugins `.text` → TextBtn; Plugins A→Z → Segs sortby
+  - CIS md snapshot 0.1.126; chrome wave largely closed (leftovers = Magpie-distinct DOM / geometry tokens)
+- **Guard:** `npm run chrome-guard`. Push/PR required. No portable / Vercel.
+
+---
 ## v0.1.125 · CIS_GATEWAY_LIBRARY_ROUTING_AGENTS · 2026-10-15 Asia/Shanghai
 
 - **WHY:** Continue CIS unification outside Settings: Gateway / Library / Routing / Agents still hand-rolled Magpie-mapped `.text` / `.segs` / `.lib-switch` / Conditions `.row.pref`.

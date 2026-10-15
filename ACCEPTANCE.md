@@ -1,3 +1,10 @@
+## v0.1.126 CIS_SIMPLEVIEWS_FEAT_USAGE_PLUGINS
+- Plugins Built-in feat-row / feat-set → PrefRow + LibSwitch `use-credits` (Magpie renderBuiltins; wrapVal=false matches `r.append(who, switch)`).
+- Usage / Plugins Magpie `.text` chrome → TextBtn; Plugins A→Z → Segs `sortby` + dataSort (Magpie sortBy).
+- PrefRow: `dataId` / `dataFeature` / `dataOf`. Segs: `dataSort`.
+- Skipped: pm-mirror nested switch (Magpie-distinct); pm-row (Magpie `row pm-row` not PrefRow); Gateway keys `.acc`; CSS-var style={{.
+- CIS chrome wave largely closed; remaining = Magpie-distinct DOM / geometry tokens.
+- `SIDE_AT=1024` only; no `WEB_SIDE_AT`. chrome-guard pass. Push/PR; no portable / Vercel.
 ## v0.1.125 CIS_GATEWAY_LIBRARY_ROUTING_AGENTS
 - Gateway Connect Segs/TextBtn; Library MCP Segs/LibSwitch/TextBtn; Routing Conditions PrefRow + found LibSwitch + names Segs; Agents Manage TextBtn.
 - Skipped: Gateway keys Magpie `.acc` (not PrefRow); skillHow busy Segs; agent/rt-gfound Magpie-distinct DOM; CSS-var style={{.
