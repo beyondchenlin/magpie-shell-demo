@@ -513,3 +513,37 @@ Routing, **ROUTING GROUPS**, no group row, templates showing. Groups plugin **on
 - Find-groups switch: sentence is the tip (on/off copy swaps); no hover tip; toasts **Found groups are off: only yours are listed and served** / **Found groups are on**; persists `noAutoGroups`.
 - Names segments Off / Not on names I set / On: sentence stays; no toast; persists `plainNames` / `plainOwnNames`. Defaults: found on, names On.
 - Import tip only (box not opened). Day pills N/A. No portable / Vercel.
+
+## Import box (180–189)
+
+Same window, pid **1871993**, magpie **0.1.1247**, **752×652 at +200+40** (id 85983247). Shots are ffmpeg x11grab of that rect (`-framerate 25`, cursor drawn). Close was not used. Gateway was not restarted. No request was sent. No OAuth. Find-groups was not toggled (still **on**). The names segments were not clicked (still **On**). No group was saved. P1 bird hop: **N/A**.
+
+Import is not a sheet and not a file dialog. The header **Import** (tip already in 179) toggles an inline box under the template cards. At this height the box starts below the fold: 180 shows one clipped line, and a scroll brings the rest up. There is no path, no Choose, no drop target. The only field is a textarea.
+
+| shot | what |
+|---|---|
+| 180 | Header **Import** clicked. The box opens under the templates. Only the first line is in the window: "Paste a routing group someone shared from their magpie: its models, routing and rules come with". |
+| 181 | Scrolled. The sentence finishes "it, never a key". Textarea focused (accent ring, caret), placeholder **Paste a group copied with Copy to share**. Blue **Import** and **Cancel**. A resize grip is drawn on the field; it was not dragged. |
+| 182 | Pointer on the blue **Import**. No hover tip. |
+| 183 | Pointer on **Cancel**. No hover tip. |
+| 184 | Typed `hello, not a shared group` into the field. Placeholder gone. Not submitted yet. |
+| 185 | Blue **Import**. Red toast at the foot: "This is not a routing group shared from magpie: copy one with Copy to share in a group's menu". The text stays in the field. The box stays open. Nothing was added. |
+| 186 | **Cancel**. Toast and text gone, box gone. Stage still **No request yet**, **0 / 0 / 0**. Find-groups **on**, names **On**. No group row. |
+| 187 | Opened again, focus in the field, **Escape**. The box closes. Under **Never stuck** the list is empty. Names still **On**. |
+| 188 | Opened again, field empty, blue **Import**. The box stays, the placeholder stays, the caret comes back, and there is no toast. |
+| 189 | Header **Import** clicked while the box was open. It toggles shut. Stage still **0 / 0 / 0**, switch **on**, names **On**. |
+
+`providers.json` is still `{"providers": []}`, same bytes as before 180, and so is the `.bak`. `settings.json` was not rewritten (`window` still `[700, 600]`; no `plainNames` / `plainOwnNames`). `plugins.yml` `groups.enabled` is still `true`.
+
+### Not in this slice
+
+A real shared-group paste (nothing valid was imported; the only submit was the refusal in 185). What a successful import says it left out (missing models, "the same model from your own provider", rules left out, **Done**). The textarea grip was not dragged. Template **Add a provider first** is still the line on each card; that tip was not hovered. Day pills, By request / By session, Replay (still **Waiting for a request**, 0 / 0 / 0).
+
+## Left state
+
+Routing, **ROUTING GROUPS**, no group row, templates showing, Import box closed. Groups plugin **on**. Find-groups **on**. Names **On**. Gateway **running** on this pid, 0 models. No group, no key. Magpie still running, pid 1871993, window 752×652 at +200+40. Close was not used.
+
+## demo 对齐（180–189）· v0.1.96 IMPORT_BOX_DONE
+- Header **Import** toggles inline box under templates (not a sheet; no path/file). Sentence + placeholder **Paste a group copied with Copy to share**; blue **Import** + **Cancel** (no tips).
+- Cancel / Escape / header Import again close and drop text. Empty Import only refocuses. Invalid paste → red toast, box stays, nothing added.
+- Successful shared paste out of scope. Day pills N/A. No portable / Vercel.

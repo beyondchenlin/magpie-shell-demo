@@ -245,6 +245,7 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
   const [gImportOpen, setGImportOpen] = useState(false);
   const [importPaste, setImportPaste] = useState("");
   const [importNote, setImportNote] = useState("");
+  const importTextRef = useRef<HTMLTextAreaElement>(null);
   const [templateSeed, setTemplateSeed] = useState<{ name: string; memberIds: string[] } | null>(null);
   const [editGroup, setEditGroup] = useState<SavedGroupDraft | null>(null);
   const [tplMenuOpen, setTplMenuOpen] = useState(false);
@@ -325,6 +326,14 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
     ro.observe(el);
     return () => ro.disconnect();
   }, [peerServes, groupsOn, savedGroups.length, groupEditorOpen]);
+
+  // Magpie Import box: focus the textarea when it opens (routing 181)
+  useEffect(() => {
+    if (!gImportOpen) return;
+    const tmr = window.setTimeout(() => importTextRef.current?.focus({ preventScroll: true }), 0);
+    return () => clearTimeout(tmr);
+  }, [gImportOpen]);
+
 
   useEffect(() => {
     const draw = () => {
@@ -1417,7 +1426,9 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
               onClick={() => {
                 setGImportOpen((o) => {
                   const next = !o;
-                  if (next) setImportPaste("");
+                  // 186 / 189: closing drops the text; opening starts empty
+                  setImportPaste("");
+                  setImportNote("");
                   return next;
                 });
               }}
@@ -1564,52 +1575,74 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                 )}
               </div>
               <textarea
+                ref={importTextRef}
                 className="rt-gimport-text"
                 rows={3}
                 value={importPaste}
                 placeholder={t("Paste a group copied with Copy to share")}
                 onChange={(e) => setImportPaste(e.target.value)}
-                onKeyDown={(e) => e.stopPropagation()}
+                onKeyDown={(e) => {
+                  e.stopPropagation();
+                  // 187: Escape in the field closes and drops text
+                  if (e.key === "Escape") {
+                    e.preventDefault();
+                    setGImportOpen(false);
+                    setImportPaste("");
+                    setImportNote("");
+                  }
+                }}
               />
               <div className="acts">
                 <button
                   type="button"
-                  className="text"
-                  onClick={() => {
-                    setGImportOpen(false);
-                    setImportPaste("");
-                  }}
-                >
-                  {t("Cancel")}
-                </button>
-                <button
-                  type="button"
                   className="text primary"
-                  disabled={!importPaste.trim()}
                   onClick={() => {
                     const raw = importPaste.trim();
-                    if (!raw) return;
-                    let name = "";
-                    let members: string[] = [];
-                    let rulesLeft = 0;
+                    // 188: empty Import only refocuses — no toast
+                    if (!raw) {
+                      importTextRef.current?.focus({ preventScroll: true });
+                      return;
+                    }
+                    // Magpie share blob: JSON with members (+ name/id). Junk → refuse (185).
+                    // Successful shared paste is out of scope this tip — still wire a strict check.
+                    let parsed: { name?: string; id?: string; members?: unknown; rules?: unknown[] } | null = null;
                     try {
                       const j = JSON.parse(raw) as {
                         name?: string;
-                        members?: string[];
+                        id?: string;
+                        members?: unknown;
                         rules?: unknown[];
+                        group?: { name?: string; members?: unknown };
                       };
-                      name = (j.name || "").trim() || t("Imported group");
-                      members = Array.isArray(j.members) ? j.members.map(String) : [];
-                      // Magpie may leave out rules that reference missing models
-                      if (Array.isArray(j.rules) && j.rules.length && members.length < 2) {
-                        rulesLeft = j.rules.length;
+                      const g = j.group && typeof j.group === "object" ? j.group : j;
+                      if (Array.isArray(g.members) && g.members.length > 0) {
+                        parsed = {
+                          name: (g.name || j.name || j.id || "").toString(),
+                          members: g.members,
+                          rules: Array.isArray(j.rules) ? j.rules : undefined,
+                        };
                       }
                     } catch {
-                      // Magpie share blob is often opaque; demo accepts a name line
-                      name = raw.split("\n")[0].slice(0, 64) || t("Imported group");
-                      members = ["claude-sonnet-4-5", "claude-haiku-4-5"];
+                      parsed = null;
                     }
-                    const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "") || "group";
+                    if (!parsed || !Array.isArray(parsed.members) || parsed.members.length < 1) {
+                      onStatus?.(
+                        t(
+                          "This is not a routing group shared from magpie: copy one with Copy to share in a group's menu",
+                        ),
+                        "err",
+                      );
+                      // text stays; box stays open
+                      return;
+                    }
+                    const members = parsed.members.map(String);
+                    const name = (parsed.name || "").trim() || t("Imported group");
+                    let rulesLeft = 0;
+                    if (Array.isArray(parsed.rules) && parsed.rules.length && members.length < 2) {
+                      rulesLeft = parsed.rules.length;
+                    }
+                    const slug =
+                      name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "") || "group";
                     setSavedGroups((gs) => [
                       ...gs,
                       {
@@ -1639,6 +1672,17 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                   }}
                 >
                   {t("Import")}
+                </button>
+                <button
+                  type="button"
+                  className="text"
+                  onClick={() => {
+                    setGImportOpen(false);
+                    setImportPaste("");
+                    setImportNote("");
+                  }}
+                >
+                  {t("Cancel")}
                 </button>
               </div>
             </div>

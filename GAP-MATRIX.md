@@ -390,3 +390,8 @@
 - Native routing 172–179: Find-groups switch toasts + sentence swap · names segments persist · Import tip.
 - Gaps: Import box not opened; editor “in agents' lists” line while segments change not shown; day pills / Replay N/A; P1 bird hop N/A.
 - Portable/release skipped. No Vercel.
+
+## v0.1.96 IMPORT_BOX_DONE
+- Native routing 180–189: Import inline paste box · Escape/Cancel/header close · empty refocus · invalid red toast.
+- Gaps: successful Magpie share paste / Done left-out copy not nested; day pills / Replay N/A; P1 bird hop N/A.
+- Portable/release skipped. No Vercel.

@@ -779,7 +779,7 @@ button.rt-session { cursor: pointer; }
 .rt-gtpl { padding: 10px 12px 12px; display: grid; gap: 8px; }
 .rt-gtpl-head { font-size: 12px; color: var(--muted); }
 /* Import a group (laincatx on X): the text pasted, then what came of it */
-.rt-gimport { padding: 10px 12px 12px; display: grid; gap: 8px; min-width: 0; border-bottom: 1px solid var(--line); }
+.rt-gimport { padding: 12px 4px 14px; display: grid; gap: 8px; min-width: 0; margin-top: 4px; border-top: 1px solid var(--line); }
 .rt-gimport-text { width: 100%; box-sizing: border-box; min-height: 72px; padding: 7px 9px; border-radius: 7px; border: 1px solid var(--line); background: var(--card); color: var(--fg); font-family: var(--code-font, var(--code)); font-size: 12px; line-height: 1.45; resize: vertical; outline: none; overflow-wrap: anywhere; }
 .rt-gimport-text:focus { border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent); }
 .rt-gimport .acts { display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap; }
