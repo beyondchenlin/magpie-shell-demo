@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { GroupEditor } from "../components/GroupEditor";
+import { GroupEditor, type SavedGroupDraft } from "../components/GroupEditor";
 import { ModelPop } from "../components/ModelPop";
 import { Segs } from "../components/Segs";
 import { ProtoMultiMenu } from "../components/ProtoMultiMenu";
@@ -145,11 +145,14 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
   /** Magpie suffixSegs: Off | Not on names I set | On */
   const [nameSuffix, setNameSuffix] = useState<"off" | "skip" | "on">("on");
   const [groupEditorOpen, setGroupEditorOpen] = useState(false);
-  const [savedGroups, setSavedGroups] = useState<{ name: string; members?: string[] }[]>([]);
+  const [savedGroups, setSavedGroups] = useState<SavedGroupDraft[]>([]);
   const [gImportOpen, setGImportOpen] = useState(false);
   const [importPaste, setImportPaste] = useState("");
   const [importNote, setImportNote] = useState("");
   const [templateSeed, setTemplateSeed] = useState<{ name: string; memberIds: string[] } | null>(null);
+  const [editGroup, setEditGroup] = useState<SavedGroupDraft | null>(null);
+  const [tplMenuOpen, setTplMenuOpen] = useState(false);
+  const tplBtnRef = useRef<HTMLButtonElement>(null);
 
   const [groupModel, setGroupModel] = useState("claude-sonnet-4-5");
   const [popOpen, setPopOpen] = useState(false);
@@ -1221,6 +1224,20 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
             <span className="label">{t("Routing groups")}</span>
             <span className="grow" />
             <span className="note">{t("models agents pick as one")}</span>
+            {savedGroups.length ? (
+              <button
+                type="button"
+                className="text rt-gtplbtn"
+                ref={tplBtnRef}
+                aria-expanded={tplMenuOpen}
+                onClick={() => setTplMenuOpen((o) => !o)}
+              >
+                <span>{t("Templates")}</span>
+                <svg viewBox="0 0 12 12" width={11} height={11} aria-hidden>
+                  <path d="M3 4.5 6 7.5 9 4.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                </svg>
+              </button>
+            ) : null}
             <button
               type="button"
               className="text rt-gimportbtn"
@@ -1241,6 +1258,7 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
               className="text rt-gnew"
               onClick={() => {
                 setTemplateSeed(null);
+                setEditGroup(null);
                 setGroupEditorOpen(true);
                 setDemoGroups(true);
               }}
@@ -1404,7 +1422,20 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                       name = raw.split("\n")[0].slice(0, 64) || t("Imported group");
                       members = ["claude-sonnet-4-5", "claude-haiku-4-5"];
                     }
-                    setSavedGroups((gs) => [...gs, { name, members }]);
+                    const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "") || "group";
+                    setSavedGroups((gs) => [
+                      ...gs,
+                      {
+                        name,
+                        slug,
+                        members,
+                        memberNames: members,
+                        routing: "",
+                        rules: 0,
+                        levels: ["low", "medium", "high"],
+                        on: true,
+                      },
+                    ]);
                     setDemoGroups(true);
                     setGImportOpen(false);
                     setImportPaste("");
@@ -1432,17 +1463,66 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
             open={groupEditorOpen}
             nameSuffixOn={nameSuffix === "on"}
             templateSeed={templateSeed}
+            editGroup={editGroup}
             onStatus={onStatus}
             onClose={() => {
               setGroupEditorOpen(false);
               setTemplateSeed(null);
+              setEditGroup(null);
             }}
-            onSaved={(name: string) => {
-              setSavedGroups((gs) => [...gs, { name }]);
+            onSaved={(g) => {
+              setSavedGroups((gs) => {
+                if (editGroup) {
+                  return gs.map((x) => (x.slug === editGroup.slug ? g : x));
+                }
+                return [...gs, g];
+              });
               setDemoGroups(true);
               setTemplateSeed(null);
+              setEditGroup(null);
+            }}
+            onRemoved={() => {
+              if (!editGroup) return;
+              setSavedGroups((gs) => gs.filter((x) => x.slug !== editGroup.slug));
+              setEditGroup(null);
             }}
           />
+          {tplMenuOpen ? (
+            <ProtoMultiMenu
+              open
+              anchor={tplBtnRef.current}
+              head="Start from a template"
+              live={false}
+              value=""
+              align="right"
+              options={GROUP_TEMPLATES.map((tp, ti) => ({
+                v: String(ti),
+                name: tp.title,
+                note: demoHasProviders() ? tp.desc : "Add a provider first",
+              }))}
+              onChange={(v) => {
+                const ti = parseInt(String(v), 10);
+                if (Number.isNaN(ti)) return;
+                setTplMenuOpen(false);
+                if (!demoHasProviders()) {
+                  onStatus?.(t("Add a provider first"), "warn");
+                  return;
+                }
+                const seedMembers =
+                  ti === 0
+                    ? ["claude-opus-4-1", "claude-haiku-4-5"]
+                    : ti === 1
+                      ? ["claude-haiku-4-5", "claude-sonnet-4-5", "claude-opus-4-1"]
+                      : ["claude-opus-4-1", "gpt-5", "gemini-2.5-pro"];
+                setEditGroup(null);
+                setTemplateSeed({ name: t(GROUP_TEMPLATES[ti].title), memberIds: seedMembers });
+                setGroupEditorOpen(true);
+                setDemoGroups(true);
+              }}
+              onClose={() => setTplMenuOpen(false)}
+            />
+          ) : null}
+
           {false ? (
             <div className="none rt-gnone" style={{ padding: "16px 4px", color: "var(--muted)", fontSize: 13 }}>
               {foundOn
@@ -1455,22 +1535,63 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
           {savedGroups.length ? (
             <div className="rt-groups" style={{ marginTop: 8 }}>
               {savedGroups.map((g) => (
-                <div key={g.name} className="rt-group card" style={{ animation: "fade-in .18s var(--ease)" }}>
-                  <div className="rt-ghead" style={{ display: "flex", alignItems: "center", gap: 8, padding: "10px 12px" }}>
-                    <b>{g.name}</b>
-                    <span className="grow" />
-                    <span className="note">{t("routing group")}</span>
+                <div
+                  key={g.slug}
+                  className={`rt-group${g.on ? "" : " disabled"}`}
+                  style={{ animation: "fade-in .18s var(--ease)" }}
+                >
+                  <div className="ics rt-ghandle ag-handle" aria-hidden>
+                    <svg className="ic" viewBox="0 0 16 16" width={16} height={16}>
+                      <rect x="3" y="3" width="10" height="10" rx="2" fill="none" stroke="currentColor" strokeWidth="1.4" />
+                      <path d="M6 8h4M8 6v4" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+                    </svg>
                   </div>
-                  {g.members?.length ? (
-                    <div className="rt-gbody" style={{ padding: "0 12px 10px", fontSize: 12, color: "var(--muted)" }}>
-                      {g.members.join(" · ")}
+                  <div className="main">
+                    <div className="nm">
+                      <b>{g.name}</b>
+                      <code className="mdl">{`group/${g.slug}`}</code>
                     </div>
-                  ) : null}
+                    <div className="mem">
+                      {(g.memberNames.length ? g.memberNames : g.members).join(" · ") || t("no models")}
+                    </div>
+                  </div>
+                  <div className="tags">
+                    <span className="tag">{t(g.routing === "" || g.routing === "smart" ? "Smart" : g.routing === "order" ? "In order" : g.routing === "rotate" ? "In turn" : g.routing === "usage" ? "Least used" : g.routing === "pace" ? "Weekly pace" : g.routing === "weight" ? "By weight" : g.routing === "manual" ? "Manual" : "Smart")}</span>
+                    {g.rules > 0 ? (
+                      <span className="tag">{t(g.rules === 1 ? "1 rule" : "{n} rules", { n: g.rules })}</span>
+                    ) : null}
+                    <span className="tag bad">{t("no member ready")}</span>
+                  </div>
+                  <button
+                    type="button"
+                    className="text"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setEditGroup(g);
+                      setTemplateSeed(null);
+                      setGroupEditorOpen(true);
+                    }}
+                  >
+                    {t("Edit")}
+                  </button>
+                  <button
+                    type="button"
+                    className={`lib-switch rt-gon${g.on ? " on" : ""}`}
+                    role="switch"
+                    aria-checked={g.on}
+                    aria-label={g.name}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSavedGroups((gs) => gs.map((x) => (x.slug === g.slug ? { ...x, on: !x.on } : x)));
+                    }}
+                  >
+                    <i />
+                  </button>
                 </div>
               ))}
             </div>
           ) : null}
-          {demoGroups ? (
+          {demoGroups && !savedGroups.length && !groupEditorOpen ? (
             <div className="rt-groups" style={{ marginTop: 8 }}>
               <div className="rt-group card">
                 <div className="rt-ghead">

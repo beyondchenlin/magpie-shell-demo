@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ModelPop, type PopOption } from "./ModelPop";
+import { ProtoMultiMenu } from "./ProtoMultiMenu";
 import { Segs } from "./Segs";
 import { t } from "../i18n";
 import { dragRows } from "../lib/dragRows";
@@ -110,9 +111,57 @@ const DAY_NAMES: Record<(typeof WEEK)[number], string> = {
 
 const DEMO_AGENTS = [
   { id: "claude-code", name: "Claude Code" },
+  { id: "claude-desktop", name: "Claude Desktop" },
+  { id: "claude-science", name: "Claude Science" },
   { id: "codex", name: "Codex" },
+  { id: "gemini-cli", name: "Gemini CLI" },
+  { id: "antigravity-cli", name: "Antigravity CLI" },
   { id: "opencode", name: "OpenCode" },
+  { id: "openchamber", name: "OpenChamber" },
+  { id: "mimo-code", name: "MiMo Code" },
+  { id: "prime-agent", name: "Prime Agent" },
+  { id: "goose", name: "Goose" },
   { id: "cursor", name: "Cursor" },
+  { id: "cursor-private", name: "Cursor Private Inference" },
+  { id: "zed", name: "Zed" },
+  { id: "vscode", name: "VS Code" },
+  { id: "vscode-insiders", name: "VS Code Insiders" },
+  { id: "vscodium", name: "VSCodium" },
+  { id: "copilot-jetbrains", name: "Copilot (JetBrains)" },
+  { id: "jetbrains-air", name: "JetBrains Air" },
+  { id: "reasonix-studio", name: "Reasonix Studio" },
+  { id: "command-code", name: "Command Code" },
+  { id: "fx", name: "fx" },
+  { id: "omp", name: "omp" },
+  { id: "devin", name: "Devin" },
+  { id: "hermes-agent", name: "Hermes Agent" },
+  { id: "mister-morph", name: "Mister Morph" },
+  { id: "kimi-code", name: "Kimi Code" },
+  { id: "qwen-code", name: "Qwen Code" },
+  { id: "muse-code", name: "Muse Code" },
+  { id: "empryo", name: "Empryo" },
+  { id: "ante", name: "Ante" },
+  { id: "astrbot", name: "AstrBot" },
+  { id: "jcode", name: "jcode" },
+  { id: "minimax-code", name: "MiniMax Code" },
+  { id: "droid", name: "Droid" },
+  { id: "cline", name: "Cline" },
+  { id: "qoder", name: "Qoder" },
+  { id: "qoder-cn", name: "Qoder CN" },
+  { id: "grok-build", name: "Grok Build" },
+  { id: "grok-app", name: "Grok App" },
+  { id: "zcode", name: "ZCode" },
+  { id: "workbuddy", name: "WorkBuddy" },
+  { id: "pencil", name: "Pencil" },
+  { id: "t3-code", name: "T3 Code" },
+  { id: "openhanako", name: "OpenHanako" },
+  { id: "atomcode", name: "AtomCode" },
+  { id: "snow-cli", name: "Snow CLI" },
+  { id: "alma", name: "Alma" },
+  { id: "cindy", name: "Cindy" },
+  { id: "magpie", name: "magpie" },
+  { id: "curl", name: "curl" },
+  { id: "pi-desktop", name: "PI-Desktop" },
 ];
 
 /** Demo classifier / decision models (Magpie groups.deciders + models). */
@@ -136,6 +185,8 @@ type Rule = {
   folders: string[];
   exceptFolders: string[];
   time: RuleTime | null;
+  /** Conditions pinned via + Add a condition (may still be empty / dashed). */
+  pins: string[];
 };
 
 type Member = {
@@ -208,7 +259,39 @@ function emptyRule(use: string): Rule {
     folders: [],
     exceptFolders: [],
     time: null,
+    pins: [],
   };
+}
+
+function pinRule(r: Rule, pin: string): Rule {
+  return r.pins.includes(pin) ? r : { ...r, pins: [...r.pins, pin] };
+}
+
+function unpinRule(r: Rule, pin: string): Rule {
+  const pins = r.pins.filter((p) => p !== pin);
+  const next: Rule = { ...r, pins };
+  if (pin === "tokens") next.tokens = 0;
+  if (pin === "images") next.images = false;
+  if (pin === "effort") next.effort = "";
+  if (pin === "agents") next.agents = [];
+  if (pin === "compact") next.compact = false;
+  if (pin === "folders") next.folders = [];
+  if (pin === "exceptFolders") next.exceptFolders = [];
+  if (pin === "time") next.time = null;
+  return next;
+}
+
+function ruleHasPin(r: Rule, pin: string): boolean {
+  if (r.pins.includes(pin)) return true;
+  if (pin === "tokens") return !!r.tokens;
+  if (pin === "images") return !!r.images;
+  if (pin === "effort") return !!r.effort;
+  if (pin === "agents") return r.agents.length > 0;
+  if (pin === "compact") return !!r.compact;
+  if (pin === "folders") return r.folders.length > 0;
+  if (pin === "exceptFolders") return r.exceptFolders.length > 0;
+  if (pin === "time") return !!r.time;
+  return false;
 }
 
 function slug(s: string) {
@@ -263,14 +346,28 @@ function draftSnapshot(d: Draft) {
   return JSON.stringify(d);
 }
 
+export type SavedGroupDraft = {
+  name: string;
+  slug: string;
+  members: string[];
+  memberNames: string[];
+  routing: string;
+  rules: number;
+  levels: string[];
+  on: boolean;
+};
+
 type Props = {
   open: boolean;
   nameSuffixOn: boolean;
   onClose: () => void;
-  onSaved: (name: string) => void;
+  onSaved: (group: SavedGroupDraft) => void;
+  onRemoved?: () => void;
   onStatus?: (msg: string, kind?: string) => void;
   /** Prefill when starting from a Magpie template card (mock). */
   templateSeed?: { name: string; memberIds: string[] } | null;
+  /** Edit an existing saved group (footer Remove / Cancel / Save). */
+  editGroup?: SavedGroupDraft | null;
 };
 
 /**
@@ -278,13 +375,15 @@ type Props = {
  * Motion: segs thumb 280ms; #pop pop-fade .18s + pop-in .42s; discard dialog pop-in .28s;
  * member sort .22s cubic-bezier(.22,1,.36,1); rt-gadd hover .15s.
  */
-export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onStatus, templateSeed }: Props) {
+export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, onStatus, templateSeed, editGroup }: Props) {
   const [draft, setDraft] = useState<Draft>(emptyDraft);
   const [was, setWas] = useState("");
   const [addOpen, setAddOpen] = useState(false);
   const [reasonFor, setReasonFor] = useState<number | null>(null);
   const [patIn, setPatIn] = useState("");
   const [discardOpen, setDiscardOpen] = useState(false);
+  const [removeOpen, setRemoveOpen] = useState(false);
+  const [condMenuFor, setCondMenuFor] = useState<number | null>(null);
   const [firstErr, setFirstErr] = useState("");
   const [ctxErr, setCtxErr] = useState("");
   const [weightEdit, setWeightEdit] = useState<string | null>(null);
@@ -303,7 +402,24 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onStatus, te
   useEffect(() => {
     if (!open) return;
     const d = emptyDraft();
-    if (templateSeed) {
+    if (editGroup) {
+      d.name = editGroup.name === editGroup.slug ? "" : editGroup.name;
+      d.members = editGroup.members.map((id, i) => {
+        const known = DEMO_MODELS.find((m) => m.value === id || m.label === id);
+        const name = editGroup.memberNames[i] || known?.label || id.split("/").pop() || id;
+        const [, fixed] = splitMember(id);
+        return { id, name: name.includes(":") ? name.split(":")[0] : name, on: true, fixed };
+      });
+      d.routing = editGroup.routing;
+      d.levelsOwn = true;
+      d.levels = editGroup.levels.length ? [...editGroup.levels] : ["low", "medium", "high"];
+      if (d.members.length >= 2 && editGroup.rules > 0) {
+        const r = emptyRule(d.members[d.members.length - 1].id);
+        r.effort = "high";
+        r.pins = ["effort"];
+        d.rules = [r];
+      }
+    } else if (templateSeed) {
       d.name = templateSeed.name;
       d.members = templateSeed.memberIds.map((id) => {
         const known = DEMO_MODELS.find((m) => m.value === id || m.label === id);
@@ -321,6 +437,8 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onStatus, te
     setReasonFor(null);
     setPatIn("");
     setDiscardOpen(false);
+    setRemoveOpen(false);
+    setCondMenuFor(null);
     setFirstErr("");
     setCtxErr("");
     setWeightEdit(null);
@@ -329,7 +447,7 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onStatus, te
     setAskingRule(null);
     const tmr = window.setTimeout(() => nameRef.current?.focus({ preventScroll: true }), 0);
     return () => clearTimeout(tmr);
-  }, [open, templateSeed]);
+  }, [open, templateSeed, editGroup]);
 
   const dirty = useMemo(() => open && was !== "" && draftSnapshot(draft) !== was, [open, draft, was]);
 
@@ -480,8 +598,19 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onStatus, te
       warn(t("Pick a level to offer, or leave them to its models"));
       return;
     }
-    onStatus?.(t("{name} added", { name: draft.name.trim() || idOf() }), "ok");
-    onSaved(draft.name.trim() || idOf());
+    const name = draft.name.trim() || idOf();
+    const payload: SavedGroupDraft = {
+      name,
+      slug: idOf(),
+      members: draft.members.map((m) => m.id),
+      memberNames: draft.members.map((m) => memberDisplay(m)),
+      routing: draft.routing,
+      rules: rules.length,
+      levels: draft.levelsOwn ? [...draft.levels] : ["low", "medium", "high"],
+      on: true,
+    };
+    onStatus?.(t(editGroup ? "{name} saved" : "{name} added", { name }), "ok");
+    onSaved(payload);
     onClose();
   };
 
@@ -498,7 +627,7 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onStatus, te
     <>
       <div className="editor rt-gedit card" style={{ marginTop: 8, animation: "pop-in .42s cubic-bezier(.16,1,.3,1)" }}>
         <div className="ehead">
-          <b>{t("New group")}</b>
+          <b>{t(editGroup ? "Edit group" : "New group")}</b>
         </div>
 
         <label>{t("Name")}</label>
@@ -935,76 +1064,20 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onStatus, te
                     ? r.agents.map((id) => DEMO_AGENTS.find((a) => a.id === id)?.name || id).join(", ")
                     : t("any agent");
                 const useMember = draft.members.find((m) => m.id === r.use) || draft.members[draft.members.length - 1];
-                const warnBits: string[] = [];
-                if (r.pause) warnBits.push(t("left out of the group then: not tried, not a fallback"));
-                if (!r.pause && r.images) warnBits.push(""); // demo: no modelInfo
                 const from = clockOf(r.time?.from || "");
                 const to = clockOf(r.time?.to || "");
-                if (from && to && to < from) warnBits.push(t("runs past midnight, into the next day"));
-                const typedTime = !!(r.time && (r.time.from || r.time.to));
+                const showTokens = ruleHasPin(r, "tokens");
+                const showImages = ruleHasPin(r, "images");
+                const showEffort = ruleHasPin(r, "effort");
+                const showAgents = ruleHasPin(r, "agents");
+                const showCompact = ruleHasPin(r, "compact");
+                const showFolders = ruleHasPin(r, "folders");
+                const showExcept = ruleHasPin(r, "exceptFolders");
+                const showTime = ruleHasPin(r, "time");
                 return (
                   <div key={ri} className="rt-rule">
                     <span className="i">{ri + 1}</span>
                     <div className="when">
-                      <span className="w">{t("When")}</span>
-                      {!r.pause ? (
-                        <>
-                          <span className={`rt-cond tk${r.tokens ? " on" : ""}`} onClick={() => condBtnRefs.current[`tk${ri}`]?.focus()}>
-                            <span>≥</span>
-                            <input
-                              ref={(el) => {
-                                condBtnRefs.current[`tk${ri}`] = el as unknown as HTMLButtonElement;
-                              }}
-                              type="number"
-                              min={0}
-                              step={1000}
-                              value={r.tokens || ""}
-                              placeholder=""
-                              onChange={(e) => {
-                                const tokens = Math.max(0, parseInt(e.target.value, 10) || 0);
-                                setDraft((d) => {
-                                  const rules = d.rules.map((x, j) => (j === ri ? { ...x, tokens } : x));
-                                  return { ...d, rules };
-                                });
-                              }}
-                              onKeyDown={(e) => e.stopPropagation()}
-                            />
-                            <span>{t("tokens")}</span>
-                          </span>
-                          <button
-                            type="button"
-                            className={`rt-cond${r.images ? " on" : ""}`}
-                            onClick={() =>
-                              setDraft((d) => ({
-                                ...d,
-                                rules: d.rules.map((x, j) => (j === ri ? { ...x, images: !x.images } : x)),
-                              }))
-                            }
-                          >
-                            {t("has an image")}
-                          </button>
-                          <button
-                            type="button"
-                            className={`rt-cond${r.effort ? " on" : ""}`}
-                            ref={(el) => {
-                              condBtnRefs.current[`ef${ri}`] = el;
-                            }}
-                            onClick={() => setPopKind((cur) => (cur?.kind === "effort" && cur.rule === ri ? null : { kind: "effort", rule: ri }))}
-                          >
-                            {effortName(r.effort)}
-                          </button>
-                        </>
-                      ) : null}
-                      <button
-                        type="button"
-                        className={`rt-cond${r.agents.length ? " on" : ""}`}
-                        ref={(el) => {
-                          condBtnRefs.current[`ag${ri}`] = el;
-                        }}
-                        onClick={() => setPopKind((cur) => (cur?.kind === "agent" && cur.rule === ri ? null : { kind: "agent", rule: ri }))}
-                      >
-                        {agentsName()}
-                      </button>
                       {!r.pause ? (
                         <>
                           <span
@@ -1035,168 +1108,342 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onStatus, te
                               onKeyDown={(e) => e.stopPropagation()}
                             />
                           </span>
+                          {showTokens ? (
+                            <span className={`rt-cond tk${r.tokens ? " on" : ""}`}>
+                              <span>≥</span>
+                              <input
+                                ref={(el) => {
+                                  condBtnRefs.current[`tk${ri}`] = el as unknown as HTMLButtonElement;
+                                }}
+                                type="number"
+                                min={0}
+                                step={1000}
+                                value={r.tokens || ""}
+                                placeholder=""
+                                onChange={(e) => {
+                                  const tokens = Math.max(0, parseInt(e.target.value, 10) || 0);
+                                  setDraft((d) => ({
+                                    ...d,
+                                    rules: d.rules.map((x, j) => (j === ri ? pinRule({ ...x, tokens }, "tokens") : x)),
+                                  }));
+                                }}
+                                onKeyDown={(e) => e.stopPropagation()}
+                              />
+                              <span>{t("tokens")}</span>
+                              <button
+                                type="button"
+                                className="rt-cond-x"
+                                aria-label={t("Remove")}
+                                onClick={() =>
+                                  setDraft((d) => ({
+                                    ...d,
+                                    rules: d.rules.map((x, j) => (j === ri ? unpinRule(x, "tokens") : x)),
+                                  }))
+                                }
+                              >
+                                ×
+                              </button>
+                            </span>
+                          ) : null}
+                          {showImages ? (
+                            <button
+                              type="button"
+                              className={`rt-cond${r.images ? " on" : ""}`}
+                              onClick={() =>
+                                setDraft((d) => ({
+                                  ...d,
+                                  rules: d.rules.map((x, j) => (j === ri ? { ...x, images: !x.images } : x)),
+                                }))
+                              }
+                            >
+                              {t("has an image")}
+                              <span
+                                className="rt-cond-x"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setDraft((d) => ({
+                                    ...d,
+                                    rules: d.rules.map((x, j) => (j === ri ? unpinRule(x, "images") : x)),
+                                  }));
+                                }}
+                              >
+                                ×
+                              </span>
+                            </button>
+                          ) : null}
+                          {showEffort ? (
+                            <button
+                              type="button"
+                              className={`rt-cond${r.effort ? " on" : ""}`}
+                              ref={(el) => {
+                                condBtnRefs.current[`ef${ri}`] = el;
+                              }}
+                              onClick={() => setPopKind((cur) => (cur?.kind === "effort" && cur.rule === ri ? null : { kind: "effort", rule: ri }))}
+                            >
+                              {effortName(r.effort)}
+                              <span
+                                className="rt-cond-x"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setDraft((d) => ({
+                                    ...d,
+                                    rules: d.rules.map((x, j) => (j === ri ? unpinRule(x, "effort") : x)),
+                                  }));
+                                }}
+                              >
+                                ×
+                              </span>
+                            </button>
+                          ) : null}
+                          {showCompact ? (
+                            <button
+                              type="button"
+                              className={`rt-cond${r.compact ? " on" : ""}`}
+                              title={t(
+                                "The agent summarizes the conversation to go on in less room (Claude Code's /compact, Codex, OpenCode…): a cheaper, faster model can do it",
+                              )}
+                              onClick={() =>
+                                setDraft((d) => ({
+                                  ...d,
+                                  rules: d.rules.map((x, j) => (j === ri ? { ...x, compact: !x.compact } : x)),
+                                }))
+                              }
+                            >
+                              {t("compacting")}
+                              <span
+                                className="rt-cond-x"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setDraft((d) => ({
+                                    ...d,
+                                    rules: d.rules.map((x, j) => (j === ri ? unpinRule(x, "compact") : x)),
+                                  }));
+                                }}
+                              >
+                                ×
+                              </span>
+                            </button>
+                          ) : null}
+                        </>
+                      ) : null}
+                      {showAgents ? (
+                        <button
+                          type="button"
+                          className={`rt-cond${r.agents.length ? " on" : ""}`}
+                          ref={(el) => {
+                            condBtnRefs.current[`ag${ri}`] = el;
+                          }}
+                          onClick={() => setPopKind((cur) => (cur?.kind === "agent" && cur.rule === ri ? null : { kind: "agent", rule: ri }))}
+                        >
+                          {agentsName()}
+                          <span
+                            className="rt-cond-x"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setDraft((d) => ({
+                                ...d,
+                                rules: d.rules.map((x, j) => (j === ri ? unpinRule(x, "agents") : x)),
+                              }));
+                            }}
+                          >
+                            ×
+                          </span>
+                        </button>
+                      ) : null}
+                      {showFolders ? (
+                        <span
+                          className={`rt-cond fd${r.folders.length ? " on" : ""}`}
+                          title={t(
+                            "The agent works in one of these folders or a folder inside one, as it tells the model (Claude Code, Codex, OpenCode, Pi); an agent that doesn't say isn't matched",
+                          )}
+                        >
+                          <span>{t("in folder")}</span>
+                          <input
+                            type="text"
+                            value={r.folders.join(", ")}
+                            placeholder="~/work/acme, ~/oss"
+                            onChange={(e) => {
+                              const folders = e.target.value
+                                .split(",")
+                                .map((x) => x.trim())
+                                .filter(Boolean);
+                              setDraft((d) => ({
+                                ...d,
+                                rules: d.rules.map((x, j) => (j === ri ? pinRule({ ...x, folders }, "folders") : x)),
+                              }));
+                            }}
+                            onKeyDown={(e) => e.stopPropagation()}
+                          />
                           <button
                             type="button"
-                            className={`rt-cond${r.compact ? " on" : ""}`}
-                            title={t(
-                              "The agent summarizes the conversation to go on in less room (Claude Code's /compact, Codex, OpenCode…): a cheaper, faster model can do it",
-                            )}
+                            className="rt-cond-x"
+                            aria-label={t("Remove")}
                             onClick={() =>
                               setDraft((d) => ({
                                 ...d,
-                                rules: d.rules.map((x, j) => (j === ri ? { ...x, compact: !x.compact } : x)),
+                                rules: d.rules.map((x, j) => (j === ri ? unpinRule(x, "folders") : x)),
                               }))
                             }
                           >
-                            {t("compacting")}
+                            ×
+                          </button>
+                        </span>
+                      ) : null}
+                      {showExcept ? (
+                        <span
+                          className={`rt-cond xf${r.exceptFolders.length ? " on" : ""}`}
+                          title={t(
+                            "The agent works in none of these folders, nor a folder inside one, as it tells the model; an agent that doesn't say counts as outside them",
+                          )}
+                        >
+                          <span>{t("not in folder")}</span>
+                          <input
+                            type="text"
+                            value={r.exceptFolders.join(", ")}
+                            placeholder="~/big-task"
+                            onChange={(e) => {
+                              const exceptFolders = e.target.value
+                                .split(",")
+                                .map((x) => x.trim())
+                                .filter(Boolean);
+                              setDraft((d) => ({
+                                ...d,
+                                rules: d.rules.map((x, j) => (j === ri ? pinRule({ ...x, exceptFolders }, "exceptFolders") : x)),
+                              }));
+                            }}
+                            onKeyDown={(e) => e.stopPropagation()}
+                          />
+                          <button
+                            type="button"
+                            className="rt-cond-x"
+                            aria-label={t("Remove")}
+                            onClick={() =>
+                              setDraft((d) => ({
+                                ...d,
+                                rules: d.rules.map((x, j) => (j === ri ? unpinRule(x, "exceptFolders") : x)),
+                              }))
+                            }
+                          >
+                            ×
+                          </button>
+                        </span>
+                      ) : null}
+                      {showTime ? (
+                        <>
+                          <span
+                            className={`rt-cond tm${from && to ? " on" : ""}${r.time && ((r.time.from && !from) || (r.time.to && !to)) ? " bad" : ""}`}
+                            title={t(
+                              "The turn begins within these hours, on this computer's clock — a provider's peak-price hours sent to another, say",
+                            )}
+                          >
+                            <span>{t("from")}</span>
+                            <input
+                              className="clock"
+                              type="text"
+                              maxLength={5}
+                              inputMode="numeric"
+                              value={r.time?.from || ""}
+                              placeholder="09:00"
+                              onChange={(e) => {
+                                const fromV = e.target.value.trim();
+                                setDraft((d) => {
+                                  const rules = d.rules.map((x, j) => {
+                                    if (j !== ri) return x;
+                                    const time = x.time || { from: "", to: "", days: [] };
+                                    return pinRule({ ...x, time: { ...time, from: fromV } }, "time");
+                                  });
+                                  return { ...d, rules };
+                                });
+                              }}
+                              onBlur={(e) => {
+                                const v = clockOf(e.target.value);
+                                if (!v) return;
+                                setDraft((d) => {
+                                  const rules = d.rules.map((x, j) => {
+                                    if (j !== ri) return x;
+                                    const time = x.time || { from: "", to: "", days: [] };
+                                    return { ...x, time: { ...time, from: v } };
+                                  });
+                                  return { ...d, rules };
+                                });
+                              }}
+                              onKeyDown={(e) => e.stopPropagation()}
+                            />
+                            <span>{t("to")}</span>
+                            <input
+                              className="clock"
+                              type="text"
+                              maxLength={5}
+                              inputMode="numeric"
+                              value={r.time?.to || ""}
+                              placeholder="18:00"
+                              onChange={(e) => {
+                                const toV = e.target.value.trim();
+                                setDraft((d) => {
+                                  const rules = d.rules.map((x, j) => {
+                                    if (j !== ri) return x;
+                                    const time = x.time || { from: "", to: "", days: [] };
+                                    return pinRule({ ...x, time: { ...time, to: toV } }, "time");
+                                  });
+                                  return { ...d, rules };
+                                });
+                              }}
+                              onBlur={(e) => {
+                                const v = clockOf(e.target.value);
+                                if (!v) return;
+                                setDraft((d) => {
+                                  const rules = d.rules.map((x, j) => {
+                                    if (j !== ri) return x;
+                                    const time = x.time || { from: "", to: "", days: [] };
+                                    return { ...x, time: { ...time, to: v } };
+                                  });
+                                  return { ...d, rules };
+                                });
+                              }}
+                              onKeyDown={(e) => e.stopPropagation()}
+                            />
+                          </span>
+                          <button
+                            type="button"
+                            className={`rt-cond${daysText(r.time?.days) ? " on" : ""}`}
+                            ref={(el) => {
+                              condBtnRefs.current[`day${ri}`] = el;
+                            }}
+                            onClick={() => setPopKind((cur) => (cur?.kind === "days" && cur.rule === ri ? null : { kind: "days", rule: ri }))}
+                          >
+                            {daysText(r.time?.days) || t("every day")}
+                            <span
+                              className="rt-cond-x"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setDraft((d) => ({
+                                  ...d,
+                                  rules: d.rules.map((x, j) => (j === ri ? unpinRule(x, "time") : x)),
+                                }));
+                              }}
+                            >
+                              ×
+                            </span>
                           </button>
                         </>
                       ) : null}
-                      <span
-                        className={`rt-cond fd${r.folders.length ? " on" : ""}`}
-                        title={t(
-                          "The agent works in one of these folders or a folder inside one, as it tells the model (Claude Code, Codex, OpenCode, Pi); an agent that doesn't say isn't matched",
-                        )}
-                      >
-                        <span>{t("in folder")}</span>
-                        <input
-                          type="text"
-                          value={r.folders.join(", ")}
-                          placeholder="~/work/acme, ~/oss"
-                          onChange={(e) => {
-                            const folders = e.target.value
-                              .split(",")
-                              .map((x) => x.trim())
-                              .filter(Boolean);
-                            setDraft((d) => ({
-                              ...d,
-                              rules: d.rules.map((x, j) => (j === ri ? { ...x, folders } : x)),
-                            }));
-                          }}
-                          onKeyDown={(e) => e.stopPropagation()}
-                        />
-                      </span>
-                      <span
-                        className={`rt-cond xf${r.exceptFolders.length ? " on" : ""}`}
-                        title={t(
-                          "The agent works in none of these folders, nor a folder inside one, as it tells the model; an agent that doesn't say counts as outside them",
-                        )}
-                      >
-                        <span>{t("not in folder")}</span>
-                        <input
-                          type="text"
-                          value={r.exceptFolders.join(", ")}
-                          placeholder="~/big-task"
-                          onChange={(e) => {
-                            const exceptFolders = e.target.value
-                              .split(",")
-                              .map((x) => x.trim())
-                              .filter(Boolean);
-                            setDraft((d) => ({
-                              ...d,
-                              rules: d.rules.map((x, j) => (j === ri ? { ...x, exceptFolders } : x)),
-                            }));
-                          }}
-                          onKeyDown={(e) => e.stopPropagation()}
-                        />
-                      </span>
-                      <span
-                        className={`rt-cond tm${from && to ? " on" : ""}${r.time && ((r.time.from && !from) || (r.time.to && !to)) ? " bad" : ""}`}
-                        title={t(
-                          "The turn begins within these hours, on this computer's clock — a provider's peak-price hours sent to another, say",
-                        )}
-                      >
-                        <span>{t("from")}</span>
-                        <input
-                          className="clock"
-                          type="text"
-                          maxLength={5}
-                          inputMode="numeric"
-                          value={r.time?.from || ""}
-                          placeholder="09:00"
-                          onChange={(e) => {
-                            const fromV = e.target.value.trim();
-                            setDraft((d) => {
-                              const rules = d.rules.map((x, j) => {
-                                if (j !== ri) return x;
-                                const time = x.time || { from: "", to: "", days: [] };
-                                return { ...x, time: { ...time, from: fromV } };
-                              });
-                              return { ...d, rules };
-                            });
-                          }}
-                          onBlur={(e) => {
-                            const v = clockOf(e.target.value);
-                            if (!v) return;
-                            setDraft((d) => {
-                              const rules = d.rules.map((x, j) => {
-                                if (j !== ri) return x;
-                                const time = x.time || { from: "", to: "", days: [] };
-                                return { ...x, time: { ...time, from: v } };
-                              });
-                              return { ...d, rules };
-                            });
-                          }}
-                          onKeyDown={(e) => e.stopPropagation()}
-                        />
-                        <span>{t("to")}</span>
-                        <input
-                          className="clock"
-                          type="text"
-                          maxLength={5}
-                          inputMode="numeric"
-                          value={r.time?.to || ""}
-                          placeholder="18:00"
-                          onChange={(e) => {
-                            const toV = e.target.value.trim();
-                            setDraft((d) => {
-                              const rules = d.rules.map((x, j) => {
-                                if (j !== ri) return x;
-                                const time = x.time || { from: "", to: "", days: [] };
-                                return { ...x, time: { ...time, to: toV } };
-                              });
-                              return { ...d, rules };
-                            });
-                          }}
-                          onBlur={(e) => {
-                            const v = clockOf(e.target.value);
-                            if (!v) return;
-                            setDraft((d) => {
-                              const rules = d.rules.map((x, j) => {
-                                if (j !== ri) return x;
-                                const time = x.time || { from: "", to: "", days: [] };
-                                return { ...x, time: { ...time, to: v } };
-                              });
-                              return { ...d, rules };
-                            });
-                          }}
-                          onKeyDown={(e) => e.stopPropagation()}
-                        />
-                      </span>
-                      {typedTime || (r.time?.days?.length ?? 0) > 0 ? (
-                        <button
-                          type="button"
-                          className={`rt-cond${daysText(r.time?.days) ? " on" : ""}`}
-                          ref={(el) => {
-                            condBtnRefs.current[`day${ri}`] = el;
-                          }}
-                          onClick={() => setPopKind((cur) => (cur?.kind === "days" && cur.rule === ri ? null : { kind: "days", rule: ri }))}
-                        >
-                          {daysText(r.time?.days) || t("every day")}
-                        </button>
-                      ) : null}
-                    </div>
-                    <div className="rt-use">
                       <button
                         type="button"
-                        className={`rt-cond rt-act${r.pause ? " on" : ""}`}
+                        className={`rt-cond rt-cond-plus${condMenuFor === ri ? " open" : ""}`}
                         ref={(el) => {
-                          condBtnRefs.current[`act${ri}`] = el;
+                          condBtnRefs.current[`plus${ri}`] = el;
                         }}
-                        onClick={() => setPopKind((cur) => (cur?.kind === "action" && cur.rule === ri ? null : { kind: "action", rule: ri }))}
+                        title={t("Add a condition")}
+                        aria-label={t("Add a condition")}
+                        onClick={() => setCondMenuFor((cur) => (cur === ri ? null : ri))}
                       >
-                        {t(r.pause ? "pause" : "send to")}
+                        <svg viewBox="0 0 16 16" width={11} height={11} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden>
+                          <path d="M8 3.5v9M3.5 8h9" />
+                        </svg>
                       </button>
+                      <span className="rt-arrow" aria-hidden>
+                        →
+                      </span>
                       <button
                         type="button"
                         className="rt-cond on"
@@ -1205,26 +1452,14 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onStatus, te
                         }}
                         onClick={() => setPopKind((cur) => (cur?.kind === "use" && cur.rule === ri ? null : { kind: "use", rule: ri }))}
                       >
+                        <svg className="ic" viewBox="0 0 16 16" width={14} height={14} aria-hidden>
+                          <rect x="3" y="3" width="10" height="10" rx="2" fill="none" stroke="currentColor" strokeWidth="1.4" />
+                          <path d="M6 8h4M8 6v4" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+                        </svg>
                         <span>{useMember ? memberDisplay(useMember) : r.use}</span>
                       </button>
-                      <span className="rt-rwarn">{warnBits.filter(Boolean).join(" · ")}</span>
                     </div>
                     <span className="ctl">
-                      {ri > 0 ? (
-                        <button
-                          type="button"
-                          className="text"
-                          onClick={() =>
-                            setDraft((d) => {
-                              const rules = [...d.rules];
-                              rules.splice(ri - 1, 0, rules.splice(ri, 1)[0]);
-                              return { ...d, rules };
-                            })
-                          }
-                        >
-                          {t("Up")}
-                        </button>
-                      ) : null}
                       <button
                         type="button"
                         className="text"
@@ -1245,6 +1480,8 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onStatus, te
                   onClick={() => {
                     const use = draft.members[draft.members.length - 1].id;
                     setDraft((d) => ({ ...d, rules: [...d.rules, emptyRule(use)] }));
+                    setAskingRule(draft.rules.length);
+                    window.setTimeout(() => intentFocusRef.current?.focus({ preventScroll: true }), 0);
                   }}
                 >
                   <svg viewBox="0 0 16 16" width={11} height={11} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden>
@@ -1254,64 +1491,60 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onStatus, te
                 </button>
                 <button
                   type="button"
-                  className="rt-gadd"
-                  onClick={() => {
-                    const use = draft.members[draft.members.length - 1].id;
-                    setDraft((d) => {
-                      const rules = [...d.rules, emptyRule(use)];
-                      const classifier = d.classifier || DEMO_CLASSIFIERS[0]?.value || "";
-                      return { ...d, rules, classifier };
-                    });
-                    setAskingRule(draft.rules.length);
-                    window.setTimeout(() => intentFocusRef.current?.focus({ preventScroll: true }), 0);
-                  }}
+                  className="rt-info"
+                  title={t(
+                    "Checked top first when you send a message: the first that matches sends that turn to its model first; the rest stay behind it if it fails. A turn under way is never moved.",
+                  )}
+                  aria-label={t("About rules")}
                 >
-                  <svg viewBox="0 0 16 16" width={11} height={11} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden>
-                    <path d="M8 3.5v9M3.5 8h9" />
-                  </svg>
-                  <span>{t("Route by what it asks for")}</span>
+                  i
                 </button>
               </div>
             ) : null}
           </div>
-          <div className="hint">
-            {t(
-              draft.members.length < 2
-                ? "With two models or more, a rule can send some turns to one of them first."
-                : draft.routing === "manual"
-                  ? "The rules wait while you pick the model by hand."
-                  : "Checked top first when you send a message: the first that matches sends that turn to its model first; the rest stay behind it if it fails. A turn under way is never moved.",
-            )}
-          </div>
+          {draft.members.length < 2 ? (
+            <div className="hint">
+              {t("With two models or more, a rule can send some turns to one of them first.")}
+            </div>
+          ) : draft.routing === "manual" ? (
+            <div className="hint">{t("The rules wait while you pick the model by hand.")}</div>
+          ) : null}
         </div>
 
         <label>{t("Effort")}</label>
         <div>
-          <Segs
-            value={draft.effort}
-            items={[
-              { id: "" as const, label: t("Agent's") },
-              { id: "auto" as const, label: t("Picked per turn") },
-            ]}
-            onChange={(v) =>
-              setDraft((d) => ({
-                ...d,
-                effort: v,
-                classifier: v === "auto" && !d.classifier ? DEMO_CLASSIFIERS[0]?.value || "" : d.classifier,
-              }))
-            }
-            aria-label={t("Effort")}
-          />
-          <div className="hint">
-            {t(
-              draft.effort === "auto"
-                ? "As a turn begins, the classifier rates how hard it is and the turn's requests ask their model for low, medium, high or xhigh reasoning — the level each model has nearest. Only where the agent asked for reasoning: a request without any (a session title) stays without."
-                : "Each request reasons as much as the agent asked.",
-            )}
+          <div className="rt-effort-row">
+            <Segs
+              value={draft.effort}
+              items={[
+                { id: "" as const, label: t("Agent's") },
+                { id: "auto" as const, label: t("Picked per turn") },
+              ]}
+              onChange={(v) =>
+                setDraft((d) => ({
+                  ...d,
+                  effort: v,
+                  classifier: v === "auto" && !d.classifier ? DEMO_CLASSIFIERS[0]?.value || "" : d.classifier,
+                }))
+              }
+              aria-label={t("Effort")}
+            />
+            <button
+              type="button"
+              className="rt-info"
+              title={t(
+                draft.effort === "auto"
+                  ? "As a turn begins, the classifier rates how hard it is and the turn's requests ask their model for low, medium, high or xhigh reasoning — the level each model has nearest. Only where the agent asked for reasoning: a request without any (a session title) stays without."
+                  : "Each request reasons as much as the agent asked.",
+              )}
+              aria-label={t("About effort")}
+            >
+              i
+            </button>
           </div>
         </div>
 
-        {draft.effort === "auto" || draft.rules.some((r) => r.intent.trim()) ? (
+        {draft.effort === "auto" || draft.rules.length > 0 ? (
           <>
             <label>{t(draft.effort === "auto" && !draft.rules.some((r) => r.intent.trim()) ? "Decided by" : "Intent told by")}</label>
             <div>
@@ -1419,12 +1652,17 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onStatus, te
         </div>
 
         <div className="bar" style={{ gridColumn: "1 / -1" }}>
+          {editGroup ? (
+            <button type="button" className="text" onClick={() => setRemoveOpen(true)}>
+              {t("Remove")}
+            </button>
+          ) : null}
           <span className="grow" />
           <button type="button" className="text" onClick={askClose}>
             {t("Cancel")}
           </button>
           <button type="button" className="text primary" onClick={save}>
-            {t("Add")}
+            {t(editGroup ? "Save" : "Add")}
           </button>
         </div>
       </div>
@@ -1445,7 +1683,7 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onStatus, te
             const ri = popKind.rule;
             setDraft((d) => ({
               ...d,
-              rules: d.rules.map((x, j) => (j === ri ? { ...x, effort: v } : x)),
+              rules: d.rules.map((x, j) => (j === ri ? pinRule({ ...x, effort: v }, "effort") : x)),
             }));
             setPopKind(null);
           }}
@@ -1458,7 +1696,7 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onStatus, te
           anchor={condBtnRefs.current[`ag${popKind.rule}`] || null}
           value=""
           modelPicker={false}
-          placeholder={t("Filter agents…")}
+          placeholder={t("Filter agent…")}
           options={[
             { value: "", label: t("any agent"), note: t("not a condition") },
             ...DEMO_AGENTS.map((a) => ({
@@ -1473,14 +1711,22 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onStatus, te
               const rules = d.rules.map((x, j) => {
                 if (j !== ri) return x;
                 const agents = !v ? [] : x.agents.includes(v) ? x.agents.filter((id) => id !== v) : [...x.agents, v];
-                return { ...x, agents };
+                return pinRule({ ...x, agents }, "agents");
               });
               return { ...d, rules };
             });
             /* multi-toggle: keep open unless clearing */
             if (!v) setPopKind(null);
           }}
-          onClose={() => setPopKind(null)}
+          onClose={() => {
+            /* Escape / outside: leave dashed any agent chip (NOTES 46) */
+            const ri = popKind.rule;
+            setDraft((d) => ({
+              ...d,
+              rules: d.rules.map((x, j) => (j === ri ? pinRule(x, "agents") : x)),
+            }));
+            setPopKind(null);
+          }}
           keepOpen
         />
       ) : null}
@@ -1558,6 +1804,7 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onStatus, te
           anchor={condBtnRefs.current[`use${popKind.rule}`] || null}
           value={draft.rules[popKind.rule]?.use || ""}
           modelPicker={false}
+          placeholder={t("Filter member…")}
           options={draft.members.map((m) => ({ value: m.id, label: memberDisplay(m), note: m.name }))}
           onPick={(v) => {
             const ri = popKind.rule;
@@ -1569,6 +1816,55 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onStatus, te
             setPopKind(null);
           }}
           onClose={() => setPopKind(null)}
+        />
+      ) : null}
+
+      {condMenuFor != null ? (
+        <ProtoMultiMenu
+          open
+          anchor={condBtnRefs.current[`plus${condMenuFor}`] || null}
+          head="Add a condition"
+          hideHead={false}
+          live={false}
+          value=""
+          align="left"
+          options={(
+            [
+              ["tokens", "Conversation length"],
+              ["images", "has an image"],
+              ["effort", "Reasoning level"],
+              ["compact", "compacting"],
+              ["agents", "Agents"],
+              ["folders", "in folder"],
+              ["exceptFolders", "not in folder"],
+              ["time", "Hours and days"],
+            ] as const
+          )
+            .filter(([id]) => !ruleHasPin(draft.rules[condMenuFor] || emptyRule(""), id))
+            .map(([id, label]) => ({ v: id, name: label }))}
+          onChange={(v) => {
+            const ri = condMenuFor;
+            const id = typeof v === "string" ? v : "";
+            if (!id) return;
+            setCondMenuFor(null);
+            setDraft((d) => {
+              const rules = d.rules.map((x, j) => {
+                if (j !== ri) return x;
+                let next = pinRule(x, id);
+                if (id === "images") next = { ...next, images: true };
+                if (id === "compact") next = { ...next, compact: true };
+                if (id === "time") next = { ...next, time: next.time || { from: "", to: "", days: [] } };
+                return next;
+              });
+              return { ...d, rules };
+            });
+            if (id === "effort") setPopKind({ kind: "effort", rule: ri });
+            if (id === "agents") setPopKind({ kind: "agent", rule: ri });
+            if (id === "tokens") {
+              window.setTimeout(() => (condBtnRefs.current[`tk${ri}`] as unknown as HTMLInputElement | null)?.focus?.(), 0);
+            }
+          }}
+          onClose={() => setCondMenuFor(null)}
         />
       ) : null}
 
@@ -1599,6 +1895,45 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onStatus, te
                 onClick={doDiscard}
               >
                 {t("Discard")}
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
+
+      {removeOpen ? (
+        <div
+          className="modal"
+          style={{ zIndex: 40, background: "rgba(20,22,30,.35)" }}
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setRemoveOpen(false);
+          }}
+        >
+          <div className="dialog sm" role="alertdialog" aria-labelledby="rtRemoveGroupTitle" style={{ animation: "pop-in .28s var(--ease)", maxWidth: 360 }}>
+            <div className="ehead" style={{ padding: "14px 16px 0" }}>
+              <b id="rtRemoveGroupTitle">{t("Remove group?")}</b>
+            </div>
+            <p style={{ margin: "10px 16px 0", fontSize: 13, color: "var(--fg-2)", lineHeight: 1.45 }}>
+              {t("This routing group will no longer be available to agents.")}
+            </p>
+            <div className="bar" style={{ padding: "14px 16px" }}>
+              <span className="grow" />
+              <button type="button" className="text" onClick={() => setRemoveOpen(false)}>
+                {t("Cancel")}
+              </button>
+              <button
+                type="button"
+                className="text"
+                style={{ background: "var(--red)", color: "#fff", borderColor: "var(--red)" }}
+                onClick={() => {
+                  const name = draft.name.trim() || idOf();
+                  setRemoveOpen(false);
+                  onStatus?.(t("{name} removed", { name }), "ok");
+                  onRemoved?.();
+                  onClose();
+                }}
+              >
+                {t("Remove")}
               </button>
             </div>
           </div>

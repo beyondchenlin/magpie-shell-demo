@@ -140,3 +140,13 @@
 ## v0.1.69 MIRROR_TOGGLE_DONE
 - Mirrors in China On/Off + tip (71–75); switch On = fg track.
 - No fake installs. P1 N/A. Skip Vercel.
+
+## v0.1.73 ROUTING_RULES_31_54
+
+- Consumed native `interactions/native-linux/routing/31–54` + NOTES into GroupEditor / RoutingView.
+- Two members → **+ Add a rule** + info tip; rule row asks-for · **+ Add a condition** menu · **→ member**.
+- Conditions: Conversation length, has an image, Reasoning level (≥ high), compacting, Agents (list through PI-Desktop; filter grok / zzzz → No matches; Escape leaves dashed any agent), in/not in folder, Hours and days (from/to + every day).
+- Effort info tip; Levels **Named** chips (default low/medium/high).
+- **Add** → green toast **group added**; row `group` / `group/group` · members · Smart · 1 rule · red **no member ready** · Edit · switch. Templates collapses to menu.
+- Edit footer **Remove / Cancel / Save**; **Remove group?** → red Remove → toast **group removed**; templates cards return.
+- P1 live bird hop: **N/A**. Skip Vercel 402.

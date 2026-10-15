@@ -586,12 +586,12 @@ button.rt-session { cursor: pointer; }
 .rt-gadds > [hidden] { display: none; }
 /* a group's rules: when, and the model it sends that turn to first */
 .rt-rules .fbl { gap: 6px; }
-.rt-rule { display: grid; grid-template-columns: 14px minmax(0, 1fr) auto; align-items: center; gap: 4px 8px; padding: 6px 0; border-top: 1px solid var(--line); font-size: 12.5px; }
+.rt-rule { display: grid; grid-template-columns: 14px minmax(0, 1fr) auto; align-items: start; gap: 4px 8px; padding: 6px 0; border-top: 1px solid var(--line); font-size: 12.5px; }
 .rt-rule:first-child { border-top: 0; padding-top: 0; }
-.rt-rule > .i { color: var(--muted); font-variant-numeric: tabular-nums; }
+.rt-rule > .i { color: var(--muted); font-variant-numeric: tabular-nums; padding-top: 6px; }
 .rt-rule .when, .rt-rule .rt-use { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px; min-width: 0; }
 .rt-rule .rt-use { grid-column: 2; }
-.rt-rule .ctl { grid-column: 3; grid-row: 1; display: flex; }
+.rt-rule .ctl { grid-column: 3; grid-row: 1; display: flex; padding-top: 2px; }
 .rt-rule .w { color: var(--muted); font-size: 12px; }
 .rt-cond {
   display: inline-flex; align-items: center; gap: 5px; height: 26px; padding: 0 10px; border-radius: 999px;
@@ -768,3 +768,28 @@ button.rt-session { cursor: pointer; }
 .rt-gtpl-card.off b { color: var(--muted); }
 .rt-gtpl-card .acts { display: flex; align-items: center; gap: 8px; margin-top: auto; padding-top: 4px; }
 .rt-gtplbtn { display: inline-flex; align-items: center; gap: 4px; }
+
+/* Routing rules nest 31–54: + condition, → member, info tip, chip × */
+.rt-info {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 18px; height: 18px; border-radius: 50%;
+  border: 1px solid var(--line); background: transparent;
+  color: var(--muted); font: inherit; font-size: 11px; font-weight: 600;
+  cursor: help; flex: none; padding: 0; line-height: 1;
+}
+.rt-info:hover { color: var(--fg); border-color: var(--muted); }
+.rt-effort-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.rt-cond-plus { width: 26px; height: 26px; padding: 0; justify-content: center; }
+.rt-cond-plus.open { border-style: solid; color: var(--fg); background: var(--card-2); }
+.rt-cond-x {
+  display: inline-flex; align-items: center; justify-content: center;
+  margin-left: 2px; width: 14px; height: 14px; border: 0; background: transparent;
+  color: var(--faint); font-size: 13px; line-height: 1; cursor: pointer; padding: 0;
+}
+.rt-cond-x:hover { color: var(--fg); }
+.rt-arrow { color: var(--muted); font-size: 13px; padding: 0 2px; }
+.rt-rule .when { align-items: center; }
+.rt-rule .ctl { opacity: 0; transition: opacity .12s; }
+.rt-rule:hover .ctl, .rt-rule:focus-within .ctl { opacity: 1; }
+.rt-gtplbtn { display: inline-flex; align-items: center; gap: 4px; }
+.rt-gtplbtn svg { opacity: .7; }

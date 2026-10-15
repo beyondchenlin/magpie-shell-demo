@@ -315,3 +315,7 @@
 有意 Demo 简化（非 P1）：无真后端；Electron 标题栏；Usage filled 演示开关；OS 字体枚举 mock；OTel 默认隐藏。
 
 *Sessions / Library 不是顶栏缺口：官方默认不展示。*
+
+## v0.1.73 ROUTING_RULES_31_54
+- Routing rules nest 31–54 consumed (progressive + condition · full agent list · save/remove group row).
+- P1 unchanged: true gateway bird hop · true OAuth/key · Allowances quota body N/A.

@@ -121,3 +121,50 @@ Routing tab on the 752×652 window at +610+300. Editor closed, import closed, ac
 - **v0.1.30**: 23–30 templates + Import paste box + Accounts mask tip；空态 Waiting / Send one… / Every request… 英文源键；ModelPop multi keepOpen + use as typed
 
 Demo v0.1.42: ROUTING_NEST — templates **Add a provider first** (empty providers; `magpie.demoProviders=1` enables Add); Accounts hidden default; Import disabled until paste; editor 02–22 already from v0.1.29–30.
+
+
+## Rules with two models (31–54)
+
+Groups was off in the running window (the CLI file said on; the Plugins switch was still off). The Built-in **Routing groups** switch was turned on so the editor exists, and turned off again at the end. Shots are the same **752×652 at +200+40**, pid 560329. No provider was added. P1 live bird hop: **N/A** (the header bird did not hop on Add or Remove).
+
+Two typed ids, `opus` and `haiku` (`use as typed`). Escape closed the model pop. With two members the Rules line is no longer the one-model sentence. It is **+ Add a rule** plus an info dot.
+
+| shot | what |
+|---|---|
+| 31 | Rules head after two members. **+ Add a rule**. Footer **Cancel** / **Add** still there. Defaults unchanged: busy **1 min**, context **Largest model's**, stays **Auto**, effort **Agent's**, levels **Its models' shared**. |
+| 32 | Pointer on the rules info dot. Tip: "Checked top first when you send a message: the first that matches sends that turn to its model first; the rest stay behind it if it fails. A turn under way is never moved." |
+| 33 | Add a rule. Row **1**, an **asks for** field (placeholder "what it asks for, e.g. writing tests", focused), a **+**, and **→ haiku**. **Intent told by** / **choose a model** appears under Effort. |
+| 34 | Pointer on that **+**. Tip **Add a condition**. Menu open under it, first row covered by the tip. |
+| 35 | Same menu, tip gone. **Conversation length**, **has an image**, **Reasoning level** (hover), **compacting**, **Agents**, **in folder**. |
+| 36 | Reasoning level opens **Filter reasoning…**. **any reasoning** checked, note "not a condition". **reasoning on** "thinking or any effort level". Then **reasoning ≥ low / medium / high / xhigh / max**. |
+| 37 | **reasoning ≥ high** picked. Chip on the rule. Menu closes. The **+** wraps under the chips. |
+| 38 | **+** again. Menu opens **upward** with a scrollbar. **Reasoning level** is gone (already on the rule). Visible: Conversation length, has an image, compacting, Agents, in folder, **not in folder**. Tip **Add a condition** on the +. |
+| 39 | Menu opens downward and fits: those, plus **Hours and days** at the bottom. |
+| 40 | **Agents**. **Filter agent…**. **any agent** checked, "not a condition". Then Claude Code, Claude Desktop, Claude Science, Codex, Gemini CLI, Antigravity CLI, OpenCode, OpenChamber, MiMo Code. Scrollbar. |
+| 41 | Further down: Prime Agent, Goose, Cursor, Cursor Private Inference, Zed, VS Code, VS Code Insiders, VSCodium, Copilot (JetBrains), JetBrains Air. |
+| 42 | Mister Morph, Kimi Code, Qwen Code, Muse Code, Empryo, Ante, AstrBot, jcode, MiniMax Code, Droid. Between 41 and 42 the list also passed Reasonix Studio, Command Code, fx, omp, Devin, Hermes Agent. |
+| 43 | End of the list (thumb at the bottom): Pencil, T3 Code, OpenHanako, AtomCode, Snow CLI, Alma, Cindy, magpie, curl, **PI-Desktop**. Between 42 and 43: Cline, Qoder, Qoder CN, Grok Build, Grok App, ZCode, WorkBuddy. |
+| 44 | Filter `grok`. Two rows: **Grok Build**, **Grok App**. |
+| 45 | Filter `zzzz`. **No matches.** |
+| 46 | **Escape** closes the agent menu. Nothing was picked. A dashed **any agent** chip is now on the rule (still "not a condition"). |
+| 47 | **Hours and days** added. Fields **from** `09:00` **to** `18:00` (placeholders, focused) and a dashed **every day**. |
+| 48 | Second click on **every day**. **Filter days…**. **every day** "not a condition", **weekdays** Mon–Fri, **weekends** Sat, Sun, then Mon Tue Wed Thu Fri Sat Sun. Escape closed it; every day stayed dashed. |
+| 49 | The **haiku** target chip. **Filter member…** with **opus** and **haiku**. Not a pause menu. Left on haiku (Escape). |
+| 50 | Effort info dot, while **Agent's** is selected. Tip: "Each request reasons as much as the agent asked." |
+| 51 | **Named**. Chips, all looking unselected: **none, minimal, low, medium, high, xhigh, max**. Hint: "Agents are offered these. A model without the level asked is sent the one it has nearest." |
+| 52 | **Add** did save (the empty-looking Named chips did not block it). Green toast **group added**. Row: **group** `group/group`, `opus · haiku`, **Smart**, **1 rule**, red **no member ready**, **Edit**, switch on. Templates collapse to a **Templates** menu while a group of your own exists. Find-groups still on. Names still **On**. |
+| 53 | Edit → footer is **Remove**, **Cancel**, blue **Save** (not Add). Remove opens **Remove group?** "This routing group will no longer be available to agents." **Cancel** and red **Remove**. |
+| 54 | Red Remove. Green toast **group removed**. Templates cards return (**Add a provider first**). No group row. |
+
+The written group, before it was removed, was id `group`, members `opus` and `haiku`, one rule `{use: haiku, effort: high}`, levels `low`, `medium`, `high`. Placeholders (asks for, 09:00–18:00, any agent, every day) were not stored. It is not in `providers.json` now (`{"providers": null}`). A `.bak` that still held that group was stripped so a restore does not bring it back.
+
+## Left state
+
+Routing tab, empty live stage, **Accounts hidden**. Groups plugin **off** again (Plugins switch and `plugins.yml`). No group, no key. Find-groups and the names segments were not clicked. Magpie still running, pid 560329, window 752×652 at +200+40. Close was not used.
+
+Not in this slice: rate-limit / slow-to-start / context / stays segment clicks (19–20 still missed), Conversation length, has an image, compacting, in folder, not in folder, the intent **choose a model** pop, a pause control (the target chip is a member filter), routing-mode hints other than Smart, day pills and replay (still no gateway requests). P1 N/A.
+
+Next: those remaining Routing nests, not tray.
+
+## demo 对齐
+- **v0.1.73**: Rules with two models 31–54（+ Add a rule · condition menu · agents through PI-Desktop · Hours and days · Named · group added/removed · no member ready）
