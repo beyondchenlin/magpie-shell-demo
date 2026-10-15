@@ -713,15 +713,8 @@ body.web.side-nav {
   background: color-mix(in srgb, var(--agent, var(--accent)) 55%, var(--pill));
   transition: width .35s var(--ease);
 }
-.rt-livedot.on {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--green, #2fb087);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--green, #2fb087) 25%, transparent);
-  display: inline-block;
-  vertical-align: middle;
-}
+/* v0.1.127: removed invented .rt-livedot.on 7px glow — Magpie routing.css L405
+   is always-green 6px + rtlive (no .on / no ring). Tip JSX may keep class "on" harmlessly. */
 
 .ag-relocate input.words,
 .pv-add-steps input.words {

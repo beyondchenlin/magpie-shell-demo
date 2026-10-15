@@ -1,3 +1,19 @@
+## v0.1.127 · RT_LIVEDOT_GUIDE_HIDE_FIDELITY · 2026-10-15 Asia/Shanghai
+- **WHY:** Next 1:1 visual/interaction tip after CIS chrome wave closed at 0.1.126 — pick Magpie-faithful CSS/motion on pages users check (Routing empty/live stage, Agents guide).
+- **CAUSE:** Tip had diverged `.rt-livedot` to faint + `.on` and invented shell-patch 7px glow (not Magpie); Agents `guide-x` invent fade not in Magpie `hideGuide`.
+- **Gold:**
+  - Magpie `routing.css` **405**: `.rt-livedot { width: 6px; height: 6px; … background: var(--green); animation: rtlive 1.8s infinite; }`
+  - Magpie `app.js` **1682–1695** `hideGuide()` — prefs write + re-render, **no** opacity/transform fade
+  - Win chrome / nest-752 / `SIDE_AT=1024` unchanged
+- **WHAT kept:** `SIDE_AT=1024`; no `WEB_SIDE_AT`; 752×652 frame; CIS PrefRow/Segs/TextBtn; no PrefRow on Magpie `.acc` / `pm-row`.
+- **WHAT changed:**
+  - `routing.css`: Magpie livedot restore
+  - `shell-patch.css`: remove invented `.rt-livedot.on` 7px glow
+  - `RoutingView.tsx`: `rt-livedot` without invent `.on`
+  - `AgentsView.tsx`: instant guide hide
+  - CIS md: chrome wave closed @ 0.1.126 + PrefRow add-row recipe
+- **Guard:** chrome-guard. Push/PR. No portable / Vercel.
+
 # Tip changelog · 循环检测日志
 
 每条 tip 必须有 **WHY**。动到壳 chrome 时再加 **CAUSE / WHAT kept / WHAT changed**。见 [`TIP-CYCLE.md`](./TIP-CYCLE.md)。

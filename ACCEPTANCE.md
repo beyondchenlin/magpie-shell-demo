@@ -1,3 +1,9 @@
+## v0.1.127 RT_LIVEDOT_GUIDE_HIDE_FIDELITY
+- Routing `.rt-livedot`: restore Magpie always-green 6px + `rtlive` (routing.css L405); drop tip invent faint/`.on` + shell-patch 7px glow ring.
+- Agents Get started `guide-x`: Magpie `hideGuide` instant (app.js ~1682) — remove invent `.22s` opacity fade.
+- CIS: chrome wave closed at 0.1.126 + PrefRow Settings-row recipe noted.
+- SIDE_AT=1024. No portable / Vercel.
+
 ## v0.1.126 CIS_SIMPLEVIEWS_FEAT_USAGE_PLUGINS
 - Plugins Built-in feat-row / feat-set → PrefRow + LibSwitch `use-credits` (Magpie renderBuiltins; wrapVal=false matches `r.append(who, switch)`).
 - Usage / Plugins Magpie `.text` chrome → TextBtn; Plugins A→Z → Segs `sortby` + dataSort (Magpie sortBy).

@@ -686,7 +686,7 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
       <main className={viewClass} id="view-routing">
         <div className="row-head">
           <span className="label">{ZH.routing}</span>
-          <span className="rt-livedot on" aria-hidden="true" />
+          <span className="rt-livedot" aria-hidden="true" />
           <span className="note">{t("live, as the gateway decides")}</span>
           <span className="grow" />
           <button
@@ -724,7 +724,7 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
     <main className={viewClass} id="view-routing">
       <div className="row-head">
         <span className="label">{ZH.routing}</span>
-        <span className="rt-livedot on" aria-hidden="true" />
+        <span className="rt-livedot" aria-hidden="true" />
         <span className="note">{t("live, as the gateway decides")}</span>
         <span className="grow" />
         {groupsOn ? (
@@ -779,7 +779,7 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
           <div className="rt-top">
             <div className="rt-what">
               <b>{demoLive ? t("Demo request · affinity kept") : t("Waiting for a request")}</b>
-              {demoLive ? <span className="rt-livedot on" aria-hidden="true" /> : null}
+              {demoLive ? <span className="rt-livedot" aria-hidden="true" /> : null}
             </div>
             <p className="rt-mode">
               {demoLive

@@ -755,19 +755,9 @@ export function AgentsView({
                   aria-label={ZH.hideGetStarted}
                   onClick={(e) => {
                     e.stopPropagation();
-                    const lead = document.getElementById("agentsLead");
-                    if (lead && !calm()) {
-                      lead.style.transition = "opacity .22s var(--ease), transform .22s var(--ease)";
-                      lead.style.opacity = "0";
-                      lead.style.transform = "translateY(-6px)";
-                      window.setTimeout(() => {
-                        setGuideHidden(true);
-                        try { localStorage.setItem(GUIDE_KEY, "1"); } catch { /* ignore */ }
-                      }, 220);
-                    } else {
-                      setGuideHidden(true);
-                      try { localStorage.setItem(GUIDE_KEY, "1"); } catch { /* ignore */ }
-                    }
+                    /* Magpie hideGuide (app.js ~1682): instant prefs write, no fade invent */
+                    setGuideHidden(true);
+                    try { localStorage.setItem(GUIDE_KEY, "1"); } catch { /* ignore */ }
                   }}>
                   <svg viewBox="0 0 16 16" width={12} height={12} aria-hidden>
                     <path
