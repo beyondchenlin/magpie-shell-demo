@@ -1,3 +1,6 @@
+## v0.1.116 CIS_ROUTINGVIEW_LAYOUT_CHROME
+- RoutingView layout chrome → Magpie `.rt-*` + bridge; `style={{` 58 → 10 (`--agent`/`--bar`/replay left). fromHub/max560 kept. SIDE_AT=1024. No portable / Vercel.
+
 ## v0.1.115 CIS_SIMPLEVIEWS_LAYOUT_CHROME
 - SimpleViews Usage/Plugins layout chrome → Magpie `plugins.css` + bridge; `style={{` 118 → 10 (metric CSS vars). SIDE_AT=1024. No portable / Vercel.
 

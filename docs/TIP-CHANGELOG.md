@@ -4,6 +4,17 @@
 
 ---
 
+## v0.1.116 · CIS_ROUTINGVIEW_LAYOUT_CHROME · 2026-10-15 Asia/Shanghai
+
+- **WHY:** CIS continuous — RoutingView held ~58 `style={{…}}`; cut layout chrome to Magpie routing classes + bridge (same approach as Library/SimpleViews).
+- **WHAT kept:** `SIDE_AT=1024`; no `WEB_SIDE_AT`; Win chrome / 752 frame; adaptive `max560` / fromHub wire logic; `--agent` / replay `left` / `--bar` tokens.
+- **WHAT changed:**
+  - Bridge in `shell-patch.css` (`#view-routing` filters/empty/tpl/confirm).
+  - Layout inlines → Magpie `.rt-*` / `.empty-state` / `.rt-livedot` / `hidden`; confirm → `.modal.rt-confirm` + `.danger-fill`.
+  - RoutingView `style={{` **58 → 10** (~83%; remaining = `--agent` / `--bar` / replay `left` only).
+- **Guard:** `npm run chrome-guard`. No portable. No push/Vercel.
+
+---
 ## v0.1.115 · CIS_SIMPLEVIEWS_LAYOUT_CHROME · 2026-10-15 Asia/Shanghai
 
 - **WHY:** CIS continuous — SimpleViews (Usage + Plugins) held ~118 `style={{…}}`; cut layout chrome to Magpie classes + CIS wrappers (same approach as LibraryView).

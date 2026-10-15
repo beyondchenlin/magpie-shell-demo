@@ -2535,3 +2535,83 @@ button.lib-ag.icon {
   font-size: 12px; line-height: 1.45;
 }
 .pop.anchored-tr { position: absolute; top: 100%; right: 0; z-index: 40; min-width: 160px; }
+
+
+/* ── CIS v0.1.116 RoutingView chrome bridge ── */
+.pop.row-menu.fixed { position: fixed; z-index: 80; }
+#view-routing .rt-req-head.note {
+  margin: 4px 0 0; font-size: 11.5px; color: var(--muted);
+}
+#view-routing .rt-fade { animation: fade-in .2s var(--ease); }
+#view-routing .rt-fade.fast { animation: fade-in .18s var(--ease); }
+#view-routing .rt-cols { margin-top: 10px; }
+#view-routing .rt-filters {
+  display: flex; margin-bottom: 6px; align-items: center; gap: 8px; flex-wrap: wrap;
+}
+#view-routing .rt-filters[hidden],
+#view-routing .rt-col-live[hidden] { display: none !important; }
+#view-routing .rt-days { flex: 1; min-width: 0; }
+#view-routing .rt-group-by { display: inline-flex; gap: 4px; }
+#view-routing .empty-state {
+  padding: 14px 8px; color: var(--muted); font-size: 12.5px;
+}
+#view-routing .empty-state b {
+  display: block; margin-bottom: 4px; color: var(--fg-2);
+}
+#view-routing .rt-col-live {
+  display: flex; flex-direction: column;
+}
+#view-routing .rt-act.enter { animation: rtin .4s ease-out; }
+#view-routing .rt-accts > li > .bar {
+  width: var(--bar, 0%);
+  background: var(--muted);
+}
+#view-routing .rt-act .bar i {
+  width: var(--bar, 0%);
+}
+#view-routing .rt-accts .bar { /* Magpie bar is track; demo uses bar as fill */
+  display: block; height: 3px; border-radius: 2px;
+  background: var(--muted); max-width: 100%;
+}
+#view-routing .rt-tpl-head { margin: 8px 0 4px; }
+#view-routing .rt-tpl-list { padding: 4px 4px 8px; }
+#view-routing .rt-tpl.row,
+#view-routing .rt-group.row {
+  align-items: flex-start; gap: 12px; padding: 10px 4px;
+}
+#view-routing .rt-tpl .who,
+#view-routing .rt-group .who { flex: 1; min-width: 0; }
+#view-routing .rt-tpl .who b,
+#view-routing .rt-group .who b { display: block; font-size: 13px; }
+#view-routing .rt-tpl .who small,
+#view-routing .rt-group .who small {
+  display: block; color: var(--muted); line-height: 1.4; margin-top: 2px;
+}
+#view-routing .rt-dim { opacity: 0.55; }
+#view-routing .rt-pick-empty {
+  padding: 16px 4px; color: var(--muted); font-size: 13px;
+}
+#view-routing .rt-pick-title { font-size: 12.5px; font-weight: 600; }
+#view-routing .rt-pick-clear { color: var(--muted); }
+#view-routing .rt-pick-clear.on { color: var(--red); }
+#view-routing .rt-pick-gap { margin-top: 8px; }
+#view-routing .rt-ic.sm { width: 16px; height: 16px; flex: none; }
+.modal.rt-confirm {
+  z-index: 40; background: rgba(20, 22, 30, 0.35);
+}
+.modal.rt-confirm .dialog {
+  animation: pop-in .28s var(--ease); max-width: 360px;
+}
+.modal.rt-confirm .ehead { padding: 14px 16px 0; }
+.modal.rt-confirm .msg {
+  margin: 10px 16px 0; font-size: 13px; color: var(--fg-2); line-height: 1.45;
+}
+.modal.rt-confirm .bar { padding: 14px 16px; }
+.modal.rt-confirm .text.danger-fill {
+  background: var(--red); color: #fff; border-color: var(--red);
+}
+#view-routing .rt-add-stack {
+  margin-top: 8px; display: flex; flex-direction: column; gap: 6px;
+}
+#view-routing .rt-add-stack .text { padding: 6px 8px; }
+#view-routing .rt-add-stack .text.aside { align-self: flex-start; }
