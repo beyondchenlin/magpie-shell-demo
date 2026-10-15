@@ -1,7 +1,7 @@
-# Last tip cycle · v0.1.116
+# Last tip cycle · v0.1.117
 
-- **WHY:** CIS RoutingView layout `style={{…}}` → Magpie routing classes + bridge
-- **Chrome:** SIDE_AT=1024 / no WEB_SIDE_AT / 752 frame unchanged; fromHub / max560 kept
+- **WHY:** CIS AgentsView + NestedBlocks (+ GroupEditor/ModelPop leftovers) layout chrome
+- **Chrome:** SIDE_AT=1024 / no WEB_SIDE_AT / 752 frame unchanged
 - **Guard:** chrome-guard OK
-- **Cut:** RoutingView 58 → 10 `style={{` (agent/bar/left tokens)
+- **Cut:** Agents 29→6 · Nested 24→2 · GroupEditor 4→0 · LedHeat 4→3 · ModelPop/AMPop 2→1
 - **Date:** 2026-10-15 Asia/Shanghai

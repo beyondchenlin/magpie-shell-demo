@@ -4,6 +4,17 @@
 
 ---
 
+## v0.1.117 · CIS_AGENTS_SETTINGS_LEFTOVERS · 2026-10-15 Asia/Shanghai
+
+- **WHY:** CIS continuous — AgentsView (~29) + NestedBlocks (~24) layout `style={{…}}`; also knock GroupEditor / ModelPop / AgentModelsPop / LedHeat legend chrome.
+- **WHAT kept:** `SIDE_AT=1024`; no `WEB_SIDE_AT`; Win chrome / 752 frame; agent-fold `--n`/`--i`; FontRow fixed pos + fontFamily preview; LedHeat `gridArea`; pop position tokens.
+- **WHAT changed:**
+  - Bridge in `shell-patch.css` (`#view-agents` relocate/exp, `#view-settings` lan/sync/font/search).
+  - AgentsView layout → Magpie/agent classes; NestedBlocks GTK chooser → `.gtk-select-files` places/pane; GroupEditor `display:contents` / `ge-add-sheet` / `ge-full-row`.
+  - Counts: AgentsView **29→6**; NestedBlocks **24→2**; GroupEditor **4→0**; LedHeat **4→3**; ModelPop **2→1**; AgentModelsPop **2→1**.
+- **Guard:** `npm run chrome-guard`. No portable. No push/Vercel.
+
+---
 ## v0.1.116 · CIS_ROUTINGVIEW_LAYOUT_CHROME · 2026-10-15 Asia/Shanghai
 
 - **WHY:** CIS continuous — RoutingView held ~58 `style={{…}}`; cut layout chrome to Magpie routing classes + bridge (same approach as Library/SimpleViews).

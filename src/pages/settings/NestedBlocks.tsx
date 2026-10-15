@@ -34,7 +34,7 @@ export type AutoResetMap = Record<string, { week: boolean; expiring: boolean }>;
 
 function OpenAIIcon() {
   return (
-    <span className="ic" aria-hidden style={{ display: "inline-flex", width: 14, height: 14, alignItems: "center", justifyContent: "center", fontSize: 11 }}>
+    <span className="ic openai-mark" aria-hidden>
       ◉
     </span>
   );
@@ -334,8 +334,7 @@ export function LanAddressRow({
               className={`proto pick lan-interface${menu ? " open" : ""}`}
               ref={btnRef}
               aria-label={t("Address")}
-              onClick={() => setMenu((m) => !m)}
-            >
+              onClick={() => setMenu((m) => !m)}>
               <span className="lan-url">{shown}</span>
               <svg viewBox="0 0 16 16" width={11} height={11} aria-hidden>
                 <path d="M4 6l4 4 4-4" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
@@ -351,8 +350,7 @@ export function LanAddressRow({
               onClick={async () => {
                 try { await navigator.clipboard.writeText(shown); } catch { /* */ }
                 onStatus?.(t("{what} copied", { what: t("{label} address", { label: protocol === "openai" ? "OpenAI" : "Anthropic" }) }), "ok");
-              }}
-            >
+              }}>
               <svg viewBox="0 0 16 16" width={13} height={13}>
                 <rect x="5.5" y="5.5" width="7" height="7" rx="1.5" fill="none" stroke="currentColor" strokeWidth="1.4" />
                 <path d="M3.5 10.5V3.5h7" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
@@ -360,18 +358,17 @@ export function LanAddressRow({
             </button>
           </span>
           {menu ? (
-            <div className="pop proto-menu lan-address-menu" style={{ position: "absolute", top: 44, right: 8, zIndex: 30 }} role="menu">
-              <ul style={{ listStyle: "none", margin: 0, padding: 4 }}>
+            <div className="pop proto-menu lan-address-menu" role="menu">
+              <ul>
                 {urls.map((u) => (
                   <li
                     key={u}
                     className={u === cur ? "sel" : ""}
                     role="menuitem"
-                    style={{ padding: "6px 8px", borderRadius: 7, cursor: "pointer", display: "flex", alignItems: "center", gap: 8 }}
-                    onClick={() => { onSelect(u); setMenu(false); }}
-                  >
-                    <span className="pm-name" style={{ flex: 1 }}>{u}{suffix}</span>
-                    {u === cur ? <span aria-hidden style={{ color: "var(--accent)" }}>✓</span> : null}
+                   
+                    onClick={() => { onSelect(u); setMenu(false); }}>
+                    <span className="pm-name">{u}{suffix}</span>
+                    {u === cur ? <span aria-hidden>✓</span> : null}
                   </li>
                 ))}
               </ul>
@@ -689,8 +686,7 @@ export function SyncForms({
           setErr("");
           onSave();
           onStatus?.(t("Saved"), "ok");
-        }}
-      >
+        }}>
         {t("Turn on")}
       </button>
     </div>
@@ -702,20 +698,11 @@ export function SyncForms({
       role="dialog"
       aria-modal="true"
       aria-label={t("Select File")}
-      onClick={(e) => { if (e.target === e.currentTarget) setChooser(false); }}
-    >
+      onClick={(e) => { if (e.target === e.currentTarget) setChooser(false); }}>
       <div
-        className="dialog gtk-select-files"
-        style={{
-          width: "min(640px, 94vw)",
-          maxHeight: "min(520px, 84vh)",
-          display: "flex",
-          flexDirection: "column",
-          animation: "pop-in .42s cubic-bezier(.16,1,.3,1)",
-        }}
-      >
-        <div className="ebody" style={{ display: "grid", gridTemplateColumns: "160px 1fr", gap: 0, minHeight: 340, padding: 0, flex: 1 }}>
-          <nav style={{ borderRight: "1px solid var(--line)", padding: "10px 8px", display: "flex", flexDirection: "column", gap: 2 }}>
+        className="dialog gtk-select-files">
+        <div className="ebody">
+          <nav className="places">
             {([
               ["home", t("Home")],
               ["desktop", t("Desktop")],
@@ -725,24 +712,17 @@ export function SyncForms({
               <button
                 key={id}
                 type="button"
-                className="text"
-                style={{
-                  justifyContent: "flex-start",
-                  padding: "7px 10px",
-                  borderRadius: 8,
-                  background: chooserPlace === id ? "color-mix(in srgb, var(--accent) 18%, transparent)" : "transparent",
-                }}
-                onClick={() => setChooserPlace(id)}
-              >
+                className={`text${chooserPlace === id ? " on" : ""}`}
+                onClick={() => setChooserPlace(id)}>
                 {label}
               </button>
             ))}
           </nav>
-          <div style={{ padding: 16, color: "var(--muted)", fontSize: 12.5, border: "1px dashed var(--line)", margin: 12, borderRadius: 8, minHeight: 280 }}>
-            {/* empty list — accept .magpie-backup; NOTES 86 */}
+          <div className="pane">
+            <div className="empty">{/* empty list — accept .magpie-backup; NOTES 86 */}</div>
           </div>
         </div>
-        <div className="bar" style={{ padding: "10px 14px", borderTop: "1px solid var(--line)" }}>
+        <div className="bar">
           <span className="grow" />
           <button type="button" className="text" onClick={() => setChooser(false)}>{t("Cancel")}</button>
           <button type="button" className="text primary" disabled title={t("No file chosen")}>{t("Open")}</button>
@@ -872,8 +852,7 @@ export function SyncForms({
               setErr("");
               onStatus?.(demoCopy("演示：导出已模拟完成", "Demo: export simulated"), "ok");
               onClose();
-            }}
-          >
+            }}>
             {t("Export")}
           </button>
         </div>
@@ -886,7 +865,7 @@ export function SyncForms({
       <>
         <div className="editor sync-form">
           <label>{t("File")}</label>
-          <div className="pair" style={{ display: "flex", gap: 8, alignItems: "center" }}>
+          <div className="pair">
             <span className="fname">{fname}</span>
             <button type="button" className="text" onClick={() => { setChooserPlace("home"); setChooser(true); }}>{t("Choose…")}</button>
           </div>
@@ -908,8 +887,7 @@ export function SyncForms({
                 if (fname === t("No file chosen")) { setErr(t("Choose a file first")); return; }
                 onStatus?.(demoCopy("演示：导入已模拟完成", "Demo: import simulated"), "ok");
                 onClose();
-              }}
-            >
+              }}>
               {t("Import")}
             </button>
           </div>
@@ -947,7 +925,7 @@ export function WhatsNewModal({ onClose }: { onClose: () => void }) {
       <div className="dialog">
         <div className="editor whatsnew framed">
           <div className="ehead"><b>{t("What's new in v{v}", { v: "0.1.1244" })}</b></div>
-          <div className="ebody" style={{ padding: "12px 18px", maxHeight: 360, overflow: "auto" }}>
+          <div className="ebody whatsnew-body">
             <div className="wn-rel">
               <div className="wn-ver">
                 <b>v0.1.1244</b>
@@ -1010,8 +988,7 @@ export function CliRow() {
             try { await navigator.clipboard.writeText(tip); } catch { /* demo */ }
             setCopied(true);
             window.setTimeout(() => setCopied(false), 1200);
-          }}
-        >
+          }}>
           {copied ? (
             <svg viewBox="0 0 16 16" width={13} height={13}>
               <path d="M3.5 8.5 6.5 11.5 12.5 4.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
@@ -1134,7 +1111,7 @@ export function UpdateMirrorRow({
           {sub}
         </div>
       </div>
-      <div className="val" style={{ display: "flex", gap: 6, alignItems: "center", flexWrap: "wrap" }}>
+      <div className="val">
         {!editing ? (
           mirror ? (
             <>
@@ -1146,8 +1123,7 @@ export function UpdateMirrorRow({
                   setEditing(true);
                   setDraft(mirror);
                   setErr("");
-                }}
-              >
+                }}>
                 {t("Change")}
               </button>
               <button
@@ -1156,8 +1132,7 @@ export function UpdateMirrorRow({
                 onClick={() => {
                   onChange("");
                   onStatus?.(t("Saved"), "ok");
-                }}
-              >
+                }}>
                 {t("Use GitHub")}
               </button>
             </>
@@ -1171,8 +1146,7 @@ export function UpdateMirrorRow({
                   setEditing(true);
                   setDraft("");
                   setErr("");
-                }}
-              >
+                }}>
                 {t("Use a mirror…")}
               </button>
             </>
@@ -1210,8 +1184,7 @@ export function UpdateMirrorRow({
               onClick={() => {
                 setEditing(false);
                 setErr("");
-              }}
-            >
+              }}>
               {t("Cancel")}
             </button>
             <button
@@ -1228,8 +1201,7 @@ export function UpdateMirrorRow({
                 setEditing(false);
                 setErr("");
                 onStatus?.(t("Saved"), "ok");
-              }}
-            >
+              }}>
               {t("Save")}
             </button>
           </>
@@ -1277,22 +1249,21 @@ export function TrayUsagePick({
   }, [open]);
 
   return (
-    <div style={{ position: "relative" }} id="trayUsagePick">
+    <div id="trayUsagePick">
       <button
         type="button"
         ref={ref}
         className={`sess-pick proto pick${value ? " set" : ""}${open ? " open" : ""}`}
         aria-haspopup="menu"
         aria-expanded={open}
-        onClick={() => setOpen((o) => !o)}
-      >
+        onClick={() => setOpen((o) => !o)}>
         <span>{t(label)}</span>
         <svg viewBox="0 0 12 12" width={11} height={11} aria-hidden>
           <path d="M3 4.5 6 7.5 9 4.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
         </svg>
       </button>
       {open ? (
-        <div className="pop proto-menu sess-menu" ref={menuRef} role="menu" style={{ position: "absolute", right: 0, top: "100%", zIndex: 40, minWidth: 220 }}>
+        <div className="pop proto-menu sess-menu" ref={menuRef} role="menu">
           {opts.map((o) => (
             <button
               type="button"
@@ -1302,8 +1273,7 @@ export function TrayUsagePick({
               onClick={() => {
                 onChange(o.v);
                 setOpen(false);
-              }}
-            >
+              }}>
               {t(o.name)}
             </button>
           ))}
@@ -1353,8 +1323,7 @@ export function DisableModelsBlock({
             onClick={(e) => {
               setAnchor(e.currentTarget);
               setOpen(true);
-            }}
-          >
+            }}>
             {t("Disable…")}
           </button>
         </div>
@@ -1374,15 +1343,14 @@ export function DisableModelsBlock({
               type="button"
               className="text"
               aria-label={t("Enable {model}", { model: pat })}
-              onClick={() => onChange(models.filter((p) => p !== pat))}
-            >
+              onClick={() => onChange(models.filter((p) => p !== pat))}>
               {t("Enable")}
             </button>
           </div>
         </div>
       ))}
       {!models.length ? (
-        <div className="empty-state" style={{ padding: "18px 12px" }}>
+        <div className="empty-state">
           {t("No disabled models")}
         </div>
       ) : null}
@@ -1472,14 +1440,13 @@ export function SearchApisBlock({
                 t("No provider can search, so these are asked")}
           </div>
         </div>
-        <div className="val rule-add" style={{ position: "relative", display: "flex", flexWrap: "wrap", gap: 6, alignItems: "center" }}>
+        <div className="val rule-add">
           <button
             type="button"
             className={`proto pick search-vendor${menu ? " open" : ""}`}
             ref={pickRef}
             aria-label={t("Search API")}
-            onClick={() => setMenu((m) => !m)}
-          >
+            onClick={() => setMenu((m) => !m)}>
             <span>{v.name}</span>
             <svg viewBox="0 0 16 16" width={11} height={11} aria-hidden>
               <path d="M4 6l4 4 4-4" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
@@ -1508,8 +1475,7 @@ export function SearchApisBlock({
             <button
               type="button"
               className="link"
-              onClick={() => onStatus?.(demoCopy("演示：打开密钥页", "Demo: open keys page") + " · " + v.keysURL, "ok")}
-            >
+              onClick={() => onStatus?.(demoCopy("演示：打开密钥页", "Demo: open keys page") + " · " + v.keysURL, "ok")}>
               {t("Get a key ↗")}
             </button>
           ) : null}
@@ -1527,7 +1493,7 @@ export function SearchApisBlock({
             }}
           />
           {menu ? (
-            <div className="pop proto-menu" style={{ position: "absolute", top: 32, left: 0, zIndex: 40, minWidth: 180 }} role="menu">
+            <div className="pop proto-menu" role="menu">
               {SEARCH_VENDORS.map((x) => (
                 <button
                   type="button"
@@ -1538,8 +1504,7 @@ export function SearchApisBlock({
                     setVendor(x.id);
                     setMenu(false);
                     setErr("");
-                  }}
-                >
+                  }}>
                   <span className="pm-name">{x.name}</span>
                   {x.needURL ? <span className="pm-note">{t("your own")}</span> : null}
                 </button>
@@ -1558,14 +1523,13 @@ export function SearchApisBlock({
               {[showKey[a.vendor] ? a.key : a.key ? a.key.slice(0, 4) + "…" : "", a.url].filter(Boolean).join(" · ") || t("needs its key")}
             </div>
           </div>
-          <div className="val" style={{ display: "inline-flex", gap: 6 }}>
+          <div className="val">
             {a.key ? (
               <>
                 <button
                   type="button"
                   className="text search-eye"
-                  onClick={() => setShowKey((s) => ({ ...s, [a.vendor]: !s[a.vendor] }))}
-                >
+                  onClick={() => setShowKey((s) => ({ ...s, [a.vendor]: !s[a.vendor] }))}>
                   {showKey[a.vendor] ? t("Hide") : t("Show")}
                 </button>
                 <button
@@ -1578,8 +1542,7 @@ export function SearchApisBlock({
                       /* */
                     }
                     onStatus?.(t("{what} copied", { what: t("API key") }), "ok");
-                  }}
-                >
+                  }}>
                   {t("Copy")}
                 </button>
               </>
@@ -1674,7 +1637,7 @@ export function AboutVersionRow({
       <div className="who">
         <div className="sub">{t("{v} is downloaded", { v: downloaded })}</div>
       </div>
-      <div className="val" style={{ display: "flex", gap: 8, alignItems: "center" }}>
+      <div className="val">
         <code>{current}</code>
         <button
           type="button"
@@ -1683,8 +1646,7 @@ export function AboutVersionRow({
           onClick={(e) => {
             // NOTES: Restart hovered only — demo keeps ready; no install.
             e.preventDefault();
-          }}
-        >
+          }}>
           {t("Restart to update")}
         </button>
       </div>
@@ -1964,8 +1926,7 @@ export function FontRow({
         zIndex: 80,
         maxHeight: pos?.maxH,
         visibility: pos ? "visible" : "hidden",
-      }}
-    >
+      }}>
       <div className="pm-head">{open === "family" ? t(label) : t("Font style")}</div>
       {open === "family" ? (
         <>
@@ -1991,8 +1952,7 @@ export function FontRow({
               onClick={() => {
                 onChange(null);
                 closeMenu();
-              }}
-            >
+              }}>
               <span className="pm-tick" aria-hidden>
                 {!value ? (
                   <svg viewBox="0 0 16 16" width={12} height={12} fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
@@ -2019,8 +1979,7 @@ export function FontRow({
                 onClick={() => {
                   onChange(closestFont(f.styles, value));
                   closeMenu();
-                }}
-              >
+                }}>
                 <span className="pm-tick" aria-hidden>
                   {on ? (
                     <svg viewBox="0 0 16 16" width={12} height={12} fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
@@ -2039,8 +1998,7 @@ export function FontRow({
             role="menuitem"
             className="pm-item always"
             onMouseEnter={(e) => (e.currentTarget as HTMLButtonElement).focus({ preventScroll: true })}
-            onClick={refresh}
-          >
+            onClick={refresh}>
             <span className="pm-tick" aria-hidden />
             <span className="pm-words">
               <span className="pm-name">{t("Refresh fonts")}</span>
@@ -2061,8 +2019,7 @@ export function FontRow({
               onClick={() => {
                 onChange(s);
                 closeMenu();
-              }}
-            >
+              }}>
               <span className="pm-tick" aria-hidden>
                 {on ? (
                   <svg viewBox="0 0 16 16" width={12} height={12} fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">

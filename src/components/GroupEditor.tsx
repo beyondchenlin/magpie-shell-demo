@@ -437,9 +437,9 @@ function RuleMoreMenu({
   ];
 
   return (
-    <div className="pop row-menu" role="menu" ref={boxRef} style={{ position: "fixed", zIndex: 50 }}>
+    <div className="pop row-menu fixed-z50" role="menu" ref={boxRef}>
       {items.map((o) => (
-        <span key={o.name} style={{ display: "contents" }}>
+        <span key={o.name} className="display-contents">
           {o.sep ? <div className="rm-sep" /> : null}
           <button
             type="button"
@@ -450,8 +450,7 @@ function RuleMoreMenu({
               e.stopPropagation();
               onClose();
               o.run();
-            }}
-          >
+            }}>
             <svg viewBox="0 0 16 16" width={13} height={13} aria-hidden>
               <path d={o.icon} fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
@@ -788,7 +787,7 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
 
   return (
     <>
-      <div className="editor rt-gedit card" style={{ marginTop: 8, animation: "pop-in .42s cubic-bezier(.16,1,.3,1)" }}>
+      <div className="editor rt-gedit card ge-add-sheet">
         <div className="ehead">
           <b>{t(editGroup ? "Edit group" : "New group")}</b>
         </div>
@@ -843,8 +842,7 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
                         ...d,
                         members: d.members.map((x, j) => (j === i ? { ...x, on: !x.on } : x)),
                       }))
-                    }
-                  >
+                    }>
                     <i />
                   </button>
                   <button
@@ -879,8 +877,7 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
                         e.preventDefault();
                         moveMember(i, i + 1);
                       }
-                    }}
-                  >
+                    }}>
                     {i + 1}
                   </button>
                   <svg className="ic" viewBox="0 0 16 16" width={14} height={14} aria-hidden>
@@ -901,8 +898,7 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
                         ? t("Sent at {level} reasoning whatever the agent asks, at the model's nearest level", { level: m.fixed })
                         : t("Reasons as the group's effort says")
                     }
-                    onClick={() => setReasonFor((cur) => (cur === i ? null : i))}
-                  >
+                    onClick={() => setReasonFor((cur) => (cur === i ? null : i))}>
                     {m.fixed ? fixedWords(m.fixed) : t("Group's reasoning")}
                   </button>
                   {draft.routing === "weight" ? (
@@ -959,8 +955,7 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
                           const w = Math.max(draft.weights[m.id] || 0, 1);
                           setWeightDraft(String(w));
                           setWeightEdit(m.id);
-                        }}
-                      >
+                        }}>
                         {(() => {
                           const w = Math.max(draft.weights[m.id] || 0, 1);
                           const total = draft.members.filter((x) => x.on).reduce((n, x) => n + Math.max(draft.weights[x.id] || 0, 1), 0);
@@ -987,8 +982,7 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
                           .filter((r) => members.some((m) => m.id === r.use));
                         return { ...d, members, weights, rules: members.length >= 2 ? rules : [] };
                       })
-                    }
-                  >
+                    }>
                     {t("Remove")}
                   </button>
                 </div>
@@ -998,8 +992,7 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
               type="button"
               className={`rt-gadd${addOpen ? " open" : ""}`}
               ref={addBtnRef}
-              onClick={() => setAddOpen((o) => !o)}
-            >
+              onClick={() => setAddOpen((o) => !o)}>
               <svg viewBox="0 0 16 16" width={11} height={11} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden>
                 <path d="M8 3.5v9M3.5 8h9" />
               </svg>
@@ -1045,8 +1038,7 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
                   <button
                     type="button"
                     className="text"
-                    onClick={() => setDraft((d) => ({ ...d, patterns: d.patterns.filter((x) => x !== p) }))}
-                  >
+                    onClick={() => setDraft((d) => ({ ...d, patterns: d.patterns.filter((x) => x !== p) }))}>
                     {t("Remove")}
                   </button>
                 </div>
@@ -1247,8 +1239,7 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
                         <>
                           <span
                             className={`rt-cond in${r.intent ? " on" : ""}`}
-                            onClick={() => intentFocusRef.current?.focus()}
-                          >
+                            onClick={() => intentFocusRef.current?.focus()}>
                             <span>{t("asks for")}</span>
                             <input
                               ref={(el) => {
@@ -1277,8 +1268,7 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
                                   ...d,
                                   rules: d.rules.map((x, j) => (j === ri ? { ...x, intent: "" } : x)),
                                 }));
-                              }}
-                            >
+                              }}>
                               ×
                             </button>
                           </span>
@@ -1313,8 +1303,7 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
                                     ...d,
                                     rules: d.rules.map((x, j) => (j === ri ? unpinRule(x, "tokens") : x)),
                                   }))
-                                }
-                              >
+                                }>
                                 ×
                               </button>
                             </span>
@@ -1328,8 +1317,7 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
                                   ...d,
                                   rules: d.rules.map((x, j) => (j === ri ? { ...x, images: !x.images } : x)),
                                 }))
-                              }
-                            >
+                              }>
                               {t("has an image")}
                               <span
                                 className="rt-cond-x"
@@ -1339,8 +1327,7 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
                                     ...d,
                                     rules: d.rules.map((x, j) => (j === ri ? unpinRule(x, "images") : x)),
                                   }));
-                                }}
-                              >
+                                }}>
                                 ×
                               </span>
                             </button>
@@ -1352,8 +1339,7 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
                               ref={(el) => {
                                 condBtnRefs.current[`ef${ri}`] = el;
                               }}
-                              onClick={() => setPopKind((cur) => (cur?.kind === "effort" && cur.rule === ri ? null : { kind: "effort", rule: ri }))}
-                            >
+                              onClick={() => setPopKind((cur) => (cur?.kind === "effort" && cur.rule === ri ? null : { kind: "effort", rule: ri }))}>
                               {effortName(r.effort)}
                               <span
                                 className="rt-cond-x"
@@ -1363,8 +1349,7 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
                                     ...d,
                                     rules: d.rules.map((x, j) => (j === ri ? unpinRule(x, "effort") : x)),
                                   }));
-                                }}
-                              >
+                                }}>
                                 ×
                               </span>
                             </button>
@@ -1381,8 +1366,7 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
                                   ...d,
                                   rules: d.rules.map((x, j) => (j === ri ? { ...x, compact: !x.compact } : x)),
                                 }))
-                              }
-                            >
+                              }>
                               {t("compacting")}
                               <span
                                 className="rt-cond-x"
@@ -1392,8 +1376,7 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
                                     ...d,
                                     rules: d.rules.map((x, j) => (j === ri ? unpinRule(x, "compact") : x)),
                                   }));
-                                }}
-                              >
+                                }}>
                                 ×
                               </span>
                             </button>
@@ -1407,8 +1390,7 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
                           ref={(el) => {
                             condBtnRefs.current[`ag${ri}`] = el;
                           }}
-                          onClick={() => setPopKind((cur) => (cur?.kind === "agent" && cur.rule === ri ? null : { kind: "agent", rule: ri }))}
-                        >
+                          onClick={() => setPopKind((cur) => (cur?.kind === "agent" && cur.rule === ri ? null : { kind: "agent", rule: ri }))}>
                           {agentsName()}
                           <span
                             className="rt-cond-x"
@@ -1418,16 +1400,14 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
                                 ...d,
                                 rules: d.rules.map((x, j) => (j === ri ? unpinRule(x, "agents") : x)),
                               }));
-                            }}
-                          >
+                            }}>
                             ×
                           </span>
                         </button>
                       ) : null}
                       {showFolders ? (
                         <span
-                          className={`rt-cond fd${r.folders.length ? " on" : ""}`}
-                        >
+                          className={`rt-cond fd${r.folders.length ? " on" : ""}`}>
                           <span>{t("in folder")}</span>
                           <input
                             type="text"
@@ -1454,8 +1434,7 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
                                 ...d,
                                 rules: d.rules.map((x, j) => (j === ri ? unpinRule(x, "folders") : x)),
                               }))
-                            }
-                          >
+                            }>
                             ×
                           </button>
                         </span>
@@ -1463,8 +1442,7 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
                       {showExcept ? (
                         <span
                           className={`rt-cond xf${r.exceptFolders.length ? " on" : ""}`}
-                          title={t("not in folder")}
-                        >
+                          title={t("not in folder")}>
                           <span title={t("not in folder")}>{t("not in folder")}</span>
                           <input
                             type="text"
@@ -1491,8 +1469,7 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
                                 ...d,
                                 rules: d.rules.map((x, j) => (j === ri ? unpinRule(x, "exceptFolders") : x)),
                               }))
-                            }
-                          >
+                            }>
                             ×
                           </button>
                         </span>
@@ -1503,8 +1480,7 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
                             className={`rt-cond tm${from && to ? " on" : ""}${r.time && ((r.time.from && !from) || (r.time.to && !to)) ? " bad" : ""}`}
                             title={t(
                               "The turn begins within these hours, on this computer's clock — a provider's peak-price hours sent to another, say",
-                            )}
-                          >
+                            )}>
                             <span>{t("from")}</span>
                             <input
                               className="clock"
@@ -1578,8 +1554,7 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
                             ref={(el) => {
                               condBtnRefs.current[`day${ri}`] = el;
                             }}
-                            onClick={() => setPopKind((cur) => (cur?.kind === "days" && cur.rule === ri ? null : { kind: "days", rule: ri }))}
-                          >
+                            onClick={() => setPopKind((cur) => (cur?.kind === "days" && cur.rule === ri ? null : { kind: "days", rule: ri }))}>
                             {daysText(r.time?.days) || t("every day")}
                             <span
                               className="rt-cond-x"
@@ -1589,8 +1564,7 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
                                   ...d,
                                   rules: d.rules.map((x, j) => (j === ri ? unpinRule(x, "time") : x)),
                                 }));
-                              }}
-                            >
+                              }}>
                               ×
                             </span>
                           </button>
@@ -1604,8 +1578,7 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
                         }}
                         title={t("Add a condition")}
                         aria-label={t("Add a condition")}
-                        onClick={() => setCondMenuFor((cur) => (cur === ri ? null : ri))}
-                      >
+                        onClick={() => setCondMenuFor((cur) => (cur === ri ? null : ri))}>
                         <svg viewBox="0 0 16 16" width={11} height={11} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden>
                           <path d="M8 3.5v9M3.5 8h9" />
                         </svg>
@@ -1620,8 +1593,7 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
                           ref={(el) => {
                             condBtnRefs.current[`act${ri}`] = el;
                           }}
-                          onClick={() => setPopKind((cur) => (cur?.kind === "action" && cur.rule === ri ? null : { kind: "action", rule: ri }))}
-                        >
+                          onClick={() => setPopKind((cur) => (cur?.kind === "action" && cur.rule === ri ? null : { kind: "action", rule: ri }))}>
                           {t("pause")}
                         </button>
                       ) : null}
@@ -1631,8 +1603,7 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
                         ref={(el) => {
                           condBtnRefs.current[`use${ri}`] = el;
                         }}
-                        onClick={() => setPopKind((cur) => (cur?.kind === "use" && cur.rule === ri ? null : { kind: "use", rule: ri }))}
-                      >
+                        onClick={() => setPopKind((cur) => (cur?.kind === "use" && cur.rule === ri ? null : { kind: "use", rule: ri }))}>
                         <svg className="ic" viewBox="0 0 16 16" width={14} height={14} aria-hidden>
                           <rect x="3" y="3" width="10" height="10" rx="2" fill="none" stroke="currentColor" strokeWidth="1.4" />
                           <path d="M6 8h4M8 6v4" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
@@ -1659,8 +1630,7 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
                           setRuleMenuFor((cur) => (cur === ri ? null : ri));
                           setCondMenuFor(null);
                           setPopKind(null);
-                        }}
-                      >
+                        }}>
                         ⋯
                       </button>
                     </span>
@@ -1678,8 +1648,7 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
                     setDraft((d) => ({ ...d, rules: [...d.rules, emptyRule(use)] }));
                     setAskingRule(draft.rules.length);
                     window.setTimeout(() => intentFocusRef.current?.focus({ preventScroll: true }), 0);
-                  }}
-                >
+                  }}>
                   <svg viewBox="0 0 16 16" width={11} height={11} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden>
                     <path d="M8 3.5v9M3.5 8h9" />
                   </svg>
@@ -1691,8 +1660,7 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
                   title={t(
                     "Checked top first when you send a message: the first that matches sends that turn to its model first; the rest stay behind it if it fails. A turn under way is never moved.",
                   )}
-                  aria-label={t("About rules")}
-                >
+                  aria-label={t("About rules")}>
                   i
                 </button>
               </div>
@@ -1733,8 +1701,7 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
                   ? "As a turn begins, the classifier rates how hard it is and the turn's requests ask their model for low, medium, high or xhigh reasoning — the level each model has nearest. Only where the agent asked for reasoning: a request without any (a session title) stays without."
                   : "Each request reasons as much as the agent asked.",
               )}
-              aria-label={t("About effort")}
-            >
+              aria-label={t("About effort")}>
               i
             </button>
           </div>
@@ -1749,8 +1716,7 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
                   type="button"
                   className={`rt-cond${draft.classifier ? " on" : ""}`}
                   ref={clsBtnRef}
-                  onClick={() => setClsOpen((o) => !o)}
-                >
+                  onClick={() => setClsOpen((o) => !o)}>
                   <span>
                     {draft.classifier
                       ? (() => {
@@ -1767,8 +1733,7 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
                   title={t(
                     "As a turn begins, this model is asked which of the intents the message is — once; a small, fast one without reasoning is best. If it fails or can't say, no intent matches. Its calls show in the usage as magpie’s own.",
                   )}
-                  aria-label={t("About intent")}
-                >
+                  aria-label={t("About intent")}>
                   i
                 </button>
                 <ModelPop
@@ -1809,8 +1774,7 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
                       }));
                       setAskingRule(draft.rules.length);
                       window.setTimeout(() => intentFocusRef.current?.focus({ preventScroll: true }), 0);
-                    }}
-                  >
+                    }}>
                     {t("It can pick the model too: add a rule with an intent")}
                   </button>
                 ) : null}
@@ -1842,8 +1806,7 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
                       ...d,
                       levels: d.levels.includes(v) ? d.levels.filter((x) => x !== v) : LEVELS.filter((x) => x === v || d.levels.includes(x)),
                     }))
-                  }
-                >
+                  }>
                   {v}
                 </button>
               ))}
@@ -1858,7 +1821,7 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
           </div>
         </div>
 
-        <div className="bar" style={{ gridColumn: "1 / -1" }}>
+        <div className="bar ge-full-row">
           {editGroup ? (
             <button type="button" className="text" onClick={() => setRemoveOpen(true)}>
               {t("Remove")}

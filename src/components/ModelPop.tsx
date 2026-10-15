@@ -197,8 +197,7 @@ export function ModelPop({
         maxHeight: pos.h,
         ["--ox" as string]: `${pos.ox}px`,
       }}
-      role="listbox"
-    >
+      role="listbox">
       <div className="search">
         <svg viewBox="0 0 16 16" width={13} height={13}>
           <circle cx="7" cy="7" r="4.5" fill="none" stroke="currentColor" strokeWidth="1.6" />
@@ -231,8 +230,7 @@ export function ModelPop({
               data-group="all"
               title={t("All models")}
               aria-label={t("All models")}
-              onClick={() => setGroupFilter("all")}
-            >
+              onClick={() => setGroupFilter("all")}>
               <svg className="ic" viewBox="0 0 15 15" width={15} height={15} aria-hidden>
                 <path d="M3 3h4v4H3zM9 3h4v4H9zM3 9h4v4H3zM9 9h4v4H9z" fill="none" stroke="currentColor" strokeWidth="1.4" />
               </svg>
@@ -243,8 +241,7 @@ export function ModelPop({
               data-group="favorites"
               title={t("Favorites")}
               aria-label={t("Favorites")}
-              onClick={() => setGroupFilter("favorites")}
-            >
+              onClick={() => setGroupFilter("favorites")}>
               <svg className="ic" viewBox="0 0 16 16" width={16} height={16} aria-hidden>
                 <path
                   d="m8 2 1.8 3.7 4.1.6-3 2.9.7 4.1L8 11.4l-3.6 1.9.7-4.1-3-2.9 4.1-.6z"
@@ -263,9 +260,8 @@ export function ModelPop({
                 className={`rail-item${groupFilter === g ? " on" : ""}`}
                 data-group={g}
                 aria-label={g}
-                onClick={() => setGroupFilter(g)}
-              >
-                <span className="ic" aria-hidden style={{ fontSize: 11, lineHeight: 1 }}>
+                onClick={() => setGroupFilter(g)}>
+                <span className="ic" aria-hidden>
                   ◆
                 </span>
               </button>
@@ -286,8 +282,7 @@ export function ModelPop({
                     onPick(o.value);
                     if (!keepOpen) dismiss();
                     else setQ("");
-                  }}
-                >
+                  }}>
                   <span className="ic" aria-hidden>
                     {o.icon === "openai" || !o.icon ? "◎" : "◆"}
                   </span>
@@ -304,8 +299,7 @@ export function ModelPop({
                       onClick={(ev) => {
                         ev.stopPropagation();
                         toggleFav(o);
-                      }}
-                    >
+                      }}>
                       <svg viewBox="0 0 16 16" width={14} height={14} aria-hidden>
                         <path
                           d="m8 2 1.8 3.7 4.1.6-3 2.9.7 4.1L8 11.4l-3.6 1.9.7-4.1-3-2.9 4.1-.6z"
@@ -337,8 +331,7 @@ export function ModelPop({
                   onPick(q.trim());
                   if (!keepOpen) dismiss();
                   else setQ("");
-                }}
-              >
+                }}>
                 <span className="ic" aria-hidden>✦</span>
                 <span className="option-words">
                   <span className="v">{q.trim()}</span>
@@ -373,8 +366,7 @@ export function PrefPickChip({ label, display, open, onToggle, chipRef }: ChipPr
       aria-haspopup="listbox"
       aria-expanded={open}
       ref={chipRef}
-      onClick={(e) => onToggle(e.currentTarget)}
-    >
+      onClick={(e) => onToggle(e.currentTarget)}>
       {display}
     </button>
   );

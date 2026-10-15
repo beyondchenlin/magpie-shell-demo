@@ -1,3 +1,6 @@
+## v0.1.117 CIS_AGENTS_SETTINGS_LEFTOVERS
+- AgentsView 29→6 (`--n`/`--i`); NestedBlocks 24→2 (FontRow pos/fontFamily); GroupEditor 0; LedHeat/ModelPop tokens. SIDE_AT=1024. No portable / Vercel.
+
 ## v0.1.116 CIS_ROUTINGVIEW_LAYOUT_CHROME
 - RoutingView layout chrome → Magpie `.rt-*` + bridge; `style={{` 58 → 10 (`--agent`/`--bar`/replay left). fromHub/max560 kept. SIDE_AT=1024. No portable / Vercel.
 

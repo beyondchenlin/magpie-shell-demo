@@ -144,8 +144,7 @@ export function AgentModelsPop({
         display: "flex",
         flexDirection: "column",
         ["--ox" as string]: `${pos.ox}px`,
-      }}
-    >
+      }}>
       <div className="am-head">
         <div className="am-t">{t("{agent}'s model list", { agent: agentName })}</div>
         <div className="am-d">
@@ -182,8 +181,7 @@ export function AgentModelsPop({
               key={id}
               type="button"
               className={seg === id ? "on" : ""}
-              onClick={() => setSeg(id)}
-            >
+              onClick={() => setSeg(id)}>
               {label}
             </button>
           ))}
@@ -194,8 +192,7 @@ export function AgentModelsPop({
           <button
             type="button"
             className={`am-ri${group === "all" ? " on" : ""}`}
-            onClick={() => setGroup("all")}
-          >
+            onClick={() => setGroup("all")}>
             <span className="rn">{t("All models")}</span>
             <span className="c">{models.length}</span>
           </button>
@@ -204,8 +201,7 @@ export function AgentModelsPop({
               key={g}
               type="button"
               className={`am-ri${group === g ? " on" : ""}`}
-              onClick={() => setGroup(g)}
-            >
+              onClick={() => setGroup(g)}>
               <span className="rn">{g}</span>
               <span className="c">{n}</span>
             </button>
@@ -233,8 +229,7 @@ export function AgentModelsPop({
                 <button
                   type="button"
                   className="am-all"
-                  onClick={() => setGroupAll(g, !rows.every((m) => m.on))}
-                >
+                  onClick={() => setGroupAll(g, !rows.every((m) => m.on))}>
                   {rows.every((m) => m.on) ? t("Hide all") : t("Show all")}
                 </button>
               </div>
@@ -267,8 +262,7 @@ export function AgentModelsPop({
                       const [item] = next.splice(fi, 1);
                       next.splice(ti, 0, item);
                       onChange(next);
-                    }}
-                  >
+                    }}>
                     {seg === "order" ? (
                       <span className="am-ord" aria-hidden>
                         {i + 1}
@@ -285,7 +279,7 @@ export function AgentModelsPop({
             </div>
           ))}
           {!filtered.length ? (
-            <div className="none" style={{ padding: "16px 12px", color: "var(--muted)", fontSize: 12.5 }}>
+            <div className="none">
               {t("No matches.")}
             </div>
           ) : null}

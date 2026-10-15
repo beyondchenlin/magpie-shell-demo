@@ -158,7 +158,7 @@ export function LedHeat({ show }: { show: boolean }) {
 
   return (
     <section className="led-heat" id="ledHeat" ref={boxRef}>
-      <div className="led-bar" style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", marginBottom: 6 }}>
+      <div className="led-bar">
         <div className="heat-title">
           <b>{t("Usage heatmap")}</b>
           <span>{t("Daily usage over the last 53 weeks")}</span>
@@ -179,8 +179,7 @@ export function LedHeat({ show }: { show: boolean }) {
           const scroll = scrollRef.current;
           if (!scroll?.clientWidth) return;
           atEnd.current = scroll.scrollLeft >= scroll.scrollWidth - scroll.clientWidth - 2;
-        }}
-      >
+        }}>
         <div className="heat-grid" role="img" aria-label={t("Usage heatmap")}>
           {names.map((n, i) => (
             <span key={n + i} className="wd" style={{ gridArea: `${i + 2} / 1` }}>
@@ -193,8 +192,7 @@ export function LedHeat({ show }: { show: boolean }) {
               className="mo"
               style={{
                 gridArea: `1 / ${w + 2} / 2 / ${(labels[i + 1]?.w ?? weeks) + 2}`,
-              }}
-            >
+              }}>
               {label}
             </span>
           ))}
@@ -229,8 +227,7 @@ export function LedHeat({ show }: { show: boolean }) {
         id="ledHeatTip"
         ref={tipRef}
         hidden={!tip}
-        style={tip ? { left: tip.left, top: tip.top } : undefined}
-      >
+        style={tip ? { left: tip.left, top: tip.top } : undefined}>
         {tip ? (
           <>
             <b>
