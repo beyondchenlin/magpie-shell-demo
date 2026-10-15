@@ -271,8 +271,9 @@ body.window:not(.side-nav) .top.tight .brand > span:not(.logo) { display: none; 
 #view-providers .sheet[hidden] { display: none !important; }
 /* v0.1.133: drop invent .tile gap:8 / width:100% / missing transition —
    Magpie app.css L2676–2682 owns .tile (gap:10px; min-width:0; transition background .12s)
-   + L2682 .tile .ic 18×18. React img fill only: */
-.tile img.ic-img { width: 18px; height: 18px; object-fit: contain; }
+   + L2682 .tile .ic 18×18.
+   v0.1.179: drop invent .tile img.ic-img — Magpie pickRow uses span.ic>img;
+   .ic img (app.css L157) + .tile .ic (L2682) size the fill. */
 .row.agent .ic img { width: 100%; height: 100%; object-fit: contain; }
 
 /* v0.1.145: drop invent .signing .mark amber 22px —

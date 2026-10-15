@@ -1,3 +1,10 @@
+## v0.1.179 · TILE_IC_SPAN_IMG_OSS · 2026-10-16 Asia/Shanghai
+
+- **WHY:** Drop invent tile `img.ic-img`; restore Magpie `span.ic>img` (pickRow / icon()).
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; skip oauth Approve wall; Magpie `.tile .ic` 18×18 + `.ic img` fill.
+- **Cite:** Magpie app.js **L284–322** `icon()` → `span.ic`+img; **L7040–46** `pickRow`; app.css **L156–157** `.ic`/`.ic img`; **L2682** `.tile .ic`.
+- **chrome-guard:** pass. Push/PR #1. No portable/Vercel.
+
 ## v0.1.178 · PM_FIND_NATIVE_CANCEL · 2026-10-16 Asia/Shanghai
 
 - **WHY:** Drop invent Plugins search clear `pm-find-clear`; restore Magpie native `type="search"` cancel (`::-webkit-search-cancel-button`) + Escape.

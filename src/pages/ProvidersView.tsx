@@ -168,18 +168,20 @@ function Tile({
       title={tip || name}
       onClick={() => onPick(id)}
     >
-      <img
-        className="ic-img ic"
-        src={iconSrc(icon)}
-        alt=""
-        onError={(e) => {
-          const el = e.currentTarget;
-          if (!el.dataset.fallback) {
-            el.dataset.fallback = "1";
-            el.src = `/icons/${icon}.png`;
-          }
-        }}
-      />
+      <span className="ic" data-icon={icon} aria-hidden>
+        <img
+          src={iconSrc(icon)}
+          alt=""
+          draggable={false}
+          onError={(e) => {
+            const el = e.currentTarget;
+            if (!el.dataset.fallback) {
+              el.dataset.fallback = "1";
+              el.src = `/icons/${icon}.png`;
+            }
+          }}
+        />
+      </span>
       <span className="nm">
         <span className="n">{name}</span>
       </span>

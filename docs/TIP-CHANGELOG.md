@@ -1,3 +1,19 @@
+## v0.1.179 · TILE_IC_SPAN_IMG_OSS · 2026-10-16 Asia/Shanghai
+
+- **WHY:** Hard invent audit — Providers add-sheet tiles used invent `img.ic-img.ic` plus shell-patch `.tile img.ic-img { 18×18; object-fit }`. Magpie OSS `pickRow` appends `icon(ic)` → `span.ic` with child `img` (or mask/svg); sizing is gold `.tile .ic` + `.ic img`.
+- **CAUSE:** Tip put the Magpie `.ic` class on the `<img>` and invented a fill class instead of wrapping like Magpie `icon()`.
+- **Cite:**
+  - Magpie `app.js` **L284–322** `function icon(name)` → `el("span","ic")` + append `img` (file:/color/png) or mask
+  - Magpie `app.js` **L7040–46** `pickRow` → `b.append(icon(ic), nm)` on `button.tile`
+  - Magpie `app.css` **L156–157** `.ic` / `.ic img { width:100%; height:100%; object-fit:contain }`
+  - Magpie `app.css` **L2682** `.tile .ic { width:18px; height:18px; flex:none }`
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; skip oauth Approve wall; Magpie `.tile` / `.nm` / `.n`; React onError png fallback; editor `.ehead` already `span.ic>img`.
+- **WHAT changed:**
+  - `ProvidersView.tsx` tile: `img.ic-img.ic` → Magpie `span.ic[data-icon]>img` (`draggable={false}`).
+  - `shell-patch.css`: delete invent `.tile img.ic-img`.
+- **Remaining invent (weak/skip):** oauth Approve wall (nest=browser); `rt-flier-demo`; `win-caption*`; intentional `lib-hook*` / `pref-anchor` React bridges; weak: `rt-peer` / `rt-fade` extras; residual `.usage-head .range-opt > span` max-width ellipsis bridge; some rows still bare `img.ic` (not invent class `ic-img`).
+- **Guard:** `npm run chrome-guard`. No portable. No manual Vercel.
+
 ## v0.1.178 · PM_FIND_NATIVE_CANCEL · 2026-10-16 Asia/Shanghai
 
 - **WHY:** Hard invent audit — Plugins head search stacked invent `button.pm-find-clear` (×) + shell-patch styles on Magpie `.pm-find`. Magpie OSS uses bare `input type="search"` inside `.pm-find` and styles the **native** webkit cancel (`cursor: default`); Escape clears and re-runs oninput (Discover if needed). No custom clear control.
