@@ -1006,7 +1006,7 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
       </section>
 
       {/* Magpie gateway trace — Purpose/Metrics menus + Accounts column (v0.1.21) */}
-      <div className={`rt-cols${demoLive ? " min1150" : " solo"}`} id="rtHist">
+      <div className={`rt-cols${!demoLive ? " solo" : ""}`} id="rtHist">
         <div className="rt-col" id="rtColA">
           <div className="row-head rt-req-head">
             <span className="label">{t("Requests")}</span>
@@ -1338,7 +1338,7 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                 <button
                   key={r.id}
                   type="button"
-                  className={`rt-req${r.ok === false ? " bad" : ""}${r.moved ? " moved" : ""}${r.wait ? " wait" : ""}${pickedReq === r.id ? " on" : ""}`}
+                  className={`rt-req${r.ok === false ? " bad" : ""}${r.moved ? " moved" : ""}${r.wait ? " wait" : ""}`}
                   aria-pressed={pickedReq === r.id}
                  
                   onClick={() => {

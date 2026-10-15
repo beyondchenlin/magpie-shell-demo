@@ -1,3 +1,9 @@
+## v0.1.146 ROUTING_REQ_MIN1150_SETTINGS_DEAD_INVENT_OSS_FIDELITY
+- Routing selected request: drop invent class `on` + shell-patch `.rt-req.on` pill — Magpie `aria-pressed` only (routing.css L251).
+- Routing hist cols: drop invent `.rt-cols.min1150*` + purpose/metric re-owns — Magpie min1150 on `.rt-more` (routing.js L260; routing.css L237–239 / L324–335); cols keep Magpie `solo` only.
+- Settings shell-patch: drop dead invent `.sync-row` / `.mirror-row` / `.tray-usage-wrap` / `.models-empty` / `.search-apis*` / `.about-ver` / empty `.font-preview` / invent `.font-menu .opt .preview` — Magpie update-mirror-row / `.search-api` / `.font-preview` L3063+.
+- SIDE_AT=1024. No portable / Vercel.
+
 ## v0.1.145 LIBRARY_OAUTH_LIBAPP_SIGNING_OSS_FIDELITY
 - Library MCP OAuth app: drop invent `oauth-pair` + text × — restore Magpie `lib-app` + bare `field2` inputs + `lib-x` / closed `lib-addpair` (client.js L1971–2031; library.css L133–135 / L341–343).
 - Library Sign-in waiting: drop invent `sign-row` + hint — restore Magpie `lib-signin` > `lib-signin-line` + `span.note` (client.js L1714–1733; library.css L131–132).

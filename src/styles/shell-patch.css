@@ -435,30 +435,10 @@ body.web.side-nav {
 /* v0.1.127: removed invented .rt-livedot.on 7px glow — Magpie routing.css L405
    is always-green 6px + rtlive (no .on / no ring). Tip JSX may keep class "on" harmlessly. */
 
-/* v0.1.21 — Routing Purpose/Metrics menus + Accounts column outside .rt-more */
-.rt-cols.min1150 {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) clamp(260px, 28%, 360px);
-  column-gap: 16px;
-  align-items: start;
-}
-.rt-cols.min1150:not(.solo) .rt-col:last-child {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-}
-.rt-cols.min1150:not(.solo) .rt-acts {
-  flex: 1 1 auto;
-  min-height: 216px;
-  overflow-y: auto;
-  overscroll-behavior: contain;
-}
-
-.rt-req.on { border-color: var(--fg-2); background: var(--pill); }
-.rt-purpose.open svg,
-.rt-metric-pick.open svg { transform: rotate(180deg); }
-.pop.proto-menu.rt-purpose-menu .pm-head,
-.pop.proto-menu.rt-purpose-menu .pm-note { display: none; }
+/* v0.1.146: drop invent .rt-cols.min1150* + .rt-req.on + purpose/metric re-owns —
+   Magpie puts min1150 on .rt-more (routing.js L260 byWidth; routing.css L237–239);
+   selected req is [aria-pressed=true] (routing.css L251), not invent .on / pill;
+   .rt-purpose.open / .rt-metric-pick.open / purpose-menu pm-head|pm-note = routing.css L324–335. */
 
 
 /* USAGE_NEST v0.1.37 — native usage/01–50 calendar + refresh */
@@ -2084,31 +2064,14 @@ label.tick input { margin: 0; }
 }
 /* v0.1.142: drop invent .lan-pop* — Magpie LAN is openProtoMenu
    lan-address-menu (app.js L23639–23640; NestedBlocks 0.1.137). */
-#view-settings .sync-row {
-  display: flex; gap: 8px; align-items: center;
-}
 /* v0.1.143: drop invent #view-settings .whatsnew-body — Magpie showWhatsNew
    uses .modal .editor.whatsnew > .ebody (app.js L4144; app.css L3279 / framed L3268). */
-#view-settings .mirror-row {
-  display: flex; gap: 6px; align-items: center; flex-wrap: wrap;
-}
-#view-settings .tray-usage-wrap { position: relative; }
-#view-settings .tray-usage-wrap .pop {
-  position: absolute; right: 0; top: 100%; z-index: 40; min-width: 220px;
-}
-#view-settings .models-empty { padding: 18px 12px; }
-#view-settings .search-apis {
-  position: relative; display: flex; flex-wrap: wrap; gap: 6px; align-items: center;
-}
-#view-settings .search-apis .pop {
-  position: absolute; top: 32px; left: 0; z-index: 40; min-width: 180px;
-}
-#view-settings .search-apis .acts { display: inline-flex; gap: 6px; }
-#view-settings .about-ver {
-  display: flex; gap: 8px; align-items: center;
-}
-#view-settings .font-preview { /* fontFamily via CSS var */ }
-.font-menu .opt .preview { font-family: var(--ff, var(--font)); }
+/* v0.1.146: drop dead invent Settings chrome — .sync-row / .mirror-row /
+   .tray-usage-wrap / .models-empty / .search-apis* / .about-ver / empty
+   #view-settings .font-preview / invent .font-menu .opt .preview.
+   Magpie: update-mirror-row (app.js L20952); .search-api (app.css L3117);
+   .font-preview (app.css L3063–3065); About = PrefRow Version (app.js L21118);
+   TrayUsage = #trayUsagePick proto pick (app.js L21812+); SyncForms editor.sync-form. */
 
 /* leftovers */
 .led-heat-legend {

@@ -1,14 +1,14 @@
 # last-cycle · 2026-10-15 Asia/Shanghai
 
-## v0.1.145 · LIBRARY_OAUTH_LIBAPP_SIGNING_OSS_FIDELITY · 2026-10-15 Asia/Shanghai
+## v0.1.146 · ROUTING_REQ_MIN1150_SETTINGS_DEAD_INVENT_OSS_FIDELITY · 2026-10-15 Asia/Shanghai
 
-- **WHY:** Continue Magpie 1:1 after 0.1.144 — delete tip invent Library OAuth layout + Providers signing chrome that covered Magpie OSS.
-- **CAUSE:** Demo wrapped OAuth Client ID/secret/port in invent `oauth-pair` + text × and Sign-in wait in invent `sign-row`; shell-patch re-owned Magpie `.signing .mark` (amber 22px) and `.signing > .text` / invent `.s.note`.
-- **WHAT kept:** SIDE_AT=1024; nest 752×652; Plugins ask (0.1.144); CIS PrefRow/Segs/TextBtn; Magpie `library.css` import.
+- **WHY:** Continue Magpie 1:1 after 0.1.145 — delete tip invent Routing selected-req / min1150-on-cols + dead Settings invent chrome that covered Magpie OSS.
+- **CAUSE:** Demo painted picked request as invent `.rt-req.on` (pill/fg-2) instead of Magpie `[aria-pressed=true]` (card-2/line); put invent `min1150` on `.rt-cols` and re-owned purpose/metric open chevrons against Magpie `.rt-more.min1150` + routing.css; shell-patch still held dead invent Settings selectors after TrayUsage/Search/About/Sync already used Magpie DOM.
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; Library OAuth/signing (0.1.145); CIS PrefRow/Segs/TextBtn; Magpie `routing.css` import.
 - **Cite:**
-  - Magpie `plugins/library/client.js` **1971–2031** `drawApp` → `lib-app` / `lib-addpair` / `lib-x` + `field2`
-  - Magpie `plugins/library/client.js` **1714–1733** `signInBox` → `.lib-signin` / `.lib-signin-line` / `.note`
-  - Magpie `plugins/library/library.css` **131–135** / **341–343**
-  - Magpie `app.css` **2563–2564** `.signing .s` / `.signing > .text`; **2603** `.signing .mark`
-- **WHAT changed:** `LibraryView.tsx` OAuth/Sign-in DOM; `ProvidersView.tsx` Codex note `s`; `shell-patch.css` drop invents above.
+  - Magpie `routing.css` **251** `.rt-req[aria-pressed="true"]`; **237–239** `:where(.rt-more.min1150) .rt-cols*`; **324–335** purpose/metric open + purpose-menu
+  - Magpie `routing.js` **260** `byWidth(more, { min1150 })`; **2340** hist `solo`
+  - Magpie `app.js` **20952** update-mirror-row; **21812+** TrayUsage; **21118** About Version
+  - Magpie `app.css` **3117** `.search-api`; **3063–3065** `.font-preview`; **3456+** sync-form
+- **WHAT changed:** `RoutingView.tsx` drop invent req `.on` + cols `min1150`; `shell-patch.css` drop invents above.
 - **chrome-guard:** pass. Push/PR #1. No portable/Vercel.
