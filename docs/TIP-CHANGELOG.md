@@ -4,6 +4,18 @@
 
 ---
 
+## v0.1.108 · CIS_ACTIONCONFIRM_LIBRARY_GROUP · 2026-10-15 Asia/Shanghai
+
+- **WHY:** CIS §10 — migrate Library LibModal discard/remove-all/remove-selected (+ project discard) and GroupEditor `#modal` discard/remove onto Magpie `ActionConfirm`.
+- **WHAT kept:** `SIDE_AT=1024`; no `WEB_SIDE_AT`; Win chrome / 752 frame; no new features; Providers OAuth walls skipped (not trivial 1:1).
+- **WHAT changed:**
+  - Library: `discardOpen` / `instDiscardOpen` / `projectDiscard` / `mcpRemoveAllAsk` / `mcpRemoveSelectedAsk` → `ActionConfirm` (drop inline red/flex styles).
+  - GroupEditor: discard + remove → `ActionConfirm` (drop `#modal` + inline danger styles).
+  - Escape for migrated confirms owned by dialog `onCancel` (removed capture duplicates).
+  - CIS §10.5 marks Library/GroupEditor ActionConfirm Done.
+- **Guard:** `npm run chrome-guard`. No portable. No push/Vercel.
+
+---
 ## v0.1.107 · CIS_FOLD_TOAST_CONFIRM · 2026-10-15 Asia/Shanghai
 
 - **WHY:** CIS §10 next knife — extract Fold / StatusToast / ActionConfirm; wire existing Magpie-class call sites only (no feature stuffing).

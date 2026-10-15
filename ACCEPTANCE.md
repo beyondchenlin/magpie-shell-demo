@@ -1,3 +1,8 @@
+## v0.1.108 CIS_ACTIONCONFIRM_LIBRARY_GROUP
+- Library discard / Instructions discard / project discard / MCP remove-all / remove-selected → `ActionConfirm`.
+- GroupEditor discard + remove → `ActionConfirm` (Magpie `.action-confirm`).
+- Providers OAuth walls / folder pickers / remaining LibModal (skill remove, project remove sheet, Turn all off, single MCP remove) still Open. SIDE_AT=1024. No portable / Vercel.
+
 ## v0.1.107 CIS_FOLD_TOAST_CONFIRM
 - Extracted `Fold` / `FoldChev` — Gateway Connect+Models, Providers Turned off.
 - Extracted `StatusToast` — App `#status` foot toast.

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { ActionConfirm } from "./ActionConfirm";
 import { ModelPop, type PopOption } from "./ModelPop";
 import { ProtoMultiMenu } from "./ProtoMultiMenu";
 import { Segs } from "./Segs";
@@ -2131,77 +2132,33 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
         />
       ) : null}
 
-      {discardOpen ? (
-        <div
-          className="modal"
-          style={{ zIndex: 40, background: "rgba(20,22,30,.35)" }}
-          onClick={(e) => {
-            if (e.target === e.currentTarget) setDiscardOpen(false);
-          }}
-        >
-          <div className="dialog sm" role="alertdialog" aria-labelledby="rtDiscardTitle" style={{ animation: "pop-in .28s var(--ease)", maxWidth: 360 }}>
-            <div className="ehead" style={{ padding: "14px 16px 0" }}>
-              <b id="rtDiscardTitle">{t("Discard")}</b>
-            </div>
-            <p style={{ margin: "10px 16px 0", fontSize: 13, color: "var(--fg-2)", lineHeight: 1.45 }}>
-              {t("Discard unsaved changes? Your changes will be lost.")}
-            </p>
-            <div className="bar" style={{ padding: "14px 16px" }}>
-              <span className="grow" />
-              <button type="button" className="text" onClick={() => setDiscardOpen(false)}>
-                {t("Cancel")}
-              </button>
-              <button
-                type="button"
-                className="text"
-                style={{ background: "var(--red)", color: "#fff", borderColor: "var(--red)" }}
-                onClick={doDiscard}
-              >
-                {t("Discard")}
-              </button>
-            </div>
-          </div>
-        </div>
-      ) : null}
+      <ActionConfirm
+        open={discardOpen}
+        titleId="rtDiscardTitle"
+        title={t("Discard")}
+        message={t("Discard unsaved changes? Your changes will be lost.")}
+        cancelLabel={t("Cancel")}
+        acceptLabel={t("Discard")}
+        onCancel={() => setDiscardOpen(false)}
+        onAccept={doDiscard}
+      />
 
-      {removeOpen ? (
-        <div
-          className="modal"
-          style={{ zIndex: 40, background: "rgba(20,22,30,.35)" }}
-          onClick={(e) => {
-            if (e.target === e.currentTarget) setRemoveOpen(false);
-          }}
-        >
-          <div className="dialog sm" role="alertdialog" aria-labelledby="rtRemoveGroupTitle" style={{ animation: "pop-in .28s var(--ease)", maxWidth: 360 }}>
-            <div className="ehead" style={{ padding: "14px 16px 0" }}>
-              <b id="rtRemoveGroupTitle">{t("Remove {name}?", { name: draft.name.trim() || idOf() })}</b>
-            </div>
-            <p style={{ margin: "10px 16px 0", fontSize: 13, color: "var(--fg-2)", lineHeight: 1.45 }}>
-              {t("This routing group will no longer be available to agents.")}
-            </p>
-            <div className="bar" style={{ padding: "14px 16px" }}>
-              <span className="grow" />
-              <button type="button" className="text" onClick={() => setRemoveOpen(false)}>
-                {t("Cancel")}
-              </button>
-              <button
-                type="button"
-                className="text"
-                style={{ background: "var(--red)", color: "#fff", borderColor: "var(--red)" }}
-                onClick={() => {
-                  const name = draft.name.trim() || idOf();
-                  setRemoveOpen(false);
-                  onStatus?.(t("{name} removed", { name }), "ok");
-                  onRemoved?.();
-                  onClose();
-                }}
-              >
-                {t("Remove")}
-              </button>
-            </div>
-          </div>
-        </div>
-      ) : null}
+      <ActionConfirm
+        open={removeOpen}
+        titleId="rtRemoveGroupTitle"
+        title={t("Remove {name}?", { name: draft.name.trim() || idOf() })}
+        message={t("This routing group will no longer be available to agents.")}
+        cancelLabel={t("Cancel")}
+        acceptLabel={t("Remove")}
+        onCancel={() => setRemoveOpen(false)}
+        onAccept={() => {
+          const name = draft.name.trim() || idOf();
+          setRemoveOpen(false);
+          onStatus?.(t("{name} removed", { name }), "ok");
+          onRemoved?.();
+          onClose();
+        }}
+      />
     </>
   );
 }

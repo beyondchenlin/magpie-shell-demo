@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type ClipboardEvent, type ReactNode } from "react";
+import { ActionConfirm } from "../components/ActionConfirm";
 import { Bird } from "../components/Bird";
 import { useSegThumb } from "../components/SegThumb";
 import { t } from "../i18n";
@@ -1701,11 +1702,6 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
           onStatus?.(t("Saved — the agents already had it"), "ok");
         }
       }
-      if (e.key === "Escape" && instDiscardOpen) {
-        e.preventDefault();
-        e.stopPropagation();
-        setInstDiscardOpen(false);
-      }
       if (e.key === "Escape" && mcpTurnAllOffAsk) {
         // NOTES 214: Escape closes ask; servers stay on for the agent
         e.preventDefault();
@@ -1713,28 +1709,10 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
         setMcpTurnAllOffAsk(false);
         return;
       }
-      if (e.key === "Escape" && mcpRemoveAllAsk) {
-        e.preventDefault();
-        e.stopPropagation();
-        setMcpRemoveAllAsk(false);
-        return;
-      }
-      if (e.key === "Escape" && mcpRemoveSelectedAsk) {
-        e.preventDefault();
-        e.stopPropagation();
-        setMcpRemoveSelectedAsk(false);
-        return;
-      }
       if (e.key === "Escape" && mcpCopyMenu) {
         e.preventDefault();
         e.stopPropagation();
         setMcpCopyMenu(null);
-        return;
-      }
-      if (e.key === "Escape" && discardOpen) {
-        e.preventDefault();
-        e.stopPropagation();
-        setDiscardOpen(false);
         return;
       }
       if (e.key === "Escape" && mcpEditor && !mcpOauthWall && !mcpSignWaiting) {
@@ -1747,7 +1725,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
     };
     window.addEventListener("keydown", onKey, true);
     return () => window.removeEventListener("keydown", onKey, true);
-  }, [instDirty, tab, instDiscardOpen, mcpTurnAllOffAsk, mcpRemoveAllAsk, mcpRemoveSelectedAsk, mcpCopyMenu, discardOpen, mcpEditor, mcpOauthWall, mcpSignWaiting, onStatus]);
+  }, [instDirty, tab, mcpTurnAllOffAsk, mcpCopyMenu, mcpEditor, mcpOauthWall, mcpSignWaiting, onStatus]);
 
   const openSet = sets.find((s) => s.id === openId);
   const mcpHits = useMemo(() => {
@@ -4468,54 +4446,34 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
         </LibModal>
       ) : null}
 
-      {discardOpen ? (
-        <LibModal onBg={() => setDiscardOpen(false)} sm>
-          <b style={{ display: "block", fontSize: 15, marginBottom: 8 }}>{t("Discard")}</b>
-          <p style={{ margin: "0 0 14px", fontSize: 13, color: "var(--fg-2)", lineHeight: 1.45 }}>{t("Discard unsaved changes? Your changes will be lost.")}</p>
-          <div className="bar" style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
-            <button type="button" className="text" onClick={() => setDiscardOpen(false)}>{t("Cancel")}</button>
-            <button
-              type="button"
-              className="text"
-              style={{ background: "var(--red)", color: "#fff", borderColor: "transparent" }}
-              onClick={() => {
-                setDiscardOpen(false);
-                if (mcpEditor) {
-                  setMcpEditor(null);
-                  setMcpEditId(null);
-                  setMcpSignWaiting(false);
-                  setMcpCopyMenu(null);
-                }
-                if (hookEditor) setHookEditor(null);
-              }}
-            >
-              {t("Discard")}
-            </button>
-          </div>
-        </LibModal>
-      ) : null}
+      <ActionConfirm
+        open={discardOpen}
+        title={t("Discard")}
+        message={t("Discard unsaved changes? Your changes will be lost.")}
+        cancelLabel={t("Cancel")}
+        acceptLabel={t("Discard")}
+        onCancel={() => setDiscardOpen(false)}
+        onAccept={() => {
+          setDiscardOpen(false);
+          if (mcpEditor) {
+            setMcpEditor(null);
+            setMcpEditId(null);
+            setMcpSignWaiting(false);
+            setMcpCopyMenu(null);
+          }
+          if (hookEditor) setHookEditor(null);
+        }}
+      />
 
-      {instDiscardOpen ? (
-        <LibModal onBg={() => setInstDiscardOpen(false)} sm>
-          <b style={{ display: "block", fontSize: 15, marginBottom: 8 }}>{t("Discard")}</b>
-          <p style={{ margin: "0 0 14px", fontSize: 13, color: "var(--fg-2)", lineHeight: 1.45 }}>
-            {t("Discard unsaved changes? Your changes will be lost.")}
-          </p>
-          <div className="bar" style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
-            <button type="button" className="text" autoFocus onClick={() => setInstDiscardOpen(false)}>
-              {t("Cancel")}
-            </button>
-            <button
-              type="button"
-              className="text"
-              style={{ background: "var(--red)", color: "#fff", borderColor: "transparent" }}
-              onClick={discardInstructions}
-            >
-              {t("Discard")}
-            </button>
-          </div>
-        </LibModal>
-      ) : null}
+      <ActionConfirm
+        open={instDiscardOpen}
+        title={t("Discard")}
+        message={t("Discard unsaved changes? Your changes will be lost.")}
+        cancelLabel={t("Cancel")}
+        acceptLabel={t("Discard")}
+        onCancel={() => setInstDiscardOpen(false)}
+        onAccept={discardInstructions}
+      />
 
       {projectRemove ? (
         <LibModal
@@ -4595,29 +4553,19 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
         </LibModal>
       ) : null}
 
-      {projectDiscard && projectRemove ? (
-        <LibModal onBg={() => setProjectDiscard(false)} sm>
-          <b style={{ display: "block", fontSize: 15, marginBottom: 8 }}>{t("Discard")}</b>
-          <p style={{ margin: "0 0 14px", fontSize: 13, color: "var(--fg-2)", lineHeight: 1.45 }}>
-            {t("Discard unsaved changes? Your changes will be lost.")}
-          </p>
-          <div className="bar" style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
-            <button type="button" className="text" onClick={() => setProjectDiscard(false)}>{t("Cancel")}</button>
-            <button
-              type="button"
-              className="text"
-              style={{ background: "var(--red)", color: "#fff", borderColor: "transparent" }}
-              onClick={() => {
-                // NOTES 143: Discard closes remove sheet and does NOT remove the project
-                setProjectDiscard(false);
-                setProjectRemove(null);
-              }}
-            >
-              {t("Discard")}
-            </button>
-          </div>
-        </LibModal>
-      ) : null}
+      <ActionConfirm
+        open={!!(projectDiscard && projectRemove)}
+        title={t("Discard")}
+        message={t("Discard unsaved changes? Your changes will be lost.")}
+        cancelLabel={t("Cancel")}
+        acceptLabel={t("Discard")}
+        onCancel={() => setProjectDiscard(false)}
+        onAccept={() => {
+          // NOTES 143: Discard closes remove sheet and does NOT remove the project
+          setProjectDiscard(false);
+          setProjectRemove(null);
+        }}
+      />
 
 
       {mcpByAgentOpen ? (
@@ -4778,67 +4726,44 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
         </div>
       ) : null}
 
-      {mcpRemoveAllAsk ? (
-        <LibModal onBg={() => setMcpRemoveAllAsk(false)} sm>
-          <b style={{ display: "block", fontSize: 15, marginBottom: 8 }}>
-            {t("Remove all {n} servers?", { n: mcpServers.length })}
-          </b>
-          <p style={{ margin: "0 0 8px", fontSize: 13, color: "var(--fg-2)", lineHeight: 1.45 }}>
-            {t("They are taken out of the library; no agent has any of them.")}
-          </p>
-          <p style={{ margin: "0 0 14px", fontSize: 13, color: "var(--fg-2)", lineHeight: 1.45 }}>
-            {t("Servers your agents have that aren't in the library stay as they are.")}
-          </p>
-          <div className="bar" style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
-            <button type="button" className="text" onClick={() => setMcpRemoveAllAsk(false)}>{t("Cancel")}</button>
-            <button
-              type="button"
-              className="text"
-              style={{ background: "var(--red)", color: "#fff", borderColor: "transparent" }}
-              onClick={() => {
-                const n = mcpServers.length;
-                setMcpServers([]);
-                setMcpRemoveAllAsk(false);
-                setMcpSelectMode(false);
-                setMcpSelected(new Set());
-                onStatus?.(t("{n} servers removed", { n }), "ok");
-              }}
-            >
-              {t("Remove all {n}", { n: mcpServers.length })}
-            </button>
-          </div>
-        </LibModal>
-      ) : null}
+      <ActionConfirm
+        open={mcpRemoveAllAsk}
+        title={t("Remove all {n} servers?", { n: mcpServers.length })}
+        message={
+          t("They are taken out of the library; no agent has any of them.") +
+          "\n\n" +
+          t("Servers your agents have that aren't in the library stay as they are.")
+        }
+        cancelLabel={t("Cancel")}
+        acceptLabel={t("Remove all {n}", { n: mcpServers.length })}
+        onCancel={() => setMcpRemoveAllAsk(false)}
+        onAccept={() => {
+          const n = mcpServers.length;
+          setMcpServers([]);
+          setMcpRemoveAllAsk(false);
+          setMcpSelectMode(false);
+          setMcpSelected(new Set());
+          onStatus?.(t("{n} servers removed", { n }), "ok");
+        }}
+      />
 
-      {mcpRemoveSelectedAsk ? (
-        <LibModal onBg={() => setMcpRemoveSelectedAsk(false)} sm>
-          <b style={{ display: "block", fontSize: 15, marginBottom: 8 }}>
-            {t("Remove {n} servers?", { n: mcpSelected.size })}
-          </b>
-          <p style={{ margin: "0 0 14px", fontSize: 13, color: "var(--fg-2)", lineHeight: 1.45 }}>
-            {t("They are taken out of the library and the agents they were given to.")}
-          </p>
-          <div className="bar" style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
-            <button type="button" className="text" onClick={() => setMcpRemoveSelectedAsk(false)}>{t("Cancel")}</button>
-            <button
-              type="button"
-              className="text"
-              style={{ background: "var(--red)", color: "#fff", borderColor: "transparent" }}
-              onClick={() => {
-                const ids = mcpSelected;
-                const n = ids.size;
-                setMcpServers((list) => list.filter((x) => !ids.has(x.id)));
-                setMcpRemoveSelectedAsk(false);
-                setMcpSelected(new Set());
-                setMcpSelectMode(false);
-                onStatus?.(t("{n} servers removed", { n }), "ok");
-              }}
-            >
-              {t("Remove")}
-            </button>
-          </div>
-        </LibModal>
-      ) : null}
+      <ActionConfirm
+        open={mcpRemoveSelectedAsk}
+        title={t("Remove {n} servers?", { n: mcpSelected.size })}
+        message={t("They are taken out of the library and the agents they were given to.")}
+        cancelLabel={t("Cancel")}
+        acceptLabel={t("Remove")}
+        onCancel={() => setMcpRemoveSelectedAsk(false)}
+        onAccept={() => {
+          const ids = mcpSelected;
+          const n = ids.size;
+          setMcpServers((list) => list.filter((x) => !ids.has(x.id)));
+          setMcpRemoveSelectedAsk(false);
+          setMcpSelected(new Set());
+          setMcpSelectMode(false);
+          onStatus?.(t("{n} servers removed", { n }), "ok");
+        }}
+      />
 
       {mcpRemoveAsk ? (
         <LibModal onBg={() => setMcpRemoveAsk(null)} sm>
