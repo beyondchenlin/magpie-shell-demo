@@ -1,3 +1,19 @@
+## v0.1.182 · ROW_IC_SPAN_IMG_OSS · 2026-10-16 Asia/Shanghai
+
+- **WHY:** Hard invent audit — TrayPanel agent handle / FieldPill trailing, Gateway model rows, and Providers list handle + `.use` chips still painted bare `img.ic` (class on the `<img>`). Magpie OSS `icon(name)` builds `span.ic` with `dataset.icon`, then appends `img` with `draggable = false` (file:/color/png); sizing is gold `.ic` + `.ic img`, not invent class on the image.
+- **CAUSE:** Tip put Magpie `.ic` on the `<img>` in row chrome instead of wrapping like Magpie `icon()` / `pickRow`.
+- **Cite:**
+  - Magpie `app.js` **L284–322** `function icon(name)` → `el("span","ic")` + `dataset.icon` + append `img` (`draggable=false`) or mask/svg
+  - Magpie `app.js` **L7040–46** `pickRow` → `b.append(icon(ic), nm)` on `button.tile`
+  - Magpie `app.css` **L156–157** `.ic` / `.ic img { width:100%; height:100%; object-fit:contain }`
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; skip oauth Approve wall; Providers add-sheet tiles already `span.ic[data-icon]>img` (v0.1.179); Magpie `.ic` gold in tip CSS.
+- **WHAT changed:**
+  - `TrayPanel.tsx`: ag-handle + FieldPill trailing `img.ic` → Magpie `span.ic[data-icon]>img` (`draggable={false}`).
+  - `GatewayView.tsx`: model row `img.ic` → Magpie `span.ic[data-icon]>img`.
+  - `ProvidersView.tsx`: provider handle + agent `.use` chip `img.ic` → Magpie `span.ic[data-icon]>img`.
+- **Remaining invent (weak/skip):** oauth Approve wall (nest=browser); `rt-flier-demo`; `win-caption*`; intentional `lib-hook*` / `pref-anchor` React bridges; AgentsView still one bare `img.ic` (out of this tip's Tray/Gateway/Providers scope).
+- **Guard:** `npm run chrome-guard`. No portable. No manual Vercel.
+
 ## v0.1.181 · RANGE_OPT_SPAN_OSS · 2026-10-16 Asia/Shanghai
 
 - **WHY:** Hard invent audit — Usage Custom `.range-opt > span` got invent `max-width` / `text-overflow: ellipsis` / `white-space` bridges under `.usage-head` (plus a redundant flex re-own). Magpie OSS `.range-opt` is only `inline-flex` + gap; label overflow is handled by hiding `:not(.on) > span` when `.usage-head.tight` or `@media (max-width: 640px)` — no span max-width.

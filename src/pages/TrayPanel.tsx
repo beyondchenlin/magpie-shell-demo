@@ -331,7 +331,9 @@ export function TrayPanel({ onOpenMain, onHide, onQuit, onPrefs, onStatus }: Pro
               aria-hidden
               title="~/.cursor/cli-config.json"
             >
-              <img className="ic" src={iconSrc("cursor")} alt="" />
+              <span className="ic" data-icon="cursor" aria-hidden>
+                <img src={iconSrc("cursor")} alt="" draggable={false} />
+              </span>
             </span>
             <div className="who">
               <div className="name">Cursor</div>
@@ -356,7 +358,11 @@ export function TrayPanel({ onOpenMain, onHide, onQuit, onPrefs, onStatus }: Pro
                     open={modelPop}
                     k={t("Model")}
                     v={modelLabel}
-                    trailing={<img className="ic" src={iconSrc("cursor")} alt="" />}
+                    trailing={
+                      <span className="ic" data-icon="cursor" aria-hidden>
+                        <img src={iconSrc("cursor")} alt="" draggable={false} />
+                      </span>
+                    }
                     ref={modelFieldRef}
                     onClick={() => setModelPop((v) => !v)}
                   />

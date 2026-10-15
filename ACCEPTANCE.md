@@ -1,3 +1,12 @@
+## v0.1.182 · ROW_IC_SPAN_IMG_OSS · 2026-10-16 Asia/Shanghai
+
+- **WHY:** Bare `img.ic` on TrayPanel / GatewayView / Providers rows — Magpie `icon()` wraps `span.ic[data-icon]>img` (`draggable=false`).
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; skip oauth; Magpie `.ic` / `.ic img` gold; tile pickRow already span.ic.
+- **Cite:** Magpie app.js **L284–322** `icon()`; **L7040–46** `pickRow`; app.css **L156–157** `.ic` / `.ic img`.
+- **WHAT changed:** TrayPanel / Gateway / Providers bare `img.ic` → `span.ic[data-icon]>img`.
+- **Remaining invent (weak/skip):** oauth Approve wall; `rt-flier-demo`; `win-caption*`; `lib-hook*` / `pref-anchor`; AgentsView bare `img.ic` (next).
+- **Guard:** `npm run chrome-guard`. No portable. No manual Vercel.
+
 ## v0.1.181 · RANGE_OPT_SPAN_OSS · 2026-10-16 Asia/Shanghai
 
 - **WHY:** Drop invent Usage `.usage-head .range-opt > span` max-width/ellipsis; restore Magpie `.range-opt` flex + hide-when-tight gold.

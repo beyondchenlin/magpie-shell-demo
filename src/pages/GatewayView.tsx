@@ -898,7 +898,9 @@ export function GatewayView({ onStatus, onGoNetwork }: Props) {
                 lsSet("magpie.model", m.id);
               }}
             >
-              <img className="ic" src={iconSrc(m.icon || "openai")} alt="" />
+              <span className="ic" data-icon={m.icon || "openai"} aria-hidden>
+                <img src={iconSrc(m.icon || "openai")} alt="" draggable={false} />
+              </span>
               <div className="who">
                 <div className="name">{m.id}</div>
                 <div className="sub">{m.name !== m.id.split("/")[1] ? `${m.name} · ${m.provider}` : m.provider}</div>

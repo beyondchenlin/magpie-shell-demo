@@ -2871,7 +2871,9 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
                       );
                     }}
                   >
-                    <img className="ic" src={iconSrc(pv.icon)} alt="" />
+                    <span className="ic" data-icon={pv.icon} aria-hidden>
+                      <img src={iconSrc(pv.icon)} alt="" draggable={false} />
+                    </span>
                   </button>
                   <div className="who">
                     <div className="name">{pv.name}</div>
@@ -2889,7 +2891,9 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
                           onStatus(t("{name} · {model} — click to change", { name: a.name, model: "default" }), "ok");
                         }}
                       >
-                        <img className="ic" src={iconSrc(a.icon)} alt="" />
+                        <span className="ic" data-icon={a.icon} aria-hidden>
+                          <img src={iconSrc(a.icon)} alt="" draggable={false} />
+                        </span>
                       </button>
                     ))}
                   </div>
