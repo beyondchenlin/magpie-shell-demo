@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useRef, useState, type ClipboardEvent, type ReactNode } from "react";
+import { Bird } from "../components/Bird";
 import { useSegThumb } from "../components/SegThumb";
 import { t } from "../i18n";
 
 /**
- * Magpie Library plugin (native-linux/library nests through 88–100 folder/Backups Thunar + MCP paste).
+ * Magpie Library plugin (native-linux/library nests through 101–119 In projects Choose… + folder/Backups Thunar).
  * Feature-gated: Plugins › Built-in › Library.
  * Motion: view-in .24s; modal pop-in .42s; Discard .28s; segs .18s; lib-switch; lib-bob/lib-probe/mk-spin (v0.1.44).
  */
@@ -742,6 +743,433 @@ const DEMO_PROBE_SKILLS = [
   { path: "grill-me", name: "grill-me", desc: "A relentless interview to sharpen a plan or design." },
 ];
 
+
+/** Magpie library/projects/choose — GTK "Choose a project" (library 101–119). Not Thunar. */
+type ChoosePlace = "recent" | "home" | "desktop" | "workspace" | "other";
+
+const HOME_FOLDERS = [
+  { name: "agent-data", modified: "13:35" },
+  { name: "chrome-profile", modified: "Yesterday" },
+  { name: "cli-config", modified: "Mon" },
+  { name: "Reference", modified: "08:42" },
+  { name: "sand-data", modified: "13:35" },
+];
+
+const USR_COMPLETE = [
+  "bin/",
+  "games/",
+  "i686-w64-mingw32/",
+  "include/",
+  "lib/",
+  "lib64/",
+  "libexec/",
+  "local/",
+  "sbin/",
+  "share/",
+  "src/",
+  "x86_64-w64-mingw32/",
+  "x86_64-w64-mingw32ucrt/",
+];
+
+function LibChooseProject({
+  onClose,
+  onOpen,
+}: {
+  onClose: () => void;
+  onOpen: (path: string) => void;
+}) {
+  const [place, setPlace] = useState<ChoosePlace>("recent");
+  const [locOpen, setLocOpen] = useState(false);
+  const [locVal, setLocVal] = useState("");
+  const [complete, setComplete] = useState<string[] | null>(null);
+  const [deskTip, setDeskTip] = useState(false);
+  const locRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "l" && (e.ctrlKey || e.metaKey)) {
+        e.preventDefault();
+        setLocOpen(true);
+        setLocVal("");
+        setComplete(null);
+        window.setTimeout(() => locRef.current?.focus(), 0);
+        return;
+      }
+      if (e.key === "Escape") {
+        e.preventDefault();
+        e.stopPropagation();
+        // NOTES: Escape first dismisses location field (+ completion); second closes dialog.
+        if (locOpen || complete) {
+          setLocOpen(false);
+          setComplete(null);
+          setLocVal("");
+          return;
+        }
+        onClose();
+      }
+    };
+    window.addEventListener("keydown", onKey, true);
+    return () => window.removeEventListener("keydown", onKey, true);
+  }, [locOpen, complete, onClose]);
+
+  const openCurrent = () => {
+    // NOTES 115: Open while Home is current place (no location field) → /home/box
+    if (locOpen && locVal.trim()) {
+      // Typed path still open: NOTES does not claim acceptance; keep dialog (pointer edge miss).
+      return;
+    }
+    if (place === "home") {
+      onOpen("/home/box");
+      return;
+    }
+    if (place === "desktop") {
+      onOpen("/home/box/Desktop");
+      return;
+    }
+    if (place === "workspace") {
+      onOpen("/home/box/workspace");
+      return;
+    }
+    if (place === "other") {
+      onOpen("/");
+      return;
+    }
+    // Recent empty — Open still dark/clickable; no path to accept
+  };
+
+  const sideBtn = (id: ChoosePlace, label: string, tip?: string) => (
+    <button
+      key={id}
+      type="button"
+      className="text"
+      onMouseEnter={() => setDeskTip(id === "desktop" && !!tip)}
+      onMouseLeave={() => setDeskTip(false)}
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: 10,
+        justifyContent: "flex-start",
+        width: "100%",
+        padding: "8px 12px",
+        borderRadius: 8,
+        border: 0,
+        background: place === id ? "#3584e4" : "transparent",
+        color: place === id ? "#fff" : "var(--fg)",
+        font: "inherit",
+        fontSize: 13,
+        cursor: "pointer",
+        textAlign: "left",
+        position: "relative",
+      }}
+      onClick={() => {
+        setPlace(id);
+        setLocOpen(false);
+        setComplete(null);
+        setLocVal("");
+      }}
+    >
+      {id === "recent" ? "◷" : id === "home" ? "⌂" : id === "other" ? "+" : "📁"}
+      <span>{id === "other" ? `+ ${label}` : label}</span>
+      {id === "desktop" && deskTip ? (
+        <span
+          style={{
+            position: "absolute",
+            left: -8,
+            top: "50%",
+            transform: "translate(-100%, -50%)",
+            background: "#1c1c1c",
+            color: "#fff",
+            fontSize: 12,
+            padding: "6px 10px",
+            borderRadius: 6,
+            whiteSpace: "nowrap",
+            pointerEvents: "none",
+            zIndex: 4,
+            boxShadow: "0 4px 12px rgba(0,0,0,.25)",
+          }}
+        >
+          {t("Open the contents of your desktop in a folder")}
+        </span>
+      ) : null}
+    </button>
+  );
+
+  return (
+    <div
+      className="modal open"
+      role="presentation"
+      style={{
+        position: "fixed",
+        inset: 0,
+        zIndex: 95,
+        display: "grid",
+        placeItems: "center",
+        background: "rgba(20,22,30,.42)",
+        animation: "fade-in .18s var(--ease)",
+      }}
+      onMouseDown={(e) => {
+        if (e.target === e.currentTarget) {
+          /* Magpie Escape/Cancel close; outside click not documented — leave open */
+        }
+      }}
+    >
+      <div
+        className="dialog gtk-select-files lib-choose-project"
+        role="dialog"
+        aria-modal
+        aria-label={t("Choose a project")}
+        style={{
+          width: "min(1100px, 96vw)",
+          height: "min(680px, 90vh)",
+          maxHeight: "min(680px, 90vh)",
+          display: "flex",
+          flexDirection: "column",
+          animation: "pop-in .42s cubic-bezier(.16,1,.3,1)",
+          background: "#fafafa",
+          borderRadius: 10,
+          border: "1px solid #c0c0c0",
+          boxShadow: "0 18px 48px rgba(20,22,30,.28)",
+          overflow: "hidden",
+          position: "relative",
+        }}
+        onMouseDown={(e) => e.stopPropagation()}
+      >
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+            height: 40,
+            padding: "0 10px 0 12px",
+            background: "linear-gradient(#f0f0f0, #e6e6e6)",
+            borderBottom: "1px solid #c8c8c8",
+            userSelect: "none",
+          }}
+        >
+          <span style={{ color: "var(--fg)", display: "inline-flex" }}>
+            <Bird size={16} />
+          </span>
+          <span style={{ flex: 1, textAlign: "center", fontWeight: 600, fontSize: 13 }}>{t("Choose a project")}</span>
+          <button type="button" aria-label="Minimize" style={{ width: 24, height: 22, border: "1px solid #aaa", borderRadius: 4, background: "#eee", fontSize: 11 }}>─</button>
+          <button type="button" aria-label="Maximize" style={{ width: 24, height: 22, border: "1px solid #aaa", borderRadius: 4, background: "#eee", fontSize: 10 }}>□</button>
+          <button type="button" aria-label="Close" onClick={onClose} style={{ width: 24, height: 22, border: "1px solid #aaa", borderRadius: 4, background: "#eee", fontSize: 12 }}>×</button>
+        </div>
+
+        <div style={{ display: "flex", flex: 1, minHeight: 0 }}>
+          <nav
+            style={{
+              width: 188,
+              flex: "none",
+              borderRight: "1px solid #ddd",
+              padding: "10px 8px",
+              display: "flex",
+              flexDirection: "column",
+              gap: 2,
+              background: "#f3f3f3",
+            }}
+          >
+            {sideBtn("recent", t("Recent"))}
+            {sideBtn("home", t("Home"))}
+            {sideBtn("desktop", t("Desktop"), t("Open the contents of your desktop in a folder"))}
+            {sideBtn("workspace", "workspace")}
+            <div style={{ height: 1, background: "#ddd", margin: "8px 6px" }} />
+            {sideBtn("other", t("Other Locations"))}
+          </nav>
+
+          <div style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0, background: "#fff" }}>
+            {place === "home" && !locOpen ? (
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 6,
+                  padding: "8px 12px",
+                  borderBottom: "1px solid #e8e8e8",
+                }}
+              >
+                <button type="button" className="text" disabled style={{ opacity: 0.35, border: 0, background: "transparent" }}>←</button>
+                <button type="button" className="text" style={{ display: "inline-flex", alignItems: "center", gap: 6, height: 28, padding: "0 10px", borderRadius: 999, border: "1px solid #ccc", background: "#f6f6f6", font: "inherit", fontSize: 12.5 }}>
+                  ⌂ box
+                </button>
+                <button type="button" className="text" disabled style={{ opacity: 0.35, border: 0, background: "transparent" }}>→</button>
+                <span className="grow" />
+                <button type="button" className="text" title={t("Create Folder…")} aria-label={t("Create Folder…")} style={{ width: 32, height: 28, border: "1px solid #ccc", borderRadius: 6, background: "#f6f6f6" }}>📁+</button>
+              </div>
+            ) : null}
+
+            {locOpen ? (
+              <div style={{ padding: "8px 12px", borderBottom: "1px solid #e8e8e8" }}>
+                <input
+                  ref={locRef}
+                  type="text"
+                  value={locVal}
+                  spellCheck={false}
+                  autoComplete="off"
+                  onChange={(e) => {
+                    setLocVal(e.target.value);
+                    setComplete(null);
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      const v = locVal.trim() || "/";
+                      const norm = v.endsWith("/") ? v : `${v}/`;
+                      setLocVal(norm);
+                      if (norm === "/usr/" || locVal.trim() === "/usr") {
+                        setComplete(USR_COMPLETE);
+                      } else {
+                        setComplete([]);
+                      }
+                    }
+                    if (e.key === "Escape") {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setLocOpen(false);
+                      setComplete(null);
+                      setLocVal("");
+                    }
+                  }}
+                  style={{
+                    width: "100%",
+                    height: 34,
+                    padding: "0 10px",
+                    borderRadius: 8,
+                    border: "2px solid #3584e4",
+                    outline: "none",
+                    font: "inherit",
+                    fontSize: 13,
+                    background: "#fff",
+                  }}
+                />
+              </div>
+            ) : null}
+
+            <div style={{ flex: 1, overflow: "auto", padding: place === "other" ? 16 : 0 }}>
+              {complete ? (
+                <div style={{ padding: "8px 16px", fontSize: 13, lineHeight: 1.7 }}>
+                  {complete.map((c) => (
+                    <div key={c}>{c}</div>
+                  ))}
+                </div>
+              ) : place === "recent" ? (
+                <div>
+                  <div
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns: "1.4fr 1.2fr 0.6fr 0.7fr 0.8fr",
+                      gap: 8,
+                      padding: "8px 14px",
+                      borderBottom: "1px solid #eee",
+                      fontSize: 12,
+                      color: "#666",
+                      fontWeight: 500,
+                    }}
+                  >
+                    <span>{t("Name")}</span>
+                    <span>{t("Location")}</span>
+                    <span>{t("Size")}</span>
+                    <span>{t("Type")}</span>
+                    <span>{t("Accessed")}</span>
+                  </div>
+                </div>
+              ) : place === "home" ? (
+                <div>
+                  <div
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns: "1.6fr 0.5fr 0.7fr 0.7fr",
+                      gap: 8,
+                      padding: "8px 14px",
+                      borderBottom: "1px solid #eee",
+                      fontSize: 12,
+                      color: "#666",
+                      fontWeight: 500,
+                    }}
+                  >
+                    <span>{t("Name")} ↓</span>
+                    <span>{t("Size")}</span>
+                    <span>{t("Type")}</span>
+                    <span>{t("Modified")}</span>
+                  </div>
+                  {HOME_FOLDERS.map((f) => (
+                    <div
+                      key={f.name}
+                      style={{
+                        display: "grid",
+                        gridTemplateColumns: "1.6fr 0.5fr 0.7fr 0.7fr",
+                        gap: 8,
+                        padding: "7px 14px",
+                        fontSize: 13,
+                        alignItems: "center",
+                      }}
+                    >
+                      <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
+                        <span aria-hidden>📁</span>
+                        {f.name}
+                      </span>
+                      <span style={{ color: "#888" }}>—</span>
+                      <span style={{ color: "#666" }}>{t("Folder")}</span>
+                      <span style={{ color: "#666" }}>{f.modified}</span>
+                    </div>
+                  ))}
+                </div>
+              ) : place === "other" ? (
+                <div>
+                  <div style={{ fontWeight: 600, fontSize: 13, marginBottom: 12 }}>{t("On This Computer")}</div>
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 12,
+                      padding: "10px 12px",
+                      borderRadius: 8,
+                      border: "1px dashed #bbb",
+                      maxWidth: 520,
+                    }}
+                  >
+                    <span aria-hidden style={{ fontSize: 22 }}>💾</span>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ fontWeight: 500 }}>{t("Computer")}</div>
+                      <div style={{ fontSize: 12, color: "#666" }}>112.2 GB / 134.2 GB available</div>
+                    </div>
+                    <span style={{ color: "#888" }}>/</span>
+                  </div>
+                </div>
+              ) : (
+                <p style={{ margin: 48, textAlign: "center", color: "#888", fontSize: 13 }}>{t("This folder is empty")}</p>
+              )}
+            </div>
+          </div>
+        </div>
+
+        <div
+          className="bar"
+          style={{
+            display: "flex",
+            gap: 8,
+            justifyContent: "flex-end",
+            padding: "10px 14px",
+            borderTop: "1px solid #ddd",
+            background: "#f0f0f0",
+          }}
+        >
+          <button type="button" className="text" onClick={onClose} style={{ height: 32, padding: "0 14px", border: "1px solid #bbb", borderRadius: 6, background: "#fff", font: "inherit" }}>
+            {t("Cancel")}
+          </button>
+          <button
+            type="button"
+            className="text"
+            onClick={openCurrent}
+            style={{ height: 32, padding: "0 14px", border: "1px solid #bbb", borderRadius: 6, background: "#fff", font: "inherit", color: "#1c1c1c" }}
+          >
+            {t("Open")}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: string, ms?: number) => void }) {
   const [tab, setTab] = useState<string>(() => {
     try {
@@ -808,7 +1236,10 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
   const [skillChecking, setSkillChecking] = useState(false);
   /** Magpie Library folder / Backups → OS Thunar (library 88–100) */
   const [thunarKind, setThunarKind] = useState<"library" | "backups" | null>(null);
+  /** Magpie library/projects/choose — GTK Choose a project (101–119) */
+  const [chooseProjectOpen, setChooseProjectOpen] = useState(false);
   const newNameRef = useRef<HTMLInputElement>(null);
+  const projectPathRef = useRef<HTMLInputElement>(null);
   const mcpNameRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -1700,6 +2131,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                       <div className="lib-find" style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center" }}>
                         <span aria-hidden style={{ fontSize: 14, color: "var(--muted)" }}>📁</span>
                         <input
+                          ref={projectPathRef}
                           type="text"
                           spellCheck={false}
                           autoComplete="off"
@@ -1708,10 +2140,16 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                           disabled={!!addingProject.busy}
                           onChange={(e) => setAddingProject({ ...addingProject, dir: e.target.value })}
                           onKeyDown={(e) => {
+                            // NOTES 117–118: Escape closes sheet only when path field focused
                             e.stopPropagation();
-                            if (e.key === "Escape") setAddingProject(null);
+                            if (e.key === "Escape") {
+                              setAddingProject(null);
+                              setChooseProjectOpen(false);
+                              return;
+                            }
                             if (e.key === "Enter") {
                               const dir = addingProject.dir.trim();
+                              // empty Enter / Add = no-op (112)
                               if (!dir || addingProject.busy) return;
                               setAddingProject({ ...addingProject, busy: true });
                               window.setTimeout(() => {
@@ -1724,26 +2162,23 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                           }}
                           style={{ flex: "1 1 180px", minWidth: 0 }}
                         />
-                        {!document.body.classList.contains("web") ? (
-                          <button
-                            type="button"
-                            className="text"
-                            disabled={!!addingProject.busy}
-                            onClick={() => {
-                              // Magpie library/projects/choose — demo fills a path (no OS picker / no credentials)
-                              setAddingProject({ ...addingProject, dir: "~/code/app" });
-                            }}
-                          >
-                            {t("Choose…")}
-                          </button>
-                        ) : null}
+                        <button
+                          type="button"
+                          className="text"
+                          disabled={!!addingProject.busy}
+                          onClick={() => setChooseProjectOpen(true)}
+                        >
+                          {t("Choose…")}
+                        </button>
                         <button
                           type="button"
                           className="text action"
-                          disabled={!!addingProject.busy || !addingProject.dir.trim()}
+                          disabled={!!addingProject.busy}
                           onClick={() => {
                             const dir = addingProject.dir.trim();
+                            // NOTES 112: empty Add = no-op; no error; sheet stays
                             if (!dir || addingProject.busy) return;
+                            // Path filled + Add not shot in 101–119; keep prior demo add for completeness
                             setAddingProject({ ...addingProject, busy: true });
                             window.setTimeout(() => {
                               const name = dir.split("/").filter(Boolean).pop() || dir;
@@ -1755,7 +2190,17 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                         >
                           {addingProject.busy ? t("Adding…") : t("Add")}
                         </button>
-                        <button type="button" className="text" disabled={!!addingProject.busy} onClick={() => setAddingProject(null)}>{t("Cancel")}</button>
+                        <button
+                          type="button"
+                          className="text"
+                          disabled={!!addingProject.busy}
+                          onClick={() => {
+                            setAddingProject(null);
+                            setChooseProjectOpen(false);
+                          }}
+                        >
+                          {t("Cancel")}
+                        </button>
                       </div>
                     </div>
                   ) : null}
@@ -2500,6 +2945,17 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
       ) : null}
 
       {thunarKind ? <LibThunar kind={thunarKind} onClose={() => setThunarKind(null)} /> : null}
+
+      {chooseProjectOpen ? (
+        <LibChooseProject
+          onClose={() => setChooseProjectOpen(false)}
+          onOpen={(p) => {
+            setChooseProjectOpen(false);
+            if (addingProject) setAddingProject({ ...addingProject, dir: p });
+            else setAddingProject({ dir: p });
+          }}
+        />
+      ) : null}
 
     </main>
   );

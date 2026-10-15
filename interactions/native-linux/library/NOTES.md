@@ -307,3 +307,44 @@ The path on the Backups tip is `~/.config/magpie/backups`, not `~/.config/magpie
 - Escape **不**关窗、**不**上翻（仅关 File 菜单）；关窗用标题 × 或 File → Close Window；无 Cancel；Backups 右键无菜单
 - 真 Magpie 外抛 Thunar 时 Escape N/A；本演示叠层对齐 NOTES Escape 行为
 - 未做：Observability / Allowances / Codex memories / P1 / In projects → Choose…
+
+## In projects → Choose… (shots 101–119)
+
+Running magpie pid **560329**. Window still **752×652 at +200+40** (id 27262991, DISPLAY=:6). Not resized. Close (X) was not clicked. Library stayed on **Skills · 1** (ask-matt, given to Cursor). **Add was not submitted.** `magpie library` afterwards: Skills **ask-matt → cursor**; no project listed. No skill removed.
+
+The system picker is not Thunar. It is a GTK dialog owned by magpie, title **Choose a project**. Client 1100×680 at +31+55; the title sits in the window-manager bar, so the dialog grabs are the frame **1110×714 at +26+26** (a client-only 1100×680 grab cuts the title off). 109 is wider and starts at x=0 so a tip that hangs off the left of the dialog is not cut. Shot 119 is the Enter that follows 114; the file was written after 118.
+
+| shot | what |
+|---|---|
+| 101-in-projects | Skills · 1. **IN PROJECTS** and **Add a project**. Aside: give a project's agents some of these skills as the project's own; magpie links them into `.claude/skills` and `.agents/skills` and keeps them out of git. No project row. |
+| 102-add-project-hover | Pointer on **Add a project**. The button draws a border. No tooltip. |
+| 103-add-project-sheet | **Add a project** replaces the aside with one row: folder glyph, placeholder **The project's folder, like ~/code/app**, **Choose…**, **Add**, **Cancel**. Nothing typed. |
+| 104-choose-hover | Pointer on **Choose…**. Pale pill behind the words. No tooltip. |
+| 105-add-hover | Pointer on **Add**. Border (it is the action button). No tooltip. |
+| 106-cancel-hover | Pointer on **Cancel**. Pale pill. No tooltip. |
+| 107-choose-project-dialog | **Choose…** opens **Choose a project**. Title bar: magpie mark, title, minimize, maximize, close. Sidebar, top to bottom: **Recent** (selected), **Home**, **Desktop**, **workspace**, **Other Locations**. Recent list is empty. Columns: Name, Location, Size, Type, Accessed. Footer **Cancel** and **Open** (Open's label is dark, not a greyed disabled control). No breadcrumb on Recent. |
+| 108-choose-home | **Home** selected. Breadcrumb: back, home glyph, **box**, forward. A create-folder button (folder with a plus) at the top right; not clicked. Columns: Name (sort mark), Size, Type, Modified. Folders: agent-data, chrome-profile, cli-config, reference, sand-data. None opened. |
+| 109-choose-location-tip | **Ctrl+L** opens a location field under the title. On this open it was empty, blue focus ring, not prefilled with the current folder. Pointer on the sidebar **Desktop** row. Tip, one line, hanging off the dialog's left edge: **Open the contents of your desktop in a folder**. Grab is **1140×714 from +0+26**. Desktop was not opened (`~/Desktop` is not on disk). |
+| 110-choose-other-locations | **Other Locations**. Heading **On This Computer**. One row, **Computer**, **112.2 GB**. No breadcrumb. |
+| 111-choose-escape-sheet | Escape with the location field closed. Dialog closes. The magpie sheet stays. Field still the placeholder. Path not filled. |
+| 112-add-empty-noop | **Add** with the field empty. Sheet stays. Placeholder stays. No error. No project. |
+| 113-choose-cancel-sheet | Chooser opened again. **Cancel** on the dialog. Same as Escape: dialog gone, sheet still empty. |
+| 114-choose-path-typed | Chooser again. Ctrl+L, typed **/usr**. Field shows `/usr`. Recent columns still behind it. Enter not yet pressed. |
+| 119-choose-path-complete | Enter after 114. Field shows `/usr/` and a completion list: bin/, games/, i686-w64-mingw32/, include/, lib/, lib64/, libexec/, local/, sbin/, share/, src/, x86_64-w64-mingw32/, x86_64-w64-mingw32ucrt/. Dialog still open. Cancel and Open still in the footer. |
+| 115-project-path-filled | **Open** while Home is the current place (no location field). Dialog closes. The sheet field is **/home/box**. Choose…, Add, and Cancel still there. **Add was not clicked.** |
+| 116-sheet-cancel | **Cancel** on the magpie sheet. Card gone. **Add a project** and the aside are back. No project row. |
+| 117-sheet-escape-unfocused | Sheet opened again. Escape while the path field is not focused. Sheet stays. |
+| 118-sheet-escape-focused | Click in the path field, then Escape. Sheet closes. Same settled In projects aside as 116. |
+
+**Escape and Cancel.** On the dialog, Escape first dismisses the location field (and a completion list, if one is open) and does not close the window. A second Escape, with no location field, closes the dialog and does not change the sheet. **Cancel** closes the dialog in one click and also leaves the sheet empty. Neither one writes a project. On the magpie sheet, **Cancel** always drops the card. **Escape** drops it only when the path field has focus (the field's own key handler). Escape elsewhere on the sheet does nothing. **Add** with an empty field does nothing. **Add** was not clicked once a path was in the field, so `/home/box` was never kept.
+
+**Open** accepts the folder currently shown. From Home it returned `/home/box` and only filled the field. Clicks on Open while the location field still had `/usr` did not dismiss the dialog; the pointer in those checks sat on the button's left edge, so that is not a claim that a typed path cannot be accepted.
+
+Not opened: Desktop, workspace, Computer under Other Locations, the create-folder button, the dialog's minimize / maximize / close. No project row was left on the page, so the per-project skill list, copy-vs-link switch, and remove-project confirm are still unshot. Instructions, MCP servers, Hooks, and RTK were not part of this pass.
+
+## demo 对齐（101–119）· v0.1.84 IN_PROJECTS_CHOOSE_DONE
+- In projects → Add a project 卡：placeholder `The project's folder, like ~/code/app` · Choose… / Add / Cancel；无 tip
+- Choose… → GTK **Choose a project** 叠层（非 Thunar）：Recent 空 · Home（box 面包屑 + Home 夹列表）· Desktop tip · workspace · Other Locations（On This Computer / Computer 112.2 GB）
+- Ctrl+L 空 location 栏；Enter `/usr` → `/usr/` + 补全列表；Escape 先关 location/补全，再关对话框；对话框 Cancel 同 Escape（表单仍空）
+- Sheet：空 Add no-op；Cancel 关卡；Escape 仅 path 聚焦时关卡；Open@Home → 填 `/home/box`，不 Add
+- 未做：项目行 skill 勾选 / copy-vs-link / remove-project（仍未点录）
