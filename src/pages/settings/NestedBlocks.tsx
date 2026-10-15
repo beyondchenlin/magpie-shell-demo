@@ -641,23 +641,10 @@ export function SyncForms({
   const [expLib, setExpLib] = useState(true);
   const [impAgents, setImpAgents] = useState(true);
   const [impLib, setImpLib] = useState(true);
-  const [fname] = useState(t("No file chosen"));
-  const [chooser, setChooser] = useState(false);
-  const [chooserPlace, setChooserPlace] = useState<"home" | "desktop" | "workspace" | "other">("home");
+  const [fname, setFname] = useState(t("No file chosen"));
   const [err, setErr] = useState("");
-
-  useEffect(() => {
-    if (!chooser) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        e.preventDefault();
-        e.stopPropagation();
-        setChooser(false);
-      }
-    };
-    window.addEventListener("keydown", onKey, true);
-    return () => window.removeEventListener("keydown", onKey, true);
-  }, [chooser]);
+  /** Magpie app.js L21668–21674 importForm: OS <input type=file accept=.magpie-backup>, not invent GTK. */
+  const backupFileRef = useRef<HTMLInputElement>(null);
 
   const alsoSync = (
     <div className="stack">
@@ -690,45 +677,6 @@ export function SyncForms({
       </TextBtn>
     </div>
   );
-
-  const chooserModal = chooser ? (
-    <div
-      className="modal open"
-      role="dialog"
-      aria-modal="true"
-      aria-label={t("Select File")}
-      onClick={(e) => { if (e.target === e.currentTarget) setChooser(false); }}>
-      <div
-        className="dialog gtk-select-files">
-        <div className="ebody">
-          <nav className="places">
-            {([
-              ["home", t("Home")],
-              ["desktop", t("Desktop")],
-              ["workspace", "workspace"],
-              ["other", t("Other Locations")],
-            ] as const).map(([id, label]) => (
-              <TextBtn
-                key={id}
-                className={chooserPlace === id ? "on" : undefined}
-                onClick={() => setChooserPlace(id)}
-              >
-                {label}
-              </TextBtn>
-            ))}
-          </nav>
-          <div className="pane">
-            <div className="empty">{/* empty list — accept .magpie-backup; NOTES 86 */}</div>
-          </div>
-        </div>
-        <div className="bar">
-          <span className="grow" />
-          <TextBtn onClick={() => setChooser(false)}>{t("Cancel")}</TextBtn>
-          <TextBtn variant="primary" disabled title={t("No file chosen")}>{t("Open")}</TextBtn>
-        </div>
-      </div>
-    </div>
-  ) : null;
 
   if (open === "dav") {
     return (
@@ -818,7 +766,6 @@ export function SyncForms({
           {err ? <p className="editor-error">{err}</p> : null}
           {formBar}
         </div>
-        {chooserModal}
       </>
     );
   }
@@ -866,7 +813,20 @@ export function SyncForms({
           <label>{t("File")}</label>
           <div className="pair">
             <span className="fname">{fname}</span>
-            <TextBtn onClick={() => { setChooserPlace("home"); setChooser(true); }}>{t("Choose…")}</TextBtn>
+            <TextBtn onClick={() => backupFileRef.current?.click()}>{t("Choose…")}</TextBtn>
+            <input
+              ref={backupFileRef}
+              type="file"
+              accept=".magpie-backup"
+              hidden
+              onChange={(e) => {
+                const f = e.target.files?.[0];
+                e.target.value = "";
+                if (!f) return;
+                setFname(f.name);
+                setErr("");
+              }}
+            />
           </div>
           <label>{t("Passphrase")}</label>
           <div><WordsField className="full" type="password" placeholder={t("passphrase")} /></div>
@@ -892,7 +852,6 @@ export function SyncForms({
           </div>
           {err ? <p className="editor-error">{err}</p> : null}
         </div>
-        {chooserModal}
       </>
     );
   }

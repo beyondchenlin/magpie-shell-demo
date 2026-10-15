@@ -1,3 +1,16 @@
+## v0.1.156 · GTK_SELECT_FILES_OSS_FIDELITY · 2026-10-16 Asia/Shanghai
+
+- **WHY:** Continue Magpie 1:1 after 0.1.155 — cut invent `.dialog.gtk-select-files` / `.places` / `.pane` that painted an in-app GTK Select Files sheet over Magpie OS file input gold.
+- **CAUSE:** Demo Providers Claude/Antigravity "Choose files…" and Settings Sync Import "Choose…" opened invent modal `dialog.gtk-select-files` (Recent/Home/Desktop sidebar + empty pane + demo sample link) + shell-patch geometry, covering Magpie which never ships an in-app GTK chooser — import signing uses hidden `<input type=file multiple>` (app.js **L12425–12445**); sync `importForm` uses hidden `<input accept=.magpie-backup>` (app.js **L21668–21674**). Same class of invent as Library Thunar dropped in 0.1.149.
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; CIS PrefPick/WordsField/Segs/TextBtn/LibSwitch; Magpie field()/lib-pairs (0.1.154) + MCP `.bar` (0.1.155); image/skill `.ehead.detail` / `.blurb` bridges — later tips.
+- **Cite:**
+  - Magpie `app.js` **12425–12445** signing import: `input.type=file` multiple accept `.json,.txt,…`; `Choose files…` → `file.click()`; `fname` + 4MiB skip
+  - Magpie `app.js` **21668–21674** `importForm`: `input.accept=.magpie-backup`; `Choose…` → `file.click()`; `fname` / `pair`
+  - Magpie `app.js` **7908** related choose → `file.click()` pattern
+  - GAP-MATRIX NOTES 24 already: Magpie itself uses OS `<input type=file>`
+- **WHAT changed:** `ProvidersView.tsx` invent GTK modal → Magpie hidden file input in `.acts`; `NestedBlocks.tsx` Sync import invent chooser → Magpie hidden `.magpie-backup` input in `.pair`; `shell-patch.css` drop invent `.gtk-select-files*`.
+- **chrome-guard:** pass (SIDE_AT=1024). Push/PR #1. No portable/Vercel.
+
 ## v0.1.155 · LIBRARY_MCP_REMOVE_BAR_OSS_FIDELITY · 2026-10-16 Asia/Shanghai
 
 - **WHY:** Continue Magpie 1:1 after 0.1.154 — cut Library MCP invent `.acts` that held Remove / Copy config above the footer instead of Magpie `.bar`.

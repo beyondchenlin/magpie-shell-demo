@@ -1,3 +1,11 @@
+## v0.1.156 · GTK_SELECT_FILES_OSS_FIDELITY · 2026-10-16 Asia/Shanghai
+
+- **WHY:** invent `.dialog.gtk-select-files` → Magpie OS `<input type=file>` (Providers import + Sync importForm).
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; CIS PrefPick/WordsField; image/skill `.ehead.detail` / `.blurb` later.
+- **Cite:** app.js L12425–12445 / L21668–21674.
+- **chrome-guard:** pass (SIDE_AT=1024).
+- **No portable / Vercel.**
+
 ## v0.1.155 · LIBRARY_MCP_REMOVE_BAR_OSS_FIDELITY · 2026-10-16 Asia/Shanghai
 
 - **WHY:** Library invent `.acts` MCP Remove / Copy config → Magpie `.bar` (editServer L2046–2091).

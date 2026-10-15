@@ -2360,8 +2360,6 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
     | { state: "importing" }
     | { state: "imported"; results: { user: string; status: string; error?: string }[] };
   const [claudeSign, setClaudeSign] = useState<ClaudeSign>(null);
-  const [claudeFilePick, setClaudeFilePick] = useState(false);
-  const [claudeFileLoc, setClaudeFileLoc] = useState<"recent" | "home" | "desktop" | "settings" | "other">("recent");
   /** Magpie Antigravity: independent risk card (risk:true, importable) — Google riskNote + Cockpit/Manager/CLIProxyAPI import. Mock only. */
   type AgySign =
     | null
@@ -2376,27 +2374,17 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
     | { state: "importing" }
     | { state: "imported"; results: { user: string; status: string; error?: string }[] };
   const [agySign, setAgySign] = useState<AgySign>(null);
-  const [filePickFor, setFilePickFor] = useState<"claude" | "antigravity" | null>(null);
-  useEffect(() => {
-    if (!claudeFilePick) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key !== "Escape") return;
-      e.preventDefault();
-      e.stopPropagation();
-      setClaudeFilePick(false);
-      setFilePickFor(null);
-    };
-    document.addEventListener("keydown", onKey, true);
-    return () => document.removeEventListener("keydown", onKey, true);
-  }, [claudeFilePick]);
-  /** NOTES 23–24: Escape does not dismiss Claude/Antigravity import sheet — only Cancel. */
+  /** Magpie app.js L12425–12445: OS <input type=file>, not invent GTK Select Files. */
+  const claudeFileRef = useRef<HTMLInputElement>(null);
+  const agyFileRef = useRef<HTMLInputElement>(null);
+  /** NOTES 23: Escape does not dismiss Claude/Antigravity import sheet — only Cancel. */
   useEffect(() => {
     const importing =
       claudeSign?.state === "import" ||
       claudeSign?.state === "importing" ||
       agySign?.state === "import" ||
       agySign?.state === "importing";
-    if (!importing || claudeFilePick) return;
+    if (!importing) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== "Escape") return;
       e.preventDefault();
@@ -2404,7 +2392,7 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
     };
     document.addEventListener("keydown", onKey, true);
     return () => document.removeEventListener("keydown", onKey, true);
-  }, [claudeSign, agySign, claudeFilePick]);
+  }, [claudeSign, agySign]);
   /** Magpie Copilot device-code (NOTES): mock only — no real GitHub OAuth. */
   type CopilotSign =
     | null
@@ -3266,19 +3254,35 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
                             <button
                               type="button"
                               className="link"
-                              onClick={() => {
-                                setClaudeFileLoc("recent");
-                                setFilePickFor("claude");
-                                setClaudeFilePick(true);
-                              }}
+                              onClick={() => claudeFileRef.current?.click()}
                             >
                               {t("Choose files…")}
                             </button>
-                            {claudeSign.files.length ? (
-                              <span className="fname">
-                                {claudeSign.files.map((f) => f.name).join(", ")}
-                              </span>
-                            ) : null}
+                            <span className="fname">
+                              {claudeSign.files.map((f) => f.name).join(", ")}
+                            </span>
+                            <input
+                              ref={claudeFileRef}
+                              type="file"
+                              multiple
+                              accept=".json,.txt,application/json,text/plain"
+                              hidden
+                              onChange={async (e) => {
+                                const list = e.target.files;
+                                if (!list?.length) return;
+                                const picked: { name: string; text: string }[] = [];
+                                for (const f of Array.from(list)) {
+                                  if (f.size > 4 << 20) continue;
+                                  picked.push({ name: f.name, text: await f.text() });
+                                }
+                                e.target.value = "";
+                                setClaudeSign((s) =>
+                                  s?.state === "import"
+                                    ? { ...s, files: picked }
+                                    : s,
+                                );
+                              }}
+                            />
                           </span>
                           <textarea
                             rows={3}
@@ -3510,19 +3514,35 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
                             <button
                               type="button"
                               className="link"
-                              onClick={() => {
-                                setClaudeFileLoc("recent");
-                                setFilePickFor("antigravity");
-                                setClaudeFilePick(true);
-                              }}
+                              onClick={() => agyFileRef.current?.click()}
                             >
                               {t("Choose files…")}
                             </button>
-                            {agySign.files.length ? (
-                              <span className="fname">
-                                {agySign.files.map((f) => f.name).join(", ")}
-                              </span>
-                            ) : null}
+                            <span className="fname">
+                              {agySign.files.map((f) => f.name).join(", ")}
+                            </span>
+                            <input
+                              ref={agyFileRef}
+                              type="file"
+                              multiple
+                              accept=".json,.txt,application/json,text/plain"
+                              hidden
+                              onChange={async (e) => {
+                                const list = e.target.files;
+                                if (!list?.length) return;
+                                const picked: { name: string; text: string }[] = [];
+                                for (const f of Array.from(list)) {
+                                  if (f.size > 4 << 20) continue;
+                                  picked.push({ name: f.name, text: await f.text() });
+                                }
+                                e.target.value = "";
+                                setAgySign((s) =>
+                                  s?.state === "import"
+                                    ? { ...s, files: picked }
+                                    : s,
+                                );
+                              }}
+                            />
                           </span>
                           <textarea
                             rows={3}
@@ -4114,107 +4134,6 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
 
       {importOpen ? (
         <ImportAppsModal onClose={() => setImportOpen(false)} />
-      ) : null}
-      {claudeFilePick ? (
-        <div
-          className="modal open"
-          role="dialog"
-          aria-modal="true"
-          aria-label={t("Select Files")}
-          onClick={(e) => {
-            if (e.target === e.currentTarget) {
-              setClaudeFilePick(false);
-              setFilePickFor(null);
-            }
-          }}
-        >
-          {/* Magpie uses OS file input; NOTES 24 = GTK Select Files (Recent). Demo sheet mirrors that chrome. */}
-          <div className="dialog gtk-select-files">
-            <div className="ehead">{t("Select Files")}</div>
-            <div className="ebody">
-              <nav className="places">
-                {(
-                  [
-                    ["recent", t("Recent")],
-                    ["home", t("Home")],
-                    ["desktop", t("Desktop")],
-                    ["settings", "settings"],
-                    ["other", t("Other Locations")],
-                  ] as const
-                ).map(([id, label]) => (
-                  <button
-                    key={id}
-                    type="button"
-                    className={`text${claudeFileLoc === id ? " on" : ""}`}
-                    onClick={() => setClaudeFileLoc(id)}
-                  >
-                    {id === "other" ? `+ ${label}` : label}
-                  </button>
-                ))}
-              </nav>
-              <div className="pane">
-                <p className="empty">
-                  {demoCopy("此文件夹为空", "This folder is empty")}
-                </p>
-                <p className="demo">
-                  <button
-                    type="button"
-                    className="link"
-                    onClick={() => {
-                      if (filePickFor === "antigravity" && agySign?.state === "import") {
-                        setAgySign({
-                          state: "import",
-                          text: agySign.text,
-                          files: [
-                            {
-                              name: "antigravity-export.json",
-                              text: '{"demo":true,"refresh_tokens":[]}',
-                            },
-                          ],
-                        });
-                      } else if (claudeSign?.state === "import") {
-                        setClaudeSign({
-                          state: "import",
-                          text: claudeSign.text,
-                          files: [
-                            {
-                              name: ".credentials.json",
-                              text: '{"demo":true}',
-                            },
-                          ],
-                        });
-                      }
-                      setClaudeFilePick(false);
-                      setFilePickFor(null);
-                    }}
-                  >
-                    {demoCopy("演示选用示例文件", "Demo: pick a sample file")}
-                  </button>
-                </p>
-              </div>
-            </div>
-            <div className="bar">
-              <button
-                type="button"
-                className="text"
-                onClick={() => {
-                  setClaudeFilePick(false);
-                  setFilePickFor(null);
-                }}
-              >
-                {t("Cancel")}
-              </button>
-              <button
-                type="button"
-                className="text primary"
-                disabled
-                title={demoCopy("未选文件时 Open 禁用", "Open disabled with no selection")}
-              >
-                {t("Open")}
-              </button>
-            </div>
-          </div>
-        </div>
       ) : null}
       {moveMenu ? (() => {
         // Magpie app.js L5701–5726: on = providers !off; shown = search-visible on rows

@@ -795,80 +795,14 @@ label.tick input { margin: 0; }
    signInBox L1714–1733). */
 /* v0.1.140: drop invent .action-confirm .extra / label.tick.keep — Magpie confirmRemoveProject uses lib-pick.lib-keep in openLib (library/client.js L3668–3703), not ActionConfirm.extra */
 
-/* Magpie Providers signing / GTK Select Files / Move menu — CIS v0.1.112
+/* Magpie Providers signing / Move menu — CIS v0.1.112
    v0.1.145: drop invent .signing .s.note + .signing > .text { align-self } —
    Magpie app.css L2563 .signing .s; L2564 .signing > .text { margin: -3px 0 }. */
 
-.modal .dialog.gtk-select-files {
-  width: min(560px, 92vw);
-  max-height: min(480px, 82vh);
-  display: flex;
-  flex-direction: column;
-  animation: pop-in .42s cubic-bezier(.16, 1, .3, 1);
-  padding: 0;
-  overflow: hidden;
-}
-.modal .dialog.gtk-select-files > .ehead {
-  padding: 10px 14px;
-  border-bottom: 1px solid var(--line);
-  font-weight: 600;
-  font-size: 13px;
-  margin: 0;
-}
-.modal .dialog.gtk-select-files > .ebody {
-  display: grid;
-  grid-template-columns: 148px 1fr;
-  gap: 0;
-  min-height: 300px;
-  padding: 0;
-  flex: 1;
-  min-height: 0;
-}
-.modal .dialog.gtk-select-files .places {
-  border-right: 1px solid var(--line);
-  padding: 10px 8px;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-.modal .dialog.gtk-select-files .places .text {
-  justify-content: flex-start;
-  padding: 7px 10px;
-  border-radius: 8px;
-  font-weight: 450;
-}
-.modal .dialog.gtk-select-files .places .text.on {
-  background: var(--accent-soft);
-  color: var(--accent);
-  font-weight: 600;
-}
-.modal .dialog.gtk-select-files .pane {
-  padding: 12px;
-  overflow: auto;
-  margin: 10px;
-  border-radius: 8px;
-  min-height: 220px;
-  background: var(--card);
-}
-.modal .dialog.gtk-select-files .pane .empty {
-  color: var(--muted);
-  font-size: 12.5px;
-  text-align: center;
-  padding: 48px 12px;
-  margin: 0;
-}
-.modal .dialog.gtk-select-files .pane .demo {
-  text-align: center;
-  margin: 0 0 8px;
-}
-.modal .dialog.gtk-select-files > .bar {
-  display: flex;
-  gap: 8px;
-  justify-content: flex-end;
-  padding: 10px 14px;
-  margin: 0;
-  border-top: 1px solid var(--line-2);
-}
+/* v0.1.156: drop invent .dialog.gtk-select-files / .places / .pane —
+   Magpie has no in-app GTK Select Files. Providers import = OS
+   <input type=file multiple> (app.js L12425–12445 Choose files…);
+   Sync importForm = OS <input accept=.magpie-backup> (app.js L21668–21674). */
 
 /* v0.1.153: drop invent .scrim / .pop.move — Providers use Magpie openRowMenu
    .pop.row-menu (app.js L3497–3538 / L5713–5726; app.css L694–700). */
