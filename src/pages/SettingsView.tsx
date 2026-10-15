@@ -677,7 +677,7 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus, onHeade
           )}
           {gRows.language && (
             <PrefRow name={t("Language")}>
-              <div style={{ position: "relative" }}>
+              <div className="pref-anchor">
                 <button
                   type="button"
                   id="langPick"
@@ -692,7 +692,7 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus, onHeade
                   {CHEV}
                 </button>
                 {langOpen ? (
-                  <ul className="sess-menu" role="menu" style={{ position: "absolute", right: 0, top: "100%", zIndex: 20, marginTop: 4 }}>
+                  <ul className="sess-menu" role="menu">
                     {LOCALES.map((x) => (
                       <li key={x.id} role="none">
                         <button
@@ -789,7 +789,7 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus, onHeade
               name={t("Long conversations")}
               sub={t("Codex and Claude Code compact at 272K or the size typed; a full window makes turns slower and costlier")}
             >
-              <div className="compact-at" style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+              <div className="compact-at">
                 <Segs
                   value={prefs.fullContext ? "on" : "off"}
                   onChange={(v) => {
@@ -802,8 +802,8 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus, onHeade
                   ]}
                 />
                 {!prefs.fullContext ? (
-                  <input
-                    className="words compact-num"
+                  <WordsField
+                    className="compact-num"
                     value={compactDraft !== null ? compactDraft : prefs.compactAt}
                     placeholder="272k"
                     aria-label={t("Compact at")}
@@ -1250,8 +1250,8 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus, onHeade
                 sub={t("The library checks skills for updates with it: GitHub allows 5,000 requests an hour with a token, 60 without. It also installs skills from private repositories it can read; for public ones it needs no scopes.")}
                 className="github-token"
               >
-                <input
-                  className="words github-token-input"
+                <WordsField
+                  className="github-token-input"
                   type="password"
                   value={prefs.githubToken}
                   placeholder="ghp_… / github_pat_…"
@@ -1261,7 +1261,6 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus, onHeade
                     e.stopPropagation();
                     if (e.key === "Enter") setPrefs({ githubToken: prefs.githubToken.trim() });
                   }}
-                  style={{ width: 160 }}
                 />
                 <button
                   type="button"
@@ -1369,8 +1368,8 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus, onHeade
                   className="rule-row"
                   valClassName="rule-add"
                 >
-                  <input
-                    className="words rule-match allow-ip"
+                  <WordsField
+                    className="rule-match allow-ip"
                     value={prefs.allowDraft}
                     placeholder="203.0.113.7, 10.0.0.0/8"
                     aria-label={t("IP address or range")}
@@ -1417,34 +1416,33 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus, onHeade
                 name={t("Web pages that may call magpie")}
                 sub={t("Scripts on these origins can call the gateway from a browser, each request with a gateway key from Gateway. A page from any other site is refused; pages on this computer are not")}
                 className="rule-row"
+                valClassName="rule-add"
               >
-                <div className="val rule-add" style={{ display: "inline-flex", gap: 6 }}>
-                  <input
-                    className="words rule-match"
-                    value={prefs.corsDraft}
-                    placeholder="http://localhost:3000"
-                    aria-label={t("Web page origin")}
-                    onChange={(e) => setPrefsState((p) => ({ ...p, corsDraft: e.target.value }))}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        const v = prefs.corsDraft.trim();
-                        if (!v) return;
-                        setPrefs({ corsOrigins: [...prefs.corsOrigins, v], corsDraft: "" });
-                      }
-                    }}
-                  />
-                  <button
-                    type="button"
-                    className="text"
-                    onClick={() => {
+                <WordsField
+                  className="rule-match"
+                  value={prefs.corsDraft}
+                  placeholder="http://localhost:3000"
+                  aria-label={t("Web page origin")}
+                  onChange={(e) => setPrefsState((p) => ({ ...p, corsDraft: e.target.value }))}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
                       const v = prefs.corsDraft.trim();
                       if (!v) return;
                       setPrefs({ corsOrigins: [...prefs.corsOrigins, v], corsDraft: "" });
-                    }}
-                  >
-                    {t("Add")}
-                  </button>
-                </div>
+                    }
+                  }}
+                />
+                <button
+                  type="button"
+                  className="text"
+                  onClick={() => {
+                    const v = prefs.corsDraft.trim();
+                    if (!v) return;
+                    setPrefs({ corsOrigins: [...prefs.corsOrigins, v], corsDraft: "" });
+                  }}
+                >
+                  {t("Add")}
+                </button>
               </PrefRow>
               {prefs.corsOrigins.map((o) => (
                 <PrefRow key={o} name={o} className="cors-origin">
@@ -1629,23 +1627,23 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus, onHeade
             ? REDACT_KINDS.map(([id, name, sub, defOn]) => {
                 const on = prefs.redactKinds[id] ?? defOn;
                 return (
-                  <div className="row pref redact-kind" key={id} data-redact={id} style={{ animation: "fade-in .2s var(--ease)" }}>
-                    <div className="who">
-                      <div className="name">{t(name)}</div>
-                      <div className="sub">{t(sub)}</div>
-                    </div>
-                    <div className="val">
-                      <Segs
-                        value={on ? "on" : "off"}
-                        onChange={(v) =>
-                          setPrefs({
-                            redactKinds: { ...prefs.redactKinds, [id]: v === "on" },
-                          })
-                        }
-                        items={[{ id: "off", label: t("Off") }, { id: "on", label: t("On") }]}
-                      />
-                    </div>
-                  </div>
+                  <PrefRow
+                    key={id}
+                    name={t(name)}
+                    sub={t(sub)}
+                    className="redact-kind"
+                    id={`redact-${id}`}
+                  >
+                    <Segs
+                      value={on ? "on" : "off"}
+                      onChange={(v) =>
+                        setPrefs({
+                          redactKinds: { ...prefs.redactKinds, [id]: v === "on" },
+                        })
+                      }
+                      items={[{ id: "off", label: t("Off") }, { id: "on", label: t("On") }]}
+                    />
+                  </PrefRow>
                 );
               })
             : null}
@@ -1653,8 +1651,7 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus, onHeade
             <Segs value={prefs.hideAccounts ? "on" : "off"} onChange={(v) => setPrefs({ hideAccounts: v === "on" })} items={[{ id: "off", label: t("Off") }, { id: "on", label: t("On") }]} />
           </PrefRow>
           <PrefRow name={t("Masked words")} sub={t("Your own words to keep from vendors, separated by commas")}>
-            <input
-              className="words"
+            <WordsField
               value={prefs.redactWords}
               placeholder={t("names, codenames, hosts")}
               aria-label={t("Masked words")}

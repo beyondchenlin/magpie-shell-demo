@@ -4,6 +4,18 @@
 
 ---
 
+## v0.1.104 · CIS_P0_SETTINGS_TICK · 2026-10-15 Asia/Shanghai
+
+- **WHY:** Bring Settings / add-model onto CIS — replace bare inputs + native checkbox chrome (P0 only; no feature stuffing).
+- **WHAT kept:** `SIDE_AT=1024`; no `WEB_SIDE_AT`; Win chrome / 752 frame; P1 sheet/stack and P2 PrefPick deferred.
+- **WHAT changed:**
+  - Settings: `WordsField` for compact/GitHub/port/allow/cors/masked words; drop page-local flex/position styles → `.pref-anchor` / `.compact-at` / `.rule-add` / `.github-token-input` / `.redact-kind`; redact kinds via `PrefRow`.
+  - Extract `Tick`; Providers add-model User-Agent / Redaction / Web search + NestedBlocks Sync/Export ticks consume it (Magpie `label.tick` + styled checkbox).
+  - NestedBlocks Sync/Export/Search/Mirror/OTLP/rules: `WordsField` (+ `.words.full`); add-model concurrency/queue/ctx fields get Magpie editor class names.
+  - CIS §10.5 marks P0 done.
+- **Guard:** `npm run chrome-guard`. No portable. No push/Vercel.
+
+---
 ## v0.1.103 · CIS_COMPONENTS_ROUTING_WIRES · 2026-10-15 Asia/Shanghai
 
 - **WHY:** User: nest/1:1 is to learn Magpie into a **unified CIS + reusable components** — not feature stuffing. Gaps: Routing live stage weak adaptive; Settings/add-model unfit controls.

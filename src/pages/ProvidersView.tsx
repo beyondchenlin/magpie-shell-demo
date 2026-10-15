@@ -11,6 +11,7 @@ import { SUB_TILES, iconSrc } from "../data/mock";
 import { ZH, t, demoCopy } from "../i18n";
 import { ProtoMultiMenu } from "../components/ProtoMultiMenu";
 import { LibSwitch } from "../components/LibSwitch";
+import { Tick } from "../components/Tick";
 
 type Preset = { id: string; name: string; icon: string; kind: string };
 const PRESETS = presets as Preset[];
@@ -1587,7 +1588,7 @@ function ProviderEditorModal({ state, onClose, onAdd, onStatus, saved, onRemove,
                     : t("Follows the proxy in Settings")
               }
             >
-              <div className="pair" style={{ gap: 8, flexWrap: "wrap", alignItems: "center" }}>
+              <div className="pair proxy-row">
                 <Segs
                   value={proxy}
                   onChange={setProxy}
@@ -1600,10 +1601,10 @@ function ProviderEditorModal({ state, onClose, onAdd, onStatus, saved, onRemove,
                 {proxy === "custom" ? (
                   <input
                     type="url"
+                    className="proxy-url"
                     placeholder="http://127.0.0.1:7890"
                     value={proxyUrl}
                     onChange={(e) => setProxyUrl(e.target.value)}
-                    style={{ flex: 1, minWidth: 160, animation: "fade-in .2s var(--ease)" }}
                   />
                 ) : null}
               </div>
@@ -1613,7 +1614,7 @@ function ProviderEditorModal({ state, onClose, onAdd, onStatus, saved, onRemove,
               label={t("Concurrency")}
               hint={t("Over it, requests queue and go out in order; 0 or empty is no limit")}
             >
-              <input type="text" placeholder={t("No limit")} />
+              <input type="text" className="concurrency" placeholder={t("No limit")} />
             </Field>
             <Field
               label={t("Requests per minute")}
@@ -1621,16 +1622,16 @@ function ProviderEditorModal({ state, onClose, onAdd, onStatus, saved, onRemove,
                 "How many requests each key or account sends in any minute, retries included; one more waits for room, up to 2 minutes. 0 or empty is no limit",
               )}
             >
-              <input type="text" placeholder={t("No limit")} />
+              <input type="text" className="rpm" placeholder={t("No limit")} />
             </Field>
             <Field label={ZH.queueSize}>
-              <input type="text" placeholder={ZH.noBound} />
+              <input type="text" className="queue-limit" placeholder={ZH.noBound} />
             </Field>
             <Field label={ZH.queueWait}>
-              <input type="text" placeholder={ZH.asLong} />
+              <input type="text" className="queue-wait" placeholder={ZH.asLong} />
             </Field>
             <Field label={ZH.priceRate}>
-              <input type="text" placeholder={ZH.priceOne} />
+              <input type="text" className="price-rate" placeholder={ZH.priceOne} />
             </Field>
 
             {kind === "openrouter" || isLocal || (kind === "custom" && api === "anthropic") ? (
@@ -1663,10 +1664,7 @@ function ProviderEditorModal({ state, onClose, onAdd, onStatus, saved, onRemove,
                       "For a plan that serves only the coding agents it names: each request goes with the User-Agent the agent sent (pi, OpenCode, Claude Code…), not magpie's. Requests magpie makes itself, and ones the agent sent without one, still go as magpie. A User-Agent set in Headers above always wins.",
                     )}
                   >
-                    <label className="tick" style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13 }}>
-                      <input type="checkbox" />
-                      <span>{t("Send the agent's own User-Agent")}</span>
-                    </label>
+                    <Tick>{t("Send the agent's own User-Agent")}</Tick>
                   </Field>
                 ) : null}
                 {isLocal ? (
@@ -1676,14 +1674,9 @@ function ProviderEditorModal({ state, onClose, onAdd, onStatus, saved, onRemove,
                       "For a model running on this computer or your local network: secrets, personal data and your masked words go to it as written. Leave it off for a local relay or proxy that passes requests on to a vendor.",
                     )}
                   >
-                    <label className="tick" style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13 }}>
-                      <input
-                        type="checkbox"
-                        checked={unmasked}
-                        onChange={(e) => setUnmasked(e.target.checked)}
-                      />
-                      <span>{t("Send requests unmasked")}</span>
-                    </label>
+                    <Tick checked={unmasked} onChange={(e) => setUnmasked(e.target.checked)}>
+                      {t("Send requests unmasked")}
+                    </Tick>
                   </Field>
                 ) : null}
                 <Field
@@ -1692,8 +1685,8 @@ function ProviderEditorModal({ state, onClose, onAdd, onStatus, saved, onRemove,
                     "How long a request the models take, told to the agents; empty leaves it to the vendor and models.dev",
                   )}
                 >
-                  <input type="text" placeholder={t("e.g. 128k · or gpt-6=1m, comma separated")} />
-                  <div className="chips" style={{ marginTop: 6 }}>
+                  <input type="text" className="ctx-window" placeholder={t("e.g. 128k · or gpt-6=1m, comma separated")} />
+                  <div className="chips">
                     {CTX_CHIPS.map((c) => (
                       <button key={c} type="button" className="chip">
                         {c}
@@ -1707,8 +1700,8 @@ function ProviderEditorModal({ state, onClose, onAdd, onStatus, saved, onRemove,
                     "The most a reply may hold, told to the agents as their max tokens and sent as max_tokens on Anthropic's API when the agent names none; empty leaves it to the vendor and models.dev",
                   )}
                 >
-                  <input type="text" placeholder={t("e.g. 32k · or gpt-6=128k, comma separated")} />
-                  <div className="chips" style={{ marginTop: 6 }}>
+                  <input type="text" className="max-output" placeholder={t("e.g. 32k · or gpt-6=128k, comma separated")} />
+                  <div className="chips">
                     {OUT_CHIPS.map((c) => (
                       <button key={c} type="button" className="chip">
                         {c}
@@ -1722,8 +1715,8 @@ function ProviderEditorModal({ state, onClose, onAdd, onStatus, saved, onRemove,
                     "Where Codex and Claude Code compact a long conversation on these models; empty follows Settings → Long conversations, and a size at or above a model's window runs it to its whole window",
                   )}
                 >
-                  <input type="text" placeholder={t("e.g. 500k · or deepseek-v4-flash=272k, comma separated")} />
-                  <div className="chips" style={{ marginTop: 6 }}>
+                  <input type="text" className="compact-at" placeholder={t("e.g. 500k · or deepseek-v4-flash=272k, comma separated")} />
+                  <div className="chips">
                     {["128K", "200K", "272K", "500K", "1M"].map((c) => (
                       <button key={c} type="button" className="chip">
                         {c}
@@ -1935,14 +1928,9 @@ function ProviderEditorModal({ state, onClose, onAdd, onStatus, saved, onRemove,
                   "For a relay in front of Anthropic's or OpenAI's own API: Claude Code's WebSearch and Codex's web_search go to it as they were sent, not through magpie's search. magpie doesn't automatically search with it for other models, but you can name it as the searcher.",
                 )}
               >
-                <label className="tick" style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13 }}>
-                  <input
-                    type="checkbox"
-                    checked={webSearch}
-                    onChange={(e) => setWebSearch(e.target.checked)}
-                  />
-                  <span>{t("Searches the web by itself")}</span>
-                </label>
+                <Tick checked={webSearch} onChange={(e) => setWebSearch(e.target.checked)}>
+                  {t("Searches the web by itself")}
+                </Tick>
               </Field>
             ) : null}
 
@@ -1953,7 +1941,7 @@ function ProviderEditorModal({ state, onClose, onAdd, onStatus, saved, onRemove,
                 onToggle={(e) => setMoreOpen(e.currentTarget.open)}
               >
                 <summary>{t("More endpoints")}</summary>
-                <div className="inner" style={{ display: "flex", flexDirection: "column", gap: 10, paddingTop: 8 }}>
+                <div className="inner">
                   {api !== "openai" ? (
                     <Field
                       label={t("OpenAI URL")}

@@ -1,6 +1,6 @@
-# Last tip cycle · v0.1.103
+# Last tip cycle · v0.1.104
 
-- **WHY:** CIS component contract + Routing live adaptive wires (max560 / fromHub); extract PrefRow/TextBtn/WordsField/LibSwitch for Settings/Providers
-- **Chrome:** kept SIDE_AT=1024 / no WEB_SIDE_AT / Win gold / 752 frame — page-only + shared components
+- **WHY:** CIS P0 — Settings/add-model WordsField + Tick (no feature stuffing)
+- **Chrome:** SIDE_AT=1024 / no WEB_SIDE_AT / 752 frame unchanged
 - **Guard:** chrome-guard before commit
 - **Date:** 2026-10-15 Asia/Shanghai

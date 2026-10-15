@@ -1,3 +1,8 @@
+## v0.1.104 CIS_P0_SETTINGS_TICK
+- Settings prefs: bare `input.words` / page-local flex styles → `WordsField` + Magpie classes (`.pref-anchor`, `.rule-add`, `.github-token-input`, `.words.full`); redact kinds use `PrefRow`.
+- add-model + Sync/Export: native checkbox + inline `label.tick` styles → `Tick` (Magpie styled checkbox). Editor numeric fields get Magpie class names (`concurrency`, `queue-limit`, …).
+- CIS §10.5 P0 marked done. P1 layout styles / P2 PrefPick still open. SIDE_AT=1024. No portable / Vercel.
+
 ## v0.1.103 CIS_COMPONENTS_ROUTING_WIRES
 - CIS §10: Magpie-class component contract + React wrappers (`PrefRow` `TextBtn` `WordsField` `LibSwitch`); Settings/add-model mismatch prioritized; consume rule — no one-off styles.
 - Routing live stage: Magpie-faithful wires (horizontal beside hub; vertical lane when `.rt-main.max560` / nest 117); viewBox + redraw on narrow. CSS max560 grid unchanged (agent‖magpie, No request yet full width).

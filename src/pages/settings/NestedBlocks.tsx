@@ -2,6 +2,8 @@ import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "re
 import { createPortal } from "react-dom";
 import { ModelPop, PrefPickChip, type PopOption } from "../../components/ModelPop";
 import { Segs } from "../../components/Segs";
+import { Tick } from "../../components/Tick";
+import { WordsField } from "../../components/WordsField";
 import { WarmAt } from "../../components/WarmAt";
 import { demoCopy, t } from "../../i18n";
 
@@ -414,7 +416,7 @@ export function RedactRulesBlock({
           <div className="sub">{t("Secrets magpie doesn't know, such as a gateway's own keys: what they start with, or a regular expression. Masked while Mask secrets is on")}</div>
         </div>
         <div className="val rule-add">
-          <input className="words rule-kind" value={kind} placeholder="API_KEY" onChange={(e) => setKind(e.target.value)} />
+          <WordsField className="rule-kind" value={kind} placeholder="API_KEY" onChange={(e) => setKind(e.target.value)} />
           <Segs
             value={by}
             onChange={(v) => {
@@ -428,8 +430,8 @@ export function RedactRulesBlock({
               { id: "regex", label: t("Regex") },
             ]}
           />
-          <input
-            className="words rule-match"
+          <WordsField
+            className="rule-match"
             value={match}
             placeholder={by === "prefix" ? "oc_sk_" : "oc_sk_[A-Za-z0-9]{20,}"}
             onChange={(e) => setMatch(e.target.value)}
@@ -446,7 +448,7 @@ export function RedactRulesBlock({
               <div className="sub">{r.prefix ? t("Starts with {p}", { p: r.prefix }) : t("Matches {re}", { re: r.regex || "" })}</div>
             </div>
             <div className="val rule-add">
-              <input className="words rule-kind editing" value={ekind} onChange={(e) => setEkind(e.target.value)} aria-label={t("Name")} />
+              <WordsField className="rule-kind editing" value={ekind} onChange={(e) => setEkind(e.target.value)} aria-label={t("Name")} />
               <Segs value={eby} onChange={(v) => {
                 const next = v as "prefix" | "regex";
                 const samples = { prefix: "oc_sk_", regex: "oc_sk_[A-Za-z0-9]{20,}" } as const;
@@ -454,8 +456,8 @@ export function RedactRulesBlock({
                 setEby(next);
               }} items={[{ id: "prefix", label: t("Prefix") }, { id: "regex", label: t("Regex") }]} />
               <div className="rule-tail">
-                <input
-                  className="words rule-match editing"
+                <WordsField
+                  className="rule-match editing"
                   value={ematch}
                   onChange={(e) => setEmatch(e.target.value)}
                   onKeyDown={(e) => {
@@ -543,7 +545,7 @@ export function OtelFull({ config, onChange }: { config: OtelConfig; onChange: (
             <div className="sub">{t("Base URL of your collector, or Langfuse's /api/public/otel endpoint")}</div>
           </div>
           <div className="val">
-            <input className="words" value={config.endpoint} placeholder="http://localhost:4318" aria-label={t("OTLP endpoint")} onChange={(e) => save({ endpoint: e.target.value })} />
+            <WordsField className="full" value={config.endpoint} placeholder="http://localhost:4318" aria-label={t("OTLP endpoint")} onChange={(e) => save({ endpoint: e.target.value })} />
           </div>
         </div>
         <div className="row pref otel-stacked" id="otelHeadersRow">
@@ -552,7 +554,7 @@ export function OtelFull({ config, onChange }: { config: OtelConfig; onChange: (
             <div className="sub">{t("Comma-separated name=value pairs; percent-encode spaces and commas in values")}</div>
           </div>
           <div className="val">
-            <input className="words" type="password" autoComplete="off" value={config.headers} placeholder="Authorization=Bearer%20token" aria-label={t("OTLP headers")} onChange={(e) => save({ headers: e.target.value })} />
+            <WordsField className="full" type="password" autoComplete="off" value={config.headers} placeholder="Authorization=Bearer%20token" aria-label={t("OTLP headers")} onChange={(e) => save({ headers: e.target.value })} />
           </div>
         </div>
       </div>
@@ -663,10 +665,10 @@ export function SyncForms({
 
   const alsoSync = (
     <div className="stack">
-      <label className="tick"><input type="checkbox" checked={keys} onChange={(e) => setKeys(e.target.checked)} />{t("Providers' API keys")}</label>
-      <label className="tick"><input type="checkbox" checked={agents} onChange={(e) => setAgents(e.target.checked)} />{t("Agents' models")}</label>
-      <label className="tick"><input type="checkbox" checked={lib} onChange={(e) => setLib(e.target.checked)} />{t("Library: instructions, MCP servers and skills")}</label>
-      <label className="tick"><input type="checkbox" checked={usage} onChange={(e) => setUsage(e.target.checked)} />{t("Usage: this computer's calls, for the Usage page on the others")}</label>
+      <Tick checked={keys} onChange={(e) => setKeys(e.target.checked)}>{t("Providers' API keys")}</Tick>
+      <Tick checked={agents} onChange={(e) => setAgents(e.target.checked)}>{t("Agents' models")}</Tick>
+      <Tick checked={lib} onChange={(e) => setLib(e.target.checked)}>{t("Library: instructions, MCP servers and skills")}</Tick>
+      <Tick checked={usage} onChange={(e) => setUsage(e.target.checked)}>{t("Usage: this computer's calls, for the Usage page on the others")}</Tick>
       {usage ? (
         <div className="hint">{t("Usage goes as a file a day: times, tokens, models and costs, never what was said. Turn it on on each computer that shares its own.")}</div>
       ) : null}
@@ -768,37 +770,37 @@ export function SyncForms({
             <>
               <label>{t("Address")}</label>
               <div>
-                <input className="words" style={{ width: "100%" }} value={url} placeholder="https://dav.jianguoyun.com/dav/" onChange={(e) => setUrl(e.target.value)} />
+                <WordsField className="full" value={url} placeholder="https://dav.jianguoyun.com/dav/" onChange={(e) => setUrl(e.target.value)} />
                 <div className="hint">{t("A folder named magpie is made in it.")}</div>
               </div>
               <label>{t("User")}</label>
-              <div><input className="words" style={{ width: "100%" }} value={user} placeholder={t("user name")} onChange={(e) => setUser(e.target.value)} /></div>
+              <div><WordsField className="full" value={user} placeholder={t("user name")} onChange={(e) => setUser(e.target.value)} /></div>
               <label>{t("Password")}</label>
-              <div><input className="words" type="password" style={{ width: "100%" }} value={pass} placeholder={t("password, or an app password")} onChange={(e) => setPass(e.target.value)} /></div>
+              <div><WordsField className="full" type="password" value={pass} placeholder={t("password, or an app password")} onChange={(e) => setPass(e.target.value)} /></div>
             </>
           ) : kind === "s3" ? (
             <>
               <label>{t("Endpoint")}</label>
               <div>
-                <input className="words" style={{ width: "100%" }} value={endpoint} placeholder="https://<account>.r2.cloudflarestorage.com" onChange={(e) => setEndpoint(e.target.value)} />
+                <WordsField className="full" value={endpoint} placeholder="https://<account>.r2.cloudflarestorage.com" onChange={(e) => setEndpoint(e.target.value)} />
                 <div className="hint">{t("Empty for AWS S3; for R2, B2, MinIO and the like, their S3 API address.")}</div>
               </div>
               <label>{t("Bucket")}</label>
-              <div><input className="words" style={{ width: "100%" }} value={bucket} placeholder={t("bucket name")} onChange={(e) => setBucket(e.target.value)} /></div>
+              <div><WordsField className="full" value={bucket} placeholder={t("bucket name")} onChange={(e) => setBucket(e.target.value)} /></div>
               <label>{t("Prefix")}</label>
               <div>
-                <input className="words" style={{ width: "100%" }} value={prefix} placeholder={t("optional")} onChange={(e) => setPrefix(e.target.value)} />
+                <WordsField className="full" value={prefix} placeholder={t("optional")} onChange={(e) => setPrefix(e.target.value)} />
                 <div className="hint">{t("The backup goes in a folder named magpie under it.")}</div>
               </div>
               <label>{t("Region")}</label>
-              <div><input className="words" style={{ width: "100%" }} value={region} placeholder="us-east-1, or auto for R2" onChange={(e) => setRegion(e.target.value)} /></div>
+              <div><WordsField className="full" value={region} placeholder="us-east-1, or auto for R2" onChange={(e) => setRegion(e.target.value)} /></div>
               <label>{t("Access key")}</label>
-              <div><input className="words" style={{ width: "100%" }} value={accessKey} placeholder="AKIA…" onChange={(e) => setAccessKey(e.target.value)} /></div>
+              <div><WordsField className="full" value={accessKey} placeholder="AKIA…" onChange={(e) => setAccessKey(e.target.value)} /></div>
               <label>{t("Secret")}</label>
-              <div><input className="words" type="password" style={{ width: "100%" }} value={secret} placeholder={t("secret access key")} onChange={(e) => setSecret(e.target.value)} /></div>
+              <div><WordsField className="full" type="password" value={secret} placeholder={t("secret access key")} onChange={(e) => setSecret(e.target.value)} /></div>
               <label />
               <div className="stack">
-                <label className="tick"><input type="checkbox" checked={pathStyle} onChange={(e) => setPathStyle(e.target.checked)} />{t("Path-style: the bucket in the path, not the host name")}</label>
+                <Tick checked={pathStyle} onChange={(e) => setPathStyle(e.target.checked)}>{t("Path-style: the bucket in the path, not the host name")}</Tick>
                 {pathStyle ? <div className="hint">{t("MinIO and most NAS servers need it.")}</div> : null}
               </div>
             </>
@@ -806,29 +808,29 @@ export function SyncForms({
             <>
               <label>{t("Repository")}</label>
               <div>
-                <input className="words" style={{ width: "100%" }} value={repo} placeholder="owner/repo" onChange={(e) => setRepo(e.target.value)} />
+                <WordsField className="full" value={repo} placeholder="owner/repo" onChange={(e) => setRepo(e.target.value)} />
                 <div className="hint">{t("An existing private GitHub repository, in owner/repo form.")}</div>
               </div>
               <label>{t("Branch")}</label>
               <div>
-                <input className="words" style={{ width: "100%" }} value={branch} placeholder={t("default branch")} onChange={(e) => setBranch(e.target.value)} />
+                <WordsField className="full" value={branch} placeholder={t("default branch")} onChange={(e) => setBranch(e.target.value)} />
                 <div className="hint">{t("Empty uses the repository's default branch. Empty repositories are initialized by the first sync; other branches must already exist.")}</div>
               </div>
               <label>{t("Folder")}</label>
               <div>
-                <input className="words" style={{ width: "100%" }} value={folder} placeholder={t("optional")} onChange={(e) => setFolder(e.target.value)} />
+                <WordsField className="full" value={folder} placeholder={t("optional")} onChange={(e) => setFolder(e.target.value)} />
                 <div className="hint">{t("The encrypted backup goes in <folder>/magpie/magpie.magpie-backup. Each update creates a commit.")}</div>
               </div>
               <label>{t("GitHub token")}</label>
               <div>
-                <input className="words" type="password" style={{ width: "100%" }} value={ghToken} placeholder={t("GitHub token")} onChange={(e) => setGhToken(e.target.value)} />
+                <WordsField className="full" type="password" value={ghToken} placeholder={t("GitHub token")} onChange={(e) => setGhToken(e.target.value)} />
                 <div className="hint">{t("A fine-grained token for this repository with Contents: read and write. Kept on this computer, separately from the library's GitHub token.")}</div>
               </div>
             </>
           )}
           <label>{t("Passphrase")}</label>
           <div>
-            <input className="words" type="password" style={{ width: "100%" }} value={phrase} placeholder={t("the same on every computer")} onChange={(e) => setPhrase(e.target.value)} />
+            <WordsField className="full" type="password" value={phrase} placeholder={t("the same on every computer")} onChange={(e) => setPhrase(e.target.value)} />
             <div className="hint">{t("The file is sealed with it on this computer; the server only ever sees it sealed. Keep it: without it the file can't be opened.")}</div>
           </div>
           <label>{t("Also sync")}</label>
@@ -846,15 +848,15 @@ export function SyncForms({
       <div className="editor sync-form">
         <label>{t("Passphrase")}</label>
         <div>
-          <input className="words" type="password" style={{ width: "100%" }} value={p1} placeholder={t("passphrase")} onChange={(e) => setP1(e.target.value)} />
+          <WordsField className="full" type="password" value={p1} placeholder={t("passphrase")} onChange={(e) => setP1(e.target.value)} />
           <div className="hint">{t("Needed to open the file. Subscriptions aren't in it: sign in to them on the other computer.")}</div>
         </div>
         <label />
-        <div><input className="words" type="password" style={{ width: "100%" }} value={p2} placeholder={t("again")} onChange={(e) => setP2(e.target.value)} /></div>
+        <div><WordsField className="full" type="password" value={p2} placeholder={t("again")} onChange={(e) => setP2(e.target.value)} /></div>
         <label />
         <div className="stack">
-          <label className="tick"><input type="checkbox" checked={expKeys} onChange={(e) => setExpKeys(e.target.checked)} />{t("With the providers' API keys")}</label>
-          <label className="tick"><input type="checkbox" checked={expLib} onChange={(e) => setExpLib(e.target.checked)} />{t("With the library: instructions, MCP servers and skills")}</label>
+          <Tick checked={expKeys} onChange={(e) => setExpKeys(e.target.checked)}>{t("With the providers' API keys")}</Tick>
+          <Tick checked={expLib} onChange={(e) => setExpLib(e.target.checked)}>{t("With the library: instructions, MCP servers and skills")}</Tick>
         </div>
         {err ? <p className="editor-error">{err}</p> : null}
         <div className="bar">
@@ -888,11 +890,11 @@ export function SyncForms({
             <button type="button" className="text" onClick={() => { setChooserPlace("home"); setChooser(true); }}>{t("Choose…")}</button>
           </div>
           <label>{t("Passphrase")}</label>
-          <div><input className="words" type="password" style={{ width: "100%" }} placeholder={t("passphrase")} /></div>
+          <div><WordsField className="full" type="password" placeholder={t("passphrase")} /></div>
           <label />
           <div className="stack">
-            <label className="tick"><input type="checkbox" checked={impAgents} onChange={(e) => setImpAgents(e.target.checked)} />{t("Set the agents' models too")}</label>
-            <label className="tick"><input type="checkbox" checked={impLib} onChange={(e) => setImpLib(e.target.checked)} />{t("Bring in the library too: instructions, MCP servers and skills")}</label>
+            <Tick checked={impAgents} onChange={(e) => setImpAgents(e.target.checked)}>{t("Set the agents' models too")}</Tick>
+            <Tick checked={impLib} onChange={(e) => setImpLib(e.target.checked)}>{t("Bring in the library too: instructions, MCP servers and skills")}</Tick>
             <div className="hint">{t("Providers with the same id are replaced; one that came without a key keeps the key it has here. The library replaces the one here, which is kept with its backups.")}</div>
           </div>
           <div className="bar">
@@ -1176,8 +1178,8 @@ export function UpdateMirrorRow({
           )
         ) : (
           <>
-            <input
-              className="words update-mirror-input"
+            <WordsField
+              className="update-mirror-input"
               value={draft}
               placeholder="https://mirror.example/"
               aria-label={t("Mirror address")}
@@ -1482,8 +1484,8 @@ export function SearchApisBlock({
               <path d="M4 6l4 4 4-4" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </button>
-          <input
-            className="words search-key"
+          <WordsField
+            className="search-key"
             type="password"
             value={key}
             placeholder={
@@ -1513,8 +1515,8 @@ export function SearchApisBlock({
           <button type="button" className="text" onClick={add}>
             {t("Add")}
           </button>
-          <input
-            className="words search-url"
+          <WordsField
+            className="search-url"
             value={url}
             placeholder={v.needURL ? "https://searx.example.com" : t("Base URL, empty for {url}", { url: v.base || "" })}
             aria-label={v.needURL ? t("Address") : t("Base URL")}

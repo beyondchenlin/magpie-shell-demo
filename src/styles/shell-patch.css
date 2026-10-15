@@ -1008,3 +1008,35 @@ body.web.side-nav {
   font-weight: 600;
   margin-left: 6px;
 }
+
+
+/* —— v0.1.104 CIS P0: Settings / Tick / WordsField helpers (no chrome) —— */
+.pref-anchor { position: relative; display: inline-flex; align-items: center; }
+.pref-anchor > .sess-menu {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  z-index: 20;
+  margin-top: 4px;
+}
+/* Magpie .editor label.tick already in app.css; allow Tick outside editor too */
+label.tick {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--fg-2);
+  font-size: 13px;
+  cursor: pointer;
+  text-align: left;
+}
+label.tick input { margin: 0; }
+.github-token-input { width: 160px; max-width: 100%; }
+.words.full { width: 100%; max-width: 100%; }
+.row.pref.redact-kind { animation: fade-in .2s var(--ease); }
+.editor .more > .inner {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 8px;
+}
+.editor .chips { margin-top: 6px; }
