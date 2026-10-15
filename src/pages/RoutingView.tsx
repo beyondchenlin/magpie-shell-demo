@@ -1,10 +1,7 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { GroupEditor, type SavedGroupDraft } from "../components/GroupEditor";
-import { ModelPop } from "../components/ModelPop";
 import { Segs } from "../components/Segs";
-import { PrefRow } from "../components/PrefRow";
 import { LibSwitch } from "../components/LibSwitch";
-import { TextBtn } from "../components/TextBtn";
 import { ProtoMultiMenu } from "../components/ProtoMultiMenu";
 import { GATEWAY_ADDR } from "../data/mock";
 import { ZH, t } from "../i18n";
@@ -433,10 +430,6 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
   const [removeAsk, setRemoveAsk] = useState<SavedGroupDraft[] | null>(null);
   const [rowMenu, setRowMenu] = useState<{ slug: string; el: HTMLElement } | null>(null);
 
-  const [groupModel, setGroupModel] = useState("claude-sonnet-4-5");
-  const [popOpen, setPopOpen] = useState(false);
-  const modelBtnRef = useRef<HTMLButtonElement>(null);
-  const [condOpen, setCondOpen] = useState(false);
   const [bySession, setBySession] = useState(() => {
     try {
       return localStorage.getItem("magpie.routingBySession") === "1";
@@ -2072,15 +2065,6 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
             />
           ) : null}
 
-          {false ? (
-            <div className="none rt-gnone">
-              {foundOn
-                ? t(
-                    "No group yet. A model two of your providers serve becomes one on its own; New group makes one of any models you like.",
-                  )
-                : t("No group yet. New group makes one of any models you like.")}
-            </div>
-          ) : null}
           {selecting && savedGroups.length >= 2 ? (
             <div className="rt-gsel">
               <span>
@@ -2111,7 +2095,7 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
           ) : null}
 
           {savedGroups.length ? (
-            <div className="rt-groups">
+            <div className="list rt-groups">
               {(() => {
                 const words = groupFilter.trim().toLowerCase().split(/\s+/).filter(Boolean);
                 const filtered = words.length
@@ -2444,62 +2428,13 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
           ) : null}
 
           {demoGroups && !savedGroups.length && !groupEditorOpen ? (
-            <div className="rt-groups">
-              <div className="rt-group card">
-                <div className="rt-ghead">
-                  <b>{t("Default")}</b>
-                  <span className="grow" />
-                  <button
-                    type="button"
-                    className="sess-pick set"
-                    ref={modelBtnRef}
-                    aria-haspopup="listbox"
-                    aria-expanded={popOpen}
-                    onClick={() => setPopOpen((o) => !o)}>
-                    <span>{groupModel}</span>
-                    <svg viewBox="0 0 12 12" width={11} height={11} aria-hidden>
-                      <path d="M3 4.5 6 7.5 9 4.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-                    </svg>
-                  </button>
-                  <ModelPop
-                    open={popOpen}
-                    anchor={modelBtnRef.current}
-                    value={groupModel}
-                    modelPicker
-                    options={[
-                      { value: "claude-sonnet-4-5", label: "claude-sonnet-4-5", group: "Anthropic" },
-                      { value: "claude-haiku-4-5", label: "claude-haiku-4-5", group: "Anthropic" },
-                      { value: "gpt-5", label: "gpt-5", group: "OpenAI" },
-                      { value: "gemini-2.5-pro", label: "gemini-2.5-pro", group: "Google" },
-                    ]}
-                    onPick={(v) => {
-                      setGroupModel(v);
-                      setPopOpen(false);
-                    }}
-                    onClose={() => setPopOpen(false)}
-                  />
-                </div>
-                <button
-                  type="button"
-                  className={`fold text${condOpen ? " open" : ""}`}
-                  aria-expanded={condOpen}
-                  onClick={() => setCondOpen((o) => !o)}>
-                  <svg viewBox="0 0 12 12" width={11} height={11} aria-hidden>
-                    <path d="M4.5 2.5 8 6l-3.5 3.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-                  </svg>
-                  {t("Conditions")}
-                </button>
-                {condOpen ? (
-                  <div className="rt-conds">
-                    <PrefRow name={t("When agent is")} sub="Claude Code · Codex">
-                      <TextBtn>{t("Edit")}</TextBtn>
-                    </PrefRow>
-                    <PrefRow name={t("When model matches")} sub="*sonnet* · gpt-*">
-                      <TextBtn>{t("Edit")}</TextBtn>
-                    </PrefRow>
-                    <TextBtn>+ {t("Condition")}</TextBtn>
-                  </div>
-                ) : null}
+            <div className="list rt-groups">
+              <div className="none rt-gnone">
+                {foundOn
+                  ? t(
+                      "No group yet. A model two of your providers serve becomes one on its own; New group makes one of any models you like.",
+                    )
+                  : t("No group yet. New group makes one of any models you like.")}
               </div>
             </div>
           ) : null}

@@ -1,3 +1,9 @@
+## v0.1.132 RT_GROUPS_CARD_OSS_FIDELITY
+- Routing groups empty: drop tip invent `rt-group card` / `rt-ghead` / Conditions PrefRow demo — restore Magpie `list rt-groups` + `.none.rt-gnone` (routing.js L3597–3599; routing.css L414–416 / L472).
+- shell-patch: drop invent `.rt-groups` gap/card margin, `.rt-group.card*`, `.rt-ghead`, invent `#view-routing .rt-tpl*` / `.rt-group.row` / `.who`, dead `rt-dim` / `rt-pick-empty|title|gap` / `rt-ic.sm` / `modal.rt-confirm`, invent `.rt-group-by` inline-flex (Magpie L316/L667).
+- Saved groups container: `list rt-groups` as Magpie routing.js L3268.
+- SIDE_AT=1024. No portable / Vercel.
+
 ## v0.1.131 PROVIDERS_EDITOR_AGENTS_CONN_OSS_FIDELITY
 - Providers editor: drop tip invent `details.more` bordered card / summary / inner / body.web 1-col — restore Magpie `app.css` L2834–2843 plain `.editor .more` disclosure (`summary` margin-left:86px; `.inner` grid).
 - Drop invent `.extra-body textarea.json` padding/radius fight (Magpie L2775), duplicate `.stack` (L2757), invent `.chips .chip` height/radius (L1848–1858), invent `.more > .inner` flex-column / `.chips` margin-top.

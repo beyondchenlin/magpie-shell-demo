@@ -1,3 +1,15 @@
+## v0.1.132 · RT_GROUPS_CARD_OSS_FIDELITY · 2026-10-15 Asia/Shanghai
+- **WHY:** Continue Magpie 1:1 after 0.1.131 — delete tip invent Default groups card + shell-patch group/tpl invents that covered Magpie OSS list chrome.
+- **CAUSE:** Demo painted empty groups as bordered `rt-group card` + invent `rt-ghead` / Conditions PrefRow; shell-patch forced flex-gap cards and invent `.rt-group.row`/`.who` against Magpie flat list + `.main`/`.nm`.
+- **Gold:**
+  - Magpie `routing.js` **3268** `list rt-groups`; **3597–3599** `.none.rt-gnone` empty copy (foundOn branch)
+  - Magpie `routing.css` **414–416** border-top list / `.rt-group` row; **442–444** `.main` / `.nm`; **472** `.rt-gnone`
+  - Magpie `routing.css` **316** / **667** `.rt-group-by` flex (not invent inline-flex)
+  - Magpie `routing.js` **3884–3939** groupRow — never `.card` / `.rt-ghead` / `.who`
+- **WHAT kept:** `SIDE_AT=1024`; no `WEB_SIDE_AT`; 752×652; CIS PrefRow/Segs/TextBtn elsewhere; saved group rows; `rt-pick-clear` demo select chrome.
+- **WHAT changed:** `RoutingView.tsx` empty → Magpie rt-gnone; drop invent ModelPop/PrefRow/TextBtn empty-card state; `shell-patch.css` drop groups card/tpl/who invents.
+- **Guard:** chrome-guard. Push/PR. No portable / Vercel.
+
 ## v0.1.131 · PROVIDERS_EDITOR_AGENTS_CONN_OSS_FIDELITY · 2026-10-15 Asia/Shanghai
 - **WHY:** Continue Magpie 1:1 after 0.1.130 — delete tip invents on Providers editor (more/chips/icon-pick/danger) + Agents conn row layout that covered Magpie OSS.
 - **CAUSE:** shell-patch painted `details.more` as a bordered card and forced `.more > .inner` flex-column against Magpie disclosure grid; invent icon-grid `.n` labels + always-red danger; invent Agents `.conn` flex re-layout against Magpie window/web rules.

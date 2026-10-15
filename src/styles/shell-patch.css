@@ -511,13 +511,10 @@ body.web.side-nav {
 .ctx-share i.k-chat, .dot.k-chat { --k: var(--c6, #56b6c2); background: var(--k); }
 .ctx-mix-keys .dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; }
 
-.rt-groups { display: flex; flex-direction: column; gap: 10px; margin: 8px 0 12px; }
-.rt-group.card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; transition: border-color .12s var(--ease), box-shadow .18s var(--ease); }
-.rt-group.card:hover { border-color: var(--line-2); }
-.rt-group.card.muted { opacity: .85; }
-.rt-ghead { display: flex; align-items: center; gap: 8px; min-width: 0; }
-.rt-ghead b { font-size: 13px; }
-/* v0.1.130: drop invent .provider/.rt-group .fold.open rotate —
+/* v0.1.132: drop invent .rt-groups card / .rt-ghead — Magpie routing.css
+   L414–416 list separators + .rt-group row (not bordered cards).
+   Empty list: routing.js L3597–3599 .none.rt-gnone.
+   v0.1.130: drop invent .provider/.rt-group .fold.open rotate —
    Magpie app.css L2121–2122: .fold svg default rotate(90deg); [aria-expanded=false] none.
    Fold.tsx sets aria-expanded; no tip invent display/margin/open class. */
 
@@ -2372,7 +2369,7 @@ button.lib-ag.icon {
 #view-routing .rt-filters[hidden],
 #view-routing .rt-col-live[hidden] { display: none !important; }
 #view-routing .rt-days { flex: 1; min-width: 0; }
-#view-routing .rt-group-by { display: inline-flex; gap: 4px; }
+/* v0.1.132: drop invent #view-routing .rt-group-by inline-flex — Magpie routing.css L316/L667 */
 #view-routing .empty-state {
   padding: 14px 8px; color: var(--muted); font-size: 12.5px;
 }
@@ -2388,43 +2385,10 @@ button.lib-ag.icon {
 #view-routing .rt-act .bar i {
   width: var(--bar, 0%);
 }
-#view-routing .rt-tpl-head { margin: 8px 0 4px; }
-#view-routing .rt-tpl-list { padding: 4px 4px 8px; }
-#view-routing .rt-tpl.row,
-#view-routing .rt-group.row {
-  align-items: flex-start; gap: 12px; padding: 10px 4px;
-}
-#view-routing .rt-tpl .who,
-#view-routing .rt-group .who { flex: 1; min-width: 0; }
-#view-routing .rt-tpl .who b,
-#view-routing .rt-group .who b { display: block; font-size: 13px; }
-#view-routing .rt-tpl .who small,
-#view-routing .rt-group .who small {
-  display: block; color: var(--muted); line-height: 1.4; margin-top: 2px;
-}
-#view-routing .rt-dim { opacity: 0.55; }
-#view-routing .rt-pick-empty {
-  padding: 16px 4px; color: var(--muted); font-size: 13px;
-}
-#view-routing .rt-pick-title { font-size: 12.5px; font-weight: 600; }
+/* v0.1.132: drop invent rt-tpl / rt-group.row.who / rt-dim / rt-pick-empty|title|gap /
+   rt-ic.sm / modal.rt-confirm — Magpie has none; groups use .main/.nm (routing.css L442–444). */
 #view-routing .rt-pick-clear { color: var(--muted); }
 #view-routing .rt-pick-clear.on { color: var(--red); }
-#view-routing .rt-pick-gap { margin-top: 8px; }
-#view-routing .rt-ic.sm { width: 16px; height: 16px; flex: none; }
-.modal.rt-confirm {
-  z-index: 40; background: rgba(20, 22, 30, 0.35);
-}
-.modal.rt-confirm .dialog {
-  animation: pop-in .28s var(--ease); max-width: 360px;
-}
-.modal.rt-confirm .ehead { padding: 14px 16px 0; }
-.modal.rt-confirm .msg {
-  margin: 10px 16px 0; font-size: 13px; color: var(--fg-2); line-height: 1.45;
-}
-.modal.rt-confirm .bar { padding: 14px 16px; }
-.modal.rt-confirm .text.danger-fill {
-  background: var(--red); color: #fff; border-color: var(--red);
-}
 #view-routing .rt-add-stack {
   margin-top: 8px; display: flex; flex-direction: column; gap: 6px;
 }
