@@ -1,3 +1,8 @@
+## v0.1.184 · AM_MR_N_CK_OSS · 2026-10-16 Asia/Shanghai
+
+- **WHY:** AgentModelsPop invent `.am-tick` / `.am-name` (+ invent `.am-mr.on` / `.am-ord`) vs Magpie `am-mr` row: `span.n` + `span.ck` (SVG check) + hidden → `.off`; order uses `.am-or` + `.ix`.
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; skip oauth; Magpie `.am-mr .n` / `.ck` / `.am-or .ix` gold already in tip CSS.
+- **Cite:** Magpie app.js **L3308–3332** (`el("span","n")` / `el("span","ck")` + svg check); app.css **L3660–3671** / **L3707**.
 ## v0.1.183 · AGENTS_IC_SPAN_IMG_OSS · 2026-10-16 Asia/Shanghai
 
 - **WHY:** AgentsView still had bare `img.ic` on Relocate `ehead` (class on `<img>`); other Agents rows were `span.ic>img` missing Magpie `data-icon` + `draggable=false`. Magpie `icon()` / `askRelocate` / `pickRow` wrap `span.ic[data-icon]>img`.

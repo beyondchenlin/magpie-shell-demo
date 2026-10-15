@@ -238,8 +238,9 @@ export function AgentModelsPop({
                   <button
                     key={m.id}
                     type="button"
-                    className={`am-mr${m.on ? " on" : ""}`}
-                    aria-pressed={m.on}
+                    className={`am-mr${m.on ? "" : " off"}${seg === "order" ? " am-or" : ""}`}
+                    role="menuitemcheckbox"
+                    aria-checked={m.on}
                     onClick={() => toggle(m.id)}
                     style={
                       seg === "order"
@@ -264,15 +265,20 @@ export function AgentModelsPop({
                       onChange(next);
                     }}>
                     {seg === "order" ? (
-                      <span className="am-ord" aria-hidden>
+                      <span className="ix" aria-hidden>
                         {i + 1}
                       </span>
-                    ) : (
-                      <span className={`am-tick${m.on ? " on" : ""}`} aria-hidden>
-                        {m.on ? "✓" : ""}
+                    ) : null}
+                    <span className="n">{m.name}</span>
+                    {seg !== "order" ? (
+                      <span className="ck" aria-hidden>
+                        {m.on ? (
+                          <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden>
+                            <path d="m3.5 8.5 3 3 6-7" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" />
+                          </svg>
+                        ) : null}
                       </span>
-                    )}
-                    <span className="am-name">{m.name}</span>
+                    ) : null}
                   </button>
                 ))}
               </div>

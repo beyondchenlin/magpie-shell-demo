@@ -1,3 +1,16 @@
+## v0.1.184 · AM_MR_N_CK_OSS · 2026-10-16 Asia/Shanghai
+
+- **WHY:** Hard invent audit — `AgentModelsPop` still painted invent checkbox `.am-tick.on` + `.am-name` (and invent `.am-mr.on` / `.am-ord`). Magpie OSS builds `button.am-mr` (+ `off` when hidden) with `span.n` / `span.ck` (stroke check SVG when shown); order rows are `.am-mr.am-or` with `.ix`.
+- **CAUSE:** Tip v0.1.20 invented a bordered tick + renamed name class instead of Magpie `.n` / `.ck`.
+- **Cite:**
+  - Magpie `app.js` **L3308–3332** list row: `el("button","am-mr"+off+lock)` → `lg, n, x, ck`; `ck.append(svg("m3.5 8.5 3 3 6-7",12,1.9))` when `!m.hidden`
+  - Magpie `app.js` **L3246–3254** order: `am-mr am-or` + `grip` / `ix` / `lg` / `n` / `x`
+  - Magpie `app.css` **L3660–3675** `.am-mr .n` / `.ck` / `.off`; **L3707** `.am-or .ix`
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; skip oauth; Magpie am-pop chrome CSS already vendored; no shell chrome change.
+- **WHAT changed:**
+  - `AgentModelsPop.tsx`: `.am-tick`/`.am-name` → Magpie `.n` + `.ck` (SVG path); invent `.on` → Magpie `.off` when hidden; order `.am-ord` → `.ix` + `.am-or`; `aria-checked` + `menuitemcheckbox`.
+  - `app.css`: drop invent `.am-tick*` / `.am-name` / `.am-ord` / `.am-mr.on .am-name`.
+- **Remaining invent (intentional skip):** oauth Approve wall; `rt-flier-demo`; `win-caption*`; `lib-hook*` / `pref-anchor` React bridges. Live weak leftovers (CSS-only / demo bridges, not this tip): routing.css tip extras `rt-info`/`rt-cond-*`/`rt-pause-*`/`rt-rule-more`/`rt-arrow`/`rt-effort-row`; `led-tools-extra`; `lib-skillhow-note`; `ctx-window` input class.
 ## v0.1.183 · AGENTS_IC_SPAN_IMG_OSS · 2026-10-16 Asia/Shanghai
 
 - **WHY:** Hard invent audit — AgentsView Relocate `editor.sm-ask` `.ehead` still painted bare `img.ic` (class on the `<img>`, invent width attrs). Magpie OSS `askRelocate` does `h.append(icon("claude"), el("b",…))`; `icon()` builds `span.ic` + `dataset.icon` + `img.draggable=false`. Other AgentsView rows already used `span.ic>img` but omitted `data-icon` / `draggable` (incomplete vs Magpie `icon()` / `pickRow`).
