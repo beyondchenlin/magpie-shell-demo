@@ -348,3 +348,53 @@ Not opened: Desktop, workspace, Computer under Other Locations, the create-folde
 - Ctrl+L 空 location 栏；Enter `/usr` → `/usr/` + 补全列表；Escape 先关 location/补全，再关对话框；对话框 Cancel 同 Escape（表单仍空）
 - Sheet：空 Add no-op；Cancel 关卡；Escape 仅 path 聚焦时关卡；Open@Home → 填 `/home/box`，不 Add
 - 未做：项目行 skill 勾选 / copy-vs-link / remove-project（仍未点录）
+
+## In projects → real row (shots 120–147)
+
+Running magpie pid **560329**. Window still **752×652 at +200+40** (id 27262991, DISPLAY=:6). Not resized. Close (X) was not clicked. Library stayed on **Skills · 1**. **ask-matt** was not removed. Give skills as stayed **Links**. The project added here was removed before the end. `~/.config/magpie` has no `magpie-probe` string afterwards (backups not searched). The disposable folder `/workspace/magpie-probe-project` (a README.txt only) is still on disk; it is not a magpie project.
+
+The folder was an empty directory made for this pass, not an existing repo. Magpie's own writes into it (a symlink and a `.gitignore` block) were removed by turning the skill off, before the project row was removed.
+
+Dialog grabs are the frame **1110×714 at +26+26**, same as 107–119. Tips that leave the magpie window: **132** and **137** and **145** are **900×652** from +200+40 (right). **133** and **144** are **980×652 from +40+40** (left). **139** is **980×652** from +200+40 (right).
+
+| shot | what |
+|---|---|
+| 120-add-project-sheet | **Add a project**. Same sheet as 103: placeholder, **Choose…**, **Add**, **Cancel**. |
+| 121-choose-hover | Pointer on **Choose…**. |
+| 122-choose-project-again | **Choose a project** again. Recent / Home / Desktop / workspace / Other Locations. |
+| 123-choose-workspace | Sidebar **workspace** (skipped in 101–119). Breadcrumb **workspace**. List is `/workspace` (DrawMotion, agent-ui, …, magpie-probe-project, …). Create-folder button at the top right was not clicked. Desktop was not opened. |
+| 124-choose-other-locations | **Other Locations**. **On This Computer**. One row, **Computer**, **112.2 GB**. |
+| 125-choose-computer | Double-click **Computer**. The list is `/` (bin, boot, dev, etc, home, proc, …). The path button still reads **workspace**. `bin` is selected. Not opened further. |
+| 126-choose-probe-selected | Back on **workspace**. **magpie-probe-project** selected (blue). Ctrl+L did not open a location field on this dialog (tried with the list focused and with the path button clicked; 114 is still the location-field shot). |
+| 127-project-path-filled | **Open**. Dialog closes. Sheet field is **/workspace/magpie-probe-project**. |
+| 128-add-filled-hover | Pointer on **Add** with the path filled. |
+| 129-project-added-toast | **Add**. Row appears, already open. Green toast **magpie-probe-project added — pick the skills it gets**. |
+| 130-project-row-open | Open card. Toggle off: **Copy files instead of linking**. Note: **Links follow the library's skill: an update reaches the project at once.** Skill **ask-matt**, Cursor chip off. Foot: **Placed in .agents/skills of the project and listed in its .gitignore. A folder there that isn't magpie's is left as it is.** No "reads no project skills folder" line. |
+| 131-project-head-tip | Pointer on the name. Tip is the name **magpie-probe-project** (the name/path title, not the head's hide/pick tip). Trash and chevron show on the row. |
+| 132-project-remove-tip | Pointer on the trash. Icon turns red. Tip **Remove the project**, past the window's right edge. |
+| 133-project-hide-skills-tip | Pointer on the folder glyph, row open. Tip **Hide its skills**, past the window's left edge. |
+| 134-project-copy-off | Pointer on the switch. No extra tip. Switch off. |
+| 135-project-copies-toast | Click the switch. It draws on. Name gains a **Copies** tag. Note: **Copies are made again whenever the library's skill changes; edits made to them are replaced.** Toast **magpie-probe-project gets copies now**. |
+| 136-project-links-toast | Click again. Switch off. Copies tag gone. Links note restored. Toast **magpie-probe-project gets links now**. Left on links. |
+| 137-project-skill-off-tip | Cursor chip off. Tip **Give it to Cursor**, past the right edge. Only one chip (Cursor). |
+| 138-project-skill-on-toast | Click the chip. It fills in. Toast **ask-matt is in magpie-probe-project for Cursor**. The "has it" tip is cut off in this 752px frame. |
+| 139-project-skill-on-tip | Same chip, on. Tip **Cursor has it — click to take it away**. |
+| 140-project-remove-dialog | Trash, while the skill is on. **Remove magpie-probe-project?** Body: skills and MCP servers magpie put in are taken away, with their `.gitignore` lines; nothing else is touched. Checkbox **Keep its skills and MCP servers** / **Remove the project from magpie only, leaving what magpie wrote into it**. Unchecked. **Cancel** and red **Remove**. |
+| 141-project-remove-keep | Checkbox on. Body switches to: magpie forgets the project; what it wrote stays, with the `.gitignore` lines, and is yours; a linked skill still follows the library's. |
+| 142-project-remove-discard | **Cancel** with that box checked does not close. **Discard** / **Discard unsaved changes? Your changes will be lost.** Cancel and red **Discard**. The keep checkbox dirties the sheet, so leaving it asks. Escape was sent once and did not close this sheet (the key may not have reached the page). |
+| 143-project-row-folded | **Discard** closes the sheet and does not remove the project. Click the name to fold. Pill **ask-matt** (the skill that is on). Trash and a right-pointing chevron. Name tip again **magpie-probe-project**. |
+| 144-project-pick-skills-tip | Folder glyph, folded. Tip **Pick the skills it gets**, off the left edge. |
+| 145-project-skill-off-toast | Row opened again. Chip clicked off. Toast **ask-matt is out of magpie-probe-project**. Chip pale. Magpie deleted `.agents/skills/ask-matt` (it had been a symlink to `~/.config/magpie/library/skills/ask-matt`) and the `.gitignore` block. Folder is README.txt only. |
+| 146-project-remove-plain | Trash again, nothing placed. Same title and the "taken away" body. **No keep checkbox.** Cancel / Remove. |
+| 147-project-removed-toast | **Remove**. Row gone. Aside and **Add a project** are back. Toast **magpie-probe-project removed**. |
+
+Right-click on the open card's footer opened no menu. No second agent chip. Instructions, MCP servers, Hooks, and RTK were not opened. Chooser minimize / maximize / close and the create-folder button were not clicked. Desktop was not opened (`~/Desktop` still not the target). Copy was put back to links before remove. Final page: Skills · 1, ask-matt still in the library, In projects empty.
+
+## demo 对齐（120–147）· v0.1.85 IN_PROJECTS_ROW_DONE
+- Choose… 补了上次跳过的 **workspace**（`/workspace` 列表）和 **Computer**（Other Locations → 双击进 `/`；路径钮仍显示 workspace）。未点新建文件夹，未开 Desktop。本轮 Ctrl+L 未弹出路径框（114 仍是路径框）。
+- Open `/workspace/magpie-probe-project` → Add。Toast **{name} added — pick the skills it gets**。行默认展开。
+- 复制/链接是开关不是菜单：**Copy files instead of linking**。开 → 名称 **Copies** 标 + 说明「副本会在库技能变化时重做」+ toast **{name} gets copies now**。关 → 链接说明 + toast **{name} gets links now**。录完停在关（链接）。
+- 技能行只有 **Cursor** 一颗芯片。关 tip **Give it to Cursor**；开 toast **ask-matt is in {name} for Cursor**，tip **Cursor has it — click to take it away**；关 toast **ask-matt is out of {name}**。开时写入 `.agents/skills/ask-matt` 符号链接（指向库里的 ask-matt）和 `.gitignore` 的 magpie 块；关掉后这两样被 magpie 删掉。
+- 行头文件夹图：展开 **Hide its skills**，折起 **Pick the skills it gets**（tip 向左出窗）。名字悬停 tip 是项目名本身。折起且技能开着时药丸 **ask-matt**。垃圾桶悬停变红，tip **Remove the project**（向右出窗）。右键无菜单。
+- 移除：有已放入的技能时才有 **Keep its skills and MCP servers**。勾上后正文改为「只忘记项目、留下写入」。勾过再 Cancel 会先问 **Discard unsaved changes?**；Discard 不删除项目。技能已关掉、没有 placed 时对话框没有保留勾选，只有「带走技能和 gitignore 行」。Remove toast **{name} removed**。ask-matt 仍在库里。
+- demo 消费（v0.1.85）：行默认展开；Copy files 开关 + Copies 标 + toast；Cursor 芯片 tip/toast；Hide/Pick/Remove tips；有 placed 才 Keep 勾选；勾脏 Cancel → Discard（Discard 不删项目）；无 placed 无勾选；Remove toast；默认空列表可交互增删

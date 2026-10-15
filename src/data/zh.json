@@ -4357,5 +4357,21 @@
   "Accessed": "访问时间",
   "Open the contents of your desktop in a folder": "在文件夹中打开桌面内容",
   "Size": "大小",
-  "Type": "类型"
+  "Type": "类型",
+  "Copy files instead of linking": "复制文件而不是链接",
+  "Copies are made again whenever the library's skill changes; edits made to them are replaced.": "库里的技能一变就会重做副本；对副本的改动会被覆盖。",
+  "Links follow the library's skill: an update reaches the project at once.": "链接跟着库里的技能走：一更新，项目立刻跟上。",
+  "{name} gets copies now": "{name} 现在拿到的是副本",
+  "{name} gets links now": "{name} 现在拿到的是链接",
+  "{skill} is in {name} for {agent}": "{skill} 已放入 {name}，给 {agent}",
+  "{skill} is out of {name}": "{skill} 已从 {name} 拿走",
+  "Hide its skills": "收起它的技能",
+  "Pick the skills it gets": "挑选它要的技能",
+  "Remove the project": "移除项目",
+  "Keep its skills and MCP servers": "保留它的技能和 MCP 服务器",
+  "Remove the project from magpie only, leaving what magpie wrote into it": "只从 magpie 忘掉这个项目，留下它写进去的内容",
+  "The skills and MCP servers magpie put in it are taken away, with their lines in its .gitignore. Nothing else in the folder is touched.": "magpie 放进去的技能和 MCP 服务器会一并带走，连同它在 .gitignore 里写的行。文件夹里别的东西不动。",
+  "magpie forgets the project. The skills and MCP servers it put in the folder stay there as they are, with their lines in its .gitignore, and are yours from then on; a linked skill still follows the library's.": "magpie 忘掉这个项目。它写进文件夹的技能和 MCP 服务器原样留下，连同 .gitignore 里的行，从那时起归你；链接的技能仍跟着库走。",
+  "Placed in .agents/skills of the project and listed in its .gitignore. A folder there that isn't magpie's is left as it is.": "放在项目的 .agents/skills 里，并写进它的 .gitignore。那里已有、不是 magpie 放的文件夹保持原样。",
+  "No skills in the library yet.": "资源库里还没有技能。"
 }

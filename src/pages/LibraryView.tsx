@@ -4,7 +4,7 @@ import { useSegThumb } from "../components/SegThumb";
 import { t } from "../i18n";
 
 /**
- * Magpie Library plugin (native-linux/library nests through 101–119 In projects Choose… + folder/Backups Thunar).
+ * Magpie Library plugin (native-linux/library nests through 120–147 In projects row + Choose… + folder/Backups).
  * Feature-gated: Plugins › Built-in › Library.
  * Motion: view-in .24s; modal pop-in .42s; Discard .28s; segs .18s; lib-switch; lib-bob/lib-probe/mk-spin (v0.1.44).
  */
@@ -783,7 +783,19 @@ function LibChooseProject({
   const [locVal, setLocVal] = useState("");
   const [complete, setComplete] = useState<string[] | null>(null);
   const [deskTip, setDeskTip] = useState(false);
+  /** workspace list / Computer root browse (120–126) */
+  const [browse, setBrowse] = useState<"place" | "computer">("place");
+  const [selected, setSelected] = useState<string | null>(null);
   const locRef = useRef<HTMLInputElement>(null);
+
+  const WORKSPACE_FOLDERS = [
+    "DrawMotion",
+    "agent-ui",
+    "magpie-probe-project",
+    "magpie-shell-demo",
+    "uploads",
+  ];
+  const ROOT_FOLDERS = ["bin", "boot", "dev", "etc", "home", "proc", "tmp", "usr", "var", "workspace"];
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -818,6 +830,14 @@ function LibChooseProject({
       // Typed path still open: NOTES does not claim acceptance; keep dialog (pointer edge miss).
       return;
     }
+    if (place === "workspace" && selected) {
+      onOpen(`/workspace/${selected}`);
+      return;
+    }
+    if (browse === "computer" && selected) {
+      onOpen(`/${selected}`);
+      return;
+    }
     if (place === "home") {
       onOpen("/home/box");
       return;
@@ -827,10 +847,10 @@ function LibChooseProject({
       return;
     }
     if (place === "workspace") {
-      onOpen("/home/box/workspace");
+      onOpen("/workspace");
       return;
     }
-    if (place === "other") {
+    if (place === "other" || browse === "computer") {
       onOpen("/");
       return;
     }
@@ -863,6 +883,8 @@ function LibChooseProject({
       }}
       onClick={() => {
         setPlace(id);
+        setBrowse("place");
+        setSelected(null);
         setLocOpen(false);
         setComplete(null);
         setLocVal("");
@@ -977,7 +999,7 @@ function LibChooseProject({
           </nav>
 
           <div style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0, background: "#fff" }}>
-            {place === "home" && !locOpen ? (
+            {(place === "home" || place === "workspace" || browse === "computer") && !locOpen ? (
               <div
                 style={{
                   display: "flex",
@@ -989,7 +1011,7 @@ function LibChooseProject({
               >
                 <button type="button" className="text" disabled style={{ opacity: 0.35, border: 0, background: "transparent" }}>←</button>
                 <button type="button" className="text" style={{ display: "inline-flex", alignItems: "center", gap: 6, height: 28, padding: "0 10px", borderRadius: 999, border: "1px solid #ccc", background: "#f6f6f6", font: "inherit", fontSize: 12.5 }}>
-                  ⌂ box
+                  {place === "home" ? "⌂ box" : place === "workspace" || browse === "computer" ? "📁 workspace" : "⌂"}
                 </button>
                 <button type="button" className="text" disabled style={{ opacity: 0.35, border: 0, background: "transparent" }}>→</button>
                 <span className="grow" />
@@ -1113,18 +1135,131 @@ function LibChooseProject({
                     </div>
                   ))}
                 </div>
+              ) : place === "workspace" && browse === "place" ? (
+                <div>
+                  <div
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns: "1.6fr 0.5fr 0.7fr 0.7fr",
+                      gap: 8,
+                      padding: "8px 14px",
+                      borderBottom: "1px solid #eee",
+                      fontSize: 12,
+                      color: "#666",
+                      fontWeight: 500,
+                    }}
+                  >
+                    <span>{t("Name")} ↓</span>
+                    <span>{t("Size")}</span>
+                    <span>{t("Type")}</span>
+                    <span>{t("Modified")}</span>
+                  </div>
+                  {WORKSPACE_FOLDERS.map((name) => (
+                    <button
+                      key={name}
+                      type="button"
+                      onClick={() => setSelected(name)}
+                      onDoubleClick={() => onOpen(`/workspace/${name}`)}
+                      style={{
+                        display: "grid",
+                        gridTemplateColumns: "1.6fr 0.5fr 0.7fr 0.7fr",
+                        gap: 8,
+                        padding: "7px 14px",
+                        fontSize: 13,
+                        alignItems: "center",
+                        width: "100%",
+                        border: 0,
+                        textAlign: "left",
+                        font: "inherit",
+                        cursor: "pointer",
+                        background: selected === name ? "#3584e4" : "transparent",
+                        color: selected === name ? "#fff" : "#222",
+                      }}
+                    >
+                      <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
+                        <span aria-hidden>📁</span>
+                        {name}
+                      </span>
+                      <span style={{ opacity: 0.7 }}>—</span>
+                      <span style={{ opacity: 0.85 }}>{t("Folder")}</span>
+                      <span style={{ opacity: 0.85 }}>—</span>
+                    </button>
+                  ))}
+                </div>
+              ) : browse === "computer" ? (
+                <div>
+                  <div
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns: "1.6fr 0.5fr 0.7fr 0.7fr",
+                      gap: 8,
+                      padding: "8px 14px",
+                      borderBottom: "1px solid #eee",
+                      fontSize: 12,
+                      color: "#666",
+                      fontWeight: 500,
+                    }}
+                  >
+                    <span>{t("Name")} ↓</span>
+                    <span>{t("Size")}</span>
+                    <span>{t("Type")}</span>
+                    <span>{t("Modified")}</span>
+                  </div>
+                  {ROOT_FOLDERS.map((name) => (
+                    <button
+                      key={name}
+                      type="button"
+                      onClick={() => setSelected(name)}
+                      style={{
+                        display: "grid",
+                        gridTemplateColumns: "1.6fr 0.5fr 0.7fr 0.7fr",
+                        gap: 8,
+                        padding: "7px 14px",
+                        fontSize: 13,
+                        alignItems: "center",
+                        width: "100%",
+                        border: 0,
+                        textAlign: "left",
+                        font: "inherit",
+                        cursor: "pointer",
+                        background: selected === name ? "#3584e4" : "transparent",
+                        color: selected === name ? "#fff" : "#222",
+                      }}
+                    >
+                      <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
+                        <span aria-hidden>📁</span>
+                        {name}
+                      </span>
+                      <span style={{ opacity: 0.7 }}>—</span>
+                      <span style={{ opacity: 0.85 }}>{t("Folder")}</span>
+                      <span style={{ opacity: 0.85 }}>—</span>
+                    </button>
+                  ))}
+                </div>
               ) : place === "other" ? (
                 <div>
                   <div style={{ fontWeight: 600, fontSize: 13, marginBottom: 12 }}>{t("On This Computer")}</div>
-                  <div
+                  <button
+                    type="button"
+                    onDoubleClick={() => {
+                      setBrowse("computer");
+                      setSelected("bin");
+                    }}
+                    onClick={() => setSelected("Computer")}
                     style={{
                       display: "flex",
                       alignItems: "center",
                       gap: 12,
                       padding: "10px 12px",
                       borderRadius: 8,
-                      border: "1px dashed #bbb",
+                      border: selected === "Computer" ? "1px dashed #3584e4" : "1px dashed #bbb",
                       maxWidth: 520,
+                      width: "100%",
+                      background: "transparent",
+                      font: "inherit",
+                      cursor: "pointer",
+                      textAlign: "left",
+                      color: "inherit",
                     }}
                   >
                     <span aria-hidden style={{ fontSize: 22 }}>💾</span>
@@ -1133,7 +1268,7 @@ function LibChooseProject({
                       <div style={{ fontSize: 12, color: "#666" }}>112.2 GB / 134.2 GB available</div>
                     </div>
                     <span style={{ color: "#888" }}>/</span>
-                  </div>
+                  </button>
                 </div>
               ) : (
                 <p style={{ margin: 48, textAlign: "center", color: "#888", fontSize: 13 }}>{t("This folder is empty")}</p>
@@ -1215,7 +1350,18 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
   const [skillsByAgentOpen, setSkillsByAgentOpen] = useState(false);
   /** Magpie addingProject — In projects inline card */
   const [addingProject, setAddingProject] = useState<{ dir: string; busy?: boolean } | null>(null);
-  const [projects, setProjects] = useState<{ dir: string; name: string }[]>([]);
+  /** Magpie library project row (120–147): copy/link · skill chips · remove/keep */
+  type LibProject = {
+    dir: string;
+    name: string;
+    open: boolean;
+    copy: boolean;
+    /** skillId → agent ids that have it in this project */
+    placed: Record<string, string[]>;
+  };
+  const [projects, setProjects] = useState<LibProject[]>([]);
+  const [projectRemove, setProjectRemove] = useState<{ dir: string; name: string; keep: boolean; dirty: boolean } | null>(null);
+  const [projectDiscard, setProjectDiscard] = useState(false);
   const [hooks, setHooks] = useState<
     { id: string; name: string; description: string; event: string; matcher: string; command: string; agents: string[] }[]
   >([]);
@@ -2149,12 +2295,15 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                             }
                             if (e.key === "Enter") {
                               const dir = addingProject.dir.trim();
-                              // empty Enter / Add = no-op (112)
                               if (!dir || addingProject.busy) return;
                               setAddingProject({ ...addingProject, busy: true });
                               window.setTimeout(() => {
                                 const name = dir.split("/").filter(Boolean).pop() || dir;
-                                setProjects((list) => (list.some((x) => x.dir === dir) ? list : [...list, { dir, name }]));
+                                setProjects((list) =>
+                                  list.some((x) => x.dir === dir)
+                                    ? list.map((x) => (x.dir === dir ? { ...x, open: true } : x))
+                                    : [...list, { dir, name, open: true, copy: false, placed: {} }],
+                                );
                                 setAddingProject(null);
                                 onStatus?.(t("{name} added — pick the skills it gets", { name }), "ok");
                               }, 400);
@@ -2176,13 +2325,16 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                           disabled={!!addingProject.busy}
                           onClick={() => {
                             const dir = addingProject.dir.trim();
-                            // NOTES 112: empty Add = no-op; no error; sheet stays
+                            // NOTES 112: empty Add = no-op
                             if (!dir || addingProject.busy) return;
-                            // Path filled + Add not shot in 101–119; keep prior demo add for completeness
                             setAddingProject({ ...addingProject, busy: true });
                             window.setTimeout(() => {
                               const name = dir.split("/").filter(Boolean).pop() || dir;
-                              setProjects((list) => (list.some((x) => x.dir === dir) ? list : [...list, { dir, name }]));
+                              setProjects((list) =>
+                                list.some((x) => x.dir === dir)
+                                  ? list.map((x) => (x.dir === dir ? { ...x, open: true } : x))
+                                  : [...list, { dir, name, open: true, copy: false, placed: {} }],
+                              );
                               setAddingProject(null);
                               onStatus?.(t("{name} added — pick the skills it gets", { name }), "ok");
                             }, 400);
@@ -2205,16 +2357,238 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                     </div>
                   ) : null}
                   {projects.length ? (
-                    <div style={{ marginBottom: 8 }}>
-                      {projects.map((pr) => (
-                        <div key={pr.dir} className="row" style={{ display: "flex", gap: 8, padding: "8px 4px", borderBottom: "1px solid var(--line)" }}>
-                          <div style={{ flex: 1, minWidth: 0 }}>
-                            <b style={{ fontSize: 13 }}>{pr.name}</b>
-                            <div style={{ fontSize: 12, color: "var(--muted)" }}>{pr.dir}</div>
+                    <div style={{ marginBottom: 8, display: "flex", flexDirection: "column", gap: 8 }}>
+                      {projects.map((pr) => {
+                        const placedIds = Object.keys(pr.placed).filter((id) => (pr.placed[id] || []).length > 0);
+                        const hasPlaced = placedIds.length > 0;
+                        return (
+                          <div
+                            key={pr.dir}
+                            className="card lib-project"
+                            onContextMenu={(e) => e.preventDefault()}
+                            style={{
+                              border: "1px solid var(--line)",
+                              borderRadius: 12,
+                              padding: pr.open ? "10px 12px 12px" : "8px 10px",
+                              background: "var(--card)",
+                            }}
+                          >
+                            <div
+                              className="lib-project-head"
+                              style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0 }}
+                            >
+                              <button
+                                type="button"
+                                className="text"
+                                title={pr.open ? t("Hide its skills") : t("Pick the skills it gets")}
+                                aria-label={pr.open ? t("Hide its skills") : t("Pick the skills it gets")}
+                                onClick={() =>
+                                  setProjects((list) => list.map((x) => (x.dir === pr.dir ? { ...x, open: !x.open } : x)))
+                                }
+                                style={{ width: 28, height: 28, padding: 0, flex: "none", border: 0, background: "transparent", fontSize: 14 }}
+                              >
+                                📁
+                              </button>
+                              <button
+                                type="button"
+                                className="text"
+                                title={pr.name}
+                                onClick={() =>
+                                  setProjects((list) => list.map((x) => (x.dir === pr.dir ? { ...x, open: !x.open } : x)))
+                                }
+                                style={{
+                                  flex: 1,
+                                  minWidth: 0,
+                                  textAlign: "left",
+                                  border: 0,
+                                  background: "transparent",
+                                  padding: 0,
+                                  font: "inherit",
+                                  cursor: "pointer",
+                                }}
+                              >
+                                <span style={{ display: "inline-flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
+                                  <b style={{ fontSize: 13, fontWeight: 560 }}>{pr.name}</b>
+                                  {pr.copy ? (
+                                    <span
+                                      style={{
+                                        fontSize: 11,
+                                        fontWeight: 560,
+                                        padding: "1px 7px",
+                                        borderRadius: 999,
+                                        border: "1px solid var(--line)",
+                                        color: "var(--fg-2)",
+                                      }}
+                                    >
+                                      {t("Copies")}
+                                    </span>
+                                  ) : null}
+                                </span>
+                                <div style={{ fontSize: 12, color: "var(--muted)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                                  {pr.dir}
+                                </div>
+                              </button>
+                              {!pr.open && hasPlaced
+                                ? placedIds.map((sid) => {
+                                    const sk = skills.find((s) => s.id === sid);
+                                    return sk ? (
+                                      <span
+                                        key={sid}
+                                        style={{
+                                          fontSize: 11.5,
+                                          padding: "2px 8px",
+                                          borderRadius: 999,
+                                          border: "1px solid var(--line)",
+                                          color: "var(--fg-2)",
+                                          display: "inline-flex",
+                                          alignItems: "center",
+                                          gap: 5,
+                                          flex: "none",
+                                        }}
+                                      >
+                                        <span style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--muted)" }} />
+                                        {sk.name}
+                                      </span>
+                                    ) : null;
+                                  })
+                                : null}
+                              <button
+                                type="button"
+                                className="text lib-icon"
+                                title={t("Remove the project")}
+                                aria-label={t("Remove the project")}
+                                onMouseEnter={(e) => {
+                                  e.currentTarget.style.color = "var(--red)";
+                                }}
+                                onMouseLeave={(e) => {
+                                  e.currentTarget.style.color = "";
+                                }}
+                                onClick={() =>
+                                  setProjectRemove({ dir: pr.dir, name: pr.name, keep: false, dirty: false })
+                                }
+                                style={{ width: 28, height: 28, padding: 0, flex: "none", fontSize: 14 }}
+                              >
+                                🗑
+                              </button>
+                              <button
+                                type="button"
+                                className="text"
+                                aria-label={pr.open ? t("Hide its skills") : t("Pick the skills it gets")}
+                                onClick={() =>
+                                  setProjects((list) => list.map((x) => (x.dir === pr.dir ? { ...x, open: !x.open } : x)))
+                                }
+                                style={{ width: 24, height: 28, padding: 0, flex: "none", border: 0, background: "transparent", color: "var(--muted)" }}
+                              >
+                                <span style={{ display: "inline-block", transform: pr.open ? "rotate(90deg)" : "none", transition: "transform .15s var(--ease)" }}>›</span>
+                              </button>
+                            </div>
+
+                            {pr.open ? (
+                              <div style={{ marginTop: 10, animation: "fade-in .18s var(--ease)" }}>
+                                <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", marginBottom: 10 }}>
+                                  <button
+                                    type="button"
+                                    className={`lib-switch${pr.copy ? " on" : ""}`}
+                                    role="switch"
+                                    aria-checked={pr.copy}
+                                    aria-label={t("Copy files instead of linking")}
+                                    onClick={() => {
+                                      const next = !pr.copy;
+                                      setProjects((list) =>
+                                        list.map((x) => (x.dir === pr.dir ? { ...x, copy: next } : x)),
+                                      );
+                                      onStatus?.(
+                                        next
+                                          ? t("{name} gets copies now", { name: pr.name })
+                                          : t("{name} gets links now", { name: pr.name }),
+                                        "ok",
+                                      );
+                                    }}
+                                  >
+                                    <i />
+                                  </button>
+                                  <span style={{ fontSize: 12.5, color: "var(--fg)" }}>{t("Copy files instead of linking")}</span>
+                                  <span style={{ fontSize: 12, color: "var(--muted)", flex: "1 1 180px" }}>
+                                    {pr.copy
+                                      ? t("Copies are made again whenever the library's skill changes; edits made to them are replaced.")
+                                      : t("Links follow the library's skill: an update reaches the project at once.")}
+                                  </span>
+                                </div>
+
+                                <div className="list" style={{ marginBottom: 8 }}>
+                                  {skills.length === 0 ? (
+                                    <p style={{ margin: "4px 0", fontSize: 12.5, color: "var(--muted)" }}>
+                                      {t("No skills in the library yet.")}
+                                    </p>
+                                  ) : (
+                                    skills.map((s) => {
+                                      const on = (pr.placed[s.id] || []).includes("cursor");
+                                      return (
+                                        <div
+                                          key={s.id}
+                                          className="row"
+                                          style={{
+                                            display: "flex",
+                                            alignItems: "center",
+                                            gap: 10,
+                                            padding: "8px 2px",
+                                            borderBottom: "1px solid var(--line)",
+                                          }}
+                                        >
+                                          <div style={{ flex: 1, minWidth: 0 }}>
+                                            <b style={{ fontSize: 13 }}>{s.name}</b>
+                                            <div style={{ fontSize: 12, color: "var(--muted)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                                              {s.desc}
+                                            </div>
+                                          </div>
+                                          <LibChip
+                                            iconOnly
+                                            on={on}
+                                            label="Cursor"
+                                            title={
+                                              on
+                                                ? t("{agent} has it — click to take it away", { agent: "Cursor" })
+                                                : t("Give it to {agent}", { agent: "Cursor" })
+                                            }
+                                            onClick={() => {
+                                              setProjects((list) =>
+                                                list.map((x) => {
+                                                  if (x.dir !== pr.dir) return x;
+                                                  const cur = x.placed[s.id] || [];
+                                                  const has = cur.includes("cursor");
+                                                  const nextAgents = has ? cur.filter((a) => a !== "cursor") : [...cur, "cursor"];
+                                                  const placed = { ...x.placed };
+                                                  if (nextAgents.length) placed[s.id] = nextAgents;
+                                                  else delete placed[s.id];
+                                                  return { ...x, placed };
+                                                }),
+                                              );
+                                              onStatus?.(
+                                                on
+                                                  ? t("{skill} is out of {name}", { skill: s.name, name: pr.name })
+                                                  : t("{skill} is in {name} for {agent}", {
+                                                      skill: s.name,
+                                                      name: pr.name,
+                                                      agent: "Cursor",
+                                                    }),
+                                                "ok",
+                                              );
+                                            }}
+                                          />
+                                        </div>
+                                      );
+                                    })
+                                  )}
+                                </div>
+
+                                <p style={{ margin: 0, fontSize: 12, color: "var(--muted)", lineHeight: 1.45 }}>
+                                  {t("Placed in .agents/skills of the project and listed in its .gitignore. A folder there that isn't magpie's is left as it is.")}
+                                </p>
+                              </div>
+                            ) : null}
                           </div>
-                          <button type="button" className="text" onClick={() => setProjects((list) => list.filter((x) => x.dir !== pr.dir))}>{t("Remove")}</button>
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
                   ) : !addingProject ? (
                     <p style={{ margin: 0, fontSize: 12.5, color: "var(--muted)", lineHeight: 1.45 }}>
@@ -2936,6 +3310,108 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                 setDiscardOpen(false);
                 if (mcpEditor) setMcpEditor(null);
                 if (hookEditor) setHookEditor(null);
+              }}
+            >
+              {t("Discard")}
+            </button>
+          </div>
+        </LibModal>
+      ) : null}
+
+      {projectRemove ? (
+        <LibModal
+          onBg={() => {
+            if (projectRemove.dirty) setProjectDiscard(true);
+            else setProjectRemove(null);
+          }}
+        >
+          <div className="ehead" style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
+            <span aria-hidden>🗑</span>
+            <b style={{ fontSize: 15 }}>{t("Remove {name}?", { name: projectRemove.name })}</b>
+          </div>
+          <p style={{ margin: "0 0 12px", fontSize: 13, color: "var(--fg-2)", lineHeight: 1.45 }}>
+            {projectRemove.keep
+              ? t("magpie forgets the project. The skills and MCP servers it put in the folder stay there as they are, with their lines in its .gitignore, and are yours from then on; a linked skill still follows the library's.")
+              : t("The skills and MCP servers magpie put in it are taken away, with their lines in its .gitignore. Nothing else in the folder is touched.")}
+          </p>
+          {(() => {
+            const pr = projects.find((p) => p.dir === projectRemove.dir);
+            const hasPlaced = pr ? Object.values(pr.placed).some((a) => a.length > 0) : false;
+            return hasPlaced ? (
+              <label
+                style={{
+                  display: "flex",
+                  gap: 10,
+                  alignItems: "flex-start",
+                  padding: "10px 12px",
+                  borderRadius: 10,
+                  background: "var(--pill)",
+                  marginBottom: 14,
+                  cursor: "pointer",
+                }}
+              >
+                <input
+                  type="checkbox"
+                  checked={projectRemove.keep}
+                  onChange={(e) =>
+                    setProjectRemove({ ...projectRemove, keep: e.target.checked, dirty: true })
+                  }
+                  style={{ marginTop: 3, accentColor: "var(--accent)" }}
+                />
+                <span>
+                  <span style={{ display: "block", fontSize: 13, fontWeight: 500 }}>{t("Keep its skills and MCP servers")}</span>
+                  <span style={{ display: "block", fontSize: 12, color: "var(--muted)", marginTop: 2 }}>
+                    {t("Remove the project from magpie only, leaving what magpie wrote into it")}
+                  </span>
+                </span>
+              </label>
+            ) : null;
+          })()}
+          <div className="bar" style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
+            <button
+              type="button"
+              className="text"
+              onClick={() => {
+                if (projectRemove.dirty) setProjectDiscard(true);
+                else setProjectRemove(null);
+              }}
+            >
+              {t("Cancel")}
+            </button>
+            <button
+              type="button"
+              className="text"
+              style={{ background: "var(--red)", color: "#fff", borderColor: "transparent" }}
+              onClick={() => {
+                const { dir, name } = projectRemove;
+                setProjects((list) => list.filter((x) => x.dir !== dir));
+                setProjectRemove(null);
+                setProjectDiscard(false);
+                onStatus?.(t("{name} removed", { name }), "ok");
+              }}
+            >
+              {t("Remove")}
+            </button>
+          </div>
+        </LibModal>
+      ) : null}
+
+      {projectDiscard && projectRemove ? (
+        <LibModal onBg={() => setProjectDiscard(false)} sm>
+          <b style={{ display: "block", fontSize: 15, marginBottom: 8 }}>{t("Discard")}</b>
+          <p style={{ margin: "0 0 14px", fontSize: 13, color: "var(--fg-2)", lineHeight: 1.45 }}>
+            {t("Discard unsaved changes? Your changes will be lost.")}
+          </p>
+          <div className="bar" style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
+            <button type="button" className="text" onClick={() => setProjectDiscard(false)}>{t("Cancel")}</button>
+            <button
+              type="button"
+              className="text"
+              style={{ background: "var(--red)", color: "#fff", borderColor: "transparent" }}
+              onClick={() => {
+                // NOTES 143: Discard closes remove sheet and does NOT remove the project
+                setProjectDiscard(false);
+                setProjectRemove(null);
               }}
             >
               {t("Discard")}
