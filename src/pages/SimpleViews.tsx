@@ -865,8 +865,8 @@ export function UsageView() {
                     : t("{when} · nothing", { when });
                   return (
                     <div className="bar" key={`${p.label}-${i}`} title={tip}>
-                      <i className="out" style={{ ["--h" as string]: `${((100 * p.output) / peak).toFixed(1)}%` }} />
-                      <i className="in" style={{ ["--h" as string]: `${((100 * p.input) / peak).toFixed(1)}%` }} />
+                      <i className="out" style={{ height: `${((100 * p.output) / peak).toFixed(1)}%` }} />
+                      <i className="in" style={{ height: `${((100 * p.input) / peak).toFixed(1)}%` }} />
                     </div>
                   );
                 })}
@@ -911,7 +911,7 @@ export function UsageView() {
                         </div>
                       </div>
                       <div className="share" title={t("{n}% of tokens", { n: String(Math.round((100 * tokensOf(g)) / total)) })}>
-                        <i style={{ ["--bar" as string]: `${Math.max(1.5, (100 * tokensOf(g)) / total).toFixed(1)}%` }} className="us-bar" />
+                        <i style={{ width: `${Math.max(1.5, (100 * tokensOf(g)) / total).toFixed(1)}%` }} />
                       </div>
                       <button
                         type="button"
@@ -1010,7 +1010,7 @@ export function UsageView() {
                       </div>
                     </div>
                     <div className="share" title={t("{n}% of tokens", { n: String(Math.round((100 * tokensOf(g)) / total)) })}>
-                      <i style={{ ["--bar" as string]: `${Math.max(1.5, (100 * tokensOf(g)) / total).toFixed(1)}%` }} className="us-bar" />
+                      <i style={{ width: `${Math.max(1.5, (100 * tokensOf(g)) / total).toFixed(1)}%` }} />
                     </div>
                     <div className="num">
                       <b>{fmtN(tokensOf(g))}</b>
@@ -1041,7 +1041,7 @@ export function UsageView() {
                           </div>
                         </div>
                         <div className="share">
-                          <i style={{ ["--bar" as string]: `${Math.max(1.5, (100 * tokensOf(g)) / total).toFixed(1)}%` }} />
+                          <i style={{ width: `${Math.max(1.5, (100 * tokensOf(g)) / total).toFixed(1)}%` }} />
                         </div>
                         <div className="num">
                           <b>{fmtN(tokensOf(g))}</b>
@@ -1183,7 +1183,7 @@ export function UsageView() {
                   <span className="k">{t("Cache hit rate")}</span>
                   <span className="v">{(100 * ledTotals.hit).toFixed(1)}%</span>
                   <div className="meter">
-                    <i style={{ ["--bar" as string]: `${(100 * ledTotals.hit).toFixed(1)}%` }} />
+                    <i style={{ width: `${(100 * ledTotals.hit).toFixed(1)}%` }} />
                   </div>
                 </div>
                 <div className="blk">
@@ -1764,7 +1764,7 @@ export function UsageView() {
                         <div className={`ctx-score ${tone}`} key={s.key}>
                           <span className="n">{t(s.name)}</span>
                           <span className="ctx-bar">
-                            <i style={{ ["--bar" as string]: `${(ratio * 100).toFixed(1)}%` }} className="ctx-fill" />
+                            <i style={{ width: `${(ratio * 100).toFixed(1)}%` }} />
                           </span>
                           <span className="v">
                             {s.points}/{s.most}
@@ -1800,7 +1800,7 @@ export function UsageView() {
                     <span className="ctx-k">{t("What its prompts hold")}</span>
                     <div className="ctx-share">
                       {a.shares.map((sh) => (
-                        <i key={sh.k} className={`ctx-share k-${sh.k}`} style={{ ["--grow" as string]: sh.v }} title={`${sh.name} · ${Math.round(sh.v * 100)}%`} />
+                        <i key={sh.k} className={`k-${sh.k}`} style={{ flexGrow: sh.v }} title={`${sh.name} · ${Math.round(sh.v * 100)}%`} />
                       ))}
                     </div>
                     <div className="ctx-mix-keys">

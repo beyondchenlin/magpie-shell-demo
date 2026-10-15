@@ -1490,7 +1490,7 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                     <code className="mdl">claude-sonnet-4-5</code>
                     <code className="mdl">claude-haiku-4</code>
                   </div>
-                  <div className="bar"><i style={{ ["--bar" as string]: "38%" }} /></div>
+                  <div className="bar"><i style={{ width: "38%" }} /></div>
                 </div>
                 <div className="rt-prov">
                   <span className="ic" aria-hidden>◇</span>

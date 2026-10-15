@@ -1,3 +1,12 @@
+## v0.1.161 · DEAD_INVENT_CSS_AUDIT · 2026-10-16 Asia/Shanghai
+
+- **WHY:** Audit leftover invent CSS / tip bridges in `shell-patch.css` with no live JSX/JS selectors — delete dead invent; restore Magpie context shareBar / score bar / Usage fill widths.
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; CIS PrefPick/WordsField; Magpie mk-official/installs (0.1.160); us-miniplot demo led stand-in (Magpie led-chart=SVG); skip oauth Approve wall.
+- **Cite:** Magpie context.js shareBar **L834–844** / score bar **L865–868**; context.css **L4–14** k-*/i.dot; app.js Usage `fill.style.width`; routing.css **L396–397** `.rt-act .bar i`.
+- **Deleted (dead invent):** `.usage-relative` / `.pop.anchored-tr` / `.us-empty-copy` / `.us-fade` / `.us-col` / `.us-acts` / `.us-tools` / `.us-find*` / `.led-legend` / `.us-kpi` / `.muted-12` / `.us-detail` / `.us-end` / `.us-rowacts` / `.us-tick` / `#view-usage .sess-more` / `.usage-note.sm` / `.ctx-block` / invent `.ctx-empty` / `.pm-body-rel` / `.rt-col-live` / `.led-heat-legend` / `.model-pop .hint-sm` / invent k-* hardcode + `.ctx-mix-keys .dot` 6px / `--bar|--h|--grow` chart/share/meter/ctx-fill / `pm-tabs` media orphan.
+- **Restore:** SimpleViews ctx-share → Magpie `k-*` + `flexGrow`; ctx-bar / share / meter / chart → `style.width|height`; RoutingView `.bar i` → `style.width`.
+- **chrome-guard:** pass. Push/PR #1. No portable/Vercel.
+
 ## v0.1.160 · LIBRARY_MK_OFFICIAL_INSTALLS_OSS_FIDELITY · 2026-10-16 Asia/Shanghai
 
 - **WHY:** invent skill `verified` / text-only installs → Magpie `mk-official` + `GLYPH.down` (library client/css).

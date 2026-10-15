@@ -1,3 +1,16 @@
+## v0.1.161 · DEAD_INVENT_CSS_AUDIT · 2026-10-16 Asia/Shanghai
+
+- **WHY:** Continue Magpie 1:1 after 0.1.160 — audit leftover invent CSS / tip comments in `shell-patch.css` (and related) without live selectors in JSX/JS; delete dead invent; where invent fought Magpie gold, restore Magpie.
+- **CAUSE:** CIS v0.1.115 Usage/Plugins chrome bridge left many invent selectors (`.us-acts` / `.anchored-tr` / `.pm-body-rel` / invent k-* palette / `--bar` fills…) that never landed in React, plus invent that fought Magpie context.css / shareBar / score bars.
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; Magpie mk-official + installs (0.1.160); us-miniplot demo ledger stand-in (Magpie led-chart is SVG); oauth Approve wall skip (nest=browser).
+- **Cite:**
+  - Magpie `context.js` **834–844** `shareBar`: `i.k-{k}` + `style.flexGrow`
+  - Magpie `context.js` **865–868** score `.ctx-bar` + bare `i` + `style.width`
+  - Magpie `context.css` **4–14** `--k-*` / `.k-*` / `i.dot` 8×8 radius 2.5
+  - Magpie Usage `fill.style.width` (app.js); routing.css **396–397** `.rt-act .bar i`
+- **WHAT changed:** Delete dead invent rules listed in ACCEPTANCE; SimpleViews + RoutingView Magpie-faithful width/flexGrow; drop invent k-* hardcode fighting context.css.
+- **chrome-guard:** pass (SIDE_AT=1024). Push/PR #1. No portable/Vercel.
+
 ## v0.1.160 · LIBRARY_MK_OFFICIAL_INSTALLS_OSS_FIDELITY · 2026-10-16 Asia/Shanghai
 
 - **WHY:** Continue Magpie 1:1 after 0.1.159 — restore Discover skill `mk-card` Magpie `mk-official` + installs `GLYPH.down` that demo omitted (text-only installs / invent `verified` flag).

@@ -387,13 +387,8 @@ body.web.side-nav {
 .sess-list .row.sess .ic img { width: 18px; height: 18px; display: block; }
 /* v0.1.144: drop invent .pm-ask* card — Magpie ask is .sub.ask in-row (plugins.js
    L1025–1108 / plugins.css L88). Drop invent .pm-card.installing / .pm-card.has. */
-.ctx-share i.k-system, .dot.k-system { --k: var(--c1, #5b8def); background: var(--k); }
-.ctx-share i.k-tools, .dot.k-tools { --k: var(--c2, #7c5cff); background: var(--k); }
-.ctx-share i.k-memory, .dot.k-memory { --k: var(--c3, #2bb673); background: var(--k); }
-.ctx-share i.k-files, .dot.k-files { --k: var(--c4, #e6a23c); background: var(--k); }
-.ctx-share i.k-results, .dot.k-results { --k: var(--c5, #e06c75); background: var(--k); }
-.ctx-share i.k-chat, .dot.k-chat { --k: var(--c6, #56b6c2); background: var(--k); }
-.ctx-mix-keys .dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; }
+/* v0.1.161: drop invent .ctx-share i.k-* / .dot.k-* hardcode + .ctx-mix-keys .dot 6px
+   circle — Magpie context.css L4–14 (.k-* → --k-*; i.dot 8×8 / radius 2.5). */
 
 /* v0.1.132: drop invent .rt-groups card / .rt-ghead — Magpie routing.css
    L414–416 list separators + .rt-group row (not bordered cards).
@@ -601,7 +596,6 @@ body.web.side-nav {
     gap: 6px 8px;
   }
   body.web .lib-tabs,
-  body.web .pm-tabs,
   body.web .lib-headacts {
     flex-wrap: wrap;
     max-width: 100%;
@@ -786,52 +780,27 @@ label.tick input { margin: 0; }
    Magpie gold: client.js projectCard L3535–3605; projectServers L3643–3665; hookRow L2247–2262;
    empty L803–808; intro L810; copyConfigButton L3183–3205; library.css L42–48 / L288–291 / L310–312 / L468–517 / L616–618.
    No remaining Library invent bridges in this block. */
-/* ── CIS v0.1.115 SimpleViews (Usage + Plugins) chrome bridge ── */
+/* ── CIS v0.1.115 / v0.1.161 SimpleViews (Usage + Plugins) chrome bridge ──
+   v0.1.161: drop dead invent CSS with no JSX/JS selectors —
+   .usage-relative / .pop.anchored-tr / .us-empty-copy / .us-fade / .us-col /
+   .us-acts / .us-tools / .us-find* / .led-legend / .us-kpi / .muted-12 /
+   .us-detail / .us-end / .us-rowacts / .us-tick / .sess-more (app.css L1438) /
+   .usage-note.sm / .ctx-block / invent .ctx-empty dashed card /
+   .pm-body-rel / invent --bar|--h|--grow chart/share/meter/ctx-fill bridges
+   (Magpie sets style.width / style.height / flexGrow — app.js Usage +
+   context.js shareBar L834–844 / score bar L865–868).
+   Restore Magpie context.css k-* (not invent c1… palette).
+   Keep nest bridges still live: us-empty pad, us-miniplot demo led stand-in
+   (Magpie led-chart is SVG), period-wrap/usage-refresh relative for pops,
+   pm-headrow wrap. */
 #view-usage .usage-refresh,
-#view-usage .period-wrap,
-#view-usage .usage-relative { position: relative; }
-#view-usage .pop.anchored-tr {
-  position: absolute; top: 100%; right: 0; z-index: 40; min-width: 160px;
-}
-#view-usage .pop.anchored-tr.tight { min-width: 0; }
+#view-usage .period-wrap { position: relative; }
 #view-usage .us-empty {
   padding: 22px 16px; margin-top: 8px; text-align: center;
 }
 #view-usage .us-empty b { display: block; font-weight: 600; margin-bottom: 6px; color: var(--fg); }
-#view-usage .us-empty p,
-#view-usage .us-empty-copy { color: var(--muted); font-size: 12.5px; line-height: 1.45; margin: 0; }
-#view-usage .us-fade { animation: fade-in .28s var(--ease); }
-#view-usage .us-fade.slow { animation-duration: .32s; }
-#view-usage .us-bar,
-#view-usage .share > i,
-#view-usage .meter > i,
-#view-usage .us-col {
-  transition: width .28s var(--ease), height .28s var(--ease);
-}
-#view-usage .us-bar { width: var(--bar, 0%); height: 100%; display: block; }
-#view-usage .us-col { height: var(--h, 0%); flex: 1; }
-#view-usage .share > i { width: var(--bar, 0%); display: block; height: 100%; }
-#view-usage .meter > i { width: var(--bar, 0%); }
-/* v0.1.138: drop invent #view-usage .us-more-pop absolute pop —
-   Magpie openRowMenu → .pop.row-menu (app.js L3497–3518 / L17375–17379; app.css L694).
-   Drop invent #view-usage .us-hidline margin/font — Magpie .us-hid .us-hidline
-   app.css L1067–1070 (margin 4px 0 0 2px / 11.5px / faint). */
-#view-usage .us-acts { margin-top: 10px; display: flex; gap: 8px; flex-wrap: wrap; }
-#view-usage .us-tools {
-  display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 8px;
-}
-#view-usage .us-find {
-  position: relative; display: inline-flex; align-items: center;
-}
-#view-usage .us-find-clear {
-  position: absolute; right: 4px; width: 22px; height: 22px; border: 0;
-  background: none; cursor: pointer; color: var(--muted); display: grid; place-items: center;
-}
-#view-usage .led-legend {
-  display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 6px;
-}
-#view-usage .led-legend .pair { display: inline-flex; align-items: center; gap: 6px; }
-#view-usage .led-legend .muted { font-size: 12px; color: var(--muted); }
+#view-usage .us-empty p { color: var(--muted); font-size: 12.5px; line-height: 1.45; margin: 0; }
+/* demo ledger miniplot (Magpie led-chart = SVG plot; nest stand-in) */
 #view-usage .us-miniplot {
   height: 120px; border-radius: 12px; border: 1px solid var(--line); background: var(--card);
   display: flex; align-items: flex-end; gap: 3px; padding: 12px 10px 8px;
@@ -841,42 +810,11 @@ label.tick input { margin: 0; }
   background: color-mix(in srgb, var(--accent) 55%, var(--pill));
   opacity: var(--op, .7); transition: height .28s var(--ease);
 }
-#view-usage .us-kpi { display: flex; align-items: baseline; gap: 8px; margin-top: 10px; }
-#view-usage .us-kpi p,
-#view-usage .muted-12 { margin: 0; font-size: 12px; color: var(--muted); }
-#view-usage .us-detail {
-  padding: 8px 12px 12px; font-size: 12px; color: var(--fg-2); display: grid; gap: 4px;
-}
-#view-usage .us-detail .k { color: var(--muted); }
-#view-usage .us-end { display: flex; justify-content: flex-end; margin-bottom: 6px; }
-#view-usage .us-rowacts {
-  display: flex; align-items: center; gap: 8px; margin-top: 10px; margin-bottom: 8px;
-}
-#view-usage .us-tick {
-  display: inline-flex; align-items: center; gap: 8px; font-size: 12.5px;
-  color: var(--muted); cursor: pointer;
-}
-#view-usage .us-tick input { accent-color: var(--accent); }
-#view-usage .us-empty.card {
-  padding: 22px 16px; text-align: center; color: var(--muted); line-height: 1.5;
-}
-#view-usage .sess-more { margin: 8px 12px 4px; align-self: flex-start; }
-#view-usage .usage-note.sm { margin-top: 10px; font-size: 11.5px; }
-#view-usage .ctx-block { margin-bottom: 14px; }
-#view-usage .ctx-fill { width: var(--bar, 0%); }
-#view-usage .ctx-share { flex-grow: var(--grow, 0); }
-#view-usage .ctx-empty {
-  border: 1px dashed var(--line); border-radius: 12px; padding: 28px 16px;
-  text-align: center; display: grid; gap: 6px; justify-content: center;
-}
-#view-usage .ctx-empty p { color: var(--muted); font-size: 12.5px; margin: 0; }
-
 #view-plugins .pm-headrow {
   display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
 }
 /* v0.1.150: drop invent .pm-mirror-tip fade-in — Magpie plugins.js L695 native title only;
    plugins.css L4–9 owns .pm-mirror. */
-#view-plugins .pm-body-rel { position: relative; }
 /* v0.1.148: drop invent #view-plugins .pm-ghbar margin / .pm-ghkinds* seg-track /
    .pm-ghfind / .pm-ghnone / .pm-who / .pm-name-row* / .pm-verified / .pm-byline /
    .pm-sum / .pm-meta* / .pm-card.enter* / .pm-manual-hint / .pm-gap / .pm-mb /
@@ -885,16 +823,8 @@ label.tick input { margin: 0; }
    .pm-name / .pm-by / .pm-verified / .pm-sum / .pm-meta); ghkinds is class on Magpie
    segs (plugins.js L609). Drop invent .modal .pm-detail.dialog* + .modal .pm-plugin* —
    Magpie .modal .editor.pm-detail.framed (plugins.css L191–192) + .pm-d* L193–207. */
-
-/* CIS v0.1.115 — Magpie chart/share consume CSS vars (replaces inline %) */
-.chart .bar i { height: var(--h, 0%); transition: height .28s var(--ease); }
-.row.stat .share i,
-.meter > i { width: var(--bar, 0%); }
-#view-usage .us-miniplot .col { opacity: var(--op, .7); }
 /* v0.1.148: drop invent #view-plugins .pm-ghkinds .opt --ctl-fg + invent .pm-note.warn
    recolor — Magpie segs .opt + plugins.css L144 .pm-note.warn (--amber-soft). */
-.pop.anchored-tr { position: absolute; top: 100%; right: 0; z-index: 40; min-width: 160px; }
-
 
 /* ── CIS v0.1.116 RoutingView chrome bridge ── */
 /* v0.1.142: drop invent .rt-req-head.note / .rt-filters+mb / .rt-days /
@@ -905,18 +835,11 @@ label.tick input { margin: 0; }
 .pop.row-menu.fixed { position: fixed; z-index: 80; }
 #view-routing .rt-fade { animation: fade-in .2s var(--ease); }
 #view-routing .rt-fade.fast { animation: fade-in .18s var(--ease); }
-#view-routing .rt-filters[hidden],
-#view-routing .rt-col-live[hidden] { display: none !important; }
+#view-routing .rt-filters[hidden] { display: none !important; }
 /* v0.1.132: drop invent #view-routing .rt-group-by inline-flex — Magpie routing.css L316/L667 */
-#view-routing .rt-col-live {
-  display: flex; flex-direction: column;
-}
+/* v0.1.161: drop dead invent .rt-col-live + --bar fill — demo uses .rt-col +
+   Magpie style.width on .bar i (routing.css L396–397). */
 #view-routing .rt-act.enter { animation: rtin .4s ease-out; }
-/* v0.1.128: .rt-accts bar uses Magpie routing.css track+i (no tip --bar fill invent).
-   rt-act still maps --bar → i width for demo rows that keep the token. */
-#view-routing .rt-act .bar i {
-  width: var(--bar, 0%);
-}
 /* v0.1.132: drop invent rt-tpl / rt-group.row.who / rt-dim / rt-pick-empty|title|gap /
    rt-ic.sm / modal.rt-confirm — Magpie has none; groups use .main/.nm (routing.css L442–444). */
 
@@ -951,16 +874,12 @@ label.tick input { margin: 0; }
    .font-preview (app.css L3063–3065); About = PrefRow Version (app.js L21118);
    TrayUsage = #trayUsagePick proto pick (app.js L21812+); SyncForms editor.sync-form. */
 
-/* leftovers */
-.led-heat-legend {
-  display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 6px;
-}
+/* leftovers — v0.1.161: drop dead invent .led-heat-legend / .model-pop .hint-sm */
 .pop.row-menu.fixed-z50 { position: fixed; z-index: 50; }
 .ge-add-sheet {
   margin-top: 8px; animation: pop-in .42s cubic-bezier(.16, 1, .3, 1);
 }
 .ge-full-row { grid-column: 1 / -1; }
-.model-pop .hint-sm { font-size: 11px; line-height: 1; }
 .am-pop .empty {
   padding: 16px 12px; color: var(--muted); font-size: 12.5px;
 }
