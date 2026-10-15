@@ -680,21 +680,34 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus, onHeade
                   onClick={() => setLangOpen((o) => !o)}
                 />
                 {langOpen ? (
-                  <ul className="sess-menu" role="menu">
-                    {LOCALES.map((x) => (
-                      <li key={x.id} role="none">
+                  <div className="pop proto-menu sess-menu" role="menu" aria-label={t("Language")}>
+                    <div className="pm-head">{t("Language")}</div>
+                    {LOCALES.map((x) => {
+                      const on = localePick === x.id;
+                      return (
                         <button
                           type="button"
+                          key={x.id}
+                          className={`pm-item${on ? " on" : ""}`}
                           role="menuitemradio"
-                          aria-checked={localePick === x.id}
-                          className={localePick === x.id ? "on" : ""}
+                          aria-checked={on}
                           onClick={() => pickLocale(x.id)}
                         >
-                          {localeLabel(x.id)}
+                          <span className="pm-tick" aria-hidden>
+                            {on ? (
+                              <svg viewBox="0 0 16 16" width={12} height={12} fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M3.2 8.2 6.4 11.4 12.8 4.2" />
+                              </svg>
+                            ) : null}
+                          </span>
+                          <span className="pm-words">
+                            <span className="pm-name">{localeLabel(x.id)}</span>
+                            <span className="pm-note" />
+                          </span>
                         </button>
-                      </li>
-                    ))}
-                  </ul>
+                      );
+                    })}
+                  </div>
                 ) : null}
               </div>
             </PrefRow>

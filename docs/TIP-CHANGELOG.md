@@ -1,3 +1,15 @@
+## v0.1.136 · SETTINGS_LANG_USAGE_LED_OSS_FIDELITY · 2026-10-15 Asia/Shanghai
+- **WHY:** Continue Magpie 1:1 after 0.1.135 — delete tip invent Settings Language menu + set-q/pref-pick chrome + Usage ledger/sess invents that covered Magpie OSS.
+- **CAUSE:** Demo painted Language as invent `<ul.sess-menu>` + shell-patch `.pref-pick`/`.sess-menu`/`.set-q` geometry against Magpie `openProtoMenu` + `.sess-pick`/`.sess-filter`; Usage invent `led-detail-inner` + sess grid/sess-go fought Magpie `.led-box`/`.led-dl` and flex `.row.sess`.
+- **Gold:**
+  - Magpie `app.js` **21217–21229** `renderLangPick` → `openProtoMenu(..., "sess-menu", "right")`; **13799–13808** `.pop.proto-menu` + `pm-head` / `pm-item`
+  - Magpie `app.css` **2499–2506** `.pop.proto-menu` / `.pm-item`; **1375–1377** `.pop.proto-menu.sess-menu`; **1366** `.sess-filter`; **1369–1374** `.sess-pick`; **3027–3035** `.set-q` / `.set-searching`; **3080** `.pref-pick`
+  - Magpie `app.css` **1326–1330** `.led tr.open` / `.led-detail` / `.led-box` / `.led-dl`; `app.js` **17729–17753** led detail DOM
+  - Magpie `app.css` **1514–1527** `.sess-item` / `.row.sess` / `.sess-go`; **1019** `.stats`; **1395** `.stats.six`
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; Gateway Connect / Agents guide (0.1.135); CIS PrefPick/PrefRow/Segs/TextBtn; React pref-anchor absolute `.pop` nest bridge.
+- **WHAT changed:** `SettingsView.tsx` Language menu → Magpie proto-menu; `SimpleViews.tsx` led detail → led-box/led-dl; `shell-patch.css` drop invents above.
+- SIDE_AT=1024. Push/PR #1. No portable / Vercel.
+
 ## v0.1.135 · GW_CONNECT_AGENTS_GUIDE_OSS_FIDELITY · 2026-10-15 Asia/Shanghai
 - **WHY:** Continue Magpie 1:1 after 0.1.134 — delete tip invent Gateway Connect key/model chrome + Agents guide missing optional step; restore Magpie OSS.
 - **CAUSE:** Demo always labeled Connect key `API key` and painted invent model-row `◎`; Models head lacked Magpie `#findModel`; Agents Get started omitted Magpie optional routing step 3.

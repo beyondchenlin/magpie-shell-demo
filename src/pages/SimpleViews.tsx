@@ -1244,15 +1244,29 @@ export function UsageView() {
                         {open ? (
                           <tr className="led-detail">
                             <td colSpan={10}>
-                              <div className="led-detail-inner">
-                                <div>
-                                  <b>{t("Cache write")}</b>: {fmtN(r.cache_write)} · <b>{t("Cache read")}</b>: {fmtN(r.cache_read)}
-                                  {r.speed ? ` · ${t("Speed")}: ${r.speed} tok/s` : ""}
-                                  {r.effort ? ` · ${t("Effort")}: ${r.effort}` : ""}
-                                </div>
-                                <div>
-                                  {demoCopy("演示行展开（Magpie led-row details）", "Demo row expand (Magpie led-row details)")}
-                                </div>
+                              <div className="led-box">
+                                <dl className="led-dl">
+                                  <dt>{t("Cache write")}</dt>
+                                  <dd>{fmtN(r.cache_write)}</dd>
+                                  <dt>{t("Cache read")}</dt>
+                                  <dd>{fmtN(r.cache_read)}</dd>
+                                  {r.speed ? (
+                                    <>
+                                      <dt>{t("Speed")}</dt>
+                                      <dd>{r.speed} tok/s</dd>
+                                    </>
+                                  ) : null}
+                                  {r.effort ? (
+                                    <>
+                                      <dt>{t("Effort")}</dt>
+                                      <dd>{r.effort}</dd>
+                                    </>
+                                  ) : null}
+                                  <dt>{t("Data source")}</dt>
+                                  <dd className="muted">
+                                    {demoCopy("演示行展开（Magpie led-box / led-dl）", "Demo row expand (Magpie led-box / led-dl)")}
+                                  </dd>
+                                </dl>
                               </div>
                             </td>
                           </tr>

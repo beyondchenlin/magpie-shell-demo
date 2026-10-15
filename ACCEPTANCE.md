@@ -1,3 +1,10 @@
+## v0.1.136 SETTINGS_LANG_USAGE_LED_OSS_FIDELITY
+- Settings Language: drop invent `<ul class="sess-menu">` button list — restore Magpie `openProtoMenu` → `.pop.proto-menu.sess-menu` + `pm-head` / `pm-item` / `pm-tick` / `pm-words` (app.js L21217–21229 / L13799–13808; app.css L2499–2506 / L1375–1377).
+- shell-patch: drop invent `#view-settings .set-q` height 27 / font 12.5 (Magpie L3027 flex only + `.sess-filter` L1366); drop invent `.pref-pick` pill re-paint (Magpie `.sess-pick` L1369–1374 + `.pref-pick` L3080); drop invent bare `.sess-menu` + invent `#view-settings.set-searching` duplicates (Magpie L3028–3035).
+- Usage ledger: drop invent `led-detail-inner` fade / wrong detail bg — restore Magpie `.led-box` + `.led-dl` (app.css L1326–1330; app.js L17729–17753).
+- Usage sessions: drop invent `.sess-list .row.sess` display:grid + `sess-go` opacity/translate / `.open` rotate + invent `.stats.six` re-own — Magpie L1514–1527 / L1019 / L1395.
+- SIDE_AT=1024. No portable / Vercel.
+
 ## v0.1.135 GW_CONNECT_AGENTS_GUIDE_OSS_FIDELITY
 - Gateway Connect: drop invent always-`API key` + raw secret when lan — restore Magpie `keyLabel` Gateway key / API key, empty `Create a gateway key above to connect`, lan key hints (client.js L431–442); snippet empty → Magpie L467 prompt (no copy).
 - Gateway Model hint: Magpie L446–448 branch when models listed vs empty.

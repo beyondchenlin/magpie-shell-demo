@@ -304,12 +304,8 @@ body.window:not(.side-nav) .top.tight .brand > span:not(.logo) { display: none; 
 /* v0.1.134: drop invent .importapps* (apptabs height/border/logo 16) —
    Magpie app.css L3435–3464 .editor.importapps owns tabs/list/empty */
 
-/* Settings search beside set-tabs */
-#view-settings .set-q {
-  flex: 0 1 180px; margin-left: auto; min-width: 120px;
-  height: 27px; padding: 0 9px; border-radius: 7px;
-  border: 1px solid var(--line); background: var(--card); font-size: 12.5px;
-}
+/* v0.1.136: drop invent #view-settings .set-q height/padding/border/radius/bg/font —
+   Magpie app.css L3027 .set-q flex only; chrome from .sess-filter L1366 (height 26 / font 12). */
 
 
 /* Side-nav inside web frame: Magpie uses fixed sidebar; pin it to #root. */
@@ -337,55 +333,11 @@ body.web.side-nav {
   padding-left: 0 !important;
 }
 
-/* Settings: language pref-pick menu (demo popover; Magpie uses .pop.proto-menu.sess-menu) */
-.pref-pick {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 0 8px 0 10px;
-  border-radius: 7px;
-  background: var(--pill);
-  transition: background .12s, color .12s;
-}
-.pref-pick:hover, .pref-pick.open { background: var(--pill-hover); color: var(--fg); }
-.pref-pick svg { opacity: .7; transition: transform .15s var(--ease); }
-.pref-pick.open svg { transform: rotate(180deg); }
-.sess-menu {
-  min-width: 160px;
-  padding: 4px;
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  background: var(--card);
-  box-shadow: 0 8px 24px rgba(0,0,0,.12);
-  list-style: none;
-  margin: 0;
-}
-.sess-menu button {
-  display: block;
-  width: 100%;
-  text-align: left;
-  padding: 6px 10px;
-  border-radius: 6px;
-  font-size: 12.5px;
-  color: var(--fg-2);
-  transition: background .12s, color .12s;
-}
-.sess-menu button:hover { background: var(--pill); color: var(--fg); }
-.sess-menu button.on { background: var(--pill); color: var(--fg); font-weight: 600; }
-
-/* Settings search: Magpie puts .set-searching on #view-settings */
-#view-settings.set-searching .set-tabs { display: none; }
-#view-settings.set-searching .set-q { flex: 1 1 100%; width: 100%; margin-left: 0; }
-#view-settings.set-searching .set-page::before {
-  content: attr(data-part);
-  display: block;
-  margin: 4px 2px 6px;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: .05em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
+/* v0.1.136: drop invent .pref-pick re-paint (pill bg / padding / pill-hover open) —
+   Magpie .sess-pick L1369–1374 + .pref-pick L3080 (max-width/height/color only).
+   Drop invent bare .sess-menu button list — Magpie openProtoMenu → .pop.proto-menu.sess-menu
+   (app.js L21217–21229 / L13799–13808; app.css L2499–2506 / L1375–1377).
+   Drop invent #view-settings.set-searching duplicates — Magpie L3028–3035. */
 
 /* v0.1.129: drop invent .lib-switch geometry (height 18 / thumb 14 / translateX 14 / --pill).
    Magpie library.css L141–146 owns .lib-switch (32×19, thumb 15, translateX 13, --line/--fg). */
@@ -461,24 +413,14 @@ body.web.side-nav {
 .range-menu .rm-step { border: 0; background: none; cursor: pointer; }
 
 
-/* ---- Usage filled: ledger detail / sess list / plugins ask (v0.1.16) ---- */
-.led tr.led-row.open td { background: var(--pill); }
-.led tr.led-detail td { padding: 0; border-top: 0; background: color-mix(in srgb, var(--card) 70%, var(--pill)); }
-.led-detail-inner { animation: fade-in .18s var(--ease, ease); }
+/* ---- Usage filled: ledger detail / sess list / plugins ask ---- */
+/* v0.1.136: drop invent led-row.open/led-detail bg + led-detail-inner fade —
+   Magpie app.css L1326–1328 (.open td / .led-detail td = card-2); L1329 .led-box; L1330 .led-dl.
+   Drop invent .sess-list .row.sess display:grid + sess-go opacity/translate —
+   Magpie L1514–1527 flex .row.sess + sess-go color-only hover.
+   Drop invent .stats.six re-own Magpie .stats L1019 + .stats.six L1395 (columns only). */
 .led .who .ic img { width: 14px; height: 14px; display: block; }
-.sess-list .sess-item + .sess-item { border-top: 1px solid var(--line-2); }
-.sess-list .row.sess { display: grid; grid-template-columns: 22px minmax(0, 1.4fr) minmax(100px, 0.7fr) 72px 16px; align-items: center; gap: 10px; padding: 10px 12px; cursor: pointer; transition: background .12s var(--ease); }
-.sess-list .row.sess:hover { background: var(--pill); }
 .sess-list .row.sess .ic img { width: 18px; height: 18px; display: block; }
-.sess-list .row.sess .num { text-align: right; font-variant-numeric: tabular-nums; }
-.sess-list .row.sess .num b { display: block; font-size: 13px; font-weight: 600; }
-.sess-list .row.sess .num small { display: block; font-size: 10.5px; color: var(--muted); }
-.sess-list .row.sess .cost { text-align: right; font-size: 12.5px; color: var(--green); font-weight: 600; }
-.sess-list .row.sess .cost.none, .sess-list .row.sess .num.none { color: var(--faint); }
-.sess-list .sess-go { opacity: .45; transition: opacity .12s, transform .15s var(--ease); }
-.sess-list .row.sess:hover .sess-go { opacity: 1; transform: translateX(2px); }
-.stats.six { display: grid; gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; margin-bottom: 10px; }
-.stats.six .kpi { background: var(--card); }
 .pm-ask { margin-top: 10px; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--line); background: var(--pill); display: flex; flex-direction: column; gap: 6px; animation: fade-in .18s var(--ease); }
 .pm-ask-say { margin: 0; font-size: 13px; font-weight: 600; color: var(--fg); }
 .pm-ask-sub { margin: 0; font-size: 12px; color: var(--muted); line-height: 1.45; }
@@ -522,12 +464,8 @@ body.web.side-nav {
 .heat-tip span { color: var(--muted); }
 .heat-grid i { transition: background .18s var(--ease), outline-color .12s; cursor: default; }
 
-.sess-item.open { background: color-mix(in srgb, var(--pill) 45%, transparent); }
-.sess-item .sess-detail {
-  animation: fade-in .18s var(--ease);
-}
-.sess-list .sess-go.open svg { transform: rotate(90deg); }
-.sess-list .sess-go svg { transition: transform .15s var(--ease); }
+/* v0.1.136: drop invent sess-item.open redeclare (Magpie L1515) + sess-detail fade +
+   sess-go.open rotate (Magpie sess-go L1526–1527 is color only, no .open rotate). */
 .sess-show-more { transition: color .12s var(--ease), background .12s var(--ease); }
 
 .pm-chip {
@@ -856,7 +794,8 @@ body.web.side-nav {
 
 /* —— v0.1.104 CIS P0: Settings / Tick / WordsField helpers (no chrome) —— */
 .pref-anchor { position: relative; display: inline-flex; align-items: center; }
-.pref-anchor > .sess-menu {
+/* React nest: Magpie placeMenu appends to body; framed web anchors .pop under pick */
+.pref-anchor > .pop.proto-menu {
   position: absolute;
   right: 0;
   top: 100%;
