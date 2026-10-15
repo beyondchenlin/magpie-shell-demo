@@ -1,3 +1,16 @@
+## v0.1.140 · PROJECT_REMOVE_LIBKEEP_AGENTS_SMASK_OSS_FIDELITY · 2026-10-15 Asia/Shanghai
+
+- **WHY:** Continue Magpie 1:1 after 0.1.139 — delete tip invent Library project-remove ActionConfirm.extra / Tick.keep and Agents inline ag-relocate that covered Magpie OSS.
+- **CAUSE:** Demo painted Keep-skills as invent `ActionConfirm` + `extra`/`Tick.keep` (+ invent Discard on cancel) instead of Magpie `confirmRemoveProject` openLib sheet; Agents relocate painted invent inline `ag-relocate`/`ag-settings`/`ag-quiet` instead of Magpie `askRelocate` `editor.sm-ask` modal.
+- **Magpie cites:**
+  - Magpie `plugins/library/client.js` **3668–3703** `confirmRemoveProject` → `editor.lib-editor` + `p.lib-confirm` + `label.lib-pick.lib-keep` + bar Cancel/Remove
+  - Magpie `plugins/library/library.css` **345** `.lib-editor .lib-keep`; **299–305** `.lib-pick`
+  - Magpie `plugins/sessions/client.js` **901–959** `askRelocate` → `editor.sm-ask` + `openModal` + `$("#modal").classList.add("lib")`; bar `text` / `text primary`
+  - Magpie `plugins/sessions/sessions.css` **55–58** `.sm-ask-field` / `.sm-ask-path`
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; LibModal editor path (0.1.139); other ActionConfirm uses (Discard / skill remove still tip for later); CIS PrefRow/Segs/TextBtn.
+- **WHAT changed:** `LibraryView.tsx` project remove → LibModal lib-keep; `AgentsView.tsx` relocate → sm-ask modal; `sessions.css` import; `ActionConfirm` drop invent `extra`; `shell-patch.css` drop invents above.
+- **Guard:** `npm run chrome-guard`. No portable. Push/PR #1. No Vercel.
+
 ## v0.1.139 · LIB_MODAL_EDITOR_AG_CONFIRM_OSS_FIDELITY · 2026-10-15 Asia/Shanghai
 
 - **WHY:** Continue Magpie 1:1 after 0.1.138 — delete tip invent Library sheet chrome (`.dialog.lib-editor` / unused `.sm` / invent ehead-bar padding) + invent `.lib-confirm` / pill `button.lib-ag` that covered Magpie OSS.

@@ -1098,98 +1098,6 @@ export function AgentsView({
                   </button>
                 </div>
               )}
-              {relocateFor === a.id ? (
-                <div
-                  className="ag-relocate ag-exp"
-                 
-                  onClick={(e) => e.stopPropagation()}>
-                  <div className="ag-settings">
-                    <div className="ag-kv">
-                      <div className="ag-k">
-                        <img src={iconSrc("claude-color")} alt="" width={16} height={16} />
-                        <span>{t("Relocate Claude Code project")}</span>
-                      </div>
-                      <div className="ag-v">
-                        <div className="ag-vl">
-                          <p className="sub sm-ask-path">
-                            {relFrom || "~/code/magpie"}
-                          </p>
-                          <p className="lib-confirm">
-                            {t("Close Claude Code and its editor sessions first. This moves the entire project's sessions, not just filtered or selected rows. Existing target storage is never overwritten. Desktop-only sessions are not changed.")}
-                          </p>
-                          <label className="sm-ask-field">
-                            <span>{t("New absolute project path")}</span>
-                            <input
-                              className="words"
-                              spellCheck={false}
-                              autoComplete="off"
-                             
-                              value={relTo}
-                              disabled={relPhase === "done"}
-                              onChange={(e) => {
-                                setRelTo(e.target.value);
-                                setRelPhase("edit");
-                                setRelPreview(null);
-                              }}
-                            />
-                          </label>
-                          {relPreview ? (
-                            <p className="lib-confirm" aria-live="polite">
-                              {relPreview}
-                            </p>
-                          ) : null}
-                          <div>
-                            <span className="grow" />
-                            <button
-                              type="button"
-                              className="ag-quiet"
-                              onClick={() => {
-                                setRelocateFor(null);
-                                setRelPhase("edit");
-                                setRelPreview(null);
-                              }}>
-                              {relPhase === "done" ? t("Close") : t("Cancel")}
-                            </button>
-                            {relPhase !== "done" ? (
-                              <button
-                                type="button"
-                                className="ag-quiet accent"
-                                disabled={relBusy || !relTo.trim()}
-                                onClick={() => {
-                                  setRelBusy(true);
-                                  window.setTimeout(() => {
-                                    setRelBusy(false);
-                                    if (relPhase === "edit") {
-                                      setRelPhase("preview");
-                                      setRelPreview(
-                                        t("Move {n} sessions ({size}) from {from} to {to}. Originals are retained outside Claude's project list. Historical message text is unchanged.", {
-                                          n: 12,
-                                          size: "48 MB",
-                                          from: relFrom || "~/code/magpie",
-                                          to: relTo.trim(),
-                                        }),
-                                      );
-                                    } else {
-                                      setRelPhase("done");
-                                      setRelPreview(
-                                        t("Relocation complete. Original files and recovery manifest: {dir}", {
-                                          dir: "~/.config/magpie/relocate-demo",
-                                        }),
-                                      );
-                                      onStatus(demoCopy("演示：会话路径已迁移（本地）", "Demo: sessions relocated (local)"), "ok");
-                                    }
-                                  }, 420);
-                                }}>
-                                {relBusy ? "…" : relPhase === "preview" ? t("Confirm relocation") : t("Preview relocation")}
-                              </button>
-                            ) : null}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ) : null}
               {wired[a.id] && expandOpen === a.id && a.connectable ? (
                 <div className="ag-exp" onClick={(e) => e.stopPropagation()}>
                   <div className="ag-settings">
@@ -1729,6 +1637,99 @@ export function AgentsView({
           </button>
         </section>
       </main>
+
+      {/* Magpie askRelocate: openModal editor.sm-ask + modal.lib
+          (plugins/sessions/client.js L901–959; sessions.css sm-ask-*) —
+          drop invent inline ag-relocate / ag-settings / ag-quiet bar */}
+      {relocateFor ? (
+        <div
+          className="modal lib"
+          role="presentation"
+          onMouseDown={(e) => {
+            if (e.target === e.currentTarget) {
+              setRelocateFor(null);
+              setRelPhase("edit");
+              setRelPreview(null);
+            }
+          }}>
+          <div className="dialog" role="dialog" aria-modal onMouseDown={(e) => e.stopPropagation()}>
+            <div className="editor sm-ask">
+              <div className="ehead">
+                <img src={iconSrc("claude-color")} alt="" className="ic" width={20} height={20} />
+                <b>{t("Relocate Claude Code project")}</b>
+              </div>
+              <p className="sub sm-ask-path">{relFrom || "~/code/magpie"}</p>
+              <p className="lib-confirm">
+                {t("Close Claude Code and its editor sessions first. This moves the entire project's sessions, not just filtered or selected rows. Existing target storage is never overwritten. Desktop-only sessions are not changed.")}
+              </p>
+              <label className="sm-ask-field">
+                {t("New absolute project path")}
+                <input
+                  type="text"
+                  spellCheck={false}
+                  autoComplete="off"
+                  value={relTo}
+                  disabled={relPhase === "done"}
+                  onChange={(e) => {
+                    setRelTo(e.target.value);
+                    setRelPhase("edit");
+                    setRelPreview(null);
+                  }}
+                />
+              </label>
+              <p className="lib-confirm" aria-live="polite">
+                {relPreview || ""}
+              </p>
+              <div className="bar">
+                <span className="grow" />
+                <button
+                  type="button"
+                  className="text"
+                  onClick={() => {
+                    setRelocateFor(null);
+                    setRelPhase("edit");
+                    setRelPreview(null);
+                  }}>
+                  {relPhase === "done" ? t("Close") : t("Cancel")}
+                </button>
+                {relPhase !== "done" ? (
+                  <button
+                    type="button"
+                    className={`text primary${relBusy ? " busy" : ""}`}
+                    disabled={relBusy || !relTo.trim()}
+                    onClick={() => {
+                      setRelBusy(true);
+                      window.setTimeout(() => {
+                        setRelBusy(false);
+                        if (relPhase === "edit") {
+                          setRelPhase("preview");
+                          setRelPreview(
+                            t("Move {n} sessions ({size}) from {from} to {to}. Originals are retained outside Claude's project list. Historical message text is unchanged.", {
+                              n: 12,
+                              size: "48 MB",
+                              from: relFrom || "~/code/magpie",
+                              to: relTo.trim(),
+                            }),
+                          );
+                        } else {
+                          setRelPhase("done");
+                          setRelPreview(
+                            t("Relocation complete. Original files and recovery manifest: {dir}", {
+                              dir: "~/.config/magpie/relocate-demo",
+                            }),
+                          );
+                          onStatus(demoCopy("演示：会话路径已迁移（本地）", "Demo: sessions relocated (local)"), "ok");
+                        }
+                      }, 420);
+                    }}>
+                    {relBusy ? "…" : relPhase === "preview" ? t("Confirm relocation") : t("Preview relocation")}
+                  </button>
+                ) : null}
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : null}
 
       {fieldPop ? (
         <ModelPop

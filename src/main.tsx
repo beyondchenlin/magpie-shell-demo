@@ -4,6 +4,7 @@ import "./styles/app.css";
 import "./styles/routing.css";
 import "./styles/shell-patch.css";
 import "./styles/library.css";
+import "./styles/sessions.css";
 import "./styles/plugins.css";
 import "./styles/context.css";
 import { bootDemoTheme } from "./applyTheme";

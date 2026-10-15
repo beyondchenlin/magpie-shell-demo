@@ -489,7 +489,6 @@ body.web.side-nav {
 /* v0.1.127: removed invented .rt-livedot.on 7px glow — Magpie routing.css L405
    is always-green 6px + rtlive (no .on / no ring). Tip JSX may keep class "on" harmlessly. */
 
-.ag-relocate input.words,
 .pv-add-steps input.words {
   height: 26px;
   padding: 0 9px;
@@ -1045,29 +1044,7 @@ label.tick input { margin: 0; }
   gap: 10px;
   flex-wrap: wrap;
 }
-/* Magpie action-confirm extra slot (Library Keep-skills) — tokens only */
-.action-confirm .extra { margin: -4px 0 16px; }
-.action-confirm .extra label.tick.keep {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  padding: 10px 12px;
-  border-radius: 10px;
-  background: var(--pill);
-  color: var(--fg);
-  cursor: pointer;
-}
-.action-confirm .extra label.tick.keep .name {
-  display: block;
-  font-size: 13px;
-  font-weight: 500;
-}
-.action-confirm .extra label.tick.keep .sub {
-  display: block;
-  font-size: 12px;
-  color: var(--muted);
-  margin-top: 2px;
-}
+/* v0.1.140: drop invent .action-confirm .extra / label.tick.keep — Magpie confirmRemoveProject uses lib-pick.lib-keep in openLib (library/client.js L3668–3703), not ActionConfirm.extra */
 
 /* Magpie Providers signing / GTK Select Files / Move menu — CIS v0.1.112 */
 .signing .s.note {
@@ -2216,36 +2193,7 @@ label.tick input { margin: 0; }
 #view-agents .row.agent .val.acts {
   display: flex; gap: 6px; flex-wrap: wrap; align-items: center;
 }
-#view-agents .ag-relocate.ag-exp { animation: fade-in .18s var(--ease); }
-#view-agents .ag-relocate .rel-head {
-  display: flex; align-items: center; gap: 8px;
-}
-#view-agents .ag-relocate .rel-mark { border-radius: 3px; }
-#view-agents .ag-relocate .rel-stack {
-  display: flex; flex-direction: column; align-items: stretch; gap: 8px;
-}
-#view-agents .ag-relocate .rel-path {
-  margin: 0; font-family: var(--code-font, var(--code)); font-size: 11.5px;
-  color: var(--fg-2); word-break: break-all;
-}
-#view-agents .ag-relocate .rel-note {
-  margin: 0; font-size: 12px; color: var(--muted); line-height: 1.45;
-}
-#view-agents .ag-relocate .rel-fields {
-  display: flex; flex-direction: column; gap: 4px; font-size: 12px;
-}
-#view-agents .ag-relocate .rel-fields .k {
-  color: var(--muted); font-weight: 560;
-}
-#view-agents .ag-relocate .rel-fields .words {
-  width: 100%; font-family: var(--code-font, var(--code)); font-size: 12.5px;
-}
-#view-agents .ag-relocate .rel-body {
-  margin: 0; font-size: 12px; color: var(--fg-2); line-height: 1.45;
-}
-#view-agents .ag-relocate .rel-acts {
-  display: flex; gap: 8px; align-items: center;
-}
+/* v0.1.140: drop invent #view-agents .ag-relocate* — Magpie askRelocate is editor.sm-ask modal (sessions/client.js L901–959) */
 #view-agents .ag-exp.enter { animation: fade-in .22s var(--ease); }
 #view-agents .ag-exp .mt6 { margin-top: 6px; }
 #view-agents .ag-exp .mt2 { margin-top: 2px; }

@@ -3,7 +3,6 @@ import { ActionConfirm } from "../components/ActionConfirm";
 import { PrefPick } from "../components/PrefPick";
 import { Segs } from "../components/Segs";
 import { WordsField } from "../components/WordsField";
-import { Tick } from "../components/Tick";
 import { LibSwitch } from "../components/LibSwitch";
 import { TextBtn } from "../components/TextBtn";
 import { Bird } from "../components/Bird";
@@ -960,8 +959,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
     placed: Record<string, string[]>;
   };
   const [projects, setProjects] = useState<LibProject[]>([]);
-  const [projectRemove, setProjectRemove] = useState<{ dir: string; name: string; keep: boolean; dirty: boolean } | null>(null);
-  const [projectDiscard, setProjectDiscard] = useState(false);
+  const [projectRemove, setProjectRemove] = useState<{ dir: string; name: string; keep: boolean } | null>(null);
   const [hooks, setHooks] = useState<
     { id: string; name: string; description: string; event: string; matcher: string; command: string; agents: string[] }[]>([]);
   const [hookEditor, setHookEditor] = useState<HookDraft | null>(null);
@@ -2654,7 +2652,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                                   e.currentTarget.style.color = "";
                                 }}
                                 onClick={() =>
-                                  setProjectRemove({ dir: pr.dir, name: pr.name, keep: false, dirty: false })
+                                  setProjectRemove({ dir: pr.dir, name: pr.name, keep: false })
                                 }>
                                 🗑
                               </button>
@@ -3559,66 +3557,72 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
         onAccept={discardInstructions}
       />
 
-      <ActionConfirm
-        open={!!projectRemove && !projectDiscard}
-        title={projectRemove ? t("Remove {name}?", { name: projectRemove.name }) : ""}
-        message={
-          projectRemove?.keep
-            ? t("magpie forgets the project. The skills and MCP servers it put in the folder stay there as they are, with their lines in its .gitignore, and are yours from then on; a linked skill still follows the library's.")
-            : t("The skills and MCP servers magpie put in it are taken away, with their lines in its .gitignore. Nothing else in the folder is touched.")
-        }
-        cancelLabel={t("Cancel")}
-        acceptLabel={t("Remove")}
-        onCancel={() => {
-          if (!projectRemove) return;
-          if (projectRemove.dirty) setProjectDiscard(true);
-          else setProjectRemove(null);
-        }}
-        onAccept={() => {
-          if (!projectRemove) return;
-          const { dir, name } = projectRemove;
-          setProjects((list) => list.filter((x) => x.dir !== dir));
-          setProjectRemove(null);
-          setProjectDiscard(false);
-          onStatus?.(t("{name} removed", { name }), "ok");
-        }}
-        extra={(() => {
-          if (!projectRemove) return null;
-          const pr = projects.find((p) => p.dir === projectRemove.dir);
-          const hasPlaced = pr ? Object.values(pr.placed).some((a) => a.length > 0) : false;
-          if (!hasPlaced) return null;
-          return (
-            <Tick
-              className="keep" checked={projectRemove.keep}
-              onChange={(e) =>
-                setProjectRemove({ ...projectRemove, keep: e.target.checked, dirty: true })
-              }>
-              <span>
-                <span className="name">{t("Keep its skills and MCP servers")}</span>
-                <span className="sub">
-                  {t("Remove the project from magpie only, leaving what magpie wrote into it")}
+      {/* Magpie confirmRemoveProject: openLib editor.lib-editor + lib-pick.lib-keep
+          (plugins/library/client.js L3668–3703) — not invent ActionConfirm.extra / Tick.keep */}
+      {projectRemove ? (
+        <LibModal
+          onBg={() => {
+            setProjectRemove(null);
+          }}>
+          <div className="ehead">
+            <b>{t("Remove {name}?", { name: projectRemove.name })}</b>
+          </div>
+          <p className="lib-confirm">
+            {projectRemove.keep
+              ? t("magpie forgets the project. The skills and MCP servers it put in the folder stay there as they are, with their lines in its .gitignore, and are yours from then on; a linked skill still follows the library's.")
+              : t("The skills and MCP servers magpie put in it are taken away, with their lines in its .gitignore. Nothing else in the folder is touched.")}
+          </p>
+          {(() => {
+            const pr = projects.find((p) => p.dir === projectRemove.dir);
+            const has = pr ? Object.values(pr.placed).some((a) => a.length > 0) : false;
+            if (!has) return null;
+            return (
+              <label className="lib-pick lib-keep">
+                <input
+                  type="checkbox"
+                  checked={projectRemove.keep}
+                  onChange={(e) =>
+                    setProjectRemove({ ...projectRemove, keep: e.target.checked })
+                  }
+                />
+                <span className="who">
+                  <span className="name">{t("Keep its skills and MCP servers")}</span>
+                  <span className="sub">
+                    {t("Remove the project from magpie only, leaving what magpie wrote into it")}
+                  </span>
                 </span>
-              </span>
-            </Tick>
-          );
-        })()}
-      />
-
-      
-
-      <ActionConfirm
-        open={!!(projectDiscard && projectRemove)}
-        title={t("Discard")}
-        message={t("Discard unsaved changes? Your changes will be lost.")}
-        cancelLabel={t("Cancel")}
-        acceptLabel={t("Discard")}
-        onCancel={() => setProjectDiscard(false)}
-        onAccept={() => {
-          // NOTES 143: Discard closes remove sheet and does NOT remove the project
-          setProjectDiscard(false);
-          setProjectRemove(null);
-        }}
-      />
+              </label>
+            );
+          })()}
+          <div className="bar">
+            <span className="grow" />
+            <button
+              type="button"
+              className="text"
+              onClick={() => {
+                setProjectRemove(null);
+              }}>
+              {t("Cancel")}
+            </button>
+            <button
+              type="button"
+              className="text primary danger-fill"
+              onClick={() => {
+                const { dir, name, keep } = projectRemove;
+                setProjects((list) => list.filter((x) => x.dir !== dir));
+                setProjectRemove(null);
+                onStatus?.(
+                  keep
+                    ? t("{name} removed, its skills and servers kept", { name })
+                    : t("{name} removed", { name }),
+                  "ok",
+                );
+              }}>
+              {t("Remove")}
+            </button>
+          </div>
+        </LibModal>
+      ) : null}
 
 
       {mcpByAgentOpen ? (

@@ -1,7 +1,7 @@
 # last-cycle · 2026-10-15 Asia/Shanghai
 
-## v0.1.139 LIB_MODAL_EDITOR_AG_CONFIRM_OSS_FIDELITY
+## v0.1.140 PROJECT_REMOVE_LIBKEEP_AGENTS_SMASK_OSS_FIDELITY
 
-- Library LibModal: Magpie openLib `.modal.lib` > `.dialog` > `.editor.lib-editor` (drop invent `.dialog.lib-editor` / `.sm`).
-- shell-patch: drop invent `.lib-confirm` + invent pill `button.lib-ag` (library.css L346 / L187–217).
+- Library project remove: Magpie confirmRemoveProject openLib + lib-pick.lib-keep (drop invent ActionConfirm.extra / Tick.keep / Discard-on-cancel).
+- Agents relocate: Magpie askRelocate editor.sm-ask modal (drop invent ag-relocate).
 - SIDE_AT=1024. Push/PR #1. No portable / Vercel.

@@ -15,8 +15,6 @@ type Props = {
   onCancel: () => void;
   onAccept: () => void;
   acceptDisabled?: boolean;
-  /** Slot between message and bar (e.g. Keep-skills Tick). */
-  extra?: ReactNode;
   /** Magpie plugins confirm uses zIndex 50 over sheet. */
   style?: CSSProperties;
   titleId?: string;
@@ -37,7 +35,6 @@ export function ActionConfirm({
   onCancel,
   onAccept,
   acceptDisabled,
-  extra,
   style,
   titleId,
   messageId,
@@ -106,7 +103,6 @@ export function ActionConfirm({
     >
       <h2 id={tid}>{title}</h2>
       <p id={mid}>{message}</p>
-      {extra ? <div className="extra">{extra}</div> : null}
       <div className="bar">
         <span className="grow" />
         <button type="button" className="text" onClick={onCancel}>
