@@ -1,3 +1,11 @@
+## v0.1.162 · LED_CHART_SVG_OSS_FIDELITY · 2026-10-16 Asia/Shanghai
+
+- **WHY:** invent `us-miniplot` div bars → Magpie SVG `led-chart` (partial `drawLedColumns`).
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; CIS PrefPick/WordsField; Magpie mk-official (0.1.160); skip oauth Approve wall.
+- **Cite:** Magpie app.js drawLedColumns **L17962–18118** / ledAxis **L17923** / ledCategories **L17932**; app.css **L1122–1146**.
+- **Partial:** day-pick / speed marks / led-rank emphasize → later tip.
+- **chrome-guard:** pass. Push/PR #1. No portable/Vercel.
+
 ## v0.1.161 · DEAD_INVENT_CSS_AUDIT · 2026-10-16 Asia/Shanghai
 
 - **WHY:** Audit leftover invent CSS / tip bridges in `shell-patch.css` with no live JSX/JS selectors — delete dead invent; restore Magpie context shareBar / score bar / Usage fill widths.

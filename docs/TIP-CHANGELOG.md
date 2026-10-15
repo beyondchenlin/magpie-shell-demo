@@ -1,3 +1,16 @@
+## v0.1.162 · LED_CHART_SVG_OSS_FIDELITY · 2026-10-16 Asia/Shanghai
+
+- **WHY:** Continue Magpie 1:1 after 0.1.161 — replace invent Usage `us-miniplot` div-bar stand-in with Magpie SVG `led-chart` gold (partial restore of `drawLedColumns`).
+- **CAUSE:** CIS Usage bridge painted `#ledChart.led-chart.us-miniplot` as flex `.col` height bars (`--h`/`--op`) + invent shell-patch CSS, covering Magpie `drawLedColumns` where `#ledChart` gets `.plot` → SVG (`.grid` / `.axis` / `.hot` / `rect.col`) + `.tip` (app.js **L17962–18118**; app.css **L1122–1146**).
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; Magpie mk-official/installs (0.1.160); dead-invent CSS audit (0.1.161); oauth Approve wall skip (nest=browser). Full Magpie day-pick (`.led-day`), speed marks/stems, and `drawLedRank` emphasize sync deferred — next tips.
+- **Cite:**
+  - Magpie `app.js` **17951–17957** `sv()` SVGNS helpers
+  - Magpie `app.js` **17923–17928** `ledAxis`; **17932–17936** `ledCategories` + `LED_SHOWN=7`
+  - Magpie `app.js` **17962–18118** `drawLedColumns`: `.plot` + svg + stacked `rect.col` + `.tip`
+  - Magpie `app.css` **1122–1146** `.led-chart` / `.plot` 236px / `.grid` / `.axis` / `.hot` / `.tip` / `.none`
+- **WHAT changed:** `LedChart.tsx` + `buildDemoLedTrend()`; `SimpleViews` drop invent `us-miniplot` → `<LedChart metric split />`; `shell-patch.css` drop invent `#view-usage .us-miniplot` rules.
+- **chrome-guard:** pass (SIDE_AT=1024). Push/PR #1. No portable/Vercel.
+
 ## v0.1.161 · DEAD_INVENT_CSS_AUDIT · 2026-10-16 Asia/Shanghai
 
 - **WHY:** Continue Magpie 1:1 after 0.1.160 — audit leftover invent CSS / tip comments in `shell-patch.css` (and related) without live selectors in JSX/JS; delete dead invent; where invent fought Magpie gold, restore Magpie.

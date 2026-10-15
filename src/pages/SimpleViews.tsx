@@ -1,5 +1,6 @@
 import { Fragment, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { ActionConfirm } from "../components/ActionConfirm";
+import { LedChart } from "../components/LedChart";
 import { LedHeat } from "../components/LedHeat";
 import { LibSwitch } from "../components/LibSwitch";
 import { PrefRow } from "../components/PrefRow";
@@ -1207,19 +1208,7 @@ export function UsageView() {
                   </span>
                 </div>
                 <div className="led-body">
-                  <div className="led-chart us-miniplot" id="ledChart" aria-hidden>
-                    {[28, 44, 36, 62, 48, 22, 55, 40, 50, 34, 58, 42].map((h, i) => (
-                      <div
-                        key={i}
-                        className="col"
-                        title={`${ledMetric} · ${ledSplit}`}
-                        style={{
-                          ["--h" as string]: `${h}%`,
-                          ["--op" as string]: 0.55 + (i % 3) * 0.1,
-                        }}
-                      />
-                    ))}
-                  </div>
+                  <LedChart metric={ledMetric} split={ledSplit} />
                   <div className="led-rank" id="ledRank" />
                 </div>
               </section>

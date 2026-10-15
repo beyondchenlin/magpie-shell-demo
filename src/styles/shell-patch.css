@@ -790,9 +790,9 @@ label.tick input { margin: 0; }
    (Magpie sets style.width / style.height / flexGrow — app.js Usage +
    context.js shareBar L834–844 / score bar L865–868).
    Restore Magpie context.css k-* (not invent c1… palette).
-   Keep nest bridges still live: us-empty pad, us-miniplot demo led stand-in
-   (Magpie led-chart is SVG), period-wrap/usage-refresh relative for pops,
-   pm-headrow wrap. */
+   v0.1.162: drop invent us-miniplot → Magpie led-chart SVG (app.js drawLedColumns).
+   Keep nest bridges still live: us-empty pad, period-wrap/usage-refresh relative
+   for pops, pm-headrow wrap. */
 #view-usage .usage-refresh,
 #view-usage .period-wrap { position: relative; }
 #view-usage .us-empty {
@@ -800,16 +800,7 @@ label.tick input { margin: 0; }
 }
 #view-usage .us-empty b { display: block; font-weight: 600; margin-bottom: 6px; color: var(--fg); }
 #view-usage .us-empty p { color: var(--muted); font-size: 12.5px; line-height: 1.45; margin: 0; }
-/* demo ledger miniplot (Magpie led-chart = SVG plot; nest stand-in) */
-#view-usage .us-miniplot {
-  height: 120px; border-radius: 12px; border: 1px solid var(--line); background: var(--card);
-  display: flex; align-items: flex-end; gap: 3px; padding: 12px 10px 8px;
-}
-#view-usage .us-miniplot .col {
-  flex: 1; height: var(--h, 0%); border-radius: 4px 4px 2px 2px;
-  background: color-mix(in srgb, var(--accent) 55%, var(--pill));
-  opacity: var(--op, .7); transition: height .28s var(--ease);
-}
+/* v0.1.162: drop invent #view-usage .us-miniplot — Magpie app.css .led-chart SVG */
 #view-plugins .pm-headrow {
   display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
 }

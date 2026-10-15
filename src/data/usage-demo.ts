@@ -639,3 +639,142 @@ export function buildDemoOverview(period = "today"): OverviewSummary {
 export function tokensOf(u: { input: number; output: number }): number {
   return u.input + u.output;
 }
+
+/** Magpie ledger trend series point — app.js drawLedColumns `l.series` shape (demo). */
+export type LedTrendPart = { calls: number; tokens: number; cost: number; name?: string };
+export type LedTrendPoint = {
+  time: string; // ISO day or hour
+  calls: number;
+  tokens: number;
+  cost: number;
+  by: Record<string, Record<string, LedTrendPart>>;
+};
+export type LedTrendCat = { id: string; name: string; calls: number; tokens: number; cost: number };
+export type LedTrend = {
+  bucket: "hour" | "day";
+  series: LedTrendPoint[];
+  by: Record<string, LedTrendCat[]>;
+};
+
+const emptyPart = (): LedTrendPart => ({ calls: 0, tokens: 0, cost: 0 });
+
+/** Build Magpie-shaped ledger chart series from DEMO_LEDGER (+ synthetic days). */
+export function buildDemoLedTrend(): LedTrend {
+  const rows = DEMO_LEDGER.filter((r) => r.status !== "rej");
+  const days = 12;
+  const series: LedTrendPoint[] = [];
+  const byAgent = new Map<string, LedTrendCat>();
+  const byModel = new Map<string, LedTrendCat>();
+  const byProvider = new Map<string, LedTrendCat>();
+
+  const bump = (
+    map: Map<string, LedTrendCat>,
+    id: string,
+    name: string,
+    calls: number,
+    tokens: number,
+    cost: number,
+  ) => {
+    const g = map.get(id) || { id, name, calls: 0, tokens: 0, cost: 0 };
+    g.calls += calls;
+    g.tokens += tokens;
+    g.cost += cost;
+    map.set(id, g);
+  };
+
+  for (let i = days - 1; i >= 0; i--) {
+    const d = new Date();
+    d.setHours(12, 0, 0, 0);
+    d.setDate(d.getDate() - i);
+    const iso = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+    const seed = (d.getDate() * 17 + d.getMonth() * 3 + i) % 11;
+    const scale = i < 3 ? 1.35 : 0.55 + (seed % 5) * 0.14;
+    // Seed from real ledger rows cycling, then scale
+    const hit = rows.length ? rows[i % rows.length] : null;
+    const agents: Record<string, LedTrendPart> = {};
+    const models: Record<string, LedTrendPart> = {};
+    const providers: Record<string, LedTrendPart> = {};
+
+    const addPart = (
+      bag: Record<string, LedTrendPart>,
+      id: string,
+      name: string,
+      calls: number,
+      tokens: number,
+      cost: number,
+    ) => {
+      const p = bag[id] || emptyPart();
+      p.calls += calls;
+      p.tokens += tokens;
+      p.cost += cost;
+      p.name = name;
+      bag[id] = p;
+    };
+
+    // 2–3 synthetic slices per day so stacked columns match Magpie split gold
+    const slices = [
+      {
+        agent: hit?.agent || "claude",
+        agentName: hit?.agentName || "Claude Code",
+        model: hit?.served || hit?.req || "claude-sonnet-4-5",
+        provider: hit?.providerName || "Anthropic",
+        w: 0.55 + (seed % 3) * 0.05,
+      },
+      {
+        agent: "codex",
+        agentName: "Codex",
+        model: "gpt-5",
+        provider: "OpenAI",
+        w: 0.28 + (seed % 2) * 0.04,
+      },
+      {
+        agent: "opencode",
+        agentName: "OpenCode",
+        model: "gemini-2.5-pro",
+        provider: "Google",
+        w: 0.12,
+      },
+    ];
+    let calls = 0;
+    let tokens = 0;
+    let cost = 0;
+    const baseCalls = Math.max(1, Math.round((2 + (seed % 4)) * scale));
+    const baseTok = Math.round((hit ? hit.in + hit.out : 8000) * scale * (0.5 + (seed % 5) * 0.1));
+    const baseCost = (hit?.cost || 0.04) * scale * (0.6 + (seed % 4) * 0.12);
+    for (const s of slices) {
+      const c = Math.max(0, Math.round(baseCalls * s.w));
+      const tok = Math.max(0, Math.round(baseTok * s.w));
+      const $ = Math.round(baseCost * s.w * 10000) / 10000;
+      if (!(c || tok || $)) continue;
+      addPart(agents, s.agent, s.agentName, c, tok, $);
+      addPart(models, s.model, s.model, c, tok, $);
+      addPart(providers, s.provider, s.provider, c, tok, $);
+      bump(byAgent, s.agent, s.agentName, c, tok, $);
+      bump(byModel, s.model, s.model, c, tok, $);
+      bump(byProvider, s.provider, s.provider, c, tok, $);
+      calls += c;
+      tokens += tok;
+      cost += $;
+    }
+    series.push({
+      time: iso + "T12:00:00",
+      calls,
+      tokens,
+      cost: Math.round(cost * 10000) / 10000,
+      by: { agent: agents, model: models, provider: providers },
+    });
+  }
+
+  const sortCats = (m: Map<string, LedTrendCat>) =>
+    [...m.values()].sort((a, b) => b.tokens - a.tokens || b.calls - a.calls);
+
+  return {
+    bucket: "day",
+    series,
+    by: {
+      agent: sortCats(byAgent),
+      model: sortCats(byModel),
+      provider: sortCats(byProvider),
+    },
+  };
+}
