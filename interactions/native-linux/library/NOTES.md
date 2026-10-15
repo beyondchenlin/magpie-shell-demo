@@ -536,3 +536,59 @@ Not opened: **Select**, a sort that changes order, **Remove all**, **Copy config
 - 登录比 17 深：HTTP **Save and sign in** → **Finish signing in in your browser…** + Cancel。Linear 墙 **Magpie is requesting access**（Cancel / Approve）。点了 Linear 的 Cancel，没有点 Approve。对话框红字 **the sign-in was refused (access_denied)**。随后从库里移除。
 - 两个探针服务器都已移除。ask-matt 仍在。`~/.cursor/mcp.json` 本轮之前不存在，空文件已删。未做：Select、排序、Remove all、Copy config 菜单、粘贴 JSON、未检查的 not checked、签到成功。Hooks / Agents 本轮未打开。
 - demo 消费（v0.1.87）：健康 checking/timeout/2 tools/needs-signin；工具开关 toast；By agent + Turn all off Escape 取消；MCP In projects 芯片 place/out；OAuth Finish signing… + Linear 墙 Cancel → access_denied；默认空列表可交互。未做 Select/排序/Remove all/Copy config/not checked/签到成功
+
+## MCP chrome left thin (shots 220–237)
+
+The window from 184–219 was gone at the start of this pass (pid 560329, id 27262991). Relaunched `/home/box/.local/bin/magpie`, now pid **1871993**. It came up **752×652 at +610+300**; moved, not resized, to **752×652 at +200+40** (DISPLAY=:6). Close (X) was not clicked. A **What's new in v0.1.1247** sheet was in front; **Close** only. **Don't show again today** was not checked.
+
+**ask-matt** was not touched. RTK Install was not clicked. No Vercel or package action. Hooks and Agents were not opened. No OAuth was started, and **Approve** was not clicked.
+
+Two probe servers were added with no agent (`aaa-paste` and `zzz-unset`, command `/bin/true`), then removed. `zzz-unset` had environment `TOKEN` = `${MAGPIE_PROBE_UNSET}`, which is not set in magpie's environment. A third name, `probe-json`, was only pasted into **New MCP server** and discarded. `magpie library` afterwards: MCP servers **none yet**, Skills **ask-matt → cursor**. `library.json` `mcp` is `[]`. `~/.cursor/mcp.json` is not there.
+
+Tips that leave the window: **221**, **222**, and **224** are **1000×720 from +120+20**. **227** is **1100×720 from +80+20**. **231** and **233** are **1100×740 from +80+10**. The rest are the window rect.
+
+| shot | what |
+|---|---|
+| 220-mcp-two-idle-not-checked | Two rows, neither given to an agent. Both **not checked**. Head, because there are two: **A→Z** (on), **Z→A**, **Select**, **Turn all on**, **Turn all off**, **By agent**, and red **Remove all**. |
+| 221-mcp-not-checked-tip | Pointer on aaa-paste's **not checked**. Tip **No agent has it, so it isn't checked on its own** / **Click to check it**. |
+| 222-mcp-az-tip | Pointer on **A→Z**. No tip in this frame. |
+| 223-mcp-za-order | **Z→A**. **zzz-unset** is above **aaa-paste**. |
+| 224-mcp-za-tip | Pointer on **Z→A**. No tip in this frame. **A→Z** was clicked again after this, before Select. |
+| 225-mcp-select-mode | **Select**. The button reads **Done**. Rows gain a checkbox. Tip **Pick some servers and turn them on or off together**. Bar: **All 2**, **Pick servers to turn them on or off together**, **Done**. |
+| 226-mcp-select-all | **All 2** checked. Both rows checked. Bar: **2 selected**, the Cursor chip, **Copy config…**, red **Remove…**, **Clear**, **Done**. |
+| 227-mcp-copy-config-tip | Tip **Copy these servers as an agent's project file has them, to paste into a project yourself**. |
+| 228-mcp-copy-config-menu | Menu head **Copy as an agent's project file**. One row, **Cursor**. |
+| 229-mcp-copied-toast | **Cursor**. Green toast **Copied for Cursor, to paste into .cursor/mcp.json in your project**. The **Copy config…** control draws a check. Nothing was written into a project. |
+| 230-mcp-unset-check | Select closed (**Done**). Click zzz-unset's **not checked**. It becomes red **MAGPIE_PROBE_UNSET not set**. aaa-paste stays **not checked**. |
+| 231-mcp-unset-tip | Tip **magpie can't check it: MAGPIE_PROBE_UNSET isn't set where magpie runs. An agent started where it is set still gets it** / **Click to check again**. |
+| 232-mcp-unset-editor | The row opens the saved server. Environment row **TOKEN** / **${MAGPIE_PROBE_UNSET}**. Hint **A value can name a variable, as ${NAME}: each agent is given it in its own way, so the token stays out of its settings**. **Remove from the library**, **Copy config…**, **Cancel**, **Save**. Save was not clicked. |
+| 233-mcp-editor-copy-tip | Tip **Copy zzz-unset as an agent's project file has it, to paste into a project yourself**. |
+| 234-mcp-paste-json | **+ Add server**, then a paste of `{"mcpServers":{"probe-json":{"command":"/bin/true","args":["--from-paste"]}}}`. Name **probe-json**, command **/bin/true --from-paste**. Toast **Filled in from what you pasted**. **Add** was not clicked. |
+| 235-mcp-paste-discard | Escape. **Discard** / **Discard unsaved changes? Your changes will be lost.** **Cancel** and red **Discard**. |
+| 236-mcp-remove-all-ask | Red **Discard** drops the draft. **Remove all**. **Remove all 2 servers?** Body: **They are taken out of the library; no agent has any of them.** Then **Servers your agents have that aren't in the library stay as they are.** **Cancel** and red **Remove all 2**. The pointer was still on **Remove all**, so its tip **Take all 2 servers out of the library** sits on the sheet. |
+| 237-mcp-empty-after-remove-all | **Remove all 2**. Empty card is back (**No servers in the library yet** / **+ Add a server**). The **2 servers removed** toast was not in this frame. |
+
+**not checked.** A server no agent has stays idle: **not checked**, tip **No agent has it, so it isn't checked on its own** / **Click to check it**. Clicking it runs the check. With `${MAGPIE_PROBE_UNSET}` in the environment and that name unset where magpie runs, the badge is **MAGPIE_PROBE_UNSET not set** and the tip is **magpie can't check it: MAGPIE_PROBE_UNSET isn't set where magpie runs. An agent started where it is set still gets it** / **Click to check again**. The editor's hint for any value is **A value can name a variable, as ${NAME}…**.
+
+**Sort and Select.** **Z→A** puts zzz-unset above aaa-paste; **A→Z** is the other way. Hovering the segments did not raise **Names from A to Z** / **Names from Z to A** in 222 or 224. **Select** is **Done** while it is on, and asks before anything is picked. With both picked the bar can copy, remove, or clear them. **Done** leaves the servers in the library.
+
+**Copy config…** On the pick bar (several) and on the open server (one). The menu is **Copy as an agent's project file**, here only **Cursor**. Toast **Copied for Cursor, to paste into .cursor/mcp.json in your project**. No project file was written.
+
+**Paste.** JSON pasted in **New MCP server** fills the form and toasts **Filled in from what you pasted**. Escape asks **Discard unsaved changes?** Discard does not add the server.
+
+**Remove all.** **Remove all 2 servers?** with **Remove all 2**. Afterwards the empty card is back.
+
+**Signed in / Sign out.** Not on this page. Those show on an HTTP server only after a sign-in has completed. This pass did not open a sign-in, and did not reach a vendor **Approve**.
+
+Window still **752×652 at +200+40**. Pid **1871993**.
+
+## demo 对齐（220–237）· v0.1.88 MCP_CHROME_DONE
+- 空闲健康：**not checked**。tip **No agent has it, so it isn't checked on its own** / **Click to check it**。点一下才检查。
+- **unset `${NAME}`**：徽章 **{name} not set**；tip magpie can't check where name isn't set；编辑器 `TOKEN` / `${MAGPIE_PROBE_UNSET}` + `${NAME}` 提示。
+- 排序：**Z→A** / **A→Z**（段悬停 tip 222/224 无，不发明）。
+- **Select**：Done、勾选、**N selected**、Copy config…、Remove…、Clear。
+- **Copy config…**：菜单 **Copy as an agent's project file** → Cursor；toast 粘贴进 `.cursor/mcp.json`（不写文件）。
+- paste-JSON：填 name/command；toast **Filled in from what you pasted**；Escape → Discard（不添加）。
+- **Remove all**：**Remove all N servers?** / 红 **Remove all N**；空卡。成功 toast 可按 NOTES 有；237 帧可缺。
+- **Signed in / Sign out** 仍缺（需完成 OAuth）— 不发明。
+- demo 消费（v0.1.88）：LibraryView MCP 选择/排序/复制/粘贴-JSON/全部移除/unset；无 portable、无 Vercel。

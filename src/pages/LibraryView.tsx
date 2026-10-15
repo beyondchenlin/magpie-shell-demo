@@ -1323,7 +1323,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
   const [newName, setNewName] = useState("");
   const [fileMode, setFileMode] = useState(false);
   const [filePath, setFilePath] = useState("~/.agents/AGENTS.md");
-  type McpHealth = "checking" | "timeout" | "tools" | "needs-signin" | "idle";
+  type McpHealth = "checking" | "timeout" | "tools" | "needs-signin" | "idle" | "unset";
   type McpTool = { id: string; name: string; desc: string; on: boolean };
   type McpServer = {
     id: string;
@@ -1331,6 +1331,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
     transport: Transport;
     command?: string;
     url?: string;
+    envRows?: [string, string][];
     agents: string[];
     health: McpHealth;
     toolsOpen: boolean;
@@ -1338,8 +1339,17 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
     /** first auto-check timed out; Check again → tools */
     checkedOnce?: boolean;
     oauthRefused?: string;
+    /** last unset env var name shown on badge */
+    unsetName?: string;
   };
   const [mcpServers, setMcpServers] = useState<McpServer[]>([]);
+  const [mcpSort, setMcpSort] = useState<"az" | "za">("az");
+  const [mcpSelectMode, setMcpSelectMode] = useState(false);
+  const [mcpSelected, setMcpSelected] = useState<Set<string>>(new Set());
+  const [mcpCopyMenu, setMcpCopyMenu] = useState<null | "bar" | "editor">(null);
+  const [mcpCopyFlash, setMcpCopyFlash] = useState(false);
+  const [mcpRemoveAllAsk, setMcpRemoveAllAsk] = useState(false);
+  const [mcpRemoveSelectedAsk, setMcpRemoveSelectedAsk] = useState(false);
   const [mcpByAgentOpen, setMcpByAgentOpen] = useState(false);
   const [mcpTurnAllOffAsk, setMcpTurnAllOffAsk] = useState(false);
   const [mcpRemoveAsk, setMcpRemoveAsk] = useState<{ id: string; name: string } | null>(null);
@@ -1460,19 +1470,31 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
     { id: "noop", name: "noop", desc: "Do nothing. Probe only.", on: true },
   ];
 
+  const unsetEnvName = (env?: [string, string][]) => {
+    for (const [, v] of env || []) {
+      const m = /\$\{([A-Za-z_][A-Za-z0-9_]*)\}/.exec(v);
+      if (m) return m[1]; // demo: any ${NAME} is unset where magpie runs
+    }
+    return null;
+  };
+
   const runMcpHealth = (id: string, forceTools?: boolean) => {
     setMcpServers((list) =>
-      list.map((x) => (x.id === id ? { ...x, health: "checking" as McpHealth } : x)),
+      list.map((x) => (x.id === id ? { ...x, health: "checking" as McpHealth, unsetName: undefined } : x)),
     );
     window.setTimeout(() => {
       setMcpServers((list) =>
         list.map((x) => {
           if (x.id !== id) return x;
+          const unset = unsetEnvName(x.envRows);
+          if (unset) {
+            return { ...x, health: "unset" as McpHealth, unsetName: unset, checkedOnce: true };
+          }
           if (x.transport === "http" || x.transport === "sse") {
             return { ...x, health: "needs-signin" as McpHealth, checkedOnce: true };
           }
-          // stdio: first check times out; Check again / force → 2 tools
-          if (!forceTools && !x.checkedOnce) {
+          // stdio with agents: first check times out; Check again / force → 2 tools
+          if (x.agents.length && !forceTools && !x.checkedOnce) {
             return { ...x, health: "timeout" as McpHealth, checkedOnce: true };
           }
           return {
@@ -1486,6 +1508,32 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
     }, forceTools ? 480 : 900);
   };
 
+  const copyMcpConfig = (ids: string[]) => {
+    const servers: Record<string, { command?: string; args?: string[]; url?: string; env?: Record<string, string> }> = {};
+    for (const s of mcpServers.filter((x) => ids.includes(x.id))) {
+      const entry: { command?: string; args?: string[]; url?: string; env?: Record<string, string> } = {};
+      if (s.transport === "stdio") {
+        const parts = (s.command || "").split(/\s+/).filter(Boolean);
+        entry.command = parts[0] || "/bin/true";
+        if (parts.length > 1) entry.args = parts.slice(1);
+      } else if (s.url) entry.url = s.url;
+      if (s.envRows?.length) {
+        entry.env = Object.fromEntries(s.envRows.filter(([k]) => k.trim()));
+      }
+      servers[s.name] = entry;
+    }
+    const json = JSON.stringify({ mcpServers: servers }, null, 2);
+    try {
+      void navigator.clipboard?.writeText(json);
+    } catch {
+      /* */
+    }
+    setMcpCopyMenu(null);
+    setMcpCopyFlash(true);
+    window.setTimeout(() => setMcpCopyFlash(false), 1600);
+    onStatus?.(t("Copied for Cursor, to paste into .cursor/mcp.json in your project"), "ok");
+  };
+
   const saveMcp = (opts?: { signIn?: boolean }) => {
     if (!mcpEditor) return;
     const name = mcpEditor.name.trim() || "custom-server";
@@ -1497,15 +1545,28 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
       transport: mcpEditor.transport,
       command: mcpEditor.transport === "stdio" ? mcpEditor.command.trim() || undefined : undefined,
       url: mcpEditor.transport !== "stdio" ? mcpEditor.url.trim() || undefined : undefined,
+      envRows: mcpEditor.envRows.map((r) => [r[0], r[1]] as [string, string]),
       agents,
       health: agents.length ? "checking" : "idle",
       toolsOpen: false,
       tools: [],
       checkedOnce: false,
-      oauthRefused: opts?.signIn ? undefined : mcpEditor.url.includes("linear") ? undefined : undefined,
+      oauthRefused: undefined,
     };
     if (mcpEditId) {
-      setMcpServers((list) => list.map((x) => (x.id === mcpEditId ? { ...next, tools: x.tools, health: x.health, checkedOnce: x.checkedOnce, oauthRefused: x.oauthRefused } : x)));
+      setMcpServers((list) =>
+        list.map((x) =>
+          x.id === mcpEditId
+            ? {
+                ...next,
+                tools: x.tools,
+                health: agents.length ? next.health : ("idle" as McpHealth),
+                checkedOnce: x.checkedOnce,
+                oauthRefused: x.oauthRefused,
+              }
+            : x,
+        ),
+      );
     } else {
       setMcpServers((list) => [...list, next]);
     }
@@ -1522,6 +1583,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
     setMcpEditor(null);
     setMcpEditId(null);
     if (agents.length) runMcpHealth(id);
+    // no agents → stays idle "not checked"
   };
   const openHookEditor = () => {
     const d = emptyHook();
@@ -1649,11 +1711,43 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
         e.preventDefault();
         e.stopPropagation();
         setMcpTurnAllOffAsk(false);
+        return;
+      }
+      if (e.key === "Escape" && mcpRemoveAllAsk) {
+        e.preventDefault();
+        e.stopPropagation();
+        setMcpRemoveAllAsk(false);
+        return;
+      }
+      if (e.key === "Escape" && mcpRemoveSelectedAsk) {
+        e.preventDefault();
+        e.stopPropagation();
+        setMcpRemoveSelectedAsk(false);
+        return;
+      }
+      if (e.key === "Escape" && mcpCopyMenu) {
+        e.preventDefault();
+        e.stopPropagation();
+        setMcpCopyMenu(null);
+        return;
+      }
+      if (e.key === "Escape" && discardOpen) {
+        e.preventDefault();
+        e.stopPropagation();
+        setDiscardOpen(false);
+        return;
+      }
+      if (e.key === "Escape" && mcpEditor && !mcpOauthWall && !mcpSignWaiting) {
+        // NOTES 235: Escape → Discard unsaved changes (paste-JSON fill)
+        e.preventDefault();
+        e.stopPropagation();
+        tryCloseMcp();
+        return;
       }
     };
     window.addEventListener("keydown", onKey, true);
     return () => window.removeEventListener("keydown", onKey, true);
-  }, [instDirty, tab, instDiscardOpen, mcpTurnAllOffAsk, onStatus]);
+  }, [instDirty, tab, instDiscardOpen, mcpTurnAllOffAsk, mcpRemoveAllAsk, mcpRemoveSelectedAsk, mcpCopyMenu, discardOpen, mcpEditor, mcpOauthWall, mcpSignWaiting, onStatus]);
 
   const openSet = sets.find((s) => s.id === openId);
   const mcpHits = useMemo(() => {
@@ -2219,6 +2313,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                   lineHeight: 1.45,
                 }}
               >
+                <p style={{ margin: "0 0 6px", fontWeight: 500, color: "var(--fg)" }}>{t("No servers in the library yet")}</p>
                 <p style={{ margin: "0 0 12px" }}>{t("Paste a server's JSON from its README, or fill it in.")}</p>
                 <button type="button" className="rt-gadd" style={{ margin: "0 auto" }} onClick={openMcpEditor}>
                   <svg viewBox="0 0 16 16" width={11} height={11} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden>
@@ -2229,51 +2324,163 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
               </div>
             ) : (
               <div style={{ marginBottom: 16 }}>
-                <div className="row-head" style={{ marginBottom: 8, display: "flex", alignItems: "center", gap: 8 }}>
+                <div className="row-head" style={{ marginBottom: 8, display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
                   <span className="label" style={{ letterSpacing: ".04em", fontSize: 11, color: "var(--muted)", fontWeight: 600 }}>{t("In the library")}</span>
                   <span className="grow" />
+                  {mcpServers.length >= 2 ? (
+                    <>
+                      <div className="segs" style={{ display: "inline-flex", gap: 2, padding: 2, borderRadius: 9, background: "var(--bg)", border: "1px solid var(--line)" }}>
+                        {([["az", "A→Z"], ["za", "Z→A"]] as const).map(([id, lab]) => (
+                          <button
+                            key={id}
+                            type="button"
+                            className={`opt${mcpSort === id ? " on" : ""}`}
+                            onClick={() => setMcpSort(id)}
+                            style={{
+                              height: 26,
+                              padding: "0 10px",
+                              borderRadius: 7,
+                              border: mcpSort === id ? "1px solid var(--line)" : "1px solid transparent",
+                              background: mcpSort === id ? "var(--card)" : "transparent",
+                              font: "inherit",
+                              fontSize: 12,
+                              cursor: "pointer",
+                            }}
+                          >
+                            {lab}
+                          </button>
+                        ))}
+                      </div>
+                      <button
+                        type="button"
+                        className="text action"
+                        title={t("Pick some servers and turn them on or off together")}
+                        onClick={() => {
+                          if (mcpSelectMode) {
+                            setMcpSelectMode(false);
+                            setMcpSelected(new Set());
+                            setMcpCopyMenu(null);
+                          } else {
+                            setMcpSelectMode(true);
+                            setMcpSelected(new Set());
+                          }
+                        }}
+                      >
+                        {mcpSelectMode ? t("Done") : t("Select")}
+                      </button>
+                      <button
+                        type="button"
+                        className="text action"
+                        onClick={() => {
+                          setMcpServers((list) =>
+                            list.map((x) => ({
+                              ...x,
+                              agents: x.agents.includes("cursor") ? x.agents : [...x.agents, "cursor"],
+                            })),
+                          );
+                          onStatus?.(t("Written to Cursor"), "ok");
+                          mcpServers.forEach((s) => {
+                            if (!s.agents.includes("cursor")) runMcpHealth(s.id, true);
+                          });
+                        }}
+                      >
+                        {t("Turn all on")}
+                      </button>
+                      <button type="button" className="text action" onClick={() => setMcpTurnAllOffAsk(true)}>
+                        {t("Turn all off")}
+                      </button>
+                    </>
+                  ) : null}
                   <button type="button" className="text action lib-updall" onClick={() => setMcpByAgentOpen(true)}>{t("By agent")}</button>
+                  {mcpServers.length >= 2 ? (
+                    <button
+                      type="button"
+                      className="text"
+                      title={t("Take all {n} servers out of the library", { n: mcpServers.length })}
+                      onClick={() => setMcpRemoveAllAsk(true)}
+                      style={{ color: "var(--red)" }}
+                    >
+                      {t("Remove all")}
+                    </button>
+                  ) : null}
                 </div>
-                {mcpServers.map((s) => {
+                {[...mcpServers]
+                  .sort((a, b) => (mcpSort === "az" ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name)))
+                  .map((s) => {
                   const hasCursor = s.agents.includes("cursor");
+                  const selected = mcpSelected.has(s.id);
+                  // When no agent has it, show idle "not checked" unless already unset/checking from a manual click
+                  const displayHealth: McpHealth =
+                    !hasCursor && s.health !== "checking" && s.health !== "unset"
+                      ? "idle"
+                      : s.health;
                   const healthTitle =
-                    s.health === "timeout"
+                    displayHealth === "timeout"
                       ? t("No answer to initialize in 30 seconds") + "\n" + t("Click to check again")
-                      : s.health === "tools"
+                      : displayHealth === "tools"
                         ? t("It started and listed its tools") + "\n" + (s.toolsOpen ? t("Click to hide them") : t("Click to see them"))
-                        : s.health === "needs-signin"
+                        : displayHealth === "needs-signin"
                           ? t("needs sign-in")
-                          : undefined;
+                          : displayHealth === "unset"
+                            ? t("magpie can't check it: {name} isn't set where magpie runs. An agent started where it is set still gets it", {
+                                name: s.unsetName || "NAME",
+                              }) +
+                              "\n" +
+                              t("Click to check again")
+                            : t("No agent has it, so it isn't checked on its own") + "\n" + t("Click to check it");
                   const healthLabel =
-                    s.health === "checking"
+                    displayHealth === "checking"
                       ? t("checking…")
-                      : s.health === "timeout"
+                      : displayHealth === "timeout"
                         ? t("no answer to initialize")
-                        : s.health === "tools"
+                        : displayHealth === "tools"
                           ? t("{n} tools", { n: s.tools.filter((x) => x.on).length || s.tools.length })
-                          : s.health === "needs-signin"
+                          : displayHealth === "needs-signin"
                             ? t("needs sign-in")
-                            : null;
+                            : displayHealth === "unset"
+                              ? t("{name} not set", { name: s.unsetName || "NAME" })
+                              : t("not checked");
                   const healthColor =
-                    s.health === "timeout" || s.health === "needs-signin"
+                    displayHealth === "timeout" || displayHealth === "needs-signin" || displayHealth === "unset"
                       ? "var(--red)"
-                      : s.health === "tools"
+                      : displayHealth === "tools"
                         ? "var(--green)"
                         : "var(--muted)";
                   return (
                     <div
                       key={s.id}
                       className="card"
-                      style={{ border: "1px solid var(--line)", borderRadius: 12, padding: "10px 12px", marginBottom: 8 }}
+                      style={{
+                        border: "1px solid var(--line)",
+                        borderRadius: 12,
+                        padding: "10px 12px",
+                        marginBottom: 8,
+                        background: mcpSelectMode && selected ? "color-mix(in srgb, var(--accent) 8%, var(--card))" : "var(--card)",
+                      }}
                     >
                       <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                        {mcpSelectMode ? (
+                          <input
+                            type="checkbox"
+                            checked={selected}
+                            onChange={() => {
+                              setMcpSelected((prev) => {
+                                const next = new Set(prev);
+                                if (next.has(s.id)) next.delete(s.id);
+                                else next.add(s.id);
+                                return next;
+                              });
+                            }}
+                            style={{ width: 16, height: 16, accentColor: "var(--accent)" }}
+                          />
+                        ) : null}
                         <span aria-hidden style={{ fontSize: 14, color: "var(--muted)" }}>{s.transport === "stdio" ? ">_ " : "🌐"}</span>
                         <div style={{ flex: 1, minWidth: 0 }}>
                           <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
                             <b
-                              style={{ fontSize: 13, cursor: "pointer" }}
+                              style={{ fontSize: 13, cursor: mcpSelectMode ? "default" : "pointer" }}
                               onClick={() => {
-                                // open edit
+                                if (mcpSelectMode) return;
                                 setMcpEditId(s.id);
                                 const d = emptyMcp();
                                 d.name = s.name;
@@ -2281,24 +2488,23 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                                 d.command = s.command || "";
                                 d.url = s.url || "";
                                 d.agents = [...s.agents];
+                                d.envRows = (s.envRows || []).map((r) => [r[0], r[1]] as [string, string]);
                                 setMcpEditor(d);
                                 setMcpSnap(JSON.stringify(d));
                                 setMcpSignWaiting(false);
-                                if (s.oauthRefused) setMcpSignWaiting(false);
                               }}
                             >
                               {s.name}
                             </b>
-                            {healthLabel ? (
-                              <button
+                            <button
                                 type="button"
                                 className="text"
                                 title={healthTitle}
                                 onClick={() => {
-                                  if (s.health === "tools") {
+                                  if (displayHealth === "tools") {
                                     setMcpServers((list) => list.map((x) => (x.id === s.id ? { ...x, toolsOpen: !x.toolsOpen } : x)));
-                                  } else if (s.health === "timeout" || s.health === "idle" || s.health === "needs-signin") {
-                                    runMcpHealth(s.id, s.health === "timeout");
+                                  } else {
+                                    runMcpHealth(s.id, displayHealth === "timeout" || displayHealth === "unset" || displayHealth === "idle");
                                   }
                                 }}
                                 style={{
@@ -2321,21 +2527,21 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                                     height: 7,
                                     borderRadius: "50%",
                                     background: healthColor,
-                                    opacity: s.health === "checking" ? 0.55 : 1,
-                                    animation: s.health === "checking" ? "pm-pulse 1s ease-in-out infinite" : undefined,
+                                    opacity: displayHealth === "checking" ? 0.55 : 1,
+                                    animation: displayHealth === "checking" ? "pm-pulse 1s ease-in-out infinite" : undefined,
                                   }}
                                 />
                                 {healthLabel}
-                                {s.health === "tools" ? (
+                                {displayHealth === "tools" ? (
                                   <span style={{ display: "inline-block", transform: s.toolsOpen ? "rotate(-90deg)" : "rotate(90deg)", transition: "transform .15s" }}>›</span>
                                 ) : null}
                               </button>
-                            ) : null}
                           </div>
                           <div style={{ fontSize: 12, color: "var(--muted)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                             {s.transport === "stdio" ? s.command || "—" : s.url || "—"}
                           </div>
                         </div>
+                        {!mcpSelectMode ? (
                         <LibChip
                           iconOnly
                           on={hasCursor}
@@ -2351,15 +2557,21 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                                 if (x.id !== s.id) return x;
                                 const on = x.agents.includes("cursor");
                                 const agents = on ? x.agents.filter((a) => a !== "cursor") : [...x.agents, "cursor"];
-                                return { ...x, agents, toolsOpen: on ? false : x.toolsOpen };
+                                return {
+                                  ...x,
+                                  agents,
+                                  toolsOpen: on ? false : x.toolsOpen,
+                                  health: on && agents.length === 0 ? ("idle" as McpHealth) : x.health,
+                                };
                               }),
                             );
                             onStatus?.(hasCursor ? t("Removed from Cursor") : t("Written to Cursor"), "ok");
                             if (!hasCursor) runMcpHealth(s.id, true);
                           }}
                         />
+                        ) : null}
                       </div>
-                      {s.toolsOpen && s.health === "tools" ? (
+                      {s.toolsOpen && displayHealth === "tools" ? (
                         <div
                           style={{
                             marginTop: 10,
@@ -2424,6 +2636,132 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                     </div>
                   );
                 })}
+                {mcpSelectMode ? (
+                  <div
+                    style={{
+                      position: "sticky",
+                      bottom: 8,
+                      zIndex: 6,
+                      marginTop: 10,
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 10,
+                      flexWrap: "wrap",
+                      padding: "8px 12px",
+                      borderRadius: 999,
+                      border: "1px solid var(--line)",
+                      background: "var(--card)",
+                      boxShadow: "0 6px 20px rgba(20,22,30,.12)",
+                    }}
+                  >
+                    <label style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 12.5, cursor: "pointer" }}>
+                      <input
+                        type="checkbox"
+                        checked={mcpSelected.size === mcpServers.length && mcpServers.length > 0}
+                        onChange={() => {
+                          if (mcpSelected.size === mcpServers.length) setMcpSelected(new Set());
+                          else setMcpSelected(new Set(mcpServers.map((x) => x.id)));
+                        }}
+                        style={{ width: 16, height: 16, accentColor: "var(--accent)" }}
+                      />
+                      {mcpSelected.size === 0
+                        ? t("All {n}", { n: mcpServers.length })
+                        : t("{n} selected", { n: mcpSelected.size })}
+                    </label>
+                    {mcpSelected.size === 0 ? (
+                      <span style={{ fontSize: 12.5, color: "var(--muted)" }}>{t("Pick servers to turn them on or off together")}</span>
+                    ) : (
+                      <>
+                        <LibChip
+                          iconOnly
+                          on={false}
+                          label="Cursor"
+                          title={t("Give it to {agent}", { agent: "Cursor" })}
+                          onClick={() => {
+                            const ids = mcpSelected;
+                            setMcpServers((list) =>
+                              list.map((x) =>
+                                ids.has(x.id)
+                                  ? { ...x, agents: x.agents.includes("cursor") ? x.agents : [...x.agents, "cursor"] }
+                                  : x,
+                              ),
+                            );
+                            onStatus?.(t("Written to Cursor"), "ok");
+                            ids.forEach((id) => runMcpHealth(id, true));
+                          }}
+                        />
+                        <div style={{ position: "relative" }}>
+                          <button
+                            type="button"
+                            className="text action"
+                            title={t("Copy these servers as an agent's project file has them, to paste into a project yourself")}
+                            onClick={() => setMcpCopyMenu((m) => (m === "bar" ? null : "bar"))}
+                          >
+                            {mcpCopyFlash && mcpCopyMenu === null ? "✓ " : ""}
+                            {t("Copy config…")}
+                          </button>
+                          {mcpCopyMenu === "bar" ? (
+                            <div
+                              style={{
+                                position: "absolute",
+                                bottom: "100%",
+                                left: 0,
+                                marginBottom: 6,
+                                minWidth: 220,
+                                padding: "6px 0",
+                                borderRadius: 10,
+                                border: "1px solid var(--line)",
+                                background: "var(--card)",
+                                boxShadow: "0 10px 28px rgba(20,22,30,.16)",
+                                zIndex: 8,
+                              }}
+                            >
+                              <div style={{ padding: "4px 12px 6px", fontSize: 11, color: "var(--muted)", fontWeight: 600 }}>
+                                {t("Copy as an agent's project file")}
+                              </div>
+                              <button
+                                type="button"
+                                className="text"
+                                style={{ display: "block", width: "100%", textAlign: "left", padding: "8px 12px", border: 0, background: "transparent", font: "inherit", fontSize: 13, cursor: "pointer" }}
+                                onClick={() => copyMcpConfig([...mcpSelected])}
+                              >
+                                Cursor
+                              </button>
+                            </div>
+                          ) : null}
+                        </div>
+                        <button
+                          type="button"
+                          className="text"
+                          style={{ color: "var(--red)" }}
+                          onClick={() => setMcpRemoveSelectedAsk(true)}
+                        >
+                          {t("Remove…")}
+                        </button>
+                        <button
+                          type="button"
+                          className="text"
+                          onClick={() => setMcpSelected(new Set())}
+                        >
+                          {t("Clear")}
+                        </button>
+                      </>
+                    )}
+                    <span className="grow" />
+                    <button
+                      type="button"
+                      className="text"
+                      onClick={() => {
+                        setMcpSelectMode(false);
+                        setMcpSelected(new Set());
+                        setMcpCopyMenu(null);
+                      }}
+                    >
+                      {t("Done")}
+                    </button>
+                  </div>
+                ) : null}
+
                 <button type="button" className="rt-gadd" style={{ marginTop: 4 }} onClick={openMcpEditor}>
                   <svg viewBox="0 0 16 16" width={11} height={11} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden>
                     <path d="M8 3.5v9M3.5 8h9" />
@@ -3600,7 +3938,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                 </div>
                 {mcpEditor.envRows.map((row, i) => (
                   <div key={i} style={{ display: "flex", gap: 6, marginBottom: 6 }}>
-                    <input placeholder="GITHUB_TOKEN" value={row[0]} onChange={(e) => { const envRows = mcpEditor.envRows.map((r, j) => (j === i ? [e.target.value, r[1]] as [string, string] : r)); setMcpEditor({ ...mcpEditor, envRows }); }} onKeyDown={(e) => e.stopPropagation()} />
+                    <input placeholder="TOKEN" value={row[0]} onChange={(e) => { const envRows = mcpEditor.envRows.map((r, j) => (j === i ? [e.target.value, r[1]] as [string, string] : r)); setMcpEditor({ ...mcpEditor, envRows }); }} onKeyDown={(e) => e.stopPropagation()} />
                     <input placeholder={t("value")} value={row[1]} onChange={(e) => { const envRows = mcpEditor.envRows.map((r, j) => (j === i ? [r[0], e.target.value] as [string, string] : r)); setMcpEditor({ ...mcpEditor, envRows }); }} onKeyDown={(e) => e.stopPropagation()} />
                   </div>
                 ))}
@@ -3709,7 +4047,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
             </div>
           </div>
           {mcpEditId ? (
-            <div style={{ display: "flex", gap: 8, marginBottom: 10, flexWrap: "wrap" }}>
+            <div style={{ display: "flex", gap: 8, marginBottom: 10, flexWrap: "wrap", alignItems: "center" }}>
               <button
                 type="button"
                 className="text"
@@ -3721,6 +4059,48 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
               >
                 {t("Remove from the library")}
               </button>
+              <div style={{ position: "relative" }}>
+                <button
+                  type="button"
+                  className="text action"
+                  title={t("Copy {name} as an agent's project file has it, to paste into a project yourself", {
+                    name: mcpEditor.name || "server",
+                  })}
+                  onClick={() => setMcpCopyMenu((m) => (m === "editor" ? null : "editor"))}
+                >
+                  {mcpCopyFlash && mcpCopyMenu !== "editor" ? "✓ " : ""}
+                  {t("Copy config…")}
+                </button>
+                {mcpCopyMenu === "editor" ? (
+                  <div
+                    style={{
+                      position: "absolute",
+                      bottom: "100%",
+                      left: 0,
+                      marginBottom: 6,
+                      minWidth: 220,
+                      padding: "6px 0",
+                      borderRadius: 10,
+                      border: "1px solid var(--line)",
+                      background: "var(--card)",
+                      boxShadow: "0 10px 28px rgba(20,22,30,.16)",
+                      zIndex: 8,
+                    }}
+                  >
+                    <div style={{ padding: "4px 12px 6px", fontSize: 11, color: "var(--muted)", fontWeight: 600 }}>
+                      {t("Copy as an agent's project file")}
+                    </div>
+                    <button
+                      type="button"
+                      className="text"
+                      style={{ display: "block", width: "100%", textAlign: "left", padding: "8px 12px", border: 0, background: "transparent", font: "inherit", fontSize: 13, cursor: "pointer" }}
+                      onClick={() => mcpEditId && copyMcpConfig([mcpEditId])}
+                    >
+                      Cursor
+                    </button>
+                  </div>
+                ) : null}
+              </div>
             </div>
           ) : null}
           <div className="bar" style={{ display: "flex", gap: 8 }}>
@@ -4100,7 +4480,12 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
               style={{ background: "var(--red)", color: "#fff", borderColor: "transparent" }}
               onClick={() => {
                 setDiscardOpen(false);
-                if (mcpEditor) setMcpEditor(null);
+                if (mcpEditor) {
+                  setMcpEditor(null);
+                  setMcpEditId(null);
+                  setMcpSignWaiting(false);
+                  setMcpCopyMenu(null);
+                }
                 if (hookEditor) setHookEditor(null);
               }}
             >
@@ -4302,7 +4687,14 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
               className="text"
               style={{ background: "var(--red)", color: "#fff", borderColor: "transparent" }}
               onClick={() => {
-                setMcpServers((list) => list.map((x) => ({ ...x, agents: x.agents.filter((a) => a !== "cursor"), toolsOpen: false })));
+                setMcpServers((list) =>
+                  list.map((x) => ({
+                    ...x,
+                    agents: x.agents.filter((a) => a !== "cursor"),
+                    toolsOpen: false,
+                    health: "idle" as McpHealth,
+                  })),
+                );
                 setMcpTurnAllOffAsk(false);
                 onStatus?.(t("Removed from Cursor"), "ok");
               }}
@@ -4384,6 +4776,68 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
             </div>
           </div>
         </div>
+      ) : null}
+
+      {mcpRemoveAllAsk ? (
+        <LibModal onBg={() => setMcpRemoveAllAsk(false)} sm>
+          <b style={{ display: "block", fontSize: 15, marginBottom: 8 }}>
+            {t("Remove all {n} servers?", { n: mcpServers.length })}
+          </b>
+          <p style={{ margin: "0 0 8px", fontSize: 13, color: "var(--fg-2)", lineHeight: 1.45 }}>
+            {t("They are taken out of the library; no agent has any of them.")}
+          </p>
+          <p style={{ margin: "0 0 14px", fontSize: 13, color: "var(--fg-2)", lineHeight: 1.45 }}>
+            {t("Servers your agents have that aren't in the library stay as they are.")}
+          </p>
+          <div className="bar" style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
+            <button type="button" className="text" onClick={() => setMcpRemoveAllAsk(false)}>{t("Cancel")}</button>
+            <button
+              type="button"
+              className="text"
+              style={{ background: "var(--red)", color: "#fff", borderColor: "transparent" }}
+              onClick={() => {
+                const n = mcpServers.length;
+                setMcpServers([]);
+                setMcpRemoveAllAsk(false);
+                setMcpSelectMode(false);
+                setMcpSelected(new Set());
+                onStatus?.(t("{n} servers removed", { n }), "ok");
+              }}
+            >
+              {t("Remove all {n}", { n: mcpServers.length })}
+            </button>
+          </div>
+        </LibModal>
+      ) : null}
+
+      {mcpRemoveSelectedAsk ? (
+        <LibModal onBg={() => setMcpRemoveSelectedAsk(false)} sm>
+          <b style={{ display: "block", fontSize: 15, marginBottom: 8 }}>
+            {t("Remove {n} servers?", { n: mcpSelected.size })}
+          </b>
+          <p style={{ margin: "0 0 14px", fontSize: 13, color: "var(--fg-2)", lineHeight: 1.45 }}>
+            {t("They are taken out of the library and the agents they were given to.")}
+          </p>
+          <div className="bar" style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
+            <button type="button" className="text" onClick={() => setMcpRemoveSelectedAsk(false)}>{t("Cancel")}</button>
+            <button
+              type="button"
+              className="text"
+              style={{ background: "var(--red)", color: "#fff", borderColor: "transparent" }}
+              onClick={() => {
+                const ids = mcpSelected;
+                const n = ids.size;
+                setMcpServers((list) => list.filter((x) => !ids.has(x.id)));
+                setMcpRemoveSelectedAsk(false);
+                setMcpSelected(new Set());
+                setMcpSelectMode(false);
+                onStatus?.(t("{n} servers removed", { n }), "ok");
+              }}
+            >
+              {t("Remove")}
+            </button>
+          </div>
+        </LibModal>
       ) : null}
 
       {mcpRemoveAsk ? (
