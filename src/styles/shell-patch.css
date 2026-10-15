@@ -414,9 +414,9 @@ body.web.side-nav {
 /* v0.1.177: drop invent .period-wrap / .led-q-wrap — Magpie #period is plain .segs
    (index.html L138; app.css L2782 position:relative + L3359 body.web .usage-head > .segs);
    Magpie #ledQ is bare .sess-filter (index.html L182; Escape clears app.js L18964–65). */
-.usage-head .range-opt { display: inline-flex; align-items: center; gap: 5px; }
-.usage-head .range-opt > span { max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.usage-head .range-opt.on > span { max-width: 220px; white-space: normal; }
+/* v0.1.181: drop invent .usage-head .range-opt > span max-width/ellipsis —
+   Magpie app.css L2504–05 .range-opt flex+gap / svg flex:none only; L1018 tight +
+   L2528 @640 hide :not(.on)>span — no span max-width / text-overflow. */
 .usage-refresh .pop.proto-menu.sess-menu { width: 148px; min-width: 148px; }
 .ctx-tune-note { margin: 0 0 10px; }
 

@@ -1,3 +1,10 @@
+## v0.1.181 · RANGE_OPT_SPAN_OSS · 2026-10-16 Asia/Shanghai
+
+- **WHY:** Drop invent Usage `.usage-head .range-opt > span` max-width/ellipsis; restore Magpie `.range-opt` flex + hide-when-tight gold.
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; skip oauth Approve wall; Magpie `.range-opt` gold in app.css; Custom calendar JSX.
+- **Cite:** Magpie app.css **L2504–05** `.range-opt` flex/gap; **L1018** tight hide; **L2528** @640 hide; app.js **L14390** `opt range-opt`.
+- **chrome-guard:** pass. Push/PR #1. No portable/Vercel.
+
 ## v0.1.180 · RT_PEER_FADE_OSS · 2026-10-16 Asia/Shanghai
 
 - **WHY:** Drop invent `rt-peer` / `rt-fade`; restore Magpie `none rt-off` + plain `rt-replay` / `rt-log`.

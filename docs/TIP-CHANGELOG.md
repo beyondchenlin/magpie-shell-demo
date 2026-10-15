@@ -1,3 +1,18 @@
+## v0.1.181 · RANGE_OPT_SPAN_OSS · 2026-10-16 Asia/Shanghai
+
+- **WHY:** Hard invent audit — Usage Custom `.range-opt > span` got invent `max-width` / `text-overflow: ellipsis` / `white-space` bridges under `.usage-head` (plus a redundant flex re-own). Magpie OSS `.range-opt` is only `inline-flex` + gap; label overflow is handled by hiding `:not(.on) > span` when `.usage-head.tight` or `@media (max-width: 640px)` — no span max-width.
+- **CAUSE:** Tip invented ellipsis clamps for long custom range labels instead of Magpie's hide-when-tight gold.
+- **Cite:**
+  - Magpie `app.css` **L2504–05** `.range-opt { display:inline-flex; align-items:center; gap:5px }` / `.range-opt svg { flex:none }`
+  - Magpie `app.css` **L1018** `.usage-head.tight .range-opt:not(.on) > span { display:none }`
+  - Magpie `app.css` **L2528** `@media (max-width:640px) { .range-opt:not(.on) > span { display:none } }`
+  - Magpie `app.js` **L14390** `button.opt.range-opt` (+ optional `on`) — no span clamp helpers
+- **WHAT kept:** SIDE_AT=1024; nest 752×652; skip oauth Approve wall; Magpie `.range-opt` gold already in tip `app.css`; `#period` segs + Custom calendar JSX; `.usage-refresh .sess-menu` width; `.ctx-tune-note`.
+- **WHAT changed:**
+  - `shell-patch.css`: delete invent `.usage-head .range-opt` flex re-own + `.range-opt > span` / `.on > span` max-width/ellipsis/white-space.
+- **Remaining invent (weak/skip):** oauth Approve wall (nest=browser); `rt-flier-demo`; `win-caption*`; intentional `lib-hook*` / `pref-anchor` React bridges; some rows still bare `img.ic` (not invent class `ic-img`) — TrayPanel / GatewayView / ProvidersView.
+- **Guard:** `npm run chrome-guard`. No portable. No manual Vercel.
+
 ## v0.1.180 · RT_PEER_FADE_OSS · 2026-10-16 Asia/Shanghai
 
 - **WHY:** Hard invent audit — Routing peer/offline used invent `pr-none rt-peer` plus shell-patch/routing `.rt-peer` margin/wrap; replay/log stacked invent `rt-fade` animation. Magpie OSS main view uses `div.none.rt-off` via `offline()`; tray panel alone uses bare `pr-none`. Magpie builds `rt-replay` / `rt-log` with no fade class (`fade-in` is for `.view` / status etc.).
