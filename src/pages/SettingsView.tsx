@@ -692,7 +692,7 @@ export function SettingsView({ tab, setTab, theme, setTheme, lang, setLang, onSt
             <PrefRow
               name={t("Long conversations")}
               subClassName="wraps"
-              sub={t("Codex and Claude Code compact at 272K or the size typed; a full window makes turns slower and costlier")}
+              sub={t("Codex and Claude Code compact at 272K (non-Claude [1m] too) or the size typed; full window: slower, costlier")}
             >
               <div className="compact-at">
                 <Segs
