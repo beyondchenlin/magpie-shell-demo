@@ -372,7 +372,7 @@ body.web.side-nav {
    invent .pm-find-clear (v0.1.178 → Magpie native type=search cancel).
    Gold: plugins.css L3–19 pm-mirror/pm-find; L23–38 pm-intro; L58–64 pm-card
    (column, no :active scale); L114–131 pm-act; L149–150 pm-mlabel 12px muted. */
-.update-mirror-input { min-width: 180px; }
+/* Mirror and token inputs keep native .words sizing (app.js 18898/20112). */
 
 /* v0.1.144: drop invent .pm-opts* / .pm-mw / .pm-act.get|busy|go|done|.spin /
    .pm-card .pm-act transition — Magpie plugins.css L114–132 + L173–182 (OSS). */
@@ -383,8 +383,7 @@ body.web.side-nav {
 .search-add .proto.pick.search-vendor.open svg { transform: rotate(180deg); }
 .disabled-model .name { font-family: var(--code); font-size: 12px; overflow-wrap: anywhere; }
 
-/* —— Range menu head —— */
-.range-menu .pm-head { padding: 6px 4px 4px; font-size: 11.5px; color: var(--muted); }
+/* Date headers use the native .proto-menu .pm-head recipe unchanged. */
 /* ---- Usage filled: ledger detail / sess list / plugins ask ---- */
 /* v0.1.136: drop invent led-row.open/led-detail bg + led-detail-inner fade —
    Magpie app.css L1326–1328 (.open td / .led-detail td = card-2); L1329 .led-box; L1330 .led-dl.
@@ -436,7 +435,7 @@ body.web.side-nav {
 /* v0.1.181: drop invent .usage-head .range-opt > span max-width/ellipsis —
    Magpie app.css L2504–05 .range-opt flex+gap / svg flex:none only; L1018 tight +
    L2528 @640 hide :not(.on)>span — no span max-width / text-overflow. */
-.ctx-tune-note { margin: 0 0 10px; }
+/* Context's native .ctx-tune-note owns its padding; no extra bottom margin. */
 
 /* v0.1.43 MOTION — Magpie control transitions still unmatched
    v0.1.128: drop invent .guide-x transition (Magpie app.css L3728–3729: snap hover) */
@@ -648,9 +647,8 @@ label.tick {
   text-align: left;
 }
 label.tick input { margin: 0; }
-.github-token-input { width: 160px; max-width: 100%; }
 .words.full { width: 100%; max-width: 100%; }
-.row.pref.redact-kind { animation: fade-in .2s var(--ease); }
+/* Redaction rows are inserted without an additional native fade animation. */
 /* v0.1.131: drop invent .editor .more > .inner flex-column —
    Magpie app.css L2842 grid minmax(72px,max-content) minmax(0,1fr) */
 /* v0.1.131: drop invent .editor .chips { margin-top: 6px } — Magpie L1848 chips padding only */
@@ -659,7 +657,6 @@ label.tick input { margin: 0; }
 /* —— v0.1.105 CIS P1: Providers editor layout (Magpie classes) —— */
 /* Magpie sets detect-grid columns inline (app.js L10024); tip keeps --detect-n in app.css.
    v0.1.175: drop invent .dg-row display:contents — Magpie flattens dg-model/dg-cell onto grid. */
-.hint.fade { animation: fade-in .15s var(--ease); }
 .hint.err { color: var(--red); }
 /* v0.1.131: drop invent .icon-pick fade-in .18s — Magpie app.css L2696 no animation */
 /* v0.1.131: drop invent icon-grid button column + .n label —
@@ -787,7 +784,7 @@ label.tick input { margin: 0; }
 /* v0.1.132: drop invent #view-routing .rt-group-by inline-flex — Magpie routing.css L316/L667 */
 /* v0.1.161: drop dead invent .rt-col-live + --bar fill — demo uses .rt-col +
    Magpie style.width on .bar i (routing.css L396–397). */
-#view-routing .rt-act.enter { animation: rtin .4s ease-out; }
+/* Native activity rows have no additional rtin animation. */
 /* v0.1.132: drop invent rt-tpl / rt-group.row.who / rt-dim / rt-pick-empty|title|gap /
    rt-ic.sm / modal.rt-confirm — Magpie has none; groups use .main/.nm (routing.css L442–444). */
 
