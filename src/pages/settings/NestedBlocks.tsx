@@ -1803,11 +1803,19 @@ export function FontRow({
   const closeMenu = () => {
     setOpen("");
     setQ("");
-
   };
 
   useEffect(() => {
     if (!open) return;
+    // openProtoMenu distinguishes a reader's view scroll from focus/layout
+    // scrolling. Scrolling the menu itself (or an input) keeps it open.
+    let purposeUntil = 0;
+    const readerScrolls = () => { purposeUntil = performance.now() + 250; };
+    const onScroll = (e: Event) => {
+      const target = e.target as Element;
+      if (menuRef.current?.contains(target) || target.matches?.("input, textarea")) return;
+      if (!target.classList?.contains("view") || performance.now() < purposeUntil) closeMenu();
+    };
     const onDown = (e: MouseEvent) => {
       const n = e.target as Node;
       if (famRef.current?.contains(n) || styleRef.current?.contains(n) || menuRef.current?.contains(n)) return;
@@ -1819,19 +1827,39 @@ export function FontRow({
         e.stopPropagation();
         closeMenu();
         (open === "style" ? styleRef.current : famRef.current)?.focus({ preventScroll: true });
-      } else if (menuRef.current) menuKeyNavigation(menuRef.current, e);
+      } else if (menuRef.current) {
+        // Home/End belong to the searchable family menu, not the style menu.
+        if (open === "family" || e.key === "ArrowDown" || e.key === "ArrowUp") menuKeyNavigation(menuRef.current, e);
+        const typing = (e.target as Element | null)?.matches("input, textarea");
+        if (e.key === "Tab" || !typing && ["PageUp", "PageDown", "Home", "End", "ArrowUp", "ArrowDown", " "].includes(e.key)) {
+          purposeUntil = performance.now() + 400;
+        }
+      }
     };
     document.addEventListener("mousedown", onDown, true);
     document.addEventListener("keydown", onKey, true);
+    document.addEventListener("scroll", onScroll, true);
+    document.addEventListener("wheel", readerScrolls, { capture: true, passive: true });
+    document.addEventListener("touchmove", readerScrolls, { capture: true, passive: true });
+    window.addEventListener("resize", closeMenu);
     return () => {
       document.removeEventListener("mousedown", onDown, true);
       document.removeEventListener("keydown", onKey, true);
+      document.removeEventListener("scroll", onScroll, true);
+      document.removeEventListener("wheel", readerScrolls, true);
+      document.removeEventListener("touchmove", readerScrolls, true);
+      window.removeEventListener("resize", closeMenu);
     };
   }, [open]);
 
   useAnchoredPopover(menuRef, menuAnchor, !!open, { align: "right", maxHeight: 360 });
   useLayoutEffect(() => {
     if (open === "family") searchRef.current?.focus({ preventScroll: true });
+    else if (open === "style") {
+      const current = menuRef.current?.querySelector<HTMLButtonElement>(".pm-item.on")
+        || menuRef.current?.querySelector<HTMLButtonElement>(".pm-item");
+      current?.focus({ preventScroll: true });
+    }
   }, [open]);
 
   const qLower = q.trim().toLocaleLowerCase();

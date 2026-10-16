@@ -1,0 +1,15 @@
+<!doctype html><meta charset="utf-8"><title>CIS task preference restore</title>
+<h1>CIS isolated preview preferences</h1>
+<p>Only this task origin and the listed appearance preferences are read or restored.</p>
+<button id="snapshot">Snapshot initial preferences</button>
+<button id="restore">Restore initial preferences</button>
+<a href="/">Open preview</a><pre id="state"></pre>
+<script>
+const keys=['magpie.navLayout','magpie.lang','magpie.uiLocale','magpie.demoPrefs'];
+const backupKey='cis-settings-20261016-initial';
+const read=()=>Object.fromEntries(keys.map(key=>[key,localStorage.getItem(key)]));
+const show=(action)=>document.querySelector('#state').textContent=JSON.stringify({action,current:read(),initial:JSON.parse(sessionStorage.getItem(backupKey)||'null')},null,2);
+document.querySelector('#snapshot').onclick=()=>{if(!sessionStorage.getItem(backupKey))sessionStorage.setItem(backupKey,JSON.stringify(read()));show('Initial snapshot retained');};
+document.querySelector('#restore').onclick=()=>{const initial=JSON.parse(sessionStorage.getItem(backupKey)||'null');if(!initial){show('No snapshot; nothing changed');return;}for(const key of keys){if(initial[key]===null)localStorage.removeItem(key);else localStorage.setItem(key,initial[key]);}show('Restored listed preferences');};
+show('Read only; snapshot before testing');
+</script>
