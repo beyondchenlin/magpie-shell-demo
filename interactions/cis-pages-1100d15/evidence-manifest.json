@@ -1,0 +1,65 @@
+{
+  "source": "1100d152bcf6ff4f6ba170824249844a3496ce9a",
+  "files": [
+    {
+      "path": "after.json",
+      "bytes": 1017,
+      "sha256": "d072dc88ae2c986e3c2f2cc7c15a9b52723ea8b573a7795c5b4b176e23dbf81b"
+    },
+    {
+      "path": "assertions.json",
+      "bytes": 266,
+      "sha256": "66048d56f1249fa1803e5284d1b0a4240d0a6bce922e2f33db58cc4f2937baf5"
+    },
+    {
+      "path": "before.json",
+      "bytes": 31097,
+      "sha256": "d8facdfcecaae0627208e054423de5b771496007861bbef98bbad3a390489b24"
+    },
+    {
+      "path": "build-info.json",
+      "bytes": 30027,
+      "sha256": "4a6b15178fb41d4f2f7ead98ce7ecebb95b1b3aa84ac81c4a4efb1d614742e53"
+    },
+    {
+      "path": "initial-preferences.json",
+      "bytes": 2587,
+      "sha256": "3ee4dd943846ef11dbe36c9e0afd14051deb4b359ed2a6cc02551b0cf13b5991"
+    },
+    {
+      "path": "lint.txt",
+      "bytes": 17459,
+      "sha256": "2fab7a6428b00e31ebe95c8aa6925119f6bd01d3660b56f79b3677f7de2b900b"
+    },
+    {
+      "path": "mcp-after.png",
+      "bytes": 51852,
+      "sha256": "e5ad06717f0cf276ce3c5e841ad01218a9834e3fa075b7d0eaed5cb492a009f4"
+    },
+    {
+      "path": "NOTES.md",
+      "bytes": 4033,
+      "sha256": "eb3595b1d3aa850be06532a671aa5be1560865092318d900bd6406641395fc9d"
+    },
+    {
+      "path": "preferences-restored.json",
+      "bytes": 2589,
+      "sha256": "1fb86c3e61961d02b6649c27c0843631bcb8e90899a0a965e71b43a8b21cf054"
+    },
+    {
+      "path": "routing-after.png",
+      "bytes": 75089,
+      "sha256": "7fce938aeb1fa0d6927b16094ad2479a43d2685a7d67359b1be4ca3d951c16e8"
+    },
+    {
+      "path": "routing-before.png",
+      "bytes": 75775,
+      "sha256": "e6e7a6897ccf794fcea2b9c3038c0e2c55882d71a961da7c17054c745a6707fe"
+    },
+    {
+      "path": "usage-after.png",
+      "bytes": 91905,
+      "sha256": "fc2964349bb2038ae030ff66dbd7abbc211c1e210d412037067cfcacb8d4057c"
+    }
+  ]
+}

@@ -1,0 +1,5 @@
+{
+  "passed": true,
+  "source": "1100d152bcf6ff4f6ba170824249844a3496ce9a",
+  "checks": "Nine conditions exact roundtrip; independent intent/images removal; pause whitelist; menu keys/sort; detail stub removed; MCP Escape preserves draft; source/logs/preferences"
+}

@@ -1,0 +1,54 @@
+{
+  "source": "1100d152bcf6ff4f6ba170824249844a3496ce9a",
+  "version": "0.1.200",
+  "p2": [
+    {
+      "case": "group-menu-keys",
+      "initial": "复制",
+      "down": "分享为文字",
+      "up": "复制"
+    },
+    {
+      "case": "group-menu-escape",
+      "menuCount": 0,
+      "active": "调整 CIS Menu"
+    },
+    {
+      "case": "group-copy-sort",
+      "order": [
+        "调整 CIS Menu 副本 2",
+        "调整 CIS Menu"
+      ]
+    },
+    {
+      "case": "group-menu-tab",
+      "menus": 0
+    }
+  ],
+  "p3": [
+    {
+      "case": "detail-after",
+      "text": "速度\n86 token/秒",
+      "developerStub": 0
+    }
+  ],
+  "p5": [
+    {
+      "case": "mcp-confirm-escape",
+      "confirms": 0,
+      "editors": 1,
+      "name": "cis-mcp",
+      "active": {
+        "tag": "BUTTON",
+        "text": "取消"
+      }
+    },
+    {
+      "case": "hook-menu-escape-regression",
+      "menus": 0,
+      "editor": 1
+    }
+  ],
+  "logs": [],
+  "actualSource": "1100d152bcf6ff4f6ba170824249844a3496ce9a"
+}

@@ -109,10 +109,10 @@
 | C3 | 确认框 | R11 | 丢弃编辑/移除插件两条入口；取消默认焦点、Tab循环、Escape、遮罩点击、框内拖出不误关、关闭回焦、窗口内遮罩，逐项验证 | 通过（7880135/v199：两入口完整路径及已有busy下正反Tab；1364/1048/390框中心精确一致，原生遮罩限定框内。[证据](../interactions/cis-confirm-7880135/NOTES.md)） |
 | C4 | Agent 模型管理 | R05/R12/R18/R20 | All/Shown/Order；分组折叠；跨供应商搜索；Shown保留刚隐藏项；Current锁；批量二次点击/4秒/其他动作撤回；Only逐agent；首焦搜索、连续键盘重排回焦/拖拽/默认恢复、scroll/resize生命周期 | 通过（faea794深态/拖拽；d1f3e03计时4012ms/resize；862789f两次Alt↑；396c11c布局依赖回归，业务无变；[证据与复用](../interactions/cis-menus-396c11c/NOTES.md)） |
 | P1 | 供应商 | R01–R15/R23 | 空态、添加表单、编辑表单、字段菜单、排序菜单、丢弃确认各一条 mock 路径；不接真实订阅 | 通过（7880135/v199：Gemini端点及custom保存/再编辑修复；类型/地址/名称/模型/图标/JSON、编辑保存刷新、右键下移及丢弃均核验，主密钥未持久化。[证据](../interactions/cis-confirm-7880135/NOTES.md)） |
-| P2 | 路由 | R24及所用公共控件 | 空、组创建/保存/再编辑；intent/tokens/images/effort/compact/agents/folders/exceptFolders/time各加删一次；intent+images互不误删；规则移动/暂停/删除、组复制/排序。pause只允许后四类；只验已有mock | 待验 |
-| P3 | 用量 | R05/R13/R25 | 概览/请求/会话/上下文四页签，默认空态和filled fixture；刷新周期、日期选择、归档开关及一条详情；不出现用户无须看到的演示按钮 | 待验 |
+| P2 | 路由 | R24及所用公共控件 | 空、组创建/保存/再编辑；intent/tokens/images/effort/compact/agents/folders/exceptFolders/time各加删一次；intent+images互不误删；规则移动/暂停/删除、组复制/排序。pause只允许后四类；只验已有mock | 通过（1100d15/v200：组菜单键盘修复及复制/排序复验；7880135九条件完整roundtrip/加删/独立性/pause/规则操作复用相同GroupEditor blob。[证据](../interactions/cis-pages-1100d15/NOTES.md)） |
+| P3 | 用量 | R05/R13/R25 | 概览/请求/会话/上下文四页签，默认空态和filled fixture；刷新周期、日期选择、归档开关及一条详情；不出现用户无须看到的演示按钮 | 通过（1100d15/v200：移除请求详情实现说明，业务速度保留；7880135空/filled四页签、周期/两次日期点击/归档/详情路径按唯一4行差异复用。[证据](../interactions/cis-pages-1100d15/NOTES.md)） |
 | P4 | 插件 | R03/R05/R11/R15/R25 | 内置/发现/已安装，状态开关、最近调用数量菜单、详情、移除取消各一条路径；不执行真实第三方代码 | 通过（7880135/v199：内置开关、20→50菜单、发现详情、已装停用/启用/选项/移除取消；安装只走1100ms mock状态。SVG与固定源一致，未采纳未复现容错草稿。[证据](../interactions/cis-confirm-7880135/NOTES.md)） |
-| P5 | Library | R25及实际调用 | 指令/MCP/Skills/Hooks 四页签；默认态与现有编辑入口，选一个菜单/一个取消动作复验；不扩展资源库业务 | 待验 |
+| P5 | Library | R25及实际调用 | 指令/MCP/Skills/Hooks 四页签；默认态与现有编辑入口，选一个菜单/一个取消动作复验；不扩展资源库业务 | 通过（1100d15/v200：MCP确认Escape修复，草稿/编辑器及回焦保留，Hook菜单复验；7880135四页签及指令放弃/取消按唯一1行差异复用。[证据](../interactions/cis-pages-1100d15/NOTES.md)） |
 | D1 | 工程检查 | 本清单§5；TIP-CYCLE | build、chrome-guard、cis-guard通过；lint 0错误且不增加当前59条warning；无新增运行异常和无效交互嵌套 | 待验 |
 | D2 | PR与预览一致 | 本清单§2；TIP-CYCLE | PR工作分支、预览、UI版本、完整SHA可互相对应；打不开或需登录据实记录，不能冒称已验云端 | 待验 |
 | D3 | CIS交付 | R01–R25；调用点索引 | 组件→配方→来源→验收ID的映射完整；每项失败都有复现与证据；无用途不明的补丁与未记录的例外 | 待验 |

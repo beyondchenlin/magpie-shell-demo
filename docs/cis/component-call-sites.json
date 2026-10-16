@@ -2,7 +2,7 @@
   "purpose": "Audit index only; a call site is not proof of correct runtime behavior. Raw DOM is a review queue, not an automatic defect.",
   "baseline": "e94edc6713da405285854e7d6548f3f8364bf84f",
   "specification": "028dab55a3877656c115439835d1d0d14465e4ee",
-  "candidate": "7880135320083e6192bfb4d5ab87b136cd59d4b5",
+  "candidate": "1100d152bcf6ff4f6ba170824249844a3496ce9a",
   "scope": "committed source snapshot, excludes inherited working-tree draft",
   "files": [
     {
@@ -59,7 +59,7 @@
     },
     {
       "file": "src/pages/LibraryView.tsx",
-      "sha256": "93b3f70e2162d1b05b512d076165a0cfd1af48dd31c78e28821e78f5bfd3a771"
+      "sha256": "dca3ebd9c9a3d2abe470e87eb26602449a1b9a75afabc6a4e650e48cafc7ff38"
     },
     {
       "file": "src/pages/ProvidersView.tsx",
@@ -67,7 +67,7 @@
     },
     {
       "file": "src/pages/RoutingView.tsx",
-      "sha256": "3b2a4b9afc2aae13436ce798eac1836e00d49758bd6941902ecf134c0eb33d94"
+      "sha256": "c288794d373255fd7aa925913705ff2c10a3d8e3471b9f73f770f4c624da4fe7"
     },
     {
       "file": "src/pages/settings/NestedBlocks.tsx",
@@ -79,7 +79,7 @@
     },
     {
       "file": "src/pages/SimpleViews.tsx",
-      "sha256": "d7c3a18dc52750defe9943b79b32f363ff492be5f8a6efa9eae3d1d1aab70b31"
+      "sha256": "e93f62b171286a9e7b7f055a92f2b8c20e6e8a0a482bcde95859405d95434764"
     },
     {
       "file": "src/pages/TrayPanel.tsx",
@@ -107,8 +107,8 @@
     "ProtoMultiMenu": 8,
     "AgentModelsPop": 1,
     "PopoverPortal": 13,
-    "useAnchoredPopover": 10,
-    "useRowMenu": 4,
+    "useAnchoredPopover": 9,
+    "useRowMenu": 5,
     "SidebarTabs": 1,
     "ConnectionField": 5,
     "RequestArchive": 2,
@@ -993,7 +993,7 @@
     {
       "control": "Segs",
       "file": "src/pages/LibraryView.tsx",
-      "line": 868,
+      "line": 869,
       "local": "Segs",
       "import": "../components/Segs",
       "attributes": {
@@ -1004,7 +1004,7 @@
     {
       "control": "Segs",
       "file": "src/pages/LibraryView.tsx",
-      "line": 1224,
+      "line": 1225,
       "local": "Segs",
       "import": "../components/Segs",
       "attributes": {
@@ -1014,7 +1014,7 @@
     {
       "control": "TextBtn",
       "file": "src/pages/LibraryView.tsx",
-      "line": 1233,
+      "line": 1234,
       "local": "TextBtn",
       "import": "../components/TextBtn",
       "attributes": {
@@ -1024,7 +1024,7 @@
     {
       "control": "TextBtn",
       "file": "src/pages/LibraryView.tsx",
-      "line": 1248,
+      "line": 1249,
       "local": "TextBtn",
       "import": "../components/TextBtn",
       "attributes": {
@@ -1034,7 +1034,7 @@
     {
       "control": "TextBtn",
       "file": "src/pages/LibraryView.tsx",
-      "line": 1264,
+      "line": 1265,
       "local": "TextBtn",
       "import": "../components/TextBtn",
       "attributes": {
@@ -1044,7 +1044,7 @@
     {
       "control": "TextBtn",
       "file": "src/pages/LibraryView.tsx",
-      "line": 1269,
+      "line": 1270,
       "local": "TextBtn",
       "import": "../components/TextBtn",
       "attributes": {
@@ -1055,7 +1055,7 @@
     {
       "control": "TextBtn",
       "file": "src/pages/LibraryView.tsx",
-      "line": 1271,
+      "line": 1272,
       "local": "TextBtn",
       "import": "../components/TextBtn",
       "attributes": {}
@@ -1063,7 +1063,7 @@
     {
       "control": "LibSwitch",
       "file": "src/pages/LibraryView.tsx",
-      "line": 1394,
+      "line": 1395,
       "local": "LibSwitch",
       "import": "../components/LibSwitch",
       "attributes": {
@@ -1073,7 +1073,7 @@
     {
       "control": "LibSwitch",
       "file": "src/pages/LibraryView.tsx",
-      "line": 2300,
+      "line": 2301,
       "local": "LibSwitch",
       "import": "../components/LibSwitch",
       "attributes": {
@@ -1083,7 +1083,7 @@
     {
       "control": "LibSwitch",
       "file": "src/pages/LibraryView.tsx",
-      "line": 2630,
+      "line": 2631,
       "local": "LibSwitch",
       "import": "../components/LibSwitch",
       "attributes": {
@@ -1093,7 +1093,7 @@
     {
       "control": "WordsField",
       "file": "src/pages/LibraryView.tsx",
-      "line": 2707,
+      "line": 2708,
       "local": "WordsField",
       "import": "../components/WordsField",
       "attributes": {
@@ -1103,7 +1103,7 @@
     {
       "control": "Segs",
       "file": "src/pages/LibraryView.tsx",
-      "line": 2716,
+      "line": 2717,
       "local": "Segs",
       "import": "../components/Segs",
       "attributes": {}
@@ -1111,7 +1111,7 @@
     {
       "control": "WordsField",
       "file": "src/pages/LibraryView.tsx",
-      "line": 2732,
+      "line": 2733,
       "local": "WordsField",
       "import": "../components/WordsField",
       "attributes": {
@@ -1121,7 +1121,7 @@
     {
       "control": "WordsField",
       "file": "src/pages/LibraryView.tsx",
-      "line": 2754,
+      "line": 2755,
       "local": "WordsField",
       "import": "../components/WordsField",
       "attributes": {
@@ -1131,7 +1131,7 @@
     {
       "control": "WordsField",
       "file": "src/pages/LibraryView.tsx",
-      "line": 3080,
+      "line": 3081,
       "local": "WordsField",
       "import": "../components/WordsField",
       "attributes": {
@@ -1141,7 +1141,7 @@
     {
       "control": "PrefPick",
       "file": "src/pages/LibraryView.tsx",
-      "line": 3099,
+      "line": 3100,
       "local": "PrefPick",
       "import": "../components/PrefPick",
       "attributes": {
@@ -1152,7 +1152,7 @@
     {
       "control": "WordsField",
       "file": "src/pages/LibraryView.tsx",
-      "line": 3202,
+      "line": 3203,
       "local": "WordsField",
       "import": "../components/WordsField",
       "attributes": {
@@ -1162,7 +1162,7 @@
     {
       "control": "PrefPick",
       "file": "src/pages/LibraryView.tsx",
-      "line": 3213,
+      "line": 3214,
       "local": "PrefPick",
       "import": "../components/PrefPick",
       "attributes": {
@@ -1173,7 +1173,7 @@
     {
       "control": "WordsField",
       "file": "src/pages/LibraryView.tsx",
-      "line": 3256,
+      "line": 3257,
       "local": "WordsField",
       "import": "../components/WordsField",
       "attributes": {
@@ -1183,7 +1183,7 @@
     {
       "control": "WordsField",
       "file": "src/pages/LibraryView.tsx",
-      "line": 3264,
+      "line": 3265,
       "local": "WordsField",
       "import": "../components/WordsField",
       "attributes": {
@@ -1193,7 +1193,7 @@
     {
       "control": "ActionConfirm",
       "file": "src/pages/LibraryView.tsx",
-      "line": 3286,
+      "line": 3287,
       "local": "ActionConfirm",
       "import": "../components/ActionConfirm",
       "attributes": {}
@@ -1201,7 +1201,7 @@
     {
       "control": "Segs",
       "file": "src/pages/LibraryView.tsx",
-      "line": 3320,
+      "line": 3321,
       "local": "Segs",
       "import": "../components/Segs",
       "attributes": {}
@@ -1209,7 +1209,7 @@
     {
       "control": "ActionConfirm",
       "file": "src/pages/LibraryView.tsx",
-      "line": 3376,
+      "line": 3377,
       "local": "ActionConfirm",
       "import": "../components/ActionConfirm",
       "attributes": {}
@@ -1217,7 +1217,7 @@
     {
       "control": "ActionConfirm",
       "file": "src/pages/LibraryView.tsx",
-      "line": 3395,
+      "line": 3396,
       "local": "ActionConfirm",
       "import": "../components/ActionConfirm",
       "attributes": {}
@@ -1225,7 +1225,7 @@
     {
       "control": "ActionConfirm",
       "file": "src/pages/LibraryView.tsx",
-      "line": 3517,
+      "line": 3518,
       "local": "ActionConfirm",
       "import": "../components/ActionConfirm",
       "attributes": {}
@@ -1233,7 +1233,7 @@
     {
       "control": "ActionConfirm",
       "file": "src/pages/LibraryView.tsx",
-      "line": 3590,
+      "line": 3591,
       "local": "ActionConfirm",
       "import": "../components/ActionConfirm",
       "attributes": {}
@@ -1241,7 +1241,7 @@
     {
       "control": "ActionConfirm",
       "file": "src/pages/LibraryView.tsx",
-      "line": 3611,
+      "line": 3612,
       "local": "ActionConfirm",
       "import": "../components/ActionConfirm",
       "attributes": {}
@@ -1249,7 +1249,7 @@
     {
       "control": "ActionConfirm",
       "file": "src/pages/LibraryView.tsx",
-      "line": 3629,
+      "line": 3630,
       "local": "ActionConfirm",
       "import": "../components/ActionConfirm",
       "attributes": {}
@@ -1257,7 +1257,7 @@
     {
       "control": "ActionConfirm",
       "file": "src/pages/LibraryView.tsx",
-      "line": 3648,
+      "line": 3649,
       "local": "ActionConfirm",
       "import": "../components/ActionConfirm",
       "attributes": {}
@@ -1457,16 +1457,16 @@
       "attributes": {}
     },
     {
-      "control": "useAnchoredPopover",
+      "control": "useRowMenu",
       "file": "src/pages/RoutingView.tsx",
       "line": 274,
-      "local": "useAnchoredPopover",
-      "import": "../lib/useAnchoredPopover"
+      "local": "useRowMenu",
+      "import": "../lib/useRowMenu"
     },
     {
       "control": "PopoverPortal",
       "file": "src/pages/RoutingView.tsx",
-      "line": 343,
+      "line": 317,
       "local": "PopoverPortal",
       "import": "../components/PopoverPortal",
       "attributes": {}
@@ -1474,7 +1474,7 @@
     {
       "control": "ProtoMultiMenu",
       "file": "src/pages/RoutingView.tsx",
-      "line": 1094,
+      "line": 1068,
       "local": "ProtoMultiMenu",
       "import": "../components/ProtoMultiMenu",
       "attributes": {
@@ -1484,7 +1484,7 @@
     {
       "control": "ProtoMultiMenu",
       "file": "src/pages/RoutingView.tsx",
-      "line": 1119,
+      "line": 1093,
       "local": "ProtoMultiMenu",
       "import": "../components/ProtoMultiMenu",
       "attributes": {
@@ -1494,7 +1494,7 @@
     {
       "control": "ProtoMultiMenu",
       "file": "src/pages/RoutingView.tsx",
-      "line": 1186,
+      "line": 1160,
       "local": "ProtoMultiMenu",
       "import": "../components/ProtoMultiMenu",
       "attributes": {
@@ -1504,7 +1504,7 @@
     {
       "control": "MagpieIcon",
       "file": "src/pages/RoutingView.tsx",
-      "line": 1463,
+      "line": 1437,
       "local": "MagpieIcon",
       "import": "../components/MagpieIcon",
       "attributes": {}
@@ -1512,7 +1512,7 @@
     {
       "control": "Segs",
       "file": "src/pages/RoutingView.tsx",
-      "line": 1561,
+      "line": 1535,
       "local": "Segs",
       "import": "../components/Segs",
       "attributes": {
@@ -1522,7 +1522,7 @@
     {
       "control": "Segs",
       "file": "src/pages/RoutingView.tsx",
-      "line": 1576,
+      "line": 1550,
       "local": "Segs",
       "import": "../components/Segs",
       "attributes": {
@@ -1532,7 +1532,7 @@
     {
       "control": "LibSwitch",
       "file": "src/pages/RoutingView.tsx",
-      "line": 1697,
+      "line": 1671,
       "local": "LibSwitch",
       "import": "../components/LibSwitch",
       "attributes": {
@@ -1542,7 +1542,7 @@
     {
       "control": "Segs",
       "file": "src/pages/RoutingView.tsx",
-      "line": 1723,
+      "line": 1697,
       "local": "Segs",
       "import": "../components/Segs",
       "attributes": {
@@ -1552,7 +1552,7 @@
     {
       "control": "ProtoMultiMenu",
       "file": "src/pages/RoutingView.tsx",
-      "line": 2031,
+      "line": 2005,
       "local": "ProtoMultiMenu",
       "import": "../components/ProtoMultiMenu",
       "attributes": {
@@ -3883,7 +3883,7 @@
     {
       "control": "TextBtn",
       "file": "src/pages/SimpleViews.tsx",
-      "line": 1438,
+      "line": 1434,
       "local": "TextBtn",
       "import": "../components/TextBtn",
       "attributes": {}
@@ -3891,7 +3891,7 @@
     {
       "control": "TextBtn",
       "file": "src/pages/SimpleViews.tsx",
-      "line": 1444,
+      "line": 1440,
       "local": "TextBtn",
       "import": "../components/TextBtn",
       "attributes": {}
@@ -3899,7 +3899,7 @@
     {
       "control": "RequestArchive",
       "file": "src/pages/SimpleViews.tsx",
-      "line": 1478,
+      "line": 1474,
       "local": "RequestArchive",
       "import": "../components/RequestArchive",
       "attributes": {}
@@ -3907,7 +3907,7 @@
     {
       "control": "Segs",
       "file": "src/pages/SimpleViews.tsx",
-      "line": 1499,
+      "line": 1495,
       "local": "Segs",
       "import": "../components/Segs",
       "attributes": {}
@@ -3915,7 +3915,7 @@
     {
       "control": "TextBtn",
       "file": "src/pages/SimpleViews.tsx",
-      "line": 1547,
+      "line": 1543,
       "local": "TextBtn",
       "import": "../components/TextBtn",
       "attributes": {
@@ -3927,7 +3927,7 @@
     {
       "control": "MagpieIcon",
       "file": "src/pages/SimpleViews.tsx",
-      "line": 1581,
+      "line": 1577,
       "local": "MagpieIcon",
       "import": "../components/MagpieIcon",
       "attributes": {}
@@ -3935,7 +3935,7 @@
     {
       "control": "CopyButton",
       "file": "src/pages/SimpleViews.tsx",
-      "line": 1619,
+      "line": 1615,
       "local": "CopyButton",
       "import": "../components/CopyButton",
       "attributes": {}
@@ -3943,7 +3943,7 @@
     {
       "control": "CopyButton",
       "file": "src/pages/SimpleViews.tsx",
-      "line": 1624,
+      "line": 1620,
       "local": "CopyButton",
       "import": "../components/CopyButton",
       "attributes": {}
@@ -3951,7 +3951,7 @@
     {
       "control": "TextBtn",
       "file": "src/pages/SimpleViews.tsx",
-      "line": 1662,
+      "line": 1658,
       "local": "TextBtn",
       "import": "../components/TextBtn",
       "attributes": {
@@ -3961,7 +3961,7 @@
     {
       "control": "TextBtn",
       "file": "src/pages/SimpleViews.tsx",
-      "line": 1686,
+      "line": 1682,
       "local": "TextBtn",
       "import": "../components/TextBtn",
       "attributes": {
@@ -3971,7 +3971,7 @@
     {
       "control": "MagpieIcon",
       "file": "src/pages/SimpleViews.tsx",
-      "line": 1744,
+      "line": 1740,
       "local": "MagpieIcon",
       "import": "../components/MagpieIcon",
       "attributes": {}
@@ -3979,7 +3979,7 @@
     {
       "control": "TextBtn",
       "file": "src/pages/SimpleViews.tsx",
-      "line": 1839,
+      "line": 1835,
       "local": "TextBtn",
       "import": "../components/TextBtn",
       "attributes": {}
@@ -3987,7 +3987,7 @@
     {
       "control": "Segs",
       "file": "src/pages/SimpleViews.tsx",
-      "line": 2283,
+      "line": 2279,
       "local": "Segs",
       "import": "../components/Segs",
       "attributes": {}
@@ -3995,7 +3995,7 @@
     {
       "control": "PrefRow",
       "file": "src/pages/SimpleViews.tsx",
-      "line": 2360,
+      "line": 2356,
       "local": "PrefRow",
       "import": "../components/PrefRow",
       "attributes": {
@@ -4008,7 +4008,7 @@
     {
       "control": "LibSwitch",
       "file": "src/pages/SimpleViews.tsx",
-      "line": 2374,
+      "line": 2370,
       "local": "LibSwitch",
       "import": "../components/LibSwitch",
       "attributes": {
@@ -4019,7 +4019,7 @@
     {
       "control": "PrefRow",
       "file": "src/pages/SimpleViews.tsx",
-      "line": 2400,
+      "line": 2396,
       "local": "PrefRow",
       "import": "../components/PrefRow",
       "attributes": {
@@ -4030,7 +4030,7 @@
     {
       "control": "Segs",
       "file": "src/pages/SimpleViews.tsx",
-      "line": 2510,
+      "line": 2506,
       "local": "Segs",
       "import": "../components/Segs",
       "attributes": {
@@ -4041,7 +4041,7 @@
     {
       "control": "TextBtn",
       "file": "src/pages/SimpleViews.tsx",
-      "line": 2548,
+      "line": 2544,
       "local": "TextBtn",
       "import": "../components/TextBtn",
       "attributes": {}
@@ -4049,7 +4049,7 @@
     {
       "control": "PluginLogo",
       "file": "src/pages/SimpleViews.tsx",
-      "line": 2569,
+      "line": 2565,
       "local": "PluginLogo",
       "import": "../components/PluginLogo",
       "attributes": {
@@ -4059,7 +4059,7 @@
     {
       "control": "PluginLogo",
       "file": "src/pages/SimpleViews.tsx",
-      "line": 2630,
+      "line": 2626,
       "local": "PluginLogo",
       "import": "../components/PluginLogo",
       "attributes": {
@@ -4069,7 +4069,7 @@
     {
       "control": "PluginLogo",
       "file": "src/pages/SimpleViews.tsx",
-      "line": 2693,
+      "line": 2689,
       "local": "PluginLogo",
       "import": "../components/PluginLogo",
       "attributes": {
@@ -4079,7 +4079,7 @@
     {
       "control": "TextBtn",
       "file": "src/pages/SimpleViews.tsx",
-      "line": 2816,
+      "line": 2812,
       "local": "TextBtn",
       "import": "../components/TextBtn",
       "attributes": {
@@ -4090,7 +4090,7 @@
     {
       "control": "PluginLogo",
       "file": "src/pages/SimpleViews.tsx",
-      "line": 2832,
+      "line": 2828,
       "local": "PluginLogo",
       "import": "../components/PluginLogo",
       "attributes": {}
@@ -4098,7 +4098,7 @@
     {
       "control": "Segs",
       "file": "src/pages/SimpleViews.tsx",
-      "line": 2844,
+      "line": 2840,
       "local": "Segs",
       "import": "../components/Segs",
       "attributes": {
@@ -4110,7 +4110,7 @@
     {
       "control": "PluginLogo",
       "file": "src/pages/SimpleViews.tsx",
-      "line": 2868,
+      "line": 2864,
       "local": "PluginLogo",
       "import": "../components/PluginLogo",
       "attributes": {
@@ -4120,7 +4120,7 @@
     {
       "control": "TextBtn",
       "file": "src/pages/SimpleViews.tsx",
-      "line": 2999,
+      "line": 2995,
       "local": "TextBtn",
       "import": "../components/TextBtn",
       "attributes": {
@@ -4130,7 +4130,7 @@
     {
       "control": "TextBtn",
       "file": "src/pages/SimpleViews.tsx",
-      "line": 3009,
+      "line": 3005,
       "local": "TextBtn",
       "import": "../components/TextBtn",
       "attributes": {}
@@ -4138,7 +4138,7 @@
     {
       "control": "TextBtn",
       "file": "src/pages/SimpleViews.tsx",
-      "line": 3019,
+      "line": 3015,
       "local": "TextBtn",
       "import": "../components/TextBtn",
       "attributes": {
@@ -4148,7 +4148,7 @@
     {
       "control": "TextBtn",
       "file": "src/pages/SimpleViews.tsx",
-      "line": 3077,
+      "line": 3073,
       "local": "TextBtn",
       "import": "../components/TextBtn",
       "attributes": {}
@@ -4156,7 +4156,7 @@
     {
       "control": "TextBtn",
       "file": "src/pages/SimpleViews.tsx",
-      "line": 3080,
+      "line": 3076,
       "local": "TextBtn",
       "import": "../components/TextBtn",
       "attributes": {
@@ -4166,7 +4166,7 @@
     {
       "control": "TextBtn",
       "file": "src/pages/SimpleViews.tsx",
-      "line": 3101,
+      "line": 3097,
       "local": "TextBtn",
       "import": "../components/TextBtn",
       "attributes": {
@@ -4176,7 +4176,7 @@
     {
       "control": "TextBtn",
       "file": "src/pages/SimpleViews.tsx",
-      "line": 3117,
+      "line": 3113,
       "local": "TextBtn",
       "import": "../components/TextBtn",
       "attributes": {
@@ -4186,7 +4186,7 @@
     {
       "control": "TextBtn",
       "file": "src/pages/SimpleViews.tsx",
-      "line": 3128,
+      "line": 3124,
       "local": "TextBtn",
       "import": "../components/TextBtn",
       "attributes": {}
@@ -4194,7 +4194,7 @@
     {
       "control": "TextBtn",
       "file": "src/pages/SimpleViews.tsx",
-      "line": 3149,
+      "line": 3145,
       "local": "TextBtn",
       "import": "../components/TextBtn",
       "attributes": {}
@@ -4202,7 +4202,7 @@
     {
       "control": "TextBtn",
       "file": "src/pages/SimpleViews.tsx",
-      "line": 3168,
+      "line": 3164,
       "local": "TextBtn",
       "import": "../components/TextBtn",
       "attributes": {
@@ -4212,7 +4212,7 @@
     {
       "control": "TextBtn",
       "file": "src/pages/SimpleViews.tsx",
-      "line": 3196,
+      "line": 3192,
       "local": "TextBtn",
       "import": "../components/TextBtn",
       "attributes": {
@@ -4222,7 +4222,7 @@
     {
       "control": "ActionConfirm",
       "file": "src/pages/SimpleViews.tsx",
-      "line": 3231,
+      "line": 3227,
       "local": "ActionConfirm",
       "import": "../components/ActionConfirm",
       "attributes": {}
@@ -4230,7 +4230,7 @@
     {
       "control": "ActionConfirm",
       "file": "src/pages/SimpleViews.tsx",
-      "line": 3262,
+      "line": 3258,
       "local": "ActionConfirm",
       "import": "../components/ActionConfirm",
       "attributes": {}
@@ -4238,7 +4238,7 @@
     {
       "control": "PluginLogo",
       "file": "src/pages/SimpleViews.tsx",
-      "line": 3301,
+      "line": 3297,
       "local": "PluginLogo",
       "import": "../components/PluginLogo",
       "attributes": {
@@ -4248,7 +4248,7 @@
     {
       "control": "TextBtn",
       "file": "src/pages/SimpleViews.tsx",
-      "line": 3424,
+      "line": 3420,
       "local": "TextBtn",
       "import": "../components/TextBtn",
       "attributes": {}
@@ -4386,31 +4386,31 @@
     {
       "tag": "div",
       "file": "src/pages/LibraryView.tsx",
-      "line": 1508,
+      "line": 1509,
       "className": "\"pop proto-menu\""
     },
     {
       "tag": "div",
       "file": "src/pages/LibraryView.tsx",
-      "line": 2087,
+      "line": 2088,
       "className": "\"segs\""
     },
     {
       "tag": "div",
       "file": "src/pages/LibraryView.tsx",
-      "line": 2901,
+      "line": 2902,
       "className": "\"pop proto-menu\""
     },
     {
       "tag": "div",
       "file": "src/pages/LibraryView.tsx",
-      "line": 3111,
+      "line": 3112,
       "className": "\"pop proto-menu\""
     },
     {
       "tag": "div",
       "file": "src/pages/LibraryView.tsx",
-      "line": 3222,
+      "line": 3223,
       "className": "\"pop proto-menu\""
     },
     {
@@ -4422,25 +4422,25 @@
     {
       "tag": "div",
       "file": "src/pages/RoutingView.tsx",
-      "line": 343,
+      "line": 317,
       "className": "\"pop row-menu fixed\""
     },
     {
       "tag": "div",
       "file": "src/pages/RoutingView.tsx",
-      "line": 1684,
+      "line": 1658,
       "className": "\"rt-gfound row pref\""
     },
     {
       "tag": "div",
       "file": "src/pages/RoutingView.tsx",
-      "line": 1714,
+      "line": 1688,
       "className": "\"rt-gnames row pref\""
     },
     {
       "tag": "button",
       "file": "src/pages/RoutingView.tsx",
-      "line": 2279,
+      "line": 2253,
       "className": "{`lib-switch rt-gon${g.on ? \" on\" : \"\"}`}"
     },
     {
@@ -4494,13 +4494,13 @@
     {
       "tag": "div",
       "file": "src/pages/SimpleViews.tsx",
-      "line": 1498,
+      "line": 1494,
       "className": "\"segs\""
     },
     {
       "tag": "span",
       "file": "src/pages/SimpleViews.tsx",
-      "line": 2314,
+      "line": 2310,
       "className": "{`lib-switch${mirror ? \" on\" : \"\"}`}"
     },
     {
