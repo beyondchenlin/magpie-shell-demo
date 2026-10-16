@@ -1,0 +1,134 @@
+[
+  {
+    "label": "final-candidate-current-style-focus",
+    "active": {
+      "cls": "pm-item on",
+      "tag": "BUTTON",
+      "text": "Bold"
+    },
+    "lang": "zh-CN",
+    "menu": [
+      {
+        "rect": {
+          "bottom": 506.5841979980469,
+          "height": 130.9326171875,
+          "left": 869.361083984375,
+          "right": 1243.07958984375,
+          "top": 375.6515808105469,
+          "width": 373.718505859375,
+          "x": 869.361083984375,
+          "y": 375.6515808105469
+        },
+        "text": "样式RegularMediumBold"
+      }
+    ],
+    "rows": [
+      {
+        "controls": [
+          {
+            "disabled": false,
+            "rect": {
+              "bottom": 370.34375,
+              "height": 26.390625,
+              "left": 902.21875,
+              "right": 1157.4375,
+              "top": 343.953125,
+              "width": 255.21875,
+              "x": 902.21875,
+              "y": 343.953125
+            },
+            "text": "Inter"
+          },
+          {
+            "disabled": false,
+            "rect": {
+              "bottom": 370.34375,
+              "height": 26.390625,
+              "left": 1164.03125,
+              "right": 1243.21875,
+              "top": 343.953125,
+              "width": 79.1875,
+              "x": 1164.03125,
+              "y": 343.953125
+            },
+            "text": "Bold"
+          }
+        ],
+        "gap": "5px 6px",
+        "grid": "232.017px 71.9886px",
+        "id": "uiFontRow",
+        "rect": {
+          "bottom": 409.34375,
+          "height": 74.078125,
+          "left": 329.78125,
+          "right": 1256.40625,
+          "top": 335.265625,
+          "width": 926.625,
+          "x": 329.78125,
+          "y": 335.265625
+        }
+      },
+      {
+        "controls": [
+          {
+            "disabled": false,
+            "rect": {
+              "bottom": 444.421875,
+              "height": 26.390625,
+              "left": 902.21875,
+              "right": 1151.9375,
+              "top": 418.03125,
+              "width": 249.71875,
+              "x": 902.21875,
+              "y": 418.03125
+            },
+            "text": "系统默认"
+          },
+          {
+            "disabled": true,
+            "rect": {
+              "bottom": 444.421875,
+              "height": 26.390625,
+              "left": 1158.53125,
+              "right": 1243.21875,
+              "top": 418.03125,
+              "width": 84.6875,
+              "x": 1158.53125,
+              "y": 418.03125
+            },
+            "text": "系统默认"
+          }
+        ],
+        "gap": "5px 6px",
+        "grid": "227.017px 76.9886px",
+        "id": "codeFontRow",
+        "rect": {
+          "bottom": 483.421875,
+          "height": 74.078125,
+          "left": 329.78125,
+          "right": 1256.40625,
+          "top": 409.34375,
+          "width": 926.625,
+          "x": 329.78125,
+          "y": 409.34375
+        }
+      }
+    ],
+    "source": "90099b9532fc7e95036fa05b7848e61e11342b72",
+    "viewport": [
+      1364,
+      941
+    ],
+    "zoom": "1"
+  },
+  {
+    "label": "final-resize-dismiss",
+    "source": "90099b9532fc7e95036fa05b7848e61e11342b72",
+    "menus": 0
+  },
+  {
+    "label": "final-reader-scroll-dismiss",
+    "source": "90099b9532fc7e95036fa05b7848e61e11342b72",
+    "menus": 0
+  }
+]

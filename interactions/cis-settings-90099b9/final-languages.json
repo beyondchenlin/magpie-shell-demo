@@ -1,0 +1,62 @@
+[
+  {
+    "localeName": "简体中文",
+    "heading": "设置",
+    "lang": "zh-CN",
+    "longConversation": "Codex 和 Claude Code 在 272K（非 Claude 的 [1m] 模型也是）或这里填的大小时压缩；完整窗口每轮更慢更贵",
+    "nav": "使用Agent模型供应商路由网关观测用量扩展插件",
+    "pick": "简体中文",
+    "source": "90099b9532fc7e95036fa05b7848e61e11342b72",
+    "tabs": []
+  },
+  {
+    "localeName": "English",
+    "heading": "Settings",
+    "lang": "en",
+    "longConversation": "Codex and Claude Code compact at 272K (non-Claude [1m] too) or the size typed; full window: slower, costlier",
+    "nav": "WorkAgentsModelsProvidersRoutingGatewayInsightsUsageExtendPlugins",
+    "pick": "English",
+    "source": "90099b9532fc7e95036fa05b7848e61e11342b72",
+    "tabs": []
+  },
+  {
+    "localeName": "繁體中文",
+    "heading": "設定",
+    "lang": "zh-TW",
+    "longConversation": "Codex 和 Claude Code 在 272K（非 Claude 的 [1m] 模型也是）或這裡填的大小時壓縮；完整視窗每輪更慢更貴",
+    "nav": "使用Agent模型供應商路由閘道觀測用量擴充外掛",
+    "pick": "繁體中文",
+    "source": "90099b9532fc7e95036fa05b7848e61e11342b72",
+    "tabs": []
+  },
+  {
+    "localeName": "日本語",
+    "heading": "設定",
+    "lang": "ja",
+    "longConversation": "Codex と Claude Code は 272K（Claude 以外の [1m] モデルも）か入力したサイズで圧縮。ウィンドウ全体は遅く高価",
+    "nav": "利用エージェントモデルプロバイダルーティングゲートウェイ観測使用量拡張プラグイン",
+    "pick": "日本語",
+    "source": "90099b9532fc7e95036fa05b7848e61e11342b72",
+    "tabs": []
+  },
+  {
+    "localeName": "Deutsch",
+    "heading": "Einstellungen",
+    "lang": "de",
+    "longConversation": "Codex/Claude Code komprimieren bei 272K (auch [1m] außer Claude) oder hier; volles Fenster: teurer",
+    "nav": "ArbeitAgentenModelleAnbieterWeiterleitungZugangspunktEinblickNutzungZusätzeErweiterungen",
+    "pick": "Deutsch",
+    "source": "90099b9532fc7e95036fa05b7848e61e11342b72",
+    "tabs": []
+  },
+  {
+    "localeName": "System",
+    "heading": "设置",
+    "lang": "zh-CN",
+    "longConversation": "Codex 和 Claude Code 在 272K（非 Claude 的 [1m] 模型也是）或这里填的大小时压缩；完整窗口每轮更慢更贵",
+    "nav": "使用Agent模型供应商路由网关观测用量扩展插件",
+    "pick": "跟随系统",
+    "source": "90099b9532fc7e95036fa05b7848e61e11342b72",
+    "tabs": []
+  }
+]

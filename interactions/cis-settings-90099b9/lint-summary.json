@@ -1,0 +1,10 @@
+{
+  "warnings": 55,
+  "files": 50,
+  "workingTreeErrors": 0,
+  "workingTreeWarnings": 59,
+  "config": ".oxlintrc.json",
+  "errors": 0,
+  "scope": "explicit candidate src TS/TSX files",
+  "source": "90099b9532fc7e95036fa05b7848e61e11342b72"
+}

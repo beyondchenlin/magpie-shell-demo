@@ -1,0 +1,1313 @@
+[
+  {
+    "label": "initial-family-open",
+    "active": {
+      "cls": "sc-q",
+      "tag": "INPUT",
+      "text": ""
+    },
+    "lang": "zh-CN",
+    "menu": [
+      {
+        "rect": {
+          "bottom": 771.734375,
+          "height": 396,
+          "left": 777.828125,
+          "right": 1151.828125,
+          "top": 375.734375,
+          "width": 374,
+          "x": 777.828125,
+          "y": 375.734375
+        },
+        "text": "界面字体系统默认ABeeZeeAbelAbhaya LibreAbhaya Libre ExtraBoldAbhaya Libre MediumAbhaya Libre SemiBoldAboretoDejaVu SansDejaVu Sans MonoDejaVu SerifFira CodeInterJetBrains MonoMonotonNoto Color EmojiNoto Kufi ArabicNoto Naskh ArabicNoto SansNoto Sans ArabicNoto Sans CJK HKNoto Sans CJK JPNoto Sans CJK KRNoto Sans CJK SCNoto Sans CJK TCNoto Sans DevanagariNoto Sans GujaratiNoto Sans MalayalamNoto Sans MonoNoto Sans Mono CJK SCNoto Sans SymbolsNoto SerifNoto Serif CJK SCNoto Serif DevanagariNoto Serif DisplayNoto Serif EthiopicSource Code Pro刷新字体列表"
+      }
+    ],
+    "rows": [
+      {
+        "controls": [
+          {
+            "disabled": false,
+            "rect": {
+              "bottom": 370.34375,
+              "height": 26.390625,
+              "left": 902.21875,
+              "right": 1151.9375,
+              "top": 343.953125,
+              "width": 249.71875,
+              "x": 902.21875,
+              "y": 343.953125
+            },
+            "text": "系统默认"
+          },
+          {
+            "disabled": true,
+            "rect": {
+              "bottom": 370.34375,
+              "height": 26.390625,
+              "left": 1158.53125,
+              "right": 1243.21875,
+              "top": 343.953125,
+              "width": 84.6875,
+              "x": 1158.53125,
+              "y": 343.953125
+            },
+            "text": "系统默认"
+          }
+        ],
+        "gap": "5px 6px",
+        "grid": "227.017px 76.9886px",
+        "id": "uiFontRow",
+        "rect": {
+          "bottom": 409.34375,
+          "height": 74.078125,
+          "left": 329.78125,
+          "right": 1256.40625,
+          "top": 335.265625,
+          "width": 926.625,
+          "x": 329.78125,
+          "y": 335.265625
+        }
+      },
+      {
+        "controls": [
+          {
+            "disabled": false,
+            "rect": {
+              "bottom": 444.421875,
+              "height": 26.390625,
+              "left": 902.21875,
+              "right": 1151.9375,
+              "top": 418.03125,
+              "width": 249.71875,
+              "x": 902.21875,
+              "y": 418.03125
+            },
+            "text": "系统默认"
+          },
+          {
+            "disabled": true,
+            "rect": {
+              "bottom": 444.421875,
+              "height": 26.390625,
+              "left": 1158.53125,
+              "right": 1243.21875,
+              "top": 418.03125,
+              "width": 84.6875,
+              "x": 1158.53125,
+              "y": 418.03125
+            },
+            "text": "系统默认"
+          }
+        ],
+        "gap": "5px 6px",
+        "grid": "227.017px 76.9886px",
+        "id": "codeFontRow",
+        "rect": {
+          "bottom": 483.421875,
+          "height": 74.078125,
+          "left": 329.78125,
+          "right": 1256.40625,
+          "top": 409.34375,
+          "width": 926.625,
+          "x": 329.78125,
+          "y": 409.34375
+        }
+      }
+    ],
+    "source": "26604006a932b564ed6468a100c37a15f5bc4644",
+    "viewport": [
+      1364,
+      941
+    ],
+    "zoom": "1"
+  },
+  {
+    "label": "before-style-open-focus",
+    "active": {
+      "cls": "proto pick set open font-style",
+      "tag": "BUTTON",
+      "text": "Regular"
+    },
+    "lang": "zh-CN",
+    "menu": [
+      {
+        "rect": {
+          "bottom": 506.2744445800781,
+          "height": 130.76422119140625,
+          "left": 869.7908935546875,
+          "right": 1243.0286865234375,
+          "top": 375.5102233886719,
+          "width": 373.23779296875,
+          "x": 869.7908935546875,
+          "y": 375.5102233886719
+        },
+        "text": "样式RegularMediumBold"
+      }
+    ],
+    "rows": [
+      {
+        "controls": [
+          {
+            "disabled": false,
+            "rect": {
+              "bottom": 370.34375,
+              "height": 26.390625,
+              "left": 902.21875,
+              "right": 1157.4375,
+              "top": 343.953125,
+              "width": 255.21875,
+              "x": 902.21875,
+              "y": 343.953125
+            },
+            "text": "Inter"
+          },
+          {
+            "disabled": false,
+            "rect": {
+              "bottom": 370.34375,
+              "height": 26.390625,
+              "left": 1164.03125,
+              "right": 1243.21875,
+              "top": 343.953125,
+              "width": 79.1875,
+              "x": 1164.03125,
+              "y": 343.953125
+            },
+            "text": "Regular"
+          }
+        ],
+        "gap": "5px 6px",
+        "grid": "232.017px 71.9886px",
+        "id": "uiFontRow",
+        "rect": {
+          "bottom": 409.34375,
+          "height": 74.078125,
+          "left": 329.78125,
+          "right": 1256.40625,
+          "top": 335.265625,
+          "width": 926.625,
+          "x": 329.78125,
+          "y": 335.265625
+        }
+      },
+      {
+        "controls": [
+          {
+            "disabled": false,
+            "rect": {
+              "bottom": 444.421875,
+              "height": 26.390625,
+              "left": 902.21875,
+              "right": 1151.9375,
+              "top": 418.03125,
+              "width": 249.71875,
+              "x": 902.21875,
+              "y": 418.03125
+            },
+            "text": "系统默认"
+          },
+          {
+            "disabled": true,
+            "rect": {
+              "bottom": 444.421875,
+              "height": 26.390625,
+              "left": 1158.53125,
+              "right": 1243.21875,
+              "top": 418.03125,
+              "width": 84.6875,
+              "x": 1158.53125,
+              "y": 418.03125
+            },
+            "text": "系统默认"
+          }
+        ],
+        "gap": "5px 6px",
+        "grid": "227.017px 76.9886px",
+        "id": "codeFontRow",
+        "rect": {
+          "bottom": 483.421875,
+          "height": 74.078125,
+          "left": 329.78125,
+          "right": 1256.40625,
+          "top": 409.34375,
+          "width": 926.625,
+          "x": 329.78125,
+          "y": 409.34375
+        }
+      }
+    ],
+    "source": "26604006a932b564ed6468a100c37a15f5bc4644",
+    "viewport": [
+      1364,
+      941
+    ],
+    "zoom": "1"
+  },
+  {
+    "label": "before-style-after-resize",
+    "active": {
+      "cls": "proto pick set open font-style",
+      "tag": "BUTTON",
+      "text": "Regular"
+    },
+    "lang": "zh-CN",
+    "menu": [
+      {
+        "rect": {
+          "bottom": 506.765625,
+          "height": 131.03125,
+          "left": 837.109375,
+          "right": 1211.109375,
+          "top": 375.734375,
+          "width": 374,
+          "x": 837.109375,
+          "y": 375.734375
+        },
+        "text": "样式RegularMediumBold"
+      }
+    ],
+    "rows": [
+      {
+        "controls": [
+          {
+            "disabled": false,
+            "rect": {
+              "bottom": 370.34375,
+              "height": 26.390625,
+              "left": 870.21875,
+              "right": 1125.4375,
+              "top": 343.953125,
+              "width": 255.21875,
+              "x": 870.21875,
+              "y": 343.953125
+            },
+            "text": "Inter"
+          },
+          {
+            "disabled": false,
+            "rect": {
+              "bottom": 370.34375,
+              "height": 26.390625,
+              "left": 1132.03125,
+              "right": 1211.21875,
+              "top": 343.953125,
+              "width": 79.1875,
+              "x": 1132.03125,
+              "y": 343.953125
+            },
+            "text": "Regular"
+          }
+        ],
+        "gap": "5px 6px",
+        "grid": "232.017px 71.9886px",
+        "id": "uiFontRow",
+        "rect": {
+          "bottom": 409.34375,
+          "height": 74.078125,
+          "left": 297.78125,
+          "right": 1224.40625,
+          "top": 335.265625,
+          "width": 926.625,
+          "x": 297.78125,
+          "y": 335.265625
+        }
+      },
+      {
+        "controls": [
+          {
+            "disabled": false,
+            "rect": {
+              "bottom": 444.421875,
+              "height": 26.390625,
+              "left": 870.21875,
+              "right": 1119.9375,
+              "top": 418.03125,
+              "width": 249.71875,
+              "x": 870.21875,
+              "y": 418.03125
+            },
+            "text": "系统默认"
+          },
+          {
+            "disabled": true,
+            "rect": {
+              "bottom": 444.421875,
+              "height": 26.390625,
+              "left": 1126.53125,
+              "right": 1211.21875,
+              "top": 418.03125,
+              "width": 84.6875,
+              "x": 1126.53125,
+              "y": 418.03125
+            },
+            "text": "系统默认"
+          }
+        ],
+        "gap": "5px 6px",
+        "grid": "227.017px 76.9886px",
+        "id": "codeFontRow",
+        "rect": {
+          "bottom": 483.421875,
+          "height": 74.078125,
+          "left": 297.78125,
+          "right": 1224.40625,
+          "top": 409.34375,
+          "width": 926.625,
+          "x": 297.78125,
+          "y": 409.34375
+        }
+      }
+    ],
+    "source": "26604006a932b564ed6468a100c37a15f5bc4644",
+    "viewport": [
+      1300,
+      900
+    ],
+    "zoom": "1"
+  },
+  {
+    "label": "before-style-after-reader-scroll",
+    "active": {
+      "cls": "proto pick set open font-style",
+      "tag": "BUTTON",
+      "text": "Regular"
+    },
+    "lang": "zh-CN",
+    "menu": [
+      {
+        "rect": {
+          "bottom": 202.765625,
+          "height": 131.03125,
+          "left": 837.109375,
+          "right": 1211.109375,
+          "top": 71.734375,
+          "width": 374,
+          "x": 837.109375,
+          "y": 71.734375
+        },
+        "text": "样式RegularMediumBold"
+      }
+    ],
+    "rows": [
+      {
+        "controls": [
+          {
+            "disabled": false,
+            "rect": {
+              "bottom": 66.34375,
+              "height": 26.390625,
+              "left": 870.21875,
+              "right": 1125.4375,
+              "top": 39.953125,
+              "width": 255.21875,
+              "x": 870.21875,
+              "y": 39.953125
+            },
+            "text": "Inter"
+          },
+          {
+            "disabled": false,
+            "rect": {
+              "bottom": 66.34375,
+              "height": 26.390625,
+              "left": 1132.03125,
+              "right": 1211.21875,
+              "top": 39.953125,
+              "width": 79.1875,
+              "x": 1132.03125,
+              "y": 39.953125
+            },
+            "text": "Regular"
+          }
+        ],
+        "gap": "5px 6px",
+        "grid": "232.017px 71.9886px",
+        "id": "uiFontRow",
+        "rect": {
+          "bottom": 105.34375,
+          "height": 74.078125,
+          "left": 297.78125,
+          "right": 1224.40625,
+          "top": 31.265625,
+          "width": 926.625,
+          "x": 297.78125,
+          "y": 31.265625
+        }
+      },
+      {
+        "controls": [
+          {
+            "disabled": false,
+            "rect": {
+              "bottom": 140.421875,
+              "height": 26.390625,
+              "left": 870.21875,
+              "right": 1119.9375,
+              "top": 114.03125,
+              "width": 249.71875,
+              "x": 870.21875,
+              "y": 114.03125
+            },
+            "text": "系统默认"
+          },
+          {
+            "disabled": true,
+            "rect": {
+              "bottom": 140.421875,
+              "height": 26.390625,
+              "left": 1126.53125,
+              "right": 1211.21875,
+              "top": 114.03125,
+              "width": 84.6875,
+              "x": 1126.53125,
+              "y": 114.03125
+            },
+            "text": "系统默认"
+          }
+        ],
+        "gap": "5px 6px",
+        "grid": "227.017px 76.9886px",
+        "id": "codeFontRow",
+        "rect": {
+          "bottom": 179.421875,
+          "height": 74.078125,
+          "left": 297.78125,
+          "right": 1224.40625,
+          "top": 105.34375,
+          "width": 926.625,
+          "x": 297.78125,
+          "y": 105.34375
+        }
+      }
+    ],
+    "source": "26604006a932b564ed6468a100c37a15f5bc4644",
+    "viewport": [
+      1300,
+      900
+    ],
+    "zoom": "1"
+  },
+  {
+    "label": "candidate-general-initial",
+    "active": {
+      "cls": "icon on",
+      "tag": "BUTTON",
+      "text": "设置"
+    },
+    "lang": "zh-CN",
+    "menu": [],
+    "rows": [
+      {
+        "controls": [
+          {
+            "disabled": false,
+            "rect": {
+              "bottom": 370.34375,
+              "height": 26.390625,
+              "left": 902.21875,
+              "right": 1151.9375,
+              "top": 343.953125,
+              "width": 249.71875,
+              "x": 902.21875,
+              "y": 343.953125
+            },
+            "text": "系统默认"
+          },
+          {
+            "disabled": true,
+            "rect": {
+              "bottom": 370.34375,
+              "height": 26.390625,
+              "left": 1158.53125,
+              "right": 1243.21875,
+              "top": 343.953125,
+              "width": 84.6875,
+              "x": 1158.53125,
+              "y": 343.953125
+            },
+            "text": "系统默认"
+          }
+        ],
+        "gap": "5px 6px",
+        "grid": "227.017px 76.9886px",
+        "id": "uiFontRow",
+        "rect": {
+          "bottom": 409.34375,
+          "height": 74.078125,
+          "left": 329.78125,
+          "right": 1256.40625,
+          "top": 335.265625,
+          "width": 926.625,
+          "x": 329.78125,
+          "y": 335.265625
+        }
+      },
+      {
+        "controls": [
+          {
+            "disabled": false,
+            "rect": {
+              "bottom": 444.421875,
+              "height": 26.390625,
+              "left": 902.21875,
+              "right": 1151.9375,
+              "top": 418.03125,
+              "width": 249.71875,
+              "x": 902.21875,
+              "y": 418.03125
+            },
+            "text": "系统默认"
+          },
+          {
+            "disabled": true,
+            "rect": {
+              "bottom": 444.421875,
+              "height": 26.390625,
+              "left": 1158.53125,
+              "right": 1243.21875,
+              "top": 418.03125,
+              "width": 84.6875,
+              "x": 1158.53125,
+              "y": 418.03125
+            },
+            "text": "系统默认"
+          }
+        ],
+        "gap": "5px 6px",
+        "grid": "227.017px 76.9886px",
+        "id": "codeFontRow",
+        "rect": {
+          "bottom": 483.421875,
+          "height": 74.078125,
+          "left": 329.78125,
+          "right": 1256.40625,
+          "top": 409.34375,
+          "width": 926.625,
+          "x": 329.78125,
+          "y": 409.34375
+        }
+      }
+    ],
+    "source": "f198b24b102fd109477ba147990ef2ce8120e39f",
+    "viewport": [
+      1364,
+      941
+    ],
+    "zoom": "1"
+  },
+  {
+    "label": "candidate-ui-style-current-focus",
+    "active": {
+      "cls": "pm-item on",
+      "tag": "BUTTON",
+      "text": "Regular"
+    },
+    "lang": "zh-CN",
+    "menu": [
+      {
+        "rect": {
+          "bottom": 506.5084533691406,
+          "height": 130.89144897460938,
+          "left": 869.4661865234375,
+          "right": 1243.067138671875,
+          "top": 375.6170043945313,
+          "width": 373.6009521484375,
+          "x": 869.4661865234375,
+          "y": 375.6170043945313
+        },
+        "text": "样式RegularMediumBold"
+      }
+    ],
+    "rows": [
+      {
+        "controls": [
+          {
+            "disabled": false,
+            "rect": {
+              "bottom": 370.34375,
+              "height": 26.390625,
+              "left": 902.21875,
+              "right": 1157.4375,
+              "top": 343.953125,
+              "width": 255.21875,
+              "x": 902.21875,
+              "y": 343.953125
+            },
+            "text": "Inter"
+          },
+          {
+            "disabled": false,
+            "rect": {
+              "bottom": 370.34375,
+              "height": 26.390625,
+              "left": 1164.03125,
+              "right": 1243.21875,
+              "top": 343.953125,
+              "width": 79.1875,
+              "x": 1164.03125,
+              "y": 343.953125
+            },
+            "text": "Regular"
+          }
+        ],
+        "gap": "5px 6px",
+        "grid": "232.017px 71.9886px",
+        "id": "uiFontRow",
+        "rect": {
+          "bottom": 409.34375,
+          "height": 74.078125,
+          "left": 329.78125,
+          "right": 1256.40625,
+          "top": 335.265625,
+          "width": 926.625,
+          "x": 329.78125,
+          "y": 335.265625
+        }
+      },
+      {
+        "controls": [
+          {
+            "disabled": false,
+            "rect": {
+              "bottom": 444.421875,
+              "height": 26.390625,
+              "left": 902.21875,
+              "right": 1151.9375,
+              "top": 418.03125,
+              "width": 249.71875,
+              "x": 902.21875,
+              "y": 418.03125
+            },
+            "text": "系统默认"
+          },
+          {
+            "disabled": true,
+            "rect": {
+              "bottom": 444.421875,
+              "height": 26.390625,
+              "left": 1158.53125,
+              "right": 1243.21875,
+              "top": 418.03125,
+              "width": 84.6875,
+              "x": 1158.53125,
+              "y": 418.03125
+            },
+            "text": "系统默认"
+          }
+        ],
+        "gap": "5px 6px",
+        "grid": "227.017px 76.9886px",
+        "id": "codeFontRow",
+        "rect": {
+          "bottom": 483.421875,
+          "height": 74.078125,
+          "left": 329.78125,
+          "right": 1256.40625,
+          "top": 409.34375,
+          "width": 926.625,
+          "x": 329.78125,
+          "y": 409.34375
+        }
+      }
+    ],
+    "source": "f198b24b102fd109477ba147990ef2ce8120e39f",
+    "viewport": [
+      1364,
+      941
+    ],
+    "zoom": "1"
+  },
+  {
+    "label": "candidate-ui-style-bold-focus",
+    "active": {
+      "cls": "pm-item on",
+      "tag": "BUTTON",
+      "text": "Bold"
+    },
+    "lang": "zh-CN",
+    "menu": [
+      {
+        "rect": {
+          "bottom": 506.5841064453125,
+          "height": 130.93255615234375,
+          "left": 869.3612060546875,
+          "right": 1243.07958984375,
+          "top": 375.6515502929687,
+          "width": 373.7183837890625,
+          "x": 869.3612060546875,
+          "y": 375.6515502929687
+        },
+        "text": "样式RegularMediumBold"
+      }
+    ],
+    "rows": [
+      {
+        "controls": [
+          {
+            "disabled": false,
+            "rect": {
+              "bottom": 370.34375,
+              "height": 26.390625,
+              "left": 902.21875,
+              "right": 1157.4375,
+              "top": 343.953125,
+              "width": 255.21875,
+              "x": 902.21875,
+              "y": 343.953125
+            },
+            "text": "Inter"
+          },
+          {
+            "disabled": false,
+            "rect": {
+              "bottom": 370.34375,
+              "height": 26.390625,
+              "left": 1164.03125,
+              "right": 1243.21875,
+              "top": 343.953125,
+              "width": 79.1875,
+              "x": 1164.03125,
+              "y": 343.953125
+            },
+            "text": "Bold"
+          }
+        ],
+        "gap": "5px 6px",
+        "grid": "232.017px 71.9886px",
+        "id": "uiFontRow",
+        "rect": {
+          "bottom": 409.34375,
+          "height": 74.078125,
+          "left": 329.78125,
+          "right": 1256.40625,
+          "top": 335.265625,
+          "width": 926.625,
+          "x": 329.78125,
+          "y": 335.265625
+        }
+      },
+      {
+        "controls": [
+          {
+            "disabled": false,
+            "rect": {
+              "bottom": 444.421875,
+              "height": 26.390625,
+              "left": 902.21875,
+              "right": 1151.9375,
+              "top": 418.03125,
+              "width": 249.71875,
+              "x": 902.21875,
+              "y": 418.03125
+            },
+            "text": "系统默认"
+          },
+          {
+            "disabled": true,
+            "rect": {
+              "bottom": 444.421875,
+              "height": 26.390625,
+              "left": 1158.53125,
+              "right": 1243.21875,
+              "top": 418.03125,
+              "width": 84.6875,
+              "x": 1158.53125,
+              "y": 418.03125
+            },
+            "text": "系统默认"
+          }
+        ],
+        "gap": "5px 6px",
+        "grid": "227.017px 76.9886px",
+        "id": "codeFontRow",
+        "rect": {
+          "bottom": 483.421875,
+          "height": 74.078125,
+          "left": 329.78125,
+          "right": 1256.40625,
+          "top": 409.34375,
+          "width": 926.625,
+          "x": 329.78125,
+          "y": 409.34375
+        }
+      }
+    ],
+    "source": "f198b24b102fd109477ba147990ef2ce8120e39f",
+    "viewport": [
+      1364,
+      941
+    ],
+    "zoom": "1"
+  },
+  {
+    "label": "candidate-ui-style-resize-dismiss",
+    "active": {
+      "cls": "window web side-nav",
+      "tag": "BODY",
+      "text": "\n    \n      \n    \n    Magpiemagpie使用Agent模型供应商路由网关观测用量扩展插件设置常规额度网络与共享模型隐私同步与备份关于网关 127.0.0.1:3425设置设置常规额度网络与共享模型隐私同步与备份关于外观跟随系统浅色深色色盲模式关闭开启语言简体中文文字大小放大 magpie 窗口里的一切；也可用 Ctrl+ / Ctrl− / Ctrl+0100%110%125%150%界面字体InterBoldAa 0123 · 中文代码字体系统默认系统默认Aa 0123 · 中文点击托盘图标打开快捷面板打开主窗口模型名带供应商关闭自定义名称不带供应商开启Codex 子代理可用任意模型GPT 主代理可在 magpie 的其他模型上开子代理。仅对新会话生效；Codex 自身的 multi_agent_v2 优先关闭开启长对话Codex 和 Claude Code 在 272K（或这里填的大小）时压缩；用完整窗口则每轮更慢更贵272K 时压缩完整窗口Codex 会话标题Codex 自带（ChatGPT）Codex 会话描述Codex 自带（ChatGPT）Codex 输入框预测Codex 自带（ChatGPT）Codex 自动审批模型由 Codex 决定开机自启关闭开启轻量模式窗口关闭一分钟后释放约 100 MB；网关和后台任务照常运行，只重新加载页面关闭开启防止休眠在 magpie 运行任务时，让电脑保持唤醒状态关闭开启屏幕也常亮菜单栏显示额度鼠标指向托盘里的 magpie 图标时显示所选订阅的额度，或今天、最近 7 天的 token 数和费用，每隔几分钟刷新关闭额度显示每个周期显示已用额度或剩余额度，用量页、面板和菜单栏一致已用剩余额度刷新仅手动：打开或刷新用量页、卡片上的刷新，以及 magpie quota 或 accounts 才会读取；在那之前，路由、菜单栏和提醒都按上次读到的额度。被厂商以额度为由拒绝的账号仍会读取。自动仅手动货币用量页、托盘面板、TUI 和命令行的费用按此币种显示；厂商余额保持其原币种，不换算$ USD¥ CNY数字单位用量页和面板上较大的 token 数、请求数用什么单位缩写英文（K / M / B）中文（万 / 亿）额度提醒5 小时、每周或每月额度用到此比例时通知，每个周期一次关闭开启余额提醒余额降到此数（按其货币或积分计）时通知，充值前只提醒一次关闭开启重置前提醒每周或每月窗口用量不到 85% 即将重置时，或重置卡将过期未用时，提前这么久通知关闭提前 12 小时提前 24 小时提前 48 小时任务完成提醒Claude Code、Codex、OpenCode 等经由 magpie 的智能体完成一个至少跑了这么久的任务时通知关闭1 分钟3 分钟10 分钟Codex：自动使用重置卡ChatGPT 账号在周额度用完、且没有别的账号能接请求时，或者重置卡快到期还没用时，自动用掉一张。默认关闭，按账号单独打开；用量页每个账号的卡片上也有同一个开关。demo@openai.com周额度用完时关闭开启重置卡到期前关闭开启CodexClaude Code窗口重置时预热发一条极小的请求，让下一个窗口立即开始计时关闭每周每周和 5 小时每日定时预热每天到这个时间开启各账号的 5 小时窗口关闭开启代理未发现系统代理，未单独设置代理的模型厂商请求和检查更新都直连测试自动关闭自定义GitHubGitHub 令牌资源库检查技能更新时使用。GitHub 每小时允许带令牌 5000 次请求，不带仅 60 次。也用它从它能读取的私有仓库安装技能；公开仓库无需勾选权限。创建一个 ↗保存网关网关端口改了之后，已接入 magpie 的 Agent 会一起换过去。当前 http://127.0.0.1:3425应用不带供应商的模型 ID网关的模型列表还会以模型自己的 ID 列出每个模型，如 codex/gpt-5.6-sol 旁的 gpt-5.6-sol，供从其他代理迁来的应用使用。多个供应商都提供的模型，按“供应商”中的顺序发往它们关闭开启局域网局域网共享同一网络中其他电脑上的 Agent，或经由隧道（如 Cloudflare Tunnel）连到这台电脑的 Agent，可凭网关页的网关密钥使用 magpie 的模型关闭开启网页允许调用 magpie 的网页这些来源的网页脚本可以在浏览器中调用网关，每个请求需带上「网关」页的网关密钥。其他网站的网页会被拒绝，本机的网页不受影响添加图像识图模型当前模型不能看图时，由此模型描述图片，每张图只描述一次自动 · 没有能看图的模型生图模型Magpie Image 生图所用的模型。Agent 要从资源库添加 Magpie Image 工具才能生图；图片保存在其项目目录自动 · 没有能生图的模型启用资源库识图 MCP 服务器智能体可以把识图添加为 MCP 服务器（Streamable HTTP），提供一个 analyze_image 工具：用识图模型读取文件路径、URL 或 data URL 中的图片。从其他电脑访问时，请以 Authorization: Bearer <key> 发送网关密钥，图片以 URL 或 data URL 传入。http://127.0.0.1:3425/mcp/magpie/vision联网搜索代搜供应商When a model can't search the web directly, the selected provider searches for it and returns the results.自动 · 没有能搜索的供应商搜索 API模型不能联网搜索时，按顺序用这些 API 代为搜索并返回结果 · 没有能搜索的供应商，由这些 API 来搜Tavily获取密钥 ↗添加MCP 服务器Cursor、Claude Desktop 等智能体可以把这个搜索添加为 MCP 服务器（Streamable HTTP），提供一个 web_search 工具。从其他电脑访问时，请以 Authorization: Bearer <key> 发送网关密钥。http://127.0.0.1:3425/mcp/magpie/web-search回复回复里写明成员回复的 model 写 magpie 里作答的 provider/model（workbuddy/glm-5.3-flash），而不是厂商自己的名字，给按它统计用量的 agent 用。Claude Code、Claude Desktop 和 Codex 仍拿到厂商的名字；X-Magpie-Model 响应头对所有 agent 都会写明关闭开启停止循环的回复回复的思考或正文反复绕着同样几句打转时，就结束它并给 Agent 一个可以重试的错误，而不是一直跑到输出上限关闭开启被拒答后再问供应商的安全过滤在还没说出任何内容前拒绝请求时，再换多少个账号或路由组成员去问。选“不再问”会直接把拒答交回：Claude Code 随后会像直连 Anthropic API 时一样，自己换到它的备用模型不再问123全部已停用的模型停用模型停用的模型在经过 magpie 的每条路径上都会被拒绝（直接请求、会话、路由组、回退、子 Agent、决策模型），也不会出现在 magpie 的列表和 Agent 的模型选择里。只管经过 magpie 的请求。输入 *fable* 这样的通配符可停用它匹配的所有模型停用…没有已停用的模型脱敏密钥API Key、私钥、Token 和密码以占位符发给模型厂商，回复里再还原关闭开启脱敏个人信息邮箱、手机号、身份证号和银行卡号也一并脱敏关闭开启账号打码用量和路由页上的邮箱和账号名会被模糊处理，方便截图分享关闭开启脱敏词不想让模型厂商看到的词，用逗号分隔自定义脱敏规则内置规则不认识的密钥，比如自建网关的 Key：按前缀或正则匹配。「脱敏密钥」开启时生效前缀正则添加API_KEY以 oc_sk_ 开头编辑移除计入用户数每天一次，发送本机随机 ID、magpie 版本和系统关闭开启分享我用的 agent、provider 和模型随上面那条一起发送：只用 magpie 内置的 ID 和各自的数量，以及每个合作伙伴被展示、打开和添加的次数；你自己添加的 provider 只记作“custom”。不含名称、地址、账号、密钥和用量关闭开启智能体登录订阅账号读取你的智能体已登录的账号（Claude Code、Codex、Copilot、Cursor 等：它们的文件和钥匙串）并提供服务。关闭后 magpie 一个都不读；API Key 服务商照常可用关闭开启采集服务连接OTLP 导出向采集服务发送链路数据，在下方选择导出范围和内容；账号凭据留在本机关闭开启OTLP 端点采集服务的基础地址，或 Langfuse 的 /api/public/otel 端点OTLP 请求头以逗号分隔的 name=value；值中的空格和逗号使用百分号编码导出范围导出指标同时发送耗时和 Token 直方图；Langfuse 等仅接收链路的服务请保持关闭关闭开启追踪代理对话读取 Codex、Pi、Oh My Pi、Claude Code、Cowork、OpenCode 和 Gemini CLI 的全部本地会话，含未经 Magpie 的调用。若在下方选择包含内容，将导出提示词、回复、工具参数和工具输出（含文件内容和命令输出），并遮蔽敏感信息关闭开启链路内容请求和响应内容仅发送模型、Token、状态和耗时元数据；提示词、回复和工具内容留在本机仅元数据最多 256 KB完整内容WebDAV / S3 / GitHub 同步让每台电脑上的供应商（含 API Key）、设置、Profile、agent 的模型、资源库保持一致设置导出把上面这些打包成一个用口令加密的文件，带到另一台电脑导出…导入导入从 magpie 导出的文件导入…版本0.1.1244 已下载0.1.1240重启以更新更新内容上次更新以来的更新说明打开更新按钮magpie 有新版本时显示在顶栏关闭开启自动更新自动检查 magpie 新版本并下载关闭开启检查间隔magpie 多久检查一次新版本30 分钟1 小时6 小时24 小时自动重启更新新版本下载好后，在没有 Agent 请求进行时自动重启到新版本关闭开启下载源更新从官方 GitHub 下载；GitHub 慢时可以改用镜像GitHub使用镜像…配置目录供应商、方案与这些设置~/.config/magpie打开命令行新终端里找不到 magpie 命令bash运行这个 app改动对之后新开的终端生效网关地址各 Agent 指向的地址http://127.0.0.1:3425社区提问、想法和反馈，Discord 或 GitHub 都可以加入 DiscordGitHub关于magpie-shell-demo · 非官方 Magpie 壳已保存127.0.0.1:3425\n\n  \n\n{\"schema\":1,\"source\":\"f198b24b102fd109477ba147990ef2ce8120e39f\",\"probe\":\"cis-motion-probe-v1\",\"initialNavPreference\":null,\"entries\":[]}"
+    },
+    "lang": "zh-CN",
+    "menu": [],
+    "rows": [
+      {
+        "controls": [
+          {
+            "disabled": false,
+            "rect": {
+              "bottom": 370.34375,
+              "height": 26.390625,
+              "left": 870.21875,
+              "right": 1125.4375,
+              "top": 343.953125,
+              "width": 255.21875,
+              "x": 870.21875,
+              "y": 343.953125
+            },
+            "text": "Inter"
+          },
+          {
+            "disabled": false,
+            "rect": {
+              "bottom": 370.34375,
+              "height": 26.390625,
+              "left": 1132.03125,
+              "right": 1211.21875,
+              "top": 343.953125,
+              "width": 79.1875,
+              "x": 1132.03125,
+              "y": 343.953125
+            },
+            "text": "Bold"
+          }
+        ],
+        "gap": "5px 6px",
+        "grid": "232.017px 71.9886px",
+        "id": "uiFontRow",
+        "rect": {
+          "bottom": 409.34375,
+          "height": 74.078125,
+          "left": 297.78125,
+          "right": 1224.40625,
+          "top": 335.265625,
+          "width": 926.625,
+          "x": 297.78125,
+          "y": 335.265625
+        }
+      },
+      {
+        "controls": [
+          {
+            "disabled": false,
+            "rect": {
+              "bottom": 444.421875,
+              "height": 26.390625,
+              "left": 870.21875,
+              "right": 1119.9375,
+              "top": 418.03125,
+              "width": 249.71875,
+              "x": 870.21875,
+              "y": 418.03125
+            },
+            "text": "系统默认"
+          },
+          {
+            "disabled": true,
+            "rect": {
+              "bottom": 444.421875,
+              "height": 26.390625,
+              "left": 1126.53125,
+              "right": 1211.21875,
+              "top": 418.03125,
+              "width": 84.6875,
+              "x": 1126.53125,
+              "y": 418.03125
+            },
+            "text": "系统默认"
+          }
+        ],
+        "gap": "5px 6px",
+        "grid": "227.017px 76.9886px",
+        "id": "codeFontRow",
+        "rect": {
+          "bottom": 483.421875,
+          "height": 74.078125,
+          "left": 297.78125,
+          "right": 1224.40625,
+          "top": 409.34375,
+          "width": 926.625,
+          "x": 297.78125,
+          "y": 409.34375
+        }
+      }
+    ],
+    "source": "f198b24b102fd109477ba147990ef2ce8120e39f",
+    "viewport": [
+      1300,
+      900
+    ],
+    "zoom": "1"
+  },
+  {
+    "label": "candidate-reader-scroll-dismiss",
+    "observed": {
+      "menus": 0,
+      "scroll": 276.3636169433594
+    }
+  },
+  {
+    "label": "candidate-code-empty-query",
+    "active": {
+      "cls": "sc-q",
+      "tag": "INPUT",
+      "text": ""
+    },
+    "lang": "zh-CN",
+    "menu": [
+      {
+        "rect": {
+          "bottom": 558.76171875,
+          "height": 109.006103515625,
+          "left": 745.9569091796875,
+          "right": 1119.7635498046875,
+          "top": 449.755615234375,
+          "width": 373.806640625,
+          "x": 745.9569091796875,
+          "y": 449.755615234375
+        },
+        "text": "代码字体刷新字体列表"
+      }
+    ],
+    "rows": [
+      {
+        "controls": [
+          {
+            "disabled": false,
+            "rect": {
+              "bottom": 370.34375,
+              "height": 26.390625,
+              "left": 870.21875,
+              "right": 1125.4375,
+              "top": 343.953125,
+              "width": 255.21875,
+              "x": 870.21875,
+              "y": 343.953125
+            },
+            "text": "Inter"
+          },
+          {
+            "disabled": false,
+            "rect": {
+              "bottom": 370.34375,
+              "height": 26.390625,
+              "left": 1132.03125,
+              "right": 1211.21875,
+              "top": 343.953125,
+              "width": 79.1875,
+              "x": 1132.03125,
+              "y": 343.953125
+            },
+            "text": "Bold"
+          }
+        ],
+        "gap": "5px 6px",
+        "grid": "232.017px 71.9886px",
+        "id": "uiFontRow",
+        "rect": {
+          "bottom": 409.34375,
+          "height": 74.078125,
+          "left": 297.78125,
+          "right": 1224.40625,
+          "top": 335.265625,
+          "width": 926.625,
+          "x": 297.78125,
+          "y": 335.265625
+        }
+      },
+      {
+        "controls": [
+          {
+            "disabled": false,
+            "rect": {
+              "bottom": 444.421875,
+              "height": 26.390625,
+              "left": 870.21875,
+              "right": 1119.9375,
+              "top": 418.03125,
+              "width": 249.71875,
+              "x": 870.21875,
+              "y": 418.03125
+            },
+            "text": "系统默认"
+          },
+          {
+            "disabled": true,
+            "rect": {
+              "bottom": 444.421875,
+              "height": 26.390625,
+              "left": 1126.53125,
+              "right": 1211.21875,
+              "top": 418.03125,
+              "width": 84.6875,
+              "x": 1126.53125,
+              "y": 418.03125
+            },
+            "text": "系统默认"
+          }
+        ],
+        "gap": "5px 6px",
+        "grid": "227.017px 76.9886px",
+        "id": "codeFontRow",
+        "rect": {
+          "bottom": 483.421875,
+          "height": 74.078125,
+          "left": 297.78125,
+          "right": 1224.40625,
+          "top": 409.34375,
+          "width": 926.625,
+          "x": 297.78125,
+          "y": 409.34375
+        }
+      }
+    ],
+    "source": "f198b24b102fd109477ba147990ef2ce8120e39f",
+    "viewport": [
+      1300,
+      900
+    ],
+    "zoom": "1"
+  },
+  {
+    "label": "candidate-code-style-focus",
+    "active": {
+      "cls": "pm-item on",
+      "tag": "BUTTON",
+      "text": "Regular"
+    },
+    "lang": "zh-CN",
+    "menu": [
+      {
+        "rect": {
+          "bottom": 548.7448120117188,
+          "height": 99.05007934570312,
+          "left": 837.4671630859375,
+          "right": 1211.0667724609375,
+          "top": 449.6947326660156,
+          "width": 373.599609375,
+          "x": 837.4671630859375,
+          "y": 449.6947326660156
+        },
+        "text": "样式RegularBold"
+      }
+    ],
+    "rows": [
+      {
+        "controls": [
+          {
+            "disabled": false,
+            "rect": {
+              "bottom": 370.34375,
+              "height": 26.390625,
+              "left": 870.21875,
+              "right": 1125.4375,
+              "top": 343.953125,
+              "width": 255.21875,
+              "x": 870.21875,
+              "y": 343.953125
+            },
+            "text": "Inter"
+          },
+          {
+            "disabled": false,
+            "rect": {
+              "bottom": 370.34375,
+              "height": 26.390625,
+              "left": 1132.03125,
+              "right": 1211.21875,
+              "top": 343.953125,
+              "width": 79.1875,
+              "x": 1132.03125,
+              "y": 343.953125
+            },
+            "text": "Bold"
+          }
+        ],
+        "gap": "5px 6px",
+        "grid": "232.017px 71.9886px",
+        "id": "uiFontRow",
+        "rect": {
+          "bottom": 409.34375,
+          "height": 74.078125,
+          "left": 297.78125,
+          "right": 1224.40625,
+          "top": 335.265625,
+          "width": 926.625,
+          "x": 297.78125,
+          "y": 335.265625
+        }
+      },
+      {
+        "controls": [
+          {
+            "disabled": false,
+            "rect": {
+              "bottom": 444.421875,
+              "height": 26.390625,
+              "left": 870.21875,
+              "right": 1125.046875,
+              "top": 418.03125,
+              "width": 254.828125,
+              "x": 870.21875,
+              "y": 418.03125
+            },
+            "text": "JetBrains Mono"
+          },
+          {
+            "disabled": false,
+            "rect": {
+              "bottom": 444.421875,
+              "height": 26.390625,
+              "left": 1131.640625,
+              "right": 1211.21875,
+              "top": 418.03125,
+              "width": 79.578125,
+              "x": 1131.640625,
+              "y": 418.03125
+            },
+            "text": "Regular"
+          }
+        ],
+        "gap": "5px 6px",
+        "grid": "231.662px 72.3438px",
+        "id": "codeFontRow",
+        "rect": {
+          "bottom": 483.421875,
+          "height": 74.078125,
+          "left": 297.78125,
+          "right": 1224.40625,
+          "top": 409.34375,
+          "width": 926.625,
+          "x": 297.78125,
+          "y": 409.34375
+        }
+      }
+    ],
+    "source": "f198b24b102fd109477ba147990ef2ce8120e39f",
+    "viewport": [
+      1300,
+      900
+    ],
+    "zoom": "1"
+  },
+  {
+    "label": "candidate-code-escape-restores-anchor",
+    "active": {
+      "cls": "proto pick set font-style",
+      "tag": "BUTTON",
+      "text": "Regular"
+    },
+    "lang": "zh-CN",
+    "menu": [],
+    "rows": [
+      {
+        "controls": [
+          {
+            "disabled": false,
+            "rect": {
+              "bottom": 370.34375,
+              "height": 26.390625,
+              "left": 870.21875,
+              "right": 1125.4375,
+              "top": 343.953125,
+              "width": 255.21875,
+              "x": 870.21875,
+              "y": 343.953125
+            },
+            "text": "Inter"
+          },
+          {
+            "disabled": false,
+            "rect": {
+              "bottom": 370.34375,
+              "height": 26.390625,
+              "left": 1132.03125,
+              "right": 1211.21875,
+              "top": 343.953125,
+              "width": 79.1875,
+              "x": 1132.03125,
+              "y": 343.953125
+            },
+            "text": "Bold"
+          }
+        ],
+        "gap": "5px 6px",
+        "grid": "232.017px 71.9886px",
+        "id": "uiFontRow",
+        "rect": {
+          "bottom": 409.34375,
+          "height": 74.078125,
+          "left": 297.78125,
+          "right": 1224.40625,
+          "top": 335.265625,
+          "width": 926.625,
+          "x": 297.78125,
+          "y": 335.265625
+        }
+      },
+      {
+        "controls": [
+          {
+            "disabled": false,
+            "rect": {
+              "bottom": 444.421875,
+              "height": 26.390625,
+              "left": 870.21875,
+              "right": 1125.046875,
+              "top": 418.03125,
+              "width": 254.828125,
+              "x": 870.21875,
+              "y": 418.03125
+            },
+            "text": "JetBrains Mono"
+          },
+          {
+            "disabled": false,
+            "rect": {
+              "bottom": 444.421875,
+              "height": 26.390625,
+              "left": 1131.640625,
+              "right": 1211.21875,
+              "top": 418.03125,
+              "width": 79.578125,
+              "x": 1131.640625,
+              "y": 418.03125
+            },
+            "text": "Regular"
+          }
+        ],
+        "gap": "5px 6px",
+        "grid": "231.662px 72.3438px",
+        "id": "codeFontRow",
+        "rect": {
+          "bottom": 483.421875,
+          "height": 74.078125,
+          "left": 297.78125,
+          "right": 1224.40625,
+          "top": 409.34375,
+          "width": 926.625,
+          "x": 297.78125,
+          "y": 409.34375
+        }
+      }
+    ],
+    "source": "f198b24b102fd109477ba147990ef2ce8120e39f",
+    "viewport": [
+      1300,
+      900
+    ],
+    "zoom": "1"
+  },
+  {
+    "label": "candidate-ui-empty",
+    "items": "界面字体\n刷新字体列表"
+  }
+]
