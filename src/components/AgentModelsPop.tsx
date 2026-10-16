@@ -81,7 +81,8 @@ export function AgentModelsPop({ open, anchor, agentName, agentId, models, curre
     const timer = setTimeout(() => setArmed(null), 4000);
     return () => clearTimeout(timer);
   }, [armed]);
-  useAnchoredPopover(ref, anchor, shown, { recipe: "agent", requestedWidth: railed ? 580 : 380 });
+  // Segment redraws change React's className; restore placement's up class too.
+  useAnchoredPopover(ref, anchor, shown, { recipe: "agent", requestedWidth: railed ? 580 : 380 }, seg);
   useEffect(() => {
     if (!shown) return;
     anchor?.classList.add("open");

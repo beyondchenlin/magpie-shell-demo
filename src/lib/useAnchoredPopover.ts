@@ -4,6 +4,7 @@ import { placePopover, popoverHost, type PopoverPlacement } from "./popover";
 export function useAnchoredPopover(
   ref: RefObject<HTMLElement | null>, anchor: HTMLElement | null | RefObject<HTMLElement | null>, shown: boolean,
   { recipe = "menu", requestedWidth, align = "left", dx = 0, gap = 5, preferUp = false, maxHeight, arrowMaxWidth, arrowInset }: PopoverPlacement = {},
+  layoutKey?: string,
 ) {
   useLayoutEffect(() => {
     const box = ref.current;
@@ -22,5 +23,5 @@ export function useAnchoredPopover(
       window.removeEventListener("resize", place);
       document.removeEventListener("scroll", place, true);
     };
-  }, [ref, anchor, shown, recipe, requestedWidth, align, dx, gap, preferUp, maxHeight, arrowMaxWidth, arrowInset]);
+  }, [ref, anchor, shown, recipe, requestedWidth, align, dx, gap, preferUp, maxHeight, arrowMaxWidth, arrowInset, layoutKey]);
 }

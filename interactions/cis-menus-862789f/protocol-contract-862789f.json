@@ -1,0 +1,145 @@
+{
+  "source": "862789fc81599c9f70c966f53fed1386e3f74fae",
+  "fixture": "eaa895c17d72c0a11151754dad002f270db70e0d2404b7b175f15eacdbd574c1",
+  "checks": [
+    {
+      "case": "deferred-current-focus",
+      "state": {
+        "live": false,
+        "value": [
+          "b"
+        ],
+        "commits": [],
+        "closes": 0
+      },
+      "active": "Beta"
+    },
+    {
+      "case": "nul-does-not-submit-or-close",
+      "state": {
+        "live": false,
+        "value": [
+          "b"
+        ],
+        "commits": [],
+        "closes": 0
+      },
+      "live": 1
+    },
+    {
+      "case": "deferred-no-early-submit",
+      "state": {
+        "live": false,
+        "value": [
+          "b"
+        ],
+        "commits": [],
+        "closes": 0
+      }
+    },
+    {
+      "case": "deferred-close-ordered-one-commit",
+      "state": {
+        "live": false,
+        "value": [
+          "a",
+          "b"
+        ],
+        "commits": [
+          [
+            "a",
+            "b"
+          ]
+        ],
+        "closes": 1
+      }
+    },
+    {
+      "case": "deferred-unchanged-no-commit",
+      "state": {
+        "live": false,
+        "value": [
+          "a",
+          "b"
+        ],
+        "commits": [
+          [
+            "a",
+            "b"
+          ]
+        ],
+        "closes": 2
+      }
+    },
+    {
+      "case": "deferred-clear-one-commit-and-close",
+      "state": {
+        "live": false,
+        "value": [],
+        "commits": [
+          [
+            "a",
+            "b"
+          ],
+          []
+        ],
+        "closes": 3
+      }
+    },
+    {
+      "case": "live-first-tick-immediate",
+      "state": {
+        "live": true,
+        "value": [
+          "a",
+          "b"
+        ],
+        "commits": [
+          [
+            "a",
+            "b"
+          ]
+        ],
+        "closes": 0
+      },
+      "open": 1
+    },
+    {
+      "case": "live-second-tick-immediate",
+      "state": {
+        "live": true,
+        "value": [
+          "a"
+        ],
+        "commits": [
+          [
+            "a",
+            "b"
+          ],
+          [
+            "a"
+          ]
+        ],
+        "closes": 0
+      }
+    },
+    {
+      "case": "live-clear-once-and-close",
+      "state": {
+        "live": true,
+        "value": [],
+        "commits": [
+          [
+            "a",
+            "b"
+          ],
+          [
+            "a"
+          ],
+          []
+        ],
+        "closes": 1
+      }
+    }
+  ]
+}
