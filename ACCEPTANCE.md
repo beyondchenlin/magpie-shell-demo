@@ -1,4 +1,10 @@
-> 设计与交互执行 [项目 CIS](docs/magpie-shell-cis-2026-10-15.md) 及其生效修订；当前核验步骤见 [CIS 执行验收清单 v1.1](docs/REPLICA-ACCEPTANCE.md)。清单不另立设计值或统一像素容差。以下为历史逐版本修改记录，不代表整体验收通过。
+> 唯一设计入口为冻结的 [CIS-CONTROLS](docs/CIS-CONTROLS.md)；当前核验步骤见 [29项验收清单](docs/REPLICA-ACCEPTANCE.md)。清单不另立设计值或统一像素容差。以下版本记录不代表整体验收通过。
+
+## v0.1.206 · FRAMED_NAV_SNAPSHOT_CLIP · 2026-10-17 Asia/Shanghai
+
+- UI源1ebfb663e4833e653bc621742cc342f3cdc7373a；本机4176。26通过/0失败/3待验，N3独立观感、D2远端/云身份、D4最终用户仍待验。
+- CAUSE：原生ViewTransition顶层快照绕过Web模拟窗overflow，白卡/侧栏可伸出窗口。WHAT kept：320ms原曲线、page旧层隐藏/新层无fade、外框与标题栏几何、六原CSS。WHAT changed：只将活动快照裁切到同一个frame；结束移除变量。
+- Checks：v206 build/TypeScript/两guard通过，lint55/0；最终六页+Settings同SHA、1364/1048/900/125%折叠边界；39偏好精确恢复、console空。[证据与限制](interactions/cis-release-1ebfb66/NOTES.md)。未合并main/生产发布/打exe。
 
 ## v0.1.194 · CIS_NATIVE_BASELINE_AND_SHARED_CONTROLS · 2026-10-16 Asia/Shanghai
 

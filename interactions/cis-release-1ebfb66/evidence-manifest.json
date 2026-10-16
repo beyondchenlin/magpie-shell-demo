@@ -1,0 +1,110 @@
+{
+  "files": [
+    {
+      "path": "agents-1364-side.png",
+      "bytes": 53324,
+      "sha256": "8725aad2b08a15d074ef20533dcc1485b46024de80eb18bdb5f0a4d5366125c1"
+    },
+    {
+      "path": "artifact-check.json",
+      "bytes": 45797,
+      "sha256": "0fd4dec9e786df7f541ad69cef3f195b3dacb88769aad7815b0eed056cdb305b"
+    },
+    {
+      "path": "assertions.json",
+      "bytes": 886,
+      "sha256": "228d6a79259a510299e60992f0de5237c58c821ee54207d72c3cbfaf2c20b4ba"
+    },
+    {
+      "path": "build-info.json",
+      "bytes": 30027,
+      "sha256": "963c9ee80f7d643cea355870d8da11cb8f69d8576e8c97fce6f4f1d8e1a4a2cd"
+    },
+    {
+      "path": "chrome-guard.txt",
+      "bytes": 684,
+      "sha256": "82bd8000994abb3b84abc224896de3f42266c14e663a6548d9c9499276d5dcab"
+    },
+    {
+      "path": "cis-guard.txt",
+      "bytes": 319,
+      "sha256": "dc7d2807ea1910f39c47cf866c2ddae915169166f9f8ec4e1ef171bb371758b7"
+    },
+    {
+      "path": "gateway-125-side.png",
+      "bytes": 87979,
+      "sha256": "c7a4b3497635c1e749a910834d68f46de25a960f9f077a1eef5bbd70535c3bf2"
+    },
+    {
+      "path": "gateway-900-side.png",
+      "bytes": 63266,
+      "sha256": "feb7548ed702599769261812fa6da21bfd0022c809a3cedaf3761953a5ac8f88"
+    },
+    {
+      "path": "lint.txt",
+      "bytes": 17459,
+      "sha256": "ec3a9e260fb8dd36d0898be04c0fe247575a351593631d45b4f4c452ebdd9c4f"
+    },
+    {
+      "path": "main-flow-summary.json",
+      "bytes": 117145,
+      "sha256": "0ccce3bfaea6d6b46ca99d4aae6f46a84aa67bc855b346009d3034c8e5ca6e93"
+    },
+    {
+      "path": "native-css-check.json",
+      "bytes": 1748,
+      "sha256": "61f8c0c797fd61ef1c8df39d8886051ceac0ebde6ad9b2bd5950af839604fce1"
+    },
+    {
+      "path": "nav-after-179-240ms.png",
+      "bytes": 42877,
+      "sha256": "cf702b8a67b9a8b95e9f6a8ca2d43394be060f0940017122aafcb68e0446d61a"
+    },
+    {
+      "path": "nav-after.json",
+      "bytes": 20190,
+      "sha256": "0c01f416f9101204f736014cff5b8e375658b880e4c382df88a7e549425c984c"
+    },
+    {
+      "path": "nav-before-169-218ms.png",
+      "bytes": 45199,
+      "sha256": "a874487590e9d26cf8aa489751e3b1bc7ec2c7d413eff7b83ca35d07848d8182"
+    },
+    {
+      "path": "nav-before.json",
+      "bytes": 17323,
+      "sha256": "a39d0bc44ee8f24eded1d15a7866a525f1d809756f4cfd8e2b5f9911b648d959"
+    },
+    {
+      "path": "NOTES.md",
+      "bytes": 5248,
+      "sha256": "58bb95f2f5826034e427e7991360e4b0ba5c1908fc53e339ee811d6072eaa529"
+    },
+    {
+      "path": "preferences-restored.json",
+      "bytes": 2590,
+      "sha256": "8c6338c109c74e9f256cccc39257bbbb6504d6c5f15455f780c286944f66bc0c"
+    },
+    {
+      "path": "remote-read-before-sync.json",
+      "bytes": 509,
+      "sha256": "7000c772bbda0d61a6a22157b8f9c3c86248534307ffbc988fa0f321fa1b2a12"
+    },
+    {
+      "path": "reuse-and-exceptions.json",
+      "bytes": 13184,
+      "sha256": "af01522a3677a00b85e2b7c5b62024f343bea3632843d50f806cf55614a3e2ab"
+    },
+    {
+      "path": "settings-1048-side.png",
+      "bytes": 76396,
+      "sha256": "8b84ce883386bf2592e93dc41400f990781b37f98cbda6ad759e378d678c3422"
+    },
+    {
+      "path": "settings.png",
+      "bytes": 73887,
+      "sha256": "47e910767bc108538f8af2e556a63c237f905965d9effaf6693e6f230c98a6c0"
+    }
+  ],
+  "logicalBytes": 716037
+}

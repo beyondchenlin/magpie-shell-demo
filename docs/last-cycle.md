@@ -1,5 +1,11 @@
 # last-cycle
 
+当前UI：**v0.1.206 /1ebfb663e4833e653bc621742cc342f3cdc7373a**，本机4176。冻结028dab5规格，26通过/0失败/3待验；N3监督独立观感、D2远端/云身份、D4用户四重点尚未完成。build/TypeScript/两guard通过，lint55/0；六原CSS不变，39偏好恢复，未合并main/生产部署/打包。证据[当前候选](../interactions/cis-release-1ebfb66/NOTES.md)，完整进度[EXECUTION-STATUS](cis/EXECUTION-STATUS.md)。
+
+WHY：按用户既定Magpie复刻范围关闭实际CIS偏差。CAUSE：共享菜单/确认框/模型状态、假供应商保存、图标失败、原生默认DOM与兼容层旧覆盖；最终发现Web过渡快照越模拟窗。WHAT kept：原320ms曲线、SIDE_AT1024、稳定窗、六同源CSS、mock边界。WHAT changed：逐批有限修复和SHA绑定证据；v206只加活动快照框内裁切。历史批次和未采集身份不追认，新候选只补受影响回归。
+
+下文v194为历史记录。
+
 2026-10-16阶段1说明：下列v194是历史UI交付记录。当前本机v195仍为继承脏稿，实际dist未绑定源码SHA；最新接管/规格状态看 [EXECUTION-STATUS](cis/EXECUTION-STATUS.md)，设计候选入口看 [CIS-CONTROLS](CIS-CONTROLS.md)。本轮文档校核不增加UI版本，不把历史Checks转成新候选通过。
 - tip: v0.1.194 CIS_NATIVE_BASELINE_AND_SHARED_CONTROLS
 - WHY: 用户要求继续全量 CIS 对照，不一致继续处理。

@@ -1,0 +1,28 @@
+{
+  "candidate": "1ebfb663e4833e653bc621742cc342f3cdc7373a",
+  "version": "0.1.206",
+  "sourceTree": "4d28c0a6891d1f5b96a5fe20c5ef953536e23f5d",
+  "origin": "http://127.0.0.1:4176",
+  "session": 97031,
+  "localOnly": true,
+  "buildTypeScript": true,
+  "guards": true,
+  "lint": {
+    "warnings": 55,
+    "errors": 0,
+    "files": 56
+  },
+  "mainPages": 7,
+  "allSourcesMatch": true,
+  "noOverflow": true,
+  "noBrokenImages": true,
+  "noInvalidNesting": true,
+  "clipConfigurations": 4,
+  "stableFrames": true,
+  "oldPageHidden": true,
+  "newPageNoFade": true,
+  "console": [],
+  "restored39Exact": true,
+  "N3": "Targeted clip defect reproduced and fixed; prior three rounds retained. Independent supervisor visual verdict still pending; parameter/DOM proof alone does not mark N3 passed.",
+  "remote": "Last confirmed e19fd5a push; current branch/cloud identity externally blocked."
+}

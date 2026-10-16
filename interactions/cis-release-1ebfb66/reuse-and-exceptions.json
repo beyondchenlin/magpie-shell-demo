@@ -1,0 +1,355 @@
+{
+  "before": "5f7f9bc0b7da8efaacbb6ae0b5e15587538a240c",
+  "candidate": "1ebfb663e4833e653bc621742cc342f3cdc7373a",
+  "changed": [
+    "src/lib/navMorph.ts",
+    "src/styles/shell-patch.css"
+  ],
+  "unchanged": [
+    {
+      "path": "src/App.tsx",
+      "previous": "368680613d2b86167a2f5cbee4a6f4e91c6f2046",
+      "current": "368680613d2b86167a2f5cbee4a6f4e91c6f2046"
+    },
+    {
+      "path": "src/applyTheme.ts",
+      "previous": "029a0ff7eaa8a937d6bc7096cd4feb4a65218353",
+      "current": "029a0ff7eaa8a937d6bc7096cd4feb4a65218353"
+    },
+    {
+      "path": "src/components/ActionConfirm.tsx",
+      "previous": "35fd7b2ec386b95a478df9ae3faa8beb2b475aba",
+      "current": "35fd7b2ec386b95a478df9ae3faa8beb2b475aba"
+    },
+    {
+      "path": "src/components/AgentModelsPop.tsx",
+      "previous": "1330e94c248180e956ca3fb89197d64a6aa8eee3",
+      "current": "1330e94c248180e956ca3fb89197d64a6aa8eee3"
+    },
+    {
+      "path": "src/components/Bird.tsx",
+      "previous": "eee9aed048644ec7a2deb53a3b5ea1385cf7e18b",
+      "current": "eee9aed048644ec7a2deb53a3b5ea1385cf7e18b"
+    },
+    {
+      "path": "src/components/ConnectionField.tsx",
+      "previous": "6caa72e324856fcc10f53d83ade3eee70f192b37",
+      "current": "6caa72e324856fcc10f53d83ade3eee70f192b37"
+    },
+    {
+      "path": "src/components/CopyButton.tsx",
+      "previous": "576c968d372b06f701aebee8654df8d8b7501c46",
+      "current": "576c968d372b06f701aebee8654df8d8b7501c46"
+    },
+    {
+      "path": "src/components/FieldPill.tsx",
+      "previous": "7024d686850dbe9475d372fd49ef6dd90f5d6924",
+      "current": "7024d686850dbe9475d372fd49ef6dd90f5d6924"
+    },
+    {
+      "path": "src/components/Fold.tsx",
+      "previous": "8d26d53efa6fdbf3f80470a677dc61acee17a089",
+      "current": "8d26d53efa6fdbf3f80470a677dc61acee17a089"
+    },
+    {
+      "path": "src/components/GroupEditor.tsx",
+      "previous": "f5c854cd7e5ded5ce2e45222bd8369ce7d0c39f7",
+      "current": "f5c854cd7e5ded5ce2e45222bd8369ce7d0c39f7"
+    },
+    {
+      "path": "src/components/InfoTip.tsx",
+      "previous": "6324318fd4cfecdcbd9e75a35a0112536825c8f0",
+      "current": "6324318fd4cfecdcbd9e75a35a0112536825c8f0"
+    },
+    {
+      "path": "src/components/LedChart.tsx",
+      "previous": "0b4d5a7e1124f9a150e23c7ea6699a29f92dc523",
+      "current": "0b4d5a7e1124f9a150e23c7ea6699a29f92dc523"
+    },
+    {
+      "path": "src/components/LedHeat.tsx",
+      "previous": "54ead39040d8ce6b5b0cad505c57b9d1fcbd07a0",
+      "current": "54ead39040d8ce6b5b0cad505c57b9d1fcbd07a0"
+    },
+    {
+      "path": "src/components/LibSwitch.tsx",
+      "previous": "1aff033e73ff6019616abd17b4d1e1f4761ad196",
+      "current": "1aff033e73ff6019616abd17b4d1e1f4761ad196"
+    },
+    {
+      "path": "src/components/MagpieIcon.tsx",
+      "previous": "4ac30b890eba99250fe6a4a0dea6129b234fe70c",
+      "current": "4ac30b890eba99250fe6a4a0dea6129b234fe70c"
+    },
+    {
+      "path": "src/components/ModelPop.tsx",
+      "previous": "f46cb142dc5082df7825e157607c2fd8cee89afb",
+      "current": "f46cb142dc5082df7825e157607c2fd8cee89afb"
+    },
+    {
+      "path": "src/components/NavIcons.tsx",
+      "previous": "c38ecd7f9bcc0dc098c1766f4ca76cef6915abb2",
+      "current": "c38ecd7f9bcc0dc098c1766f4ca76cef6915abb2"
+    },
+    {
+      "path": "src/components/PluginLogo.tsx",
+      "previous": "f5e26db4dc057fe0525e8dbe883ac503cce1215d",
+      "current": "f5e26db4dc057fe0525e8dbe883ac503cce1215d"
+    },
+    {
+      "path": "src/components/PopoverPortal.tsx",
+      "previous": "db0ca8a118d4cc72a4ad590e7aa72ab3904ad06b",
+      "current": "db0ca8a118d4cc72a4ad590e7aa72ab3904ad06b"
+    },
+    {
+      "path": "src/components/PrefPick.tsx",
+      "previous": "581aa113d6eaf8cb5ed03342968e047757e0bb87",
+      "current": "581aa113d6eaf8cb5ed03342968e047757e0bb87"
+    },
+    {
+      "path": "src/components/PrefRow.tsx",
+      "previous": "2fc59bc820cbf1318838f43431c51bca8ef8caf0",
+      "current": "2fc59bc820cbf1318838f43431c51bca8ef8caf0"
+    },
+    {
+      "path": "src/components/ProtoMultiMenu.tsx",
+      "previous": "504ca378d92faf530b61bda6cf70e6e6bd0f555a",
+      "current": "504ca378d92faf530b61bda6cf70e6e6bd0f555a"
+    },
+    {
+      "path": "src/components/RequestArchive.tsx",
+      "previous": "6ca7b3ce0937ab32f7b1f4b86c00fb2c2bd8ccf5",
+      "current": "6ca7b3ce0937ab32f7b1f4b86c00fb2c2bd8ccf5"
+    },
+    {
+      "path": "src/components/SegThumb.tsx",
+      "previous": "38646b0d635d7d134e7b9de9352bf5134634dbdb",
+      "current": "38646b0d635d7d134e7b9de9352bf5134634dbdb"
+    },
+    {
+      "path": "src/components/Segs.tsx",
+      "previous": "6c06fe571135ac95cc60b6822150451ef0fb8f53",
+      "current": "6c06fe571135ac95cc60b6822150451ef0fb8f53"
+    },
+    {
+      "path": "src/components/SidebarTabs.tsx",
+      "previous": "886df9f0b3260561aeada7049a699857c7acca22",
+      "current": "886df9f0b3260561aeada7049a699857c7acca22"
+    },
+    {
+      "path": "src/components/StatusToast.tsx",
+      "previous": "b8056a01424b7a8d1540b3b4163479da76378016",
+      "current": "b8056a01424b7a8d1540b3b4163479da76378016"
+    },
+    {
+      "path": "src/components/TextBtn.tsx",
+      "previous": "6c23710db0f61f867f5d8be707a1489ec0892072",
+      "current": "6c23710db0f61f867f5d8be707a1489ec0892072"
+    },
+    {
+      "path": "src/components/Tick.tsx",
+      "previous": "4b0b9d49cc41e5446ff4bb03b04c3c276f509c02",
+      "current": "4b0b9d49cc41e5446ff4bb03b04c3c276f509c02"
+    },
+    {
+      "path": "src/components/WarmAt.tsx",
+      "previous": "37448af19c927834280325981a0879356a1237d1",
+      "current": "37448af19c927834280325981a0879356a1237d1"
+    },
+    {
+      "path": "src/components/WinCaption.tsx",
+      "previous": "c3764684fd49449435498307caaa99a365a8ff92",
+      "current": "c3764684fd49449435498307caaa99a365a8ff92"
+    },
+    {
+      "path": "src/components/WordsField.tsx",
+      "previous": "b9c21a683e02eede160417dc634e9e6922f1a76f",
+      "current": "b9c21a683e02eede160417dc634e9e6922f1a76f"
+    },
+    {
+      "path": "src/data/de.json",
+      "previous": "cb75e1937c86818c8acf7132815522e47ae21dcc",
+      "current": "cb75e1937c86818c8acf7132815522e47ae21dcc"
+    },
+    {
+      "path": "src/data/gateway-flavors.ts",
+      "previous": "3662cd43b333a7295214e484b72033a597628b18",
+      "current": "3662cd43b333a7295214e484b72033a597628b18"
+    },
+    {
+      "path": "src/data/installs.json",
+      "previous": "7b56f9c55d1d42bcdae922cb1a82c32e299a9624",
+      "current": "7b56f9c55d1d42bcdae922cb1a82c32e299a9624"
+    },
+    {
+      "path": "src/data/ja.json",
+      "previous": "087051bd806b3b7fa76e79bb76038107defe2437",
+      "current": "087051bd806b3b7fa76e79bb76038107defe2437"
+    },
+    {
+      "path": "src/data/mock.ts",
+      "previous": "dd549a9dd8667dc8294f27788738cd63d729560d",
+      "current": "dd549a9dd8667dc8294f27788738cd63d729560d"
+    },
+    {
+      "path": "src/data/presets.json",
+      "previous": "cb68309f04710037d9066c37054b85414ad1ac57",
+      "current": "cb68309f04710037d9066c37054b85414ad1ac57"
+    },
+    {
+      "path": "src/data/settings.ts",
+      "previous": "52aac1367d3310fd4a86e953ac46a072322c7d08",
+      "current": "52aac1367d3310fd4a86e953ac46a072322c7d08"
+    },
+    {
+      "path": "src/data/usage-demo.ts",
+      "previous": "26bade518d478f5daf9e2f432fc93e198e82f081",
+      "current": "26bade518d478f5daf9e2f432fc93e198e82f081"
+    },
+    {
+      "path": "src/data/zh-TW.json",
+      "previous": "7b12fc315a3e9d1cd33b58a31f60864215a3057f",
+      "current": "7b12fc315a3e9d1cd33b58a31f60864215a3057f"
+    },
+    {
+      "path": "src/data/zh.json",
+      "previous": "c400a1a64921a27615b75eb2854e483d19889164",
+      "current": "c400a1a64921a27615b75eb2854e483d19889164"
+    },
+    {
+      "path": "src/i18n.ts",
+      "previous": "4687f122b180f68f6df2a6ea815aa47158b4fbaa",
+      "current": "4687f122b180f68f6df2a6ea815aa47158b4fbaa"
+    },
+    {
+      "path": "src/lib/copyText.ts",
+      "previous": "1c29ac3e5a757cd04520bf914ea7a1ac7d4af109",
+      "current": "1c29ac3e5a757cd04520bf914ea7a1ac7d4af109"
+    },
+    {
+      "path": "src/lib/dragRows.ts",
+      "previous": "e3bd80ba8b3971849dca4dfa756d14a55de04dac",
+      "current": "e3bd80ba8b3971849dca4dfa756d14a55de04dac"
+    },
+    {
+      "path": "src/lib/menuScroll.ts",
+      "previous": "8c00543186d4da669e2709582817e10559fb1960",
+      "current": "8c00543186d4da669e2709582817e10559fb1960"
+    },
+    {
+      "path": "src/lib/pickerGhost.ts",
+      "previous": "6555242b610bc6e76d511f56b1d1814ad78790c0",
+      "current": "6555242b610bc6e76d511f56b1d1814ad78790c0"
+    },
+    {
+      "path": "src/lib/popover.ts",
+      "previous": "0bcf028057a73627435324d856dca5d83de02933",
+      "current": "0bcf028057a73627435324d856dca5d83de02933"
+    },
+    {
+      "path": "src/lib/useAnchoredPopover.ts",
+      "previous": "adda4f15ed44a658b34af792691efab251ee9a9a",
+      "current": "adda4f15ed44a658b34af792691efab251ee9a9a"
+    },
+    {
+      "path": "src/lib/useProtocolMenu.ts",
+      "previous": "89087e43b3f671c47ba3acd579d3dcd35d61b1b5",
+      "current": "89087e43b3f671c47ba3acd579d3dcd35d61b1b5"
+    },
+    {
+      "path": "src/lib/useRowMenu.ts",
+      "previous": "a4a09145965665433e84711ef93cc746f475d0a2",
+      "current": "a4a09145965665433e84711ef93cc746f475d0a2"
+    },
+    {
+      "path": "src/main.tsx",
+      "previous": "3c8e4cb8a0741789321c95f612e76a4a45506313",
+      "current": "3c8e4cb8a0741789321c95f612e76a4a45506313"
+    },
+    {
+      "path": "src/pages/AgentsView.tsx",
+      "previous": "43a3c3db275a5c72a1bf5ed64d21aa2578089177",
+      "current": "43a3c3db275a5c72a1bf5ed64d21aa2578089177"
+    },
+    {
+      "path": "src/pages/GatewayView.tsx",
+      "previous": "e733b5588e0a9c87cf4aad681c7ce8954bcad15d",
+      "current": "e733b5588e0a9c87cf4aad681c7ce8954bcad15d"
+    },
+    {
+      "path": "src/pages/LibraryView.tsx",
+      "previous": "88574880d58941f8dfdfa7147c03f6dde1e690db",
+      "current": "88574880d58941f8dfdfa7147c03f6dde1e690db"
+    },
+    {
+      "path": "src/pages/ProvidersView.tsx",
+      "previous": "50178a563215da069ab9596485485f74462f7dd1",
+      "current": "50178a563215da069ab9596485485f74462f7dd1"
+    },
+    {
+      "path": "src/pages/RoutingView.tsx",
+      "previous": "ae983b2a68002fc46f21613d088ad1ac92f78699",
+      "current": "ae983b2a68002fc46f21613d088ad1ac92f78699"
+    },
+    {
+      "path": "src/pages/SettingsView.tsx",
+      "previous": "4847d1251315694855bdfc159de610d1bf98e3d6",
+      "current": "4847d1251315694855bdfc159de610d1bf98e3d6"
+    },
+    {
+      "path": "src/pages/SimpleViews.tsx",
+      "previous": "462aaa5b65f695428b0bb1aeb6cf788d0f5155c6",
+      "current": "462aaa5b65f695428b0bb1aeb6cf788d0f5155c6"
+    },
+    {
+      "path": "src/pages/TrayPanel.tsx",
+      "previous": "3ac0c56a55dabe274d56587a8d3d8999ef1bc04e",
+      "current": "3ac0c56a55dabe274d56587a8d3d8999ef1bc04e"
+    },
+    {
+      "path": "src/pages/settings/NestedBlocks.tsx",
+      "previous": "b509850cf8a4021b3189f5158952d4d871adab9b",
+      "current": "b509850cf8a4021b3189f5158952d4d871adab9b"
+    },
+    {
+      "path": "src/styles/app.css",
+      "previous": "b485e48dbbbad0956dd9f2b625e52927a4fba08a",
+      "current": "b485e48dbbbad0956dd9f2b625e52927a4fba08a"
+    },
+    {
+      "path": "src/styles/context.css",
+      "previous": "84edc5f859dc7bce39c714a2b1c1c5620519d5aa",
+      "current": "84edc5f859dc7bce39c714a2b1c1c5620519d5aa"
+    },
+    {
+      "path": "src/styles/library.css",
+      "previous": "e98bf5d6653f405bcc415d9ddecfb431521e7749",
+      "current": "e98bf5d6653f405bcc415d9ddecfb431521e7749"
+    },
+    {
+      "path": "src/styles/plugins.css",
+      "previous": "514dd67bfbef9bf942a3821867b60584788ff4aa",
+      "current": "514dd67bfbef9bf942a3821867b60584788ff4aa"
+    },
+    {
+      "path": "src/styles/routing.css",
+      "previous": "caa3b7d7e75ff69f39a5b11e11d89c2191efefe5",
+      "current": "caa3b7d7e75ff69f39a5b11e11d89c2191efefe5"
+    },
+    {
+      "path": "src/styles/sessions.css",
+      "previous": "b6562a6d53b934184f448a0de611ed5c65ff711c",
+      "current": "b6562a6d53b934184f448a0de611ed5c65ff711c"
+    }
+  ],
+  "staticReuse": "v205 Network/Context eight captures and all existing finite B4 branches unchanged. Only active navigation pseudo-layer receives a new clip; no static selector or page content changes. The remaining historical76 chain is explicit in cis-final-5f7f9bc/reuse-to-final.json.",
+  "compatibilityBase": "../cis-final-5f7f9bc/compatibility-inventory.json",
+  "additionalRule": {
+    "selector": ".nav-morph::view-transition",
+    "CAUSE": "Browser view-transition pseudo layer bypasses framed root overflow, allowing native own-width page snapshot outside simulated OS window.",
+    "kept": "Native 320ms cubic(.42,0,.58,1); page name, old(page) display:none and new(page) animation:none; root/caption size and all native CSS.",
+    "changed": "Web-only frame rect converted to viewport-percentage inset clip; native borderRadius retained; custom property removed on final completion.",
+    "source": "CIS R17 stable simulated window + native app.css458–479 snapshot semantics",
+    "evidence": "nav-before/after PNG and JSON; main-flow-summary 1364/1048/900 and125%"
+  }
+}

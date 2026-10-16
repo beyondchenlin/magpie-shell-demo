@@ -1,3 +1,24 @@
+## v0.1.195–206 · FROZEN_CIS_FINITE_VERIFICATION · 2026-10-16/17 Asia/Shanghai
+
+WHY：在028dab5冻结29项范围内复现、修复、验证，不扩展真实服务或产品规划。WHAT kept：SIDE_AT1024、稳定窗口、320ms原曲线、六固定源CSS、mock和非生产边界。以下是UI来源链，不把提交数当验收数量。
+
+| UI版本 / 最终SHA | 已证实原因与改动 | 有限证据 |
+| --- | --- | --- |
+| 195 /90099b9 | 字体style初焦/菜单生命周期、长对话翻译键 | cis-settings-90099b9 |
+| 196 /874268b | 五API/SystemOne示例与复制失败、隐式模型默认 | cis-gateway-874268b |
+| 197 /0a2a014 | thumb高度变化未纳入去重，折行定位修复 | cis-layout-0a2a014 |
+| 198 /396c11c | 模型ghost即时失交互、协议/行/日期/模型管理状态机 | cis-menus-* |
+| 199 /7880135 | 确认框焦点/框内位置、供应商完整配置保存/Gemini默认 | cis-confirm-7880135 |
+| 200 /1100d15 | 组菜单共享控制器、MCP确认框Escape事件、移除无源详情占位 | cis-pages-1100d15 |
+| 201 /bb1a250 | 图标/file失败fallback、特殊菜单共享控制器、移除通用开关.5覆盖 | cis-controls-a8976e0 |
+| 202 /f896ebd | LAN缺键盘导航，接同一控制器 | cis-controls-a8976e0 |
+| 203 /8431291 | 发现搜索框缺原生mk-find结构 | cis-controls-a8976e0 |
+| 204 /a8976e0 | 指令/MCP/Skills默认结构与模型说明键；54690da未用变量tsc失败、未服务 | cis-controls-a8976e0 |
+| 205 /5f7f9bc | 撤除7条无源日期/输入/Context/fade旧覆盖 | cis-final-5f7f9bc |
+| 206 /1ebfb66 | Web活动快照绕过frame overflow，按既有frame裁切 | cis-release-1ebfb66 |
+
+最新Checks：build/TypeScript/两guard通过，lint55 warnings/0errors。26通过/0失败/3待验，N3监督独立动态/D2远端云身份/D4用户未结束，不宣称整体验收完成；详见EXECUTION-STATUS。未新增worktree/依赖环境，未改用户4173/rootdist，未合并main/生产部署/打exe。
+
 ## v0.1.194 · CIS_NATIVE_BASELINE_AND_SHARED_CONTROLS · 2026-10-16 Asia/Shanghai
 
 - WHY: 用户要求不一致不能停；按历史 CIS 与固定参考源码检查全部公共控件。

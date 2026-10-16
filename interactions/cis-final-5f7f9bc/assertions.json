@@ -1,0 +1,48 @@
+{
+  "candidate": "5f7f9bc0b7da8efaacbb6ae0b5e15587538a240c",
+  "sourceTree": "486b8970029846ba6c3ae3c5bbb1ec4850652d21",
+  "version": "0.1.205",
+  "origin": "http://127.0.0.1:4176",
+  "previewSession": 70571,
+  "localOnly": true,
+  "browser": "Windows / Codex in-app Chromium, DPR1, Chinese; desktop110%, phone100%; dimensions and theme per record",
+  "build": "tsc -b + Vite succeeded before build-info was written; no subsequent source change. Existing >500kB bundle warning retained.",
+  "lint": {
+    "errors": 0,
+    "warnings": 55,
+    "files": 56,
+    "baselineWarnings": 59
+  },
+  "guards": {
+    "chrome": true,
+    "cis": true
+  },
+  "mainRecords": 23,
+  "threeTogglePairs": [
+    {
+      "key": "agents",
+      "unchangedRoot": true,
+      "unchangedCaption": true
+    },
+    {
+      "key": "gateway",
+      "unchangedRoot": true,
+      "unchangedCaption": true
+    },
+    {
+      "key": "settings",
+      "unchangedRoot": true,
+      "unchangedCaption": true
+    }
+  ],
+  "allSourcesMatch": true,
+  "allDocumentFits": true,
+  "noBrokenImages": true,
+  "noInvalidNesting": true,
+  "consoleWarningsErrors": [],
+  "restoredKeys": 39,
+  "exactRestore": true,
+  "nativeStyleMatches": 6,
+  "compatibilityRules": 108,
+  "compatibilityUnknown": 0
+}

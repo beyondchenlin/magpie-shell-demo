@@ -1,18 +1,19 @@
 # CIS 执行进度
 
-更新时间：2026-10-17 01:28 Asia/Shanghai
+更新时间：2026-10-17 02:01 Asia/Shanghai
 
-- 当前阶段：phase2_controls_complete_next_b1_b2_d1。唯一执行者本聊天01a14465-ad94-73e0-a0ad-991539957fa0；监督01a143c3-8101-75e1-b638-c39ad15d55ed；无子代理。
-- **29项：通过22、失败0、待验7。** S4/B3/B4在interactions/cis-controls-a8976e0完整收口。S4裸13数组按1100d15/session49044采集区间绑定，五操作PrefRow+SyncForms哈希同源，不追认新版采集。B3 34裸配方逐项分类、未知0，七种特殊菜单及图标/控件有限变体通过。B4 canonical76中16实采a897、8实采843、52实采f896，19个精确AST分支与未变Git blob证明有界复用；原失败及32次定向补拍历史均保留，24联系图已逐张核对。没有全矩阵重复跑或修改原生入场CSS。
+- 当前阶段：local_checks_complete_awaiting_N3_independent_review_and_remote_sync。唯一执行者本聊天01a14465-ad94-73e0-a0ad-991539957fa0；监督01a143c3-8101-75e1-b638-c39ad15d55ed；无子代理。
+- **29项：通过26、失败0、待验3（N3/D2/D4）。** B1/B2/D1及D3已收口到v206当前候选。S4/B3/B4在cc6722b收口；后续B2发现7条无原版依据旧覆盖，v205撤除并定向补8默认态/日期/输入/隐私子行，v206仅改导航快照框内裁切。全部前后失败与复用链保留，不冒称历史截图由当前SHA采集。
+- N3专项：监督疑似双正文已按实际命名/伪元素/动画核查，正文page、old(page)隐藏、new(page)无fade、组320ms和原曲线均实见；飞过正文的是独立命名导航。另实证Web快照绕过root overflow，v206按原frame矩形百分比裁切已复验有效。1364/1048/900与125%各一对，root/caption保持、clip正确、console空；未重录三轮。被动诊断有600ms观察尾巴，第二次独立点击可能落在前条尾部；公开摘要在首个morph结束帧截断并记录tailFramesExcluded，不能把两次独立过渡混称一次0.9s卡顿。原三轮性能/录屏仍保留，N3等待监督独立动态结论，不自行按参数放行。
 - 通过项：N1/N2=2660400/v194；S2/S3=90099b9/v195；G1/G2/G3=874268b/v196；S1/N4/G4=0a2a014/v197；C1/C2/C4=396c11c/v198；C3/P1/P4=7880135/v199；P2/P3/P5=1100d15/v200。跨候选复用逐条注明源blob/差异边界，不拼称同一候选全过。N3保留独立动态复核，不重录三轮。
-- 当前受管4176：a8976e0db339d520a290cbdd548c290be760797b /0.1.204，session5944、static-candidate-3 immutable Git archive，受影响静态复验已完成。843/v203搜索包装修复已验；54690da/v204因移除旧段落遗留openSet未用变量而tsc失败，未服务/未验UI；a897移除该变量后通过。其余继承草稿不整体提交，未改C1内核/导航或基础六CSS。
+- 当前受管4176：**1ebfb663e4833e653bc621742cc342f3cdc7373a /0.1.206**，session97031、final-candidate-2 immutable Git archive；七主入口/四配置折叠复验已完成。其余继承草稿不整体提交，基础六CSS不变。
 - 规则唯一入口docs/CIS-CONTROLS.md，冻结028dab5；监督批准R01 window级联勘误3c2d6de，其余范围/29项不变。常规批次无需等批准，两个同定位失败后先查根因。
-- 检查：a897 build/TypeScript/两guard通过，56 TS/TSX lint55 warnings/0 errors。索引绑定a897：21文件/473调用/34裸候选，useRowMenu5/useProtocolMenu6调用（7种内容，copy两入口共享）。独立fixture保持产品资源hash，明确浅深色及图标/控件状态；源与采集SHA分别保留。B4 76条均无文档/视图横向溢出、越界未受控内容、破图或交互嵌套；12首轮/8修订联系图已查看，新候选只补受影响范围。公开证据现约36MB，仍在40MiB预算内。
-- Git：分支tip/0.1.121-cis-appearance-shell，PR #1；最近已确认推送e19fd5a。本地UI a8976e0，证据提交不算新UI身份。上次push408/sideband断开，后续TLS EOF及连接器/gh GraphQL/REST更新失败，未确认远端落地。监督独立fetch也连续3轮失败，远端同步/云预览身份为外部阻塞；最小恢复条件是认证工具可读分支SHA并完成push确认，仅有新连通信号才做一次有界验证，不关闭TLS/强推/盲重试。
+- 检查：v206 build/TypeScript/两guard通过，56 TS/TSX lint55 warnings/0 errors；既有Vite>500kB chunk warning仍在。索引绑定1ebfb66：21文件/473调用/34裸候选、未知0；useRowMenu5/useProtocolMenu6（7种内容）。B4 canonical76+v205八定向默认态按SHA链复用，均无横溢出/破图/交互嵌套；v206只新增活动快照裁切，不改静态页。兼容层108条+1条快照适配有CAUSE/kept/changed及来源/证据。
+- Git：分支tip/0.1.121-cis-appearance-shell，PR #1；最近确认远端仍e19fd5a。新信号：02:00附近认证GitHub PR读取成功，明确读到旧head及旧标题正文；因此完成具体交付提交后可作一次有界push/PR元数据同步。旧408/TLS EOF不反复重试，不关闭TLS/强推。当前本机UI1ebfb66，尚未确认本轮push或云端身份；D2保持待验。
 - 现场：用户4173/PID21080与rootdist未动。本任务4174/PID98524、4175/PID76536保留，4176按批次通过受管PTY Ctrl+C切换。早前自动审核拒绝OS stop/restart4174，未绕过。自有tab19当前在page preference fixture，已恢复39键与initial精确一致；新批前继续保留同一tab备份，不提前关页。
 - 证据：既有nav/settings/gateway/layout/menus目录及四原问题图保留；新增interactions/cis-confirm-before-396c11c、cis-confirm-7880135、cis-pages-1100d15。F02初焦误判已更正。含个人界面的原图不公开。mock安装/供应商配置/路由组均不接真实服务，没下载或执行第三方代码。
-- 空间与保全：唯一工作树D:/demo1/tagmaai，未安装或复制环境。01:25 C/Temp25176465408、D49650900992bytes；本批公开证据约13.5MiB，总CIS公开证据约36.3MiB，未超40MiB计划，均为逻辑大小。仅早前回收7份本任务source.tar运输文件34232320逻辑bytes，D前20203614208/后20237852672含并发写入，不冒称净物理释放。清单.cache/cis-navigation-20261016/tar-cleanup-*.json；之后没有清理。接管补丁/hash/原图/源码/dist/历史验收仍保留。
-- 剩余具体子用例：B1/B2/D1固定候选身份、六CSS与兼容例外、已有必要工程检查及同候选最终固定主流程；D2/D3/D4交付/远端外部恢复条件及用户四重点观感。N3待监督独立动态结论。没有普通实现差异仍待修复，不因远端阻塞继续调UI。
+- 空间与保全：唯一工作树D:/demo1/tagmaai，未安装或复制环境。v206构建前C/Temp25164808192、D49970401280bytes。公开CIS证据当前约40.7MB逻辑bytes（<40MiB41943040计划）；只保留定向新图/结构摘要，raw全量诊断在本任务.cache，不把三轮录屏重复入包。仅早前回收7份source.tar运输文件34232320逻辑bytes，D前20203614208/后20237852672含并发写入，不冒称净物理释放。之后没有清理；接管补丁/hash/原图/源码/dist/历史验收仍保留。
+- 剩余具体子用例：N3监督独立动态复核；D2本轮一次有界远端同步后确认分支/云预览身份（如仍有部署限额不强制部署）；D4最后四重点用户观感。没有普通实现差异仍待修复，不继续无边界调UI；尚非只余用户认可的technical_complete状态。
 
 ## 实质进展记录
 

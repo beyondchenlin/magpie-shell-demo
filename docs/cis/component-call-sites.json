@@ -2,7 +2,7 @@
   "purpose": "Audit index only; a call site is not proof of correct runtime behavior. Raw DOM is a review queue, not an automatic defect.",
   "baseline": "e94edc6713da405285854e7d6548f3f8364bf84f",
   "specification": "028dab55a3877656c115439835d1d0d14465e4ee",
-  "candidate": "a8976e0db339d520a290cbdd548c290be760797b",
+  "candidate": "1ebfb663e4833e653bc621742cc342f3cdc7373a",
   "scope": "committed source snapshot, excludes inherited working-tree draft",
   "files": [
     {
