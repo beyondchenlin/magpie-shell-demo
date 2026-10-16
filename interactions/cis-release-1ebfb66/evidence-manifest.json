@@ -12,8 +12,8 @@
     },
     {
       "path": "assertions.json",
-      "bytes": 886,
-      "sha256": "228d6a79259a510299e60992f0de5237c58c821ee54207d72c3cbfaf2c20b4ba"
+      "bytes": 978,
+      "sha256": "4430faff727eaee145af58f33772602c20873acb982389e597c6c58fb225739f"
     },
     {
       "path": "build-info.json",
@@ -87,8 +87,8 @@
     },
     {
       "path": "NOTES.md",
-      "bytes": 5701,
-      "sha256": "813c96835c5aa2dcc806cbefb97ee42f4ca876acd800963df3151cfdff5f425b"
+      "bytes": 6298,
+      "sha256": "80616647b3e19ab815adbcccea256b7d20740b371ba7a7f7064dbd500128d036"
     },
     {
       "path": "preferences-restored.json",
@@ -121,5 +121,5 @@
       "sha256": "47e910767bc108538f8af2e556a63c237f905965d9effaf6693e6f230c98a6c0"
     }
   ],
-  "logicalBytes": 864104
+  "logicalBytes": 864793
 }
