@@ -240,6 +240,7 @@ export const SUB_TILES: { id: string; name: string; icon: string }[] = [
 ];
 
 export function iconSrc(name: string): string {
+  if (name.startsWith("file:")) return `/api/icons/${encodeURIComponent(name.slice(5))}`;
   if (name.endsWith(".png") || name.endsWith(".svg")) return `/icons/${name}`;
   const png = new Set(["crush", "zcode", "alma", "hanako", "cindy", "lody", "typesafe", "atomcode", "snow", "mlx-serve", "mothx"]);
   return `/icons/${name}.${png.has(name) ? "png" : "svg"}`;

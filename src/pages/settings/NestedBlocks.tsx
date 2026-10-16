@@ -2,6 +2,7 @@ import { CopyButton } from "../../components/CopyButton";
 import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { PopoverPortal } from "../../components/PopoverPortal";
 import { useAnchoredPopover } from "../../lib/useAnchoredPopover";
+import { useProtocolMenu } from "../../lib/useProtocolMenu";
 import { MagpieIcon } from "../../components/MagpieIcon";
 import { menuKeyNavigation } from "../../lib/popover";
 import { menuHoverFocus } from "../../lib/menuScroll";
@@ -1144,7 +1145,7 @@ export function TrayUsagePick({
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLButtonElement | null>(null);
   const menuRef = useRef<HTMLDivElement | null>(null);
-  useAnchoredPopover(menuRef, ref, open, { align: "right", maxHeight: 360 });
+  useProtocolMenu(menuRef, ref, open, () => setOpen(false), { align: "right", maxHeight: 360 });
   // Magpie TRAY_TOTALS (app.js L21946) + Off; demo single-select stand-in for multi ids
   const opts = [
     { v: "", name: "Off", note: "" },
@@ -1154,23 +1155,6 @@ export function TrayUsagePick({
   const label =
     opts.find((o) => o.v === value)?.name ||
     (value ? value : "Off");
-
-  useEffect(() => {
-    if (!open) return;
-    const onDown = (e: MouseEvent) => {
-      if (ref.current?.contains(e.target as Node) || menuRef.current?.contains(e.target as Node)) return;
-      setOpen(false);
-    };
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setOpen(false);
-    };
-    document.addEventListener("mousedown", onDown, true);
-    document.addEventListener("keydown", onKey, true);
-    return () => {
-      document.removeEventListener("mousedown", onDown, true);
-      document.removeEventListener("keydown", onKey, true);
-    };
-  }, [open]);
 
   return (
     <div id="trayUsagePick" className="pref-anchor">
@@ -1337,25 +1321,7 @@ export function SearchApisBlock({
   const [showKey, setShowKey] = useState<Record<string, boolean>>({});
   const pickRef = useRef<HTMLButtonElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
-  useAnchoredPopover(menuRef, pickRef, menu, { align: "right", maxHeight: 360 });
-
-  useEffect(() => {
-    if (!menu) return;
-    const onDoc = (e: MouseEvent) => {
-      const n = e.target as Node;
-      if (pickRef.current?.contains(n) || menuRef.current?.contains(n)) return;
-      setMenu(false);
-    };
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setMenu(false);
-    };
-    document.addEventListener("mousedown", onDoc, true);
-    document.addEventListener("keydown", onKey, true);
-    return () => {
-      document.removeEventListener("mousedown", onDoc, true);
-      document.removeEventListener("keydown", onKey, true);
-    };
-  }, [menu]);
+  useProtocolMenu(menuRef, pickRef, menu, () => setMenu(false), { align: "right", maxHeight: 360 });
 
   const v = SEARCH_VENDORS.find((x) => x.id === vendor) || SEARCH_VENDORS[0];
   const saved = apis.find((a) => a.vendor === vendor);

@@ -7,6 +7,8 @@ import { LibSwitch } from "../components/LibSwitch";
 import { TextBtn } from "../components/TextBtn";
 import { useSegThumb } from "../components/SegThumb";
 import { t } from "../i18n";
+import { PopoverPortal } from "../components/PopoverPortal";
+import { useProtocolMenu } from "../lib/useProtocolMenu";
 
 /**
  * Magpie Library plugin (native-linux/library nests through 184–219 MCP health/tools/OAuth + Instructions/projects).
@@ -430,6 +432,11 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
   const [mcpSelectMode, setMcpSelectMode] = useState(false);
   const [mcpSelected, setMcpSelected] = useState<Set<string>>(new Set());
   const [mcpCopyMenu, setMcpCopyMenu] = useState<null | "bar" | "editor">(null);
+  const copyMenuRef = useRef<HTMLDivElement>(null);
+  const copyBarRef = useRef<HTMLButtonElement>(null);
+  const copyEditorRef = useRef<HTMLButtonElement>(null);
+  useProtocolMenu(copyMenuRef, mcpCopyMenu === "bar" ? copyBarRef : copyEditorRef,
+    !!mcpCopyMenu, () => setMcpCopyMenu(null), {align:"left"});
   const [mcpCopyFlash, setMcpCopyFlash] = useState(false);
   const [mcpRemoveAllAsk, setMcpRemoveAllAsk] = useState(false);
   const [mcpRemoveSelectedAsk, setMcpRemoveSelectedAsk] = useState(false);
@@ -491,30 +498,13 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
   const [eventMenu, setEventMenu] = useState(false);
   const [eventFilter, setEventFilter] = useState("");
   const [toolMenu, setToolMenu] = useState(false);
-  /* Magpie openProtoMenu outside/Escape (app.js L13854–L13864) */
-  useEffect(() => {
-    if (!eventMenu && !toolMenu) return;
-    const onDown = (e: MouseEvent) => {
-      const n = e.target as Node | null;
-      const host = n && (n as Element).closest?.(".lib-hookpick");
-      if (host) return;
-      setEventMenu(false);
-      setToolMenu(false);
-    };
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        setEventMenu(false);
-        setToolMenu(false);
-        setEventFilter("");
-      }
-    };
-    document.addEventListener("mousedown", onDown, true);
-    document.addEventListener("keydown", onKey, true);
-    return () => {
-      document.removeEventListener("mousedown", onDown, true);
-      document.removeEventListener("keydown", onKey, true);
-    };
-  }, [eventMenu, toolMenu]);
+  const eventMenuRef = useRef<HTMLDivElement>(null);
+  const eventAnchorRef = useRef<HTMLButtonElement>(null);
+  const toolMenuRef = useRef<HTMLDivElement>(null);
+  const toolAnchorRef = useRef<HTMLButtonElement>(null);
+  useProtocolMenu(eventMenuRef, eventAnchorRef, eventMenu,
+    () => {setEventMenu(false);setEventFilter("");}, {align:"left"});
+  useProtocolMenu(toolMenuRef, toolAnchorRef, toolMenu, () => setToolMenu(false), {align:"left"});
   const [rtkOn, setRtkOn] = useState<Record<string, boolean>>({ cursor: false });
   /** Magpie renderRTK: missing | installing | checking (skeleton) — no fake binary/path */
   const [rtkPhase, setRtkPhase] = useState<"missing" | "installing" | "checking">("missing");
@@ -803,12 +793,6 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
         }
       }
       if (e.key === "Escape" && document.querySelector("dialog[open]")) return;
-      if (e.key === "Escape" && mcpCopyMenu) {
-        e.preventDefault();
-        e.stopPropagation();
-        setMcpCopyMenu(null);
-        return;
-      }
       if (e.key === "Escape" && document.querySelector(".pop:not(.leaving)")) return;
       if (e.key === "Escape" && mcpEditor && !mcpOauthWall && !mcpSignWaiting) {
         // NOTES 235: Escape → Discard unsaved changes (paste-JSON fill)
@@ -1496,7 +1480,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                           }}
                         />
                         <span className="pref-anchor">
-                          <button
+                          <button ref={copyBarRef}
                             type="button"
                             className="text action lib-updall lib-copyconfig"
                             title={t("Copy these servers as an agent's project file has them, to paste into a project yourself")}
@@ -1506,7 +1490,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                             {t("Copy config…")}
                           </button>
                           {mcpCopyMenu === "bar" ? (
-                            <div className="pop proto-menu" role="menu" aria-label={t("Copy as an agent's project file")}>
+                            <PopoverPortal><div data-anchored ref={copyMenuRef} className="pop proto-menu" role="menu" aria-label={t("Copy as an agent's project file")}>
                               <div className="pm-head">{t("Copy as an agent's project file")}</div>
                               <button
                                 type="button"
@@ -1519,7 +1503,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                                   <span className="pm-note" />
                                 </span>
                               </button>
-                            </div>
+                            </div></PopoverPortal>
                           ) : null}
                         </span>
                         <button
@@ -2886,7 +2870,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                   {t("Remove from the library")}
                 </button>
                 <span className="pref-anchor">
-                  <button
+                  <button ref={copyEditorRef}
                     type="button"
                     className="text lib-updall lib-copyconfig"
                     title={t("Copy {name} as an agent's project file has it, to paste into a project yourself", {
@@ -2899,7 +2883,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                     {t("Copy config…")}
                   </button>
                   {mcpCopyMenu === "editor" ? (
-                    <div className="pop proto-menu" role="menu" aria-label={t("Copy as an agent's project file")}>
+                    <PopoverPortal><div data-anchored ref={copyMenuRef} className="pop proto-menu" role="menu" aria-label={t("Copy as an agent's project file")}>
                       <div className="pm-head">{t("Copy as an agent's project file")}</div>
                       <button
                         type="button"
@@ -2913,7 +2897,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                           <span className="pm-note" />
                         </span>
                       </button>
-                    </div>
+                    </div></PopoverPortal>
                   ) : null}
                 </span>
               </>
@@ -3098,7 +3082,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
           <LibField label={t("When it runs")}>
             <span className="pref-anchor lib-hookpick">
               <PrefPick
-                className="lib-menu lib-hookevent"
+                ref={eventAnchorRef} className="lib-menu lib-hookevent"
                 label={
                   hookEditor.event.includes(":")
                     ? `Cursor · ${hookEditor.event.split(":")[1]}`
@@ -3109,7 +3093,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                 aria-haspopup="menu"
               />
               {eventMenu ? (
-                <div className="pop proto-menu" role="menu" aria-label={t("When it runs")}>
+                <PopoverPortal><div data-anchored ref={eventMenuRef} className="pop proto-menu" role="menu" aria-label={t("When it runs")}>
                   <div className="pm-head">{t("When it runs")}</div>
                   <div className="sc-top">
                     <input
@@ -3123,7 +3107,10 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                       onKeyDown={(e) => e.stopPropagation()}
                     />
                   </div>
-                  {HOOK_EVENTS.map(([v, n]) => {
+                  {HOOK_EVENTS.filter(([, n]) => {
+                    const q = eventFilter.trim().toLocaleLowerCase();
+                    return !q || `${t(n)} ${t("every agent, in its own name for it")}`.toLocaleLowerCase().includes(q);
+                  }).map(([v, n]) => {
                     const on = hookEditor.event === v;
                     return (
                       <button
@@ -3192,7 +3179,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                       </button>
                     );
                   })}
-                </div>
+                </div></PopoverPortal>
               ) : null}
             </span>
           </LibField>
@@ -3212,7 +3199,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
               <LibField label={t("For which tools")} hint={t("Each agent's own names for them")}>
               <span className="pref-anchor lib-hookpick">
                 <PrefPick
-                  className="lib-menu lib-hooktool"
+                  ref={toolAnchorRef} className="lib-menu lib-hooktool"
                   label={t(HOOK_TOOLS.find(([v]) => v === hookEditor.matcher)?.[1] || "Any tool")}
                   open={toolMenu}
                   title={t(HOOK_TOOLS.find(([v]) => v === hookEditor.matcher)?.[1] || "Any tool")}
@@ -3220,7 +3207,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                   aria-haspopup="menu"
                 />
                 {toolMenu ? (
-                  <div className="pop proto-menu" role="menu" aria-label={t("For which tools")}>
+                  <PopoverPortal><div data-anchored ref={toolMenuRef} className="pop proto-menu" role="menu" aria-label={t("For which tools")}>
                     <div className="pm-head">{t("For which tools")}</div>
                     {HOOK_TOOLS.map(([v, n]) => {
                       const on = hookEditor.matcher === v;
@@ -3246,7 +3233,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                         </button>
                       );
                     })}
-                  </div>
+                  </div></PopoverPortal>
                 ) : null}
               </span>
               </LibField>

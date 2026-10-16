@@ -350,7 +350,6 @@ body.web.side-nav {
 
 /* v0.1.129: drop invent .lib-switch geometry (height 18 / thumb 14 / translateX 14 / --pill).
    Magpie library.css L141–146 owns .lib-switch (32×19, thumb 15, translateX 13, --line/--fg). */
-.lib-switch:disabled { opacity: .5; cursor: default; }
 
 /* text.action / icon hover already in app.css — ensure copy-pop available */
 @media (prefers-reduced-motion: reduce) {
