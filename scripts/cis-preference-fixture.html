@@ -5,11 +5,11 @@
 <button id="restore">Restore initial preferences</button>
 <a href="/">Open preview</a><pre id="state"></pre>
 <script>
-const keys=['magpie.navLayout','magpie.lang','magpie.uiLocale','magpie.demoPrefs'];
-const backupKey='cis-settings-20261016-initial';
+const keys=['magpie.navLayout','magpie.lang','magpie.uiLocale','magpie.demoPrefs','magpie.demoGw','magpie.routingPeerServes','magpie.flavor','magpie.snipLang','magpie.gwSnipLang','magpie.snipOS','magpie.gwConnectFolded','magpie.gwModelsFolded','magpie.model'];
+const backupKey='cis-appearance-gateway-20261016-initial';
 const read=()=>Object.fromEntries(keys.map(key=>[key,localStorage.getItem(key)]));
 const show=(action)=>document.querySelector('#state').textContent=JSON.stringify({action,current:read(),initial:JSON.parse(sessionStorage.getItem(backupKey)||'null')},null,2);
 document.querySelector('#snapshot').onclick=()=>{if(!sessionStorage.getItem(backupKey))sessionStorage.setItem(backupKey,JSON.stringify(read()));show('Initial snapshot retained');};
-document.querySelector('#restore').onclick=()=>{const initial=JSON.parse(sessionStorage.getItem(backupKey)||'null');if(!initial){show('No snapshot; nothing changed');return;}for(const key of keys){if(initial[key]===null)localStorage.removeItem(key);else localStorage.setItem(key,initial[key]);}show('Restored listed preferences');};
+document.querySelector('#restore').onclick=()=>{const initial=JSON.parse(sessionStorage.getItem(backupKey)||'null');if(!initial){show('No snapshot; nothing changed');return;}for(const key of keys){if(!Object.hasOwn(initial,key))continue;if(initial[key]===null)localStorage.removeItem(key);else localStorage.setItem(key,initial[key]);}show('Restored listed preferences');};
 show('Read only; snapshot before testing');
 </script>

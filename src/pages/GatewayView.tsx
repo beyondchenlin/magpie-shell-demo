@@ -1,3 +1,4 @@
+import { GATEWAY_FLAVORS, curlSnippet, envSnippet, type FlavorId } from "../data/gateway-flavors";
 import { MagpieIcon } from "../components/MagpieIcon";
 import { useEffect, useState, type ReactNode } from "react";
 import { CopyButton as CopyBtn } from "../components/CopyButton";
@@ -6,6 +7,7 @@ import { Fold, FoldChev } from "../components/Fold";
 import { Segs } from "../components/Segs";
 import { TextBtn } from "../components/TextBtn";
 import { demoCopy, t, useLang } from "../i18n";
+import { copyText } from "../lib/copyText";
 
 type DemoGwModel = { id: string; name: string; provider: string; icon?: string };
 type DemoCall = { id: string; time: number; agent: string; model: string; from: string; to: string; status: number; ms: number; ttft?: number; error?: string };
@@ -29,7 +31,7 @@ function readDemoPrefs(): { lan: boolean; showGwDemo: boolean; port: string } {
     const raw = localStorage.getItem("magpie.demoPrefs");
     if (!raw) return { lan: false, showGwDemo: false, port: "3425" };
     const j = JSON.parse(raw);
-    return { lan: !!j.lan, showGwDemo: j.showGwDemo !== false, port: String(j.port || "3425") };
+    return { lan: !!j.lan, showGwDemo: j.showGwDemo === true, port: String(j.port || "3425") };
   } catch {
     return { lan: false, showGwDemo: false, port: "3425" };
   }
@@ -78,61 +80,10 @@ function persistGwMode(m: GwMode) {
   }
 }
 
-type FlavorId = "openai" | "responses" | "anthropic" | "gemini" | "systemone";
 type SnipLang = "shell" | "curl" | "python" | "node";
 type SnipOS = "windows" | "unix";
 
-type Flavor = {
-  id: FlavorId;
-  name: string;
-  note: string;
-  base: (u: string) => string;
-  baseEnv?: string;
-  keyEnv?: string;
-  decide?: boolean;
-};
-
-const FLAVORS: Flavor[] = [
-  {
-    id: "openai",
-    name: "OpenAI",
-    note: "Chat Completions, the API most tools speak. Anything with an OpenAI base-URL setting works.",
-    base: (u) => u + "/v1",
-    baseEnv: "OPENAI_BASE_URL",
-    keyEnv: "OPENAI_API_KEY",
-  },
-  {
-    id: "responses",
-    name: "Responses",
-    note: "OpenAI's newer API: reasoning, built-in tool items, encrypted reasoning. Codex speaks this.",
-    base: (u) => u + "/v1",
-    baseEnv: "OPENAI_BASE_URL",
-    keyEnv: "OPENAI_API_KEY",
-  },
-  {
-    id: "anthropic",
-    name: "Anthropic",
-    note: "Messages API. Claude Code reads ANTHROPIC_AUTH_TOKEN instead of the key; the Agents tab sets that for you.",
-    base: (u) => u,
-    baseEnv: "ANTHROPIC_BASE_URL",
-    keyEnv: "ANTHROPIC_API_KEY",
-  },
-  {
-    id: "gemini",
-    name: "Gemini",
-    note: "Google's generateContent API, v1beta. Gemini CLI and the google-genai SDKs speak this.",
-    base: (u) => u,
-    baseEnv: "GOOGLE_GEMINI_BASE_URL",
-    keyEnv: "GEMINI_API_KEY",
-  },
-  {
-    id: "systemone",
-    name: "System One",
-    note: 'TypeSafe\'s decision API: a Jev or Clef model answers typed questions (choice, noul, score) about a state, with how sure it is. Clef also reads images: add "images": ["data:image/png;base64,…"].',
-    base: (u) => u + "/v1",
-    decide: true,
-  },
-];
+const FLAVORS = Object.entries(GATEWAY_FLAVORS).map(([id, flavor]) => ({ id: id as FlavorId, ...flavor }));
 
 function lsGet(k: string, fallback: string) {
   try {
@@ -199,13 +150,6 @@ function highlightShell(code: string): ReactNode[] {
   });
 }
 
-function envSnippet(baseEnv: string, base: string, keyEnv: string, secret: string, win: boolean) {
-  if (win) {
-    return `$env:${baseEnv}="${base}"\n$env:${keyEnv}="${secret}"`;
-  }
-  return `export ${baseEnv}=${base}\nexport ${keyEnv}=${secret}`;
-}
-
 type Props = {
   onStatus: (msg: string, kind?: string) => void;
   onGoNetwork: () => void;
@@ -255,7 +199,7 @@ export function GatewayView({ onStatus, onGoNetwork }: Props) {
   const f = FLAVORS.find((x) => x.id === flavor) || FLAVORS[0];
   const gatewayUrl = `http://127.0.0.1:${port}`;
   const base = f.base(gatewayUrl);
-  const modelPlaceholder = f.decide ? "provider/jev_latest" : (catalog.some((model) => model.id === exampleModel) ? exampleModel : catalog[0]?.id || "provider/model");
+  const modelPlaceholder = f.decide ? "provider/jev-latest" : (catalog.some((model) => model.id === exampleModel) ? exampleModel : catalog[0]?.id || "provider/model");
   /** Magpie client.js L394–405 / L431–437: lan keys vs loopback magpie */
   const enabledKeys = lanOn ? gwKeys.filter((k) => !k.off) : [];
   const connectKey = enabledKeys[0] || null;
@@ -305,22 +249,11 @@ export function GatewayView({ onStatus, onGoNetwork }: Props) {
   if (!secret) {
     snippet = t(connectKey ? "Loading gateway key…" : "Create a gateway key above to connect");
   } else if (f.baseEnv && f.keyEnv && activeSnip === "shell") {
-    snippet = envSnippet(f.baseEnv, base, f.keyEnv, secret, win);
-  } else if (activeSnip === "curl" && f.id === "openai") {
-    snippet = win
-      ? `@'\n{"model": "${modelPlaceholder}",\n "messages": [{"role": "user", "content": "hi"}]}\n'@ | curl.exe ${base}/chat/completions \`\n  -H "Authorization: Bearer ${secret}" \`\n  -H "Content-Type: application/json" \`\n  --data-binary "@-"`
-      : `curl ${base}/chat/completions \\\n  -H "Authorization: Bearer ${secret}" \\\n  -H "Content-Type: application/json" \\\n  -d '{"model": "${modelPlaceholder}",\n "messages": [{"role": "user", "content": "hi"}]}'`;
-  } else if (activeSnip === "python" && f.baseEnv) {
-    snippet =
-      f.id === "anthropic"
-        ? `import anthropic\n\nclient = anthropic.Anthropic(\n    base_url="${base}", api_key="${secret}",\n)\nm = client.messages.create(\n    model="${modelPlaceholder}",\n    max_tokens=1024,\n    messages=[{"role": "user", "content": "hi"}],\n)\nprint(m.content[0].text)`
-        : f.id === "gemini"
-          ? `from google import genai\n\nclient = genai.Client(api_key="${secret}", http_options={"base_url": "${base}"})\nr = client.models.generate_content(model="${modelPlaceholder}", contents="hi")\nprint(r.text)`
-          : `from openai import OpenAI\n\nclient = OpenAI(base_url="${base}", api_key="${secret}")\nr = client.chat.completions.create(\n    model="${modelPlaceholder}",\n    messages=[{"role": "user", "content": "hi"}],\n)\nprint(r.choices[0].message.content)`;
-  } else if (activeSnip === "node" && f.baseEnv) {
-    snippet = `import OpenAI from "openai";\n\nconst client = new OpenAI({ baseURL: "${base}", apiKey: "${secret}" });\nconst r = await client.chat.completions.create({\n  model: "${modelPlaceholder}",\n  messages: [{ role: "user", content: "hi" }],\n});\nconsole.log(r.choices[0].message.content);`;
-  } else if (f.decide) {
-    snippet = `curl ${base}/systemone \\\n  -H "Authorization: Bearer ${secret}" \\\n  -H "Content-Type: application/json" \\\n  -d '{"model": "${modelPlaceholder}", "state": {}, "questions": {}}'`;
+    snippet = envSnippet([[f.baseEnv, base], [f.keyEnv, secret]], win);
+  } else if (activeSnip === "curl") {
+    snippet = curlSnippet(f.curl(base, modelPlaceholder, secret), win);
+  } else if (activeSnip === "python" || activeSnip === "node") {
+    snippet = f[activeSnip](base, modelPlaceholder, secret);
   }
 
   const countsSub = [
@@ -453,6 +386,11 @@ export function GatewayView({ onStatus, onGoNetwork }: Props) {
     lsSet("magpie.snipOS", id);
   };
 
+  const copyValue = async (text: string, what: string) => {
+    if (await copyText(text)) onStatus(t("{what} copied", { what }), "ok");
+    else onStatus(demoCopy("复制失败，请手动复制", "Could not copy; select and copy the value"), "err");
+  };
+
   return (
     <main className="view" id="view-gateway">
       <div className="list gwcard">
@@ -486,8 +424,7 @@ export function GatewayView({ onStatus, onGoNetwork }: Props) {
             className="url"
             title={t("Copy the gateway URL")}
             onClick={() => {
-              void navigator.clipboard?.writeText(gatewayUrl).catch(() => {});
-              onStatus(t("{what} copied", { what: t("Gateway URL") }), "ok");
+              void copyValue(gatewayUrl, t("Gateway URL"));
             }}
           >
             <code>{gatewayUrl}</code>
@@ -764,8 +701,7 @@ export function GatewayView({ onStatus, onGoNetwork }: Props) {
           id="copyModels"
           hidden={!filteredModels.length || modelsListHidden}
           onClick={() => {
-            void navigator.clipboard?.writeText(filteredModels.map((m) => m.id).join("\n"));
-            onStatus(t("{what} copied", { what: t("Model ids") }), "ok");
+            void copyValue(filteredModels.map((m) => m.id).join("\n"), t("Model ids"));
           }}
         >
           {t("Copy all ids")}

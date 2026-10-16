@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { demoCopy, t } from "../i18n";
+import { copyText } from "../lib/copyText";
 
 /** Magpie `.copy`: one size, icon and 1200ms feedback in Settings and Gateway. */
 export function CopyButton({ text, what, onStatus, className = "copy", title }: {
@@ -23,24 +24,7 @@ export function CopyButton({ text, what, onStatus, className = "copy", title }: 
 
   const copy = async () => {
     try {
-      let copied = false;
-      try { await navigator.clipboard.writeText(text); copied = true; } catch { /* Native tries the page's copy command next. */ }
-      if (!copied) {
-        const previousFocus = document.activeElement as HTMLElement | null;
-        const field = document.createElement("textarea");
-        field.value = text;
-        field.readOnly = true;
-        field.className = "sr-only";
-        document.body.append(field);
-        try {
-          field.focus({ preventScroll: true });
-          field.select();
-          if (!document.execCommand("copy")) throw new Error("Copy failed");
-        } finally {
-          field.remove();
-          if (previousFocus?.isConnected) previousFocus.focus({ preventScroll: true });
-        }
-      }
+      if (!await copyText(text)) throw new Error("Copy failed");
       if (!mounted.current) return;
       if (button.current) {
         button.current.classList.remove("done");

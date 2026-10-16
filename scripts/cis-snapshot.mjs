@@ -24,7 +24,8 @@ execFileSync(node,[join(root,'node_modules/vite/bin/vite.js'),'build'],{cwd:src,
 const dist=join(src,'dist'),pkg=JSON.parse(readFileSync(join(src,'package.json'),'utf8'));
 const probe=readFileSync(join(root,'scripts/cis-motion-probe.js'));
 writeFileSync(join(dist,'cis-motion-probe.js'),probe);
-const html=readFileSync(join(dist,'index.html'),'utf8').replace('<head>','<head><meta name="magpie-source-commit" content="'+source+'"><meta name="magpie-ui-version" content="'+pkg.version+'">').replace('</body>','<script type="module" src="./cis-motion-probe.js"></script></body>');
+writeFileSync(join(dist,'cis-copy-fixture.js'),readFileSync(join(root,'scripts/cis-copy-fixture.js')));
+const html=readFileSync(join(dist,'index.html'),'utf8').replace('<head>','<head><script src="./cis-copy-fixture.js"></script><meta name="magpie-source-commit" content="'+source+'"><meta name="magpie-ui-version" content="'+pkg.version+'">').replace('</body>','<script type="module" src="./cis-motion-probe.js"></script></body>');
 writeFileSync(join(dist,'index.html'),html);
 const artifacts=[];
 function walk(dir){for(const e of readdirSync(dir,{withFileTypes:true})){const p=join(dir,e.name);if(e.isDirectory())walk(p);else{const b=readFileSync(p);artifacts.push({path:relative(dist,p).replaceAll('\\','/'),bytes:b.length,sha256:createHash('sha256').update(b).digest('hex')});}}}

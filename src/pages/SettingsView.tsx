@@ -248,7 +248,7 @@ const DEFAULTS: DemoPrefs = {
   syncKind: "webdav",
   autoReset: { "demo@openai.com": { week: false, expiring: false } },
   autoResetUsers: ["demo@openai.com"],
-  showGwDemo: true,
+  showGwDemo: false,
   disabledModels: [],
   searchAPIs: [],
   uiFont: null,
