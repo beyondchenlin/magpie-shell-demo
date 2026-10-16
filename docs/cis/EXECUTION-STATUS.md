@@ -1,18 +1,18 @@
 # CIS 执行进度
 
-更新时间：2026-10-17 00:21 Asia/Shanghai
+更新时间：2026-10-17 01:28 Asia/Shanghai
 
-- 当前阶段：phase2_pages_p2_p3_p5_complete，下一批S4/B3/B4。唯一执行者本聊天01a14465-ad94-73e0-a0ad-991539957fa0；监督01a143c3-8101-75e1-b638-c39ad15d55ed；无子代理。
-- **29项：通过19、失败0、待验10。** P2/P3/P5三处复现已修复并复验：组行菜单键盘、请求详情实现说明、MCP确认Escape。之前C3/P1/P4仍通过，失败前证据均保留。下一批最多3ID，无新增组合。
+- 当前阶段：phase2_controls_complete_next_b1_b2_d1。唯一执行者本聊天01a14465-ad94-73e0-a0ad-991539957fa0；监督01a143c3-8101-75e1-b638-c39ad15d55ed；无子代理。
+- **29项：通过22、失败0、待验7。** S4/B3/B4在interactions/cis-controls-a8976e0完整收口。S4裸13数组按1100d15/session49044采集区间绑定，五操作PrefRow+SyncForms哈希同源，不追认新版采集。B3 34裸配方逐项分类、未知0，七种特殊菜单及图标/控件有限变体通过。B4 canonical76中16实采a897、8实采843、52实采f896，19个精确AST分支与未变Git blob证明有界复用；原失败及32次定向补拍历史均保留，24联系图已逐张核对。没有全矩阵重复跑或修改原生入场CSS。
 - 通过项：N1/N2=2660400/v194；S2/S3=90099b9/v195；G1/G2/G3=874268b/v196；S1/N4/G4=0a2a014/v197；C1/C2/C4=396c11c/v198；C3/P1/P4=7880135/v199；P2/P3/P5=1100d15/v200。跨候选复用逐条注明源blob/差异边界，不拼称同一候选全过。N3保留独立动态复核，不重录三轮。
-- 当前实际受测UI：1100d152bcf6ff4f6ba170824249844a3496ce9a /0.1.200；4176受管session49044、pages-candidate-1 Git archive隔离产物。GroupEditor两候选blob均f5c854cd7e5ded5ce2e45222bd8369ce7d0c39f7，九类规则增删/roundtrip等复用；实际新UI核验第五行菜单caller、MCP Escape与请求详情。其余继承草稿不整体提交。
+- 当前受管4176：a8976e0db339d520a290cbdd548c290be760797b /0.1.204，session5944、static-candidate-3 immutable Git archive，受影响静态复验已完成。843/v203搜索包装修复已验；54690da/v204因移除旧段落遗留openSet未用变量而tsc失败，未服务/未验UI；a897移除该变量后通过。其余继承草稿不整体提交，未改C1内核/导航或基础六CSS。
 - 规则唯一入口docs/CIS-CONTROLS.md，冻结028dab5；监督批准R01 window级联勘误3c2d6de，其余范围/29项不变。常规批次无需等批准，两个同定位失败后先查根因。
-- 检查：1100d15 build/TypeScript/两guard通过，55 TS/TSX lint55 warnings/0 errors；浏览器warn/error=[]。九条件前后精确相同、intent/images独立、pause白名单、组键盘/排序、MCP草稿、UI SHA、39键恢复等断言通过。索引绑定1100d15：20文件/465调用/34裸DOM候选；useRowMenu5处，不以数量当通过。
-- Git：分支tip/0.1.121-cis-appearance-shell，PR #1；最近已确认推送e19fd5a。本地UI1100d15，证据提交不算新UI身份。上次push408/sideband断开，后续TLS EOF及连接器/gh GraphQL/REST更新失败，未确认远端落地。监督独立fetch也连续3轮失败，远端同步/云预览身份为外部阻塞；最小恢复条件是认证工具可读分支SHA并完成push确认，仅有新连通信号才做一次有界验证，不关闭TLS/强推/盲重试。
+- 检查：a897 build/TypeScript/两guard通过，56 TS/TSX lint55 warnings/0 errors。索引绑定a897：21文件/473调用/34裸候选，useRowMenu5/useProtocolMenu6调用（7种内容，copy两入口共享）。独立fixture保持产品资源hash，明确浅深色及图标/控件状态；源与采集SHA分别保留。B4 76条均无文档/视图横向溢出、越界未受控内容、破图或交互嵌套；12首轮/8修订联系图已查看，新候选只补受影响范围。公开证据现约36MB，仍在40MiB预算内。
+- Git：分支tip/0.1.121-cis-appearance-shell，PR #1；最近已确认推送e19fd5a。本地UI a8976e0，证据提交不算新UI身份。上次push408/sideband断开，后续TLS EOF及连接器/gh GraphQL/REST更新失败，未确认远端落地。监督独立fetch也连续3轮失败，远端同步/云预览身份为外部阻塞；最小恢复条件是认证工具可读分支SHA并完成push确认，仅有新连通信号才做一次有界验证，不关闭TLS/强推/盲重试。
 - 现场：用户4173/PID21080与rootdist未动。本任务4174/PID98524、4175/PID76536保留，4176按批次通过受管PTY Ctrl+C切换。早前自动审核拒绝OS stop/restart4174，未绕过。自有tab19当前在page preference fixture，已恢复39键与initial精确一致；新批前继续保留同一tab备份，不提前关页。
 - 证据：既有nav/settings/gateway/layout/menus目录及四原问题图保留；新增interactions/cis-confirm-before-396c11c、cis-confirm-7880135、cis-pages-1100d15。F02初焦误判已更正。含个人界面的原图不公开。mock安装/供应商配置/路由组均不接真实服务，没下载或执行第三方代码。
-- 空间与保全：唯一工作树D:/demo1/tagmaai，未安装或复制环境。1100d15构建前C/Temp25735577600、D49682403328bytes，单快照预计<30MiB，复用现有依赖，保留>10GiB。仅早前回收7份本任务source.tar运输文件34232320逻辑bytes，D前20203614208/后20237852672含并发写入，不冒称净物理释放。清单.cache/cis-navigation-20261016/tar-cleanup-*.json；之后没有清理。接管补丁/hash/原图/源码/dist/历史验收仍保留。
-- 剩余具体子用例：S4六设置分区默认/一项操作/已有disabled；B3原语变体/调用配方与例外账本；B4固定19状态×1364浅深与900/390浅色共76记录。之后B1/B2/D1固定候选与必要工程检查、D2/D3/D4交付/远端外部恢复条件及用户四重点观感。N3待监督独立动态结论。
+- 空间与保全：唯一工作树D:/demo1/tagmaai，未安装或复制环境。01:25 C/Temp25176465408、D49650900992bytes；本批公开证据约13.5MiB，总CIS公开证据约36.3MiB，未超40MiB计划，均为逻辑大小。仅早前回收7份本任务source.tar运输文件34232320逻辑bytes，D前20203614208/后20237852672含并发写入，不冒称净物理释放。清单.cache/cis-navigation-20261016/tar-cleanup-*.json；之后没有清理。接管补丁/hash/原图/源码/dist/历史验收仍保留。
+- 剩余具体子用例：B1/B2/D1固定候选身份、六CSS与兼容例外、已有必要工程检查及同候选最终固定主流程；D2/D3/D4交付/远端外部恢复条件及用户四重点观感。N3待监督独立动态结论。没有普通实现差异仍待修复，不因远端阻塞继续调UI。
 
 ## 实质进展记录
 

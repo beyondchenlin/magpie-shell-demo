@@ -1,0 +1,30 @@
+[
+  {
+    "tab": "MCP 服务器",
+    "source": "f896ebdff21d3e9aad5ec0355709c16df3e0650a",
+    "style": {
+      "appearance": "auto",
+      "bg": "rgb(255, 255, 255)",
+      "border": "1.81818px inset rgb(118, 118, 118)",
+      "class": "",
+      "color": "rgb(28, 28, 33)",
+      "height": "21.8324px",
+      "parent": "",
+      "radius": "0px"
+    }
+  },
+  {
+    "tab": "技能",
+    "source": "f896ebdff21d3e9aad5ec0355709c16df3e0650a",
+    "style": {
+      "appearance": "auto",
+      "bg": "rgb(255, 255, 255)",
+      "border": "1.81818px inset rgb(118, 118, 118)",
+      "class": "",
+      "color": "rgb(28, 28, 33)",
+      "height": "21.8324px",
+      "parent": "",
+      "radius": "0px"
+    }
+  }
+]

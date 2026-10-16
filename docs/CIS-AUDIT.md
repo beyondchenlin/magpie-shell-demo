@@ -36,7 +36,7 @@
 | F02 Agent模型初焦/重排/生命周期 | 初焦静态判断已撤回：原组件已有autoFocus，0a2a014浏览器确认正常，没有因此改初焦。实际风险为Order moveTo无源重绘后focus、缺scroll/resize关闭；源app.js:3332、3516–3529明示行为 | C4/C2已完成有限复验，见396c11c证据；保留此更正，不将旧误判当已修缺陷 |
 | F03 字体、日期、协议生命周期 | FontRow/RangeMenu/ProtoMultiMenu主要监听外点/键盘，useAnchoredPopover在scroll/resize只重定位；源各类明示关闭 | C2：分别内部滚动、用户外部滚动与resize一次；程序恢复滚动不关。共用坐标不能代替专用状态机 |
 | F04 字体style初焦 | FontRow仅family显式初焦；style原版openProtoMenu初焦选中项；当前style菜单可能仍留锚 | S2/C2：选非默认family后开style，记录activeElement，方向键一次 |
-| F05 组件配方未全收口 | 34个裸DOM候选中包含合法组件定义、原生.dot.tick、复合archive span及可能重复Library菜单；不能全删，也不能全放过 | B3：按文件/行分类为原生特例、共享包装内部、重复配方/待复现。优先处理直接影响冻结路径者，记录每项理由 |
+| F05 组件配方未全收口 | 原34候选包含定义、原生.dot.tick、复合archive/mirror/group及特殊菜单；已逐项分类，未知0；特殊菜单独立键盘/生命周期冲突实证后收口到useProtocolMenu | B3通过：[34分类](../interactions/cis-controls-a8976e0/raw-recipe-classification.json)、[R01–R15证据链](../interactions/cis-controls-a8976e0/NOTES.md)。保留原生复合DOM，不机械删除或重包；调用数不是通过数 |
 | F06 历史证据不能绑定候选 | v195 JSON共39observations，首search rows=[]，notes称query后来yi，独立claude复测四行；没有commit/完整环境字段 | C4：绑定最终候选后只重做对应路径；原记录与失败留存；不补写不存在的旧SHA |
 | F07 dist构建身份缺失 | preview.json=v194/93b4b74，但dist构建18:39:38且实际asset index-gzRBpZxd；bundle没有壳package版本。HTTP200只证明能加载 | B1/D2：阶段2最终构建记录源码SHA、版本、产物hash与预览映射；阶段1称“继承dist，版本未可证明”，不冒称已发布v195 |
 | F08 模型定位算法可能过度合并 | placePopover对model与proto使用“较多空间”统一判向；原placePop与placeMenu上翻逻辑不同；各调用的preferUp也需与对应源核对 | C1：靠近底部且上方也不够的同窗口锚点、短/长列表各一次；对照R18各自算法，不以在框内就算对齐 |

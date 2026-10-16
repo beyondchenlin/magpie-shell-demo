@@ -6,7 +6,7 @@ import { execFileSync } from 'node:child_process';
 
 const root = resolve(process.argv[2] || process.cwd());
 const outputPath = resolve(process.argv[3] || 'docs/cis/component-call-sites.json');
-const controls = new Set(['PrefRow','TextBtn','WordsField','LibSwitch','Tick','PrefPick','FieldPill','Fold','FoldChev','StatusToast','ActionConfirm','Segs','useSegThumb','CopyButton','MagpieIcon','PluginLogo','ModelPop','ProtoMultiMenu','AgentModelsPop','PopoverPortal','useAnchoredPopover','useRowMenu','SidebarTabs','ConnectionField','RequestArchive','InfoTip']);
+const controls = new Set(['PrefRow','TextBtn','WordsField','LibSwitch','Tick','PrefPick','FieldPill','Fold','FoldChev','StatusToast','ActionConfirm','Segs','useSegThumb','CopyButton','MagpieIcon','PluginLogo','ModelPop','ProtoMultiMenu','AgentModelsPop','PopoverPortal','useAnchoredPopover','useRowMenu','useProtocolMenu','SidebarTabs','ConnectionField','RequestArchive','InfoTip']);
 const files = [];
 function walk(dir) {
   for (const e of readdirSync(dir, {withFileTypes:true})) {

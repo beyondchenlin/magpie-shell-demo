@@ -1,0 +1,62 @@
+[
+  {
+    "case": "allowances-default",
+    "snapshot": "菜单栏显示额度\n鼠标指向托盘里的 magpie 图标时显示所选订阅的额度，或今天、最近 7 天的 token 数和费用，每隔几分钟刷新\n关闭\n额度显示\n每个周期显示已用额度或剩余额度，用量页、面板和菜单栏一致\n已用\n剩余\n额度刷新\n仅手动：打开或刷新用量页、卡片上的刷新，以及 magpie quota 或 accounts 才会读取；在那之前，路由、菜单栏和提醒都按上次读到的额度。被厂商以额度为由拒绝的账号仍会读取。\n自动\n仅手动\n货币\n用量页、托盘面板、TUI 和命令行的费用按此币种显示；厂商余额保持其原币种，不换算\n$ USD\n¥ CNY\n数字单位\n用量页和面板上较大的 token 数、请求数用什么单位缩写\n英文（K / M / B）\n中文（万 / 亿）\n额度提醒\n5 小时、每周或每月额度用到此比例时通知，每个周期一次\n关闭\n开启\n余额提醒\n余额降到此数（按其货币或积分计）时通知，充值前只提醒一次\n关闭\n开启\n重置前提醒\n每周或每月窗口用量不到 85% 即将重置时，或重置卡将过期未用时，提前这么久通知\n关闭\n提前 12 小时\n提前 24 小时\n提前 48 小时\n任务完成提醒\nClaude Code、Codex、OpenCode 等经由 magpie 的智能体完成一个至少跑了这么久的任务时通知\n关闭\n1 分钟\n3 分钟\n10 分钟\nCodex：自动使用重置卡\nChatGPT 账号在周额度用完、且没有别的账号能接请求时，或者重置卡快到期还没用时，自动用掉一张。默认关闭，按账号单独打开；用量页每个账号的卡片上也有同一个开关。\ndemo@openai.com\n周额度用完时\n关闭\n开启\n重置卡到期前\n关闭\n开启\nCODEX\nCLAUDE CODE\n窗口重置时预热\n发一条极小的请求，让下一个窗口立即开始计时\n关闭\n每周\n每周和 5 小时\n每日定时预热\n每天到这个时间开启各账号的 5 小时窗口\n关闭\n开启",
+    "disabled": []
+  },
+  {
+    "case": "allowances-left",
+    "pressed": "true"
+  },
+  {
+    "case": "network-default",
+    "snapshot": "代理\n未发现系统代理，未单独设置代理的模型厂商请求和检查更新都直连\n测试\n自动\n关闭\n自定义\nGITHUB\nGitHub 令牌\n资源库检查技能更新时使用。GitHub 每小时允许带令牌 5000 次请求，不带仅 60 次。也用它从它能读取的私有仓库安装技能；公开仓库无需勾选权限。\n创建一个 ↗\n保存\n网关\n网关端口\n改了之后，已接入 magpie 的 Agent 会一起换过去。当前 http://127.0.0.1:3425\n应用\n不带供应商的模型 ID\n网关的模型列表还会以模型自己的 ID 列出每个模型，如 codex/gpt-5.6-sol 旁的 gpt-5.6-sol，供从其他代理迁来的应用使用。多个供应商都提供的模型，按“供应商”中的顺序发往它们\n关闭\n开启\n局域网\n局域网共享\n同一网络中其他电脑上的 Agent，或经由隧道（如 Cloudflare Tunnel）连到这台电脑的 Agent，可凭网关页的网关密钥使用 magpie 的模型\n关闭\n开启\n网页\n允许调用 magpie 的网页\n这些来源的网页脚本可以在浏览器中调用网关，每个请求需带上「网关」页的网关密钥。其他网站的网页会被拒绝，本机的网页不受影响\n添加",
+    "disabled": []
+  },
+  {
+    "case": "port-3426",
+    "value": "3426",
+    "footer": "网关已换到端口 3426\n127.0.0.1:3425"
+  },
+  {
+    "case": "port-gateway-synced",
+    "text": "网关运行中\n0 个模型 · 尚无 Agent 经由此路由 · 五种 API，一个地址\n重启网关\nhttp://127.0.0.1:3426\n\n网关密钥给其他电脑用，也给连到这台电脑的隧道（如 Cloudflare Tunnel）用：打开「局域网共享」后在这里添加。这台电脑上的 Agent 不需要密钥。 网络与共享\n\n接入\n仅限本机回环 · 密钥可以随意填\nAPI\nOpenAI\nResponses\nAnthropic\nGemini\nSystem One\nChat Completions，多数工具使用的 API。任何可设置 OpenAI base URL 的工具都能用。\nAPI 地址\nhttp://127.0.0.1:3426/v1\n填入 OPENAI_BASE_URL。\nAPI 密钥\nmagpie\nOPENAI_API_KEY=magpie。网关信任本机回环请求，可填任意值。\n模型\nprovider/model\n还没有模型。添加一个供应商，或登录 Codex / Copilot。\n示例\nPowerShell\ncurl\nPython\nNode\nWindows\nmacOS · Linux\n$env:OPENAI_BASE_URL=\"http://127.0.0.1:3426/v1\"\n$env:OPENAI_API_KEY=\"magpie\"\n将这些写入 shell（或工具设置），工具即改连 magpie，而非直连供应商。\n模型\n尚未暴露任何模型\n添加供应商，或登录 Codex / Copilot；其模型会列在这里，供所有 Agent 使用。\n最近调用\n还没有请求。让 Agent 使用某个模型，或运行上面的示例；调用会实时显示在这里。"
+  },
+  {
+    "case": "models-default",
+    "text": "图像\n识图模型\n当前模型不能看图时，由此模型描述图片，每张图只描述一次\n自动 · 没有能看图的模型\n生图模型\nMagpie Image 生图所用的模型。Agent 要从资源库添加 Magpie Image 工具才能生图；图片保存在其项目目录\n自动 · 没有能生图的模型\n启用资源库\n识图 MCP 服务器\n智能体可以把识图添加为 MCP 服务器（Streamable HTTP），提供一个 analyze_image 工具：用识图模型读取文件路径、URL 或 data URL 中的图片。从其他电脑访问时，请以 Authorization: Bearer <key> 发送网关密钥，图片以 URL 或 data URL 传入。\nhttp://127.0.0.1:3425/mcp/magpie/vision\n联网搜索\n代搜供应商\nWhen a model can't search the web directly, the selected provider searches for it and returns the results.\n自动 · 没有能搜索的供应商\n搜索 API\n模型不能联网搜索时，按顺序用这些 API 代为搜索并返回结果 · 没有能搜索的供应商，由这些 API 来搜\nTavily\n获取密钥 ↗\n添加\nMCP 服务器\nCursor、Claude Desktop 等智能体可以把这个搜索添加为 MCP 服务器（Streamable HTTP），提供一个 web_search 工具。从其他电脑访问时，请以 Authorization: Bearer <key> 发送网关密钥。\nhttp://127.0.0.1:3425/mcp/magpie/web-search\n回复\n回复里写明成员\n回复的 model 写 magpie 里作答的 provider/model（workbuddy/glm-5.3-flash），而不是厂商自己的名字，给按它统计用量的 agent 用。Claude Code、Claude Desktop 和 Codex 仍拿到厂商的名字；X-Magpie-Model 响应头对所有 agent 都会写明\n关闭\n开启\n停止循环的回复\n回复的思考或正文反复绕着同样几句打转时，就结束它并给 Agent 一个可以重试的错误，而不是一直跑到输出上限\n关闭\n开启\n被拒答后再问\n供应商的安全过滤在还没说出任何内容前拒绝请求时，再换多少个账号或路由组成员去问。选“不再问”会直接把拒答交回：Claude Code 随后会像直连 Anthropic API 时一样，自己换到它的备用模型\n不再问\n1\n2\n3\n全部\n已停用的模型\n停用模型\n停用的模型在经过 magpie 的每条路径上都会被拒绝（直接请求、会话、路由组、回退、子 Agent、决策模型），也不会出现在 magpie 的列表和 Agent 的模型选择里。只管经过 magpie 的请求。输入 *fable* 这样的通配符可停用它匹配的所有模型\n停用…\n没有已停用的模型",
+    "disabled": []
+  },
+  {
+    "case": "stop-loop-off",
+    "pressed": "true"
+  },
+  {
+    "case": "privacy-default",
+    "text": "脱敏密钥\nAPI Key、私钥、Token 和密码以占位符发给模型厂商，回复里再还原\n关闭\n开启\n脱敏个人信息\n邮箱、手机号、身份证号和银行卡号也一并脱敏\n关闭\n开启\n账号打码\n用量和路由页上的邮箱和账号名会被模糊处理，方便截图分享\n关闭\n开启\n脱敏词\n不想让模型厂商看到的词，用逗号分隔\n自定义脱敏规则\n内置规则不认识的密钥，比如自建网关的 Key：按前缀或正则匹配。「脱敏密钥」开启时生效\n前缀\n正则\n添加\nAPI_KEY\n以 oc_sk_ 开头\n编辑\n移除\n计入用户数\n每天一次，发送本机随机 ID、magpie 版本和系统\n关闭\n开启\n分享我用的 agent、provider 和模型\n随上面那条一起发送：只用 magpie 内置的 ID 和各自的数量，以及每个合作伙伴被展示、打开和添加的次数；你自己添加的 provider 只记作“custom”。不含名称、地址、账号、密钥和用量\n关闭\n开启\n智能体登录\n订阅账号\n读取你的智能体已登录的账号（Claude Code、Codex、Copilot、Cursor 等：它们的文件和钥匙串）并提供服务。关闭后 magpie 一个都不读；API Key 服务商照常可用\n关闭\n开启",
+    "disabled": []
+  },
+  {
+    "case": "mask-secrets-off",
+    "pressed": "true"
+  },
+  {
+    "case": "sync-default",
+    "text": "WebDAV / S3 / GitHub 同步\n让每台电脑上的供应商（含 API Key）、设置、Profile、agent 的模型、资源库保持一致\n设置\n导出\n把上面这些打包成一个用口令加密的文件，带到另一台电脑\n导出…\n导入\n导入从 magpie 导出的文件\n导入…",
+    "disabled": []
+  },
+  {
+    "case": "export-expanded",
+    "text": "WebDAV / S3 / GitHub 同步\n让每台电脑上的供应商（含 API Key）、设置、Profile、agent 的模型、资源库保持一致\n设置\n导出\n把上面这些打包成一个用口令加密的文件，带到另一台电脑\n关闭\n口令\n打开文件时需要。订阅账号不在其中，请在另一台电脑上各自登录。\n包含供应商的 API Key\n包含资源库：指令、MCP 服务器和技能\n取消\n导出\n导入\n导入从 magpie 导出的文件\n导入…",
+    "disabled": 0
+  },
+  {
+    "case": "about-default",
+    "text": "版本\n0.1.1244 已下载\n0.1.1240\n重启以更新\n更新内容\n上次更新以来的更新说明\n打开\n更新按钮\nmagpie 有新版本时显示在顶栏\n关闭\n开启\n自动更新\n自动检查 magpie 新版本并下载\n关闭\n开启\n检查间隔\nmagpie 多久检查一次新版本\n30 分钟\n1 小时\n6 小时\n24 小时\n自动重启更新\n新版本下载好后，在没有 Agent 请求进行时自动重启到新版本\n关闭\n开启\n下载源\n更新从官方 GitHub 下载；GitHub 慢时可以改用镜像\nGitHub\n使用镜像…\n配置目录\n供应商、方案与这些设置\n~/.config/magpie\n打开\n命令行\n新终端里找不到 magpie 命令\nbash\n运行这个 app\n改动对之后新开的终端生效\n网关地址\n各 Agent 指向的地址\nhttp://127.0.0.1:3425\n社区\n提问、想法和反馈，Discord 或 GitHub 都可以\n加入 Discord\nGitHub\n关于\nmagpie-shell-demo · 非官方 Magpie 壳",
+    "disabled": []
+  },
+  {
+    "case": "update-button-on",
+    "pressed": "true"
+  }
+]

@@ -1,0 +1,176 @@
+[
+  {
+    "case": "icons-before",
+    "icons": [
+      {
+        "class": "ic",
+        "img": false,
+        "mask": true,
+        "name": "openai",
+        "svg": false
+      },
+      {
+        "class": "ic",
+        "img": true,
+        "mask": false,
+        "name": "claude-color",
+        "svg": false
+      },
+      {
+        "class": "ic",
+        "img": true,
+        "mask": false,
+        "name": "alma",
+        "svg": false
+      },
+      {
+        "class": "ic generic",
+        "img": false,
+        "mask": false,
+        "name": "generic",
+        "svg": true
+      },
+      {
+        "class": "ic",
+        "img": false,
+        "mask": true,
+        "name": "cis-missing",
+        "svg": false
+      },
+      {
+        "class": "ic",
+        "img": true,
+        "mask": false,
+        "name": "file:cis-valid.png",
+        "svg": false
+      },
+      {
+        "class": "ic",
+        "img": true,
+        "mask": false,
+        "name": "file:cis-missing.png",
+        "svg": false
+      }
+    ]
+  },
+  {
+    "case": "tray-menu-before",
+    "before": {
+      "tag": "BUTTON",
+      "text": "关闭"
+    },
+    "after": {
+      "tag": "BUTTON",
+      "text": "关闭"
+    },
+    "menu": "显示在图标旁\n关闭\n今天的 token 数和费用\n所有 Agent 的合计，与用量页的统计一致\n最近 7 天的 token 数和费用\n所有 Agent 的合计，与用量页的统计一致"
+  },
+  {
+    "case": "search-api-menu-before",
+    "before": {
+      "tag": "BUTTON",
+      "text": "Tavily"
+    },
+    "after": {
+      "tag": "BUTTON",
+      "text": "Tavily"
+    },
+    "menu": "搜索 API\nTavily\nBrave Search\nExa\nFirecrawl\nYou.com\nSearXNG\n自建"
+  },
+  {
+    "case": "hook-filter-before",
+    "items": [
+      "一轮结束时所有 Agent，各用自己的事件名",
+      "工具运行之后所有 Agent，各用自己的事件名",
+      "工具运行之前所有 Agent，各用自己的事件名",
+      "发送提示词时所有 Agent，各用自己的事件名",
+      "会话开始时所有 Agent，各用自己的事件名"
+    ]
+  },
+  {
+    "case": "hook-key-before",
+    "active": {
+      "class": "sc-q",
+      "tag": "INPUT"
+    }
+  },
+  {
+    "case": "hook-tools-before",
+    "active": {
+      "class": "sess-pick pref-pick open lib-menu lib-hooktool",
+      "tag": "BUTTON",
+      "text": "任何工具"
+    },
+    "menu": "对哪些工具\n任何工具\nShell 命令\n编辑文件"
+  },
+  {
+    "case": "mcp-copy-before",
+    "active": {
+      "class": "text lib-updall lib-copyconfig",
+      "inMenu": false,
+      "tag": "BUTTON",
+      "text": "复制配置…"
+    },
+    "menu": "按 agent 的项目配置文件复制\nCursor"
+  },
+  {
+    "case": "icons-before-full",
+    "icons": [
+      {
+        "class": "ic",
+        "mask": true,
+        "name": "openai",
+        "svg": false
+      },
+      {
+        "class": "ic",
+        "mask": false,
+        "name": "claude-color",
+        "naturalWidth": 16,
+        "src": "/icons/claude-color.svg",
+        "svg": false
+      },
+      {
+        "class": "ic",
+        "mask": false,
+        "name": "alma",
+        "naturalWidth": 64,
+        "src": "/icons/alma.png",
+        "svg": false
+      },
+      {
+        "class": "ic generic",
+        "mask": false,
+        "name": "generic",
+        "svg": true
+      },
+      {
+        "class": "ic",
+        "mask": true,
+        "name": "cis-missing",
+        "svg": false
+      },
+      {
+        "class": "ic",
+        "mask": false,
+        "name": "file:cis-valid.png",
+        "naturalWidth": 0,
+        "src": "/icons/file:cis-valid.png",
+        "svg": false
+      },
+      {
+        "class": "ic",
+        "mask": false,
+        "name": "file:cis-missing.png",
+        "naturalWidth": 0,
+        "src": "/icons/file:cis-missing.png",
+        "svg": false
+      }
+    ]
+  },
+  {
+    "case": "unsupported-disabled-opacity-before",
+    "value": "0.5",
+    "note": "No base disabled caller in current app: actual ag-conn and use-credits have native specific rules. Remove unsupported broad override; retain native rules."
+  }
+]

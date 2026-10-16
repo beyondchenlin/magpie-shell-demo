@@ -2,7 +2,7 @@
   "purpose": "Audit index only; a call site is not proof of correct runtime behavior. Raw DOM is a review queue, not an automatic defect.",
   "baseline": "e94edc6713da405285854e7d6548f3f8364bf84f",
   "specification": "028dab55a3877656c115439835d1d0d14465e4ee",
-  "candidate": "1100d152bcf6ff4f6ba170824249844a3496ce9a",
+  "candidate": "a8976e0db339d520a290cbdd548c290be760797b",
   "scope": "committed source snapshot, excludes inherited working-tree draft",
   "files": [
     {
@@ -46,6 +46,10 @@
       "sha256": "0e58e4940013a1854283f2bdce700f3fb0b1f732d7ed2be420d57667a8ddb32c"
     },
     {
+      "file": "src/lib/useProtocolMenu.ts",
+      "sha256": "e67a9e586bfde363bd82c0f41f00be331f2c19451b2d42655e4d671e156c3f03"
+    },
+    {
       "file": "src/lib/useRowMenu.ts",
       "sha256": "14ab5e68c620c5498e55fc8b13ea6b474d92c2f26a221d448a712e3d14549565"
     },
@@ -59,7 +63,7 @@
     },
     {
       "file": "src/pages/LibraryView.tsx",
-      "sha256": "dca3ebd9c9a3d2abe470e87eb26602449a1b9a75afabc6a4e650e48cafc7ff38"
+      "sha256": "2a4e99231a62e0698700083fcd4b6c76ada9e4b7f60d17c744e1445a3d64f8a2"
     },
     {
       "file": "src/pages/ProvidersView.tsx",
@@ -71,11 +75,11 @@
     },
     {
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "sha256": "92c904208aa6a16f27bc4347c32e622af57e6c80662de4f459004ce19b50b3cb"
+      "sha256": "df36ee6ca65e73f2bc049f7f1ffd45f2b92ba2281bc8d37615ec60405189fb41"
     },
     {
       "file": "src/pages/SettingsView.tsx",
-      "sha256": "7c6ccc4def48fce345e4293b3de52cca9aa705e4a265e34b552ebbace2cd6e5c"
+      "sha256": "0c7432003d07fe46fcae247a572ed1203fd7d9a47a2538fa20d2bc311bdabe33"
     },
     {
       "file": "src/pages/SimpleViews.tsx",
@@ -106,9 +110,10 @@
     "ModelPop": 13,
     "ProtoMultiMenu": 8,
     "AgentModelsPop": 1,
-    "PopoverPortal": 13,
-    "useAnchoredPopover": 9,
+    "PopoverPortal": 17,
+    "useAnchoredPopover": 7,
     "useRowMenu": 5,
+    "useProtocolMenu": 6,
     "SidebarTabs": 1,
     "ConnectionField": 5,
     "RequestArchive": 2,
@@ -517,6 +522,13 @@
       "local": "Segs",
       "import": "./Segs",
       "attributes": {}
+    },
+    {
+      "control": "useAnchoredPopover",
+      "file": "src/lib/useProtocolMenu.ts",
+      "line": 11,
+      "local": "useAnchoredPopover",
+      "import": "./useAnchoredPopover"
     },
     {
       "control": "useAnchoredPopover",
@@ -970,7 +982,7 @@
     {
       "control": "WordsField",
       "file": "src/pages/LibraryView.tsx",
-      "line": 317,
+      "line": 319,
       "local": "WordsField",
       "import": "../components/WordsField",
       "attributes": {}
@@ -978,22 +990,43 @@
     {
       "control": "WordsField",
       "file": "src/pages/LibraryView.tsx",
-      "line": 326,
+      "line": 328,
       "local": "WordsField",
       "import": "../components/WordsField",
       "attributes": {}
     },
     {
+      "control": "useProtocolMenu",
+      "file": "src/pages/LibraryView.tsx",
+      "line": 451,
+      "local": "useProtocolMenu",
+      "import": "../lib/useProtocolMenu"
+    },
+    {
+      "control": "useProtocolMenu",
+      "file": "src/pages/LibraryView.tsx",
+      "line": 518,
+      "local": "useProtocolMenu",
+      "import": "../lib/useProtocolMenu"
+    },
+    {
+      "control": "useProtocolMenu",
+      "file": "src/pages/LibraryView.tsx",
+      "line": 520,
+      "local": "useProtocolMenu",
+      "import": "../lib/useProtocolMenu"
+    },
+    {
       "control": "useSegThumb",
       "file": "src/pages/LibraryView.tsx",
-      "line": 526,
+      "line": 529,
       "local": "useSegThumb",
       "import": "../components/SegThumb"
     },
     {
       "control": "Segs",
       "file": "src/pages/LibraryView.tsx",
-      "line": 869,
+      "line": 865,
       "local": "Segs",
       "import": "../components/Segs",
       "attributes": {
@@ -1004,7 +1037,7 @@
     {
       "control": "Segs",
       "file": "src/pages/LibraryView.tsx",
-      "line": 1225,
+      "line": 1221,
       "local": "Segs",
       "import": "../components/Segs",
       "attributes": {
@@ -1014,7 +1047,7 @@
     {
       "control": "TextBtn",
       "file": "src/pages/LibraryView.tsx",
-      "line": 1234,
+      "line": 1230,
       "local": "TextBtn",
       "import": "../components/TextBtn",
       "attributes": {
@@ -1024,7 +1057,7 @@
     {
       "control": "TextBtn",
       "file": "src/pages/LibraryView.tsx",
-      "line": 1249,
+      "line": 1245,
       "local": "TextBtn",
       "import": "../components/TextBtn",
       "attributes": {
@@ -1034,7 +1067,7 @@
     {
       "control": "TextBtn",
       "file": "src/pages/LibraryView.tsx",
-      "line": 1265,
+      "line": 1261,
       "local": "TextBtn",
       "import": "../components/TextBtn",
       "attributes": {
@@ -1044,7 +1077,7 @@
     {
       "control": "TextBtn",
       "file": "src/pages/LibraryView.tsx",
-      "line": 1270,
+      "line": 1266,
       "local": "TextBtn",
       "import": "../components/TextBtn",
       "attributes": {
@@ -1055,7 +1088,7 @@
     {
       "control": "TextBtn",
       "file": "src/pages/LibraryView.tsx",
-      "line": 1272,
+      "line": 1268,
       "local": "TextBtn",
       "import": "../components/TextBtn",
       "attributes": {}
@@ -1063,7 +1096,7 @@
     {
       "control": "LibSwitch",
       "file": "src/pages/LibraryView.tsx",
-      "line": 1395,
+      "line": 1391,
       "local": "LibSwitch",
       "import": "../components/LibSwitch",
       "attributes": {
@@ -1071,9 +1104,17 @@
       }
     },
     {
+      "control": "PopoverPortal",
+      "file": "src/pages/LibraryView.tsx",
+      "line": 1505,
+      "local": "PopoverPortal",
+      "import": "../components/PopoverPortal",
+      "attributes": {}
+    },
+    {
       "control": "LibSwitch",
       "file": "src/pages/LibraryView.tsx",
-      "line": 2301,
+      "line": 2290,
       "local": "LibSwitch",
       "import": "../components/LibSwitch",
       "attributes": {
@@ -1083,7 +1124,7 @@
     {
       "control": "LibSwitch",
       "file": "src/pages/LibraryView.tsx",
-      "line": 2631,
+      "line": 2615,
       "local": "LibSwitch",
       "import": "../components/LibSwitch",
       "attributes": {
@@ -1093,7 +1134,7 @@
     {
       "control": "WordsField",
       "file": "src/pages/LibraryView.tsx",
-      "line": 2708,
+      "line": 2692,
       "local": "WordsField",
       "import": "../components/WordsField",
       "attributes": {
@@ -1103,7 +1144,7 @@
     {
       "control": "Segs",
       "file": "src/pages/LibraryView.tsx",
-      "line": 2717,
+      "line": 2701,
       "local": "Segs",
       "import": "../components/Segs",
       "attributes": {}
@@ -1111,7 +1152,7 @@
     {
       "control": "WordsField",
       "file": "src/pages/LibraryView.tsx",
-      "line": 2733,
+      "line": 2717,
       "local": "WordsField",
       "import": "../components/WordsField",
       "attributes": {
@@ -1121,7 +1162,7 @@
     {
       "control": "WordsField",
       "file": "src/pages/LibraryView.tsx",
-      "line": 2755,
+      "line": 2739,
       "local": "WordsField",
       "import": "../components/WordsField",
       "attributes": {
@@ -1129,9 +1170,17 @@
       }
     },
     {
+      "control": "PopoverPortal",
+      "file": "src/pages/LibraryView.tsx",
+      "line": 2886,
+      "local": "PopoverPortal",
+      "import": "../components/PopoverPortal",
+      "attributes": {}
+    },
+    {
       "control": "WordsField",
       "file": "src/pages/LibraryView.tsx",
-      "line": 3081,
+      "line": 3065,
       "local": "WordsField",
       "import": "../components/WordsField",
       "attributes": {
@@ -1141,7 +1190,7 @@
     {
       "control": "PrefPick",
       "file": "src/pages/LibraryView.tsx",
-      "line": 3100,
+      "line": 3084,
       "local": "PrefPick",
       "import": "../components/PrefPick",
       "attributes": {
@@ -1150,9 +1199,17 @@
       }
     },
     {
+      "control": "PopoverPortal",
+      "file": "src/pages/LibraryView.tsx",
+      "line": 3096,
+      "local": "PopoverPortal",
+      "import": "../components/PopoverPortal",
+      "attributes": {}
+    },
+    {
       "control": "WordsField",
       "file": "src/pages/LibraryView.tsx",
-      "line": 3203,
+      "line": 3190,
       "local": "WordsField",
       "import": "../components/WordsField",
       "attributes": {
@@ -1162,7 +1219,7 @@
     {
       "control": "PrefPick",
       "file": "src/pages/LibraryView.tsx",
-      "line": 3214,
+      "line": 3201,
       "local": "PrefPick",
       "import": "../components/PrefPick",
       "attributes": {
@@ -1171,9 +1228,17 @@
       }
     },
     {
+      "control": "PopoverPortal",
+      "file": "src/pages/LibraryView.tsx",
+      "line": 3210,
+      "local": "PopoverPortal",
+      "import": "../components/PopoverPortal",
+      "attributes": {}
+    },
+    {
       "control": "WordsField",
       "file": "src/pages/LibraryView.tsx",
-      "line": 3257,
+      "line": 3244,
       "local": "WordsField",
       "import": "../components/WordsField",
       "attributes": {
@@ -1183,7 +1248,7 @@
     {
       "control": "WordsField",
       "file": "src/pages/LibraryView.tsx",
-      "line": 3265,
+      "line": 3252,
       "local": "WordsField",
       "import": "../components/WordsField",
       "attributes": {
@@ -1193,7 +1258,7 @@
     {
       "control": "ActionConfirm",
       "file": "src/pages/LibraryView.tsx",
-      "line": 3287,
+      "line": 3274,
       "local": "ActionConfirm",
       "import": "../components/ActionConfirm",
       "attributes": {}
@@ -1201,7 +1266,7 @@
     {
       "control": "Segs",
       "file": "src/pages/LibraryView.tsx",
-      "line": 3321,
+      "line": 3308,
       "local": "Segs",
       "import": "../components/Segs",
       "attributes": {}
@@ -1209,7 +1274,7 @@
     {
       "control": "ActionConfirm",
       "file": "src/pages/LibraryView.tsx",
-      "line": 3377,
+      "line": 3364,
       "local": "ActionConfirm",
       "import": "../components/ActionConfirm",
       "attributes": {}
@@ -1217,7 +1282,7 @@
     {
       "control": "ActionConfirm",
       "file": "src/pages/LibraryView.tsx",
-      "line": 3396,
+      "line": 3383,
       "local": "ActionConfirm",
       "import": "../components/ActionConfirm",
       "attributes": {}
@@ -1225,7 +1290,7 @@
     {
       "control": "ActionConfirm",
       "file": "src/pages/LibraryView.tsx",
-      "line": 3518,
+      "line": 3505,
       "local": "ActionConfirm",
       "import": "../components/ActionConfirm",
       "attributes": {}
@@ -1233,7 +1298,7 @@
     {
       "control": "ActionConfirm",
       "file": "src/pages/LibraryView.tsx",
-      "line": 3591,
+      "line": 3578,
       "local": "ActionConfirm",
       "import": "../components/ActionConfirm",
       "attributes": {}
@@ -1241,7 +1306,7 @@
     {
       "control": "ActionConfirm",
       "file": "src/pages/LibraryView.tsx",
-      "line": 3612,
+      "line": 3599,
       "local": "ActionConfirm",
       "import": "../components/ActionConfirm",
       "attributes": {}
@@ -1249,7 +1314,7 @@
     {
       "control": "ActionConfirm",
       "file": "src/pages/LibraryView.tsx",
-      "line": 3630,
+      "line": 3617,
       "local": "ActionConfirm",
       "import": "../components/ActionConfirm",
       "attributes": {}
@@ -1257,7 +1322,7 @@
     {
       "control": "ActionConfirm",
       "file": "src/pages/LibraryView.tsx",
-      "line": 3649,
+      "line": 3636,
       "local": "ActionConfirm",
       "import": "../components/ActionConfirm",
       "attributes": {}
@@ -1563,7 +1628,7 @@
     {
       "control": "MagpieIcon",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 88,
+      "line": 89,
       "local": "MagpieIcon",
       "import": "../../components/MagpieIcon",
       "attributes": {}
@@ -1571,7 +1636,7 @@
     {
       "control": "MagpieIcon",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 89,
+      "line": 90,
       "local": "MagpieIcon",
       "import": "../../components/MagpieIcon",
       "attributes": {}
@@ -1579,7 +1644,7 @@
     {
       "control": "ModelPop",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 103,
+      "line": 104,
       "local": "ModelPop",
       "import": "../../components/ModelPop",
       "attributes": {
@@ -1589,7 +1654,7 @@
     {
       "control": "PrefRow",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 132,
+      "line": 133,
       "local": "PrefRow",
       "import": "../../components/PrefRow",
       "attributes": {
@@ -1601,7 +1666,7 @@
     {
       "control": "Segs",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 137,
+      "line": 138,
       "local": "Segs",
       "import": "../../components/Segs",
       "attributes": {}
@@ -1609,7 +1674,7 @@
     {
       "control": "PrefRow",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 168,
+      "line": 169,
       "local": "PrefRow",
       "import": "../../components/PrefRow",
       "attributes": {}
@@ -1617,7 +1682,7 @@
     {
       "control": "PrefRow",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 212,
+      "line": 213,
       "local": "PrefRow",
       "import": "../../components/PrefRow",
       "attributes": {}
@@ -1625,7 +1690,7 @@
     {
       "control": "TextBtn",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 219,
+      "line": 220,
       "local": "TextBtn",
       "import": "../../components/TextBtn",
       "attributes": {
@@ -1635,7 +1700,7 @@
     {
       "control": "Segs",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 235,
+      "line": 236,
       "local": "Segs",
       "import": "../../components/Segs",
       "attributes": {}
@@ -1643,22 +1708,22 @@
     {
       "control": "TextBtn",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 264,
+      "line": 265,
       "local": "TextBtn",
       "import": "../../components/TextBtn",
       "attributes": {}
     },
     {
-      "control": "useAnchoredPopover",
+      "control": "useProtocolMenu",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 296,
-      "local": "useAnchoredPopover",
-      "import": "../../lib/useAnchoredPopover"
+      "line": 297,
+      "local": "useProtocolMenu",
+      "import": "../../lib/useProtocolMenu"
     },
     {
       "control": "PrefRow",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 317,
+      "line": 300,
       "local": "PrefRow",
       "import": "../../components/PrefRow",
       "attributes": {
@@ -1668,7 +1733,7 @@
     {
       "control": "Segs",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 319,
+      "line": 302,
       "local": "Segs",
       "import": "../../components/Segs",
       "attributes": {}
@@ -1676,7 +1741,7 @@
     {
       "control": "CopyButton",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 343,
+      "line": 326,
       "local": "CopyButton",
       "import": "../../components/CopyButton",
       "attributes": {}
@@ -1684,7 +1749,7 @@
     {
       "control": "PopoverPortal",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 346,
+      "line": 329,
       "local": "PopoverPortal",
       "import": "../../components/PopoverPortal",
       "attributes": {}
@@ -1692,7 +1757,7 @@
     {
       "control": "PrefRow",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 407,
+      "line": 390,
       "local": "PrefRow",
       "import": "../../components/PrefRow",
       "attributes": {
@@ -1702,7 +1767,7 @@
     {
       "control": "WordsField",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 413,
+      "line": 396,
       "local": "WordsField",
       "import": "../../components/WordsField",
       "attributes": {
@@ -1712,7 +1777,7 @@
     {
       "control": "Segs",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 414,
+      "line": 397,
       "local": "Segs",
       "import": "../../components/Segs",
       "attributes": {}
@@ -1720,7 +1785,7 @@
     {
       "control": "WordsField",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 427,
+      "line": 410,
       "local": "WordsField",
       "import": "../../components/WordsField",
       "attributes": {
@@ -1730,7 +1795,7 @@
     {
       "control": "TextBtn",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 434,
+      "line": 417,
       "local": "TextBtn",
       "import": "../../components/TextBtn",
       "attributes": {}
@@ -1738,7 +1803,7 @@
     {
       "control": "PrefRow",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 438,
+      "line": 421,
       "local": "PrefRow",
       "import": "../../components/PrefRow",
       "attributes": {
@@ -1748,7 +1813,7 @@
     {
       "control": "WordsField",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 445,
+      "line": 428,
       "local": "WordsField",
       "import": "../../components/WordsField",
       "attributes": {
@@ -1759,7 +1824,7 @@
     {
       "control": "Segs",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 446,
+      "line": 429,
       "local": "Segs",
       "import": "../../components/Segs",
       "attributes": {}
@@ -1767,7 +1832,7 @@
     {
       "control": "WordsField",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 453,
+      "line": 436,
       "local": "WordsField",
       "import": "../../components/WordsField",
       "attributes": {
@@ -1777,7 +1842,7 @@
     {
       "control": "TextBtn",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 470,
+      "line": 453,
       "local": "TextBtn",
       "import": "../../components/TextBtn",
       "attributes": {
@@ -1787,7 +1852,7 @@
     {
       "control": "TextBtn",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 478,
+      "line": 461,
       "local": "TextBtn",
       "import": "../../components/TextBtn",
       "attributes": {
@@ -1797,7 +1862,7 @@
     {
       "control": "PrefRow",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 482,
+      "line": 465,
       "local": "PrefRow",
       "import": "../../components/PrefRow",
       "attributes": {}
@@ -1805,7 +1870,7 @@
     {
       "control": "TextBtn",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 487,
+      "line": 470,
       "local": "TextBtn",
       "import": "../../components/TextBtn",
       "attributes": {
@@ -1815,7 +1880,7 @@
     {
       "control": "TextBtn",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 493,
+      "line": 476,
       "local": "TextBtn",
       "import": "../../components/TextBtn",
       "attributes": {}
@@ -1823,7 +1888,7 @@
     {
       "control": "PrefRow",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 524,
+      "line": 507,
       "local": "PrefRow",
       "import": "../../components/PrefRow",
       "attributes": {
@@ -1833,7 +1898,7 @@
     {
       "control": "Segs",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 529,
+      "line": 512,
       "local": "Segs",
       "import": "../../components/Segs",
       "attributes": {}
@@ -1841,7 +1906,7 @@
     {
       "control": "PrefRow",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 531,
+      "line": 514,
       "local": "PrefRow",
       "import": "../../components/PrefRow",
       "attributes": {
@@ -1852,7 +1917,7 @@
     {
       "control": "WordsField",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 537,
+      "line": 520,
       "local": "WordsField",
       "import": "../../components/WordsField",
       "attributes": {
@@ -1863,7 +1928,7 @@
     {
       "control": "PrefRow",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 539,
+      "line": 522,
       "local": "PrefRow",
       "import": "../../components/PrefRow",
       "attributes": {
@@ -1874,7 +1939,7 @@
     {
       "control": "WordsField",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 545,
+      "line": 528,
       "local": "WordsField",
       "import": "../../components/WordsField",
       "attributes": {
@@ -1885,7 +1950,7 @@
     {
       "control": "PrefRow",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 550,
+      "line": 533,
       "local": "PrefRow",
       "import": "../../components/PrefRow",
       "attributes": {
@@ -1895,7 +1960,7 @@
     {
       "control": "Segs",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 555,
+      "line": 538,
       "local": "Segs",
       "import": "../../components/Segs",
       "attributes": {}
@@ -1903,7 +1968,7 @@
     {
       "control": "PrefRow",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 557,
+      "line": 540,
       "local": "PrefRow",
       "import": "../../components/PrefRow",
       "attributes": {
@@ -1913,7 +1978,7 @@
     {
       "control": "Segs",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 562,
+      "line": 545,
       "local": "Segs",
       "import": "../../components/Segs",
       "attributes": {}
@@ -1921,7 +1986,7 @@
     {
       "control": "PrefRow",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 567,
+      "line": 550,
       "local": "PrefRow",
       "import": "../../components/PrefRow",
       "attributes": {
@@ -1932,7 +1997,7 @@
     {
       "control": "Segs",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 573,
+      "line": 556,
       "local": "Segs",
       "import": "../../components/Segs",
       "attributes": {}
@@ -1940,7 +2005,7 @@
     {
       "control": "Tick",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 637,
+      "line": 620,
       "local": "Tick",
       "import": "../../components/Tick",
       "attributes": {}
@@ -1948,7 +2013,7 @@
     {
       "control": "Tick",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 638,
+      "line": 621,
       "local": "Tick",
       "import": "../../components/Tick",
       "attributes": {}
@@ -1956,7 +2021,7 @@
     {
       "control": "Tick",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 639,
+      "line": 622,
       "local": "Tick",
       "import": "../../components/Tick",
       "attributes": {}
@@ -1964,7 +2029,7 @@
     {
       "control": "Tick",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 640,
+      "line": 623,
       "local": "Tick",
       "import": "../../components/Tick",
       "attributes": {}
@@ -1972,7 +2037,7 @@
     {
       "control": "TextBtn",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 650,
+      "line": 633,
       "local": "TextBtn",
       "import": "../../components/TextBtn",
       "attributes": {
@@ -1982,7 +2047,7 @@
     {
       "control": "TextBtn",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 652,
+      "line": 635,
       "local": "TextBtn",
       "import": "../../components/TextBtn",
       "attributes": {}
@@ -1990,7 +2055,7 @@
     {
       "control": "TextBtn",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 653,
+      "line": 636,
       "local": "TextBtn",
       "import": "../../components/TextBtn",
       "attributes": {
@@ -2000,7 +2065,7 @@
     {
       "control": "Segs",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 673,
+      "line": 656,
       "local": "Segs",
       "import": "../../components/Segs",
       "attributes": {}
@@ -2008,7 +2073,7 @@
     {
       "control": "WordsField",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 687,
+      "line": 670,
       "local": "WordsField",
       "import": "../../components/WordsField",
       "attributes": {
@@ -2018,7 +2083,47 @@
     {
       "control": "WordsField",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 691,
+      "line": 674,
+      "local": "WordsField",
+      "import": "../../components/WordsField",
+      "attributes": {
+        "className": "\"full\""
+      }
+    },
+    {
+      "control": "WordsField",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 676,
+      "local": "WordsField",
+      "import": "../../components/WordsField",
+      "attributes": {
+        "className": "\"full\""
+      }
+    },
+    {
+      "control": "WordsField",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 682,
+      "local": "WordsField",
+      "import": "../../components/WordsField",
+      "attributes": {
+        "className": "\"full\""
+      }
+    },
+    {
+      "control": "WordsField",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 686,
+      "local": "WordsField",
+      "import": "../../components/WordsField",
+      "attributes": {
+        "className": "\"full\""
+      }
+    },
+    {
+      "control": "WordsField",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 689,
       "local": "WordsField",
       "import": "../../components/WordsField",
       "attributes": {
@@ -2038,7 +2143,7 @@
     {
       "control": "WordsField",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 699,
+      "line": 695,
       "local": "WordsField",
       "import": "../../components/WordsField",
       "attributes": {
@@ -2048,47 +2153,7 @@
     {
       "control": "WordsField",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 703,
-      "local": "WordsField",
-      "import": "../../components/WordsField",
-      "attributes": {
-        "className": "\"full\""
-      }
-    },
-    {
-      "control": "WordsField",
-      "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 706,
-      "local": "WordsField",
-      "import": "../../components/WordsField",
-      "attributes": {
-        "className": "\"full\""
-      }
-    },
-    {
-      "control": "WordsField",
-      "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 710,
-      "local": "WordsField",
-      "import": "../../components/WordsField",
-      "attributes": {
-        "className": "\"full\""
-      }
-    },
-    {
-      "control": "WordsField",
-      "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 712,
-      "local": "WordsField",
-      "import": "../../components/WordsField",
-      "attributes": {
-        "className": "\"full\""
-      }
-    },
-    {
-      "control": "WordsField",
-      "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 714,
+      "line": 697,
       "local": "WordsField",
       "import": "../../components/WordsField",
       "attributes": {
@@ -2098,7 +2163,7 @@
     {
       "control": "Tick",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 717,
+      "line": 700,
       "local": "Tick",
       "import": "../../components/Tick",
       "attributes": {}
@@ -2106,7 +2171,37 @@
     {
       "control": "WordsField",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 725,
+      "line": 708,
+      "local": "WordsField",
+      "import": "../../components/WordsField",
+      "attributes": {
+        "className": "\"full\""
+      }
+    },
+    {
+      "control": "WordsField",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 713,
+      "local": "WordsField",
+      "import": "../../components/WordsField",
+      "attributes": {
+        "className": "\"full\""
+      }
+    },
+    {
+      "control": "WordsField",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 718,
+      "local": "WordsField",
+      "import": "../../components/WordsField",
+      "attributes": {
+        "className": "\"full\""
+      }
+    },
+    {
+      "control": "WordsField",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 723,
       "local": "WordsField",
       "import": "../../components/WordsField",
       "attributes": {
@@ -2126,26 +2221,6 @@
     {
       "control": "WordsField",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 735,
-      "local": "WordsField",
-      "import": "../../components/WordsField",
-      "attributes": {
-        "className": "\"full\""
-      }
-    },
-    {
-      "control": "WordsField",
-      "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 740,
-      "local": "WordsField",
-      "import": "../../components/WordsField",
-      "attributes": {
-        "className": "\"full\""
-      }
-    },
-    {
-      "control": "WordsField",
-      "file": "src/pages/settings/NestedBlocks.tsx",
       "line": 747,
       "local": "WordsField",
       "import": "../../components/WordsField",
@@ -2156,17 +2231,7 @@
     {
       "control": "WordsField",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 764,
-      "local": "WordsField",
-      "import": "../../components/WordsField",
-      "attributes": {
-        "className": "\"full\""
-      }
-    },
-    {
-      "control": "WordsField",
-      "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 768,
+      "line": 751,
       "local": "WordsField",
       "import": "../../components/WordsField",
       "attributes": {
@@ -2176,7 +2241,7 @@
     {
       "control": "Tick",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 771,
+      "line": 754,
       "local": "Tick",
       "import": "../../components/Tick",
       "attributes": {}
@@ -2184,7 +2249,7 @@
     {
       "control": "Tick",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 772,
+      "line": 755,
       "local": "Tick",
       "import": "../../components/Tick",
       "attributes": {}
@@ -2192,7 +2257,7 @@
     {
       "control": "TextBtn",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 777,
+      "line": 760,
       "local": "TextBtn",
       "import": "../../components/TextBtn",
       "attributes": {}
@@ -2200,7 +2265,7 @@
     {
       "control": "TextBtn",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 778,
+      "line": 761,
       "local": "TextBtn",
       "import": "../../components/TextBtn",
       "attributes": {
@@ -2210,7 +2275,7 @@
     {
       "control": "TextBtn",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 802,
+      "line": 785,
       "local": "TextBtn",
       "import": "../../components/TextBtn",
       "attributes": {}
@@ -2218,7 +2283,7 @@
     {
       "control": "WordsField",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 818,
+      "line": 801,
       "local": "WordsField",
       "import": "../../components/WordsField",
       "attributes": {
@@ -2228,7 +2293,7 @@
     {
       "control": "Tick",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 821,
+      "line": 804,
       "local": "Tick",
       "import": "../../components/Tick",
       "attributes": {}
@@ -2236,7 +2301,7 @@
     {
       "control": "Tick",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 822,
+      "line": 805,
       "local": "Tick",
       "import": "../../components/Tick",
       "attributes": {}
@@ -2244,7 +2309,7 @@
     {
       "control": "TextBtn",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 827,
+      "line": 810,
       "local": "TextBtn",
       "import": "../../components/TextBtn",
       "attributes": {}
@@ -2252,7 +2317,7 @@
     {
       "control": "TextBtn",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 828,
+      "line": 811,
       "local": "TextBtn",
       "import": "../../components/TextBtn",
       "attributes": {
@@ -2262,7 +2327,7 @@
     {
       "control": "TextBtn",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 857,
+      "line": 840,
       "local": "TextBtn",
       "import": "../../components/TextBtn",
       "attributes": {}
@@ -2270,7 +2335,7 @@
     {
       "control": "TextBtn",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 858,
+      "line": 841,
       "local": "TextBtn",
       "import": "../../components/TextBtn",
       "attributes": {
@@ -2281,7 +2346,7 @@
     {
       "control": "TextBtn",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 900,
+      "line": 883,
       "local": "TextBtn",
       "import": "../../components/TextBtn",
       "attributes": {
@@ -2291,7 +2356,7 @@
     {
       "control": "PrefRow",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 910,
+      "line": 893,
       "local": "PrefRow",
       "import": "../../components/PrefRow",
       "attributes": {
@@ -2301,7 +2366,7 @@
     {
       "control": "CopyButton",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 927,
+      "line": 910,
       "local": "CopyButton",
       "import": "../../components/CopyButton",
       "attributes": {}
@@ -2309,7 +2374,7 @@
     {
       "control": "MagpieIcon",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 964,
+      "line": 947,
       "local": "MagpieIcon",
       "import": "../../components/MagpieIcon",
       "attributes": {}
@@ -2317,7 +2382,7 @@
     {
       "control": "ModelPop",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 993,
+      "line": 976,
       "local": "ModelPop",
       "import": "../../components/ModelPop",
       "attributes": {
@@ -2327,7 +2392,7 @@
     {
       "control": "PrefRow",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 1031,
+      "line": 1014,
       "local": "PrefRow",
       "import": "../../components/PrefRow",
       "attributes": {
@@ -2337,7 +2402,7 @@
     {
       "control": "TextBtn",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 1047,
+      "line": 1030,
       "local": "TextBtn",
       "import": "../../components/TextBtn",
       "attributes": {}
@@ -2345,7 +2410,7 @@
     {
       "control": "TextBtn",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 1056,
+      "line": 1039,
       "local": "TextBtn",
       "import": "../../components/TextBtn",
       "attributes": {}
@@ -2353,7 +2418,7 @@
     {
       "control": "TextBtn",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 1068,
+      "line": 1051,
       "local": "TextBtn",
       "import": "../../components/TextBtn",
       "attributes": {}
@@ -2361,7 +2426,7 @@
     {
       "control": "WordsField",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 1081,
+      "line": 1064,
       "local": "WordsField",
       "import": "../../components/WordsField",
       "attributes": {
@@ -2372,7 +2437,7 @@
     {
       "control": "TextBtn",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 1106,
+      "line": 1089,
       "local": "TextBtn",
       "import": "../../components/TextBtn",
       "attributes": {}
@@ -2380,22 +2445,22 @@
     {
       "control": "TextBtn",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 1114,
+      "line": 1097,
       "local": "TextBtn",
       "import": "../../components/TextBtn",
       "attributes": {}
     },
     {
-      "control": "useAnchoredPopover",
+      "control": "useProtocolMenu",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 1147,
-      "local": "useAnchoredPopover",
-      "import": "../../lib/useAnchoredPopover"
+      "line": 1130,
+      "local": "useProtocolMenu",
+      "import": "../../lib/useProtocolMenu"
     },
     {
       "control": "PopoverPortal",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 1190,
+      "line": 1156,
       "local": "PopoverPortal",
       "import": "../../components/PopoverPortal",
       "attributes": {}
@@ -2403,7 +2468,7 @@
     {
       "control": "PrefRow",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 1249,
+      "line": 1215,
       "local": "PrefRow",
       "import": "../../components/PrefRow",
       "attributes": {
@@ -2414,7 +2479,7 @@
     {
       "control": "TextBtn",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 1256,
+      "line": 1222,
       "local": "TextBtn",
       "import": "../../components/TextBtn",
       "attributes": {
@@ -2425,7 +2490,7 @@
     {
       "control": "PrefRow",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 1269,
+      "line": 1235,
       "local": "PrefRow",
       "import": "../../components/PrefRow",
       "attributes": {
@@ -2436,7 +2501,7 @@
     {
       "control": "TextBtn",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 1281,
+      "line": 1247,
       "local": "TextBtn",
       "import": "../../components/TextBtn",
       "attributes": {
@@ -2446,7 +2511,7 @@
     {
       "control": "ModelPop",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 1294,
+      "line": 1260,
       "local": "ModelPop",
       "import": "../../components/ModelPop",
       "attributes": {
@@ -2454,16 +2519,16 @@
       }
     },
     {
-      "control": "useAnchoredPopover",
+      "control": "useProtocolMenu",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 1340,
-      "local": "useAnchoredPopover",
-      "import": "../../lib/useAnchoredPopover"
+      "line": 1306,
+      "local": "useProtocolMenu",
+      "import": "../../lib/useProtocolMenu"
     },
     {
       "control": "PrefRow",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 1381,
+      "line": 1329,
       "local": "PrefRow",
       "import": "../../components/PrefRow",
       "attributes": {
@@ -2473,7 +2538,7 @@
     {
       "control": "WordsField",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 1404,
+      "line": 1352,
       "local": "WordsField",
       "import": "../../components/WordsField",
       "attributes": {
@@ -2484,7 +2549,7 @@
     {
       "control": "TextBtn",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 1431,
+      "line": 1379,
       "local": "TextBtn",
       "import": "../../components/TextBtn",
       "attributes": {}
@@ -2492,7 +2557,7 @@
     {
       "control": "WordsField",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 1432,
+      "line": 1380,
       "local": "WordsField",
       "import": "../../components/WordsField",
       "attributes": {
@@ -2503,7 +2568,7 @@
     {
       "control": "PopoverPortal",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 1443,
+      "line": 1391,
       "local": "PopoverPortal",
       "import": "../../components/PopoverPortal",
       "attributes": {}
@@ -2511,7 +2576,7 @@
     {
       "control": "PrefRow",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 1477,
+      "line": 1425,
       "local": "PrefRow",
       "import": "../../components/PrefRow",
       "attributes": {
@@ -2521,7 +2586,7 @@
     {
       "control": "TextBtn",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 1486,
+      "line": 1434,
       "local": "TextBtn",
       "import": "../../components/TextBtn",
       "attributes": {
@@ -2531,7 +2596,7 @@
     {
       "control": "TextBtn",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 1492,
+      "line": 1440,
       "local": "TextBtn",
       "import": "../../components/TextBtn",
       "attributes": {
@@ -2541,7 +2606,7 @@
     {
       "control": "TextBtn",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 1507,
+      "line": 1455,
       "local": "TextBtn",
       "import": "../../components/TextBtn",
       "attributes": {}
@@ -2549,7 +2614,7 @@
     {
       "control": "Segs",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 1564,
+      "line": 1512,
       "local": "Segs",
       "import": "../../components/Segs",
       "attributes": {}
@@ -2557,7 +2622,7 @@
     {
       "control": "PrefRow",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 1594,
+      "line": 1542,
       "local": "PrefRow",
       "import": "../../components/PrefRow",
       "attributes": {
@@ -2567,7 +2632,7 @@
     {
       "control": "TextBtn",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 1600,
+      "line": 1548,
       "local": "TextBtn",
       "import": "../../components/TextBtn",
       "attributes": {}
@@ -2575,14 +2640,14 @@
     {
       "control": "useAnchoredPopover",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 1855,
+      "line": 1803,
       "local": "useAnchoredPopover",
       "import": "../../lib/useAnchoredPopover"
     },
     {
       "control": "PrefRow",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 1994,
+      "line": 1942,
       "local": "PrefRow",
       "import": "../../components/PrefRow",
       "attributes": {
@@ -2594,7 +2659,7 @@
     {
       "control": "PrefPick",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 1996,
+      "line": 1944,
       "local": "PrefPick",
       "import": "../../components/PrefPick",
       "attributes": {
@@ -2607,7 +2672,7 @@
     {
       "control": "PrefPick",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 2016,
+      "line": 1964,
       "local": "PrefPick",
       "import": "../../components/PrefPick",
       "attributes": {
@@ -2620,7 +2685,7 @@
     {
       "control": "PopoverPortal",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 2036,
+      "line": 1984,
       "local": "PopoverPortal",
       "import": "../../components/PopoverPortal",
       "attributes": {}
@@ -4386,31 +4451,31 @@
     {
       "tag": "div",
       "file": "src/pages/LibraryView.tsx",
-      "line": 1509,
+      "line": 1505,
       "className": "\"pop proto-menu\""
     },
     {
       "tag": "div",
       "file": "src/pages/LibraryView.tsx",
-      "line": 2088,
+      "line": 2077,
       "className": "\"segs\""
     },
     {
       "tag": "div",
       "file": "src/pages/LibraryView.tsx",
-      "line": 2902,
+      "line": 2886,
       "className": "\"pop proto-menu\""
     },
     {
       "tag": "div",
       "file": "src/pages/LibraryView.tsx",
-      "line": 3112,
+      "line": 3096,
       "className": "\"pop proto-menu\""
     },
     {
       "tag": "div",
       "file": "src/pages/LibraryView.tsx",
-      "line": 3223,
+      "line": 3210,
       "className": "\"pop proto-menu\""
     },
     {
@@ -4446,25 +4511,25 @@
     {
       "tag": "div",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 346,
+      "line": 329,
       "className": "\"pop proto-menu lan-address-menu\""
     },
     {
       "tag": "div",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 1190,
+      "line": 1156,
       "className": "\"pop proto-menu\""
     },
     {
       "tag": "div",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 1443,
+      "line": 1391,
       "className": "\"pop proto-menu\""
     },
     {
       "tag": "div",
       "file": "src/pages/settings/NestedBlocks.tsx",
-      "line": 1877,
+      "line": 1825,
       "className": "\"pop proto-menu sess-menu font-menu\""
     },
     {

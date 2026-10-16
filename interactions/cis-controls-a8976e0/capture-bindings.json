@@ -1,0 +1,38 @@
+{
+  "candidate": "a8976e0db339d520a290cbdd548c290be760797b",
+  "version": "0.1.204",
+  "origin": "http://127.0.0.1:4176",
+  "platform": "Windows / Codex in-app Chromium",
+  "localOnly": true,
+  "pinnedUpstream": "63be47717a9ca91fc89102078a1f1fff3e03e0ce",
+  "specification": "028dab55a3877656c115439835d1d0d14465e4ee",
+  "s4": {
+    "raw": "s4.json",
+    "rawFormat": "Original bare 13-element array; no embedded SHA/environment. Original retained unchanged.",
+    "source": "1100d152bcf6ff4f6ba170824249844a3496ce9a",
+    "binding": "Collection interval in executor tool history: immutable pages-candidate-1 / preview session49044 served 4176 before S4; preceding interactions/cis-pages-1100d15/after.json independently observed actualSource=1100d15; controlsChecks source=1100d15 created before 13 cases; no preview switch until all 13 cases completed. Subsequent controls-candidate-1 switch has separate source. This is an interval/manifest binding, not retroactive embedded metadata.",
+    "environment": "same task tab19/origin4176, Windows IAB, Chinese, light theme; no separate per-case viewport record in bare array, so do not assert exact per-case dimensions",
+    "disabled": "All six recorded defaults have disabled:[]; no new disabled feature invented",
+    "reuse": "Five identical fixed-operation PrefRow AST nodes plus entire SyncForms function; Settings diff pages→final consists only of unrelated search-provider description key."
+  },
+  "b3": {
+    "defaultSource": "bb1a250c18ec99817d7ab63270758e3bed4ab8aa",
+    "sourceExceptions": "controls-after.b3[40] LAN before remains bb1a250; [41..44] after preview switch f896; [0..4] theme inherited system dark, not evidence of light; explicit [5..10] themed entry records light/dark; toast-runtime explicitly final a897.",
+    "fixture": "Actual shared components and native six CSS; extra test-only entry built without changing original production asset hashes; file valid PNG served from own /api/icons fixture, no service API."
+  },
+  "b4": {
+    "raw": "b4/records-first-pass.json",
+    "canonical": "b4/records-final.json",
+    "sources": {
+      "f896ebdff21d3e9aad5ec0355709c16df3e0650a": 52,
+      "843129145444a214a60c05b4a592620ce43e00d6": 8,
+      "a8976e0db339d520a290cbdd548c290be760797b": 16
+    },
+    "firstPassSource": "f896ebdff21d3e9aad5ec0355709c16df3e0650a",
+    "searchCorrectionSource": "843129145444a214a60c05b4a592620ce43e00d6",
+    "finalAffectedSource": "a8976e0db339d520a290cbdd548c290be760797b",
+    "note": "76 bounded states, 19×4 configurations. 8 route/gateway first captures caught native .24s view-in; corrected only those and changed Library/Models branches. 32 retake history includes 8 Library records retaken twice. All previous PNGs retained. No paired native Windows pixel gold; source/browser review only."
+  },
+  "restoration": "preferences-final.json current and initial exactly match all 39 listed task keys; viewport reset. Previous restoration files retained.",
+  "remote": "No confirmed push after e19fd5a; cloud SHA unverified and externally blocked."
+}

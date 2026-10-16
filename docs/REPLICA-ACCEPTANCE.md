@@ -90,8 +90,8 @@
 | --- | --- | --- | --- | --- |
 | B1 | 候选与金标冻结 | 本清单§2；R01–R25固定来源 | 记录第 2 节要求的版本、SHA、地址、环境和 fixture；本地/远端不混用 | 待验 |
 | B2 | 六份基础样式 | R01–R25；source-manifest | app/routing/library/plugins/sessions/context 与固定提交的规范化哈希相同；兼容层例外有原因和浏览器证据 | 待验 |
-| B3 | CIS 组件配方 | R01–R15；调用点索引 | PrefRow/TextBtn/WordsField/LibSwitch/Tick/PrefPick/FieldPill/Fold/StatusToast/ActionConfirm/Segs/SegThumb/CopyButton/图标/公共浮层的规则与调用位置可追溯；同类控件无第二套冲突实现 | 待验 |
-| B4 | 全页静态一致性 | R01–R25；R19/R21–R25 | 1364浅/深19状态×2=38；900/390浅色各19状态仅查溢出/关键操作=38，共76记录。19=六主+设置七区+Library四页签+Sessions/Context。深态由对应ID固定步骤覆盖，不扩全组合 | 待验 |
+| B3 | CIS 组件配方 | R01–R15；调用点索引 | PrefRow/TextBtn/WordsField/LibSwitch/Tick/PrefPick/FieldPill/Fold/StatusToast/ActionConfirm/Segs/SegThumb/CopyButton/图标/公共浮层的规则与调用位置可追溯；同类控件无第二套冲突实现 | 通过（[控件证据](../interactions/cis-controls-a8976e0/NOTES.md)：34裸配方逐项分类、0未知；图标/file与七种特殊菜单内容复现修复及有限变体通过。19个精确AST分支哈希与Git blob限定复用，非整文件冒称未变） |
+| B4 | 全页静态一致性 | R01–R25；R19/R21–R25 | 1364浅/深19状态×2=38；900/390浅色各19状态仅查溢出/关键操作=38，共76记录。19=六主+设置七区+Library四页签+Sessions/Context。深态由对应ID固定步骤覆盖，不扩全组合 | 通过（[76记录及来源链](../interactions/cis-controls-a8976e0/NOTES.md)：实际a897采16、843采8、f896采52；受影响默认态已复测，其余源码/分支哈希复用；横溢出/破图/交互嵌套均0。固定源码及浏览器核对，不冒称原生Windows像素金标或同SHA采76张） |
 | N1 | 外框保持 | R16/R17 | 1364、1048、900 下切换导航；外框、标题栏矩形不变；无内容越出窗口 | 通过（2660400；证据cis-nav-2660400，最终受影响回归仍须做） |
 | N2 | 选中位置 | R02/R17 | 六主页面各做 10 次折叠/展开；正文、当前页、选中背景始终对应；thumb 严格按 CIS 的测量/定位算法匹配目标，不以统一像素容差放行 | 通过（2660400；六页60次，最终受影响回归仍须做） |
 | N3 | 顺滑度 | R16/R17；本清单§3.3 | 完成 3.3 的三轮性能记录和录屏；参数、性能、实际观感分别给结论 | 待验（[实际记录与时间索引](../interactions/cis-nav-2660400/NOTES.md)已齐；不以录屏峰值自动归因或放行） |
@@ -99,7 +99,7 @@
 | S1 | 设置主外观 | R01–R07/R21 | 常规页与用户图三逐项核对字体、两列对齐、分隔线、控件尺寸、选中态和滚动 | 通过（874268b证据复用于0a2a014；监督R01勘误3c2d6de，有限核验已另完成；[证据](../interactions/cis-layout-0a2a014/NOTES.md)） |
 | S2 | 字体选择 | R01/R07/R13/R18 | 界面/代码字体两列，菜单普通/空查询/选中/关闭四态正确，无首次打不开和截边 | 通过（90099b9；f198b24完整有限状态+相同FontRow字节复用，最终复测初焦/resize/外部滚动；C1/C2另验） |
 | S3 | 语言与字号 | R02/R07/R19/R21 | zh/en/zh-TW/ja/de及系统语言各选一次；四字号各在常规页验一次，125%另查导航/网关，不扩成全语言×字号×页面；恢复原值 | 通过（90099b9；五语言+System正确；复用仅一译文键差异前的字号矩阵；偏好已恢复） |
-| S4 | 设置其他分区 | R01–R15/R21 | 额度/网络与共享/模型/隐私/同步与备份/关于各检查默认态、一个可操作项、一个可用的禁用态；不存在的禁用控件不新增 | 待验 |
+| S4 | 设置其他分区 | R01–R15/R21 | 额度/网络与共享/模型/隐私/同步与备份/关于各检查默认态、一个可操作项、一个可用的禁用态；不存在的禁用控件不新增 | 通过（[1100d15的13记录](../interactions/cis-controls-a8976e0/capture-bindings.json)：裸数组按实际采集区间绑定源，不追认新SHA；五操作PrefRow与SyncForms完整函数哈希相同。Used/Left、端口3426联动恢复、Stop looping、Mask secrets、Export取消、Update；六默认无disabled） |
 | G1 | 网关状态 | R03/R09/R22 | running/off/older/other 四个明确 mock fixture：状态、主操作、地址及说明匹配，样式共用 | 通过（874268b；四态/三操作/端口失败/普通设置保存仍空模型；[证据](../interactions/cis-gateway-874268b/NOTES.md)） |
 | G2 | 五种 API | R02/R22 | OpenAI/Responses/Anthropic/Gemini/System One 逐一切换，字段和代码示例同步，无旧选中残留 | 通过（874268b；五API curl及六条已修分支，地址/占位/提示同步） |
 | G3 | 复制 | R10/R14/R22 | 地址/密钥/模型/示例各一遍；内容正确，成功反馈和恢复正确，失败不伪报成功 | 通过（874268b；实际剪贴板四类文本/重复约1200ms恢复/受控失败/卸载，无新console错误） |

@@ -1,0 +1,25 @@
+[
+  {
+    "source": "a8976e0db339d520a290cbdd548c290be760797b",
+    "case": "error-default-timeout-bounded-observation",
+    "fixture": "cisCopy=fail; both clipboard paths rejected; no clipboard write",
+    "clickAt": 1792171348035,
+    "shownAt": 1792171348325,
+    "text": "复制失败，请手动复制",
+    "visibleAtLeastMs": 3409,
+    "emptyAt": 1792171358069,
+    "emptyAtMostMs": 10034,
+    "note": "waitFor options exceeded backend ~3s selector deadline; message still present then, empty at 10.034s; source establishes exact scheduled 8000ms, observation is a bound, not exact timing"
+  },
+  {
+    "source": "a8976e0db339d520a290cbdd548c290be760797b",
+    "case": "default-3500-bounded",
+    "shownAt": 1792171387764,
+    "checkedAt": 1792171390798,
+    "text": "模型列表已刷新",
+    "current": "模型列表已刷新",
+    "wait": "backend-selector-cap-before-3500",
+    "emptyCheckAt": 1792171400134,
+    "emptyAfter": ""
+  }
+]
