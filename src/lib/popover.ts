@@ -40,8 +40,11 @@ export function placePopover(box: HTMLElement, anchor: HTMLElement, {
   const host = popoverHost();
   const frame = host.getBoundingClientRect();
   const scale = host.offsetWidth ? frame.width / host.offsetWidth : 1;
-  const originX = frame.left + host.clientLeft * scale;
-  const originY = frame.top + host.clientTop * scale;
+  // clientLeft/clientTop round a subpixel border to an integer. Use the
+  // rendered border width so browser/display scaling does not shift the anchor.
+  const style = getComputedStyle(host);
+  const originX = frame.left + (parseFloat(style.borderLeftWidth) || 0) * scale;
+  const originY = frame.top + (parseFloat(style.borderTopWidth) || 0) * scale;
   const width = host.clientWidth, height = host.clientHeight;
   const r = anchor.getBoundingClientRect();
   const a = { left: (r.left - originX) / scale, right: (r.right - originX) / scale,

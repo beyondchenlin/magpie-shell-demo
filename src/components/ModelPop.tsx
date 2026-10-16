@@ -60,6 +60,7 @@ export function ModelPop({
   const railRef = useRef<HTMLElement>(null);
   const thumbRef = useRef<HTMLSpanElement>(null);
   const [q, setQ] = useState("");
+  const [cursor, setCursor] = useState<string | null>(value);
   const [groupFilter, setGroupFilter] = useState<"all" | "favorites" | string>("all");
   const [favs, setFavs] = useState<Set<string>>(() => loadFavs());
   const shown = open;
@@ -69,10 +70,11 @@ export function ModelPop({
   useEffect(() => {
     if (open) {
       setQ("");
+      setCursor(value);
       setGroupFilter("all");
       setFavs(loadFavs());
     }
-  }, [open, anchor]);
+  }, [open, anchor, value]);
 
   useAnchoredPopover(popRef, anchor, shown, { recipe: "model", requestedWidth, maxHeight: modelPicker ? 420 : 340 });
 
@@ -105,7 +107,7 @@ export function ModelPop({
         const at = items.findIndex(item => item.classList.contains("sel"));
         const from = at < 0 ? (e.key === "ArrowDown" ? items.length - 1 : 0) : at;
         const next = items[(from + (e.key === "ArrowDown" ? 1 : items.length - 1)) % items.length];
-        items.forEach(item => item.classList.toggle("sel", item === next));
+        setCursor(next.dataset.value ?? null);
         next.scrollIntoView({ block: "nearest" });
       } else if (e.key === "Enter" && popRef.current?.contains(document.activeElement)) {
         const selected = popRef.current.querySelector<HTMLElement>("li.sel[role=option]");
@@ -163,6 +165,9 @@ export function ModelPop({
     const hay = `${o.label} ${o.note || ""} ${o.value} ${o.group || ""}`.toLowerCase();
     return words.every((w) => hay.includes(w));
   });
+  const selected = filtered.find(o => o.value === cursor) ?? filtered[0];
+  const search = (next: string) => { setQ(next); setCursor(null); };
+  const selectGroup = (next: string) => { setGroupFilter(next); setCursor(null); };
 
   const groups: { title?: string; items: PopOption[] }[] = [];
   let cur: { title?: string; items: PopOption[] } | null = null;
@@ -199,14 +204,7 @@ export function ModelPop({
           placeholder={placeholder || t("Filter, or type any model id…")}
           value={q}
           autoFocus={!document.body.classList.contains("web") || !window.matchMedia("(pointer: coarse)").matches}
-          onChange={(e) => setQ(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" && q.trim() && !filtered.some((o) => o.value === q.trim())) {
-              onPick(q.trim());
-              if (!keepOpen) dismiss();
-              else setQ("");
-            }
-          }}
+          onChange={(e) => search(e.target.value)}
         />
       </div>
       <div className="picker-body">
@@ -219,7 +217,7 @@ export function ModelPop({
               data-group="all"
               title={t("All models")}
               aria-label={t("All models")}
-              onClick={() => setGroupFilter("all")}>
+              onClick={() => selectGroup("all")}>
               <svg className="ic" viewBox="0 0 15 15" width={15} height={15} aria-hidden>
                 <path d="M3 3h4v4H3zM9 3h4v4H9zM3 9h4v4H3zM9 9h4v4H9z" fill="none" stroke="currentColor" strokeWidth="1.4" />
               </svg>
@@ -230,7 +228,7 @@ export function ModelPop({
               data-group="favorites"
               title={t("Favorites")}
               aria-label={t("Favorites")}
-              onClick={() => setGroupFilter("favorites")}>
+              onClick={() => selectGroup("favorites")}>
               <svg className="ic" viewBox="0 0 16 16" width={16} height={16} aria-hidden>
                 <path
                   d="m8 2 1.8 3.7 4.1.6-3 2.9.7 4.1L8 11.4l-3.6 1.9.7-4.1-3-2.9 4.1-.6z"
@@ -249,7 +247,7 @@ export function ModelPop({
                 className={`rail-item${groupFilter === g ? " on" : ""}`}
                 data-group={g}
                 aria-label={g}
-                onClick={() => setGroupFilter(g)}>
+                onClick={() => selectGroup(g)}>
                 <MagpieIcon name={options.find(o => o.group === g)?.icon || "generic"} />
               </button>
             ))}
@@ -262,9 +260,11 @@ export function ModelPop({
               {g.items.map((o) => (
                 <li
                   key={o.value || o.label}
-                  className={`${o.reset ? "reset " : ""}${o.value === value ? "cur sel" : ""}`.trim()}
+                  data-value={o.value}
+                  className={`${o.reset ? "reset " : ""}${o.value === value ? "cur " : ""}${o === selected ? "sel" : ""}`.trim()}
                   role="option"
                   aria-selected={o.value === value}
+                  onMouseMove={() => setCursor(o.value)}
                   onClick={() => {
                     onPick(o.value);
                     if (!keepOpen) dismiss();
