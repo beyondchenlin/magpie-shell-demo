@@ -1,0 +1,147 @@
+{
+  "wide": [
+    {
+      "boxHeight": 26,
+      "kind": "openai|responses|anthropic|gemini|systemone",
+      "on": {
+        "height": 22,
+        "width": 60,
+        "x": 2,
+        "y": 2
+      },
+      "thumb": {
+        "computedHeight": "21.9886px",
+        "height": "",
+        "transform": "translateX(2px)",
+        "width": "60px"
+      }
+    },
+    {
+      "boxHeight": 26,
+      "kind": "shell|curl|python|node",
+      "on": {
+        "height": 22,
+        "width": 78,
+        "x": 2,
+        "y": 2
+      },
+      "thumb": {
+        "computedHeight": "21.9886px",
+        "height": "",
+        "transform": "translateX(2px)",
+        "width": "78px"
+      }
+    },
+    {
+      "boxHeight": 26,
+      "kind": "windows|unix",
+      "on": {
+        "height": 22,
+        "width": 69,
+        "x": 2,
+        "y": 2
+      },
+      "thumb": {
+        "computedHeight": "21.9886px",
+        "height": "",
+        "transform": "translateX(2px)",
+        "width": "69px"
+      }
+    }
+  ],
+  "phone": [
+    {
+      "boxHeight": 92,
+      "kind": "openai|responses|anthropic|gemini|systemone",
+      "on": {
+        "height": 44,
+        "width": 60,
+        "x": 2,
+        "y": 2
+      },
+      "thumb": {
+        "computedHeight": "44px",
+        "height": "44px",
+        "transform": "translate(2px, 0px)",
+        "width": "60px"
+      }
+    },
+    {
+      "boxHeight": 48,
+      "kind": "shell|curl|python|node",
+      "on": {
+        "height": 44,
+        "width": 78,
+        "x": 2,
+        "y": 2
+      },
+      "thumb": {
+        "computedHeight": "44px",
+        "height": "",
+        "transform": "translateX(2px)",
+        "width": "78px"
+      }
+    },
+    {
+      "boxHeight": 48,
+      "kind": "windows|unix",
+      "on": {
+        "height": 44,
+        "width": 69,
+        "x": 2,
+        "y": 2
+      },
+      "thumb": {
+        "computedHeight": "44px",
+        "height": "",
+        "transform": "translateX(2px)",
+        "width": "69px"
+      }
+    }
+  ],
+  "settingsPhone110": {
+    "htmlZoom": "1",
+    "on": {
+      "h": 44,
+      "w": 49,
+      "x": 51,
+      "y": 2
+    },
+    "selected": "110%",
+    "thumb": {
+      "height": "44px",
+      "transform": "translate(51px, 0px)",
+      "width": "49px"
+    }
+  },
+  "settingsPhone150": {
+    "htmlZoom": "1",
+    "on": {
+      "h": 44,
+      "w": 49,
+      "x": 2,
+      "y": 46
+    },
+    "selected": "150%",
+    "thumb": {
+      "height": "44px",
+      "transform": "translate(2px, 44px)",
+      "width": "49px"
+    }
+  },
+  "settingsWide": {
+    "htmlZoom": "1.1",
+    "on": {
+      "h": 22,
+      "w": 49,
+      "x": 51,
+      "y": 2
+    },
+    "selected": "110%",
+    "thumb": {
+      "height": "",
+      "transform": "translateX(51px)",
+      "width": "49px"
+    }
+  }
+}

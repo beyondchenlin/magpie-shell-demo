@@ -1,0 +1,25 @@
+# S1/N4/G4 and affected navigation regression
+
+Current UI candidate `0a2a014ff881e37a636d05605849f246485888ff`, version0.1.197. Frozen028dab5 plus supervisor-approved R01 correction committed in3c2d6de; no native CSS changed. This batch adds three passed IDs; total10 passed/0 failed/19 pending. N3 remains independently pending.
+
+## S1 passed after the approved clarification
+
+Supervisor independently verified fixed app.css:533 specificity and approved recording the window variant, while requiring the original finite checks. `s1.json` and Settings top/bottom screenshots bind874268b: Windows UI and monospace fallback stacks,13px body/110%, light/Chinese/1364×941; font controls310px, gap5px6px, contiguous two columns with protocol buttons and disabled default style; window rows48/7/12, font-row gap8×14; adjacent rows have native top dividers; seven sidebar sections with onlyGeneral selected; scrolling keeps root/caption and section selection unchanged. `.val` computed display:flex is the CSS blockification of declared inline-flex as a flex item, not a conflicting recipe. At zoom1.1 the1px declared top border resolves to0.909091 CSS px (~1 screen px); this is recorded, not a blanket tolerance. The white selected pill is the shared thumb, not a button background.
+
+User image3 was re-read privately as an old defect report (wrong large family/style gap, missing sidebar sections, older font rendering), not a correct pixel gold. No personal image is copied to this public folder. Fixed source supplies the expected geometry; no native same-platform full pixel gold is claimed. S1 desktop component/styles are unchanged in0a2a014, so the874268b evidence is reused; the changed shared thumb's phone behavior is separately verified below.
+
+## N4 passed
+
+`n4.json`: initial preference null;900/1023 defaulttop,1024/1364 defaultside; explicittop fresh document reads initialPreference=top; explicitside cold document at900 reads side and stays side despite the defaulttop breakpoint;390 suppresses side and applies zoom1, return1364 restores explicit side/zoom1.1. Root bounds fit each recorded viewport. A preflight new tab used its default1280×720; that record is preserved and labeled, and the required900 case was repeated with viewport applied to about:blank before navigation. No900 claim is made for the1280 record. App/style bytes are unchanged from874268b; affected navigation geometry is additionally checked on0a2a014.
+
+## G4 passed after one height-cache fix
+
+`g4.json` exercises OpenAI Shell/curl/Python/Node, both OS choices for Shell/curl, no OS selector forPython/Node, and SystemOne withoutShell. Desktop1364 code fits (727 client/727 scroll, no horizontal movement required); phone390 code overflows onlypre (324 client/625 scroll), actual scrollLeft301→0. Copy remains a sibling outsidepre, with right/top inset6px before and after horizontal scrolling; whole window stays390wide. First phone resize observation included a3.58px vertical settle, moving both pre and copy together; settled return-scroll confirms identical relative6px anchors. The early samples are retained.
+
+Screenshot review caught a real shared-thumb bug: after desktop→phone, API's selected button was44px but its white thumb88px. `wrap-before.json` shows unchangedx/y/width causing the cache to skip applying the new row height. React retains this strip through responsive reflow. The patch includes height in the existing internal thumbSame comparison; source target geometry stays offsetLeft/Width and wrapped offsetTop−2/offsetHeight, animation280ms/curve unchanged. This is not an acceptance pixel tolerance. `wrap-after.json` on0a2a014: API thumb44px, Settings110% row44px; selecting second-row150% targets translate(2px,44px), height44; desktop return clears inlineheight and uses translateX. Corrected phone screenshot shows a single-row pill. Full pre-fix dialect/scroll evidence is reused because Gateway/templates/styles are unchanged; the changed wrap cases were rerun on0a2a014.
+
+## Regression, identity and cleanup
+
+`navigation-regression.json` on0a2a014 records six main pages × one top/side pair=12 toggles. `regression-result.json` asserts root/caption unchanged before/during/after every sampled frame, correct unique page/selected identity, no view horizontal overflow, exact integeroffset inlinewidth/transform targets, correct white sidebar card and no watchdog. All pass. This is affected N1/N2 geometry regression, not another N3 recording or FPS claim; original finite N1/N2 evidence remains linked.
+
+Build/TypeScript and bothguards pass; explicit52-file candidate lint55warnings/0errors. No new dependencies, installs or worktrees. build-info binds source/tree/version/asset and probe hashes.13 preferences restored to initialnull, all batch tabs closed, viewport reset; no clipboard changes in this batch. Existing4173/dist untouched. Candidate4176 runs in owned terminal session60331; prior managed53434 ended normally viaCtrl+C, earlier4174/4175 processes were left intact following the logged approval rejection. Necessary raw data remains `.cache/cis-layout-20261016/`; no historical evidence removed.

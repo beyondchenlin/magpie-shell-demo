@@ -1,0 +1,299 @@
+[
+  {
+    "case": "default-900",
+    "body": "window web",
+    "initialPreference": null,
+    "nav": {
+      "bottom": 100.8671875,
+      "height": 30.765625,
+      "left": 274.7578125,
+      "right": 625.2421875,
+      "top": 70.1015625,
+      "width": 350.484375,
+      "x": 274.7578125,
+      "y": 70.1015625
+    },
+    "root": {
+      "bottom": 741.1875,
+      "height": 717.1875,
+      "left": 36.40625,
+      "right": 863.59375,
+      "top": 24,
+      "width": 827.1875,
+      "x": 36.40625,
+      "y": 24
+    },
+    "side": "false",
+    "source": "874268b83c40d3b1a621b152d54aeaed51732334",
+    "toggleHidden": "flex",
+    "viewport": [
+      900,
+      941
+    ],
+    "zoom": "1.1"
+  },
+  {
+    "case": "default-1023",
+    "body": "window web",
+    "initialPreference": null,
+    "nav": {
+      "bottom": 100.8671875,
+      "height": 30.765625,
+      "left": 336.2578125,
+      "right": 686.7421875,
+      "top": 70.1015625,
+      "width": 350.484375,
+      "x": 336.2578125,
+      "y": 70.1015625
+    },
+    "root": {
+      "bottom": 741.1875,
+      "height": 717.1875,
+      "left": 97.90625,
+      "right": 925.09375,
+      "top": 24,
+      "width": 827.1875,
+      "x": 97.90625,
+      "y": 24
+    },
+    "side": "false",
+    "source": "874268b83c40d3b1a621b152d54aeaed51732334",
+    "toggleHidden": "flex",
+    "viewport": [
+      1023,
+      941
+    ],
+    "zoom": "1.1"
+  },
+  {
+    "case": "default-1024",
+    "body": "window web side-nav",
+    "initialPreference": null,
+    "nav": {
+      "bottom": 412.640625,
+      "height": 341.453125,
+      "left": 36,
+      "right": 246.1875,
+      "top": 71.1875,
+      "width": 210.1875,
+      "x": 36,
+      "y": 71.1875
+    },
+    "root": {
+      "bottom": 816,
+      "height": 792,
+      "left": 24,
+      "right": 1000,
+      "top": 24,
+      "width": 976,
+      "x": 24,
+      "y": 24
+    },
+    "side": "true",
+    "source": "874268b83c40d3b1a621b152d54aeaed51732334",
+    "toggleHidden": "flex",
+    "viewport": [
+      1024,
+      941
+    ],
+    "zoom": "1.1"
+  },
+  {
+    "case": "default-1364",
+    "body": "window web side-nav",
+    "initialPreference": null,
+    "nav": {
+      "bottom": 412.640625,
+      "height": 341.453125,
+      "left": 89,
+      "right": 299.1875,
+      "top": 71.1875,
+      "width": 210.1875,
+      "x": 89,
+      "y": 71.1875
+    },
+    "root": {
+      "bottom": 816,
+      "height": 792,
+      "left": 77,
+      "right": 1287,
+      "top": 24,
+      "width": 1210,
+      "x": 77,
+      "y": 24
+    },
+    "side": "true",
+    "source": "874268b83c40d3b1a621b152d54aeaed51732334",
+    "toggleHidden": "flex",
+    "viewport": [
+      1364,
+      941
+    ],
+    "zoom": "1.1"
+  },
+  {
+    "case": "explicit-top-fresh-document",
+    "body": "window web",
+    "initialPreference": "top",
+    "nav": {
+      "bottom": 100.8671875,
+      "height": 30.765625,
+      "left": 464.7578125,
+      "right": 815.2421875,
+      "top": 70.1015625,
+      "width": 350.484375,
+      "x": 464.7578125,
+      "y": 70.1015625
+    },
+    "root": {
+      "bottom": 696,
+      "height": 672,
+      "left": 35,
+      "right": 1245,
+      "top": 24,
+      "width": 1210,
+      "x": 35,
+      "y": 24
+    },
+    "side": "false",
+    "source": "874268b83c40d3b1a621b152d54aeaed51732334",
+    "toggleHidden": "flex",
+    "viewport": [
+      1280,
+      720
+    ],
+    "zoom": "1.1"
+  },
+  {
+    "case": "preflight-side-fresh-document-default-1280",
+    "body": "window web side-nav",
+    "initialPreference": "side",
+    "nav": {
+      "bottom": 412.640625,
+      "height": 341.453125,
+      "left": 47,
+      "right": 257.1875,
+      "top": 71.1875,
+      "width": 210.1875,
+      "x": 47,
+      "y": 71.1875
+    },
+    "root": {
+      "bottom": 696,
+      "height": 672,
+      "left": 35,
+      "right": 1245,
+      "top": 24,
+      "width": 1210,
+      "x": 35,
+      "y": 24
+    },
+    "side": "true",
+    "source": "874268b83c40d3b1a621b152d54aeaed51732334",
+    "toggleHidden": "flex",
+    "viewport": [
+      1280,
+      720
+    ],
+    "zoom": "1.1"
+  },
+  {
+    "case": "phone-390-explicit-side-suppressed",
+    "body": "window web phone-web",
+    "initialPreference": null,
+    "nav": {
+      "bottom": 98,
+      "height": 44,
+      "left": 12,
+      "right": 378,
+      "top": 54,
+      "width": 366,
+      "x": 12,
+      "y": 54
+    },
+    "root": {
+      "bottom": 844,
+      "height": 844,
+      "left": 0,
+      "right": 390,
+      "top": 0,
+      "width": 390,
+      "x": 0,
+      "y": 0
+    },
+    "side": "false",
+    "source": "874268b83c40d3b1a621b152d54aeaed51732334",
+    "toggleHidden": "none",
+    "viewport": [
+      390,
+      844
+    ],
+    "zoom": "1"
+  },
+  {
+    "case": "return-wide-restores-explicit-side",
+    "body": "window web side-nav",
+    "initialPreference": null,
+    "nav": {
+      "bottom": 412.640625,
+      "height": 341.453125,
+      "left": 89,
+      "right": 299.1875,
+      "top": 71.1875,
+      "width": 210.1875,
+      "x": 89,
+      "y": 71.1875
+    },
+    "root": {
+      "bottom": 816,
+      "height": 792,
+      "left": 77,
+      "right": 1287,
+      "top": 24,
+      "width": 1210,
+      "x": 77,
+      "y": 24
+    },
+    "side": "true",
+    "source": "874268b83c40d3b1a621b152d54aeaed51732334",
+    "toggleHidden": "flex",
+    "viewport": [
+      1364,
+      941
+    ],
+    "zoom": "1.1"
+  },
+  {
+    "case": "explicit-side-cold-document-900",
+    "body": "window web side-nav",
+    "initialPreference": "side",
+    "nav": {
+      "bottom": 412.640625,
+      "height": 341.453125,
+      "left": 48.40625,
+      "right": 258.59375,
+      "top": 71.1875,
+      "width": 210.1875,
+      "x": 48.40625,
+      "y": 71.1875
+    },
+    "root": {
+      "bottom": 741.1875,
+      "height": 717.1875,
+      "left": 36.40625,
+      "right": 863.59375,
+      "top": 24,
+      "width": 827.1875,
+      "x": 36.40625,
+      "y": 24
+    },
+    "side": "true",
+    "source": "874268b83c40d3b1a621b152d54aeaed51732334",
+    "toggleHidden": "flex",
+    "viewport": [
+      900,
+      941
+    ],
+    "zoom": "1.1"
+  }
+]
