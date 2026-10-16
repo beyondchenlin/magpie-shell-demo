@@ -10,6 +10,18 @@ export function morphNavigation(change: () => void) {
     change();
     return;
   }
+  // View-transition snapshots live above the DOM, so #root's overflow cannot
+  // clip them to the simulated OS window. Percent insets remain viewport
+  // relative even when the document uses Magpie's CSS zoom.
+  const frame = document.body.classList.contains("web") ? document.getElementById("root") : null;
+  if (frame) {
+    const r = frame.getBoundingClientRect();
+    const insets = [r.top / innerHeight, (innerWidth - r.right) / innerWidth,
+      (innerHeight - r.bottom) / innerHeight, r.left / innerWidth];
+    const radius = getComputedStyle(frame).borderRadius;
+    document.documentElement.style.setProperty("--nav-frame-clip",
+      `inset(${insets.map(v => `${Math.max(0, v) * 100}%`).join(" ")} round ${radius})`);
+  }
   document.documentElement.classList.add("nav-morph");
   const transition = document.startViewTransition(() => {
     if (turn === generation) change();
@@ -21,6 +33,7 @@ export function morphNavigation(change: () => void) {
     if (current === transition) {
       current = undefined;
       document.documentElement.classList.remove("nav-morph");
+      document.documentElement.style.removeProperty("--nav-frame-clip");
     }
   };
   void transition.finished.then(finish, finish);

@@ -241,6 +241,9 @@ body.web .pop {
   position: absolute !important;
   z-index: 40;
 }
+/* Browser snapshot layers sit above #root's overflow clip. Keep the native
+   navigation animation inside the same simulated OS window. */
+.nav-morph::view-transition { clip-path: var(--nav-frame-clip, none); }
 .pop[data-anchored] { position: absolute !important; z-index: 80; }
 /* React exposes the native Detect column count as a custom property. */
 .detect-grid { grid-template-columns: minmax(0, 1.3fr) repeat(var(--detect-n, 1), minmax(0, 1fr)); }
