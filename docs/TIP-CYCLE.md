@@ -1,7 +1,7 @@
 # Tip cycle · 循环检测（consume 前必过）
 
 **目的：** 每个 tip 只能 **改进 nest 切片**，不能 silently 冲掉壳 chrome。  
-金标（CIS / SHELL-APPEARANCE-LOGIC + Magpie 开源）：**桌面默认 = Windows Magpie**（系统标题栏 + `html.win` Segoe；页内无 brand/winclose）+ **顶栏 tabs**（`SIDE_AT=1024` 以下）；宽窗 / 用户强制才侧栏。Web 框 **752×652** 对齐 nest responsive，不是把侧栏硬塞进窄窗。不以 Linux nest 截图当 Win 外观金标。
+金标（CIS / SHELL-APPEARANCE-LOGIC + Magpie 开源）：**桌面默认 = Windows Magpie**（系统标题栏 + `html.win` Segoe；页内无 brand/winclose）+ **顶栏 tabs**（`SIDE_AT=1024` 以下）；宽窗 / 用户强制才侧栏。Web 紧凑框 **752×652** 对齐 nest responsive，宽视口框最大 **1100×720**；两者按视口选择，折叠导航不改变窗口尺寸。不以 Linux nest 截图当 Win 外观金标。
 
 **反面教材：**
 - **v0.1.91** 把 Web `#root` 锁到 752×652（对齐 nest，**故意**）；窄/中宽仍顶栏 = 金标。
@@ -30,7 +30,7 @@
 |------|------|----------|
 | `SIDE_AT`（金标 **1024**） | 不动 | nest NOTES 明文要求 native 断点 |
 | `wantSide` / 顶栏↔侧栏门槛 | 不动 | 修复**已证明**的回归，且 changelog 写 CAUSE；**禁止**为「Vercel 看起来要侧栏」降门槛 |
-| Web `#root` 752×652 框 | 不动 | nest responsive NOTES 明文改尺寸 |
+| Web `#root` 窗口尺寸契约 | 不动 | 用户 2026-10-16 明确要求 1:1：折叠时保持窗口大小；752×652 / 1100×720 只由视口选择，禁止由 `.side-nav` 选择 |
 | 侧栏 / 顶栏 `.on`（白卡 + `seg-edge`） | 不动 | 同上 |
 | Routing / Agents / … 页内 | 可改 | 限本 tip nest 切片 |
 
@@ -75,5 +75,5 @@ npm run chrome-guard
 2. `wantSide` 只用 `SIDE_AT`
 3. App 仍渲染 `aside.sidebar` / `#side`
 4. `app.css` 仍有 `body.side-nav … .on` + `seg-edge` / `--card`
-5. `shell-patch`：非 side-nav 时 `#root` 仍有 **752** 框；`@media (min-width: 1024px)` 才扩 side-nav 卡
+5. `shell-patch`：紧凑 `#root` 仍有 **752** 框；`@media (min-width: 1024px)` 才扩宽窗；`.side-nav #root` 不得覆盖宽高。浏览器还须验证折叠前后外框与标题栏矩形不变。
 6. Web `#root` 宽高必须对 `--zoom` 敏感（`calc((100vw|vh - …) / var(--zoom, …))`），禁止再用裸 `100vw` 把 110% 卡撑出视口

@@ -65,10 +65,16 @@ if (!/body\.web\s+#root\s*\{[\s\S]*?100vw[\s\S]*?\/\s*var\(--zoom/.test(patch)) 
 }
 ok("web #root zoom-aware width");
 
-if (!/@media\s*\(\s*min-width:\s*1024px\s*\)\s*\{[\s\S]*?body\.web\.side-nav\s+#root/.test(patch)) {
-  fail("side-nav card expand must stay behind @media (min-width: 1024px)");
+if (!/@media\s*\(\s*min-width:\s*1024px\s*\)\s*\{\s*body\.web\s+#root\s*\{/.test(patch)) {
+  fail("wide preview sizing must depend on viewport >=1024, not navigation");
 }
-ok("side-nav expand gated at 1024");
+for (const block of patch.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
+  if (/body\.web\.side-nav\s+#root/.test(block[1]) &&
+      /(?:^|[;\s])(?:min-|max-)?(?:width|height)\s*:/.test(block[2])) {
+    fail("side-nav must not resize the preview window");
+  }
+}
+ok("preview sizing independent of navigation; wide frame gated at 1024");
 
 
 // Windows Magpie desktop sim (v0.1.101+): not Linux in-page brand chrome

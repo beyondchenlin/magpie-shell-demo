@@ -12,7 +12,8 @@ body { margin: 0; }
   position: relative;
 }
 
-/* Web preview: Magpie nest footprint 752×652 (NOTES responsive).
+/* Web preview: compact Magpie nest footprint 752×652 (NOTES responsive).
+   Wide viewports use 1100×720 below; navigation never resizes the window.
    At text size 110%, Magpie clamps to min ~616 wide (windowMinW 560 × 1.10).
    CSS width uses un-zoomed px; html { zoom } scales the frame. */
 /* Nest preview canvas around #root card.
@@ -307,13 +308,6 @@ body.window:not(.side-nav) .top.tight .brand > span:not(.logo) { display: none; 
 
 
 /* Side-nav inside web frame: Magpie uses fixed sidebar; pin it to #root. */
-body.web.side-nav #root {
-  width: min(1100px, calc((100vw - 48px) / var(--zoom, 1.1)));
-  max-width: min(1100px, calc((100vw - 48px) / var(--zoom, 1.1)));
-  height: min(720px, calc((100vh - 48px) / var(--zoom, 1.1)));
-  max-height: min(720px, calc((100vh - 48px) / var(--zoom, 1.1)));
-  position: relative;
-}
 body.web .sidebar {
   position: absolute;
 }
@@ -322,6 +316,10 @@ body.web.side-nav {
 }
 body.web.side-nav #root {
   padding-left: var(--side-w, 212px);
+}
+/* The OS caption spans the same window in either navigation layout. */
+body.web.side-nav .win-caption {
+  margin-left: calc(-1 * var(--side-w, 212px));
 }
 body.web.side-nav .sidebar {
   left: 0; top: 0; bottom: 0;
@@ -639,11 +637,11 @@ body.web.side-nav {
   }
 }
 
-/* Tablet / short side-nav (Magpie --side-w: 184 @ ≤859) already in app.css.
-   Web framed card stays 752 until viewport past SIDE_AT with side layout. */
+/* Preview window sizing follows the viewport, never side-nav state.
+   Native layoutNav changes the contents of an existing OS window. */
 @media (min-width: 1024px) {
-  body.web.side-nav #root {
-    /* Wide web with side-nav: use more of the viewport, keep card chrome soft.
+  body.web #root {
+    /* Wide preview: use more of the viewport, keep card chrome soft.
        Still divide by --zoom so 1100 CSS × 1.1 never exceeds the viewport. */
     width: min(1100px, calc((100vw - 48px) / var(--zoom, 1.1)));
     max-width: min(1100px, calc((100vw - 48px) / var(--zoom, 1.1)));

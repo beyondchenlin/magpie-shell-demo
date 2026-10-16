@@ -1,3 +1,13 @@
+## v0.1.193 · NAV_WINDOW_GEOMETRY · 2026-10-16 Asia/Shanghai
+
+- WHY: 用户明确要求 1:1 继续复刻，修正折叠导航导致外框缩放的差异。
+- CAUSE: shell-patch 将 1100×720 尺寸绑定 side-nav；原生 layoutNav 仅改变窗口内容，不改变 OS 窗口。
+- WHAT kept: SIDE_AT=1024；紧凑 752×652 / 宽窗最大 1100×720 的视口与字号约束；320ms 原生曲线；设置/网关组件修复。
+- WHAT changed: 预览宽高仅按视口选择；移除所有 side-nav 宽高覆盖；系统标题栏横贯窗口，折叠时位置/大小不变；同步 CIS 与 chrome-guard 新契约。
+- Cite: Magpie 63be477 app.js L22749+ layoutNav；app.css L457–485 nav-morph。
+- Checks: chrome-guard / build / lint 通过（lint 59 warnings、0 errors）；900/1048/1364px × 三页 × 两次切换，18 次外框与标题栏矩形不变，九次折叠后 thumb 对齐；125% 字号与 390px 无横向溢出。证据 interactions/web-frame-0.1.193。未采集 FPS，人工顺滑度待验收。
+- Ship: 更新 PR #1 → 分支临时预览；无 main 合并、portable/exe 或生产部署。
+
 ## v0.1.192 · NAV_MORPH_REFERENCE_TIMING · 2026-10-16 Asia/Shanghai
 
 - WHY: 用户追问折叠动效是否与参考仓库相同；逐项对比发现 v0.1.191 仍沿用了旧 CSS 的 500ms 曲线。
