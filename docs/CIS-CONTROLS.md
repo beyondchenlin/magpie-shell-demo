@@ -1,8 +1,9 @@
 # CIS 当前规则入口（监督冻结候选）
 
-状态：**frozen；2026-10-16 19:43监督消息批准进入阶段2**。冻结规格基线：`028dab55a3877656c115439835d1d0d14465e4ee`中的本页R01–R25、CIS-AUDIT和REPLICA-ACCEPTANCE有限范围与证据边界。规则ID及参数保持稳定；本次仅更新批准元数据。不是v195已通过声明。
+状态：**frozen；2026-10-16 19:43监督消息批准进入阶段2**。冻结规格基线：`028dab55a3877656c115439835d1d0d14465e4ee`中的本页R01–R25、CIS-AUDIT和REPLICA-ACCEPTANCE有限范围与证据边界。规则ID及范围保持稳定；2026-10-16续行监督已批准R01遗漏的window级联变体勘误（见下），未改变原版CSS。不是全量已通过声明。
 本页是本轮唯一规则入口；批准来源为监督聊天01a143c3-8101-75e1-b638-c39ad15d55ed的续行指令，首批限N3/N1/N2，B1构建身份为前置。此后常规批次可继续，规格冲突/同修复两轮失败/不可代理阻塞才停相应动作。
 
+监督勘误记录（2026-10-16，监督聊天01a143c3-8101-75e1-b638-c39ad15d55ed续行批准）：R01原冻结表只写基础50/8/14，遗漏固定app.css:533的window高优先级规则。保留基础、补记48/7/12及字体gap特例、既有phone条件；其他冻结规则与29项范围不变。批准勘误不自动使S1通过，S1仍按原有限核验及实测证据判定。未更改任何原版CSS以迎合旧表。
 ## 1. 依据、生效与历史
 
 判定次序：用户明确的复刻目标与边界 → 固定原版证据 → 本页校核规则 → 组件与页面验证。现有实现只用于查调用和差异，不能反过来证明设计正确。
@@ -26,7 +27,7 @@
 
 | 规则ID / 类 | 旧条款 | 独立参考证据 | 结论与采用值、变体、状态 | 组件与主要调用点 | 验收方法 / ID |
 | --- | --- | --- | --- | --- | --- |
-| R01 PrefRow | §10.1/10.7：50px、gap14及复用 | app.css:3176–3189、3303；index.html:153–183 | 保留。min-height50，padding8px 12px 8px 14px，gap14；.prefs .val为inline-flex、gap2、max-width60%。字体行直接接.font-controls而非.val：310px grid，列minmax(100px,1fr)/minmax(72px,auto)，gap5px 6px；preview跨两列。手机变体按R19。原生.acc/pm-row/agent行不硬包PrefRow | PrefRow；SettingsView各分区、NestedBlocks；SimpleViews内置设置。92处调用索引 | 查DOM父子结构、最终grid、60%约束和换行；S1/S2/S4/B3 |
+| R01 PrefRow | §10.1/10.7：50px、gap14及复用 | app.css:533、3176–3189、3303、3495–3499；index.html:153–183 | 基础.row.pref为min-height50，padding8px 12px 8px 14px，gap14；window生效变体：body.window .row specificity(0,2,1)覆盖基础(0,2,0)，故min-height48，padding7px 12px 7px 14px，gap12。字体.row.pref.font-row specificity(0,3,0)保留gap8px 14px；phone Web现有媒体条件下body.web .row.pref改gap8/padding12并折行，按R19，不取消window继承的min-height。.prefs .val为inline-flex、gap2、max-width60%。字体行直接接.font-controls而非.val：310px grid，列minmax(100px,1fr)/minmax(72px,auto)，gap5px 6px；preview跨两列。手机变体按R19。原生.acc/pm-row/agent行不硬包PrefRow | PrefRow；SettingsView各分区、NestedBlocks；SimpleViews内置设置。92处调用索引 | 查DOM父子结构、最终grid、60%约束和换行；S1/S2/S4/B3 |
 | R02 Segs / SegThumb | §2.1/10.1把分段字与圆角概括为范围 | app.css:227–238、2878–2900；app.js:8499–8594 | 修正精确变体。页内.segs轨padding2/r7；.opt高22/pad0 10/r5/字12；thumb r5。顶栏.seg padding2/r8，按钮高24/pad0 12/r6/字12.5，thumb r6；cramped/crowded/packed有明确padding/字级。thumb280ms cubic(.2,.8,.2,1)，只选择变化滑动；隐藏/首次挂载/resize直接定位，折行时记录y/h；不得继承另一条坐标。源thumbSame内0.5比较是算法去重，不是验收容差 | Segs、SegThumb；App顶栏、Providers、Settings、Gateway、Usage、Library、GroupEditor | 追踪offsetLeft/Width、最终transform/width及所选按钮身份；变化/首次/隐藏恢复/折行各核；N2/S3/G2/B3 |
 | R03 TextBtn / icon按钮 | §2.2/10.1：6–8px、.12–.16s | app.css:240–246、1913–1919、3363–3369 | 修正为具体级联。基础.text字12/pad3px 7px/r6；.action高27/pad0 10/1px line/card底；primary用accent与500字重；danger默认不强制常红，hover red/red-soft。最终共用motion块transition .16s var(--ease)，active .96；.icon26×26/r7/active .9。busy/disabled是否禁交互与文案由具体原版入口决定，不把所有busy统一造spinner | TextBtn、现有.icon按钮；Providers编辑器、Gateway主操作、Settings、Library及插件 | 查最终computed transition，default/hover/active/disabled及已有busy；B3/G1/P1/P4 |
 | R04 WordsField | §10.1：h27/r7/12.5、aria-invalid→red | app.css:3210–3219、3234–3236；3165–3167 | 部分保留/修正。input.words基础h27/pad0 9/r7/1px line/字12.5，最终默认宽240/max100%；focus accent+3px 22%混色ring，border/shadow .12s。gateway-port/rule-kind宽110，compact-num76等按明确class。固定源只给.set-field[aria-invalid=true]红边，未给普通.words同规则；原“所有words aria-invalid变红”来源不足，撤回通用视觉断言，保留aria语义和具体表单原版验证 | WordsField；Settings、NestedBlocks、Providers、Library、GroupEditor；41处 | 输入/聚焦/具体invalid/禁用，按实际class查；不新增无来源通用红边；B3/S4/P1/P2 |
