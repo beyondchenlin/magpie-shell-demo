@@ -390,6 +390,19 @@ function LibModal({
 }
 
 
+/** Native library discover() search: library.css .mk-find, not an OS input. */
+function MarketSearch({value, onChange, placeholder, market}: {
+  value: string; onChange: (value: string) => void; placeholder: string; market: "mcp" | "skills";
+}) {
+  return <div className="mk-find">
+    <span className="lib-mini" aria-hidden><svg viewBox="0 0 16 16" width={16} height={16} fill="none" stroke="currentColor" strokeWidth="1.3"><path d={SEARCH}/></svg></span>
+    <input type="search" data-lib={`market-${market}`} spellCheck={false} autoComplete="off"
+      value={value} placeholder={placeholder} onChange={e => onChange(e.target.value)}
+      onKeyDown={e => {e.stopPropagation();if(e.key === "Escape" && value){e.preventDefault();onChange("");}}}/>
+    <span className="mk-spin" aria-hidden/>
+  </div>;
+}
+
 export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: string, ms?: number) => void }) {
   const [tab, setTab] = useState<string>(() => {
     try {
@@ -1724,19 +1737,14 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
               </div>
             )}
 
-            <div id="libDiscover">
+            <div id="libDiscover" className="mk">
               <div className="row-head lib-cardhead">
                 <span className="label">
                   {t("DISCOVER")}
                 </span>
               </div>
-              <input
-                type="search"
-                value={mcpQ}
-                placeholder={t("Search MCP servers — GitHub, Postgres, Figma…")}
-                onChange={(e) => setMcpQ(e.target.value)}
-               
-              />
+              <MarketSearch market="mcp" value={mcpQ} onChange={setMcpQ}
+                placeholder={t("Search MCP servers — GitHub, Postgres, Figma…")}/>
               <div className="mk-grid">
                 {mcpHits.map((c) => (
                   <div
@@ -2395,19 +2403,14 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
               </>
             )}
 
-            <div id="libSkillDiscover">
+            <div id="libSkillDiscover" className="mk">
               <div className="row-head">
                 <span className="label">{t("DISCOVER")}</span>
                 <span className="grow" />
                 <span>{t("Popular on skills.sh")}</span>
               </div>
-              <input
-                type="search"
-                value={skillQ}
-                placeholder={t("Search skills on skills.sh — react, pdf, testing…")}
-                onChange={(e) => setSkillQ(e.target.value)}
-               
-              />
+              <MarketSearch market="skills" value={skillQ} onChange={setSkillQ}
+                placeholder={t("Search skills on skills.sh — react, pdf, testing…")}/>
               <div className="mk-grid">
                 {DEMO_SKILLS_MARKET.filter((c) => {
                   const q = skillQ.trim().toLowerCase();
