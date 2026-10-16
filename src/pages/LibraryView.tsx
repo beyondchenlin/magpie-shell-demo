@@ -819,7 +819,6 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
     return () => window.removeEventListener("keydown", onKey, true);
   }, [instDirty, tab, mcpCopyMenu, mcpEditor, mcpOauthWall, mcpSignWaiting, onStatus]);
 
-  const openSet = sets.find((s) => s.id === openId);
   const mcpHits = useMemo(() => {
     const q = mcpQ.trim().toLowerCase();
     if (!q) return DEMO_MCP;
