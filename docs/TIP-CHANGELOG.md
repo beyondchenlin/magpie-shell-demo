@@ -1,3 +1,11 @@
+## v0.1.192 · NAV_MORPH_REFERENCE_TIMING · 2026-10-16 Asia/Shanghai
+
+- WHY: 用户追问折叠动效是否与参考仓库相同；逐项对比发现 v0.1.191 仍沿用了旧 CSS 的 500ms 曲线。
+- WHAT changed: 按 Magpie 63be477 app.css L457–483 使用 --morph-t:.32s / cubic-bezier(.42,0,.58,1)，三组过渡共用参数；修正 CIS 中的 500ms 描述。
+- WHAT kept: SIDE_AT=1024；Web 顶栏 752×652 / 侧栏最大 1100×720；v0.1.191 设置与网关修复。
+- Remaining: 原生外框不随折叠缩放，当前 Web 框仍会变尺寸；已明确记录为复刻差异，不宣称完整动效 1:1。
+- Checks: chrome-guard / build；时长与曲线逐项源码对照，未宣称 FPS 验收。PR #1 → 临时预览；无 portable / 生产部署。
+
 ## v0.1.191 · NAV_MORPH_CIS_CONTROLS · 2026-10-16 Asia/Shanghai
 
 - WHY: 用户截图指出折叠侧栏卡顿、顶栏滑块错位，以及 Settings / Gateway 控件不一致。

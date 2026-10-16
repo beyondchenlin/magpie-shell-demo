@@ -1,4 +1,4 @@
-/** Magpie app.js navMorph: compositor snapshots, 500ms CSS spring, 1500ms watchdog. */
+/** Magpie app.js navMorph: compositor snapshots, 320ms CSS easing, 1500ms watchdog. */
 let current: ViewTransition | undefined;
 let generation = 0;
 
