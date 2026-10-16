@@ -1,4 +1,6 @@
 # last-cycle
+
+2026-10-16阶段1说明：下列v194是历史UI交付记录。当前本机v195仍为继承脏稿，实际dist未绑定源码SHA；最新接管/规格状态看 [EXECUTION-STATUS](cis/EXECUTION-STATUS.md)，设计候选入口看 [CIS-CONTROLS](CIS-CONTROLS.md)。本轮文档校核不增加UI版本，不把历史Checks转成新候选通过。
 - tip: v0.1.194 CIS_NATIVE_BASELINE_AND_SHARED_CONTROLS
 - WHY: 用户要求继续全量 CIS 对照，不一致继续处理。
 - CAUSE: 多版本基础 CSS、浮层首次挂载死锁、窗口/视口坐标混用、语言监听提前卸载、路由旧结构。

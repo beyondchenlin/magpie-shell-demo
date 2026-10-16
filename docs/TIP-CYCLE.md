@@ -1,5 +1,7 @@
 # Tip cycle · 循环检测（consume 前必过）
 
+2026-10-16：设计/交互的唯一规则候选入口为 [CIS-CONTROLS](CIS-CONTROLS.md) R01–R25，阶段1状态awaiting_supervisor。冻结前不改UI；本页只管交付流程，旧CIS/Appearance说明/历史nest不再作为并列设计标准。当前候选身份、证据与门禁见 [EXECUTION-STATUS](cis/EXECUTION-STATUS.md)。
+
 **目的：** 每个 tip 只能 **改进 nest 切片**，不能 silently 冲掉壳 chrome。  
 金标（CIS / SHELL-APPEARANCE-LOGIC + Magpie 开源）：**桌面默认 = Windows Magpie**（系统标题栏 + `html.win` Segoe；页内无 brand/winclose）+ **顶栏 tabs**（`SIDE_AT=1024` 以下）；宽窗 / 用户强制才侧栏。Web 紧凑框 **752×652** 对齐 nest responsive，宽视口框最大 **1100×720**；两者按视口选择，折叠导航不改变窗口尺寸。不以 Linux nest 截图当 Win 外观金标。
 

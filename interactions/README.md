@@ -2,6 +2,8 @@
 
 对照官方 Magpie 逐控件记录，再按 Spec 回写 demo。
 
+2026-10-16证据口径：本目录各版本、native-linux、win-mac及pages/*/SPEC均为带时间/平台/候选背景的历史材料，不是并列生效标准。当前唯一规则候选入口为 [CIS-CONTROLS](../docs/CIS-CONTROLS.md)，冻结状态见 [EXECUTION-STATUS](../docs/cis/EXECUTION-STATUS.md)。原始截图、失败记录、NOTES全部保留；旧Done、差<1px、已构建、未测FPS等结论不可自动映射到新候选。缺候选SHA或同环境金标必须明确记录。
+
 ## 结构
 
 ```

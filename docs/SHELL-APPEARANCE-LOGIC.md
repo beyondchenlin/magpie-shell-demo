@@ -1,5 +1,7 @@
 # Magpie 外壳外观制作逻辑（PackGate / 二开备忘）
 
+历史机制说明：本页包含旧版本行号、参数和产品扩展建议，不作为当前并列规范。2026-10-16独立校核后的唯一规则候选入口为 [CIS-CONTROLS](CIS-CONTROLS.md)；需要按用途与最终级联选择具体规则，监督冻结后执行。原文保留供溯源。
+
 > 对照：官方 Magpie `internal/gui/assets/`（app.js / app.css / index.html / i18n.js / plugins/gateway）。  
 > 目的：说明**目的 → 机制 → 如何扩展**，不是 PRD。  
 > Demo：`magpie-shell-demo`。品牌可换；**壳的结构与动效应对齐**，不要凭感觉抄。

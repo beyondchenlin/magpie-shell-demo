@@ -1,0 +1,144 @@
+{
+  "repository": "https://github.com/yetone/magpie",
+  "commit": "63be47717a9ca91fc89102078a1f1fff3e03e0ce",
+  "checkedAt": "2026-10-16T19:27:58.0461344+08:00",
+  "method": "GitHub fetch_file at immutable ref returns full-file Git blob SHA; compare git hash-object against cached bytes (or Git-normalized source CSS). app.css and plugins/usage/page.js also fetched in full. No rendering conclusion is inferred.",
+  "files": [
+    {
+      "cache": "app.js",
+      "path": "app.js",
+      "sha": "a63781fff414ad2cd4d487d86bfc38ee7ba1883a",
+      "error": null,
+      "local": ".cache/magpie-gold-20261016/app.js",
+      "observedBlob": "a63781fff414ad2cd4d487d86bfc38ee7ba1883a",
+      "equal": true
+    },
+    {
+      "cache": "app.css",
+      "path": "app.css",
+      "sha": "b485e48dbbbad0956dd9f2b625e52927a4fba08a",
+      "error": null,
+      "local": ".cache/magpie-gold-20261016/app.css",
+      "observedBlob": "b485e48dbbbad0956dd9f2b625e52927a4fba08a",
+      "equal": true
+    },
+    {
+      "cache": "library-library.css",
+      "path": "plugins/library/library.css",
+      "sha": "e98bf5d6653f405bcc415d9ddecfb431521e7749",
+      "error": null,
+      "local": ".cache/magpie-gold-20261016/library-library.css",
+      "observedBlob": "e98bf5d6653f405bcc415d9ddecfb431521e7749",
+      "equal": true
+    },
+    {
+      "cache": "plugins.css",
+      "path": "plugins.css",
+      "sha": "514dd67bfbef9bf942a3821867b60584788ff4aa",
+      "error": null,
+      "local": ".cache/magpie-gold-20261016/plugins.css",
+      "observedBlob": "514dd67bfbef9bf942a3821867b60584788ff4aa",
+      "equal": true
+    },
+    {
+      "cache": "routing-routing.css",
+      "path": "plugins/routing/routing.css",
+      "sha": "caa3b7d7e75ff69f39a5b11e11d89c2191efefe5",
+      "error": null,
+      "local": ".cache/magpie-gold-20261016/routing-routing.css",
+      "observedBlob": "caa3b7d7e75ff69f39a5b11e11d89c2191efefe5",
+      "equal": true
+    },
+    {
+      "cache": "gateway-client.js",
+      "path": "plugins/gateway/client.js",
+      "sha": "986a0ed4f2a4a6d67c3c1723f56e1f192de10e2a",
+      "error": null,
+      "local": ".cache/magpie-gold-20261016/gateway-client.js",
+      "observedBlob": "986a0ed4f2a4a6d67c3c1723f56e1f192de10e2a",
+      "equal": true
+    },
+    {
+      "cache": "index.html",
+      "path": "index.html",
+      "sha": "f01a919b8072ef8d6a2cec461d466cb4aa9642c2",
+      "error": null,
+      "local": ".cache/magpie-gold-20261016/index.html",
+      "observedBlob": "f01a919b8072ef8d6a2cec461d466cb4aa9642c2",
+      "equal": true
+    },
+    {
+      "cache": "layout.js",
+      "path": "layout.js",
+      "sha": "1d9289f482e5c246c2f1baf50b083ad17955e3a0",
+      "error": null,
+      "local": ".cache/magpie-gold-20261016/layout.js",
+      "observedBlob": "1d9289f482e5c246c2f1baf50b083ad17955e3a0",
+      "equal": true
+    },
+    {
+      "cache": "theme.js",
+      "path": "theme.js",
+      "sha": "d487d96b9664903150fb2e6ac66058e5cc9b3f96",
+      "error": null,
+      "local": ".cache/magpie-gold-20261016/theme.js",
+      "observedBlob": "d487d96b9664903150fb2e6ac66058e5cc9b3f96",
+      "equal": true
+    },
+    {
+      "cache": "library-client.js",
+      "path": "plugins/library/client.js",
+      "sha": "5e778f3ac360a6aa55e16fa86a248eb541b6ef8f",
+      "error": null,
+      "local": ".cache/magpie-gold-20261016/library-client.js",
+      "observedBlob": "5e778f3ac360a6aa55e16fa86a248eb541b6ef8f",
+      "equal": true
+    },
+    {
+      "cache": "routing-client.js",
+      "path": "plugins/routing/client.js",
+      "sha": "4947ee272971b8a6b81249e826e0ed31b10e0bcc",
+      "error": null,
+      "local": ".cache/magpie-gold-20261016/routing-client.js",
+      "observedBlob": "4947ee272971b8a6b81249e826e0ed31b10e0bcc",
+      "equal": true
+    },
+    {
+      "cache": "plugins.js",
+      "path": "plugins.js",
+      "sha": "087dd5fa467e075c12997c65f4281c06193574aa",
+      "error": null,
+      "local": ".cache/magpie-gold-20261016/plugins.js",
+      "observedBlob": "087dd5fa467e075c12997c65f4281c06193574aa",
+      "equal": true
+    },
+    {
+      "cache": null,
+      "path": "plugins/sessions/sessions.css",
+      "sha": "b6562a6d53b934184f448a0de611ed5c65ff711c",
+      "error": null,
+      "local": "src/styles/sessions.css",
+      "observedBlob": "b6562a6d53b934184f448a0de611ed5c65ff711c",
+      "equal": true
+    },
+    {
+      "cache": null,
+      "path": "context.css",
+      "sha": "84edc5f859dc7bce39c714a2b1c1c5620519d5aa",
+      "error": null,
+      "local": "src/styles/context.css",
+      "observedBlob": "84edc5f859dc7bce39c714a2b1c1c5620519d5aa",
+      "equal": true
+    },
+    {
+      "cache": "plugins-usage-page.js",
+      "path": "plugins/usage/page.js",
+      "sha": "e0a9842c18970d41f150d7a8676e9f10607b9f4e",
+      "error": null,
+      "local": ".cache/magpie-gold-20261016/plugins-usage-page.js",
+      "observedBlob": "e0a9842c18970d41f150d7a8676e9f10607b9f4e",
+      "equal": true
+    }
+  ],
+  "limits": "Proves identity of source files; does not prove consumers, cascade, focus, geometry, motion or complete UI acceptance. Earlier direct network failures are retained in task recovery log."
+}
