@@ -147,6 +147,12 @@ type EditorState = {
   note?: string;
 } | null;
 
+/** Local demo configuration. Credentials remain blank when an editor reopens. */
+type ProviderFormData = {
+  kind: EditorForm;
+  values: Record<string, string | boolean>;
+};
+
 type Props = {
   onStatus: (msg: string, kind?: string) => void;
   onGoPlugins?: () => void;
@@ -434,7 +440,8 @@ function ImportAppsModal({ onClose }: { onClose: () => void }) {
 type EditorProps = {
   state: NonNullable<EditorState>;
   onClose: () => void;
-  onAdd: (info?: { key: string }) => void;
+  onAdd: (info: { key: string; form: ProviderFormData }) => void;
+  initial?: ProviderFormData;
   onStatus?: (msg: string, kind?: string) => void;
   /** When editing a saved provider (NOTES 91) */
   saved?: boolean;
@@ -443,8 +450,10 @@ type EditorProps = {
   onAddAnother?: () => void;
 };
 
-function ProviderEditorModal({ state, onClose, onAdd, onStatus, saved, onRemove, onDuplicate, onAddAnother }: EditorProps) {
+function ProviderEditorModal({ state, onClose, onAdd, initial, onStatus, saved, onRemove, onDuplicate, onAddAnother }: EditorProps) {
   const kind = state.form;
+  const text = (field: string, fallback = "") => typeof initial?.values[field] === "string" ? initial.values[field] as string : fallback;
+  const flag = (field: string) => initial?.values[field] === true;
   const isLocal = kind === "local" || kind === "ollama" || !!LOCAL_PRESETS[state.id];
   const localMeta = LOCAL_PRESETS[state.id] || LOCAL_PRESETS.ollama;
   const { modalRef, dialogRef, close } = useModalAnim(true, onClose);
@@ -483,7 +492,7 @@ function ProviderEditorModal({ state, onClose, onAdd, onStatus, saved, onRemove,
         keyless?: boolean;
       };
   const [detectView, setDetectView] = useState<DetectView>(null);
-  const [modelIds, setModelIds] = useState("");
+  const [modelIds, setModelIds] = useState(() => text("modelIds"));
   const [fetchBusy, setFetchBusy] = useState(false);
   type FetchView =
     | null
@@ -493,21 +502,21 @@ function ProviderEditorModal({ state, onClose, onAdd, onStatus, saved, onRemove,
     | { mode: "list"; models: { id: string; name?: string }[]; filter: string; picked: string[] };
   const [fetchView, setFetchView] = useState<FetchView>(null);
   const [moreOpen, setMoreOpen] = useState(false);
-  const [epChat, setEpChat] = useState("");
-  const [epAnthropic, setEpAnthropic] = useState("");
-  const [epResponses, setEpResponses] = useState("");
-  const [epGemini, setEpGemini] = useState("");
-  const [modelsURL, setModelsURL] = useState("");
-  const [catalog, setCatalog] = useState("");
-  const [balanceURL, setBalanceURL] = useState("");
-  const [balancePath, setBalancePath] = useState("");
-  const [webSearch, setWebSearch] = useState(false);
+  const [epChat, setEpChat] = useState(() => text("epChat"));
+  const [epAnthropic, setEpAnthropic] = useState(() => text("epAnthropic"));
+  const [epResponses, setEpResponses] = useState(() => text("epResponses"));
+  const [epGemini, setEpGemini] = useState(() => text("epGemini"));
+  const [modelsURL, setModelsURL] = useState(() => text("modelsURL"));
+  const [catalog, setCatalog] = useState(() => text("catalog"));
+  const [balanceURL, setBalanceURL] = useState(() => text("balanceURL"));
+  const [balancePath, setBalancePath] = useState(() => text("balancePath"));
+  const [webSearch, setWebSearch] = useState(() => flag("webSearch"));
   type EpTest = { protocol: string; label: string; url: string; status: "idle" | "wait" | "ok" | "bad"; text: string };
   const [epTests, setEpTests] = useState<EpTest[]>([]);
   const [epTestBusy, setEpTestBusy] = useState(false);
   const [iconsOpen, setIconsOpen] = useState(false);
   const [iconQ, setIconQ] = useState("");
-  const [pickedIcon, setPickedIcon] = useState(state.icon || "aside");
+  const [pickedIcon, setPickedIcon] = useState(() => text("pickedIcon", state.icon || "aside"));
   const [hdrs, setHdrs] = useState<{ name: string; value: string; json?: boolean }[]>([{ name: "", value: "" }]);
   const [discardOpen, setDiscardOpen] = useState(false);
   const API_HINTS: Record<string, string> = {
@@ -522,42 +531,31 @@ function ProviderEditorModal({ state, onClose, onAdd, onStatus, saved, onRemove,
     "deepseek-color", "xai", "kimi", "zhipu-color", "zai", "cohere-color", "mistral-color",
   ];
   const [key, setKey] = useState("");
-  const [proxy, setProxy] = useState("");
-  const [authHdr, setAuthHdr] = useState(""); // openrouter: "" both
-  const [api, setApi] = useState("openai");
-  const [name, setName] = useState("");
-  const [baseUrl, setBaseUrl] = useState("");
-  const [endpoint, setEndpoint] = useState("");
-  const [extra, setExtra] = useState("");
+  const [proxy, setProxy] = useState(() => text("proxy"));
+  const [authHdr, setAuthHdr] = useState(() => text("authHdr")); // openrouter: "" both
+  const [api, setApi] = useState(() => text("api", "openai"));
+  const [name, setName] = useState(() => text("name"));
+  const [baseUrl, setBaseUrl] = useState(() => text("baseUrl"));
+  const [endpoint, setEndpoint] = useState(() => text("endpoint"));
+  const [extra, setExtra] = useState(() => text("extra"));
   const [addrOpen, setAddrOpen] = useState(false);
-  const [serverAddr, setServerAddr] = useState(localMeta.address);
-  const [unmasked, setUnmasked] = useState(false);
+  const [serverAddr, setServerAddr] = useState(() => text("serverAddr", localMeta.address));
+  const [unmasked, setUnmasked] = useState(() => flag("unmasked"));
 
-  const [proxyUrl, setProxyUrl] = useState("http://127.0.0.1:7890");
+  const [proxyUrl, setProxyUrl] = useState(() => text("proxyUrl", "http://127.0.0.1:7890"));
   const [region, setRegion] = useState(
-    state.id.endsWith("-cn") ? "china" : "global",
+    () => text("region", state.id.endsWith("-cn") ? "china" : "global"),
   );
-  const [vxProject, setVxProject] = useState("");
-  const [vxLoc, setVxLoc] = useState("global");
+  const [vxProject, setVxProject] = useState(() => text("vxProject"));
+  const [vxLoc, setVxLoc] = useState(() => text("vxLoc", "global"));
   const [vxCred, setVxCred] = useState("");
   const [vxImp, setVxImp] = useState("");
-  const dirty =
-    !!(
-      name.trim() ||
-      baseUrl.trim() ||
-      key.trim() ||
-      tryModel.trim() ||
-      endpoint.trim() ||
-      vxProject.trim() ||
-      vxCred.trim() ||
-      vxImp.trim() ||
-      (isLocal && serverAddr.trim() !== localMeta.address) ||
-      unmasked ||
-      proxy === "direct" ||
-      proxy === "custom" ||
-      extra.trim() ||
-      hdrs.some((h) => h.name || h.value)
-    );
+  const values = { name, baseUrl, api, modelIds, pickedIcon, endpoint, extra, proxy, proxyUrl,
+    authHdr, serverAddr, unmasked, epChat, epAnthropic, epResponses, epGemini,
+    modelsURL, catalog, balanceURL, balancePath, webSearch, vxProject, vxLoc };
+  const [initialValues] = useState(() => JSON.stringify(values));
+  const dirty = JSON.stringify(values) !== initialValues || !!(
+    key.trim() || tryModel.trim() || vxCred.trim() || vxImp.trim() || hdrs.some((h) => h.name || h.value));
   /* Region switch alone is NOT dirty (native NOTES shot 32). */
   const requestClose = () => {
     /* Magpie: Cancel on dirty editor → Discard (shot 28 Gemini) */
@@ -601,7 +599,7 @@ function ProviderEditorModal({ state, onClose, onAdd, onStatus, saved, onRemove,
 
   const onSubmit = (e: FormEvent) => {
     e.preventDefault();
-    onAdd({ key });
+    onAdd({ key, form: { kind, values: { ...values, region } } });
     close();
   };
 
@@ -2036,7 +2034,8 @@ function ProviderEditorModal({ state, onClose, onAdd, onStatus, saved, onRemove,
                 <div className="eps">
                   {(epTests.length
                     ? epTests
-                    : [
+                    : state.id === "google" ? [{ protocol: "gemini", label: "Gemini",
+                        url: `https://${VENDOR_HOST.google}/v1beta`, status: "idle" as const, text: "" }] : [
                         {
                           protocol: "openai",
                           label: "OpenAI",
@@ -2096,6 +2095,10 @@ function ProviderEditorModal({ state, onClose, onAdd, onStatus, saved, onRemove,
                           status: "wait",
                           text: "…",
                         };
+                      }
+                      if (state.id === "google") {
+                        rows[0] = { protocol: "gemini", label: "Gemini",
+                          url: `https://${VENDOR_HOST.google}/v1beta`, status: "wait", text: "…" };
                       }
                       setEpTests(rows);
                       setEpTestBusy(true);
@@ -2369,6 +2372,8 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
     /** Magpie sub: signed in as {user} · {n} models */
     user?: string;
     host?: string;
+    site?: string;
+    formData?: ProviderFormData;
     keyKind: "acct" | "on" | "none" | "free";
     keyLabel: string;
     accounts: DemoAcct[];
@@ -2394,6 +2399,11 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
       off: !!raw.off,
       user: raw.user ? String(raw.user) : accounts[0]?.label,
       host: raw.host ? String(raw.host) : undefined,
+      site: typeof raw.site === "string" ? raw.site : undefined,
+      formData: raw.formData && typeof raw.formData === "object" &&
+        ["anthropic", "openrouter", "ollama", "local", "remote", "vertex", "custom", "generic"].includes((raw.formData as ProviderFormData).kind) &&
+        (raw.formData as ProviderFormData).values && typeof (raw.formData as ProviderFormData).values === "object"
+        ? raw.formData as ProviderFormData : undefined,
       keyKind,
       keyLabel: String(raw.keyLabel || (keyKind === "acct" ? "Pro" : accounts[0]?.label || "needs a key")),
       accounts,
@@ -2731,7 +2741,9 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
                     if (dragId) return;
                     // NOTES 91: row opens saved editor
                     setListEditId(pv.id);
-                    if (LOCAL_PRESETS[pv.id] || pv.keyKind === "none" || pv.keyKind === "free") {
+                    if (pv.formData) {
+                      setEditor({ form: pv.formData.kind, id: pv.id, name: pv.name, icon: pv.icon, site: pv.site });
+                    } else if (LOCAL_PRESETS[pv.id] || pv.keyKind === "none" || pv.keyKind === "free") {
                       const loc = LOCAL_PRESETS[pv.id];
                       setEditor({
                         form: "local",
@@ -2955,11 +2967,11 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
                   setListEditId(pv.id);
                   const loc = LOCAL_PRESETS[pv.id];
                   setEditor({
-                    form: loc ? "local" : "generic",
+                    form: pv.formData?.kind || (loc ? "local" : "generic"),
                     id: pv.id,
                     name: pv.name,
                     icon: pv.icon,
-                    site: loc?.site,
+                    site: pv.site || loc?.site,
                     note: t(
                       "Switched off: agents aren't given its models and no request goes to it. Its keys and settings are kept; switch it on to use it again.",
                     ),
@@ -4152,6 +4164,7 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
       {editor ? (
         <ProviderEditorModal
           state={editor}
+          initial={demoProvs.find((p) => p.id === listEditId)?.formData}
           saved={!!listEditId && listEditId === editor.id}
           onClose={() => {
             setEditor(null);
@@ -4195,11 +4208,16 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
           }}
           onAdd={(info) => {
             if (!editor) return;
-            const keyEmpty = !(info?.key || "").trim();
+            const keyEmpty = !info.key.trim();
             const isLocal = !!LOCAL_PRESETS[editor.id] || editor.form === "local";
-            const host = isLocal
-              ? (LOCAL_PRESETS[editor.id]?.address || "http://localhost:11434").replace(/^https?:\/\//, "")
-              : undefined;
+            const fields = info.form.values;
+            const name = typeof fields.name === "string" && fields.name.trim() ? fields.name.trim() : editor.name;
+            const address = isLocal ? fields.serverAddr : fields.baseUrl;
+            const host = typeof address === "string" && address.trim() ? address.trim().replace(/^https?:\/\//, "") : undefined;
+            const modelIds = typeof fields.modelIds === "string"
+              ? [...new Set(fields.modelIds.split(/[,\n]/).map((id) => id.trim()).filter(Boolean))] : [];
+            const details = { name, icon: typeof fields.pickedIcon === "string" ? fields.pickedIcon : editor.icon,
+              host, site: editor.site, formData: info.form, models: modelIds };
             if (listEditId && listEditId === editor.id) {
               // Save existing
               setDemoProvs((list) =>
@@ -4207,13 +4225,15 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
                   x.id === editor.id
                     ? {
                         ...x,
-                        keyKind: keyEmpty && isLocal ? ("none" as const) : x.keyKind,
-                        keyLabel: keyEmpty && isLocal ? t("no key") : x.keyLabel,
+                        ...details,
+                        models: editor.form === "custom" || modelIds.length ? modelIds : x.models,
+                        keyKind: keyEmpty ? x.keyKind : ("on" as const),
+                        keyLabel: keyEmpty ? x.keyLabel : "sk-…",
                       }
                     : x,
                 ),
               );
-              onStatus(t("{name} saved", { name: editor.name }), "ok");
+              onStatus(t("{name} saved", { name }), "ok");
               setListEditId(null);
               return;
             }
@@ -4223,19 +4243,16 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
                 ...list,
                 {
                   id: editor.id,
-                  name: editor.name,
-                  icon: editor.icon,
-                  host: host ? host.replace(/\/v1$/, "") : undefined,
+                  ...details,
                   keyKind: keyEmpty && isLocal ? ("none" as const) : ("on" as const),
                   keyLabel: keyEmpty && isLocal ? t("no key") : keyEmpty ? t("no key") : "sk-…",
                   accounts: [],
-                  models: [],
                   agentsUsing: [],
                 },
               ];
             });
             setSheetOpen(false);
-            onStatus(t("{name} added", { name: editor.name }), "ok");
+            onStatus(t("{name} added", { name }), "ok");
           }}
         />
       ) : null}

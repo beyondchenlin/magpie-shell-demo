@@ -222,6 +222,21 @@ body.web .modal {
   inset: 0;
   border-radius: inherit;
 }
+/* showModal uses the browser's top layer; anchor its native control and
+   scrim to the preview window just like .modal above. No control restyling. */
+body.web .action-confirm.framed-confirm {
+  inset: auto;
+  left: var(--confirm-x);
+  top: var(--confirm-y);
+  margin: 0;
+  transform: translate(-50%, -50%);
+  width: min(420px, var(--confirm-width));
+  max-height: var(--confirm-height);
+}
+body.web .action-confirm.framed-confirm::backdrop {
+  inset: var(--confirm-inset-top) var(--confirm-inset-right) var(--confirm-inset-bottom) var(--confirm-inset-left);
+  border-radius: var(--confirm-radius);
+}
 body.web .pop {
   position: absolute !important;
   z-index: 40;
