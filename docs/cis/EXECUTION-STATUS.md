@@ -1,13 +1,13 @@
 # CIS 执行进度
 
-更新时间：2026-10-16 20:30 Asia/Shanghai
+更新时间：2026-10-16 20:40 Asia/Shanghai
 
-- 阶段：0/1已完成；2已完成导航与Settings有限批次；S1规格冲突待监督裁定，接续Gateway G1/G2/G3；3未开始。
-- 状态：**phase2_gateway_reproducing**。冻结028dab5未改；R01发现遗漏window级联变体，S1暂不放行，详见20:30记录。N3仍待独立复核；其余工作继续。
+- 阶段：0/1已完成；2已完成导航与Settings有限批次；S1规格冲突待监督裁定，Gateway G1/G2/G3完成；下一批N4/G4/C1；3未开始。
+- 状态：**phase2_responsive_popover_reproducing**。冻结028dab5未改；R01发现遗漏window级联变体，S1暂不放行，详见20:30记录。N3仍待独立复核；其余工作继续。
 - 唯一执行者：本聊天01a14465-ad94-73e0-a0ad-991539957fa0；监督聊天01a143c3-8101-75e1-b638-c39ad15d55ed；未派生代理。
-- 分支：tip/0.1.121-cis-appearance-shell，PR #1。接管基底e94edc6713da405285854e7d6548f3f8364bf84f；规格冻结提交028dab55a3877656c115439835d1d0d14465e4ee；导航受测26604006a932b564ed6468a100c37a15f5bc4644；Settings新候选90099b9532fc7e95036fa05b7848e61e11342b72。不要把后续证据提交当成新UI候选。
+- 分支：tip/0.1.121-cis-appearance-shell，PR #1。接管基底e94edc6713da405285854e7d6548f3f8364bf84f；规格冻结提交028dab55a3877656c115439835d1d0d14465e4ee；导航受测26604006a932b564ed6468a100c37a15f5bc4644；Settings候选90099b9532fc7e95036fa05b7848e61e11342b72；当前Gateway候选874268b83c40d3b1a621b152d54aeaed51732334。不要把后续证据提交当成新UI候选。
 - package/锁文件的195纯版本行经复核已随FontRow修复提交；其余继承v195脏稿逐文件保全，未整体发布。新候选90099b9仅含FontRow最小修复与一个Settings翻译键；隔离快照排除其余脏稿。
-- 验收计数：**通过4（N1/N2/S2/S3）、失败0、待验25（含N3待复核、S1待规格裁定）**。结果绑定26604006a932b564ed6468a100c37a15f5bc4644 / v0.1.194，不代表继承v195或最终全量通过；最后仍须受影响回归。B1构建身份子条件已满足，B1整项保留待最终候选收口。F01–F08仍为静态风险，未顺带修改。
+- 验收计数：**通过7（N1/N2/S2/S3/G1/G2/G3）、失败0、待验22（含N3待复核、S1待规格裁定）**。各项分别绑定2660400/v194、90099b9/v195、874268b/v196，详见清单，不代表继承v195或最终全量通过；最后仍须受影响回归。B1构建身份子条件已满足，B1整项保留待最终候选收口。F04已按S2复现修复；F03字体部分已处理，其余风险仍待对应批次。
 - 规格交付：已冻结的唯一规则入口docs/CIS-CONTROLS.md；R01–R15覆盖15类控件，R16–R25覆盖导航、复合控件与页面；旧条款/固定原版来源/判定/具体变体/组件调用/验法已落表。29ID逐项必要性、有限状态与终点见CIS-AUDIT；验收清单只管组织和证据。
 - 追溯：固定15个源码文件Git blob身份均比对相同；六CSS LF SHA-256 guard通过。冻结时混合工作树索引20文件/465调用；现已改为90099b9提交源码快照索引19文件/459调用/34裸DOM候选，排除继承脏稿；数量不是通过数量。
 - 原图：四张用户问题附件已从监督聊天找回、逐张查看并保全必要私有副本，索引USER-REFERENCE。它们是旧demo问题图，不是原生正确金标；未公开上传含浏览器个人界面的原图。
@@ -49,3 +49,12 @@
 **监督待裁定：S1/R01固定源码变体遗漏。** 原版app.css:533 `body.window .row` specificity(0,2,1)，覆盖3176 `.row.pref`(0,2,0)的min-height/padding/gap；候选body.window实测48px / 7px 12px 7px 14px / 12px。字体行gap因更具体规则仍8px 14px；字体grid310/5×6/min100/72正确。R01当前只写50/8/14，不能按这个不完整规格修改原版CSS。提议补记window变体，保留原base及phone变体；**本执行者未改冻结规则、未调CSS凑数，S1保持待验**。完整CSS/DOM/截图在interactions/cis-settings-90099b9/，唯一规则仍CIS-CONTROLS；这不是另建标准。
 
 自动审批审核拒绝combined stop/restart4174命令，仅返回blocked by policy，未执行停止；原4174/PID98524保持，4175/PID76536为本任务f198b24；90099b9以受管终端session18184在4176提供。4173用户页与dist未动。测试前后4174/4175/4176四个受测偏好均恢复null，测试tab已关闭、viewport reset。无新worktree、依赖或环境副本；新建仅有界源码构建快照。C25.80/D21.52GiB（12:26UTC附近测量）；任务Settings原始证据约1.3MiB，未删任何旧证据。开始Gateway G1/G2/G3独立复现，不等待常规批次批准；S1冲突分开保留。
+### 20:40 Gateway结果 / 下一批N4/G4/C1
+
+874268b/v196只修改Gateway API模板/复制共用函数及Settings的隐式filled默认，不含继承脏稿。复现并修复Responses curl为空、SystemOne Python却是curl及jev_latest拼写、其他API Node误用OpenAI；已核验固定gateway/client.js模板抽为纯展示函数，全部五API curl及六条原有错误分支通过。普通Settings保存不再偷偷启用五模型。
+
+G1四状态、on重启/off启动/older接管、other无按钮、端口占用失败及保存普通设置仍空模型通过。on的80ms忙态在观测前已结束，未冒称直接见到；off/older720ms禁用忙态实见。G3四类复制已实际读剪贴板一致，重复复制反馈约1211ms复位（声明1200ms+调度），离开页面清理/console无新错误；受控双路径失败后顶部URL与共用按钮都显示错误，不报成功，剪贴板不变。旧顶部URL误报成功的复现保留。原剪贴板0items，最后恢复空文本并读回为空；13项测试偏好全回null，任务tab已关，viewport reset。
+
+构建/TypeScript/两guard通过；候选52 TS/TSX按仓库config显式lint55 warnings/0 errors；无新依赖。受管终端session18184已正常Ctrl+C结束，新候选沿用4176，session53434；没有再次尝试被审核拒绝的OS停止4174动作。4174/PID98524、4175/PID76536及用户4173保持。Settings旧90099b9 dist临时增加受控copy fixture时记录了新index/fixture hash，旧Settings原始证据身份不追认这个后加HTML；新874 manifest已包含copy probe。Gateway证据在interactions/cis-gateway-874268b/。
+
+磁盘C25.35/D21.26GiB；任务全部源码快照+导航raw77.49MiB逻辑、Settings raw1.29MiB、Gateway raw0.30MiB；不是物理净占用/释放量，没有清理行为或新worktree/依赖环境。公开导航证据20.11MiB，动态raw主要559帧而无重复WebP，证据仍按40MiB计划；源码tar/build不混作验收证据。S1/R01冲突和N3不变，继续独立N4/G4/C1，最多3ID一批。

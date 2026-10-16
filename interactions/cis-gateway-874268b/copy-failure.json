@@ -1,0 +1,85 @@
+[
+  {
+    "name": "http://127.0.0.1:3425",
+    "toast": "复制失败，请手动复制",
+    "role": "alert",
+    "class": "url",
+    "clipboardUnchanged": true,
+    "probe": {
+      "probe": "cis-copy-v1",
+      "fail": true,
+      "events": [
+        {
+          "at": 209.8999999910593,
+          "kind": "write",
+          "text": "http://127.0.0.1:3425"
+        },
+        {
+          "at": 210,
+          "kind": "rejected"
+        },
+        {
+          "at": 212.09999999403954,
+          "kind": "fallback",
+          "text": "http://127.0.0.1:3425"
+        },
+        {
+          "at": 212.09999999403954,
+          "kind": "fallback-result",
+          "copied": false
+        }
+      ]
+    }
+  },
+  {
+    "name": "复制 API 地址",
+    "toast": "复制失败，请手动复制",
+    "role": "alert",
+    "class": "copy",
+    "clipboardUnchanged": true,
+    "probe": {
+      "probe": "cis-copy-v1",
+      "fail": true,
+      "events": [
+        {
+          "at": 209.8999999910593,
+          "kind": "write",
+          "text": "http://127.0.0.1:3425"
+        },
+        {
+          "at": 210,
+          "kind": "rejected"
+        },
+        {
+          "at": 212.09999999403954,
+          "kind": "fallback",
+          "text": "http://127.0.0.1:3425"
+        },
+        {
+          "at": 212.09999999403954,
+          "kind": "fallback-result",
+          "copied": false
+        },
+        {
+          "at": 575.7999999970198,
+          "kind": "write",
+          "text": "http://127.0.0.1:3425/v1"
+        },
+        {
+          "at": 575.8999999910593,
+          "kind": "rejected"
+        },
+        {
+          "at": 577,
+          "kind": "fallback",
+          "text": "http://127.0.0.1:3425/v1"
+        },
+        {
+          "at": 577.0999999940395,
+          "kind": "fallback-result",
+          "copied": false
+        }
+      ]
+    }
+  }
+]

@@ -1,0 +1,7 @@
+- heading "CIS isolated preview preferences" [level=1]
+- paragraph: Only this task origin and the listed appearance preferences are read or restored.
+- button "Snapshot initial preferences"
+- button "Restore initial preferences" [active]
+- link "Open preview":
+  - /url: /
+- generic: "{ \"action\": \"Restored listed preferences\", \"current\": { \"magpie.navLayout\": null, \"magpie.lang\": null, \"magpie.uiLocale\": null, \"magpie.demoPrefs\": null, \"magpie.demoGw\": null, \"magpie.routingPeerServes\": null, \"magpie.flavor\": null, \"magpie.snipLang\": null, \"magpie.gwSnipLang\": null, \"magpie.snipOS\": null, \"magpie.gwConnectFolded\": null, \"magpie.gwModelsFolded\": null, \"magpie.model\": null }, \"initial\": { \"magpie.navLayout\": null, \"magpie.lang\": null, \"magpie.uiLocale\": null, \"magpie.demoPrefs\": null, \"magpie.demoGw\": null, \"magpie.routingPeerServes\": null, \"magpie.flavor\": null, \"magpie.snipLang\": null, \"magpie.gwSnipLang\": null, \"magpie.snipOS\": null, \"magpie.gwConnectFolded\": null, \"magpie.gwModelsFolded\": null, \"magpie.model\": null } }"

@@ -1,0 +1,11 @@
+{
+  "urlHeader": {
+    "status": "已复制网关地址",
+    "probe": "{\"probe\":\"cis-copy-v1\",\"fail\":true,\"events\":[{\"at\":7221.899999991059,\"kind\":\"write\",\"text\":\"http://127.0.0.1:3425\"},{\"at\":7222,\"kind\":\"rejected\"}]}"
+  },
+  "copyButton": {
+    "feedback": "复制失败，请手动复制",
+    "done": "copy",
+    "probe": "{\"probe\":\"cis-copy-v1\",\"fail\":true,\"events\":[{\"at\":7221.899999991059,\"kind\":\"write\",\"text\":\"http://127.0.0.1:3425\"},{\"at\":7222,\"kind\":\"rejected\"},{\"at\":7538.199999988079,\"kind\":\"write\",\"text\":\"http://127.0.0.1:3425/v1\"},{\"at\":7538.199999988079,\"kind\":\"rejected\"},{\"at\":7543.199999988079,\"kind\":\"fallback\",\"text\":\"http://127.0.0.1:3425/v1\"},{\"at\":7543.199999988079,\"kind\":\"fallback-result\",\"copied\":false},{\"at\":36331.5,\"kind\":\"write\",\"text\":\"http://127.0.0.1:3425/v1\"},{\"at\":36331.5,\"kind\":\"rejected\"},{\"at\":36332.29999999702,\"kind\":\"fallback\",\"text\":\"http://127.0.0.1:3425/v1\"},{\"at\":36332.39999999106,\"kind\":\"fallback-result\",\"copied\":false}]}"
+  }
+}

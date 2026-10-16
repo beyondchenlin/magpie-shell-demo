@@ -2,7 +2,7 @@
   "purpose": "Audit index only; a call site is not proof of correct runtime behavior. Raw DOM is a review queue, not an automatic defect.",
   "baseline": "e94edc6713da405285854e7d6548f3f8364bf84f",
   "specification": "028dab55a3877656c115439835d1d0d14465e4ee",
-  "candidate": "90099b9532fc7e95036fa05b7848e61e11342b72",
+  "candidate": "874268b83c40d3b1a621b152d54aeaed51732334",
   "scope": "committed source snapshot, excludes inherited working-tree draft",
   "files": [
     {
@@ -51,7 +51,7 @@
     },
     {
       "file": "src/pages/GatewayView.tsx",
-      "sha256": "76da68de97023b0aab0cb9b90a8527d1981c3635c4deeebf5fd121a18ee63947"
+      "sha256": "bbd9ddafa543628eff87f13b95f9e9ede4c8c32f550d258dc4db3ce4f7ebc2ac"
     },
     {
       "file": "src/pages/LibraryView.tsx",
@@ -71,7 +71,7 @@
     },
     {
       "file": "src/pages/SettingsView.tsx",
-      "sha256": "b549ebb0b21a661d5bd631ebaba5d1059ec9f94d67c15626f4ab07b5d86de737"
+      "sha256": "7c6ccc4def48fce345e4293b3de52cca9aa705e4a265e34b552ebbace2cd6e5c"
     },
     {
       "file": "src/pages/SimpleViews.tsx",
@@ -695,7 +695,7 @@
     {
       "control": "TextBtn",
       "file": "src/pages/GatewayView.tsx",
-      "line": 469,
+      "line": 407,
       "local": "TextBtn",
       "import": "../components/TextBtn",
       "attributes": {
@@ -706,7 +706,7 @@
     {
       "control": "TextBtn",
       "file": "src/pages/GatewayView.tsx",
-      "line": 503,
+      "line": 440,
       "local": "TextBtn",
       "import": "../components/TextBtn",
       "attributes": {
@@ -716,7 +716,7 @@
     {
       "control": "CopyButton",
       "file": "src/pages/GatewayView.tsx",
-      "line": 557,
+      "line": 494,
       "local": "CopyBtn",
       "import": "../components/CopyButton",
       "attributes": {}
@@ -724,7 +724,7 @@
     {
       "control": "TextBtn",
       "file": "src/pages/GatewayView.tsx",
-      "line": 562,
+      "line": 499,
       "local": "TextBtn",
       "import": "../components/TextBtn",
       "attributes": {
@@ -734,7 +734,7 @@
     {
       "control": "TextBtn",
       "file": "src/pages/GatewayView.tsx",
-      "line": 578,
+      "line": 515,
       "local": "TextBtn",
       "import": "../components/TextBtn",
       "attributes": {
@@ -744,7 +744,7 @@
     {
       "control": "TextBtn",
       "file": "src/pages/GatewayView.tsx",
-      "line": 599,
+      "line": 536,
       "local": "TextBtn",
       "import": "../components/TextBtn",
       "attributes": {
@@ -754,7 +754,7 @@
     {
       "control": "Fold",
       "file": "src/pages/GatewayView.tsx",
-      "line": 606,
+      "line": 543,
       "local": "Fold",
       "import": "../components/Fold",
       "attributes": {
@@ -765,7 +765,7 @@
     {
       "control": "CopyButton",
       "file": "src/pages/GatewayView.tsx",
-      "line": 623,
+      "line": 560,
       "local": "CopyBtn",
       "import": "../components/CopyButton",
       "attributes": {}
@@ -773,7 +773,7 @@
     {
       "control": "ConnectionField",
       "file": "src/pages/GatewayView.tsx",
-      "line": 632,
+      "line": 569,
       "local": "ConnectionField",
       "import": "../components/ConnectionField",
       "attributes": {
@@ -783,7 +783,7 @@
     {
       "control": "Segs",
       "file": "src/pages/GatewayView.tsx",
-      "line": 633,
+      "line": 570,
       "local": "Segs",
       "import": "../components/Segs",
       "attributes": {
@@ -793,7 +793,7 @@
     {
       "control": "ConnectionField",
       "file": "src/pages/GatewayView.tsx",
-      "line": 641,
+      "line": 578,
       "local": "ConnectionField",
       "import": "../components/ConnectionField",
       "attributes": {
@@ -803,7 +803,7 @@
     {
       "control": "CopyButton",
       "file": "src/pages/GatewayView.tsx",
-      "line": 646,
+      "line": 583,
       "local": "CopyBtn",
       "import": "../components/CopyButton",
       "attributes": {}
@@ -811,11 +811,76 @@
     {
       "control": "ConnectionField",
       "file": "src/pages/GatewayView.tsx",
-      "line": 650,
+      "line": 587,
       "local": "ConnectionField",
       "import": "../components/ConnectionField",
       "attributes": {
         "id": "\"connect-key\""
+      }
+    },
+    {
+      "control": "CopyButton",
+      "file": "src/pages/GatewayView.tsx",
+      "line": 598,
+      "local": "CopyBtn",
+      "import": "../components/CopyButton",
+      "attributes": {}
+    },
+    {
+      "control": "CopyButton",
+      "file": "src/pages/GatewayView.tsx",
+      "line": 603,
+      "local": "CopyBtn",
+      "import": "../components/CopyButton",
+      "attributes": {}
+    },
+    {
+      "control": "ConnectionField",
+      "file": "src/pages/GatewayView.tsx",
+      "line": 611,
+      "local": "ConnectionField",
+      "import": "../components/ConnectionField",
+      "attributes": {
+        "id": "\"connect-model\""
+      }
+    },
+    {
+      "control": "CopyButton",
+      "file": "src/pages/GatewayView.tsx",
+      "line": 620,
+      "local": "CopyBtn",
+      "import": "../components/CopyButton",
+      "attributes": {}
+    },
+    {
+      "control": "ConnectionField",
+      "file": "src/pages/GatewayView.tsx",
+      "line": 628,
+      "local": "ConnectionField",
+      "import": "../components/ConnectionField",
+      "attributes": {
+        "id": "\"connect-example\""
+      }
+    },
+    {
+      "control": "Segs",
+      "file": "src/pages/GatewayView.tsx",
+      "line": 632,
+      "local": "Segs",
+      "import": "../components/Segs",
+      "attributes": {
+        "aria-label": "{t(\"Example\")}"
+      }
+    },
+    {
+      "control": "Segs",
+      "file": "src/pages/GatewayView.tsx",
+      "line": 639,
+      "local": "Segs",
+      "import": "../components/Segs",
+      "attributes": {
+        "className": "\"snip-os\"",
+        "aria-label": "{t(\"Where the snippet runs\")}"
       }
     },
     {
@@ -827,74 +892,9 @@
       "attributes": {}
     },
     {
-      "control": "CopyButton",
-      "file": "src/pages/GatewayView.tsx",
-      "line": 666,
-      "local": "CopyBtn",
-      "import": "../components/CopyButton",
-      "attributes": {}
-    },
-    {
-      "control": "ConnectionField",
-      "file": "src/pages/GatewayView.tsx",
-      "line": 674,
-      "local": "ConnectionField",
-      "import": "../components/ConnectionField",
-      "attributes": {
-        "id": "\"connect-model\""
-      }
-    },
-    {
-      "control": "CopyButton",
-      "file": "src/pages/GatewayView.tsx",
-      "line": 683,
-      "local": "CopyBtn",
-      "import": "../components/CopyButton",
-      "attributes": {}
-    },
-    {
-      "control": "ConnectionField",
-      "file": "src/pages/GatewayView.tsx",
-      "line": 691,
-      "local": "ConnectionField",
-      "import": "../components/ConnectionField",
-      "attributes": {
-        "id": "\"connect-example\""
-      }
-    },
-    {
-      "control": "Segs",
-      "file": "src/pages/GatewayView.tsx",
-      "line": 695,
-      "local": "Segs",
-      "import": "../components/Segs",
-      "attributes": {
-        "aria-label": "{t(\"Example\")}"
-      }
-    },
-    {
-      "control": "Segs",
-      "file": "src/pages/GatewayView.tsx",
-      "line": 702,
-      "local": "Segs",
-      "import": "../components/Segs",
-      "attributes": {
-        "className": "\"snip-os\"",
-        "aria-label": "{t(\"Where the snippet runs\")}"
-      }
-    },
-    {
-      "control": "CopyButton",
-      "file": "src/pages/GatewayView.tsx",
-      "line": 724,
-      "local": "CopyBtn",
-      "import": "../components/CopyButton",
-      "attributes": {}
-    },
-    {
       "control": "Fold",
       "file": "src/pages/GatewayView.tsx",
-      "line": 732,
+      "line": 669,
       "local": "Fold",
       "import": "../components/Fold",
       "attributes": {
@@ -905,7 +905,7 @@
     {
       "control": "TextBtn",
       "file": "src/pages/GatewayView.tsx",
-      "line": 763,
+      "line": 700,
       "local": "TextBtn",
       "import": "../components/TextBtn",
       "attributes": {
@@ -915,7 +915,7 @@
     {
       "control": "MagpieIcon",
       "file": "src/pages/GatewayView.tsx",
-      "line": 793,
+      "line": 729,
       "local": "MagpieIcon",
       "import": "../components/MagpieIcon",
       "attributes": {}
@@ -923,7 +923,7 @@
     {
       "control": "CopyButton",
       "file": "src/pages/GatewayView.tsx",
-      "line": 798,
+      "line": 734,
       "local": "CopyBtn",
       "import": "../components/CopyButton",
       "attributes": {}
@@ -931,7 +931,7 @@
     {
       "control": "FoldChev",
       "file": "src/pages/GatewayView.tsx",
-      "line": 840,
+      "line": 776,
       "local": "FoldChev",
       "import": "../components/Fold",
       "attributes": {}
@@ -4319,7 +4319,7 @@
     {
       "tag": "button",
       "file": "src/pages/GatewayView.tsx",
-      "line": 528,
+      "line": 465,
       "className": "\"dot tick\""
     },
     {

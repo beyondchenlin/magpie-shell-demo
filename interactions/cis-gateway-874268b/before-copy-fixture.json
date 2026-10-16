@@ -1,0 +1,6 @@
+{
+  "purpose": "controlled before-fix copy failure fixture; no source/application asset change",
+  "source": "90099b9532fc7e95036fa05b7848e61e11342b72",
+  "fixtureSha256": "F536CC2DDFB49B6C70AB6397E4A9E1C8966D84B27FD735FCCAD8EF2DD3FDCA88",
+  "indexSha256": "0845C462F65E2E291122E86996AFA5B405CDF0BE9D51D869BEE56C5D7B8FBEB4"
+}

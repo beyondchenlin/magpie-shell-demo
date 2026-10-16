@@ -1,0 +1,19 @@
+[
+  {
+    "label": "systemone-python",
+    "observed": {
+      "code": "curl http://127.0.0.1:3425/v1/systemone \\\n  -H \"Authorization: Bearer magpie\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"model\": \"provider/jev_latest\", \"state\": {}, \"questions\": {}}'",
+      "model": "provider/jev_latest",
+      "selected": [
+        "System One",
+        "Python"
+      ]
+    }
+  },
+  {
+    "label": "responses-curl",
+    "observed": {
+      "code": ""
+    }
+  }
+]

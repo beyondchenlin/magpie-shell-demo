@@ -1,0 +1,487 @@
+[
+  {
+    "api": "OpenAI",
+    "snippetKind": "curl",
+    "fields": [
+      {
+        "hint": "Chat Completions，多数工具使用的 API。任何可设置 OpenAI base URL 的工具都能用。",
+        "label": "connect-api-label"
+      },
+      {
+        "code": "http://127.0.0.1:3425/v1",
+        "hint": "填入 OPENAI_BASE_URL。",
+        "label": "connect-url-label"
+      },
+      {
+        "code": "magpie",
+        "hint": "OPENAI_API_KEY=magpie。网关信任本机回环请求，可填任意值。",
+        "label": "connect-key-label"
+      },
+      {
+        "code": "provider/model",
+        "hint": "还没有模型。添加一个供应商，或登录 Codex / Copilot。",
+        "label": "connect-model-label"
+      },
+      {
+        "code": "@'\n{\"model\": \"provider/model\",\n \"messages\": [{\"role\": \"user\", \"content\": \"hi\"}]}\n'@ | curl.exe http://127.0.0.1:3425/v1/chat/completions `\n  -H \"Authorization: Bearer magpie\" `\n  -H \"Content-Type: application/json\" `\n  --data-binary \"@-\"",
+        "label": "connect-example-label"
+      }
+    ],
+    "models": "尚未暴露任何模型\n添加供应商，或登录 Codex / Copilot；其模型会列在这里，供所有 Agent 使用。",
+    "osVisible": true,
+    "selected": [
+      "OpenAI",
+      "curl",
+      "Windows"
+    ],
+    "shellOffered": [
+      "PowerShell",
+      "curl",
+      "Python",
+      "Node",
+      "Windows",
+      "macOS · Linux"
+    ],
+    "snippet": "@'\n{\"model\": \"provider/model\",\n \"messages\": [{\"role\": \"user\", \"content\": \"hi\"}]}\n'@ | curl.exe http://127.0.0.1:3425/v1/chat/completions `\n  -H \"Authorization: Bearer magpie\" `\n  -H \"Content-Type: application/json\" `\n  --data-binary \"@-\"",
+    "source": "874268b83c40d3b1a621b152d54aeaed51732334"
+  },
+  {
+    "api": "Responses",
+    "snippetKind": "curl",
+    "fields": [
+      {
+        "hint": "OpenAI 较新的 API：推理、内置工具项、加密推理。Codex 使用它。",
+        "label": "connect-api-label"
+      },
+      {
+        "code": "http://127.0.0.1:3425/v1",
+        "hint": "填入 OPENAI_BASE_URL。",
+        "label": "connect-url-label"
+      },
+      {
+        "code": "magpie",
+        "hint": "OPENAI_API_KEY=magpie。网关信任本机回环请求，可填任意值。",
+        "label": "connect-key-label"
+      },
+      {
+        "code": "provider/model",
+        "hint": "还没有模型。添加一个供应商，或登录 Codex / Copilot。",
+        "label": "connect-model-label"
+      },
+      {
+        "code": "@'\n{\"model\": \"provider/model\", \"input\": \"hi\"}\n'@ | curl.exe http://127.0.0.1:3425/v1/responses `\n  -H \"Authorization: Bearer magpie\" `\n  -H \"Content-Type: application/json\" `\n  --data-binary \"@-\"",
+        "label": "connect-example-label"
+      }
+    ],
+    "models": "尚未暴露任何模型\n添加供应商，或登录 Codex / Copilot；其模型会列在这里，供所有 Agent 使用。",
+    "osVisible": true,
+    "selected": [
+      "Responses",
+      "curl",
+      "Windows"
+    ],
+    "shellOffered": [
+      "PowerShell",
+      "curl",
+      "Python",
+      "Node",
+      "Windows",
+      "macOS · Linux"
+    ],
+    "snippet": "@'\n{\"model\": \"provider/model\", \"input\": \"hi\"}\n'@ | curl.exe http://127.0.0.1:3425/v1/responses `\n  -H \"Authorization: Bearer magpie\" `\n  -H \"Content-Type: application/json\" `\n  --data-binary \"@-\"",
+    "source": "874268b83c40d3b1a621b152d54aeaed51732334"
+  },
+  {
+    "api": "Anthropic",
+    "snippetKind": "curl",
+    "fields": [
+      {
+        "hint": "Messages API。Claude Code 读取 ANTHROPIC_AUTH_TOKEN 而非密钥；Agent 页会替你设置。",
+        "label": "connect-api-label"
+      },
+      {
+        "code": "http://127.0.0.1:3425",
+        "hint": "填入 ANTHROPIC_BASE_URL。",
+        "label": "connect-url-label"
+      },
+      {
+        "code": "magpie",
+        "hint": "ANTHROPIC_API_KEY=magpie。网关信任本机回环请求，可填任意值。",
+        "label": "connect-key-label"
+      },
+      {
+        "code": "provider/model",
+        "hint": "还没有模型。添加一个供应商，或登录 Codex / Copilot。",
+        "label": "connect-model-label"
+      },
+      {
+        "code": "@'\n{\"model\": \"provider/model\", \"max_tokens\": 1024,\n \"messages\": [{\"role\": \"user\", \"content\": \"hi\"}]}\n'@ | curl.exe http://127.0.0.1:3425/v1/messages `\n  -H \"x-api-key: magpie\" `\n  -H \"anthropic-version: 2023-06-01\" `\n  -H \"Content-Type: application/json\" `\n  --data-binary \"@-\"",
+        "label": "connect-example-label"
+      }
+    ],
+    "models": "尚未暴露任何模型\n添加供应商，或登录 Codex / Copilot；其模型会列在这里，供所有 Agent 使用。",
+    "osVisible": true,
+    "selected": [
+      "Anthropic",
+      "curl",
+      "Windows"
+    ],
+    "shellOffered": [
+      "PowerShell",
+      "curl",
+      "Python",
+      "Node",
+      "Windows",
+      "macOS · Linux"
+    ],
+    "snippet": "@'\n{\"model\": \"provider/model\", \"max_tokens\": 1024,\n \"messages\": [{\"role\": \"user\", \"content\": \"hi\"}]}\n'@ | curl.exe http://127.0.0.1:3425/v1/messages `\n  -H \"x-api-key: magpie\" `\n  -H \"anthropic-version: 2023-06-01\" `\n  -H \"Content-Type: application/json\" `\n  --data-binary \"@-\"",
+    "source": "874268b83c40d3b1a621b152d54aeaed51732334"
+  },
+  {
+    "api": "Gemini",
+    "snippetKind": "curl",
+    "fields": [
+      {
+        "hint": "Google 的 generateContent API（v1beta）。Gemini CLI 和 google-genai SDK 使用它。",
+        "label": "connect-api-label"
+      },
+      {
+        "code": "http://127.0.0.1:3425",
+        "hint": "填入 GOOGLE_GEMINI_BASE_URL。",
+        "label": "connect-url-label"
+      },
+      {
+        "code": "magpie",
+        "hint": "GEMINI_API_KEY=magpie。网关信任本机回环请求，可填任意值。",
+        "label": "connect-key-label"
+      },
+      {
+        "code": "provider/model",
+        "hint": "还没有模型。添加一个供应商，或登录 Codex / Copilot。",
+        "label": "connect-model-label"
+      },
+      {
+        "code": "@'\n{\"contents\": [{\"parts\": [{\"text\": \"hi\"}]}]}\n'@ | curl.exe http://127.0.0.1:3425/v1beta/models/provider/model:generateContent `\n  -H \"x-goog-api-key: magpie\" `\n  -H \"Content-Type: application/json\" `\n  --data-binary \"@-\"",
+        "label": "connect-example-label"
+      }
+    ],
+    "models": "尚未暴露任何模型\n添加供应商，或登录 Codex / Copilot；其模型会列在这里，供所有 Agent 使用。",
+    "osVisible": true,
+    "selected": [
+      "Gemini",
+      "curl",
+      "Windows"
+    ],
+    "shellOffered": [
+      "PowerShell",
+      "curl",
+      "Python",
+      "Node",
+      "Windows",
+      "macOS · Linux"
+    ],
+    "snippet": "@'\n{\"contents\": [{\"parts\": [{\"text\": \"hi\"}]}]}\n'@ | curl.exe http://127.0.0.1:3425/v1beta/models/provider/model:generateContent `\n  -H \"x-goog-api-key: magpie\" `\n  -H \"Content-Type: application/json\" `\n  --data-binary \"@-\"",
+    "source": "874268b83c40d3b1a621b152d54aeaed51732334"
+  },
+  {
+    "api": "System One",
+    "snippetKind": "curl",
+    "fields": [
+      {
+        "hint": "TypeSafe 的决策 API：Jev 或 Clef 模型按类型（choice、noul、score）回答关于 state 的问题，并给出置信度。Clef 还能读图：加上 \"images\": [\"data:image/png;base64,…\"]。",
+        "label": "connect-api-label"
+      },
+      {
+        "code": "http://127.0.0.1:3425/v1",
+        "hint": "请求发到 POST http://127.0.0.1:3425/v1/systemone。",
+        "label": "connect-url-label"
+      },
+      {
+        "code": "magpie",
+        "hint": "作为 Authorization: Bearer 发送。网关信任本机回环请求，可填任意值。",
+        "label": "connect-key-label"
+      },
+      {
+        "code": "provider/jev-latest",
+        "hint": "还没有决策模型。添加一个 System One、Jev 或 Workers AI 供应商。",
+        "label": "connect-model-label"
+      },
+      {
+        "code": "@'\n{\"model\": \"provider/jev-latest\",\n \"state\": {\"message\": \"My order never arrived, refund it\"},\n \"questions\": {\"team\": {\"type\": \"choice\",\n   \"instructions\": \"Which team should answer the message?\",\n   \"criteria\": {\"billing\": \"Payments and refunds\", \"shipping\": \"Deliveries\", \"other\": \"Anything else\"}}}}\n'@ | curl.exe http://127.0.0.1:3425/v1/systemone `\n  -H \"Authorization: Bearer magpie\" `\n  -H \"Content-Type: application/json\" `\n  --data-binary \"@-\"",
+        "label": "connect-example-label"
+      }
+    ],
+    "models": "尚未暴露任何模型\n添加供应商，或登录 Codex / Copilot；其模型会列在这里，供所有 Agent 使用。",
+    "osVisible": true,
+    "selected": [
+      "System One",
+      "curl",
+      "Windows"
+    ],
+    "shellOffered": [
+      "curl",
+      "Python",
+      "Node",
+      "Windows",
+      "macOS · Linux"
+    ],
+    "snippet": "@'\n{\"model\": \"provider/jev-latest\",\n \"state\": {\"message\": \"My order never arrived, refund it\"},\n \"questions\": {\"team\": {\"type\": \"choice\",\n   \"instructions\": \"Which team should answer the message?\",\n   \"criteria\": {\"billing\": \"Payments and refunds\", \"shipping\": \"Deliveries\", \"other\": \"Anything else\"}}}}\n'@ | curl.exe http://127.0.0.1:3425/v1/systemone `\n  -H \"Authorization: Bearer magpie\" `\n  -H \"Content-Type: application/json\" `\n  --data-binary \"@-\"",
+    "source": "874268b83c40d3b1a621b152d54aeaed51732334"
+  },
+  {
+    "api": "Responses",
+    "snippetKind": "Python",
+    "fields": [
+      {
+        "hint": "OpenAI 较新的 API：推理、内置工具项、加密推理。Codex 使用它。",
+        "label": "connect-api-label"
+      },
+      {
+        "code": "http://127.0.0.1:3425/v1",
+        "hint": "填入 OPENAI_BASE_URL。",
+        "label": "connect-url-label"
+      },
+      {
+        "code": "magpie",
+        "hint": "OPENAI_API_KEY=magpie。网关信任本机回环请求，可填任意值。",
+        "label": "connect-key-label"
+      },
+      {
+        "code": "provider/model",
+        "hint": "还没有模型。添加一个供应商，或登录 Codex / Copilot。",
+        "label": "connect-model-label"
+      },
+      {
+        "code": "from openai import OpenAI\n\nclient = OpenAI(base_url=\"http://127.0.0.1:3425/v1\", api_key=\"magpie\")\nr = client.responses.create(model=\"provider/model\", input=\"hi\")\nprint(r.output_text)",
+        "label": "connect-example-label"
+      }
+    ],
+    "models": "尚未暴露任何模型\n添加供应商，或登录 Codex / Copilot；其模型会列在这里，供所有 Agent 使用。",
+    "osVisible": false,
+    "selected": [
+      "Responses",
+      "Python"
+    ],
+    "shellOffered": [
+      "PowerShell",
+      "curl",
+      "Python",
+      "Node"
+    ],
+    "snippet": "from openai import OpenAI\n\nclient = OpenAI(base_url=\"http://127.0.0.1:3425/v1\", api_key=\"magpie\")\nr = client.responses.create(model=\"provider/model\", input=\"hi\")\nprint(r.output_text)",
+    "source": "874268b83c40d3b1a621b152d54aeaed51732334"
+  },
+  {
+    "api": "Responses",
+    "snippetKind": "Node",
+    "fields": [
+      {
+        "hint": "OpenAI 较新的 API：推理、内置工具项、加密推理。Codex 使用它。",
+        "label": "connect-api-label"
+      },
+      {
+        "code": "http://127.0.0.1:3425/v1",
+        "hint": "填入 OPENAI_BASE_URL。",
+        "label": "connect-url-label"
+      },
+      {
+        "code": "magpie",
+        "hint": "OPENAI_API_KEY=magpie。网关信任本机回环请求，可填任意值。",
+        "label": "connect-key-label"
+      },
+      {
+        "code": "provider/model",
+        "hint": "还没有模型。添加一个供应商，或登录 Codex / Copilot。",
+        "label": "connect-model-label"
+      },
+      {
+        "code": "import OpenAI from \"openai\";\n\nconst client = new OpenAI({ baseURL: \"http://127.0.0.1:3425/v1\", apiKey: \"magpie\" });\nconst r = await client.responses.create({ model: \"provider/model\", input: \"hi\" });\nconsole.log(r.output_text);",
+        "label": "connect-example-label"
+      }
+    ],
+    "models": "尚未暴露任何模型\n添加供应商，或登录 Codex / Copilot；其模型会列在这里，供所有 Agent 使用。",
+    "osVisible": false,
+    "selected": [
+      "Responses",
+      "Node"
+    ],
+    "shellOffered": [
+      "PowerShell",
+      "curl",
+      "Python",
+      "Node"
+    ],
+    "snippet": "import OpenAI from \"openai\";\n\nconst client = new OpenAI({ baseURL: \"http://127.0.0.1:3425/v1\", apiKey: \"magpie\" });\nconst r = await client.responses.create({ model: \"provider/model\", input: \"hi\" });\nconsole.log(r.output_text);",
+    "source": "874268b83c40d3b1a621b152d54aeaed51732334"
+  },
+  {
+    "api": "Anthropic",
+    "snippetKind": "Node",
+    "fields": [
+      {
+        "hint": "Messages API。Claude Code 读取 ANTHROPIC_AUTH_TOKEN 而非密钥；Agent 页会替你设置。",
+        "label": "connect-api-label"
+      },
+      {
+        "code": "http://127.0.0.1:3425",
+        "hint": "填入 ANTHROPIC_BASE_URL。",
+        "label": "connect-url-label"
+      },
+      {
+        "code": "magpie",
+        "hint": "ANTHROPIC_API_KEY=magpie。网关信任本机回环请求，可填任意值。",
+        "label": "connect-key-label"
+      },
+      {
+        "code": "provider/model",
+        "hint": "还没有模型。添加一个供应商，或登录 Codex / Copilot。",
+        "label": "connect-model-label"
+      },
+      {
+        "code": "import Anthropic from \"@anthropic-ai/sdk\";\n\nconst client = new Anthropic({ baseURL: \"http://127.0.0.1:3425\", apiKey: \"magpie\" });\nconst m = await client.messages.create({\n  model: \"provider/model\",\n  max_tokens: 1024,\n  messages: [{ role: \"user\", content: \"hi\" }],\n});\nconsole.log(m.content[0].text);",
+        "label": "connect-example-label"
+      }
+    ],
+    "models": "尚未暴露任何模型\n添加供应商，或登录 Codex / Copilot；其模型会列在这里，供所有 Agent 使用。",
+    "osVisible": false,
+    "selected": [
+      "Anthropic",
+      "Node"
+    ],
+    "shellOffered": [
+      "PowerShell",
+      "curl",
+      "Python",
+      "Node"
+    ],
+    "snippet": "import Anthropic from \"@anthropic-ai/sdk\";\n\nconst client = new Anthropic({ baseURL: \"http://127.0.0.1:3425\", apiKey: \"magpie\" });\nconst m = await client.messages.create({\n  model: \"provider/model\",\n  max_tokens: 1024,\n  messages: [{ role: \"user\", content: \"hi\" }],\n});\nconsole.log(m.content[0].text);",
+    "source": "874268b83c40d3b1a621b152d54aeaed51732334"
+  },
+  {
+    "api": "Gemini",
+    "snippetKind": "Node",
+    "fields": [
+      {
+        "hint": "Google 的 generateContent API（v1beta）。Gemini CLI 和 google-genai SDK 使用它。",
+        "label": "connect-api-label"
+      },
+      {
+        "code": "http://127.0.0.1:3425",
+        "hint": "填入 GOOGLE_GEMINI_BASE_URL。",
+        "label": "connect-url-label"
+      },
+      {
+        "code": "magpie",
+        "hint": "GEMINI_API_KEY=magpie。网关信任本机回环请求，可填任意值。",
+        "label": "connect-key-label"
+      },
+      {
+        "code": "provider/model",
+        "hint": "还没有模型。添加一个供应商，或登录 Codex / Copilot。",
+        "label": "connect-model-label"
+      },
+      {
+        "code": "import { GoogleGenAI } from \"@google/genai\";\n\nconst ai = new GoogleGenAI({\n  apiKey: \"magpie\",\n  httpOptions: { baseUrl: \"http://127.0.0.1:3425\" },\n});\nconst r = await ai.models.generateContent({ model: \"provider/model\", contents: \"hi\" });\nconsole.log(r.text);",
+        "label": "connect-example-label"
+      }
+    ],
+    "models": "尚未暴露任何模型\n添加供应商，或登录 Codex / Copilot；其模型会列在这里，供所有 Agent 使用。",
+    "osVisible": false,
+    "selected": [
+      "Gemini",
+      "Node"
+    ],
+    "shellOffered": [
+      "PowerShell",
+      "curl",
+      "Python",
+      "Node"
+    ],
+    "snippet": "import { GoogleGenAI } from \"@google/genai\";\n\nconst ai = new GoogleGenAI({\n  apiKey: \"magpie\",\n  httpOptions: { baseUrl: \"http://127.0.0.1:3425\" },\n});\nconst r = await ai.models.generateContent({ model: \"provider/model\", contents: \"hi\" });\nconsole.log(r.text);",
+    "source": "874268b83c40d3b1a621b152d54aeaed51732334"
+  },
+  {
+    "api": "System One",
+    "snippetKind": "Python",
+    "fields": [
+      {
+        "hint": "TypeSafe 的决策 API：Jev 或 Clef 模型按类型（choice、noul、score）回答关于 state 的问题，并给出置信度。Clef 还能读图：加上 \"images\": [\"data:image/png;base64,…\"]。",
+        "label": "connect-api-label"
+      },
+      {
+        "code": "http://127.0.0.1:3425/v1",
+        "hint": "请求发到 POST http://127.0.0.1:3425/v1/systemone。",
+        "label": "connect-url-label"
+      },
+      {
+        "code": "magpie",
+        "hint": "作为 Authorization: Bearer 发送。网关信任本机回环请求，可填任意值。",
+        "label": "connect-key-label"
+      },
+      {
+        "code": "provider/jev-latest",
+        "hint": "还没有决策模型。添加一个 System One、Jev 或 Workers AI 供应商。",
+        "label": "connect-model-label"
+      },
+      {
+        "code": "import requests\n\nr = requests.post(\"http://127.0.0.1:3425/v1/systemone\",\n    headers={\"Authorization\": \"Bearer magpie\"},\n    json={\n        \"model\": \"provider/jev-latest\",\n        \"state\": {\"message\": \"My order never arrived, refund it\"},\n        \"questions\": {\"team\": {\n            \"type\": \"choice\",\n            \"instructions\": \"Which team should answer the message?\",\n            \"criteria\": {\"billing\": \"Payments and refunds\", \"shipping\": \"Deliveries\", \"other\": \"Anything else\"},\n        }},\n    })\na = r.json()[\"answers\"][\"team\"]\nprint(a[\"choice\"], a[\"confidence\"])",
+        "label": "connect-example-label"
+      }
+    ],
+    "models": "尚未暴露任何模型\n添加供应商，或登录 Codex / Copilot；其模型会列在这里，供所有 Agent 使用。",
+    "osVisible": false,
+    "selected": [
+      "System One",
+      "Python"
+    ],
+    "shellOffered": [
+      "curl",
+      "Python",
+      "Node"
+    ],
+    "snippet": "import requests\n\nr = requests.post(\"http://127.0.0.1:3425/v1/systemone\",\n    headers={\"Authorization\": \"Bearer magpie\"},\n    json={\n        \"model\": \"provider/jev-latest\",\n        \"state\": {\"message\": \"My order never arrived, refund it\"},\n        \"questions\": {\"team\": {\n            \"type\": \"choice\",\n            \"instructions\": \"Which team should answer the message?\",\n            \"criteria\": {\"billing\": \"Payments and refunds\", \"shipping\": \"Deliveries\", \"other\": \"Anything else\"},\n        }},\n    })\na = r.json()[\"answers\"][\"team\"]\nprint(a[\"choice\"], a[\"confidence\"])",
+    "source": "874268b83c40d3b1a621b152d54aeaed51732334"
+  },
+  {
+    "api": "System One",
+    "snippetKind": "Node",
+    "fields": [
+      {
+        "hint": "TypeSafe 的决策 API：Jev 或 Clef 模型按类型（choice、noul、score）回答关于 state 的问题，并给出置信度。Clef 还能读图：加上 \"images\": [\"data:image/png;base64,…\"]。",
+        "label": "connect-api-label"
+      },
+      {
+        "code": "http://127.0.0.1:3425/v1",
+        "hint": "请求发到 POST http://127.0.0.1:3425/v1/systemone。",
+        "label": "connect-url-label"
+      },
+      {
+        "code": "magpie",
+        "hint": "作为 Authorization: Bearer 发送。网关信任本机回环请求，可填任意值。",
+        "label": "connect-key-label"
+      },
+      {
+        "code": "provider/jev-latest",
+        "hint": "还没有决策模型。添加一个 System One、Jev 或 Workers AI 供应商。",
+        "label": "connect-model-label"
+      },
+      {
+        "code": "const r = await fetch(\"http://127.0.0.1:3425/v1/systemone\", {\n  method: \"POST\",\n  headers: { Authorization: \"Bearer magpie\", \"Content-Type\": \"application/json\" },\n  body: JSON.stringify({\n    model: \"provider/jev-latest\",\n    state: { message: \"My order never arrived, refund it\" },\n    questions: { team: {\n      type: \"choice\",\n      instructions: \"Which team should answer the message?\",\n      criteria: { billing: \"Payments and refunds\", shipping: \"Deliveries\", other: \"Anything else\" },\n    } },\n  }),\n});\nconst a = (await r.json()).answers.team;\nconsole.log(a.choice, a.confidence);",
+        "label": "connect-example-label"
+      }
+    ],
+    "models": "尚未暴露任何模型\n添加供应商，或登录 Codex / Copilot；其模型会列在这里，供所有 Agent 使用。",
+    "osVisible": false,
+    "selected": [
+      "System One",
+      "Node"
+    ],
+    "shellOffered": [
+      "curl",
+      "Python",
+      "Node"
+    ],
+    "snippet": "const r = await fetch(\"http://127.0.0.1:3425/v1/systemone\", {\n  method: \"POST\",\n  headers: { Authorization: \"Bearer magpie\", \"Content-Type\": \"application/json\" },\n  body: JSON.stringify({\n    model: \"provider/jev-latest\",\n    state: { message: \"My order never arrived, refund it\" },\n    questions: { team: {\n      type: \"choice\",\n      instructions: \"Which team should answer the message?\",\n      criteria: { billing: \"Payments and refunds\", shipping: \"Deliveries\", other: \"Anything else\" },\n    } },\n  }),\n});\nconst a = (await r.json()).answers.team;\nconsole.log(a.choice, a.confidence);",
+    "source": "874268b83c40d3b1a621b152d54aeaed51732334"
+  }
+]
