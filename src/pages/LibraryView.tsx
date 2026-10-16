@@ -1183,27 +1183,27 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
             ) : null}
 
             <div>
-              <div className="row-head lib-cardhead">
-                <span className="label">
-                  {t("AGENTS")}
+              <div className="row-head">
+                <span className="label">{t("Agents")}</span>
+                <span className="note lib-reads">
+                  {t("They read {name}", {name:sets.find(x => x.inUse)?.name || "Default"})}
+                  {!sets.find(x => x.inUse)?.body.trim() ? ` · ${t("Empty")}` : ""}
                 </span>
+                <span className="grow"/>
+                <span className="note">{t("magpie writes its part between two marker lines — the rest of each file stays yours")}</span>
               </div>
-              <p>
-                {t("They read {name} · magpie writes its part between two marker lines — the rest of each file stays yours.", {
-                  name: sets.find((x) => x.inUse)?.name || openSet?.name || "Default",
-                })}
-              </p>
-              <div className="card lib-card">
-                {t("None of your agents reads a user-wide instructions file magpie knows.")}
+              <div className="list lib-list">
+                <div className="lib-none">{t("None of your agents reads a user-wide instructions file magpie knows.")}</div>
               </div>
-              <p>{t("Cursor keeps no user-wide instructions file.")}</p>
+              <p className="lib-aside">{t("{agents} keeps no user-wide instructions file.", {agents:"Cursor"})}</p>
             </div>
           </>
         ) : tab === "mcp" ? (
           <>
+            <p className="lib-intro">{t("Add a server once and switch it on for the agents that should have it — magpie writes it into each one's config in the shape that agent reads.")}</p>
             {mcpServers.length === 0 ? (
-              <div>
-                <p>{t("No servers in the library yet")}</p>
+              <div className="lib-empty">
+                <b>{t("No servers in the library yet")}</b>
                 <p>{t("Paste a server's JSON from its README, or fill it in.")}</p>
                 <button type="button" className="rt-gadd" onClick={openMcpEditor}>
                   <svg viewBox="0 0 16 16" width={11} height={11} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden>
@@ -1970,9 +1970,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
               ) : null}
             </div>
 
-            {skills.length === 0 ? (
-              <div>{t("No skills in the library yet — find some above.")}</div>
-            ) : (
+            {skills.length === 0 ? null : (
               <>
                 <div>
                   <div className="row-head lib-cardhead">

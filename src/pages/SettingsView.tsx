@@ -1432,7 +1432,7 @@ export function SettingsView({ tab, setTab, theme, setTheme, lang, setLang, onSt
             sub={
               prefs.webSearch === "off"
                 ? t("When provider search is off, only configured Search APIs are used. Without a Search API, magpie does not add a search tool. Providers' native web search is unchanged.")
-                : t("When a model can't search the web directly, the selected provider searches for it and returns the results.")
+                : t("When a model can't search the web directly, the selected provider searches for it and returns the results. Searches may use the service's quota or incur charges; if the provider magpie picks fails, it tries other available sources, but a provider you select here is never replaced by another provider, only by your Search APIs.")
             }
           >
             <SideModelPick
