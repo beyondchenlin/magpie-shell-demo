@@ -1,4 +1,4 @@
-> 当前阶段的范围、通过条件与结束条件见 [复刻验收标准 v1.0](docs/REPLICA-ACCEPTANCE.md)。以下为历史逐版本修改记录，不代表整体验收通过。
+> 设计与交互执行 [项目 CIS](docs/magpie-shell-cis-2026-10-15.md) 及其生效修订；当前核验步骤见 [CIS 执行验收清单 v1.1](docs/REPLICA-ACCEPTANCE.md)。清单不另立设计值或统一像素容差。以下为历史逐版本修改记录，不代表整体验收通过。
 
 ## v0.1.194 · CIS_NATIVE_BASELINE_AND_SHARED_CONTROLS · 2026-10-16 Asia/Shanghai
 
