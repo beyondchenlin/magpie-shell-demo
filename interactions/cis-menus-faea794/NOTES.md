@@ -7,4 +7,4 @@ UI绑定faea7942cd9cdc83e388e1a607176408312822f1 /0.1.198，4176隔离预览，1
 - C4：深层折叠/搜索/Shown保留、Current锁、组内及全局二次确认、其他操作撤回、Only逐agent/重载保持、连续Alt重排、实际tab.drag及默认恢复均留状态。第一次原始CDP短序列未改变顺序，后使用文档支持的tab.drag实际提交；不将前次无效输入当成产品错误。
 - waitFor隐藏的后端约3秒截止，早于源码4000ms，后续状态已过期恢复。保留这个工具失败，不据此断言精确4秒时序；下一候选probe观察data-armed变更时间。
 - c4-candidate-1中早期长列表深处点击意外关闭的空状态为不完整尝试；过滤到Gemini后相同行正确变更并保持弹层，未归因前不据此报产品缺陷。
-- 30键偏好通过显式fixture恢复并逐键相等，见candidate-1-restored.json。源头nav为top、若干mock键已有值，不是全null。
+- 31键偏好通过显式fixture恢复并逐键相等，见candidate-1-restored.json。源头nav为top、若干mock键已有值，不是全null。

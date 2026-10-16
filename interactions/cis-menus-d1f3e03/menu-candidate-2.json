@@ -1,0 +1,1259 @@
+{
+  "source": "d1f3e03c06543c7ce3763f437951edb829c7470f",
+  "checks": [
+    {
+      "case": "model-search-select-first",
+      "selected": "gpt-5"
+    },
+    {
+      "case": "model-search-arrow-select-second",
+      "selected": "✦gptgptf按输入使用"
+    },
+    {
+      "case": "model-search-enter-second",
+      "field": "gptgptf",
+      "live": 0
+    },
+    {
+      "case": "direct-key-down",
+      "selected": "gpt-5-mini",
+      "query": "gpt"
+    },
+    {
+      "case": "model-1364-settled-border-after",
+      "geometry": {
+        "active": {
+          "class": "",
+          "pop": "pop model-picker",
+          "tag": "INPUT"
+        },
+        "anchor": {
+          "bottom": 461.03125,
+          "height": 27.5,
+          "left": 377.5104370117187,
+          "right": 619.5104370117188,
+          "top": 433.53125,
+          "width": 242,
+          "x": 377.5104370117187,
+          "y": 433.53125
+        },
+        "popup": {
+          "class": "pop model-picker",
+          "height": 261,
+          "rect": {
+            "bottom": 631.9791870117188,
+            "height": 287.21875,
+            "left": 377.5104370117187,
+            "right": 916.5104370117188,
+            "top": 344.76043701171875,
+            "width": 539,
+            "x": 377.5104370117187,
+            "y": 344.76043701171875
+          },
+          "scrollHeight": 260,
+          "style": "width: 490px; max-width: 1083px; left: 272.585px; --ox: 109.99999999999994px; top: 291px; bottom: auto; max-height: 420px;",
+          "transform": "none",
+          "width": 490
+        },
+        "root": {
+          "caption": 32,
+          "clientHeight": 719,
+          "clientLeft": 1,
+          "clientTop": 1,
+          "clientWidth": 1099,
+          "offsetWidth": 1100,
+          "rect": {
+            "bottom": 816,
+            "height": 792,
+            "left": 77,
+            "right": 1287,
+            "top": 24,
+            "width": 1210,
+            "x": 77,
+            "y": 24
+          }
+        },
+        "source": "d1f3e03c06543c7ce3763f437951edb829c7470f",
+        "viewport": [
+          1364,
+          941
+        ]
+      },
+      "border": "0.606061px"
+    },
+    {
+      "case": "model-direct-key-submit-second",
+      "field": "gpt-5-mini",
+      "live": 0
+    },
+    {
+      "case": "model-search-enter-first",
+      "field": "gpt-5"
+    },
+    {
+      "case": "model-custom-enter",
+      "field": "cis-test-model"
+    },
+    {
+      "case": "model-close-open-agent-immediately",
+      "liveModel": 0,
+      "agent": {
+        "active": {
+          "class": "",
+          "pop": "pop am-pop railed up",
+          "tag": "INPUT"
+        },
+        "armed": [],
+        "only": "false",
+        "order": [],
+        "rows": [
+          {
+            "checked": "true",
+            "locked": null,
+            "text": "magpie/fast"
+          },
+          {
+            "checked": "true",
+            "locked": null,
+            "text": "claude-opus-4"
+          },
+          {
+            "checked": "true",
+            "locked": "true",
+            "text": "claude-sonnet-4-5在用"
+          },
+          {
+            "checked": "true",
+            "locked": "true",
+            "text": "claude-haiku-4在用"
+          },
+          {
+            "checked": "false",
+            "locked": null,
+            "text": "claude-3-5-haiku"
+          },
+          {
+            "checked": "true",
+            "locked": null,
+            "text": "gemini-2.5-pro"
+          },
+          {
+            "checked": "true",
+            "locked": null,
+            "text": "Mock own model"
+          }
+        ],
+        "sections": [
+          {
+            "folded": false,
+            "name": "路由组",
+            "rows": 1
+          },
+          {
+            "folded": false,
+            "name": "Anthropic",
+            "rows": 4
+          },
+          {
+            "folded": true,
+            "name": "OpenAI",
+            "rows": 0
+          },
+          {
+            "folded": false,
+            "name": "Google",
+            "rows": 1
+          },
+          {
+            "folded": false,
+            "name": "ChatGPT",
+            "rows": 1
+          }
+        ]
+      }
+    },
+    {
+      "case": "agent-batch-four-second-observed",
+      "arming": [
+        {
+          "at": 150494.59999999404,
+          "class": "am-reset am-hide",
+          "armed": "1",
+          "text": "隐藏所有供应商的 15 个模型？再点一次"
+        },
+        {
+          "at": 154506.59999999404,
+          "class": "am-reset am-hide",
+          "armed": null,
+          "text": "全部隐藏"
+        }
+      ]
+    },
+    {
+      "case": "agent-1364-settled",
+      "geometry": {
+        "active": {
+          "class": "am-reset am-hide",
+          "pop": "pop am-pop railed up",
+          "tag": "BUTTON"
+        },
+        "anchor": {
+          "bottom": 460.7395839691162,
+          "height": 26.39583396911621,
+          "left": 803.4166870117188,
+          "right": 862.8021049499512,
+          "top": 434.34375,
+          "width": 59.38541793823242,
+          "x": 803.4166870117188,
+          "y": 434.34375
+        },
+        "popup": {
+          "class": "pop am-pop railed up",
+          "height": 324,
+          "rect": {
+            "bottom": 425.3125,
+            "height": 356.875,
+            "left": 639.7604370117188,
+            "right": 1277.7604370117188,
+            "top": 68.4375,
+            "width": 638,
+            "x": 639.7604370117188,
+            "y": 68.4375
+          },
+          "scrollHeight": 332,
+          "style": "width: 580px; max-width: 1083px; max-height: 324.434px; left: 511px; --ox: 175.76611716439538px; top: auto; bottom: 354.566px;",
+          "transform": "none",
+          "width": 580
+        },
+        "root": {
+          "caption": 32,
+          "clientHeight": 719,
+          "clientLeft": 1,
+          "clientTop": 1,
+          "clientWidth": 1099,
+          "offsetWidth": 1100,
+          "rect": {
+            "bottom": 816,
+            "height": 792,
+            "left": 77,
+            "right": 1287,
+            "top": 24,
+            "width": 1210,
+            "x": 77,
+            "y": 24
+          }
+        },
+        "source": "d1f3e03c06543c7ce3763f437951edb829c7470f",
+        "viewport": [
+          1364,
+          941
+        ]
+      }
+    },
+    {
+      "case": "agent-escape-focus",
+      "active": {
+        "class": "ag-quiet",
+        "text": "挑选"
+      },
+      "live": 0
+    },
+    {
+      "case": "agent-resize-close",
+      "live": 0
+    },
+    {
+      "case": "agent-390-first-open",
+      "geometry": {
+        "active": {
+          "class": "",
+          "pop": "pop am-pop",
+          "tag": "INPUT"
+        },
+        "anchor": {
+          "bottom": 473.2291870117187,
+          "height": 24,
+          "left": 182.8229217529297,
+          "right": 236.8229217529297,
+          "top": 449.2291870117187,
+          "width": 54,
+          "x": 182.8229217529297,
+          "y": 449.2291870117187
+        },
+        "popup": {
+          "class": "pop am-pop",
+          "height": 222,
+          "rect": {
+            "bottom": 702.8750305175781,
+            "height": 221.64584350585935,
+            "left": 8,
+            "right": 382,
+            "top": 481.2291870117187,
+            "width": 374,
+            "x": 8,
+            "y": 481.2291870117187
+          },
+          "scrollHeight": 222,
+          "style": "width: 374px; max-width: 374px; max-height: 354.771px; left: 8px; --ox: 201.8229217529297px; top: 481.229px; bottom: auto;",
+          "transform": "none",
+          "width": 374
+        },
+        "root": {
+          "caption": 0,
+          "clientHeight": 844,
+          "clientLeft": 0,
+          "clientTop": 0,
+          "clientWidth": 390,
+          "offsetWidth": 390,
+          "rect": {
+            "bottom": 844,
+            "height": 844,
+            "left": 0,
+            "right": 390,
+            "top": 0,
+            "width": 390,
+            "x": 0,
+            "y": 0
+          }
+        },
+        "source": "d1f3e03c06543c7ce3763f437951edb829c7470f",
+        "viewport": [
+          390,
+          844
+        ]
+      }
+    },
+    {
+      "case": "model-390-first-open",
+      "geometry": {
+        "active": {
+          "class": "",
+          "pop": "pop model-picker up",
+          "tag": "INPUT"
+        },
+        "anchor": {
+          "bottom": 483.0625,
+          "height": 44,
+          "left": 110.66667175292967,
+          "right": 330.6666717529297,
+          "top": 439.0625,
+          "width": 220,
+          "x": 110.66667175292967,
+          "y": 439.0625
+        },
+        "popup": {
+          "class": "pop model-picker up",
+          "height": 420,
+          "rect": {
+            "bottom": 434.0625,
+            "height": 420,
+            "left": 8,
+            "right": 382,
+            "top": 14.0625,
+            "width": 374,
+            "x": 8,
+            "y": 14.0625
+          },
+          "scrollHeight": 419,
+          "style": "width: 374px; max-width: 374px; left: 8px; --ox: 212.6666717529297px; top: auto; bottom: 409.938px; max-height: 420px;",
+          "transform": "none",
+          "width": 374
+        },
+        "root": {
+          "caption": 0,
+          "clientHeight": 844,
+          "clientLeft": 0,
+          "clientTop": 0,
+          "clientWidth": 390,
+          "offsetWidth": 390,
+          "rect": {
+            "bottom": 844,
+            "height": 844,
+            "left": 0,
+            "right": 390,
+            "top": 0,
+            "width": 390,
+            "x": 0,
+            "y": 0
+          }
+        },
+        "source": "d1f3e03c06543c7ce3763f437951edb829c7470f",
+        "viewport": [
+          390,
+          844
+        ]
+      }
+    },
+    {
+      "case": "model-outside-opens-row",
+      "model": 1
+    },
+    {
+      "case": "row-390-first-open",
+      "geometry": {
+        "active": {
+          "class": "rm-item",
+          "pop": "pop row-menu",
+          "tag": "BUTTON"
+        },
+        "anchor": {
+          "bottom": 474.8541870117187,
+          "height": 28,
+          "left": 27.666667938232425,
+          "right": 55.66666793823242,
+          "top": 446.8541870117187,
+          "width": 28,
+          "x": 27.666667938232425,
+          "y": 446.8541870117187
+        },
+        "popup": {
+          "class": "pop row-menu",
+          "height": 103,
+          "rect": {
+            "bottom": 583.1875228881836,
+            "height": 103.33333587646484,
+            "left": 23.666667938232425,
+            "right": 199.6666679382324,
+            "top": 479.8541870117187,
+            "width": 176,
+            "x": 23.666667938232425,
+            "y": 479.8541870117187
+          },
+          "scrollHeight": 102,
+          "style": "max-width: 374px; left: 23.6667px; top: 479.854px; bottom: auto; --ox: 18px;",
+          "transform": "none",
+          "width": 176
+        },
+        "root": {
+          "caption": 0,
+          "clientHeight": 844,
+          "clientLeft": 0,
+          "clientTop": 0,
+          "clientWidth": 390,
+          "offsetWidth": 390,
+          "rect": {
+            "bottom": 844,
+            "height": 844,
+            "left": 0,
+            "right": 390,
+            "top": 0,
+            "width": 390,
+            "x": 0,
+            "y": 0
+          }
+        },
+        "source": "d1f3e03c06543c7ce3763f437951edb829c7470f",
+        "viewport": [
+          390,
+          844
+        ]
+      }
+    },
+    {
+      "case": "row-down-skips-disabled",
+      "active": "隐藏"
+    },
+    {
+      "case": "row-cycle",
+      "active": "上移Alt+↑"
+    },
+    {
+      "case": "row-tab-close",
+      "live": 0,
+      "active": {
+        "class": "window web phone-web",
+        "text": "\n    \n      \n    \n    网关 127.0.0.1:3425magpieAgentAgent供应商路由网关用量插件设置快速上手已完成 1/21添加模型来源你已经付费的订阅、一个供应商，或一个 API 密钥添加供应商2接入一个 agent安装 Claude Code、Codex、Gemini CLI、OpenCode 等之后，会列在这里。3设置路由（可选）路由组把每个请求发给合适的模型，一个模型出错时交给下一个Cursor只能用 Cursor 自己的模型不能接入Claude Code已接入 · 2 个运行中的 Claude Code 待重开收起在 Claude Code 里新开的会话生效，在  里切换档位。/model2 个正在运行的 Claude Code 还是旧列表知道了19m ago启动的编辑器（VS Code、Cursor…）里的 Claude Code：重新加载那个编辑器的窗口。10m ago在终端里启动的 Claude Code：退出后重新启动。档位Opuscis-test-model/model opusSonnetclaude-sonnet-4-5/model sonnet · 默认档位Haikuclaude-haiku-4/model haiku · 也用于后台小任务模型列表Anthropic3OpenAI11Google1路由组1ChatGPT1已隐藏 2 个挑选新会话默认模型claude-sonnet-4-5迁移项目会话改动了 ~/.claude/settings.json查看断开并还原未设置Codex未接入 · 用 Codex 自己的设置OpenCode未接入 · 用 OpenCode 自己的设置Pi未接入 · 用 Pi 自己的设置显示其余 3 个管理安装其他 Agent（14）方案还没有 · 保存当前设置，之后一键切回＋ 保存当前127.0.0.1:3425\n\n  \n\n{\"schema\":1,\"source\":\"d1f3e03c06543c7ce3763f437951edb829c7470f\",\"probe\":\"cis-motion-probe-v1\",\"initialNavPreference\":\"top\",\"entries\":[]}{\"probe\":\"cis-copy-v1\",\"fail\":false,\"events\":[]}{\"probe\":\"cis-popup-v2\",\"events\":[{\"type\":\"keydown\",\"key\":\"Escape\",\"target\":\"INPUT\",\"targetClass\":\"\",\"targetText\":\"\",\"at\":149960.40000000596,\"before\":{\"active\":{\"tag\":\"INPUT\",\"text\":\"\",\"class\":\"\"},\"layers\":[{\"class\":\"pop model-picker\",\"id\":\"pop\",\"role\":\"listbox\",\"hidden\":false,\"ariaHidden\":null,\"inert\":false,\"pointerEvents\":\"auto\",\"rect\":{\"x\":377.73992919921875,\"y\":344.5517578125,\"width\":537.9776611328125,\"height\":461.12371826171875,\"top\":344.5517578125,\"right\":915.7175903320312,\"bottom\":805.6754760742188,\"left\":377.73992919921875}}]},\"samples\":[{\"phase\":\"microtask\",\"at\":149960.90000000596,\"active\":{\"tag\":\"INPUT\",\"text\":\"\",\"class\":\"\"},\"layers\":[{\"class\":\"pop model-picker\",\"id\":\"pop\",\"role\":\"listbox\",\"hidden\":false,\"ariaHidden\":null,\"inert\":false,\"pointerEvents\":\"auto\",\"rect\":{\"x\":377.73992919921875,\"y\":344.5517578125,\"width\":537.9776611328125,\"height\":461.12371826171875,\"top\":344.5517578125,\"right\":915.7175903320312,\"bottom\":805.6754760742188,\"left\":377.73992919921875}}]},{\"phase\":\"next-frame\",\"at\":149966,\"active\":{\"tag\":\"BODY\",\"text\":\"\\n    \\n      \\n    \\n    Magpie网关 127.0.0.1:3425magpieAgentAgent供应商路由网关用量插件设置快速上手已完成 1/21添加模型来源你已经付费的订阅\",\"class\":\"window web\"},\"layers\":[{\"class\":\"pop model-picker leaving\",\"id\":\"\",\"role\":\"listbox\",\"hidden\":false,\"ariaHidden\":\"true\",\"inert\":true,\"pointerEvents\":\"none\",\"rect\":{\"x\":377.51043701171875,\"y\":344.76043701171875,\"width\":539,\"height\":462,\"top\":344.76043701171875,\"right\":916.5104370117188,\"bottom\":806.7604370117188,\"left\":377.51043701171875}}]},{\"phase\":\"50ms\",\"at\":150034,\"active\":{\"tag\":\"INPUT\",\"text\":\"\",\"class\":\"\"},\"layers\":[{\"class\":\"pop model-picker leaving\",\"id\":\"\",\"role\":\"listbox\",\"hidden\":false,\"ariaHidden\":\"true\",\"inert\":true,\"pointerEvents\":\"none\",\"rect\":{\"x\":377.674072265625,\"y\":344.6265563964844,\"width\":538.2711181640625,\"height\":461.37518310546875,\"top\":344.6265563964844,\"right\":915.9451904296875,\"bottom\":806.0017395019531,\"left\":377.674072265625}},{\"class\":\"pop am-pop railed up\",\"id\":\"\",\"role\":\"dialog\",\"hidden\":false,\"ariaHidden\":null,\"inert\":false,\"pointerEvents\":\"auto\",\"rect\":{\"x\":651.3610229492188,\"y\":96.45001220703125,\"width\":599.7200927734375,\"height\":335.4625244140625,\"top\":96.45001220703125,\"right\":1251.0811157226562,\"bottom\":431.91253662109375,\"left\":651.3610229492188}}]},{\"phase\":\"230ms\",\"at\":150198.29999999702,\"active\":{\"tag\":\"INPUT\",\"text\":\"\",\"class\":\"\"},\"layers\":[{\"class\":\"pop model-picker leaving\",\"id\":\"\",\"role\":\"listbox\",\"hidden\":false,\"ariaHidden\":\"true\",\"inert\":true,\"pointerEvents\":\"none\",\"rect\":{\"x\":382.10198974609375,\"y\":341.00372314453125,\"width\":518.5467529296875,\"height\":444.4686279296875,\"top\":341.00372314453125,\"right\":900.6487426757812,\"bottom\":785.4723510742188,\"left\":382.10198974609375}},{\"class\":\"pop am-pop railed up\",\"id\":\"\",\"role\":\"dialog\",\"hidden\":false,\"ariaHidden\":null,\"inert\":false,\"pointerEvents\":\"auto\",\"rect\":{\"x\":640.56005859375,\"y\":70.36845397949219,\"width\":635.361328125,\"height\":355.3990173339844,\"top\":70.36845397949219,\"right\":1275.92138671875,\"bottom\":425.76747131347656,\"left\":640.56005859375}}]},{\"phase\":\"430ms\",\"at\":150397.29999999702,\"active\":{\"tag\":\"INPUT\",\"text\":\"\",\"class\":\"\"},\"layers\":[{\"class\":\"pop am-pop railed up\",\"id\":\"\",\"role\":\"dialog\",\"hidden\":false,\"ariaHidden\":null,\"inert\":false,\"pointerEvents\":\"auto\",\"rect\":{\"x\":639.7662353515625,\"y\":68.45146179199219,\"width\":637.98095703125,\"height\":356.8643493652344,\"top\":68.45146179199219,\"right\":1277.7471923828125,\"bottom\":425.31581115722656,\"left\":639.7662353515625}}]}]},{\"type\":\"mousedown\",\"target\":\"BUTTON\",\"targetClass\":\"am-reset am-hide\",\"targetText\":\"全部隐藏\",\"at\":150488.20000000298,\"before\":{\"active\":{\"tag\":\"INPUT\",\"text\":\"\",\"class\":\"\"},\"layers\":[{\"class\":\"pop am-pop railed up\",\"id\":\"\",\"role\":\"dialog\",\"hidden\":false,\"ariaHidden\":null,\"inert\":false,\"pointerEvents\":\"auto\",\"rect\":{\"x\":639.7604370117188,\"y\":68.4375,\"width\":638,\"height\":356.875,\"top\":68.4375,\"right\":1277.7604370117188,\"bottom\":425.3125,\"left\":639.7604370117188}}]},\"samples\":[{\"phase\":\"microtask\",\"at\":150488.59999999404,\"active\":{\"tag\":\"INPUT\",\"text\":\"\",\"class\":\"\"},\"layers\":[{\"class\":\"pop am-pop railed up\",\"id\":\"\",\"role\":\"dialog\",\"hidden\":false,\"ariaHidden\":null,\"inert\":false,\"pointerEvents\":\"auto\",\"rect\":{\"x\":639.7604370117188,\"y\":68.4375,\"width\":638,\"height\":356.875,\"top\":68.4375,\"right\":1277.7604370117188,\"bottom\":425.3125,\"left\":639.7604370117188}}]},{\"phase\":\"next-frame\",\"at\":150511.5,\"active\":{\"tag\":\"BUTTON\",\"text\":\"隐藏所有供应商的 15 个模型？再点一次\",\"class\":\"am-reset am-hide\"},\"layers\":[{\"class\":\"pop am-pop railed up\",\"id\":\"\",\"role\":\"dialog\",\"hidden\":false,\"ariaHidden\":null,\"inert\":false,\"pointerEvents\":\"auto\",\"rect\":{\"x\":639.7604370117188,\"y\":68.4375,\"width\":638,\"height\":356.875,\"top\":68.4375,\"right\":1277.7604370117188,\"bottom\":425.3125,\"left\":639.7604370117188}}]},{\"phase\":\"50ms\",\"at\":150547,\"active\":{\"tag\":\"BUTTON\",\"text\":\"隐藏所有供应商的 15 个模型？再点一次\",\"class\":\"am-reset am-hide\"},\"layers\":[{\"class\":\"pop am-pop railed up\",\"id\":\"\",\"role\":\"dialog\",\"hidden\":false,\"ariaHidden\":null,\"inert\":false,\"pointerEvents\":\"auto\",\"rect\":{\"x\":639.7604370117188,\"y\":68.4375,\"width\":638,\"height\":356.875,\"top\":68.4375,\"right\":1277.7604370117188,\"bottom\":425.3125,\"left\":639.7604370117188}}]},{\"phase\":\"230ms\",\"at\":150719.79999999702,\"active\":{\"tag\":\"BUTTON\",\"text\":\"隐藏所有供应商的 15 个模型？再点一次\",\"class\":\"am-reset am-hide\"},\"layers\":[{\"class\":\"pop am-pop railed up\",\"id\":\"\",\"role\":\"dialog\",\"hidden\":false,\"ariaHidden\":null,\"inert\":false,\"pointerEvents\":\"auto\",\"rect\":{\"x\":639.7604370117188,\"y\":68.4375,\"width\":638,\"height\":356.875,\"top\":68.4375,\"right\":1277.7604370117188,\"bottom\":425.3125,\"left\":639.7604370117188}}]},{\"phase\":\"430ms\",\"at\":150932.20000000298,\"active\":{\"tag\":\"BUTTON\",\"text\":\"隐藏所有供应商的 15 个模型？再点一次\",\"class\":\"am-reset am-hide\"},\"layers\":[{\"class\":\"pop am-pop railed up\",\"id\":\"\",\"role\":\"dialog\",\"hidden\":false,\"ariaHidden\":null,\"inert\":false,\"pointerEvents\":\"auto\",\"rect\":{\"x\":639.7604370117188,\"y\":68.4375,\"width\":638,\"height\":356.875,\"top\":68.4375,\"right\":1277.7604370117188,\"bottom\":425.3125,\"left\":639.7604370117188}}]}]},{\"type\":\"keydown\",\"key\":\"Escape\",\"target\":\"BUTTON\",\"targetClass\":\"am-reset am-hide\",\"targetText\":\"全部隐藏\",\"at\":185130.20000000298,\"before\":{\"active\":{\"tag\":\"BUTTON\",\"text\":\"全部隐藏\",\"class\":\"am-reset am-hide\"},\"layers\":[{\"class\":\"pop am-pop railed up\",\"id\":\"\",\"role\":\"dialog\",\"hidden\":false,\"ariaHidden\":null,\"inert\":false,\"pointerEvents\":\"auto\",\"rect\":{\"x\":639.7604370117188,\"y\":68.4375,\"width\":638,\"height\":356.875,\"top\":68.4375,\"right\":1277.7604370117188,\"bottom\":425.3125,\"left\":639.7604370117188}}]},\"samples\":[{\"phase\":\"microtask\",\"at\":185130.59999999404,\"active\":{\"tag\":\"BUTTON\",\"text\":\"全部隐藏\",\"class\":\"am-reset am-hide\"},\"layers\":[{\"class\":\"pop am-pop railed up\",\"id\":\"\",\"role\":\"dialog\",\"hidden\":false,\"ariaHidden\":null,\"inert\":false,\"pointerEvents\":\"auto\",\"rect\":{\"x\":639.7604370117188,\"y\":68.4375,\"width\":638,\"height\":356.875,\"top\":68.4375,\"right\":1277.7604370117188,\"bottom\":425.3125,\"left\":639.7604370117188}}]},{\"phase\":\"next-frame\",\"at\":185142.20000000298,\"active\":{\"tag\":\"BUTTON\",\"text\":\"挑选\",\"class\":\"ag-quiet\"},\"layers\":[{\"class\":\"pop am-pop railed up leaving\",\"id\":\"\",\"role\":\"dialog\",\"hidden\":false,\"ariaHidden\":\"true\",\"inert\":true,\"pointerEvents\":\"none\",\"rect\":{\"x\":639.7604370117188,\"y\":68.4375,\"width\":638,\"height\":356.875,\"top\":68.4375,\"right\":1277.7604370117188,\"bottom\":425.3125,\"left\":639.7604370117188}}]},{\"phase\":\"50ms\",\"at\":185180.70000000298,\"active\":{\"tag\":\"BUTTON\",\"text\":\"挑选\",\"class\":\"ag-quiet\"},\"layers\":[{\"class\":\"pop am-pop railed up leaving\",\"id\":\"\",\"role\":\"dialog\",\"hidden\":false,\"ariaHidden\":\"true\",\"inert\":true,\"pointerEvents\":\"none\",\"rect\":{\"x\":639.8015747070312,\"y\":68.53450775146484,\"width\":637.8643188476562,\"height\":356.799072265625,\"top\":68.53450775146484,\"right\":1277.6658935546875,\"bottom\":425.33358001708984,\"left\":639.8015747070312}}]},{\"phase\":\"230ms\",\"at\":185363.59999999404,\"active\":{\"tag\":\"INPUT\",\"text\":\"\",\"class\":\"\"},\"layers\":[{\"class\":\"pop am-pop railed up leaving\",\"id\":\"\",\"role\":\"dialog\",\"hidden\":false,\"ariaHidden\":\"true\",\"inert\":true,\"pointerEvents\":\"none\",\"rect\":{\"x\":646.47412109375,\"y\":84.26750183105469,\"width\":615.8458862304688,\"height\":344.48272705078125,\"top\":84.26750183105469,\"right\":1262.3200073242188,\"bottom\":428.75022888183594,\"left\":646.47412109375}},{\"class\":\"pop am-pop railed up\",\"id\":\"\",\"role\":\"dialog\",\"hidden\":false,\"ariaHidden\":null,\"inert\":false,\"pointerEvents\":\"auto\",\"rect\":{\"x\":645.0119018554688,\"y\":81.11845397949219,\"width\":620.6710815429688,\"height\":347.18182373046875,\"top\":81.11845397949219,\"right\":1265.6829833984375,\"bottom\":428.30027770996094,\"left\":645.0119018554688}}]},{\"phase\":\"430ms\",\"at\":185565.20000000298,\"active\":{\"tag\":\"BODY\",\"text\":\"\\n    \\n      \\n    \\n    Magpie网关 127.0.0.1:3425magpieAgentAgent供应商路由网关用量插件设置快速上手已完成 1/21添加模型来源你已经付费的订阅\",\"class\":\"window web\"},\"layers\":[{\"class\":\"pop am-pop railed up leaving\",\"id\":\"\",\"role\":\"dialog\",\"hidden\":false,\"ariaHidden\":\"true\",\"inert\":true,\"pointerEvents\":\"none\",\"rect\":{\"x\":376.66668701171875,\"y\":68.4375,\"width\":638,\"height\":356.8333435058594,\"top\":68.4375,\"right\":1014.6666870117188,\"bottom\":425.2708435058594,\"left\":376.66668701171875}}]}]},{\"type\":\"keydown\",\"key\":\"Escape\",\"target\":\"INPUT\",\"targetClass\":\"\",\"targetText\":\"\",\"at\":240547.59999999404,\"before\":{\"active\":{\"tag\":\"INPUT\",\"text\":\"\",\"class\":\"\"},\"layers\":[{\"class\":\"pop am-pop\",\"id\":\"\",\"role\":\"dialog\",\"hidden\":false,\"ariaHidden\":null,\"inert\":false,\"pointerEvents\":\"auto\",\"rect\":{\"x\":8,\"y\":481.22918701171875,\"width\":374,\"height\":221.64584350585938,\"top\":481.22918701171875,\"right\":382,\"bottom\":702.8750305175781,\"left\":8}}]},\"samples\":[{\"phase\":\"microtask\",\"at\":240547.79999999702,\"active\":{\"tag\":\"INPUT\",\"text\":\"\",\"class\":\"\"},\"layers\":[{\"class\":\"pop am-pop\",\"id\":\"\",\"role\":\"dialog\",\"hidden\":false,\"ariaHidden\":null,\"inert\":false,\"pointerEvents\":\"auto\",\"rect\":{\"x\":8,\"y\":481.22918701171875,\"width\":374,\"height\":221.64584350585938,\"top\":481.22918701171875,\"right\":382,\"bottom\":702.8750305175781,\"left\":8}}]},{\"phase\":\"next-frame\",\"at\":240551.40000000596,\"active\":{\"tag\":\"BUTTON\",\"text\":\"挑选\",\"class\":\"ag-quiet\"},\"layers\":[{\"class\":\"pop am-pop leaving\",\"id\":\"\",\"role\":\"dialog\",\"hidden\":false,\"ariaHidden\":\"true\",\"inert\":true,\"pointerEvents\":\"none\",\"rect\":{\"x\":8,\"y\":481.22918701171875,\"width\":374,\"height\":221.64584350585938,\"top\":481.22918701171875,\"right\":382,\"bottom\":702.8750305175781,\"left\":8}}]},{\"phase\":\"50ms\",\"at\":240616,\"active\":{\"tag\":\"INPUT\",\"text\":\"\",\"class\":\"\"},\"layers\":[{\"class\":\"pop am-pop leaving\",\"id\":\"\",\"role\":\"dialog\",\"hidden\":false,\"ariaHidden\":\"true\",\"inert\":true,\"pointerEvents\":\"none\",\"rect\":{\"x\":8.36773681640625,\"y\":481.065185546875,\"width\":373.31854248046875,\"height\":221.241943359375,\"top\":481.065185546875,\"right\":381.686279296875,\"bottom\":702.30712890625,\"left\":8.36773681640625}},{\"class\":\"pop model-picker up\",\"id\":\"pop\",\"role\":\"listbox\",\"hidden\":false,\"ariaHidden\":null,\"inert\":false,\"pointerEvents\":\"auto\",\"rect\":{\"x\":20.760009765625,\"y\":45.26249313354492,\"width\":351.5600280761719,\"height\":394.8000183105469,\"top\":45.26249313354492,\"right\":372.3200378417969,\"bottom\":440.0625114440918,\"left\":20.760009765625}}]},{\"phase\":\"230ms\",\"at\":240779.20000000298,\"active\":{\"tag\":\"INPUT\",\"text\":\"\",\"class\":\"\"},\"layers\":[{\"class\":\"pop model-picker up\",\"id\":\"pop\",\"role\":\"listbox\",\"hidden\":false,\"ariaHidden\":null,\"inert\":false,\"pointerEvents\":\"auto\",\"rect\":{\"x\":8.797689437866211,\"y\":16.012981414794922,\"width\":372.59716796875,\"height\":418.42462158203125,\"top\":16.012981414794922,\"right\":381.3948574066162,\"bottom\":434.4376029968262,\"left\":8.797689437866211}}]},{\"phase\":\"430ms\",\"at\":240981,\"active\":{\"tag\":\"INPUT\",\"text\":\"\",\"class\":\"\"},\"layers\":[{\"class\":\"pop model-picker up\",\"id\":\"pop\",\"role\":\"listbox\",\"hidden\":false,\"ariaHidden\":null,\"inert\":false,\"pointerEvents\":\"auto\",\"rect\":{\"x\":8.00653076171875,\"y\":14.0784912109375,\"width\":373.988525390625,\"height\":419.98712158203125,\"top\":14.0784912109375,\"right\":381.99505615234375,\"bottom\":434.06561279296875,\"left\":8.00653076171875}}]}]},{\"type\":\"mousedown\",\"target\":\"BUTTON\",\"targetClass\":\"rail-item\",\"targetText\":\"\",\"at\":271126.5,\"before\":{\"active\":{\"tag\":\"INPUT\",\"text\":\"\",\"class\":\"\"},\"layers\":[{\"class\":\"pop model-picker up\",\"id\":\"pop\",\"role\":\"listbox\",\"hidden\":false,\"ariaHidden\":null,\"inert\":false,\"pointerEvents\":\"auto\",\"rect\":{\"x\":8,\"y\":286.0625,\"width\":374,\"height\":420,\"top\":286.0625,\"right\":382,\"bottom\":706.0625,\"left\":8}}]},\"samples\":[{\"phase\":\"microtask\",\"at\":271127.200000003,\"active\":{\"tag\":\"INPUT\",\"text\":\"\",\"class\":\"\"},\"layers\":[{\"class\":\"pop model-picker up\",\"id\":\"pop\",\"role\":\"listbox\",\"hidden\":false,\"ariaHidden\":null,\"inert\":false,\"pointerEvents\":\"auto\",\"rect\":{\"x\":8,\"y\":286.0625,\"width\":374,\"height\":420,\"top\":286.0625,\"right\":382,\"bottom\":706.0625,\"left\":8}}]},{\"phase\":\"next-frame\",\"at\":271134.700000003,\"active\":{\"tag\":\"BUTTON\",\"text\":\"\",\"class\":\"rail-item on\"},\"layers\":[{\"class\":\"pop model-picker up\",\"id\":\"pop\",\"role\":\"listbox\",\"hidden\":false,\"ariaHidden\":null,\"inert\":false,\"pointerEvents\":\"auto\",\"rect\":{\"x\":8,\"y\":439.0625,\"width\":374,\"height\":267,\"top\":439.0625,\"right\":382,\"bottom\":706.0625,\"left\":8}}]},{\"phase\":\"50ms\",\"at\":271179.200000003,\"active\":{\"tag\":\"BUTTON\",\"text\":\"\",\"class\":\"rail-item on\"},\"layers\":[{\"class\":\"pop model-picker up\",\"id\":\"pop\",\"role\":\"listbox\",\"hidden\":false,\"ariaHidden\":null,\"inert\":false,\"pointerEvents\":\"auto\",\"rect\":{\"x\":8,\"y\":439.0625,\"width\":374,\"height\":267,\"top\":439.0625,\"right\":382,\"bottom\":706.0625,\"left\":8}}]},{\"phase\":\"230ms\",\"at\":271357.799999997,\"active\":{\"tag\":\"BUTTON\",\"text\":\"\",\"class\":\"rail-item on\"},\"layers\":[{\"class\":\"pop model-picker up\",\"id\":\"pop\",\"role\":\"listbox\",\"hidden\":false,\"ariaHidden\":null,\"inert\":false,\"pointerEvents\":\"auto\",\"rect\":{\"x\":8,\"y\":439.0625,\"width\":374,\"height\":267,\"top\":439.0625,\"right\":382,\"bottom\":706.0625,\"left\":8}}]},{\"phase\":\"430ms\",\"at\":271558.40000000596,\"active\":{\"tag\":\"BUTTON\",\"text\":\"\",\"class\":\"rail-item on\"},\"layers\":[{\"class\":\"pop model-picker up\",\"id\":\"pop\",\"role\":\"listbox\",\"hidden\":false,\"ariaHidden\":null,\"inert\":false,\"pointerEvents\":\"auto\",\"rect\":{\"x\":8,\"y\":439.0625,\"width\":374,\"height\":267,\"top\":439.0625,\"right\":382,\"bottom\":706.0625,\"left\":8}}]}]},{\"type\":\"keydown\",\"key\":\"Escape\",\"target\":\"BUTTON\",\"targetClass\":\"rail-item on\",\"targetText\":\"\",\"at\":322438.299999997,\"before\":{\"active\":{\"tag\":\"BUTTON\",\"text\":\"\",\"class\":\"rail-item on\"},\"layers\":[{\"class\":\"pop model-picker up\",\"id\":\"pop\",\"role\":\"listbox\",\"hidden\":false,\"ariaHidden\":null,\"inert\":false,\"pointerEvents\":\"auto\",\"rect\":{\"x\":8,\"y\":439.0625,\"width\":374,\"height\":267,\"top\":439.0625,\"right\":382,\"bottom\":706.0625,\"left\":8}}]},\"samples\":[{\"phase\":\"microtask\",\"at\":322438.59999999404,\"active\":{\"tag\":\"BUTTON\",\"text\":\"\",\"class\":\"rail-item on\"},\"layers\":[{\"class\":\"pop model-picker up\",\"id\":\"pop\",\"role\":\"listbox\",\"hidden\":false,\"ariaHidden\":null,\"inert\":false,\"pointerEvents\":\"auto\",\"rect\":{\"x\":8,\"y\":439.0625,\"width\":374,\"height\":267,\"top\":439.0625,\"right\":382,\"bottom\":706.0625,\"left\":8}}]},{\"phase\":\"next-frame\",\"at\":322447.40000000596,\"active\":{\"tag\":\"BODY\",\"text\":\"\\n    \\n      \\n    \\n    网关 127.0.0.1:3425magpieAgentAgent供应商路由网关用量插件设置快速上手已完成 1/21添加模型来源你已经付费的订阅、一个供应商\",\"class\":\"window web phone-web\"},\"layers\":[{\"class\":\"pop model-picker up leaving\",\"id\":\"\",\"role\":\"listbox\",\"hidden\":false,\"ariaHidden\":\"true\",\"inert\":true,\"pointerEvents\":\"none\",\"rect\":{\"x\":8,\"y\":558.0625,\"width\":374,\"height\":148,\"top\":558.0625,\"right\":382,\"bottom\":706.0625,\"left\":8}}]},{\"phase\":\"50ms\",\"at\":322497.40000000596,\"active\":{\"tag\":\"BODY\",\"text\":\"\\n    \\n      \\n    \\n    网关 127.0.0.1:3425magpieAgentAgent供应商路由网关用量插件设置快速上手已完成 1/21添加模型来源你已经付费的订阅、一个供应商\",\"class\":\"window web phone-web\"},\"layers\":[{\"class\":\"pop model-picker up leaving\",\"id\":\"\",\"role\":\"listbox\",\"hidden\":false,\"ariaHidden\":\"true\",\"inert\":true,\"pointerEvents\":\"none\",\"rect\":{\"x\":8.1676025390625,\"y\":558.2501220703125,\"width\":373.70526123046875,\"height\":147.88339233398438,\"top\":558.2501220703125,\"right\":381.87286376953125,\"bottom\":706.1335144042969,\"left\":8.1676025390625}}]},{\"phase\":\"230ms\",\"at\":322678.5,\"active\":{\"tag\":\"BUTTON\",\"text\":\"上移Alt+↑\",\"class\":\"rm-item\"},\"layers\":[{\"class\":\"pop row-menu\",\"id\":\"\",\"role\":\"menu\",\"hidden\":false,\"ariaHidden\":null,\"inert\":false,\"pointerEvents\":\"auto\",\"rect\":{\"x\":23.850082397460938,\"y\":478.8351745605469,\"width\":174.2065887451172,\"height\":102.2803955078125,\"top\":478.8351745605469,\"right\":198.05667114257812,\"bottom\":581.1155700683594,\"left\":23.850082397460938}}]},{\"phase\":\"430ms\",\"at\":322876.40000000596,\"active\":{\"tag\":\"BUTTON\",\"text\":\"上移Alt+↑\",\"class\":\"rm-item\"},\"layers\":[{\"class\":\"pop row-menu\",\"id\":\"\",\"role\":\"menu\",\"hidden\":false,\"ariaHidden\":null,\"inert\":false,\"pointerEvents\":\"auto\",\"rect\":{\"x\":23.67059898376465,\"y\":479.83233642578125,\"width\":175.9615478515625,\"height\":103.31075286865234,\"top\":479.83233642578125,\"right\":199.63214683532715,\"bottom\":583.1430892944336,\"left\":23.67059898376465}}]}]}],\"scrolls\":[{\"at\":271082.200000003,\"target\":\"MAIN\",\"class\":\"view\",\"top\":58,\"active\":{\"tag\":\"INPUT\",\"text\":\"\",\"class\":\"\"},\"layers\":[{\"class\":\"pop model-picker up\",\"id\":\"pop\",\"role\":\"listbox\",\"hidden\":false,\"ariaHidden\":null,\"inert\":false,\"pointerEvents\":\"auto\",\"rect\":{\"x\":8,\"y\":14.0625,\"width\":374,\"height\":420,\"top\":14.0625,\"right\":382,\"bottom\":434.0625,\"left\":8}}]}],\"arming\":[{\"at\":150494.59999999404,\"class\":\"am-reset am-hide\",\"armed\":\"1\",\"text\":\"隐藏所有供应商的 15 个模型？再点一次\"},{\"at\":154506.59999999404,\"class\":\"am-reset am-hide\",\"armed\":null,\"text\":\"全部隐藏\"}]}"
+      }
+    },
+    {
+      "case": "row-1364-first-open",
+      "geometry": {
+        "active": {
+          "class": "rm-item",
+          "pop": "pop row-menu",
+          "tag": "BUTTON"
+        },
+        "anchor": {
+          "bottom": 462.5625114440918,
+          "height": 30.791667938232425,
+          "left": 108.03125,
+          "right": 138.82291793823242,
+          "top": 431.7708435058594,
+          "width": 30.791667938232425,
+          "x": 108.03125,
+          "y": 431.7708435058594
+        },
+        "popup": {
+          "class": "pop row-menu",
+          "height": 103,
+          "rect": {
+            "bottom": 581.5208358764648,
+            "height": 113.45833587646484,
+            "left": 103.625,
+            "right": 297.21875,
+            "top": 468.0625,
+            "width": 193.59375,
+            "x": 103.625,
+            "y": 468.0625
+          },
+          "scrollHeight": 102,
+          "style": "max-width: 1083px; left: 23.6042px; top: 403.087px; bottom: auto; --ox: 17.99621269919655px;",
+          "transform": "none",
+          "width": 176
+        },
+        "root": {
+          "caption": 32,
+          "clientHeight": 719,
+          "clientLeft": 1,
+          "clientTop": 1,
+          "clientWidth": 1099,
+          "offsetWidth": 1100,
+          "rect": {
+            "bottom": 816,
+            "height": 792,
+            "left": 77,
+            "right": 1287,
+            "top": 24,
+            "width": 1210,
+            "x": 77,
+            "y": 24
+          }
+        },
+        "source": "d1f3e03c06543c7ce3763f437951edb829c7470f",
+        "viewport": [
+          1364,
+          941
+        ]
+      }
+    },
+    {
+      "case": "row-escape-focus",
+      "active": {
+        "class": "ag-handle",
+        "text": "调整 Claude Code"
+      },
+      "live": 0
+    },
+    {
+      "case": "row-external-user-scroll-close",
+      "live": 0
+    },
+    {
+      "case": "protocol-1364-first-open",
+      "geometry": {
+        "active": {
+          "class": "pm-item on",
+          "pop": "pop proto-menu sess-menu",
+          "tag": "BUTTON"
+        },
+        "anchor": {
+          "bottom": 301.1666774749756,
+          "height": 31.89583396911621,
+          "left": 1155.9896240234375,
+          "right": 1244.2083740234375,
+          "top": 269.2708435058594,
+          "width": 88.21875,
+          "x": 1155.9896240234375,
+          "y": 269.2708435058594
+        },
+        "popup": {
+          "class": "pop proto-menu sess-menu",
+          "height": 206,
+          "rect": {
+            "bottom": 532.8021087646484,
+            "height": 226.1354217529297,
+            "left": 870.2083740234375,
+            "right": 1244.2083740234375,
+            "top": 306.66668701171875,
+            "width": 374,
+            "x": 870.2083740234375,
+            "y": 306.66668701171875
+          },
+          "scrollHeight": 204,
+          "style": "max-width: 1083px; left: 720.492px; top: 256.364px; bottom: auto; --ox: 299.90056818181824px;",
+          "transform": "none",
+          "width": 340
+        },
+        "root": {
+          "caption": 32,
+          "clientHeight": 719,
+          "clientLeft": 1,
+          "clientTop": 1,
+          "clientWidth": 1099,
+          "offsetWidth": 1100,
+          "rect": {
+            "bottom": 816,
+            "height": 792,
+            "left": 77,
+            "right": 1287,
+            "top": 24,
+            "width": 1210,
+            "x": 77,
+            "y": 24
+          }
+        },
+        "source": "d1f3e03c06543c7ce3763f437951edb829c7470f",
+        "viewport": [
+          1364,
+          941
+        ]
+      }
+    },
+    {
+      "case": "protocol-down",
+      "active": "繁體中文"
+    },
+    {
+      "case": "protocol-escape-focus",
+      "active": "语言",
+      "live": 0
+    },
+    {
+      "case": "protocol-resize-close",
+      "live": 0
+    },
+    {
+      "case": "protocol-390-first-open",
+      "geometry": {
+        "active": {
+          "class": "pm-item on",
+          "pop": "pop proto-menu sess-menu",
+          "tag": "BUTTON"
+        },
+        "anchor": {
+          "bottom": 474.78125,
+          "height": 44,
+          "left": 263,
+          "right": 351.33333587646484,
+          "top": 430.78125,
+          "width": 88.33333587646484,
+          "x": 263,
+          "y": 430.78125
+        },
+        "popup": {
+          "class": "pop proto-menu sess-menu",
+          "height": 215,
+          "rect": {
+            "bottom": 695.1145935058594,
+            "height": 215.33334350585935,
+            "left": 11.333333969116213,
+            "right": 351.3333339691162,
+            "top": 479.78125,
+            "width": 340,
+            "x": 11.333333969116213,
+            "y": 479.78125
+          },
+          "scrollHeight": 214,
+          "style": "max-width: 374px; left: 11.3333px; top: 479.781px; bottom: auto; --ox: 295.8333320617676px;",
+          "transform": "none",
+          "width": 340
+        },
+        "root": {
+          "caption": 0,
+          "clientHeight": 844,
+          "clientLeft": 0,
+          "clientTop": 0,
+          "clientWidth": 390,
+          "offsetWidth": 390,
+          "rect": {
+            "bottom": 844,
+            "height": 844,
+            "left": 0,
+            "right": 390,
+            "top": 0,
+            "width": 390,
+            "x": 0,
+            "y": 0
+          }
+        },
+        "source": "d1f3e03c06543c7ce3763f437951edb829c7470f",
+        "viewport": [
+          390,
+          844
+        ]
+      }
+    },
+    {
+      "case": "protocol-external-scroll-close",
+      "live": 0,
+      "viewScroll": [
+        {
+          "id": "view-settings",
+          "max": 1307,
+          "scroll": 844
+        }
+      ]
+    },
+    {
+      "case": "font-390-first-open",
+      "geometry": {
+        "active": {
+          "class": "sc-q",
+          "pop": "pop proto-menu sess-menu font-menu up",
+          "tag": "INPUT"
+        },
+        "anchor": {
+          "bottom": 472.7291870117187,
+          "height": 24,
+          "left": 41.33333587646485,
+          "right": 268.33333587646484,
+          "top": 448.7291870117187,
+          "width": 227,
+          "x": 41.33333587646485,
+          "y": 448.7291870117187
+        },
+        "popup": {
+          "class": "pop proto-menu sess-menu font-menu up",
+          "height": 360,
+          "rect": {
+            "bottom": 443.7291717529297,
+            "height": 360,
+            "left": 8,
+            "right": 348,
+            "top": 83.72917175292969,
+            "width": 340,
+            "x": 8,
+            "y": 83.72917175292969
+          },
+          "scrollHeight": 1196,
+          "style": "max-width: 374px; max-height: 360px; left: 8px; top: 83.7292px; bottom: auto; --ox: 146.83333587646484px;",
+          "transform": "none",
+          "width": 340
+        },
+        "root": {
+          "caption": 0,
+          "clientHeight": 844,
+          "clientLeft": 0,
+          "clientTop": 0,
+          "clientWidth": 390,
+          "offsetWidth": 390,
+          "rect": {
+            "bottom": 844,
+            "height": 844,
+            "left": 0,
+            "right": 390,
+            "top": 0,
+            "width": 390,
+            "x": 0,
+            "y": 0
+          }
+        },
+        "source": "d1f3e03c06543c7ce3763f437951edb829c7470f",
+        "viewport": [
+          390,
+          844
+        ]
+      }
+    },
+    {
+      "case": "font-internal-scroll-keeps-open",
+      "live": 1,
+      "scroll": 837.3333129882812
+    },
+    {
+      "case": "font-1364-first-open",
+      "geometry": {
+        "active": {
+          "class": "sc-q",
+          "pop": "pop proto-menu sess-menu font-menu",
+          "tag": "INPUT"
+        },
+        "anchor": {
+          "bottom": 402.0208339691162,
+          "height": 26.39583396911621,
+          "left": 903.2083740234376,
+          "right": 1152.9375457763672,
+          "top": 375.625,
+          "width": 249.7291717529297,
+          "x": 903.2083740234376,
+          "y": 375.625
+        },
+        "popup": {
+          "class": "pop proto-menu sess-menu font-menu",
+          "height": 360,
+          "rect": {
+            "bottom": 803.5208435058594,
+            "height": 396,
+            "left": 778.9375,
+            "right": 1152.9375,
+            "top": 407.5208435058594,
+            "width": 374,
+            "x": 778.9375,
+            "y": 407.5208435058594
+          },
+          "scrollHeight": 1170,
+          "style": "max-width: 1083px; max-height: 360px; left: 637.519px; top: 348.049px; bottom: auto; --ox: 226.4867401123047px;",
+          "transform": "none",
+          "width": 340
+        },
+        "root": {
+          "caption": 32,
+          "clientHeight": 719,
+          "clientLeft": 1,
+          "clientTop": 1,
+          "clientWidth": 1099,
+          "offsetWidth": 1100,
+          "rect": {
+            "bottom": 816,
+            "height": 792,
+            "left": 77,
+            "right": 1287,
+            "top": 24,
+            "width": 1210,
+            "x": 77,
+            "y": 24
+          }
+        },
+        "source": "d1f3e03c06543c7ce3763f437951edb829c7470f",
+        "viewport": [
+          1364,
+          941
+        ]
+      }
+    },
+    {
+      "case": "font-search-keeps-input-focus",
+      "active": "sc-q"
+    },
+    {
+      "case": "font-style-current",
+      "geometry": {
+        "active": {
+          "class": "pm-item on",
+          "pop": "pop proto-menu sess-menu font-menu",
+          "tag": "BUTTON"
+        },
+        "anchor": {
+          "bottom": 402.0208339691162,
+          "height": 26.39583396911621,
+          "left": 1165.010498046875,
+          "right": 1244.2084197998047,
+          "top": 375.625,
+          "width": 79.19792175292969,
+          "x": 1165.010498046875,
+          "y": 375.625
+        },
+        "popup": {
+          "class": "pop proto-menu sess-menu font-menu",
+          "height": 90,
+          "rect": {
+            "bottom": 506.0729293823242,
+            "height": 98.55208587646484,
+            "left": 870.2083740234375,
+            "right": 1244.2083740234375,
+            "top": 407.5208435058594,
+            "width": 374,
+            "x": 870.2083740234375,
+            "y": 407.5208435058594
+          },
+          "scrollHeight": 88,
+          "style": "max-width: 1083px; max-height: 360px; left: 720.493px; top: 348.049px; bottom: auto; --ox: 304.0009446577592px;",
+          "transform": "none",
+          "width": 340
+        },
+        "root": {
+          "caption": 32,
+          "clientHeight": 719,
+          "clientLeft": 1,
+          "clientTop": 1,
+          "clientWidth": 1099,
+          "offsetWidth": 1100,
+          "rect": {
+            "bottom": 816,
+            "height": 792,
+            "left": 77,
+            "right": 1287,
+            "top": 24,
+            "width": 1210,
+            "x": 77,
+            "y": 24
+          }
+        },
+        "source": "d1f3e03c06543c7ce3763f437951edb829c7470f",
+        "viewport": [
+          1364,
+          941
+        ]
+      }
+    },
+    {
+      "case": "font-code-first-open",
+      "geometry": {
+        "active": {
+          "class": "sc-q",
+          "pop": "pop proto-menu sess-menu font-menu up",
+          "tag": "INPUT"
+        },
+        "anchor": {
+          "bottom": 460.4895839691162,
+          "height": 26.39583396911621,
+          "left": 903.2083740234376,
+          "right": 1152.9375457763672,
+          "top": 434.09375,
+          "width": 249.7291717529297,
+          "x": 903.2083740234376,
+          "y": 434.09375
+        },
+        "popup": {
+          "class": "pop proto-menu sess-menu font-menu up",
+          "height": 327,
+          "rect": {
+            "bottom": 428.89510345458984,
+            "height": 359.6568603515625,
+            "left": 779.12451171875,
+            "right": 1152.84375,
+            "top": 69.23824310302734,
+            "width": 373.71923828125,
+            "x": 779.12451171875,
+            "y": 69.23824310302734
+          },
+          "scrollHeight": 1170,
+          "style": "max-width: 1083px; max-height: 327.206px; left: 637.519px; top: 40.2064px; bottom: auto; --ox: 226.4867401123047px;",
+          "transform": "matrix(0.999249, 0, 0, 0.999249, 0, 0.075077)",
+          "width": 340
+        },
+        "root": {
+          "caption": 32,
+          "clientHeight": 719,
+          "clientLeft": 1,
+          "clientTop": 1,
+          "clientWidth": 1099,
+          "offsetWidth": 1100,
+          "rect": {
+            "bottom": 816,
+            "height": 792,
+            "left": 77,
+            "right": 1287,
+            "top": 24,
+            "width": 1210,
+            "x": 77,
+            "y": 24
+          }
+        },
+        "source": "d1f3e03c06543c7ce3763f437951edb829c7470f",
+        "viewport": [
+          1364,
+          941
+        ]
+      }
+    },
+    {
+      "case": "date-1364-first-open",
+      "geometry": {
+        "active": {
+          "class": "rm-day today",
+          "pop": "pop proto-menu range-menu",
+          "tag": "BUTTON"
+        },
+        "anchor": {
+          "bottom": 147.8437538146973,
+          "height": 24.197917938232425,
+          "left": 515.4791870117188,
+          "right": 595.7812728881836,
+          "top": 123.64583587646484,
+          "width": 80.30208587646484,
+          "x": 515.4791870117188,
+          "y": 123.64583587646484
+        },
+        "popup": {
+          "class": "pop proto-menu range-menu",
+          "height": 272,
+          "rect": {
+            "bottom": 452.34375,
+            "height": 299,
+            "left": 515.4791870117188,
+            "right": 792.6771240234375,
+            "top": 153.34375,
+            "width": 277.19793701171875,
+            "x": 515.4791870117188,
+            "y": 153.34375
+          },
+          "scrollHeight": 271,
+          "style": "max-width: 1083px; left: 398.011px; top: 116.979px; bottom: auto; --ox: 36.50094812566584px;",
+          "transform": "none",
+          "width": 252
+        },
+        "root": {
+          "caption": 32,
+          "clientHeight": 719,
+          "clientLeft": 1,
+          "clientTop": 1,
+          "clientWidth": 1099,
+          "offsetWidth": 1100,
+          "rect": {
+            "bottom": 816,
+            "height": 792,
+            "left": 77,
+            "right": 1287,
+            "top": 24,
+            "width": 1210,
+            "x": 77,
+            "y": 24
+          }
+        },
+        "source": "d1f3e03c06543c7ce3763f437951edb829c7470f",
+        "viewport": [
+          1364,
+          941
+        ]
+      },
+      "futureDisabled": true
+    },
+    {
+      "case": "date-future-arrow-blocked",
+      "active": "2026-10-16"
+    },
+    {
+      "case": "date-key-Left",
+      "expected": "2026-10-15",
+      "active": "2026-10-15"
+    },
+    {
+      "case": "date-key-Up",
+      "expected": "2026-10-08",
+      "active": "2026-10-08"
+    },
+    {
+      "case": "date-key-Up",
+      "expected": "2026-10-01",
+      "active": "2026-10-01"
+    },
+    {
+      "case": "date-key-Left",
+      "expected": "2026-09-30",
+      "active": "2026-09-30"
+    },
+    {
+      "case": "date-first-start-only",
+      "live": 1,
+      "head": "再选最后一天"
+    },
+    {
+      "case": "date-second-ascending-submit",
+      "live": 0,
+      "range": "10月8日 – 10月16日",
+      "label": "所选日期：10月8日 – 10月16日"
+    },
+    {
+      "case": "date-reopen-end-focus",
+      "active": "2026-10-08"
+    },
+    {
+      "case": "date-escape-focus",
+      "class": "opt range-opt on",
+      "live": 0
+    },
+    {
+      "case": "date-resize-close",
+      "live": 0
+    },
+    {
+      "case": "date-390-first-open",
+      "geometry": {
+        "active": {
+          "class": "rm-day end",
+          "pop": "pop proto-menu range-menu",
+          "tag": "BUTTON"
+        },
+        "anchor": {
+          "bottom": 214,
+          "height": 44,
+          "left": 195.98959350585935,
+          "right": 338.85418701171875,
+          "top": 170,
+          "width": 142.86459350585938,
+          "x": 195.98959350585935,
+          "y": 170
+        },
+        "popup": {
+          "class": "pop proto-menu range-menu",
+          "height": 282,
+          "rect": {
+            "bottom": 501,
+            "height": 282,
+            "left": 130,
+            "right": 382,
+            "top": 219,
+            "width": 252,
+            "x": 130,
+            "y": 219
+          },
+          "scrollHeight": 281,
+          "style": "max-width: 374px; left: 130px; top: 219px; bottom: auto; --ox: 137.42189025878906px;",
+          "transform": "none",
+          "width": 252
+        },
+        "root": {
+          "caption": 0,
+          "clientHeight": 844,
+          "clientLeft": 0,
+          "clientTop": 0,
+          "clientWidth": 390,
+          "offsetWidth": 390,
+          "rect": {
+            "bottom": 844,
+            "height": 844,
+            "left": 0,
+            "right": 390,
+            "top": 0,
+            "width": 390,
+            "x": 0,
+            "y": 0
+          }
+        },
+        "source": "d1f3e03c06543c7ce3763f437951edb829c7470f",
+        "viewport": [
+          390,
+          844
+        ]
+      }
+    },
+    {
+      "case": "date-outside-close",
+      "live": 0
+    },
+    {
+      "case": "model-keep-open-after-first",
+      "live": 1,
+      "active": {
+        "class": "window web",
+        "tag": "BODY"
+      }
+    },
+    {
+      "case": "model-keep-open-after-second",
+      "live": 1,
+      "active": {
+        "class": "window web",
+        "tag": "BODY"
+      }
+    },
+    {
+      "case": "keep-open-filter-before-fix",
+      "query": "",
+      "active": "INPUT"
+    },
+    {
+      "case": "plain-model-noted-372",
+      "geometry": {
+        "active": {
+          "class": "",
+          "pop": "pop",
+          "tag": "INPUT"
+        },
+        "anchor": {
+          "bottom": 460.9895839691162,
+          "height": 26.39583396911621,
+          "left": 1090.6771240234375,
+          "right": 1187.6875457763672,
+          "top": 434.59375,
+          "width": 97.01042175292967,
+          "x": 1090.6771240234375,
+          "y": 434.59375
+        },
+        "popup": {
+          "class": "pop",
+          "height": 227,
+          "rect": {
+            "bottom": 682.0208587646484,
+            "height": 249.2604217529297,
+            "left": 868.5625,
+            "right": 1277.7604370117188,
+            "top": 432.7604370117187,
+            "width": 409.1979370117187,
+            "x": 868.5625,
+            "y": 432.7604370117187
+          },
+          "scrollHeight": 227,
+          "style": "width: 372px; max-width: 1083px; left: 719px; --ox: 246.01424345445662px; top: 371px; bottom: auto; max-height: 340px;",
+          "transform": "none",
+          "width": 372
+        },
+        "root": {
+          "caption": 32,
+          "clientHeight": 719,
+          "clientLeft": 1,
+          "clientTop": 1,
+          "clientWidth": 1099,
+          "offsetWidth": 1100,
+          "rect": {
+            "bottom": 816,
+            "height": 792,
+            "left": 77,
+            "right": 1287,
+            "top": 24,
+            "width": 1210,
+            "x": 77,
+            "y": 24
+          }
+        },
+        "source": "d1f3e03c06543c7ce3763f437951edb829c7470f",
+        "viewport": [
+          1364,
+          941
+        ]
+      }
+    },
+    {
+      "case": "plain-model-unnoted-300",
+      "geometry": {
+        "active": {
+          "class": "",
+          "pop": "pop up",
+          "tag": "INPUT"
+        },
+        "anchor": {
+          "bottom": 509.75,
+          "height": 28.59375,
+          "left": 411.8333435058594,
+          "right": 502.09376525878906,
+          "top": 481.15625,
+          "width": 90.26042175292967,
+          "x": 411.8333435058594,
+          "y": 481.15625
+        },
+        "popup": {
+          "class": "pop up",
+          "height": 107,
+          "rect": {
+            "bottom": 475.4271087646485,
+            "height": 117.26042175292967,
+            "left": 411.8333435058594,
+            "right": 741.8333435058594,
+            "top": 358.16668701171875,
+            "width": 330,
+            "x": 411.8333435058594,
+            "y": 358.16668701171875
+          },
+          "scrollHeight": 107,
+          "style": "width: 300px; max-width: 1083px; left: 303.788px; --ox: 41.02746443314987px; top: auto; bottom: 309.009px; max-height: 340px;",
+          "transform": "none",
+          "width": 300
+        },
+        "root": {
+          "caption": 32,
+          "clientHeight": 719,
+          "clientLeft": 1,
+          "clientTop": 1,
+          "clientWidth": 1099,
+          "offsetWidth": 1100,
+          "rect": {
+            "bottom": 816,
+            "height": 792,
+            "left": 77,
+            "right": 1287,
+            "top": 24,
+            "width": 1210,
+            "x": 77,
+            "y": 24
+          }
+        },
+        "source": "d1f3e03c06543c7ce3763f437951edb829c7470f",
+        "viewport": [
+          1364,
+          941
+        ]
+      }
+    }
+  ]
+}

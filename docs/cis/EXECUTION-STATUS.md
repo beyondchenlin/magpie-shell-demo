@@ -1,19 +1,19 @@
 # CIS 执行进度
 
-更新时间：2026-10-16 21:54 Asia/Shanghai
+更新时间：2026-10-16 22:17 Asia/Shanghai
 
 - 当前阶段：phase2_menus_c1_c2_c4_reproducing。唯一执行者本聊天01a14465-ad94-73e0-a0ad-991539957fa0；监督01a143c3-8101-75e1-b638-c39ad15d55ed；无子代理。
-- **29项：通过10、失败2（C1/C2）、待验17。** C2/F01关闭事件层的子用例在faea794已修复，监督独立抽查支持；但本批另复现搜索gpt有候选却回车提交gpt。C1另复现整数clientLeft=1代替实际0.606061px边框造成稳定左移0.4375屏幕px。二者均有最小补丁待构建复验，不能提前关闭失败。Agent初焦当前正常，不把旧静态风险当成已复现缺陷。
+- **29项：通过10、失败2（C1/C2）、待验17。** C2/F01关闭事件层的子用例在faea794已修复，监督独立抽查支持；搜索gpt回车与C1边框误差已在d1f3e03定向复验正确。完整C1矩阵还需汇总校算，C2还有新复现的keepOpen焦点/查询问题待补丁复验，不能提前关闭失败。Agent初焦正常，不把旧静态风险当成已复现缺陷。
 - 通过项：N1/N2=2660400/v194；S2/S3=90099b9/v195；G1/G2/G3=874268b/v196；S1/N4/G4=0a2a014/v197的有限核验/有依据复用。0a2a014六主页面12次受影响导航回归通过；最终候选仍需受影响回归。N3保留独立动态复核，不重录三轮。
-- 当前实际受测UI：faea7942cd9cdc83e388e1a607176408312822f1 /0.1.198；4176受管预览session11057、menus-candidate-1 Git archive隔离产物，build-info绑定源码/版本/资源hash。C1/C2/C4首个补丁候选已构建，正在实际复验，三个ID均未报通过；继承v195其余草稿仍逐文件保全，不整体提交。
+- 当前实际受测UI：d1f3e03c06543c7ce3763f437951edb829c7470f /0.1.198；4176受管预览session53036、menus-candidate-2 Git archive隔离产物，build-info绑定源码/版本/资源hash。模型gpt搜索首项/方向/回车及任意ID已正确，稳定模型左边与锚点一致；C1/C2/C4完整ID均未报通过。另复现GroupEditor keepOpen鼠标选择后BODY获焦、选已列模型清空搜索，正在同一批最小修复；继承其余草稿不整体提交。
 - 规则：唯一入口docs/CIS-CONTROLS.md。冻结028dab5保留，监督已明确批准R01的window级联勘误并独立提交3c2d6de；S1完成原有限核验后才通过。其他冻结条款与29项范围不变，不再写S1待裁定。
 - 监督已支持S2/S3及G3/G4有限结论、确认4176为0a2a014；最新要求明确C2失败计数并继续C1/C2/C4最多3ID，不需等常规批次批准。C3与Providers/Plugins后续一起核验。
-- 检查：faea794 build/TypeScript通过，候选55 TS/TSX lint55 warnings/0 errors；两guard在0a2a014通过，本批最终修改后再查。此前工作树基线59/0。浏览器前批无新console异常；这些检查不替代当前未完成弹层批次。
+- 检查：d1f3e03 build/TypeScript/两guard通过，候选55 TS/TSX lint55 warnings/0 errors。此前工作树基线59/0。一次locator.press(ArrowDown)意外改变输入内容，已保留无效尝试；文档支持的tab.pressKey(Down/Return)实际保持gpt、选中并提交gpt-5-mini。没有因这个输入接口异常再修改产品。
 - Git：分支tip/0.1.121-cis-appearance-shell，PR #1。最近已确认推送e19fd5a；本地HEAD faea794（含0a2a014、R01勘误及弹层首个补丁），上次push遇408/sideband断开，后续读远端也TLS EOF，是否已落远端未确认。PR标题/正文更新经连接器、gh GraphQL与REST失败，未报更新成功；停止同路径无信息重试，本地工作继续保全。
-- 现场：用户4173/PID21080与dist未动；本任务4174/PID98524、4175/PID76536保留；受管4176按批次Ctrl+C切换。早前自动审核拒绝OS stop/restart4174（仅blocked by policy），没有绕过停止该进程。当前自有tab18正在C4深层mock验证、1364×941；30键snapshot留在本页sessionStorage，结束前显式恢复，不能提前关页。初始nav是top及若干已有mock键，未谎称本批全部null；用户4173偏好未触及。
+- 现场：用户4173/PID21080与dist未动；本任务4174/PID98524、4175/PID76536保留；受管4176按批次Ctrl+C切换。早前自动审核拒绝OS stop/restart4174（仅blocked by policy），没有绕过停止该进程。自有tab18现已恢复31键，current与initial逐键相同；此前文字误计30键已更正，实际fixture/JSON一直为31键。沿用该页sessionStorage保全初始快照，用户4173偏好未触及。
 - 证据：interactions/cis-nav-2660400、cis-settings-90099b9、cis-gateway-874268b、cis-layout-0a2a014；当前C2失败证据cis-menus-before-0a2a014。源码调用索引现绑定0a2a014快照19文件/459调用/34裸DOM候选，数量不代表通过。四原问题图已找回保全，含个人界面的原图不公开。
 - 空间/保全：唯一工作树D:/demo1/tagmaai；不安装/复制依赖环境。D低于20GiB已提示，下一构建预计<30MiB且保留>10GiB；C24.94/D18.82GiB附近。已先列清单并核验边界/重解析/进程引用/独占锁/近期写入，回收7份本任务source.tar运输文件34232320逻辑bytes，解压源码/构建/历史证据均保留；D前20203614208、后20237852672bytes，含并发写入，不把逻辑大小冒称物理净释放。清单及结果.cache/cis-navigation-20261016/tar-cleanup-*.json。接管.cache补丁/hash/原图仍保留。
-- 下一步：按固定source完成Model/Proto/Agent/Row/Font/Date定位和生命周期复验。C4 Current三行锁定、组内/全局批量保护、跨组搜索、Shown保留/清除、Only逐agent及重载保持、连续Alt两次/实际拖拽/默认顺序、内部/外部滚动已观察正确；4秒过期已见恢复但工具waitFor被后端约3秒截止，下一版只读probe记录属性时间，不把工具截止报成产品失败。一次长列表深处点击意外关闭，过滤后同一Gemini行生效，保留未归因尝试不反复重试。当前tab18显式恢复30键与初始快照相同，后续沿用该页；证据interactions/cis-menus-faea794。
+- 下一步：六族1364/390首开已采，普通Model有注释372/无有效注释300均从真实GroupEditor调用打开；日期跨月、两次升序提交、未来禁用、关闭回焦正确。C4仍补Alt向上；4秒probe实测4012ms复位，其余有限状态见faea794记录并按未变组件复用。C2补keepOpen焦点/搜索和协议非live多选/NUL公共契约，后两分支当前没有页面调用，使用独立测试入口，不添加产品控件或扩业务。d1f3e03证据interactions/cis-menus-d1f3e03。D最新36.26/C24.89GiB；空间外部回升不能归因于本任务32.7MiB tar回收，下一构建仍预计<30MiB、复用依赖。
 
 ## 实质进展记录
 

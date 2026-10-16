@@ -150,6 +150,16 @@ export function ModelPop({
   };
 
   const isFav = (o: PopOption) => favs.has(favKey(o)) || favs.has(o.value);
+  const pick = (next: string, custom = false) => {
+    onPick(next);
+    if (!keepOpen) { dismiss(); return; }
+    // Native multi-pickers keep the filter and its keys after a catalog pick.
+    // A typed id is new in the catalog, so that path clears the filter first.
+    if (custom) { setQ(""); setCursor(null); }
+    if (!document.body.classList.contains("web") || !window.matchMedia("(pointer: coarse)").matches) {
+      popRef.current?.querySelector<HTMLInputElement>(".search input")?.focus({ preventScroll: true });
+    }
+  };
 
   if (!shown) return null;
 
@@ -265,11 +275,7 @@ export function ModelPop({
                   role="option"
                   aria-selected={o.value === value}
                   onMouseMove={() => setCursor(o.value)}
-                  onClick={() => {
-                    onPick(o.value);
-                    if (!keepOpen) dismiss();
-                    else setQ("");
-                  }}>
+                  onClick={() => pick(o.value)}>
                   <MagpieIcon name={o.icon || "generic"} />
                   <span className="option-words">
                     <span className="v">{o.label}</span>
@@ -312,11 +318,7 @@ export function ModelPop({
                 role="option"
                 aria-selected={true}
                 title={t("use as typed")}
-                onClick={() => {
-                  onPick(q.trim());
-                  if (!keepOpen) dismiss();
-                  else setQ("");
-                }}>
+                onClick={() => pick(q.trim(), true)}>
                 <span className="ic" aria-hidden>✦</span>
                 <span className="option-words">
                   <span className="v">{q.trim()}</span>
