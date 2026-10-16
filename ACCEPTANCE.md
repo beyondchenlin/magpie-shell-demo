@@ -1,3 +1,13 @@
+## v0.1.191 · NAV_MORPH_CIS_CONTROLS · 2026-10-16 Asia/Shanghai
+
+- WHY: 用户截图指出折叠侧栏卡顿、顶栏滑块错位，以及 Settings / Gateway 控件不一致。
+- CAUSE: body/layout 提交晚于滑块测量；fitTop 观察自己会改尺寸的 nav；字体 grid 被 flex 补丁覆盖；菜单 45% 宽度上限在嵌套包装中重复作用；设置标题工具按视口定位被框裁切。
+- WHAT kept: SIDE_AT=1024；752×652 顶栏 Web 框；Windows chrome；仅假数据壳；不扩展其他产品功能。
+- WHAT changed: 原生 navMorph 与 React 同步布局；滑块监听选项尺寸/字体；PrefPick menu/protocol 两配方；字体恢复两列 grid；Settings 侧栏分区与页内 tabs 共用状态；标题栏搜索归入预览框；Gateway 使用 ConnectionField、与 Settings 共用 CopyButton，空模型占位和端口统一。
+- Cite: yetone/magpie @ 63be477，app.js L8524–8599 / L22691–22739 / L22925–23030；index.html L153–183；app.css L2207–2220 / L3176–3205；plugins/gateway/client.js L364–481。
+- CIS: docs/CIS-CONTROLS.md；Evidence: interactions/web-cis-0.1.191/NOTES.md。九组导航坐标和 390px 页面检查通过；未采集 FPS，用户顺滑度验收待确认。
+- Ship: PR #1 → 分支临时预览；不 merge main，不打 portable/exe，不强制生产部署。
+
 ## v0.1.190 · AG_INSTALL_OPENAI_ICON_OSS · 2026-10-16 Asia/Shanghai
 - Agents invent `div.ag-install-body` → Magpie siblings `ag-install-note` + `ag-install-row` under `section.ag-install` (paintInstalls; no body wrapper).
 - NestedBlocks invent `openai-mark` / ◉ → Magpie `icon("openai")` = `span.ic[data-icon]` + `img`; Codex/Side selected use model icon.

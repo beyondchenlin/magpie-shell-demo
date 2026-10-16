@@ -95,8 +95,25 @@ body.web .segs > .thumb,
 }
 #view-settings .row.pref .val {
   min-width: 0;
-  max-width: 100%;
 }
+/* React's menu anchor owns the row's width cap; the pick must use that
+   space, not take another 45% of its already shrink-wrapped parent. */
+.pref-anchor > .pref-pick { max-width: 100%; }
+/* Native pins page tools to its window title bar. In the framed Web demo,
+   root is that window; fixed top:0 would clip the search above its caption. */
+body.web.side-nav #view-settings .set-head {
+  position: absolute;
+  top: var(--win-caption-h, 32px);
+  left: auto;
+  right: 76px;
+  max-width: calc(100% - var(--side-w, 212px) - 170px);
+  height: 46px;
+}
+body.web.side-nav #view-settings .set-q { min-width: 0; }
+/* The Connect card keeps Magpie's label/value columns. Descriptions may
+   wrap at identifiers too; code blocks scroll within their own field. */
+.connect .hint { overflow-wrap: anywhere; }
+.connect .snip-tabs > .segs { align-self: center; }
 .sr-only {
   position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
   overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
@@ -686,7 +703,8 @@ label.tick input { margin: 0; }
    Magpie New sessions is line(fields) → .ag-vl > .fields (app.js L1903);
    #agents .ag-exp .ag-vl > .fields flex wrap + .field min-width 170 (app.css L3814–3820);
    .ag-vl .field.ag-pick width 220 (app.css L3840). No invent "inline" class. */
-.font-controls { position: relative; display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+/* Font controls use app.css's two-column grid. A flex bridge here used to
+   override it, stretching both picks onto separate lines. */
 /* v0.1.134: drop invent pv-tools / find.pv-find / none.pv-none / rt-gadd.pv-gap —
    Magpie index.html L112–120 + app.css L2113–2115 / L1366 / L3036 / L2611–2617
    (.pv-head > .sess-filter.pv-q; .set-none.pv-none; .after-list > #addProvider.text) */

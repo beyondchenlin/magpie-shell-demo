@@ -30,9 +30,8 @@ export function Segs<T extends string | number | boolean>({
   dataSort,
   id,
 }: Props<T>) {
-  const dep = String(value);
-  const setBox = useSegThumb(dep);
   const kind = items.map((x) => String(x.id)).join("|");
+  const setBox = useSegThumb(`${String(value)}:${kind}:${items.map((item) => item.label).join("|")}`);
 
   return (
     <div

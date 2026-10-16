@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { flushSync } from "react-dom";
 import { Bird, useLogoWag } from "./components/Bird";
 import { NavIcon } from "./components/NavIcons";
 import { useSegThumb } from "./components/SegThumb";
@@ -15,6 +16,9 @@ import { TrayPanel, wantPanelMode } from "./pages/TrayPanel";
 import { StatusToast } from "./components/StatusToast";
 import { WinCaption } from "./components/WinCaption";
 import { applyDocumentTheme, readDemoTheme } from "./applyTheme";
+import { SidebarTabs } from "./components/SidebarTabs";
+import { readSettingsTab, settingsTabs, type SettingsTabId } from "./data/settings";
+import { morphNavigation } from "./lib/navMorph";
 
 const SIDE_AT = 1024;
 const NAV_LS = "magpie.navLayout";
@@ -109,6 +113,8 @@ export default function App() {
   const [spinning, setSpinning] = useState(false);
   const [refreshNonce, setRefreshNonce] = useState(0);
   const [sideOn, setSideOn] = useState(() => wantSide(readNavPick()));
+  const sideIntent = useRef(sideOn);
+  const [settingsTab, setSettingsTab] = useState<SettingsTabId>(readSettingsTab);
   const [phone, setPhone] = useState(() => phoneWeb());
   /** Magpie fitTop classes: tight → cramped → inrow → crowded → packed */
   const [topFit, setTopFit] = useState("inrow tight");
@@ -119,7 +125,6 @@ export default function App() {
   const brandRef = useRef<HTMLDivElement>(null);
   const sideEdgeRef = useRef<HTMLDivElement>(null);
   useLogoWag(brandRef);
-  const setNavBox = useSegThumb(sideOn || view === "settings" ? null : view);
 
   /** Magpie app.js L324–335 status(): kind default ""; err 8000ms else 3500 */
   const showStatus = (msg: string, kind = "", ms?: number) => {
@@ -131,7 +136,7 @@ export default function App() {
 
   const applyChrome = useCallback(() => {
     const electron = isElectron();
-    const onPhone = !electron && isPhoneWebViewport();
+    const onPhone = phone;
     // Magpie layout.js:16 — :root.win Segoe stack (app.css L108–111)
     document.documentElement.classList.add("win");
     document.body.classList.add("window");
@@ -146,9 +151,9 @@ export default function App() {
     if (onPhone) delete document.body.dataset.simPlatform;
     else document.body.dataset.simPlatform = "win";
     // Theme: Magpie applyPrefs — applyDocumentTheme (separate effect; sync theming)
-  }, [sideOn]);
+  }, [sideOn, phone]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     applyChrome();
   }, [applyChrome]);
 
@@ -159,7 +164,7 @@ export default function App() {
 
   // NOTES 178–183: colorblind chart palette survives leaving Settings
   // NOTES responsive: textSize 110% is Magpie default — apply before Settings mounts
-  useEffect(() => {
+  useLayoutEffect(() => {
     try {
       const raw = localStorage.getItem("magpie.demoPrefs");
       const p = raw ? (JSON.parse(raw) as { colorblind?: boolean; textSize?: number }) : {};
@@ -205,10 +210,13 @@ export default function App() {
       const onPhone = phoneWeb();
       setPhone(onPhone);
       if (onPhone) {
+        sideIntent.current = false;
         setSideOn(false);
         return;
       }
-      setSideOn(wantSide(readNavPick()));
+      const next = wantSide(readNavPick());
+      sideIntent.current = next;
+      setSideOn(next);
     };
     sync();
     sideMq.addEventListener("change", sync);
@@ -220,7 +228,7 @@ export default function App() {
   }, []);
 
   // Magpie fitTop — progressive header compression for desktop chrome (not phoneWeb / side-nav)
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (sideOn || phone) {
       setTopFit("");
       return;
@@ -272,26 +280,27 @@ export default function App() {
     ro.observe(top);
     if (brand) ro.observe(brand);
     ro.observe(actions);
-    if (nav) ro.observe(nav);
-    document.fonts?.ready.then(run);
+    // fitTop changes the nav's width: observing it here would resize the
+    // very control we are fitting, retriggering all compression steps.
+    let mounted = true;
+    document.fonts?.ready.then(() => { if (mounted) run(); });
     window.addEventListener("resize", run);
     return () => {
+      mounted = false;
       ro.disconnect();
       window.removeEventListener("resize", run);
     };
-  }, [sideOn, phone, view, libFeat]);
+  }, [sideOn, phone, view, libFeat, lang]);
+
+  // Measure after body.side-nav and fitTop have committed their final layout.
+  const setNavBox = useSegThumb(`${sideOn ? "side" : "top"}:${view}:${topFit}:${lang}`);
 
   const toggleSideNav = useCallback(() => {
     if (phoneWeb()) return;
-    setSideOn((prev) => {
-      const next = !prev;
-      try {
-        localStorage.setItem(NAV_LS, next ? "side" : "top");
-      } catch {
-        /* this time only */
-      }
-      return next;
-    });
+    const next = !sideIntent.current;
+    sideIntent.current = next;
+    try { localStorage.setItem(NAV_LS, next ? "side" : "top"); } catch { /* this time only */ }
+    morphNavigation(() => flushSync(() => setSideOn(next)));
   }, []);
 
   // Magpie sideDrag (#sideEdge): persist magpie.sideWidth; fold past SIDE_MIN-64
@@ -595,6 +604,10 @@ export default function App() {
         <div className="side-scroll">{sideOn ? sideNav : null}</div>
         <div className="side-foot">
           {sideOn ? prefsBtn : null}
+          {sideOn && view === "settings" ? <SidebarTabs
+            label={t("Settings")} value={settingsTab} onChange={setSettingsTab}
+            items={settingsTabs().map((tab) => ({ id: tab.id, label: t(tab.en) }))}
+          /> : null}
           <button
             type="button"
             className="side-gw"
@@ -761,9 +774,7 @@ export default function App() {
         <GatewayView
           onStatus={showStatus}
           onGoNetwork={() => {
-            try {
-              sessionStorage.setItem("magpie.setTab", "network");
-            } catch { /* ignore */ }
+            setSettingsTab("network");
             go("settings");
           }}
         />
@@ -772,6 +783,8 @@ export default function App() {
       {view === "plugins" && <PluginsView onStatus={showStatus} />}
       {view === "settings" && (
         <SettingsView
+          tab={settingsTab}
+          setTab={setSettingsTab}
           theme={theme}
           setTheme={setTheme}
           lang={lang}

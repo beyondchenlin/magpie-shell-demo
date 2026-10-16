@@ -1,0 +1,56 @@
+import { useEffect, useRef, useState } from "react";
+import { demoCopy, t } from "../i18n";
+
+/** Magpie `.copy`: one size, icon and 1200ms feedback in Settings and Gateway. */
+export function CopyButton({ text, what, onStatus, className = "copy" }: {
+  text: string;
+  what: string;
+  onStatus?: (message: string, kind?: string) => void;
+  className?: string;
+}) {
+  const [done, setDone] = useState(false);
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const mounted = useRef(true);
+  useEffect(() => {
+    mounted.current = true;
+    return () => {
+      mounted.current = false;
+      if (timer.current) clearTimeout(timer.current);
+    };
+  }, []);
+
+  const copy = async () => {
+    try {
+      if (navigator.clipboard?.writeText) await navigator.clipboard.writeText(text);
+      else {
+        const field = document.createElement("textarea");
+        field.value = text;
+        field.className = "sr-only";
+        document.body.append(field);
+        try {
+          field.select();
+          if (!document.execCommand("copy")) throw new Error("Copy failed");
+        } finally { field.remove(); }
+      }
+      if (!mounted.current) return;
+      setDone(true);
+      onStatus?.(t("{what} copied", { what }), "ok");
+      if (timer.current) clearTimeout(timer.current);
+      timer.current = setTimeout(() => setDone(false), 1200);
+    } catch {
+      if (mounted.current) onStatus?.(demoCopy("复制失败，请手动复制", "Could not copy; select and copy the value"), "err");
+    }
+  };
+
+  return (
+    <button type="button" className={`${className}${done ? " done" : ""}`}
+      title={t(done ? "Copied" : "Copy")} aria-label={`${t("Copy")} ${what}`}
+      onClick={(event) => { event.stopPropagation(); void copy(); }}>
+      <svg viewBox="0 0 16 16" width={12} height={12} aria-hidden="true">
+        <path d={done ? "m3.5 8.5 3 3 6-7" : "M5.5 5.5V3.5h7v7h-2M3.5 5.5h7v7h-7z"}
+          fill="none" stroke="currentColor" strokeWidth={done ? 1.7 : 1.5}
+          strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    </button>
+  );
+}

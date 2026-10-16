@@ -1,4 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { CopyButton as CopyBtn } from "../components/CopyButton";
+import { SETTINGS_TABS as SET_TABS, type SettingsTabId as SetTabId } from "../data/settings";
 import { PrefPick } from "../components/PrefPick";
 import { PrefRow } from "../components/PrefRow";
 import { Segs } from "../components/Segs";
@@ -35,17 +37,6 @@ import {
   type SearchApiEntry,
 } from "./settings/NestedBlocks";
 
-const SET_TABS = [
-  { id: "general", en: "General" },
-  { id: "usage", en: "Allowances" },
-  { id: "network", en: "Network and sharing" },
-  { id: "models", en: "Models" },
-  { id: "privacy", en: "Privacy" },
-  { id: "otel", en: "Observability" },
-  { id: "sync", en: "Sync and backup" },
-  { id: "about", en: "About" },
-] as const;
-
 /** Magpie data-feature=otel — off by default (native Linux tab row has no Observability). */
 function otelFeatureOn(): boolean {
   try {
@@ -72,7 +63,6 @@ const REDACT_KINDS: [string, string, string, boolean][] = [
   ["bucket", "Cloud storage buckets", "The bucket in s3://, gs://, oss://, cos:// and storage URLs; the path in it stays", false],
 ];
 
-type SetTabId = (typeof SET_TABS)[number]["id"];
 
 const LOCALES = [
   { id: "system", nameKey: "System", literal: false },
@@ -85,7 +75,6 @@ const LOCALES = [
 
 const TEXT_SIZES = [100, 110, 125, 150] as const;
 const PREFS_LS = "magpie.demoPrefs";
-const COPY_FLASH_MS = 1200;
 
 type Theme = "system" | "light" | "dark";
 
@@ -343,48 +332,9 @@ function Label({ en }: { en: string }) {
   );
 }
 
-function CopyBtn({ text, what, onStatus }: { text: string; what: string; onStatus?: (m: string, k?: string) => void }) {
-  const [done, setDone] = useState(false);
-  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  return (
-    <button
-      type="button"
-      className={`copy${done ? " done" : ""}`}
-      title={t("Copy")}
-      aria-label={`${t("Copy")} ${what}`}
-      onClick={async () => {
-        try {
-          await navigator.clipboard.writeText(text);
-        } catch {
-          const ta = document.createElement("textarea");
-          ta.value = text;
-          document.body.appendChild(ta);
-          ta.select();
-          document.execCommand("copy");
-          ta.remove();
-        }
-        setDone(true);
-        onStatus?.(t("{what} copied", { what }), "ok");
-        if (timer.current) clearTimeout(timer.current);
-        timer.current = setTimeout(() => setDone(false), COPY_FLASH_MS);
-      }}
-    >
-      {done ? (
-        <svg viewBox="0 0 16 16" width={13} height={13}>
-          <path d="M3.5 8.5 6.5 11.5 12.5 4.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-      ) : (
-        <svg viewBox="0 0 16 16" width={13} height={13}>
-          <rect x="5.5" y="5.5" width="7" height="7" rx="1.5" fill="none" stroke="currentColor" strokeWidth="1.4" />
-          <path d="M3.5 10.5V3.5h7" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
-        </svg>
-      )}
-    </button>
-  );
-}
-
-
 type SettingsProps = {
+  tab: SetTabId;
+  setTab: (tab: SetTabId) => void;
   theme: Theme;
   setTheme: (t: Theme) => void;
   lang: Lang;
@@ -412,15 +362,7 @@ function formatCompactTokens(n: number): string {
 
 const AUTOSTART_LS = "magpie.demoAutostart";
 
-export function SettingsView({ theme, setTheme, lang, setLang, onStatus, onHeaderUpdate }: SettingsProps) {
-  const [tab, setTab] = useState<SetTabId>(() => {
-    try {
-      const v = sessionStorage.getItem("magpie.setTab") || "";
-      sessionStorage.removeItem("magpie.setTab");
-      if (SET_TABS.some((x) => x.id === v)) return v as SetTabId;
-    } catch { /* ignore */ }
-    return "general";
-  });
+export function SettingsView({ tab, setTab, theme, setTheme, lang, setLang, onStatus, onHeaderUpdate }: SettingsProps) {
   const [q, setQ] = useState("");
   const [prefs, setPrefsState] = useState<DemoPrefs>(() => loadPrefs());
   /** Compact field draft: invalid "nope" stays typed; null = show prefs.compactAt / placeholder. */
@@ -433,7 +375,7 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus, onHeade
   const [proxyTest, setProxyTest] = useState("");
   useEffect(() => {
     if (tab === "otel" && !otelFeatureOn()) setTab("general");
-  }, [tab]);
+  }, [tab, setTab]);
   useEffect(() => {
     applyDemoFonts(prefs.uiFont, prefs.codeFont);
   }, [prefs.uiFont, prefs.codeFont]);
@@ -716,6 +658,7 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus, onHeade
             <PrefRow
               name={t("Text size")}
               id="textSizeRow"
+              subClassName="wraps"
               sub={t("Everything in magpie's windows, larger; {keys} too", { keys: "Ctrl+ / Ctrl− / Ctrl+0" })}
             >
               <Segs
@@ -773,6 +716,7 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus, onHeade
           {gRows.codexAgents && (
             <PrefRow
               name={t("Codex subagents on any model")}
+              subClassName="wraps"
               sub={t("A GPT lead spawns subagents on magpie’s other models. New threads only; Codex’s own multi_agent_v2 still wins")}
             >
               <Segs
@@ -788,6 +732,7 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus, onHeade
           {gRows.longConv && (
             <PrefRow
               name={t("Long conversations")}
+              subClassName="wraps"
               sub={t("Codex and Claude Code compact at 272K or the size typed; a full window makes turns slower and costlier")}
             >
               <div className="compact-at">
@@ -894,6 +839,7 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus, onHeade
           {gRows.lightweight && (
             <PrefRow
               name={t("Lightweight mode")}
+              subClassName="wraps"
               sub={t("A closed window frees about 100 MB after a minute; the gateway and tasks keep running, only the page reloads")}
               id="lightweightRow"
             >
@@ -910,6 +856,7 @@ export function SettingsView({ theme, setTheme, lang, setLang, onStatus, onHeade
           {gRows.keepAwake && (
             <PrefRow
               name={t("Prevent sleep")}
+              subClassName="wraps"
               sub={
                 prefs.keepAwake === "display"
                   ? t("Keeps this computer and its screen awake while magpie runs tasks")

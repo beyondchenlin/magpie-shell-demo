@@ -68,6 +68,7 @@ export function useSegThumb(dep: string | null) {
   const lastTo = useRef<ThumbPos | null>(null);
 
   const setBox = useCallback((node: HTMLElement | null) => {
+    if (boxRef.current !== node) lastTo.current = null;
     boxRef.current = node;
   }, []);
 
@@ -102,7 +103,7 @@ export function useSegThumb(dep: string | null) {
       lastTo.current = to;
       return;
     }
-    const from = animate ? thumbNow(th) : null;
+    const from = animate && last && !matchMedia("(prefers-reduced-motion: reduce)").matches ? thumbNow(th) : null;
     thumbPut(th, to);
     lastTo.current = to;
     if (!animate || !from || thumbSame(from, to)) return;
@@ -122,7 +123,11 @@ export function useSegThumb(dep: string | null) {
     // Magpie thumbFit ResizeObserver (app.js ~8227–8239): still put on resize/font
     const ro = new ResizeObserver(() => place(false));
     ro.observe(box);
-    return () => ro.disconnect();
+    // Its siblings can move the selected option without resizing the strip.
+    for (const option of box.children) if (!option.classList.contains("thumb")) ro.observe(option);
+    let mounted = true;
+    document.fonts?.ready.then(() => { if (mounted) place(false); });
+    return () => { mounted = false; ro.disconnect(); };
   }, [dep, place]);
 
   return setBox;

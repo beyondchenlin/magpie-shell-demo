@@ -2037,7 +2037,8 @@ export function FontRow({
       <div className="font-controls">
         <PrefPick
           ref={famRef}
-          className="proto pick font-family"
+          variant="protocol"
+          className="font-family"
           label={value?.family || defaultLabel}
           open={open === "family"}
           aria-haspopup="menu"
@@ -2055,7 +2056,8 @@ export function FontRow({
         />
         <PrefPick
           ref={styleRef}
-          className="proto pick font-style"
+          variant="protocol"
+          className="font-style"
           label={value?.name || defaultLabel}
           open={open === "style"}
           set={!!value}

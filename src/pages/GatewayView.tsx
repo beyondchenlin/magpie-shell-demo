@@ -1,14 +1,11 @@
-import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
+import { CopyButton as CopyBtn } from "../components/CopyButton";
+import { ConnectionField } from "../components/ConnectionField";
 import { Fold, FoldChev } from "../components/Fold";
 import { Segs } from "../components/Segs";
 import { TextBtn } from "../components/TextBtn";
-import { GATEWAY_ADDR, iconSrc } from "../data/mock";
+import { iconSrc } from "../data/mock";
 import { demoCopy, t, useLang } from "../i18n";
-
-/** Magpie flashCopied: 1200ms; copy-pop .36s --ease */
-const COPY_FLASH_MS = 1200;
-
-const GW_URL = `http://${GATEWAY_ADDR}`;
 
 type DemoGwModel = { id: string; name: string; provider: string; icon?: string };
 type DemoCall = { id: string; time: number; agent: string; model: string; from: string; to: string; status: number; ms: number; ttft?: number; error?: string };
@@ -171,84 +168,6 @@ function readSnipOS(): SnipOS {
   return /^Win/i.test(navigator.platform || "") ? "windows" : "unix";
 }
 
-function CopyIcon({ check }: { check?: boolean }) {
-  if (check) {
-    return (
-      <svg viewBox="0 0 16 16" width={12} height={12} aria-hidden>
-        <path
-          d="m3.5 8.5 3 3 6-7"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.7"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
-    );
-  }
-  return (
-    <svg viewBox="0 0 16 16" width={12} height={12} aria-hidden>
-      <path
-        d="M5.5 5.5V3.5h7v7h-2M3.5 5.5h7v7h-7z"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
-
-
-function CopyBtn({
-  text,
-  what,
-  onStatus,
-  className = "copy",
-}: {
-  text: string;
-  what: string;
-  onStatus: (msg: string, kind?: string) => void;
-  className?: string;
-}) {
-  const [done, setDone] = useState(false);
-  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  const flash = useCallback(() => {
-    setDone(false);
-    // restart copy-pop: force reflow then add .done (Magpie void b.offsetWidth)
-    requestAnimationFrame(() => {
-      setDone(true);
-      if (timer.current) clearTimeout(timer.current);
-      timer.current = setTimeout(() => setDone(false), COPY_FLASH_MS);
-    });
-  }, []);
-
-  useEffect(
-    () => () => {
-      if (timer.current) clearTimeout(timer.current);
-    },
-    [],
-  );
-
-  return (
-    <button
-      type="button"
-      className={`${className}${done ? " done" : ""}`}
-      title={done ? t("Copied") : t("Copy")}
-      aria-label={t("Copy")}
-      onClick={(e) => {
-        e.stopPropagation();
-        void navigator.clipboard?.writeText(text).catch(() => {});
-        flash();
-        onStatus(t("{what} copied", { what }), "ok");
-      }}
-    >
-      <CopyIcon check={done} />
-    </button>
-  );
-}
-
 function highlightShell(code: string): ReactNode[] {
   // Magpie highlight(): env vars before =, keywords export; strings after =
   const lines = code.split("\n");
@@ -334,8 +253,9 @@ export function GatewayView({ onStatus, onGoNetwork }: Props) {
   const calls = showFilled ? DEMO_CALLS : [];
   const port = demoPrefs.port || "3425";
   const f = FLAVORS.find((x) => x.id === flavor) || FLAVORS[0];
-  const base = f.base(GW_URL);
-  const modelPlaceholder = f.decide ? "provider/jev_latest" : (exampleModel || "provider/model");
+  const gatewayUrl = `http://127.0.0.1:${port}`;
+  const base = f.base(gatewayUrl);
+  const modelPlaceholder = f.decide ? "provider/jev_latest" : (catalog.some((model) => model.id === exampleModel) ? exampleModel : catalog[0]?.id || "provider/model");
   /** Magpie client.js L394–405 / L431–437: lan keys vs loopback magpie */
   const enabledKeys = lanOn ? gwKeys.filter((k) => !k.off) : [];
   const connectKey = enabledKeys[0] || null;
@@ -566,11 +486,11 @@ export function GatewayView({ onStatus, onGoNetwork }: Props) {
             className="url"
             title={t("Copy the gateway URL")}
             onClick={() => {
-              void navigator.clipboard?.writeText(GW_URL).catch(() => {});
+              void navigator.clipboard?.writeText(gatewayUrl).catch(() => {});
               onStatus(t("{what} copied", { what: t("Gateway URL") }), "ok");
             }}
           >
-            <code>{GW_URL}</code>
+            <code>{gatewayUrl}</code>
           </button>
         </div>
       </div>
@@ -709,32 +629,31 @@ export function GatewayView({ onStatus, onGoNetwork }: Props) {
       </div>
 
       <section className="list connect" id="connect" hidden={connectFolded}>
-          <label>API</label>
-          <div>
+          <ConnectionField id="connect-api" label="API" hint={t(f.note)}>
             <Segs
               value={flavor}
               onChange={pickFlavor}
               items={FLAVORS.map((x) => ({ id: x.id, label: x.name }))}
               aria-label="API"
             />
-            <div className="hint">{t(f.note)}</div>
-          </div>
+          </ConnectionField>
 
-          <label>{t("Base URL")}</label>
-          <div>
+          <ConnectionField id="connect-url" label={t("Base URL")}
+            hint={f.baseEnv ? t("What {env} takes.", { env: f.baseEnv })
+              : t("Requests go to POST {url}.", { url: base + "/systemone" })}>
             <div className="val">
               <code>{base}</code>
               <CopyBtn text={base} what={t("Base URL")} onStatus={onStatus} />
             </div>
-            <div className="hint">
-              {f.baseEnv
-                ? t("What {env} takes.", { env: f.baseEnv })
-                : t("Requests go to POST {url}.", { url: base + "/systemone" })}
-            </div>
-          </div>
+          </ConnectionField>
 
-          <label>{t(keyLabel)}</label>
-          <div>
+          <ConnectionField id="connect-key" label={t(keyLabel)} hint={
+            !f.keyEnv ? t(lanOn && (connectKey || enabledKeys.length)
+              ? "Choose a gateway key to send as Authorization: Bearer; usage is tracked by key."
+              : "Sent as Authorization: Bearer. The gateway trusts everything on loopback, so any value works.")
+              : t(lanOn && (connectKey || enabledKeys.length)
+                ? "Choose a gateway key to use as {env}; usage is tracked by key."
+                : "{env}=magpie. The gateway trusts everything on loopback, so any value works.", { env: f.keyEnv })}>
             <div className="val">
               {!lanOn ? (
                 <>
@@ -750,24 +669,15 @@ export function GatewayView({ onStatus, onGoNetwork }: Props) {
                 <code>{t("Create a gateway key above to connect")}</code>
               )}
             </div>
-            <div className="hint">
-              {!f.keyEnv
-                ? t(
-                    lanOn && (connectKey || enabledKeys.length)
-                      ? "Choose a gateway key to send as Authorization: Bearer; usage is tracked by key."
-                      : "Sent as Authorization: Bearer. The gateway trusts everything on loopback, so any value works.",
-                  )
-                : t(
-                    lanOn && (connectKey || enabledKeys.length)
-                      ? "Choose a gateway key to use as {env}; usage is tracked by key."
-                      : "{env}=magpie. The gateway trusts everything on loopback, so any value works.",
-                    { env: f.keyEnv },
-                  )}
-            </div>
-          </div>
+          </ConnectionField>
 
-          <label>{t("Model")}</label>
-          <div>
+          <ConnectionField id="connect-model" label={t("Model")} hint={t(f.decide
+            ? catalog.length
+              ? "A decision model (Jev, Clef), as listed below. Click one there to put it in the snippets."
+              : "No decision models yet. Add a System One, Jev or Workers AI provider."
+            : catalog.length
+              ? "provider/model, as listed below. Click a model there to put it in the snippets."
+              : "No models yet. Add a provider, or sign in to Codex or Copilot.")}>
             <div className="val">
               <code>{modelPlaceholder}</code>
               <CopyBtn
@@ -776,21 +686,10 @@ export function GatewayView({ onStatus, onGoNetwork }: Props) {
                 onStatus={onStatus}
               />
             </div>
-            <div className="hint">
-              {t(
-                f.decide
-                  ? catalog.length
-                    ? "A decision model (Jev, Clef), as listed below. Click one there to put it in the snippets."
-                    : "No decision models yet. Add a System One, Jev or Workers AI provider."
-                  : catalog.length
-                    ? "provider/model, as listed below. Click a model there to put it in the snippets."
-                    : "No models yet. Add a provider, or sign in to Codex or Copilot.",
-              )}
-            </div>
-          </div>
+          </ConnectionField>
 
-          <label>{t("Example")}</label>
-          <div>
+          <ConnectionField id="connect-example" label={t("Example")}
+            hint={activeSnip === "shell" ? t("Put these in the shell (or the tool's settings) and the tool talks to magpie instead of the vendor.") : undefined}>
             <div className="stack">
               <div className="snip-tabs">
                 <Segs
@@ -826,14 +725,7 @@ export function GatewayView({ onStatus, onGoNetwork }: Props) {
                 ) : null}
               </div>
             </div>
-            {activeSnip === "shell" ? (
-              <div className="hint">
-                {t(
-                  "Put these in the shell (or the tool's settings) and the tool talks to magpie instead of the vendor.",
-                )}
-              </div>
-            ) : null}
-          </div>
+          </ConnectionField>
         </section>
 
       <div className="row-head">

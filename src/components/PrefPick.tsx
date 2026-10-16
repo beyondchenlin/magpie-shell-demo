@@ -19,7 +19,9 @@ type Props = Omit<ButtonHTMLAttributes<HTMLButtonElement>, "children"> & {
   open?: boolean;
   /** Magpie `.set` when a non-default value is chosen. */
   set?: boolean;
-  /** Extra classes e.g. `font-family`, `proto pick`. Base is always `sess-pick pref-pick`. */
+  /** Magpie font controls use `.proto.pick`, without the menu pick's 45% cap. */
+  variant?: "menu" | "protocol";
+  /** Extra classes, e.g. font-family. `variant` selects the base DOM recipe. */
   className?: string;
   chevron?: ReactNode;
 };
@@ -29,12 +31,11 @@ type Props = Omit<ButtonHTMLAttributes<HTMLButtonElement>, "children"> & {
  * CIS: Language, font family/style, Usage refresh — not Ant Select.
  */
 export const PrefPick = forwardRef<HTMLButtonElement, Props>(function PrefPick(
-  { label, open, set, className, chevron = CHEV, type = "button", ...rest },
+  { label, open, set, variant = "menu", className, chevron = CHEV, type = "button", ...rest },
   ref,
 ) {
   const cls = [
-    "sess-pick",
-    "pref-pick",
+    variant === "protocol" ? "proto pick" : "sess-pick pref-pick",
     set ? "set" : "",
     open ? "open" : "",
     className || "",
