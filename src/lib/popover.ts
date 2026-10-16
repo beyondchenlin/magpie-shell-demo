@@ -39,13 +39,23 @@ export function placePopover(box: HTMLElement, anchor: HTMLElement, {
 }: PopoverPlacement = {}) {
   const host = popoverHost();
   const frame = host.getBoundingClientRect();
-  const scale = host.offsetWidth ? frame.width / host.offsetWidth : 1;
   // clientLeft/clientTop round a subpixel border to an integer. Use the
   // rendered border width so browser/display scaling does not shift the anchor.
   const style = getComputedStyle(host);
-  const originX = frame.left + (parseFloat(style.borderLeftWidth) || 0) * scale;
-  const originY = frame.top + (parseFloat(style.borderTopWidth) || 0) * scale;
-  const width = host.clientWidth, height = host.clientHeight;
+  const borderLeft = parseFloat(style.borderLeftWidth) || 0;
+  const borderTop = parseFloat(style.borderTopWidth) || 0;
+  const borderRight = parseFloat(style.borderRightWidth) || 0;
+  const borderBottom = parseFloat(style.borderBottomWidth) || 0;
+  const borderBoxWidth = parseFloat(style.width) + (style.boxSizing === "border-box" ? 0
+    : borderLeft + borderRight + (parseFloat(style.paddingLeft) || 0) + (parseFloat(style.paddingRight) || 0));
+  // offsetWidth also rounds a calc() width (e.g. 909.091px) before scaling.
+  const scale = frame.width / (borderBoxWidth || host.offsetWidth || frame.width || 1);
+  const originX = frame.left + borderLeft * scale;
+  const originY = frame.top + borderTop * scale;
+  // clientWidth/clientHeight round the padding box as well. A bottom/right
+  // anchored popup needs the actual opposite edge of that same coordinate box.
+  const width = frame.width / scale - borderLeft - borderRight;
+  const height = frame.height / scale - borderTop - borderBottom;
   const r = anchor.getBoundingClientRect();
   const a = { left: (r.left - originX) / scale, right: (r.right - originX) / scale,
     top: (r.top - originY) / scale, bottom: (r.bottom - originY) / scale };

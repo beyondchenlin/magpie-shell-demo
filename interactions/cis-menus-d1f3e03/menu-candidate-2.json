@@ -1254,6 +1254,73 @@
           941
         ]
       }
+    },
+    {
+      "case": "fractional-root-1048-before",
+      "geometry": {
+        "active": {
+          "class": "pm-item on",
+          "pop": "pop proto-menu sess-menu",
+          "tag": "BUTTON"
+        },
+        "anchor": {
+          "bottom": 301.1666774749756,
+          "height": 31.89583396911621,
+          "left": 892.9896240234375,
+          "right": 981.2083740234376,
+          "top": 269.2708435058594,
+          "width": 88.21875,
+          "x": 892.9896240234375,
+          "y": 269.2708435058594
+        },
+        "popup": {
+          "class": "pop proto-menu sess-menu",
+          "height": 206,
+          "rect": {
+            "bottom": 532.9896087646484,
+            "height": 226.1354217529297,
+            "left": 607.1041870117188,
+            "right": 981.1041870117188,
+            "top": 306.85418701171875,
+            "width": 374,
+            "x": 607.1041870117188,
+            "y": 306.85418701171875
+          },
+          "scrollHeight": 204,
+          "style": "max-width: 892px; left: 529.496px; top: 256.539px; bottom: auto; --ox: 299.90457812499994px;",
+          "transform": "none",
+          "width": 340
+        },
+        "root": {
+          "caption": 32,
+          "clientHeight": 719,
+          "clientLeft": 1,
+          "clientTop": 1,
+          "clientWidth": 908,
+          "offsetWidth": 909,
+          "rect": {
+            "bottom": 816,
+            "height": 792,
+            "left": 24,
+            "right": 1024,
+            "top": 24,
+            "width": 1000,
+            "x": 24,
+            "y": 24
+          }
+        },
+        "source": "d1f3e03c06543c7ce3763f437951edb829c7470f",
+        "viewport": [
+          1048,
+          941
+        ]
+      },
+      "root": {
+        "border": "0.606061px",
+        "boxSizing": "border-box",
+        "height": "720px",
+        "width": "909.091px"
+      }
     }
   ]
 }
