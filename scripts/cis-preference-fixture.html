@@ -6,7 +6,9 @@
 <a href="/">Open preview</a><pre id="state"></pre>
 <script>
 const keys=['magpie.navLayout','magpie.lang','magpie.uiLocale','magpie.demoPrefs','magpie.demoGw','magpie.routingPeerServes','magpie.flavor','magpie.snipLang','magpie.gwSnipLang','magpie.snipOS','magpie.gwConnectFolded','magpie.gwModelsFolded','magpie.model'];
-const backupKey='cis-appearance-gateway-20261016-initial';
+keys.push('magpie.agentOrder','magpie.demoAgentWired','magpie.demoProviders','magpie.demoProviderOrder','magpie.usageTab','magpie.usagePeriod','magpie.sessRange','magpie.usageEvery','magpie.ctxDays','magpie.pluginTab','magpie.sort.plugins','magpie.feature.library','magpie.feature.groups','magpie.bunReady','magpie.modelFavorites','magpie-demo-guideHidden');
+keys.push('magpie.demoAmModels','magpie.demoAmPrefs');
+const backupKey='cis-menus-20261016-initial-v2';
 const read=()=>Object.fromEntries(keys.map(key=>[key,localStorage.getItem(key)]));
 const show=(action)=>document.querySelector('#state').textContent=JSON.stringify({action,current:read(),initial:JSON.parse(sessionStorage.getItem(backupKey)||'null')},null,2);
 document.querySelector('#snapshot').onclick=()=>{if(!sessionStorage.getItem(backupKey))sessionStorage.setItem(backupKey,JSON.stringify(read()));show('Initial snapshot retained');};

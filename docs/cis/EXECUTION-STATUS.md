@@ -1,26 +1,19 @@
 # CIS 执行进度
 
-更新时间：2026-10-16 20:52 Asia/Shanghai
+更新时间：2026-10-16 21:08 Asia/Shanghai
 
-- 阶段：0/1已完成；2已完成导航与Settings有限批次；S1/N4/G4及Gateway G1/G2/G3完成；下一批C1/C2/C3；3未开始。
-- 状态：**phase2_responsive_popover_reproducing**。冻结028dab5保留；R01 window勘误获监督批准并登记3c2d6de，S1有限核验后通过；其他规则未变。N3仍待独立复核；其余工作继续。
-- 唯一执行者：本聊天01a14465-ad94-73e0-a0ad-991539957fa0；监督聊天01a143c3-8101-75e1-b638-c39ad15d55ed；未派生代理。
-- 分支：tip/0.1.121-cis-appearance-shell，PR #1。接管基底e94edc6713da405285854e7d6548f3f8364bf84f；规格冻结提交028dab55a3877656c115439835d1d0d14465e4ee；导航受测26604006a932b564ed6468a100c37a15f5bc4644；Settings候选90099b9532fc7e95036fa05b7848e61e11342b72；Gateway候选874268b83c40d3b1a621b152d54aeaed51732334；当前布局候选0a2a014ff881e37a636d05605849f246485888ff/v197。不要把后续证据提交当成新UI候选。
-- package/锁文件的195纯版本行经复核已随FontRow修复提交；其余继承v195脏稿逐文件保全，未整体发布。新候选90099b9仅含FontRow最小修复与一个Settings翻译键；隔离快照排除其余脏稿。
-- 验收计数：**通过10（N1/N2/N4/S1/S2/S3/G1/G2/G3/G4）、失败0、待验19（含N3待复核）**。各项分别绑定2660400/v194、90099b9/v195、874268b/v196，另S1/N4/G4绑定0a2a014/v197的有依据复用与回归；详见清单，不代表继承v195或最终全量通过；最后仍须受影响回归。B1构建身份子条件已满足，B1整项保留待最终候选收口。F04已按S2复现修复；F03字体部分已处理，其余风险仍待对应批次。
-- 规格交付：已冻结的唯一规则入口docs/CIS-CONTROLS.md；R01–R15覆盖15类控件，R16–R25覆盖导航、复合控件与页面；旧条款/固定原版来源/判定/具体变体/组件调用/验法已落表。29ID逐项必要性、有限状态与终点见CIS-AUDIT；验收清单只管组织和证据。
-- 追溯：固定15个源码文件Git blob身份均比对相同；六CSS LF SHA-256 guard通过。冻结时混合工作树索引20文件/465调用；现已改为90099b9提交源码快照索引19文件/459调用/34裸DOM候选，排除继承脏稿；数量不是通过数量。
-- 原图：四张用户问题附件已从监督聊天找回、逐张查看并保全必要私有副本，索引USER-REFERENCE。它们是旧demo问题图，不是原生正确金标；未公开上传含浏览器个人界面的原图。
-- 基线检查：两guard通过；lint59 warnings/0 errors/exit0；只读文档/JSON/来源一致性检查另记提交前结果。阶段1未build，未改变UI/字典/package/锁文件；继承的26个非文档文件均保全，25项初次哈希未变，context为Git内容无差异的换行状态并单独保存字节。
-- 预览现场：4173监听PID21080未动；HTTP200，Cua新建后台页实际加载index-gzRBpZxd.js。dist时间18:39:38，无源码SHA/壳版本可核验标记，故记录为继承dist，不确认v194/v195运行身份。未独立核验云部署。
-- 产物指纹：JS SHA256 3099158208260f67d03f8d9de363a84e6075b6ee13c62fc53015be1c2bbb4ed1；CSS 64181a0435e81323f04d45b24fcaaa49171fc971a412f785fc992a60dc350b2d。preview.json仍滞后，未以其作版本凭据。
-- 浏览器收尾：首批自己的测试页均已关闭；仅在4174测试origin修改导航偏好，已显式恢复初始unset，viewport恢复1280×720；用户4173原页/偏好未动。Cua采样已实际完成，不报渲染FPS。恢复失败首检与最终成功均保留。
-- 保全目录：.cache/cis-takeover-20261016/，补丁/28路径inventory/8份未跟踪副本/4原图副本/换行原字节/18KB lint日志/只读索引脚本与恢复说明，约1.00MB逻辑大小；负责人本任务、复查2026-10-23，整体验收前保留。未复制node_modules/dist/运行环境，未删除旧证据。
-- 其他保留：既有node_modules、dist、参考缓存、191/193/194/195历史证据、唯一工作树D:/demo1/tagmaai；参考缓存只补缺失的固定Usage page.js约162KB。未安装、未建额外worktree、未停止服务、未清理其他目录。
-- 空间：接管C/Temp27.14GiB、D38.22GiB；19:30测得C26.43GiB、D27.91GiB。本任务新增只约1MB恢复资料及小文档/162KB参考文件，期间磁盘大幅变化未归因于本任务，不将其当作任务占用或净释放量。没有释放空间操作；后续大操作须重测。逻辑大小不冒称物理占用。
-- 导航旧候选：26604006a932b564ed6468a100c37a15f5bc4644 / v0.1.194，已推PR分支，4174独立预览；Settings现候选90099b9 / v0.1.195已本机构建/浏览器验证，待本检查点统一推PR。产物/build-info记录源SHA、src树、probe与各文件hash；监督已独立读4174 build-info并复核hash。4173及其dist未改。
-- 当前门禁：N3三轮30次、559帧画面与rAF/longtask已采齐，全部document visible、0长任务、0watchdog超时；录制时峰值33–66.7ms不能自动归因或放行，两次无录制对照为16.9/17ms，仅提示观测开销可能影响。保留待独立复核，不报渲染FPS/原生Mac观感。首轮55.935s中有采集建立阶段约50.682s静态间隔，原片/真实折叠时间索引已随072b858推PR，不重录整批。
-- 下一步：Settings检查点证据/索引推PR，Gateway G1/G2/G3继续复现；S1等监督裁定原版window变体。N3不阻塞独立工作，不反复调320ms/曲线。常规批次不重等批准；规格冲突、同修复两轮失败或不可代理条件才停相应动作。
+- 当前阶段：phase2_menus_c1_c2_c4_reproducing。唯一执行者本聊天01a14465-ad94-73e0-a0ad-991539957fa0；监督01a143c3-8101-75e1-b638-c39ad15d55ed；无子代理。
+- **29项：通过10、失败1（C2）、待验18。** C2/F01已经浏览器复现：Escape后的下一rAF与50ms仍有可访问的模型/AgentModels leaving层、aria-hidden未设、inert=false，原版要求立即结束交互，仅留inert影像。正在修复，尚未关闭失败。Agent初焦当前正常，不把旧静态风险当成已复现缺陷。
+- 通过项：N1/N2=2660400/v194；S2/S3=90099b9/v195；G1/G2/G3=874268b/v196；S1/N4/G4=0a2a014/v197的有限核验/有依据复用。0a2a014六主页面12次受影响导航回归通过；最终候选仍需受影响回归。N3保留独立动态复核，不重录三轮。
+- 当前实际受测UI：0a2a014ff881e37a636d05605849f246485888ff /0.1.197；4176受管预览session60331、Git archive隔离产物，build-info绑定源码/版本/资源hash。当前工作树C1/C2/C4修改未构建、未报通过；继承v195其余草稿仍逐文件保全，不整体提交。
+- 规则：唯一入口docs/CIS-CONTROLS.md。冻结028dab5保留，监督已明确批准R01的window级联勘误并独立提交3c2d6de；S1完成原有限核验后才通过。其他冻结条款与29项范围不变，不再写S1待裁定。
+- 监督已支持S2/S3及G3/G4有限结论、确认4176为0a2a014；最新要求明确C2失败计数并继续C1/C2/C4最多3ID，不需等常规批次批准。C3与Providers/Plugins后续一起核验。
+- 检查：0a2a014 build/TypeScript/两guard通过，候选52 TS/TSX lint55 warnings/0 errors；此前工作树基线59/0。浏览器前批无新console异常；这些检查不替代当前未完成弹层批次。
+- Git：分支tip/0.1.121-cis-appearance-shell，PR #1。最近已确认推送e19fd5a；本地HEAD c843654（含0a2a014与R01勘误），上次push遇408/sideband断开，后续读远端也TLS EOF，是否已落远端未确认。PR标题/正文更新经连接器、gh GraphQL与REST失败，未报更新成功；停止同路径无信息重试，本地工作继续保全。
+- 现场：用户4173/PID21080与dist未动；本任务4174/PID98524、4175/PID76536保留；受管4176按批次Ctrl+C切换。早前自动审核拒绝OS stop/restart4174（仅blocked by policy），没有绕过停止该进程。自有测试页均已关闭、viewport reset；最后弹层前置复现按28键snapshot恢复，初始nav是top、其余值见before-restored，未谎称本批全部null；用户4173偏好未触及。
+- 证据：interactions/cis-nav-2660400、cis-settings-90099b9、cis-gateway-874268b、cis-layout-0a2a014；当前C2失败证据cis-menus-before-0a2a014。源码调用索引现绑定0a2a014快照19文件/459调用/34裸DOM候选，数量不代表通过。四原问题图已找回保全，含个人界面的原图不公开。
+- 空间/保全：唯一工作树D:/demo1/tagmaai；不安装/复制依赖环境。C25.25/D21.02GiB附近（本批构建前测量）；新产物只有有界源码tar/build与必要证据，尚未清理，未冒称净释放。接管.cache补丁/hash/原图与所有历史验收证据保留；任务源码快照重建产物待收尾按规则精确清理，运行中的候选保留。
+- 下一步：按固定source分别修正Model/Proto/Agent/Row/Font/Date的定位和生命周期；C4复核既有草稿与有限深层mock，不顺带发布其余草稿；复现、最小修改、绑定新提交构建、实际复验后更新各ID结果。
 
 ## 实质进展记录
 
@@ -64,4 +57,4 @@ G1四状态、on重启/off启动/older接管、other无按钮、端口占用失�
 
 G4四方言/两OS及1364/390代码滚动有限矩阵已做。手机pre横滚301→0，复制按钮在pre外且相对右/上inset6不动。截图发现折行thumb为88px而选项44px：x/y/w未变导致旧去重跳过高度更新。0a2a014/v197只把h纳入内部thumbSame比较（不改280ms/曲线/offset目标/验收容差），新候选API44px、Settings110/150跨行y44/h44、回桌面清height实测正确；该问题一次定向修复通过。共用hook受影响N1/N2在六页各一对12次回归，root/caption全程保持、身份/目标offset/白card均严格通过。N3不重录，仍待独立复核。
 
-构建/TypeScript/两guard通过，候选52文件lint55/0；证据interactions/cis-layout-0a2a014，App/Gateway/styles未变的前矩阵按哈希/差异依据复用，变化分支已重测。13项偏好恢复null、全部测试页关闭、viewport reset。4176现在0a2a014，受管session60331；旧53434正常Ctrl+C结束。PR源码/证据e19fd5a已推；PR标题正文更新遇连接器transport及gh GraphQL/REST EOF，目前未报更新成功，不阻塞UI工作。下一批C1/C2/C3最多3项，先复现再最小修复。
+构建/TypeScript/两guard通过，候选52文件lint55/0；证据interactions/cis-layout-0a2a014，App/Gateway/styles未变的前矩阵按哈希/差异依据复用，变化分支已重测。13项偏好恢复null、全部测试页关闭、viewport reset。4176现在0a2a014，受管session60331；旧53434正常Ctrl+C结束。PR源码/证据e19fd5a已推；PR标题正文更新遇连接器transport及gh GraphQL/REST EOF，目前未报更新成功，不阻塞UI工作。下一批C1/C2/C4最多3项，先复现再最小修复。

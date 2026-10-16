@@ -3,6 +3,7 @@ import { PopoverPortal } from "./PopoverPortal";
 import { useAnchoredPopover } from "../lib/useAnchoredPopover";
 import { Fragment, useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { t } from "../i18n";
+import { usePickerDismiss } from "../lib/pickerGhost";
 
 export type PopOption = {
   value: string;
@@ -26,8 +27,6 @@ type Props = {
   onClose: () => void;
   /** Magpie multi member picker: stay open after pick */
   keepOpen?: boolean;
-  /** Prefer opening above the chip (settings Codex pickers at scroll bottom). */
-  preferUp?: boolean;
 };
 
 const FAV_KEY = "magpie.modelFavorites";
@@ -56,31 +55,26 @@ export function ModelPop({
   onPick,
   onClose,
   keepOpen = false,
-  preferUp = false,
 }: Props) {
   const popRef = useRef<HTMLDivElement>(null);
   const railRef = useRef<HTMLElement>(null);
   const thumbRef = useRef<HTMLSpanElement>(null);
   const [q, setQ] = useState("");
-  const [leaving, setLeaving] = useState(false);
-  const closeTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const [groupFilter, setGroupFilter] = useState<"all" | "favorites" | string>("all");
   const [favs, setFavs] = useState<Set<string>>(() => loadFavs());
-  const shown = open || leaving;
+  const shown = open;
+  const dismiss = usePickerDismiss(popRef, open, anchor, onClose);
+  const requestedWidth = modelPicker ? 490 : options.some(o => o.note && o.note !== o.value) ? 372 : 300;
 
   useEffect(() => {
     if (open) {
-      clearTimeout(closeTimer.current);
-      closeTimer.current = undefined;
-      setLeaving(false);
       setQ("");
       setGroupFilter("all");
       setFavs(loadFavs());
     }
-  }, [open]);
-  useEffect(() => () => clearTimeout(closeTimer.current), []);
+  }, [open, anchor]);
 
-  useAnchoredPopover(popRef, anchor, shown, { maxHeight: modelPicker ? 420 : 340, preferUp });
+  useAnchoredPopover(popRef, anchor, shown, { recipe: "model", requestedWidth, maxHeight: modelPicker ? 420 : 340 });
 
   useLayoutEffect(() => {
     if (!shown || !modelPicker || !railRef.current || !thumbRef.current) return;
@@ -103,7 +97,6 @@ export function ModelPop({
         e.preventDefault();
         e.stopPropagation();
         dismiss();
-        anchor?.focus({ preventScroll: true });
       } else if (e.key === "ArrowDown" || e.key === "ArrowUp") {
         const items = [...(popRef.current?.querySelectorAll<HTMLElement>("li[role=option]") || [])];
         if (!items.length) return;
@@ -135,17 +128,7 @@ export function ModelPop({
       document.removeEventListener("mousedown", onDown, true);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [shown, anchor]);
-
-  const dismiss = () => {
-    if (closeTimer.current) return;
-    setLeaving(true);
-    closeTimer.current = setTimeout(() => {
-      closeTimer.current = undefined;
-      setLeaving(false);
-      onClose();
-    }, 220);
-  };
+  }, [shown, anchor, dismiss]);
 
   const toggleFav = (o: PopOption) => {
     const key = favKey(o);
@@ -199,9 +182,9 @@ export function ModelPop({
       data-anchored
       id="pop"
       ref={popRef}
-      className={`pop${modelPicker ? " model-picker" : ""}${leaving ? " leaving" : ""}`}
+      className={`pop${modelPicker ? " model-picker" : ""}`}
       style={{
-        width: modelPicker ? 490 : options.some(o => o.note && o.note !== o.value) ? 372 : 300,
+        width: requestedWidth,
       }}
       role="listbox">
       <div className="search">
@@ -215,7 +198,7 @@ export function ModelPop({
           autoComplete="off"
           placeholder={placeholder || t("Filter, or type any model id…")}
           value={q}
-          autoFocus
+          autoFocus={!document.body.classList.contains("web") || !window.matchMedia("(pointer: coarse)").matches}
           onChange={(e) => setQ(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === "Enter" && q.trim() && !filtered.some((o) => o.value === q.trim())) {

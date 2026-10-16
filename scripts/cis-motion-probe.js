@@ -1,7 +1,7 @@
 /* Test-only observer for the pinned CIS navigation checks. Never imported by the app.
  * An isolated snapshot builder injects it into its own preview. It observes UI clicks,
  * rAF cadence, long tasks and geometry without changing UI/motion values during a run.
- * On pagehide it restores only this task origin's initial navigation preference. */
+ * Preference restoration is explicit through the task fixture, never a pagehide write. */
 (() => {
   const report = document.createElement("script");
   report.id = "cis-motion-evidence";
@@ -67,7 +67,5 @@
   publish();
   addEventListener("pagehide",() => {
     observer?.disconnect();
-    if (initialNavPreference === null) localStorage.removeItem("magpie.navLayout");
-    else localStorage.setItem("magpie.navLayout",initialNavPreference);
   },{once:true});
 })();

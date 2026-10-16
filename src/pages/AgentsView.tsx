@@ -1,9 +1,9 @@
 import { CopyButton } from "../components/CopyButton";
 import { MagpieIcon } from "../components/MagpieIcon";
 import { PopoverPortal } from "../components/PopoverPortal";
-import { useAnchoredPopover } from "../lib/useAnchoredPopover";
+import { useRowMenu } from "../lib/useRowMenu";
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
-import { AgentModelsPop, type AmModel } from "../components/AgentModelsPop";
+import { AgentModelsPop, type AmModel, type AmPreferences } from "../components/AgentModelsPop";
 import { FieldPill } from "../components/FieldPill";
 import { LibSwitch } from "../components/LibSwitch";
 import { TextBtn } from "../components/TextBtn";
@@ -55,16 +55,40 @@ const DEMO_POP_OPTS: PopOption[] = [
 ];
 
 const DEMO_AM_MODELS: AmModel[] = [
-  { id: "claude-opus-4", name: "claude-opus-4", group: "Anthropic", on: true },
-  { id: "claude-sonnet-4-5", name: "claude-sonnet-4-5", group: "Anthropic", on: true },
-  { id: "claude-haiku-4", name: "claude-haiku-4", group: "Anthropic", on: true },
-  { id: "claude-3-5-haiku", name: "claude-3-5-haiku", group: "Anthropic", on: false },
-  { id: "gpt-5", name: "gpt-5", group: "OpenAI", on: true },
-  { id: "gpt-5-mini", name: "gpt-5-mini", group: "OpenAI", on: true },
-  { id: "o4-mini", name: "o4-mini", group: "OpenAI", on: false },
-  { id: "gemini-2.5-pro", name: "gemini-2.5-pro", group: "Google", on: true },
+  { id: "claude-opus-4", name: "claude-opus-4", group: "Anthropic", icon: "anthropic", logo: "anthropic", on: true },
+  { id: "claude-sonnet-4-5", name: "claude-sonnet-4-5", group: "Anthropic", icon: "anthropic", logo: "anthropic", on: true },
+  { id: "claude-haiku-4", name: "claude-haiku-4", group: "Anthropic", icon: "anthropic", logo: "anthropic", on: true },
+  { id: "claude-3-5-haiku", name: "claude-3-5-haiku", group: "Anthropic", icon: "anthropic", logo: "anthropic", on: false },
+  { id: "gpt-5", name: "gpt-5", group: "OpenAI", icon: "openai", logo: "openai", on: true },
+  { id: "gpt-5-mini", name: "gpt-5-mini", group: "OpenAI", icon: "openai", logo: "openai", on: true },
+  { id: "o4-mini", name: "o4-mini", group: "OpenAI", icon: "openai", logo: "openai", on: false },
+  { id: "gemini-2.5-pro", name: "gemini-2.5-pro", group: "Google", icon: "gemini-color", logo: "gemini-color", on: true },
   { id: "magpie/fast", name: "magpie/fast", group: "Routing groups", on: true },
 ];
+
+// Explicit test-only depth for the frozen >8-model fold and own-order cases.
+// The normal mock catalog stays unchanged; these are labels, never API models.
+const DEEP_AM_MODELS: AmModel[] = [
+  ...DEMO_AM_MODELS,
+  ...Array.from({ length: 9 }, (_, i) => ({ id: `mock/openai-${i + 1}`, name: `Mock OpenAI ${i + 1}`, group: "OpenAI", icon: "openai", on: true })),
+  { id: "mock/own-model", name: "Mock own model", group: "ChatGPT", icon: "openai", own: true, on: true },
+];
+
+function readAmModels(): Record<string, AmModel[]> {
+  try {
+    const data = JSON.parse(localStorage.getItem("magpie.demoAmModels") || "{}");
+    if (!data || typeof data !== "object" || Array.isArray(data)) return {};
+    return Object.fromEntries(Object.entries(data).filter(([, rows]) => Array.isArray(rows) && rows.every(m => m && [m.id, m.name, m.group].every(s => typeof s === "string") && typeof m.on === "boolean"))) as Record<string, AmModel[]>;
+  } catch { return {}; }
+}
+
+function readAmPreferences(): Record<string, AmPreferences> {
+  try {
+    const data = JSON.parse(localStorage.getItem("magpie.demoAmPrefs") || "{}");
+    if (!data || typeof data !== "object" || Array.isArray(data)) return {};
+    return Object.fromEntries(Object.entries(data).filter(([, value]) => value && typeof value === "object" && "only" in value && "ordered" in value && typeof value.only === "boolean" && typeof value.ordered === "boolean")) as Record<string, AmPreferences>;
+  } catch { return {}; }
+}
 
 type StaleCopy = { kind: "app" | "ide" | "daemon" | "embedded" | "cli"; since: number; app?: string };
 const STALE_HOW: Record<string, [string, string?]> = {
@@ -447,36 +471,7 @@ function ArrangeMenu({
   onClose,
 }: ArrangeProps) {
   const boxRef = useRef<HTMLDivElement>(null);
-  useAnchoredPopover(boxRef, anchor, true, { dx: -4 });
-
-  useEffect(() => {
-    const box = boxRef.current;
-    if (!box) return;
-    anchor.classList.add("open");
-    const outside = (e: MouseEvent) => {
-      if (!box.contains(e.target as Node) && !anchor.contains(e.target as Node))
-        onClose();
-    };
-    const keys = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        e.preventDefault();
-        e.stopPropagation();
-        onClose();
-        anchor.focus({ preventScroll: true });
-      } else if (e.key === "Tab") onClose();
-    };
-    document.addEventListener("mousedown", outside, true);
-    document.addEventListener("keydown", keys, true);
-    const first = box.querySelector<HTMLButtonElement>(
-      "button.rm-item:not(:disabled)",
-    );
-    first?.focus({ preventScroll: true });
-    return () => {
-      anchor.classList.remove("open");
-      document.removeEventListener("mousedown", outside, true);
-      document.removeEventListener("keydown", keys, true);
-    };
-  }, [anchor, onClose]);
+  useRowMenu(boxRef, anchor, onClose);
 
   const items: {
     name: string;
@@ -618,7 +613,15 @@ export function AgentsView({
   }));
   /** Magpie am-pop (Pick on Model list) */
   const [amPop, setAmPop] = useState<{ agentId: string; el: HTMLElement } | null>(null);
-  const [amModels, setAmModels] = useState<Record<string, AmModel[]>>({});
+  const [amCatalog] = useState(() => new URLSearchParams(location.search).get("amFixture") === "deep" ? DEEP_AM_MODELS : DEMO_AM_MODELS);
+  const [amModels, setAmModels] = useState<Record<string, AmModel[]>>(readAmModels);
+  const [amPreferences, setAmPreferences] = useState<Record<string, AmPreferences>>(readAmPreferences);
+  useEffect(() => {
+    if (Object.keys(amModels).length) try { localStorage.setItem("magpie.demoAmModels", JSON.stringify(amModels)); } catch { /* local mock only */ }
+  }, [amModels]);
+  useEffect(() => {
+    if (Object.keys(amPreferences).length) try { localStorage.setItem("magpie.demoAmPrefs", JSON.stringify(amPreferences)); } catch { /* local mock only */ }
+  }, [amPreferences]);
   /** Magpie staleSeen — dismiss "Got it" per agent */
   const [staleSeen, setStaleSeen] = useState<Record<string, number>>({});
   const [staleDemo] = useState(() => new URLSearchParams(location.search).get("stale") !== "0");
@@ -1189,7 +1192,7 @@ export function AgentsView({
                       <div className="ag-v">
                         <div className="ag-vl ag-chips">
                           {(() => {
-                            const list = amModels[a.id] || DEMO_AM_MODELS;
+                            const list = amModels[a.id] || amCatalog;
                             const by = new Map<string, number>();
                             for (const m of list.filter((x) => x.on)) by.set(m.group, (by.get(m.group) || 0) + 1);
                             const hidden = list.filter((x) => !x.on).length;
@@ -1219,7 +1222,7 @@ export function AgentsView({
                                 cur?.agentId === a.id ? null : { agentId: a.id, el },
                               );
                               if (!amModels[a.id]) {
-                                setAmModels((m) => ({ ...m, [a.id]: DEMO_AM_MODELS.map((x) => ({ ...x })) }));
+                                setAmModels((m) => ({ ...m, [a.id]: amCatalog.map((x) => ({ ...x })) }));
                               }
                             }}>
                             <span>{t("Pick")}</span>
@@ -1708,11 +1711,12 @@ export function AgentsView({
 
       {fieldPop ? (
         <ModelPop
+          key={`${fieldPop.agentId}:${fieldPop.key}`}
           open
           anchor={fieldPop.el}
           value={fieldVals[fieldPop.key] || ""}
           modelPicker
-          options={DEMO_POP_OPTS}
+          options={DEMO_POP_OPTS.filter(option => amModels[fieldPop.agentId]?.find(model => model.id === option.value)?.on !== false || fieldVals[fieldPop.key] === option.value)}
           onPick={(v) => {
             setFieldVals((f) => ({ ...f, [fieldPop.key]: v }));
             setFieldPop(null);
@@ -1724,10 +1728,16 @@ export function AgentsView({
 
       {amPop ? (
         <AgentModelsPop
+          key={amPop.agentId}
           open
           anchor={amPop.el}
           agentName={ALL_AGENTS.find((x) => x.id === amPop.agentId)?.name || amPop.agentId}
-          models={amModels[amPop.agentId] || DEMO_AM_MODELS}
+          agentId={amPop.agentId}
+          currentModels={Object.entries(fieldVals).filter(([key]) => key.startsWith(amPop.agentId + ":")).map(([, value]) => value)}
+          defaultOrder={amCatalog.map(m => m.id)}
+          preferences={amPreferences[amPop.agentId] || { only: false, ordered: false }}
+          onPreferences={next => setAmPreferences(previous => ({ ...previous, [amPop.agentId]: next }))}
+          models={amModels[amPop.agentId] || amCatalog}
           onChange={(next) => setAmModels((m) => ({ ...m, [amPop.agentId]: next }))}
           onClose={() => setAmPop(null)}
         />

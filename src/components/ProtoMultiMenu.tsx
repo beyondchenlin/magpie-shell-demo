@@ -3,6 +3,7 @@ import { useAnchoredPopover } from "../lib/useAnchoredPopover";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { menuKeyNavigation } from "../lib/popover";
 import { t } from "../i18n";
+import { menuHoverFocus, watchMenuScroll } from "../lib/menuScroll";
 
 export type ProtoOpt = {
   v: string;
@@ -72,7 +73,8 @@ export function ProtoMultiMenu({
   useAnchoredPopover(ref, anchor, shown, { align });
   useLayoutEffect(() => {
     if (!open) return;
-    ref.current?.querySelector<HTMLElement>(".pm-item.on, .pm-item")?.focus({ preventScroll: true });
+    const first = ref.current?.querySelector<HTMLElement>(".pm-item.on") || ref.current?.querySelector<HTMLElement>(".pm-item");
+    first?.focus({ preventScroll: true });
   }, [open]);
 
   useEffect(() => {
@@ -83,7 +85,7 @@ export function ProtoMultiMenu({
         e.stopPropagation();
         close();
         anchor?.focus({ preventScroll: true });
-      } else if (ref.current) menuKeyNavigation(ref.current, e);
+      } else if (ref.current && (e.key === "ArrowDown" || e.key === "ArrowUp")) menuKeyNavigation(ref.current, e);
     };
     const onDown = (e: MouseEvent) => {
       const t = e.target as Node;
@@ -92,7 +94,9 @@ export function ProtoMultiMenu({
     };
     document.addEventListener("keydown", onKey, true);
     document.addEventListener("mousedown", onDown, true);
+    const stopScroll = ref.current ? watchMenuScroll(ref.current, close) : () => {};
     return () => {
+      stopScroll();
       document.removeEventListener("keydown", onKey, true);
       document.removeEventListener("mousedown", onDown, true);
     };
@@ -149,9 +153,10 @@ export function ProtoMultiMenu({
             type="button"
             key={o.v || "__all__"}
             className={`pm-item${on ? " on" : ""}`}
-            role={multi && o.v ? "menuitemcheckbox" : "menuitemradio"}
+            role={multi && o.v && o.v !== "\x00" ? "menuitemcheckbox" : "menuitemradio"}
             aria-checked={on}
             title={o.title || o.note || undefined}
+            onMouseEnter={e => menuHoverFocus(e.currentTarget, e.nativeEvent)}
             onClick={(e) => {
               e.stopPropagation();
               pick(o.v);

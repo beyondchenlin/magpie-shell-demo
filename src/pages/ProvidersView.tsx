@@ -1,7 +1,7 @@
 import { CopyButton } from "../components/CopyButton";
 import { MagpieIcon } from "../components/MagpieIcon";
 import { PopoverPortal } from "../components/PopoverPortal";
-import { useAnchoredPopover } from "../lib/useAnchoredPopover";
+import { useRowMenu } from "../lib/useRowMenu";
 import {
   Fragment,
   useEffect,
@@ -2214,33 +2214,7 @@ function ProviderMoveMenu({
   onClose,
 }: ProvMoveMenuProps) {
   const boxRef = useRef<HTMLDivElement>(null);
-  useAnchoredPopover(boxRef, anchor, true, { dx: -4 });
-
-  useEffect(() => {
-    const box = boxRef.current;
-    if (!box) return;
-    anchor.classList.add("open");
-    const outside = (e: MouseEvent) => {
-      if (!box.contains(e.target as Node) && !anchor.contains(e.target as Node)) onClose();
-    };
-    const keys = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        e.preventDefault();
-        e.stopPropagation();
-        onClose();
-        anchor.focus({ preventScroll: true });
-      } else if (e.key === "Tab") onClose();
-    };
-    document.addEventListener("mousedown", outside, true);
-    document.addEventListener("keydown", keys, true);
-    const first = box.querySelector<HTMLButtonElement>("button.rm-item:not(:disabled)");
-    first?.focus({ preventScroll: true });
-    return () => {
-      anchor.classList.remove("open");
-      document.removeEventListener("mousedown", outside, true);
-      document.removeEventListener("keydown", keys, true);
-    };
-  }, [anchor, onClose]);
+  useRowMenu(boxRef, anchor, onClose);
 
   const items: {
     name: string;

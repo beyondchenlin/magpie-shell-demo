@@ -25,11 +25,12 @@ const dist=join(src,'dist'),pkg=JSON.parse(readFileSync(join(src,'package.json')
 const probe=readFileSync(join(root,'scripts/cis-motion-probe.js'));
 writeFileSync(join(dist,'cis-motion-probe.js'),probe);
 writeFileSync(join(dist,'cis-copy-fixture.js'),readFileSync(join(root,'scripts/cis-copy-fixture.js')));
-const html=readFileSync(join(dist,'index.html'),'utf8').replace('<head>','<head><script src="./cis-copy-fixture.js"></script><meta name="magpie-source-commit" content="'+source+'"><meta name="magpie-ui-version" content="'+pkg.version+'">').replace('</body>','<script type="module" src="./cis-motion-probe.js"></script></body>');
+writeFileSync(join(dist,'cis-popup-probe.js'),readFileSync(join(root,'scripts/cis-popup-probe.js')));
+const html=readFileSync(join(dist,'index.html'),'utf8').replace('<head>','<head><script src="./cis-copy-fixture.js"></script><script src="./cis-popup-probe.js"></script><meta name="magpie-source-commit" content="'+source+'"><meta name="magpie-ui-version" content="'+pkg.version+'">').replace('</body>','<script type="module" src="./cis-motion-probe.js"></script></body>');
 writeFileSync(join(dist,'index.html'),html);
 const artifacts=[];
 function walk(dir){for(const e of readdirSync(dir,{withFileTypes:true})){const p=join(dir,e.name);if(e.isDirectory())walk(p);else{const b=readFileSync(p);artifacts.push({path:relative(dist,p).replaceAll('\\','/'),bytes:b.length,sha256:createHash('sha256').update(b).digest('hex')});}}}
 walk(dist);
-const info={sourceCommit:source,sourceTree:execFileSync('git',['rev-parse',source+':src'],{encoding:'utf8'}).trim(),version:pkg.version,builtAt:new Date().toISOString(),method:'git archive source + existing ancestor dependencies + tsc/vite; nonvisual measurement probe injected after build, restoring task navigation preference on pagehide',probeSha256:createHash('sha256').update(probe).digest('hex'),artifacts};
+const info={sourceCommit:source,sourceTree:execFileSync('git',['rev-parse',source+':src'],{encoding:'utf8'}).trim(),version:pkg.version,builtAt:new Date().toISOString(),method:'git archive source + existing ancestor dependencies + tsc/vite; test-only observers injected after build; preference restoration through explicit task fixture',probeSha256:createHash('sha256').update(probe).digest('hex'),artifacts};
 writeFileSync(join(dist,'build-info.json'),JSON.stringify(info,null,2)+'\n');
 console.log(JSON.stringify({source,version:pkg.version,base,dist,probeSha256:info.probeSha256}));

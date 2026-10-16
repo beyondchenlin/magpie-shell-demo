@@ -808,6 +808,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
         setMcpCopyMenu(null);
         return;
       }
+      if (e.key === "Escape" && document.querySelector(".pop:not(.leaving)")) return;
       if (e.key === "Escape" && mcpEditor && !mcpOauthWall && !mcpSignWaiting) {
         // NOTES 235: Escape → Discard unsaved changes (paste-JSON fill)
         e.preventDefault();

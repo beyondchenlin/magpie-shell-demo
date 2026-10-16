@@ -1,7 +1,7 @@
 import { MagpieIcon } from "./MagpieIcon";
 import { InfoTip } from "./InfoTip";
 import { PopoverPortal } from "./PopoverPortal";
-import { useAnchoredPopover } from "../lib/useAnchoredPopover";
+import { useRowMenu } from "../lib/useRowMenu";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ActionConfirm } from "./ActionConfirm";
 import { ModelPop, type PopOption } from "./ModelPop";
@@ -389,28 +389,7 @@ function RuleMoreMenu({
   onClose: () => void;
 }) {
   const boxRef = useRef<HTMLDivElement>(null);
-  useAnchoredPopover(boxRef, anchor, true, { align: "right" });
-  useEffect(() => {
-    const box = boxRef.current;
-    if (!box) return;
-    const outside = (e: MouseEvent) => {
-      if (!box.contains(e.target as Node) && !anchor.contains(e.target as Node)) onClose();
-    };
-    const keys = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        e.preventDefault();
-        e.stopPropagation();
-        onClose();
-        anchor.focus({ preventScroll: true });
-      }
-    };
-    document.addEventListener("mousedown", outside, true);
-    document.addEventListener("keydown", keys, true);
-    return () => {
-      document.removeEventListener("mousedown", outside, true);
-      document.removeEventListener("keydown", keys, true);
-    };
-  }, [anchor, onClose]);
+  useRowMenu(boxRef, anchor, onClose);
 
   const items: { name: string; icon: string; off?: boolean; sep?: boolean; run: () => void }[] = [
     {

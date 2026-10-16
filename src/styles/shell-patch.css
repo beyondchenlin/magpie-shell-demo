@@ -422,7 +422,6 @@ body.web.side-nav {
 /* v0.1.181: drop invent .usage-head .range-opt > span max-width/ellipsis —
    Magpie app.css L2504–05 .range-opt flex+gap / svg flex:none only; L1018 tight +
    L2528 @640 hide :not(.on)>span — no span max-width / text-overflow. */
-.usage-refresh .pop.proto-menu.sess-menu { width: 148px; min-width: 148px; }
 .ctx-tune-note { margin: 0 0 10px; }
 
 /* v0.1.43 MOTION — Magpie control transitions still unmatched
@@ -743,7 +742,6 @@ label.tick input { margin: 0; }
    #stats.stats.empty > .none (app.js L17250–55; app.css L1020–21), not
    card.empty-state.us-empty. Keep nest bridge: usage-refresh relative for pops;
    #period is Magpie .segs (already position:relative). */
-#view-usage .usage-refresh { position: relative; }
 /* v0.1.162: drop invent #view-usage .us-miniplot — Magpie app.css .led-chart SVG */
 /* v0.1.174: drop invent #view-plugins .pm-headrow wrap + ProtoMenu pm-headrow /
    invent Plugins folderPicker .pm-folder-row dialog —

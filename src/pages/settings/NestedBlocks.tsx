@@ -4,6 +4,7 @@ import { PopoverPortal } from "../../components/PopoverPortal";
 import { useAnchoredPopover } from "../../lib/useAnchoredPopover";
 import { MagpieIcon } from "../../components/MagpieIcon";
 import { menuKeyNavigation } from "../../lib/popover";
+import { menuHoverFocus } from "../../lib/menuScroll";
 import { ModelPop, PrefPickChip, type PopOption } from "../../components/ModelPop";
 import { PrefPick } from "../../components/PrefPick";
 import { PrefRow } from "../../components/PrefRow";
@@ -105,7 +106,6 @@ export function CodexModelPick({ field, value, label, onChange }: CodexPickProps
         options={options}
         value={value}
         modelPicker
-        preferUp
         onPick={(v) => { onChange(v); setOpen(false); }}
         onClose={() => setOpen(false)}
       />
@@ -1901,7 +1901,7 @@ export function FontRow({
               role="menuitemradio"
               aria-checked={!value}
               className={`pm-item${!value ? " on" : ""}`}
-              onMouseEnter={(e) => (e.currentTarget as HTMLButtonElement).focus({ preventScroll: true })}
+              onMouseEnter={e => menuHoverFocus(e.currentTarget, e.nativeEvent)}
               onClick={() => {
                 onChange(null);
                 closeMenu();
@@ -1928,7 +1928,7 @@ export function FontRow({
                 aria-checked={on}
                 className={`pm-item${on ? " on" : ""}`}
                 style={{ fontFamily: `"${f.name.replace(/\\/g, "\\\\").replace(/"/g, '\\"')}", var(--font)` }}
-                onMouseEnter={(e) => (e.currentTarget as HTMLButtonElement).focus({ preventScroll: true })}
+                onMouseEnter={e => menuHoverFocus(e.currentTarget, e.nativeEvent)}
                 onClick={() => {
                   onChange(closestFont(f.styles, value));
                   closeMenu();
@@ -1950,7 +1950,7 @@ export function FontRow({
             type="button"
             role="menuitem"
             className="pm-item always"
-            onMouseEnter={(e) => (e.currentTarget as HTMLButtonElement).focus({ preventScroll: true })}
+            onMouseEnter={e => menuHoverFocus(e.currentTarget, e.nativeEvent)}
             onClick={refresh}>
             <span className="pm-tick" aria-hidden />
             <span className="pm-words">
@@ -1968,7 +1968,7 @@ export function FontRow({
               role="menuitemradio"
               aria-checked={on}
               className={`pm-item${on ? " on" : ""}`}
-              onMouseEnter={(e) => (e.currentTarget as HTMLButtonElement).focus({ preventScroll: true })}
+              onMouseEnter={e => menuHoverFocus(e.currentTarget, e.nativeEvent)}
               onClick={() => {
                 onChange(s);
                 closeMenu();

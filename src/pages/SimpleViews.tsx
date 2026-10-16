@@ -3,8 +3,11 @@ import { RequestArchive } from "../components/RequestArchive";
 import { CopyButton } from "../components/CopyButton";
 import { MagpieIcon } from "../components/MagpieIcon";
 import { PopoverPortal } from "../components/PopoverPortal";
+import { useRowMenu } from "../lib/useRowMenu";
 import { useAnchoredPopover } from "../lib/useAnchoredPopover";
-import { Fragment, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { ProtoMultiMenu } from "../components/ProtoMultiMenu";
+import { watchMenuScroll } from "../lib/menuScroll";
+import { Fragment, useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { ActionConfirm } from "../components/ActionConfirm";
 import { LedChart, LedRank } from "../components/LedChart";
 import { LedHeat } from "../components/LedHeat";
@@ -64,33 +67,7 @@ function UsageAgentMenu({
   onClose: () => void;
 }) {
   const boxRef = useRef<HTMLDivElement>(null);
-  useAnchoredPopover(boxRef, anchor, true, { dx: -4 });
-
-  useEffect(() => {
-    const box = boxRef.current;
-    if (!box) return;
-    anchor.classList.add("open");
-    const outside = (e: MouseEvent) => {
-      if (!box.contains(e.target as Node) && !anchor.contains(e.target as Node)) onClose();
-    };
-    const keys = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        e.preventDefault();
-        e.stopPropagation();
-        onClose();
-        anchor.focus({ preventScroll: true });
-      } else if (e.key === "Tab") onClose();
-    };
-    document.addEventListener("mousedown", outside, true);
-    document.addEventListener("keydown", keys, true);
-    const first = box.querySelector<HTMLButtonElement>("button.rm-item:not(:disabled)");
-    first?.focus({ preventScroll: true });
-    return () => {
-      anchor.classList.remove("open");
-      document.removeEventListener("mousedown", outside, true);
-      document.removeEventListener("keydown", keys, true);
-    };
-  }, [anchor, onClose]);
+  useRowMenu(boxRef, anchor, onClose);
 
   return (
     <PopoverPortal><div data-anchored className="pop row-menu fixed" role="menu" ref={boxRef}>
@@ -230,7 +207,7 @@ function SessPick({
 }: {
   label: string;
   open: boolean;
-  onToggle: () => void;
+  onToggle: (anchor: HTMLElement) => void;
   children?: ReactNode;
   set?: boolean;
 }) {
@@ -241,7 +218,7 @@ function SessPick({
       aria-haspopup="menu"
       aria-expanded={open}
       aria-label={label}
-      onClick={onToggle}>
+      onClick={e => onToggle(e.currentTarget)}>
       <span>{label}</span>
       <svg viewBox="0 0 12 12" width={11} height={11} aria-hidden>
         <path d="M3 4.5 6 7.5 9 4.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
@@ -251,78 +228,18 @@ function SessPick({
   );
 }
 
-function ProtoMenu({
-  open,
-  onClose,
-  items,
-  value,
-  onPick,
-  title,
-}: {
+function ProtoMenu({ open, anchor, onClose, items, value, onPick, title }: {
   open: boolean;
+  anchor: HTMLElement | null;
   onClose: () => void;
   items: { v: string; name: string; note?: string }[];
   value: string;
   onPick: (v: string) => void;
   title?: string;
 }) {
-  const ref = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    if (!open) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        e.preventDefault();
-        onClose();
-      }
-    };
-    const onDown = (e: MouseEvent) => {
-      if (!ref.current?.contains(e.target as Node)) onClose();
-    };
-    document.addEventListener("keydown", onKey, true);
-    document.addEventListener("mousedown", onDown, true);
-    return () => {
-      document.removeEventListener("keydown", onKey, true);
-      document.removeEventListener("mousedown", onDown, true);
-    };
-  }, [open, onClose]);
-  if (!open) return null;
-  return (
-    <div
-      className="pop proto-menu sess-menu"
-      ref={ref}
-      role="menu"
-      aria-label={title}
-    >
-      {title ? <div className="pm-head">{t(title)}</div> : null}
-      {items.map((it) => {
-        const on = it.v === value;
-        return (
-          <button
-            type="button"
-            key={it.v}
-            className={`pm-item${on ? " on" : ""}`}
-            role="menuitemradio"
-            aria-checked={on}
-            onClick={() => {
-              onPick(it.v);
-              onClose();
-            }}>
-            <span className="pm-tick" aria-hidden>
-              {on ? (
-                <svg viewBox="0 0 16 16" width={12} height={12} fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M3.2 8.2 6.4 11.4 12.8 4.2" />
-                </svg>
-              ) : null}
-            </span>
-            <span className="pm-words">
-              <span className="pm-name">{t(it.name)}</span>
-              {it.note ? <span className="pm-note">{t(it.note)}</span> : null}
-            </span>
-          </button>
-        );
-      })}
-    </div>
-  );
+  return <ProtoMultiMenu open={open} anchor={anchor} options={items} value={value}
+    onChange={next => onPick(String(next))} onClose={onClose} head={title}
+    menuClass="sess-menu" align="left" />;
 }
 
 function dayKeyOf(d: Date) {
@@ -345,10 +262,12 @@ function rangeName(from: string, to: string) {
 /** Magpie openRangeMenu: quick spans + month grid (first day then last). */
 function RangeCalendar({
   current,
+  anchor,
   onChoose,
   onClose,
 }: {
   current: { from: string; to: string } | null;
+  anchor: HTMLElement | null;
   onChoose: (from: string, to: string) => void;
   onClose: () => void;
 }) {
@@ -359,6 +278,14 @@ function RangeCalendar({
     return new Date(base.getFullYear(), base.getMonth(), 1, 12);
   });
   const ref = useRef<HTMLDivElement>(null);
+  useAnchoredPopover(ref, anchor, true);
+  useLayoutEffect(() => {
+    const box = ref.current;
+    const initial = box?.querySelector<HTMLButtonElement>(".rm-day.end")
+      || box?.querySelector<HTMLButtonElement>(".rm-day.today")
+      || box?.querySelector<HTMLButtonElement>(".rm-span");
+    initial?.focus({ preventScroll: true });
+  }, []);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -366,6 +293,7 @@ function RangeCalendar({
         e.preventDefault();
         e.stopPropagation();
         onClose();
+        anchor?.focus({ preventScroll: true });
         return;
       }
       const at = (document.activeElement as HTMLElement | null)?.dataset?.day;
@@ -388,16 +316,18 @@ function RangeCalendar({
       const t = e.target as Node;
       if (ref.current?.contains(t)) return;
       // Magpie outside ignores the range-opt anchor
-      if ((e.target as HTMLElement | null)?.closest?.(".range-opt")) return;
+      if (anchor?.contains(e.target as Node)) return;
       onClose();
     };
     document.addEventListener("keydown", onKey, true);
     document.addEventListener("mousedown", onDown, true);
+    const stopScroll = ref.current ? watchMenuScroll(ref.current, onClose) : () => {};
     return () => {
+      stopScroll();
       document.removeEventListener("keydown", onKey, true);
       document.removeEventListener("mousedown", onDown, true);
     };
-  }, [onClose, shown, today]);
+  }, [onClose, shown, today, anchor]);
 
   const now = new Date();
   now.setHours(12, 0, 0, 0);
@@ -466,7 +396,7 @@ function RangeCalendar({
   const nextMonthStart = dayKeyOf(new Date(shown.getFullYear(), shown.getMonth() + 1, 1, 12));
 
   return (
-    <div className="pop proto-menu range-menu" ref={ref} role="dialog" aria-label={t("Pick days")}>
+    <PopoverPortal><div data-anchored className="pop proto-menu range-menu" ref={ref} role="dialog" aria-label={t("Pick days")}>
       <div className="pm-head">{start ? t("Now the last day") : t("Pick the first day, then the last")}</div>
       <div className="rm-quick">
         {quicks.map(([name, r]) => (
@@ -508,7 +438,7 @@ function RangeCalendar({
       <div className="rm-grid" role="grid">
         {cells}
       </div>
-    </div>
+    </div></PopoverPortal>
   );
 }
 
@@ -546,8 +476,10 @@ export function UsageView() {
     return 5;
   });
   const [everyOpen, setEveryOpen] = useState(false);
+  const [everyAnchor, setEveryAnchor] = useState<HTMLElement | null>(null);
   const [busy, setBusy] = useState(false);
   const [customOpen, setCustomOpen] = useState(false);
+  const [customAnchor, setCustomAnchor] = useState<HTMLElement | null>(null);
   const [customLabel, setCustomLabel] = useState("");
   const [ledStatus, setLedStatus] = useState("");
   const [ledMetric, setLedMetric] = useState("calls");
@@ -865,7 +797,7 @@ export function UsageView() {
               aria-expanded={customOpen}
               aria-label={customLabel ? t("Days picked: {days}", { days: customLabel }) : t("Pick days")}
               title={customLabel ? t("Days picked: {days}", { days: customLabel }) : undefined}
-              onClick={() => setCustomOpen((o) => !o)}>
+              onClick={e => { setCustomAnchor(e.currentTarget); setCustomOpen((o) => !o); }}>
               <svg viewBox="0 0 16 16" width={12} height={12} fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                 <path d="M3 4.5h10v8.5H3zM3 7h10M5.5 3v3M10.5 3v3" />
               </svg>
@@ -873,6 +805,7 @@ export function UsageView() {
             </button>
             {customOpen ? (
               <RangeCalendar
+                anchor={customAnchor}
                 current={
                   periodIsCustom
                     ? { from: period.split("..")[0], to: period.split("..")[1] }
@@ -926,10 +859,11 @@ export function UsageView() {
             label={t(everyLabel)}
             open={everyOpen}
             set={every > 0}
-            onToggle={() => setEveryOpen((o) => !o)}
+            onToggle={anchor => { setEveryAnchor(anchor); setEveryOpen((o) => !o); }}
           />
           <ProtoMenu
             open={everyOpen}
+            anchor={everyAnchor}
             onClose={() => setEveryOpen(false)}
             value={String(every)}
             title={t("Refresh every")}
@@ -2182,6 +2116,7 @@ export function PluginsView({
   /** Magpie detail: pm-rskel until README resolves */
   const [detailReadmeReady, setDetailReadmeReady] = useState(false);
   const [gwCallsOpen, setGwCallsOpen] = useState(false);
+  const [gwCallsAnchor, setGwCallsAnchor] = useState<HTMLElement | null>(null);
 
   useEffect(() => {
     try {
@@ -2472,7 +2407,7 @@ export function PluginsView({
                         className={`sess-pick set${gwCallsOpen ? " open" : ""}`}
                         aria-haspopup="menu"
                         aria-expanded={gwCallsOpen}
-                        onClick={() => setGwCallsOpen((o) => !o)}>
+                        onClick={e => { setGwCallsAnchor(e.currentTarget); setGwCallsOpen((o) => !o); }}>
                         <span>{b.callsPage ?? 20}</span>
                         <svg viewBox="0 0 12 12" width={11} height={11} aria-hidden>
                           <path d="M3 4.5 6 7.5 9 4.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
@@ -2480,6 +2415,7 @@ export function PluginsView({
                       </button>
                       <ProtoMenu
                         open={gwCallsOpen}
+                        anchor={gwCallsAnchor}
                         onClose={() => setGwCallsOpen(false)}
                         value={String(b.callsPage ?? 20)}
                         title={t("Recent calls at a time")}

@@ -4,6 +4,8 @@ export function popoverHost() {
 }
 
 export type PopoverPlacement = {
+  recipe?: "menu" | "model" | "agent";
+  requestedWidth?: number;
   align?: "left" | "right";
   dx?: number;
   gap?: number;
@@ -33,7 +35,7 @@ export function menuKeyNavigation(box: HTMLElement, event: KeyboardEvent) {
 }
 
 export function placePopover(box: HTMLElement, anchor: HTMLElement, {
-  align = "left", dx = 0, gap = 5, preferUp = false, maxHeight, arrowMaxWidth = Infinity, arrowInset = 16,
+  recipe = "menu", requestedWidth, align = "left", dx = 0, gap = 5, preferUp = false, maxHeight, arrowMaxWidth = Infinity, arrowInset = 16,
 }: PopoverPlacement = {}) {
   const host = popoverHost();
   const frame = host.getBoundingClientRect();
@@ -48,6 +50,41 @@ export function placePopover(box: HTMLElement, anchor: HTMLElement, {
   const caption = host.querySelector<HTMLElement>(".win-caption");
   const top = Math.max(pad, caption?.offsetHeight ? caption.offsetHeight + pad : pad);
   box.style.maxWidth = `${Math.max(0, width - pad * 2)}px`;
+  if (requestedWidth != null) box.style.width = `${Math.min(requestedWidth, Math.max(0, width - pad * 2))}px`;
+  if (recipe === "model") {
+    // placePop uses the declared maximum, not placeMenu's natural list height.
+    const h = Math.min(maxHeight ?? 340, Math.max(0, height - pad - top));
+    const w = box.offsetWidth;
+    const left = Math.max(pad, Math.min(a.left, width - w - pad));
+    box.style.left = `${left}px`;
+    box.style.setProperty("--ox", `${Math.max(16, Math.min(w - 16, a.left + (a.right - a.left) / 2 - left))}px`);
+    const up = a.bottom + 5 + h > height - pad && a.top - 5 - h >= top;
+    box.classList.toggle("up", up);
+    if (up) {
+      box.style.top = "auto";
+      box.style.bottom = `${height - a.top + 5}px`;
+      box.style.maxHeight = `${Math.min(h, a.top - 5 - top)}px`;
+    } else {
+      const y = a.bottom + 5 + h > height - pad ? Math.max(top, height - pad - h) : a.bottom + 5;
+      box.style.top = `${y}px`;
+      box.style.bottom = "auto";
+      box.style.maxHeight = `${Math.min(h, height - pad - y)}px`;
+    }
+    return;
+  }
+  if (recipe === "agent") {
+    box.style.maxHeight = "560px";
+    const w = box.offsetWidth, below = Math.max(0, height - a.bottom - 8 - pad), above = Math.max(0, a.top - 8 - top);
+    const want = Math.min(560, box.scrollHeight), up = want > below && above > below;
+    const left = Math.max(pad, Math.min(a.left - 10, width - w - pad));
+    box.style.left = `${left}px`;
+    box.style.setProperty("--ox", `${Math.max(18, Math.min(w - 18, a.left + Math.min(a.right - a.left, 60) / 2 - left))}px`);
+    box.classList.toggle("up", up);
+    box.style.top = up ? "auto" : `${a.bottom + 8}px`;
+    box.style.bottom = up ? `${height - a.top + 8}px` : "auto";
+    box.style.maxHeight = `${Math.min(560, up ? above : below)}px`;
+    return;
+  }
   // Reset the previous clamp before measuring, so filtering cannot flip a
   // shortened menu to the wrong side of its anchor on the next observer tick.
   box.style.maxHeight = maxHeight == null ? "" : `${maxHeight}px`;
