@@ -1,3 +1,5 @@
+> 当前阶段的范围、通过条件与结束条件见 [复刻验收标准 v1.0](docs/REPLICA-ACCEPTANCE.md)。以下为历史逐版本修改记录，不代表整体验收通过。
+
 ## v0.1.194 · CIS_NATIVE_BASELINE_AND_SHARED_CONTROLS · 2026-10-16 Asia/Shanghai
 
 - WHY: 用户要求不一致不能停；按历史 CIS 与固定参考源码检查全部公共控件。
