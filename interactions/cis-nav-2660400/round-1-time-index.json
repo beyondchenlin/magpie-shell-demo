@@ -1,0 +1,103 @@
+{
+  "round": 1,
+  "clock": "screencast timestamp; relative to first captured frame",
+  "setupGap": {
+    "afterFrame": 1,
+    "beforeFrame": 2,
+    "gapMs": 50681.79392814636,
+    "startMs": 14.248132705688477,
+    "endMs": 50696.04206085205
+  },
+  "firstThreeFramesIdentical": [
+    "d08db8c86c877445d2875c8b8bcd9aed80c4742f313b8f544b66f4e4a018782c",
+    "d08db8c86c877445d2875c8b8bcd9aed80c4742f313b8f544b66f4e4a018782c",
+    "d08db8c86c877445d2875c8b8bcd9aed80c4742f313b8f544b66f4e4a018782c"
+  ],
+  "actualCaptureWindowAfterSetup": {
+    "startMs": 50696.04206085205,
+    "endMs": 55908.889055252075
+  },
+  "probeClock": "performance.now, independent from screencast epoch clock; not falsely aligned",
+  "folds": [
+    {
+      "id": 1,
+      "startRelativeToFirstClickMs": 0,
+      "observationDurationMs": 467.19999998807907,
+      "morphObservedFromMs": -0.4000000119267497,
+      "morphObservedThroughMs": 416.09999998807325,
+      "completedMs": 432.69999998807907
+    },
+    {
+      "id": 2,
+      "startRelativeToFirstClickMs": 663,
+      "observationDurationMs": 420.19999998807907,
+      "morphObservedFromMs": 3.0999999880732503,
+      "morphObservedThroughMs": 369.69999998807907,
+      "completedMs": 386.59999998807325
+    },
+    {
+      "id": 3,
+      "startRelativeToFirstClickMs": 1162.2999999970198,
+      "observationDurationMs": 420.79999999701977,
+      "morphObservedFromMs": 3.8999999910593033,
+      "morphObservedThroughMs": 370.2999999910535,
+      "completedMs": 386.9999999910651
+    },
+    {
+      "id": 4,
+      "startRelativeToFirstClickMs": 1648,
+      "observationDurationMs": 402.09999999403954,
+      "morphObservedFromMs": 1.3999999880761607,
+      "morphObservedThroughMs": 351.499999988082,
+      "completedMs": 368.09999998807325
+    },
+    {
+      "id": 5,
+      "startRelativeToFirstClickMs": 2146.199999988079,
+      "observationDurationMs": 403.5,
+      "morphObservedFromMs": 3.3000000000029104,
+      "morphObservedThroughMs": 353.1000000000058,
+      "completedMs": 369.8000000000029
+    },
+    {
+      "id": 6,
+      "startRelativeToFirstClickMs": 2645.5,
+      "observationDurationMs": 404.3999999910593,
+      "morphObservedFromMs": 3.9999999880819814,
+      "morphObservedThroughMs": 353.89999998807616,
+      "completedMs": 370.59999998807325
+    },
+    {
+      "id": 7,
+      "startRelativeToFirstClickMs": 3150,
+      "observationDurationMs": 400.19999998807907,
+      "morphObservedFromMs": -0.5000000119180186,
+      "morphObservedThroughMs": 349.499999988082,
+      "completedMs": 365.999999988082
+    },
+    {
+      "id": 8,
+      "startRelativeToFirstClickMs": 3650.699999988079,
+      "observationDurationMs": 415.90000000596046,
+      "morphObservedFromMs": -1.1680000000051223,
+      "morphObservedThroughMs": 365.3000000000029,
+      "completedMs": 382.1000000000058
+    },
+    {
+      "id": 9,
+      "startRelativeToFirstClickMs": 4179.399999991059,
+      "observationDurationMs": 470.29999999701977,
+      "morphObservedFromMs": 3.4659999970172066,
+      "morphObservedThroughMs": 419.8999999970256,
+      "completedMs": 436.5999999970227
+    },
+    {
+      "id": 10,
+      "startRelativeToFirstClickMs": 4785,
+      "observationDurationMs": 414.8999999910593,
+      "morphObservedFromMs": 14.531999988073949,
+      "morphObservedThroughMs": 364.2999999880849,
+      "completedMs": 380.89999998807616
+    }
+  ]
+}

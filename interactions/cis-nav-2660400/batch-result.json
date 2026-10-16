@@ -1,0 +1,615 @@
+{
+  "sourceCommit": "26604006a932b564ed6468a100c37a15f5bc4644",
+  "version": "0.1.194",
+  "specFreeze": "028dab55a3877656c115439835d1d0d14465e4ee",
+  "origin": "http://127.0.0.1:4174",
+  "environment": "Codex In-app Browser, Windows, DPR1, resolved light, 110%; exact engine version unavailable through supported Browser.getVersion",
+  "N1": {
+    "status": "通过",
+    "matrix": [
+      {
+        "width": 1364,
+        "view": "agents",
+        "ids": [
+          1,
+          2
+        ],
+        "reuse": "N3 round1 and N2 agents"
+      },
+      {
+        "width": 1364,
+        "view": "gateway",
+        "ids": [
+          53,
+          54
+        ],
+        "reuse": "N2 gateway"
+      },
+      {
+        "width": 1364,
+        "view": "settings",
+        "ids": [
+          83,
+          84
+        ]
+      },
+      {
+        "width": 1048,
+        "view": "agents",
+        "ids": [
+          85,
+          86
+        ]
+      },
+      {
+        "width": 1048,
+        "view": "settings",
+        "ids": [
+          87,
+          88
+        ]
+      },
+      {
+        "width": 1048,
+        "view": "gateway",
+        "ids": [
+          89,
+          90
+        ]
+      },
+      {
+        "width": 900,
+        "view": "agents",
+        "ids": [
+          91,
+          92
+        ]
+      },
+      {
+        "width": 900,
+        "view": "settings",
+        "ids": [
+          93,
+          94
+        ]
+      },
+      {
+        "width": 900,
+        "view": "gateway",
+        "ids": [
+          95,
+          96
+        ]
+      }
+    ],
+    "failures": []
+  },
+  "N2": {
+    "status": "通过",
+    "pages": [
+      {
+        "view": "agents",
+        "ids": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
+      },
+      {
+        "view": "providers",
+        "ids": [
+          33,
+          34,
+          35,
+          36,
+          37,
+          38,
+          39,
+          40,
+          41,
+          42
+        ]
+      },
+      {
+        "view": "routing",
+        "ids": [
+          43,
+          44,
+          45,
+          46,
+          47,
+          48,
+          49,
+          50,
+          51,
+          52
+        ]
+      },
+      {
+        "view": "gateway",
+        "ids": [
+          53,
+          54,
+          55,
+          56,
+          57,
+          58,
+          59,
+          60,
+          61,
+          62
+        ]
+      },
+      {
+        "view": "usage",
+        "ids": [
+          63,
+          64,
+          65,
+          66,
+          67,
+          68,
+          69,
+          70,
+          71,
+          72
+        ]
+      },
+      {
+        "view": "plugins",
+        "ids": [
+          73,
+          74,
+          75,
+          76,
+          77,
+          78,
+          79,
+          80,
+          81,
+          82
+        ]
+      }
+    ],
+    "failures": [],
+    "roundedMeasurements": [
+      {
+        "id": 1,
+        "view": "agents",
+        "offsetWidth": 57,
+        "inlineWidth": "57px",
+        "computedWidth": "56.9886px",
+        "buttonRectWidth": 62.984375,
+        "thumbRectWidth": 62.6875,
+        "rectXDifference": 0.01251220703125,
+        "rectWidthDifference": -0.296875
+      },
+      {
+        "id": 3,
+        "view": "agents",
+        "offsetWidth": 57,
+        "inlineWidth": "57px",
+        "computedWidth": "56.9886px",
+        "buttonRectWidth": 62.984375,
+        "thumbRectWidth": 62.6875,
+        "rectXDifference": 0.01251220703125,
+        "rectWidthDifference": -0.296875
+      },
+      {
+        "id": 5,
+        "view": "agents",
+        "offsetWidth": 57,
+        "inlineWidth": "57px",
+        "computedWidth": "56.9886px",
+        "buttonRectWidth": 62.984375,
+        "thumbRectWidth": 62.6875,
+        "rectXDifference": 0.01251220703125,
+        "rectWidthDifference": -0.296875
+      },
+      {
+        "id": 7,
+        "view": "agents",
+        "offsetWidth": 57,
+        "inlineWidth": "57px",
+        "computedWidth": "56.9886px",
+        "buttonRectWidth": 62.984375,
+        "thumbRectWidth": 62.6875,
+        "rectXDifference": 0.01251220703125,
+        "rectWidthDifference": -0.296875
+      },
+      {
+        "id": 9,
+        "view": "agents",
+        "offsetWidth": 57,
+        "inlineWidth": "57px",
+        "computedWidth": "56.9886px",
+        "buttonRectWidth": 62.984375,
+        "thumbRectWidth": 62.6875,
+        "rectXDifference": 0.01251220703125,
+        "rectWidthDifference": -0.296875
+      },
+      {
+        "id": 33,
+        "view": "providers",
+        "offsetWidth": 61,
+        "inlineWidth": "61px",
+        "computedWidth": "60.9943px",
+        "buttonRectWidth": 67.625,
+        "thumbRectWidth": 67.09375,
+        "rectXDifference": -0.2718505859375,
+        "rectWidthDifference": -0.53125
+      },
+      {
+        "id": 35,
+        "view": "providers",
+        "offsetWidth": 61,
+        "inlineWidth": "61px",
+        "computedWidth": "60.9943px",
+        "buttonRectWidth": 67.625,
+        "thumbRectWidth": 67.09375,
+        "rectXDifference": -0.2718505859375,
+        "rectWidthDifference": -0.53125
+      },
+      {
+        "id": 37,
+        "view": "providers",
+        "offsetWidth": 61,
+        "inlineWidth": "61px",
+        "computedWidth": "60.9943px",
+        "buttonRectWidth": 67.625,
+        "thumbRectWidth": 67.09375,
+        "rectXDifference": -0.2718505859375,
+        "rectWidthDifference": -0.53125
+      },
+      {
+        "id": 39,
+        "view": "providers",
+        "offsetWidth": 61,
+        "inlineWidth": "61px",
+        "computedWidth": "60.9943px",
+        "buttonRectWidth": 67.625,
+        "thumbRectWidth": 67.09375,
+        "rectXDifference": -0.2718505859375,
+        "rectWidthDifference": -0.53125
+      },
+      {
+        "id": 41,
+        "view": "providers",
+        "offsetWidth": 61,
+        "inlineWidth": "61px",
+        "computedWidth": "60.9943px",
+        "buttonRectWidth": 67.625,
+        "thumbRectWidth": 67.09375,
+        "rectXDifference": -0.2718505859375,
+        "rectWidthDifference": -0.53125
+      },
+      {
+        "id": 43,
+        "view": "routing",
+        "offsetWidth": 49,
+        "inlineWidth": "49px",
+        "computedWidth": "48.9915px",
+        "buttonRectWidth": 53.875,
+        "thumbRectWidth": 53.890625,
+        "rectXDifference": 0.3031005859375,
+        "rectWidthDifference": 0.015625
+      },
+      {
+        "id": 45,
+        "view": "routing",
+        "offsetWidth": 49,
+        "inlineWidth": "49px",
+        "computedWidth": "48.9915px",
+        "buttonRectWidth": 53.875,
+        "thumbRectWidth": 53.890625,
+        "rectXDifference": 0.3031005859375,
+        "rectWidthDifference": 0.015625
+      },
+      {
+        "id": 47,
+        "view": "routing",
+        "offsetWidth": 49,
+        "inlineWidth": "49px",
+        "computedWidth": "48.9915px",
+        "buttonRectWidth": 53.875,
+        "thumbRectWidth": 53.890625,
+        "rectXDifference": 0.3031005859375,
+        "rectWidthDifference": 0.015625
+      },
+      {
+        "id": 49,
+        "view": "routing",
+        "offsetWidth": 49,
+        "inlineWidth": "49px",
+        "computedWidth": "48.9915px",
+        "buttonRectWidth": 53.875,
+        "thumbRectWidth": 53.890625,
+        "rectXDifference": 0.3031005859375,
+        "rectWidthDifference": 0.015625
+      },
+      {
+        "id": 51,
+        "view": "routing",
+        "offsetWidth": 49,
+        "inlineWidth": "49px",
+        "computedWidth": "48.9915px",
+        "buttonRectWidth": 53.875,
+        "thumbRectWidth": 53.890625,
+        "rectXDifference": 0.3031005859375,
+        "rectWidthDifference": 0.015625
+      },
+      {
+        "id": 53,
+        "view": "gateway",
+        "offsetWidth": 49,
+        "inlineWidth": "49px",
+        "computedWidth": "48.9915px",
+        "buttonRectWidth": 53.875,
+        "thumbRectWidth": 53.890625,
+        "rectXDifference": 0.328125,
+        "rectWidthDifference": 0.015625
+      },
+      {
+        "id": 55,
+        "view": "gateway",
+        "offsetWidth": 49,
+        "inlineWidth": "49px",
+        "computedWidth": "48.9915px",
+        "buttonRectWidth": 53.875,
+        "thumbRectWidth": 53.890625,
+        "rectXDifference": 0.328125,
+        "rectWidthDifference": 0.015625
+      },
+      {
+        "id": 57,
+        "view": "gateway",
+        "offsetWidth": 49,
+        "inlineWidth": "49px",
+        "computedWidth": "48.9915px",
+        "buttonRectWidth": 53.875,
+        "thumbRectWidth": 53.890625,
+        "rectXDifference": 0.328125,
+        "rectWidthDifference": 0.015625
+      },
+      {
+        "id": 59,
+        "view": "gateway",
+        "offsetWidth": 49,
+        "inlineWidth": "49px",
+        "computedWidth": "48.9915px",
+        "buttonRectWidth": 53.875,
+        "thumbRectWidth": 53.890625,
+        "rectXDifference": 0.328125,
+        "rectWidthDifference": 0.015625
+      },
+      {
+        "id": 61,
+        "view": "gateway",
+        "offsetWidth": 49,
+        "inlineWidth": "49px",
+        "computedWidth": "48.9915px",
+        "buttonRectWidth": 53.875,
+        "thumbRectWidth": 53.890625,
+        "rectXDifference": 0.328125,
+        "rectWidthDifference": 0.015625
+      },
+      {
+        "id": 63,
+        "view": "usage",
+        "offsetWidth": 49,
+        "inlineWidth": "49px",
+        "computedWidth": "48.9915px",
+        "buttonRectWidth": 53.875,
+        "thumbRectWidth": 53.890625,
+        "rectXDifference": 0.3531494140625,
+        "rectWidthDifference": 0.015625
+      },
+      {
+        "id": 65,
+        "view": "usage",
+        "offsetWidth": 49,
+        "inlineWidth": "49px",
+        "computedWidth": "48.9915px",
+        "buttonRectWidth": 53.875,
+        "thumbRectWidth": 53.890625,
+        "rectXDifference": 0.3531494140625,
+        "rectWidthDifference": 0.015625
+      },
+      {
+        "id": 67,
+        "view": "usage",
+        "offsetWidth": 49,
+        "inlineWidth": "49px",
+        "computedWidth": "48.9915px",
+        "buttonRectWidth": 53.875,
+        "thumbRectWidth": 53.890625,
+        "rectXDifference": 0.3531494140625,
+        "rectWidthDifference": 0.015625
+      },
+      {
+        "id": 69,
+        "view": "usage",
+        "offsetWidth": 49,
+        "inlineWidth": "49px",
+        "computedWidth": "48.9915px",
+        "buttonRectWidth": 53.875,
+        "thumbRectWidth": 53.890625,
+        "rectXDifference": 0.3531494140625,
+        "rectWidthDifference": 0.015625
+      },
+      {
+        "id": 71,
+        "view": "usage",
+        "offsetWidth": 49,
+        "inlineWidth": "49px",
+        "computedWidth": "48.9915px",
+        "buttonRectWidth": 53.875,
+        "thumbRectWidth": 53.890625,
+        "rectXDifference": 0.3531494140625,
+        "rectWidthDifference": 0.015625
+      },
+      {
+        "id": 73,
+        "view": "plugins",
+        "offsetWidth": 49,
+        "inlineWidth": "49px",
+        "computedWidth": "48.9915px",
+        "buttonRectWidth": 53.875,
+        "thumbRectWidth": 53.890625,
+        "rectXDifference": 0.378173828125,
+        "rectWidthDifference": 0.015625
+      },
+      {
+        "id": 75,
+        "view": "plugins",
+        "offsetWidth": 49,
+        "inlineWidth": "49px",
+        "computedWidth": "48.9915px",
+        "buttonRectWidth": 53.875,
+        "thumbRectWidth": 53.890625,
+        "rectXDifference": 0.378173828125,
+        "rectWidthDifference": 0.015625
+      },
+      {
+        "id": 77,
+        "view": "plugins",
+        "offsetWidth": 49,
+        "inlineWidth": "49px",
+        "computedWidth": "48.9915px",
+        "buttonRectWidth": 53.875,
+        "thumbRectWidth": 53.890625,
+        "rectXDifference": 0.378173828125,
+        "rectWidthDifference": 0.015625
+      },
+      {
+        "id": 79,
+        "view": "plugins",
+        "offsetWidth": 49,
+        "inlineWidth": "49px",
+        "computedWidth": "48.9915px",
+        "buttonRectWidth": 53.875,
+        "thumbRectWidth": 53.890625,
+        "rectXDifference": 0.378173828125,
+        "rectWidthDifference": 0.015625
+      },
+      {
+        "id": 81,
+        "view": "plugins",
+        "offsetWidth": 49,
+        "inlineWidth": "49px",
+        "computedWidth": "48.9915px",
+        "buttonRectWidth": 53.875,
+        "thumbRectWidth": 53.890625,
+        "rectXDifference": 0.378173828125,
+        "rectWidthDifference": 0.015625
+      }
+    ],
+    "measurementNote": "No tolerance used for design targets. Inline width and transform exactly match source offsetWidth/offsetLeft. DOMRect/computed fractional differences are recorded separately at CSS zoom1.1."
+  },
+  "N3": {
+    "status": "待验",
+    "technicalObservations": [
+      {
+        "round": 1,
+        "entries": 10,
+        "screenFrames": 184,
+        "capturedBytes": 3152030,
+        "rafIntervals": 240,
+        "minMs": 16.39999999999418,
+        "medianMs": 16.69999999999709,
+        "maxMs": 66.60000000000582,
+        "longTasks": [],
+        "allLongTaskSupported": true,
+        "hiddenSamples": 0,
+        "timeouts": 0,
+        "declared": {
+          "duration": ".32s",
+          "easing": "cubic-bezier(.42, 0, .58, 1)"
+        },
+        "counterDelta": {
+          "LayoutDuration": 0.071174,
+          "RecalcStyleDuration": 0.729962,
+          "DevToolsCommandDuration": 0.066963,
+          "ScriptDuration": 0.124162,
+          "TaskDuration": 1.800612
+        }
+      },
+      {
+        "round": 2,
+        "entries": 10,
+        "screenFrames": 195,
+        "capturedBytes": 3339592,
+        "rafIntervals": 239,
+        "minMs": 16,
+        "medianMs": 16.699999999982538,
+        "maxMs": 33.368000000016764,
+        "longTasks": [],
+        "allLongTaskSupported": true,
+        "hiddenSamples": 0,
+        "timeouts": 0,
+        "declared": {
+          "duration": ".32s",
+          "easing": "cubic-bezier(.42, 0, .58, 1)"
+        },
+        "counterDelta": {
+          "LayoutDuration": 0.068672,
+          "RecalcStyleDuration": 0.754312,
+          "DevToolsCommandDuration": 0.052027000000000004,
+          "ScriptDuration": 0.100578,
+          "TaskDuration": 1.781811
+        }
+      },
+      {
+        "round": 3,
+        "entries": 10,
+        "screenFrames": 180,
+        "capturedBytes": 3081223,
+        "rafIntervals": 234,
+        "minMs": 16.39999999999418,
+        "medianMs": 16.699999999982538,
+        "maxMs": 66.69999999998254,
+        "longTasks": [],
+        "allLongTaskSupported": true,
+        "hiddenSamples": 0,
+        "timeouts": 0,
+        "declared": {
+          "duration": ".32s",
+          "easing": "cubic-bezier(.42, 0, .58, 1)"
+        },
+        "counterDelta": {
+          "LayoutDuration": 0.07375100000000001,
+          "RecalcStyleDuration": 0.7802019999999998,
+          "DevToolsCommandDuration": 0.058729,
+          "ScriptDuration": 0.11024199999999998,
+          "TaskDuration": 1.8932520000000004
+        }
+      }
+    ],
+    "controlWithoutScreencast": [
+      {
+        "id": 31,
+        "maxMs": 16.900000000023283,
+        "longTasks": []
+      },
+      {
+        "id": 32,
+        "maxMs": 17,
+        "longTasks": []
+      }
+    ],
+    "boundary": "Actual frames, visible-document rAF cadence and longtask evidence collected. Screencast sampling is acknowledgement-paced, not renderer FPS. Peaks during recording cannot be silently passed; visual independent review remains. No UI parameters changed."
+  },
+  "recordedToggles": 96,
+  "extraDiagnosticToggles": [
+    31,
+    32
+  ],
+  "initialNavPreference": null
+}
