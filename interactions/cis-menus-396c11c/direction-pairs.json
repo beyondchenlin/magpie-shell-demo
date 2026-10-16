@@ -1,0 +1,22 @@
+{
+  "source": "396c11cb266f9e832c1cb9dfd0e1d75fc1c469a2",
+  "checks": [
+    {
+      "case": "model-down-then-up",
+      "selected": "gpt-5",
+      "query": "gpt"
+    },
+    {
+      "case": "row-up-wrap-skips-disabled",
+      "active": "隐藏"
+    },
+    {
+      "case": "protocol-up",
+      "active": "English"
+    },
+    {
+      "case": "date-up-down-seven-days",
+      "active": "2026-10-16"
+    }
+  ]
+}

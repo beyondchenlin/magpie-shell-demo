@@ -1,19 +1,19 @@
 # CIS 执行进度
 
-更新时间：2026-10-16 22:51 Asia/Shanghai
+更新时间：2026-10-16 23:00 Asia/Shanghai
 
-- 当前阶段：phase2_menus_c1_c2_c4_reproducing。唯一执行者本聊天01a14465-ad94-73e0-a0ad-991539957fa0；监督01a143c3-8101-75e1-b638-c39ad15d55ed；无子代理。
-- **29项：通过11、失败2（C1/C2）、待验16。** C4有限矩阵完成，组件/调用blob相同，862789f补齐两次Alt↑保持焦点。C2关闭事件层、gpt回车与C1原点已定向修正；C1完整校算和C2 keepOpen补丁复验继续，不能提前关闭失败。Agent初焦正常，不把旧静态风险当成已复现缺陷。
-- 通过项：N1/N2=2660400/v194；S2/S3=90099b9/v195；G1/G2/G3=874268b/v196；S1/N4/G4=0a2a014/v197的有限核验/有依据复用。0a2a014六主页面12次受影响导航回归通过；最终候选仍需受影响回归。N3保留独立动态复核，不重录三轮。
-- 当前实际受测UI：862789fc81599c9f70c966f53fed1386e3f74fae /0.1.198；4176受管预览session50323、menus-candidate-4 Git archive隔离产物。候选3 ef3323f已构建但未启动/未浏览器测试，汇总时发现clientHeight/offsetWidth取整后补为862789f。候选4含keepOpen焦点/查询修正和实际浮点frame尺寸；其余继承草稿不整体提交。
+- 当前阶段：phase2_confirm_providers_plugins_c3_p1_p4_reproducing。唯一执行者本聊天01a14465-ad94-73e0-a0ad-991539957fa0；监督01a143c3-8101-75e1-b638-c39ad15d55ed；无子代理。
+- **29项：通过13、失败0、待验16。** C1/C2/C4有限矩阵已完成；396c11c修复分段重绘up类，All/Order/Shown方向、Escape回焦、立即进入其他入口均过；字体Home/End边界也实际验证。先前真实失败及工具无效尝试均保留，未通过改规格消除失败。下一批C3/P1/P4最多3ID。
+- 通过项：N1/N2=2660400/v194；S2/S3=90099b9/v195；G1/G2/G3=874268b/v196；S1/N4/G4=0a2a014/v197；C1/C2/C4=396c11c/v198（有明确复用依据）。0a2a014六主页面12次受影响导航回归通过，后续菜单改动不改导航内核。N3保留独立动态复核，不重录三轮。
+- 当前实际受测UI：396c11cb266f9e832c1cb9dfd0e1d75fc1c469a2 /0.1.198；4176受管预览session16586、menus-candidate-5 Git archive隔离产物。862789f→396c11c只加Agent分段布局依赖及hook可选key，不再改坐标。候选3 ef3323f仅构建未浏览器测试，记录保留。其余继承草稿不整体提交。
 - 规则：唯一入口docs/CIS-CONTROLS.md。冻结028dab5保留，监督已明确批准R01的window级联勘误并独立提交3c2d6de；S1完成原有限核验后才通过。其他冻结条款与29项范围不变，不再写S1待裁定。
 - 监督已支持S2/S3及G3/G4有限结论、确认4176为0a2a014；最新要求明确C2失败计数并继续C1/C2/C4最多3ID，不需等常规批次批准。C3与Providers/Plugins后续一起核验。
-- 检查：862789f build/TypeScript/两guard通过，候选55 TS/TSX lint55 warnings/0 errors；独立协议fixture严格TS编译与非live/live/NUL/清除计数通过，原生产资源hash未变，另有fixture manifest。此前基线59/0。一次locator.press(ArrowDown)意外改变输入已保留，tab.pressKey正确，没有因此改产品。
-- Git：分支tip/0.1.121-cis-appearance-shell，PR #1。最近已确认推送e19fd5a；本地HEAD 862789f，上次push遇408/sideband断开，后续读远端也TLS EOF，是否已落远端未确认。PR标题/正文更新经连接器、gh GraphQL与REST失败，未报更新成功；停止无信息重试，本地继续保全。
-- 现场：用户4173/PID21080与dist未动；本任务4174/PID98524、4175/PID76536保留；受管4176按批次Ctrl+C切换。早前自动审核拒绝OS stop/restart4174（仅blocked by policy），没有绕过停止该进程。自有tab18现已恢复31键，current与initial逐键相同；此前文字误计30键已更正，实际fixture/JSON一直为31键。沿用该页sessionStorage保全初始快照，用户4173偏好未触及。
-- 证据：interactions/cis-nav-2660400、cis-settings-90099b9、cis-gateway-874268b、cis-layout-0a2a014及cis-menus-before-0a2a014/faea794/d1f3e03/862789f。源码调用索引现绑定862789f：20文件/465调用/34裸DOM候选，不把数量当通过。四原问题图保全，含个人界面的原图不公开。
+- 检查：396c11c build/TypeScript/两guard通过，55 TS/TSX lint55 warnings/0 errors；最终浏览器warn/error为空。独立协议fixture严格TS编译与非live/live/NUL/清除计数通过，原产品资源hash未变，另有manifest。此前基线59/0。locator.press(ArrowDown)无效输入已保留，tab.pressKey正确，没有因此改产品。
+- Git：分支tip/0.1.121-cis-appearance-shell，PR #1。最近已确认推送e19fd5a；本地UI源码检查点396c11c，后续证据提交不作为新UI身份。上次push遇408/sideband断开，随后读远端TLS EOF，未确认落地。PR标题/正文更新经连接器、gh GraphQL/REST失败，未报成功；远端/云身份外部阻塞，停止无信息重试。
+- 现场：用户4173/PID21080与dist未动；本任务4174/PID98524、4175/PID76536保留，受管4176按批次Ctrl+C切换。早前自动审核拒绝OS stop/restart4174，没有绕过。tab18已显式恢复31键、current与initial逐键相同，viewport reset后关页；此前文字误计30已更正，实际JSON一直31。下一批先做新snapshot再测，用户4173偏好未触及。
+- 证据：interactions/cis-nav-2660400、cis-settings-90099b9、cis-gateway-874268b、cis-layout-0a2a014及cis-menus-before-0a2a014/faea794/d1f3e03/862789f/396c11c。索引绑定396c11c：20文件/465调用/34裸DOM候选，不把数量当通过。四原问题图保全，含个人界面的原图不公开。F02初焦误判已在审计账本更正。
 - 空间/保全：唯一工作树D:/demo1/tagmaai；不安装/复制依赖环境。D低于20GiB已提示，下一构建预计<30MiB且保留>10GiB；C24.94/D18.82GiB附近。已先列清单并核验边界/重解析/进程引用/独占锁/近期写入，回收7份本任务source.tar运输文件34232320逻辑bytes，解压源码/构建/历史证据均保留；D前20203614208、后20237852672bytes，含并发写入，不把逻辑大小冒称物理净释放。清单及结果.cache/cis-navigation-20261016/tar-cleanup-*.json。接管.cache补丁/hash/原图仍保留。
-- 剩余具体子用例：C1在Order→All时React className覆盖up类，已定位到分段重绘未触发定位hook，新增seg布局依赖，尚待实际构建复验；不是再调整坐标参数。C1稳定1048右边相同、gap5.50001px；模型下方8px钳制及Agent相反边界正确，其他未变/有效数值相同分支复用有依据。C2 keepOpen鼠标/键盘均保留查询和INPUT焦点、typed新ID才清查询；日期程序滚动301.818仍开、用户滚轮回0则关，均已完成，只剩最后hook变更后的Escape清理回归。自有tab18现已显式恢复31键逐键相同。最新C24.61/D54.59GiB，空间回升不归因本任务32.7MiB tar回收。
+- 已完成本批子用例：C1定位/方向最终回归通过，C2六族按用途闭合，C4有限模型管理通过，完整来源矩阵见interactions/cis-menus-396c11c/NOTES.md；AST索引现绑定396c11c，20文件/465调用/34裸DOM候选。下一批具体范围是Providers dirty discard及Plugins Remove的C3焦点/遮罩/回焦两入口，同时完成P1供应商、P4插件已有mock路径；先复现再采纳相应继承草稿，不顺带提交其他文件。最新C24.61/D54.59GiB，空间回升不归因本任务32.7MiB tar回收。
 - 外部阻塞：监督独立GitHub fetch也连续3轮transport失败，远端同步/云预览身份暂不可确认。最小恢复条件是认证连接器或Git能读回分支SHA并完成push确认；只在连通有新证据时做一次有界核验，停止同路径盲重试，不关闭TLS或强推。
 
 ## 实质进展记录

@@ -104,10 +104,10 @@
 | G2 | 五种 API | R02/R22 | OpenAI/Responses/Anthropic/Gemini/System One 逐一切换，字段和代码示例同步，无旧选中残留 | 通过（874268b；五API curl及六条已修分支，地址/占位/提示同步） |
 | G3 | 复制 | R10/R14/R22 | 地址/密钥/模型/示例各一遍；内容正确，成功反馈和恢复正确，失败不伪报成功 | 通过（874268b；实际剪贴板四类文本/重复约1200ms恢复/受控失败/卸载，无新console错误） |
 | G4 | 示例布局 | R02/R14/R22 | OpenAI Shell/curl/Python/Node各一次；Shell和curl各查两OS，Python/Node无OS控件，SystemOne无Shell；1364/390代码只在pre内滚动，复制钮在pre外 | 通过（0a2a014；四示例/两OS/pre横滚；修复折行thumb高度缓存，受影响导航12次回归通过） |
-| C1 | 浮层打开与定位 | R07/R08/R12/R13/R18/R20 | 模型/协议/Agent 模型/行菜单/字体/日期六类，桌面和390各开一次；首次出现且在窗口内，锚点与方向正确 | 失败（faea794：实际边框0.606061px而clientLeft=1，模型弹层稳定左移0.4375屏幕px；[复现](../interactions/cis-menus-faea794/menu-candidate-1.json)，修复中） |
-| C2 | 菜单关闭与焦点 | R12/R13/R18六族矩阵 | 上述六类按各自原生配方验证 Escape、外部点击、键盘；行菜单验证上下循环、禁用跳过、Tab、外部滚动与 resize；关闭回焦符合参考 | 失败（0a2a014关闭事件层错误在faea794子用例已修复；faea794另复现搜索gpt有候选却回车提交字面值gpt，[复现](../interactions/cis-menus-faea794/menu-candidate-1.json)，修复及完整矩阵复验中） |
+| C1 | 浮层打开与定位 | R07/R08/R12/R13/R18/R20 | 模型/协议/Agent 模型/行菜单/字体/日期六类，桌面和390各开一次；首次出现且在窗口内，锚点与方向正确 | 通过（396c11c；六族1364/390、有注释372/无有效注释300、实际浮点frame及分段up方向；[矩阵与复用依据](../interactions/cis-menus-396c11c/NOTES.md)） |
+| C2 | 菜单关闭与焦点 | R12/R13/R18六族矩阵 | 上述六类按各自原生配方验证 Escape、外部点击、键盘；行菜单验证上下循环、禁用跳过、Tab、外部滚动与 resize；关闭回焦符合参考 | 通过（396c11c；即时ghost/用途键盘与回焦、keepOpen、外点/内部及用户外部滚动/resize、程序滚动保持；协议未接线公开分支另有独立fixture；[证据](../interactions/cis-menus-396c11c/NOTES.md)） |
 | C3 | 确认框 | R11 | 丢弃编辑/移除插件两条入口；取消默认焦点、Tab循环、Escape、遮罩点击、框内拖出不误关、关闭回焦、窗口内遮罩，逐项验证 | 待验 |
-| C4 | Agent 模型管理 | R05/R12/R18/R20 | All/Shown/Order；分组折叠；跨供应商搜索；Shown保留刚隐藏项；Current锁；批量二次点击/4秒/其他动作撤回；Only逐agent；首焦搜索、连续键盘重排回焦/拖拽/默认恢复、scroll/resize生命周期 | 通过（faea794深层状态/拖拽；d1f3e03计时4012ms/resize；862789f两次Alt↑，组件/调用blob相同；[证据](../interactions/cis-menus-862789f/NOTES.md)） |
+| C4 | Agent 模型管理 | R05/R12/R18/R20 | All/Shown/Order；分组折叠；跨供应商搜索；Shown保留刚隐藏项；Current锁；批量二次点击/4秒/其他动作撤回；Only逐agent；首焦搜索、连续键盘重排回焦/拖拽/默认恢复、scroll/resize生命周期 | 通过（faea794深态/拖拽；d1f3e03计时4012ms/resize；862789f两次Alt↑；396c11c布局依赖回归，业务无变；[证据与复用](../interactions/cis-menus-396c11c/NOTES.md)） |
 | P1 | 供应商 | R01–R15/R23 | 空态、添加表单、编辑表单、字段菜单、排序菜单、丢弃确认各一条 mock 路径；不接真实订阅 | 待验 |
 | P2 | 路由 | R24及所用公共控件 | 空、组创建/保存/再编辑；intent/tokens/images/effort/compact/agents/folders/exceptFolders/time各加删一次；intent+images互不误删；规则移动/暂停/删除、组复制/排序。pause只允许后四类；只验已有mock | 待验 |
 | P3 | 用量 | R05/R13/R25 | 概览/请求/会话/上下文四页签，默认空态和filled fixture；刷新周期、日期选择、归档开关及一条详情；不出现用户无须看到的演示按钮 | 待验 |

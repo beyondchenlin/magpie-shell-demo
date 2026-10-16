@@ -1,0 +1,33 @@
+diff --git a/src/components/AgentModelsPop.tsx b/src/components/AgentModelsPop.tsx
+index 7bfb066..1330e94 100644
+--- a/src/components/AgentModelsPop.tsx
++++ b/src/components/AgentModelsPop.tsx
+@@ -81,7 +81,8 @@ export function AgentModelsPop({ open, anchor, agentName, agentId, models, curre
+     const timer = setTimeout(() => setArmed(null), 4000);
+     return () => clearTimeout(timer);
+   }, [armed]);
+-  useAnchoredPopover(ref, anchor, shown, { recipe: "agent", requestedWidth: railed ? 580 : 380 });
++  // Segment redraws change React's className; restore placement's up class too.
++  useAnchoredPopover(ref, anchor, shown, { recipe: "agent", requestedWidth: railed ? 580 : 380 }, seg);
+   useEffect(() => {
+     if (!shown) return;
+     anchor?.classList.add("open");
+diff --git a/src/lib/useAnchoredPopover.ts b/src/lib/useAnchoredPopover.ts
+index 93bfe3b..adda4f1 100644
+--- a/src/lib/useAnchoredPopover.ts
++++ b/src/lib/useAnchoredPopover.ts
+@@ -4,6 +4,7 @@ import { placePopover, popoverHost, type PopoverPlacement } from "./popover";
+ export function useAnchoredPopover(
+   ref: RefObject<HTMLElement | null>, anchor: HTMLElement | null | RefObject<HTMLElement | null>, shown: boolean,
+   { recipe = "menu", requestedWidth, align = "left", dx = 0, gap = 5, preferUp = false, maxHeight, arrowMaxWidth, arrowInset }: PopoverPlacement = {},
++  layoutKey?: string,
+ ) {
+   useLayoutEffect(() => {
+     const box = ref.current;
+@@ -22,5 +23,5 @@ export function useAnchoredPopover(
+       window.removeEventListener("resize", place);
+       document.removeEventListener("scroll", place, true);
+     };
+-  }, [ref, anchor, shown, recipe, requestedWidth, align, dx, gap, preferUp, maxHeight, arrowMaxWidth, arrowInset]);
++  }, [ref, anchor, shown, recipe, requestedWidth, align, dx, gap, preferUp, maxHeight, arrowMaxWidth, arrowInset, layoutKey]);
+ }

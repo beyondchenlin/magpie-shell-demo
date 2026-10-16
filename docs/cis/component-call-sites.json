@@ -2,7 +2,7 @@
   "purpose": "Audit index only; a call site is not proof of correct runtime behavior. Raw DOM is a review queue, not an automatic defect.",
   "baseline": "e94edc6713da405285854e7d6548f3f8364bf84f",
   "specification": "028dab55a3877656c115439835d1d0d14465e4ee",
-  "candidate": "862789fc81599c9f70c966f53fed1386e3f74fae",
+  "candidate": "396c11cb266f9e832c1cb9dfd0e1d75fc1c469a2",
   "scope": "committed source snapshot, excludes inherited working-tree draft",
   "files": [
     {
@@ -11,7 +11,7 @@
     },
     {
       "file": "src/components/AgentModelsPop.tsx",
-      "sha256": "f632ac13c14a42aaddd05a4bff83ea44ec877405475e18a998f1d2f7669df2ba"
+      "sha256": "b3784695cf67ade2cdcc2b4c54aaa1d8df2a79a0efa06cae1a2783cd3109f01e"
     },
     {
       "file": "src/components/Fold.tsx",
@@ -153,14 +153,14 @@
     {
       "control": "useAnchoredPopover",
       "file": "src/components/AgentModelsPop.tsx",
-      "line": 84,
+      "line": 85,
       "local": "useAnchoredPopover",
       "import": "../lib/useAnchoredPopover"
     },
     {
       "control": "MagpieIcon",
       "file": "src/components/AgentModelsPop.tsx",
-      "line": 139,
+      "line": 140,
       "local": "MagpieIcon",
       "import": "./MagpieIcon",
       "attributes": {
@@ -170,7 +170,7 @@
     {
       "control": "PopoverPortal",
       "file": "src/components/AgentModelsPop.tsx",
-      "line": 196,
+      "line": 197,
       "local": "PopoverPortal",
       "import": "./PopoverPortal",
       "attributes": {}
@@ -4314,7 +4314,7 @@
     {
       "tag": "button",
       "file": "src/components/AgentModelsPop.tsx",
-      "line": 224,
+      "line": 225,
       "className": "{`lib-switch use-credits${preferences.only ? \" on\" : \"\"}`}"
     },
     {

@@ -33,7 +33,7 @@
 | 风险ID | 静态证据 | 需要的有限复现 / 下一步 |
 | --- | --- | --- |
 | F01 模型关闭仍留事件层 | ModelPop.dismiss及AgentModelsPop.dismiss都延时220ms才onClose，shown期间keydown/mousedown仍注册；原版立即关闭，仅ghost不可交互 | C2：按Escape/外点后立即开另一个入口、Tab、再次Escape；逐帧查影像aria/inert与事件层。不能因时长相同自动判过 |
-| F02 Agent模型初焦/重排/生命周期 | AgentModelsPop无搜索初焦调用；Order moveTo无源重绘后focus；没有scroll/resize关闭监听，只有定位hook；源app.js:3332、3516–3529有明确行为 | C4/C2：首开焦点、Alt上下连续两次、外部用户scroll/resize；内部scroll保持。须先复现再决定最小修改 |
+| F02 Agent模型初焦/重排/生命周期 | 初焦静态判断已撤回：原组件已有autoFocus，0a2a014浏览器确认正常，没有因此改初焦。实际风险为Order moveTo无源重绘后focus、缺scroll/resize关闭；源app.js:3332、3516–3529明示行为 | C4/C2已完成有限复验，见396c11c证据；保留此更正，不将旧误判当已修缺陷 |
 | F03 字体、日期、协议生命周期 | FontRow/RangeMenu/ProtoMultiMenu主要监听外点/键盘，useAnchoredPopover在scroll/resize只重定位；源各类明示关闭 | C2：分别内部滚动、用户外部滚动与resize一次；程序恢复滚动不关。共用坐标不能代替专用状态机 |
 | F04 字体style初焦 | FontRow仅family显式初焦；style原版openProtoMenu初焦选中项；当前style菜单可能仍留锚 | S2/C2：选非默认family后开style，记录activeElement，方向键一次 |
 | F05 组件配方未全收口 | 34个裸DOM候选中包含合法组件定义、原生.dot.tick、复合archive span及可能重复Library菜单；不能全删，也不能全放过 | B3：按文件/行分类为原生特例、共享包装内部、重复配方/待复现。优先处理直接影响冻结路径者，记录每项理由 |
