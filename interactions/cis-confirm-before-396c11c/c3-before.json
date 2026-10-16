@@ -1,0 +1,418 @@
+{
+  "source": "396c11cb266f9e832c1cb9dfd0e1d75fc1c469a2",
+  "checks": [
+    {
+      "case": "provider-discard-first",
+      "state": {
+        "active": {
+          "class": "text",
+          "tag": "BUTTON",
+          "text": "取消"
+        },
+        "dialog": {
+          "class": "action-confirm",
+          "open": true,
+          "rect": {
+            "bottom": 549.5625,
+            "height": 158.140625,
+            "left": 451,
+            "right": 913,
+            "top": 391.421875,
+            "width": 462,
+            "x": 451,
+            "y": 391.421875
+          },
+          "style": null
+        },
+        "root": {
+          "bottom": 816,
+          "height": 792,
+          "left": 77,
+          "right": 1287,
+          "top": 24,
+          "width": 1210,
+          "x": 77,
+          "y": 24
+        },
+        "source": "396c11cb266f9e832c1cb9dfd0e1d75fc1c469a2"
+      }
+    },
+    {
+      "case": "provider-reverse-tab",
+      "state": {
+        "active": {
+          "class": "text primary danger-fill",
+          "tag": "BUTTON",
+          "text": "放弃"
+        },
+        "dialog": {
+          "class": "action-confirm",
+          "open": true,
+          "rect": {
+            "bottom": 549.5625,
+            "height": 158.140625,
+            "left": 451,
+            "right": 913,
+            "top": 391.421875,
+            "width": 462,
+            "x": 451,
+            "y": 391.421875
+          },
+          "style": null
+        },
+        "root": {
+          "bottom": 816,
+          "height": 792,
+          "left": 77,
+          "right": 1287,
+          "top": 24,
+          "width": 1210,
+          "x": 77,
+          "y": 24
+        },
+        "source": "396c11cb266f9e832c1cb9dfd0e1d75fc1c469a2"
+      }
+    },
+    {
+      "case": "provider-forward-tab",
+      "state": {
+        "active": {
+          "class": "text",
+          "tag": "BUTTON",
+          "text": "取消"
+        },
+        "dialog": {
+          "class": "action-confirm",
+          "open": true,
+          "rect": {
+            "bottom": 549.5625,
+            "height": 158.140625,
+            "left": 451,
+            "right": 913,
+            "top": 391.421875,
+            "width": 462,
+            "x": 451,
+            "y": 391.421875
+          },
+          "style": null
+        },
+        "root": {
+          "bottom": 816,
+          "height": 792,
+          "left": 77,
+          "right": 1287,
+          "top": 24,
+          "width": 1210,
+          "x": 77,
+          "y": 24
+        },
+        "source": "396c11cb266f9e832c1cb9dfd0e1d75fc1c469a2"
+      }
+    },
+    {
+      "case": "provider-escape-return",
+      "state": {
+        "active": {
+          "class": "window web",
+          "tag": "BODY",
+          "text": "\n    \n      \n    \n    Magpie网关 127.0.0.1:3425magpie供应商Agent供应商路由网关用量插件设置没有和“”匹配的"
+        },
+        "dialog": null,
+        "root": {
+          "bottom": 816,
+          "height": 792,
+          "left": 77,
+          "right": 1287,
+          "top": 24,
+          "width": 1210,
+          "x": 77,
+          "y": 24
+        },
+        "source": "396c11cb266f9e832c1cb9dfd0e1d75fc1c469a2"
+      },
+      "draft": "<redacted>"
+    },
+    {
+      "case": "provider-return-settled",
+      "state": {
+        "active": {
+          "class": "window web",
+          "tag": "BODY",
+          "text": "\n    \n      \n    \n    Magpie网关 127.0.0.1:3425magpie供应商Agent供应商路由网关用量插件设置没有和“”匹配的"
+        },
+        "dialog": null,
+        "root": {
+          "bottom": 816,
+          "height": 792,
+          "left": 77,
+          "right": 1287,
+          "top": 24,
+          "width": 1210,
+          "x": 77,
+          "y": 24
+        },
+        "source": "396c11cb266f9e832c1cb9dfd0e1d75fc1c469a2"
+      }
+    },
+    {
+      "case": "provider-body-drag-out-before",
+      "state": {
+        "active": {
+          "class": "window web",
+          "tag": "BODY",
+          "text": "\n    \n      \n    \n    Magpie网关 127.0.0.1:3425magpie供应商Agent供应商路由网关用量插件设置没有和“”匹配的"
+        },
+        "dialog": null,
+        "root": {
+          "bottom": 816,
+          "height": 792,
+          "left": 77,
+          "right": 1287,
+          "top": 24,
+          "width": 1210,
+          "x": 77,
+          "y": 24
+        },
+        "source": "396c11cb266f9e832c1cb9dfd0e1d75fc1c469a2"
+      }
+    },
+    {
+      "case": "plugin-remove-first",
+      "state": {
+        "active": {
+          "class": "text",
+          "tag": "BUTTON",
+          "text": "取消"
+        },
+        "dialog": {
+          "class": "action-confirm",
+          "open": true,
+          "rect": {
+            "bottom": 549.5625,
+            "height": 158.140625,
+            "left": 451,
+            "right": 913,
+            "top": 391.421875,
+            "width": 462,
+            "x": 451,
+            "y": 391.421875
+          },
+          "style": null
+        },
+        "root": {
+          "bottom": 816,
+          "height": 792,
+          "left": 77,
+          "right": 1287,
+          "top": 24,
+          "width": 1210,
+          "x": 77,
+          "y": 24
+        },
+        "source": "396c11cb266f9e832c1cb9dfd0e1d75fc1c469a2"
+      }
+    },
+    {
+      "case": "plugin-reverse-tab",
+      "state": {
+        "active": {
+          "class": "text primary danger-fill",
+          "tag": "BUTTON",
+          "text": "移除"
+        },
+        "dialog": {
+          "class": "action-confirm",
+          "open": true,
+          "rect": {
+            "bottom": 549.5625,
+            "height": 158.140625,
+            "left": 451,
+            "right": 913,
+            "top": 391.421875,
+            "width": 462,
+            "x": 451,
+            "y": 391.421875
+          },
+          "style": null
+        },
+        "root": {
+          "bottom": 816,
+          "height": 792,
+          "left": 77,
+          "right": 1287,
+          "top": 24,
+          "width": 1210,
+          "x": 77,
+          "y": 24
+        },
+        "source": "396c11cb266f9e832c1cb9dfd0e1d75fc1c469a2"
+      }
+    },
+    {
+      "case": "plugin-escape-return",
+      "state": {
+        "active": {
+          "class": "text quiet",
+          "tag": "BUTTON",
+          "text": "移除"
+        },
+        "dialog": null,
+        "root": {
+          "bottom": 816,
+          "height": 792,
+          "left": 77,
+          "right": 1287,
+          "top": 24,
+          "width": 1210,
+          "x": 77,
+          "y": 24
+        },
+        "source": "396c11cb266f9e832c1cb9dfd0e1d75fc1c469a2"
+      }
+    },
+    {
+      "case": "plugin-body-drag-out-before",
+      "state": {
+        "active": {
+          "class": "text quiet",
+          "tag": "BUTTON",
+          "text": "移除"
+        },
+        "dialog": null,
+        "root": {
+          "bottom": 816,
+          "height": 792,
+          "left": 77,
+          "right": 1287,
+          "top": 24,
+          "width": 1210,
+          "x": 77,
+          "y": 24
+        },
+        "source": "396c11cb266f9e832c1cb9dfd0e1d75fc1c469a2"
+      }
+    },
+    {
+      "case": "plugin-accept-disabled-before",
+      "disabled": true,
+      "state": {
+        "active": {
+          "class": "text",
+          "tag": "BUTTON",
+          "text": "取消"
+        },
+        "dialog": {
+          "class": "action-confirm",
+          "open": true,
+          "rect": {
+            "bottom": 549.5625,
+            "height": 158.140625,
+            "left": 451,
+            "right": 913,
+            "top": 391.421875,
+            "width": 462,
+            "x": 451,
+            "y": 391.421875
+          },
+          "style": null
+        },
+        "root": {
+          "bottom": 816,
+          "height": 792,
+          "left": 77,
+          "right": 1287,
+          "top": 24,
+          "width": 1210,
+          "x": 77,
+          "y": 24
+        },
+        "source": "396c11cb266f9e832c1cb9dfd0e1d75fc1c469a2"
+      }
+    },
+    {
+      "case": "plugin-disabled-reverse-tab",
+      "state": {
+        "active": {
+          "class": "text",
+          "tag": "BUTTON",
+          "text": "取消"
+        },
+        "dialog": {
+          "class": "action-confirm",
+          "open": true,
+          "rect": {
+            "bottom": 549.5625,
+            "height": 158.140625,
+            "left": 451,
+            "right": 913,
+            "top": 391.421875,
+            "width": 462,
+            "x": 451,
+            "y": 391.421875
+          },
+          "style": null
+        },
+        "root": {
+          "bottom": 816,
+          "height": 792,
+          "left": 77,
+          "right": 1287,
+          "top": 24,
+          "width": 1210,
+          "x": 77,
+          "y": 24
+        },
+        "source": "396c11cb266f9e832c1cb9dfd0e1d75fc1c469a2"
+      }
+    },
+    {
+      "case": "plugin-disabled-forward-tab",
+      "state": {
+        "active": {
+          "class": "window web",
+          "tag": "BODY",
+          "text": "\n    \n      \n    \n    Magpie网关 127.0.0.1:3425magpie插件Agent供应商路由网关用量插件设置内置发现已安装 ·"
+        },
+        "dialog": {
+          "class": "action-confirm",
+          "open": true,
+          "rect": {
+            "bottom": 549.5625,
+            "height": 158.140625,
+            "left": 451,
+            "right": 913,
+            "top": 391.421875,
+            "width": 462,
+            "x": 451,
+            "y": 391.421875
+          },
+          "style": null
+        },
+        "root": {
+          "bottom": 816,
+          "height": 792,
+          "left": 77,
+          "right": 1287,
+          "top": 24,
+          "width": 1210,
+          "x": 77,
+          "y": 24
+        },
+        "source": "396c11cb266f9e832c1cb9dfd0e1d75fc1c469a2"
+      }
+    },
+    {
+      "case": "plugin-disabled-tab-both-flags",
+      "before": {
+        "active": "取消",
+        "disabled": true,
+        "tag": "BUTTON"
+      },
+      "after": {
+        "active": "\n    \n      \n    \n    Magpie网关 127.0.0.1",
+        "disabled": true,
+        "tag": "BODY"
+      }
+    }
+  ]
+}

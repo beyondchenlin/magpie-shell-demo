@@ -2,7 +2,7 @@
   "purpose": "Audit index only; a call site is not proof of correct runtime behavior. Raw DOM is a review queue, not an automatic defect.",
   "baseline": "e94edc6713da405285854e7d6548f3f8364bf84f",
   "specification": "028dab55a3877656c115439835d1d0d14465e4ee",
-  "candidate": "396c11cb266f9e832c1cb9dfd0e1d75fc1c469a2",
+  "candidate": "7880135320083e6192bfb4d5ab87b136cd59d4b5",
   "scope": "committed source snapshot, excludes inherited working-tree draft",
   "files": [
     {
@@ -63,7 +63,7 @@
     },
     {
       "file": "src/pages/ProvidersView.tsx",
-      "sha256": "915a2fda95c4060c79b0c8520333f0dada4863092a10687914ed36a0da7f4529"
+      "sha256": "9931478334df63ad59d1864410bf9b0b72078c53b093993edd44981d7c64c28b"
     },
     {
       "file": "src/pages/RoutingView.tsx",
@@ -1265,7 +1265,7 @@
     {
       "control": "MagpieIcon",
       "file": "src/pages/ProvidersView.tsx",
-      "line": 178,
+      "line": 184,
       "local": "MagpieIcon",
       "import": "../components/MagpieIcon",
       "attributes": {}
@@ -1273,7 +1273,7 @@
     {
       "control": "CopyButton",
       "file": "src/pages/ProvidersView.tsx",
-      "line": 199,
+      "line": 205,
       "local": "CopyButton",
       "import": "../components/CopyButton",
       "attributes": {}
@@ -1281,7 +1281,7 @@
     {
       "control": "MagpieIcon",
       "file": "src/pages/ProvidersView.tsx",
-      "line": 627,
+      "line": 625,
       "local": "MagpieIcon",
       "import": "../components/MagpieIcon",
       "attributes": {}
@@ -1289,7 +1289,7 @@
     {
       "control": "Segs",
       "file": "src/pages/ProvidersView.tsx",
-      "line": 650,
+      "line": 648,
       "local": "Segs",
       "import": "../components/Segs",
       "attributes": {}
@@ -1297,7 +1297,7 @@
     {
       "control": "Segs",
       "file": "src/pages/ProvidersView.tsx",
-      "line": 740,
+      "line": 738,
       "local": "Segs",
       "import": "../components/Segs",
       "attributes": {}
@@ -1305,7 +1305,7 @@
     {
       "control": "MagpieIcon",
       "file": "src/pages/ProvidersView.tsx",
-      "line": 1289,
+      "line": 1287,
       "local": "MagpieIcon",
       "import": "../components/MagpieIcon",
       "attributes": {}
@@ -1313,7 +1313,7 @@
     {
       "control": "MagpieIcon",
       "file": "src/pages/ProvidersView.tsx",
-      "line": 1334,
+      "line": 1332,
       "local": "MagpieIcon",
       "import": "../components/MagpieIcon",
       "attributes": {}
@@ -1321,7 +1321,7 @@
     {
       "control": "Segs",
       "file": "src/pages/ProvidersView.tsx",
-      "line": 1566,
+      "line": 1564,
       "local": "Segs",
       "import": "../components/Segs",
       "attributes": {}
@@ -1329,7 +1329,7 @@
     {
       "control": "Segs",
       "file": "src/pages/ProvidersView.tsx",
-      "line": 1613,
+      "line": 1611,
       "local": "Segs",
       "import": "../components/Segs",
       "attributes": {}
@@ -1337,7 +1337,7 @@
     {
       "control": "Tick",
       "file": "src/pages/ProvidersView.tsx",
-      "line": 1641,
+      "line": 1639,
       "local": "Tick",
       "import": "../components/Tick",
       "attributes": {}
@@ -1345,7 +1345,7 @@
     {
       "control": "Tick",
       "file": "src/pages/ProvidersView.tsx",
-      "line": 1651,
+      "line": 1649,
       "local": "Tick",
       "import": "../components/Tick",
       "attributes": {}
@@ -1353,7 +1353,7 @@
     {
       "control": "Tick",
       "file": "src/pages/ProvidersView.tsx",
-      "line": 1913,
+      "line": 1911,
       "local": "Tick",
       "import": "../components/Tick",
       "attributes": {}
@@ -1361,7 +1361,7 @@
     {
       "control": "ActionConfirm",
       "file": "src/pages/ProvidersView.tsx",
-      "line": 2166,
+      "line": 2169,
       "local": "ActionConfirm",
       "import": "../components/ActionConfirm",
       "attributes": {}
@@ -1369,14 +1369,14 @@
     {
       "control": "useRowMenu",
       "file": "src/pages/ProvidersView.tsx",
-      "line": 2217,
+      "line": 2220,
       "local": "useRowMenu",
       "import": "../lib/useRowMenu"
     },
     {
       "control": "PopoverPortal",
       "file": "src/pages/ProvidersView.tsx",
-      "line": 2257,
+      "line": 2260,
       "local": "PopoverPortal",
       "import": "../components/PopoverPortal",
       "attributes": {}
@@ -1384,7 +1384,7 @@
     {
       "control": "MagpieIcon",
       "file": "src/pages/ProvidersView.tsx",
-      "line": 2813,
+      "line": 2825,
       "local": "MagpieIcon",
       "import": "../components/MagpieIcon",
       "attributes": {}
@@ -1392,7 +1392,7 @@
     {
       "control": "MagpieIcon",
       "file": "src/pages/ProvidersView.tsx",
-      "line": 2831,
+      "line": 2843,
       "local": "MagpieIcon",
       "import": "../components/MagpieIcon",
       "attributes": {}
@@ -1400,7 +1400,7 @@
     {
       "control": "LibSwitch",
       "file": "src/pages/ProvidersView.tsx",
-      "line": 2845,
+      "line": 2857,
       "local": "LibSwitch",
       "import": "../components/LibSwitch",
       "attributes": {
@@ -1411,7 +1411,7 @@
     {
       "control": "Fold",
       "file": "src/pages/ProvidersView.tsx",
-      "line": 2922,
+      "line": 2934,
       "local": "Fold",
       "import": "../components/Fold",
       "attributes": {
@@ -1422,7 +1422,7 @@
     {
       "control": "MagpieIcon",
       "file": "src/pages/ProvidersView.tsx",
-      "line": 2969,
+      "line": 2981,
       "local": "MagpieIcon",
       "import": "../components/MagpieIcon",
       "attributes": {}
@@ -1430,7 +1430,7 @@
     {
       "control": "LibSwitch",
       "file": "src/pages/ProvidersView.tsx",
-      "line": 2980,
+      "line": 2992,
       "local": "LibSwitch",
       "import": "../components/LibSwitch",
       "attributes": {
@@ -1440,7 +1440,7 @@
     {
       "control": "ProtoMultiMenu",
       "file": "src/pages/ProvidersView.tsx",
-      "line": 3785,
+      "line": 3797,
       "local": "ProtoMultiMenu",
       "import": "../components/ProtoMultiMenu",
       "attributes": {
@@ -1451,7 +1451,7 @@
     {
       "control": "ActionConfirm",
       "file": "src/pages/ProvidersView.tsx",
-      "line": 4130,
+      "line": 4142,
       "local": "ActionConfirm",
       "import": "../components/ActionConfirm",
       "attributes": {}
@@ -4308,7 +4308,7 @@
     {
       "tag": "dialog",
       "file": "src/components/ActionConfirm.tsx",
-      "line": 79,
+      "line": 117,
       "className": "\"action-confirm\""
     },
     {
@@ -4416,7 +4416,7 @@
     {
       "tag": "div",
       "file": "src/pages/ProvidersView.tsx",
-      "line": 2257,
+      "line": 2260,
       "className": "\"pop row-menu\""
     },
     {

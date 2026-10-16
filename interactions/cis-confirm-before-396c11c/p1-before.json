@@ -1,0 +1,39 @@
+[
+  {
+    "case": "empty-provider-sheet",
+    "dom": "- banner \"Window title bar\":\n  - generic: Magpie\n  - button:\n  - button:\n  - button:\n- banner:\n  - heading \"供应商\" [level=1]\n  - button \"显示侧边栏\":\n  - navigation \"Main navigation\":\n    - button \"Agent\"\n    - button \"供应商\"\n    - button \"路由\"\n    - button \"网关\"\n    - button \"用量\"\n    - button \"插件\"\n  - button \"刷新模型列表（models.dev 与各供应商）\":\n  - button \"设置 (Ctrl+,)\":\n- main:\n  - generic: 添加第一个供应商\n  - searchbox \"查找供应商…\"\n  - button \"导入…\"\n  - generic: 订阅\n  - generic: 登录即可，无需密钥\n  - button \"Claude\":\n    - generic: Claude\n  - button \"ChatGPT\":\n    - generic: ChatGPT\n  - button \"ChatGPT API\":\n    - generic: ChatGPT API\n  - button \"Copilot\":\n    - generic: Copilot\n  - button \"Gemini CLI\":\n    - generic: Gemini CLI\n  - button \"Antigravity\":\n    - generic: Antigravity\n  - button \"插件中还有更多\":\n    - generic: 插件中还有更多\n  - generic: 供应商\n  - generic: 模型厂商的 API\n  - button \"Anthropic\":\n    - generic: Anthropic\n  - button \"OpenAI\":\n    - generic: OpenAI\n  - button \"Google Gemini\":\n    - generic: Google Gemini\n  - button \"Vertex AI\":\n    - generic: Vertex AI\n  - button \"DeepSeek\":\n    - generic: DeepSeek\n  - button \"xAI\":\n    - generic: xAI\n  - button \"Kimi\":\n    - generic: Kimi\n  - button \"Kimi Code\":\n    - generic: Kimi Code\n  - button \"Zhipu GLM\":\n    - generic: Zhipu GLM\n  - button \"Z.ai\":\n    - generic: Z.ai\n  - button \"MiniMax\":\n    - generic: MiniMax\n  - button \"StepFun\":\n    - generic: StepFun\n  - button \"Xiaomi MiMo\":\n    - generic: Xiaomi MiMo\n  - button \"Baidu Qianfan\":\n    - generic: Baidu Qianfan\n  - button \"Tencent Cloud\":\n    - generic: Tencent Cloud\n  - button \"Huawei Cloud\":\n    - generic: Huawei Cloud\n  - button \"Volcengine Ark\":\n    - generic: Volcengine Ark\n  - button \"Qwen\":\n    - generic: Qwen\n  - button \"Qwen Plan\":\n    - generic: Qwen Plan\n  - button \"Bailian Plan\":\n    - generic: Bailian Plan\n  - button \"Mistral\":\n    - generic: Mistral\n  - button \"Groq\":\n    - generic: Groq\n  - button \"Amazon Bedrock\":\n    - generic: Amazon Bedrock\n  - button \"Azure OpenAI\":\n    - generic: Azure OpenAI\n  - button \"Ollama Cloud\":\n    - generic: Ollama Cloud\n  - button \"Nous Portal\":\n    - generic: Nous Portal\n  - button \"TypeSafe Jev\":\n    - generic: TypeSafe Jev\n  - button \"Bailian Decision\":\n    - generic: Bailian Decision\n  - button \"Qwen Decision\":\n    - generic: Qwen Decision\n  - generic: 中转\n  - generic: 一个密钥，多家模型\n  - button \"OpenRouter\":\n    - generic: OpenRouter\n  - button \"OpenCode Go\":\n    - generic: OpenCode Go\n  - button \"ClinePass\":\n    - generic: ClinePass\n  - button \"OpenCode Zen\":\n    - generic: OpenCode Zen\n  - button \"Kilo Gateway\":\n    - generic: Kilo Gateway\n  - button \"Command Code\":\n    - generic: Command Code\n  - button \"Together AI\":\n    - generic: Together AI\n  - button \"Fireworks\":\n    - generic: Fireworks\n  - button \"SiliconFlow\":\n    - generic: SiliconFlow\n  - button \"NVIDIA NIM\":\n    - generic: NVIDIA NIM\n  - button \"ModelScope\":\n    - generic: ModelScope\n  - button \"AiHubMix\":\n    - generic: AiHubMix\n  - button \"PipeLLM\":\n    - generic: PipeLLM\n  - button \"302.AI\":\n    - generic: 302.AI\n  - button \"CherryIN\":\n    - generic: CherryIN\n  - button \"鱼鱼连线\":\n    - generic: 鱼鱼连线\n  - button \"Jev · Vercel AI Gateway\":\n    - generic: Jev · Vercel AI Gateway\n  - button \"Cloudflare Workers AI · Jev, Clef\":\n    - generic: Cloudflare Workers AI · Jev, Clef\n  - generic: 本机\n  - button \"Ollama\":\n    - generic: Ollama\n  - button \"LM Studio\":\n    - generic: LM Studio\n  - button \"oMLX\":\n    - generic: oMLX\n  - button \"MLX-Serve\":\n    - generic: MLX-Serve\n  - generic: 另一台电脑上的 magpie\n  - generic: 在它的局域网上共享\n  - button \"Remote magpie\":\n    - generic: Remote magpie\n  - button \"自定义供应商\":\n    - generic: 自定义供应商\n  - generic: 任意 OpenAI / Anthropic 兼容的 URL\n- contentinfo:\n  - status\n  - generic: 127.0.0.1:3425"
+  },
+  {
+    "case": "gemini-endpoint-before",
+    "protocols": [
+      "OpenAI"
+    ],
+    "urls": [
+      "https://aistudio.google.com/v1"
+    ]
+  },
+  {
+    "case": "discard-cancel-keeps-draft",
+    "extra": "{\"cis\":true}"
+  },
+  {
+    "case": "discard-confirm-closes-editor",
+    "dialogs": 1
+  },
+  {
+    "case": "discard-confirm-clears-draft",
+    "extra": ""
+  },
+  {
+    "case": "custom-save-before",
+    "rows": [
+      "自定义供应商未暴露模型sk-…"
+    ]
+  },
+  {
+    "case": "custom-edit-before",
+    "hasBaseUrl": 0,
+    "hasName": 0,
+    "dom": "- dialog \"自定义供应商\":\n  - generic: 自定义供应商\n  - generic \"Agent 以 custom/… 选用它的模型\":\n    - text: ID\n    - code: custom\n  - generic: API 密钥\n  - textbox \"粘贴 API 密钥\" [active]\n  - button \"显示\"\n  - button \"获取密钥 ↗\"\n  - generic: 保存在 ~/.config/magpie/providers.json，仅你本人可读。不读取 shell 中的任何内容。\n  - generic: 请求头\n  - button \"＋ 添加请求头\"\n  - generic: 随每个发往 自定义供应商 的请求发送的可选请求头，在鉴权之后应用。\n  - generic: 额外请求体\n  - 'textbox \"{ \\\"prompt_cache_key\\\": \\\"${sessionId}\\\" }\"':\n    - /placeholder: \"{\\n  \\\"prompt_cache_key\\\": \\\"${sessionId}\\\"\\n}\"\n  - generic: \"JSON fields added to the body of every request to the vendor. A field the request has already is kept; write '!name' to replace it. ${sessionId} is the conversation's id.\"\n  - generic: 代理\n  - button \"全局代理\" [pressed]\n  - button \"直连\"\n  - button \"自定义\"\n  - generic: 跟随设置里的代理\n  - generic: 并发上限\n  - textbox \"不限制\"\n  - generic: 超出时排队，按顺序发出；0 或留空为不限制\n  - generic: 每分钟请求数\n  - textbox \"不限制\"\n  - generic: 每个密钥或账号在任意一分钟内最多发出的请求数，重试也计入；超出的请求等待空位，最多等 2 分钟。0 或留空为不限制\n  - generic: 排队上限\n  - textbox \"不限\"\n  - generic: 排队等待\n  - textbox \"一直等\"\n  - generic: 价格倍率\n  - textbox \"1，即官方价格\"\n  - generic: User-Agent\n  - checkbox \"发送 Agent 自己的 User-Agent\"\n  - text: 发送 Agent 自己的 User-Agent\n  - generic: 给只允许指定编程 Agent 使用的套餐：每个请求带上 Agent 自己发来的 User-Agent（pi、OpenCode、Claude Code…），而不是 magpie 的。magpie 自己发出的请求，以及 Agent 没带 User-Agent 的请求，仍以 magpie 的身份发送。上面请求头里设置的 User-Agent 始终优先。\n  - generic: 上下文窗口\n  - textbox \"如 128k · 或 gpt-6=1m，逗号分隔\"\n  - button \"128K\"\n  - button \"200K\"\n  - button \"256K\"\n  - button \"400K\"\n  - button \"512K\"\n  - button \"1M\"\n  - generic: 模型可接受的上下文长度，会告知 Agent；留空则按厂商和 models.dev\n  - generic: 最大输出\n  - textbox \"如 32k · 或 gpt-6=128k，逗号分隔\"\n  - button \"8K\"\n  - button \"16K\"\n  - button \"32K\"\n  - button \"64K\"\n  - button \"128K\"\n  - generic: 单次回复的最大 token 数，作为 max tokens 告知 Agent，Agent 没给时也作为 max_tokens 发给 Anthropic 的 API；留空则按厂商和 models.dev\n  - generic: 压缩阈值\n  - textbox \"如 500k · 或 deepseek-v4-flash=272k，逗号分隔\"\n  - button \"128K\"\n  - button \"200K\"\n  - button \"272K\"\n  - button \"500K\"\n  - button \"1M\"\n  - generic: Codex 和 Claude Code 在这些模型上压缩长对话的位置；留空按「设置 → 长对话」，大于等于模型窗口则用完整窗口\n  - generic: 端点\n  - generic: OpenAI\n  - code: https://…/v1\n  - button \"测试\"\n  - button \"移除\"\n  - button \"再添加一个 自定义供应商\"\n  - button \"复制\"\n  - button \"取消\"\n  - button \"保存\"\n- contentinfo:\n  - status \"已添加 自定义供应商\"\n  - generic: 127.0.0.1:3425"
+  }
+]

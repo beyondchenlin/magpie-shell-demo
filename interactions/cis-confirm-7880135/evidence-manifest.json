@@ -1,0 +1,50 @@
+{
+  "source": "7880135320083e6192bfb4d5ab87b136cd59d4b5",
+  "files": [
+    {
+      "path": "after.json",
+      "bytes": 27571,
+      "sha256": "2675ced8ccc9e24e8e3a8e35723d0b25a840d97f3280f6bc86ccf707508a23f5"
+    },
+    {
+      "path": "assertions.json",
+      "bytes": 231,
+      "sha256": "e37f84f67515f033101a4b5f039fd6b8a905a2f0494b6d0414e8007b917e0d64"
+    },
+    {
+      "path": "build-info.json",
+      "bytes": 30027,
+      "sha256": "851cac3992ebcf95adf68f18d10559a47b259c5deac5b218b86c73e1bc7aa3a8"
+    },
+    {
+      "path": "lint.txt",
+      "bytes": 17459,
+      "sha256": "cfd6d26d3ee8cf547a9c623ffa0371d781c329a8a5ca27b11557c428633f0d8a"
+    },
+    {
+      "path": "plugins-final.png",
+      "bytes": 37944,
+      "sha256": "d9d6e55898f6730f6fcf2e0b74ce883dfb1a8b142e340a7f608b62d6b061aa33"
+    },
+    {
+      "path": "preferences-restored.json",
+      "bytes": 2057,
+      "sha256": "5cefdce54c6a9d4e53c848d19cce5cafca3949894a537fbde947669518ca84bf"
+    },
+    {
+      "path": "provider-confirm-after.png",
+      "bytes": 36995,
+      "sha256": "a1c9b58a9596a517d7d5b2609a4f7da9368baa771ae70378dd2d0f7cf30c0d68"
+    },
+    {
+      "path": "provider-confirm-phone.png",
+      "bytes": 5775,
+      "sha256": "a5ad969820c3c8e75428e436ff3a40a7b0ecafda60502213080b99953a3020e6"
+    },
+    {
+      "path": "providers-final.png",
+      "bytes": 31337,
+      "sha256": "a57b0aba6fb1ed84b0cab07e5397677e8d50e91a4a0f49ae42990299dd83face"
+    }
+  ]
+}

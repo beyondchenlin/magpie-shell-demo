@@ -1,19 +1,19 @@
 # CIS 执行进度
 
-更新时间：2026-10-16 23:00 Asia/Shanghai
+更新时间：2026-10-16 23:58 Asia/Shanghai
 
-- 当前阶段：phase2_confirm_providers_plugins_c3_p1_p4_reproducing。唯一执行者本聊天01a14465-ad94-73e0-a0ad-991539957fa0；监督01a143c3-8101-75e1-b638-c39ad15d55ed；无子代理。
-- **29项：通过13、失败0、待验16。** C1/C2/C4有限矩阵已完成；396c11c修复分段重绘up类，All/Order/Shown方向、Escape回焦、立即进入其他入口均过；字体Home/End边界也实际验证。先前真实失败及工具无效尝试均保留，未通过改规格消除失败。下一批C3/P1/P4最多3ID。
+- 当前阶段：phase2_confirm_providers_plugins_c3_p1_p4_complete，下一批P2/P3/P5。唯一执行者本聊天01a14465-ad94-73e0-a0ad-991539957fa0；监督01a143c3-8101-75e1-b638-c39ad15d55ed；无子代理。
+- **29项：通过16、失败0、待验13。** 本批C3/P1/P4最多3ID现已闭合；原失败复现保留。C3框内几何/遮罩、回焦、正文拖出及已有busy正反Tab已修复验证。P1 Gemini主机/类型及custom保存数据丢失已修复；P4有限入口通过，未采纳无复现的图标容错草稿。
 - 通过项：N1/N2=2660400/v194；S2/S3=90099b9/v195；G1/G2/G3=874268b/v196；S1/N4/G4=0a2a014/v197；C1/C2/C4=396c11c/v198（有明确复用依据）。0a2a014六主页面12次受影响导航回归通过，后续菜单改动不改导航内核。N3保留独立动态复核，不重录三轮。
-- 当前实际受测UI：396c11cb266f9e832c1cb9dfd0e1d75fc1c469a2 /0.1.198；4176受管预览session16586、menus-candidate-5 Git archive隔离产物。862789f→396c11c只加Agent分段布局依赖及hook可选key，不再改坐标。候选3 ef3323f仅构建未浏览器测试，记录保留。其余继承草稿不整体提交。
+- 当前实际受测UI：7880135320083e6192bfb4d5ab87b136cd59d4b5 /0.1.199；4176受管预览session34502、confirm-candidate-1 Git archive隔离产物。改动仅ActionConfirm/相应框内兼容CSS与Providers本地配置数据流，C1坐标内核未改。候选3 ef3323f仅构建未浏览器测试，记录保留。其余继承草稿不整体提交。
 - 规则：唯一入口docs/CIS-CONTROLS.md。冻结028dab5保留，监督已明确批准R01的window级联勘误并独立提交3c2d6de；S1完成原有限核验后才通过。其他冻结条款与29项范围不变，不再写S1待裁定。
 - 监督已支持S2/S3及G3/G4有限结论、确认4176为0a2a014；最新要求明确C2失败计数并继续C1/C2/C4最多3ID，不需等常规批次批准。C3与Providers/Plugins后续一起核验。
-- 检查：396c11c build/TypeScript/两guard通过，55 TS/TSX lint55 warnings/0 errors；最终浏览器warn/error为空。独立协议fixture严格TS编译与非live/live/NUL/清除计数通过，原产品资源hash未变，另有manifest。此前基线59/0。locator.press(ArrowDown)无效输入已保留，tab.pressKey正确，没有因此改产品。
+- 检查：7880135 build/TypeScript/两guard通过，55 TS/TSX lint55 warnings/0 errors；最终浏览器warn/error为空。18条C3/14条P1/10条P4记录与精确几何、两种busy Tab等断言通过。原独立协议fixture与历史证据保留，无重复扩大测试。
 - Git：分支tip/0.1.121-cis-appearance-shell，PR #1。最近已确认推送e19fd5a；本地UI源码检查点396c11c，后续证据提交不作为新UI身份。上次push遇408/sideband断开，随后读远端TLS EOF，未确认落地。PR标题/正文更新经连接器、gh GraphQL/REST失败，未报成功；远端/云身份外部阻塞，停止无信息重试。
-- 现场：用户4173/PID21080与dist未动；本任务4174/PID98524、4175/PID76536保留，受管4176按批次Ctrl+C切换。早前自动审核拒绝OS stop/restart4174，没有绕过。tab18已显式恢复31键、current与initial逐键相同，viewport reset后关页；此前文字误计30已更正，实际JSON一直31。下一批先做新snapshot再测，用户4173偏好未触及。
-- 证据：interactions/cis-nav-2660400、cis-settings-90099b9、cis-gateway-874268b、cis-layout-0a2a014及cis-menus-before-0a2a014/faea794/d1f3e03/862789f/396c11c。索引绑定396c11c：20文件/465调用/34裸DOM候选，不把数量当通过。四原问题图保全，含个人界面的原图不公开。F02初焦误判已在审计账本更正。
+- 现场：用户4173/PID21080与dist未动；本任务4174/PID98524、4175/PID76536保留，受管4176按批次Ctrl+C切换。早前自动审核拒绝OS stop/restart4174，没有绕过。tab18恢复31键/reset/关页；新自有tab19已先留31键snapshot，1364×941，当前在C3/P1/P4，不能提前关页丢失恢复资料。mock插件安装只改React状态/Bun就绪偏好，不下载或运行软件；用户4173未触及。
+- 证据：既有nav/settings/gateway/layout/menus目录均保留；新增cis-confirm-before-396c11c、cis-confirm-7880135。索引绑定7880135：20文件/465调用/34裸DOM候选，不把数量当通过。四原问题图保全，含个人界面的原图不公开。F02初焦误判已在审计账本更正。
 - 空间/保全：唯一工作树D:/demo1/tagmaai；不安装/复制依赖环境。D低于20GiB已提示，下一构建预计<30MiB且保留>10GiB；C24.94/D18.82GiB附近。已先列清单并核验边界/重解析/进程引用/独占锁/近期写入，回收7份本任务source.tar运输文件34232320逻辑bytes，解压源码/构建/历史证据均保留；D前20203614208、后20237852672bytes，含并发写入，不把逻辑大小冒称物理净释放。清单及结果.cache/cis-navigation-20261016/tar-cleanup-*.json。接管.cache补丁/hash/原图仍保留。
-- 已完成本批子用例：C1定位/方向最终回归通过，C2六族按用途闭合，C4有限模型管理通过，完整来源矩阵见interactions/cis-menus-396c11c/NOTES.md；AST索引现绑定396c11c，20文件/465调用/34裸DOM候选。下一批具体范围是Providers dirty discard及Plugins Remove的C3焦点/遮罩/回焦两入口，同时完成P1供应商、P4插件已有mock路径；先复现再采纳相应继承草稿，不顺带提交其他文件。最新C24.61/D54.59GiB，空间回升不归因本任务32.7MiB tar回收。
+- 剩余具体子用例：P2组创建/保存/再编辑及9条件加删、pause限定、intent/images独立、规则与组排序复制；P3四页签默认空/filled、周期/日期/归档/详情；P5四页签及已有编辑/菜单/取消。之后S4/B3/B4，B1/B2/D1，D2/D3/D4，N3独立动态复核。下一批仍最多3ID。7880135前C/Temp25725550592、D49608978432bytes，快照预计<30MiB且余量>10GiB；磁盘外部回升不归因本任务清理。
 - 外部阻塞：监督独立GitHub fetch也连续3轮transport失败，远端同步/云预览身份暂不可确认。最小恢复条件是认证连接器或Git能读回分支SHA并完成push确认；只在连通有新证据时做一次有界核验，停止同路径盲重试，不关闭TLS或强推。
 
 ## 实质进展记录
