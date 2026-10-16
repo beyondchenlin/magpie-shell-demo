@@ -1,4 +1,7 @@
-import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
+import { MagpieIcon } from "./MagpieIcon";
+import { PopoverPortal } from "./PopoverPortal";
+import { useAnchoredPopover } from "../lib/useAnchoredPopover";
+import { Fragment, useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { t } from "../i18n";
 
 export type PopOption = {
@@ -60,35 +63,24 @@ export function ModelPop({
   const thumbRef = useRef<HTMLSpanElement>(null);
   const [q, setQ] = useState("");
   const [leaving, setLeaving] = useState(false);
+  const closeTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const [groupFilter, setGroupFilter] = useState<"all" | "favorites" | string>("all");
   const [favs, setFavs] = useState<Set<string>>(() => loadFavs());
-  const [pos, setPos] = useState<{ top: number; left: number; ox: number; up: boolean; w: number; h: number } | null>(null);
   const shown = open || leaving;
 
   useEffect(() => {
     if (open) {
+      clearTimeout(closeTimer.current);
+      closeTimer.current = undefined;
       setLeaving(false);
       setQ("");
       setGroupFilter("all");
       setFavs(loadFavs());
     }
   }, [open]);
+  useEffect(() => () => clearTimeout(closeTimer.current), []);
 
-  useLayoutEffect(() => {
-    if (!open || !anchor || !popRef.current) return;
-    const r = anchor.getBoundingClientRect();
-    const w = modelPicker ? Math.min(490, window.innerWidth - 16) : 320;
-    const h = modelPicker ? Math.min(420, window.innerHeight - 16) : 340;
-    let left = Math.min(Math.max(8, r.left), window.innerWidth - w - 8);
-    let top = r.bottom + 6;
-    let up = false;
-    if (preferUp || top + Math.min(h, 280) > window.innerHeight - 8) {
-      top = Math.max(8, r.top - 6);
-      up = true;
-    }
-    const ox = Math.min(Math.max(16, r.left + r.width / 2 - left), w - 16);
-    setPos({ top: up ? top - h : top, left, ox, up, w, h });
-  }, [open, anchor, modelPicker, options.length, preferUp]);
+  useAnchoredPopover(popRef, anchor, shown, { maxHeight: modelPicker ? 420 : 340, preferUp });
 
   useLayoutEffect(() => {
     if (!shown || !modelPicker || !railRef.current || !thumbRef.current) return;
@@ -111,6 +103,23 @@ export function ModelPop({
         e.preventDefault();
         e.stopPropagation();
         dismiss();
+        anchor?.focus({ preventScroll: true });
+      } else if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+        const items = [...(popRef.current?.querySelectorAll<HTMLElement>("li[role=option]") || [])];
+        if (!items.length) return;
+        e.preventDefault();
+        e.stopPropagation();
+        const at = items.findIndex(item => item.classList.contains("sel"));
+        const from = at < 0 ? (e.key === "ArrowDown" ? items.length - 1 : 0) : at;
+        const next = items[(from + (e.key === "ArrowDown" ? 1 : items.length - 1)) % items.length];
+        items.forEach(item => item.classList.toggle("sel", item === next));
+        next.scrollIntoView({ block: "nearest" });
+      } else if (e.key === "Enter" && popRef.current?.contains(document.activeElement)) {
+        const selected = popRef.current.querySelector<HTMLElement>("li.sel[role=option]");
+        if (!selected) return;
+        e.preventDefault();
+        e.stopPropagation();
+        selected.click();
       }
     };
     const onDown = (e: MouseEvent) => {
@@ -129,9 +138,10 @@ export function ModelPop({
   }, [shown, anchor]);
 
   const dismiss = () => {
-    if (leaving) return;
+    if (closeTimer.current) return;
     setLeaving(true);
-    window.setTimeout(() => {
+    closeTimer.current = setTimeout(() => {
+      closeTimer.current = undefined;
       setLeaving(false);
       onClose();
     }, 220);
@@ -156,7 +166,7 @@ export function ModelPop({
 
   const isFav = (o: PopOption) => favs.has(favKey(o)) || favs.has(o.value);
 
-  if (!shown || !pos) return null;
+  if (!shown) return null;
 
   const words = q.trim().toLowerCase().split(/\s+/).filter(Boolean);
   let source = options;
@@ -185,17 +195,13 @@ export function ModelPop({
   const railGroups = [...new Set(options.map((o) => o.group).filter(Boolean))] as string[];
 
   return (
-    <div
+    <PopoverPortal><div
+      data-anchored
       id="pop"
       ref={popRef}
-      className={`pop${modelPicker ? " model-picker" : ""}${pos.up ? " up" : ""}${leaving ? " leaving" : ""}`}
+      className={`pop${modelPicker ? " model-picker" : ""}${leaving ? " leaving" : ""}`}
       style={{
-        top: pos.up ? undefined : pos.top,
-        bottom: pos.up ? window.innerHeight - pos.top : undefined,
-        left: pos.left,
-        width: pos.w,
-        maxHeight: pos.h,
-        ["--ox" as string]: `${pos.ox}px`,
+        width: modelPicker ? 490 : options.some(o => o.note && o.note !== o.value) ? 372 : 300,
       }}
       role="listbox">
       <div className="search">
@@ -261,16 +267,14 @@ export function ModelPop({
                 data-group={g}
                 aria-label={g}
                 onClick={() => setGroupFilter(g)}>
-                <span className="ic" aria-hidden>
-                  ◆
-                </span>
+                <MagpieIcon name={options.find(o => o.group === g)?.icon || "generic"} />
               </button>
             ))}
           </nav>
         ) : null}
         <ul id="list">
           {groups.map((g, gi) => (
-            <span key={gi}>
+            <Fragment key={gi}>
               {g.title ? <li className="group">{g.title}</li> : null}
               {g.items.map((o) => (
                 <li
@@ -283,9 +287,7 @@ export function ModelPop({
                     if (!keepOpen) dismiss();
                     else setQ("");
                   }}>
-                  <span className="ic" aria-hidden>
-                    {o.icon === "openai" || !o.icon ? "◎" : "◆"}
-                  </span>
+                  <MagpieIcon name={o.icon || "generic"} />
                   <span className="option-words">
                     <span className="v">{o.label}</span>
                     {o.note ? <span className="n">{o.note}</span> : null}
@@ -318,7 +320,7 @@ export function ModelPop({
                   ) : null}
                 </li>
               ))}
-            </span>
+            </Fragment>
           ))}
           {!filtered.length ? (
             q.trim() ? (
@@ -344,7 +346,7 @@ export function ModelPop({
           ) : null}
         </ul>
       </div>
-    </div>
+    </div></PopoverPortal>
   );
 }
 

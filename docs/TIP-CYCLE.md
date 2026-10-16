@@ -55,6 +55,7 @@ npm run chrome-guard
 ### 4. PR → 临时预览 → 查看验收
 
 1. `npm run chrome-guard`
+   同时运行 `npm run cis-guard`，校验六份基础样式与固定参考提交一致；兼容层变化另做浏览器回归。
 2. UI tip 更新 `package.json`、`ACCEPTANCE.md` 顶条、`docs/TIP-CHANGELOG.md`、`docs/last-cycle.md`；纯流程文档修改不虚增 UI 版本。
 3. Commit：`v0.1.xx: <slice> (no portable)` 或对应文档修正说明。
 4. 推送当前 tip 分支：`git push origin tip/0.1.121-cis-appearance-shell`，更新 [PR #1](https://github.com/beyondchenlin/magpie-shell-demo/pull/1) 的标题、范围与验证结果。后续若换 PR，以经确认的工作分支为准；不要直接推送或合并 `main`。

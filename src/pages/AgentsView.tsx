@@ -1,3 +1,7 @@
+import { CopyButton } from "../components/CopyButton";
+import { MagpieIcon } from "../components/MagpieIcon";
+import { PopoverPortal } from "../components/PopoverPortal";
+import { useAnchoredPopover } from "../lib/useAnchoredPopover";
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { AgentModelsPop, type AmModel } from "../components/AgentModelsPop";
 import { FieldPill } from "../components/FieldPill";
@@ -5,7 +9,7 @@ import { LibSwitch } from "../components/LibSwitch";
 import { TextBtn } from "../components/TextBtn";
 import { ModelPop, type PopOption } from "../components/ModelPop";
 import installsData from "../data/installs.json";
-import { VIA_LABEL, iconSrc } from "../data/mock";
+import { VIA_LABEL } from "../data/mock";
 import { ZH, demoCopy, t } from "../i18n";
 
 type InstallCmd = { via: string; command: string; node?: string };
@@ -146,42 +150,7 @@ function CopyBtn({
   agentName: string;
   onStatus: (msg: string, kind?: string) => void;
 }) {
-  const [done, setDone] = useState(false);
-  return (
-    <button
-      type="button"
-      className={`copy${done ? " done" : ""}`}
-      title={t("Copy")}
-      aria-label={t("Copy")}
-      onClick={(e) => {
-        e.stopPropagation();
-        void navigator.clipboard?.writeText(text).catch(() => {});
-        setDone(true);
-        setTimeout(() => setDone(false), 900);
-        // Magpie: status(t("{what} copied", { what: t("{agent}'s install command", …) }))
-        onStatus(t("{what} copied", { what: t("{agent}'s install command", { agent: agentName }) }), "ok");
-      }}>
-      <svg viewBox="0 0 16 16" width={12} height={12} aria-hidden>
-        <rect
-          x="5.5"
-          y="5.5"
-          width="7"
-          height="7"
-          rx="1.2"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.5"
-        />
-        <path
-          d="M3.5 10.5v-7A1.5 1.5 0 0 1 5 2h7"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-        />
-      </svg>
-    </button>
-  );
+  return <CopyButton text={text} what={t("{agent}'s install command", { agent: agentName })} onStatus={onStatus} />;
 }
 
 type ManageProps = {
@@ -413,9 +382,7 @@ function ManageAgentsModal({
                       aria-label={a.name}
                       onChange={(e) => toggle(a.id, e.target.checked)}
                     />
-                    <span className="ic" data-icon={a.icon} aria-hidden>
-                      <img src={iconSrc(a.icon)} alt="" draggable={false} />
-                    </span>
+                    <MagpieIcon name={a.icon} />
                     <span className="ag-manage-name">{a.name}</span>
                     <span className="ag-manage-state">
                       {hiddenIds.has(a.id) ? t("Hidden") : t("Not hidden")}
@@ -480,22 +447,11 @@ function ArrangeMenu({
   onClose,
 }: ArrangeProps) {
   const boxRef = useRef<HTMLDivElement>(null);
+  useAnchoredPopover(boxRef, anchor, true, { dx: -4 });
 
   useEffect(() => {
     const box = boxRef.current;
     if (!box) return;
-    const r = anchor.getBoundingClientRect();
-    const pad = 8;
-    const w = box.offsetWidth || 176;
-    const h = box.offsetHeight || 100;
-    let y = r.bottom + 5;
-    if (y + h > window.innerHeight - pad && r.top - 5 - h >= pad) {
-      y = r.top - 5 - h;
-      box.classList.add("up");
-    }
-    const left = Math.max(pad, Math.min(r.left - 4, window.innerWidth - w - pad));
-    box.style.left = `${left}px`;
-    box.style.top = `${Math.max(pad, y)}px`;
     anchor.classList.add("open");
     const outside = (e: MouseEvent) => {
       if (!box.contains(e.target as Node) && !anchor.contains(e.target as Node))
@@ -555,7 +511,7 @@ function ArrangeMenu({
   ];
 
   return (
-    <div className="pop row-menu" role="menu" ref={boxRef}>
+    <PopoverPortal><div data-anchored className="pop row-menu" role="menu" ref={boxRef}>
       {items.map((o) => (
         <span key={o.name} className="display-contents">
           {o.sep ? <div className="rm-sep" /> : null}
@@ -584,7 +540,7 @@ function ArrangeMenu({
           </button>
         </span>
       ))}
-    </div>
+    </div></PopoverPortal>
   );
 }
 
@@ -665,7 +621,7 @@ export function AgentsView({
   const [amModels, setAmModels] = useState<Record<string, AmModel[]>>({});
   /** Magpie staleSeen — dismiss "Got it" per agent */
   const [staleSeen, setStaleSeen] = useState<Record<string, number>>({});
-  const [staleDemo, setStaleDemo] = useState(true);
+  const [staleDemo] = useState(() => new URLSearchParams(location.search).get("stale") !== "0");
 
   useEffect(() => {
     try {
@@ -1008,9 +964,7 @@ export function AgentsView({
                   window.addEventListener("blur", cancel);
                   window.addEventListener("resize", cancel);
                 }}>
-                <span className="ic" data-icon={a.icon} aria-hidden>
-                  <img src={iconSrc(a.icon)} alt="" draggable={false} />
-                </span>
+                <MagpieIcon name={a.icon} />
               </button>
               <div className="who">
                 <div className="name">{a.name}</div>
@@ -1311,24 +1265,7 @@ export function AgentsView({
                         </div>
                       </div>
                     </div>
-                    {a.id === "claude" || a.id === "codex" ? (
-                      <div className="ag-kv">
-                        <div className="ag-k" />
-                        <div className="ag-v">
-                          <label>
-                            <input
-                              type="checkbox"
-                              checked={staleDemo}
-                              onChange={(e) => {
-                                setStaleDemo(e.target.checked);
-                                if (e.target.checked) setStaleSeen({});
-                              }}
-                            />
-                            {demoCopy("演示：显示 stale copies UI", "Demo: show stale copies UI")}
-                          </label>
-                        </div>
-                      </div>
-                    ) : null}
+
                   </div>
                   {a.id === "claude" ? (
                     <div className="ag-kv">
@@ -1429,9 +1366,7 @@ export function AgentsView({
                           title={a.name}
                           style={{ ["--i" as string]: i + 1 }}>
                           <button type="button" className="ag-handle" aria-label={a.name}>
-                            <span className="ic" data-icon={a.icon} aria-hidden>
-                              <img src={iconSrc(a.icon)} alt="" draggable={false} />
-                            </span>
+                            <MagpieIcon name={a.icon} />
                           </button>
                           <div className="who">
                             <div className="name">{a.name}</div>
@@ -1479,9 +1414,7 @@ export function AgentsView({
                           title={a.name}
                           style={{ ["--i" as string]: i + 1 }}>
                           <button type="button" className="ag-handle" aria-label={a.name}>
-                            <span className="ic" data-icon={a.icon} aria-hidden>
-                              <img src={iconSrc(a.icon)} alt="" draggable={false} />
-                            </span>
+                            <MagpieIcon name={a.icon} />
                           </button>
                           <div className="who">
                             <div className="name">{a.name}</div>
@@ -1521,9 +1454,7 @@ export function AgentsView({
                         ? hidden.map((a) => (
                             <div key={a.id} className="row agent conn hid put-away" data-id={a.id} title={a.name}>
                               <button type="button" className="ag-handle" aria-label={a.name}>
-                                <span className="ic" data-icon={a.icon} aria-hidden>
-                                  <img src={iconSrc(a.icon)} alt="" draggable={false} />
-                                </span>
+                                <MagpieIcon name={a.icon} />
                               </button>
                               <div className="who">
                                 <div className="name">{a.name}</div>
@@ -1619,20 +1550,7 @@ export function AgentsView({
               {INSTALLS.map((x) => (
                 <div key={x.id} className="ag-install-row" data-id={x.id}>
                   <div className="ag-install-who">
-                    <span className="ic" data-icon={x.icon || x.id} aria-hidden>
-                      <img
-                        src={iconSrc(x.icon || x.id)}
-                        alt=""
-                        draggable={false}
-                        onError={(e) => {
-                          const el = e.currentTarget;
-                          if (!el.dataset.fallback) {
-                            el.dataset.fallback = "1";
-                            el.src = `/icons/${x.icon || x.id}.png`;
-                          }
-                        }}
-                      />
-                    </span>
+                    <MagpieIcon name={x.icon || x.id} />
                     <span className="ag-install-name">
                       <b>{x.name}</b>
                     </span>
@@ -1712,9 +1630,7 @@ export function AgentsView({
           <div className="dialog" role="dialog" aria-modal onMouseDown={(e) => e.stopPropagation()}>
             <div className="editor sm-ask">
               <div className="ehead">
-                <span className="ic" data-icon="claude-color" aria-hidden>
-                  <img src={iconSrc("claude-color")} alt="" draggable={false} />
-                </span>
+                <MagpieIcon name={"claude-color"} />
                 <b>{t("Relocate Claude Code project")}</b>
               </div>
               <p className="sub sm-ask-path">{relFrom || "~/code/magpie"}</p>

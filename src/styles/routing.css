@@ -1,9 +1,7 @@
 /* Routing, live: the Gateway view's stage for what routing does with each
-   request (routing.js). The same stage as the site's Model Routing, only
+   request (client.js). The same stage as the site's Model Routing, only
    played by the gateway's own trace. */
-#view-routing { overflow-y: scroll; }
-#view-routing > .row-head, #view-routing > .rt { flex-shrink: 0; }
-.rt { --rt-columns: minmax(0, 1fr) minmax(0, 1fr); background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px 12px; margin: 0 0 18px; }
+.rt { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px 12px; margin: 0 0 18px; }
 .rt-top { display: flex; flex-direction: column; gap: 3px; }
 .rt-what { font-size: 13px; color: var(--muted); }
 .rt-what b { color: var(--fg); font-weight: 600; }
@@ -12,6 +10,8 @@
 .rt-wires { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
 .rt-wires path { fill: none; stroke: var(--line); stroke-width: 1.5; transition: opacity .3s; }
 .rt-wires path.live { stroke: var(--agent, var(--muted)); stroke-dasharray: 3 5; animation: rtflow .7s linear infinite; }
+/* lit: the way the request shown went, over; only a request in flight flows (#2386) */
+.rt-wires path.lit { stroke: var(--agent, var(--muted)); }
 .rt-wires path.rest { stroke-dasharray: 2 6; opacity: .45; }
 @keyframes rtflow { to { stroke-dashoffset: -8; } }
 /* the magpies, over the nodes: one carries each request out, another
@@ -88,7 +88,8 @@
 .rt-accts li.on { border-color: var(--fg); }
 .rt-accts li.on em { color: var(--fg); }
 .rt-accts li.on .bar i { background: var(--fg); }
-.rt-accts li.on .dot { background: var(--fg); border-color: var(--fg); animation: rtlive 1.8s infinite; }
+.rt-accts li.on .dot { background: var(--fg); border-color: var(--fg); }
+.rt-accts li.now .dot { animation: rtlive 1.8s infinite; }
 @keyframes rtlive { 0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--fg) 40%, transparent); } 70%, 100% { box-shadow: 0 0 0 6px transparent; } }
 .rt-accts li.low em { color: var(--fg-2); }
 .rt-accts li.rest { border-style: dashed; }
@@ -119,52 +120,16 @@
 .rt-stats > span { display: flex; flex-direction: column; }
 .rt-stats b { font-size: 19px; line-height: 1.2; font-weight: 650; letter-spacing: -.02em; color: var(--fg); font-variant-numeric: tabular-nums; }
 .rt-log { padding-top: 10px; margin-top: 10px; border-top: 1px solid var(--line); }
-.rt-log-head { display: flex; align-items: center; font-size: 12px; font-weight: 600; color: var(--fg); }
+.rt-log-head { display: flex; flex-wrap: wrap; align-items: center; row-gap: 2px; font-size: 12px; font-weight: 600; color: var(--fg); }
 .rt-log-head .grow { flex: 1; }
-/* Context sits below both upper columns, and its own columns use
-   the same split so a tall content list cannot leave the stage empty. */
-.rt-main, .rt-log { min-width: 0; }
-.rt > .rt-ctx { margin-top: 12px; }
-.rt.min1100 .rt-main { display: grid; grid-template-columns: var(--rt-columns); column-gap: 24px; align-items: start; }
-.rt.min1100 .rt-top, .rt.min1100 .rt-replay { grid-column: 1 / -1; }
-.rt.min1100 .rt-stage { grid-column: 1; grid-row: 3; column-gap: 36px; }
-.rt.min1100 .rt-foot { grid-column: 1; grid-row: 4; }
-.rt.min1100 .rt-log { grid-column: 2; grid-row: 3 / 5; margin-top: 16px; padding: 0 0 0 24px; border-top: 0; border-left: 1px solid var(--line); }
-.rt.min1100 .rt-off { grid-column: 1 / -1; }
-.rt-ctx-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-.rt-ctx-toggle > svg { flex: none; }
-.rt-ctx-toggle[aria-expanded="true"] > svg { transform: rotate(180deg); }
-.rt-ctx { position: relative; background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 10px 12px; display: flex; flex-direction: column; gap: 12px; font-variant-numeric: tabular-nums; }
-.rt-ctx-toggle { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 10px; text-align: left; padding: 3px 0; background: none; border: 0; border-radius: 4px; color: var(--fg); }
-.rt-ctx-toggle > svg { opacity: .5; }
-.rt-ctx-toggle:hover > svg { opacity: 1; }
-.ctx-summary { flex: 1; display: flex; align-items: center; gap: 6px 10px; min-width: 0; height: 20px; white-space: nowrap; font-size: 12px; font-variant-numeric: tabular-nums; }
-.ctx-summary .ctx-title { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
-.ctx-summary-numbers { display: flex; align-items: center; gap: inherit; flex: none; }
-.ctx-summary .ctx-stack { display: flex; }
-.rt:not(.min800) .ctx-summary { gap: 6px; font-size: 11px; }
-.rt:not(.min800) .ctx-summary .ctx-stack { min-width: 12px; }
-.ctx-summary .grow { flex: 1; }
-.ctx-summary .ctx-title { font-size: 12px; }
-.ctx-summary-used { color: var(--muted); white-space: nowrap; }
-.ctx-summary-used b { color: var(--fg); font-weight: 600; }
-.ctx-summary-est, .ctx-summary-cache { font-size: 11px; color: var(--muted); white-space: nowrap; }
-.rt-ctx-detail, .rt-ctx-detail .ctx-body { min-width: 0; }
-.rt-ctx-detail .ctx-body { position: relative; display: flex; flex-direction: column; gap: 16px; }
-.rt-ctx-detail .ctx-overview { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
-.rt-ctx-detail .ctx-waffle { grid-template-columns: repeat(50, minmax(0, 1fr)); grid-auto-rows: 7px; }
-.rt-ctx-detail .ctx-waffle > i { aspect-ratio: auto; animation: none; }
-.rt-ctx-detail .ctx-bar i { animation: none; }
-.rt-ctx-detail .ctx-contents-head { flex-wrap: nowrap; }
-.rt-ctx-detail .ctx-contents-head .ctx-k { flex: none; }
-.rt-ctx-detail .ctx-contents-head .grow { display: none; }
-.rt-ctx-detail .ctx-contents-head .segs { flex: 0 1 auto; min-width: 0; margin-left: auto; }
-.rt-ctx-detail .ctx-contents-head .segs .opt { padding: 0 7px; }
-.rt-ctx-detail .ctx-rows { max-height: 234px; overflow-y: auto; overscroll-behavior: contain; padding: 0 6px; margin: 0 -6px; }
-.rt.min800 .rt-ctx-detail .ctx-body { display: grid; grid-template-columns: var(--rt-columns); gap: 24px; }
-.rt.min800 .rt-ctx-detail .ctx-contents { min-width: 0; padding: 0 0 0 24px; border-top: 0; border-left: 1px solid var(--line); }
-.rt-ctx-detail .ctx-body.max420 :is(.ctx-mini, .ctx-tag) { display: none; }
-.rt-ctx-detail .ctx-body.max520 .ctx-top { gap: 12px; }
+/* a request's request and response, opened from the story's head */
+.rt-bodies { margin-top: 8px; border: 1px solid var(--line-2); border-radius: 8px; overflow: hidden; background: var(--card); }
+.rt-bodies[hidden] { display: none; }
+.rt-bodies > .call-details { border-top: 0; }
+.rt-bodies > .call-archive { border: 0; }
+.rt-bodies > .none, .rt-bodies-gone { margin: 0; padding: 10px 12px; font-size: 11.5px; font-weight: 400; color: var(--muted); }
+.rt-bodies > .call-archive-err { padding: 10px 12px 4px; }
+.rt-bodies > .call-archive-err + button.text { margin: 0 12px 10px; }
 .rt-steps { list-style: none; margin: 6px 0 0; padding: 0; display: grid; align-content: start; gap: 5px; counter-reset: rt; }
 .rt-steps li { position: relative; padding-left: 20px; font-size: 12.5px; line-height: 1.45; color: var(--fg-2); }
 .rt-steps li::before { content: ""; position: absolute; left: 5px; top: .5em; width: 6px; height: 6px; border-radius: 50%; background: var(--muted); }
@@ -179,13 +144,27 @@
 .rt-steps li.ok::before { background: var(--green); }
 .rt-steps li.bad::before { background: var(--red); }
 .rt-steps li.wait::before { animation: rtlive 1.8s infinite; }
+/* where a try's time went: one stacked bar, magpie's, the network's and
+   the vendor's told apart by a swatch, each part named with its time */
+.rt-time { display: grid; gap: 5px; max-width: 560px; }
+.rt-time-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; color: var(--fg-2); }
+.rt-time-who { display: inline-flex; align-items: center; gap: 5px; font-variant-numeric: tabular-nums; }
+.rt-time-who::before, .rt-time-parts li::before { content: ""; flex: none; width: 7px; height: 7px; border-radius: 2px; background: var(--rt-time); }
+.rt-time-bar { display: flex; height: 6px; border-radius: 3px; overflow: hidden; background: var(--line); gap: 1px; }
+.rt-time-bar span { min-width: 2px; background: var(--rt-time); }
+.rt-time-parts { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 2px 14px; }
+.rt-time-parts li { display: inline-flex; align-items: center; gap: 5px; font-size: 11.5px; }
+.rt-time-parts .v { color: var(--fg-2); font-variant-numeric: tabular-nums; }
+.rt-time .magpie { --rt-time: var(--accent); }
+.rt-time .net { --rt-time: var(--amber); }
+.rt-time .vendor { --rt-time: var(--fg-2); }
 .rt-off { padding: 18px 4px; text-align: center; color: var(--muted); font-size: 13px; }
 @media (prefers-reduced-motion: reduce) {
-  .rt-accts li.on .dot, .rt-wires path.live, .rt-sky .pkt.held, .rt-accts li.new, .rt-accts li.hit, .rt-hub.tick, .rt-src.tick, .rt-cap.in, .rt-steps li.wait::before, .masking .pii { animation: none; }
+  .rt-accts li.now .dot, .rt-wires path.live, .rt-sky .pkt.held, .rt-accts li.new, .rt-accts li.hit, .rt-hub.tick, .rt-src.tick, .rt-cap.in, .rt-steps li.wait::before, .masking .pii { animation: none; }
   .rt-accts li { transition: none; }
 }
 /* The narrow and wide layouts below go by a box's own width, as container
-   queries would: routing.js sets max560 on a box 560px wide or less, min1150
+   queries would: client.js sets max560 on a box 560px wide or less, min1150
    on one 1150px or wider. Not container queries: in WebKit they kept the
    page from scrolling to its end (#1249). :where() keeps each rule as
    strong as it was inside its query. */
@@ -198,24 +177,12 @@
 .rt-accts:where(.max460) li.rt-fold .chev { grid-column: 3; grid-row: 1; }
 /* narrow (the tray panel): magpie and the agent side by side, the
    accounts under them, on a lane down their left */
-:where(.rt-main.max560) .rt-stage { grid-template-columns: 1fr 1fr; column-gap: 28px; row-gap: 26px; padding: 16px 0; }
-:where(.rt-main.max560) .rt-accts { grid-column: 1 / -1; padding-left: 22px; }
+:where(.rt.max560) .rt-stage { grid-template-columns: 1fr 1fr; column-gap: 28px; row-gap: 26px; padding: 16px 0; }
+:where(.rt.max560) .rt-accts { grid-column: 1 / -1; padding-left: 22px; }
 .rt-accts:where(.max560) li { grid-template-columns: 10px minmax(0, 1fr); }
 .rt-accts:where(.max560) em { grid-column: 2; white-space: normal; }
 .rt-accts:where(.max560) .bar { grid-column: 2; }
-:where(.rt-main.max560) .rt-stats { gap: 14px; }
-/* 117 / responsive 12: counts under the sentence; No request yet full width under the pair */
-:where(.rt-main.max560) .rt-foot {
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 12px;
-}
-:where(.rt-main.max560) .rt-cap {
-  flex: none;
-  min-height: 0;
-  width: 100%;
-}
-:where(.rt-main.max560) .rt-accts:has(> li.idle) { padding-left: 0; }
+:where(.rt.max560) .rt-stats { gap: 14px; }
 /* the Routing view */
 #view-routing .row-head { margin: 14px 0 6px; padding: 0 2px; gap: 0; }
 #view-routing .row-head .note { font-size: 11px; color: var(--faint); margin-left: 8px; }
@@ -318,7 +285,7 @@
 .rt-req .meta[hidden] { display: none; }
 .rt-session { grid-column: 1 / -1; display: flex; align-items: center; flex-wrap: wrap; gap: 4px 8px; min-width: 0; padding: 9px 8px; margin-top: 4px; font: inherit; font-size: 12px; text-align: left; color: var(--fg-2); background: var(--card-2); border: 1px solid var(--line); border-radius: 8px; }
 button.rt-session { cursor: pointer; }
-.rt-session .arrow { flex: none; width: 10px; color: var(--muted); transition: color .15s; }
+.rt-session .arrow { flex: none; width: 10px; color: var(--muted); }
 .rt-session .nm { flex: 1 1 160px; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 500; }
 .rt-session .summary { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 10px; color: var(--muted); font-variant-numeric: tabular-nums; }
 .rt-session > .cost { flex: none; margin-left: auto; font-variant-numeric: tabular-nums; }
@@ -353,6 +320,12 @@ button.rt-session { cursor: pointer; }
 :where(.rt-col.max440) .rt-purpose { max-width: 150px; }
 /* Keep the compact row on wide lists. In a narrow column the destination
    and the metrics go under the model; individual metrics stay whole. */
+/* Where a request's numbers don't fit their column on one line (set by
+   metaFit), they go on a line of their own under where it went, which keeps
+   its room (#2288, xishuchkui-code). */
+:where(.rt-col.meta-under:not(.max760)) .rt-reqs { grid-template-columns: auto fit-content(45%) minmax(0, 1fr); }
+:where(.rt-col.meta-under:not(.max760)) .rt-req { row-gap: 2px; }
+:where(.rt-col.meta-under:not(.max760)) .rt-req .meta { grid-column: 2 / -1; grid-row: 2; justify-content: flex-start; }
 :where(.rt-col.max760) .rt-reqs { grid-template-columns: auto minmax(0, 1fr); }
 :where(.rt-col.max760) .rt-req { row-gap: 2px; }
 :where(.rt-col.max760) .rt-req .asked { grid-column: 2; grid-row: 1; }
@@ -440,10 +413,7 @@ button.rt-session { cursor: pointer; }
    selector so it outweighs body.window .ag-handle, whose 28px held a stack
    of logos in, spilling it over the card's left edge onto the name (ARNO
    on Discord) */
-.rt-group .rt-ghandle.ag-handle { position: relative; display: inline-flex; align-items: center; justify-content: center; width: auto; min-width: 24px; height: 24px; padding: 0 3px; border: 0; background: transparent; color: inherit; cursor: pointer; }
-.rt-group .rt-ghandle.ag-handle:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; border-radius: 6px; }
-.rt-pats .fbrow.none { gap: 8px; }
-.rt-pats .fbrow.none small { margin-left: 2px; }
+.rt-group .rt-ghandle.ag-handle { position: relative; align-items: center; justify-content: center; width: auto; min-width: 24px; height: 24px; padding: 0 3px; }
 .rt-group .rt-ghandle::before { content: ""; position: absolute; left: -7px; top: 50%; width: 5px; height: 11px; margin-top: -5.5px; background: radial-gradient(circle, var(--muted) .9px, transparent 1.2px) 0 0 / 3.5px 3.75px; opacity: 0; transition: opacity .15s; }
 .rt-group:is(:hover, .dragging) .rt-ghandle::before, .rt-group .rt-ghandle.open::before { opacity: 1; }
 /* apart: Safari before 15.4 drops a whole selector list with :focus-visible in it */
@@ -466,7 +436,8 @@ button.rt-session { cursor: pointer; }
 /* a classifier that failed (#1929): a dot, never a stripe */
 .rt-group .mem.clsfail { color: var(--amber); }
 .rt-group .mem.clsfail .dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: currentColor; margin-right: 6px; vertical-align: 1px; }
-.rt-patadd { display: flex; gap: 6px; align-items: center; margin-top: 4px; }
+.rt-patadd { display: flex; gap: 6px; align-items: center; }
+.rt-pats .fbl:not(:empty) + .rt-patadd { margin-top: 4px; }
 .rt-patadd input { flex: 1; min-width: 0; }
 .rt-group .tags { display: flex; gap: 4px; flex: none; }
 .rt-group .tag { font-size: 11px; line-height: 18px; padding: 0 8px; border-radius: 999px; box-shadow: inset 0 0 0 1px var(--line); color: var(--muted); white-space: nowrap; }
@@ -498,11 +469,12 @@ button.rt-session { cursor: pointer; }
 .rt-gsel { display: flex; align-items: center; gap: 10px; padding: 8px 12px 8px 14px; }
 .rt-group.rt-gpick { cursor: default; }
 .rt-group.rt-gpick.on { background: var(--card-2); }
-.rt-gedit { cursor: default; }
+.rt-gedit { cursor: default; scroll-margin-top: 12px; }
 .rt-gedit .ehead.fold { cursor: pointer; }
 .rt-gedit .segs { max-width: 100%; }
-.rt-gedit .ctx-wrap { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
-.rt-gedit .ctx-wrap .hint { flex-basis: 100%; }
+/* its hint as close under the choices as every other row's: 4px */
+.rt-gedit .ctx-wrap { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; }
+.rt-gedit .ctx-wrap .hint { flex-basis: 100%; margin-top: 0; }
 .rt-gedit .gsuffix { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; }
 .rt-gedit .gsuffix .hint { overflow-wrap: anywhere; }
 .rt-gedit .ctx-wrap input.ctx-in { width: 96px; flex: none; }
@@ -534,7 +506,7 @@ button.rt-session { cursor: pointer; }
   body.web .rt-gedit { grid-template-columns: minmax(0, 1fr); gap: 6px; padding: 12px; }
   body.web .rt-gedit label { text-align: left; padding-top: 8px; }
   body.web .rt-gedit .segs { flex-wrap: wrap; }
-  body.web .rt-gedit .fbrow { flex-wrap: wrap; }
+  body.web .rt-gedit .fbrow { flex-wrap: wrap; justify-content: normal; }
   body.web .rt-gedit .fbrow .n { flex: 1 1 calc(100% - 60px); white-space: normal; overflow-wrap: anywhere; }
   body.web .rt-gedit .fbrow > .grow { display: none; }
   body.web .rt-gedit .fbrow .text { min-width: 44px; }
@@ -558,23 +530,20 @@ button.rt-session { cursor: pointer; }
 :where(.rt-more.max520) .rt-gedit { grid-template-columns: minmax(0, 1fr); gap: 4px; }
 :where(.rt-more.max520) .rt-gedit label { text-align: left; padding-top: 8px; }
 :where(.rt-more.max520) .rt-gedit .segs .opt { padding-left: 9px; padding-right: 9px; }
-/* 143: groups head note gone; find/names copy wraps; templates stay two-up */
-:where(.rt-more.max520) .rt-gfound,
-:where(.rt-more.max520) .rt-gnames {
-  flex-wrap: nowrap;
-}
-:where(.rt-more.max520) .rt-gfound .txt,
-:where(.rt-more.max520) .rt-gnames .txt {
-  min-width: 0;
-}
-:where(.rt-more.max520) .rt-gnames .segs {
-  flex: none;
-  flex-wrap: nowrap;
-}
-:where(.rt-more.max520) .rt-gtpl-cards {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
+/* the models and patterns take the column's width and no more: a grid's
+   auto track grows to its widest row's content, so a long model name with
+   its chips pushed the rows past the editor's edge, cut off there, and
+   the patterns below no longer lined up with them. Tight, the name gives
+   way (it ellipsizes, to 8em), and tighter still (German's longer words)
+   the chips go on a line of their own, right-aligned, rather than past
+   the edge; none of them is ever cut */
+.rt-gedit .fallback, .rt-gedit .fallback:not(.rt-rules) .fbl { grid-template-columns: minmax(0, 1fr); }
+/* in :where, so a phone's own row (body.web, above) still wins */
+:where(.rt-gedit .fallback:not(.rt-rules)) .fbrow { flex-wrap: wrap; justify-content: flex-end; row-gap: 2px; }
+:where(.rt-gedit .fallback:not(.rt-rules)) .fbrow .n { flex: 1 1 8em; }
 .rt-gedit .fbrow .n { display: flex; align-items: baseline; gap: 6px; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rt-gedit .fbrow .n > * { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.rt-gedit .fbrow .n > small { flex: 0 100 auto; } /* gives way before the name */
 .rt-gedit .fbrow .n small { color: var(--muted); font-size: 11.5px; }
 .rt-gedit .fbrow.off .n { color: var(--muted); text-decoration: line-through; }
 .rt-gedit .fbrow .rt-mon { transform: scale(.85); }
@@ -615,15 +584,61 @@ button.rt-session { cursor: pointer; }
 /* Add a rule, and beside it a rule by what the message asks for */
 .rt-gadds { display: flex; flex-wrap: wrap; gap: 6px; }
 .rt-gadds > [hidden] { display: none; }
-/* a group's rules: when, and the model it sends that turn to first */
-.rt-rules .fbl { gap: 6px; }
-.rt-rule { display: grid; grid-template-columns: 14px minmax(0, 1fr) auto; align-items: start; gap: 4px 8px; padding: 6px 0; border-top: 1px solid var(--line); font-size: 12.5px; }
-.rt-rule:first-child { border-top: 0; padding-top: 0; }
-.rt-rule > .i { color: var(--muted); font-variant-numeric: tabular-nums; padding-top: 6px; }
-.rt-rule .when, .rt-rule .rt-use { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px; min-width: 0; }
-.rt-rule .rt-use { grid-column: 2; }
-.rt-rule .ctl { grid-column: 3; grid-row: 1; display: flex; padding-top: 2px; }
-.rt-rule .w { color: var(--muted); font-size: 12px; }
+/* a group's rules, each one line read as a sentence: the conditions it
+   has, → and the model it sends that turn to first; its acts under ⋯ */
+.rt-rules .fbl:not(:empty) + .rt-gadds { margin-top: 2px; }
+/* the rules share their columns (each rule a subgrid of the list), so
+   every rule's → and model start at one x: the number, the conditions
+   (as wide as the widest rule's, to at most half the width before they wrap), what
+   it does, the ⋯. Where subgrid isn't, each rule keeps the same columns
+   on its own */
+.rt-rules .fbl { display: grid; grid-template-columns: 16px fit-content(50%) minmax(0, 1fr) auto; gap: 0; }
+.rt-rule { grid-column: 1 / -1; display: grid; grid-template-columns: 16px fit-content(50%) minmax(0, 1fr) auto; align-items: start; column-gap: 8px; padding: 7px 0; border-top: 1px solid var(--line); font-size: 12.5px; }
+@supports (grid-template-columns: subgrid) { .rt-rule { grid-template-columns: subgrid; } }
+.rt-rule:first-child { border-top: 0; padding-top: 2px; }
+.rt-rule > .i { line-height: 26px; color: var(--muted); font-size: 11.5px; font-variant-numeric: tabular-nums; text-align: right; }
+.rt-line { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; min-width: 0; }
+/* on a narrow page what it does goes under the conditions */
+@media (max-width: 640px) {
+  .rt-rules .fbl { display: flex; flex-direction: column; }
+  .rt-rule { grid-template-columns: 16px minmax(0, 1fr) auto; row-gap: 6px; }
+  .rt-rule > .rt-then { grid-column: 2; grid-row: 2; }
+  .rt-rule > .rt-rmore { grid-column: 3; grid-row: 1; }
+}
+.rt-arrow { color: var(--muted); font-size: 12px; padding: 0 1px; }
+/* a set condition, and the × on its corner that takes it off: shown on
+   hover or focus, always where nothing hovers */
+.rt-c { position: relative; display: inline-flex; align-items: center; gap: 6px; min-width: 0; max-width: 100%; }
+.rt-cx {
+  position: absolute; top: -5px; right: -5px; z-index: 1; display: grid; place-items: center;
+  width: 16px; height: 16px; padding: 0; border-radius: 50%; border: 1px solid var(--line);
+  background: var(--card); color: var(--muted); cursor: pointer;
+  opacity: 0; pointer-events: none; transition: opacity .12s, color .12s;
+}
+.rt-cx:hover { color: var(--fg); border-color: var(--muted); }
+.rt-c:hover > .rt-cx, .rt-c:focus-within > .rt-cx { opacity: 1; pointer-events: auto; }
+@media (hover: none) { .rt-cx { opacity: 1; pointer-events: auto; } }
+/* the quiet + that adds a condition; in words while the rule has none */
+.rt-addc {
+  display: inline-grid; grid-auto-flow: column; place-items: center; gap: 5px;
+  width: 24px; height: 24px; padding: 0; border-radius: 999px; border: 1px solid transparent;
+  background: transparent; color: var(--muted); font: inherit; font-size: 12px; cursor: pointer;
+  transition: color .15s, border-color .15s, background .15s;
+}
+.rt-addc.wide { width: auto; height: 26px; padding: 0 10px 0 8px; border: 1px dashed var(--line); }
+.rt-addc:hover, .rt-addc.open, .rt-addc:focus-visible { color: var(--fg); background: var(--card-2); }
+.rt-addc.wide:hover, .rt-addc.wide.open { border-color: var(--muted); }
+/* the rule's ⋯: on hover, as the usage rows' */
+.rt-rule > .rt-rmore { align-self: start; opacity: 0; transition: opacity .12s, background .12s, color .12s; }
+.rt-rule:hover > .rt-rmore, .rt-rule > .rt-rmore:focus-visible, .rt-rule > .rt-rmore.open { opacity: 1; }
+@media (hover: none) { .rt-rule > .rt-rmore { opacity: 1; } }
+/* how a part works, under an ⓘ beside it */
+.rt-info { display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; color: var(--muted); cursor: help; outline: none; }
+.rt-info:hover, .rt-info:focus-visible { color: var(--fg); }
+.rt-info:focus-visible { box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 40%, transparent); }
+.rt-info[hidden] { display: none; }
+.rt-gadds { align-items: center; }
+.rt-pickrow { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
 .rt-cond {
   display: inline-flex; align-items: center; gap: 5px; height: 26px; padding: 0 10px; border-radius: 999px;
   border: 1px dashed var(--line); background: transparent; color: var(--muted);
@@ -639,11 +654,38 @@ button.rt-session { cursor: pointer; }
 .rt-cond > .ic-stack { overflow: visible; }
 .rt-cond.tk { cursor: text; }
 .rt-cond.in { cursor: text; }
-.rt-cond.in input, .editor .rt-cond.in input[type="text"] { width: 24ch; }
 .rt-cond.fd { cursor: text; }
 .rt-cond.fd input, .editor .rt-cond.fd input[type="text"] { width: 24ch; }
 .rt-cond.xf { cursor: text; }
 .rt-cond.xf input, .editor .rt-cond.xf input[type="text"] { width: 24ch; }
+/* a narrow line squeezes what was typed (it scrolls in its box), never
+   the word that says what the box is */
+.rt-cond.in > span:not(.rt-grow), .rt-cond.fd > span, .rt-cond.xf > span { flex: none; }
+.rt-cond.fd > input, .rt-cond.xf > input { min-width: 0; flex: 0 1 auto; }
+/* the intent, a sentence, shown whole: its box as wide as the words and
+   onto more lines where the line ends. A hidden copy of the words, in the
+   same cell and font, gives the box its size; the pill rounds less once
+   it is more than one line */
+.rt-cond.in { height: auto; min-height: 26px; padding-top: 2px; padding-bottom: 2px; border-radius: 13px; white-space: normal; }
+.rt-cond.in > span:first-child { align-self: flex-start; line-height: 20px; }
+.rt-cond > .rt-grow { align-self: flex-start; display: inline-grid; flex: 0 1 auto; min-width: min(6ch, 100%); max-width: 100%; overflow: visible; }
+.rt-grow::after, .rt-grow > textarea, .editor .rt-grow > textarea {
+  grid-area: 1 / 1; box-sizing: border-box; margin: 0; padding: 0 2px; border: 0; min-width: 0;
+  font: inherit; line-height: 20px; white-space: pre-wrap; overflow-wrap: anywhere;
+}
+.rt-grow::after { content: attr(data-v) " "; visibility: hidden; }
+.rt-grow > textarea, .editor .rt-grow > textarea {
+  width: 100%; height: 100%; min-height: 20px; resize: none; overflow: hidden;
+  background: transparent; color: inherit; outline: none; box-shadow: none; border-radius: 0;
+}
+@media (max-width: 760px), (pointer: coarse) and (max-width: 1024px) {
+  /* a phone's page sets its boxes at 16px; a rule's fields keep the line's
+     own size (iOS gets maximum-scale=1 from layout.js, so focus doesn't zoom) */
+  body.web .rt-cond input:not([type="range"]):not([type="checkbox"]):not([type="radio"]),
+  body.web .rt-grow, body.web .rt-grow > textarea { font-size: inherit; }
+  body.web .rt-cond.in { padding-top: 11px; padding-bottom: 11px; } /* the first line in the middle of the 44px pill */
+  body.web .rt-grow > textarea { min-height: 0; }
+}
 /* a rule's hours: two times in the pill, typed; one that isn't a time is marked */
 .rt-cond.tm { cursor: text; }
 .rt-cond.tm input.clock, .editor .rt-cond.tm input.clock[type="text"] { width: 5.5ch; text-align: center; }
@@ -660,10 +702,10 @@ button.rt-session { cursor: pointer; }
 .rt-levels { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px; margin-top: 6px; }
 .rt-levels[hidden] { display: none; }
 /* the field is the pill: the editor's boxed input (its border and focus ring) stays off it */
-.rt-cond input, .editor .rt-cond input[type="text"], .editor .rt-cond input:focus { box-shadow: none; border-radius: 0; }
+.rt-cond input, .editor .rt-cond input[type="text"], .editor .rt-cond input[type="number"], .editor .rt-cond input:focus { box-shadow: none; border-radius: 0; }
 .editor .rt-cond input:focus-visible { box-shadow: none; border-radius: 0; }
 .rt-cond:focus-within { border-style: solid; border-color: var(--accent); color: var(--fg); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent); }
-.rt-cond input, .editor .rt-cond input[type="text"] { width: 7ch; height: 20px; padding: 0 2px; border: 0; background: transparent; color: inherit; font: inherit; font-variant-numeric: tabular-nums; outline: none; -moz-appearance: textfield; }
+.rt-cond input, .editor .rt-cond input[type="text"], .editor .rt-cond input[type="number"] { width: 7ch; height: 20px; padding: 0 2px; border: 0; background: transparent; color: inherit; font: inherit; font-variant-numeric: tabular-nums; outline: none; -moz-appearance: textfield; }
 .rt-cond input::-webkit-outer-spin-button, .rt-cond input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 .rt-rwarn { color: var(--amber, var(--muted)); font-size: 11.5px; }
 .rt-rwarn:empty { display: none; }
@@ -781,11 +823,11 @@ button.rt-session { cursor: pointer; }
 .rt-gtpl { padding: 10px 12px 12px; display: grid; gap: 8px; }
 .rt-gtpl-head { font-size: 12px; color: var(--muted); }
 /* Import a group (laincatx on X): the text pasted, then what came of it */
-.rt-gimport { padding: 12px 4px 14px; display: grid; gap: 8px; min-width: 0; margin-top: 4px; border-top: 1px solid var(--line); }
+.rt-gimport { padding: 10px 12px 12px; display: grid; gap: 8px; min-width: 0; border-bottom: 1px solid var(--line); }
 .rt-gimport-text { width: 100%; box-sizing: border-box; min-height: 72px; padding: 7px 9px; border-radius: 7px; border: 1px solid var(--line); background: var(--card); color: var(--fg); font-family: var(--code-font, var(--code)); font-size: 12px; line-height: 1.45; resize: vertical; outline: none; overflow-wrap: anywhere; }
 .rt-gimport-text:focus { border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent); }
 .rt-gimport .acts { display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap; }
-.rt-gimport-done { font-size: 13px; font-weight: 650; color: var(--fg); }
+.rt-gimport-done { font-size: 12.5px; font-weight: 600; }
 .rt-gimport-missing, .rt-gimport-note { font-size: 12px; line-height: 1.45; color: var(--muted); overflow-wrap: anywhere; }
 .rt-gimport-missing { color: var(--danger, #d66); }
 .rt-gtpl-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 8px; }
@@ -799,48 +841,3 @@ button.rt-session { cursor: pointer; }
 .rt-gtpl-card.off b { color: var(--muted); }
 .rt-gtpl-card .acts { display: flex; align-items: center; gap: 8px; margin-top: auto; padding-top: 4px; }
 .rt-gtplbtn { display: inline-flex; align-items: center; gap: 4px; }
-
-/* Routing rules nest 31–54: + condition, → member, info tip, chip × */
-.rt-info {
-  display: inline-flex; align-items: center; justify-content: center;
-  width: 18px; height: 18px; border-radius: 50%;
-  border: 1px solid var(--line); background: transparent;
-  color: var(--muted); font: inherit; font-size: 11px; font-weight: 600;
-  cursor: help; flex: none; padding: 0; line-height: 1;
-}
-.rt-info:hover { color: var(--fg); border-color: var(--muted); }
-.rt-effort-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-.rt-cond-plus { width: 26px; height: 26px; padding: 0; justify-content: center; }
-.rt-cond-plus.open { border-style: solid; color: var(--fg); background: var(--card-2); }
-.rt-cond-x {
-  display: inline-flex; align-items: center; justify-content: center;
-  margin-left: 2px; width: 14px; height: 14px; border: 0; background: transparent;
-  color: var(--faint); font-size: 13px; line-height: 1; cursor: pointer; padding: 0;
-}
-.rt-cond-x:hover { color: var(--fg); }
-.rt-arrow { color: var(--muted); font-size: 13px; padding: 0 2px; }
-.rt-rule .when { align-items: center; }
-.rt-rule .ctl { opacity: 0; transition: opacity .12s; }
-.rt-rule:hover .ctl, .rt-rule:focus-within .ctl { opacity: 1; }
-.rt-gtplbtn { display: inline-flex; align-items: center; gap: 4px; }
-.rt-gtplbtn svg { opacity: .7; }
-
-/* v0.1.74 — routing 55–98 pause / rule ⋯ */
-/* v0.1.75 — routing 99–114 modes / weight / manual picks */
-.rt-rule-more {
-  min-width: 28px; height: 26px; padding: 0 6px;
-  font-size: 16px; line-height: 1; letter-spacing: 0.02em;
-  color: var(--muted);
-}
-.rt-rule-more:hover, .rt-rule-more.open { color: var(--fg); }
-.rt-pause-chip { font-weight: 500; }
-.rt-pause-note {
-  flex: 1 1 100%;
-  margin: 2px 0 0;
-  font-size: 11.5px;
-  line-height: 1.35;
-  color: #c2410c;
-}
-.rt-classifier { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
-.rt-classifier .hint { flex: 1 1 100%; }
-

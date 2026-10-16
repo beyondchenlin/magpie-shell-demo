@@ -80,7 +80,7 @@ footer.foot                 ← #status toast 胶囊
 | `#sync.spin` / `spin` | **.9s** linear infinite | 顶栏刷新 |
 | `.status.ok` 胶囊 | 出现约 **3.5s** 后清；opacity transition **.2–.3s** | footer toast |
 | `.nav-hl`（侧栏） | transform/height **.3s** `cubic-bezier(.25,.9,.3,1)` | 侧栏行高亮 |
-| view-transition（侧栏进出） | **.5s** `cubic-bezier(.32,.72,0,1)` | 顶栏↔侧栏 morph（可选） |
+| view-transition（侧栏进出） | **.32s** `cubic-bezier(.42,0,.58,1)` | 顶栏↔侧栏 morph（可选） |
 | `skeleton-shift` | **1.4s** ease-in-out infinite | Gateway loading 骨架 |
 | `.lib-switch` / `i` | background **.18s**；thumb translateX **.18s** `--ease` | Agents 连接 / Providers / 额度开关 |
 | `.pref-pick` chevron | transform **.15s** `--ease`；open 旋转 180° | Settings 语言等菜单钮 |
@@ -484,3 +484,8 @@ Full nested capture consumed. Hook When-it-runs includes shared events + Cursor 
 | 空态 Overview | `noCallsIn(period)` + 引导句；隐藏 chart/Agents/… | 默认 `demoFilled=false` |
 | Context `#ctxRange` | Today / 7d / 30d（`magpie.ctxDays`） | 已去掉误加的 90d |
 | Allowances | 无配额时 `quotaHead` hidden | **不发明**配额卡（无原生镜头） |
+
+
+## v0.1.194 同源基线
+
+当前控件契约以 docs/CIS-CONTROLS.md 为准。六个基础样式文件统一为 Magpie 63be477；预览框尺寸与导航解耦，见 docs/TIP-CYCLE.md。菜单使用同一窗口坐标、字号换算和边界约束；原生协议菜单立即关闭，模型浮层按 .leaving 220ms 退出。字体使用 .proto.pick 两列 grid；单色图标用 mask、彩色/PNG 保留图片。运行 npm run cis-guard 检查基础样式未漂移；该检查不代替浏览器和原生交互验收。

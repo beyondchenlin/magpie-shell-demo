@@ -1,4 +1,6 @@
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { PopoverPortal } from "./PopoverPortal";
+import { useAnchoredPopover } from "../lib/useAnchoredPopover";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { t } from "../i18n";
 
 export type AmModel = {
@@ -31,33 +33,23 @@ export function AgentModelsPop({
   const [seg, setSeg] = useState<"all" | "shown" | "order">("all");
   const [group, setGroup] = useState("all");
   const [leaving, setLeaving] = useState(false);
-  const [pos, setPos] = useState<{ top: number; left: number; ox: number; up: boolean } | null>(null);
+  const closeTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const shown = open || leaving;
+  const railed = new Set(models.map(model => model.group)).size > 1;
 
   useEffect(() => {
     if (open) {
+      clearTimeout(closeTimer.current);
+      closeTimer.current = undefined;
       setLeaving(false);
       setQ("");
       setSeg("all");
       setGroup("all");
     }
   }, [open]);
+  useEffect(() => () => clearTimeout(closeTimer.current), []);
 
-  useLayoutEffect(() => {
-    if (!open || !anchor || !ref.current) return;
-    const r = anchor.getBoundingClientRect();
-    const w = Math.min(520, window.innerWidth - 16);
-    const h = Math.min(480, window.innerHeight - 16);
-    let left = Math.min(Math.max(8, r.left), window.innerWidth - w - 8);
-    let top = r.bottom + 8;
-    let up = false;
-    if (top + Math.min(h, 280) > window.innerHeight - 8) {
-      top = Math.max(8, r.top - 8);
-      up = true;
-    }
-    const ox = Math.min(Math.max(16, r.left + r.width / 2 - left), w - 16);
-    setPos({ top: up ? Math.max(8, top - h) : top, left, ox, up });
-  }, [open, anchor, models.length]);
+  useAnchoredPopover(ref, anchor, shown, { maxHeight: 560, gap: 8, dx: -10, arrowMaxWidth: 60, arrowInset: 18 });
 
   useEffect(() => {
     if (!shown) return;
@@ -65,6 +57,7 @@ export function AgentModelsPop({
       if (e.key === "Escape") {
         e.preventDefault();
         dismiss();
+        anchor?.focus({ preventScroll: true });
       }
     };
     const onDown = (e: MouseEvent) => {
@@ -83,9 +76,10 @@ export function AgentModelsPop({
   }, [shown, anchor]);
 
   const dismiss = () => {
-    if (leaving) return;
+    if (closeTimer.current) return;
     setLeaving(true);
-    window.setTimeout(() => {
+    closeTimer.current = setTimeout(() => {
+      closeTimer.current = undefined;
       setLeaving(false);
       onClose();
     }, 220);
@@ -117,7 +111,7 @@ export function AgentModelsPop({
     return [...map.entries()];
   }, [filtered]);
 
-  if (!shown || !pos) return null;
+  if (!shown) return null;
 
   const toggle = (id: string) => {
     onChange(models.map((m) => (m.id === id ? { ...m, on: !m.on } : m)));
@@ -128,22 +122,14 @@ export function AgentModelsPop({
   };
 
   return (
-    <div
-      className={`pop am-pop${pos.up ? " up" : ""}${leaving ? " leaving" : ""}${seg === "order" ? " ordering" : ""}`}
+    <PopoverPortal><div
+      data-anchored
+      className={`pop am-pop${leaving ? " leaving" : ""}${seg === "order" ? " ordering" : ""}`}
       ref={ref}
       role="dialog"
       aria-label={t("{agent}'s model list", { agent: agentName })}
       style={{
-        position: "fixed",
-        top: pos.up ? undefined : pos.top,
-        bottom: pos.up ? window.innerHeight - pos.top - 8 : undefined,
-        left: pos.left,
-        width: Math.min(520, window.innerWidth - 16),
-        maxHeight: Math.min(480, window.innerHeight - 16),
-        zIndex: 80,
-        display: "flex",
-        flexDirection: "column",
-        ["--ox" as string]: `${pos.ox}px`,
+        width: railed ? 580 : 380,
       }}>
       <div className="am-head">
         <div className="am-t">{t("{agent}'s model list", { agent: agentName })}</div>
@@ -188,7 +174,7 @@ export function AgentModelsPop({
         </div>
       </div>
       <div className="am-body">
-        <nav className="am-rail" aria-label={t("Model providers")}>
+        {railed ? <nav className="am-rail" aria-label={t("Model providers")}>
           <button
             type="button"
             className={`am-ri${group === "all" ? " on" : ""}`}
@@ -206,7 +192,7 @@ export function AgentModelsPop({
               <span className="c">{n}</span>
             </button>
           ))}
-        </nav>
+        </nav> : null}
         <div className="am-list">
           {byGroup.map(([g, rows]) => (
             <div className="am-g" key={g}>
@@ -291,6 +277,6 @@ export function AgentModelsPop({
           ) : null}
         </div>
       </div>
-    </div>
+    </div></PopoverPortal>
   );
 }

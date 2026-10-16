@@ -1,5 +1,9 @@
+import { CopyButton } from "../../components/CopyButton";
 import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
-import { createPortal } from "react-dom";
+import { PopoverPortal } from "../../components/PopoverPortal";
+import { useAnchoredPopover } from "../../lib/useAnchoredPopover";
+import { MagpieIcon } from "../../components/MagpieIcon";
+import { menuKeyNavigation } from "../../lib/popover";
 import { ModelPop, PrefPickChip, type PopOption } from "../../components/ModelPop";
 import { PrefPick } from "../../components/PrefPick";
 import { PrefRow } from "../../components/PrefRow";
@@ -8,7 +12,6 @@ import { Segs } from "../../components/Segs";
 import { Tick } from "../../components/Tick";
 import { WordsField } from "../../components/WordsField";
 import { WarmAt } from "../../components/WarmAt";
-import { iconSrc } from "../../data/mock";
 import { demoCopy, t } from "../../i18n";
 
 const PM_CHECK = "M3.2 8.2 6.4 11.4 12.8 4.2";
@@ -36,16 +39,6 @@ const AUTO_RESET_CASES = [
 ];
 
 export type AutoResetMap = Record<string, { week: boolean; expiring: boolean }>;
-
-/** Magpie app.js icon(name): span.ic[data-icon] > img (or mask). */
-function MagpieIcon({ name }: { name: string }) {
-  const n = name || "generic";
-  return (
-    <span className="ic" data-icon={n} aria-hidden>
-      <img src={iconSrc(n)} alt="" draggable={false} />
-    </span>
-  );
-}
 
 function named(id: string) {
   const m = DEMO_MODELS.find((x) => x.value === id);
@@ -300,6 +293,7 @@ export function LanAddressRow({
   const [menu, setMenu] = useState(false);
   const btnRef = useRef<HTMLButtonElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
+  useAnchoredPopover(menuRef, btnRef, menu, { align: "right", maxHeight: 360 });
 
   useEffect(() => {
     if (!menu) return;
@@ -346,23 +340,10 @@ export function LanAddressRow({
             </button>
           )}
           <span className="lan-copy">
-            <button
-              type="button"
-              className="copy"
-              title={t("Copy")}
-              aria-label={`${t("Copy")} ${t("{label} address", { label: protocol === "openai" ? "OpenAI" : "Anthropic" })}`}
-              onClick={async () => {
-                try { await navigator.clipboard.writeText(shown); } catch { /* */ }
-                onStatus?.(t("{what} copied", { what: t("{label} address", { label: protocol === "openai" ? "OpenAI" : "Anthropic" }) }), "ok");
-              }}>
-              <svg viewBox="0 0 16 16" width={13} height={13}>
-                <rect x="5.5" y="5.5" width="7" height="7" rx="1.5" fill="none" stroke="currentColor" strokeWidth="1.4" />
-                <path d="M3.5 10.5V3.5h7" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
-              </svg>
-            </button>
+            <CopyButton text={shown} what={t("{label} address", { label: protocol === "openai" ? "OpenAI" : "Anthropic" })} onStatus={onStatus} />
           </span>
           {menu ? (
-            <div className="pop proto-menu lan-address-menu" ref={menuRef} role="menu" aria-label={t("Address")}>
+            <PopoverPortal><div data-anchored className="pop proto-menu lan-address-menu" ref={menuRef} role="menu" aria-label={t("Address")}>
               <div className="pm-head">{t("Address")}</div>
               {urls.map((u) => {
                 const on = u === cur;
@@ -388,7 +369,7 @@ export function LanAddressRow({
                   </button>
                 );
               })}
-            </div>
+            </div></PopoverPortal>
           ) : null}
         </div>
     </PrefRow>
@@ -925,7 +906,6 @@ export function WhatsNewModal({ onClose }: { onClose: () => void }) {
 }
 
 export function CliRow() {
-  const [copied, setCopied] = useState(false);
   return (
     <PrefRow
       name={t("Command line")}
@@ -944,28 +924,7 @@ export function CliRow() {
         </>
       }
     >
-        <button
-          type="button"
-          className={`copy${copied ? " done" : ""}`}
-          title={t("Copy")}
-          aria-label={t("Copy")}
-          onClick={async () => {
-            const tip = "magpie";
-            try { await navigator.clipboard.writeText(tip); } catch { /* demo */ }
-            setCopied(true);
-            window.setTimeout(() => setCopied(false), 1200);
-          }}>
-          {copied ? (
-            <svg viewBox="0 0 16 16" width={13} height={13}>
-              <path d="M3.5 8.5 6.5 11.5 12.5 4.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          ) : (
-            <svg viewBox="0 0 16 16" width={13} height={13}>
-              <rect x="5.5" y="5.5" width="7" height="7" rx="1.5" fill="none" stroke="currentColor" strokeWidth="1.4" />
-              <path d="M3.5 10.5V3.5h7" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
-            </svg>
-          )}
-        </button>
+        <CopyButton text="magpie" what={t("Command line")} />
     </PrefRow>
   );
 }
@@ -1185,6 +1144,7 @@ export function TrayUsagePick({
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLButtonElement | null>(null);
   const menuRef = useRef<HTMLDivElement | null>(null);
+  useAnchoredPopover(menuRef, ref, open, { align: "right", maxHeight: 360 });
   // Magpie TRAY_TOTALS (app.js L21946) + Off; demo single-select stand-in for multi ids
   const opts = [
     { v: "", name: "Off", note: "" },
@@ -1227,7 +1187,7 @@ export function TrayUsagePick({
         </svg>
       </button>
       {open ? (
-        <div className="pop proto-menu" ref={menuRef} role="menu" aria-label={t("Shown beside the icon")}>
+        <PopoverPortal><div data-anchored className="pop proto-menu" ref={menuRef} role="menu" aria-label={t("Shown beside the icon")}>
           <div className="pm-head">{t("Shown beside the icon")}</div>
           {opts.map((o) => {
             const on = o.v === value;
@@ -1256,7 +1216,7 @@ export function TrayUsagePick({
               </button>
             );
           })}
-        </div>
+        </div></PopoverPortal>
       ) : null}
     </div>
   );
@@ -1377,6 +1337,7 @@ export function SearchApisBlock({
   const [showKey, setShowKey] = useState<Record<string, boolean>>({});
   const pickRef = useRef<HTMLButtonElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
+  useAnchoredPopover(menuRef, pickRef, menu, { align: "right", maxHeight: 360 });
 
   useEffect(() => {
     if (!menu) return;
@@ -1479,7 +1440,7 @@ export function SearchApisBlock({
             }}
           />
           {menu ? (
-            <div className="pop proto-menu" ref={menuRef} role="menu" aria-label={t("Search API")}>
+            <PopoverPortal><div data-anchored className="pop proto-menu" ref={menuRef} role="menu" aria-label={t("Search API")}>
               <div className="pm-head">{t("Search API")}</div>
               {SEARCH_VENDORS.map((x) => {
                 const on = x.id === vendor;
@@ -1509,7 +1470,7 @@ export function SearchApisBlock({
                   </button>
                 );
               })}
-            </div>
+            </div></PopoverPortal>
           ) : null}
       </PrefRow>
       {apis.map((a, n) => (
@@ -1830,7 +1791,7 @@ export function FontRow({
   const [open, setOpen] = useState<"" | "family" | "style">("");
   const [q, setQ] = useState("");
   const [list, setList] = useState(DEMO_FONT_LIST);
-  const [pos, setPos] = useState<{ top: number; left: number; up: boolean; maxH?: number } | null>(null);
+  const [menuAnchor, setMenuAnchor] = useState<HTMLElement | null>(null);
   const famRef = useRef<HTMLButtonElement | null>(null);
   const styleRef = useRef<HTMLButtonElement | null>(null);
   const menuRef = useRef<HTMLDivElement | null>(null);
@@ -1842,7 +1803,7 @@ export function FontRow({
   const closeMenu = () => {
     setOpen("");
     setQ("");
-    setPos(null);
+
   };
 
   useEffect(() => {
@@ -1858,7 +1819,7 @@ export function FontRow({
         e.stopPropagation();
         closeMenu();
         (open === "style" ? styleRef.current : famRef.current)?.focus({ preventScroll: true });
-      }
+      } else if (menuRef.current) menuKeyNavigation(menuRef.current, e);
     };
     document.addEventListener("mousedown", onDown, true);
     document.addEventListener("keydown", onKey, true);
@@ -1868,35 +1829,10 @@ export function FontRow({
     };
   }, [open]);
 
+  useAnchoredPopover(menuRef, menuAnchor, !!open, { align: "right", maxHeight: 360 });
   useLayoutEffect(() => {
-    if (!open) return;
-    const anchor = open === "family" ? famRef.current : styleRef.current;
-    const box = menuRef.current;
-    if (!anchor || !box) return;
-    const r = anchor.getBoundingClientRect();
-    const pad = 8;
-    const h = box.offsetHeight;
-    const w = box.offsetWidth;
-    let y = r.bottom + 5;
-    const below = window.innerHeight - pad - y;
-    const above = r.top - 5 - pad;
-    let up = false;
-    let maxH: number | undefined;
-    if (h > below && above >= h) {
-      y = r.top - 5 - h;
-      up = true;
-    } else if (h > below && above > below) {
-      maxH = above;
-      y = pad;
-      up = true;
-    } else if (h > below) {
-      maxH = Math.max(below, 0);
-    }
-    const left = Math.max(pad, Math.min(r.right - w, window.innerWidth - w - pad));
-    setPos({ top: Math.max(pad, y), left, up, maxH });
-    box.scrollTop = 0;
     if (open === "family") searchRef.current?.focus({ preventScroll: true });
-  }, [open, q, list.length]);
+  }, [open]);
 
   const qLower = q.trim().toLocaleLowerCase();
   const defaultLabel = t("System default");
@@ -1911,17 +1847,11 @@ export function FontRow({
 
   const menu = open ? (
     <div
-      className={`pop proto-menu sess-menu font-menu${pos?.up ? " up" : ""}`}
+      data-anchored
+      className="pop proto-menu sess-menu font-menu"
       ref={menuRef}
       role="menu"
-      style={{
-        position: "fixed",
-        top: pos ? pos.top : -9999,
-        left: pos ? pos.left : 0,
-        zIndex: 80,
-        maxHeight: pos?.maxH,
-        visibility: pos ? "visible" : "hidden",
-      }}>
+>
       <div className="pm-head">{open === "family" ? t(label) : t("Font style")}</div>
       {open === "family" ? (
         <>
@@ -2050,6 +1980,7 @@ export function FontRow({
             if (open === "family") closeMenu();
             else {
               setQ("");
+              setMenuAnchor(e.currentTarget);
               setOpen("family");
             }
           }}
@@ -2070,11 +2001,11 @@ export function FontRow({
             e.stopPropagation();
             if (!styleEnabled) return;
             if (open === "style") closeMenu();
-            else setOpen("style");
+            else { setMenuAnchor(e.currentTarget); setOpen("style"); }
           }}
         />
         <div className="font-preview">{t("Aa 0123 · 中文")}</div>
-        {menu && createPortal(menu, document.body)}
+        {menu && <PopoverPortal>{menu}</PopoverPortal>}
       </div>
     </PrefRow>
   );

@@ -1,3 +1,6 @@
+import { MagpieIcon } from "../components/MagpieIcon";
+import { PopoverPortal } from "../components/PopoverPortal";
+import { useAnchoredPopover } from "../lib/useAnchoredPopover";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { GroupEditor, type SavedGroupDraft } from "../components/GroupEditor";
 import { Segs } from "../components/Segs";
@@ -268,22 +271,11 @@ function GroupRowMenu({
   onCopyShare,
 }: GroupRowMenuProps) {
   const boxRef = useRef<HTMLDivElement>(null);
+  useAnchoredPopover(boxRef, anchor, true, { dx: -4 });
 
   useEffect(() => {
     const box = boxRef.current;
     if (!box) return;
-    const r = anchor.getBoundingClientRect();
-    const pad = 8;
-    const w = box.offsetWidth || 200;
-    const h = box.offsetHeight || 120;
-    let y = r.bottom + 5;
-    if (y + h > window.innerHeight - pad && r.top - 5 - h >= pad) {
-      y = r.top - 5 - h;
-      box.classList.add("up");
-    }
-    const left = Math.max(pad, Math.min(r.left - 4, window.innerWidth - w - pad));
-    box.style.left = `${left}px`;
-    box.style.top = `${Math.max(pad, y)}px`;
     anchor.classList.add("open");
     const outside = (e: MouseEvent) => {
       if (!box.contains(e.target as Node) && !anchor.contains(e.target as Node)) onClose();
@@ -348,7 +340,7 @@ function GroupRowMenu({
   ];
 
   return (
-    <div className="pop row-menu fixed" role="menu" ref={boxRef}>
+    <PopoverPortal><div data-anchored className="pop row-menu fixed" role="menu" ref={boxRef}>
       {items.map((o) => (
         <button
           type="button"
@@ -376,7 +368,7 @@ function GroupRowMenu({
           {o.key ? <span className="rm-key">{o.key}</span> : null}
         </button>
       ))}
-    </div>
+    </div></PopoverPortal>
   );
 }
 
@@ -704,7 +696,7 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
             <span data-t>{masked ? t("Accounts hidden") : t("Hide accounts")}</span>
           </button>
         </div>
-        <section className="rt" id="rt">
+        <section className={`rt${mainNarrow ? " max560" : ""}`} id="rt">
           <div className="rt-main">
             <div className="none rt-off">
               {t("Another magpie serves the gateway; its routing plays live in that magpie's window.")}
@@ -769,7 +761,7 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
         </button>
       </div>
 
-      <section className="rt" id="rt">
+      <section className={`rt${mainNarrow ? " max560" : ""}`} id="rt">
         <div className={`rt-main${mainNarrow ? " max560" : ""}`} ref={mainRef}>
           <div className="rt-top">
             <div className="rt-what">
@@ -1468,7 +1460,7 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
             {demoLive ? (
               <>
                 <div className="rt-prov">
-                  <span className="ic" aria-hidden>◆</span>
+                  <MagpieIcon name="anthropic" />
                   <b>Anthropic</b>
                   <span className="rt-go">{t("Smart")}</span>
                 </div>

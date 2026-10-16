@@ -241,6 +241,6 @@ export const SUB_TILES: { id: string; name: string; icon: string }[] = [
 
 export function iconSrc(name: string): string {
   if (name.endsWith(".png") || name.endsWith(".svg")) return `/icons/${name}`;
-  // Magpie: pngIcons set for some; try svg then png
-  return `/icons/${name}.svg`;
+  const png = new Set(["crush", "zcode", "alma", "hanako", "cindy", "lody", "typesafe", "atomcode", "snow", "mlx-serve", "mothx"]);
+  return `/icons/${name}.${png.has(name) ? "png" : "svg"}`;
 }

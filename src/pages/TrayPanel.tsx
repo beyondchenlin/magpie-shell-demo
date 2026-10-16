@@ -1,3 +1,4 @@
+import { MagpieIcon } from "../components/MagpieIcon";
 /**
  * Magpie tray / quick panel (body.panel) — native-linux/tray/01–27.
  * Open: ?panel=1 | #panel | localStorage magpie.demoPanel=1
@@ -12,7 +13,6 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState, type MouseEv
 import { Bird, useLogoWag } from "../components/Bird";
 import { ModelPop, type PopOption } from "../components/ModelPop";
 import { useSegThumb } from "../components/SegThumb";
-import { iconSrc } from "../data/mock";
 import { t } from "../i18n";
 import { FieldPill } from "../components/FieldPill";
 
@@ -331,9 +331,7 @@ export function TrayPanel({ onOpenMain, onHide, onQuit, onPrefs, onStatus }: Pro
               aria-hidden
               title="~/.cursor/cli-config.json"
             >
-              <span className="ic" data-icon="cursor" aria-hidden>
-                <img src={iconSrc("cursor")} alt="" draggable={false} />
-              </span>
+              <MagpieIcon name={"cursor"} />
             </span>
             <div className="who">
               <div className="name">Cursor</div>
@@ -359,9 +357,7 @@ export function TrayPanel({ onOpenMain, onHide, onQuit, onPrefs, onStatus }: Pro
                     k={t("Model")}
                     v={modelLabel}
                     trailing={
-                      <span className="ic" data-icon="cursor" aria-hidden>
-                        <img src={iconSrc("cursor")} alt="" draggable={false} />
-                      </span>
+                      <MagpieIcon name={"cursor"} />
                     }
                     ref={modelFieldRef}
                     onClick={() => setModelPop((v) => !v)}

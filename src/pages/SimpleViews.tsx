@@ -1,3 +1,9 @@
+import { PluginLogo } from "../components/PluginLogo";
+import { RequestArchive } from "../components/RequestArchive";
+import { CopyButton } from "../components/CopyButton";
+import { MagpieIcon } from "../components/MagpieIcon";
+import { PopoverPortal } from "../components/PopoverPortal";
+import { useAnchoredPopover } from "../lib/useAnchoredPopover";
 import { Fragment, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { ActionConfirm } from "../components/ActionConfirm";
 import { LedChart, LedRank } from "../components/LedChart";
@@ -7,7 +13,6 @@ import { PrefRow } from "../components/PrefRow";
 import { Segs } from "../components/Segs";
 import { useSegThumb } from "../components/SegThumb";
 import { TextBtn } from "../components/TextBtn";
-import { iconSrc } from "../data/mock";
 import {
   DEMO_CTX_AGENTS,
   DEMO_LEDGER,
@@ -59,23 +64,11 @@ function UsageAgentMenu({
   onClose: () => void;
 }) {
   const boxRef = useRef<HTMLDivElement>(null);
+  useAnchoredPopover(boxRef, anchor, true, { dx: -4 });
 
   useEffect(() => {
     const box = boxRef.current;
     if (!box) return;
-    const r = anchor.getBoundingClientRect();
-    const pad = 8;
-    const w = box.offsetWidth || 176;
-    const h = box.offsetHeight || 40;
-    let y = r.bottom + 5;
-    if (y + h > window.innerHeight - pad && r.top - 5 - h >= pad) {
-      y = r.top - 5 - h;
-      box.classList.add("up");
-    }
-    // Magpie placeMenu(box, anchor, "left", -4) — app.js L13784–13797 / L3518
-    const left = Math.max(pad, Math.min(r.left - 4, window.innerWidth - w - pad));
-    box.style.left = `${left}px`;
-    box.style.top = `${Math.max(pad, y)}px`;
     anchor.classList.add("open");
     const outside = (e: MouseEvent) => {
       if (!box.contains(e.target as Node) && !anchor.contains(e.target as Node)) onClose();
@@ -100,7 +93,7 @@ function UsageAgentMenu({
   }, [anchor, onClose]);
 
   return (
-    <div className="pop row-menu fixed" role="menu" ref={boxRef}>
+    <PopoverPortal><div data-anchored className="pop row-menu fixed" role="menu" ref={boxRef}>
       <button
         type="button"
         className="rm-item"
@@ -122,7 +115,7 @@ function UsageAgentMenu({
         </svg>
         <span className="rm-name">{t("Hide from this list")}</span>
       </button>
-    </div>
+    </div></PopoverPortal>
   );
 }
 
@@ -570,8 +563,8 @@ export function UsageView() {
   const [sessAgent, setSessAgent] = useState("all");
   const [sessQ, setSessQ] = useState("");
   const [mask, setMask] = useState(false);
-  /** Magpie ledDash stays hidden with no ledger; demo can show a chart shell. */
-  const [demoChart, setDemoChart] = useState(false);
+
+
   const [ctxDays, setCtxDays] = useState(() => {
     try {
       const d = localStorage.getItem("magpie.ctxDays");
@@ -579,8 +572,8 @@ export function UsageView() {
     } catch { /* ignore */ }
     return "7";
   });
-  /** Magpie empty vs filled demo. Native usage/01–50 are empty — default off; toggle fills mock data. */
-  const [demoFilled, setDemoFilled] = useState(false);
+  /** Empty by default; populated mock data is an explicit review fixture, not an invented app control. */
+  const [demoFilled] = useState(() => new URLSearchParams(location.search).get("fixture") === "filled");
   const [ledOpen, setLedOpen] = useState<Set<string>>(() => new Set());
   const [ledPage, setLedPage] = useState(0);
   const [sessOpen, setSessOpen] = useState<string | null>(null);
@@ -976,9 +969,7 @@ export function UsageView() {
             <div className="none">
               {`${noCallsIn(period)} ${t("Point an agent at a catalog model and use it; every call through the gateway is counted here.")}`}
             </div>
-            <TextBtn variant="primary" onClick={() => setDemoFilled(true)}>
-              {demoCopy("显示演示有数据", "Show demo with data")}
-            </TextBtn>
+
           </section>
         ) : (
           <>
@@ -1072,9 +1063,7 @@ export function UsageView() {
                       : "";
                   return (
                     <div className="row stat acts" key={g.id} data-id={g.id}>
-                      <span className="ic">
-                        <img src={iconSrc(g.icon)} alt="" />
-                      </span>
+                      <MagpieIcon name={g.icon} />
                       <div className="who">
                         <div className="name">{g.name}</div>
                         <div className="sub">
@@ -1137,9 +1126,7 @@ export function UsageView() {
                         .filter((g) => hiddenUsageAgents.has(g.id))
                         .map((g) => (
                           <div className="row stat hid acts" key={`hid-${g.id}`} data-id={g.id}>
-                            <span className="ic">
-                              <img src={iconSrc(g.icon)} alt="" />
-                            </span>
+                            <MagpieIcon name={g.icon} />
                             <div className="who">
                               <div className="name">{g.name}</div>
                               <div className="sub">{t(g.calls === 1 ? "{n} call" : "{n} calls", { n: String(g.calls) })}</div>
@@ -1178,7 +1165,7 @@ export function UsageView() {
                 const total = Math.max(1, tokensOf(overview));
                 return (
                   <div className="row stat" key={g.id} data-id={g.id}>
-                    <span className="ic" aria-hidden>◆</span>
+                    <MagpieIcon />
                     <div className="who">
                       <div className="name">{g.name}</div>
                       <div className="sub">
@@ -1207,9 +1194,7 @@ export function UsageView() {
                     const total = Math.max(1, tokensOf(overview));
                     return (
                       <div className="row stat" key={g.id} data-id={g.id}>
-                        <span className="ic">
-                          <img src={iconSrc(g.icon)} alt="" />
-                        </span>
+                        <MagpieIcon name={g.icon} />
                         <div className="who">
                           <div className={`name${mask ? " faint" : ""}`}>{mask ? "••••@••••.com" : g.name}</div>
                           <div className="sub">
@@ -1230,14 +1215,6 @@ export function UsageView() {
                 </div>
               </>
             ) : null}
-            <div>
-              <TextBtn
-                aria-pressed={demoFilled}
-                onClick={() => setDemoFilled(false)}
-                title={demoCopy("关演示数据看真空态", "Turn off demo data for Magpie empty")}>
-                {demoCopy("演示数据开 · 点此关", "Demo data on · click to clear")}
-              </TextBtn>
-            </div>
           </>
         )}
         <p className="usage-note" id="usageNote" />
@@ -1259,16 +1236,7 @@ export function UsageView() {
             }))}
           />
           <span className="grow" />
-          <TextBtn
-            aria-pressed={demoFilled}
-            title={demoCopy("切换演示 ledger 数据", "Toggle demo ledger data")}
-            onClick={() => {
-              setDemoFilled((d) => !d);
-              setLedPage(0);
-              setDemoChart(false);
-            }}>
-            {demoFilled ? demoCopy("演示数据开", "Demo data on") : demoCopy("演示数据关", "Demo data off")}
-          </TextBtn>
+
           <input
             className="sess-filter"
             id="ledQ"
@@ -1402,7 +1370,7 @@ export function UsageView() {
               </p>
               {/* Magpie #ledTight after #ledSum (app.js ledFit L18641–47) */}
               <span className="led-tight" id="ledTight" hidden />
-              <span className="grow" />
+              <RequestArchive on={reqArchive} onChange={setReqArchive} />
             </div>
             <div className="led-wrap" id="ledWrap" ref={ledWrapRef}>
               <table className="led">
@@ -1437,20 +1405,11 @@ export function UsageView() {
                           </td>
                           <td>
                             <span className="who">
-                              <span className="ic">
-                                <img
-                                  src={iconSrc(
-                                    r.icon === "claude"
+                              <MagpieIcon name={r.icon === "claude"
                                       ? "claude-color"
                                       : r.icon === "codex"
                                         ? "codex-color"
-                                        : "openai",
-                                  )}
-                                  alt=""
-                                  width={14}
-                                  height={14}
-                                />
-                              </span>
+                                        : "openai"} />
                               <span>{r.agentName}</span>
                             </span>
                           </td>
@@ -1557,15 +1516,8 @@ export function UsageView() {
           </>
         ) : (
           <>
-            <div className="led-tools-extra">
-              <TextBtn
-                aria-pressed={demoChart}
-                onClick={() => setDemoChart((d) => !d)}
-                title={demoCopy("官方空态隐藏 ledDash；点此预览演示柱图壳", "Magpie hides ledDash when empty; preview demo chart shell")}>
-                {demoChart ? demoCopy("隐藏演示图", "Hide demo chart") : demoCopy("显示演示图", "Show demo chart")}
-              </TextBtn>
-            </div>
-            <div className="led-dash" id="ledDash" hidden={!demoChart}>
+
+            <div className="led-dash" id="ledDash" hidden>
               <div className="led-strip" id="ledKpi">
                 {[
                   ["Calls", "0", ""],
@@ -1589,22 +1541,9 @@ export function UsageView() {
                 {t("{n} requests", { n: "0" })}
               </p>
               <span className="grow" />
-              <label
-                className="led-archive"
-               
-                title={t("The request archive goes to the S3 bucket sync keeps its backup in, and sync isn't set up with one")}>
-                <span>{t("Request archive")}</span>
-                <input
-                  type="checkbox"
-                  role="switch"
-                  checked={reqArchive}
-                  aria-checked={reqArchive}
-                  onChange={(e) => setReqArchive(e.target.checked)}
-                 
-                />
-              </label>
+              <RequestArchive on={reqArchive} onChange={setReqArchive} />
             </div>
-            <div className={`led-wrap${!demoChart ? " none" : ""}`} id="ledWrap">
+            <div className="led-wrap none" id="ledWrap">
               <div className="led-none">
                 <b>
                   {ledQ.trim() || ledStatus
@@ -1637,17 +1576,11 @@ export function UsageView() {
           <button className="sess-pick" id="sessModel" type="button" hidden />
           <button className="sess-pick" id="sessFolder" type="button" hidden />
           <span className="grow" />
-          <TextBtn
-            aria-pressed={demoFilled}
-            onClick={() => setDemoFilled((d) => !d)}>
-            {demoFilled ? demoCopy("演示数据开", "Demo data on") : demoCopy("演示数据关", "Demo data off")}
-          </TextBtn>
+
         </div>
         {!demoFilled ? (
           <div>
-            <TextBtn aria-pressed={false} onClick={() => setDemoFilled(true)}>
-              {demoCopy("演示数据关 · 点此填充", "Demo data off · fill")}
-            </TextBtn>
+
           </div>
         ) : null}
         {demoFilled && sessRows.length ? (
@@ -1711,14 +1644,7 @@ export function UsageView() {
                           setSessOpen(open ? null : s.id);
                         }
                       }}>
-                      <span className="ic">
-                        <img
-                          src={iconSrc(
-                            s.icon === "claude" ? "claude-color" : s.icon === "codex" ? "codex-color" : "openai",
-                          )}
-                          alt=""
-                        />
-                      </span>
+                      <MagpieIcon name={s.icon === "claude" ? "claude-color" : s.icon === "codex" ? "codex-color" : "openai"} />
                       <div className="who">
                         <div className="name">{s.title === "(no prompt)" ? t("(no prompt)") : s.title}</div>
                         <div className="sub">
@@ -1756,36 +1682,12 @@ export function UsageView() {
                         <div className="sess-line">
                           <span className="k">{t("Session ID")}</span>
                           <span className="v">{detail.id}</span>
-                          <button
-                            type="button"
-                            className="copy"
-                            title={t("Session id")}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              void navigator.clipboard?.writeText(detail.id);
-                            }}>
-                            <svg viewBox="0 0 16 16" width={12} height={12} aria-hidden>
-                              <rect x="5.5" y="5.5" width="7" height="7" rx="1.2" fill="none" stroke="currentColor" strokeWidth="1.5" />
-                              <path d="M3.5 10.5v-7A1.5 1.5 0 0 1 5 2h7" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-                            </svg>
-                          </button>
+                          <CopyButton text={detail.id} what={t("Session ID")} />
                         </div>
                         <div className="sess-line">
                           <span className="k">{t("Resume")}</span>
                           <code>{detail.resume}</code>
-                          <button
-                            type="button"
-                            className="copy"
-                            title={t("Resume command")}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              void navigator.clipboard?.writeText(detail.resume);
-                            }}>
-                            <svg viewBox="0 0 16 16" width={12} height={12} aria-hidden>
-                              <rect x="5.5" y="5.5" width="7" height="7" rx="1.2" fill="none" stroke="currentColor" strokeWidth="1.5" />
-                              <path d="M3.5 10.5v-7A1.5 1.5 0 0 1 5 2h7" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-                            </svg>
-                          </button>
+                          <CopyButton text={detail.resume} what={t("Resume command")} />
                         </div>
                         <div className="sess-models">
                           {detail.models.map((m) => (
@@ -1871,11 +1773,7 @@ export function UsageView() {
         <div className="row-head">
           <span className="label">{t("Tuned for you")}</span>
           <span className="grow" />
-          <TextBtn
-            aria-pressed={demoFilled}
-            onClick={() => setDemoFilled((d) => !d)}>
-            {demoFilled ? demoCopy("演示数据开", "Demo data on") : demoCopy("演示数据关", "Demo data off")}
-          </TextBtn>
+
         </div>
         <p className="usage-note ctx-tune-note">
           {t(
@@ -1909,14 +1807,7 @@ export function UsageView() {
                   <div className="ctx-agent-head">
                     <div className="ctx-who-box">
                       <div className="ctx-who">
-                        <span className="ic">
-                          <img
-                            src={iconSrc(
-                              a.icon === "claude" ? "claude-color" : a.icon === "codex" ? "codex-color" : "openai",
-                            )}
-                            alt=""
-                          />
-                        </span>
+                        <MagpieIcon name={a.icon === "claude" ? "claude-color" : a.icon === "codex" ? "codex-color" : "openai"} />
                         <b>{a.name}</b>
                       </div>
                       <div className="ctx-who-sub">
@@ -2464,10 +2355,11 @@ export function PluginsView({
         />
         <span className="grow" />
         {tab !== "builtin" ? (
+          (
           <button
             type="button"
             className={`pm-mirror${mirror ? " on" : ""}`}
-           
+
             role="switch"
             aria-checked={mirror}
             disabled={mirrorSaving}
@@ -2488,6 +2380,7 @@ export function PluginsView({
               <i />
             </span>
           </button>
+        )
         ) : null}
         {tab !== "builtin" ? (
           <label className="pm-find">
@@ -2737,9 +2630,7 @@ export function PluginsView({
                               setPluginDetail(c);
                             }
                           }}>
-                          <div className="pm-logo" aria-hidden>
-                            ◆
-                          </div>
+                          <PluginLogo kind={"kind" in c ? String(c.kind) : undefined} icon={"icon" in c ? String(c.icon) : undefined} />
                           <div className="pm-words">
                             <div className="pm-name">
                               <b>{c.name}</b>
@@ -2800,7 +2691,7 @@ export function PluginsView({
                     const has = installed.some((x) => x.pkg === c.pkg);
                     return (
                       <div className={`pm-card${busy === c.pkg ? " installing" : ""}${has ? " has" : ""}`} key={c.pkg} tabIndex={0} role="button">
-                        <div className="pm-logo" aria-hidden>◆</div>
+                        <PluginLogo kind={"kind" in c ? String(c.kind) : undefined} icon={"icon" in c ? String(c.icon) : undefined} />
                         <div className="pm-words">
                           <b>{c.name}</b>
                           {c.builtin ? <span className="pm-chip">{t("Also built in")}</span> : null}
@@ -2863,7 +2754,7 @@ export function PluginsView({
                         const has = installed.some((x) => x.pkg === c.pkg);
                         return (
                           <div className={`pm-card${busy === c.pkg ? " installing" : ""}${has ? " has" : ""}`} key={c.pkg} tabIndex={0} role="button">
-                            <div className="pm-logo" aria-hidden>◆</div>
+                            <PluginLogo kind={"kind" in c ? String(c.kind) : undefined} icon={"icon" in c ? String(c.icon) : undefined} />
                             <div className="pm-words">
                               <b>{c.name}</b>
                               <p>{c.summary}</p>
@@ -3002,9 +2893,7 @@ export function PluginsView({
         {tab === "installed" ? (
           !installed.length ? (
             <div className="pm-none">
-              <div className="pm-logo big" aria-hidden>
-                ◆
-              </div>
+              <PluginLogo big />
               <b>{t("No plugins yet")}</b>
               <p>{t("Install a subscription or a middleware from Discover; a subscription signs in from here.")}</p>
               <button type="button" className="pm-act get" onClick={() => setTab("discover")}>
@@ -3037,12 +2926,10 @@ export function PluginsView({
                   .sort((a, b) => (pluginsSort === "za" ? -1 : 1) * a.name.localeCompare(b.name))
                   .map((e) => (
                   <div
-                    className={`row pref pm-row${e.off ? " off" : ""}`}
+                    className={`row pm-row${e.off ? " off" : ""}`}
                     key={e.pkg}
                     title={`${e.name}${e.ver || ""}${e.kind || ""}`}>
-                    <div className="pm-logo" aria-hidden>
-                      ◆
-                    </div>
+                    <PluginLogo kind={"kind" in e ? String(e.kind) : undefined} icon={"icon" in e ? String(e.icon) : undefined} />
                     <div className="who">
                       <div className="name pm-name">
                         <span>{e.name}</span>
@@ -3409,7 +3296,7 @@ export function PluginsView({
         open={!!removeConfirm}
         titleId="pluginRemoveTitle"
         messageId="pluginRemoveMsg"
-       
+
         title={removeConfirm ? t("Remove {name}?", { name: removeConfirm.name }) : ""}
         message={t("Removes the plugin and what it installed; its sign-ins are kept until you sign out")}
         cancelLabel={t("Cancel")}
@@ -3440,7 +3327,7 @@ export function PluginsView({
         open={!!clearConfirm}
         titleId="pluginClearTitle"
         messageId="pluginClearMsg"
-       
+
         title={t("Clear")}
         message={t("Saved middleware options will be removed. The plugin will run with no options.")}
         cancelLabel={t("Cancel")}
@@ -3475,7 +3362,7 @@ export function PluginsView({
           <div className="backdrop" onClick={() => setPluginDetail(null)} />
           <div className="dialog editor pm-detail">
             <div className="ehead pm-dhead">
-              <div className="pm-logo" aria-hidden>◆</div>
+              <PluginLogo big kind={"kind" in pluginDetail ? String(pluginDetail.kind) : undefined} icon={"icon" in pluginDetail ? String(pluginDetail.icon) : undefined} />
               <div className="pm-who">
                 <div className="pm-name"><b>{pluginDetail.name}</b></div>
                 <div className="pm-by">

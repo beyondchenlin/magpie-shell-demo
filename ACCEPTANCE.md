@@ -1,3 +1,13 @@
+## v0.1.194 · CIS_NATIVE_BASELINE_AND_SHARED_CONTROLS · 2026-10-16 Asia/Shanghai
+
+- WHY: 用户要求不一致不能停；按历史 CIS 与固定参考源码检查全部公共控件。
+- CAUSE: 基础样式混用多个版本；浮层初始挂载与定位互相等待，且用浏览器坐标定位窗口内 absolute 元素；语言菜单外部监听抢先关闭选项；路由规则旧 DOM 与二次样式并存。
+- WHAT kept: SIDE_AT=1024；窗口尺寸与导航解耦；原生 320ms 过渡；纯 mock 壳、PR → 临时预览工作流。
+- WHAT changed: 六份基础 CSS 同步到 63be477 并加 cis-guard；共用浮层窗口坐标/边界；修复首次打开、方向键与回焦；统一图标、插件 logo、复制反馈与请求归档；路由规则四列/条件删除/完整编辑状态；移除演示控件；语言五种实际接线，额外词典按需分块。
+- Checks: build/chrome-guard/cis-guard 通过；lint 59 warnings/0 errors。52 组页面/分区/宽度检查发现 390px Routing 窄屏 class 错位，修复后手机 13 组复测无溢出；设置语言四次切换、字体空结果、模型/规则菜单、规则保存再编辑、深色复制反馈实际检查。证据 interactions/web-cis-0.1.194。
+- Remaining: 确认框焦点/遮罩拖动、Agent 模型管理完整页脚与排序等继续检查，见 docs/CIS-AUDIT.md；不宣称全应用/原生 Mac/FPS 验收完成。
+- Ship: PR #1；不合并 main、不打 portable/exe、不发布生产环境。
+
 ## v0.1.193 · NAV_WINDOW_GEOMETRY · 2026-10-16 Asia/Shanghai
 
 - WHY: 用户明确要求 1:1 继续复刻，修正折叠导航导致外框缩放的差异。

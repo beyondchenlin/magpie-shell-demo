@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { ProtoMultiMenu } from "../components/ProtoMultiMenu";
+import { useCallback, useEffect, useState } from "react";
 import { CopyButton as CopyBtn } from "../components/CopyButton";
 import { SETTINGS_TABS as SET_TABS, type SettingsTabId as SetTabId } from "../data/settings";
 import { PrefPick } from "../components/PrefPick";
@@ -7,8 +8,8 @@ import { Segs } from "../components/Segs";
 import { TextBtn } from "../components/TextBtn";
 import { WordsField } from "../components/WordsField";
 import { GATEWAY_ADDR } from "../data/mock";
-import { demoCopy, t, type Lang } from "../i18n";
-import { applyDocumentTheme, persistDemoTheme, type DemoTheme } from "../applyTheme";
+import { demoCopy, t, LANGS, systemLang, type Lang } from "../i18n";
+import { applyDocumentTheme, applyDocumentTextSize as applyTextSize, persistDemoTheme, type DemoTheme } from "../applyTheme";
 import {
   AlertNumField,
   AboutVersionRow,
@@ -319,11 +320,6 @@ function savePrefs(p: DemoPrefs) {
   }
 }
 
-function applyTextSize(n: number) {
-  document.documentElement.style.setProperty("--zoom", String(n / 100));
-  document.documentElement.style.zoom = String(n / 100);
-}
-
 function Label({ en }: { en: string }) {
   return (
     <div className="row-head">
@@ -338,7 +334,7 @@ type SettingsProps = {
   theme: Theme;
   setTheme: (t: Theme) => void;
   lang: Lang;
-  setLang: (l: Lang) => void;
+  setLang: (l: Lang) => Promise<boolean>;
   onStatus?: (msg: string, kind?: string, ms?: number) => void;
   onHeaderUpdate?: (show: boolean) => void;
 };
@@ -368,7 +364,7 @@ export function SettingsView({ tab, setTab, theme, setTheme, lang, setLang, onSt
   /** Compact field draft: invalid "nope" stays typed; null = show prefs.compactAt / placeholder. */
   const [compactDraft, setCompactDraft] = useState<string | null>(null);
   const [langOpen, setLangOpen] = useState(false);
-  const [localePick, setLocalePick] = useState<string>(() => (lang === "zh" ? "zh" : lang === "en" ? "en" : "system"));
+  const [localePick, setLocalePick] = useState<string>(() => { try { return localStorage.getItem("magpie.uiLocale") || lang; } catch { return lang; } });
   const [warmTab, setWarmTab] = useState<"codex" | "claude">("codex");
   const [restoreOpen, setRestoreOpen] = useState(false);
   const [whatsNewOpen, setWhatsNewOpen] = useState(false);
@@ -379,7 +375,7 @@ export function SettingsView({ tab, setTab, theme, setTheme, lang, setLang, onSt
   useEffect(() => {
     applyDemoFonts(prefs.uiFont, prefs.codeFont);
   }, [prefs.uiFont, prefs.codeFont]);
-  const langBtn = useRef<HTMLButtonElement>(null);
+  const [langAnchor, setLangAnchor] = useState<HTMLElement | null>(null);
   const searching = q.trim().length > 0;
 
   const setPrefs = useCallback(
@@ -410,30 +406,21 @@ export function SettingsView({ tab, setTab, theme, setTheme, lang, setLang, onSt
     onHeaderUpdate?.(!prefs.noUpdatePill);
   }, [prefs.noUpdatePill, onHeaderUpdate]);
 
-  useEffect(() => {
-    const onDoc = (e: MouseEvent) => {
-      if (!langBtn.current?.contains(e.target as Node)) setLangOpen(false);
-    };
-    document.addEventListener("mousedown", onDoc);
-    return () => document.removeEventListener("mousedown", onDoc);
-  }, []);
-
   const localeLabel = (id: string) => {
     const row = LOCALES.find((x) => x.id === id);
     if (!row) return id;
     return row.literal ? row.nameKey : t(row.nameKey);
   };
 
-  const pickLocale = (id: string) => {
-    setLocalePick(id);
+  const pickLocale = async (id: string) => {
     setLangOpen(false);
-    if (id === "zh" || id === "en") setLang(id);
-    else if (id === "system") {
-      const sys = navigator.language?.toLowerCase().startsWith("zh") ? "zh" : "en";
-      setLang(sys);
-    } else {
-      onStatus?.(demoCopy(`演示：${localeLabel(id)} 界面尚未接线`, `Demo: ${localeLabel(id)} UI not wired`), "warn", 2500);
+    const next = id === "system" ? systemLang() : id as Lang;
+    if (!LANGS.includes(next) || !await setLang(next)) {
+      onStatus?.(demoCopy("语言加载失败，请重试", "Could not load the language; try again"), "err");
+      return;
     }
+    setLocalePick(id);
+    try { localStorage.setItem("magpie.uiLocale", id); } catch { /* preference remains for this window */ }
   };
 
   const matchQ = (en: string, ...extra: string[]) => {
@@ -618,38 +605,10 @@ export function SettingsView({ tab, setTab, theme, setTheme, lang, setLang, onSt
                   open={langOpen}
                   aria-label={t("Language")}
                   aria-haspopup="menu"
-                  ref={langBtn}
-                  onClick={() => setLangOpen((o) => !o)}
+                  onClick={(e) => { setLangAnchor(e.currentTarget); setLangOpen((o) => !o); }}
                 />
                 {langOpen ? (
-                  <div className="pop proto-menu sess-menu" role="menu" aria-label={t("Language")}>
-                    <div className="pm-head">{t("Language")}</div>
-                    {LOCALES.map((x) => {
-                      const on = localePick === x.id;
-                      return (
-                        <button
-                          type="button"
-                          key={x.id}
-                          className={`pm-item${on ? " on" : ""}`}
-                          role="menuitemradio"
-                          aria-checked={on}
-                          onClick={() => pickLocale(x.id)}
-                        >
-                          <span className="pm-tick" aria-hidden>
-                            {on ? (
-                              <svg viewBox="0 0 16 16" width={12} height={12} fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
-                                <path d="M3.2 8.2 6.4 11.4 12.8 4.2" />
-                              </svg>
-                            ) : null}
-                          </span>
-                          <span className="pm-words">
-                            <span className="pm-name">{localeLabel(x.id)}</span>
-                            <span className="pm-note" />
-                          </span>
-                        </button>
-                      );
-                    })}
-                  </div>
+                  <ProtoMultiMenu open anchor={langAnchor} value={localePick} head="Language" menuClass="sess-menu" align="right" options={LOCALES.map(x => ({ v: x.id, name: localeLabel(x.id), literalName: true }))} onChange={v => { if (typeof v === "string") pickLocale(v); }} onClose={() => setLangOpen(false)} />
                 ) : null}
               </div>
             </PrefRow>

@@ -1,4 +1,7 @@
+import { PopoverPortal } from "./PopoverPortal";
+import { useAnchoredPopover } from "../lib/useAnchoredPopover";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { menuKeyNavigation } from "../lib/popover";
 import { t } from "../i18n";
 
 export type ProtoOpt = {
@@ -46,11 +49,11 @@ export function ProtoMultiMenu({
   hideHead = false,
 }: Props) {
   const ref = useRef<HTMLDivElement>(null);
-  const [leaving, setLeaving] = useState(false);
-  const [pos, setPos] = useState<{ top: number; left: number; up: boolean } | null>(null);
   const multi = Array.isArray(value);
-  const picked = multi ? value : null;
-  const shown = open || leaving;
+  const [staged, setStaged] = useState<string[]>(() => multi ? value : []);
+  const picked = multi ? (live ? value : staged) : [];
+  const stagedRef = useRef(staged);
+  const shown = open;
 
   const isOn = (v: string) =>
     !multi
@@ -59,27 +62,18 @@ export function ProtoMultiMenu({
         ? !picked!.length
         : picked!.includes(v);
 
-  useEffect(() => {
-    if (open) setLeaving(false);
-  }, [open]);
-
   useLayoutEffect(() => {
-    if (!open || !anchor || !ref.current) return;
-    const r = anchor.getBoundingClientRect();
-    const w = Math.min(190, window.innerWidth - 16);
-    const h = Math.min(320, window.innerHeight - 16);
-    let left =
-      align === "right"
-        ? Math.min(Math.max(8, r.right - w), window.innerWidth - w - 8)
-        : Math.min(Math.max(8, r.left), window.innerWidth - w - 8);
-    let top = r.bottom + 6;
-    let up = false;
-    if (top + Math.min(h, 200) > window.innerHeight - 8) {
-      top = Math.max(8, r.top - 6);
-      up = true;
+    if (open && Array.isArray(value)) {
+      stagedRef.current = [...value];
+      setStaged([...value]);
     }
-    setPos({ top, left, up });
-  }, [open, anchor, align, options.length]);
+  }, [open, value]);
+
+  useAnchoredPopover(ref, anchor, shown, { align });
+  useLayoutEffect(() => {
+    if (!open) return;
+    ref.current?.querySelector<HTMLElement>(".pm-item.on, .pm-item")?.focus({ preventScroll: true });
+  }, [open]);
 
   useEffect(() => {
     if (!shown) return;
@@ -89,7 +83,7 @@ export function ProtoMultiMenu({
         e.stopPropagation();
         close();
         anchor?.focus({ preventScroll: true });
-      }
+      } else if (ref.current) menuKeyNavigation(ref.current, e);
     };
     const onDown = (e: MouseEvent) => {
       const t = e.target as Node;
@@ -102,64 +96,50 @@ export function ProtoMultiMenu({
       document.removeEventListener("keydown", onKey, true);
       document.removeEventListener("mousedown", onDown, true);
     };
+    // close reads the staged ref so outside/Escape commit the latest ticks.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [shown, anchor]);
+  }, [shown, anchor, live, value, onChange, onClose]);
 
   const close = () => {
-    if (leaving) return;
-    setLeaving(true);
-    const box = ref.current;
-    if (!box) {
-      onClose();
-      return;
+    if (multi && !live) {
+      const next = options.map(o => o.v).filter(v => stagedRef.current.includes(v));
+      if (next.length !== value.length || next.some(v => !value.includes(v))) onChange(next);
     }
-    const a = box.animate(
-      [{ opacity: 1, transform: "scale(1)" }, { opacity: 0, transform: "scale(.96)" }],
-      { duration: 180, easing: "cubic-bezier(.4,0,.7,.2)", fill: "forwards" },
-    );
-    a.finished.then(() => onClose(), () => onClose());
+    // Native closeProtoMenu removes app menus immediately; model pickers
+    // use the separate 220ms .leaving recipe.
+    onClose();
   };
 
-  if (!shown || !pos) return null;
+  if (!shown) return null;
 
   const pick = (v: string) => {
+    if (v === "\x00") return;
     if (!multi) {
       onChange(v);
       close();
       return;
     }
     if (!v) {
-      onChange([]);
-      if (live) {
-        /* keep open until outside; Magpie closes All */
-        close();
-      }
+      stagedRef.current = [];
+      setStaged([]);
+      if (live) onChange([]);
+      close();
       return;
     }
     const next = picked!.includes(v)
       ? picked!.filter((x) => x !== v)
       : [...picked!, v];
-    onChange(next);
-    if (!live) {
-      /* wait until close */
-    }
+    stagedRef.current = next;
+    setStaged(next);
+    if (live) onChange(options.map(o => o.v).filter(v => next.includes(v)));
   };
 
   return (
-    <div
+    <PopoverPortal><div
+      data-anchored
       ref={ref}
-      className={`pop proto-menu${menuClass ? " " + menuClass : ""}${leaving ? " leaving" : ""}`}
+      className={`pop proto-menu${menuClass ? " " + menuClass : ""}`}
       role="menu"
-      style={{
-        position: "fixed",
-        top: pos.up ? undefined : pos.top,
-        bottom: pos.up ? window.innerHeight - pos.top : undefined,
-        left: pos.left,
-        zIndex: 80,
-        animation: leaving
-          ? undefined
-          : "pop-fade .18s ease-out, pop-in .42s cubic-bezier(.16,1,.3,1)",
-      }}
     >
       {!hideHead && head ? <div className="pm-head">{t(head)}</div> : null}
       {options.map((o) => {
@@ -191,6 +171,6 @@ export function ProtoMultiMenu({
           </button>
         );
       })}
-    </div>
+    </div></PopoverPortal>
   );
 }

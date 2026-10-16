@@ -1,10 +1,10 @@
+import { MagpieIcon } from "../components/MagpieIcon";
 import { useEffect, useState, type ReactNode } from "react";
 import { CopyButton as CopyBtn } from "../components/CopyButton";
 import { ConnectionField } from "../components/ConnectionField";
 import { Fold, FoldChev } from "../components/Fold";
 import { Segs } from "../components/Segs";
 import { TextBtn } from "../components/TextBtn";
-import { iconSrc } from "../data/mock";
 import { demoCopy, t, useLang } from "../i18n";
 
 type DemoGwModel = { id: string; name: string; provider: string; icon?: string };
@@ -790,9 +790,7 @@ export function GatewayView({ onStatus, onGoNetwork }: Props) {
                 lsSet("magpie.model", m.id);
               }}
             >
-              <span className="ic" data-icon={m.icon || "openai"} aria-hidden>
-                <img src={iconSrc(m.icon || "openai")} alt="" draggable={false} />
-              </span>
+              <MagpieIcon name={m.icon || "openai"} />
               <div className="who">
                 <div className="name">{m.id}</div>
                 <div className="sub">{m.name !== m.id.split("/")[1] ? `${m.name} · ${m.provider}` : m.provider}</div>

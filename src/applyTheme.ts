@@ -9,6 +9,13 @@
 
 export type DemoTheme = "system" | "light" | "dark";
 
+/** Native browser UI leaves zoom to the browser; desktop preview simulates text size. */
+export function applyDocumentTextSize(size: number, phone = document.body.classList.contains("phone-web")) {
+  const scale = phone ? 1 : size / 100;
+  document.documentElement.style.setProperty("--zoom", String(scale));
+  document.documentElement.style.zoom = String(scale);
+}
+
 export const DEMO_PREFS_LS = "magpie.demoPrefs";
 
 const flash: { t?: number; ready: boolean } = { ready: false };
@@ -20,6 +27,8 @@ function isTheme(v: unknown): v is DemoTheme {
 /** Read Appearance theme from magpie.demoPrefs (Magpie prefs.theme). Default light. */
 export function readDemoTheme(): DemoTheme {
   try {
+    const requested = new URLSearchParams(location.search).get("theme");
+    if (isTheme(requested)) return requested;
     const raw = localStorage.getItem(DEMO_PREFS_LS);
     if (!raw) return "light";
     const p = JSON.parse(raw) as { theme?: unknown };

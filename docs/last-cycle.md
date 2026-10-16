@@ -1,9 +1,9 @@
 # last-cycle
-- tip: v0.1.193 NAV_WINDOW_GEOMETRY
-- WHY: 用户明确要求继续 1:1，消除导航折叠时 Web 外框额外缩放。
-- CAUSE: side-nav 决定预览宽高，与原生 layoutNav 保持 OS 窗口尺寸的行为不同。
-- WHAT changed: 窗口尺寸仅按视口选择，标题栏始终横贯窗口；更新 CIS / TIP-CYCLE / chrome-guard。
-- WHAT kept: SIDE_AT=1024；752×652 紧凑 / 1100×720 宽窗上限与字号约束；320ms 曲线；设置/网关修复。
-- Checks: chrome-guard/build/lint pass；18 次切换窗口/标题栏矩形不变，九次收起后滑块对齐；125% 字号、390px phone 无横向溢出。详见 interactions/web-frame-0.1.193/NOTES.md。未采集 FPS。
-- Deferred: routing tip extras / GroupEditor、led-tools-extra、oauth；全应用不宣称已完成 1:1。
-- Ship: PR #1 → 临时预览，不合并 main，不打 portable/exe，不强制生产部署。
+- tip: v0.1.194 CIS_NATIVE_BASELINE_AND_SHARED_CONTROLS
+- WHY: 用户要求继续全量 CIS 对照，不一致继续处理。
+- CAUSE: 多版本基础 CSS、浮层首次挂载死锁、窗口/视口坐标混用、语言监听提前卸载、路由旧结构。
+- WHAT changed: 六份同源 CSS + cis-guard；统一菜单、图标、复制、归档；路由条件/编辑恢复；五种语言接线并分块；手机 zoom=1，Routing max560 挂到原生容器。
+- WHAT kept: SIDE_AT=1024、稳定窗口、320ms 原生曲线、mock 后端边界、PR → 临时预览。
+- Checks: build/chrome-guard/cis-guard pass；lint 59 warnings / 0 errors；52 组布局检查 + 修复后 13 组手机复测；语言/菜单/规则/复制深态，见 interactions/web-cis-0.1.194。
+- Next: docs/CIS-AUDIT.md 中的确认框、Agent 深层模型管理与其他已知未验收项；不以本 checkpoint 宣称全应用完成。
+- Ship: PR #1，不合并 main、不打 portable/exe、不发布生产环境。

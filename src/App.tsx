@@ -15,7 +15,7 @@ import { SettingsView, applyColorblind } from "./pages/SettingsView";
 import { TrayPanel, wantPanelMode } from "./pages/TrayPanel";
 import { StatusToast } from "./components/StatusToast";
 import { WinCaption } from "./components/WinCaption";
-import { applyDocumentTheme, readDemoTheme } from "./applyTheme";
+import { applyDocumentTheme, applyDocumentTextSize, readDemoTheme } from "./applyTheme";
 import { SidebarTabs } from "./components/SidebarTabs";
 import { readSettingsTab, settingsTabs, type SettingsTabId } from "./data/settings";
 import { morphNavigation } from "./lib/navMorph";
@@ -170,14 +170,12 @@ export default function App() {
       const p = raw ? (JSON.parse(raw) as { colorblind?: boolean; textSize?: number }) : {};
       applyColorblind(!!p.colorblind);
       const n = typeof p.textSize === "number" ? p.textSize : 110;
-      document.documentElement.style.setProperty("--zoom", String(n / 100));
-      document.documentElement.style.zoom = String(n / 100);
+      applyDocumentTextSize(n, phone);
     } catch {
       applyColorblind(false);
-      document.documentElement.style.setProperty("--zoom", "1.1");
-      document.documentElement.style.zoom = "1.1";
+      applyDocumentTextSize(110, phone);
     }
-  }, []);
+  }, [phone]);
 
   useEffect(() => {
     const sync = () => setLibFeat(libraryOn());
@@ -459,7 +457,7 @@ export default function App() {
         view === "library"
           ? NAV.find((g) => g.groupEn === "Work")
           : NAV.find((g) => g.items.some((i) => i.id === view));
-      if (group) crumbParts.push(lang === "en" ? group.groupEn : group.group);
+      if (group) crumbParts.push(lang === "zh" ? group.group : t(group.groupEn));
       crumbParts.push(t(VIEW_EN[view]));
     }
   }
@@ -505,7 +503,7 @@ export default function App() {
     }
     return [
       <span key={`gl-${g.groupEn}`} className="nav-gl">
-        {lang === "en" ? g.groupEn : g.group}
+        {lang === "zh" ? g.group : t(g.groupEn)}
       </span>,
       ...items.map((item) => (
         <button

@@ -1,3 +1,7 @@
+import { CopyButton } from "../components/CopyButton";
+import { MagpieIcon } from "../components/MagpieIcon";
+import { PopoverPortal } from "../components/PopoverPortal";
+import { useAnchoredPopover } from "../lib/useAnchoredPopover";
 import {
   Fragment,
   useEffect,
@@ -171,20 +175,7 @@ function Tile({
       title={tip || name}
       onClick={() => onPick(id)}
     >
-      <span className="ic" data-icon={icon} aria-hidden>
-        <img
-          src={iconSrc(icon)}
-          alt=""
-          draggable={false}
-          onError={(e) => {
-            const el = e.currentTarget;
-            if (!el.dataset.fallback) {
-              el.dataset.fallback = "1";
-              el.src = `/icons/${icon}.png`;
-            }
-          }}
-        />
-      </span>
+      <MagpieIcon name={icon} />
       <span className="nm">
         <span className="n">{name}</span>
       </span>
@@ -205,28 +196,7 @@ function SignCopy({
   /** NOTES 97–98: code → Copy; link → Copy link */
   tip?: string;
 }) {
-  const [done, setDone] = useState(false);
-  const tipTitle = tip || t("Copy");
-  return (
-    <button
-      type="button"
-      className={`copy${done ? " done" : ""}`}
-      title={tipTitle}
-      aria-label={tipTitle}
-      onClick={(e) => {
-        e.stopPropagation();
-        void navigator.clipboard?.writeText(text).catch(() => {});
-        setDone(true);
-        window.setTimeout(() => setDone(false), 1200);
-        onStatus(t("{what} copied", { what }), "ok");
-      }}
-    >
-      <svg viewBox="0 0 16 16" width={12} height={12} aria-hidden>
-        <rect x="5.5" y="5.5" width="7" height="7" rx="1.2" fill="none" stroke="currentColor" strokeWidth="1.5" />
-        <path d="M3.5 10.5v-7A1.5 1.5 0 0 1 5 2h7" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-      </svg>
-    </button>
-  );
+  return <CopyButton text={text} what={what} onStatus={onStatus} title={tip} />;
 }
 
 const GHE_HOST = /^(https?:\/\/)?[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?\.ghe\.com\/?$/i;
@@ -371,6 +341,7 @@ function useModalAnim(open: boolean, onGone: () => void) {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
+        if (document.querySelector(".pop:not(.leaving), dialog[open]")) return;
         e.preventDefault();
         e.stopPropagation();
         close();
@@ -653,9 +624,7 @@ function ProviderEditorModal({ state, onClose, onAdd, onStatus, saved, onRemove,
       >
         <form className="editor new framed" onSubmit={onSubmit}>
           <div className="ehead">
-            <span className="ic">
-              <img src={iconSrc(kind === "custom" ? pickedIcon : meta.icon)} alt="" />
-            </span>
+            <MagpieIcon name={kind === "custom" ? pickedIcon : meta.icon} />
             <b id="modalTitle">{meta.title}</b>
             {meta.note ? <span className="note">{meta.note}</span> : null}
             {saved ? (
@@ -1317,9 +1286,7 @@ function ProviderEditorModal({ state, onClose, onAdd, onStatus, saved, onRemove,
               <Field label={t("Icon")}>
                 <div className="icon-pick">
                   <span className="icon-now" aria-hidden>
-                    <span className="ic">
-                      <img src={iconSrc(pickedIcon)} alt="" />
-                    </span>
+                    <MagpieIcon name={pickedIcon} />
                   </span>
                   <button type="button" className="text" onClick={() => setDetectHint(demoCopy("演示：未打开文件选择器", "Demo: no file picker"))}>
                     {t("Choose a picture…")}
@@ -1364,9 +1331,7 @@ function ProviderEditorModal({ state, onClose, onAdd, onStatus, saved, onRemove,
                             title={id.replace(/-color$/, "")}
                             onClick={() => setPickedIcon(id)}
                           >
-                            <span className="ic">
-                              <img src={iconSrc(id)} alt="" />
-                            </span>
+                            <MagpieIcon name={id} />
                           </button>
                         ))}
                       </div>
@@ -2249,22 +2214,11 @@ function ProviderMoveMenu({
   onClose,
 }: ProvMoveMenuProps) {
   const boxRef = useRef<HTMLDivElement>(null);
+  useAnchoredPopover(boxRef, anchor, true, { dx: -4 });
 
   useEffect(() => {
     const box = boxRef.current;
     if (!box) return;
-    const r = anchor.getBoundingClientRect();
-    const pad = 8;
-    const w = box.offsetWidth || 176;
-    const h = box.offsetHeight || 120;
-    let y = r.bottom + 5;
-    if (y + h > window.innerHeight - pad && r.top - 5 - h >= pad) {
-      y = r.top - 5 - h;
-      box.classList.add("up");
-    }
-    const left = Math.max(pad, Math.min(r.left - 4, window.innerWidth - w - pad));
-    box.style.left = `${left}px`;
-    box.style.top = `${Math.max(pad, y)}px`;
     anchor.classList.add("open");
     const outside = (e: MouseEvent) => {
       if (!box.contains(e.target as Node) && !anchor.contains(e.target as Node)) onClose();
@@ -2326,7 +2280,7 @@ function ProviderMoveMenu({
   ];
 
   return (
-    <div className="pop row-menu" role="menu" ref={boxRef}>
+    <PopoverPortal><div data-anchored className="pop row-menu" role="menu" ref={boxRef}>
       {items.map((o) => (
         <button
           type="button"
@@ -2354,7 +2308,7 @@ function ProviderMoveMenu({
           <span className="rm-key">{o.key}</span>
         </button>
       ))}
-    </div>
+    </div></PopoverPortal>
   );
 }
 
@@ -2882,9 +2836,7 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
                       );
                     }}
                   >
-                    <span className="ic" data-icon={pv.icon} aria-hidden>
-                      <img src={iconSrc(pv.icon)} alt="" draggable={false} />
-                    </span>
+                    <MagpieIcon name={pv.icon} />
                   </button>
                   <div className="who">
                     <div className="name">{pv.name}</div>
@@ -2902,9 +2854,7 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
                           onStatus(t("{name} · {model} — click to change", { name: a.name, model: "default" }), "ok");
                         }}
                       >
-                        <span className="ic" data-icon={a.icon} aria-hidden>
-                          <img src={iconSrc(a.icon)} alt="" draggable={false} />
-                        </span>
+                        <MagpieIcon name={a.icon} />
                       </button>
                     ))}
                   </div>
@@ -3042,9 +2992,7 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
                   });
                 }}
               >
-                <span className="ic">
-                  <img src={iconSrc(pv.icon)} alt="" />
-                </span>
+                <MagpieIcon name={pv.icon} />
                 <div className="who">
                   <div className="name">
                     {pv.name}

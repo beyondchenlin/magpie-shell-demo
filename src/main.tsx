@@ -9,12 +9,15 @@ import "./styles/plugins.css";
 import "./styles/context.css";
 import { bootDemoTheme } from "./applyTheme";
 import App from "./App";
+import { prepareLanguage } from "./i18n";
 
 // Magpie theme.js: saved theme before first paint (bootPrefs → dataset.theme)
 bootDemoTheme();
 
-createRoot(document.getElementById("root")!).render(
+const mount = () => createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <App />
   </StrictMode>,
 );
+// Load only a saved non-default language before the first UI paint.
+void prepareLanguage().then(mount, mount);

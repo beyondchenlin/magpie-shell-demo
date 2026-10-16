@@ -103,7 +103,7 @@ export function useSegThumb(dep: string | null) {
       lastTo.current = to;
       return;
     }
-    const from = animate && last && !matchMedia("(prefers-reduced-motion: reduce)").matches ? thumbNow(th) : null;
+    const from = animate && last ? thumbNow(th) : null;
     thumbPut(th, to);
     lastTo.current = to;
     if (!animate || !from || thumbSame(from, to)) return;

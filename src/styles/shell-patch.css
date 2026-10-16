@@ -115,12 +115,6 @@ body.web.side-nav #view-settings .set-q { min-width: 0; }
    wrap at identifiers too; code blocks scroll within their own field. */
 .connect .hint { overflow-wrap: anywhere; }
 .connect .snip-tabs > .segs { align-self: center; }
-.sr-only {
-  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
-  overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
-}
-button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
-
 /* Top-tab mode: keep side-toggle visible (native Linux chrome). */
 body.window:not(.side-nav) #sideToggle { display: inline-flex; }
 body.window:not(.side-nav) .side-toggle .st-pane {
@@ -232,6 +226,11 @@ body.web .pop {
   position: absolute !important;
   z-index: 40;
 }
+.pop[data-anchored] { position: absolute !important; z-index: 80; }
+/* React exposes the native Detect column count as a custom property. */
+.detect-grid { grid-template-columns: minmax(0, 1.3fr) repeat(var(--detect-n, 1), minmax(0, 1fr)); }
+/* A demo tray window can be unmapped without closing the browser tab. */
+.panel-unmapped { min-height: 100vh; background: transparent; }
 
 body.window .profiles.naming .chips .hint { display: none; }
 
@@ -262,7 +261,6 @@ body.window:not(.side-nav) .top.tight .brand > span:not(.logo) { display: none; 
 
 /* v0.1.143: drop invent .ag-native-note + .sq — Magpie connectLine kind "no"
    is .ag-st > .ag-dot + .ag-st-t (app.js L1234–1240; app.css L3762–3765). */
-.profiles .chips .hint { color: var(--muted); font-size: 12.5px; line-height: 30px; }
 /* v0.1.128: idle row uses Magpie routing.css L74 (display:block + text-align:center) — no tip invent */
 .rt-flier-demo { pointer-events: none; }
 
@@ -366,9 +364,6 @@ body.web.side-nav {
    .pm-card .pm-act transition — Magpie plugins.css L114–132 + L173–182 (OSS). */
 
 /* —— Usage led chart demo —— */
-.led-chart { transition: opacity .18s var(--ease); }
-.led-rank { transition: opacity .18s var(--ease); }
-
 /* —— Search API / Disable —— */
 .search-add .proto.pick.search-vendor svg { transition: transform .15s var(--ease); }
 .search-add .proto.pick.search-vendor.open svg { transform: rotate(180deg); }
@@ -376,11 +371,6 @@ body.web.side-nav {
 
 /* —— Range menu head —— */
 .range-menu .pm-head { padding: 6px 4px 4px; font-size: 11.5px; color: var(--muted); }
-.range-menu .rm-span { border: 0; cursor: pointer; font: inherit; transition: color .12s var(--ease), background .12s var(--ease); }
-.range-menu .rm-day { border: 0; background: none; cursor: pointer; font: inherit; transition: background .12s var(--ease), color .12s var(--ease); }
-.range-menu .rm-step { border: 0; background: none; cursor: pointer; }
-
-
 /* ---- Usage filled: ledger detail / sess list / plugins ask ---- */
 /* v0.1.136: drop invent led-row.open/led-detail bg + led-detail-inner fade —
    Magpie app.css L1326–1328 (.open td / .led-detail td = card-2); L1329 .led-box; L1330 .led-dl.
@@ -458,37 +448,6 @@ body.web.side-nav {
 /* plugins: askNPM ghost cards + README skeleton (plugins.css) */
 /* v0.1.144: drop invent ghost min-height/flex/g2-width88 + duplicate pm-pulse /
    pm-rskel / pm-act .spin — Magpie plugins.css L135–140 / L206–207 / L132. */
-
-/* library plugin motions (library.css) */
-.lib-savebar {
-  position: sticky; bottom: 8px; z-index: 3; margin-top: 12px; display: flex; align-items: center; gap: 6px;
-  padding: 7px 8px 7px 14px; border-radius: 11px; background: var(--pop-bg, var(--card)); box-shadow: var(--shadow, 0 8px 24px rgba(0,0,0,.12));
-  animation: lib-rise .22s var(--ease);
-}
-.lib-savebar[hidden] { display: none; }
-@keyframes lib-rise { from { opacity: 0; transform: translateY(8px); } }
-.lib-icon { width: 26px; height: 26px; padding: 0; display: inline-grid; place-items: center; }
-.lib-icon.busy svg { animation: lib-bob .8s var(--ease) infinite alternate; }
-@keyframes lib-bob { to { transform: translateY(-2px); } }
-.lib-probe { animation: content-in .22s var(--ease); }
-.lib-skel { animation: lib-skel-in .3s var(--ease) .18s backwards; }
-@keyframes lib-skel-in { from { opacity: 0; } }
-.lib-skel .skeleton {
-  background-color: var(--skel, var(--pill)); background-attachment: fixed; background-size: 200vw 100%;
-  background-repeat: no-repeat; background-position: 20vw 0; animation-name: lib-skel-shift; animation-duration: 1.8s;
-}
-@keyframes lib-skel-shift { from { background-position: 20vw 0; } to { background-position: -100vw 0; } }
-.mk-spin { flex: none; width: 12px; height: 12px; border-radius: 50%; border: 1.5px solid var(--line); border-top-color: var(--fg-2); opacity: 0; transition: opacity .15s; }
-.mk.loading .mk-spin { opacity: 1; animation: mk-spin .7s linear infinite; }
-@keyframes mk-spin { to { transform: rotate(360deg); } }
-.mk.loading .mk-grid { opacity: .55; transition: opacity .2s var(--ease); }
-.lib-health.checking::before { animation: lib-health-pulse 1s ease-in-out infinite alternate; }
-@keyframes lib-health-pulse { to { opacity: .25; } }
-@media (prefers-reduced-motion: reduce) {
-  .pm-card.ghost > div, .pm-rskel { animation: none; }
-  .lib-icon.busy svg, .lib-skel, .lib-skel .skeleton, .lib-health.checking::before, .mk.loading .mk-spin { animation: none !important; }
-  .lib-savebar, .lib-probe { animation: none; }
-}
 
 /* v0.1.144: drop invent duplicate .pm-chip.kind* / .pm-row .pm-logo radius8 /
    .pm-act.busy min-width / .pm-dhead* — Magpie plugins.css L102–110 / L163 /
