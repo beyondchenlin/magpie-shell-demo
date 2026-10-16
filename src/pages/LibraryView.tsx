@@ -802,6 +802,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
           onStatus?.(t("Saved — the agents already had it"), "ok");
         }
       }
+      if (e.key === "Escape" && document.querySelector("dialog[open]")) return;
       if (e.key === "Escape" && mcpCopyMenu) {
         e.preventDefault();
         e.stopPropagation();

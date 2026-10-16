@@ -1415,10 +1415,6 @@ export function UsageView() {
                                       <dd>{t("{n} tok/s", { n: String(r.speed) })}</dd>
                                     </>
                                   ) : null}
-                                  <dt>{t("Data source")}</dt>
-                                  <dd className="muted">
-                                    {demoCopy("演示行展开（Magpie led-box / led-dl）", "Demo row expand (Magpie led-box / led-dl)")}
-                                  </dd>
                                 </dl>
                               </div>
                             </td>
