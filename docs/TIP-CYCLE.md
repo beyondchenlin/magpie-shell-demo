@@ -52,12 +52,18 @@ npm run chrome-guard
 - [ ] 侧栏开关（`#sideToggle` / `magpie.navLayout`）仍可用
 - [ ] 本 tip **没有**改无关页的壳 chrome
 
-### 4. Ship
+### 4. PR → 临时预览 → 查看验收
 
 1. `npm run chrome-guard`
-2. Bump `package.json`；`ACCEPTANCE.md` 顶条；`docs/TIP-CHANGELOG.md`；`docs/last-cycle.md`
-3. Commit：`v0.1.xx: <slice> (no portable)` 或 chrome 修复说明
-4. `git push origin main`（**不要**打 portable，除非用户明文要求）
+2. UI tip 更新 `package.json`、`ACCEPTANCE.md` 顶条、`docs/TIP-CHANGELOG.md`、`docs/last-cycle.md`；纯流程文档修改不虚增 UI 版本。
+3. Commit：`v0.1.xx: <slice> (no portable)` 或对应文档修正说明。
+4. 推送当前 tip 分支：`git push origin tip/0.1.121-cis-appearance-shell`，更新 [PR #1](https://github.com/beyondchenlin/magpie-shell-demo/pull/1) 的标题、范围与验证结果。后续若换 PR，以经确认的工作分支为准；不要直接推送或合并 `main`。
+5. PR 更新后，同步该分支的临时预览；记录预览 URL、对应 commit SHA、UI 版本和检查结果。优先沿用已有分支预览；本机预览须注明仅本机可访问。
+6. 打开预览查看受影响的切片与上述 chrome 清单。构建失败、部署限额或预览需登录时，明确说明实际状态；不得把旧预览称为当前版本。
+
+**当前范围（2026-10-16 用户确认）：** 继续 Magpie 复刻，沉淀自有 CIS 与可复用组件，再开展其他产品功能。Appearance 交互金标沿用用户 Mac；没有新证据不编造点录。
+
+**发布边界：** 仅更新工作分支与临时预览；不擅自发布生产环境、不强推 Vercel，不打 portable / exe。已有云预览不可用时，先提供标明版本的本机预览，不用升级套餐或反复部署绕过限额。
 
 ---
 
