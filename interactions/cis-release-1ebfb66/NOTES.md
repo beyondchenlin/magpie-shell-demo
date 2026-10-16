@@ -16,6 +16,8 @@ Diagnostic caveat: the passive observer intentionally sampled a600ms tail. A sec
 
 **N3 remains pending independent supervisor visual review.** Reproduced clipping is fixed; parameter/DOM proof alone does not close the subjective dynamic verdict or user acceptance.
 
+`nav-collapse-review.webp` encodes the existing eight final-candidate capture frames with their measured midpoint intervals and a600ms final-frame inspection hold. It loops back to the first capture; that loop reset is not a new application transition. Metadata is adjacent. No rerecording, retiming of the actual transition, or performance/FPS claim is made.
+
 ## Engineering, reuse and CIS delivery
 
 TypeScript/build and both guards pass. Lint55 warnings/0errors on56 files, below inherited59; existing Vite >500kB chunk warning retained. Source changes after v205 are only `navMorph.ts` and an active-transition pseudo-layer rule. Static page/controls source blobs are identical. Eight changed v205 B4 defaults and the prior canonical76 remain separate source-bound observations; see `reuse-and-exceptions.json`, `../cis-final-5f7f9bc/` and `../cis-controls-a8976e0/`.
@@ -24,4 +26,4 @@ B2's compatibility ledger is108 classified rules at v205 plus one documented Web
 
 The three original performance recordings, finite interaction batches, failed reproductions and source/capture differences remain intact. Uncommitted inherited locale/page drafts are excluded from immutable builds and preserved in the takeover recovery set; they were not silently adopted. No new worktree/environment, installer, main merge or production deployment was made. User4173 and rootdist were untouched. Old task previews4174/4175 remain retained after an earlier OS-stop approval rejection; it was not circumvented.
 
-Remote status is recorded separately in `docs/cis/EXECUTION-STATUS.md`. A newly successful authenticated PR read at02:00 confirms the remote head was still e19fd5a and the old PR text was stale. It is a new connectivity signal permitting one bounded synchronization attempt after the concrete local deliverable is committed; it is not yet evidence of a successful push or matching cloud preview.
+Remote status is recorded separately in `docs/cis/EXECUTION-STATUS.md`. A new authenticated PR read confirmed remote e19fd5a and stale PR text. After local evidence commit504d633, one normal push failed TLS handshake. Metadata update also failed connector transport; a subsequent read verified title/body unchanged. Pending replacement text is saved in `docs/cis/PR-DESCRIPTION-PENDING-SYNC.md`. No successful push/metadata update/cloud identity is claimed. No further same-path retries.

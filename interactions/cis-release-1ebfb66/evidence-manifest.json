@@ -76,9 +76,19 @@
       "sha256": "a39d0bc44ee8f24eded1d15a7866a525f1d809756f4cfd8e2b5f9911b648d959"
     },
     {
+      "path": "nav-collapse-review.json",
+      "bytes": 1075,
+      "sha256": "fcd261586a302454a4a8916747f8b2c1d3a50da3d9b7afc190072d1477336430"
+    },
+    {
+      "path": "nav-collapse-review.webp",
+      "bytes": 145552,
+      "sha256": "5997949f4ebda773e839216a0998f76c4616d82aff2a662781410e66d2c86939"
+    },
+    {
       "path": "NOTES.md",
-      "bytes": 5248,
-      "sha256": "58bb95f2f5826034e427e7991360e4b0ba5c1908fc53e339ee811d6072eaa529"
+      "bytes": 5701,
+      "sha256": "813c96835c5aa2dcc806cbefb97ee42f4ca876acd800963df3151cfdff5f425b"
     },
     {
       "path": "preferences-restored.json",
@@ -89,6 +99,11 @@
       "path": "remote-read-before-sync.json",
       "bytes": 509,
       "sha256": "7000c772bbda0d61a6a22157b8f9c3c86248534307ffbc988fa0f321fa1b2a12"
+    },
+    {
+      "path": "remote-sync-result.json",
+      "bytes": 987,
+      "sha256": "7645553c6faa5e2c5b3487453f391535d492df8b2a23d88f480789352be7e358"
     },
     {
       "path": "reuse-and-exceptions.json",
@@ -106,5 +121,5 @@
       "sha256": "47e910767bc108538f8af2e556a63c237f905965d9effaf6693e6f230c98a6c0"
     }
   ],
-  "logicalBytes": 716037
+  "logicalBytes": 864104
 }

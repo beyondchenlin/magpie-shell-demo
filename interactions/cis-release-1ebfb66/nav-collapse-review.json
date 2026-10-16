@@ -1,0 +1,57 @@
+{
+  "source": "1ebfb663e4833e653bc621742cc342f3cdc7373a",
+  "inputFrames": 8,
+  "captureBoundsMs": [
+    {
+      "i": 0,
+      "fromClickMs": 12,
+      "toClickMs": 70
+    },
+    {
+      "i": 1,
+      "fromClickMs": 71,
+      "toClickMs": 104
+    },
+    {
+      "i": 2,
+      "fromClickMs": 105,
+      "toClickMs": 137
+    },
+    {
+      "i": 3,
+      "fromClickMs": 138,
+      "toClickMs": 179
+    },
+    {
+      "i": 4,
+      "fromClickMs": 179,
+      "toClickMs": 240
+    },
+    {
+      "i": 5,
+      "fromClickMs": 241,
+      "toClickMs": 289
+    },
+    {
+      "i": 6,
+      "fromClickMs": 289,
+      "toClickMs": 326
+    },
+    {
+      "i": 7,
+      "fromClickMs": 327,
+      "toClickMs": 379
+    }
+  ],
+  "playbackDurationsMs": [
+    46,
+    34,
+    38,
+    51,
+    56,
+    42,
+    46,
+    600
+  ],
+  "note": "Review encoding of existing unmodified capture frames. Actual midpoint intervals retained; final frame held600ms for inspection. Loop reset is not a new app transition. Not a performance benchmark."
+}
