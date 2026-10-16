@@ -34,7 +34,10 @@ function thumbSame(a: ThumbPos, b: ThumbPos) {
   return (
     Math.abs(a.x - b.x) < 0.5 &&
     Math.abs((a.y || 0) - (b.y || 0)) < 0.5 &&
-    Math.abs(a.w - b.w) < 0.5
+    Math.abs(a.w - b.w) < 0.5 &&
+    // React retains the strip across desktop/phone reflow. Its selected
+    // first-row option can keep x/y/width while the thumb needs a row height.
+    Math.abs((a.h || 0) - (b.h || 0)) < 0.5
   );
 }
 
