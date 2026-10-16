@@ -294,25 +294,7 @@ export function LanAddressRow({
   const [menu, setMenu] = useState(false);
   const btnRef = useRef<HTMLButtonElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
-  useAnchoredPopover(menuRef, btnRef, menu, { align: "right", maxHeight: 360 });
-
-  useEffect(() => {
-    if (!menu) return;
-    const onDoc = (e: MouseEvent) => {
-      const n = e.target as Node;
-      if (btnRef.current?.contains(n) || menuRef.current?.contains(n)) return;
-      setMenu(false);
-    };
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setMenu(false);
-    };
-    document.addEventListener("mousedown", onDoc, true);
-    document.addEventListener("keydown", onKey, true);
-    return () => {
-      document.removeEventListener("mousedown", onDoc, true);
-      document.removeEventListener("keydown", onKey, true);
-    };
-  }, [menu]);
+  useProtocolMenu(menuRef, btnRef, menu, () => setMenu(false), { align: "right", maxHeight: 360 });
 
   return (
     <PrefRow name={t("Address")} className={`lan-address-row${urls.length > 1 ? " multi" : ""}`}>
