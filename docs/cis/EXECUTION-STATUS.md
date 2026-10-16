@@ -1,19 +1,20 @@
 # CIS 执行进度
 
-更新时间：2026-10-17 02:09 Asia/Shanghai
+更新时间：2026-10-17 02:26 Asia/Shanghai
 
-- 当前阶段：local_checks_complete_awaiting_N3_independent_review_and_remote_sync。唯一执行者本聊天01a14465-ad94-73e0-a0ad-991539957fa0；监督01a143c3-8101-75e1-b638-c39ad15d55ed；无子代理。
-- **29项：通过26、失败0、待验3（N3/D2/D4）。** B1/B2/D1及D3已收口到v206当前候选。S4/B3/B4在cc6722b收口；后续B2发现7条无原版依据旧覆盖，v205撤除并定向补8默认态/日期/输入/隐私子行，v206仅改导航快照框内裁切。全部前后失败与复用链保留，不冒称历史截图由当前SHA采集。
-- N3专项：监督疑似双正文已按实际命名/伪元素/动画核查，正文page、old(page)隐藏、new(page)无fade、组320ms和原曲线均实见；飞过正文的是独立命名导航。另实证Web快照绕过root overflow，v206按原frame矩形百分比裁切已复验有效。1364/1048/900与125%各一对，root/caption保持、clip正确、console空；未重录三轮。被动诊断有600ms观察尾巴，第二次独立点击可能落在前条尾部；公开摘要在首个morph结束帧截断并记录tailFramesExcluded，不能把两次独立过渡混称一次0.9s卡顿。原三轮性能/录屏仍保留，N3等待监督独立动态结论，不自行按参数放行。
+- 当前阶段：local_technical_checks_passed_awaiting_vercel_access_and_user。唯一执行者本聊天01a14465-ad94-73e0-a0ad-991539957fa0；监督01a143c3-8101-75e1-b638-c39ad15d55ed；无子代理。UI冻结v206，不再无边界改页。
+- **29项：通过27、失败0、待验2（D2/D4）。** N3于02:12由监督独立技术复核通过；B1/B2/D1及D3已收口到v206。S4/B3/B4在cc6722b收口；后续B2撤除7条无源旧覆盖并补8默认态，v206仅加快照框内裁切。全部前后失败与复用链保留，不冒称历史截图由当前SHA采集。
+- N3专项：监督实际查看原三轮数据、round2/3解码时序及v206八帧联系图后放行有限技术项。疑似双正文与独立nav飞行对应；实际old(page)隐藏/new(page)无fade、320ms曲线均正确；越框已按frame裁切，1364/1048/900/125%矩形保持。原33–66.7ms峰值保留且未完全归因，不声称稳定FPS/原生Windows实时对照/用户认可。被动观察600ms尾巴的后续独立切换已按首个结束帧分段，未重录三轮。用户实际观感仍属D4。
 - 通过项：N1/N2=2660400/v194；S2/S3=90099b9/v195；G1/G2/G3=874268b/v196；S1/N4/G4=0a2a014/v197；C1/C2/C4=396c11c/v198；C3/P1/P4=7880135/v199；P2/P3/P5=1100d15/v200。跨候选复用逐条注明源blob/差异边界，不拼称同一候选全过。N3保留独立动态复核，不重录三轮。
 - 当前受管4176：**1ebfb663e4833e653bc621742cc342f3cdc7373a /0.1.206**，session97031、final-candidate-2 immutable Git archive；七主入口/四配置折叠复验已完成。其余继承草稿不整体提交，基础六CSS不变。
 - 规则唯一入口docs/CIS-CONTROLS.md，冻结028dab5；监督批准R01 window级联勘误3c2d6de，其余范围/29项不变。常规批次无需等批准，两个同定位失败后先查根因。
 - 检查：v206 build/TypeScript/两guard通过，56 TS/TSX lint55 warnings/0 errors；既有Vite>500kB chunk warning仍在。索引绑定1ebfb66：21文件/473调用/34裸候选、未知0；useRowMenu5/useProtocolMenu6（7种内容）。B4 canonical76+v205八定向默认态按SHA链复用，均无横溢出/破图/交互嵌套；v206只新增活动快照裁切，不改静态页。兼容层108条+1条快照适配有CAUSE/kept/changed及来源/证据。
-- Git：分支tip/0.1.121-cis-appearance-shell，PR #1；新认证读取成功确认旧head e19fd5a及旧标题正文后，交付504d633提交并只作一次普通push，仍schannel TLS握手失败。PR元数据写入也transport error；随后fetch_issue只读核验确认标题/正文未改。待同步完整正文已保存docs/cis/PR-DESCRIPTION-PENDING-SYNC.md，未谎报更新成功。停止该失败路径，不关闭TLS/强推/强制Vercel；D2外部阻塞，需GitHTTPS与认证写恢复后push并核验云预览新SHA。
-- 现场：用户4173/PID21080与rootdist未动；原JS/CSS SHA256末次核验仍30991582…/64181a04…。任务4174/PID98524、4175/PID76536保留，早前自动审核拒绝OS stop/restart4174，未绕过。当前4176/session97031作为交付本机预览继续运行。39键恢复与initial精确相同、viewport reset后，自有tab19已关闭；4176没有其他遗留测试tab。
+- Git：监督提供新实测OpenSSL/HTTP1.1 ls-remote成功后，以该严格TLS链路普通push成功，并读回确认远端6a6d47bce7e96b262a1c47a46855713341a566ee。GitHub公开提交状态证明该SHA的Vercel自动部署success（Tway5xycG9TCj3jvYui8WXZ9VSSP，18:14:38UTC）。PR标题/正文经现有gh凭证内存复用、默认验证的Python OpenSSL HTTPS更新并读回完全一致，无明文凭证落盘/输出。原schannel/连接器写/gh Go TLS失败路径已停止；没有关闭TLS或强推。后续仅文档证据提交，不变UI源1ebfb66。
+- D2当前唯一外部阻塞：分支预览跳转VercelLogin；Vercel list_deployments 403、protected web_fetch在read_protection_bypass阶段403，明确当前连接无该项目/团队权限；本机无现成Vercel CLI。已向用户一次性请求补beyondchenlins-projects / magpie-shell-demo连接授权或先交付本机并保留D2。未修改保护、创建公开绕过、强制部署或升级套餐。部署成功与登录后云端页面未实测分列，D2继续待验。
+- 现场：用户4173/PID21080与rootdist未动；原JS/CSS SHA256末次核验仍30991582…/64181a04…。旧任务4174/PID98524、4175/PID76536保留，早前自动审核拒绝OS stop/restart4174，未绕过。交付4176/PID100184/session97031保留。39键精确恢复、viewport reset，tab19已关；云端受保护tab20的页面状态读取超时后，通过现有浏览器直接生命周期API关闭成功，任务IAB剩余tabs=[]；未切换用户Chrome/Edge页面。
 - 证据：既有nav/settings/gateway/layout/menus目录及四原问题图保留；新增interactions/cis-confirm-before-396c11c、cis-confirm-7880135、cis-pages-1100d15。F02初焦误判已更正。含个人界面的原图不公开。mock安装/供应商配置/路由组均不接真实服务，没下载或执行第三方代码。
 - 空间与保全：唯一工作树D:/demo1/tagmaai，未安装或复制环境。v206前C/Temp25164808192、D49970401280bytes；02:05末次C/Temp25146904576、D49896849408bytes，差值含并发写入，不归因本任务净占用/释放。公开CIS证据约40.9MB逻辑bytes（<40MiB41943040计划）；新增8帧WebP仅用现成截图编码145552bytes，实际帧间隔保留、末帧停600ms便于查看，非性能基准。五个明确任务缓存目录合计约279MB逻辑（接管恢复1.0MB、source/build快照250.5MB、controls14.0MB、final诊断12.0MB、release1.5MB），保留到N3/D2/D4复核结束，不混作公共证据预算或物理分配。仅早前回收7份source.tar34232320逻辑bytes；之后未删任何历史证据/恢复资料，无新worktree。
-- 剩余具体子用例：N3监督独立动态复核；D2本轮一次有界远端同步后确认分支/云预览身份（如仍有部署限额不强制部署）；D4最后四重点用户观感。没有普通实现差异仍待修复，不继续无边界调UI；尚非只余用户认可的technical_complete状态。
+- 剩余：D2用户补Vercel项目/团队访问权后核验受保护预览页面/资源身份；D4四重点用户观感（顺滑/选中/设置/网关）。普通实现、独立技术复核、Git分支及PR元数据同步均已完成；D2仍在，不能标只余用户认可或29全过。
 
 ## 实质进展记录
 

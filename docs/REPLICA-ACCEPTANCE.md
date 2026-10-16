@@ -114,7 +114,7 @@
 | P4 | 插件 | R03/R05/R11/R15/R25 | 内置/发现/已安装，状态开关、最近调用数量菜单、详情、移除取消各一条路径；不执行真实第三方代码 | 通过（7880135/v199：内置开关、20→50菜单、发现详情、已装停用/启用/选项/移除取消；安装只走1100ms mock状态。SVG与固定源一致，未采纳未复现容错草稿。[证据](../interactions/cis-confirm-7880135/NOTES.md)） |
 | P5 | Library | R25及实际调用 | 指令/MCP/Skills/Hooks 四页签；默认态与现有编辑入口，选一个菜单/一个取消动作复验；不扩展资源库业务 | 通过（1100d15/v200：MCP确认Escape修复，草稿/编辑器及回焦保留，Hook菜单复验；7880135四页签及指令放弃/取消按唯一1行差异复用。[证据](../interactions/cis-pages-1100d15/NOTES.md)） |
 | D1 | 工程检查 | 本清单§5；TIP-CYCLE | build、chrome-guard、cis-guard通过；lint 0错误且不增加当前59条warning；无新增运行异常和无效交互嵌套 | 通过（v206 build/TypeScript/两guard、56文件lint55 warnings/0errors；最终主流程console空、无交互嵌套/破图/横溢出；[工程与运行记录](../interactions/cis-release-1ebfb66/assertions.json)） |
-| D2 | PR与预览一致 | 本清单§2；TIP-CYCLE | PR工作分支、预览、UI版本、完整SHA可互相对应；打不开或需登录据实记录，不能冒称已验云端 | 待验（外部阻塞：新认证读确认远端e19fd5a；一次普通push仍TLS握手失败，PR元数据写transport失败后读核验未改。完整待同步正文已落本地。当前本机v206/1ebfb66，不能用旧云URL冒称对应；不强制部署/关闭TLS/强推） |
+| D2 | PR与预览一致 | 本清单§2；TIP-CYCLE | PR工作分支、预览、UI版本、完整SHA可互相对应；打不开或需登录据实记录，不能冒称已验云端 | 待验（Git OpenSSL正常push/读回6a6d47b成功，PR标题/正文更新读回一致，GitHub Vercel状态确认该SHA自动部署success；但预览跳登录、当前Vercel连接读保护403无项目团队权，云页面/资源未实测。需用户补该连接授权；保留同UI源1ebfb66/v206本机链，不关闭保护或冒称已验云端） |
 | D3 | CIS交付 | R01–R25；调用点索引 | 组件→配方→来源→验收ID的映射完整；每项失败都有复现与证据；无用途不明的补丁与未记录的例外 | 通过（最终索引1ebfb66，473调用/34裸配方逐项分类；R01–R25→组件→固定来源→有限ID及前后复现、AST/Git复用和109兼容规则用途均可追踪。[当前证据入口](../interactions/cis-release-1ebfb66/NOTES.md)。N3独立观感/D2云身份/D4用户结论明确待验，非未分类实现差异） |
 | D4 | 最终收口 | 本清单§6 | B1–D3全过，同一候选固定主流程+监督抽查，范围内无未关闭差异；只余用户四重点观感时标technical_complete_awaiting_user、D4待验并停止改UI，不冒称用户认可 | 待验 |
 

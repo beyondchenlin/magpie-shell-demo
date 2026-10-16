@@ -17,7 +17,7 @@ WHY：在028dab5冻结29项范围内复现、修复、验证，不扩展真实�
 | 205 /5f7f9bc | 撤除7条无源日期/输入/Context/fade旧覆盖 | cis-final-5f7f9bc |
 | 206 /1ebfb66 | Web活动快照绕过frame overflow，按既有frame裁切 | cis-release-1ebfb66 |
 
-最新Checks：build/TypeScript/两guard通过，lint55 warnings/0errors。26通过/0失败/3待验，N3监督独立动态/D2远端云身份/D4用户未结束，不宣称整体验收完成；详见EXECUTION-STATUS。未新增worktree/依赖环境，未改用户4173/rootdist，未合并main/生产部署/打exe。
+最新Checks：build/TypeScript/两guard、N3监督独立技术复核通过，lint55 warnings/0errors。27通过/0失败/2待验；Git/PR同步与6a6d47b自动部署已确认，但D2因Vercel连接403尚未实测受保护页面，D4用户未确认。未新增worktree/依赖环境，未改用户4173/rootdist，未合并main/生产部署/打exe。
 
 ## v0.1.194 · CIS_NATIVE_BASELINE_AND_SHARED_CONTROLS · 2026-10-16 Asia/Shanghai
 

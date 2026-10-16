@@ -1,6 +1,6 @@
 Magpie 壳在导航折叠、控件/弹层生命周期、设置和网关模板上存在实际偏差。本轮按固定 `yetone/magpie@63be477` 和冻结的 R01–R25 修复，并保留每个失败复现、源码版本和有限复验范围。
 
-当前 UI：**v0.1.206 / `1ebfb663e4833e653bc621742cc342f3cdc7373a`**。文档/证据提交可以在它之后；本机4176通过 immutable Git archive 提供这个确切UI。继承的未提交词典/页面草稿不在构建中。
+当前 UI：**v0.1.206 / `1ebfb663e4833e653bc621742cc342f3cdc7373a`**。工作分支已推送并读回确认 `6a6d47bce7e96b262a1c47a46855713341a566ee`；后续提交只含文档/证据，本机4176通过 immutable Git archive 提供确切UI。继承的未提交词典/页面草稿不在构建中。
 
 主要结果：
 
@@ -11,7 +11,9 @@ Magpie 壳在导航折叠、控件/弹层生命周期、设置和网关模板上
 
 验证：TypeScript/Vite build、chrome-guard、cis-guard通过；56文件lint55 warnings/0errors（继承59）；最终六主页面+Settings同候选，1364/1048/900及125%折叠检查；console空、无横溢出/破图/交互嵌套；39项任务偏好精确恢复。保留现有>500kB构建块警告。所有后端动作均为mock，未使用真实API/OAuth/插件命令/Key。
 
-**验收26通过/0失败/3待验：N3监督独立动态观感、D2 PR/云预览身份、D4最终四重点用户观感。** 原三轮录屏与性能记录保留，不能仅凭参数/截图宣称顺滑或全量1:1。源码/浏览器验证不冒称原生Windows像素金标。
+**验收27通过/0失败/2待验：D2受保护云预览核验、D4最终四重点用户观感。** N3已由监督独立复核原三轮录屏/性能与最终帧序列后按有限范围技术通过；33–66.7ms峰值仍保留且未完全归因，不宣称稳定FPS、原生Windows实时对照或用户已认可。
+
+GitHub的Vercel提交状态确认6a6d47b自动部署成功。分支预览会跳Vercel登录，当前Vercel连接403无项目/团队访问权；部署成功与登录后云端页面未实测分开记录，不用旧预览冒称新候选已看过，也不关闭保护或强制部署。
 
 最新报告与唯一规则入口：`docs/cis/EXECUTION-STATUS.md`、`docs/REPLICA-ACCEPTANCE.md`、`docs/CIS-CONTROLS.md`、`interactions/cis-release-1ebfb66/NOTES.md`。
 

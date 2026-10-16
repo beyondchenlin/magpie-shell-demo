@@ -41,6 +41,11 @@
       "sha256": "feb7548ed702599769261812fa6da21bfd0022c809a3cedaf3761953a5ac8f88"
     },
     {
+      "path": "github-commit-status.json",
+      "bytes": 448,
+      "sha256": "bb7da08774f2c79f372b1c85e8d9c0ecfc8140ebe69d791206d41b99af633ba5"
+    },
+    {
       "path": "lint.txt",
       "bytes": 17459,
       "sha256": "ec3a9e260fb8dd36d0898be04c0fe247575a351593631d45b4f4c452ebdd9c4f"
@@ -87,8 +92,13 @@
     },
     {
       "path": "NOTES.md",
-      "bytes": 6298,
-      "sha256": "80616647b3e19ab815adbcccea256b7d20740b371ba7a7f7064dbd500128d036"
+      "bytes": 6885,
+      "sha256": "c593ea0cd831b2e8dd9290042fd0d0e2a182242282fd4aed1bf1b5576415736d"
+    },
+    {
+      "path": "pr-update-verified.json",
+      "bytes": 397,
+      "sha256": "26a29fd98da089861c2b7d407aa6ac787552bc97c7c6b4f36f6389bcdca3566a"
     },
     {
       "path": "preferences-restored.json",
@@ -99,6 +109,11 @@
       "path": "remote-read-before-sync.json",
       "bytes": 509,
       "sha256": "7000c772bbda0d61a6a22157b8f9c3c86248534307ffbc988fa0f321fa1b2a12"
+    },
+    {
+      "path": "remote-sync-recovered.json",
+      "bytes": 2224,
+      "sha256": "163e3fe5e1e84e33e3acf1d01fc97ad2207b49b7b395634bfe45019488694c45"
     },
     {
       "path": "remote-sync-result.json",
@@ -121,5 +136,5 @@
       "sha256": "47e910767bc108538f8af2e556a63c237f905965d9effaf6693e6f230c98a6c0"
     }
   ],
-  "logicalBytes": 864793
+  "logicalBytes": 868449
 }
