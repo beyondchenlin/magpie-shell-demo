@@ -57,6 +57,26 @@ struct Execution {
 struct FailureCode(String);
 #[derive(Clone)]
 struct UsageStream;
+#[derive(Clone)]
+pub(crate) struct StreamControl {
+    deadline: tokio::time::Instant,
+    cancelled: tokio_util::sync::CancellationToken,
+    shutdown: tokio_util::sync::CancellationToken,
+    health: HealthContext,
+}
+impl StreamControl {
+    pub async fn stopped(&self) -> &'static str {
+        tokio::select! {
+            biased;
+            _ = self.cancelled.cancelled() => "ACCESS_REVOKED",
+            _ = self.shutdown.cancelled() => "GATEWAY_STOPPING",
+            _ = tokio::time::sleep_until(self.deadline) => "REQUEST_BUDGET_EXCEEDED",
+        }
+    }
+    pub fn error(&self, code: &str) -> Bytes {
+        stream_error(&self.health, code)
+    }
+}
 impl HealthContext {
     fn observe(&self, observation: tagma_core::health::HealthObservation) {
         self.tracker.observe(
@@ -966,37 +986,11 @@ async fn account_response(
     }
     let (mut parts, body) = response.into_parts();
     parts.extensions.insert(UsageStream);
-    let output = async_stream::stream! {
-        let mut body=body.into_data_stream();
-        let mut tokens=tagma_core::usage::Tokens::default();let mut seen_usage=false;let mut ambiguous=false;
-        while let Some(chunk)=body.next().await{
-            let bytes=match chunk{Ok(bytes)=>bytes,Err(_)=>{
-                let code="UPSTREAM_STREAM_INTERRUPTED";let result=attempt.finish(Some(code),tokens).await;let request_result=attempt.finish_request(Some(code)).await;
-                yield Ok::<_,Infallible>(usage_stream_error_state(code,result.is_err()||request_result.is_err()));return;
-            }};
-            if bytes.as_ref()==b"data: [DONE]\n\n"{
-                let result=attempt.finish(None,tokens).await;
-                let code=if result.is_ok(){None}else{Some(super::usage::FAILURE)};
-                let request_result=attempt.finish_request(code).await;
-                if result.is_err()||request_result.is_err(){yield Ok(usage_stream_error(super::usage::FAILURE));}else{yield Ok(bytes);}
-                return;
-            }
-            let value=std::str::from_utf8(&bytes).ok().and_then(|text|text.strip_prefix("data: ")).and_then(|text|serde_json::from_str::<Value>(text.trim()).ok());
-            if let Some(value)=value{
-                if let Some(code)=value["error"]["code"].as_str(){
-                    let result=attempt.finish(Some(code),tokens).await;
-                    let request_result=attempt.finish_request(Some(code)).await;
-                    if result.is_err()||request_result.is_err(){yield Ok(usage_stream_error_state(code,true));}else{yield Ok(bytes);}
-                    return;
-                }
-                if value.get("usage").is_some_and(Value::is_object){let reported=super::usage::tokens(&value);if seen_usage&&tokens!=reported{ambiguous=true;}seen_usage=true;tokens=if ambiguous{Default::default()}else{reported};}
-            }
-            yield Ok(bytes);
-        }
-        let code="UPSTREAM_STREAM_INTERRUPTED";let result=attempt.finish(Some(code),tokens).await;let request_result=attempt.finish_request(Some(code)).await;
-        yield Ok(usage_stream_error_state(code,result.is_err()||request_result.is_err()));
-    };
-    Response::from_parts(parts, Body::from_stream(output))
+    let control = parts
+        .extensions
+        .remove::<StreamControl>()
+        .expect("successful streaming forward supplies its pinned controls");
+    Response::from_parts(parts, super::stream_driver::drive(body, attempt, control))
 }
 fn usage_stream_error(code: &str) -> Bytes {
     Bytes::from(format!(
@@ -1004,7 +998,7 @@ fn usage_stream_error(code: &str) -> Bytes {
         json!({"error":{"code":code,"message":code}})
     ))
 }
-fn usage_stream_error_state(code: &str, unconfirmed: bool) -> Bytes {
+pub(crate) fn usage_stream_error_state(code: &str, unconfirmed: bool) -> Bytes {
     if !unconfirmed {
         return usage_stream_error(code);
     }
@@ -1161,6 +1155,12 @@ async fn forward_response(
     if streaming {
         let shutdown = state.shutdown.clone();
         let cancelled = run.cancel.clone();
+        let control = StreamControl {
+            deadline: total_deadline,
+            cancelled: cancelled.clone(),
+            shutdown: shutdown.clone(),
+            health: health.clone(),
+        };
         let output = async_stream::stream! {
             let mut function_stream=if available_functions.is_empty(){None}else{Some(super::function_tools::StreamTools::new(available_functions,parallel_tools))};
             let mut decoder = SseDecoder::default();
@@ -1208,14 +1208,16 @@ async fn forward_response(
             }
             // Dropping the response stream drops the upstream body and its request permit.
         };
-        (
+        let mut response = (
             [
                 ("content-type", "text/event-stream"),
                 ("cache-control", "no-store"),
             ],
             Body::from_stream(output),
         )
-            .into_response()
+            .into_response();
+        response.extensions_mut().insert(control);
+        response
     } else {
         let mut bytes = Vec::new();
         loop {

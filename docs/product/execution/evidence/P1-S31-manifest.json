@@ -1,0 +1,104 @@
+{
+  "recordedAtUtc": "2026-10-17T22:53:36.725Z",
+  "sourceBase": "7524b04580f2d64a7a37d50c5f4e5a18f8dce5a1",
+  "candidateVersion": "0.2.0-dev.16",
+  "configSchema": 10,
+  "usageSchema": 2,
+  "source": [
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-gateway\\src\\main.rs",
+      "bytes": 37026,
+      "sha256": "eb957aa28e30c27f83d6e505f854232bf5efc9a898f5884b81d5ebd28fd1e61d"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-gateway\\src\\http_api.rs",
+      "bytes": 48624,
+      "sha256": "018373545a67f353e7b75af46ac643e1261bddd82c8cb495eb0d16787d8359d1"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-gateway\\src\\stream_driver.rs",
+      "bytes": 4054,
+      "sha256": "e65ad8348b5bddb592ae675c6469840cd37f2d6d8d6e935a6f73848d562bdb6e"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-gateway\\tests\\backpressure.rs",
+      "bytes": 11458,
+      "sha256": "587d50389484054dde6e7a58d7e2a7541476f7d508ef0dda65033538565bf0ed"
+    }
+  ],
+  "documents": [
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\EXECUTION-STATUS.md",
+      "bytes": 35383,
+      "sha256": "830052fc75a6ca9ef0c0f21e22e151da4d47c5ad5432497d12014c7714b03a21"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\P1-S31-SLOW-CLIENT-CANCELLATION.md",
+      "bytes": 4322,
+      "sha256": "1e01993478f8d38b5d4e09397beddc2847917ffefea2d5204658b9659922ebaf"
+    }
+  ],
+  "prd": {
+    "path": "D:\\demo1\\tagmaai\\docs\\product\\TAGMA-PRD-v0.3.md",
+    "bytes": 50957,
+    "sha256": "6e6503391f70e3f2e53347890de6e7c9f7fd93cc393c68f7bba494ac4d67a6d6"
+  },
+  "evidence": [
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S31-clippy.txt",
+      "bytes": 739,
+      "sha256": "4d45032b94478d27fb7be1d99e042fe011810bce1c54defd7b388920e65ed37f"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S31-curl.txt",
+      "bytes": 1390,
+      "sha256": "4784072761219e52e5564317be211ceab32c1aa80edb4d5a9b7d9c56d4ee5ff5"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S31-regression.txt",
+      "bytes": 14484,
+      "sha256": "f9ce85355a74345e6a20fe3448ae9a6f205238a1445763aaff562f4442f106e1"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S31-slow-after.txt",
+      "bytes": 1167,
+      "sha256": "bb0a75b5ba1c507ef5bef79cf3e06143ff8195b67b34033467dd7925c1c1f358"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S31-slow-before.txt",
+      "bytes": 2011,
+      "sha256": "c3d6f3595ecf07e4ef022867451c2d7b6aa5e8f63586f0c5e6c5f4101cdf280f"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S31-slow-final.txt",
+      "bytes": 1570,
+      "sha256": "82b937eb0c46bc83cccb89635fe3d209e6387605105a477af59dd714b04048f3"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S31-slow-matrix.txt",
+      "bytes": 1570,
+      "sha256": "2aa1fe6ede1b1659a3bd6ecd3cd8785ec0f2e4b71c79b4963c09fddbcafa04e9"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S31-space-after.json",
+      "bytes": 594,
+      "sha256": "73b2cb5f8241cefd648a4bbea7289c85d54585dec085873175b44ccac2d9b895"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S31-space-plan.json",
+      "bytes": 677,
+      "sha256": "bde16cec13c43ccc99cc879cc01c4da1473f5314c7a470a9dc926cc3026b02db"
+    }
+  ],
+  "results": {
+    "newSlowTcp": 2,
+    "existingGatewayUnits": 26,
+    "relatedHttp": 13,
+    "explicitWindowsCurl": 1,
+    "totalDistinctPassed": 42,
+    "clippy": "gateway all targets -D warnings passed",
+    "desktopDrag": "unresolved/unaccepted;no desktop operation"
+  },
+  "installed": "dev.9 untouched;computer control prohibited",
+  "scope": "bounded independent SSE producer;one queued event plus one terminal;8 permits retained through downstream body;no real provider/keys/new env/worktree/cleanup"
+}

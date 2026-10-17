@@ -1,0 +1,19 @@
+{
+  "RecordedAtUtc": "2026-10-17T22:53:36.6753632Z",
+  "Disks": [
+    {
+      "Name": "C",
+      "FreeGiB": 42.2
+    },
+    {
+      "Name": "D",
+      "FreeGiB": 9.68
+    }
+  ],
+  "OwnedFixtureLeftovers": [],
+  "NewWorktrees": 0,
+  "NewEnvironments": 0,
+  "ManualDeletion": "None;old evidence/caches/denied files/user preview preserved",
+  "Kept": "Existing target/node_modules/dist;user installed dev.9 and preview data/webview",
+  "SpaceCaveat": "Drive differences include cache and concurrent writes;not measured task peak or net release;>1GiB operations remain paused"
+}

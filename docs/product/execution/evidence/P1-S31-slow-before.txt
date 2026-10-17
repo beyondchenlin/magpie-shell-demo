@@ -1,0 +1,49 @@
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+   Compiling tagma-gateway v0.2.0-dev.16 (D:\demo1\tagmaai\crates\tagma-gateway)
+warning: unused import: `Value`
+ --> crates\tagma-gateway\tests\backpressure.rs:8:18
+  |
+8 | use serde_json::{Value, json};
+  |                  ^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: `tagma-gateway` (test "backpressure") generated 1 warning (run `cargo fix --test "backpressure" -p tagma-gateway` to apply 1 suggestion)
+    Finished `test` profile [unoptimized] target(s) in 1.59s
+     Running tests\backpressure.rs (target\debug\deps\backpressure-0a64df4760bca6ab.exe)
+
+running 1 test
+Slow reader after1500ms for total700ms:upstream_closed=false,produced_bytes=4206592,record_state=Running,error=None
+
+thread 'stalled_downstream_cannot_suspend_upstream_budget_and_settlement' (11096) panicked at crates\tagma-gateway\tests\backpressure.rs:100:9:
+total budget must close upstream even while downstream is not polling body
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+error: test failed, to rerun pass `-p tagma-gateway --test backpressure`
+test stalled_downstream_cannot_suspend_upstream_budget_and_settlement ... FAILED
+
+failures:
+
+failures:
+    stalled_downstream_cannot_suspend_upstream_budget_and_settlement
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.62s
+

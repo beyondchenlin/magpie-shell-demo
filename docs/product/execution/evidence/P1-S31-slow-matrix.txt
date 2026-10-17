@@ -1,0 +1,33 @@
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+   Compiling tagma-gateway v0.2.0-dev.16 (D:\demo1\tagmaai\crates\tagma-gateway)
+    Finished `test` profile [unoptimized] target(s) in 1.23s
+     Running tests\backpressure.rs (target\debug\deps\backpressure-0a64df4760bca6ab.exe)
+
+running 2 tests
+Eight real stalled TCP readers:9th429;private revoke(true) acknowledged,8 upstreams closed and8 logical/attempt rows ACCESS_REVOKED;slots still429 until downstream sockets dropped,then200
+test stalled_readers_retain_eight_slots_but_cannot_suspend_confirmed_revocation ... ok
+Slow reader after1500ms for total700ms:upstream_closed=1,produced_bytes=4798144,record_state=Failed,error=Some("REQUEST_BUDGET_EXCEEDED")
+Same stalled socket resumed:bounded partial body then exactly one budget error,noDONE;settlement already visible before resume
+test stalled_downstream_cannot_suspend_upstream_budget_and_settlement ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.63s
+

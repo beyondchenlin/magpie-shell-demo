@@ -1,0 +1,178 @@
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+   Compiling tagma-gateway v0.2.0-dev.16 (D:\demo1\tagmaai\crates\tagma-gateway)
+    Finished `test` profile [unoptimized] target(s) in 3.50s
+     Running unittests src\main.rs (target\debug\deps\tagma_gateway-96c849ca787440a6.exe)
+
+running 26 tests
+test http_api::tests::refuses_unimplemented_fields_before_dispatch ... ok
+test health::tests::coalescing_preserves_scope_time_and_failure_precedence ... ok
+test function_tools::tests::incomplete_unknown_duplicate_or_changed_stream_id_never_gets_tool_call_success ... ok
+Pinned provider client cache:one validated record ->one reusable client;invalid timer/duplicate provider/129records refused before snapshot publication,no requests issued
+test function_tools::tests::malformed_custom_unknown_and_unbounded_request_shapes_are_rejected ... ok
+test apply_tests::provider_client_cache_is_bounded_and_refuses_invalid_or_ambiguous_settings ... ok
+test function_tools::tests::request_contract_preserves_function_fields_and_complete_tool_history ... ok
+test function_tools::tests::nonstream_calls_allow_null_text_and_opaque_arguments_but_bind_identity_and_parallel_limit ... ok
+test function_tools::tests::stream_fragments_are_forwardable_without_accumulating_or_parsing_argument_json ... ok
+test apply_tests::timed_out_credential_load_keeps_one_worker_limit ... ok
+test apply_tests::pending_apply_cannot_resurrect_stopping_runtime ... ok
+Usage management:full bounded channel ->busy without fence;actual writer skips expired and preclosed clear before mutation,epoch remains0,healthy accounting retained
+test usage::tests::full_or_abandoned_management_never_mutates_or_blocks_accounting ... ok
+A08 metadata: pending catalog writes block health reads; confirmed completion advances epoch; abandoned/unknown completion never acknowledges old ready rows
+test apply_tests::delayed_old_success_never_regresses_effective_revision ... ok
+test health::tests::catalog_writes_share_the_health_epoch_and_unknown_results_remain_unconfirmed ... ok
+test apply_tests::delayed_old_failure_never_overwrites_new_success ... ok
+Usage management:running request ->busy,changed preview ->changed;neither blocks healthy accounting;new preview clear succeeds
+test usage::tests::management_busy_and_changed_do_not_fence_healthy_inference ... ok
+Idle tick:existing pending1 never retried despite removed storage fault;clock failure fences healthy store and later tick cannot silently recover
+test usage::tests::idle_retention_never_replays_pending_results_or_clears_a_failure_fence ... ok
+SUP-006 observed_t0=1000 drain_t=301001 persisted_success=Some(1000) ready=false selected=false
+test health::tests::delayed_health_write_does_not_refresh_an_expired_observation ... ok
+SUP-007 phase=first-step token_scope=false cancel_inflight=false confirmed_revision=1 upstream_target_calls=0 status=403
+A11 real HTTP/in-memory credentials: missing/wrong/revoked 401; no data-plane management; new token saved-before-apply denied then accepted; provider revoke blocks new dispatch; optional cancellation closes real upstream and retains partial/error without DONE; corrupt security store 503/unconfirmed
+test security::tests::real_http_token_revocation_rotation_inflight_cancel_and_storage_failure ... ok
+SUP-007 phase=next-step token_scope=false cancel_inflight=false confirmed_revision=1 upstream_target_calls=0 status=403
+Usage accounting ACK:remaining150ms request budget ends wait while committed writer ACK is held;explicit recovery required
+test usage::tests::accounting_ack_wait_respects_the_remaining_request_budget ... ok
+SUP-007 phase=admitted-first-send token_scope=false cancel_inflight=false confirmed_revision=1 upstream_target_calls=1 status=200
+SUP-007 phase=first-step token_scope=true cancel_inflight=false confirmed_revision=1 upstream_target_calls=0 status=403
+A14 health consumer: bounded single read slot, admission timeout, recovery and shutdown rejection verified
+test health::tests::confirmed_reads_are_bounded_and_shutdown_is_not_an_acknowledgement ... ok
+SUP-007 phase=next-step token_scope=true cancel_inflight=false confirmed_revision=1 upstream_target_calls=0 status=403
+test security::tests::sup007_confirmed_revoke_cannot_overtake_an_unstarted_dispatch ... ok
+test health::tests::coalesced_observations_are_confirmed_only_after_persistent_write ... ok
+SUP-008 bounded writer race:recover operation timed out/Err;writer later completed actual pending1->0 and degraded=false;original operation Err preserved for reply
+test usage::tests::recovery_timeout_retains_operation_failure_after_late_writer_completion ... ok
+Usage clear ACK:actual delete+epoch+receipt commit precedes800ms caller timeout;timeout remains unconfirmed,accounting healthy;same plan retry retrieves generation1 without replay
+test usage::tests::clear_wait_timeout_keeps_durable_receipt_without_replaying_deletion ... ok
+Usage lost committed-start ACK unit: unfinished records=0; late ACK lifecycle guard recovery
+test usage::tests::lost_attempt_start_acknowledgement_closes_both_started_records ... ok
+Real idle writer timer path:owned detail crosses30days then disappears with no dispatch/management/new request;daily1 retained,healthy;test timer50ms,production60s;worker joins on drop
+test usage::tests::idle_writer_expires_owned_details_without_any_new_dispatch ... ok
+
+test result: ok. 26 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.06s
+
+     Running tests\function_tools.rs (target\debug\deps\function_tools-a55b3f978251af12.exe)
+
+running 1 test
+Function actual HTTP:exact definitions/choice/parallel/request history preserved,nonstream null text+opaque calls,byte-fragmented UTF8/CRLF SSE arguments reconstructed by caller,DONE after tokens3/2 durable;nonstream length+preface and stream preface+tools never mark text Ready after confirmed health flush;caller-only result turn;team/orphan0sends,bad tool index ->error/noDONE+failed ledger;no tool execution or arguments in usage DB
+test actual_function_calls_round_trip_and_fragment_without_gateway_execution ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.16s
+
+     Running tests\inference.rs (target\debug\deps\inference-57016f10c6f98dcc.exe)
+
+running 1 test
+test real_gateway_text_contract_streaming_snapshot_pin_and_client_cancel ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.07s
+
+     Running tests\revocation_faults.rs (target\debug\deps\revocation_faults-aaf67d597361cc95.exe)
+
+running 1 test
+A27 actual sidecar:apply=RestartRequired old_effective5 desired6 IPC_delivered=false cancel=false client_confirm=Err unknown_status=true review_calls1 revoked_final_calls0;real confirmation keeps apply error
+A27 actual sidecar:apply=RestartRequired old_effective5 desired6 IPC_delivered=true cancel=false client_confirm=Err unknown_status=true review_calls1 revoked_final_calls0;real confirmation keeps apply error
+A27 actual sidecar:apply=RestartRequired old_effective5 desired6 IPC_delivered=false cancel=true client_confirm=Err unknown_status=true review_calls1 revoked_final_calls0;real confirmation keeps apply error
+A27 actual sidecar:apply=RestartRequired old_effective5 desired6 IPC_delivered=true cancel=true client_confirm=Err unknown_status=true review_calls1 revoked_final_calls0;real confirmation keeps apply error
+test failed_configuration_apply_and_missing_private_ack_never_restore_revoked_dispatch ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.74s
+
+     Running tests\security.rs (target\debug\deps\security-7a4f45ff9e9af041.exe)
+
+running 1 test
+DATA-06 routing: raw duplicate model uses the first permitted configured provider on a new call; immutable explicit team UUID never substitutes a replacement
+DATA-06 actual sidecar: saved revocation -> instance-bound acknowledgement; old in-flight step finishes, revoked next step dispatch count=0; directory filtered; restart and private catalog probe remain denied
+test persistent_revocation_overrides_pinned_team_steps_and_restarts_without_credential_access ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.22s
+
+     Running tests\teams.rs (target\debug\deps\teams-341e6254effe3696.exe)
+
+running 1 test
+SUP-005 case=length final_calls=0 status=502 Bad Gateway
+SUP-005 case=content_filter final_calls=0 status=502 Bad Gateway
+SUP-005 case=missing_finish final_calls=0 status=502 Bad Gateway
+SUP-005 case=null_finish final_calls=0 status=502 Bad Gateway
+SUP-005 case=non_string_finish final_calls=0 status=502 Bad Gateway
+SUP-005 case=unknown_finish final_calls=0 status=502 Bad Gateway
+SUP-005 case=legacy_function final_calls=0 status=502 Bad Gateway
+SUP-005 case=legacy_reason final_calls=0 status=502 Bad Gateway
+SUP-005 case=tool_reason final_calls=0 status=502 Bad Gateway
+SUP-005 case=refusal final_calls=0 status=502 Bad Gateway
+SUP-005 case=invalid_role final_calls=0 status=502 Bad Gateway
+SUP-005 case=invalid_index final_calls=0 status=502 Bad Gateway
+SUP-005 case=error final_calls=0 status=429 Too Many Requests
+SUP-005 case=tool final_calls=0 status=502 Bad Gateway
+SUP-005 case=empty final_calls=0 status=502 Bad Gateway
+SUP-005 case=huge final_calls=0 status=502 Bad Gateway
+SUP-005 case=timeout final_calls=0 status=504 Gateway Timeout
+SUP-005 final model=tagma/test-team@2 reason=length nonstream_and_stream=preserved
+SUP-005 final model=final-model reason=length nonstream_and_stream=preserved
+SUP-005 final model=tagma/test-team@2 reason=content_filter nonstream_and_stream=preserved
+SUP-005 final model=final-model reason=content_filter nonstream_and_stream=preserved
+test team_execution_pins_recipe_and_targets_and_stops_after_failure_timeout_or_cancel ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.53s
+
+     Running tests\timeouts.rs (target\debug\deps\timeouts-2b6d86e0399a6196.exe)
+
+running 3 tests
+Actual TLS stall:accepted TCP/never supplied TLS response,configured connect150ms wins over first-response1500ms,total3000ms ->502 UPSTREAM_CONNECT_TIMEOUT,owned upstream socket closed,no credentials/certificate bypass
+test configured_connect_timeout_covers_stalled_owned_tls_handshake ... ok
+Actual provider headers:old cfg3/1500ms in flight before apply,new cfg4/100ms returns504 UPSTREAM_RESPONSE_TIMEOUT,old400ms response still200/cfg3;client/timers pinned,new config never cancels old run
+test response_timeout_changes_only_new_requests_and_old_client_snapshot_completes ... ok
+Actual stream timers:150ms idle ->UPSTREAM_IDLE_TIMEOUT with partial text,noDONE;30ms heartbeat avoids idle but500ms total ->REQUEST_BUDGET_EXCEEDED/noDONE;both upstreams closed,explicit accounting recovery then cfg3/4 errors and unknown tokens retained
+test provider_idle_and_total_budgets_have_distinct_stream_errors_and_cancel_upstream ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.80s
+
+     Running tests\usage.rs (target\debug\deps\usage-c086c387e7fe0bf4.exe)
+
+running 4 tests
+Usage HTTP success: requests=1 attempts=1 cfg=2 tokens=2/1 persisted before response success
+Usage live readonly bridge:actual sidecar request -> exact request/detail/UTC attempt summary,config2 and tokens2/1
+Usage actual sidecar kill/restart:upstream entered only after request+attempt starts persisted;both recovered interrupted,NULL tokens,no fabricated zero
+Soft budget actual HTTP:config3 target1/1,2 successful calls retained2/token6,threshold flags true without blocking;single readonly report context/gen0;extra upstream calls0
+Usage HTTP begin failure: upstream delta=0,503,degraded=true;private explicit recovery acknowledged
+test actual_sidecar_death_keeps_started_usage_and_restart_marks_unknown_interrupted ... ok
+test soft_budget_observes_real_http_without_blocking_dispatch_or_making_extra_calls ... ok
+Usage HTTP first-attempt registration failure:upstream delta0,degraded and explicit recovery
+Usage successful SSE:final reported tokens3/2 persisted before DONE
+Usage HTTP result failure:2 pending,unknown tokens NULL,subsequent upstream delta0;fault-active recovery refused;after recovery pending0,unknown stays NULL
+Usage SSE result failure:partial text retained,error frame,successful DONE withheld,2 bounded pending;recovery retains unknown tokens
+Usage SSE client drop:actual upstream closed;request+attempt cancelled with unknown tokens
+Usage sequential:logical1/attempts2/tokens4/2;second-attempt begin failure sends first once and second zero
+Usage actual revoke(true):partial stream ends ACCESS_REVOKED,request+attempt cancelled,NULL usage;no success DONE
+test actual_http_usage_starts_precede_dispatch_and_failed_results_fence_new_calls ... ok
+Actual HTTP WAL pressure:successful=306,WAL=16813752bytes,pinned old snapshot0;503 adds0upstream;private recovery refused while reader lives;after close TRUNCATE0/degradedfalse,newHTTP200,attempt summaries preserved+1
+test actual_long_reader_wal_refuses_new_inference_until_checkpoint_recovers ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.96s
+
+     Running tests\usage_clear.rs (target\debug\deps\usage_clear-8227a38a1edeede0.exe)
+
+running 1 test
+Usage actual private clear:seeded past-day1request/1attempt/2buckets removed;3 actual HTTP today records retained;busy holds upstream alive and changed preview leaves accounting healthy;real reply lost ->unconfirmed;same plan retry twice receipt generation1;config RestartRequired preserved;data API clear501,extra inference0
+test actual_private_clear_preserves_active_calls_and_recovers_lost_receipt ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.17s
+

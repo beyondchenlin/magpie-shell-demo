@@ -5,6 +5,7 @@ mod function_tools;
 mod health;
 mod http_api;
 mod security;
+mod stream_driver;
 mod usage;
 use axum::{
     extract::{Request as HttpRequest, State},
