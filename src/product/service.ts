@@ -1,4 +1,5 @@
-import { invoke, isTauri } from "@tauri-apps/api/core";
+import { invoke, isTauri, Channel } from "@tauri-apps/api/core";
+import type { StartChat, ChatEvent } from "./contract";
 import type { ApplicationView, ConfigView, DiagnosticBundle, RecoverInitialization, RecoveryOutcome, ReorderProviders, RevisionCommand, RuntimeStatus, SaveProvider, SaveAppProfile, SaveGateway, RevisionInput } from "./contract";
 
 export const desktop = isTauri();
@@ -17,6 +18,12 @@ async function command<T>(name: string, args: Record<string, unknown>): Promise<
 }
 
 export const service = {
+  sendChat: (input: StartChat, onEvent: (event: ChatEvent) => void) => {
+    const channel = new Channel<ChatEvent>();
+    channel.onmessage = onEvent;
+    return invoke<void>("send_chat", { input, onEvent: channel });
+  },
+  cancelChat: (requestId: string) => command<void>("cancel_chat", { protocolVersion, requestId }),
   view: () => command<ApplicationView>("application_view", { protocolVersion }),
   save: (input: SaveProvider) => command<ConfigView>("save_provider", { input }),
   remove: (input: RevisionCommand) => command<ConfigView>("delete_provider", { input }),

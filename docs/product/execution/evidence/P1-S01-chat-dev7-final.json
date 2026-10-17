@@ -1,0 +1,27 @@
+{
+  "platform": "win32",
+  "productVersion": "0.2.0-dev.7",
+  "schemaVersion": 3,
+  "executable": "D:\\demo1\\tagmaai\\target\\debug\\tagma-desktop.exe",
+  "nativeHost": true,
+  "mockBridge": false,
+  "upstream": "controlled loopback fixture; no external generation",
+  "upstreamCalls": 4,
+  "forwardedCredential": true,
+  "upstreamCancelled": true,
+  "tests": [
+    "real-provider-form-and-system-credential",
+    "native-model-selection",
+    "native-bridge-local-auth",
+    "gateway-streaming-roundtrip",
+    "fragmented-utf8-sse",
+    "stop-closes-upstream",
+    "partial-reply-retained",
+    "sanitized-upstream-auth-error",
+    "no-generation-retry",
+    "truncated-stream-error",
+    "dark-150-percent-no-overflow",
+    "native-graceful-quit"
+  ],
+  "result": "passed"
+}

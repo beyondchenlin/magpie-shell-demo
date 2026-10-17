@@ -1,4 +1,27 @@
 /* Product layout bridge. CIS app.css owns tokens and control recipes; no gold CSS is changed. */
+.tagma-chat-toolbar { display:flex; gap:10px; align-items:center; flex-wrap:wrap; padding:0 0 14px; border-bottom:1px solid var(--line); }
+.tagma-chat-toolbar label { display:flex; gap:8px; align-items:center; flex:1; min-width:180px; white-space:nowrap; }
+.tagma-chat-toolbar select { flex:1; width:100%; min-width:0; height:30px; border:1px solid var(--line); border-radius:7px; padding:0 9px; background:var(--card); color:var(--fg); font:inherit; }
+.tagma-chat-toolbar > .sub { flex-basis:100%; }
+.tagma-chat-welcome { display:flex; flex-direction:column; align-items:center; gap:12px; text-align:center; padding:38px 14px; color:var(--muted); }
+.tagma-chat-welcome > span { font-size:34px; color:var(--fg); }
+.tagma-chat-welcome p { max-width:420px; line-height:1.7; }
+.tagma-conversation { min-height:160px; max-height:42vh; overflow:auto; overscroll-behavior:contain; }
+.tagma-chat-turn { margin:18px 0; }
+.tagma-chat-user, .tagma-chat-assistant { padding:13px 14px; border-radius:8px; }
+.tagma-chat-user { background:var(--card-2); margin-left:30px; border:1px solid var(--line); }
+.tagma-chat-assistant { margin-right:18px; }
+.tagma-chat-turn strong { font-size:11px; color:var(--muted); font-weight:500; }
+.tagma-chat-turn pre { font:inherit; line-height:1.8; white-space:pre-wrap; overflow-wrap:anywhere; margin:7px 0; }
+.tagma-stream-status { color:var(--muted); font-size:11px; }
+.tagma-composer { position:sticky; bottom:0; z-index:1; border:1px solid var(--line); border-radius:10px; padding:12px; background:var(--card); }
+.tagma-compose-label { display:block; color:var(--muted); font-size:11px; margin-bottom:8px; }
+.tagma-composer textarea.words { display:block; resize:vertical; width:100%; min-height:76px; max-height:250px; box-sizing:border-box; background:var(--card-2); color:var(--fg); border:1px solid var(--line); border-radius:7px; padding:8px 10px; font:inherit; outline:none; }
+.tagma-composer textarea.words:focus, .tagma-chat-toolbar select:focus { border-color:var(--accent); box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 22%,transparent); }
+.tagma-composer-footer { display:flex; gap:12px; align-items:center; justify-content:space-between; margin-top:10px; }
+.tagma-composer-footer > span { font-size:10px; color:var(--muted); line-height:1.6; }
+.tagma-chat-setup { margin-top:22px; border-top:1px solid var(--line); padding-top:14px; }
+.tagma-chat-setup > summary { color:var(--muted); cursor:pointer; margin-bottom:16px; }
 body.tagma #root { display:flex; flex-direction:column; width:100%; height:100%; min-height:0; overflow:hidden; }
 .tagma-header { min-height:46px; display:flex; align-items:center; gap:14px; padding:8px 14px; border-bottom:1px solid var(--line); flex-wrap:wrap; }
 .tagma-header nav { flex:1; display:flex; justify-content:center; }

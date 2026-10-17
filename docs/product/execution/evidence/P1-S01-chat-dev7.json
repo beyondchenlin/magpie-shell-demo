@@ -1,0 +1,102 @@
+{
+  "recordedAtUtc": "2026-10-17T08:19:07.8468943Z",
+  "productVersion": "0.2.0-dev.7",
+  "schemaVersion": 3,
+  "sourceBaseCommit": "9c44104",
+  "nativeChatEvidence": "P1-S01-chat-dev7-cancellation-final.json",
+  "visualEvidence": "P1-S01-chat-dev7-final/",
+  "gatewayProcessEvidence": "cargo test -p tagma-gateway --locked: unit5, real gateway/inference1 covering protocol, snapshot, cancellation and bounds, lifecycle10; two explicit credential/version tests ignored",
+  "coreEvidence": "cargo test -p tagma-core --lib: 18 passed, 3 subprocess fixture workers ignored",
+  "checks": [
+    "TypeScript/Vite product build",
+    "product oxlint",
+    "all four Rust packages all-targets Clippy -D warnings",
+    "generated DTO drift check",
+    "six CIS guards"
+  ],
+  "nativeRegressions": [
+    "P1-S01-dev7-gateway-regression.json",
+    "P1-S01-dev7-main-regression.json"
+  ],
+  "files": [
+    {
+      "name": "tagma-desktop.exe",
+      "sha256": "99f08ea36f88b45f839b9a2b7e0a573dfb0a1e9b532d69f73baa0644b0b7af48",
+      "bytes": 17947136
+    },
+    {
+      "name": "tagma-gateway.exe",
+      "sha256": "67e5e2a0878ba0623d4101d611f7781bb471fbab730276e0e5cf534cdc064006",
+      "bytes": 7846912
+    }
+  ],
+  "upstream": "controlled loopback only; no external generation or paid API call",
+  "releaseBlocked": true,
+  "limitations": [
+    "text-only Chat Completions; tool/vision/Responses/Anthropic/Gemini unsupported",
+    "fixed connection10s, headers30s, stream idle30s, total120s; provider-custom timeouts pending",
+    "no token rotation/persistent revocation ledger yet",
+    "no durable chat history or Pi harness",
+    "no real-provider budget acceptance or signed/clean-machine release"
+  ],
+  "cleanup": [
+    {
+      "credentials": 2,
+      "removed": true,
+      "logicalBytes": 9544439,
+      "fixture": "tagma-native-owned-f47f48d8-71a4-43e8-9bc2-54057bcd07cc"
+    },
+    {
+      "credentials": 2,
+      "removed": true,
+      "logicalBytes": 9549746,
+      "fixture": "tagma-native-owned-afc359af-5932-4207-a457-d0d66f77ad97"
+    },
+    {
+      "credentials": 2,
+      "removed": true,
+      "logicalBytes": 9544409,
+      "result": "driver failed before sending; result preserved",
+      "fixture": "tagma-native-owned-215e0487-11b8-466e-91e7-ca3f06f4cce0"
+    },
+    {
+      "credentials": 2,
+      "removed": true,
+      "logicalBytes": 9550045,
+      "fixture": "tagma-native-owned-ddba7f4e-2adc-4d78-b9cc-54183f616703"
+    },
+    {
+      "credentials": 1,
+      "removed": true,
+      "logicalBytes": 18671766,
+      "fixture": "tagma-native-owned-bbbd5096-89fd-4a94-8244-5f3f151f9300"
+    },
+    {
+      "credentials": 0,
+      "removed": true,
+      "logicalBytes": 10586991,
+      "fixture": "tagma-native-owned-16e2e472-c7fb-40cf-b603-affade08763e"
+    }
+  ],
+  "noNewWorktree": true,
+  "reused": [
+    "target",
+    "node_modules",
+    "Cargo registry"
+  ],
+  "diskBeforeGiB": {
+    "D": 24.51,
+    "C": 49.14
+  },
+  "diskAfter": [
+    {
+      "Name": "C",
+      "freeGiB": 48.96
+    },
+    {
+      "Name": "D",
+      "freeGiB": 23.37
+    }
+  ],
+  "diskNote": "Logical fixture sizes are not physical net release; concurrent writes and hardlinks may differ. No general cache purge."
+}

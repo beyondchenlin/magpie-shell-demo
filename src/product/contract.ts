@@ -22,3 +22,6 @@ export type DiagnosticBundle = { product_version: string, protocol_version: numb
 export type InitializationRecoveryPlan = { operation_id: string, record_path: string, archive_path: string, expected_sha256: string, };
 export type RecoverInitialization = { protocol_version: number, operation_id: string, expected_sha256: string, };
 export type RecoveryOutcome = { archive_path: string, requires_restart: boolean, };
+export type ChatMessage = { role: string, content: string, };
+export type StartChat = { protocol_version: number, request_id: string, expected_revision: number, model: string, messages: Array<ChatMessage>, };
+export type ChatEvent = { "kind": "started" } | { "kind": "delta", text: string, } | { "kind": "finished", reason: string, } | { "kind": "cancelled" } | { "kind": "failed", code: string, };

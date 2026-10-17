@@ -9,7 +9,7 @@ import { LanguagePick } from "./LanguagePick";
 import { DiagnosticsPanel } from "./DiagnosticsPanel";
 import { AppProfiles } from "./AppProfiles";
 import { GatewaySettings } from "./GatewaySettings";
-import { ConnectionWorkspace } from "./ConnectionWorkspace";
+import { ChatView } from "./ChatView";
 import { copy, errorCopy } from "./copy";
 import { applyPreferences, readPreferences, savePreferences, type Preferences, type ProductTheme } from "./preferences";
 import { desktop, protocolVersion, service } from "./service";
@@ -112,7 +112,7 @@ export default function ProductApp() {
     <main className="tagma-main" aria-busy={busy}>
       {error != null && <div className="tagma-error" role="alert">{typeof error === "object" && "code" in error && error.code === "PREFERENCES_UNSAVED" ? c.preferencesError : typeof error === "object" && "code" in error && error.code === "CLIPBOARD_UNCONFIRMED" ? c.copyFailed : errorCopy(error, preferences.language)} <TextBtn disabled={busy} onClick={() => void refresh()}>{c.refresh}</TextBtn></div>}
       {notice && <p role="status" className="tagma-notice">{view?.runtime.state === "running" && view.runtime.effective_revision === view.config.desired_revision ? c.configurationApplied : c.saved}</p>}
-      {page === "chat" && <ConnectionWorkspace view={view} busy={busy} language={preferences.language} onAddProvider={() => { setPage("providers"); setEditor("new"); setNotice(false); }} onProviders={() => setPage("providers")} onGateway={() => setPage("gateway")} onMarket={() => setPage("market")} />}
+      <div hidden={page !== "chat"}><ChatView active={page === "chat"} view={view} busy={busy} language={preferences.language} onAddProvider={() => { setPage("providers"); setEditor("new"); setNotice(false); }} onProviders={() => setPage("providers")} onGateway={() => setPage("gateway")} onMarket={() => setPage("market")} /></div>
       {page === "providers" && <section><div className="tagma-heading"><h1>{c.providers}</h1><TextBtn variant="action" disabled={!view || busy || editing} onClick={() => { setEditor("new"); setNotice(false); }}>{c.add}</TextBtn></div>
         {!desktop && <p>{c.previewHint}</p>}
         {desktop && !view && !error && <p role="status">{c.loading}</p>}
@@ -145,7 +145,7 @@ export default function ProductApp() {
         <PrefRow name={c.theme}><Segs value={preferences.theme} items={[{ id: "system", label: c.system }, { id: "light", label: c.light }, { id: "dark", label: c.dark }]} onChange={id => changePreferences({ ...preferences, theme: id as ProductTheme })} /></PrefRow>
         <PrefRow name={c.size}><Segs value={preferences.textSize} items={[100, 125, 150].map(n => ({ id: n, label: `${n}%` }))} onChange={id => changePreferences({ ...preferences, textSize: id as Preferences["textSize"] })} /></PrefRow>
         <PrefRow name={c.gateway}><TextBtn onClick={() => setPage("gateway")}>{c.gateway}</TextBtn></PrefRow>
-        <PrefRow name={c.version}><span>{view?.product_version ?? "0.2.0-dev.6"}</span></PrefRow>
+        <PrefRow name={c.version}><span>{view?.product_version ?? "0.2.0-dev.7"}</span></PrefRow>
         <PrefRow name={c.schema}><span>{view?.config.schema_version ?? c.unknown}</span></PrefRow>
       </div><DiagnosticsPanel language={preferences.language} /><TextBtn disabled={!desktop || busy} onClick={() => void service.quit().catch(setError)}>{c.quit}</TextBtn></section>}
     </main>

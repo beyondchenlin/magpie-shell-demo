@@ -2,7 +2,7 @@ param(
   [string]$Executable = 'target/debug/tagma-desktop.exe',
   [Parameter(Mandatory=$true)][string]$ResultPath,
   [string]$EvidenceDirectory,
-  [ValidateSet('full','appearance','recovery','profiles','gateway','performance','workspace')][string]$Mode = 'full'
+  [ValidateSet('full','appearance','recovery','profiles','gateway','performance','workspace','chat')][string]$Mode = 'full'
 )
 $ErrorActionPreference='Stop'
 $taskExecutable=(Resolve-Path -LiteralPath $Executable).Path
@@ -59,7 +59,7 @@ try {
     }
   }
   $taskLogicalBytes=($taskItems | Where-Object { -not $_.PSIsContainer } | Measure-Object Length -Sum).Sum
-  if($Mode -in @('gateway','performance')) {
+  if($Mode -in @('gateway','performance','chat')) {
     $taskCredentialCleanup=$false
     if(-not $taskReferences.Count -and -not $taskLinks.Count -and -not $taskLocked) {
       & (Join-Path $PSScriptRoot '../target/debug/examples/cleanup_native_fixture.exe') $taskAbsolute

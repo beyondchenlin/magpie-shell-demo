@@ -1,6 +1,8 @@
 fn main() {
     tauri_build::try_build(tauri_build::Attributes::new().app_manifest(
         tauri_build::AppManifest::new().commands(&[
+            "send_chat",
+            "cancel_chat",
             "application_view",
             "save_provider",
             "delete_provider",

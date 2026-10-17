@@ -2,6 +2,8 @@
 // The caller supplies an exclusively owned temporary config directory and dev-server URL.
 import { spawn } from 'node:child_process';
 import { createServer } from 'node:net';
+import { createServer as createHttpServer } from 'node:http';
+import { randomUUID } from 'node:crypto';
 import { writeFile, readFile, access, mkdir } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import assert from 'node:assert/strict';
@@ -12,6 +14,9 @@ const recoveryMode=process.env.TAGMA_NATIVE_SMOKE_MODE==='recovery';
 const profilesMode=process.env.TAGMA_NATIVE_SMOKE_MODE==='profiles';
 const gatewayMode=process.env.TAGMA_NATIVE_SMOKE_MODE==='gateway';
 const workspaceMode=process.env.TAGMA_NATIVE_SMOKE_MODE==='workspace';
+const chatMode=process.env.TAGMA_NATIVE_SMOKE_MODE==='chat';
+let chatUpstream;
+const chatTimers=new Set();
 assert(fixture, 'Caller must supply an isolated TAGMA_TEST_CONFIG_DIR');
 const executable=resolve(process.env.TAGMA_NATIVE_EXE || 'target/debug/tagma-desktop.exe');
 await access(executable);
@@ -24,7 +29,7 @@ await new Promise(resolve=>gatewayReservation.listen(0,'127.0.0.1',resolve));
 const gatewayPort=gatewayReservation.address().port;
 await new Promise(resolve=>gatewayReservation.close(resolve));
 let child = spawn(executable, [], {
-  env: { ...process.env, TAGMA_TEST_GATEWAY_PORT:String(gatewayPort), ...(gatewayMode?{TAGMA_TEST_INITIALIZE_TOKEN:'1'}:{}), WEBVIEW2_USER_DATA_FOLDER:resolve(fixture,'webview'), WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS: `--remote-debugging-port=${port} --remote-debugging-address=127.0.0.1` },
+  env: { ...process.env, TAGMA_TEST_GATEWAY_PORT:String(gatewayPort), ...(gatewayMode||chatMode?{TAGMA_TEST_INITIALIZE_TOKEN:'1'}:{}), WEBVIEW2_USER_DATA_FOLDER:resolve(fixture,'webview'), WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS: `--remote-debugging-port=${port} --remote-debugging-address=127.0.0.1` },
   // Do not hide a console to make this test pass. Both executables must be GUI-subsystem binaries.
   stdio: 'ignore', windowsHide: false,
 });
@@ -34,7 +39,7 @@ let socket;
 const pending = new Map();
 let sequence = 0;
 const pause = ms => new Promise(r => setTimeout(r, ms));
-const deadline = Date.now() + 35_000;
+const deadline = Date.now() + (chatMode?60_000:35_000);
 async function until(test, message) {
   while (Date.now() < deadline) { if(spawnError) throw spawnError; try { const result = await test(); if (result) return result; } catch {} await pause(100); }
   throw new Error(message);
@@ -83,15 +88,66 @@ async function connectPage() {
 }
 try {
   let page=await connectPage();
-  if(workspaceMode) {
+  if(chatMode) {
+    const credential=`tagma-owned-fixture-${randomUUID()}`;
+    let upstreamCalls=0, forwardedCredential=false, upstreamCancelled=false, cancelledBeforeResponse=false;
+    const delta=(content,finish=null)=>`data: ${JSON.stringify({id:'synthetic-fixture',object:'chat.completion.chunk',choices:[{index:0,delta:content===null?{}:{content},finish_reason:finish}]})}\r\n\r\n`;
+    chatUpstream=createHttpServer(async(req,res)=>{
+      const chunks=[];for await(const chunk of req)chunks.push(chunk);
+      const input=JSON.parse(Buffer.concat(chunks).toString('utf8'));
+      upstreamCalls++;forwardedCredential=req.headers.authorization===`Bearer ${credential}`;
+      assert.equal(req.url,'/v1/chat/completions');assert.equal(input.model,'native-test-model');assert.equal(input.stream,true);
+      const prompt=input.messages.at(-1).content;
+      if(prompt==='error'){res.writeHead(401,{'content-type':'application/json'});res.end(JSON.stringify({error:{message:'private-fixture-error-body'}}));return;}
+      if(prompt==='wait'){
+        const timer=setTimeout(()=>{res.writeHead(200,{'content-type':'text/event-stream'});res.end(delta('late')+delta(null,'stop')+'data: [DONE]\n\n');},15000);chatTimers.add(timer);
+        res.on('close',()=>{clearTimeout(timer);chatTimers.delete(timer);cancelledBeforeResponse=true;});return;
+      }
+      res.writeHead(200,{'content-type':'text/event-stream'});
+      if(prompt==='stop'||prompt==='leave'){
+        res.write(delta('停止前已收到的文字'));
+        const timer=setInterval(()=>res.write(': keepalive\n\n'),50);chatTimers.add(timer);
+        res.on('close',()=>{clearInterval(timer);chatTimers.delete(timer);upstreamCancelled=true;});return;
+      }
+      if(prompt==='broken'){res.end(delta('断流前已收到的文字'));return;}
+      const frames=Buffer.from(delta('你好，')+delta('流式连接成功。')+delta(null,'stop')+'data: [DONE]\n\n');
+      for(let offset=0;offset<frames.length;offset+=7){if(res.destroyed)return;res.write(frames.subarray(offset,offset+7));await pause(2);}res.end();
+    });
+    await new Promise(resolve=>chatUpstream.listen(0,'127.0.0.1',resolve));
+    await until(async()=>(await text()).includes('已保存版本: 1'),'Native local token not initialized');
+    await click('添加供应商');
+    const upstreamUrl=`http://127.0.0.1:${chatUpstream.address().port}/v1`;
+    await evaluate(`(()=>{const fields=document.querySelectorAll('input.words');const setter=Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value').set;['Native chat fixture',${JSON.stringify(upstreamUrl)},${JSON.stringify(credential)}].forEach((value,index)=>{setter.call(fields[index],value);fields[index].dispatchEvent(new Event('input',{bubbles:true}));});const models=document.querySelector('textarea');Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype,'value').set.call(models,'native-test-model');models.dispatchEvent(new Event('input',{bubbles:true}));})()`);
+    await click('保存');await until(async()=>(await text()).includes('已保存版本: 2'),'Native provider not saved');await click('对话');
+    await until(async()=>await evaluate(`[...document.querySelectorAll('button')].some(b=>b.getClientRects().length&&b.textContent.trim()==='发送'&&!b.disabled)`)===false&&(await text()).includes('从一句话开始'),'Real native chat UI not rendered');
+    await until(async()=>{const v=await evaluate(`window.__TAURI_INTERNALS__.invoke('application_view',{protocolVersion:1})`);return v.runtime.effective_revision===2;},'Native provider snapshot not effective');
+    const send=async value=>{await evaluate(`(()=>{const field=document.querySelector('#tagma-message');Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype,'value').set.call(field,${JSON.stringify(value)});field.dispatchEvent(new Event('input',{bubbles:true}));})()`);await until(async()=>await evaluate(`[...document.querySelectorAll('button')].some(b=>b.getClientRects().length&&b.textContent.trim()==='发送'&&!b.disabled)`),'Composer send action not ready');await click('发送');};
+    await capture('13-chat-ready');await send('hello');
+    await until(async()=>(await text()).includes('你好，流式连接成功。')&&!(await text()).includes('正在回复'),'Native SSE text did not finish');
+    assert(forwardedCredential,'Gateway did not use the saved provider credential');assert.equal(upstreamCalls,1);
+    assert(!JSON.stringify(await evaluate(`window.__TAURI_INTERNALS__.invoke('application_view',{protocolVersion:1})`)).includes(credential));
+    await capture('14-chat-stream-complete');
+    await send('stop');await until(async()=>(await text()).includes('停止前已收到的文字'),'Cancellation stream never started');await click('停止回复');
+    await until(async()=>(await text()).includes('已停止 · 保留收到的内容'),'Cancellation was not acknowledged');await until(async()=>upstreamCancelled,'Native stop did not close upstream');
+    await send('wait');await until(async()=>upstreamCalls===3,'Waiting request never reached upstream');await click('停止回复');await until(async()=>cancelledBeforeResponse,'Stop before response headers did not close upstream');
+    await until(async()=>await evaluate(`[...document.querySelectorAll('button')].some(b=>b.getClientRects().length&&b.textContent.trim()==='发送')`),'Pre-response cancellation did not release native request');
+    await send('error');await until(async()=>(await text()).includes('供应商拒绝了凭据'),'Native upstream error not displayed');assert(!(await text()).includes('private-fixture-error-body'));assert.equal(upstreamCalls,4,'Failed request was replayed');
+    await send('broken');await until(async()=>(await text()).includes('回复中途断开'),'Truncated stream falsely completed');assert((await text()).includes('断流前已收到的文字'));assert.equal(upstreamCalls,5);
+    upstreamCancelled=false;await send('leave');await until(async()=>upstreamCalls===6,'Navigation cancellation request never reached upstream');await click('供应商');await until(async()=>upstreamCancelled,'Leaving chat did not close its upstream');await click('对话');
+    await click('设置');await click('深色');await click('150%');await click('对话');assert(await evaluate(`document.documentElement.scrollWidth<=innerWidth+1`));await capture('15-chat-dark-150-errors');
+    const view=await evaluate(`window.__TAURI_INTERNALS__.invoke('application_view',{protocolVersion:1})`);
+    await evaluate(`window.__TAURI_INTERNALS__.invoke('quit_application',{protocolVersion:1})`).catch(()=>{});await until(async()=>child.exitCode!==null,'Native chat host did not quit');
+    await writeFile(resolve(fixture,'native-result.json'),JSON.stringify({platform:process.platform,productVersion:view.product_version,schemaVersion:view.config.schema_version,executable,nativeHost:true,mockBridge:false,upstream:'controlled loopback fixture; no external generation',upstreamCalls,forwardedCredential,upstreamCancelled,cancelledBeforeResponse,tests:['real-provider-form-and-system-credential','native-model-selection','native-bridge-local-auth','gateway-streaming-roundtrip','fragmented-utf8-sse','stop-closes-upstream','stop-before-response-headers-closes-upstream','partial-reply-retained','sanitized-upstream-auth-error','no-generation-retry','truncated-stream-error','leaving-chat-cancels-own-upstream','dark-150-percent-no-overflow','native-graceful-quit'],result:'passed'},null,2));
+    console.log('Native chat: 14 checks passed (real host → local gateway → controlled upstream → streamed UI; cancellation before and after response).');
+  } else if(workspaceMode) {
     await until(async()=>(await text()).includes('接入你的模型，开始组织工作流'),'Workspace home not rendered');
-    assert((await text()).includes('还没有配置模型'));assert((await text()).includes('真实对话仍待接入'));
+    assert((await text()).includes('还没有配置模型'));assert((await text()).includes('配置模型后开始对话'));
     await capture('10-workspace-empty');await click('添加供应商');
     assert(await evaluate(`document.querySelector('form')?.getAttribute('aria-label')==='添加供应商'`));
     await evaluate(`(()=>{const fields=document.querySelectorAll('input.words');const setter=Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value').set;['UI workflow provider','https://example.invalid/v1'].forEach((value,index)=>{setter.call(fields[index],value);fields[index].dispatchEvent(new Event('input',{bubbles:true}));});const models=document.querySelector('textarea');Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype,'value').set.call(models,'ui-workflow-model');models.dispatchEvent(new Event('input',{bubbles:true}));})()`);await click('保存');
     await until(async()=>(await text()).includes('已保存版本: 1'),'Workspace provider save not committed');await click('对话');
     await until(async()=>(await text()).includes('ui-workflow-model'),'Saved model missing from workspace');
-    assert((await text()).includes('UI workflow provider'));assert((await text()).includes('手动配置'));assert((await text()).includes('尚未检测上游可用性'));
+    assert((await text()).includes('UI workflow provider'));await evaluate(`document.querySelector('.tagma-chat-setup').open=true`);assert((await text()).includes('手动配置'));assert((await text()).includes('尚未检测上游可用性'));
     await until(async()=>(await text()).includes('网关正在使用已保存的配置'),'Workspace effective status not confirmed');
     assert(!(await text()).includes('已保存，待应用到网关'),'Applied configuration still claims to be pending');
     await capture('11-workspace-configured');await click('查看网关');assert((await text()).includes('网关配置'));
@@ -110,7 +166,7 @@ try {
     assert.equal((await fetch(`http://127.0.0.1:${gatewayPort}/v1/models`)).status,401);
     await click('显示令牌');const token=await evaluate(`document.querySelector('.tagma-secret').textContent`);assert.equal(token.length,64);
     await click('隐藏令牌');assert.equal(await evaluate(`!!document.querySelector('.tagma-secret')`),false);
-    assert.equal((await fetch(`http://127.0.0.1:${gatewayPort}/v1/models`,{headers:{Authorization:`Bearer ${token}`}})).status,503);
+    assert.equal((await fetch(`http://127.0.0.1:${gatewayPort}/v1/models`,{headers:{Authorization:`Bearer ${token}`}})).status,200);
     assert.equal((await fetch(`http://127.0.0.1:${gatewayPort}/v1/models`,{headers:{Authorization:'Bearer incorrect'}})).status,401);
     const reservation=createServer();await new Promise(resolve=>reservation.listen(0,'127.0.0.1',resolve));const savedPort=reservation.address().port;await new Promise(resolve=>reservation.close(resolve));
     await click('修改网关配置');
@@ -127,11 +183,11 @@ try {
     child=spawn(executable,[],{env:relaunchEnvironment,stdio:'ignore',windowsHide:false});child.on('error',error=>{spawnError=error;});page=await connectPage();
     view=await until(async()=>{const v=await evaluate(`window.__TAURI_INTERNALS__.invoke('application_view',{protocolVersion:1})`);return v.runtime.effective_revision===2?v:null;},'Saved port was not loaded by native relaunch');
     assert(view.runtime.address.includes(String(savedPort)));assert.equal(view.config.gateway.auth_enabled,false);assert.equal(view.config.gateway.has_access_token,true);
-    assert.equal((await fetch(`http://127.0.0.1:${savedPort}/v1/models`)).status,503);
+    assert.equal((await fetch(`http://127.0.0.1:${savedPort}/v1/models`)).status,200);
     const diagnostics=await evaluate(`window.__TAURI_INTERNALS__.invoke('diagnostics_view',{protocolVersion:1})`);assert(!JSON.stringify(view).includes(token));assert(!JSON.stringify(diagnostics).includes(token));
     await evaluate(`window.__TAURI_INTERNALS__.invoke('quit_application',{protocolVersion:1})`).catch(()=>{});await until(async()=>child.exitCode!==null,'Relaunched gateway host did not quit');
     for(const name of ['config.sqlite3','config.sqlite3-wal','logs/tagma.0.jsonl']) {const bytes=await readFile(resolve(fixture,name)).catch(()=>Buffer.alloc(0));assert(!bytes.includes(Buffer.from(token)));}
-    await writeFile(resolve(fixture,'native-result.json'),JSON.stringify({platform:process.platform,architecture:process.arch,productVersion:view.product_version,schemaVersion:view.config.schema_version,executable,embeddedAssets:!page.url.startsWith('http://localhost:'),nativeHost:true,mockBridge:false,windowsHide:false,tests:['default-token-in-system-store','explicit-reveal-and-hide','missing-and-wrong-token-401','valid-token-unsupported-503','port-and-auth-form-save','old-effective-address-until-restart','degraded-owned-stop','saved-port-on-native-relaunch-without-override','explicit-compatibility-mode-loopback','no-token-in-dto-diagnostics-sqlite-wal-log'],result:'passed'},null,2));
+    await writeFile(resolve(fixture,'native-result.json'),JSON.stringify({platform:process.platform,architecture:process.arch,productVersion:view.product_version,schemaVersion:view.config.schema_version,executable,embeddedAssets:!page.url.startsWith('http://localhost:'),nativeHost:true,mockBridge:false,windowsHide:false,tests:['default-token-in-system-store','explicit-reveal-and-hide','missing-and-wrong-token-401','valid-token-model-directory-200','port-and-auth-form-save','old-effective-address-until-restart','degraded-owned-stop','saved-port-on-native-relaunch-without-override','explicit-compatibility-mode-loopback','no-token-in-dto-diagnostics-sqlite-wal-log'],result:'passed'},null,2));
     console.log('Native gateway settings: 10 checks passed (system token, HTTP authentication, explicit port restart and real relaunch).');
   } else if(profilesMode) {
     await until(async()=>(await text()).includes('已保存版本: 0'),'Native profile fixture not initialized');
@@ -261,6 +317,8 @@ try {
   console.log(`Native Tauri smoke: ${appearanceOnly?7:16} checks passed (real WebView + IPC + SQLite + sidecar; isolated synthetic configuration).`);
   }
 } finally {
+  for(const timer of chatTimers)clearInterval(timer);
+  if(chatUpstream){chatUpstream.closeAllConnections();await new Promise(resolve=>chatUpstream.close(resolve));}
   socket?.close();
   for (const p of pending.values()) p.reject(new Error('Native test closing'));
   if (child.exitCode === null) child.kill();

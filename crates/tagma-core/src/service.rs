@@ -544,7 +544,8 @@ impl ConfigService {
         self.view()
     }
 
-    /// Only the privileged desktop's explicit reveal/copy action calls this method.
+    /// Privileged desktop access: explicit reveal/copy, or the native loopback
+    /// chat adapter. The latter keeps the token in Rust and never serializes it.
     pub fn reveal_gateway_token(&self, protocol_version: u32) -> AppResult<Zeroizing<String>> {
         check_protocol(protocol_version)?;
         let (_, snapshot) = self.read_snapshot()?;

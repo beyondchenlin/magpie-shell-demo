@@ -165,7 +165,7 @@ async fn http(port: u16, authorization: Option<&str>) -> u16 {
     stream
         .write_all(
             format!(
-                "GET /v1/models HTTP/1.1\r\nHost: localhost\r\n{header}Connection: close\r\n\r\n"
+                "GET /v1/models HTTP/1.1\r\nHost: localhost:{port}\r\n{header}Connection: close\r\n\r\n"
             )
             .as_bytes(),
         )
@@ -199,8 +199,8 @@ async fn auth_missing_token_denies_by_default_and_port_changes_require_explicit_
     manager.apply().await.unwrap();
     assert_eq!(
         http(port, None).await,
-        503,
-        "Compatibility mode still has no inference endpoints"
+        200,
+        "Compatibility mode exposes the configured model directory"
     );
     config
         .save_gateway(SaveGateway {
@@ -216,7 +216,7 @@ async fn auth_missing_token_denies_by_default_and_port_changes_require_explicit_
     assert!(old.address.unwrap().contains(&port.to_string()));
     assert_eq!(
         http(port, None).await,
-        503,
+        200,
         "Unapplied settings must not be reported effective"
     );
     manager.stop().await.unwrap();
@@ -325,7 +325,7 @@ async fn system_token_authenticates_only_data_plane_and_never_appears_in_configu
     assert_eq!(http(port, Some("Bearer incorrect")).await, 401);
     assert_eq!(
         http(port, Some(&format!("Bearer {}", token.as_str()))).await,
-        503
+        200
     );
     let manifest = ipc::read_manifest(temp.path()).unwrap();
     let denied = ipc::call(

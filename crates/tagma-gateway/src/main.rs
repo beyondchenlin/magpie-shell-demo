@@ -1,6 +1,6 @@
 #![cfg_attr(windows, windows_subsystem = "windows")]
 
-use axum::{Json, Router, http::StatusCode};
+mod http_api;
 use axum::{
     extract::{Request as HttpRequest, State},
     middleware::{self, Next},
@@ -26,6 +26,7 @@ type LoadedSnapshot = (
     u32,
     tagma_core::service::ConfigSnapshot,
     Option<zeroize::Zeroizing<String>>,
+    std::collections::HashMap<String, Arc<zeroize::Zeroizing<String>>>,
 );
 
 struct Runtime {
@@ -38,6 +39,8 @@ struct Runtime {
     shutdown: CancellationToken,
     apply_guard: tokio::sync::Mutex<()>,
     load_slots: Arc<tokio::sync::Semaphore>,
+    client: reqwest::Client,
+    request_slots: Arc<tokio::sync::Semaphore>,
     #[cfg(test)]
     _fixture: Option<tempfile::TempDir>,
 }
@@ -167,7 +170,7 @@ async fn run(
         tokio::task::spawn_blocking(move || load_snapshot(&startup_directory)),
     )
     .await;
-    let (revision, snapshot, access_token) = match initial
+    let (revision, snapshot, access_token, provider_tokens) = match initial
         .unwrap_or_else(|_| Ok(Err(AppError::new(ErrorCode::StartupTimeout))))
         .unwrap_or_else(|_| Err(AppError::new(ErrorCode::ConfigApplyFailed)))
     {
@@ -226,11 +229,16 @@ async fn run(
         manifest: manifest.clone(),
         status: RwLock::new(status),
         configured_port: snapshot.gateway.port,
-        snapshot: RwLock::new((revision, snapshot, access_token)),
+        snapshot: RwLock::new((revision, snapshot, access_token, provider_tokens)),
         token,
         shutdown: shutdown.clone(),
         apply_guard: tokio::sync::Mutex::new(()),
         load_slots: Arc::new(tokio::sync::Semaphore::new(1)),
+        client: match http_api::client() {
+            Ok(client) => client,
+            Err(_) => return 12,
+        },
+        request_slots: Arc::new(tokio::sync::Semaphore::new(8)),
         #[cfg(test)]
         _fixture: None,
     });
@@ -295,9 +303,8 @@ async fn run(
             tokio::select! { _ = reconcile.shutdown.cancelled() => break, _ = interval.tick() => apply(&reconcile).await }
         }
     });
-    // P0 data plane deliberately has no inference endpoints or management routes.
-    let router = Router::new().fallback(|| async { (StatusCode::SERVICE_UNAVAILABLE, Json(serde_json::json!({"error":{"code":"UNSUPPORTED_CAPABILITY","message":"Model inference is not connected in this P0 slice"}}))) })
-        .layer(middleware::from_fn_with_state(state.clone(),authorize));
+    let router = http_api::router(state.clone())
+        .layer(middleware::from_fn_with_state(state.clone(), authorize));
     use std::future::IntoFuture;
     let serving = axum::serve(tcp, router)
         .with_graceful_shutdown(shutdown.clone().cancelled_owned())
@@ -316,11 +323,15 @@ async fn run(
 
 fn load_snapshot(directory: &std::path::Path) -> AppResult<LoadedSnapshot> {
     let result = ConfigService::read_runtime_snapshot(directory)?;
+    let mut provider_tokens = std::collections::HashMap::new();
     for record in &result.1.providers {
         if record.provider.enabled
             && let Some(reference) = &record.credential_ref
         {
-            let _secret = SystemCredentials.get(reference)?;
+            provider_tokens.insert(
+                record.provider.id.clone(),
+                Arc::new(SystemCredentials.get(reference)?),
+            );
         }
     }
     let access_token = if result.1.gateway.auth_enabled {
@@ -340,7 +351,7 @@ fn load_snapshot(directory: &std::path::Path) -> AppResult<LoadedSnapshot> {
     {
         return Err(AppError::new(ErrorCode::CredentialStoreUnavailable));
     }
-    Ok((result.0, result.1, access_token))
+    Ok((result.0, result.1, access_token, provider_tokens))
 }
 
 async fn authorize(
@@ -348,6 +359,9 @@ async fn authorize(
     request: HttpRequest,
     next: Next,
 ) -> HttpResponse {
+    if !http_api::trusted_local_request(&request, state.manifest.port) {
+        return http_api::error(axum::http::StatusCode::FORBIDDEN, "UNTRUSTED_ORIGIN");
+    }
     let allowed = {
         let loaded = state.snapshot.read().await;
         if !loaded.1.gateway.auth_enabled {
@@ -372,9 +386,24 @@ async fn authorize(
         }
     };
     if !allowed {
-        return (StatusCode::UNAUTHORIZED,[(axum::http::header::WWW_AUTHENTICATE,"Bearer")],Json(serde_json::json!({"error":{"code":"UNAUTHORIZED","message":"A valid local access token is required"}}))).into_response();
+        return (axum::http::StatusCode::UNAUTHORIZED,[(axum::http::header::WWW_AUTHENTICATE,"Bearer")],axum::Json(serde_json::json!({"error":{"code":"UNAUTHORIZED","message":"A valid local access token is required"}}))).into_response();
     }
-    next.run(request).await
+    // Acquire before body extraction, and retain until the downstream body is
+    // consumed/dropped. Slow callers cannot create an unbounded response queue.
+    let permit = match state.request_slots.clone().try_acquire_owned() {
+        Ok(permit) => permit,
+        Err(_) => {
+            return http_api::error(axum::http::StatusCode::TOO_MANY_REQUESTS, "GATEWAY_BUSY");
+        }
+    };
+    let (parts, body) = next.run(request).await.into_parts();
+    let stream = async_stream::stream! {
+        use futures_util::StreamExt;
+        let _permit=permit;
+        let mut body=body.into_data_stream();
+        while let Some(chunk)=body.next().await { yield chunk; }
+    };
+    HttpResponse::from_parts(parts, axum::body::Body::from_stream(stream))
 }
 
 async fn apply(state: &Runtime) {
@@ -432,7 +461,7 @@ async fn apply_with(
         return;
     }
     match loaded {
-        Ok((revision, snapshot, access_token)) => {
+        Ok((revision, snapshot, access_token, provider_tokens)) => {
             if status
                 .effective_revision
                 .is_some_and(|current| revision < current)
@@ -448,7 +477,7 @@ async fn apply_with(
                     Some(revision),
                 );
             }
-            *state.snapshot.write().await = (revision, snapshot, access_token);
+            *state.snapshot.write().await = (revision, snapshot, access_token, provider_tokens);
             status.effective_revision = Some(revision);
             status.state = RuntimeState::Running;
             status.error = None;
@@ -494,12 +523,14 @@ mod apply_tests {
                 owned: false,
                 error: None,
             }),
-            snapshot: RwLock::new((0, Default::default(), None)),
+            snapshot: RwLock::new((0, Default::default(), None, Default::default())),
             configured_port: 9168,
             token: zeroize::Zeroizing::new(String::new()),
             shutdown: CancellationToken::new(),
             apply_guard: tokio::sync::Mutex::new(()),
             load_slots: Arc::new(tokio::sync::Semaphore::new(1)),
+            client: http_api::client().unwrap(),
+            request_slots: Arc::new(tokio::sync::Semaphore::new(8)),
             _fixture: Some(fixture),
         })
     }
@@ -524,7 +555,10 @@ mod apply_tests {
             let state = state.clone();
             tokio::spawn(async move {
                 let _ = new_started_tx.send(());
-                apply_with(&state, async { Ok((2, Default::default(), None)) }).await;
+                apply_with(&state, async {
+                    Ok((2, Default::default(), None, Default::default()))
+                })
+                .await;
             })
         };
         new_started_rx.await.unwrap();
@@ -535,7 +569,7 @@ mod apply_tests {
     }
     #[tokio::test]
     async fn delayed_old_success_never_regresses_effective_revision() {
-        let state = delayed_old(Ok((1, Default::default(), None))).await;
+        let state = delayed_old(Ok((1, Default::default(), None, Default::default()))).await;
         assert_eq!(state.status.read().await.effective_revision, Some(2));
         assert_eq!(state.snapshot.read().await.0, 2);
     }
@@ -559,7 +593,7 @@ mod apply_tests {
                 apply_with(&state, async {
                     let _ = ready_tx.send(());
                     release_rx.await.unwrap();
-                    Ok((1, Default::default(), None))
+                    Ok((1, Default::default(), None, Default::default()))
                 })
                 .await;
             })
@@ -586,7 +620,7 @@ mod apply_tests {
                 bounded_load(&slots, Duration::from_millis(20), move || {
                     let _ = started_tx.send(());
                     release_rx.recv().unwrap();
-                    Ok((1, Default::default(), None))
+                    Ok((1, Default::default(), None, Default::default()))
                 })
                 .await
             })
@@ -601,7 +635,7 @@ mod apply_tests {
         assert_eq!(
             bounded_load(&slots, Duration::from_millis(20), move || {
                 observed.store(true, std::sync::atomic::Ordering::SeqCst);
-                Ok((2, Default::default(), None))
+                Ok((2, Default::default(), None, Default::default()))
             })
             .await
             .err()

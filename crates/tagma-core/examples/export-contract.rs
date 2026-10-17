@@ -28,6 +28,9 @@ fn main() {
         InitializationRecoveryPlan::decl(&cfg),
         RecoverInitialization::decl(&cfg),
         RecoveryOutcome::decl(&cfg),
+        chat::ChatMessage::decl(&cfg),
+        chat::StartChat::decl(&cfg),
+        chat::ChatEvent::decl(&cfg),
     ];
     let content = format!(
         "// Generated from tagma-core. Run npm run contract:generate; do not edit.\n{}\n",

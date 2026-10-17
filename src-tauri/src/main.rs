@@ -8,6 +8,7 @@ use std::sync::{
 use tagma_core::{credentials::SystemCredentials, *};
 use tagma_runtime::GatewayManager;
 use tauri::{Manager, State, WebviewWindow};
+mod chat;
 
 struct Application {
     config: AppResult<ConfigService>,
@@ -15,6 +16,7 @@ struct Application {
     quitting: AtomicBool,
     tray: bool,
     directory: Option<std::path::PathBuf>,
+    chat: chat::ChatBridge,
 }
 
 fn local(window: &WebviewWindow) -> AppResult<()> {
@@ -139,6 +141,53 @@ fn gateway<'a>(window: &WebviewWindow, app: &'a Application) -> AppResult<&'a Ar
     app.runtime
         .as_ref()
         .ok_or_else(|| AppError::new(ErrorCode::GatewayUnavailable))
+}
+
+#[tauri::command]
+async fn send_chat(
+    window: WebviewWindow,
+    app: State<'_, Application>,
+    input: tagma_core::chat::StartChat,
+    on_event: tauri::ipc::Channel<tagma_core::chat::ChatEvent>,
+) -> AppResult<()> {
+    check_protocol(input.protocol_version)?;
+    let service = config(&window, &app)?;
+    let view = service.view()?;
+    if view.desired_revision != input.expected_revision {
+        return Err(AppError::new(ErrorCode::ConfigConflict));
+    }
+    let runtime = gateway(&window, &app)?.status().await;
+    if !matches!(runtime.state, RuntimeState::Running)
+        || runtime.effective_revision != Some(input.expected_revision)
+    {
+        return Err(AppError::new(ErrorCode::ConfigApplyFailed));
+    }
+    let access_token = if view.gateway.auth_enabled {
+        Some(service.reveal_gateway_token(PROTOCOL_VERSION)?)
+    } else {
+        None
+    };
+    app.chat
+        .start(
+            input,
+            runtime
+                .address
+                .ok_or_else(|| AppError::new(ErrorCode::GatewayUnavailable))?,
+            access_token,
+            on_event,
+        )
+        .await
+}
+#[tauri::command]
+async fn cancel_chat(
+    window: WebviewWindow,
+    app: State<'_, Application>,
+    protocol_version: u32,
+    request_id: String,
+) -> AppResult<()> {
+    check_protocol(protocol_version)?;
+    local(&window)?;
+    app.chat.cancel(&request_id)
 }
 
 #[tauri::command]
@@ -387,10 +436,13 @@ fn main() {
                 quitting: AtomicBool::new(false),
                 tray,
                 directory: local_directory,
+                chat: chat::ChatBridge::new()?,
             });
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
+            send_chat,
+            cancel_chat,
             save_profile,
             delete_profile,
             save_gateway,
