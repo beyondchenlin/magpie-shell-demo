@@ -10,11 +10,13 @@ import { DiagnosticsPanel } from "./DiagnosticsPanel";
 import { AppProfiles } from "./AppProfiles";
 import { GatewaySettings } from "./GatewaySettings";
 import { ChatView } from "./ChatView";
+import { ProductChrome, type ProductPage } from "./ProductChrome";
 import { copy, errorCopy } from "./copy";
 import { applyPreferences, readPreferences, savePreferences, type Preferences, type ProductTheme } from "./preferences";
 import { desktop, protocolVersion, service } from "./service";
+import { getCurrentWindow } from "@tauri-apps/api/window";
 
-type Page = "chat" | "providers" | "market" | "gateway" | "settings";
+type Page = ProductPage;
 
 export default function ProductApp() {
   const [page, setPage] = useState<Page>("chat");
@@ -46,7 +48,7 @@ export default function ProductApp() {
       .finally(() => { if (live) setBusy(false); });
     return () => { live = false; mounted.current = false; };
   }, []);
-  useEffect(() => { applyPreferences(preferences); }, [preferences]);
+  useEffect(() => { applyPreferences(preferences); if (desktop) void getCurrentWindow().setTheme(preferences.theme === "system" ? null : preferences.theme).catch(() => setError({code:"NATIVE_THEME_UNCONFIRMED"})); }, [preferences]);
   useEffect(() => {
     if (!desktop || busy) return;
     let live=true;
@@ -102,14 +104,10 @@ export default function ProductApp() {
   }
 
   return <>
-    <header className="tagma-header"><strong>Tagma</strong><nav aria-label="Tagma"><Segs value={page === "gateway" || page === "settings" ? "" : page} items={[
-      { id: "chat", label: c.chat }, { id: "providers", label: c.providers }, { id: "market", label: c.market },
-    ]} onChange={id => { if (!busy && !editing) setPage(id as Page); }} /></nav>
-      <TextBtn disabled={busy || editing} onClick={() => setPage("settings")}>{c.settings}</TextBtn>
-    </header>
+    <ProductChrome page={page} onPage={setPage} onRefresh={()=>void refresh()} disabled={busy||editing} view={view} language={preferences.language}/>
     {!desktop && <aside className="tagma-banner" role="status">{c.preview}</aside>}
     {!["zh", "en"].includes(preferences.language) && <aside className="tagma-banner">{c.coverage}</aside>}
-    <main className="tagma-main" aria-busy={busy}>
+    <main className="view tagma-main" aria-busy={busy}>
       {error != null && <div className="tagma-error" role="alert">{typeof error === "object" && "code" in error && error.code === "PREFERENCES_UNSAVED" ? c.preferencesError : typeof error === "object" && "code" in error && error.code === "CLIPBOARD_UNCONFIRMED" ? c.copyFailed : errorCopy(error, preferences.language)} <TextBtn disabled={busy} onClick={() => void refresh()}>{c.refresh}</TextBtn></div>}
       {notice && <p role="status" className="tagma-notice">{view?.runtime.state === "running" && view.runtime.effective_revision === view.config.desired_revision ? c.configurationApplied : c.saved}</p>}
       <div hidden={page !== "chat"}><ChatView active={page === "chat"} view={view} busy={busy} language={preferences.language} onAddProvider={() => { setPage("providers"); setEditor("new"); setNotice(false); }} onProviders={() => setPage("providers")} onGateway={() => setPage("gateway")} onMarket={() => setPage("market")} /></div>
@@ -141,15 +139,15 @@ export default function ProductApp() {
         {view && <GatewaySettings config={view.config} busy={busy} language={preferences.language} onMutate={mutate} onEditingChange={setGatewayEditing} onError={setError} />}
         <TextBtn disabled={busy || gatewayEditing} onClick={() => setPage("providers")}>{c.back}</TextBtn></section>}
       {page === "settings" && <section><h1>{c.settings}</h1><div className="list prefs">
-        <PrefRow name={c.language} wrapVal={false}><LanguagePick label={c.language} value={preferences.language} onChange={language=>changePreferences({...preferences,language})} /></PrefRow>
         <PrefRow name={c.theme}><Segs value={preferences.theme} items={[{ id: "system", label: c.system }, { id: "light", label: c.light }, { id: "dark", label: c.dark }]} onChange={id => changePreferences({ ...preferences, theme: id as ProductTheme })} /></PrefRow>
-        <PrefRow name={c.size}><Segs value={preferences.textSize} items={[100, 125, 150].map(n => ({ id: n, label: `${n}%` }))} onChange={id => changePreferences({ ...preferences, textSize: id as Preferences["textSize"] })} /></PrefRow>
+        <PrefRow name={c.language} wrapVal={false}><LanguagePick label={c.language} value={preferences.language} onChange={language=>changePreferences({...preferences,language})} /></PrefRow>
+        <PrefRow name={c.size}><Segs value={preferences.textSize} items={[100, 110, 125, 150].map(n => ({ id: n, label: `${n}%` }))} onChange={id => changePreferences({ ...preferences, textSize: id as Preferences["textSize"] })} /></PrefRow>
         <PrefRow name={c.gateway}><TextBtn onClick={() => setPage("gateway")}>{c.gateway}</TextBtn></PrefRow>
-        <PrefRow name={c.version}><span>{view?.product_version ?? "0.2.0-dev.7"}</span></PrefRow>
+        <PrefRow name={c.version}><span>{view?.product_version ?? "0.2.0-dev.8"}</span></PrefRow>
         <PrefRow name={c.schema}><span>{view?.config.schema_version ?? c.unknown}</span></PrefRow>
       </div><DiagnosticsPanel language={preferences.language} /><TextBtn disabled={!desktop || busy} onClick={() => void service.quit().catch(setError)}>{c.quit}</TextBtn></section>}
+      <div className="tagma-revision-line"><span>{c.desired}: {view?.config.desired_revision ?? c.unknown} · {c.effective}: {view?.runtime.effective_revision ?? c.unknown}</span></div>
     </main>
-    <footer className="tagma-footer"><span>{desktop ? c.native : c.preview}</span><span>{c.desired}: {view?.config.desired_revision ?? c.unknown} · {c.effective}: {view?.runtime.effective_revision ?? c.unknown}</span><TextBtn disabled={busy || !desktop} onClick={() => void refresh()}>{c.refresh}</TextBtn></footer>
     <dialog ref={deleteDialog} className="tagma-confirm" onCancel={e => { if (busy) e.preventDefault(); else setDeleting(null); }} aria-labelledby="delete-title" aria-describedby="delete-description">
       <h2 id="delete-title">{c.deleteTitle}</h2><p id="delete-description">{deleting?.name} — {c.deleteHint}</p>
       {providerReferences.length > 0 && <div role="status"><h3>{c.referencedBy}</h3><ul>{providerReferences.map(profile => <li key={profile.id}>{profile.name} · {profile.target_app}</li>)}</ul><p>{c.referenceHint}</p></div>}

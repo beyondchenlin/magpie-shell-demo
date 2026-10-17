@@ -1,115 +1,58 @@
-/* Product layout bridge. CIS app.css owns tokens and control recipes; no gold CSS is changed. */
-.tagma-chat-toolbar { display:flex; gap:10px; align-items:center; flex-wrap:wrap; padding:0 0 14px; border-bottom:1px solid var(--line); }
-.tagma-chat-toolbar label { display:flex; gap:8px; align-items:center; flex:1; min-width:180px; white-space:nowrap; }
-.tagma-chat-toolbar select { flex:1; width:100%; min-width:0; height:30px; border:1px solid var(--line); border-radius:7px; padding:0 9px; background:var(--card); color:var(--fg); font:inherit; }
-.tagma-chat-toolbar > .sub { flex-basis:100%; }
-.tagma-chat-welcome { display:flex; flex-direction:column; align-items:center; gap:12px; text-align:center; padding:38px 14px; color:var(--muted); }
-.tagma-chat-welcome > span { font-size:34px; color:var(--fg); }
-.tagma-chat-welcome p { max-width:420px; line-height:1.7; }
-.tagma-conversation { min-height:160px; max-height:42vh; overflow:auto; overscroll-behavior:contain; }
-.tagma-chat-turn { margin:18px 0; }
-.tagma-chat-user, .tagma-chat-assistant { padding:13px 14px; border-radius:8px; }
-.tagma-chat-user { background:var(--card-2); margin-left:30px; border:1px solid var(--line); }
-.tagma-chat-assistant { margin-right:18px; }
-.tagma-chat-turn strong { font-size:11px; color:var(--muted); font-weight:500; }
-.tagma-chat-turn pre { font:inherit; line-height:1.8; white-space:pre-wrap; overflow-wrap:anywhere; margin:7px 0; }
-.tagma-stream-status { color:var(--muted); font-size:11px; }
-.tagma-composer { position:sticky; bottom:0; z-index:1; border:1px solid var(--line); border-radius:10px; padding:12px; background:var(--card); }
-.tagma-compose-label { display:block; color:var(--muted); font-size:11px; margin-bottom:8px; }
-.tagma-composer textarea.words { display:block; resize:vertical; width:100%; min-height:76px; max-height:250px; box-sizing:border-box; background:var(--card-2); color:var(--fg); border:1px solid var(--line); border-radius:7px; padding:8px 10px; font:inherit; outline:none; }
-.tagma-composer textarea.words:focus, .tagma-chat-toolbar select:focus { border-color:var(--accent); box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 22%,transparent); }
-.tagma-composer-footer { display:flex; gap:12px; align-items:center; justify-content:space-between; margin-top:10px; }
-.tagma-composer-footer > span { font-size:10px; color:var(--muted); line-height:1.6; }
-.tagma-chat-setup { margin-top:22px; border-top:1px solid var(--line); padding-top:14px; }
-.tagma-chat-setup > summary { color:var(--muted); cursor:pointer; margin-bottom:16px; }
+/* Product-only composition. Chrome, rows, cards, menus and controls use the frozen CIS recipes. */
 body.tagma #root { display:flex; flex-direction:column; width:100%; height:100%; min-height:0; overflow:hidden; }
-.tagma-header { min-height:46px; display:flex; align-items:center; gap:14px; padding:8px 14px; border-bottom:1px solid var(--line); flex-wrap:wrap; }
-.tagma-header nav { flex:1; display:flex; justify-content:center; }
-.tagma-main { flex:1; min-height:0; overflow:auto; padding:18px 16px; }
-.tagma-main section { max-width:900px; margin:auto; }
-.tagma-main h1 { font-size:16px; font-weight:600; margin-bottom:16px; }
-.tagma-main h2 { font-size:14px; font-weight:500; }
-.tagma-heading { display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; gap:12px; }
-.tagma-heading h1 { margin:0; }
-.tagma-empty { text-align:center; padding:38px 20px; display:flex; flex-direction:column; align-items:center; gap:12px; color:var(--muted); }
-.tagma-empty p { max-width:420px; }
-.tagma-empty h2 { color:var(--fg); }
+.tagma-main > div[hidden] { display:none; }
+.tagma-main > section, .tagma-main > div:not([hidden]) { flex:none; }
+.tagma-heading { display:flex; align-items:center; justify-content:space-between; gap:12px; min-height:36px; margin:0 0 8px; }
+.tagma-heading h1, .tagma-heading h2, .tagma-main > section > h1 { font-size:13px; font-weight:500; margin:8px 0 12px; }
+.tagma-main > section > h2 { font-size:13px; font-weight:500; }
+.tagma-section-label { display:flex; align-items:center; gap:8px; margin:18px 2px 8px; font-size:12px; color:var(--muted); }
+.tagma-section-label > span { color:var(--faint); font-variant-numeric:tabular-nums; }
+.tagma-workspace { padding-top:4px; }
+.tagma-workspace .prefs { margin-top:12px; }
+.tagma-actions { display:flex; align-items:center; gap:6px; flex-wrap:wrap; justify-content:flex-end; }
 .tagma-provider .who { min-width:100px; flex:1; }
-.tagma-provider .sub { overflow-wrap:anywhere; white-space:normal; }
+.tagma-provider .sub { white-space:normal; overflow-wrap:anywhere; }
 .tagma-provider { flex-wrap:wrap; }
-.tagma-actions { display:flex; gap:6px; align-items:center; flex-wrap:wrap; justify-content:flex-end; }
-.tagma-profiles { margin-top:24px; padding-top:18px; border-top:1px solid var(--line); }
+.tagma-empty { padding:36px 20px; text-align:center; color:var(--muted); }
+.tagma-empty h2 { color:var(--fg); font-size:13px; font-weight:500; margin-bottom:4px; }
+.tagma-profiles { margin-top:18px; }
 .tagma-profile-selection { display:flex; flex-direction:column; align-items:flex-start; gap:8px; }
 .tagma-profile-order { padding-left:22px; }
 .tagma-profile-order li { padding:6px 0; overflow-wrap:anywhere; }
-.tagma-profile-order li > span { display:inline-block; max-width:100%; }
-.tagma-secret { display:block; margin:12px 0; padding:12px; overflow-wrap:anywhere; user-select:all; font-family:var(--code); border:1px solid var(--line); border-radius:7px; }
-.tagma-workspace-intro { display:flex; gap:20px; align-items:flex-start; justify-content:space-between; margin:4px 0 22px; }
-.tagma-eyebrow { color:var(--muted); font-size:10px; letter-spacing:1.4px; font-weight:600; margin-bottom:9px; }
-.tagma-workspace .tagma-workspace-intro h1 { font-size:24px; line-height:1.4; font-weight:600; margin:0 0 8px; letter-spacing:-.4px; }
-.tagma-workspace-intro > div:first-child > p:last-child { color:var(--muted); line-height:1.7; max-width:490px; }
-.tagma-runtime-badge { display:flex; flex-shrink:0; align-items:center; gap:7px; border:1px solid var(--line); border-radius:20px; padding:7px 10px; color:var(--muted); font-size:11px; margin-top:4px; }
-.tagma-status-dot { width:6px; height:6px; border-radius:50%; background:var(--muted); }
-.tagma-runtime-badge.is-running .tagma-status-dot { background:var(--green); }
-.tagma-workspace-grid { display:grid; grid-template-columns:minmax(0,1.15fr) minmax(0,1fr); gap:14px; }
-.tagma-setup-card,.tagma-summary-card,.tagma-model-card { border:1px solid var(--line); border-radius:12px; background:var(--card); padding:16px; min-width:0; }
-.tagma-workspace h2 { margin:0; font-size:13px; font-weight:600; }
-.tagma-workspace h3 { margin:0; font-size:12px; font-weight:500; }
-.tagma-setup-progress { display:flex; gap:5px; margin:2px 0 19px; }
-.tagma-setup-progress > span { flex:1; height:3px; background:var(--line); border-radius:4px; }
-.tagma-setup-progress > span.done { background:var(--green); }
-.tagma-setup-steps { list-style:none; padding:0; margin:0; }
-.tagma-setup-steps li { display:flex; align-items:flex-start; gap:12px; padding:0 0 17px; margin-bottom:17px; border-bottom:1px solid var(--line); }
-.tagma-setup-steps li:last-child { border:0; margin:0; padding-bottom:0; }
-.tagma-step-number { display:grid; place-items:center; flex-shrink:0; width:27px; height:27px; border:1px solid var(--line); border-radius:8px; color:var(--muted); font-size:11px; }
-.tagma-step-number.done { color:var(--green); border-color:var(--green); }
-.tagma-setup-steps p { color:var(--muted); font-size:11px; line-height:1.7; margin:5px 0 8px; }
-.tagma-workspace-side { display:flex; flex-direction:column; gap:14px; }
-.tagma-summary-card dl { margin:0; }
-.tagma-summary-card dl > div { display:flex; justify-content:space-between; gap:12px; padding:8px 0; font-size:11px; }
-.tagma-summary-card dt { color:var(--muted); flex-shrink:0; }
-.tagma-summary-card dd { margin:0; text-align:right; overflow-wrap:anywhere; }
-.tagma-summary-card > p { color:var(--muted); font-size:11px; line-height:1.8; margin:10px 0; }
-.tagma-address { display:flex; flex-direction:column; gap:5px; padding-top:13px; margin-top:9px; border-top:1px solid var(--line); }
-.tagma-address > span { color:var(--muted); font-size:9px; letter-spacing:1px; }
-.tagma-address code { font-family:var(--code); font-size:11px; overflow-wrap:anywhere; }
-.tagma-model-card { margin-top:14px; }
-.tagma-model-card .tagma-heading { margin-bottom:12px; }
-.tagma-model-card .tagma-heading p { color:var(--muted); font-size:11px; margin-top:5px; line-height:1.6; }
-.tagma-count { padding:4px 8px; border:1px solid var(--line); border-radius:7px; font-size:11px; }
-.tagma-model-empty { display:flex; align-items:center; gap:12px; padding:14px 0 3px; border-top:1px solid var(--line); }
-.tagma-model-symbol { display:grid; place-items:center; width:34px; height:34px; flex-shrink:0; border:1px dashed var(--line); border-radius:9px; color:var(--muted); }
-.tagma-model-empty > div { flex:1; min-width:0; }
-.tagma-model-empty p { font-size:11px; color:var(--muted); line-height:1.7; margin-top:4px; }
-.tagma-model-list { list-style:none; padding:0; margin:0; }
-.tagma-model-list li { display:flex; flex-wrap:wrap; align-items:center; gap:7px 14px; padding:10px 0; border-top:1px solid var(--line); font-size:11px; overflow-wrap:anywhere; }
-.tagma-model-list li > span:first-child { flex:1; font-family:var(--code); min-width:100px; }
-.tagma-model-list li > span:not(:first-child) { color:var(--muted); }
-.tagma-chat-boundary { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; padding:16px 2px 4px; color:var(--muted); }
-.tagma-chat-boundary strong { font-size:11px; font-weight:500; }
-.tagma-chat-boundary p { font-size:11px; margin-top:4px; line-height:1.7; }
-.tagma-chat-boundary > span { border:1px solid var(--line); border-radius:6px; padding:4px 7px; font-size:10px; }
-@media(max-width:660px) { .tagma-workspace-intro { flex-direction:column; gap:10px; } .tagma-workspace-grid { grid-template-columns:1fr; } .tagma-model-empty { flex-wrap:wrap; } .tagma-workspace .tagma-workspace-intro h1 { font-size:21px; } }
-.tagma-editor { margin-top:12px; padding:14px; border:1px solid var(--line); border-radius:10px; background:var(--card); }
-.tagma-editor fieldset { border:0; display:grid; grid-template-columns:minmax(80px,auto) minmax(0,1fr); align-items:start; gap:12px 14px; margin-bottom:14px; }
+.tagma-editor { margin:12px 0; padding:14px; border:1px solid var(--line); border-radius:12px; background:var(--card); }
+.tagma-editor fieldset { border:0; display:grid; grid-template-columns:minmax(90px,auto) minmax(0,1fr); align-items:start; gap:12px 14px; margin-bottom:14px; }
 .tagma-editor label { padding-top:4px; }
 .tagma-editor .words { width:100%; max-width:100%; }
-.tagma-editor textarea.words { height:auto; padding:7px 9px; resize:vertical; min-height:72px; font-family:var(--code); }
+.tagma-editor textarea.words, .tagma-composer textarea.words { display:block; width:100%; min-width:0; min-height:72px; padding:7px 9px; border:1px solid var(--line); border-radius:7px; background:var(--card); color:var(--fg); font:12.5px/1.5 var(--code); resize:vertical; outline:none; transition:border-color .12s, box-shadow .12s; }
+.tagma-editor textarea.words:focus, .tagma-composer textarea.words:focus { border-color:var(--accent); box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 22%,transparent); }
 .tagma-editor .sub { margin-top:5px; white-space:normal; }
 .tagma-editor .tagma-actions { margin-top:12px; }
-.tagma-footer { border-top:1px solid var(--line); padding:8px 14px; display:flex; gap:12px; align-items:center; flex-wrap:wrap; color:var(--muted); font-size:11px; }
-.tagma-footer > span:nth-child(2) { flex:1; }
+.tagma-revision-line { display:flex; justify-content:flex-end; flex:none; padding:12px 2px 4px; font-size:11px; color:var(--muted); }
 .tagma-banner { padding:8px 14px; background:var(--amber-soft); color:var(--amber); }
-.tagma-error { padding:10px 12px; border-radius:7px; background:var(--red-soft); color:var(--red); margin-bottom:12px; overflow-wrap:anywhere; }
-.tagma-notice { color:var(--green); margin-bottom:12px; }
-.tagma-footnote { color:var(--muted); font-size:11px; margin:14px 0; }
+.tagma-error { margin:8px 0 12px; padding:9px 12px; border-radius:7px; background:var(--red-soft); color:var(--red); overflow-wrap:anywhere; }
+.tagma-notice { color:var(--green); margin:4px 0 10px; font-size:11.5px; }
+.tagma-footnote { color:var(--muted); font-size:11.5px; margin:10px 2px; }
 .tagma-instance { overflow-wrap:anywhere; font-family:var(--code); font-size:11px; }
-.tagma-language { min-width:220px; max-width:calc(100vw - 16px); }
+.tagma-language, .tagma-model-menu { min-width:220px; max-width:calc(100vw - 16px); }
+.tagma-secret { display:block; margin:12px 0; padding:12px; overflow-wrap:anywhere; user-select:all; font-family:var(--code); border:1px solid var(--line); border-radius:7px; }
 .tagma-diagnostics { margin-top:12px; }
 .tagma-diagnostics pre { max-height:220px; overflow:auto; user-select:text; background:var(--card); padding:12px; border:1px solid var(--line); border-radius:7px; font-family:var(--code); font-size:11px; margin:8px 0; }
 .tagma-confirm { margin:auto; padding:22px; width:min(420px,calc(100% - 32px)); max-height:calc(100% - 32px); overflow:auto; border:1px solid var(--line); border-radius:14px; background:var(--card); color:var(--fg); box-shadow:var(--shadow); }
 .tagma-confirm::backdrop { background:rgba(0,0,0,.32); backdrop-filter:blur(4px); }
 .tagma-confirm p { margin:12px 0 20px; line-height:1.6; overflow-wrap:anywhere; }
-body.tagma .row.pref .sub { white-space:normal; }
-body.tagma :focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
-@media(max-width:520px) { .tagma-header { gap:6px; } .tagma-header > strong { display:none; } .tagma-editor fieldset { grid-template-columns:1fr; gap:6px; } .tagma-editor fieldset > span:empty { display:none; } .tagma-footer { gap:6px; } }
+.tagma-conversation { margin:12px 0; min-height:160px; max-height:42vh; overflow:auto; overscroll-behavior:contain; user-select:text; }
+.tagma-conversation .empty-state p { max-width:440px; margin:auto; font-size:12px; line-height:1.5; }
+.tagma-chat-turn + .tagma-chat-turn { border-top:1px solid var(--line-2); }
+.tagma-chat-user, .tagma-chat-assistant { padding:10px 14px; }
+.tagma-chat-user { background:var(--card-2); }
+.tagma-chat-turn strong { font-size:11.5px; color:var(--muted); font-weight:500; }
+.tagma-chat-turn pre { font:inherit; line-height:1.6; white-space:pre-wrap; overflow-wrap:anywhere; margin:5px 0; }
+.tagma-stream-status { color:var(--muted); font-size:11px; }
+.tagma-composer { margin:12px 0; }
+.tagma-compose-label { display:block; color:var(--muted); font-size:11.5px; margin:0 2px 6px; }
+.tagma-composer textarea.words { max-height:220px; font-family:var(--font); }
+.tagma-composer-footer { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:7px; }
+.tagma-composer-footer > span { color:var(--muted); font-size:11px; line-height:1.4; }
+.tagma-chat-setup { margin-top:16px; }
+.tagma-chat-setup > summary { color:var(--muted); cursor:pointer; font-size:12px; margin:8px 2px; }
+@media(max-width:520px) { .tagma-editor fieldset { grid-template-columns:1fr; gap:6px; } .tagma-editor fieldset > span:empty { display:none; } .tagma-provider .tagma-actions { width:100%; } .tagma-composer-footer { flex-wrap:wrap; } }

@@ -1,0 +1,210 @@
+{
+  "recordedAtUtc": "2026-10-17T09:06:00.9404779Z",
+  "productVersion": "0.2.0-dev.8",
+  "schemaVersion": 3,
+  "sourceBaseCommit": "e1c4f73",
+  "userPriority": "Restore prior CIS replica appearance; preserve true chat; do not ask user to choose priorities",
+  "nativeAppearance": "P0-S05-cis-dev8-complete.json",
+  "nativeVisuals": "P0-S05-cis-dev8-complete/",
+  "nativeChat": "P0-S05-dev8-final-chat.json",
+  "mainRegression": "P0-S05-dev8-main-regression.json",
+  "gatewayRegression": "P0-S05-dev8-gateway-regression.json",
+  "sourceReference": {
+    "url": "http://localhost:1420/index.html#/settings",
+    "viewport": {
+      "width": 660,
+      "height": 600
+    },
+    "zoom": "1.1",
+    "theme": "light",
+    "body": {
+      "height": "545.455px",
+      "minHeight": "0px",
+      "padding": "0px",
+      "gap": "normal",
+      "fontSize": "13px",
+      "fontFamily": "\"Segoe UI Variable Text\", \"Segoe UI\", \"Microsoft YaHei UI\", \"Microsoft YaHei\", system-ui, sans-serif"
+    },
+    "top": {
+      "height": "45.9943px",
+      "minHeight": "auto",
+      "padding": "0px 10px 0px 14px",
+      "gap": "8px",
+      "fontSize": "13px",
+      "fontFamily": "\"Segoe UI Variable Text\", \"Segoe UI\", \"Microsoft YaHei UI\", \"Microsoft YaHei\", system-ui, sans-serif"
+    },
+    "row": {
+      "height": "47.9972px",
+      "minHeight": "48px",
+      "padding": "7px 12px 7px 14px",
+      "gap": "12px",
+      "fontSize": "13px",
+      "fontFamily": "\"Segoe UI Variable Text\", \"Segoe UI\", \"Microsoft YaHei UI\", \"Microsoft YaHei\", system-ui, sans-serif"
+    },
+    "simulatedCaption": false
+  },
+  "cisStyleHashes": {
+    "app.css": "15dbe2e9db7d08fff208c73e4ff206bd0ba438deaf403f301538261afa77b6f8",
+    "routing.css": "c4613697492a423a24afd1ce0276a92c51d4bce9c3bc77cdd3366d646eb45ba9",
+    "shell-patch.css": "e925c005a2e32e61621fc85aa77b3591decf23417bb1a10a28deaa2d61832a62",
+    "library.css": "4e509437417bbd4b8c9e599a4b9b99f8fa7333f8f09617d7ea641c2d768a2be1",
+    "sessions.css": "f48a6f6ca28a99e90ebb6c2c55e151ac1eacda21783ccc25a2b63787ce77852b",
+    "plugins.css": "ec95e0f4b723fa66a7fcb7ec1b15419483a91975f79231d807dc6929b04ac6d6",
+    "context.css": "2fd627c6f36fe332ab3f55a29e7fe51e7d9d75db2fc4e5e93e17848afcfe70c8"
+  },
+  "nativeThemeConfirmed": true,
+  "checks": [
+    "product TypeScript/Vite build",
+    "product oxlint",
+    "all four Rust packages all-targets Clippy -D warnings",
+    "generated DTO drift check",
+    "six frozen CSS guards"
+  ],
+  "visualSelfReviews": [
+    "First review: inspect new home/settings against prior replica at same 660x600, light,110%; restore chrome, guide, list recipes",
+    "Second review: fix oversized AppProfile heading, missing shared stylesheet imports and invisible switch; add real switch geometry/off-on assertions; recheck exact source and native theme"
+  ],
+  "businessDifferences": [
+    "Tagma three-page IA instead of replica full navigation, per product PRD",
+    "Only implemented configuration settings appear; no fake subscription/OAuth/vendor success",
+    "Text chat uses CIS rows/cards/picker; original replica has no equivalent built-in text chat page",
+    "Native OS caption uses Tagma; no second simulated caption inside native app"
+  ],
+  "files": [
+    {
+      "name": "tagma-desktop.exe",
+      "bytes": 17986048,
+      "sha256": "b2a52b1f6639dc6f06ff4122e152ed3be7397785a97e36a2819d9404f494949f"
+    },
+    {
+      "name": "tagma-gateway.exe",
+      "bytes": 7846400,
+      "sha256": "4d568db74a0baf47ee298d7028790483235e4a5d575ae9d21728ab1ba969a04e"
+    }
+  ],
+  "cleanup": [
+    {
+      "path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-native-owned-952759dc-5fe6-42d4-b752-a8767d3258cc",
+      "logicalBytes": 9258250,
+      "syntheticCredentialReferencesRemoved": 0,
+      "stillExists": false,
+      "observedResult": "driver exact string assertion on rounded 46px failed",
+      "cleanup": "finally: exact boundary, reparse, process, lock checks; receipt-scoped credential deletion before owned files"
+    },
+    {
+      "path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-native-owned-ab726ad9-915a-427f-9f09-79d4859e0a2f",
+      "logicalBytes": 9288632,
+      "syntheticCredentialReferencesRemoved": 0,
+      "stillExists": false,
+      "observedResult": "driver exact string assertion on rounded 212px failed",
+      "cleanup": "finally: exact boundary, reparse, process, lock checks; receipt-scoped credential deletion before owned files"
+    },
+    {
+      "path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-native-owned-ddec3d8f-955b-4d33-bd20-0e20400b8d66",
+      "logicalBytes": 28116237,
+      "syntheticCredentialReferencesRemoved": 0,
+      "stillExists": false,
+      "observedResult": "12 limited CIS checks passed; visual review continued",
+      "cleanup": "finally: exact boundary, reparse, process, lock checks; receipt-scoped credential deletion before owned files"
+    },
+    {
+      "path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-native-owned-9ea62c92-2ee3-432b-8157-930e282a482f",
+      "logicalBytes": 27950003,
+      "syntheticCredentialReferencesRemoved": 0,
+      "stillExists": false,
+      "observedResult": "12 checks passed after profile title correction",
+      "cleanup": "finally: exact boundary, reparse, process, lock checks; receipt-scoped credential deletion before owned files"
+    },
+    {
+      "path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-native-owned-812d3588-5c0c-4fdc-a4a4-ae58a1283b8c",
+      "logicalBytes": 10638835,
+      "syntheticCredentialReferencesRemoved": 2,
+      "stillExists": false,
+      "observedResult": "14 chat checks and model menu checks passed",
+      "cleanup": "finally: exact boundary, reparse, process, lock checks; receipt-scoped credential deletion before owned files"
+    },
+    {
+      "path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-native-owned-2361d06f-3b80-42c3-a2f8-19280e66a6a2",
+      "logicalBytes": 28146744,
+      "syntheticCredentialReferencesRemoved": 0,
+      "stillExists": false,
+      "observedResult": "13 shared control checks passed after missing style imports fixed",
+      "cleanup": "finally: exact boundary, reparse, process, lock checks; receipt-scoped credential deletion before owned files"
+    },
+    {
+      "path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-native-owned-ace0c6f6-c555-4e34-9bae-416d2b208aeb",
+      "logicalBytes": 10639016,
+      "syntheticCredentialReferencesRemoved": 2,
+      "stillExists": false,
+      "observedResult": "14 final chat checks passed with full shared styles",
+      "cleanup": "finally: exact boundary, reparse, process, lock checks; receipt-scoped credential deletion before owned files"
+    },
+    {
+      "path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-native-owned-15180860-cb50-4859-8445-f1003298c29d",
+      "logicalBytes": 10570312,
+      "syntheticCredentialReferencesRemoved": 0,
+      "stillExists": false,
+      "observedResult": "16 main regression checks passed",
+      "cleanup": "finally: exact boundary, reparse, process, lock checks; receipt-scoped credential deletion before owned files"
+    },
+    {
+      "path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-native-owned-5be14376-e36d-4d07-a8cb-1653f01dc9c9",
+      "logicalBytes": 14440375,
+      "syntheticCredentialReferencesRemoved": 1,
+      "stillExists": false,
+      "observedResult": "10 gateway regression checks passed",
+      "cleanup": "finally: exact boundary, reparse, process, lock checks; receipt-scoped credential deletion before owned files"
+    },
+    {
+      "path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-native-owned-5aa6535a-eeab-420c-aa51-b27fabc4c4a8",
+      "logicalBytes": 28161114,
+      "syntheticCredentialReferencesRemoved": 0,
+      "stillExists": false,
+      "observedResult": "14 final CIS checks passed including native theme",
+      "cleanup": "finally: exact boundary, reparse, process, lock checks; receipt-scoped credential deletion before owned files"
+    }
+  ],
+  "imageEvidenceLogicalBytes": 981503.0,
+  "newWorktrees": 0,
+  "newEnvironment": 0,
+  "keptDirectories": [
+    "target",
+    "dist-tagma",
+    "D:\\demo1\\tagmaai-preview\\data",
+    "D:\\demo1\\tagmaai-preview\\webview"
+  ],
+  "userPreviewProcessesPreserved": [
+    {
+      "ProcessId": 57532,
+      "Name": "tagma-desktop.exe",
+      "ExecutablePath": "D:\\demo1\\tagmaai-preview\\versions\\0.2.0-dev.6\\tagma-desktop.exe"
+    },
+    {
+      "ProcessId": 45736,
+      "Name": "tagma-gateway.exe",
+      "ExecutablePath": "D:\\demo1\\tagmaai-preview\\versions\\0.2.0-dev.6\\tagma-gateway.exe"
+    }
+  ],
+  "diskBeforeGiB": {
+    "C": 48.84,
+    "D": 22.97
+  },
+  "diskAfter": [
+    {
+      "Name": "C",
+      "freeGiB": 49.07
+    },
+    {
+      "Name": "D",
+      "freeGiB": 22.83
+    }
+  ],
+  "releaseBlocked": true,
+  "limitations": [
+    "CIS checks cover declared components and states, not all legacy R01-R25 acceptance IDs",
+    "Wide screenshot is native WebView viewport emulation, not OS-window resizing",
+    "OS screenshot helper unavailable; actual native theme property verified, no pixel-perfect OS caption claim",
+    "No real paid-provider acceptance; no signed/clean-machine/macOS/Linux release"
+  ],
+  "next": "Continue authorized team configuration and immutable publishing; do not stop after this appearance checkpoint"
+}

@@ -1,0 +1,238 @@
+{
+  "platform": "win32",
+  "productVersion": "0.2.0-dev.8",
+  "schemaVersion": 3,
+  "executable": "D:\\demo1\\tagmaai\\target\\debug\\tagma-desktop.exe",
+  "nativeHost": true,
+  "mockBridge": false,
+  "baseline": {
+    "zoom": "1.1",
+    "body": {
+      "height": "545.455px",
+      "minHeight": "0px",
+      "padding": "0px",
+      "gap": "normal",
+      "fontSize": "13px",
+      "fontFamily": "\"Segoe UI Variable Text\", \"Segoe UI\", \"Microsoft YaHei UI\", \"Microsoft YaHei\", system-ui, sans-serif",
+      "borderRadius": "0px",
+      "background": "rgb(244, 244, 246)"
+    },
+    "top": {
+      "height": "45.9943px",
+      "minHeight": "auto",
+      "padding": "0px 10px 0px 14px",
+      "gap": "8px",
+      "fontSize": "13px",
+      "fontFamily": "\"Segoe UI Variable Text\", \"Segoe UI\", \"Microsoft YaHei UI\", \"Microsoft YaHei\", system-ui, sans-serif",
+      "borderRadius": "0px",
+      "background": "rgba(0, 0, 0, 0)"
+    },
+    "guide": {
+      "height": "316.96px",
+      "minHeight": "0px",
+      "padding": "14px 16px 6px",
+      "gap": "normal",
+      "fontSize": "12.5px",
+      "fontFamily": "\"Segoe UI Variable Text\", \"Segoe UI\", \"Microsoft YaHei UI\", \"Microsoft YaHei\", system-ui, sans-serif",
+      "borderRadius": "12px",
+      "background": "rgb(255, 255, 255)"
+    },
+    "guideTitle": {
+      "height": "19.6023px",
+      "minHeight": "auto",
+      "padding": "0px",
+      "gap": "normal",
+      "fontSize": "14px",
+      "fontFamily": "\"Segoe UI Variable Text\", \"Segoe UI\", \"Microsoft YaHei UI\", \"Microsoft YaHei\", system-ui, sans-serif",
+      "borderRadius": "0px",
+      "background": "rgba(0, 0, 0, 0)"
+    },
+    "guideTick": {
+      "height": "20px",
+      "minHeight": "auto",
+      "padding": "0px",
+      "gap": "normal",
+      "fontSize": "11px",
+      "fontFamily": "\"Segoe UI Variable Text\", \"Segoe UI\", \"Microsoft YaHei UI\", \"Microsoft YaHei\", system-ui, sans-serif",
+      "borderRadius": "10px",
+      "background": "rgba(0, 0, 0, 0)"
+    },
+    "row": {
+      "height": "50.2699px",
+      "minHeight": "48px",
+      "padding": "7px 12px 7px 14px",
+      "gap": "12px",
+      "fontSize": "13px",
+      "fontFamily": "\"Segoe UI Variable Text\", \"Segoe UI\", \"Microsoft YaHei UI\", \"Microsoft YaHei\", system-ui, sans-serif",
+      "borderRadius": "0px",
+      "background": "rgba(0, 0, 0, 0)"
+    },
+    "navClass": "seg",
+    "originalTopRecipe": true,
+    "pageSegmentInHeader": false,
+    "customHero": false
+  },
+  "sourceBaseline": {
+    "top": {
+      "width": "600px",
+      "height": "45.9943px",
+      "minHeight": "auto",
+      "padding": "0px 10px 0px 14px",
+      "gap": "8px",
+      "fontSize": "13px",
+      "fontFamily": "\"Segoe UI Variable Text\", \"Segoe UI\", \"Microsoft YaHei UI\", \"Microsoft YaHei\", system-ui, sans-serif",
+      "borderRadius": "0px",
+      "background": "rgba(0, 0, 0, 0)"
+    },
+    "row": {
+      "width": "598.182px",
+      "height": "47.9972px",
+      "minHeight": "48px",
+      "padding": "7px 12px 7px 14px",
+      "gap": "12px",
+      "fontSize": "13px",
+      "fontFamily": "\"Segoe UI Variable Text\", \"Segoe UI\", \"Microsoft YaHei UI\", \"Microsoft YaHei\", system-ui, sans-serif",
+      "borderRadius": "0px",
+      "background": "rgba(0, 0, 0, 0)"
+    },
+    "guide": {
+      "width": "600px",
+      "height": "61.8182px",
+      "minHeight": "auto",
+      "padding": "14px 16px 6px",
+      "gap": "normal",
+      "fontSize": "13px",
+      "fontFamily": "\"Segoe UI Variable Text\", \"Segoe UI\", \"Microsoft YaHei UI\", \"Microsoft YaHei\", system-ui, sans-serif",
+      "borderRadius": "12px",
+      "background": "rgb(255, 255, 255)"
+    },
+    "guideTick": {
+      "width": "20px",
+      "height": "20px",
+      "minHeight": "0px",
+      "padding": "0px",
+      "gap": "normal",
+      "fontSize": "11px",
+      "fontFamily": "\"Segoe UI Variable Text\", \"Segoe UI\", \"Microsoft YaHei UI\", \"Microsoft YaHei\", system-ui, sans-serif",
+      "borderRadius": "10px",
+      "background": "rgba(0, 0, 0, 0)"
+    },
+    "field": {
+      "width": "240px",
+      "height": "26.9886px",
+      "minHeight": "auto",
+      "padding": "0px 9px",
+      "gap": "normal",
+      "fontSize": "12.5px",
+      "fontFamily": "\"Segoe UI Variable Text\", \"Segoe UI\", \"Microsoft YaHei UI\", \"Microsoft YaHei\", system-ui, sans-serif",
+      "borderRadius": "7px",
+      "background": "rgb(255, 255, 255)"
+    },
+    "switch": {
+      "width": "31.9886px",
+      "height": "18.9915px",
+      "minHeight": "auto",
+      "padding": "0px",
+      "gap": "normal",
+      "fontSize": "13px",
+      "fontFamily": "\"Segoe UI Variable Text\", \"Segoe UI\", \"Microsoft YaHei UI\", \"Microsoft YaHei\", system-ui, sans-serif",
+      "borderRadius": "10px",
+      "background": "rgb(28, 28, 33)"
+    },
+    "switchThumb": {
+      "width": "15px",
+      "height": "15px",
+      "minHeight": "0px",
+      "padding": "0px",
+      "gap": "normal",
+      "fontSize": "13px",
+      "fontFamily": "\"Segoe UI Variable Text\", \"Segoe UI\", \"Microsoft YaHei UI\", \"Microsoft YaHei\", system-ui, sans-serif",
+      "borderRadius": "50%",
+      "background": "rgb(255, 255, 255)"
+    }
+  },
+  "cisStyleHashes": {
+    "app.css": "15dbe2e9db7d08fff208c73e4ff206bd0ba438deaf403f301538261afa77b6f8",
+    "routing.css": "c4613697492a423a24afd1ce0276a92c51d4bce9c3bc77cdd3366d646eb45ba9",
+    "shell-patch.css": "e925c005a2e32e61621fc85aa77b3591decf23417bb1a10a28deaa2d61832a62",
+    "library.css": "4e509437417bbd4b8c9e599a4b9b99f8fa7333f8f09617d7ea641c2d768a2be1",
+    "sessions.css": "f48a6f6ca28a99e90ebb6c2c55e151ac1eacda21783ccc25a2b63787ce77852b",
+    "plugins.css": "ec95e0f4b723fa66a7fcb7ec1b15419483a91975f79231d807dc6929b04ac6d6",
+    "context.css": "2fd627c6f36fe332ab3f55a29e7fe51e7d9d75db2fc4e5e93e17848afcfe70c8"
+  },
+  "nativeDarkTheme": true,
+  "field": {
+    "height": "26.9886px",
+    "radius": "7px",
+    "fontSize": "12.5px"
+  },
+  "switchGeometry": {
+    "width": "31.9886px",
+    "height": "18.9915px",
+    "radius": "10px",
+    "thumbWidth": "15px",
+    "thumbHeight": "15px",
+    "visible": true
+  },
+  "side": {
+    "width": "211.989px",
+    "selected": [
+      "providers"
+    ]
+  },
+  "sourceSideWidth": "211.989px",
+  "replicaReference": {
+    "url": "http://localhost:1420/index.html#/settings",
+    "viewport": {
+      "width": 660,
+      "height": 600
+    },
+    "zoom": "1.1",
+    "theme": "light",
+    "body": {
+      "height": "545.455px",
+      "minHeight": "0px",
+      "padding": "0px",
+      "gap": "normal",
+      "fontSize": "13px",
+      "fontFamily": "\"Segoe UI Variable Text\", \"Segoe UI\", \"Microsoft YaHei UI\", \"Microsoft YaHei\", system-ui, sans-serif"
+    },
+    "top": {
+      "height": "45.9943px",
+      "minHeight": "auto",
+      "padding": "0px 10px 0px 14px",
+      "gap": "8px",
+      "fontSize": "13px",
+      "fontFamily": "\"Segoe UI Variable Text\", \"Segoe UI\", \"Microsoft YaHei UI\", \"Microsoft YaHei\", system-ui, sans-serif"
+    },
+    "row": {
+      "height": "47.9972px",
+      "minHeight": "48px",
+      "padding": "7px 12px 7px 14px",
+      "gap": "12px",
+      "fontSize": "13px",
+      "fontFamily": "\"Segoe UI Variable Text\", \"Segoe UI\", \"Microsoft YaHei UI\", \"Microsoft YaHei\", system-ui, sans-serif"
+    },
+    "simulatedCaption": false
+  },
+  "referenceSourceHash": "362cff3eb8088f3445a627a71e004cb24fb70cebd34241ed47a315d3b258337b",
+  "comparison": "Exact computed styles against isolated original-CIS-only shadow probe and actual original replica in the SAME native WebView, viewport, theme and zoom; no blanket pixel tolerance",
+  "wideScreenshot": "native WebView viewport emulation, not a resized OS window",
+  "tests": [
+    "frozen-CIS-top-nav-recipe",
+    "CIS-110-percent-Windows-font",
+    "CIS-row-48-7-12-cascade",
+    "CIS-guide-geometry",
+    "CIS-input-27-7-12.5",
+    "CIS-visible-switch-geometry-and-persistent-off-on",
+    "native-provider-form",
+    "native-settings-shared-controls",
+    "native-window-theme-follows-appearance",
+    "responsive-sidebar-212",
+    "single-nav-selection",
+    "dark-150-no-overflow",
+    "original-replica-same-native-viewport-comparison",
+    "native-graceful-quit"
+  ],
+  "result": "passed"
+}

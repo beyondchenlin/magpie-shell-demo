@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { TextBtn } from "../components/TextBtn";
 import { ConnectionWorkspace } from "./ConnectionWorkspace";
+import { PrefRow } from "../components/PrefRow";
+import { ModelPick } from "./ModelPick";
 import type { ApplicationView, ChatMessage } from "./contract";
 import type { ProductLanguage } from "./preferences";
 import { errorCopy } from "./copy";
@@ -80,11 +82,11 @@ export function ChatView(props: { view: ApplicationView | null; busy: boolean; l
   }
   if (!view || !modelSources.size) return <ConnectionWorkspace {...props} />;
   return <section className="tagma-chat" aria-label={zh ? "模型对话" : "Model chat"}>
-    <div className="tagma-heading"><div><p className="tagma-eyebrow">TAGMA · {zh ? "本机网关对话" : "LOCAL GATEWAY CHAT"}</p><h1>{zh ? "从一句话开始" : "Start a conversation"}</h1></div><TextBtn disabled={sending} onClick={() => { setTurns([]); setError(null); }}>{zh ? "新对话" : "New chat"}</TextBtn></div>
-    <div className="tagma-chat-toolbar"><label>{zh ? "模型" : "Model"}<select className="words" value={model} disabled={sending || busy} onChange={event => setSelected(event.target.value)}>{[...modelSources].map(([id, source]) => <option key={id} value={id}>{id} · {source}</option>)}</select></label><TextBtn disabled={busy} onClick={props.onProviders}>{zh ? "管理模型" : "Manage models"}</TextBtn><span className="sub">{zh ? "同名模型按全局供应商顺序选用" : "Duplicate model IDs follow global provider order"}</span></div>
+    <div className="tagma-heading"><h1>{zh ? "对话" : "Chat"}</h1><div className="tagma-actions"><TextBtn disabled={busy} onClick={props.onProviders}>{zh ? "管理模型" : "Manage models"}</TextBtn><TextBtn disabled={sending} onClick={() => { setTurns([]); setError(null); }}>{zh ? "新对话" : "New chat"}</TextBtn></div></div>
+    <div className="list prefs"><PrefRow name={zh ? "模型" : "Model"} sub={modelSources.get(model)}><ModelPick value={model} models={modelSources} disabled={sending||busy} label={zh?"选择模型":"Select model"} onChange={setSelected}/></PrefRow></div>
     {!applied && <p className="tagma-error" role="status">{zh ? "等待配置生效后可发送。" : "Apply configuration before sending."} <TextBtn onClick={props.onGateway}>{zh ? "查看网关" : "Open gateway"}</TextBtn></p>}
-    <div ref={conversation} className="tagma-conversation" role="log" aria-label={zh ? "对话记录" : "Conversation"} aria-live="polite" aria-relevant="additions text">
-      {!turns.length && <div className="tagma-chat-welcome"><span aria-hidden="true">✳</span><h2>{zh ? "模型已配置，发送第一条消息" : "Your model is configured. Send your first message."}</h2><p>{zh ? "内容会经本机网关发送至所选供应商，可能产生其 API 费用。" : "Messages go through your local gateway to the selected provider and may incur its API charges."}</p></div>}
+    <div ref={conversation} className="list tagma-conversation" role="log" aria-label={zh ? "对话记录" : "Conversation"} aria-live="polite" aria-relevant="additions text">
+      {!turns.length && <div className="empty-state"><b>{zh ? "发送第一条消息" : "Send your first message"}</b><p>{zh ? "内容经本机网关发送至所选供应商，可能产生其 API 费用。" : "Messages go through your local gateway to the selected provider and may incur its API charges."}</p></div>}
       {turns.map(turn => <article key={turn.id} className="tagma-chat-turn"><div className="tagma-chat-user"><strong>{zh ? "你" : "You"}</strong><pre>{turn.prompt}</pre></div><div className="tagma-chat-assistant"><strong>{turn.model}</strong><pre>{turn.reply || (turn.status === "streaming" ? (zh ? "等待首段回复…" : "Waiting for response…") : "")}</pre>{turn.status === "streaming" && <span className="tagma-stream-status">{zh ? "正在回复…" : "Replying…"}</span>}{turn.status === "cancelled" && <p className="sub">{zh ? "已停止 · 保留收到的内容" : "Stopped · Received text retained"}</p>}{turn.finishReason === "length" && <p className="sub">{zh ? "达到模型输出长度上限" : "Model output length limit reached"}</p>}{turn.finishReason === "content_filter" && <p className="sub">{zh ? "回复被供应商内容过滤器限制" : "Response limited by the provider content filter"}</p>}{turn.error && <p role="alert" className="tagma-error">{turn.error}</p>}</div></article>)}
     </div>
     {error && <p className="tagma-error" role="alert">{error}</p>}

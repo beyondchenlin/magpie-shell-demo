@@ -3,7 +3,7 @@
 import { spawn } from 'node:child_process';
 import { createServer } from 'node:net';
 import { createServer as createHttpServer } from 'node:http';
-import { randomUUID } from 'node:crypto';
+import { randomUUID, createHash } from 'node:crypto';
 import { writeFile, readFile, access, mkdir } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import assert from 'node:assert/strict';
@@ -15,6 +15,7 @@ const profilesMode=process.env.TAGMA_NATIVE_SMOKE_MODE==='profiles';
 const gatewayMode=process.env.TAGMA_NATIVE_SMOKE_MODE==='gateway';
 const workspaceMode=process.env.TAGMA_NATIVE_SMOKE_MODE==='workspace';
 const chatMode=process.env.TAGMA_NATIVE_SMOKE_MODE==='chat';
+const cisMode=process.env.TAGMA_NATIVE_SMOKE_MODE==='cis';
 let chatUpstream;
 const chatTimers=new Set();
 assert(fixture, 'Caller must supply an isolated TAGMA_TEST_CONFIG_DIR');
@@ -39,7 +40,7 @@ let socket;
 const pending = new Map();
 let sequence = 0;
 const pause = ms => new Promise(r => setTimeout(r, ms));
-const deadline = Date.now() + (chatMode?60_000:35_000);
+const deadline = Date.now() + (chatMode||cisMode?60_000:35_000);
 async function until(test, message) {
   while (Date.now() < deadline) { if(spawnError) throw spawnError; try { const result = await test(); if (result) return result; } catch {} await pause(100); }
   throw new Error(message);
@@ -88,7 +89,43 @@ async function connectPage() {
 }
 try {
   let page=await connectPage();
-  if(chatMode) {
+  if(cisMode) {
+    await until(async()=>(await text()).includes('开始接入'),'CIS guide not rendered');
+    await until(async()=>(await text()).includes('网关正在使用已保存的配置'),'CIS baseline is not in stable running state');
+    const baseline=await evaluate(`(()=>{const style=selector=>{const element=document.querySelector(selector);const s=getComputedStyle(element);return{height:s.height,minHeight:s.minHeight,padding:s.padding,gap:s.gap,fontSize:s.fontSize,fontFamily:s.fontFamily,borderRadius:s.borderRadius,background:s.backgroundColor}};return{zoom:getComputedStyle(document.documentElement).zoom,body:style('body'),top:style('.top'),guide:style('.guide'),guideTitle:style('.guide-h'),guideTick:style('.guide-tick'),row:style('.row.pref'),navClass:document.querySelector('#nav').className,originalTopRecipe:!!document.querySelector('.top > #nav.seg > button[data-view].on'),pageSegmentInHeader:!!document.querySelector('.top .segs'),customHero:!!document.querySelector('.tagma-workspace-intro')}})()`);
+    const cisStylePaths=['app.css','routing.css','shell-patch.css','library.css','sessions.css','plugins.css','context.css'];
+    const cisStyleSources=await Promise.all(cisStylePaths.map(name=>readFile(resolve('src/styles',name),'utf8')));
+    const cisStyleHashes=Object.fromEntries(cisStylePaths.map((name,index)=>[name,createHash('sha256').update(cisStyleSources[index]).digest('hex')]));
+    const frozenCss=cisStyleSources.join('\n');
+    const sourceBaseline=await evaluate(`(()=>{const host=document.createElement('div');host.style.cssText='position:fixed;left:-10000px;top:0;width:600px;height:600px;visibility:hidden;pointer-events:none';const shadow=host.attachShadow({mode:'closed'});const style=document.createElement('style');style.textContent=${JSON.stringify(frozenCss)};shadow.append(style);const body=document.createElement('body');body.className='window';body.innerHTML='<header class="top"></header><section class="guide"><b class="guide-h">Guide</b><span class="guide-tick">1</span></section><div class="list prefs"><div class="row pref"></div></div><input class="words"><button class="lib-switch on"><i></i></button>';shadow.append(body);document.body.append(host);try{const take=selector=>{const s=getComputedStyle(shadow.querySelector(selector));return{width:s.width,height:s.height,minHeight:s.minHeight,padding:s.padding,gap:s.gap,fontSize:s.fontSize,fontFamily:s.fontFamily,borderRadius:s.borderRadius,background:s.backgroundColor}};return{top:take('.top'),row:take('.row.pref'),guide:take('.guide'),guideTick:take('.guide-tick'),field:take('input.words'),switch:take('.lib-switch'),switchThumb:take('.lib-switch i')}}finally{host.remove()}})()`);
+    assert.equal(baseline.zoom,'1.1');assert.equal(baseline.body.fontSize,'13px');assert(baseline.body.fontFamily.includes('Segoe UI'));assert.equal(baseline.top.height,sourceBaseline.top.height);assert.equal(baseline.row.minHeight,sourceBaseline.row.minHeight);assert.equal(baseline.row.padding,sourceBaseline.row.padding);assert.equal(baseline.row.gap,sourceBaseline.row.gap);assert.equal(baseline.guide.borderRadius,sourceBaseline.guide.borderRadius);assert.equal(baseline.guideTick.height,sourceBaseline.guideTick.height);assert(baseline.originalTopRecipe);assert(!baseline.pageSegmentInHeader);assert(!baseline.customHero);
+    await capture('16-cis-home-110');await click('添加供应商');
+    const field=await evaluate(`(()=>{const s=getComputedStyle(document.querySelector('input.words'));return{height:s.height,radius:s.borderRadius,fontSize:s.fontSize}})()`);assert.equal(field.height,sourceBaseline.field.height);assert.equal(field.radius,sourceBaseline.field.borderRadius);assert.equal(field.fontSize,sourceBaseline.field.fontSize);await capture('17-cis-provider-form-110');
+    await evaluate(`(()=>{const fields=document.querySelectorAll('input.words');const setter=Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value').set;['CIS fixture provider','https://example.invalid/v1'].forEach((value,index)=>{setter.call(fields[index],value);fields[index].dispatchEvent(new Event('input',{bubbles:true}));});const models=document.querySelector('textarea');Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype,'value').set.call(models,'cis-fixture-model');models.dispatchEvent(new Event('input',{bubbles:true}));})()`);await click('保存');await until(async()=>(await text()).includes('已保存版本: 1'),'CIS provider configuration not saved');await click('设置');
+    assert((await text()).includes('110%'));await capture('18-cis-settings-110');
+    await cdp('Emulation.setDeviceMetricsOverride',{width:1364,height:941,deviceScaleFactor:1,mobile:false});
+    await until(async()=>await evaluate(`document.body.classList.contains('side-nav')`),'CIS responsive sidebar not rendered');await click('供应商');
+    const switchGeometry=await evaluate(`(()=>{const s=getComputedStyle(document.querySelector('.lib-switch'));const i=getComputedStyle(document.querySelector('.lib-switch i'));return{width:s.width,height:s.height,radius:s.borderRadius,thumbWidth:i.width,thumbHeight:i.height,visible:document.querySelector('.lib-switch').getBoundingClientRect().width>0}})()`);assert(switchGeometry.visible);assert.equal(switchGeometry.width,sourceBaseline.switch.width);assert.equal(switchGeometry.height,sourceBaseline.switch.height);assert.equal(switchGeometry.thumbWidth,sourceBaseline.switchThumb.width);assert.equal(switchGeometry.thumbHeight,sourceBaseline.switchThumb.height);
+    await evaluate(`document.querySelector('.tagma-provider .lib-switch').click()`);await until(async()=>(await text()).includes('已保存版本: 2')&&await evaluate(`document.querySelector('.tagma-provider .lib-switch').getAttribute('aria-checked')==='false'`),'CIS visible provider switch did not persist off');await evaluate(`document.querySelector('.tagma-provider .lib-switch').click()`);await until(async()=>(await text()).includes('已保存版本: 3')&&await evaluate(`document.querySelector('.tagma-provider .lib-switch').getAttribute('aria-checked')==='true'`),'CIS provider switch did not persist on');
+    const side=await evaluate(`(()=>{const s=getComputedStyle(document.querySelector('.sidebar'));return{width:s.width,selected:[...document.querySelectorAll('#nav button.on')].map(b=>b.dataset.view)}})()`);
+    const sourceSideWidth=await evaluate(`(()=>{const host=document.createElement('div');host.style.cssText='position:fixed;left:-10000px;visibility:hidden;pointer-events:none';const shadow=host.attachShadow({mode:'closed'});const style=document.createElement('style');style.textContent=${JSON.stringify(frozenCss)};const body=document.createElement('body');body.className='window side-nav';body.innerHTML='<aside class="sidebar"></aside>';shadow.append(style,body);document.body.append(host);try{return getComputedStyle(shadow.querySelector('.sidebar')).width}finally{host.remove()}})()`);assert.equal(side.width,sourceSideWidth);assert.deepEqual(side.selected,['providers']);await capture('19-cis-wide-sidebar-110');
+    await cdp('Emulation.clearDeviceMetricsOverride');await click('设置');await click('深色');await click('150%');await click('对话');assert(await evaluate(`document.documentElement.scrollWidth<=innerWidth+1`));const nativeDarkTheme=await until(async()=>await evaluate(`window.__TAURI_INTERNALS__.invoke('plugin:window|theme',{label:'main'})`)==='dark','Native window did not follow dark appearance');await capture('20-cis-home-dark-150');
+    await click('设置');await click('浅色');await click('110%');await until(async()=>await evaluate(`window.__TAURI_INTERNALS__.invoke('plugin:window|theme',{label:'main'})`)==='light','Native window did not return to light appearance');
+    const view=await evaluate(`window.__TAURI_INTERNALS__.invoke('application_view',{protocolVersion:1})`);
+    const productUrl=page.url;
+    const nativeAgent=await evaluate('navigator.userAgent');
+    assert.equal((await fetch('http://localhost:1420/index.html')).status,200,'Original replica reference server must be explicit and available');
+    await cdp('Emulation.setUserAgentOverride',{userAgent:`${nativeAgent} Electron/44.7.2`});
+    await cdp('Page.navigate',{url:'http://localhost:1420/index.html#/settings'});
+    await until(async()=>await evaluate(`!!document.querySelector('.prefs .row.pref') && document.body.classList.contains('window') && !document.body.classList.contains('web')`),'Original CIS replica native variant not loaded');await pause(350);
+    const replicaReference=await evaluate(`(()=>{const take=selector=>{const s=getComputedStyle(document.querySelector(selector));return{height:s.height,minHeight:s.minHeight,padding:s.padding,gap:s.gap,fontSize:s.fontSize,fontFamily:s.fontFamily}};return{url:location.href,viewport:{width:innerWidth,height:innerHeight},zoom:getComputedStyle(document.documentElement).zoom,theme:document.documentElement.dataset.theme,body:take('body'),top:take('.top'),row:take('.row.pref'),simulatedCaption:!!document.querySelector('.win-caption')}})()`);
+    assert.equal(replicaReference.zoom,baseline.zoom);assert.equal(replicaReference.body.fontFamily,baseline.body.fontFamily);assert.equal(replicaReference.top.height,baseline.top.height);for(const key of ['minHeight','padding','gap'])assert.equal(replicaReference.row[key],baseline.row[key]);assert(!replicaReference.simulatedCaption);await capture('21-original-replica-native-settings-110');
+    await cdp('Emulation.setUserAgentOverride',{userAgent:nativeAgent});await cdp('Page.navigate',{url:productUrl});await until(async()=>await evaluate(`!!window.__TAURI_INTERNALS__ && !!document.querySelector('.guide')`),'Product did not return after independent reference comparison');
+    await evaluate(`window.__TAURI_INTERNALS__.invoke('quit_application',{protocolVersion:1})`).catch(()=>{});await until(async()=>child.exitCode!==null,'CIS native host did not quit');
+    const referenceSourceHash=createHash('sha256').update(await readFile(resolve('src/App.tsx'))).digest('hex');
+    await writeFile(resolve(fixture,'native-result.json'),JSON.stringify({platform:process.platform,productVersion:view.product_version,schemaVersion:view.config.schema_version,executable,nativeHost:true,mockBridge:false,baseline,sourceBaseline,cisStyleHashes,nativeDarkTheme,field,switchGeometry,side,sourceSideWidth,replicaReference,referenceSourceHash,comparison:'Exact computed styles against isolated original-CIS-only shadow probe and actual original replica in the SAME native WebView, viewport, theme and zoom; no blanket pixel tolerance',wideScreenshot:'native WebView viewport emulation, not a resized OS window',tests:['frozen-CIS-top-nav-recipe','CIS-110-percent-Windows-font','CIS-row-48-7-12-cascade','CIS-guide-geometry','CIS-input-27-7-12.5','CIS-visible-switch-geometry-and-persistent-off-on','native-provider-form','native-settings-shared-controls','native-window-theme-follows-appearance','responsive-sidebar-212','single-nav-selection','dark-150-no-overflow','original-replica-same-native-viewport-comparison','native-graceful-quit'],result:'passed'},null,2));
+    console.log('Native CIS: 14 checks passed (same native WebView comparison, shared switch CSS and real off/on persistence).');
+  } else if(chatMode) {
     const credential=`tagma-owned-fixture-${randomUUID()}`;
     let upstreamCalls=0, forwardedCredential=false, upstreamCancelled=false, cancelledBeforeResponse=false;
     const delta=(content,finish=null)=>`data: ${JSON.stringify({id:'synthetic-fixture',object:'chat.completion.chunk',choices:[{index:0,delta:content===null?{}:{content},finish_reason:finish}]})}\r\n\r\n`;
@@ -119,8 +156,11 @@ try {
     const upstreamUrl=`http://127.0.0.1:${chatUpstream.address().port}/v1`;
     await evaluate(`(()=>{const fields=document.querySelectorAll('input.words');const setter=Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value').set;['Native chat fixture',${JSON.stringify(upstreamUrl)},${JSON.stringify(credential)}].forEach((value,index)=>{setter.call(fields[index],value);fields[index].dispatchEvent(new Event('input',{bubbles:true}));});const models=document.querySelector('textarea');Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype,'value').set.call(models,'native-test-model');models.dispatchEvent(new Event('input',{bubbles:true}));})()`);
     await click('保存');await until(async()=>(await text()).includes('已保存版本: 2'),'Native provider not saved');await click('对话');
-    await until(async()=>await evaluate(`[...document.querySelectorAll('button')].some(b=>b.getClientRects().length&&b.textContent.trim()==='发送'&&!b.disabled)`)===false&&(await text()).includes('从一句话开始'),'Real native chat UI not rendered');
+    await until(async()=>await evaluate(`!!document.querySelector('#tagma-message')`),'Real native chat UI not rendered');
     await until(async()=>{const v=await evaluate(`window.__TAURI_INTERNALS__.invoke('application_view',{protocolVersion:1})`);return v.runtime.effective_revision===2;},'Native provider snapshot not effective');
+    await evaluate(`document.querySelector('button[aria-label="选择模型"]').click()`);await until(async()=>await evaluate(`!!document.querySelector('.tagma-model-menu')`),'CIS model menu did not open');
+    assert(await evaluate(`(()=>{const r=document.querySelector('.tagma-model-menu').getBoundingClientRect();return r.left>=0&&r.top>=0&&r.right<=innerWidth+1&&r.bottom<=innerHeight+1})()`),'CIS model menu escaped viewport');await capture('22-cis-model-menu');
+    await cdp('Input.dispatchKeyEvent',{type:'keyDown',key:'Escape',code:'Escape'});await cdp('Input.dispatchKeyEvent',{type:'keyUp',key:'Escape',code:'Escape'});await until(async()=>await evaluate(`!document.querySelector('.tagma-model-menu')`),'CIS model menu did not dismiss with Escape');
     const send=async value=>{await evaluate(`(()=>{const field=document.querySelector('#tagma-message');Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype,'value').set.call(field,${JSON.stringify(value)});field.dispatchEvent(new Event('input',{bubbles:true}));})()`);await until(async()=>await evaluate(`[...document.querySelectorAll('button')].some(b=>b.getClientRects().length&&b.textContent.trim()==='发送'&&!b.disabled)`),'Composer send action not ready');await click('发送');};
     await capture('13-chat-ready');await send('hello');
     await until(async()=>(await text()).includes('你好，流式连接成功。')&&!(await text()).includes('正在回复'),'Native SSE text did not finish');
@@ -140,8 +180,8 @@ try {
     await writeFile(resolve(fixture,'native-result.json'),JSON.stringify({platform:process.platform,productVersion:view.product_version,schemaVersion:view.config.schema_version,executable,nativeHost:true,mockBridge:false,upstream:'controlled loopback fixture; no external generation',upstreamCalls,forwardedCredential,upstreamCancelled,cancelledBeforeResponse,tests:['real-provider-form-and-system-credential','native-model-selection','native-bridge-local-auth','gateway-streaming-roundtrip','fragmented-utf8-sse','stop-closes-upstream','stop-before-response-headers-closes-upstream','partial-reply-retained','sanitized-upstream-auth-error','no-generation-retry','truncated-stream-error','leaving-chat-cancels-own-upstream','dark-150-percent-no-overflow','native-graceful-quit'],result:'passed'},null,2));
     console.log('Native chat: 14 checks passed (real host → local gateway → controlled upstream → streamed UI; cancellation before and after response).');
   } else if(workspaceMode) {
-    await until(async()=>(await text()).includes('接入你的模型，开始组织工作流'),'Workspace home not rendered');
-    assert((await text()).includes('还没有配置模型'));assert((await text()).includes('配置模型后开始对话'));
+    await until(async()=>(await text()).includes('开始接入'),'Workspace home not rendered');
+    assert((await text()).includes('还没有配置模型'));
     await capture('10-workspace-empty');await click('添加供应商');
     assert(await evaluate(`document.querySelector('form')?.getAttribute('aria-label')==='添加供应商'`));
     await evaluate(`(()=>{const fields=document.querySelectorAll('input.words');const setter=Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value').set;['UI workflow provider','https://example.invalid/v1'].forEach((value,index)=>{setter.call(fields[index],value);fields[index].dispatchEvent(new Event('input',{bubbles:true}));});const models=document.querySelector('textarea');Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype,'value').set.call(models,'ui-workflow-model');models.dispatchEvent(new Event('input',{bubbles:true}));})()`);await click('保存');

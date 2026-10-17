@@ -1,0 +1,191 @@
+{
+  "platform": "win32",
+  "productVersion": "0.2.0-dev.8",
+  "schemaVersion": 3,
+  "executable": "D:\\demo1\\tagmaai\\target\\debug\\tagma-desktop.exe",
+  "nativeHost": true,
+  "mockBridge": false,
+  "baseline": {
+    "zoom": "1.1",
+    "body": {
+      "height": "545.455px",
+      "minHeight": "0px",
+      "padding": "0px",
+      "gap": "normal",
+      "fontSize": "13px",
+      "fontFamily": "\"Segoe UI Variable Text\", \"Segoe UI\", \"Microsoft YaHei UI\", \"Microsoft YaHei\", system-ui, sans-serif",
+      "borderRadius": "0px",
+      "background": "rgb(244, 244, 246)"
+    },
+    "top": {
+      "height": "45.9943px",
+      "minHeight": "auto",
+      "padding": "0px 10px 0px 14px",
+      "gap": "8px",
+      "fontSize": "13px",
+      "fontFamily": "\"Segoe UI Variable Text\", \"Segoe UI\", \"Microsoft YaHei UI\", \"Microsoft YaHei\", system-ui, sans-serif",
+      "borderRadius": "0px",
+      "background": "rgba(0, 0, 0, 0)"
+    },
+    "guide": {
+      "height": "316.96px",
+      "minHeight": "0px",
+      "padding": "14px 16px 6px",
+      "gap": "normal",
+      "fontSize": "12.5px",
+      "fontFamily": "\"Segoe UI Variable Text\", \"Segoe UI\", \"Microsoft YaHei UI\", \"Microsoft YaHei\", system-ui, sans-serif",
+      "borderRadius": "12px",
+      "background": "rgb(255, 255, 255)"
+    },
+    "guideTitle": {
+      "height": "19.6023px",
+      "minHeight": "auto",
+      "padding": "0px",
+      "gap": "normal",
+      "fontSize": "14px",
+      "fontFamily": "\"Segoe UI Variable Text\", \"Segoe UI\", \"Microsoft YaHei UI\", \"Microsoft YaHei\", system-ui, sans-serif",
+      "borderRadius": "0px",
+      "background": "rgba(0, 0, 0, 0)"
+    },
+    "guideTick": {
+      "height": "20px",
+      "minHeight": "auto",
+      "padding": "0px",
+      "gap": "normal",
+      "fontSize": "11px",
+      "fontFamily": "\"Segoe UI Variable Text\", \"Segoe UI\", \"Microsoft YaHei UI\", \"Microsoft YaHei\", system-ui, sans-serif",
+      "borderRadius": "10px",
+      "background": "rgba(0, 0, 0, 0)"
+    },
+    "row": {
+      "height": "50.2699px",
+      "minHeight": "48px",
+      "padding": "7px 12px 7px 14px",
+      "gap": "12px",
+      "fontSize": "13px",
+      "fontFamily": "\"Segoe UI Variable Text\", \"Segoe UI\", \"Microsoft YaHei UI\", \"Microsoft YaHei\", system-ui, sans-serif",
+      "borderRadius": "0px",
+      "background": "rgba(0, 0, 0, 0)"
+    },
+    "navClass": "seg",
+    "originalTopRecipe": true,
+    "pageSegmentInHeader": false,
+    "customHero": false
+  },
+  "sourceBaseline": {
+    "top": {
+      "height": "45.9943px",
+      "minHeight": "auto",
+      "padding": "0px 10px 0px 14px",
+      "gap": "8px",
+      "fontSize": "13px",
+      "fontFamily": "\"Segoe UI Variable Text\", \"Segoe UI\", \"Microsoft YaHei UI\", \"Microsoft YaHei\", system-ui, sans-serif",
+      "borderRadius": "0px",
+      "background": "rgba(0, 0, 0, 0)"
+    },
+    "row": {
+      "height": "47.9972px",
+      "minHeight": "48px",
+      "padding": "7px 12px 7px 14px",
+      "gap": "12px",
+      "fontSize": "13px",
+      "fontFamily": "\"Segoe UI Variable Text\", \"Segoe UI\", \"Microsoft YaHei UI\", \"Microsoft YaHei\", system-ui, sans-serif",
+      "borderRadius": "0px",
+      "background": "rgba(0, 0, 0, 0)"
+    },
+    "guide": {
+      "height": "61.8182px",
+      "minHeight": "auto",
+      "padding": "14px 16px 6px",
+      "gap": "normal",
+      "fontSize": "13px",
+      "fontFamily": "\"Segoe UI Variable Text\", \"Segoe UI\", \"Microsoft YaHei UI\", \"Microsoft YaHei\", system-ui, sans-serif",
+      "borderRadius": "12px",
+      "background": "rgb(255, 255, 255)"
+    },
+    "guideTick": {
+      "height": "20px",
+      "minHeight": "0px",
+      "padding": "0px",
+      "gap": "normal",
+      "fontSize": "11px",
+      "fontFamily": "\"Segoe UI Variable Text\", \"Segoe UI\", \"Microsoft YaHei UI\", \"Microsoft YaHei\", system-ui, sans-serif",
+      "borderRadius": "10px",
+      "background": "rgba(0, 0, 0, 0)"
+    },
+    "field": {
+      "height": "26.9886px",
+      "minHeight": "auto",
+      "padding": "0px 9px",
+      "gap": "normal",
+      "fontSize": "12.5px",
+      "fontFamily": "\"Segoe UI Variable Text\", \"Segoe UI\", \"Microsoft YaHei UI\", \"Microsoft YaHei\", system-ui, sans-serif",
+      "borderRadius": "7px",
+      "background": "rgb(255, 255, 255)"
+    }
+  },
+  "field": {
+    "height": "26.9886px",
+    "radius": "7px",
+    "fontSize": "12.5px"
+  },
+  "side": {
+    "width": "211.989px",
+    "selected": [
+      "providers"
+    ]
+  },
+  "sourceSideWidth": "211.989px",
+  "replicaReference": {
+    "url": "http://localhost:1420/index.html#/settings",
+    "viewport": {
+      "width": 660,
+      "height": 600
+    },
+    "zoom": "1.1",
+    "theme": "light",
+    "body": {
+      "height": "545.455px",
+      "minHeight": "0px",
+      "padding": "0px",
+      "gap": "normal",
+      "fontSize": "13px",
+      "fontFamily": "\"Segoe UI Variable Text\", \"Segoe UI\", \"Microsoft YaHei UI\", \"Microsoft YaHei\", system-ui, sans-serif"
+    },
+    "top": {
+      "height": "45.9943px",
+      "minHeight": "auto",
+      "padding": "0px 10px 0px 14px",
+      "gap": "8px",
+      "fontSize": "13px",
+      "fontFamily": "\"Segoe UI Variable Text\", \"Segoe UI\", \"Microsoft YaHei UI\", \"Microsoft YaHei\", system-ui, sans-serif"
+    },
+    "row": {
+      "height": "47.9972px",
+      "minHeight": "48px",
+      "padding": "7px 12px 7px 14px",
+      "gap": "12px",
+      "fontSize": "13px",
+      "fontFamily": "\"Segoe UI Variable Text\", \"Segoe UI\", \"Microsoft YaHei UI\", \"Microsoft YaHei\", system-ui, sans-serif"
+    },
+    "simulatedCaption": false
+  },
+  "referenceSourceHash": "362cff3eb8088f3445a627a71e004cb24fb70cebd34241ed47a315d3b258337b",
+  "comparison": "Exact computed styles against frozen-CIS-only shadow probe and actual original replica in the SAME native WebView, viewport, theme and zoom; no blanket pixel tolerance",
+  "wideScreenshot": "native WebView viewport emulation, not a resized OS window",
+  "tests": [
+    "frozen-CIS-top-nav-recipe",
+    "CIS-110-percent-Windows-font",
+    "CIS-row-48-7-12-cascade",
+    "CIS-guide-geometry",
+    "CIS-input-27-7-12.5",
+    "native-provider-form",
+    "native-settings-shared-controls",
+    "responsive-sidebar-212",
+    "single-nav-selection",
+    "dark-150-no-overflow",
+    "original-replica-same-native-viewport-comparison",
+    "native-graceful-quit"
+  ],
+  "result": "passed"
+}

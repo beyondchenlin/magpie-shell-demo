@@ -15,7 +15,7 @@ const en = {
   previewHint: "Open Tagma desktop to manage real providers and credentials. The preview does not read desktop configuration.",
   notAvailable: "Unavailable in this slice", runtimeHint: "Independent local process; text Chat Completions subset.",
   start: "Start gateway", stop: "Stop gateway", apply: "Apply saved configuration", running: "Running", starting: "Starting", stopping: "Stopping", degraded: "Degraded", failed: "Failed", owned: "Owned by this desktop", external: "Owned by another entrypoint", quit: "Quit Tagma",
-  language: "Language", theme: "Theme", system: "System", light: "Light", dark: "Dark", size: "Text size", coverage: "This language is retained; new product text currently uses English fallback.",
+  language: "Language", theme: "Appearance", system: "System", light: "Light", dark: "Dark", size: "Text size", coverage: "This language is retained; new product text currently uses English fallback.",
   cleanup: "Credential cleanup is pending; retry after unlocking the credential store.", retry: "Retry", invalid: "Check the name, URL and model IDs. HTTPS is required except for localhost. Reserved tagma/ IDs are not allowed.",
   error: "Operation failed", timeout: "Confirmation timed out. The operation may still finish; refresh before retrying.", preferencesError: "Appearance changed for this session, but could not be saved.",
   cancelHint: "Cancel discards this unsaved form.", diagnostics: "Diagnostics", version: "Version", schema: "Schema", noInference: "Text chat · OpenAI-compatible subset",
@@ -39,7 +39,7 @@ const zh: typeof en = {
   previewHint: "在 Tagma 桌面管理真实供应商和凭据。预览不读取桌面配置。",
   notAvailable: "本切片尚未开放", runtimeHint: "本机独立进程；支持文本 Chat Completions 子集。",
   start: "启动网关", stop: "停止网关", apply: "应用已保存配置", running: "运行中", starting: "正在启动", stopping: "正在停止", degraded: "降级运行", failed: "失败", owned: "由本桌面拥有", external: "由其他入口拥有", quit: "退出 Tagma",
-  language: "语言", theme: "主题", system: "跟随系统", light: "浅色", dark: "深色", size: "文字大小", coverage: "已保留此语言选项；新增产品文案暂以英文显示。",
+  language: "语言", theme: "外观", system: "跟随系统", light: "浅色", dark: "深色", size: "文字大小", coverage: "已保留此语言选项；新增产品文案暂以英文显示。",
   cleanup: "有凭据清理待处理；请解锁凭据库后重试。", retry: "重试", invalid: "请检查名称、地址和模型 ID。除 localhost 外必须使用 HTTPS，不允许保留的 tagma/ 模型 ID。",
   error: "操作失败", timeout: "确认超时。操作可能仍会完成，请先刷新再重试。", preferencesError: "外观已在本次会话应用，但未能保存。",
   cancelHint: "取消将丢弃此表单中尚未保存的修改。", diagnostics: "诊断", version: "版本", schema: "配置结构", noInference: "文本对话 · OpenAI 兼容子集",
@@ -73,6 +73,7 @@ export function errorCopy(error: unknown, language: ProductLanguage): string {
   if (error && typeof error === "object" && "code" in error) {
     const code = String(error.code);
     if (code === "CONFIRMATION_TIMEOUT") return copy(language).timeout;
+    if (code === "NATIVE_THEME_UNCONFIRMED") return language === "zh" ? "页面外观已设置，原生窗口外观尚未确认。请重试或检查诊断。" : "Page appearance changed; native window appearance is not confirmed. Retry or check diagnostics.";
     if (code in errors) return errors[code as ErrorCode][language === "zh" ? 0 : 1];
   }
   return errors.INTERNAL_ERROR[language === "zh" ? 0 : 1];
