@@ -18,6 +18,8 @@
 
 ## 当前批次
 
+- **用量容量/长读者恢复局部验证补齐**：候选仍dev.16/config9/usage2，仅测试新增，生产逻辑不变。core2和实际headless HTTP1通过：真实16MiB WAL围栏拒绝新派发/上游增量0，长读者未关时恢复拒绝，关后TRUNCATE0并恢复；128条有界明细清理保留日汇总/在途，删除失败整事务回滚。core/gateway全target Clippy通过，两轮自查/空间收尾见[P1-S23](P1-S23-USAGE-CAPACITY-EVIDENCE.md)。空闲过期处理与完整容量矩阵仍未完成，A16/A28/P1不整体通过；用户dev.9不动，电脑控制禁令及拖动未通过不变，继续独立源码缺口。
+
 - **CIS软预算编辑/展示源码接线完成，未作桌面验收**：候选仍dev.16/config9/usage2，精确字符串软目标CRUD、固定编辑/删除修订、手动周期报告、未知token不绘条/实际余额账单未知，预算缓存共用目录/代次/pending围栏，清除及配置变化丢弃旧读。21项无窗口源模型/静态HTML检查（原15+预算6）、TS/Vite、6文件116规则零lint及CIS/chrome guard通过；两轮自查见[P1-S22](P1-S22-BUDGET-UI-SOURCE.md)。未调用原生预算命令或更新用户dev.9，拖动仍未通过，禁止电脑控制继续有效。A16/A28/P1及容量完整矩阵仍未整体完成，继续独立源码工作。
 
 - **周期观察报告/本机源码桥接局部完成，尚无预算UI**：候选仍dev.16/config9/usage2，固定配置规则+单用量读事务，UTC日/月、逻辑请求/实际尝试分开、未知token不生成进度；core82通过/8忽略不计、reader1、实际headless HTTP软阈值1、main限定三命令静态权限与workspace Clippy/DTO/TS/Vite/lint通过。两轮自查及限制见[P1-S21](P1-S21-BUDGET-OBSERVATIONS.md)，不计A16/A28/P1完成。安装仍dev.9，禁止电脑控制与拖动未通过不变；继续CIS预算源码接线。

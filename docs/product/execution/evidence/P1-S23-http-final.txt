@@ -1,0 +1,30 @@
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+   Compiling tagma-gateway v0.2.0-dev.16 (D:\demo1\tagmaai\crates\tagma-gateway)
+    Finished `test` profile [unoptimized] target(s) in 1.50s
+     Running tests\usage.rs (target\debug\deps\usage-c086c387e7fe0bf4.exe)
+
+running 1 test
+Actual HTTP WAL pressure:successful=267,WAL=16780792bytes,pinned old snapshot0;503 adds0upstream;private recovery refused while reader lives;after close TRUNCATE0/degradedfalse,newHTTP200,attempt summaries preserved+1
+test actual_long_reader_wal_refuses_new_inference_until_checkpoint_recovers ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 3 filtered out; finished in 3.48s
+

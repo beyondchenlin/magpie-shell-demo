@@ -1,0 +1,13 @@
+{
+  "recordedAtUtc": "2026-10-17T21:18:55.364Z",
+  "target": "D:/demo1/tagmaai/target",
+  "temporaryRoot": "C:\\Users\\ai\\AppData\\Local\\Temp",
+  "estimatedAdditionalPeakGiB": 0.04,
+  "freeBeforeGiB": {
+    "C": 42.44,
+    "D": 10.04
+  },
+  "scope": "Small main DB plus bounded real 16MiB WAL long-reader capacity tests;cached Rust tests only",
+  "reuse": "Existing Cargo caches/target,no new env/worktree",
+  "cleanup": "Owned tagma-usage-capacity TempDir RAII after connections close;no real data/old artifacts"
+}

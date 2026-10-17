@@ -109,6 +109,48 @@ async fn wait_state(path: &Path, id: &str, outcome: &str) {
 }
 
 #[tokio::test]
+async fn actual_long_reader_wal_refuses_new_inference_until_checkpoint_recovers() {
+    let calls = Arc::new(AtomicUsize::new(0));
+    let upstream=Router::new().fallback(post({let calls=calls.clone();move||{let calls=calls.clone();async move{calls.fetch_add(1,Ordering::SeqCst);Json(json!({"model":"usage-model","choices":[{"index":0,"message":{"role":"assistant","content":"owned WAL fixture"},"finish_reason":"stop"}],"usage":{"prompt_tokens":2,"completion_tokens":1}}))}}}));
+    let listener = tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();
+    let up = listener.local_addr().unwrap().port();
+    let _server = Server(tokio::spawn(async move {
+        axum::serve(listener, upstream).await.unwrap();
+    }));
+    let (temp, _config, port, _provider) = setup(up);
+    let manager = GatewayManager::new(temp.path(), Path::new(env!("CARGO_BIN_EXE_tagma-gateway")));
+    manager.start(port).await.unwrap();
+    let result=std::panic::AssertUnwindSafe(async {
+        let reader=db(temp.path(),false);reader.execute_batch("BEGIN").unwrap();
+        let initial:i64=reader.query_row("SELECT count(*) FROM usage_requests",[],|row|row.get(0)).unwrap();assert_eq!(initial,0);
+        let client=reqwest::Client::builder().no_proxy().timeout(Duration::from_secs(3)).build().unwrap();
+        let endpoint=format!("http://127.0.0.1:{port}/v1/chat/completions");
+        let mut succeeded=0;let started=std::time::Instant::now();
+        for _ in 0..2000 {
+            let response=client.post(&endpoint).json(&input("usage-model","owned WAL bound",false)).send().await.unwrap();
+            if response.status()==200 {response.bytes().await.unwrap();succeeded+=1;assert!(started.elapsed()<Duration::from_secs(20),"bounded fixture time");assert!(std::fs::metadata(temp.path().join("usage.sqlite3-wal")).unwrap().len()<17*1024*1024,"stop owned fixture growth if admission fence regresses");}else{assert_eq!(response.status(),503);assert!(response.text().await.unwrap().contains("USAGE_STORAGE_UNAVAILABLE"));break;}
+        }
+        let status=manager.status().await;assert_eq!(status.usage_degraded,Some(true));
+        assert_eq!(calls.load(Ordering::SeqCst),succeeded,"refused grant never reaches upstream");
+        let wal=temp.path().join("usage.sqlite3-wal");let bytes=std::fs::metadata(&wal).unwrap().len();assert!(bytes>16*1024*1024&&bytes<17*1024*1024);
+        let before:i64=db(temp.path(),false).query_row("SELECT sum(count) FROM usage_daily WHERE kind='attempt'",[],|row|row.get(0)).unwrap();assert_eq!(before,succeeded as i64);
+        assert!(manager.recover_usage().await.is_err(),"private recovery must not claim checkpoint success with old reader still pinned");assert_eq!(manager.status().await.usage_degraded,Some(true));
+        let response=client.post(&endpoint).json(&input("usage-model","still blocked",false)).send().await.unwrap();assert_eq!(response.status(),503);response.bytes().await.unwrap();assert_eq!(calls.load(Ordering::SeqCst),succeeded);
+        let old:i64=reader.query_row("SELECT count(*) FROM usage_requests",[],|row|row.get(0)).unwrap();assert_eq!(old,0);
+        reader.execute_batch("ROLLBACK").unwrap();drop(reader);
+        manager.recover_usage().await.unwrap();assert_eq!(manager.status().await.usage_degraded,Some(false));assert_eq!(std::fs::metadata(&wal).unwrap().len(),0);
+        let response=client.post(&endpoint).json(&input("usage-model","after actual checkpoint",false)).send().await.unwrap();assert_eq!(response.status(),200);response.bytes().await.unwrap();assert_eq!(calls.load(Ordering::SeqCst),succeeded+1);
+        let after:i64=db(temp.path(),false).query_row("SELECT sum(count) FROM usage_daily WHERE kind='attempt'",[],|row|row.get(0)).unwrap();assert_eq!(after,before+1);
+        println!("Actual HTTP WAL pressure:successful={succeeded},WAL={bytes}bytes,pinned old snapshot0;503 adds0upstream;private recovery refused while reader lives;after close TRUNCATE0/degradedfalse,newHTTP200,attempt summaries preserved+1");
+    }).catch_unwind().await;
+    let stopped = manager.stop().await;
+    if let Err(error) = result {
+        std::panic::resume_unwind(error);
+    }
+    stopped.unwrap();
+}
+
+#[tokio::test]
 async fn soft_budget_observes_real_http_without_blocking_dispatch_or_making_extra_calls() {
     use tagma_core::budgets::*;
     let calls = Arc::new(AtomicUsize::new(0));

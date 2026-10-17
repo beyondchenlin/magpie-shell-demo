@@ -1,0 +1,84 @@
+{
+  "recordedAtUtc": "2026-10-17T21:21:17.650Z",
+  "sourceBase": "50010b7cfa060a363948a2cf3a161e6321a60093",
+  "candidateVersion": "0.2.0-dev.16",
+  "configSchema": 9,
+  "usageSchema": 2,
+  "source": [
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-core\\src\\usage.rs",
+      "bytes": 47843,
+      "sha256": "79bc2e7ba53a02d1f0e9d4d2264abfbc7826f3e939f11574d6713c7637b3eb13"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-core\\src\\usage\\capacity_tests.rs",
+      "bytes": 7165,
+      "sha256": "236cd53c38355107ebf942852da085f21ab48ec042367c3568eecac218bfbb9c"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-gateway\\tests\\usage.rs",
+      "bytes": 29330,
+      "sha256": "dc8a23be9f626b651836d9f9c7bd08dea1904e681e61e1874262da699c2be55b"
+    }
+  ],
+  "documents": [
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\EXECUTION-STATUS.md",
+      "bytes": 29154,
+      "sha256": "8a5ba087c90e3ec1bf496ec14cf41f31882b0f667851a6622abd31a1147eff9a"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\P1-S23-USAGE-CAPACITY-EVIDENCE.md",
+      "bytes": 3154,
+      "sha256": "eb0b1f48450b8812ec77a1a7971e0fde556f88c4012662c7955ca06569e8bbdb"
+    }
+  ],
+  "prd": {
+    "path": "D:\\demo1\\tagmaai\\docs\\product\\TAGMA-PRD-v0.3.md",
+    "bytes": 50957,
+    "sha256": "6e6503391f70e3f2e53347890de6e7c9f7fd93cc393c68f7bba494ac4d67a6d6"
+  },
+  "evidence": [
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S23-capacity-final.txt",
+      "bytes": 1628,
+      "sha256": "83b87a527252cd6ff61dba0717b9440888bc36949a1adfc6c6457c5b8d777226"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S23-capacity-first.txt",
+      "bytes": 1901,
+      "sha256": "5698cfb6076a2c8c73b8b0fd613b416d15b521762aacac00ab91468a1d02e15c"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S23-capacity-second.txt",
+      "bytes": 1628,
+      "sha256": "d7d79f55fe407ffe51248954b8bd4465062b2684c05bcf1f789db9385bc217bf"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S23-clippy.txt",
+      "bytes": 1493,
+      "sha256": "0b769ae8a364550858d1df8ca0785302af0ad5de9dc1682574bf55d6797d242d"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S23-http-final.txt",
+      "bytes": 1236,
+      "sha256": "a2fafa43c7b537641993a0ae28b19625ecdc4680117b7d01a0939802ad16ef78"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S23-http-first.txt",
+      "bytes": 1394,
+      "sha256": "b40cbe9be2243ff82f39590443b002dd2c0de9dadbeeddb4d808725e5a7ff0a3"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S23-space-plan.json",
+      "bytes": 518,
+      "sha256": "6454978dc88145a52b202493f64c7d4993c1fb4b8e84205ef6502290eb5a87d0"
+    }
+  ],
+  "freeAfterGiB": {
+    "C": 42.44,
+    "D": 10.02
+  },
+  "cleanup": "Owned capacity TempDir prefix remaining0;actual sidecar stop finally;server Drop abort;no prior deletion or net-release claim",
+  "installed": "dev.9 untouched;drag not accepted;computer control prohibited"
+}

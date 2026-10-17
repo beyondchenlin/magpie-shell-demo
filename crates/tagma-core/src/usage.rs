@@ -1,6 +1,8 @@
 //! Separate, single-writer request ledger. No messages, headers or credentials.
 //! The gateway actor awaits begin_request/begin_attempt before dispatch.
 //! Read-only projections share this ledger through the read module.
+#[cfg(test)]
+mod capacity_tests;
 pub mod clear;
 mod migration;
 pub mod read;
