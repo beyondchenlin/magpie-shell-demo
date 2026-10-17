@@ -1,0 +1,11 @@
+
+> magpie-shell-demo@0.1.208 cis-guard
+> node scripts/cis-guard.mjs
+
+cis-guard OK: src/styles/app.css
+cis-guard OK: src/styles/routing.css
+cis-guard OK: src/styles/library.css
+cis-guard OK: src/styles/plugins.css
+cis-guard OK: src/styles/sessions.css
+cis-guard OK: src/styles/context.css
+cis-guard: six native stylesheets match the pinned source; browser checks are still required

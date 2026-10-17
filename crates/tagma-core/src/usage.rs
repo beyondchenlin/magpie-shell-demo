@@ -169,6 +169,15 @@ impl Completion {
                     | "TEAM_INTERMEDIATE_INCOMPLETE"
                     | "TEAM_INTERMEDIATE_UNSUPPORTED"
                     | "USAGE_STORAGE_UNAVAILABLE"
+                    | "USAGE_START_UNCONFIRMED"
+                    | "UPSTREAM_REDIRECT_REJECTED"
+                    | "UPSTREAM_REQUEST_REJECTED"
+                    | "TEAM_DEPENDENCY_UNAVAILABLE"
+                    | "TEAM_INTERMEDIATE_LIMIT"
+                    | "TEAM_INTERMEDIATE_FILTERED"
+                    | "TEAM_INTERMEDIATE_REFUSED"
+                    | "TEAM_INTERMEDIATE_TRUNCATED"
+                    | "TEAM_INTERMEDIATE_UNHANDLED_CALL"
             )
         }) {
             return Err(invalid());
@@ -386,6 +395,9 @@ impl UsageStore {
             detail_start_ms,
         })
     }
+    pub fn pending_results(&self) -> usize {
+        self.pending.len()
+    }
     fn admit(&mut self, now_ms: u64) -> AppResult<()> {
         if self.degraded {
             return Err(storage("usage degraded"));
@@ -536,6 +548,8 @@ impl UsageStore {
         if busy != 0 {
             return Err(storage("checkpoint busy"));
         }
+        // Do not confirm recovery when the metadata view itself is unreadable.
+        self.state()?;
         self.degraded = false;
         Ok(())
     }

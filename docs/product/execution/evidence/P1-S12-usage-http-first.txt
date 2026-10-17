@@ -1,0 +1,32 @@
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+   Compiling tagma-gateway v0.2.0-dev.15 (D:\demo1\tagmaai\crates\tagma-gateway)
+    Finished `test` profile [unoptimized] target(s) in 1.44s
+     Running tests\usage.rs (target\debug\deps\usage-92925ce630d90bd4.exe)
+
+running 2 tests
+Usage HTTP success: requests=1 attempts=1 cfg=2 tokens=2/1 persisted before response success
+Usage HTTP begin failure: upstream delta=0,503,degraded=true;private explicit recovery acknowledged
+Usage HTTP result failure:2 pending,unknown tokens NULL,subsequent upstream delta0;fault-active recovery refused;after recovery pending0,unknown stays NULL
+Usage actual sidecar kill/restart:upstream entered only after request+attempt starts persisted;both recovered interrupted,NULL tokens,no fabricated zero
+test actual_sidecar_death_keeps_started_usage_and_restart_marks_unknown_interrupted ... ok
+Usage SSE result failure:partial text retained,error frame,successful DONE withheld,2 bounded pending;recovery retains unknown tokens
+Usage SSE client drop:actual upstream closed;request+attempt cancelled with unknown tokens
+Usage sequential:logical1/attempts2/tokens4/2;second-attempt begin failure sends first once and second zero
+test actual_http_usage_starts_precede_dispatch_and_failed_results_fence_new_calls ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.56s
+

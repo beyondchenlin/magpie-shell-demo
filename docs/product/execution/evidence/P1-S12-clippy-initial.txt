@@ -1,0 +1,117 @@
+    Checking tagma-core v0.2.0-dev.15 (D:\demo1\tagmaai\crates\tagma-core)
+   Compiling tagma-desktop v0.2.0-dev.15 (D:\demo1\tagmaai\src-tauri)
+warning: failed to parse serde attribute
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+    Checking tagma-runtime v0.2.0-dev.15 (D:\demo1\tagmaai\crates\tagma-runtime)
+    Checking tagma-gateway v0.2.0-dev.15 (D:\demo1\tagmaai\crates\tagma-gateway)
+error: this expression creates a reference which is immediately dereferenced by the compiler
+   --> crates\tagma-gateway\src\http_api.rs:834:13
+    |
+834 |             &state,
+    |             ^^^^^^ help: change this to: `state`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.98.0/index.html#needless_borrow
+    = note: `-D clippy::needless-borrow` implied by `-D warnings`
+    = help: to override `-D warnings` add `#[allow(clippy::needless_borrow)]`
+
+error: this `if` statement can be collapsed
+   --> crates\tagma-gateway\src\usage.rs:154:21
+    |
+154 | /                     if let Some(reply) = message.reply {
+155 | |                         if reply.send(result).is_err() && began {
+...   |
+175 | |                     }
+    | |_____________________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.98.0/index.html#collapsible_if
+    = note: `-D clippy::collapsible-if` implied by `-D warnings`
+    = help: to override `-D warnings` add `#[allow(clippy::collapsible_if)]`
+help: collapse nested if block
+    |
+154 ~                     if let Some(reply) = message.reply
+155 ~                         && reply.send(result).is_err() && began {
+156 |                             // The caller never received a usable start grant. Close a
+...
+173 |                             }
+174 ~                         }
+    |
+
+error: could not compile `tagma-gateway` (bin "tagma-gateway") due to 2 previous errors
+warning: build failed, waiting for other jobs to finish...
+error: this `if` statement can be collapsed
+   --> crates\tagma-gateway\src\usage.rs:141:25
+    |
+141 | /                         if let Some(hook) = hook {
+142 | |                             if (hook.finish && is_finish)
+143 | |                                 || (!hook.finish
+144 | |                                     && began
+...   |
+152 | |                         }
+    | |_________________________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.98.0/index.html#collapsible_if
+    = note: `-D clippy::collapsible-if` implied by `-D warnings`
+    = help: to override `-D warnings` add `#[allow(clippy::collapsible_if)]`
+help: collapse nested if block
+    |
+141 ~                         if let Some(hook) = hook
+142 ~                             && ((hook.finish && is_finish)
+143 |                                 || (!hook.finish
+...
+146 |                                         .as_ref()
+147 ~                                         .is_some_and(|(_, ordinal, _)| ordinal.is_some())))
+148 |                             {
+149 |                                 hook.entered.notify_one();
+150 |                                 hook.release.wait();
+151 ~                             }
+    |
+
+error: this `if` statement can be collapsed
+   --> crates\tagma-gateway\src\usage.rs:154:21
+    |
+154 | /                     if let Some(reply) = message.reply {
+155 | |                         if reply.send(result).is_err() && began {
+...   |
+175 | |                     }
+    | |_____________________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.98.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+154 ~                     if let Some(reply) = message.reply
+155 ~                         && reply.send(result).is_err() && began {
+156 |                             // The caller never received a usable start grant. Close a
+...
+173 |                             }
+174 ~                         }
+    |
+
+error: could not compile `tagma-gateway` (bin "tagma-gateway" test) due to 3 previous errors

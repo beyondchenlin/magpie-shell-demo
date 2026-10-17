@@ -4,6 +4,7 @@ mod catalog;
 mod health;
 mod http_api;
 mod security;
+mod usage;
 use axum::{
     extract::{Request as HttpRequest, State},
     middleware::{self, Next},
@@ -33,6 +34,7 @@ type LoadedSnapshot = (
 );
 
 struct Runtime {
+    usage: Arc<usage::Ledger>,
     security: Arc<security::Gate>,
     catalog_client: reqwest::Client,
     catalog_jobs: Arc<catalog::Jobs>,
@@ -230,7 +232,19 @@ async fn run(
         Ok(revision) => revision,
         Err(_) => return 15,
     };
+    let usage_directory = directory.clone();
+    let usage = match tokio::time::timeout(
+        Duration::from_secs(8),
+        tokio::task::spawn_blocking(move || usage::Ledger::open(&usage_directory)),
+    )
+    .await
+    {
+        Ok(Ok(Ok(ledger))) => ledger,
+        _ => return 15,
+    };
     let status = RuntimeStatus {
+        usage_degraded: None,
+        usage_pending_results: None,
         security_revision: Some(security_revision),
         state: RuntimeState::Running,
         instance_id: Some(instance_id),
@@ -247,6 +261,7 @@ async fn run(
     let health = health::Tracker::new(directory.clone(), shutdown.clone());
     health.reconcile(&snapshot);
     let state = Arc::new(Runtime {
+        usage,
         security,
         catalog_jobs: Arc::new(catalog::Jobs::default()),
         catalog_slots: Arc::new(tokio::sync::Semaphore::new(2)),
@@ -310,14 +325,17 @@ async fn run(
                             let mut stop = false;
                             match request.command {
                                 Command::Status => {},
+                                Command::RecoverUsage => {
+                                    if let Err(error)=state.usage.recover().await {let mut status=status_snapshot(&state).await;status.error=Some(error);let response=Response{protocol_version:PROTOCOL_VERSION,product_version:PRODUCT_VERSION.into(),instance_id:state.manifest.instance_id.clone(),config_id:state.manifest.config_id.clone(),challenge:request.challenge,status};let _=ipc::write_frame(&mut stream,&response).await;return;}
+                                },
                                 Command::ConfirmSecurity {revision} => {
                                     match confirm_security(&state,revision).await {Ok(_)=>{},Err(error)=>{
-                                        let mut status=state.status.read().await.clone();status.error=Some(error);let response=Response {protocol_version:PROTOCOL_VERSION,product_version:PRODUCT_VERSION.into(),instance_id:state.manifest.instance_id.clone(),config_id:state.manifest.config_id.clone(),challenge:request.challenge,status};let _=ipc::write_frame(&mut stream,&response).await;return;
+                                        let mut status=status_snapshot(&state).await;status.error=Some(error);let response=Response {protocol_version:PROTOCOL_VERSION,product_version:PRODUCT_VERSION.into(),instance_id:state.manifest.instance_id.clone(),config_id:state.manifest.config_id.clone(),challenge:request.challenge,status};let _=ipc::write_frame(&mut stream,&response).await;return;
                                     }}
                                 },
                                 Command::Probe { input } => {
                                     if let Err(error)=catalog::start(&state,input).await {
-                                        let mut status=state.status.read().await.clone();status.error=Some(error);
+                                        let mut status=status_snapshot(&state).await;status.error=Some(error);
                                         let response=Response {protocol_version:PROTOCOL_VERSION,product_version:PRODUCT_VERSION.into(),instance_id:state.manifest.instance_id.clone(),config_id:state.manifest.config_id.clone(),challenge:request.challenge,status};let _=ipc::write_frame(&mut stream,&response).await;return;
                                     }
                                 },
@@ -325,11 +343,11 @@ async fn run(
                                 Command::Apply => apply(&state).await,
                                 Command::Stop { owner_token } => {
                                     if owner_token == *state.token { let mut status=state.status.write().await;status.state = RuntimeState::Stopping;status.error=None; stop = true; }
-                                    else { let mut status = state.status.read().await.clone(); status.error = Some(AppError::new(ErrorCode::OwnershipRequired));
+                                    else { let mut status = status_snapshot(&state).await; status.error = Some(AppError::new(ErrorCode::OwnershipRequired));
                                         let response = Response { protocol_version: PROTOCOL_VERSION, product_version: PRODUCT_VERSION.into(), instance_id: state.manifest.instance_id.clone(), config_id: state.manifest.config_id.clone(), challenge: request.challenge, status }; let _ = ipc::write_frame(&mut stream,&response).await; return; }
                                 },
                             }
-                            let response = Response { protocol_version: PROTOCOL_VERSION, product_version: PRODUCT_VERSION.into(), instance_id: state.manifest.instance_id.clone(), config_id: state.manifest.config_id.clone(), challenge: request.challenge, status: state.status.read().await.clone() };
+                            let response = Response { protocol_version: PROTOCOL_VERSION, product_version: PRODUCT_VERSION.into(), instance_id: state.manifest.instance_id.clone(), config_id: state.manifest.config_id.clone(), challenge: request.challenge, status: status_snapshot(&state).await };
                             let _ = ipc::write_frame(&mut stream,&response).await;
                             if stop { state.shutdown.cancel(); }
                         }).await;
@@ -481,6 +499,21 @@ async fn authorize(
     HttpResponse::from_parts(parts, axum::body::Body::from_stream(stream))
 }
 
+async fn status_snapshot(state: &Runtime) -> RuntimeStatus {
+    let mut status = state.status.read().await.clone();
+    status.usage_degraded = Some(state.usage.degraded());
+    status.usage_pending_results = Some(state.usage.pending());
+    if state.usage.degraded()
+        && matches!(status.state, RuntimeState::Running | RuntimeState::Degraded)
+    {
+        status.state = RuntimeState::Degraded;
+        if status.error.is_none() {
+            status.error = Some(AppError::new(ErrorCode::UsageStorageUnavailable));
+        }
+    }
+    status
+}
+
 async fn confirm_security(state: &Runtime, expected: u32) -> AppResult<u32> {
     match state.security.confirm(expected).await {
         Ok(revision) => {
@@ -598,6 +631,7 @@ mod apply_tests {
             .tempdir()
             .unwrap();
         Arc::new(Runtime {
+            usage: usage::Ledger::open(fixture.path()).unwrap(),
             security: security::Gate::new(fixture.path().to_owned(), CancellationToken::new()),
             catalog_jobs: Arc::new(catalog::Jobs::default()),
             catalog_slots: Arc::new(tokio::sync::Semaphore::new(2)),
@@ -614,6 +648,8 @@ mod apply_tests {
                 console_attached: false,
             },
             status: RwLock::new(RuntimeStatus {
+                usage_degraded: None,
+                usage_pending_results: None,
                 security_revision: None,
                 state: RuntimeState::Running,
                 instance_id: Some("test".into()),

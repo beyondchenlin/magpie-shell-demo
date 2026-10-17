@@ -34,7 +34,28 @@ struct HealthContext {
 struct ForwardContext {
     health: HealthContext,
     run: Arc<super::security::Run>,
+    request: Arc<super::usage::TrackedRequest>,
+    ordinal: u32,
+    attempt: AttemptSlot,
 }
+#[derive(Clone, Default)]
+struct AttemptSlot(Arc<std::sync::Mutex<Option<super::usage::Attempt>>>);
+struct Invocation {
+    run: Arc<super::security::Run>,
+    request: Arc<super::usage::TrackedRequest>,
+    ordinal: u32,
+}
+struct Execution {
+    plan: PinnedPlan,
+    run: Arc<super::security::Run>,
+    request: Arc<super::usage::TrackedRequest>,
+    deadline: tokio::time::Instant,
+    streaming: bool,
+}
+#[derive(Clone)]
+struct FailureCode(String);
+#[derive(Clone)]
+struct UsageStream;
 impl HealthContext {
     fn observe(&self, observation: tagma_core::health::HealthObservation) {
         self.tracker.observe(
@@ -234,6 +255,7 @@ pub fn error(status: StatusCode, code: &str) -> Response {
         Json(json!({"error":{"code":code,"message":code,"type":"tagma_gateway_error"}})),
     )
         .into_response();
+    response.extensions_mut().insert(FailureCode(code.into()));
     if let Some(failure) = health_failure(code) {
         response.extensions_mut().insert(failure);
     }
@@ -677,7 +699,91 @@ async fn completion(
             },
         );
     }
-    let total_deadline = request_started + plan.timeout;
+    let deadline = request_started + plan.timeout;
+    let Some(final_provider) = plan.steps.last().map(|step| step.provider.id.clone()) else {
+        return error(
+            StatusCode::SERVICE_UNAVAILABLE,
+            "TEAM_DEPENDENCY_UNAVAILABLE",
+        );
+    };
+    let config_revision = plan.revision;
+    let team_revision = plan.team_revision;
+    let start = tagma_core::usage::RequestStart {
+        id: request_id.clone(),
+        provider_id: final_provider,
+        model: model.into(),
+        config_revision: plan.revision,
+        team_revision: plan.team_revision,
+        started_ms: match tagma_core::health::now_ms() {
+            Ok(now) => now,
+            Err(_) => return error(StatusCode::SERVICE_UNAVAILABLE, super::usage::FAILURE),
+        },
+    };
+    let request = match tokio::time::timeout_at(deadline, state.usage.begin(start, deadline)).await
+    {
+        Ok(Ok(request)) => request,
+        _ => {
+            return request_metadata(
+                error(StatusCode::SERVICE_UNAVAILABLE, super::usage::FAILURE),
+                &request_id,
+                config_revision,
+                team_revision,
+            );
+        }
+    };
+    let mut response = execute_plan(
+        &state,
+        &input,
+        Execution {
+            plan,
+            run,
+            request: request.clone(),
+            deadline,
+            streaming,
+        },
+    )
+    .await;
+    if response.extensions().get::<UsageStream>().is_none() {
+        let code = response
+            .extensions()
+            .get::<FailureCode>()
+            .map(|code| code.0.as_str());
+        if request.finish(code).await.is_err() {
+            response = unconfirmed_response(response);
+        }
+    }
+    request_metadata(response, &request_id, config_revision, team_revision)
+}
+fn request_metadata(
+    mut response: Response,
+    id: &str,
+    revision: u32,
+    team: Option<u32>,
+) -> Response {
+    response.headers_mut().insert(
+        "x-tagma-request-id",
+        HeaderValue::from_str(id).expect("UUID"),
+    );
+    response
+        .headers_mut()
+        .insert("x-tagma-config-revision", HeaderValue::from(revision));
+    if let Some(team) = team {
+        response
+            .headers_mut()
+            .insert("x-tagma-team-revision", HeaderValue::from(team));
+    }
+    response
+}
+
+async fn execute_plan(state: &Arc<Runtime>, input: &Value, execution: Execution) -> Response {
+    let Execution {
+        plan,
+        run,
+        request,
+        deadline: total_deadline,
+        streaming,
+    } = execution;
+    let request_id = request.id.clone();
     let count = plan.steps.len();
     let mut previous = None;
     for (index, step) in plan.steps.into_iter().enumerate() {
@@ -705,7 +811,7 @@ async fn completion(
             return error(StatusCode::GATEWAY_TIMEOUT, "REQUEST_BUDGET_EXCEEDED");
         }
         let final_step = index + 1 == count;
-        let mut payload = input.clone();
+        let mut payload = (*input).clone();
         payload["model"] = json!(step.model);
         payload["stream"] = json!(final_step && streaming);
         if !final_step {
@@ -725,8 +831,12 @@ async fn completion(
         }
         let deadline = total_deadline.min(tokio::time::Instant::now() + step.timeout);
         let mut response = forward(
-            &state,
-            &run,
+            state,
+            Invocation {
+                run: run.clone(),
+                request: request.clone(),
+                ordinal: index as u32 + 1,
+            },
             &step,
             &payload,
             final_step && streaming,
@@ -783,13 +893,14 @@ async fn completion(
 
 async fn forward(
     state: &Arc<Runtime>,
-    run: &Arc<super::security::Run>,
+    invocation: Invocation,
     step: &PinnedStep,
     input: &Value,
     streaming: bool,
     total_deadline: tokio::time::Instant,
     public_model: Option<String>,
 ) -> Response {
+    let attempt = AttemptSlot::default();
     let health = HealthContext {
         tracker: state.health.clone(),
         provider_id: step.provider.id.clone(),
@@ -805,7 +916,10 @@ async fn forward(
         public_model,
         ForwardContext {
             health,
-            run: run.clone(),
+            run: invocation.run,
+            request: invocation.request,
+            ordinal: invocation.ordinal,
+            attempt: attempt.clone(),
         },
     )
     .await;
@@ -820,6 +934,90 @@ async fn forward(
             tagma_core::health::HealthObservation::InferenceFailed(failure.clone()),
         );
     }
+    let tracked = attempt.0.lock().unwrap_or_else(|p| p.into_inner()).take();
+    match tracked {
+        Some(attempt) => account_response(response, attempt, streaming).await,
+        None => response,
+    }
+}
+
+async fn account_response(
+    response: Response,
+    mut attempt: super::usage::Attempt,
+    streaming: bool,
+) -> Response {
+    if !streaming || !response.status().is_success() {
+        let code = response
+            .extensions()
+            .get::<FailureCode>()
+            .map(|code| code.0.as_str());
+        let tokens = response
+            .extensions()
+            .get::<tagma_core::usage::Tokens>()
+            .copied()
+            .unwrap_or_default();
+        if attempt.finish(code, tokens).await.is_err() {
+            return unconfirmed_response(response);
+        }
+        return response;
+    }
+    let (mut parts, body) = response.into_parts();
+    parts.extensions.insert(UsageStream);
+    let output = async_stream::stream! {
+        let mut body=body.into_data_stream();
+        let mut tokens=tagma_core::usage::Tokens::default();let mut seen_usage=false;let mut ambiguous=false;
+        while let Some(chunk)=body.next().await{
+            let bytes=match chunk{Ok(bytes)=>bytes,Err(_)=>{
+                let code="UPSTREAM_STREAM_INTERRUPTED";let result=attempt.finish(Some(code),tokens).await;let request_result=attempt.finish_request(Some(code)).await;
+                yield Ok::<_,Infallible>(usage_stream_error_state(code,result.is_err()||request_result.is_err()));return;
+            }};
+            if bytes.as_ref()==b"data: [DONE]\n\n"{
+                let result=attempt.finish(None,tokens).await;
+                let code=if result.is_ok(){None}else{Some(super::usage::FAILURE)};
+                let request_result=attempt.finish_request(code).await;
+                if result.is_err()||request_result.is_err(){yield Ok(usage_stream_error(super::usage::FAILURE));}else{yield Ok(bytes);}
+                return;
+            }
+            let value=std::str::from_utf8(&bytes).ok().and_then(|text|text.strip_prefix("data: ")).and_then(|text|serde_json::from_str::<Value>(text.trim()).ok());
+            if let Some(value)=value{
+                if let Some(code)=value["error"]["code"].as_str(){
+                    let result=attempt.finish(Some(code),tokens).await;
+                    let request_result=attempt.finish_request(Some(code)).await;
+                    if result.is_err()||request_result.is_err(){yield Ok(usage_stream_error_state(code,true));}else{yield Ok(bytes);}
+                    return;
+                }
+                if value.get("usage").is_some_and(Value::is_object){let reported=super::usage::tokens(&value);if seen_usage&&tokens!=reported{ambiguous=true;}seen_usage=true;tokens=if ambiguous{Default::default()}else{reported};}
+            }
+            yield Ok(bytes);
+        }
+        let code="UPSTREAM_STREAM_INTERRUPTED";let result=attempt.finish(Some(code),tokens).await;let request_result=attempt.finish_request(Some(code)).await;
+        yield Ok(usage_stream_error_state(code,result.is_err()||request_result.is_err()));
+    };
+    Response::from_parts(parts, Body::from_stream(output))
+}
+fn usage_stream_error(code: &str) -> Bytes {
+    Bytes::from(format!(
+        "data: {}\n\n",
+        json!({"error":{"code":code,"message":code}})
+    ))
+}
+fn usage_stream_error_state(code: &str, unconfirmed: bool) -> Bytes {
+    if !unconfirmed {
+        return usage_stream_error(code);
+    }
+    Bytes::from(format!(
+        "data: {}\n\n",
+        json!({"error":{"code":code,"message":code},"usage_state":"unconfirmed"})
+    ))
+}
+fn unconfirmed_response(mut response: Response) -> Response {
+    if response.status().is_success() {
+        response = error(StatusCode::SERVICE_UNAVAILABLE, super::usage::FAILURE);
+    }
+    response.headers_mut().insert(
+        "x-tagma-usage-state",
+        HeaderValue::from_static("unconfirmed"),
+    );
     response
 }
 
@@ -832,7 +1030,13 @@ async fn forward_response(
     public_model: Option<String>,
     context: ForwardContext,
 ) -> Response {
-    let ForwardContext { health, run } = context;
+    let ForwardContext {
+        health,
+        run,
+        request: tracked,
+        ordinal,
+        attempt,
+    } = context;
     if run.cancel.is_cancelled() {
         return error(StatusCode::FORBIDDEN, "ACCESS_REVOKED");
     }
@@ -876,6 +1080,26 @@ async fn forward_response(
     };
     #[cfg(test)]
     run.before_dispatch(&step.model, true).await;
+    if run.cancel.is_cancelled() {
+        return error(StatusCode::FORBIDDEN, "ACCESS_REVOKED");
+    }
+    if state.shutdown.is_cancelled() {
+        return error(StatusCode::SERVICE_UNAVAILABLE, "GATEWAY_STOPPING");
+    }
+    if tokio::time::Instant::now() >= total_deadline {
+        return error(StatusCode::GATEWAY_TIMEOUT, "REQUEST_BUDGET_EXCEEDED");
+    }
+    let tracked_attempt = match tokio::time::timeout_at(
+        total_deadline,
+        tracked.attempt(ordinal, &step.provider.id, &step.model),
+    )
+    .await
+    {
+        Ok(Ok(attempt)) => attempt,
+        Ok(Err(_)) => return error(StatusCode::SERVICE_UNAVAILABLE, super::usage::FAILURE),
+        Err(_) => return error(StatusCode::GATEWAY_TIMEOUT, "REQUEST_BUDGET_EXCEEDED"),
+    };
+    *attempt.0.lock().unwrap_or_else(|p| p.into_inner()) = Some(tracked_attempt);
     if run.cancel.is_cancelled() {
         return error(StatusCode::FORBIDDEN, "ACCESS_REVOKED");
     }
@@ -1045,7 +1269,10 @@ async fn forward_response(
         if let Some(model) = public_model {
             value["model"] = json!(model);
         }
-        Json(value).into_response()
+        let tokens = super::usage::tokens(&value);
+        let mut response = Json(value).into_response();
+        response.extensions_mut().insert(tokens);
+        response
     }
 }
 

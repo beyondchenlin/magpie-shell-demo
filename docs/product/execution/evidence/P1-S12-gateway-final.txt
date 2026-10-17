@@ -1,0 +1,162 @@
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+   Compiling tagma-gateway v0.2.0-dev.15 (D:\demo1\tagmaai\crates\tagma-gateway)
+    Finished `test` profile [unoptimized] target(s) in 2.62s
+     Running unittests src\main.rs (target\debug\deps\tagma_gateway-73f8e811999c3931.exe)
+
+running 14 tests
+test health::tests::coalescing_preserves_scope_time_and_failure_precedence ... ok
+test http_api::tests::refuses_unimplemented_fields_before_dispatch ... ok
+A08 metadata: pending catalog writes block health reads; confirmed completion advances epoch; abandoned/unknown completion never acknowledges old ready rows
+test apply_tests::delayed_old_failure_never_overwrites_new_success ... ok
+test apply_tests::delayed_old_success_never_regresses_effective_revision ... ok
+test apply_tests::timed_out_credential_load_keeps_one_worker_limit ... ok
+test health::tests::catalog_writes_share_the_health_epoch_and_unknown_results_remain_unconfirmed ... ok
+test apply_tests::pending_apply_cannot_resurrect_stopping_runtime ... ok
+SUP-006 observed_t0=1000 drain_t=301001 persisted_success=Some(1000) ready=false selected=false
+test health::tests::delayed_health_write_does_not_refresh_an_expired_observation ... ok
+SUP-007 phase=first-step token_scope=false cancel_inflight=false confirmed_revision=1 upstream_target_calls=0 status=403
+SUP-007 phase=next-step token_scope=false cancel_inflight=false confirmed_revision=1 upstream_target_calls=0 status=403
+A11 real HTTP/in-memory credentials: missing/wrong/revoked 401; no data-plane management; new token saved-before-apply denied then accepted; provider revoke blocks new dispatch; optional cancellation closes real upstream and retains partial/error without DONE; corrupt security store 503/unconfirmed
+test security::tests::real_http_token_revocation_rotation_inflight_cancel_and_storage_failure ... ok
+Usage accounting ACK:remaining150ms request budget ends wait while committed writer ACK is held;explicit recovery required
+test usage::tests::accounting_ack_wait_respects_the_remaining_request_budget ... ok
+SUP-007 phase=admitted-first-send token_scope=false cancel_inflight=false confirmed_revision=1 upstream_target_calls=1 status=200
+A14 health consumer: bounded single read slot, admission timeout, recovery and shutdown rejection verified
+test health::tests::confirmed_reads_are_bounded_and_shutdown_is_not_an_acknowledgement ... ok
+SUP-007 phase=first-step token_scope=true cancel_inflight=false confirmed_revision=1 upstream_target_calls=0 status=403
+SUP-007 phase=next-step token_scope=true cancel_inflight=false confirmed_revision=1 upstream_target_calls=0 status=403
+test security::tests::sup007_confirmed_revoke_cannot_overtake_an_unstarted_dispatch ... ok
+test health::tests::coalesced_observations_are_confirmed_only_after_persistent_write ... ok
+Usage lost committed-start ACK unit: unfinished records=0; late ACK lifecycle guard recovery
+test usage::tests::lost_attempt_start_acknowledgement_closes_both_started_records ... ok
+
+test result: ok. 14 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.88s
+
+     Running tests\catalog.rs (target\debug\deps\catalog-f9cf11411f2e0ff7.exe)
+
+running 1 test
+A08 controlled catalog case=ok outcome=Available status=Some(200) durable_backoff=true
+A08 controlled catalog case=401 outcome=Authentication status=Some(401) durable_backoff=true
+A08 controlled catalog case=403 outcome=Authentication status=Some(403) durable_backoff=true
+A08 controlled catalog case=429 outcome=RateLimited status=Some(429) durable_backoff=true
+A08 controlled catalog case=404 outcome=Unsupported status=Some(404) durable_backoff=true
+A08 controlled catalog case=405 outcome=Unsupported status=Some(405) durable_backoff=true
+A08 controlled catalog case=501 outcome=Unsupported status=Some(501) durable_backoff=true
+A08 controlled catalog case=500 outcome=Upstream status=Some(500) durable_backoff=true
+A08 controlled catalog case=invalid outcome=Protocol status=Some(200) durable_backoff=true
+A08 controlled catalog case=huge outcome=Protocol status=Some(200) durable_backoff=true
+A08 controlled catalog case=idle outcome=Timeout status=Some(200) durable_backoff=true
+A08 controlled catalog case=tls outcome=Tls status=None durable_backoff=true
+A08 controlled catalog case=network outcome=Network status=None durable_backoff=true
+A08 admission: two-job bound, cancellation and cooldown after real sidecar restart verified
+A08 inference: actual upstream 404 mapped to UPSTREAM_MODEL_UNAVAILABLE, exactly three explicitly requested inference calls, zero automatic generation probes
+A08 facts: GET-only discovery, original IDs/source/time, no inference promotion, auth negative fence, no catalog revival, explicit inference recovery, cancelled/stale-generation rejection verified
+test controlled_catalog_classification_cancellation_backoff_and_health_separation ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.10s
+
+     Running tests\first_cloud.rs (target\debug\deps\first_cloud-4284cb021c6f31fc.exe)
+
+running 1 test
+A14 HTTP pin: in-flight two-step target=b/b1 across config reorder + b1 authentication failure; concurrent new call=a/a2; old published manual recipe unchanged
+A14 HTTP selection: actual inference required; global provider+model reorder; default App custom/empty scope; stale rows -> NO_AVAILABLE_BRAIN; pending/failed write -> omitted/rejected; no implicit probes; metadata recovery verified
+test automatic_brain_real_http_order_fallback_uncertainty_and_inflight_pinning ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.82s
+
+     Running tests\inference.rs (target\debug\deps\inference-001797fec97a6308.exe)
+
+running 1 test
+test real_gateway_text_contract_streaming_snapshot_pin_and_client_cancel ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.05s
+
+     Running tests\process_lifecycle.rs (target\debug\deps\process_lifecycle-a0957dcad10e9ee5.exe)
+
+running 14 tests
+test real_old_binary_is_not_stopped_or_migrated_by_new_entrypoint ... ignored, Requires explicitly supplied retained dev.3 executable; no binary download or key access
+test system_token_authenticates_only_data_plane_and_never_appears_in_configuration_files ... ignored, Explicit synthetic OS credential + actual HTTP integration, exact created reference cleaned
+test oversized_private_frame_is_dropped_without_crashing_gateway ... ok
+test port_conflict_never_changes_port_or_kills_existing_listener ... ok
+test active_older_version_envelope_is_reported_without_spawn_or_stop ... ok
+test concurrent_start_has_one_instance_and_one_owner ... ok
+test unclean_health_invalidation_failure_prevents_readiness_and_preserves_marker ... ok
+test stale_old_version_manifest_does_not_block_start_without_an_active_lock ... ok
+test parent_eof_exits_managed_process_but_standalone_survives ... ok
+test unclean_health_restart_preserves_success_facts_but_requires_new_confirmation ... ok
+test auth_missing_token_denies_by_default_and_port_changes_require_explicit_restart ... ok
+test saved_port_change_cannot_be_acknowledged_on_old_port_during_crash_restart ... ok
+test managed_ready_apply_reconcile_wrong_owner_and_graceful_stop ... ok
+test managed_crashes_restart_at_most_three_times_then_remain_failed ... ok
+
+test result: ok. 12 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 8.20s
+
+     Running tests\security.rs (target\debug\deps\security-768a4f282a0fbceb.exe)
+
+running 1 test
+DATA-06 routing: raw duplicate model uses the first permitted configured provider on a new call; immutable explicit team UUID never substitutes a replacement
+DATA-06 actual sidecar: saved revocation -> instance-bound acknowledgement; old in-flight step finishes, revoked next step dispatch count=0; directory filtered; restart and private catalog probe remain denied
+test persistent_revocation_overrides_pinned_team_steps_and_restarts_without_credential_access ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.25s
+
+     Running tests\teams.rs (target\debug\deps\teams-1c17971d73a20073.exe)
+
+running 1 test
+SUP-005 case=length final_calls=0 status=502 Bad Gateway
+SUP-005 case=content_filter final_calls=0 status=502 Bad Gateway
+SUP-005 case=missing_finish final_calls=0 status=502 Bad Gateway
+SUP-005 case=null_finish final_calls=0 status=502 Bad Gateway
+SUP-005 case=non_string_finish final_calls=0 status=502 Bad Gateway
+SUP-005 case=unknown_finish final_calls=0 status=502 Bad Gateway
+SUP-005 case=legacy_function final_calls=0 status=502 Bad Gateway
+SUP-005 case=legacy_reason final_calls=0 status=502 Bad Gateway
+SUP-005 case=tool_reason final_calls=0 status=502 Bad Gateway
+SUP-005 case=refusal final_calls=0 status=502 Bad Gateway
+SUP-005 case=invalid_role final_calls=0 status=502 Bad Gateway
+SUP-005 case=invalid_index final_calls=0 status=502 Bad Gateway
+SUP-005 case=error final_calls=0 status=429 Too Many Requests
+SUP-005 case=tool final_calls=0 status=502 Bad Gateway
+SUP-005 case=empty final_calls=0 status=502 Bad Gateway
+SUP-005 case=huge final_calls=0 status=502 Bad Gateway
+SUP-005 case=timeout final_calls=0 status=504 Gateway Timeout
+SUP-005 final model=tagma/test-team@2 reason=length nonstream_and_stream=preserved
+SUP-005 final model=final-model reason=length nonstream_and_stream=preserved
+SUP-005 final model=tagma/test-team@2 reason=content_filter nonstream_and_stream=preserved
+SUP-005 final model=final-model reason=content_filter nonstream_and_stream=preserved
+test team_execution_pins_recipe_and_targets_and_stops_after_failure_timeout_or_cancel ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.54s
+
+     Running tests\usage.rs (target\debug\deps\usage-92925ce630d90bd4.exe)
+
+running 2 tests
+Usage HTTP success: requests=1 attempts=1 cfg=2 tokens=2/1 persisted before response success
+Usage HTTP begin failure: upstream delta=0,503,degraded=true;private explicit recovery acknowledged
+Usage HTTP first-attempt registration failure:upstream delta0,degraded and explicit recovery
+Usage actual sidecar kill/restart:upstream entered only after request+attempt starts persisted;both recovered interrupted,NULL tokens,no fabricated zero
+test actual_sidecar_death_keeps_started_usage_and_restart_marks_unknown_interrupted ... ok
+Usage successful SSE:final reported tokens3/2 persisted before DONE
+Usage HTTP result failure:2 pending,unknown tokens NULL,subsequent upstream delta0;fault-active recovery refused;after recovery pending0,unknown stays NULL
+Usage SSE result failure:partial text retained,error frame,successful DONE withheld,2 bounded pending;recovery retains unknown tokens
+Usage SSE client drop:actual upstream closed;request+attempt cancelled with unknown tokens
+Usage sequential:logical1/attempts2/tokens4/2;second-attempt begin failure sends first once and second zero
+Usage actual revoke(true):partial stream ends ACCESS_REVOKED,request+attempt cancelled,NULL usage;no success DONE
+test actual_http_usage_starts_precede_dispatch_and_failed_results_fence_new_calls ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.38s
+

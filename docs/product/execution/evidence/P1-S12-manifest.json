@@ -1,0 +1,316 @@
+{
+  "recordedAtUtc": "2026-10-17T18:39:44.363Z",
+  "sourceBase": "ba4c1f7009a48b436c2c578bd722a078d05f6b4e",
+  "candidateVersion": "0.2.0-dev.15",
+  "configSchema": 8,
+  "usageSchema": 1,
+  "sources": [
+    {
+      "path": "D:\\demo1\\tagmaai\\Cargo.lock",
+      "bytes": 138828,
+      "sha256": "83e7325030b8889c144f6198ffdf08610a7a67fe6adb907922c03ca52f9c8009"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\Cargo.toml",
+      "bytes": 397,
+      "sha256": "75df7f937f4f025d464205922f96a39502bb88a42ec26202fce2d2a2d36e0c0e"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-core\\src\\contract.rs",
+      "bytes": 6843,
+      "sha256": "fa17253fc8909c9d46fa5f9832cd9546301b513ef8f708292142c0eeadac338c"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-core\\src\\usage.rs",
+      "bytes": 45743,
+      "sha256": "4c9b593b4d7b2469ebb047e111769ec06b402392ec2b7d08dbf0dcebcc47d4c0"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-gateway\\src\\http_api.rs",
+      "bytes": 48391,
+      "sha256": "97d0904a67e1c3c120ec4067eee198a4cb3d3d43e7b8849958c3811904793e68"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-gateway\\src\\main.rs",
+      "bytes": 31710,
+      "sha256": "dcf49680dda6c2f5808d73da3553de05fca1351e5226d6bfd0c2dac04f396e4e"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-gateway\\src\\usage.rs",
+      "bytes": 17616,
+      "sha256": "8b59a85d0d9944469ed978e1c83f73ec958dd26b7a2a36ec6683b0906868aadf"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-gateway\\tests\\usage.rs",
+      "bytes": 19566,
+      "sha256": "ec3693f3f7b24738b8ed5cbc34cc06f752b0ebf183cd7ec8f69e3f9fc69d72a4"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-runtime\\src\\ipc.rs",
+      "bytes": 10250,
+      "sha256": "1ccf734053575b9d4d8b2c4c94bbd76701146dd01524a95c05da18beb5d11d8a"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-runtime\\src\\manager.rs",
+      "bytes": 17528,
+      "sha256": "69b8d3a745260e8351a5d97f82e9a7588741c3b2e6491b6a4620c42083a5cce6"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\src-tauri\\src\\main.rs",
+      "bytes": 19359,
+      "sha256": "1c1237c830f7fae079014a85f04c71e8356c9538ad5cacf26b1cc5a96fba388b"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\src-tauri\\tauri.conf.json",
+      "bytes": 1502,
+      "sha256": "47802436b81819620d9b7da696feb79314811aa9434560148f99868706116a7e"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\src\\product\\contract.ts",
+      "bytes": 8935,
+      "sha256": "37477d944349b4306b51b29032560b2be06957acb5d426bd6f6d3b5f6d23ed83"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\src\\product\\copy.ts",
+      "bytes": 18374,
+      "sha256": "292805dc4e38fa170a6c1f37864627726370f022281986794c32e25bae04b36a"
+    }
+  ],
+  "evidence": [
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S12-ack-after.txt",
+      "bytes": 1697,
+      "sha256": "6c8839add3bc9df10f4464f3756e6463225e1a0baec82f3b5ddff8ff239e80d6"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S12-ack-before-source.json",
+      "bytes": 286,
+      "sha256": "0717c28bd1bb18d62775b22b161c7d042c172760c2e398efd16e35efb3c3657a"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S12-ack-before-source.txt",
+      "bytes": 14672,
+      "sha256": "17b0e62f5ef59cccfc1dcea5fe8e0a2ea588036e0b96d063dd860532fca24319"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S12-ack-before.txt",
+      "bytes": 1525,
+      "sha256": "7d7877c43581dfc649cc2b67c89b0f6cc37708dadce9c40ed95836419729f529"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S12-ack-deadline-final.txt",
+      "bytes": 1194,
+      "sha256": "48819df67b926bfe9ed5673ab2e20dc806001fa71c5710c295ab5153e0d42c57"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S12-ack-fixed.txt",
+      "bytes": 984,
+      "sha256": "3fe45a27fc017772f38e10c8bb70c032f711985eb20d33c07b7f1441bef18a16"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S12-check-initial.txt",
+      "bytes": 748,
+      "sha256": "2fed846e9ea352a8027df6f32f3de62783312de7793d2bcdea40041dccfa8aae"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S12-cis.txt",
+      "bytes": 392,
+      "sha256": "7587116bc3db3e5adceb2714727a26a5b9eb4723fdf160a7622bf46d25b860a5"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S12-clippy-complete.txt",
+      "bytes": 590,
+      "sha256": "683a5dff1414f2a9286a026c69ab33770c593bff42968b18fc1cb499fd3cc661"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S12-clippy-final.txt",
+      "bytes": 1108,
+      "sha256": "4c1bb8a30d4495a4d8c0dbc6de620fe9666b60a33656fe1071817247ec1a7d74"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S12-clippy-initial.txt",
+      "bytes": 4969,
+      "sha256": "d708d1d02cdfaa152573cae5214981009420a29a074d49d21de4a9d924ca63f2"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S12-clippy-verified.txt",
+      "bytes": 1783,
+      "sha256": "fe255d508506802ee96701edd0eb234e3ed96d76c38f197c5bd94b7605d0538e"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S12-core-final.txt",
+      "bytes": 11740,
+      "sha256": "2f3b80baffd261703ef1d898f764e58439aaf7c852019fe0ff876e5535f4fe9b"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S12-deadline-check-fixed.txt",
+      "bytes": 590,
+      "sha256": "853590f61f73c32f7efb2340650ebc39e4c355d7705489b06bdd76f8c4faba60"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S12-deadline-check.txt",
+      "bytes": 2657,
+      "sha256": "736ef68faca3fc02254fb919eb3884c476b1fe422f565ba29546eedb7b91b79c"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S12-dto-check.txt",
+      "bytes": 574,
+      "sha256": "3c0233ebd8df8895ad42ed7dc7c66fafcc8a5373fa6e27b048c4e864eb747f80"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S12-dto-generate.txt",
+      "bytes": 566,
+      "sha256": "af0e19d1cf531dcdb695094112153520e185ce2093c57a8f7c337fbdbc0248c3"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S12-frontend.txt",
+      "bytes": 478,
+      "sha256": "e36443f4d00fa7eaaa6f6f5e1cfa65e3edf8ed9fc15ae1b4b06f14a321122a57"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S12-gateway-final.txt",
+      "bytes": 11768,
+      "sha256": "41bc7704666194c08ef9771ca13050b1b330da9b8a2356e393d929ef6c52db41"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S12-gateway-full.txt",
+      "bytes": 11559,
+      "sha256": "f55a09ebfdcc6072088788719559fa9f404de1376e2c7db4eb31a4fe0bc2ee44"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S12-gateway-verified.txt",
+      "bytes": 11768,
+      "sha256": "16bd62fd765b9850a431820d79a836aa3b01445545806b8c05b0c1323600cc7c"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S12-lint-json.txt",
+      "bytes": 201,
+      "sha256": "16519cb73017a0215fba241e144bf7c7f6ab1cebcb3bdabbb40ba2832674ab84"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S12-retention.json",
+      "bytes": 1096,
+      "sha256": "3d0b7de0ca36dcfee5c0ec93f4aa2ca05fcd5dc3eca343d2299d07bc9cb15b80"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S12-runtime-final.txt",
+      "bytes": 988,
+      "sha256": "fd4ec5689114a4c71a4c65e5752468c6d8e23d6a3766e644950bf4b68192511e"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S12-space-plan.json",
+      "bytes": 582,
+      "sha256": "700b8d6aca96c93689169720cb11e5a3bcc5a9b9a3dc79947f384735876acdae"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S12-usage-http-complete.txt",
+      "bytes": 2087,
+      "sha256": "76a92ba42b675bf35b0a62697deb06b924f6db083b5a7f142ffa141e82a3897d"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S12-usage-http-expanded.txt",
+      "bytes": 2087,
+      "sha256": "44ddc398dc723227cb8be646824a94e736860319fe90443ce4383a2b890b7ff7"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S12-usage-http-final.txt",
+      "bytes": 2087,
+      "sha256": "e086bc48b0a3214772c68d74cdfce75bb9021433c313bb456c8600c8ea369cab"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S12-usage-http-first.txt",
+      "bytes": 1809,
+      "sha256": "67200862774517b9ea4db3f64001db03528e5ef2c3fc358c920b9842c02d30ed"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S12-usage-http-initial.txt",
+      "bytes": 3698,
+      "sha256": "b23bb645fe2dcf3f5cb1d5ff948142dea08b778c9f98b27a8de20194f3daa9d2"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S12-usage-http-reviewed.txt",
+      "bytes": 1372,
+      "sha256": "06bc166b8cfb7f1a77d1f46a310457ac03e22eab1ad05640fae93d4d6498141a"
+    }
+  ],
+  "commands": [
+    "cargo test -p tagma-core --locked --offline -- --nocapture",
+    "cargo test -p tagma-gateway --locked --offline -- --nocapture",
+    "cargo test -p tagma-gateway --test usage --locked --offline -- --nocapture",
+    "cargo test -p tagma-runtime --lib --locked --offline",
+    "cargo clippy --workspace --all-targets --locked --offline -- -D warnings",
+    "cargo clippy -p tagma-gateway --all-targets --locked --offline -- -D warnings",
+    "cargo run -p tagma-core --example export-contract --locked --offline -- --check",
+    "npm run build:tagma",
+    "node node_modules/oxlint/bin/oxlint --format json src/product/copy.ts src/product/contract.ts",
+    "npm run cis-guard"
+  ],
+  "results": {
+    "corePassed": 60,
+    "coreIgnored": 7,
+    "gatewayPassed": 33,
+    "gatewayIgnored": 2,
+    "runtimePassed": 1,
+    "usageHttpIntegratedTestsPassed": 2,
+    "ackBeforeUnfinishedRows": 1,
+    "ackFixedUnfinishedRows": 0,
+    "remainingBudgetAckWaitTest": "passed",
+    "SUP007Regression": "provider/token first/next zero target calls; admitted cancel=false one call remains allowed",
+    "clippy": "passed",
+    "dto": "passed",
+    "typescriptVite": "passed",
+    "oxlint": {
+      "files": 2,
+      "diagnostics": 0,
+      "rules": 116
+    },
+    "cis": "passed"
+  },
+  "boundedResources": {
+    "writerThreadsPerInstance": 1,
+    "writerQueueMessages": 32,
+    "resultRecoveryQueue": 32,
+    "logicalActiveRequests": 8,
+    "maxAttemptsPerRequest": 16,
+    "ackWaitMsAtMost": 800,
+    "ackWaitAlsoBoundByRemainingRequestBudget": true
+  },
+  "scope": "Actual owned sidecar/controlled HTTP usage dispatch and lifecycle integration, not full A16/A28/A27 acceptance",
+  "desktopControl": false,
+  "uiVerified": false,
+  "userInstallation": "dev.9 unchanged",
+  "userDataMigrated": false,
+  "realCredentialAccess": false,
+  "realProviderCalls": 0,
+  "newWorktrees": 0,
+  "newEnvironments": 0,
+  "retainedNewFixtures": [],
+  "retainedExistingFixtureLogicalBytes": 122880,
+  "retentionRecord": "docs/product/execution/evidence/P1-S12-retention.json",
+  "selfReviewRounds": 2,
+  "A16FullyAccepted": false,
+  "A28FullyAccepted": false,
+  "A27ApplyFailureAndIpcLossMatrixAccepted": false,
+  "P1FullyAccepted": false,
+  "diskStartGiB": {
+    "C": 42.63,
+    "D": 12.71
+  },
+  "diskEnd": [
+    {
+      "drive": "C",
+      "freeGiB": 42.52
+    },
+    {
+      "drive": "D",
+      "freeGiB": 11.83
+    }
+  ],
+  "diskNote": "Includes concurrent tasks; no net physical release claimed. Existing target/dist retained; no installer or manual cleanup.",
+  "tools": {
+    "node": "v24.14.0",
+    "oxlint": "1.88.0",
+    "tauriApi": "2.12.4"
+  },
+  "prdSha256": "6e6503391f70e3f2e53347890de6e7c9f7fd93cc393c68f7bba494ac4d67a6d6"
+}

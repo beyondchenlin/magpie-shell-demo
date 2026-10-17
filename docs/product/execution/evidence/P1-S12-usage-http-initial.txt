@@ -1,0 +1,38 @@
+   Compiling tagma-core v0.2.0-dev.15 (D:\demo1\tagmaai\crates\tagma-core)
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+   Compiling tagma-runtime v0.2.0-dev.15 (D:\demo1\tagmaai\crates\tagma-runtime)
+   Compiling tagma-gateway v0.2.0-dev.15 (D:\demo1\tagmaai\crates\tagma-gateway)
+error[E0422]: cannot find struct, variant or union type `TeamRevisionCommand` in this scope
+   --> crates\tagma-gateway\tests\usage.rs:148:884
+    |
+148 | ...delRequest}]}}).unwrap();let view=config.publish_team(TeamRevisionCommand{protocol_version:1,expected_revision:3,team_id:view.te...
+    |                                                          ^^^^^^^^^^^^^^^^^^^
+    |
+   ::: crates\tagma-core\src\contract.rs:95:1
+    |
+ 95 | pub struct RevisionCommand {
+    | -------------------------- similarly named struct `RevisionCommand` defined here
+    |
+help: a struct with a similar name exists
+    |
+148 -         let target=CloudTarget{provider_id:provider,model_id:"usage-model".into()};let view=config.save_team(SaveTeam{protocol_version:1,expected_revision:2,id:None,slug:"usage-team".into(),recipe:TeamRecipe{display_name:"usage fixture".into(),brain:TeamBrain::Explicit{target:target.clone()},routing:TeamRouting::Sequential,total_timeout_ms:8000,steps:vec![TeamStep{target:TeamStepTarget::CloudModel{target:target.clone().into()},input:TeamStepInput::OriginalMessages,output:TeamStepOutput::IntermediateText,timeout_ms:4000,failure:TeamFailurePolicy::Abort,side_effect:TeamSideEffect::OutboundModelRequest},TeamStep{target:TeamStepTarget::CloudModel{target:target.into()},input:TeamStepInput::PreviousText,output:TeamStepOutput::FinalAnswer,timeout_ms:4000,failure:TeamFailurePolicy::Abort,side_effect:TeamSideEffect::OutboundModelRequest}]}}).unwrap();let view=config.publish_team(TeamRevisionCommand{protocol_version:1,expected_revision:3,team_id:view.teams[0].team.id.clone()}).unwrap();let team=view.teams[0].team.versions[0].public_id.clone();manager.apply().await.unwrap();
+148 +         let target=CloudTarget{provider_id:provider,model_id:"usage-model".into()};let view=config.save_team(SaveTeam{protocol_version:1,expected_revision:2,id:None,slug:"usage-team".into(),recipe:TeamRecipe{display_name:"usage fixture".into(),brain:TeamBrain::Explicit{target:target.clone()},routing:TeamRouting::Sequential,total_timeout_ms:8000,steps:vec![TeamStep{target:TeamStepTarget::CloudModel{target:target.clone().into()},input:TeamStepInput::OriginalMessages,output:TeamStepOutput::IntermediateText,timeout_ms:4000,failure:TeamFailurePolicy::Abort,side_effect:TeamSideEffect::OutboundModelRequest},TeamStep{target:TeamStepTarget::CloudModel{target:target.into()},input:TeamStepInput::PreviousText,output:TeamStepOutput::FinalAnswer,timeout_ms:4000,failure:TeamFailurePolicy::Abort,side_effect:TeamSideEffect::OutboundModelRequest}]}}).unwrap();let view=config.publish_team(RevisionCommand{protocol_version:1,expected_revision:3,team_id:view.teams[0].team.id.clone()}).unwrap();let team=view.teams[0].team.versions[0].public_id.clone();manager.apply().await.unwrap();
+    |
+
+For more information about this error, try `rustc --explain E0422`.
+error: could not compile `tagma-gateway` (test "usage") due to 1 previous error
+warning: build failed, waiting for other jobs to finish...

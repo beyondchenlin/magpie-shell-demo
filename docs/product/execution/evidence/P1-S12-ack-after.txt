@@ -1,0 +1,39 @@
+   Compiling tagma-core v0.2.0-dev.15 (D:\demo1\tagmaai\crates\tagma-core)
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+   Compiling tagma-runtime v0.2.0-dev.15 (D:\demo1\tagmaai\crates\tagma-runtime)
+   Compiling tagma-gateway v0.2.0-dev.15 (D:\demo1\tagmaai\crates\tagma-gateway)
+    Finished `test` profile [unoptimized] target(s) in 5.84s
+     Running unittests src\main.rs (target\debug\deps\tagma_gateway-73f8e811999c3931.exe)
+
+running 1 test
+Usage lost committed-start ACK unit: unfinished records=1; late ACK lifecycle guard recovery
+
+thread 'usage::tests::lost_attempt_start_acknowledgement_closes_both_started_records' (40896) panicked at crates\tagma-gateway\src\usage.rs:405:9:
+assertion `left == right` failed: late start ACK must not leave a logical request running after its cancellation
+  left: 1
+ right: 0
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test usage::tests::lost_attempt_start_acknowledgement_closes_both_started_records ... FAILED
+
+failures:
+
+failures:
+    usage::tests::lost_attempt_start_acknowledgement_closes_both_started_records
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 12 filtered out; finished in 0.86s
+
+error: test failed, to rerun pass `-p tagma-gateway --bin tagma-gateway`

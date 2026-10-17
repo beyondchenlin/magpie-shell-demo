@@ -1,0 +1,68 @@
+    Checking tagma-core v0.2.0-dev.15 (D:\demo1\tagmaai\crates\tagma-core)
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+    Checking tagma-runtime v0.2.0-dev.15 (D:\demo1\tagmaai\crates\tagma-runtime)
+    Checking tagma-gateway v0.2.0-dev.15 (D:\demo1\tagmaai\crates\tagma-gateway)
+error[E0061]: this method takes 1 argument but 2 arguments were supplied
+   --> crates\tagma-gateway\src\usage.rs:352:14
+    |
+352 |             .call(
+    |              ^^^^
+353 |                 Operation::Finish(self.request.completion(Some(self.ordinal), code, tokens)),
+354 |                 self.request.deadline,
+    |                 --------------------- unexpected argument #2 of type `tokio::time::Instant`
+    |
+note: method defined here
+   --> crates\tagma-gateway\src\usage.rs:207:14
+    |
+207 |     async fn call(&self, operation: Operation) -> AppResult<()> {
+    |              ^^^^
+help: remove the extra argument
+    |
+353 -                 Operation::Finish(self.request.completion(Some(self.ordinal), code, tokens)),
+354 -                 self.request.deadline,
+353 +                 Operation::Finish(self.request.completion(Some(self.ordinal), code, tokens)),
+    |
+
+error[E0061]: this method takes 2 arguments but 1 argument was supplied
+   --> crates\tagma-gateway\src\usage.rs:320:14
+    |
+320 |               .call_until(Operation::Finish(self.completion(
+    |  ______________^^^^^^^^^^-
+321 | |                 None,
+322 | |                 code,
+323 | |                 Tokens::default(),
+324 | |             )))
+    | |_______________- argument #2 of type `tokio::time::Instant` is missing
+    |
+note: method defined here
+   --> crates\tagma-gateway\src\usage.rs:211:14
+    |
+211 |     async fn call_until(
+    |              ^^^^^^^^^^
+...
+214 |         deadline: tokio::time::Instant,
+    |         ------------------------------
+help: provide the argument
+    |
+320 |             .call_until(Operation::Finish(self.completion(
+...
+323 |                 Tokens::default(),
+324 ~             )), /* tokio::time::Instant */)
+    |
+
+For more information about this error, try `rustc --explain E0061`.
+error: could not compile `tagma-gateway` (bin "tagma-gateway") due to 2 previous errors

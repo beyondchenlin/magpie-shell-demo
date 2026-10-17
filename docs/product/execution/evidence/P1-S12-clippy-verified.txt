@@ -1,0 +1,35 @@
+    Checking tagma-core v0.2.0-dev.15 (D:\demo1\tagmaai\crates\tagma-core)
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+    Checking tagma-runtime v0.2.0-dev.15 (D:\demo1\tagmaai\crates\tagma-runtime)
+    Checking tagma-gateway v0.2.0-dev.15 (D:\demo1\tagmaai\crates\tagma-gateway)
+error: for loop over a single element
+   --> crates\tagma-gateway\tests\usage.rs:162:118
+    |
+162 | ...)){for needle in [b"synthetic private response".as_slice()]{assert!(!bytes.windows(needle.len()).any(|window|window==needle));}}}
+    |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.98.0/index.html#single_element_loop
+    = note: `-D clippy::single-element-loop` implied by `-D warnings`
+    = help: to override `-D warnings` add `#[allow(clippy::single_element_loop)]`
+help: try
+    |
+162 ~         for suffix in ["","-wal"]{if let Ok(bytes)=std::fs::read(temp.path().join(format!("usage.sqlite3{suffix}"))){{
+163 ~         let needle = b"synthetic private response".as_slice();assert!(!bytes.windows(needle.len()).any(|window|window==needle));}}}
+    |
+
+error: could not compile `tagma-gateway` (test "usage") due to 1 previous error
+warning: build failed, waiting for other jobs to finish...

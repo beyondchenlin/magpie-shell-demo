@@ -29,6 +29,7 @@ pub enum ErrorCode {
     ProbeBusy,
     AccessRevoked,
     SecurityStateUnconfirmed,
+    UsageStorageUnavailable,
     RestartRequired,
     TeamSlugConflict,
     TeamPublished,
@@ -205,6 +206,10 @@ pub enum RuntimeState {
 
 #[derive(Debug, Clone, Serialize, Deserialize, TS)]
 pub struct RuntimeStatus {
+    #[serde(default)]
+    pub usage_degraded: Option<bool>,
+    #[serde(default)]
+    pub usage_pending_results: Option<u32>,
     #[serde(default)]
     pub security_revision: Option<u32>,
     pub state: RuntimeState,

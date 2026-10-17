@@ -1,0 +1,30 @@
+   Compiling tagma-core v0.2.0-dev.15 (D:\demo1\tagmaai\crates\tagma-core)
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+   Compiling tagma-runtime v0.2.0-dev.15 (D:\demo1\tagmaai\crates\tagma-runtime)
+   Compiling tagma-gateway v0.2.0-dev.15 (D:\demo1\tagmaai\crates\tagma-gateway)
+error[E0599]: no method named `is_err_or` found for enum `Result<T, E>` in the current scope
+   --> crates\tagma-gateway\src\usage.rs:120:39
+    |
+120 |                     if state.as_ref().is_err_or(|state| state.degraded) {
+    |                                       ^^^^^^^^^
+    |
+help: there is a method `is_err` with a similar name, but with different arguments
+   --> /rustc/48a229ceaefd4985c50990b14116b6d856af0985/library\core\src\result.rs:646:4
+
+For more information about this error, try `rustc --explain E0599`.
+error: could not compile `tagma-gateway` (bin "tagma-gateway") due to 1 previous error
+warning: build failed, waiting for other jobs to finish...

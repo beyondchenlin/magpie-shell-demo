@@ -53,6 +53,8 @@ async fn application_view(
             runtime.status().await
         } else {
             RuntimeStatus {
+                usage_degraded: None,
+                usage_pending_results: None,
                 security_revision: None,
                 state: RuntimeState::Stopped,
                 instance_id: None,
@@ -339,6 +341,8 @@ async fn diagnostics_view(
         manager.status().await
     } else {
         RuntimeStatus {
+            usage_degraded: None,
+            usage_pending_results: None,
             security_revision: None,
             state: RuntimeState::Failed,
             instance_id: None,

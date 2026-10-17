@@ -1,0 +1,25 @@
+{
+  "recordedAtUtc": "2026-10-17T18:33:49.2121159Z",
+  "newUsageFixtureResidues": [],
+  "existingUnitFixtures": [
+    {
+      "path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-gateway-unit-lHZQ5w",
+      "createdAtUtc": "2026-10-17T16:14:08.0143743Z",
+      "lastWriteAtUtc": "2026-10-17T16:14:08.0579828Z",
+      "logicalBytes": 61440.0,
+      "reparsePoint": false,
+      "fileExclusiveOpenProbe": "All3files unlocked at inspection",
+      "decision": "Retain; predates S12 plan17:44UTC. No deletion authorized by a prefix name. No retry of earlier rejected cleanup."
+    },
+    {
+      "path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-gateway-unit-Y84X7l",
+      "createdAtUtc": "2026-10-17T16:14:07.9753574Z",
+      "lastWriteAtUtc": "2026-10-17T16:14:08.0153749Z",
+      "logicalBytes": 61440.0,
+      "reparsePoint": false,
+      "fileExclusiveOpenProbe": "All3files unlocked at inspection",
+      "decision": "Retain; predates S12 plan17:44UTC. No deletion authorized by a prefix name. No retry of earlier rejected cleanup."
+    }
+  ],
+  "deletedPaths": []
+}

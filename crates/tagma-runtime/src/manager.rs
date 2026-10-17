@@ -123,6 +123,8 @@ impl GatewayManager {
     }
     fn unavailable(state: RuntimeState, error: Option<AppError>) -> RuntimeStatus {
         RuntimeStatus {
+            usage_degraded: None,
+            usage_pending_results: None,
             security_revision: None,
             state,
             instance_id: None,
@@ -311,6 +313,18 @@ impl GatewayManager {
                 .error
                 .clone()
                 .unwrap_or_else(|| AppError::new(ErrorCode::SecurityStateUnconfirmed)));
+        }
+        Ok(status)
+    }
+    /// Private management channel only; never reachable with a model API token.
+    pub async fn recover_usage(&self) -> AppResult<RuntimeStatus> {
+        let manifest = ipc::read_manifest(&self.directory)?;
+        let status = ipc::call(&manifest, Control::RecoverUsage).await?;
+        if status.instance_id.as_deref() != Some(&manifest.instance_id)
+            || status.usage_degraded != Some(false)
+            || !matches!(status.state, RuntimeState::Running | RuntimeState::Degraded)
+        {
+            return Err(AppError::new(ErrorCode::UsageStorageUnavailable));
         }
         Ok(status)
     }

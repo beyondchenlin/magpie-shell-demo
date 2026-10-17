@@ -51,6 +51,7 @@ const zh: typeof en = {
 
 export function copy(language: ProductLanguage) { return language === "zh" ? zh : en; }
 const errors: Record<ErrorCode, [string, string]> = {
+  USAGE_STORAGE_UNAVAILABLE:["用量记录未确认，已暂停新的派发。请检查存储并明确恢复网关记账。","Usage storage is unconfirmed; new dispatch is paused. Check storage and explicitly recover accounting."],
   ACCESS_REVOKED:["本机访问权限已撤销，请检查访问令牌或供应商连接。","Local access was revoked. Check the access token or provider connection."],
   SECURITY_STATE_UNCONFIRMED:["安全状态尚未确认，已阻止后续派发。请检查本机存储和网关。","Security state is unconfirmed; further dispatch is blocked. Check local storage and the gateway."],
   PROBE_BACKOFF:["检测仍在冷却或退避中，请按显示的时间重试。","Detection is cooling down or backing off. Retry after the displayed time."],

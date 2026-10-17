@@ -1,0 +1,13 @@
+{
+  "recordedAtUtc": "2026-10-17T17:44:49.3267716Z",
+  "target": "D:\\demo1\\tagmaai\\target",
+  "temporaryRoot": "C:\\Users\\ai\\AppData\\Local\\Temp",
+  "estimatedAdditionalPeakGiB": 1.5,
+  "freeBeforeGiB": {
+    "C": 42.63,
+    "D": 12.71
+  },
+  "reuse": "Existing Cargo target/registry; no new environment, worktree or installer",
+  "scope": "Usage ledger gateway dispatch/body integration and targeted headless real HTTP checks",
+  "cleanup": "Owned TempDir and exact owned sidecar teardown; preserve installed dev9/data and prior evidence; target reserve10GiB"
+}

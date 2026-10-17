@@ -48,6 +48,7 @@ pub struct Request {
 pub enum Command {
     Status,
     Apply,
+    RecoverUsage,
     ConfirmSecurity {
         revision: u32,
     },

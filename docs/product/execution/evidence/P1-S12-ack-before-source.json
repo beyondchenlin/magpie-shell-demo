@@ -1,0 +1,6 @@
+{
+  "recordedAtUtc": "2026-10-17T18:07:45.977Z",
+  "path": "crates/tagma-gateway/src/usage.rs",
+  "sha256": "17b0e62f5ef59cccfc1dcea5fe8e0a2ea588036e0b96d063dd860532fca24319",
+  "scope": "Lost committed attempt-start ACK deterministic worker/guard unit; actual HTTP results separate"
+}
