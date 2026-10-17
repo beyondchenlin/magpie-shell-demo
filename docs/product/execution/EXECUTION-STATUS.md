@@ -18,6 +18,8 @@
 
 ## 当前批次
 
+- **Windows curl8.13.0外部进程版本绑定局部完成**：候选仍dev.16/config10/usage2，仅新增显式集成，无生产改动。复用系统curl且SHA前后相同，真实CLI本机HTTP1.1/显式无鉴权下目录、Unicode非流、上游未结束前已读首段的SSE、函数参数与Responses501验证；3个ID/cfg2及逻辑3/尝试3/token9/5对应。显式--ignored运行1通过、定向Clippy通过，范围与双自查见[P1-S30](P1-S30-CURL-CLIENT.md)。不算SDK/Agent/鉴权开启/真实上游或A09/P1整体通过；用户dev.9/禁电脑控制/拖动未通过、低空间限制保持。
+
 - **CIS供应商超时编辑/main保存源码接线完成，未作原生验收**：候选仍dev.16/config10/usage2，保存值标识、四项ms校验、固定provider/revision草稿、单保存/成功防重发/失败保留/迟到dispose保护；明确保存后应用及在途语义。main精确一项命令权限，native check/静态边界、源模型/SSR25（原21+新4）、TS/Vite/6文件116规则零lint、CIS/chrome guard通过，两轮自查见[P1-S29](P1-S29-PROVIDER-TIMEOUT-UI-SOURCE.md)。没有原生调用/截图/安装，A10/P1不整体通过；D9.77GiB有界小验证/>1GiB暂停，用户dev.9/资料/电脑禁令/拖动未通过保持。
 
 - **固定快照的供应商超时执行局部完成**：候选仍dev.16/config10/usage2，每供应商缓存连接客户端，首HTTP响应/流idle/总预算，普通/小队步骤取配置与配方更短预算；新旧修订/Client在途固定。gateway单元26、实际TLS/header/idle-total3及目录/first_cloud/文本/函数/撤销/小队/用量HTTP11共40通过，gateway Clippy/check通过，两轮自查见[P1-S28](P1-S28-PINNED-PROVIDER-TIMEOUTS.md)。native/UI仍未接、A10/P1未整体通过；末次D9.78GiB（盘差0.09GiB超过初估0.06，含并发），收尾不扩大编译、>1GiB暂停，用户dev.9/资料/电脑禁令/拖动未通过保持。继续有界main保存和CIS接线。
@@ -64,7 +66,7 @@
 
 ## 历史切片记录
 
-以下保留各批当时的实现范围与版本；其中“未开放/待接线/下一步”等描述不是本批最新状态。最新范围以上方 dev.16/config schema10/usage schema2、P1-S29及后续补充为准。
+以下保留各批当时的实现范围与版本；其中“未开放/待接线/下一步”等描述不是本批最新状态。最新范围以上方 dev.16/config schema10/usage schema2、P1-S30及后续补充为准。
 
 - SUP-006按先失败后修复完成观测时刻校验：延迟到TTL后落盘不刷新成功时间；同毫秒失败优先、目录/推理分槽。原始before/after/core/final/regression结果保留。纯选择器与未确认退出围栏已验证，first_cloud发布/解析仍未开放；新增两项无窗口异常退出测试通过，禁止电脑控制持续有效。详见[SUP-006](SUP-006-OBSERVATION-TIME.md)及[P1-S07](P1-S07-HEALTH-UNCERTAINTY.md)。
 
@@ -131,7 +133,7 @@
 | A06 | UI-01/02/03/04 NFR-01/06 | P0 未验证 |
 | A07 | DATA-01/05 | 双入口与原生过期编辑冲突通过；演示无导入路径；阶段复查待完成 |
 | A08 | PROV-02/04/06 NFR-08 | 手动非生成目录、错误分类、来源/时间/缓存、取消/退避/代次及模型404本机HTTP通过；真实供应商、桌面与客户端矩阵待验，整体未通过，见P1-S09 |
-| A09 | G2 GW-02/03/04 | 文本及普通云模型function调用非流/分片SSE/调用方tool结果与目录本机实际HTTP通过；小队工具明确不支持。外部SDK/Agent版本、真实服务及整体阶段待验，见P1-S26 |
+| A09 | G2 GW-02/03/04 | 文本/普通云模型function非流/分片SSE/调用方tool结果本机通过；系统curl8.13.0 Windows/HTTP1.1/显式无鉴权受控版本证据1通过。小队工具不支持，SDK/Agent/鉴权开启curl/真实服务及整体阶段待验，见P1-S26/30 |
 | A10 | GW-04/05/06/07 NFR-04 | 文本/函数参数分片、取消/断流/限流/体积/修订隔离本地通过；函数只转发、不执行。超时核心/实际connect-header-idle-total及在途固定本机通过，main/CIS源页已接；真实native/视觉/完整用例待验，见P1-S26–29 |
 | A11 | GW-08 NFR-07 | 缺失/错误/撤销令牌、内存凭据轮换与数据面管理拒绝本机HTTP通过；真实OS凭据及完整用例待验，整体未通过，见P1-S10 |
 | A12 | DATA-02 GW-04 | 文本/小队实际HTTP的快照/配置/目标固定与旧在途、新调用修订本机验证通过；完整应用失败/平台阶段复查待验，见P1-S01/03/08/14 |

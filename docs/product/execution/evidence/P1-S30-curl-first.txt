@@ -1,0 +1,44 @@
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+   Compiling tagma-gateway v0.2.0-dev.16 (D:\demo1\tagmaai\crates\tagma-gateway)
+error: mismatched closing delimiter: `}`
+  --> crates\tagma-gateway\tests\external_curl.rs:36:40
+   |
+36 |     let upstream=Router::new().fallback(post({let seen=seen.clone();let release=release.clone();let final_sent=final_sent.clone();mo...
+   |                                        ^ unclosed delimiter
+...
+43 |         }))).into_response();}
+   |                              ^ mismatched closing delimiter
+
+error: unexpected closing delimiter: `}`
+  --> crates\tagma-gateway\tests\external_curl.rs:45:5
+   |
+39 |         if value["stream"]==true{return ([("content-type","text/event-stream")],Body::from_stream(async_stream::stream!{
+   |                                 - the nearest open delimiter
+...
+43 |         }))).into_response();}
+   |            - missing open `(` for this delimiter
+44 |         Json(json!({"model":"curl-model","choices":[{"index":0,"message":{"role":"assistant","content":"独立 curl 客...
+45 |     }}}));
+   |     ^ unexpected closing delimiter
+
+error: could not compile `tagma-gateway` (test "external_curl") due to 2 previous errors
+warning: build failed, waiting for other jobs to finish...

@@ -1,0 +1,80 @@
+{
+  "recordedAtUtc": "2026-10-17T22:36:06.123Z",
+  "sourceBase": "210af4730f22328e16d904a21ad0cca397e065e1",
+  "candidateVersion": "0.2.0-dev.16",
+  "configSchema": 10,
+  "usageSchema": 2,
+  "source": [
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-gateway\\tests\\external_curl.rs",
+      "bytes": 11991,
+      "sha256": "3834b0f1e6fe1b8416de2b2304e752b7d3ced0aa83ab6e818061eb160635d279"
+    }
+  ],
+  "documents": [
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\EXECUTION-STATUS.md",
+      "bytes": 34551,
+      "sha256": "3010ba4f19167adfb1ebfed510897ce9b371cadc600ed0feda7464664ec78739"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\P1-S30-CURL-CLIENT.md",
+      "bytes": 3306,
+      "sha256": "8f64e703623e9ba82ddb639b3d811752b7c8b3bd55f299d6175fcb2ffc6ca364"
+    }
+  ],
+  "prd": {
+    "path": "D:\\demo1\\tagmaai\\docs\\product\\TAGMA-PRD-v0.3.md",
+    "bytes": 50957,
+    "sha256": "6e6503391f70e3f2e53347890de6e7c9f7fd93cc393c68f7bba494ac4d67a6d6"
+  },
+  "evidence": [
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S30-client-after.json",
+      "bytes": 679,
+      "sha256": "371f101c638102c48490095e1d2c9edad3fae78f422bd2b34385b83a2c6c2647"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S30-client-before.json",
+      "bytes": 687,
+      "sha256": "5b84423cb2335dd145f3eeed412921cde5511af458fd5af63d6420c03dab15e4"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S30-clippy.txt",
+      "bytes": 739,
+      "sha256": "4e8afe31a740e184b3ba57b47a775c52e93edd2fc8fba2b861444bcde516efd4"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S30-curl-final.txt",
+      "bytes": 1472,
+      "sha256": "3306e326a19eded563038708f1befdb4a38cdc0d35fb1614de20a5c9e0274e91"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S30-curl-first.txt",
+      "bytes": 1835,
+      "sha256": "3777936d33b654a4c65116ceba8120116770af7e4a982bcd1d663bdab2a21248"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S30-curl-reviewed.txt",
+      "bytes": 1439,
+      "sha256": "ad781b9e1814c9f6aafb1694b1e82febb7038d1e51ea68bb918c044c6b994a9c"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S30-space-after.json",
+      "bytes": 241,
+      "sha256": "8448d471764ee2a7f2b5fa0b02698a2f324a0a8fa3945414e7e7d0284a3c96fa"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S30-space-plan.json",
+      "bytes": 612,
+      "sha256": "070a6d4d2aae0eea69e49f2488d6bc27687844bb3a96f7120395d9a092efa03d"
+    }
+  ],
+  "freeAfterGiB": {
+    "C": 42.43,
+    "D": 9.73
+  },
+  "spaceConstraint": "D below10GiB;>1GiB paused;disk delta0.04 exceeds initial0.02 including cache/concurrent writes,not task peak/net release;no more closeout compilation",
+  "cleanup": "Owned curl fixture prefix0;system curl SHA unchanged;no-window children kill-on-drop/owned sidecar stop/server abort/RAII;no new worktree/env or prior deletion",
+  "installed": "dev.9 untouched;only Windows curl8.13.0 loopback/auth-off interop;drag not accepted;computer control prohibited"
+}

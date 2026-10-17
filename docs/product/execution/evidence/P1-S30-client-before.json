@@ -1,0 +1,13 @@
+{
+  "RecordedAtUtc": "2026-10-17T22:26:09.1109768Z",
+  "Path": "C:\\Windows\\System32\\curl.exe",
+  "Bytes": 711736,
+  "SHA256": "3345339164cf384eff527b6c3160fea8d849a4231ec6ca80513e3a739e505168",
+  "Version": [
+    "curl 8.13.0 (Windows) libcurl/8.13.0 Schannel zlib/1.3.1 WinIDN",
+    "Release-Date: 2025-04-02",
+    "Protocols: dict file ftp ftps http https imap imaps ipfs ipns mqtt pop3 pop3s smb smbs smtp smtps telnet tftp ws wss",
+    "Features: alt-svc AsynchDNS HSTS HTTPS-proxy IDN IPv6 Kerberos Largefile libz NTLM SPNEGO SSL SSPI threadsafe Unicode UnixSockets"
+  ],
+  "Scope": "Existing Windows curl only;version probe with -q,no curlrc/no provider traffic"
+}

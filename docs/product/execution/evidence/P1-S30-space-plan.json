@@ -1,0 +1,12 @@
+{
+  "RecordedAtUtc": "2026-10-17T22:26:09.1529171Z",
+  "Target": "D:/demo1/tagmaai/target",
+  "TemporaryRoot": "C:\\Users\\ai\\AppData\\Local\\Temp",
+  "EstimatedAdditionalPeakGiB": 0.02,
+  "CFreeBeforeGiB": 42.43,
+  "DFreeBeforeGiB": 9.77,
+  "Scope": "One new bounded test binary,existing Windows curl no downloads/env/install/GUI,owned loopback only",
+  "Reuse": "Existing Cargo target and native curl",
+  "Constraint": "Below10GiB,>1GiB operations paused,no full rebuild",
+  "Cleanup": "Owned curl children/no-window/kill-on-drop,owned sidecar/server/TempDir RAII;all prior/user artifacts kept"
+}
