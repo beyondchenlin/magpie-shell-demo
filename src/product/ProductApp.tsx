@@ -136,7 +136,7 @@ export default function ProductApp() {
         <PrefRow name={c.theme}><Segs value={preferences.theme} items={[{ id: "system", label: c.system }, { id: "light", label: c.light }, { id: "dark", label: c.dark }]} onChange={id => changePreferences({ ...preferences, theme: id as ProductTheme })} /></PrefRow>
         <PrefRow name={c.size}><Segs value={preferences.textSize} items={[100, 125, 150].map(n => ({ id: n, label: `${n}%` }))} onChange={id => changePreferences({ ...preferences, textSize: id as Preferences["textSize"] })} /></PrefRow>
         <PrefRow name={c.gateway}><TextBtn onClick={() => setPage("gateway")}>{c.gateway}</TextBtn></PrefRow>
-        <PrefRow name={c.version}><span>{view?.product_version ?? "0.2.0-dev.3"}</span></PrefRow>
+        <PrefRow name={c.version}><span>{view?.product_version ?? "0.2.0-dev.4"}</span></PrefRow>
         <PrefRow name={c.schema}><span>{view?.config.schema_version ?? c.unknown}</span></PrefRow>
       </div><DiagnosticsPanel language={preferences.language} /><TextBtn disabled={!desktop || busy} onClick={() => void service.quit().catch(setError)}>{c.quit}</TextBtn></section>}
     </main>

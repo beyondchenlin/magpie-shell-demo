@@ -1,0 +1,7 @@
+{
+  "result": "failed",
+  "exitCode": 1,
+  "fixture": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-native-owned-623b20dc-4b15-4048-a0b1-d56582980509",
+  "failure_signature": "Test fetched a second recovery plan and asserted its new archive UUID instead of the plan shown in the UI; ENOENT after confirmed archive",
+  "correction": "Read the exact displayed diagnostic preview plan before clicking confirmation"
+}

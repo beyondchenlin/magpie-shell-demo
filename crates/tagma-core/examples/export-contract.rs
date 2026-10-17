@@ -20,6 +20,9 @@ fn main() {
         Event::decl(&cfg),
         Record::decl(&cfg),
         DiagnosticBundle::decl(&cfg),
+        InitializationRecoveryPlan::decl(&cfg),
+        RecoverInitialization::decl(&cfg),
+        RecoveryOutcome::decl(&cfg),
     ];
     let content = format!(
         "// Generated from tagma-core. Run npm run contract:generate; do not edit.\n{}\n",

@@ -60,6 +60,7 @@ pub struct DiagnosticBundle {
     pub max_log_files: u32,
     pub telemetry_enabled: bool,
     pub recent_events: Vec<Record>,
+    pub initialization_recovery: Option<InitializationRecoveryPlan>,
 }
 
 pub fn console_attached() -> bool {

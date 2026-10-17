@@ -184,7 +184,24 @@ async fn diagnostics_view(
         max_log_files: tagma_core::diagnostics::MAX_LOG_FILES as u32,
         telemetry_enabled: false,
         recent_events: recent.unwrap_or_default(),
+        initialization_recovery: tagma_core::recovery::initialization_plan(directory)
+            .ok()
+            .flatten(),
     })
+}
+
+#[tauri::command]
+async fn recover_initialization(
+    window: WebviewWindow,
+    app: State<'_, Application>,
+    input: RecoverInitialization,
+) -> AppResult<RecoveryOutcome> {
+    local(&window)?;
+    let directory = app
+        .directory
+        .as_ref()
+        .ok_or_else(|| AppError::new(ErrorCode::StorageUnavailable))?;
+    tagma_core::recovery::archive_initialization_record(directory, input)
 }
 
 fn gateway_port() -> u16 {
@@ -307,7 +324,8 @@ fn main() {
             stop_gateway,
             apply_gateway,
             quit_application,
-            diagnostics_view
+            diagnostics_view,
+            recover_initialization
         ])
         .on_window_event(|window, event| {
             if let tauri::WindowEvent::CloseRequested { api, .. } = event {

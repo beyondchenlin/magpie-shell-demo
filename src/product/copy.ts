@@ -19,6 +19,7 @@ const en = {
   error: "Operation failed", timeout: "Confirmation timed out. The operation may still finish; refresh before retrying.", preferencesError: "Appearance changed for this session, but could not be saved.",
   cancelHint: "Cancel discards this unsaved form.", diagnostics: "Diagnostics", version: "Version", schema: "Schema", noInference: "Model inference not connected",
   diagnosticHint: "Preview redacted diagnostics before copying. No credentials, request bodies or databases are included.", copyDiagnostics:"Copy diagnostics", copied:"Copied", logsUnavailable:"The last diagnostic write was not confirmed. Check local storage and permissions.",
+  recover:"Preserve damaged record and recover",recoverHint:"Archive only the damaged initialization record shown below. Other files are retained. Restart afterward to create a fresh configuration. An existing database will never be replaced.",recoverConfirm:"Archive record",recovered:"Record preserved. Quit and reopen Tagma to retry initialization.",
 };
 
 const zh: typeof en = {
@@ -39,6 +40,7 @@ const zh: typeof en = {
   error: "操作失败", timeout: "确认超时。操作可能仍会完成，请先刷新再重试。", preferencesError: "外观已在本次会话应用，但未能保存。",
   cancelHint: "取消将丢弃此表单中尚未保存的修改。", diagnostics: "诊断", version: "版本", schema: "配置结构", noInference: "模型推理尚未接入",
   diagnosticHint: "先预览脱敏诊断，再复制。内容不含凭据、请求正文或数据库。", copyDiagnostics:"复制诊断", copied:"已复制", logsUnavailable:"最近一次诊断写入未确认，请检查本机存储和权限。",
+  recover:"保留损坏记录并恢复",recoverHint:"仅归档下列损坏的初始化记录，其他文件保留。退出并重新打开后将创建新配置；不会替换已有数据库。",recoverConfirm:"归档记录",recovered:"记录已保留。请退出并重新打开 Tagma，重试初始化。",
 };
 
 export function copy(language: ProductLanguage) { return language === "zh" ? zh : en; }
@@ -57,6 +59,7 @@ const errors: Record<ErrorCode, [string, string]> = {
   CONFIG_APPLY_FAILED: ["配置已保存，运行中尚未应用。请修复错误后重试。", "Configuration is saved but not applied. Resolve the error and retry."],
   OWNERSHIP_REQUIRED: ["此实例由外部入口拥有，本窗口不能停止它。", "This window does not own the gateway and cannot stop it."],
   STARTUP_TIMEOUT: ["网关启动超过10秒，已回收本次启动的子进程。请检查诊断后重试。", "Gateway startup exceeded 10 seconds. The owned child was reclaimed. Check diagnostics before retrying."],
+  INITIALIZATION_RECOVERY_REQUIRED:["初始化记录损坏，原记录与数据已保护。请到设置查看诊断及可用恢复操作。","The initialization record is damaged and has been preserved. Open Settings for diagnostics and available recovery actions."],
 };
 export function errorCopy(error: unknown, language: ProductLanguage): string {
   if (error && typeof error === "object" && "code" in error) {

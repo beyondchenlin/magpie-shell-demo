@@ -14,6 +14,7 @@ url = "2.5"
 fs2 = "0.4"
 ts-rs = "12.0.1"
 zeroize = "1.8"
+sha2 = "0.10"
 keyring = "3.6.3"
 
 [target.'cfg(windows)'.dependencies]

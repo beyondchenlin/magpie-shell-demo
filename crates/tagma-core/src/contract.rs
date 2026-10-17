@@ -22,6 +22,7 @@ pub enum ErrorCode {
     ConfigApplyFailed,
     OwnershipRequired,
     StartupTimeout,
+    InitializationRecoveryRequired,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, TS, PartialEq, Eq)]
@@ -128,6 +129,28 @@ pub struct ApplicationView {
     pub product_version: String,
     pub config: ConfigView,
     pub runtime: RuntimeStatus,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, TS)]
+pub struct InitializationRecoveryPlan {
+    pub operation_id: String,
+    pub record_path: String,
+    pub archive_path: String,
+    pub expected_sha256: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, TS)]
+#[serde(deny_unknown_fields)]
+pub struct RecoverInitialization {
+    pub protocol_version: u32,
+    pub operation_id: String,
+    pub expected_sha256: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, TS)]
+pub struct RecoveryOutcome {
+    pub archive_path: String,
+    pub requires_restart: bool,
 }
 
 pub fn check_protocol(version: u32) -> AppResult<()> {

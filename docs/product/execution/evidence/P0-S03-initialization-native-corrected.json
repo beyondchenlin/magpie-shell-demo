@@ -1,0 +1,21 @@
+{
+  "platform": "win32",
+  "architecture": "x64",
+  "productVersion": "0.2.0-dev.4",
+  "executable": "D:\\demo1\\tagmaai\\target\\debug\\tagma-desktop.exe",
+  "embeddedAssets": true,
+  "nativeHost": true,
+  "mockBridge": false,
+  "windowsHide": false,
+  "tests": [
+    "damaged-intent-visible",
+    "explicit-archive-confirmation",
+    "archive-bytes-preserved",
+    "unrelated-output-retained",
+    "wait-for-restart",
+    "real-native-relaunch",
+    "recovered-sidecar-ready",
+    "console-free-and-quit"
+  ],
+  "result": "passed"
+}

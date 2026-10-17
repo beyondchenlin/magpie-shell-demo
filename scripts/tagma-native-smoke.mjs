@@ -2,24 +2,25 @@
 // The caller supplies an exclusively owned temporary config directory and dev-server URL.
 import { spawn } from 'node:child_process';
 import { createServer } from 'node:net';
-import { writeFile, access, mkdir } from 'node:fs/promises';
+import { writeFile, readFile, access, mkdir } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import assert from 'node:assert/strict';
 
 const fixture = process.env.TAGMA_TEST_CONFIG_DIR;
 const appearanceOnly=process.env.TAGMA_NATIVE_SMOKE_MODE==='appearance';
+const recoveryMode=process.env.TAGMA_NATIVE_SMOKE_MODE==='recovery';
 assert(fixture, 'Caller must supply an isolated TAGMA_TEST_CONFIG_DIR');
 const executable=resolve(process.env.TAGMA_NATIVE_EXE || 'target/debug/tagma-desktop.exe');
 await access(executable);
 const server = createServer();
 await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
-const port = server.address().port;
+let port = server.address().port;
 await new Promise(resolve => server.close(resolve));
 const gatewayReservation=createServer();
 await new Promise(resolve=>gatewayReservation.listen(0,'127.0.0.1',resolve));
 const gatewayPort=gatewayReservation.address().port;
 await new Promise(resolve=>gatewayReservation.close(resolve));
-const child = spawn(executable, [], {
+let child = spawn(executable, [], {
   env: { ...process.env, TAGMA_TEST_GATEWAY_PORT:String(gatewayPort), WEBVIEW2_USER_DATA_FOLDER:resolve(fixture,'webview'), WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS: `--remote-debugging-port=${port} --remote-debugging-address=127.0.0.1` },
   // Do not hide a console to make this test pass. Both executables must be GUI-subsystem binaries.
   stdio: 'ignore', windowsHide: false,
@@ -62,18 +63,49 @@ async function click(label) {
   assert(result, `Enabled UI action missing: ${label}`);
   await pause(100);
 }
-try {
+async function connectPage() {
   const page = await until(async () => {
     const pages = await fetch(`http://127.0.0.1:${port}/json/list`).then(r => r.json());
     return pages.find(p => p.type === 'page' && p.url.includes('tagma.html'));
   }, 'Native WebView debug endpoint unavailable');
-  socket = new WebSocket(page.webSocketDebuggerUrl);
-  await new Promise((r,j) => { socket.addEventListener('open',r,{once:true}); socket.addEventListener('error',j,{once:true}); });
-  socket.addEventListener('message', event => {
+  const connection = new WebSocket(page.webSocketDebuggerUrl); socket=connection;
+  await new Promise((r,j) => { connection.addEventListener('open',r,{once:true}); connection.addEventListener('error',j,{once:true}); });
+  connection.addEventListener('message', event => {
+    if(socket!==connection)return;
     const value = JSON.parse(event.data); const request = pending.get(value.id);
     if (request) { pending.delete(value.id); value.error ? request.reject(new Error(value.error.message)) : request.resolve(value.result); }
   });
-  socket.addEventListener('close',()=>{ for(const request of pending.values()) request.reject(new Error('Native WebView closed')); pending.clear(); });
+  connection.addEventListener('close',()=>{ if(socket!==connection)return; for(const request of pending.values()) request.reject(new Error('Native WebView closed')); pending.clear(); });
+  return page;
+}
+try {
+  let page=await connectPage();
+  if(recoveryMode) {
+    await until(async()=>(await text()).includes('初始化记录损坏'),'Damaged committed intent was not reported');
+    await click('设置'); await click('诊断');
+    await until(async()=>await evaluate(`!!document.querySelector('.tagma-diagnostics pre')`),'Recovery diagnostics missing');
+    // Validate the concrete plan shown to the user, not a newly generated preview UUID.
+    const damaged=await evaluate(`JSON.parse(document.querySelector('.tagma-diagnostics pre').textContent)`);
+    assert(damaged.initialization_recovery); assert.equal(damaged.config_schema_version,null);
+    await click('保留损坏记录并恢复'); await capture('07-initialization-recovery'); await click('归档记录');
+    await until(async()=>(await text()).includes('记录已保留'),'Record archive not confirmed');
+    assert.equal(await readFile(damaged.initialization_recovery.archive_path,'utf8'),'{tagma-corrupt-fixture');
+    assert.equal(await readFile(resolve(fixture,'unrelated-output'),'utf8'),'keep-test-output');
+    assert.equal(await access(resolve(fixture,'config.sqlite3')).then(()=>true,()=>false),false,'Recovery must wait for restart before initializing');
+    await evaluate(`window.__TAURI_INTERNALS__.invoke('quit_application',{protocolVersion:1})`).catch(()=>{});
+    await until(async()=>child.exitCode!==null,'Damaged-config host did not quit'); socket?.close();
+    const reservation=createServer();await new Promise(resolve=>reservation.listen(0,'127.0.0.1',resolve));port=reservation.address().port;await new Promise(resolve=>reservation.close(resolve));
+    child=spawn(executable,[],{env:{...process.env,TAGMA_TEST_GATEWAY_PORT:String(gatewayPort),WEBVIEW2_USER_DATA_FOLDER:resolve(fixture,'recovered-webview'),WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS:`--remote-debugging-port=${port} --remote-debugging-address=127.0.0.1`},stdio:'ignore',windowsHide:false});
+    child.on('error',error=>{spawnError=error;});
+    page=await connectPage();
+    await until(async()=>(await text()).includes('已保存版本: 0'),'Native relaunch did not initialize fresh config');
+    const recovered=await until(async()=>{const value=await evaluate(`window.__TAURI_INTERNALS__.invoke('diagnostics_view',{protocolVersion:1})`);return value.runtime.state==='running'?value:null;},'Recovered gateway did not become ready');
+    assert.equal(recovered.runtime.effective_revision,0);assert.equal(recovered.console_attached,false);assert.equal(recovered.sidecar_console_attached,false);
+    assert.equal(await readFile(damaged.initialization_recovery.archive_path,'utf8'),'{tagma-corrupt-fixture');
+    await evaluate(`window.__TAURI_INTERNALS__.invoke('quit_application',{protocolVersion:1})`).catch(()=>{});await until(async()=>child.exitCode!==null,'Recovered host did not quit');
+    await writeFile(resolve(fixture,'native-result.json'),JSON.stringify({platform:process.platform,architecture:process.arch,productVersion:recovered.product_version,executable,embeddedAssets:!page.url.startsWith('http://localhost:'),nativeHost:true,mockBridge:false,windowsHide:false,tests:['damaged-intent-visible','explicit-archive-confirmation','archive-bytes-preserved','unrelated-output-retained','wait-for-restart','real-native-relaunch','recovered-sidecar-ready','console-free-and-quit'],result:'passed'},null,2));
+    console.log('Native initialization recovery: 8 checks passed (real host, confirmation, archive, relaunch and sidecar).');
+  } else {
   await until(async () => (await text()).includes('已保存版本: 0'), 'Native IPC did not load revision zero');
   assert(!(await text()).includes('Web 预览'));
   const result = await evaluate(`window.__TAURI_INTERNALS__.invoke('application_view',{protocolVersion:1})`);
@@ -138,6 +170,7 @@ try {
     limitations: ['OS graphics capture unavailable; WebView screenshots do not prove pixel equivalence','debug internal test build; release signatures and macOS/Linux unverified'],
   },null,2));
   console.log(`Native Tauri smoke: ${appearanceOnly?7:16} checks passed (real WebView + IPC + SQLite + sidecar; isolated synthetic configuration).`);
+  }
 } finally {
   socket?.close();
   for (const p of pending.values()) p.reject(new Error('Native test closing'));

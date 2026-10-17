@@ -3797,7 +3797,7 @@ dependencies = [
 
 [[package]]
 name = "tagma-core"
-version = "0.2.0-dev.3"
+version = "0.2.0-dev.4"
 dependencies = [
  "fs2",
  "keyring",
@@ -3805,6 +3805,7 @@ dependencies = [
  "rusqlite",
  "serde",
  "serde_json",
+ "sha2",
  "tempfile",
  "ts-rs",
  "url",
@@ -3815,7 +3816,7 @@ dependencies = [
 
 [[package]]
 name = "tagma-desktop"
-version = "0.2.0-dev.3"
+version = "0.2.0-dev.4"
 dependencies = [
  "tagma-core",
  "tagma-runtime",
@@ -3826,7 +3827,7 @@ dependencies = [
 
 [[package]]
 name = "tagma-gateway"
-version = "0.2.0-dev.3"
+version = "0.2.0-dev.4"
 dependencies = [
  "axum",
  "fs2",
@@ -3843,7 +3844,7 @@ dependencies = [
 
 [[package]]
 name = "tagma-runtime"
-version = "0.2.0-dev.3"
+version = "0.2.0-dev.4"
 dependencies = [
  "fs2",
  "interprocess",

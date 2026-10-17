@@ -1,5 +1,5 @@
 // Generated from tagma-core. Run npm run contract:generate; do not edit.
-export type ErrorCode = "INVALID_INPUT" | "CONFIG_CONFLICT" | "STORAGE_UNAVAILABLE" | "CREDENTIAL_STORE_UNAVAILABLE" | "INCOMPATIBLE_VERSION" | "MAINTENANCE_IN_PROGRESS" | "DESKTOP_REQUIRED" | "INTERNAL_ERROR" | "PORT_IN_USE" | "ALREADY_RUNNING" | "GATEWAY_UNAVAILABLE" | "CONFIG_APPLY_FAILED" | "OWNERSHIP_REQUIRED" | "STARTUP_TIMEOUT";
+export type ErrorCode = "INVALID_INPUT" | "CONFIG_CONFLICT" | "STORAGE_UNAVAILABLE" | "CREDENTIAL_STORE_UNAVAILABLE" | "INCOMPATIBLE_VERSION" | "MAINTENANCE_IN_PROGRESS" | "DESKTOP_REQUIRED" | "INTERNAL_ERROR" | "PORT_IN_USE" | "ALREADY_RUNNING" | "GATEWAY_UNAVAILABLE" | "CONFIG_APPLY_FAILED" | "OWNERSHIP_REQUIRED" | "STARTUP_TIMEOUT" | "INITIALIZATION_RECOVERY_REQUIRED";
 export type AppError = { code: ErrorCode, retryable: boolean, };
 export type ProviderProtocol = "openai_chat_completions";
 export type Provider = { id: string, name: string, protocol: ProviderProtocol, base_url: string, enabled: boolean, models: Array<string>, has_credential: boolean, };
@@ -13,4 +13,7 @@ export type ApplicationView = { product_version: string, config: ConfigView, run
 export type Component = "desktop" | "gateway";
 export type Event = "starting" | "ready" | "attached" | "start_failed" | "apply_succeeded" | "apply_failed" | "crash_detected" | "restart_attempt" | "restart_exhausted" | "stop_requested" | "stopped" | "configuration_unavailable";
 export type Record = { unix_seconds: number, component: Component, event: Event, code: ErrorCode | null, revision: number | null, };
-export type DiagnosticBundle = { product_version: string, protocol_version: number, platform: string, architecture: string, supported_schema_version: number, config_schema_version: number | null, desired_revision: number | null, runtime: RuntimeStatus, console_attached: boolean, sidecar_console_attached: boolean | null, logging_available: boolean, max_log_bytes: number, max_log_files: number, telemetry_enabled: boolean, recent_events: Array<Record>, };
+export type DiagnosticBundle = { product_version: string, protocol_version: number, platform: string, architecture: string, supported_schema_version: number, config_schema_version: number | null, desired_revision: number | null, runtime: RuntimeStatus, console_attached: boolean, sidecar_console_attached: boolean | null, logging_available: boolean, max_log_bytes: number, max_log_files: number, telemetry_enabled: boolean, recent_events: Array<Record>, initialization_recovery: InitializationRecoveryPlan | null, };
+export type InitializationRecoveryPlan = { operation_id: string, record_path: string, archive_path: string, expected_sha256: string, };
+export type RecoverInitialization = { protocol_version: number, operation_id: string, expected_sha256: string, };
+export type RecoveryOutcome = { archive_path: string, requires_restart: boolean, };

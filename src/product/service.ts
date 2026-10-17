@@ -1,5 +1,5 @@
 import { invoke, isTauri } from "@tauri-apps/api/core";
-import type { ApplicationView, ConfigView, DiagnosticBundle, ReorderProviders, RevisionCommand, RuntimeStatus, SaveProvider } from "./contract";
+import type { ApplicationView, ConfigView, DiagnosticBundle, RecoverInitialization, RecoveryOutcome, ReorderProviders, RevisionCommand, RuntimeStatus, SaveProvider } from "./contract";
 
 export const desktop = isTauri();
 export const protocolVersion = 1;
@@ -26,4 +26,5 @@ export const service = {
   applyGateway: () => command<RuntimeStatus>("apply_gateway", { protocolVersion }),
   quit: () => command<void>("quit_application", { protocolVersion }),
   diagnostics: () => command<DiagnosticBundle>("diagnostics_view", { protocolVersion }),
+  recoverInitialization: (input:RecoverInitialization)=>command<RecoveryOutcome>("recover_initialization",{input}),
 };

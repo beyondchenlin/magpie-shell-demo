@@ -4,15 +4,16 @@
 
 ## 当前批次
 
-- 日期：2026-10-17（Asia/Shanghai）；P0-S02独立sidecar/内部安装切片交接，进入P0-S03配置覆盖与迁移。P0整体未通过。
-- 源码起点03643407ed214f7e4d2a3804423028ee496b9a4a；S01提交7f5c5fb，当前S02在codex/tagma-p0待提交+继承dirty。产品0.2.0-dev.3；程序/IPC/schema分别3候选/1/1，不沿用v208验收。
-- 已确认：仓库当前只有 Electron + React mock，未存在 Rust/Tauri 工程；复用 npm/node_modules、Cargo registry、MSVC、Rust 1.98.1（C:/Program Files/Rust stable MSVC 1.98/bin）、WebView2 155.0.4283.60。
+- 日期：2026-10-17（Asia/Shanghai）；P0-S03先闭环SUP-004初始化记录原子发布及原生受控恢复，再进行AppProfile/网关设置/迁移。P0整体未通过。
+- 源码起点03643407ed214f7e4d2a3804423028ee496b9a4a；S01提交7f5c5fb，S02提交6b24b95；当前codex/tagma-p0 S03 dirty+保留继承dirty。已交付dev.3，当前原生dev.4恢复切片已构建验证，IPC1/schema1；schema2迁移尚未实现。
+- 启动盘点时仅有Electron/React mock；现已新增Tauri宿主、Rust核心/独立网关。继续复用npm/node_modules、Cargo registry、MSVC、Rust1.98.1、WebView2 155.0.4283.60，未重复安装环境。
 - 已实现：Tauri原生三页、受限异步IPC、共享Rust配置服务、SQLite乐观事务、系统凭据/journal恢复、单源生成DTO。详细边界与两遍自查见 [S01交接](P0-S01-HANDOFF.md)。
-- 已验证：Rust故障集成6项、Windows系统凭据合成测试1项、原生WebView→IPC→SQLite 7项；产品构建/类型/DTO/lint、原壳与六CSS guard通过。无完整A用例通过声明。
+- 已验证：S01历史6项故障集成/OS凭据1项/原生7项；S02新增安装后16项、最新进程8项、并发apply4项、初始化/诊断5项、OS凭据真实进程恢复。构建/DTO/lint和保留CIS guard通过；无完整A用例通过声明。
 - 最近有意义变化：dev.3安装后16项通过；宿主/网关PE=GUI(2)，不隐藏窗口的驱动确认两者无附着控制台，Windows应用启动器仅Tagma主窗；日志20MiB×5及脱敏预览。SUP-001/002先复现后修复测试通过；最新进程回归8项。NSIS安装/升级/卸载与配置保留通过，仍debug未签名。详见[P0-S02交接](P0-S02-HANDOFF.md)及evidence/P0-S02.json。
+- 最近S03变化：SUP-004三个真实子进程故障（intent刚创建/半写/已sync未发布）修复前3失败、原子暂存发布后3通过；未知/损坏正式记录保护与显式hash确认归档2项通过；真实原生确认/归档/退出重启/网关恢复8项通过，finally清理通过。首轮原生驱动误读了第二次预览生成的UUID，已改验用户实际看到的计划并复验通过，失败证据保留。
 - 下一步：P0-S03 AppProfile引用与覆盖、持久网关设置/令牌、排他迁移与一致性备份；再完成主路径/性能及平台出口验证。
 - 外部依赖：macOS/Linux 目标环境、发行签名、已授权真实上游及预算、ReachFlow 发行与服务授权。当前可独立实施的 P0 工作不依赖它们。
-- release_blocked：是；尚无新产品安装/签名/目标平台验收。
+- release_blocked：是；Windows内部debug NSIS安装/升级/卸载已验证；正式签名、干净无开发环境机器、macOS/Linux及完整P0门槛仍未通过。
 
 ## 继承修改（不提交、不覆盖）
 
@@ -35,9 +36,9 @@
 
 | 用例 | 需求 | 状态/证据 |
 | --- | --- | --- |
-| A01 | UI-01/02 ARCH-01 REL-01/04 | 原生开发宿主三页通过；安装包未验证 |
+| A01 | UI-01/02 ARCH-01 REL-01/04 | Windows debug包内资源/sidecar/三页启动通过；干净无开发环境机器/正式签名/其他平台待验 |
 | A02 | PROV-01/03 DATA-01/02 | CRUD/排序/重启及原生提交通过；AppProfile/运行确认未完成 |
-| A03 | PROV-05 DATA-03 NFR-07 | 系统凭据、SQL失败/journal恢复测试通过；真实进程中途崩溃注入待补 |
+| A03 | PROV-05 DATA-03 NFR-07 | OS凭据写后、建库中断、intent创建/半写/发布前中断真实进程恢复通过；损坏记录原生显式归档及重启恢复通过；未知数据库始终保留拒写 |
 | A04 | GW-01 ARCH-02 RUN-01/02/06 | Windows真实二进制端口/并发/握手/所有权通过；完整历史版本与跨用户/Unix待验 |
 | A05 | RUN-03/04/05 | 父EOF/独立实例/有限重启/原生完整退出通过；原生关闭到托盘helper受阻未通过；Mac/Linux待验 |
 | A06 | UI-01/02/03/04 NFR-01/06 | P0 未验证 |

@@ -47,7 +47,22 @@ fn regular(path: &Path) -> AppResult<()> {
     Ok(())
 }
 
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+enum IntentPoint {
+    Created,
+    PartialWritten,
+    Synced,
+}
+
 pub(crate) fn ensure(directory: &Path, after_create: impl FnOnce()) -> AppResult<()> {
+    ensure_inner(directory, after_create, |_| {})
+}
+
+fn ensure_inner(
+    directory: &Path,
+    after_create: impl FnOnce(),
+    intent_hook: impl Fn(IntentPoint),
+) -> AppResult<()> {
     let target = directory.join("config.sqlite3");
     let intent_path = directory.join(INTENT);
     let intent: Intent = if intent_path.exists() {
@@ -61,7 +76,8 @@ pub(crate) fn ensure(directory: &Path, after_create: impl FnOnce()) -> AppResult
         if bytes.len() > 4096 {
             return Err(incompatible());
         }
-        serde_json::from_slice(&bytes).map_err(|_| incompatible())?
+        serde_json::from_slice(&bytes)
+            .map_err(|_| AppError::new(ErrorCode::InitializationRecoveryRequired))?
     } else {
         if target.exists() {
             return Err(incompatible());
@@ -73,14 +89,27 @@ pub(crate) fn ensure(directory: &Path, after_create: impl FnOnce()) -> AppResult
             operation_id,
             schema_version: SCHEMA_VERSION,
         };
+        // Never expose an empty/partial JSON record at the committed intent path.
+        // Unpublished unique temporary records have no database or credential side effects.
+        let temporary = directory.join(format!(
+            ".config-initialization-intent-{}.tmp",
+            intent.operation_id
+        ));
         let mut file = OpenOptions::new()
             .create_new(true)
             .write(true)
-            .open(&intent_path)
+            .open(&temporary)
             .map_err(|_| error())?;
-        file.write_all(&serde_json::to_vec(&intent).map_err(|_| error())?)
-            .map_err(|_| error())?;
+        intent_hook(IntentPoint::Created);
+        let bytes = serde_json::to_vec(&intent).map_err(|_| error())?;
+        let midpoint = bytes.len() / 2;
+        file.write_all(&bytes[..midpoint]).map_err(|_| error())?;
+        intent_hook(IntentPoint::PartialWritten);
+        file.write_all(&bytes[midpoint..]).map_err(|_| error())?;
         file.sync_all().map_err(|_| error())?;
+        intent_hook(IntentPoint::Synced);
+        drop(file);
+        publish_new(&temporary, &intent_path).map_err(|_| error())?;
         intent
     };
     let operation = uuid::Uuid::parse_str(&intent.operation_id).map_err(|_| incompatible())?;
@@ -170,7 +199,7 @@ pub(crate) fn ensure(directory: &Path, after_create: impl FnOnce()) -> AppResult
 
 /// Same-volume atomic publication with NO replacement and no shared writable hard links.
 #[cfg(windows)]
-fn publish_new(source: &Path, target: &Path) -> std::io::Result<()> {
+pub(crate) fn publish_new(source: &Path, target: &Path) -> std::io::Result<()> {
     use std::os::windows::ffi::OsStrExt;
     use windows_sys::Win32::Storage::FileSystem::{MOVEFILE_WRITE_THROUGH, MoveFileExW};
     let source: Vec<u16> = source.as_os_str().encode_wide().chain(Some(0)).collect();
@@ -186,6 +215,71 @@ fn publish_new(source: &Path, target: &Path) -> std::io::Result<()> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    #[ignore = "Child only: intent publication interruption"]
+    fn intent_crash_worker() {
+        let directory = std::env::var_os("TAGMA_INTENT_CRASH_DIR").expect("owned directory");
+        let point = match std::env::var("TAGMA_INTENT_CRASH_POINT").unwrap().as_str() {
+            "created" => IntentPoint::Created,
+            "partial" => IntentPoint::PartialWritten,
+            "synced" => IntentPoint::Synced,
+            _ => panic!("point"),
+        };
+        let _ = ensure_inner(
+            Path::new(&directory),
+            || {},
+            move |at| {
+                if at == point {
+                    std::process::exit(90);
+                }
+            },
+        );
+        panic!("fixture did not exit");
+    }
+    fn interrupted_intent(point: &str) {
+        let temp = tempfile::tempdir().unwrap();
+        let result = std::process::Command::new(std::env::current_exe().unwrap())
+            .args([
+                "--ignored",
+                "--exact",
+                "initialization::tests::intent_crash_worker",
+            ])
+            .env("TAGMA_INTENT_CRASH_DIR", temp.path())
+            .env("TAGMA_INTENT_CRASH_POINT", point)
+            .status()
+            .unwrap();
+        assert_eq!(result.code(), Some(90));
+        assert!(
+            !temp.path().join(INTENT).exists(),
+            "Unpublished/partial intent must not appear at the committed path"
+        );
+        let owned_before: Vec<_> = fs::read_dir(temp.path())
+            .unwrap()
+            .map(|e| e.unwrap().path())
+            .collect();
+        let service = ConfigService::open(
+            temp.path(),
+            std::sync::Arc::new(crate::credentials::SystemCredentials),
+        )
+        .unwrap();
+        assert_eq!(service.view().unwrap().desired_revision, 0);
+        assert!(
+            owned_before.iter().all(|p| p.exists()),
+            "Interrupted temporary records must be preserved, not silently deleted"
+        );
+    }
+    #[test]
+    fn crash_after_intent_file_creation_recovers() {
+        interrupted_intent("created");
+    }
+    #[test]
+    fn crash_after_partial_intent_write_recovers() {
+        interrupted_intent("partial");
+    }
+    #[test]
+    fn crash_after_intent_sync_before_publication_recovers() {
+        interrupted_intent("synced");
+    }
     #[test]
     fn atomic_publication_never_replaces_a_newly_appeared_target() {
         let temp = tempfile::tempdir().unwrap();
@@ -224,7 +318,7 @@ mod tests {
 }
 
 #[cfg(unix)]
-fn publish_new(source: &Path, target: &Path) -> std::io::Result<()> {
+pub(crate) fn publish_new(source: &Path, target: &Path) -> std::io::Result<()> {
     use std::{ffi::CString, os::unix::ffi::OsStrExt};
     let source = CString::new(source.as_os_str().as_bytes())?;
     let target = CString::new(target.as_os_str().as_bytes())?;

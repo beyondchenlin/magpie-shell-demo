@@ -2,7 +2,7 @@ param(
   [string]$Executable = 'target/debug/tagma-desktop.exe',
   [Parameter(Mandatory=$true)][string]$ResultPath,
   [string]$EvidenceDirectory,
-  [ValidateSet('full','appearance')][string]$Mode = 'full'
+  [ValidateSet('full','appearance','recovery')][string]$Mode = 'full'
 )
 $ErrorActionPreference='Stop'
 $taskExecutable=(Resolve-Path -LiteralPath $Executable).Path
@@ -18,6 +18,10 @@ foreach($taskName in $taskNames) { $taskOldEnvironment[$taskName]=[Environment]:
 $taskExit=1
 $taskCleaned=$false
 try {
+  if($Mode -eq 'recovery') {
+    [IO.File]::WriteAllText((Join-Path $taskFixture 'config-initialization.json'),'{tagma-corrupt-fixture',[Text.UTF8Encoding]::new($false))
+    [IO.File]::WriteAllText((Join-Path $taskFixture 'unrelated-output'),'keep-test-output',[Text.UTF8Encoding]::new($false))
+  }
   $env:TAGMA_TEST_CONFIG_DIR=$taskFixture
   $env:TAGMA_NATIVE_EXE=$taskExecutable
   $env:TAGMA_NATIVE_SMOKE_MODE=$Mode

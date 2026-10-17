@@ -10,6 +10,7 @@ fn main() {
             "apply_gateway",
             "quit_application",
             "diagnostics_view",
+            "recover_initialization",
         ]),
     ))
     .expect("Tauri build configuration failed");
