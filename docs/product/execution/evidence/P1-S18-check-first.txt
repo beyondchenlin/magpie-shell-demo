@@ -1,0 +1,57 @@
+    Checking tagma-core v0.2.0-dev.16 (D:\demo1\tagmaai\crates\tagma-core)
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+    Checking tagma-runtime v0.2.0-dev.16 (D:\demo1\tagmaai\crates\tagma-runtime)
+    Checking tagma-gateway v0.2.0-dev.16 (D:\demo1\tagmaai\crates\tagma-gateway)
+warning: variant `Manage` is never constructed
+  --> crates\tagma-gateway\src\usage.rs:33:5
+   |
+28 | enum Operation {
+   |      --------- variant in this enum
+...
+33 |     Manage(Management),
+   |     ^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: variants `Preview` and `Clear` are never constructed
+  --> crates\tagma-gateway\src\usage.rs:36:5
+   |
+35 | enum Management {
+   |      ---------- variants in this enum
+36 |     Preview {
+   |     ^^^^^^^
+...
+40 |     Clear {
+   |     ^^^^^
+
+warning: methods `management`, `prepare_clear`, and `clear` are never used
+   --> crates\tagma-gateway\src\usage.rs:338:14
+    |
+106 | impl Ledger {
+    | ----------- methods in this implementation
+...
+338 |     async fn management<T>(
+    |              ^^^^^^^^^^
+...
+369 |     pub async fn prepare_clear(&self, range: UsageRange) -> AppResult<UsageClearPlan> {
+    |                  ^^^^^^^^^^^^^
+...
+373 |     pub async fn clear(&self, plan: UsageClearPlan) -> AppResult<UsageClearReceipt> {
+    |                  ^^^^^
+
+warning: `tagma-gateway` (bin "tagma-gateway") generated 3 warnings
+    Finished `dev` profile [unoptimized] target(s) in 3.63s

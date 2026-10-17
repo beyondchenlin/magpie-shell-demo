@@ -49,6 +49,12 @@ pub enum Command {
     Status,
     Apply,
     RecoverUsage,
+    PrepareUsageClear {
+        range: tagma_core::usage::read::UsageRange,
+    },
+    ClearUsage {
+        plan: tagma_core::usage::clear::UsageClearPlan,
+    },
     ConfirmSecurity {
         revision: u32,
     },
@@ -66,6 +72,14 @@ pub enum Command {
 #[derive(Serialize, Deserialize)]
 #[serde(tag = "kind", rename_all = "snake_case", deny_unknown_fields)]
 pub enum OperationResult {
+    PrepareUsageClear {
+        plan: Option<tagma_core::usage::clear::UsageClearPlan>,
+        error: Option<AppError>,
+    },
+    ClearUsage {
+        receipt: Option<tagma_core::usage::clear::UsageClearReceipt>,
+        error: Option<AppError>,
+    },
     ConfirmSecurity {
         requested_revision: u32,
         confirmed: bool,
@@ -212,6 +226,20 @@ fn current_user_sid() -> io::Result<String> {
 }
 
 pub async fn call(manifest: &Manifest, command: Command) -> AppResult<RuntimeStatus> {
+    Ok(call_response(manifest, command).await?.status)
+}
+pub(crate) async fn call_response(manifest: &Manifest, command: Command) -> AppResult<Response> {
+    let preview = match &command {
+        Command::PrepareUsageClear { range } => Some(range.clone()),
+        _ => None,
+    };
+    let clearing = match &command {
+        Command::ClearUsage { plan } => Some(plan.clone()),
+        _ => None,
+    };
+    if let Some(plan) = &clearing {
+        validate_clear_plan(plan, &plan.range)?;
+    }
     let recovery = matches!(&command, Command::RecoverUsage);
     let safety = match &command {
         Command::ConfirmSecurity { revision } => Some(*revision),
@@ -283,11 +311,100 @@ pub async fn call(manifest: &Manifest, command: Command) -> AppResult<RuntimeSta
                 _ => return Err(AppError::new(ErrorCode::SecurityStateUnconfirmed)),
             }
         }
-        Ok(response.status)
+        if let Some(range) = &preview {
+            match &response.operation {
+                Some(OperationResult::PrepareUsageClear {
+                    error: Some(error), ..
+                }) => return Err(error.clone()),
+                Some(OperationResult::PrepareUsageClear {
+                    plan: Some(plan),
+                    error: None,
+                }) => {
+                    validate_usage_management(&response.status, &manifest.instance_id)?;
+                    validate_clear_plan(plan, range)?;
+                }
+                _ => return Err(AppError::new(ErrorCode::UsageQueryUnavailable)),
+            }
+        }
+        if let Some(plan) = &clearing {
+            match &response.operation {
+                Some(OperationResult::ClearUsage {
+                    error: Some(error), ..
+                }) => return Err(error.clone()),
+                Some(OperationResult::ClearUsage {
+                    receipt: Some(receipt),
+                    error: None,
+                }) => {
+                    validate_usage_management(&response.status, &manifest.instance_id)?;
+                    if receipt.plan != *plan
+                        || receipt.generation.parse::<u64>().ok()
+                            != plan
+                                .generation
+                                .parse::<u64>()
+                                .ok()
+                                .and_then(|generation| generation.checked_add(1))
+                        || !valid_decimal(&receipt.generation)
+                        || !receipt.committed_ms.is_finite()
+                        || receipt.committed_ms.fract() != 0.0
+                        || receipt.committed_ms < plan.range.end_ms
+                        || receipt.committed_ms > 9_007_199_254_740_991.0
+                    {
+                        return Err(AppError::new(ErrorCode::UsageClearUnconfirmed));
+                    }
+                }
+                _ => return Err(AppError::new(ErrorCode::UsageClearUnconfirmed)),
+            }
+        }
+        Ok(response)
     };
     tokio::time::timeout(std::time::Duration::from_secs(2), operation)
         .await
         .map_err(|_| AppError::new(ErrorCode::GatewayUnavailable))?
+}
+fn valid_decimal(value: &str) -> bool {
+    value
+        .parse::<u64>()
+        .is_ok_and(|n| n <= i64::MAX as u64 && n.to_string() == value)
+}
+fn validate_clear_plan(
+    plan: &tagma_core::usage::clear::UsageClearPlan,
+    range: &tagma_core::usage::read::UsageRange,
+) -> AppResult<()> {
+    let day = 86_400_000.0;
+    if !range.start_ms.is_finite()
+        || !range.end_ms.is_finite()
+        || range.start_ms < 0.0
+        || range.end_ms > 9_007_199_254_740_991.0
+        || range.start_ms.fract() != 0.0
+        || range.end_ms.fract() != 0.0
+        || range.start_ms % day != 0.0
+        || range.end_ms % day != 0.0
+        || range.end_ms <= range.start_ms
+        || range.end_ms - range.start_ms > 366.0 * day
+        || plan.range != *range
+        || !uuid::Uuid::parse_str(&plan.operation_id)
+            .is_ok_and(|id| id.to_string() == plan.operation_id)
+        || [
+            &plan.expected_revision,
+            &plan.generation,
+            &plan.requests,
+            &plan.attempts,
+            &plan.summary_buckets,
+        ]
+        .iter()
+        .any(|n| !valid_decimal(n))
+    {
+        return Err(AppError::new(ErrorCode::UsageQueryUnavailable));
+    }
+    Ok(())
+}
+fn validate_usage_management(status: &RuntimeStatus, instance: &str) -> AppResult<()> {
+    if status.instance_id.as_deref() != Some(instance)
+        || !matches!(status.state, RuntimeState::Running | RuntimeState::Degraded)
+    {
+        return Err(AppError::new(ErrorCode::UsageClearUnconfirmed));
+    }
+    Ok(())
 }
 pub(crate) fn validate_confirmed_security(
     status: &RuntimeStatus,

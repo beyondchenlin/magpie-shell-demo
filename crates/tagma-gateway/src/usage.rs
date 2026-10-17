@@ -9,6 +9,10 @@ use std::{
     thread::JoinHandle,
     time::{Duration, Instant},
 };
+use tagma_core::usage::{
+    clear::{UsageClearPlan, UsageClearReceipt},
+    read::UsageRange,
+};
 use tagma_core::{
     usage::{AttemptStart, Completion, Outcome, RequestStart, Tokens, UsageStore},
     *,
@@ -26,6 +30,17 @@ enum Operation {
     Attempt(AttemptStart),
     Finish(Completion),
     Recover,
+    Manage(Management),
+}
+enum Management {
+    Preview {
+        range: UsageRange,
+        reply: oneshot::Sender<AppResult<UsageClearPlan>>,
+    },
+    Clear {
+        plan: UsageClearPlan,
+        reply: oneshot::Sender<AppResult<UsageClearReceipt>>,
+    },
 }
 struct Message {
     operation: Operation,
@@ -43,6 +58,7 @@ enum HookPhase {
     AttemptCommitted,
     FinishCommitted,
     BeforeRecover,
+    ClearCommitted,
 }
 #[cfg(test)]
 #[derive(Default)]
@@ -103,6 +119,37 @@ impl Ledger {
             .spawn(move || {
                 let mut store = store;
                 while let Ok(message) = receiver.recv() {
+                    let operation = match message.operation {
+                        Operation::Manage(Management::Preview { range, reply }) => {
+                            management_result(
+                                &mut store,
+                                &flags,
+                                reply,
+                                message.deadline,
+                                false,
+                                move |store| {
+                                    store.prepare_clear(range, tagma_core::health::now_ms()?)
+                                },
+                            );
+                            continue;
+                        }
+                        Operation::Manage(Management::Clear { plan, reply }) => {
+                            management_result(
+                                &mut store,
+                                &flags,
+                                reply,
+                                message.deadline,
+                                true,
+                                move |store| store.clear(&plan, tagma_core::health::now_ms()?),
+                            );
+                            continue;
+                        }
+                        operation => operation,
+                    };
+                    let message = Message {
+                        operation,
+                        ..message
+                    };
                     let is_start = matches!(
                         &message.operation,
                         Operation::Request(_) | Operation::Attempt(_)
@@ -153,6 +200,9 @@ impl Ledger {
                         Operation::Request(_) | Operation::Attempt(_) => Err(unavailable()),
                         Operation::Finish(end) => store.finish(end),
                         Operation::Recover => store.retry_pending(),
+                        Operation::Manage(_) => {
+                            unreachable!("management handled before inference ledger operations")
+                        }
                     };
                     flags
                         .pending
@@ -285,6 +335,45 @@ impl Ledger {
         // reaches a caller and could overtake a later failed result.
         self.call(Operation::Recover).await
     }
+    async fn management<T>(
+        &self,
+        clear: bool,
+        operation: impl FnOnce(oneshot::Sender<AppResult<T>>) -> Management,
+    ) -> AppResult<T> {
+        let (reply, receiver) = oneshot::channel();
+        let message = Message {
+            operation: Operation::Manage(operation(reply)),
+            reply: None,
+            deadline: Instant::now() + BUDGET,
+        };
+        {
+            let guard = self
+                .sender
+                .lock()
+                .map_err(|_| management_unconfirmed(clear))?;
+            let sender = guard
+                .as_ref()
+                .ok_or_else(|| management_unconfirmed(clear))?;
+            sender.try_send(message).map_err(|error| match error {
+                mpsc::TrySendError::Full(_) => AppError::new(ErrorCode::UsageClearBusy),
+                mpsc::TrySendError::Disconnected(_) => management_unconfirmed(clear),
+            })?;
+        }
+        // Waiting expiry does not imply that an already-running clear rolled
+        // back. Its durable receipt can be queried by replaying the SAME plan.
+        tokio::time::timeout(BUDGET, receiver)
+            .await
+            .map_err(|_| management_unconfirmed(clear))?
+            .map_err(|_| management_unconfirmed(clear))?
+    }
+    pub async fn prepare_clear(&self, range: UsageRange) -> AppResult<UsageClearPlan> {
+        self.management(false, |reply| Management::Preview { range, reply })
+            .await
+    }
+    pub async fn clear(&self, plan: UsageClearPlan) -> AppResult<UsageClearReceipt> {
+        self.management(true, |reply| Management::Clear { plan, reply })
+            .await
+    }
     pub async fn begin(
         self: &Arc<Self>,
         start: RequestStart,
@@ -311,6 +400,51 @@ impl Ledger {
             deadline: Instant::now() + BUDGET,
         });
     }
+}
+fn management_unconfirmed(clear: bool) -> AppError {
+    AppError::new(if clear {
+        ErrorCode::UsageClearUnconfirmed
+    } else {
+        ErrorCode::UsageQueryUnavailable
+    })
+}
+fn management_result<T>(
+    store: &mut UsageStore,
+    flags: &Shared,
+    reply: oneshot::Sender<AppResult<T>>,
+    deadline: Instant,
+    clear: bool,
+    work: impl FnOnce(&mut UsageStore) -> AppResult<T>,
+) {
+    let result = if reply.is_closed() || Instant::now() >= deadline {
+        Err(management_unconfirmed(clear))
+    } else if flags.blocked.load(Ordering::SeqCst) {
+        Err(AppError::new(ErrorCode::UsageClearBusy))
+    } else {
+        work(store)
+    };
+    #[cfg(test)]
+    {
+        let hook = flags.hook.lock().unwrap().clone();
+        if let Some(hook) = hook
+            && clear
+            && result.is_ok()
+            && matches!(hook.phase, HookPhase::ClearCommitted)
+        {
+            hook.entered.notify_one();
+            hook.release.wait();
+            hook.completed.notify_one();
+        }
+    }
+    flags
+        .pending
+        .store(store.pending_results() as u32, Ordering::SeqCst);
+    if !store.state().is_ok_and(|state| !state.degraded) {
+        flags.blocked.store(true, Ordering::SeqCst);
+    }
+    // Busy/changed/preview timeout never turn healthy inference accounting off.
+    // Preserve the actual operation result separately from subsequent status.
+    let _ = reply.send(result);
 }
 pub struct TrackedRequest {
     ledger: Arc<Ledger>,
@@ -434,6 +568,264 @@ pub fn tokens(value: &serde_json::Value) -> Tokens {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[tokio::test]
+    async fn full_or_abandoned_management_never_mutates_or_blocks_accounting() {
+        // Isolated bounded channel proves full-management behavior, without a
+        // storage worker or queueing inference on an unrelated application.
+        let (sender, receiver) = mpsc::sync_channel(1);
+        sender
+            .try_send(Message {
+                operation: Operation::Recover,
+                reply: None,
+                deadline: Instant::now() + BUDGET,
+            })
+            .unwrap();
+        let stub = Ledger {
+            sender: Mutex::new(Some(sender)),
+            worker: None,
+            shared: Arc::new(Shared {
+                blocked: AtomicBool::new(false),
+                pending: AtomicU32::new(0),
+                hook: Mutex::new(None),
+            }),
+        };
+        let range = UsageRange {
+            start_ms: 0.0,
+            end_ms: 86_400_000.0,
+        };
+        assert_eq!(
+            stub.prepare_clear(range).await.unwrap_err().code,
+            ErrorCode::UsageClearBusy
+        );
+        assert!(!stub.degraded());
+        drop(stub);
+        drop(receiver);
+        let temp = tempfile::Builder::new()
+            .prefix("tagma-clear-abandoned-")
+            .tempdir()
+            .unwrap();
+        let ledger = Ledger::open(temp.path()).unwrap();
+        let now = tagma_core::health::now_ms().unwrap();
+        let day = 86_400_000;
+        let end = now / day * day;
+        let range = UsageRange {
+            start_ms: (end - day) as f64,
+            end_ms: end as f64,
+        };
+        let plan = ledger.prepare_clear(range.clone()).await.unwrap();
+        let hook = Arc::new(TestHook {
+            phase: HookPhase::BeforeRecover,
+            entered: Default::default(),
+            release: Default::default(),
+            completed: Default::default(),
+        });
+        *ledger.shared.hook.lock().unwrap() = Some(hook.clone());
+        let recovering = {
+            let ledger = ledger.clone();
+            tokio::spawn(async move { ledger.recover().await })
+        };
+        tokio::time::timeout(Duration::from_secs(2), hook.entered.notified())
+            .await
+            .unwrap();
+        let (reply, expired) = oneshot::channel();
+        ledger
+            .sender
+            .lock()
+            .unwrap()
+            .as_ref()
+            .unwrap()
+            .try_send(Message {
+                operation: Operation::Manage(Management::Clear {
+                    plan: plan.clone(),
+                    reply,
+                }),
+                reply: None,
+                deadline: Instant::now() - Duration::from_millis(1),
+            })
+            .unwrap();
+        let (reply, closed) = oneshot::channel();
+        drop(closed);
+        ledger
+            .sender
+            .lock()
+            .unwrap()
+            .as_ref()
+            .unwrap()
+            .try_send(Message {
+                operation: Operation::Manage(Management::Clear { plan, reply }),
+                reply: None,
+                deadline: Instant::now() + BUDGET,
+            })
+            .unwrap();
+        *ledger.shared.hook.lock().unwrap() = None;
+        hook.release.open();
+        recovering.await.unwrap().unwrap();
+        assert_eq!(
+            tokio::time::timeout(Duration::from_secs(1), expired)
+                .await
+                .unwrap()
+                .unwrap()
+                .unwrap_err()
+                .code,
+            ErrorCode::UsageClearUnconfirmed
+        );
+        assert_eq!(ledger.prepare_clear(range).await.unwrap().generation, "0");
+        assert!(!ledger.degraded());
+        drop(ledger);
+        println!(
+            "Usage management:full bounded channel ->busy without fence;actual writer skips expired and preclosed clear before mutation,epoch remains0,healthy accounting retained"
+        );
+    }
+    #[tokio::test]
+    async fn management_busy_and_changed_do_not_fence_healthy_inference() {
+        let temp = tempfile::Builder::new()
+            .prefix("tagma-clear-management-")
+            .tempdir()
+            .unwrap();
+        let ledger = Ledger::open(temp.path()).unwrap();
+        let now = tagma_core::health::now_ms().unwrap();
+        let day = 86_400_000;
+        let end = now / day * day;
+        let range = UsageRange {
+            start_ms: (end - day) as f64,
+            end_ms: end as f64,
+        };
+        let plan = ledger.prepare_clear(range.clone()).await.unwrap();
+        let request = ledger
+            .begin(
+                RequestStart {
+                    id: uuid::Uuid::new_v4().to_string(),
+                    provider_id: uuid::Uuid::new_v4().to_string(),
+                    model: "clear-busy".into(),
+                    config_revision: 1,
+                    team_revision: None,
+                    started_ms: now,
+                },
+                tokio::time::Instant::now() + Duration::from_secs(10),
+            )
+            .await
+            .unwrap();
+        assert_eq!(
+            ledger.prepare_clear(range.clone()).await.unwrap_err().code,
+            ErrorCode::UsageClearBusy
+        );
+        assert!(!ledger.degraded());
+        assert_eq!(
+            ledger.clear(plan.clone()).await.unwrap_err().code,
+            ErrorCode::UsageClearBusy
+        );
+        assert!(!ledger.degraded());
+        request.finish(None).await.unwrap();
+        assert_eq!(
+            ledger.clear(plan).await.unwrap_err().code,
+            ErrorCode::UsageClearChanged
+        );
+        assert!(!ledger.degraded());
+        let plan = ledger.prepare_clear(range).await.unwrap();
+        ledger.clear(plan).await.unwrap();
+        assert!(!ledger.degraded());
+        ledger.shared.blocked.store(true, Ordering::SeqCst);
+        assert_eq!(
+            ledger
+                .prepare_clear(UsageRange {
+                    start_ms: (end - day) as f64,
+                    end_ms: end as f64
+                })
+                .await
+                .unwrap_err()
+                .code,
+            ErrorCode::UsageClearBusy,
+            "unconfirmed admission flags also require explicit recovery"
+        );
+        ledger.recover().await.unwrap();
+        assert!(!ledger.degraded());
+        drop(request);
+        drop(ledger);
+        println!(
+            "Usage management:running request ->busy,changed preview ->changed;neither blocks healthy accounting;new preview clear succeeds"
+        );
+    }
+    #[tokio::test]
+    async fn clear_wait_timeout_keeps_durable_receipt_without_replaying_deletion() {
+        let temp = tempfile::Builder::new()
+            .prefix("tagma-clear-late-")
+            .tempdir()
+            .unwrap();
+        let now = tagma_core::health::now_ms().unwrap();
+        let day = 86_400_000;
+        let end = now / day * day;
+        {
+            let mut store = UsageStore::open(temp.path(), now).unwrap();
+            let id = uuid::Uuid::new_v4().to_string();
+            store
+                .begin_request(&RequestStart {
+                    id: id.clone(),
+                    provider_id: uuid::Uuid::new_v4().to_string(),
+                    model: "owned-clear-late".into(),
+                    config_revision: 1,
+                    team_revision: None,
+                    started_ms: end - day + 100,
+                })
+                .unwrap();
+            store
+                .finish(Completion {
+                    request_id: id,
+                    ordinal: None,
+                    finished_ms: end - day + 200,
+                    outcome: Outcome::Succeeded,
+                    error_code: None,
+                    tokens: Tokens::default(),
+                })
+                .unwrap();
+        }
+        let ledger = Ledger::open(temp.path()).unwrap();
+        let plan = ledger
+            .prepare_clear(UsageRange {
+                start_ms: (end - day) as f64,
+                end_ms: end as f64,
+            })
+            .await
+            .unwrap();
+        assert_eq!(plan.requests, "1");
+        let hook = Arc::new(TestHook {
+            phase: HookPhase::ClearCommitted,
+            entered: Default::default(),
+            release: Default::default(),
+            completed: Default::default(),
+        });
+        *ledger.shared.hook.lock().unwrap() = Some(hook.clone());
+        let pending = {
+            let ledger = ledger.clone();
+            let plan = plan.clone();
+            tokio::spawn(async move { ledger.clear(plan).await })
+        };
+        tokio::time::timeout(Duration::from_secs(2), hook.entered.notified())
+            .await
+            .unwrap();
+        let result = pending.await.unwrap();
+        assert_eq!(result.unwrap_err().code, ErrorCode::UsageClearUnconfirmed);
+        assert!(!ledger.degraded());
+        *ledger.shared.hook.lock().unwrap() = None;
+        hook.release.open();
+        tokio::time::timeout(Duration::from_secs(1), hook.completed.notified())
+            .await
+            .unwrap();
+        let receipt = ledger.clear(plan.clone()).await.unwrap();
+        assert_eq!(receipt.plan, plan);
+        assert_eq!(receipt.generation, "1");
+        assert!(!ledger.degraded());
+        let db = rusqlite::Connection::open(temp.path().join("usage.sqlite3")).unwrap();
+        assert_eq!(
+            db.query_row::<u32, _, _>("SELECT count(*) FROM usage_requests", [], |row| row.get(0))
+                .unwrap(),
+            0
+        );
+        drop(db);
+        drop(ledger);
+        println!(
+            "Usage clear ACK:actual delete+epoch+receipt commit precedes800ms caller timeout;timeout remains unconfirmed,accounting healthy;same plan retry retrieves generation1 without replay"
+        );
+    }
     #[tokio::test]
     async fn lost_attempt_start_acknowledgement_closes_both_started_records() {
         let temp = tempfile::Builder::new()

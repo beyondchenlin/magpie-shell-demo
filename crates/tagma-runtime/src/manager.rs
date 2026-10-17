@@ -313,6 +313,46 @@ impl GatewayManager {
         ipc::validate_recovered_usage(&status, &manifest.instance_id)?;
         Ok(status)
     }
+    pub async fn prepare_usage_clear(
+        &self,
+        range: tagma_core::usage::read::UsageRange,
+    ) -> AppResult<tagma_core::usage::clear::UsageClearPlan> {
+        let manifest = ipc::read_manifest(&self.directory)?;
+        let response = ipc::call_response(&manifest, Control::PrepareUsageClear { range }).await?;
+        match response.operation {
+            Some(ipc::OperationResult::PrepareUsageClear {
+                plan: Some(plan),
+                error: None,
+            }) => Ok(plan),
+            _ => Err(AppError::new(ErrorCode::UsageQueryUnavailable)),
+        }
+    }
+    pub async fn clear_usage(
+        &self,
+        plan: tagma_core::usage::clear::UsageClearPlan,
+    ) -> AppResult<tagma_core::usage::clear::UsageClearReceipt> {
+        let result = async {
+            let manifest = ipc::read_manifest(&self.directory)?;
+            ipc::call_response(&manifest, Control::ClearUsage { plan }).await
+        };
+        let response = result.await.map_err(|error| {
+            if matches!(
+                error.code,
+                ErrorCode::GatewayUnavailable | ErrorCode::IncompatibleVersion
+            ) {
+                AppError::new(ErrorCode::UsageClearUnconfirmed)
+            } else {
+                error
+            }
+        })?;
+        match response.operation {
+            Some(ipc::OperationResult::ClearUsage {
+                receipt: Some(receipt),
+                error: None,
+            }) => Ok(receipt),
+            _ => Err(AppError::new(ErrorCode::UsageClearUnconfirmed)),
+        }
+    }
     pub async fn cancel_probe(&self, request_id: String) -> AppResult<()> {
         uuid::Uuid::parse_str(&request_id).map_err(|_| AppError::new(ErrorCode::InvalidInput))?;
         let manifest = ipc::read_manifest(&self.directory)?;

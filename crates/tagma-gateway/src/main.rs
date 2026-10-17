@@ -325,6 +325,14 @@ async fn run(
                             let mut stop = false;
                             match request.command {
                                 Command::Status => {},
+                                Command::PrepareUsageClear {range} => {
+                                    let result=state.usage.prepare_clear(range).await;let (plan,error)=match result {Ok(plan)=>(Some(plan),None),Err(error)=>(None,Some(error))};let status=status_snapshot(&state).await;
+                                    let response=Response{operation:Some(ipc::OperationResult::PrepareUsageClear{plan,error}),protocol_version:PROTOCOL_VERSION,product_version:PRODUCT_VERSION.into(),instance_id:state.manifest.instance_id.clone(),config_id:state.manifest.config_id.clone(),challenge:request.challenge,status};let _=ipc::write_frame(&mut stream,&response).await;return;
+                                },
+                                Command::ClearUsage {plan} => {
+                                    let result=state.usage.clear(plan).await;let (receipt,error)=match result {Ok(receipt)=>(Some(receipt),None),Err(error)=>(None,Some(error))};let status=status_snapshot(&state).await;
+                                    let response=Response{operation:Some(ipc::OperationResult::ClearUsage{receipt,error}),protocol_version:PROTOCOL_VERSION,product_version:PRODUCT_VERSION.into(),instance_id:state.manifest.instance_id.clone(),config_id:state.manifest.config_id.clone(),challenge:request.challenge,status};let _=ipc::write_frame(&mut stream,&response).await;return;
+                                },
                                 Command::RecoverUsage => {
                                     let result=state.usage.recover().await;let confirmed=result.is_ok();let error=result.err();let mut status=status_snapshot(&state).await;
                                     if let Some(error)=&error{status.error=Some(error.clone());}

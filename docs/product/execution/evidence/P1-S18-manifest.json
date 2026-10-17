@@ -1,0 +1,203 @@
+{
+  "recordedAtUtc": "2026-10-17T20:21:11.042Z",
+  "sourceBase": "99e3a8d36ee5df2908c1270b5f55a339c10b4e8b",
+  "candidateVersion": "0.2.0-dev.16",
+  "configSchema": 8,
+  "usageSchema": 2,
+  "source": [
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-core\\src\\contract.rs",
+      "bytes": 7158,
+      "sha256": "31e92dd4b2baf323d34b796734ccdbd0617273090dc88023f0c1792d51b9c4ff"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-gateway\\src\\main.rs",
+      "bytes": 33547,
+      "sha256": "48fdab53473408ce1c4284be9f37c17dda0852d71ef8467dd6ca756033d19aa7"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-gateway\\src\\usage.rs",
+      "bytes": 36759,
+      "sha256": "a25c3a349be030dd7ba42fefbbf6aba6515489cbf524f725e6a80c26ef55b289"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-gateway\\tests\\usage_clear.rs",
+      "bytes": 10497,
+      "sha256": "5d3ec7439880ef8c9eb6cd809adb2dd38bd7bd35b6519be4a398d9d3639470ed"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-runtime\\src\\ipc.rs",
+      "bytes": 18324,
+      "sha256": "06a5d2f71baa0b5f94ea825e0da429a2ed2d532e8172f07ec41619f9d2892958"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-runtime\\src\\manager.rs",
+      "bytes": 18478,
+      "sha256": "a67e0401b6d9f7bbded2e381b3f0704278026b6eb5fede380f9a0e8c61f061a4"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-runtime\\tests\\usage_clear_ack.rs",
+      "bytes": 7133,
+      "sha256": "a49b0586b886850b3fd1a6f407a837ee057b905bfd23e1602a83e2e465ba4458"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\src\\product\\contract.ts",
+      "bytes": 12486,
+      "sha256": "cbbcd8bab878c6b2f763b40be71b319c9d089262f8f885b90c772720ad1ba1dd"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\src\\product\\copy.ts",
+      "bytes": 19249,
+      "sha256": "e45654aff95ca2569253641dde779e6078e58aced4d513fc917d0920ef6186cc"
+    }
+  ],
+  "documents": [
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\EXECUTION-STATUS.md",
+      "bytes": 25904,
+      "sha256": "d5a2c4ffa2f3f90b9448f693f8c35e95f19e433ece09ef95292776c4f8733102"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\P1-S18-USAGE-CLEAR-IPC.md",
+      "bytes": 5842,
+      "sha256": "7c0222f3a63aaf9bd28b8b3ed81fe266f9bdb4d50ba1777a3fc9fe068e067d87"
+    }
+  ],
+  "prd": {
+    "path": "D:\\demo1\\tagmaai\\docs\\product\\TAGMA-PRD-v0.3.md",
+    "bytes": 50957,
+    "sha256": "6e6503391f70e3f2e53347890de6e7c9f7fd93cc393c68f7bba494ac4d67a6d6"
+  },
+  "evidence": [
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S18-check-first.txt",
+      "bytes": 1921,
+      "sha256": "e64a0699ee1b9318f85e6c55898da9f4c0b0d9beead98ad3e66b6003c1f2c9f7"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S18-check-ipc.txt",
+      "bytes": 672,
+      "sha256": "9cbf65ee939eaefde93fdc1e64b38c521e634d886d05b253f48e3355a6937c2f"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S18-clippy-verified.txt",
+      "bytes": 748,
+      "sha256": "3439c35e9e7f3a7ce4c559ea81f16b23e150688b0bb01c3a5f950f64139c9cb4"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S18-clippy.txt",
+      "bytes": 1266,
+      "sha256": "c4ed079e853adb9abbb1d607c206d4fae0edc993952c3bc839f926b19ec36422"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S18-dto-check.txt",
+      "bytes": 574,
+      "sha256": "22470352db86a1f3d402507ada470b37a5b48a2ab331ef0bb23433e46f94ddaa"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S18-dto.txt",
+      "bytes": 642,
+      "sha256": "cc1e1c53d345b8c2446e7af8c5fb0a337c6cd0d3e404dc6e81d242fc225e4198"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S18-frontend.txt",
+      "bytes": 478,
+      "sha256": "015e8e0701294bc37b952063177381c0ed1673c1d745f169e008c0d514e52b6c"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S18-gateway-final.txt",
+      "bytes": 8567,
+      "sha256": "12622c386d3bfcb9d2c22aa5b82de74576515cf63f5f7cf3d2d7063784e26a21"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S18-lint.txt",
+      "bytes": 202,
+      "sha256": "ead9a45ef5f1cebe7c7e43f1894a7d31418f9bfc149ce03904e94e8e7c38311f"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S18-live-complete.txt",
+      "bytes": 1206,
+      "sha256": "385cda886dc698fd48afa6e5793085923a562514e3fcc2a604b0734879534cc7"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S18-live-first.txt",
+      "bytes": 1206,
+      "sha256": "38cf3e5079a9fe6058c6c0f05d8f6f94cf8b602813365ebee654848967b4ae2e"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S18-live-verified.txt",
+      "bytes": 1206,
+      "sha256": "bd403812440a5383615e0cf0fa367b303f36df6cc6b17a1b8be39ea46e9fc328"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S18-private-first.txt",
+      "bytes": 1380,
+      "sha256": "646de3b481ee84bf1d8144bb052a5a63a9f0c2363421c56f27357c93894c16b9"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S18-runtime-final.txt",
+      "bytes": 3705,
+      "sha256": "66153fb2bd39227b26a7e47a9fb4f2dab0c70a938d5113fd1a620a69dc764b41"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S18-space-plan.json",
+      "bytes": 567,
+      "sha256": "77d2d85ef0c3241d4c0c746c6666e418e13785fc51fd91e8d8e681ddc101134d"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S18-writer-final.txt",
+      "bytes": 2206,
+      "sha256": "21cbc2f6dd1e87fd711878f7c5604c36c9e53297145aa254497657d42e1da614"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S18-writer-first.txt",
+      "bytes": 2106,
+      "sha256": "62f5fbc1eac6153471bfbe8cc319ac39c31b83c7e06cfcbdcd65b763a4a29ea9"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S18-writer-verified.txt",
+      "bytes": 2206,
+      "sha256": "c66d123b4fc75fe0ae26fb7d78f150fbefa7d9b26e8416893a97b51fa6a674e2"
+    }
+  ],
+  "checks": {
+    "runtimePassed": 6,
+    "gatewayRelatedPassed": 23,
+    "finalAffected": "writer6 + actual clear1 repeated,not added to23",
+    "clearPrivateMatrix": "two tests:16 clear negatives/3 positives,6 preview negatives/1 positive",
+    "clippy": "workspace alltarget + final gateway alltarget passed",
+    "other": "DTO generate/check,TS/Vite,oxlint1file116rules0diagnostics passed"
+  },
+  "scope": {
+    "actualClear": "past-day synthetic ledger history removed by actual sidecar/private IPC;3 actual HTTP current-day registrations retained with exact cfg2/tokens2/1",
+    "lostReply": "actual proxy sees validated private completion then drops client response;manager unconfirmed;2 explicit same-plan retries same receipt",
+    "writerTimeout": "real actor after-commit hook + caller wait expiry proven separately from socket fake reply matrix;not a full real-process timeout race",
+    "nativeUI": "not connected or tested",
+    "ownClearCacheFloor": "pending",
+    "realUpstream": 0,
+    "computerControl": false,
+    "installedVersion": "dev.9",
+    "physicalWindowDrag": false,
+    "A16": "partial",
+    "A28": "partial",
+    "P1": false
+  },
+  "resources": {
+    "freeAfterGiB": [
+      {
+        "name": "C",
+        "freeGiB": 42.462
+      },
+      {
+        "name": "D",
+        "freeGiB": 10.143
+      }
+    ],
+    "noNewWorktree": true,
+    "noNewEnvironment": true,
+    "noInstaller": true,
+    "lastNewClearFixtureResidue": 0,
+    "retained": "Existing target/dependencies/evidence,user preview/data/webview,prior fixtures and rejected cleanup files",
+    "note": "All owned test workers/sidecars ended before TempDir teardown;no manual/rejected cleanup attempted;disk changes include concurrent writes"
+  }
+}

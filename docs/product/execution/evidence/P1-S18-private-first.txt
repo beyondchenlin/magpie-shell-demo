@@ -1,0 +1,28 @@
+   Compiling tagma-core v0.2.0-dev.16 (D:\demo1\tagmaai\crates\tagma-core)
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+   Compiling tagma-runtime v0.2.0-dev.16 (D:\demo1\tagmaai\crates\tagma-runtime)
+    Finished `test` profile [unoptimized] target(s) in 4.60s
+     Running tests\usage_clear_ack.rs (target\debug\deps\usage_clear_ack-b0aeac93d9718b07.exe)
+
+running 2 tests
+Usage preview IPC:6 missing/changed/incomplete/error replies rejected;exact requested range and canonical numeric plan accepted
+test preview_requires_requested_range_complete_plan_and_no_operation_error ... ok
+Usage clear IPC:13 malformed/failed operation replies plus wrong instance/stopped/lost reply rejected;3 explicit receipt positives accepted;later runtime error does not replace actual operation result
+test clear_receipt_requires_matching_operation_scope_generation_and_instance ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.12s
+

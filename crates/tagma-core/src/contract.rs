@@ -34,6 +34,7 @@ pub enum ErrorCode {
     UsageQueryCancelled,
     UsageClearBusy,
     UsageClearChanged,
+    UsageClearUnconfirmed,
     RestartRequired,
     TeamSlugConflict,
     TeamPublished,
@@ -57,6 +58,7 @@ impl AppError {
                 | ErrorCode::UsageQueryUnavailable
                 | ErrorCode::UsageClearBusy
                 | ErrorCode::UsageClearChanged
+                | ErrorCode::UsageClearUnconfirmed
                 | ErrorCode::MaintenanceInProgress
         );
         Self { code, retryable }

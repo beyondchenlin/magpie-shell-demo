@@ -18,6 +18,8 @@
 
 ## 当前批次
 
+- **清除私有管理接线局部完成**：候选仍dev.16/schema8/usage2，唯一writer有界控制、800ms未确认与同plan持久回执、明确操作结果/严格实例与范围校验。runtime6/gateway相关23通过，最后writer6/真实clear1及Clippy复验通过，DTO/TS/Vite/lint通过。实际sidecar的过去合成历史被删、当天3条真实HTTP保留；真实回复丢失后两次核实同回执，busy/changed不锁死记账，配置RestartRequired保留。两轮自查与分层证据见[P1-S18](P1-S18-USAGE-CLEAR-IPC.md)。尚未接native清除/UI/最低代次围栏，A16/A28/P1未整体通过；用户dev.9、拖动未通过与禁止电脑控制不变，继续本机源码接线。
+
 - **清除核心与schema2备份升级局部完成**：候选dev.16/config schema8/usage schema2，显式UTC范围/数量预览、变更修订、事务删除/代次/持久回执、旧游标拒绝及源页面代次隔离。迁移一致性备份/WAL/校验与七点真实exit90、两类损坏拒绝验证；最终core72通过（8忽略不计）、实际gateway相关3、源页面7、workspace Clippy/DTO/TS/Vite/lint/CIS通过。两轮自查与精确范围见[P1-S17](P1-S17-USAGE-CLEAR-CORE.md)。尚未接IPC清除/确认UI/自身清除后最低代次围栏，A16/A28/P1未整体通过；用户dev.9、拖动未通过与禁止电脑控制不变，继续管理接线。
 
 - **用量页源码接线完成，未作桌面验收**：候选仍dev.16，CIS组件增加用量入口、UTC范围/结果/错误/目标/修订筛选、两种汇总口径、32条有界翻页和请求/尝试详情。精确整数与未知区分、失败清缓存、退出迟到隔离；6项无窗口检查、TS/Vite、6文件JSON lint零诊断、CIS/chrome guard通过。两轮自查及限制见[P1-S16](P1-S16-USAGE-UI-SOURCE.md)。没有更新用户dev.9安装或控制窗口；拖动未通过，清除/软预算/完整容量矩阵及A16/A28/P1仍待完成。继续独立源码工作。
@@ -40,7 +42,7 @@
 
 ## 历史切片记录
 
-以下保留各批当时的实现范围与版本；其中“未开放/待接线/下一步”等描述不是本批最新状态。最新范围以上方 dev.16/usage schema2、P1-S17及后续补充为准。
+以下保留各批当时的实现范围与版本；其中“未开放/待接线/下一步”等描述不是本批最新状态。最新范围以上方 dev.16/usage schema2、P1-S18及后续补充为准。
 
 - SUP-006按先失败后修复完成观测时刻校验：延迟到TTL后落盘不刷新成功时间；同毫秒失败优先、目录/推理分槽。原始before/after/core/final/regression结果保留。纯选择器与未确认退出围栏已验证，first_cloud发布/解析仍未开放；新增两项无窗口异常退出测试通过，禁止电脑控制持续有效。详见[SUP-006](SUP-006-OBSERVATION-TIME.md)及[P1-S07](P1-S07-HEALTH-UNCERTAINTY.md)。
 

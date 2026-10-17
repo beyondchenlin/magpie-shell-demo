@@ -1,0 +1,13 @@
+{
+  "recordedAtUtc": "2026-10-17T20:09:26.440Z",
+  "target": "D:/demo1/tagmaai/target",
+  "temporaryRoot": "C:\\Users\\ai\\AppData\\Local\\Temp",
+  "estimatedAdditionalPeakGiB": 0.15,
+  "freeBeforeGiB": {
+    "C": 42.46,
+    "D": 10.25
+  },
+  "scope": "Bounded private writer clear management and strict IPC acknowledgements; no native UI/installation",
+  "reuse": "Existing target,registry,node_modules; no new worktree or environment",
+  "cleanup": "Owned TempDir workers/sidecars close before teardown; preserve user data,existing evidence and rejected cleanup"
+}

@@ -51,6 +51,7 @@ const zh: typeof en = {
 
 export function copy(language: ProductLanguage) { return language === "zh" ? zh : en; }
 const errors: Record<ErrorCode, [string, string]> = {
+  USAGE_CLEAR_UNCONFIRMED:["本次清除结果未确认。请核实同一次清除，不要重新提交新的范围。","This clear is unconfirmed. Verify the same operation before submitting a new scope."],
   USAGE_CLEAR_BUSY:["存在在途请求或待恢复用量，暂不能清除。","Usage cannot be cleared while requests or pending recovery results exist."],
   USAGE_CLEAR_CHANGED:["用量数据已变化，旧查询或清除预览已失效，请重新读取。","Usage changed. Read again before continuing the query or clear preview."],
   USAGE_QUERY_UNAVAILABLE:["用量读取未确认，请稍后手动刷新。运行记账状态请查看网关。","Usage reading is unconfirmed. Refresh manually; see the gateway for accounting status."],

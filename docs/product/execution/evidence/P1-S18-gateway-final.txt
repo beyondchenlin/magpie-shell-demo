@@ -1,0 +1,103 @@
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+   Compiling tagma-gateway v0.2.0-dev.16 (D:\demo1\tagmaai\crates\tagma-gateway)
+    Finished `test` profile [unoptimized] target(s) in 1.96s
+     Running unittests src\main.rs (target\debug\deps\tagma_gateway-96c849ca787440a6.exe)
+
+running 18 tests
+test http_api::tests::refuses_unimplemented_fields_before_dispatch ... ok
+test health::tests::coalescing_preserves_scope_time_and_failure_precedence ... ok
+test apply_tests::timed_out_credential_load_keeps_one_worker_limit ... ok
+test apply_tests::pending_apply_cannot_resurrect_stopping_runtime ... ok
+A08 metadata: pending catalog writes block health reads; confirmed completion advances epoch; abandoned/unknown completion never acknowledges old ready rows
+Usage management:full bounded channel ->busy without fence;actual writer skips expired and preclosed clear before mutation,epoch remains0,healthy accounting retained
+test health::tests::catalog_writes_share_the_health_epoch_and_unknown_results_remain_unconfirmed ... ok
+test usage::tests::full_or_abandoned_management_never_mutates_or_blocks_accounting ... ok
+Usage management:running request ->busy,changed preview ->changed;neither blocks healthy accounting;new preview clear succeeds
+test usage::tests::management_busy_and_changed_do_not_fence_healthy_inference ... ok
+test apply_tests::delayed_old_success_never_regresses_effective_revision ... ok
+test apply_tests::delayed_old_failure_never_overwrites_new_success ... ok
+SUP-006 observed_t0=1000 drain_t=301001 persisted_success=Some(1000) ready=false selected=false
+test health::tests::delayed_health_write_does_not_refresh_an_expired_observation ... ok
+SUP-007 phase=first-step token_scope=false cancel_inflight=false confirmed_revision=1 upstream_target_calls=0 status=403
+SUP-007 phase=next-step token_scope=false cancel_inflight=false confirmed_revision=1 upstream_target_calls=0 status=403
+Usage accounting ACK:remaining150ms request budget ends wait while committed writer ACK is held;explicit recovery required
+test usage::tests::accounting_ack_wait_respects_the_remaining_request_budget ... ok
+A11 real HTTP/in-memory credentials: missing/wrong/revoked 401; no data-plane management; new token saved-before-apply denied then accepted; provider revoke blocks new dispatch; optional cancellation closes real upstream and retains partial/error without DONE; corrupt security store 503/unconfirmed
+test security::tests::real_http_token_revocation_rotation_inflight_cancel_and_storage_failure ... ok
+SUP-007 phase=admitted-first-send token_scope=false cancel_inflight=false confirmed_revision=1 upstream_target_calls=1 status=200
+A14 health consumer: bounded single read slot, admission timeout, recovery and shutdown rejection verified
+test health::tests::confirmed_reads_are_bounded_and_shutdown_is_not_an_acknowledgement ... ok
+SUP-007 phase=first-step token_scope=true cancel_inflight=false confirmed_revision=1 upstream_target_calls=0 status=403
+SUP-007 phase=next-step token_scope=true cancel_inflight=false confirmed_revision=1 upstream_target_calls=0 status=403
+test security::tests::sup007_confirmed_revoke_cannot_overtake_an_unstarted_dispatch ... ok
+test health::tests::coalesced_observations_are_confirmed_only_after_persistent_write ... ok
+SUP-008 bounded writer race:recover operation timed out/Err;writer later completed actual pending1->0 and degraded=false;original operation Err preserved for reply
+test usage::tests::recovery_timeout_retains_operation_failure_after_late_writer_completion ... ok
+Usage clear ACK:actual delete+epoch+receipt commit precedes800ms caller timeout;timeout remains unconfirmed,accounting healthy;same plan retry retrieves generation1 without replay
+test usage::tests::clear_wait_timeout_keeps_durable_receipt_without_replaying_deletion ... ok
+Usage lost committed-start ACK unit: unfinished records=0; late ACK lifecycle guard recovery
+test usage::tests::lost_attempt_start_acknowledgement_closes_both_started_records ... ok
+
+test result: ok. 18 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.89s
+
+     Running tests\revocation_faults.rs (target\debug\deps\revocation_faults-aaf67d597361cc95.exe)
+
+running 1 test
+A27 actual sidecar:apply=RestartRequired old_effective5 desired6 IPC_delivered=false cancel=false client_confirm=Err unknown_status=true review_calls1 revoked_final_calls0;real confirmation keeps apply error
+A27 actual sidecar:apply=RestartRequired old_effective5 desired6 IPC_delivered=true cancel=false client_confirm=Err unknown_status=true review_calls1 revoked_final_calls0;real confirmation keeps apply error
+A27 actual sidecar:apply=RestartRequired old_effective5 desired6 IPC_delivered=false cancel=true client_confirm=Err unknown_status=true review_calls1 revoked_final_calls0;real confirmation keeps apply error
+A27 actual sidecar:apply=RestartRequired old_effective5 desired6 IPC_delivered=true cancel=true client_confirm=Err unknown_status=true review_calls1 revoked_final_calls0;real confirmation keeps apply error
+test failed_configuration_apply_and_missing_private_ack_never_restore_revoked_dispatch ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.72s
+
+     Running tests\security.rs (target\debug\deps\security-7a4f45ff9e9af041.exe)
+
+running 1 test
+DATA-06 routing: raw duplicate model uses the first permitted configured provider on a new call; immutable explicit team UUID never substitutes a replacement
+DATA-06 actual sidecar: saved revocation -> instance-bound acknowledgement; old in-flight step finishes, revoked next step dispatch count=0; directory filtered; restart and private catalog probe remain denied
+test persistent_revocation_overrides_pinned_team_steps_and_restarts_without_credential_access ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.21s
+
+     Running tests\usage.rs (target\debug\deps\usage-c086c387e7fe0bf4.exe)
+
+running 2 tests
+Usage HTTP success: requests=1 attempts=1 cfg=2 tokens=2/1 persisted before response success
+Usage live readonly bridge:actual sidecar request -> exact request/detail/UTC attempt summary,config2 and tokens2/1
+Usage actual sidecar kill/restart:upstream entered only after request+attempt starts persisted;both recovered interrupted,NULL tokens,no fabricated zero
+test actual_sidecar_death_keeps_started_usage_and_restart_marks_unknown_interrupted ... ok
+Usage HTTP begin failure: upstream delta=0,503,degraded=true;private explicit recovery acknowledged
+Usage HTTP first-attempt registration failure:upstream delta0,degraded and explicit recovery
+Usage successful SSE:final reported tokens3/2 persisted before DONE
+Usage HTTP result failure:2 pending,unknown tokens NULL,subsequent upstream delta0;fault-active recovery refused;after recovery pending0,unknown stays NULL
+Usage SSE result failure:partial text retained,error frame,successful DONE withheld,2 bounded pending;recovery retains unknown tokens
+Usage SSE client drop:actual upstream closed;request+attempt cancelled with unknown tokens
+Usage sequential:logical1/attempts2/tokens4/2;second-attempt begin failure sends first once and second zero
+Usage actual revoke(true):partial stream ends ACCESS_REVOKED,request+attempt cancelled,NULL usage;no success DONE
+test actual_http_usage_starts_precede_dispatch_and_failed_results_fence_new_calls ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.40s
+
+     Running tests\usage_clear.rs (target\debug\deps\usage_clear-8227a38a1edeede0.exe)
+
+running 1 test
+Usage actual private clear:seeded past-day1request/1attempt/2buckets removed;3 actual HTTP today records retained;busy holds upstream alive and changed preview leaves accounting healthy;real reply lost ->unconfirmed;same plan retry twice receipt generation1;config RestartRequired preserved;data API clear501,extra inference0
+test actual_private_clear_preserves_active_calls_and_recovers_lost_receipt ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.18s
+

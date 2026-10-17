@@ -1,0 +1,25 @@
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+   Compiling tagma-gateway v0.2.0-dev.16 (D:\demo1\tagmaai\crates\tagma-gateway)
+    Finished `test` profile [unoptimized] target(s) in 2.55s
+     Running tests\usage_clear.rs (target\debug\deps\usage_clear-8227a38a1edeede0.exe)
+
+running 1 test
+Usage actual private clear:seeded past-day1request/1attempt/2buckets removed;3 actual HTTP today records retained;busy holds upstream alive and changed preview leaves accounting healthy;real reply lost ->unconfirmed;same plan retry twice receipt generation1;config RestartRequired preserved;data API clear501,extra inference0
+test actual_private_clear_preserves_active_calls_and_recovers_lost_receipt ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.42s
+
