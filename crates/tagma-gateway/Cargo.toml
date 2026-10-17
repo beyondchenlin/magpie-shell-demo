@@ -19,3 +19,4 @@ interprocess = { version = "2.4.0", features = ["tokio"] }
 
 [dev-dependencies]
 tempfile = "3.27"
+rusqlite = { version = "0.40.0", features = ["bundled"] }

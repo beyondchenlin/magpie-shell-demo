@@ -51,6 +51,9 @@ impl ConfigService {
         let maintenance = lock_file(&directory.join("maintenance.lock"))?;
         FileExt::try_lock_shared(&maintenance)
             .map_err(|_| AppError::new(ErrorCode::MaintenanceInProgress))?;
+        if crate::migrations::pending(directory) {
+            return Err(AppError::new(ErrorCode::MaintenanceInProgress));
+        }
         let db = Connection::open_with_flags(
             directory.join("config.sqlite3"),
             rusqlite::OpenFlags::SQLITE_OPEN_READ_ONLY,
@@ -93,7 +96,7 @@ impl ConfigService {
             FileExt::try_lock_shared(&maintenance)
                 .map_err(|_| AppError::new(ErrorCode::MaintenanceInProgress))?;
         }
-        let db = Connection::open_with_flags(
+        let mut db = Connection::open_with_flags(
             directory.join("config.sqlite3"),
             rusqlite::OpenFlags::SQLITE_OPEN_READ_WRITE,
         )
@@ -102,6 +105,27 @@ impl ConfigService {
             .map_err(storage)?;
         let schema: u32 = db
             .pragma_query_value(None, "user_version", |row| row.get(0))
+            .map_err(storage)?;
+        if schema == 1 || crate::migrations::pending(directory) {
+            drop(db);
+            FileExt::unlock(&maintenance).map_err(storage)?;
+            maintenance
+                .try_lock_exclusive()
+                .map_err(|_| AppError::new(ErrorCode::MaintenanceInProgress))?;
+            crate::migrations::prepare(directory)?;
+            FileExt::unlock(&maintenance).map_err(storage)?;
+            FileExt::try_lock_shared(&maintenance)
+                .map_err(|_| AppError::new(ErrorCode::MaintenanceInProgress))?;
+            db = Connection::open_with_flags(
+                directory.join("config.sqlite3"),
+                rusqlite::OpenFlags::SQLITE_OPEN_READ_WRITE,
+            )
+            .map_err(storage)?;
+            db.busy_timeout(std::time::Duration::from_secs(2))
+                .map_err(storage)?;
+        }
+        let schema: u32 = db
+            .pragma_query_value(None, "user_version", |r| r.get(0))
             .map_err(storage)?;
         if schema != SCHEMA_VERSION {
             return Err(AppError::new(ErrorCode::IncompatibleVersion));

@@ -210,7 +210,13 @@ impl GatewayManager {
             .map_err(|_| AppError::new(ErrorCode::GatewayUnavailable))?;
         let limit = tokio::time::Instant::now() + Duration::from_secs(10);
         loop {
-            if let Ok(manifest) = ipc::read_manifest(&self.directory)
+            let manifest = ipc::read_manifest(&self.directory);
+            if let Err(error) = &manifest
+                && error.code == ErrorCode::IncompatibleVersion
+            {
+                return Err(error.clone());
+            }
+            if let Ok(manifest) = manifest
                 && let Ok(mut status) = ipc::call(&manifest, Control::Status).await
             {
                 // A simultaneous starter may win. Only our own child can acknowledge our stop token.

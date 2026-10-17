@@ -114,7 +114,7 @@ fn ensure_inner(
     };
     let operation = uuid::Uuid::parse_str(&intent.operation_id).map_err(|_| incompatible())?;
     if intent.owner != OWNER
-        || intent.schema_version != SCHEMA_VERSION
+        || ![1, SCHEMA_VERSION].contains(&intent.schema_version)
         || intent.staging_file != format!(".config-initializing-{operation}.sqlite3")
     {
         return Err(incompatible());
@@ -134,7 +134,7 @@ fn ensure_inner(
         let owner: u32 = db
             .pragma_query_value(None, "application_id", |r| r.get(0))
             .map_err(|_| error())?;
-        if schema != SCHEMA_VERSION || owner != APPLICATION_ID {
+        if schema != intent.schema_version || owner != APPLICATION_ID {
             return Err(incompatible());
         }
         drop(db);
@@ -144,7 +144,7 @@ fn ensure_inner(
     if staging.exists() {
         regular(&staging)?;
     }
-    let db = Connection::open(&staging).map_err(|_| error())?;
+    let mut db = Connection::open(&staging).map_err(|_| error())?;
     after_create();
     let schema: u32 = db
         .pragma_query_value(None, "user_version", |r| r.get(0))
@@ -160,16 +160,31 @@ fn ensure_inner(
         )
         .map_err(|_| error())?;
     if schema == 0 && owner == 0 && objects == 0 {
-        db.execute_batch("BEGIN IMMEDIATE;
+        let tx = db
+            .transaction_with_behavior(rusqlite::TransactionBehavior::Immediate)
+            .map_err(|_| error())?;
+        tx.execute_batch("
             CREATE TABLE revisions(revision INTEGER PRIMARY KEY, snapshot TEXT NOT NULL);
             CREATE TABLE config_head(singleton INTEGER PRIMARY KEY CHECK(singleton=1), revision INTEGER NOT NULL REFERENCES revisions(revision));
             CREATE TABLE credential_journal(operation_id TEXT PRIMARY KEY, credential_ref TEXT NOT NULL UNIQUE);
             INSERT INTO revisions VALUES(0, '{\"providers\":[]}');
             INSERT INTO config_head VALUES(1,0);
-            PRAGMA application_id=1413564237;
-            PRAGMA user_version=1;
-            COMMIT;").map_err(|_|error())?;
-    } else if schema != SCHEMA_VERSION || owner != APPLICATION_ID || objects != 3 {
+            PRAGMA application_id=1413564237;").map_err(|_|error())?;
+        if intent.schema_version == 2 {
+            tx.execute_batch("CREATE TABLE config_metadata(singleton INTEGER PRIMARY KEY CHECK(singleton=1),config_uuid TEXT NOT NULL);").map_err(|_|error())?;
+            tx.execute(
+                "INSERT INTO config_metadata VALUES(1,?1)",
+                [uuid::Uuid::new_v4().to_string()],
+            )
+            .map_err(|_| error())?;
+        }
+        tx.pragma_update(None, "user_version", intent.schema_version)
+            .map_err(|_| error())?;
+        tx.commit().map_err(|_| error())?;
+    } else if schema != intent.schema_version
+        || owner != APPLICATION_ID
+        || objects != if intent.schema_version == 2 { 4 } else { 3 }
+    {
         return Err(incompatible());
     }
     // This staging file cannot have received business writes before publication.

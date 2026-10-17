@@ -22,6 +22,81 @@ fn manager(path: &Path) -> GatewayManager {
 fn initialize(path: &Path) -> ConfigService {
     ConfigService::open(path, Arc::new(SystemCredentials)).unwrap()
 }
+
+#[tokio::test]
+#[ignore = "Requires explicitly supplied retained dev.3 executable; no binary download or key access"]
+async fn real_old_binary_is_not_stopped_or_migrated_by_new_entrypoint() {
+    let old = std::env::var_os("TAGMA_OLD_GATEWAY").expect("retained dev.3 executable");
+    let temp = tempfile::tempdir().unwrap();
+    let db = rusqlite::Connection::open(temp.path().join("config.sqlite3")).unwrap();
+    db.execute_batch("PRAGMA application_id=1413564237;CREATE TABLE revisions(revision INTEGER PRIMARY KEY,snapshot TEXT NOT NULL);CREATE TABLE config_head(singleton INTEGER PRIMARY KEY,revision INTEGER NOT NULL);CREATE TABLE credential_journal(operation_id TEXT PRIMARY KEY,credential_ref TEXT NOT NULL UNIQUE);INSERT INTO revisions VALUES(0,'{\"providers\":[]}');INSERT INTO config_head VALUES(1,0);PRAGMA user_version=1;").unwrap();
+    drop(db);
+    std::fs::File::create(temp.path().join("maintenance.lock")).unwrap();
+    let mut child = Process::new(old)
+        .arg("--config-dir")
+        .arg(temp.path())
+        .arg("--port")
+        .arg(free_port().to_string())
+        .arg("--managed")
+        .stdin(std::process::Stdio::piped())
+        .stdout(std::process::Stdio::null())
+        .stderr(std::process::Stdio::null())
+        .kill_on_drop(true)
+        .spawn()
+        .unwrap();
+    let mut pipe = child.stdin.take().unwrap();
+    let mut bootstrap = serde_json::to_vec(&Bootstrap {
+        owner_token: uuid::Uuid::new_v4().to_string(),
+        instance_id: uuid::Uuid::new_v4().to_string(),
+    })
+    .unwrap();
+    bootstrap.push(b'\n');
+    pipe.write_all(&bootstrap).await.unwrap();
+    wait_until(async || {
+        if let Some(exit) = child.try_wait().unwrap() {
+            panic!("old fixture exited {exit}; typed log: {}", std::fs::read_to_string(temp.path().join("logs/tagma.0.jsonl")).unwrap_or_default());
+        }
+        std::fs::read(temp.path().join("runtime.json"))
+            .ok()
+            .and_then(|b| serde_json::from_slice::<serde_json::Value>(&b).ok())
+            .is_some_and(|m| m["product_version"] == "0.2.0-dev.3")
+    })
+    .await;
+    assert_eq!(
+        manager(temp.path())
+            .start(free_port())
+            .await
+            .unwrap_err()
+            .code,
+        ErrorCode::IncompatibleVersion
+    );
+    assert_eq!(
+        ConfigService::open(temp.path(), Arc::new(SystemCredentials))
+            .err()
+            .unwrap()
+            .code,
+        ErrorCode::MaintenanceInProgress
+    );
+    assert!(child.try_wait().unwrap().is_none());
+    assert!(!temp.path().join("config-migration.json").exists());
+    drop(pipe);
+    assert!(
+        tokio::time::timeout(Duration::from_secs(5), child.wait())
+            .await
+            .unwrap()
+            .unwrap()
+            .success()
+    );
+    let config = initialize(temp.path());
+    assert_eq!(config.view().unwrap().schema_version, 2);
+    assert_eq!(config.view().unwrap().desired_revision, 0);
+    let current = manager(temp.path());
+    assert_eq!(
+        current.start(free_port()).await.unwrap().effective_revision,
+        Some(0)
+    );
+    current.stop().await.unwrap();
+}
 async fn wait_until(mut check: impl AsyncFnMut() -> bool) {
     tokio::time::timeout(Duration::from_secs(5), async {
         loop {

@@ -3832,6 +3832,7 @@ dependencies = [
  "axum",
  "fs2",
  "interprocess",
+ "rusqlite",
  "serde_json",
  "tagma-core",
  "tagma-runtime",
