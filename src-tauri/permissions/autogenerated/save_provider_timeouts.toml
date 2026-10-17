@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-save-provider-timeouts"
+description = "Enables the save_provider_timeouts command without any pre-configured scope."
+commands.allow = ["save_provider_timeouts"]
+
+[[permission]]
+identifier = "deny-save-provider-timeouts"
+description = "Denies the save_provider_timeouts command without any pre-configured scope."
+commands.deny = ["save_provider_timeouts"]

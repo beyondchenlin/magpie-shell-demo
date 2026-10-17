@@ -1,0 +1,1 @@
+Timeout native source:one exact permission/main only/no remote;typed core command uses existing local config guard;CIS labels saved values,not effective state;no native invocation/window/drag verification.

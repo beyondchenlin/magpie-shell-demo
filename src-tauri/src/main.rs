@@ -87,6 +87,15 @@ async fn delete_provider(
 }
 
 #[tauri::command]
+fn save_provider_timeouts(
+    window: WebviewWindow,
+    app: State<'_, Application>,
+    input: timeouts::SaveProviderTimeouts,
+) -> AppResult<ConfigView> {
+    config(&window, &app)?.save_provider_timeouts(input)
+}
+
+#[tauri::command]
 async fn reorder_providers(
     window: WebviewWindow,
     app: State<'_, Application>,
@@ -675,6 +684,7 @@ fn main() {
             rotate_gateway_token,
             application_view,
             save_provider,
+            save_provider_timeouts,
             delete_provider,
             reorder_providers,
             start_gateway,

@@ -1,0 +1,14 @@
+{
+  "recordedAtUtc": "2026-10-17T22:08:55.652Z",
+  "target": "D:/demo1/tagmaai",
+  "temporaryRoot": "C:\\Users\\ai\\AppData\\Local\\Temp",
+  "estimatedAdditionalPeakGiB": 0.02,
+  "freeBeforeGiB": {
+    "C": 42.45,
+    "D": 9.78
+  },
+  "scope": "One native source command check plus CIS timeout editor/source tests/TS,no Rust binary link or GUI/install",
+  "reuse": "Existing node_modules/Cargo check cache;no clean/dependency/env/worktree",
+  "constraint": "Below10GiB,expected>1GiB paused;only bounded checks",
+  "cleanup": "In-memory source fixtures;no user/prior artifacts deleted"
+}

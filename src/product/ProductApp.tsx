@@ -5,6 +5,7 @@ import { PrefRow } from "../components/PrefRow";
 import { LibSwitch } from "../components/LibSwitch";
 import type { ApplicationView, ConfigView, Provider, RuntimeStatus, SaveProvider, TeamRecipe } from "./contract";
 import { ProviderForm } from "./ProviderForm";
+import { ProviderTimeoutForm } from "./ProviderTimeoutForm";
 import { SecurityControls } from "./SecurityControls";
 import { ProviderCatalog } from "./ProviderCatalog";
 import { LanguagePick } from "./LanguagePick";
@@ -32,6 +33,7 @@ export default function ProductApp() {
   const [error, setError] = useState<unknown>(null);
   const [notice, setNotice] = useState(false);
   const [editor, setEditor] = useState<Provider | "new" | null>(null);
+  const [timeoutEditor,setTimeoutEditor]=useState<Provider|null>(null);
   const [profileEditing, setProfileEditing] = useState(false);
   const [gatewayEditing, setGatewayEditing] = useState(false);
   const [securityEditing,setSecurityEditing]=useState(false);
@@ -41,7 +43,7 @@ export default function ProductApp() {
   const mounted = useRef(true);
   const deleteDialog = useRef<HTMLDialogElement>(null);
   const c = copy(preferences.language);
-  const editing = !!editor || profileEditing || gatewayEditing || teamEditing || securityEditing || budgetEditing;
+  const editing = !!editor || !!timeoutEditor || profileEditing || gatewayEditing || teamEditing || securityEditing || budgetEditing;
   const providerReferences = deleting ? view?.config.profiles.filter(profile => !profile.is_global && profile.provider_ids.includes(deleting.id)) ?? [] : [];
   const teamReferences = deleting ? view?.config.teams.filter(({team})=>teamUsesProvider(team.draft,deleting.id)||team.versions.some(version=>teamUsesProvider(version.recipe,deleting.id)))??[]:[];
   const refresh = useCallback(async () => {
@@ -135,10 +137,11 @@ export default function ProductApp() {
             <TextBtn variant="danger" disabled={busy || editing} onClick={() => setDeleting(provider)}>{c.remove}</TextBtn>
           </div>
         </div>)}</div>
-        {view && <ProviderCatalog view={view} busy={busy||editing} language={preferences.language} onMutate={mutate} onEdit={provider=>{setEditor(provider);setNotice(false);}} onChat={()=>setPage("chat")} />}
-        {view&&<SecurityControls view={view} mode="providers" busy={busy||!!editor||profileEditing||gatewayEditing||teamEditing} language={preferences.language} onMutate={mutate} onEditingChange={setSecurityEditing}/>}
+        {view && <ProviderCatalog view={view} busy={busy||editing} language={preferences.language} onMutate={mutate} onEdit={provider=>{setEditor(provider);setNotice(false);}} onTimeoutEdit={provider=>{setTimeoutEditor(provider);setNotice(false);}} onChat={()=>setPage("chat")} />}
+        {view&&<SecurityControls view={view} mode="providers" busy={busy||!!editor||!!timeoutEditor||profileEditing||gatewayEditing||teamEditing} language={preferences.language} onMutate={mutate} onEditingChange={setSecurityEditing}/>}
         {editor && view && <ProviderForm key={editor === "new" ? "new" : editor.id} provider={editor === "new" ? undefined : editor} revision={view.config.desired_revision} busy={busy} language={preferences.language} onSave={save} onCancel={() => setEditor(null)} />}
-        {view && <AppProfiles config={view.config} busy={busy || !!editor} language={preferences.language} onMutate={mutate} onEditingChange={setProfileEditing} />}
+        {timeoutEditor&&view&&<ProviderTimeoutForm key={timeoutEditor.id} provider={timeoutEditor} revision={view.config.desired_revision} busy={busy} language={preferences.language} onSave={input=>mutate(()=>service.saveProviderTimeouts(input))} onCancel={()=>setTimeoutEditor(null)}/>}
+        {view && <AppProfiles config={view.config} busy={busy || !!editor||!!timeoutEditor} language={preferences.language} onMutate={mutate} onEditingChange={setProfileEditing} />}
         <p className="tagma-footnote">{c.protocolName} · {c.noInference}</p>
         <TextBtn disabled={busy || editing} onClick={() => setPage("gateway")}>{c.gateway}</TextBtn>
       </section>}

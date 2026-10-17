@@ -12,7 +12,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 const require = createRequire(import.meta.url);
 const cache = new Map();
 const servicePath = resolve("src/product/service.ts");
-cache.set(servicePath, { desktop: false, service: new Proxy({}, { get() { return () => { throw Error("No native calls in source tests"); }; } }) });
+cache.set(servicePath, { desktop: false, protocolVersion:1, service: new Proxy({}, { get() { return () => { throw Error("No native calls in source tests"); }; } }) });
 function load(filename) {
   filename = resolve(filename);
   if (cache.has(filename)) return cache.get(filename);
@@ -37,6 +37,8 @@ const { UsageClearScope, UsageClearControls } = load("src/product/UsageClearCont
 const { UsageResults, UsageDetail, UsagePanel } = load("src/product/UsagePanel.tsx");
 const { BudgetLoader, budgetDraft, budgetSpec } = load("src/product/budgetModel.ts");
 const { BudgetFacts, BudgetReport, BudgetEditor, BudgetPanel } = load("src/product/BudgetPanel.tsx");
+const {timeoutDraft,timeoutValues,TimeoutSaver}=load("src/product/providerTimeoutModel.ts");
+const {ProviderTimeoutForm}=load("src/product/ProviderTimeoutForm.tsx");
 const selection = usageSelection(usageDefault(Date.parse("2026-10-18T12:00:00Z")));
 const info = { context_id: "a".repeat(64), generation: "0", availability: "available", observed_ms: 1792324800000, detail_start_ms: 1792000000000, summary_start_ms: 1791936000000, timezone: "UTC" };
 const requestId = "00000000-0000-4000-8000-000000000001";
@@ -265,4 +267,31 @@ test("budget source editor has named text integer controls, explicit cancellatio
   assert.match(html, /class="words"/); assert.match(html, /9223372036854775807/); assert.match(html, /value="9007199254740993"/); assert.doesNotMatch(html, /type="number"/); assert.match(html, /取消/);
   const panel = render(BudgetPanel, { config, busy: false, language: "zh", session: {}, readEpoch: 0, onBusy() {}, onMutate: async () => false, onEditingChange() {} });
   assert.match(panel, /平台真实余额 \/ 账单：未知/); assert.match(panel, /规则可重叠，请勿相加/); assert.match(panel, /保留已有用量记录/); assert.match(panel, /Read period usage|读取周期用量/);
+});
+
+const timeouts={connect_ms:10000,first_response_ms:30000,idle_ms:30000,total_ms:120000};
+test("timeout editor validates exact integer ranges and cross-field budgets before any save",()=>{
+  assert.deepEqual(timeoutValues(timeoutDraft(timeouts)),timeouts);
+  const draft=timeoutDraft(timeouts);
+  for(const change of [{connect_ms:"0"},{connect_ms:"0100"},{connect_ms:"1e3"},{connect_ms:"100.5"},{connect_ms:"60001"},{first_response_ms:"500"},{idle_ms:"120001"},{total_ms:"29999"},{total_ms:""},{total_ms:"9007199254740993"}])assert.throws(()=>timeoutValues({...draft,...change}));
+  assert.deepEqual(timeoutValues({connect_ms:"100",first_response_ms:"200",idle_ms:"150",total_ms:"300"}),{connect_ms:100,first_response_ms:200,idle_ms:150,total_ms:300});
+});
+test("timeout saves pin provider and base revision; duplicate submits cannot queue or auto-apply",async()=>{
+  const pending=deferred();const states=[];const inputs=[];let reply=pending.promise;
+  const saver=new TimeoutSaver(requestId,7,input=>{inputs.push(input);return reply;},state=>states.push(state));
+  const draft=timeoutDraft(timeouts);const first=saver.submit(draft);await saver.submit(draft);assert.equal(inputs.length,1);assert.equal(states.at(-1).busy,true);assert.deepEqual(inputs[0],{protocol_version:1,expected_revision:7,id:requestId,timeouts});
+  pending.resolve(false);await first;assert.equal(states.at(-1).saved,false);assert.equal(states.at(-1).busy,false);assert.deepEqual(draft,timeoutDraft(timeouts));
+  await saver.submit({...draft,total_ms:"0"});assert.equal(inputs.length,1);assert.equal(states.at(-1).error.code,"INVALID_INPUT");
+  reply=Promise.resolve(true);await saver.submit(draft);assert.equal(inputs.length,2);assert.deepEqual(inputs[1],inputs[0]);assert.equal(states.at(-1).saved,true);await saver.submit(draft);assert.equal(inputs.length,2,"successful editor cannot submit again before unmount");saver.dispose();
+});
+test("failed timeout save remains unsaved; disposed late success never closes another editor",async()=>{
+  const states=[];let calls=0;
+  const saver=new TimeoutSaver(requestId,4,async()=>{calls++;throw {code:"CONFIG_CONFLICT"};},state=>states.push(state));await saver.submit(timeoutDraft(timeouts));assert.equal(calls,1);assert.equal(states.at(-1).saved,false);assert.equal(states.at(-1).error.code,"CONFIG_CONFLICT");saver.dispose();
+  const pending=deferred();const late=[];const disposed=new TimeoutSaver(requestId,4,()=>pending.promise,state=>late.push(state));const first=disposed.submit(timeoutDraft(timeouts));disposed.dispose();const count=late.length;pending.resolve(true);await first;assert.equal(late.length,count);await disposed.submit(timeoutDraft(timeouts));assert.equal(late.length,count);
+});
+test("timeout source form keeps CIS controls, named ms fields, explicit apply and in-flight semantics",()=>{
+  const provider={id:requestId,name:"<owned provider>",timeouts};
+  const html=render(ProviderTimeoutForm,{provider,revision:7,busy:false,language:"zh",onSave:async()=>{throw Error("No writes during source render");},onCancel(){}});
+  assert.match(html,/class="editor tagma-editor"/);assert.equal((html.match(/class="words"/g)??[]).length,4);assert.match(html,/首个 HTTP 响应头/);assert.match(html,/连接 ≤ 响应头 ≤ 总预算/);assert.match(html,/在途请求保留原值/);assert.match(html,/保存后需要在网关应用配置/);assert.match(html,/不会自动重试/);assert.match(html,/取消/);assert.match(html,/&lt;owned provider&gt;/);assert.doesNotMatch(html,/type="number"|<owned provider>/);
+  const disabled=render(ProviderTimeoutForm,{provider,revision:7,busy:true,language:"en",onSave:async()=>false,onCancel(){}});assert.match(disabled,/<fieldset disabled=""/);assert.match(disabled,/Catalog checks have a separate policy/);
 });

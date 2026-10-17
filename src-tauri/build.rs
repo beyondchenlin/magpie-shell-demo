@@ -5,6 +5,7 @@ fn main() {
             "cancel_chat",
             "application_view",
             "save_provider",
+            "save_provider_timeouts",
             "delete_provider",
             "reorder_providers",
             "save_profile",

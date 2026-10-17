@@ -2,6 +2,7 @@ import { invoke, isTauri, Channel } from "@tauri-apps/api/core";
 import type { StartChat, ChatEvent } from "./contract";
 import type {UsageReadInfo,UsageClearPlan,UsageClearReceipt,UsageRange} from "./contract";
 import type {SaveBudget,BudgetObservations} from "./contract";
+import type {SaveProviderTimeouts} from "./contract";
 import type { UsageRequestsQuery, UsageRequestsView, UsageDetailsQuery, UsageDetailsView, UsageSummaryQuery, UsageSummaryView } from "./contract";
 import type { SaveTeam, SetTeamEnabled, SaveFirstCloudOrder, ProbeProvider, RevokeAccess, RotateGatewayToken } from "./contract";
 import type { ApplicationView, ConfigView, DiagnosticBundle, RecoverInitialization, RecoveryOutcome, ReorderProviders, RevisionCommand, RuntimeStatus, SaveProvider, SaveAppProfile, SaveGateway, RevisionInput } from "./contract";
@@ -22,6 +23,7 @@ async function command<T>(name: string, args: Record<string, unknown>): Promise<
 }
 
 export const service = {
+  saveProviderTimeouts:(input:SaveProviderTimeouts)=>command<ConfigView>("save_provider_timeouts",{input}),
   saveBudget:(input:SaveBudget)=>command<ConfigView>("save_budget",{input}),
   deleteBudget:(input:RevisionCommand)=>command<ConfigView>("delete_budget",{input}),
   budgetObservations:(revision:number)=>command<BudgetObservations>("usage_budgets",{input:{protocol_version:protocolVersion,expected_revision:revision}}),

@@ -1,0 +1,33 @@
+✔ UTC inclusive dates, leap dates, max span and strict filters (1.0924ms)
+✔ decimal precision, known zero, unknown and out-of-Date-range timestamps (0.1901ms)
+✔ sequential single-reader calls; duplicate clicks ignored; cursor pins applied selection (0.7326ms)
+✔ query failure clears prior result, and errors never silently broaden summary (0.2852ms)
+✔ disposed query and detail cannot repopulate cache or launch next stage (0.1679ms)
+✔ clear generations cannot mix cached totals/requests; fresh detail invalidates older list (0.1729ms)
+✔ source rendering uses CIS rows; precise unknown/zero, absent store and detail identity (14.5867ms)
+✔ clear intent is saved before native call; own-clear invalidation drops late query and raises durable floor (0.8673ms)
+✔ failed intent persistence sends no clear; malformed state is preserved and refuses mutation (0.3795ms)
+✔ saved pending clear survives unmount and retries the exact plan after receipt persistence fails (0.4153ms)
+✔ late disposed clear reply cannot erase a newer pending operation or lower its floor (0.4378ms)
+✔ explicit leave/recovery sends no new clear and keeps the unknown outcome visible (0.2314ms)
+✔ invalid clear receipts cannot confirm or release pending state (0.2937ms)
+✔ context namespaces and exact large-generation floors reject foreign/old reads without fake zero (0.211ms)
+✔ clear source rendering exposes exact range/counts and explicit uncertainty, with CIS controls (4.3755ms)
+✔ budget drafts preserve exact integer targets and historical scopes without numeric coercion (0.668ms)
+✔ budget read pins config and scope with one call; failure clears old data and duplicate clicks cannot queue (0.6514ms)
+✔ pending clear and large generation floor block budget reports before or after actual read (0.2794ms)
+✔ clear session invalidation disposes old budget report; late reply cannot repopulate after clear (0.2769ms)
+✔ budget source report uses CIS facts and exact counts; unknown tokens have no fake progress (3.4609ms)
+✔ budget source editor has named text integer controls, explicit cancellation and no automatic balance (2.5486ms)
+✔ timeout editor validates exact integer ranges and cross-field budgets before any save (0.2601ms)
+✔ timeout saves pin provider and base revision; duplicate submits cannot queue or auto-apply (0.23ms)
+✔ failed timeout save remains unsaved; disposed late success never closes another editor (0.154ms)
+✔ timeout source form keeps CIS controls, named ms fields, explicit apply and in-flight semantics (1.4716ms)
+ℹ tests 25
+ℹ suites 0
+ℹ pass 25
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 492.4731

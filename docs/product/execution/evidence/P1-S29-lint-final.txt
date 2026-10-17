@@ -1,0 +1,7 @@
+{ "diagnostics": [],
+              "number_of_files": 6,
+              "number_of_rules": 116,
+              "threads_count": 20,
+              "start_time": 0.0296667
+            }
+            

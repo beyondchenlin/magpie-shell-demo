@@ -1,0 +1,10 @@
+{
+  "RecordedAtUtc": "2026-10-17T22:12:55.4513157Z",
+  "CFreeGiB": 42.43,
+  "DFreeGiB": 9.77,
+  "NewWorktree": 0,
+  "NewEnvironment": 0,
+  "NewTempFixtures": 0,
+  "PriorArtifactsRemoved": 0,
+  "Scope": "Only source/static/cache checks;expected>1GiB paused,no GUI/install/full rebuild"
+}

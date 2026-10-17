@@ -10,6 +10,7 @@
     "allow-cancel-chat",
     "allow-application-view",
     "allow-save-provider",
+    "allow-save-provider-timeouts",
     "allow-delete-provider",
     "allow-reorder-providers",
     "allow-save-profile",
