@@ -11,6 +11,115 @@ use futures_util::StreamExt;
 use serde_json::{Value, json};
 use std::{collections::HashSet, convert::Infallible, sync::Arc, time::Duration};
 use tagma_core::chat::{MAX_RESPONSE_BYTES, SseDecoder};
+use tagma_core::{
+    Provider,
+    teams::{TeamStepInput, TeamStepTarget, valid_team_slug},
+};
+
+struct PinnedStep {
+    provider: Provider,
+    model: String,
+    credential: Option<Arc<zeroize::Zeroizing<String>>>,
+    input: TeamStepInput,
+    timeout: Duration,
+}
+struct PinnedPlan {
+    revision: u32,
+    steps: Vec<PinnedStep>,
+    timeout: Duration,
+    public_model: Option<String>,
+    team_revision: Option<u32>,
+}
+
+struct PlanError(StatusCode, &'static str);
+
+fn pin_plan(loaded: &super::LoadedSnapshot, model: &str) -> Result<PinnedPlan, PlanError> {
+    let pin = |provider: &Provider, model: String, input, timeout| PinnedStep {
+        provider: provider.clone(),
+        credential: loaded.3.get(&provider.id).cloned(),
+        model,
+        input,
+        timeout,
+    };
+    if !model.starts_with("tagma/") {
+        let record = loaded
+            .1
+            .providers
+            .iter()
+            .find(|r| r.provider.enabled && r.provider.models.iter().any(|id| id == model))
+            .ok_or(PlanError(StatusCode::NOT_FOUND, "MODEL_NOT_FOUND"))?;
+        return Ok(PinnedPlan {
+            revision: loaded.0,
+            steps: vec![pin(
+                &record.provider,
+                model.into(),
+                TeamStepInput::OriginalMessages,
+                Duration::from_secs(120),
+            )],
+            timeout: Duration::from_secs(120),
+            public_model: None,
+            team_revision: None,
+        });
+    }
+    let (team, version) = loaded
+        .1
+        .teams
+        .iter()
+        .find_map(|team| {
+            team.versions
+                .iter()
+                .find(|v| v.public_id == model)
+                .map(|v| (team, v))
+        })
+        .ok_or(PlanError(StatusCode::NOT_FOUND, "MODEL_NOT_FOUND"))?;
+    if !team.enabled_revisions.contains(&version.revision) {
+        return Err(PlanError(StatusCode::GONE, "TEAM_DISABLED"));
+    }
+    if !valid_team_slug(&team.slug)
+        || version.recipe.validate_draft().is_err()
+        || !version.recipe.publish_issues(&loaded.1).is_empty()
+    {
+        return Err(PlanError(
+            StatusCode::SERVICE_UNAVAILABLE,
+            "TEAM_DEPENDENCY_UNAVAILABLE",
+        ));
+    }
+    let mut steps = Vec::new();
+    for step in &version.recipe.steps {
+        let TeamStepTarget::CloudModel { target } = &step.target else {
+            return Err(PlanError(
+                StatusCode::SERVICE_UNAVAILABLE,
+                "TEAM_DEPENDENCY_UNAVAILABLE",
+            ));
+        };
+        let provider = loaded
+            .1
+            .providers
+            .iter()
+            .find(|r| {
+                r.provider.id == target.provider_id
+                    && r.provider.enabled
+                    && r.provider.models.contains(&target.model_id)
+            })
+            .ok_or(PlanError(
+                StatusCode::SERVICE_UNAVAILABLE,
+                "TEAM_DEPENDENCY_UNAVAILABLE",
+            ))?;
+        steps.push(pin(
+            &provider.provider,
+            target.model_id.clone(),
+            step.input.clone(),
+            Duration::from_millis(step.timeout_ms.into()),
+        ));
+    }
+    Ok(PinnedPlan {
+        revision: loaded.0,
+        steps,
+        timeout: Duration::from_millis(version.recipe.total_timeout_ms.into()),
+        public_model: Some(version.public_id.clone()),
+        team_revision: Some(version.revision),
+    })
+}
 
 pub fn client() -> Result<reqwest::Client, reqwest::Error> {
     reqwest::Client::builder()
@@ -55,7 +164,7 @@ pub fn router(state: Arc<Runtime>) -> Router {
 async fn models(State(state): State<Arc<Runtime>>) -> Response {
     let loaded = state.snapshot.read().await;
     let mut seen = HashSet::new();
-    let data: Vec<_> = loaded
+    let mut data: Vec<_> = loaded
         .1
         .providers
         .iter()
@@ -64,6 +173,17 @@ async fn models(State(state): State<Arc<Runtime>>) -> Response {
         .filter(|id| !id.starts_with("tagma/") && seen.insert((*id).clone()))
         .map(|id| json!({"id":id,"object":"model","created":0,"owned_by":"configured-provider"}))
         .collect();
+    for team in &loaded.1.teams {
+        for version in &team.versions {
+            if pin_plan(&loaded, &version.public_id).is_ok()
+                && seen.insert(version.public_id.clone())
+            {
+                data.push(
+                    json!({"id":version.public_id,"object":"model","created":0,"owned_by":"tagma"}),
+                );
+            }
+        }
+    }
     let mut response = Json(json!({"object":"list","data":data})).into_response();
     response
         .headers_mut()
@@ -230,40 +350,126 @@ async fn completion(
         Err(code) => return error(StatusCode::BAD_REQUEST, code),
     };
     // Pin target, credentials and revision together. A later config apply affects only new calls.
-    let (revision, target, credential) = {
+    let plan = {
         let loaded = state.snapshot.read().await;
         if let Some(expected) = headers.get("x-tagma-expected-revision")
             && expected.to_str().ok().and_then(|v| v.parse::<u32>().ok()) != Some(loaded.0)
         {
             return error(StatusCode::CONFLICT, "CONFIG_NOT_APPLIED");
         }
-        let Some(record) = loaded.1.providers.iter().find(|record| {
-            record.provider.enabled
-                && !model.starts_with("tagma/")
-                && record.provider.models.iter().any(|id| id == model)
-        }) else {
-            return error(StatusCode::NOT_FOUND, "MODEL_NOT_FOUND");
-        };
-        (
-            loaded.0,
-            record.provider.clone(),
-            loaded.3.get(&record.provider.id).cloned(),
-        )
+        match pin_plan(&loaded, model) {
+            Ok(plan) => plan,
+            Err(PlanError(status, code)) => return error(status, code),
+        }
     };
     let request_id = uuid::Uuid::new_v4().to_string();
-    let total_deadline = tokio::time::Instant::now() + Duration::from_secs(120);
+    let total_deadline = tokio::time::Instant::now() + plan.timeout;
+    let count = plan.steps.len();
+    let mut previous = None;
+    for (index, step) in plan.steps.into_iter().enumerate() {
+        if state.shutdown.is_cancelled() {
+            return error(StatusCode::SERVICE_UNAVAILABLE, "GATEWAY_STOPPING");
+        }
+        if tokio::time::Instant::now() >= total_deadline {
+            return error(StatusCode::GATEWAY_TIMEOUT, "REQUEST_BUDGET_EXCEEDED");
+        }
+        let final_step = index + 1 == count;
+        let mut payload = input.clone();
+        payload["model"] = json!(step.model);
+        payload["stream"] = json!(final_step && streaming);
+        if !final_step {
+            payload
+                .as_object_mut()
+                .expect("validated request")
+                .remove("stream_options");
+        }
+        if step.input == TeamStepInput::PreviousText {
+            let Some(text) = previous.take() else {
+                return error(StatusCode::BAD_GATEWAY, "TEAM_INTERMEDIATE_EMPTY");
+            };
+            payload["messages"] = json!([{"role":"user","content":text}]);
+        }
+        if serde_json::to_vec(&payload).map_or(true, |bytes| bytes.len() > 128 * 1024) {
+            return error(StatusCode::PAYLOAD_TOO_LARGE, "TEAM_INTERMEDIATE_LIMIT");
+        }
+        let deadline = total_deadline.min(tokio::time::Instant::now() + step.timeout);
+        let mut response = forward(
+            &state,
+            &step,
+            &payload,
+            final_step && streaming,
+            deadline,
+            if final_step {
+                plan.public_model.clone()
+            } else {
+                None
+            },
+        )
+        .await;
+        response.headers_mut().insert(
+            "x-tagma-request-id",
+            HeaderValue::from_str(&request_id).expect("UUID header"),
+        );
+        response
+            .headers_mut()
+            .insert("x-tagma-config-revision", HeaderValue::from(plan.revision));
+        if let Some(revision) = plan.team_revision {
+            response
+                .headers_mut()
+                .insert("x-tagma-team-revision", HeaderValue::from(revision));
+            response
+                .headers_mut()
+                .insert("x-tagma-team-step", HeaderValue::from(index as u32 + 1));
+        }
+        if final_step || !response.status().is_success() {
+            return response;
+        }
+        let bytes = match axum::body::to_bytes(response.into_body(), MAX_RESPONSE_BYTES).await {
+            Ok(bytes) => bytes,
+            Err(_) => return error(StatusCode::BAD_GATEWAY, "TEAM_INTERMEDIATE_LIMIT"),
+        };
+        let text = serde_json::from_slice::<Value>(&bytes)
+            .ok()
+            .and_then(|value| {
+                value["choices"][0]["message"]["content"]
+                    .as_str()
+                    .map(str::to_owned)
+            });
+        let Some(text) = text.filter(|text| !text.trim().is_empty()) else {
+            return error(StatusCode::BAD_GATEWAY, "TEAM_INTERMEDIATE_EMPTY");
+        };
+        if text.len() > 96 * 1024 {
+            return error(StatusCode::BAD_GATEWAY, "TEAM_INTERMEDIATE_LIMIT");
+        }
+        previous = Some(text);
+    }
+    error(
+        StatusCode::SERVICE_UNAVAILABLE,
+        "TEAM_DEPENDENCY_UNAVAILABLE",
+    )
+}
+
+async fn forward(
+    state: &Arc<Runtime>,
+    step: &PinnedStep,
+    input: &Value,
+    streaming: bool,
+    total_deadline: tokio::time::Instant,
+    public_model: Option<String>,
+) -> Response {
     let mut request = state
         .client
         .post(format!(
             "{}/chat/completions",
-            target.base_url.trim_end_matches('/')
+            step.provider.base_url.trim_end_matches('/')
         ))
         .json(&input);
-    if let Some(secret) = &credential {
+    if let Some(secret) = &step.credential {
         request = request.bearer_auth(secret.as_str());
     }
     let upstream = tokio::select! {
         _ = state.shutdown.cancelled() => return error(StatusCode::SERVICE_UNAVAILABLE,"GATEWAY_STOPPING"),
+        _ = tokio::time::sleep_until(total_deadline) => return error(StatusCode::GATEWAY_TIMEOUT,"REQUEST_BUDGET_EXCEEDED"),
         response = tokio::time::timeout(Duration::from_secs(30),request.send()) => match response {
             Ok(Ok(response)) => response,
             Ok(Err(error_value)) => return error(StatusCode::BAD_GATEWAY,if error_value.is_timeout(){"UPSTREAM_CONNECT_TIMEOUT"}else if error_value.is_connect(){"UPSTREAM_CONNECTION_FAILED"}else{"UPSTREAM_TRANSPORT_ERROR"}),
@@ -291,7 +497,7 @@ async fn completion(
         return error(StatusCode::BAD_GATEWAY, "UPSTREAM_PROTOCOL_ERROR");
     }
     let mut upstream = upstream.bytes_stream();
-    let mut response = if streaming {
+    if streaming {
         let shutdown = state.shutdown.clone();
         let output = async_stream::stream! {
             let mut decoder = SseDecoder::default();
@@ -313,12 +519,13 @@ async fn completion(
                         else { yield Ok(stream_error("UPSTREAM_STREAM_INTERRUPTED")); }
                         break 'reading;
                     }
-                    let value: Value = match serde_json::from_str(&data) { Ok(value) => value, Err(_) => { yield Ok(stream_error("UPSTREAM_PROTOCOL_ERROR")); break 'reading; } };
+                    let mut value: Value = match serde_json::from_str(&data) { Ok(value) => value, Err(_) => { yield Ok(stream_error("UPSTREAM_PROTOCOL_ERROR")); break 'reading; } };
                     if value.get("error").is_some() { yield Ok(stream_error("UPSTREAM_ERROR")); break 'reading; }
                     let Some(choices) = value["choices"].as_array() else { yield Ok(stream_error("UPSTREAM_PROTOCOL_ERROR")); break 'reading; };
                     if !valid_chunk(&value) { yield Ok(stream_error("UPSTREAM_PROTOCOL_ERROR")); break 'reading; }
                     finished |= choices.iter().any(|choice| choice["finish_reason"].is_string());
-                    yield Ok(Bytes::from(format!("data: {data}\n\n")));
+                    if let Some(model)=&public_model { value["model"]=json!(model);yield Ok(Bytes::from(format!("data: {value}\n\n"))); }
+                    else { yield Ok(Bytes::from(format!("data: {data}\n\n"))); }
                 }
             }
             // Dropping the response stream drops the upstream body and its request permit.
@@ -353,7 +560,7 @@ async fn completion(
                 Err(_) => return error(StatusCode::GATEWAY_TIMEOUT, "UPSTREAM_IDLE_TIMEOUT"),
             }
         }
-        let value: Value = match serde_json::from_slice(&bytes) {
+        let mut value: Value = match serde_json::from_slice(&bytes) {
             Ok(value) => value,
             Err(_) => return error(StatusCode::BAD_GATEWAY, "UPSTREAM_PROTOCOL_ERROR"),
         };
@@ -364,16 +571,11 @@ async fn completion(
         }) {
             return error(StatusCode::BAD_GATEWAY, "UPSTREAM_PROTOCOL_ERROR");
         }
+        if let Some(model) = public_model {
+            value["model"] = json!(model);
+        }
         Json(value).into_response()
-    };
-    response.headers_mut().insert(
-        "x-tagma-request-id",
-        HeaderValue::from_str(&request_id).expect("UUID header"),
-    );
-    response
-        .headers_mut()
-        .insert("x-tagma-config-revision", HeaderValue::from(revision));
-    response
+    }
 }
 
 #[cfg(test)]
