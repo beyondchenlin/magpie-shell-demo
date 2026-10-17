@@ -1,0 +1,100 @@
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+   Compiling tagma-gateway v0.2.0-dev.16 (D:\demo1\tagmaai\crates\tagma-gateway)
+    Finished `test` profile [unoptimized] target(s) in 1.25s
+     Running tests\inference.rs (target\debug\deps\inference-57016f10c6f98dcc.exe)
+
+running 1 test
+test real_gateway_text_contract_streaming_snapshot_pin_and_client_cancel ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.02s
+
+     Running tests\revocation_faults.rs (target\debug\deps\revocation_faults-aaf67d597361cc95.exe)
+
+running 1 test
+A27 actual sidecar:apply=RestartRequired old_effective5 desired6 IPC_delivered=false cancel=false client_confirm=Err unknown_status=true review_calls1 revoked_final_calls0;real confirmation keeps apply error
+A27 actual sidecar:apply=RestartRequired old_effective5 desired6 IPC_delivered=true cancel=false client_confirm=Err unknown_status=true review_calls1 revoked_final_calls0;real confirmation keeps apply error
+A27 actual sidecar:apply=RestartRequired old_effective5 desired6 IPC_delivered=false cancel=true client_confirm=Err unknown_status=true review_calls1 revoked_final_calls0;real confirmation keeps apply error
+A27 actual sidecar:apply=RestartRequired old_effective5 desired6 IPC_delivered=true cancel=true client_confirm=Err unknown_status=true review_calls1 revoked_final_calls0;real confirmation keeps apply error
+test failed_configuration_apply_and_missing_private_ack_never_restore_revoked_dispatch ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.77s
+
+     Running tests\security.rs (target\debug\deps\security-7a4f45ff9e9af041.exe)
+
+running 1 test
+DATA-06 routing: raw duplicate model uses the first permitted configured provider on a new call; immutable explicit team UUID never substitutes a replacement
+DATA-06 actual sidecar: saved revocation -> instance-bound acknowledgement; old in-flight step finishes, revoked next step dispatch count=0; directory filtered; restart and private catalog probe remain denied
+test persistent_revocation_overrides_pinned_team_steps_and_restarts_without_credential_access ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.22s
+
+     Running tests\teams.rs (target\debug\deps\teams-341e6254effe3696.exe)
+
+running 1 test
+SUP-005 case=length final_calls=0 status=502 Bad Gateway
+SUP-005 case=content_filter final_calls=0 status=502 Bad Gateway
+SUP-005 case=missing_finish final_calls=0 status=502 Bad Gateway
+SUP-005 case=null_finish final_calls=0 status=502 Bad Gateway
+SUP-005 case=non_string_finish final_calls=0 status=502 Bad Gateway
+SUP-005 case=unknown_finish final_calls=0 status=502 Bad Gateway
+SUP-005 case=legacy_function final_calls=0 status=502 Bad Gateway
+SUP-005 case=legacy_reason final_calls=0 status=502 Bad Gateway
+SUP-005 case=tool_reason final_calls=0 status=502 Bad Gateway
+SUP-005 case=refusal final_calls=0 status=502 Bad Gateway
+SUP-005 case=invalid_role final_calls=0 status=502 Bad Gateway
+SUP-005 case=invalid_index final_calls=0 status=502 Bad Gateway
+SUP-005 case=error final_calls=0 status=429 Too Many Requests
+SUP-005 case=tool final_calls=0 status=502 Bad Gateway
+SUP-005 case=empty final_calls=0 status=502 Bad Gateway
+SUP-005 case=huge final_calls=0 status=502 Bad Gateway
+SUP-005 case=timeout final_calls=0 status=504 Gateway Timeout
+SUP-005 final model=tagma/test-team@2 reason=length nonstream_and_stream=preserved
+SUP-005 final model=final-model reason=length nonstream_and_stream=preserved
+SUP-005 final model=tagma/test-team@2 reason=content_filter nonstream_and_stream=preserved
+SUP-005 final model=final-model reason=content_filter nonstream_and_stream=preserved
+test team_execution_pins_recipe_and_targets_and_stops_after_failure_timeout_or_cancel ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.56s
+
+     Running tests\usage.rs (target\debug\deps\usage-c086c387e7fe0bf4.exe)
+
+running 4 tests
+Soft budget actual HTTP:config3 target1/1,2 successful calls retained2/token6,threshold flags true without blocking;single readonly report context/gen0;extra upstream calls0
+Usage HTTP success: requests=1 attempts=1 cfg=2 tokens=2/1 persisted before response success
+Usage actual sidecar kill/restart:upstream entered only after request+attempt starts persisted;both recovered interrupted,NULL tokens,no fabricated zero
+test soft_budget_observes_real_http_without_blocking_dispatch_or_making_extra_calls ... ok
+Usage live readonly bridge:actual sidecar request -> exact request/detail/UTC attempt summary,config2 and tokens2/1
+test actual_sidecar_death_keeps_started_usage_and_restart_marks_unknown_interrupted ... ok
+Usage HTTP begin failure: upstream delta=0,503,degraded=true;private explicit recovery acknowledged
+Usage HTTP first-attempt registration failure:upstream delta0,degraded and explicit recovery
+Usage successful SSE:final reported tokens3/2 persisted before DONE
+Usage HTTP result failure:2 pending,unknown tokens NULL,subsequent upstream delta0;fault-active recovery refused;after recovery pending0,unknown stays NULL
+Usage SSE result failure:partial text retained,error frame,successful DONE withheld,2 bounded pending;recovery retains unknown tokens
+Usage SSE client drop:actual upstream closed;request+attempt cancelled with unknown tokens
+Usage sequential:logical1/attempts2/tokens4/2;second-attempt begin failure sends first once and second zero
+Usage actual revoke(true):partial stream ends ACCESS_REVOKED,request+attempt cancelled,NULL usage;no success DONE
+test actual_http_usage_starts_precede_dispatch_and_failed_results_fence_new_calls ... ok
+Actual HTTP WAL pressure:successful=304,WAL=16780792bytes,pinned old snapshot0;503 adds0upstream;private recovery refused while reader lives;after close TRUNCATE0/degradedfalse,newHTTP200,attempt summaries preserved+1
+test actual_long_reader_wal_refuses_new_inference_until_checkpoint_recovers ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.94s
+

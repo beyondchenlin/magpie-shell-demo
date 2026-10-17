@@ -1,0 +1,33 @@
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+   Compiling tagma-gateway v0.2.0-dev.16 (D:\demo1\tagmaai\crates\tagma-gateway)
+    Finished `test` profile [unoptimized] target(s) in 3.13s
+     Running unittests src\main.rs (target\debug\deps\tagma_gateway-96c849ca787440a6.exe)
+
+running 5 tests
+test function_tools::tests::nonstream_calls_allow_null_text_and_opaque_arguments_but_bind_identity_and_parallel_limit ... ok
+test function_tools::tests::request_contract_preserves_function_fields_and_complete_tool_history ... ok
+test function_tools::tests::incomplete_unknown_duplicate_or_changed_stream_id_never_gets_tool_call_success ... ok
+test function_tools::tests::stream_fragments_are_forwardable_without_accumulating_or_parsing_argument_json ... ok
+test function_tools::tests::malformed_custom_unknown_and_unbounded_request_shapes_are_rejected ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 20 filtered out; finished in 0.00s
+

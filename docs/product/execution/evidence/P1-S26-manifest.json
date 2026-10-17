@@ -1,0 +1,124 @@
+{
+  "recordedAtUtc": "2026-10-17T21:43:16.741Z",
+  "sourceBase": "d646fb965981cba5bf6915d371cca90c2b64d632",
+  "candidateVersion": "0.2.0-dev.16",
+  "configSchema": 9,
+  "usageSchema": 2,
+  "source": [
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-gateway\\src\\main.rs",
+      "bytes": 33567,
+      "sha256": "386f79b234882acd52cf147dd3a90eba725b63a9193c4ef5d1ab9d67b763956d"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-gateway\\src\\http_api.rs",
+      "bytes": 49077,
+      "sha256": "ada46ef54ece14c42376877174657def113f384a9758f9da3b2e0bd212246a50"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-gateway\\src\\function_tools.rs",
+      "bytes": 19309,
+      "sha256": "72004162148410d5d9f9d6e6acf86ed9981802007dc2281b9b204eb45ddd7c5b"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-gateway\\tests\\function_tools.rs",
+      "bytes": 11886,
+      "sha256": "84e156e5a934d99a1cdf4f3d8bc22d5caf6dce8f41212c5174cee4e51080d71c"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-gateway\\tests\\inference.rs",
+      "bytes": 12602,
+      "sha256": "6854136cd9788d4ba8277ca25a55d35b25027c8f40cee0e9dffc521c3666dcd5"
+    }
+  ],
+  "documents": [
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\EXECUTION-STATUS.md",
+      "bytes": 31761,
+      "sha256": "ac14e5d6a0080ba9e51a526f188cdaab49228cbe025504aad52f360ec20036af"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\P1-S26-FUNCTION-TOOL-PASSTHROUGH.md",
+      "bytes": 5239,
+      "sha256": "bae7ce665f5605759fa4d7175200e01495a59efcb6bb333634c406fec078adf9"
+    }
+  ],
+  "prd": {
+    "path": "D:\\demo1\\tagmaai\\docs\\product\\TAGMA-PRD-v0.3.md",
+    "bytes": 50957,
+    "sha256": "6e6503391f70e3f2e53347890de6e7c9f7fd93cc393c68f7bba494ac4d67a6d6"
+  },
+  "officialSources": [
+    "https://developers.openai.com/api/reference/resources/chat/subresources/completions/methods/create",
+    "https://developers.openai.com/api/reference/resources/chat/subresources/completions/streaming-events"
+  ],
+  "evidence": [
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S26-check-first.txt",
+      "bytes": 897,
+      "sha256": "072a17c740eaa0b0d7fe87d0d209b6d57f8b38721df04d64605ff99a9a1a0512"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S26-clippy-final.txt",
+      "bytes": 739,
+      "sha256": "ab283bba1cdc83bc56fda6fb3bbb0abec9e69b81c3273189c783bd5f20069951"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S26-clippy-first.txt",
+      "bytes": 2905,
+      "sha256": "c3d4b203eb72cc1fba2b249ff57cc7e2b72619f6b284cea9fa0b7eccc42b575f"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S26-contract-first.txt",
+      "bytes": 1514,
+      "sha256": "f7ea14f4d3aa68bda19128dc39bfee0d67e0176657786c2635931ec7264269ca"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S26-http-final.txt",
+      "bytes": 1474,
+      "sha256": "901c6d39d591060ae4000e39d650fc4a45f05c2adbd13056e2ff02377157dd4d"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S26-http-first.txt",
+      "bytes": 1373,
+      "sha256": "3a201b3437f10438824fb8cd1ab97e30ae55bebe000b5bf06e3a295fc2379849"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S26-http-reviewed.txt",
+      "bytes": 1373,
+      "sha256": "4cca9510f606cfc509cd28ed2f0c91b19c6e7f3dd3d5ea8e7a1534217f72ca22"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S26-regression-first.txt",
+      "bytes": 6500,
+      "sha256": "1363b65864b79e9bcf04922186c50202b6158d0a86ed1b7c521d1f9627377640"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S26-regression-reviewed.txt",
+      "bytes": 6712,
+      "sha256": "d70c78787c027ad45d09d5431611f83fd21ea69f8f55d5f94bb9a5d76c0fa621"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S26-space-after.json",
+      "bytes": 223,
+      "sha256": "383b6e99b200d7149284a1333f21c8539c9cc1c0e6ab8ebe8624061796539c89"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S26-space-plan.json",
+      "bytes": 523,
+      "sha256": "62c05caf6f5041e9536e996b4d443d1f0d96064ecc47af7a103da4dfb0f83e5a"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S26-space-review.json",
+      "bytes": 329,
+      "sha256": "50cb89a2b60dfe4cd24c1961abc371b91080efd013f712be2d8b505c61708363"
+    }
+  ],
+  "freeAfterGiB": {
+    "C": 42.44,
+    "D": 9.93
+  },
+  "spaceConstraint": "D below10GiB;only bounded cached checks,expected>1GiB operations paused;no full rebuild/install/new env",
+  "cleanup": "Owned function fixture prefix0;owned sidecar stopped and server aborted;no new worktree/environment or prior artifact deletion",
+  "installed": "dev.9 untouched;drag not accepted;computer control prohibited"
+}

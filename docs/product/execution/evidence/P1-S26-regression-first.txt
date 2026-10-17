@@ -1,0 +1,89 @@
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+   Compiling tagma-gateway v0.2.0-dev.16 (D:\demo1\tagmaai\crates\tagma-gateway)
+    Finished `test` profile [unoptimized] target(s) in 2.01s
+     Running unittests src\main.rs (target\debug\deps\tagma_gateway-96c849ca787440a6.exe)
+
+running 25 tests
+test function_tools::tests::request_contract_preserves_function_fields_and_complete_tool_history ... ok
+test function_tools::tests::stream_fragments_are_forwardable_without_accumulating_or_parsing_argument_json ... ok
+test health::tests::coalescing_preserves_scope_time_and_failure_precedence ... ok
+test function_tools::tests::nonstream_calls_allow_null_text_and_opaque_arguments_but_bind_identity_and_parallel_limit ... ok
+test http_api::tests::refuses_unimplemented_fields_before_dispatch ... ok
+test function_tools::tests::malformed_custom_unknown_and_unbounded_request_shapes_are_rejected ... ok
+test function_tools::tests::incomplete_unknown_duplicate_or_changed_stream_id_never_gets_tool_call_success ... ok
+test apply_tests::timed_out_credential_load_keeps_one_worker_limit ... ok
+A08 metadata: pending catalog writes block health reads; confirmed completion advances epoch; abandoned/unknown completion never acknowledges old ready rows
+test health::tests::catalog_writes_share_the_health_epoch_and_unknown_results_remain_unconfirmed ... ok
+test apply_tests::pending_apply_cannot_resurrect_stopping_runtime ... ok
+Usage management:full bounded channel ->busy without fence;actual writer skips expired and preclosed clear before mutation,epoch remains0,healthy accounting retained
+test usage::tests::full_or_abandoned_management_never_mutates_or_blocks_accounting ... ok
+test apply_tests::delayed_old_failure_never_overwrites_new_success ... ok
+test apply_tests::delayed_old_success_never_regresses_effective_revision ... ok
+Usage management:running request ->busy,changed preview ->changed;neither blocks healthy accounting;new preview clear succeeds
+test usage::tests::management_busy_and_changed_do_not_fence_healthy_inference ... ok
+Idle tick:existing pending1 never retried despite removed storage fault;clock failure fences healthy store and later tick cannot silently recover
+test usage::tests::idle_retention_never_replays_pending_results_or_clears_a_failure_fence ... ok
+SUP-006 observed_t0=1000 drain_t=301001 persisted_success=Some(1000) ready=false selected=false
+test health::tests::delayed_health_write_does_not_refresh_an_expired_observation ... ok
+SUP-007 phase=first-step token_scope=false cancel_inflight=false confirmed_revision=1 upstream_target_calls=0 status=403
+SUP-007 phase=next-step token_scope=false cancel_inflight=false confirmed_revision=1 upstream_target_calls=0 status=403
+A11 real HTTP/in-memory credentials: missing/wrong/revoked 401; no data-plane management; new token saved-before-apply denied then accepted; provider revoke blocks new dispatch; optional cancellation closes real upstream and retains partial/error without DONE; corrupt security store 503/unconfirmed
+test security::tests::real_http_token_revocation_rotation_inflight_cancel_and_storage_failure ... ok
+Usage accounting ACK:remaining150ms request budget ends wait while committed writer ACK is held;explicit recovery required
+test usage::tests::accounting_ack_wait_respects_the_remaining_request_budget ... ok
+SUP-007 phase=admitted-first-send token_scope=false cancel_inflight=false confirmed_revision=1 upstream_target_calls=1 status=200
+SUP-007 phase=first-step token_scope=true cancel_inflight=false confirmed_revision=1 upstream_target_calls=0 status=403
+A14 health consumer: bounded single read slot, admission timeout, recovery and shutdown rejection verified
+test health::tests::confirmed_reads_are_bounded_and_shutdown_is_not_an_acknowledgement ... ok
+SUP-007 phase=next-step token_scope=true cancel_inflight=false confirmed_revision=1 upstream_target_calls=0 status=403
+test security::tests::sup007_confirmed_revoke_cannot_overtake_an_unstarted_dispatch ... ok
+test health::tests::coalesced_observations_are_confirmed_only_after_persistent_write ... ok
+Usage clear ACK:actual delete+epoch+receipt commit precedes800ms caller timeout;timeout remains unconfirmed,accounting healthy;same plan retry retrieves generation1 without replay
+test usage::tests::clear_wait_timeout_keeps_durable_receipt_without_replaying_deletion ... ok
+SUP-008 bounded writer race:recover operation timed out/Err;writer later completed actual pending1->0 and degraded=false;original operation Err preserved for reply
+test usage::tests::recovery_timeout_retains_operation_failure_after_late_writer_completion ... ok
+Usage lost committed-start ACK unit: unfinished records=0; late ACK lifecycle guard recovery
+test usage::tests::lost_attempt_start_acknowledgement_closes_both_started_records ... ok
+Real idle writer timer path:owned detail crosses30days then disappears with no dispatch/management/new request;daily1 retained,healthy;test timer50ms,production60s;worker joins on drop
+test usage::tests::idle_writer_expires_owned_details_without_any_new_dispatch ... ok
+
+test result: ok. 25 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.07s
+
+     Running tests\inference.rs (target\debug\deps\inference-57016f10c6f98dcc.exe)
+
+running 1 test
+
+thread 'real_gateway_text_contract_streaming_snapshot_pin_and_client_cancel' (9660) panicked at crates\tagma-gateway\tests\inference.rs:167:5:
+assertion `left == right` failed
+  left: 200
+ right: 400
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test real_gateway_text_contract_streaming_snapshot_pin_and_client_cancel ... FAILED
+
+failures:
+
+failures:
+    real_gateway_text_contract_streaming_snapshot_pin_and_client_cancel
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.62s
+
+error: test failed, to rerun pass `-p tagma-gateway --test inference`

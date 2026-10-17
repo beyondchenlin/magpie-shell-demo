@@ -1,0 +1,30 @@
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+   Compiling tagma-gateway v0.2.0-dev.16 (D:\demo1\tagmaai\crates\tagma-gateway)
+    Finished `test` profile [unoptimized] target(s) in 1.34s
+     Running tests\function_tools.rs (target\debug\deps\function_tools-a55b3f978251af12.exe)
+
+running 1 test
+Function actual HTTP:exact definitions/choice/parallel/request history preserved,nonstream null text+opaque calls,byte-fragmented UTF8/CRLF SSE arguments reconstructed by caller,DONE after tokens3/2 durable;nonstream length+preface and stream preface+tools never mark text Ready after confirmed health flush;caller-only result turn;team/orphan0sends,bad tool index ->error/noDONE+failed ledger;no tool execution or arguments in usage DB
+test actual_function_calls_round_trip_and_fragment_without_gateway_execution ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.17s
+

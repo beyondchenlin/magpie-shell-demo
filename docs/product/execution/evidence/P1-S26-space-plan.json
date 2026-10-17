@@ -1,0 +1,13 @@
+{
+  "recordedAtUtc": "2026-10-17T21:34:04.550Z",
+  "target": "D:/demo1/tagmaai/target",
+  "temporaryRoot": "C:\\Users\\ai\\AppData\\Local\\Temp",
+  "estimatedAdditionalPeakGiB": 0.03,
+  "freeBeforeGiB": {
+    "C": 42.45,
+    "D": 10.02
+  },
+  "scope": "Function tool passthrough protocol for ordinary cloud routes;local controlled tests only,no live provider/key/desktop",
+  "reuse": "Existing Cargo caches/target,no new env/worktree",
+  "cleanup": "Bounded owned TempDir/loopback fixtures;all prior/user artifacts kept"
+}

@@ -405,6 +405,9 @@ fn validate(input: &Value) -> Result<(&str, bool), &'static str> {
         "seed",
         "stream_options",
         "n",
+        "tools",
+        "tool_choice",
+        "parallel_tool_calls",
     ];
     if object.keys().any(|key| !FIELDS.contains(&key.as_str())) {
         return Err("UNSUPPORTED_FIELD");
@@ -413,26 +416,11 @@ fn validate(input: &Value) -> Result<(&str, bool), &'static str> {
         .as_str()
         .filter(|s| !s.is_empty() && s.len() <= 256)
         .ok_or("INVALID_REQUEST")?;
-    let messages = input["messages"]
+    input["messages"]
         .as_array()
         .filter(|m| !m.is_empty() && m.len() <= 128)
         .ok_or("INVALID_REQUEST")?;
-    for message in messages {
-        let fields = message.as_object().ok_or("INVALID_REQUEST")?;
-        if fields
-            .keys()
-            .any(|key| !["role", "content"].contains(&key.as_str()))
-        {
-            return Err("UNSUPPORTED_FIELD");
-        }
-        if !matches!(
-            message["role"].as_str(),
-            Some("system" | "user" | "assistant" | "developer")
-        ) || !message["content"].is_string()
-        {
-            return Err("UNSUPPORTED_MESSAGE");
-        }
-    }
+    super::function_tools::validate(input)?;
     for (key, max) in [("temperature", 2.0), ("top_p", 1.0)] {
         if let Some(value) = object.get(key)
             && !value
@@ -668,6 +656,9 @@ async fn completion(
             Err(PlanError(status, code)) => return error(status, code),
         }
     };
+    if plan.public_model.is_some() && super::function_tools::uses_tools(&input) {
+        return error(StatusCode::BAD_REQUEST, "UNSUPPORTED_TEAM_TOOLS");
+    }
     let request_id = uuid::Uuid::new_v4().to_string();
     let run = match state.security.register(
         grant.target,
@@ -1152,15 +1143,19 @@ async fn forward_response(
         return error(StatusCode::BAD_GATEWAY, "UPSTREAM_PROTOCOL_ERROR");
     }
     let mut upstream = upstream.bytes_stream();
+    let available_functions = super::function_tools::names(input);
+    let parallel_tools = input["parallel_tool_calls"] != false;
     if streaming {
         let shutdown = state.shutdown.clone();
         let cancelled = run.cancel.clone();
         let output = async_stream::stream! {
+            let mut function_stream=if available_functions.is_empty(){None}else{Some(super::function_tools::StreamTools::new(available_functions,parallel_tools))};
             let mut decoder = SseDecoder::default();
             let mut total = 0usize;
             let mut finished = false;
             let mut saw_text=false;
             let mut saw_refusal=false;
+            let mut saw_tools=false;
             let mut valid_role=true;
             'reading: loop {
                 let next = tokio::select! {
@@ -1177,7 +1172,7 @@ async fn forward_response(
                 for data in events {
                     if data == "[DONE]" {
                         if finished {
-                            if saw_text&&!saw_refusal&&valid_role{health.observe(tagma_core::health::HealthObservation::InferenceSucceeded);}
+                            if saw_text&&!saw_refusal&&!saw_tools&&valid_role{health.observe(tagma_core::health::HealthObservation::InferenceSucceeded);}
                             else if !valid_role{health.observe(tagma_core::health::HealthObservation::InferenceFailed(tagma_core::health::HealthFailure::Protocol));}
                             yield Ok(Bytes::from_static(b"data: [DONE]\n\n"));
                         }
@@ -1187,9 +1182,11 @@ async fn forward_response(
                     let mut value: Value = match serde_json::from_str(&data) { Ok(value) => value, Err(_) => { yield Ok(stream_error(&health,"UPSTREAM_PROTOCOL_ERROR")); break 'reading; } };
                     if value.get("error").is_some() { yield Ok(stream_error(&health,"UPSTREAM_ERROR")); break 'reading; }
                     let Some(choices) = value["choices"].as_array() else { yield Ok(stream_error(&health,"UPSTREAM_PROTOCOL_ERROR")); break 'reading; };
-                    if !valid_chunk(&value) { yield Ok(stream_error(&health,"UPSTREAM_PROTOCOL_ERROR")); break 'reading; }
+                    let valid=if let Some(stream)=&mut function_stream{stream.accept(&value)}else{valid_chunk(&value)};
+                    if !valid { yield Ok(stream_error(&health,"UPSTREAM_PROTOCOL_ERROR")); break 'reading; }
                     finished |= choices.iter().any(|choice| choice["finish_reason"].is_string());
                     saw_text|=choices.iter().any(|choice|choice["delta"]["content"].as_str().is_some_and(|text|!text.trim().is_empty()));
+                    saw_tools|=choices.iter().any(|choice|choice["delta"].get("tool_calls").is_some());
                     saw_refusal|=choices.iter().any(|choice|choice["delta"].get("refusal").is_some_and(|value|!value.is_null()));
                     valid_role&=choices.iter().all(|choice|choice["delta"].get("role").is_none_or(|value|value.is_null()||value=="assistant"));
                     if let Some(model)=&public_model { value["model"]=json!(model);yield Ok(Bytes::from(format!("data: {value}\n\n"))); }
@@ -1234,26 +1231,32 @@ async fn forward_response(
             Ok(value) => value,
             Err(_) => return error(StatusCode::BAD_GATEWAY, "UPSTREAM_PROTOCOL_ERROR"),
         };
-        if !value["choices"].as_array().is_some_and(|choices| {
-            choices.len() == 1
-                && choices[0]["message"]["content"].is_string()
-                && choices[0]["message"].get("tool_calls").is_none()
-        }) {
+        let tool_answer = value["choices"][0]["message"].get("tool_calls").is_some();
+        if if tool_answer {
+            !super::function_tools::response(&value, &available_functions, parallel_tools)
+        } else {
+            !value["choices"].as_array().is_some_and(|choices| {
+                choices.len() == 1
+                    && choices[0]["message"]["content"].is_string()
+                    && choices[0]["message"].get("tool_calls").is_none()
+            })
+        } {
             return error(StatusCode::BAD_GATEWAY, "UPSTREAM_PROTOCOL_ERROR");
         }
         let message = &value["choices"][0]["message"];
         if message["role"] != "assistant"
             || message.get("function_call").is_some()
-            || !matches!(
+            || !(matches!(
                 value["choices"][0]["finish_reason"].as_str(),
                 Some("stop" | "length" | "content_filter")
-            )
+            ) || (tool_answer && value["choices"][0]["finish_reason"] == "tool_calls"))
         {
             health.observe(tagma_core::health::HealthObservation::InferenceFailed(
                 tagma_core::health::HealthFailure::Protocol,
             ));
         }
-        if message["role"] == "assistant"
+        if !tool_answer
+            && message["role"] == "assistant"
             && message["content"]
                 .as_str()
                 .is_some_and(|text| !text.trim().is_empty())
@@ -1284,7 +1287,7 @@ mod tests {
         assert!(validate(&json!({"model":"test","messages":[{"role":"user","content":"hello"}],"stream":true})).is_ok());
         assert_eq!(
             validate(
-                &json!({"model":"test","messages":[{"role":"user","content":"hello"}],"tools":[]})
+                &json!({"model":"test","messages":[{"role":"user","content":"hello"}],"response_format":{"type":"json_object"}})
             )
             .unwrap_err(),
             "UNSUPPORTED_FIELD"

@@ -163,7 +163,7 @@ async fn real_gateway_text_contract_streaming_snapshot_pin_and_client_cancel() {
     assert!(stream.ends_with("data: [DONE]\n\n"));
     let count = calls.load(Ordering::SeqCst);
     let mut unsupported = input("normal", true);
-    unsupported["tools"] = json!([]);
+    unsupported["tools"] = json!([{"type":"custom","custom":{"name":"unsupported"}}]);
     assert_eq!(
         client
             .post(&endpoint)

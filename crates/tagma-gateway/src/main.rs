@@ -1,6 +1,7 @@
 #![cfg_attr(windows, windows_subsystem = "windows")]
 
 mod catalog;
+mod function_tools;
 mod health;
 mod http_api;
 mod security;

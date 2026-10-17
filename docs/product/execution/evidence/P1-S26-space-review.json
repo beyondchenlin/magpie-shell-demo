@@ -1,0 +1,7 @@
+{
+  "RecordedAtUtc": "2026-10-17T21:39:48.1453454Z",
+  "CFreeGiB": 42.44,
+  "DFreeGiB": 9.93,
+  "Scope": "Reuse current compiled targets;targeted incremental checks only,no full rebuild/install/new environment;operations >1GiB paused below10GiB;no manual cleanup of prior artifacts",
+  "EstimatedRemainingPeakGiB": 0.01
+}
