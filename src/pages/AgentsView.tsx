@@ -818,7 +818,7 @@ export function AgentsView({
           {visible.map((a) => (
             <div
               key={a.id}
-              className={`row agent conn${a.connectable && !wired[a.id] ? " unplugged" : ""}${draggingId === a.id ? " dragging" : ""}`}
+              className={`row agent${a.missing ? "" : " conn"}${a.connectable && !wired[a.id] ? " unplugged" : ""}${draggingId === a.id ? " dragging" : ""}`}
               data-id={a.id}
               title={a.id === "cursor" ? "~/.cursor/cli-config.json" : a.name}
               style={draggingId === a.id ? { transition: "none" } : undefined}>
@@ -982,7 +982,7 @@ export function AgentsView({
                 }}>
                 <MagpieIcon name={a.icon} />
               </button>
-              <div className="who">
+              <div className={`who${a.missing ? "" : " with-models"}`}>
                 <div className="name">{a.name}</div>
                 {a.version ? <span className="ag-cli"><span className="ag-ver">{a.version}</span></span> : null}
                 {a.missing ? <span className="ag-cli ag-missing">{t("CLI not found")}</span> : null}
