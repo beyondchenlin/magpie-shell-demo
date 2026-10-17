@@ -18,6 +18,8 @@
 
 ## 当前批次
 
+- **A27供应商连接代次的组合矩阵局部验证完成**：实际sidecar的应用RestartRequired（old effective5/desired6）同时遇私有请求未送达/已处理但回复丢失，分别false/true取消四组合均为撤销final0调用；管理调用Err且未知状态不冒称确认，false保留已在途正文。自查另先复现安全确认错误快照被误接受，再按明确操作种类/请求修订/结果与运行快照分离修复。相关gateway17/runtime3通过（2显式忽略不计），workspace Clippy通过；已修正既有测试的端口预留竞争。见[P1-S14](P1-S14-REVOCATION-FAULTS.md)。A27真实凭据/桌面及完整错误矩阵、A16/A28仍未整体通过；继续用量查询等独立后台缺口，用户dev.9与电脑控制禁令不变。
+
 - **SUP-008管理恢复确认边界已局部修复**：先以真实私有IPC复现带USAGE_STORAGE_UNAVAILABLE的健康字段快照被manager误接受，再以明确operation确认/错误与runtime快照分离修复；12负例拒绝、2正例接受。真实writer的pending1恢复暂停至调用超时，晚完成false/0仍保留原操作Err；hook有界。相关gateway19/runtime2通过（2显式忽略不计），workspace及最终runtime Clippy通过，见[SUP-008](SUP-008-RECOVERY-ACK.md)。候选dev.15/schema不变，A28/A16/P1未整体通过；继续A27 apply失败+IPC丢失矩阵，用户安装与电脑控制禁令不变。
 
 - 源码候选 **dev.15/config schema8/usage schema1** 已将用量登记接入实际网关首步/后续步及SSE/非流/取消/崩溃生命周期：开始失败HTTP上游0调用，结束失败有界保留并拒绝新登记，私有显式恢复，未知token保持NULL，成功DONE前结算。核心60/网关33/runtime1通过（9项显式忽略不计），workspace Clippy、DTO、TS/Vite/oxlint JSON/CIS通过；两轮自查含确认超时遗留1→0修复及剩余预算检查。见[P1-S12](P1-S12-USAGE-GATEWAY.md)。A16/A28查询/清除/预算及完整容量矩阵未完，A27 apply失败+IPC丢失矩阵待办，P1未通过。继续独立非UI工作，用户dev.9/数据不动，拖拽保持未通过。
@@ -32,7 +34,7 @@
 
 ## 历史切片记录
 
-以下保留各批当时的实现范围与版本；其中“未开放/待接线/下一步”等描述不是本批最新状态。最新范围以上方 dev.15 和 P1-S12 为准。
+以下保留各批当时的实现范围与版本；其中“未开放/待接线/下一步”等描述不是本批最新状态。最新范围以上方 dev.15、P1-S14及SUP-008为准。
 
 - SUP-006按先失败后修复完成观测时刻校验：延迟到TTL后落盘不刷新成功时间；同毫秒失败优先、目录/推理分槽。原始before/after/core/final/regression结果保留。纯选择器与未确认退出围栏已验证，first_cloud发布/解析仍未开放；新增两项无窗口异常退出测试通过，禁止电脑控制持续有效。详见[SUP-006](SUP-006-OBSERVATION-TIME.md)及[P1-S07](P1-S07-HEALTH-UNCERTAINTY.md)。
 
@@ -117,7 +119,7 @@
 | A24 | NFR-02/03/04 | 设备登记后测量，未验证 |
 | A25 | REL-05 NFR-05 | 有界日志/诊断/新finally清理通过；旧六合成目录批量清理被自动审批拒绝，已留账 |
 | A26 | G6 GW-08 OBS-01 ARCH-01 | P4 后续 |
-| A27 | DATA-06 GW-08 RUN-06 | 持久策略覆盖旧快照/未执行步骤、实例确认及SUP-007派发屏障本机HTTP通过；故障矩阵/真实凭据与完整阶段仍待验，整体未通过，见P1-S10 |
+| A27 | DATA-06 GW-08 RUN-06 | 持久策略/SUP-007屏障与旧快照保护通过；供应商连接代次在实际apply RestartRequired+私有未送达/丢回复、false/true四组合及严格操作确认已本机验证。真实凭据/桌面/其他错误平台矩阵与完整阶段仍待验，整体未通过，见P1-S10/14 |
 | A28 | OBS-06 NFR-04 | 核心小容量SQLITE_FULL、实际HTTP开始/结束写故障、取消及sidecar真实死亡恢复通过；长期容量/WAL/查询清除矩阵仍待验，整体未通过，见P1-S11/12 |
 
 目标映射：G1→A02/07/12，G2→A09/10，G3→A13–15，G4→A17–20，G5→A03–05/08/27/28，G6→A21/26，G7→A22。覆盖全部 69 条需求，测试结果逐批附证据。

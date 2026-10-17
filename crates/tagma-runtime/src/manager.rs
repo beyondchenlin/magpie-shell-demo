@@ -303,17 +303,7 @@ impl GatewayManager {
     pub async fn confirm_security(&self, revision: u32) -> AppResult<RuntimeStatus> {
         let manifest = ipc::read_manifest(&self.directory)?;
         let status = ipc::call(&manifest, Control::ConfirmSecurity { revision }).await?;
-        if status
-            .security_revision
-            .is_none_or(|current| current < revision)
-            || status.instance_id.as_deref() != Some(manifest.instance_id.as_str())
-            || !matches!(status.state, RuntimeState::Running | RuntimeState::Degraded)
-        {
-            return Err(status
-                .error
-                .clone()
-                .unwrap_or_else(|| AppError::new(ErrorCode::SecurityStateUnconfirmed)));
-        }
+        ipc::validate_confirmed_security(&status, &manifest.instance_id, revision)?;
         Ok(status)
     }
     /// Private management channel only; never reachable with a model API token.

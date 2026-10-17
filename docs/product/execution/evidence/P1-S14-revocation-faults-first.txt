@@ -1,0 +1,34 @@
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+   Compiling tagma-gateway v0.2.0-dev.15 (D:\demo1\tagmaai\crates\tagma-gateway)
+    Finished `test` profile [unoptimized] target(s) in 1.37s
+     Running tests\revocation_faults.rs (target\debug\deps\revocation_faults-8c3c7241282963b3.exe)
+
+running 1 test
+
+thread 'failed_configuration_apply_and_missing_private_ack_never_restore_revoked_dispatch' (4220) panicked at crates\tagma-gateway\tests\revocation_faults.rs:157:229:
+called `Result::unwrap_err()` on an `Ok` value: RuntimeStatus { usage_degraded: Some(false), usage_pending_results: Some(0), security_revision: Some(0), state: Degraded, instance_id: Some("92042028-5cfd-4e86-b1db-e6ad11cd53c3"), effective_revision: Some(5), address: Some("http://127.0.0.1:65205/v1"), owned: true, error: Some(AppError { code: RestartRequired, retryable: false }) }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test failed_configuration_apply_and_missing_private_ack_never_restore_revoked_dispatch ... FAILED
+
+failures:
+
+failures:
+    failed_configuration_apply_and_missing_private_ack_never_restore_revoked_dispatch
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.12s
+
+error: test failed, to rerun pass `-p tagma-gateway --test revocation_faults`

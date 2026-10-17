@@ -1,0 +1,28 @@
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+   Compiling tagma-gateway v0.2.0-dev.15 (D:\demo1\tagmaai\crates\tagma-gateway)
+    Finished `test` profile [unoptimized] target(s) in 1.35s
+     Running tests\revocation_faults.rs (target\debug\deps\revocation_faults-8c3c7241282963b3.exe)
+
+running 1 test
+A27 actual sidecar:apply=RestartRequired old_effective5 desired6 IPC_delivered=false cancel=false client_confirm=Err unknown_status=true review_calls1 revoked_final_calls0;real confirmation keeps apply error
+A27 actual sidecar:apply=RestartRequired old_effective5 desired6 IPC_delivered=true cancel=false client_confirm=Err unknown_status=true review_calls1 revoked_final_calls0;real confirmation keeps apply error
+A27 actual sidecar:apply=RestartRequired old_effective5 desired6 IPC_delivered=false cancel=true client_confirm=Err unknown_status=true review_calls1 revoked_final_calls0;real confirmation keeps apply error
+A27 actual sidecar:apply=RestartRequired old_effective5 desired6 IPC_delivered=true cancel=true client_confirm=Err unknown_status=true review_calls1 revoked_final_calls0;real confirmation keeps apply error
+test failed_configuration_apply_and_missing_private_ack_never_restore_revoked_dispatch ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.53s
+

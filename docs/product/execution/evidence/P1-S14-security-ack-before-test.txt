@@ -1,0 +1,108 @@
+//! Operation confirmation is separate from a later, otherwise healthy snapshot.
+use serde_json::{Value, json};
+use std::path::Path;
+use tagma_core::*;
+use tagma_runtime::{GatewayManager, ipc};
+async fn confirm(mut status: RuntimeStatus, operation: Value) -> AppResult<RuntimeStatus> {
+    use interprocess::local_socket::tokio::prelude::*;
+    let temp = tempfile::Builder::new()
+        .prefix("tagma-security-ack-")
+        .tempdir()
+        .unwrap();
+    let instance = uuid::Uuid::new_v4().to_string();
+    status.instance_id = Some(instance.clone());
+    #[cfg(windows)]
+    let endpoint = format!("tagma-{}", uuid::Uuid::new_v4());
+    #[cfg(unix)]
+    let endpoint = temp
+        .path()
+        .join("security.sock")
+        .to_string_lossy()
+        .into_owned();
+    let manifest = ipc::Manifest {
+        protocol_version: PROTOCOL_VERSION,
+        product_version: PRODUCT_VERSION.into(),
+        schema_version: SCHEMA_VERSION,
+        config_id: ipc::config_id(temp.path()).unwrap(),
+        instance_id: instance,
+        endpoint,
+        port: 9168,
+        console_attached: false,
+    };
+    let listener = ipc::listener(&manifest.endpoint).unwrap();
+    std::fs::write(
+        temp.path().join("runtime.json"),
+        serde_json::to_vec(&manifest).unwrap(),
+    )
+    .unwrap();
+    let task = tokio::spawn(async move {
+        let mut stream = listener.accept().await.unwrap();
+        let request: ipc::Request = ipc::read_frame(&mut stream).await.unwrap();
+        assert!(matches!(
+            request.command,
+            ipc::Command::ConfirmSecurity { revision: 3 }
+        ));
+        let response = json!({"protocol_version":PROTOCOL_VERSION,"product_version":PRODUCT_VERSION,"config_id":request.config_id,"instance_id":request.instance_id,"challenge":request.challenge,"status":status,"operation":operation});
+        ipc::write_frame(&mut stream, &response).await.unwrap();
+    });
+    let manager = GatewayManager::new(temp.path(), Path::new("unused-private-ack-fixture"));
+    let result = manager.confirm_security(3).await;
+    task.await.unwrap();
+    result
+}
+fn clean() -> RuntimeStatus {
+    RuntimeStatus {
+        usage_degraded: Some(false),
+        usage_pending_results: Some(0),
+        security_revision: Some(3),
+        state: RuntimeState::Running,
+        instance_id: None,
+        effective_revision: Some(1),
+        address: Some("http://127.0.0.1:9168/v1".into()),
+        owned: false,
+        error: None,
+    }
+}
+#[tokio::test]
+async fn explicit_security_operation_failure_cannot_be_replaced_by_a_newer_snapshot() {
+    let mut bad = clean();
+    bad.error = Some(AppError::new(ErrorCode::SecurityStateUnconfirmed));
+    let result = confirm(bad, Value::Null).await;
+    println!(
+        "A27 contradictory security error with confirmed revision:manager_accepted={}",
+        result.is_ok()
+    );
+    assert!(
+        result.is_err(),
+        "an explicit safety confirmation error must not become success from snapshot fields"
+    );
+    let success =
+        json!({"kind":"confirm_security","requested_revision":3,"confirmed":true,"error":null});
+    let mut contradictory = clean();
+    contradictory.error = Some(AppError::new(ErrorCode::SecurityStateUnconfirmed));
+    assert!(confirm(contradictory, success.clone()).await.is_err());
+    assert!(confirm(clean(),json!({"kind":"confirm_security","requested_revision":3,"confirmed":false,"error":{"code":"SECURITY_STATE_UNCONFIRMED","retryable":false}})).await.is_err());
+    assert!(
+        confirm(
+            clean(),
+            json!({"kind":"confirm_security","requested_revision":4,"confirmed":true,"error":null})
+        )
+        .await
+        .is_err()
+    );
+    assert!(confirm(clean(), Value::Null).await.is_err());
+    let mut old = clean();
+    old.security_revision = Some(2);
+    assert!(confirm(old, success.clone()).await.is_err());
+    assert!(confirm(clean(), success.clone()).await.is_ok());
+    let mut newer = clean();
+    newer.security_revision = Some(4);
+    newer.state = RuntimeState::Degraded;
+    newer.error = Some(AppError::new(ErrorCode::RestartRequired));
+    let newer = confirm(newer, success).await.unwrap();
+    assert_eq!(newer.security_revision, Some(4));
+    assert_eq!(newer.error.unwrap().code, ErrorCode::RestartRequired);
+    println!(
+        "A27 security operation ack:explicit error/missing ack/wrong requested revision/stale snapshot rejected;newer confirmed revision with unrelated apply failure preserved"
+    );
+}

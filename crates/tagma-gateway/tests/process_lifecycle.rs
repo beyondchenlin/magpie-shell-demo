@@ -332,8 +332,13 @@ async fn auth_missing_token_denies_by_default_and_port_changes_require_explicit_
 async fn saved_port_change_cannot_be_acknowledged_on_old_port_during_crash_restart() {
     let temp = tempfile::tempdir().unwrap();
     let config = initialize(temp.path());
-    let first_port = free_port();
-    let new_port = free_port();
+    // Keep fixture ports reserved until their intended handoff. A port returned
+    // by free_port() is not guaranteed to remain free across an awaited spawn.
+    let first_reservation = std::net::TcpListener::bind("127.0.0.1:0").unwrap();
+    let new_reservation = std::net::TcpListener::bind("127.0.0.1:0").unwrap();
+    let wrong_reservation = std::net::TcpListener::bind("127.0.0.1:0").unwrap();
+    let first_port = first_reservation.local_addr().unwrap().port();
+    let new_port = new_reservation.local_addr().unwrap().port();
     config
         .save_gateway(SaveGateway {
             protocol_version: 1,
@@ -343,12 +348,15 @@ async fn saved_port_change_cannot_be_acknowledged_on_old_port_during_crash_resta
         })
         .unwrap();
     let manager = GatewayManager::new(temp.path(), Path::new(env!("CARGO_BIN_EXE_tagma-gateway")));
-    let wrong_port = free_port();
+    let wrong_port = wrong_reservation.local_addr().unwrap().port();
     assert_eq!(
         manager.start(wrong_port).await.unwrap_err().code,
         ErrorCode::RestartRequired
     );
-    assert!(std::net::TcpListener::bind((std::net::Ipv4Addr::LOCALHOST, wrong_port)).is_ok());
+    assert!(manager.owned_process_id().await.is_none());
+    assert_eq!(wrong_reservation.local_addr().unwrap().port(), wrong_port);
+    drop(wrong_reservation);
+    drop(first_reservation);
     let first = manager.start(first_port).await.unwrap();
     assert_eq!(first.effective_revision, Some(1));
     config
@@ -384,7 +392,8 @@ async fn saved_port_change_cannot_be_acknowledged_on_old_port_during_crash_resta
     .await;
     assert_eq!(manager.status().await.effective_revision, None);
     assert!(manager.owned_process_id().await.is_none());
-    assert!(std::net::TcpListener::bind((std::net::Ipv4Addr::LOCALHOST, new_port)).is_ok());
+    assert_eq!(new_reservation.local_addr().unwrap().port(), new_port);
+    drop(new_reservation);
     let manual = manager.start(new_port).await.unwrap();
     assert_eq!(manual.effective_revision, Some(2));
     assert!(manual.address.unwrap().contains(&new_port.to_string()));

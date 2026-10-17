@@ -1,0 +1,49 @@
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+   Compiling tagma-runtime v0.2.0-dev.15 (D:\demo1\tagmaai\crates\tagma-runtime)
+   Compiling tagma-gateway v0.2.0-dev.15 (D:\demo1\tagmaai\crates\tagma-gateway)
+    Finished `test` profile [unoptimized] target(s) in 3.79s
+     Running tests\process_lifecycle.rs (target\debug\deps\process_lifecycle-a0957dcad10e9ee5.exe)
+
+running 14 tests
+test real_old_binary_is_not_stopped_or_migrated_by_new_entrypoint ... ignored, Requires explicitly supplied retained dev.3 executable; no binary download or key access
+test system_token_authenticates_only_data_plane_and_never_appears_in_configuration_files ... ignored, Explicit synthetic OS credential + actual HTTP integration, exact created reference cleaned
+test concurrent_start_has_one_instance_and_one_owner ... ok
+test port_conflict_never_changes_port_or_kills_existing_listener ... ok
+
+thread 'saved_port_change_cannot_be_acknowledged_on_old_port_during_crash_restart' (47516) panicked at crates\tagma-gateway\tests\process_lifecycle.rs:351:5:
+assertion failed: std::net::TcpListener::bind((std::net::Ipv4Addr::LOCALHOST,
+            wrong_port)).is_ok()
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test oversized_private_frame_is_dropped_without_crashing_gateway ... ok
+test saved_port_change_cannot_be_acknowledged_on_old_port_during_crash_restart ... FAILED
+test active_older_version_envelope_is_reported_without_spawn_or_stop ... ok
+test unclean_health_invalidation_failure_prevents_readiness_and_preserves_marker ... ok
+test parent_eof_exits_managed_process_but_standalone_survives ... ok
+test unclean_health_restart_preserves_success_facts_but_requires_new_confirmation ... ok
+test stale_old_version_manifest_does_not_block_start_without_an_active_lock ... ok
+test auth_missing_token_denies_by_default_and_port_changes_require_explicit_restart ... ok
+test managed_ready_apply_reconcile_wrong_owner_and_graceful_stop ... ok
+test managed_crashes_restart_at_most_three_times_then_remain_failed ... ok
+
+failures:
+
+failures:
+    saved_port_change_cannot_be_acknowledged_on_old_port_during_crash_restart
+
+test result: FAILED. 11 passed; 1 failed; 2 ignored; 0 measured; 0 filtered out; finished in 8.31s
+
+error: test failed, to rerun pass `-p tagma-gateway --test process_lifecycle`

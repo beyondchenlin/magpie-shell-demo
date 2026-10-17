@@ -1,0 +1,172 @@
+{
+  "recordedAtUtc": "2026-10-17T19:06:04.589Z",
+  "sourceBase": "69c615f8e3eb694de624de63f6ec5d826d3f36eb",
+  "candidateVersion": "0.2.0-dev.15",
+  "configSchema": 8,
+  "usageSchema": 1,
+  "sources": [
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-runtime\\src\\ipc.rs",
+      "bytes": 13832,
+      "sha256": "785eed5dcac006304d22319e79c5225e4d9b5f73532e7f6c71570fe80450dd80"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-runtime\\src\\manager.rs",
+      "bytes": 16918,
+      "sha256": "235e8ae59004efbaf8cd7ca27a81fcba98af43d54884fce9748bc71c7b3db9e0"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-runtime\\tests\\security_ack.rs",
+      "bytes": 5861,
+      "sha256": "cd7a7609375f7b091165d264eeaea526d1d08e06aa0087a40dba12937983356f"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-gateway\\src\\main.rs",
+      "bytes": 32137,
+      "sha256": "3188a694a33c1848ce844d2eef88bf3808bdd514ed413f6f01884c94419739a6"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-gateway\\tests\\revocation_faults.rs",
+      "bytes": 11902,
+      "sha256": "1fab0eea3445015c7068145126a635ba25548f88deae091218770b36932eeba8"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-gateway\\tests\\process_lifecycle.rs",
+      "bytes": 27746,
+      "sha256": "87f557c725b7bf7116e5d40c8bf2494a7d98d8b9abaec62dab6ce94610980841"
+    }
+  ],
+  "evidence": [
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S14-clippy.txt",
+      "bytes": 1190,
+      "sha256": "d2878c10f6066bc87151e230f15e910e9b16d55c9e07670620414a06dcb6d82d"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S14-gateway-corrected.txt",
+      "bytes": 5430,
+      "sha256": "0f02de790fd535cb57d44047704ccaa5d9021acc87716f4237ca126e639de467"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S14-gateway-related.txt",
+      "bytes": 2747,
+      "sha256": "2703b9b08979645b56aef2eafd6091a164238ecb75eedba2faf20bd11c489aee"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S14-management-acks-after.txt",
+      "bytes": 2306,
+      "sha256": "8e87ddec6ba59cc60a5609799668cc4e2c39fe83604cab5db34c2027ecd16ff9"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S14-revocation-faults-corrected.txt",
+      "bytes": 1735,
+      "sha256": "0a24182160a1d3cce8ed12e20e23029546e3de814c3899df05f936ce2a9c45d3"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S14-revocation-faults-first.txt",
+      "bytes": 1736,
+      "sha256": "8ccec4abbcc4fdaed32f299d78877189da41e03b434c4179931728bf583a2848"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S14-runtime-final.txt",
+      "bytes": 2773,
+      "sha256": "629e354c5514c505ba9c9b0cc3fd7c892dd1ebd72f82d3499c8c925a3f7e71f3"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S14-security-ack-before-source.json",
+      "bytes": 806,
+      "sha256": "a0d330fab6f6e16f86e9196a00de7a90d26ca524705019456979bb37e59adadb"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S14-security-ack-before-test.txt",
+      "bytes": 4493,
+      "sha256": "3ff1718c3aa0075aed1fa3707ba983fc5756f78327b68383777f4b96ad60f305"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S14-security-ack-before.txt",
+      "bytes": 1473,
+      "sha256": "330939ec1c128d59a3e22dc14a9ce1ffaa4f150a50b035739ac4522a1ccc49da"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S14-space-plan.json",
+      "bytes": 598,
+      "sha256": "24be34d1a639f7e3ca5354e360ec089d61cdd1adb150c3a94539f2e51aad2b93"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S14-sup007.txt",
+      "bytes": 1507,
+      "sha256": "f548e308d1620f554f374f4eb638c6b505790cd2ef58b3c77124fae745789af9"
+    }
+  ],
+  "providerGenerationRestartRequiredAndIpcMatrix": {
+    "verified": true,
+    "cases": 4,
+    "oldEffectiveRevision": 5,
+    "desiredRevision": 6,
+    "lostBeforeDeliveryAndAfterProcessing": true,
+    "cancelTrueAndFalse": true,
+    "revokedFinalCallsPerCase": 0,
+    "admittedReviewCallsPerCase": 1,
+    "cancelFalseRetainsHeldBody": true,
+    "managementClientAcknowledged": false,
+    "unavailableStatusClaimsKnownSecurityRevision": false
+  },
+  "securityAck": {
+    "beforeContradictoryErrorAccepted": true,
+    "afterContradictoryErrorAccepted": false,
+    "beforeBaselineBindingsVerified": true,
+    "negativeCases": 10,
+    "positiveCases": 3,
+    "explicitOperationKindAndRequestedRevisionRequired": true,
+    "unrelatedErrorsPreserved": true
+  },
+  "results": {
+    "runtimePassed": 3,
+    "gatewayRelatedPassed": 17,
+    "gatewayRelatedIgnored": 2,
+    "clippy": "passed",
+    "fullGatewayRerun": false
+  },
+  "commands": [
+    "cargo test -p tagma-runtime --locked --offline -- --nocapture",
+    "cargo test -p tagma-gateway --test revocation_faults --test security --test usage --test process_lifecycle --locked --offline -- --nocapture",
+    "cargo test -p tagma-gateway --bin tagma-gateway sup007_confirmed_revoke --locked --offline -- --nocapture",
+    "cargo clippy --workspace --all-targets --locked --offline -- -D warnings"
+  ],
+  "selfReviewRounds": 2,
+  "correctedTestAssumptions": [
+    "apply failure is represented by RuntimeStatus.error, not necessarily Result::Err",
+    "free_port() is not a reservation across await; retain owned listeners until intended handoff"
+  ],
+  "A27FullyAccepted": false,
+  "A27AllFaultMatrixAccepted": false,
+  "A16FullyAccepted": false,
+  "A28FullyAccepted": false,
+  "P1FullyAccepted": false,
+  "desktopControl": false,
+  "uiVerified": false,
+  "userInstallation": "dev.9 unchanged",
+  "realCredentialAccess": false,
+  "realProviderCalls": 0,
+  "userDataMigrated": false,
+  "newWorktrees": 0,
+  "newEnvironments": 0,
+  "retainedNewFixtures": [],
+  "priorRetainedFixtures": "Unchanged; see P1-S12-retention.json",
+  "diskStartGiB": {
+    "D": 11.65,
+    "C": 42.57
+  },
+  "diskEnd": [
+    {
+      "drive": "C",
+      "freeGiB": 42.57
+    },
+    {
+      "drive": "D",
+      "freeGiB": 11.37
+    }
+  ],
+  "diskNote": "Reuse existing target/cache; delta includes concurrent tasks. No net physical release claimed.",
+  "prdSha256": "6e6503391f70e3f2e53347890de6e7c9f7fd93cc393c68f7bba494ac4d67a6d6"
+}

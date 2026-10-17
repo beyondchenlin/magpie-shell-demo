@@ -66,6 +66,11 @@ pub enum Command {
 #[derive(Serialize, Deserialize)]
 #[serde(tag = "kind", rename_all = "snake_case", deny_unknown_fields)]
 pub enum OperationResult {
+    ConfirmSecurity {
+        requested_revision: u32,
+        confirmed: bool,
+        error: Option<AppError>,
+    },
     RecoverUsage {
         confirmed: bool,
         error: Option<AppError>,
@@ -208,6 +213,10 @@ fn current_user_sid() -> io::Result<String> {
 
 pub async fn call(manifest: &Manifest, command: Command) -> AppResult<RuntimeStatus> {
     let recovery = matches!(&command, Command::RecoverUsage);
+    let safety = match &command {
+        Command::ConfirmSecurity { revision } => Some(*revision),
+        _ => None,
+    };
     check_protocol(manifest.protocol_version)?;
     if manifest.product_version != PRODUCT_VERSION || manifest.schema_version != SCHEMA_VERSION {
         return Err(AppError::new(ErrorCode::IncompatibleVersion));
@@ -259,11 +268,53 @@ pub async fn call(manifest: &Manifest, command: Command) -> AppResult<RuntimeSta
                 _ => return Err(AppError::new(ErrorCode::UsageStorageUnavailable)),
             }
         }
+        if let Some(expected) = safety {
+            match &response.operation {
+                Some(OperationResult::ConfirmSecurity {
+                    error: Some(error), ..
+                }) => return Err(error.clone()),
+                Some(OperationResult::ConfirmSecurity {
+                    requested_revision,
+                    confirmed: true,
+                    error: None,
+                }) if *requested_revision == expected => {
+                    validate_confirmed_security(&response.status, &manifest.instance_id, expected)?
+                }
+                _ => return Err(AppError::new(ErrorCode::SecurityStateUnconfirmed)),
+            }
+        }
         Ok(response.status)
     };
     tokio::time::timeout(std::time::Duration::from_secs(2), operation)
         .await
         .map_err(|_| AppError::new(ErrorCode::GatewayUnavailable))?
+}
+pub(crate) fn validate_confirmed_security(
+    status: &RuntimeStatus,
+    instance: &str,
+    revision: u32,
+) -> AppResult<()> {
+    if status.instance_id.as_deref() != Some(instance)
+        || status
+            .security_revision
+            .is_none_or(|current| current < revision)
+        || !matches!(status.state, RuntimeState::Running | RuntimeState::Degraded)
+    {
+        return Err(AppError::new(ErrorCode::SecurityStateUnconfirmed));
+    }
+    if let Some(error) = &status.error
+        && !matches!(
+            error.code,
+            ErrorCode::ConfigApplyFailed
+                | ErrorCode::RestartRequired
+                | ErrorCode::CredentialStoreUnavailable
+                | ErrorCode::MaintenanceInProgress
+                | ErrorCode::UsageStorageUnavailable
+        )
+    {
+        return Err(error.clone());
+    }
+    Ok(())
 }
 pub(crate) fn validate_recovered_usage(status: &RuntimeStatus, instance: &str) -> AppResult<()> {
     if status.instance_id.as_deref() != Some(instance)

@@ -1,0 +1,13 @@
+{
+  "recordedAtUtc": "2026-10-17T18:51:01.4561219Z",
+  "target": "D:\\demo1\\tagmaai\\target",
+  "temporaryRoot": "C:\\Users\\ai\\AppData\\Local\\Temp",
+  "estimatedAdditionalPeakGiB": 0.3,
+  "freeBeforeGiB": {
+    "D": 11.65,
+    "C": 42.57
+  },
+  "scope": "A27 controlled apply failure and IPC lost-before/lost-reply matrix; headless isolated instances only",
+  "reuse": "Existing repository,target and Cargo registry; no new environment/worktree",
+  "cleanup": "Restore owned runtime manifest,stop exact managed sidecar,close proxy/upstream and TempDir even on assertion failure"
+}

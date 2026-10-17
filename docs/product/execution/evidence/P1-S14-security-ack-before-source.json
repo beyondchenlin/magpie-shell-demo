@@ -1,0 +1,26 @@
+{
+  "recordedAtUtc": "2026-10-17T18:53:43.756Z",
+  "head": "69c615f8e3eb694de624de63f6ec5d826d3f36eb",
+  "sources": [
+    {
+      "path": "crates/tagma-runtime/src/ipc.rs",
+      "bytes": 12048,
+      "sha256": "e41d975d0058e9c052be4d4b513f5d7a5f1581921096c9f1e5e88ad5de1ad7d7"
+    },
+    {
+      "path": "crates/tagma-runtime/src/manager.rs",
+      "bytes": 17294,
+      "sha256": "890ba90856de7736288b2d513271bac6f3d50606f71f4fa104c9c2922b4c1b6f"
+    },
+    {
+      "path": "crates/tagma-gateway/src/main.rs",
+      "bytes": 31992,
+      "sha256": "220ef9fe2b1539348f1caddc5996becf17faa591f8552e394751c9caa5943467"
+    },
+    {
+      "path": "crates/tagma-runtime/tests/security_ack.rs",
+      "bytes": 4493,
+      "sha256": "3ff1718c3aa0075aed1fa3707ba983fc5756f78327b68383777f4b96ad60f305"
+    }
+  ]
+}

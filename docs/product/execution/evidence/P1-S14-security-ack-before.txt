@@ -1,0 +1,35 @@
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+   Compiling tagma-runtime v0.2.0-dev.15 (D:\demo1\tagmaai\crates\tagma-runtime)
+    Finished `test` profile [unoptimized] target(s) in 1.03s
+     Running tests\security_ack.rs (target\debug\deps\security_ack-e8686b399d77a331.exe)
+
+running 1 test
+A27 contradictory security error with confirmed revision:manager_accepted=true
+
+thread 'explicit_security_operation_failure_cannot_be_replaced_by_a_newer_snapshot' (30340) panicked at crates\tagma-runtime\tests\security_ack.rs:75:5:
+an explicit safety confirmation error must not become success from snapshot fields
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test explicit_security_operation_failure_cannot_be_replaced_by_a_newer_snapshot ... FAILED
+
+failures:
+
+failures:
+    explicit_security_operation_failure_cannot_be_replaced_by_a_newer_snapshot
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+error: test failed, to rerun pass `-p tagma-runtime --test security_ack`

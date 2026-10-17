@@ -331,9 +331,9 @@ async fn run(
                                     let response=Response{operation:Some(ipc::OperationResult::RecoverUsage{confirmed,error}),protocol_version:PROTOCOL_VERSION,product_version:PRODUCT_VERSION.into(),instance_id:state.manifest.instance_id.clone(),config_id:state.manifest.config_id.clone(),challenge:request.challenge,status};let _=ipc::write_frame(&mut stream,&response).await;return;
                                 },
                                 Command::ConfirmSecurity {revision} => {
-                                    match confirm_security(&state,revision).await {Ok(_)=>{},Err(error)=>{
-                                        let mut status=status_snapshot(&state).await;status.error=Some(error);let response=Response {operation:None,protocol_version:PROTOCOL_VERSION,product_version:PRODUCT_VERSION.into(),instance_id:state.manifest.instance_id.clone(),config_id:state.manifest.config_id.clone(),challenge:request.challenge,status};let _=ipc::write_frame(&mut stream,&response).await;return;
-                                    }}
+                                    let result=confirm_security(&state,revision).await;let confirmed=result.is_ok();let error=result.err();let mut status=status_snapshot(&state).await;
+                                    if let Some(error)=&error{status.error=Some(error.clone());}
+                                    let response=Response{operation:Some(ipc::OperationResult::ConfirmSecurity{requested_revision:revision,confirmed,error}),protocol_version:PROTOCOL_VERSION,product_version:PRODUCT_VERSION.into(),instance_id:state.manifest.instance_id.clone(),config_id:state.manifest.config_id.clone(),challenge:request.challenge,status};let _=ipc::write_frame(&mut stream,&response).await;return;
                                 },
                                 Command::Probe { input } => {
                                     if let Err(error)=catalog::start(&state,input).await {
