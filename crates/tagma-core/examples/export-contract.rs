@@ -33,6 +33,7 @@ fn main() {
         TeamRecord::decl(&cfg),
         TeamPublishIssue::decl(&cfg),
         TeamView::decl(&cfg),
+        PublishedTeamView::decl(&cfg),
         SaveTeam::decl(&cfg),
         SetTeamEnabled::decl(&cfg),
         ConfigView::decl(&cfg),

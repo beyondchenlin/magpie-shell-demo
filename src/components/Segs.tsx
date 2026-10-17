@@ -17,6 +17,7 @@ type Props<T extends string | number | boolean> = {
   dataSort?: string;
   /** Magpie segs id (e.g. ledHeatMetric). */
   id?: string;
+  disabled?: boolean;
 };
 
 /** Magpie segs(): .opt + sliding .thumb (280ms). */
@@ -29,6 +30,7 @@ export function Segs<T extends string | number | boolean>({
   "aria-label": ariaLabel,
   dataSort,
   id,
+  disabled = false,
 }: Props<T>) {
   const kind = items.map((x) => String(x.id)).join("|");
   const setBox = useSegThumb(`${String(value)}:${kind}:${items.map((item) => item.label).join("|")}`);
@@ -49,6 +51,7 @@ export function Segs<T extends string | number | boolean>({
           <button
             key={String(it.id)}
             type="button"
+            disabled={disabled}
             className={`opt${on ? " on" : ""}`}
             aria-pressed={on}
             title={it.title}

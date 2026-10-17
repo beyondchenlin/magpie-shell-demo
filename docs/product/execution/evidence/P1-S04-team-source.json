@@ -1,0 +1,56 @@
+{
+  "recordedAtUtc": "2026-10-17T10:52:20.7100103Z",
+  "sourceBase": "3896db5",
+  "candidateVersion": "0.2.0-dev.10",
+  "schemaVersion": 4,
+  "lastUserInstalledVersion": "0.2.0-dev.9",
+  "computerControl": "Forbidden by explicit user instruction; no desktop actions or native UI tests",
+  "checks": [
+    "TypeScript and Vite production asset build",
+    "oxlint product and Segs without warnings",
+    "workspace all-targets Clippy -D warnings",
+    "generated DTO drift check",
+    "core team integration 6 passed",
+    "six CIS shared stylesheet guards"
+  ],
+  "nativeUiVerified": false,
+  "installedOrOpened": false,
+  "newWorktrees": 0,
+  "newEnvironment": 0,
+  "temporaryData": "Rust tempfile Drop; no copied user data",
+  "limitations": [
+    "Native UI, menu/focus/viewport and visual comparison not run under user prohibition",
+    "Known ts-rs enum deny_unknown_fields macro warning; explicit TS tags and strict Serde tests retained",
+    "D disk below 20 GiB; cached targeted checks only"
+  ],
+  "sources": [
+    {
+      "path": "src/product/TeamsPanel.tsx",
+      "sha256": "a8f0b3d9f8e98ffcbaa67323659f0d75adddf1bf37053b1bc27213df35668a33"
+    },
+    {
+      "path": "src/product/ChatView.tsx",
+      "sha256": "b84f1673bdad837bd73efa46ffc77b0acbd940cc07341a294ee15a5453e7acf5"
+    },
+    {
+      "path": "src/product/ProductApp.tsx",
+      "sha256": "936bf348d715fd12f6347747ec8ad5ea8d25567b5667cf82cdb58a0f02fcdf1e"
+    },
+    {
+      "path": "src/product/ModelPick.tsx",
+      "sha256": "b438e04f139128272044395a1f26ca37131a1decd3373056a535dace97f46ee1"
+    },
+    {
+      "path": "src/components/Segs.tsx",
+      "sha256": "ffdd7b3a1a78370e34e461ed2f1b63f6eec9b20e448ec44680e0a783b67ba329"
+    },
+    {
+      "path": "src-tauri/src/main.rs",
+      "sha256": "b20e81b1e94eae0cdd27799ab0ced59dee062b142e6b6f30b490450bb872dfe7"
+    },
+    {
+      "path": "src-tauri/capabilities/main.json",
+      "sha256": "f4632bb75a481d178d4fd5256217f8c4317c592525df122accd00180a52d45a4"
+    }
+  ]
+}

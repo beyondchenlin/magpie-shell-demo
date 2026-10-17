@@ -125,6 +125,17 @@ pub enum TeamPublishIssue {
 pub struct TeamView {
     pub team: TeamRecord,
     pub publish_issues: Vec<TeamPublishIssue>,
+    pub published: Vec<PublishedTeamView>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, TS)]
+pub struct PublishedTeamView {
+    pub revision: u32,
+    pub public_id: String,
+    pub display_name: String,
+    pub enabled: bool,
+    pub configured_ready: bool,
+    pub issues: Vec<TeamPublishIssue>,
 }
 
 #[derive(Debug, Clone, Deserialize, TS)]

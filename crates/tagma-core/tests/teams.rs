@@ -96,6 +96,9 @@ fn published_ids_pin_recipes_while_drafts_and_availability_change() {
         })
         .unwrap();
     assert_eq!(disabled.teams[0].team.enabled_revisions, vec![2]);
+    assert!(!disabled.teams[0].published[0].enabled);
+    assert!(disabled.teams[0].published[1].enabled);
+    assert!(disabled.teams[0].published[0].configured_ready);
     assert_eq!(disabled.teams[0].team.versions[0], first);
     assert_eq!(
         service.delete_team(command(6, &id)).unwrap_err().code,
@@ -287,6 +290,7 @@ fn sequential_flow_budgets_side_effects_and_fixed_answering_brain_are_checked() 
     replacement.id = Some(p.clone());
     replacement.enabled = false;
     service.save_provider(replacement).unwrap();
+    assert!(!service.view().unwrap().teams[0].published[0].configured_ready);
     assert!(
         service.view().unwrap().teams[0]
             .publish_issues

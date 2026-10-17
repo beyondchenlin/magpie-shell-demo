@@ -268,6 +268,21 @@ impl ConfigService {
                 .map(|team| crate::teams::TeamView {
                     team: team.clone(),
                     publish_issues: team.draft.publish_issues(&snapshot),
+                    published: team
+                        .versions
+                        .iter()
+                        .map(|version| {
+                            let issues = version.recipe.publish_issues(&snapshot);
+                            crate::teams::PublishedTeamView {
+                                revision: version.revision,
+                                public_id: version.public_id.clone(),
+                                display_name: version.recipe.display_name.clone(),
+                                enabled: team.enabled_revisions.contains(&version.revision),
+                                configured_ready: issues.is_empty(),
+                                issues,
+                            }
+                        })
+                        .collect(),
                 })
                 .collect(),
             gateway: GatewayView {

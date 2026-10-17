@@ -33,7 +33,8 @@ export type TeamRecord = { id: string, slug: string, draft: TeamRecipe, versions
  */
 enabled_revisions: Array<number>, };
 export type TeamPublishIssue = "missing_steps" | "unsupported_routing" | "unsupported_brain" | "missing_brain" | "missing_dependency" | "pack_not_available" | "invalid_step_flow" | "invalid_side_effect" | "budget_exceeded";
-export type TeamView = { team: TeamRecord, publish_issues: Array<TeamPublishIssue>, };
+export type TeamView = { team: TeamRecord, publish_issues: Array<TeamPublishIssue>, published: Array<PublishedTeamView>, };
+export type PublishedTeamView = { revision: number, public_id: string, display_name: string, enabled: boolean, configured_ready: boolean, issues: Array<TeamPublishIssue>, };
 export type SaveTeam = { protocol_version: number, expected_revision: number, id: string | null, slug: string, recipe: TeamRecipe, };
 export type SetTeamEnabled = { protocol_version: number, expected_revision: number, id: string, team_revision: number, enabled: boolean, };
 export type ConfigView = { protocol_version: number, schema_version: number, desired_revision: number, providers: Array<Provider>, profiles: Array<AppProfile>, gateway: GatewayView, teams: Array<TeamView>, pending_credential_cleanup: number, };

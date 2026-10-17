@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-set-team-enabled"
+description = "Enables the set_team_enabled command without any pre-configured scope."
+commands.allow = ["set_team_enabled"]
+
+[[permission]]
+identifier = "deny-set-team-enabled"
+description = "Denies the set_team_enabled command without any pre-configured scope."
+commands.deny = ["set_team_enabled"]

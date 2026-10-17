@@ -10,6 +10,15 @@ import { protocolVersion, service } from "./service";
 
 type Turn = { id: string; model: string; prompt: string; reply: string; status: "streaming" | "complete" | "cancelled" | "failed"; error?: string; finishReason?: string };
 const messages: Record<string, [string, string]> = {
+  TEAM_DISABLED:["这个小队版本已停用，请选择其他版本。","This team revision is disabled. Select another revision."],
+  TEAM_DEPENDENCY_UNAVAILABLE:["小队所需的模型配置已失效，请检查小队版本与供应商。","Team model dependencies are unavailable. Check its revision and providers."],
+  TEAM_INTERMEDIATE_EMPTY:["中间步骤没有产生文字，小队已中止，没有继续调用。","An intermediate step returned no text. The team stopped without another call."],
+  TEAM_INTERMEDIATE_TRUNCATED:["中间步骤因长度限制未完成，小队已中止，没有继续调用。","An intermediate step was truncated. The team stopped without another call."],
+  TEAM_INTERMEDIATE_FILTERED:["中间步骤受到内容过滤，小队已中止，没有继续调用。","An intermediate step was filtered. The team stopped without another call."],
+  TEAM_INTERMEDIATE_INCOMPLETE:["中间步骤未确认正常完成，小队已中止。","An intermediate step did not complete normally. The team stopped."],
+  TEAM_INTERMEDIATE_UNHANDLED_CALL:["中间步骤含未处理的调用，小队已中止。","An intermediate step contained an unhandled call. The team stopped."],
+  TEAM_INTERMEDIATE_REFUSED:["中间步骤拒绝回答，小队已中止。","An intermediate step refused to answer. The team stopped."],
+  TEAM_INTERMEDIATE_LIMIT:["中间结果超过大小上限，小队已中止。","An intermediate result exceeded its size limit. The team stopped."],
   MODEL_NOT_FOUND:["模型不在当前运行配置中，请检查供应商。","The model is absent from the running configuration."],
   CONFIG_NOT_APPLIED:["配置尚未生效，请先检查网关。","Apply your saved configuration before sending."],
   UPSTREAM_AUTH_FAILED:["供应商拒绝了凭据，请检查 API Key。","The provider rejected its credential. Check your API key."],
@@ -44,6 +53,7 @@ export function ChatView(props: { view: ApplicationView | null; busy: boolean; l
   const conversation = useRef<HTMLDivElement>(null);
   const modelSources = new Map<string, string>();
   for (const provider of view?.config.providers ?? []) if (provider.enabled) for (const model of provider.models) if (!model.startsWith("tagma/") && !modelSources.has(model)) modelSources.set(model, provider.name);
+  for (const team of view?.config.teams ?? []) for (const version of team.published) if (version.enabled&&version.configured_ready) modelSources.set(version.public_id,version.display_name);
   const model = modelSources.has(selected) ? selected : modelSources.keys().next().value ?? "";
   const applied = view?.runtime.state === "running" && view.runtime.effective_revision === view.config.desired_revision;
   useEffect(() => { mounted.current = true; return () => { mounted.current = false; const request = inFlight.current; if (request) { request.cancel = true; void service.cancelChat(request.id).catch(() => {}); } }; }, []);

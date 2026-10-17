@@ -3,13 +3,14 @@ import { TextBtn } from "../components/TextBtn";
 import { Segs } from "../components/Segs";
 import { PrefRow } from "../components/PrefRow";
 import { LibSwitch } from "../components/LibSwitch";
-import type { ApplicationView, ConfigView, Provider, RuntimeStatus, SaveProvider } from "./contract";
+import type { ApplicationView, ConfigView, Provider, RuntimeStatus, SaveProvider, TeamRecipe } from "./contract";
 import { ProviderForm } from "./ProviderForm";
 import { LanguagePick } from "./LanguagePick";
 import { DiagnosticsPanel } from "./DiagnosticsPanel";
 import { AppProfiles } from "./AppProfiles";
 import { GatewaySettings } from "./GatewaySettings";
 import { ChatView } from "./ChatView";
+import { TeamsPanel } from "./TeamsPanel";
 import { ProductChrome, type ProductPage } from "./ProductChrome";
 import { copy, errorCopy } from "./copy";
 import { applyPreferences, readPreferences, savePreferences, type Preferences, type ProductTheme } from "./preferences";
@@ -17,6 +18,7 @@ import { desktop, protocolVersion, service } from "./service";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 
 type Page = ProductPage;
+function teamUsesProvider(recipe:TeamRecipe,id:string){return (recipe.brain.kind==="explicit"&&recipe.brain.target.provider_id===id)||recipe.steps.some(step=>step.target.kind==="cloud_model"&&step.target.target.provider_id===id);}
 
 export default function ProductApp() {
   const [page, setPage] = useState<Page>("chat");
@@ -28,12 +30,14 @@ export default function ProductApp() {
   const [editor, setEditor] = useState<Provider | "new" | null>(null);
   const [profileEditing, setProfileEditing] = useState(false);
   const [gatewayEditing, setGatewayEditing] = useState(false);
+  const [teamEditing, setTeamEditing] = useState(false);
   const [deleting, setDeleting] = useState<Provider | null>(null);
   const mounted = useRef(true);
   const deleteDialog = useRef<HTMLDialogElement>(null);
   const c = copy(preferences.language);
-  const editing = !!editor || profileEditing || gatewayEditing;
+  const editing = !!editor || profileEditing || gatewayEditing || teamEditing;
   const providerReferences = deleting ? view?.config.profiles.filter(profile => !profile.is_global && profile.provider_ids.includes(deleting.id)) ?? [] : [];
+  const teamReferences = deleting ? view?.config.teams.filter(({team})=>teamUsesProvider(team.draft,deleting.id)||team.versions.some(version=>teamUsesProvider(version.recipe,deleting.id)))??[]:[];
   const refresh = useCallback(async () => {
     if (!desktop) return;
     setBusy(true); setError(null);
@@ -130,7 +134,7 @@ export default function ProductApp() {
         <p className="tagma-footnote">{c.protocolName} · {c.noInference}</p>
         <TextBtn disabled={busy || editing} onClick={() => setPage("gateway")}>{c.gateway}</TextBtn>
       </section>}
-      {page === "market" && <section><h1>{c.market}</h1><div className="list prefs"><PrefRow name={c.reachflow} sub={c.reachflowHint}><span>{c.notInstalled}</span></PrefRow><PrefRow name={c.teams} sub={c.teamsHint}><span>{c.notAvailable}</span></PrefRow></div></section>}
+      {page === "market" && <section><h1>{c.market}</h1><div className="list prefs"><PrefRow name={c.reachflow} sub={c.reachflowHint}><span>{c.notInstalled}</span></PrefRow></div>{view&&<TeamsPanel config={view.config} busy={busy} language={preferences.language} onMutate={mutate} onEditingChange={setTeamEditing}/>}</section>}
       {page === "gateway" && <section><h1>{c.gateway}</h1><div className="list prefs"><PrefRow name={c.gateway} sub={c.runtimeHint}><span>{view ? c[view.runtime.state] : c.unknown}</span></PrefRow><PrefRow name={c.desired}><span>{view?.config.desired_revision ?? c.unknown}</span></PrefRow><PrefRow name={c.effective}><span>{view?.runtime.effective_revision ?? c.unknown}</span></PrefRow>
         {view?.runtime.address && <PrefRow name="URL"><span>{view.runtime.address}</span></PrefRow>}
         {view?.runtime.instance_id && <PrefRow name={view.runtime.owned ? c.owned : c.external}><span className="tagma-instance">{view.runtime.instance_id}</span></PrefRow>}
@@ -143,7 +147,7 @@ export default function ProductApp() {
         <PrefRow name={c.language} wrapVal={false}><LanguagePick label={c.language} value={preferences.language} onChange={language=>changePreferences({...preferences,language})} /></PrefRow>
         <PrefRow name={c.size}><Segs value={preferences.textSize} items={[100, 110, 125, 150].map(n => ({ id: n, label: `${n}%` }))} onChange={id => changePreferences({ ...preferences, textSize: id as Preferences["textSize"] })} /></PrefRow>
         <PrefRow name={c.gateway}><TextBtn onClick={() => setPage("gateway")}>{c.gateway}</TextBtn></PrefRow>
-        <PrefRow name={c.version}><span>{view?.product_version ?? "0.2.0-dev.8"}</span></PrefRow>
+        <PrefRow name={c.version}><span>{view?.product_version ?? c.unknown}</span></PrefRow>
         <PrefRow name={c.schema}><span>{view?.config.schema_version ?? c.unknown}</span></PrefRow>
       </div><DiagnosticsPanel language={preferences.language} /><TextBtn disabled={!desktop || busy} onClick={() => void service.quit().catch(setError)}>{c.quit}</TextBtn></section>}
       <div className="tagma-revision-line"><span>{c.desired}: {view?.config.desired_revision ?? c.unknown} · {c.effective}: {view?.runtime.effective_revision ?? c.unknown}</span></div>
@@ -151,7 +155,8 @@ export default function ProductApp() {
     <dialog ref={deleteDialog} className="tagma-confirm" onCancel={e => { if (busy) e.preventDefault(); else setDeleting(null); }} aria-labelledby="delete-title" aria-describedby="delete-description">
       <h2 id="delete-title">{c.deleteTitle}</h2><p id="delete-description">{deleting?.name} — {c.deleteHint}</p>
       {providerReferences.length > 0 && <div role="status"><h3>{c.referencedBy}</h3><ul>{providerReferences.map(profile => <li key={profile.id}>{profile.name} · {profile.target_app}</li>)}</ul><p>{c.referenceHint}</p></div>}
-      <div className="tagma-actions"><TextBtn autoFocus disabled={busy} onClick={() => setDeleting(null)}>{c.cancel}</TextBtn><TextBtn variant="danger" disabled={providerReferences.length > 0} busy={busy} onClick={async () => { if (deleting && view && await mutate(() => service.remove({ protocol_version: protocolVersion, expected_revision: view.config.desired_revision, id: deleting.id }))) setDeleting(null); }}>{c.confirm}</TextBtn></div>
+      {teamReferences.length>0&&<div role="status"><h3>{c.teams}</h3><ul>{teamReferences.map(({team})=><li key={team.id}>{team.draft.display_name}</li>)}</ul><p>{preferences.language==="zh"?"小队草稿或已发布版本仍引用这个供应商；停用版本不会解除历史引用。":"A team draft or published recipe still references this provider. Disabling a revision retains its historical reference."}</p></div>}
+      <div className="tagma-actions"><TextBtn autoFocus disabled={busy} onClick={() => setDeleting(null)}>{c.cancel}</TextBtn><TextBtn variant="danger" disabled={providerReferences.length > 0||teamReferences.length>0} busy={busy} onClick={async () => { if (deleting && view && await mutate(() => service.remove({ protocol_version: protocolVersion, expected_revision: view.config.desired_revision, id: deleting.id }))) setDeleting(null); }}>{c.confirm}</TextBtn></div>
     </dialog>
   </>;
 }

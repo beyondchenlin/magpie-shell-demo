@@ -101,6 +101,39 @@ async fn save_profile(
 }
 
 #[tauri::command]
+async fn save_team(
+    window: WebviewWindow,
+    app: State<'_, Application>,
+    input: teams::SaveTeam,
+) -> AppResult<ConfigView> {
+    config(&window, &app)?.save_team(input)
+}
+#[tauri::command]
+async fn publish_team(
+    window: WebviewWindow,
+    app: State<'_, Application>,
+    input: RevisionCommand,
+) -> AppResult<ConfigView> {
+    config(&window, &app)?.publish_team(input)
+}
+#[tauri::command]
+async fn set_team_enabled(
+    window: WebviewWindow,
+    app: State<'_, Application>,
+    input: teams::SetTeamEnabled,
+) -> AppResult<ConfigView> {
+    config(&window, &app)?.set_team_enabled(input)
+}
+#[tauri::command]
+async fn delete_team(
+    window: WebviewWindow,
+    app: State<'_, Application>,
+    input: RevisionCommand,
+) -> AppResult<ConfigView> {
+    config(&window, &app)?.delete_team(input)
+}
+
+#[tauri::command]
 async fn delete_profile(
     window: WebviewWindow,
     app: State<'_, Application>,
@@ -444,6 +477,10 @@ fn main() {
             send_chat,
             cancel_chat,
             save_profile,
+            save_team,
+            publish_team,
+            set_team_enabled,
+            delete_team,
             delete_profile,
             save_gateway,
             initialize_gateway_token,
