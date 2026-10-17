@@ -8,6 +8,7 @@ import { ProviderForm } from "./ProviderForm";
 import { SecurityControls } from "./SecurityControls";
 import { ProviderCatalog } from "./ProviderCatalog";
 import { LanguagePick } from "./LanguagePick";
+import { UsagePanel } from "./UsagePanel";
 import { DiagnosticsPanel } from "./DiagnosticsPanel";
 import { AppProfiles } from "./AppProfiles";
 import { GatewaySettings } from "./GatewaySettings";
@@ -141,6 +142,7 @@ export default function ProductApp() {
         <TextBtn disabled={busy || editing} onClick={() => setPage("gateway")}>{c.gateway}</TextBtn>
       </section>}
       {page === "market" && <section><h1>{c.market}</h1><div className="list prefs"><PrefRow name={c.reachflow} sub={c.reachflowHint}><span>{c.notInstalled}</span></PrefRow></div>{view&&<TeamsPanel config={view.config} busy={busy} language={preferences.language} onMutate={mutate} onEditingChange={setTeamEditing}/>}</section>}
+      {page === "usage" && <UsagePanel providers={view?.config.providers ?? []} language={preferences.language} />}
       {page === "gateway" && <section><h1>{c.gateway}</h1><div className="list prefs"><PrefRow name={c.gateway} sub={c.runtimeHint}><span>{view ? c[view.runtime.state] : c.unknown}</span></PrefRow><PrefRow name={c.desired}><span>{view?.config.desired_revision ?? c.unknown}</span></PrefRow><PrefRow name={c.effective}><span>{view?.runtime.effective_revision ?? c.unknown}</span></PrefRow>
         {view?.runtime.address && <PrefRow name="URL"><span>{view.runtime.address}</span></PrefRow>}
         {view?.runtime.instance_id && <PrefRow name={view.runtime.owned ? c.owned : c.external}><span className="tagma-instance">{view.runtime.instance_id}</span></PrefRow>}

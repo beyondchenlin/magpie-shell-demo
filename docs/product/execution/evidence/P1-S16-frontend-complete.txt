@@ -1,0 +1,14 @@
+
+> magpie-shell-demo@0.1.208 build:tagma
+> tsc -b && vite build --config vite.tagma.config.ts
+
+vite v8.3.4 building client environment for production...
+transforming...
+✓ 67 modules transformed.
+rendering chunks...
+computing gzip size...
+dist-tagma/tagma.html                   0.38 kB │ gzip:   0.26 kB
+dist-tagma/assets/tagma-E_da-cab.css  397.83 kB │ gzip:  73.74 kB
+dist-tagma/assets/tagma-PApomj3N.js   352.66 kB │ gzip: 110.54 kB
+
+✓ built in 315ms

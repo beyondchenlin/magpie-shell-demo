@@ -1,0 +1,12 @@
+{
+  "recordedAtUtc": "2026-10-17T19:44:46.198Z",
+  "target": "D:/demo1/tagmaai",
+  "scope": "CIS usage panel source and headless semantics/lifecycle checks; no browser/native UI or installation",
+  "estimatedAdditionalPeakGiB": 0.03,
+  "reuse": "Existing node_modules,TypeScript,Vite output; no Cargo build/new worktree/environment",
+  "cleanup": "No disk fixtures or copied baseline; preserve prior evidence/user installation/rejected cleanup",
+  "freeBeforeGiB": {
+    "C": 42.47,
+    "D": 10.54
+  }
+}

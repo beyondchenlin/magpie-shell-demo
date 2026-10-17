@@ -7,7 +7,7 @@ import type { ApplicationView } from "./contract";
 import type { ProductLanguage } from "./preferences";
 import { copy } from "./copy";
 
-export type ProductPage = "chat" | "providers" | "market" | "gateway" | "settings";
+export type ProductPage = "chat" | "providers" | "market" | "usage" | "gateway" | "settings";
 export function ProductChrome({page,onPage,onRefresh,disabled,view,language}: {
   page:ProductPage;onPage:(page:ProductPage)=>void;onRefresh:()=>void;disabled:boolean;view:ApplicationView|null;language:ProductLanguage;
 }) {
@@ -18,7 +18,7 @@ export function ProductChrome({page,onPage,onRefresh,disabled,view,language}: {
   const thumb=useSegThumb(side?null:page);
   useEffect(()=>{const query=matchMedia("(min-width:1024px)");const change=()=>setWide(query.matches);query.addEventListener("change",change);return()=>query.removeEventListener("change",change);},[]);
   useLayoutEffect(()=>{document.body.classList.toggle("side-nav",side);return()=>document.body.classList.remove("side-nav");},[side]);
-  const items=[{id:"chat" as const,label:c.chat,icon:"agents",group:language==="zh"?"工作":"Work"},{id:"providers" as const,label:c.providers,icon:"providers",group:language==="zh"?"模型":"Models"},{id:"market" as const,label:c.market,icon:"plugins",group:language==="zh"?"扩展":"Extend"}];
+  const items=[{id:"chat" as const,label:c.chat,icon:"agents",group:language==="zh"?"工作":"Work"},{id:"providers" as const,label:c.providers,icon:"providers",group:language==="zh"?"模型":"Models"},{id:"market" as const,label:c.market,icon:"plugins",group:language==="zh"?"扩展":"Extend"},{id:"usage" as const,label:c.usage,icon:"usage",group:language==="zh"?"观测":"Observe"}];
   const navigation=<nav className="seg" id="nav" aria-label="Tagma" ref={side?undefined:thumb}>{items.map(item=><Fragment key={item.id}>{side&&<span className="nav-gl">{item.group}</span>}<button type="button" data-view={item.id} className={page===item.id?"on":""} aria-current={page===item.id?"page":undefined} disabled={disabled} onClick={()=>onPage(item.id)}>{side&&<NavIcon name={item.icon}/>}<span>{item.label}</span></button></Fragment>)}</nav>;
   const settings=<button id="prefs" type="button" className={`icon${page==="settings"?" on":""}`} disabled={disabled} title={c.settings} aria-label={c.settings} aria-current={page==="settings"?"page":undefined} onClick={()=>onPage("settings")}><svg viewBox="0 0 24 24" width={14} height={14} aria-hidden="true"><g fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></g></svg><span className="side-l">{c.settings}</span></button>;
   return <>

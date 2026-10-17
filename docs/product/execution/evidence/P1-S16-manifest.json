@@ -1,0 +1,174 @@
+{
+  "recordedAtUtc": "2026-10-17T19:50:22.009Z",
+  "sourceBase": "26b59ba1c7fabf8adf56a629f4c7181e7653daaf",
+  "candidateVersion": "0.2.0-dev.16",
+  "configSchema": 8,
+  "usageSchema": 1,
+  "source": [
+    {
+      "path": "D:\\demo1\\tagmaai\\src\\product\\UsagePanel.tsx",
+      "bytes": 16184,
+      "sha256": "291b369eb4891bd393474c7e7b98754fb611712dd59207965553114f832cab45"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\src\\product\\usageModel.ts",
+      "bytes": 6344,
+      "sha256": "0d7f75831a9724deb79beb22fb8b554a54f124a6226f4e0e6e19478713e2efdc"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\src\\product\\ProductApp.tsx",
+      "bytes": 16184,
+      "sha256": "f78392ff812dcb2b0705592806dfa182a1a4567dc877490fa77e77f9b78d951a"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\src\\product\\ProductChrome.tsx",
+      "bytes": 5252,
+      "sha256": "3ca340bf81565faca58d37a7bdedb0a936a51621d8d39df1ecfafea06db927dc"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\src\\product\\copy.ts",
+      "bytes": 18703,
+      "sha256": "76c54b1fefddc53c7d1d3b1bcf624bc45b3738174e173e209ae34f8cc55dd219"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\src\\product\\product.css",
+      "bytes": 6231,
+      "sha256": "e9a3e350616af3b72a225d85a248cd9bfe505ce1852a62c9d206b3021e236fb8"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\scripts\\test-tagma-usage-source.mjs",
+      "bytes": 10420,
+      "sha256": "cc1be739394fee0283f042b068be24fdbb0bc9ca38ae9b2ea20ac1bbe550a542"
+    }
+  ],
+  "documents": [
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\EXECUTION-STATUS.md",
+      "bytes": 24512,
+      "sha256": "91090c8e7fc22bbf54883719b13cbb4d8457fa15911ffb791a7b596b01f1cd6d"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\P1-S16-USAGE-UI-SOURCE.md",
+      "bytes": 4506,
+      "sha256": "d41b30f1b019a1e8595500aebf975eac9bcf1729dd03ccf5bb562d11d5cc28be"
+    }
+  ],
+  "prd": {
+    "path": "D:\\demo1\\tagmaai\\docs\\product\\TAGMA-PRD-v0.3.md",
+    "bytes": 50957,
+    "sha256": "6e6503391f70e3f2e53347890de6e7c9f7fd93cc393c68f7bba494ac4d67a6d6"
+  },
+  "evidence": [
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S16-chrome.txt",
+      "bytes": 684,
+      "sha256": "82bd8000994abb3b84abc224896de3f42266c14e663a6548d9c9499276d5dcab"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S16-cis.txt",
+      "bytes": 319,
+      "sha256": "dc7d2807ea1910f39c47cf866c2ddae915169166f9f8ec4e1ef171bb371758b7"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S16-frontend-complete.txt",
+      "bytes": 478,
+      "sha256": "f598049dc42bd293388598c3809ad803d59e12b3596b8f120ab2cec7109c9eef"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S16-frontend-verified.txt",
+      "bytes": 478,
+      "sha256": "ca6b1e14c63ca7904231e5cb1e51363bb4bacd08c365b00e05d8f19d4869960e"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S16-frontend.txt",
+      "bytes": 478,
+      "sha256": "f238557a99036e9b4b865aca07a70d904201b2ecf934a805dee0eeacd160a390"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S16-headless-complete.txt",
+      "bytes": 671,
+      "sha256": "c74edcb1b949369fe9d59b98bc94a6315acb5dce016153060197b71182c87739"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S16-headless-final.txt",
+      "bytes": 671,
+      "sha256": "16844edd0baee4c1361216e94699e448d8cdc2f42e52bc7fed4d091a30833817"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S16-headless-first.txt",
+      "bytes": 673,
+      "sha256": "54cb917e473d012e2ca46eeb7c2a2659d4203b9f13cab4d36ef2dc182fe2d997"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S16-headless-verified.txt",
+      "bytes": 673,
+      "sha256": "a269d5b1845dc8072a3f375eb6f3828e871dd29b1a6fa8b8f619bc76e8264a00"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S16-lint-clean.txt",
+      "bytes": 202,
+      "sha256": "fa7e42d61909f74a452831ab8adc95f81f015b5a388c3d60a1a2c89f32750a91"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S16-lint-complete.txt",
+      "bytes": 202,
+      "sha256": "f87b299c55e473d4b3c2bb84053157bbea3c0a65d347e112b9c96ae834c5664c"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S16-lint-final.txt",
+      "bytes": 202,
+      "sha256": "431e5560a91c09b8842bb3f769056e8791a37d9f065fd85b2aacc4f95194b96e"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S16-lint-verified.txt",
+      "bytes": 776,
+      "sha256": "917f30a92d2e009c7d1b937dc4808d1de0fb9b44eaee75ce49d1b7247ce6835d"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S16-space-plan.json",
+      "bytes": 504,
+      "sha256": "5dac75a8e6e81a0fa194a9c67383f3ac7ca0fd8b36408bba78d41e9f8ee1e7c2"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S16-types-first.txt",
+      "bytes": 228,
+      "sha256": "c9fada6ed2ed5affaceb0a126482177531b68956de6c4dca380dae768b82346b"
+    }
+  ],
+  "checks": {
+    "headlessSource": 6,
+    "typescriptVite": "passed",
+    "lint": "6files116rules0diagnostics",
+    "cis": "six guards passed",
+    "chrome": "passed for frozen original App; no UI claim",
+    "nativeBrowser": "not run"
+  },
+  "scope": {
+    "mocking": "Synthetic DTO/fake API in node source tests only; production service/native unchanged",
+    "realUpstream": 0,
+    "computerControl": false,
+    "installationUnchanged": "dev.9",
+    "physicalWindowDrag": false,
+    "A16": "partial",
+    "A28": "partial",
+    "P1": false
+  },
+  "resources": {
+    "noNewWorktree": true,
+    "noNewEnvironment": true,
+    "noInstaller": true,
+    "noDiskFixtures": true,
+    "freeAfterGiB": [
+      {
+        "name": "C",
+        "freeGiB": 42.464
+      },
+      {
+        "name": "D",
+        "freeGiB": 10.443
+      }
+    ],
+    "retained": "Existing workspace/cache/Vite output/evidence,user data and previous rejected cleanup files",
+    "note": "Concurrent disk changes included; no reclaimed-space claim"
+  }
+}
