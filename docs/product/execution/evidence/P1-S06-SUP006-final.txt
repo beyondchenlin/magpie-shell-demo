@@ -1,0 +1,24 @@
+   Compiling tagma-core v0.2.0-dev.11 (D:\demo1\tagmaai\crates\tagma-core)
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+   Compiling tagma-runtime v0.2.0-dev.11 (D:\demo1\tagmaai\crates\tagma-runtime)
+   Compiling tagma-gateway v0.2.0-dev.11 (D:\demo1\tagmaai\crates\tagma-gateway)
+    Finished `test` profile [unoptimized] target(s) in 3.97s
+     Running unittests src\main.rs (target\debug\deps\tagma_gateway-fdbe8b91e008cfbd.exe)
+
+running 3 tests
+test health::tests::coalescing_preserves_scope_time_and_failure_precedence ... ok
+SUP-006 observed_t0=1000 drain_t=301001 persisted_success=Some(1000) ready=false selected=false
+test health::tests::delayed_health_write_does_not_refresh_an_expired_observation ... ok
+test health::tests::coalesced_observations_are_confirmed_only_after_persistent_write ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 5 filtered out; finished in 0.43s
+

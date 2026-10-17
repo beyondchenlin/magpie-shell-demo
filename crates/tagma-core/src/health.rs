@@ -25,6 +25,21 @@ pub enum HealthFailure {
     RateLimited,
     Protocol,
     Upstream,
+    ObservationUnconfirmed,
+}
+impl HealthFailure {
+    /// Same-millisecond conflicts keep the more definite failure, never a success.
+    pub fn precedence(&self) -> u8 {
+        match self {
+            Self::Authentication => 7,
+            Self::Protocol => 6,
+            Self::Connection => 5,
+            Self::Timeout => 4,
+            Self::RateLimited => 3,
+            Self::Upstream => 2,
+            Self::ObservationUnconfirmed => 1,
+        }
+    }
 }
 #[derive(Debug, Clone, Serialize, Deserialize, TS, PartialEq, Eq)]
 #[serde(rename_all = "snake_case")]
@@ -48,6 +63,14 @@ pub enum HealthObservation {
     CatalogSeen,
     InferenceSucceeded,
     InferenceFailed(HealthFailure),
+}
+impl HealthObservation {
+    pub fn precedence(&self) -> u8 {
+        match self {
+            Self::InferenceFailed(failure) => failure.precedence() + 1,
+            _ => 0,
+        }
+    }
 }
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 #[serde(deny_unknown_fields)]
@@ -81,6 +104,45 @@ pub fn provider_fingerprint(provider: &ProviderRecord) -> String {
     .expect("fixed provider identity serializes");
     format!("{:x}", Sha256::digest(identity))
 }
+
+/// Resolve one text-capable brain in the effective global provider/model order.
+/// Catalog observations alone never qualify; a future timestamp is not fresh.
+pub fn select_first_cloud(
+    snapshot: &ConfigSnapshot,
+    records: &[ModelHealthRecord],
+    now: u64,
+) -> Option<crate::teams::CloudTarget> {
+    let by_model: std::collections::HashMap<_, _> = records
+        .iter()
+        .map(|record| {
+            (
+                (record.provider_id.as_str(), record.model_id.as_str()),
+                record,
+            )
+        })
+        .collect();
+    for provider in &snapshot.providers {
+        if !provider.provider.enabled {
+            continue;
+        }
+        let fingerprint = provider_fingerprint(provider);
+        for model in &provider.provider.models {
+            if model.starts_with("tagma/") {
+                continue;
+            }
+            if by_model
+                .get(&(provider.provider.id.as_str(), model.as_str()))
+                .is_some_and(|record| record.fingerprint == fingerprint && record.is_ready(now))
+            {
+                return Some(crate::teams::CloudTarget {
+                    provider_id: provider.provider.id.clone(),
+                    model_id: model.clone(),
+                });
+            }
+        }
+    }
+    None
+}
 impl ModelHealthRecord {
     pub fn is_ready(&self, now: u64) -> bool {
         self.inference_succeeded_ms.is_some_and(|success| {
@@ -96,10 +158,17 @@ impl ModelHealthRecord {
             time.filter(|time| *time <= now)
                 .map(|time| ((now - time) / 1000).min(u32::MAX.into()) as u32)
         };
-        let inference = if self.inference_failed_ms.is_some_and(|failure| {
+        let failed = self.inference_failed_ms.is_some_and(|failure| {
             self.inference_succeeded_ms
                 .is_none_or(|success| failure >= success)
-        }) {
+        });
+        let inference = if failed && self.failure == Some(HealthFailure::ObservationUnconfirmed) {
+            if self.inference_succeeded_ms.is_some() {
+                InferenceHealth::Stale
+            } else {
+                InferenceHealth::Unknown
+            }
+        } else if failed {
             InferenceHealth::Failed
         } else if self.is_ready(now) {
             InferenceHealth::Ready
@@ -131,19 +200,23 @@ impl ModelHealthRecord {
                 }
                 if self
                     .inference_failed_ms
-                    .is_some_and(|failure| time >= failure)
+                    .is_some_and(|failure| time > failure)
                 {
                     self.inference_failed_ms = None;
                     self.failure = None;
                 }
             }
             HealthObservation::InferenceFailed(failure) => {
-                if self
-                    .inference_failed_ms
-                    .is_none_or(|previous| time >= previous)
-                    && self
-                        .inference_succeeded_ms
-                        .is_none_or(|success| time >= success)
+                if self.inference_failed_ms.is_none_or(|previous| {
+                    time > previous
+                        || (time == previous
+                            && self
+                                .failure
+                                .as_ref()
+                                .is_none_or(|old| failure.precedence() > old.precedence()))
+                }) && self
+                    .inference_succeeded_ms
+                    .is_none_or(|success| time >= success)
                 {
                     self.inference_failed_ms = Some(time);
                     self.failure = Some(failure);
@@ -202,6 +275,70 @@ pub(crate) fn records(
     Ok(result)
 }
 impl ConfigService {
+    /// Preserve old success facts, but make an unconfirmed prior runtime ineligible.
+    /// This is operational metadata, not a configuration revision or a provider failure.
+    pub fn invalidate_unconfirmed_runtime_health(directory: &Path) -> AppResult<()> {
+        let (_lease, mut db) = health_connection(directory, true)?;
+        let tx = db
+            .transaction_with_behavior(TransactionBehavior::Immediate)
+            .map_err(storage)?;
+        let (_, snapshot) = Self::read_db(&tx)?;
+        let current: std::collections::HashMap<_, _> = snapshot
+            .providers
+            .iter()
+            .map(|p| {
+                (
+                    &p.provider.id,
+                    (provider_fingerprint(p), &p.provider.models),
+                )
+            })
+            .collect();
+        let rows = {
+            let mut statement = tx
+                .prepare("SELECT provider_id,model_id,fingerprint,observation FROM model_health")
+                .map_err(storage)?;
+            statement
+                .query_map([], |row| {
+                    Ok((
+                        row.get::<_, String>(0)?,
+                        row.get::<_, String>(1)?,
+                        row.get::<_, String>(2)?,
+                        row.get::<_, String>(3)?,
+                    ))
+                })
+                .map_err(storage)?
+                .collect::<Result<Vec<_>, _>>()
+                .map_err(storage)?
+        };
+        let observed_now = now_ms()?;
+        for (id, model, fingerprint, json) in rows {
+            if !current.get(&id).is_some_and(|(expected, models)| {
+                expected == &fingerprint && models.contains(&model)
+            }) {
+                continue;
+            }
+            if json.len() > 4096 {
+                return Err(AppError::new(ErrorCode::StorageUnavailable));
+            }
+            let mut record: ModelHealthRecord = serde_json::from_str(&json).map_err(storage)?;
+            if record.provider_id != id
+                || record.model_id != model
+                || record.fingerprint != fingerprint
+            {
+                return Err(AppError::new(ErrorCode::StorageUnavailable));
+            }
+            record.observe(
+                HealthObservation::InferenceFailed(HealthFailure::ObservationUnconfirmed),
+                observed_now,
+            );
+            tx.execute(
+                "UPDATE model_health SET observation=?3 WHERE provider_id=?1 AND model_id=?2",
+                params![id, model, serde_json::to_string(&record).map_err(storage)?],
+            )
+            .map_err(storage)?;
+        }
+        tx.commit().map_err(storage)
+    }
     /// Runtime observations do not open/migrate configuration or access the credential store.
     /// A generation that no longer matches the desired provider is ignored, never reassigned.
     pub fn record_runtime_health(
@@ -226,6 +363,25 @@ impl ConfigService {
     ) -> AppResult<Vec<ModelHealthRecord>> {
         let (_lease, db) = health_connection(directory, false)?;
         records(&db, snapshot)
+    }
+    /// Trusted runtime callers supply the time captured when the response was observed.
+    /// No frontend command accepts a caller-provided health timestamp.
+    pub fn record_observed_runtime_health(
+        directory: &Path,
+        provider_id: &str,
+        model_id: &str,
+        fingerprint: &str,
+        observation: HealthObservation,
+        observed_at_ms: u64,
+    ) -> AppResult<bool> {
+        record_at(
+            directory,
+            provider_id,
+            model_id,
+            fingerprint,
+            observation,
+            observed_at_ms,
+        )
     }
 }
 fn health_connection(directory: &Path, write: bool) -> AppResult<(std::fs::File, Connection)> {
@@ -548,5 +704,157 @@ mod tests {
         let json = serde_json::to_string(&view).unwrap();
         assert!(!json.contains("reference"));
         assert!(!json.contains("fingerprint"));
+    }
+
+    #[test]
+    fn first_cloud_uses_both_global_orders_and_rejects_stale_failed_or_replaced_generations() {
+        let make = |name: &str| ProviderRecord {
+            provider: Provider {
+                id: uuid::Uuid::new_v4().to_string(),
+                name: name.into(),
+                protocol: ProviderProtocol::OpenaiChatCompletions,
+                base_url: "https://example.invalid/v1".into(),
+                enabled: true,
+                models: vec!["first".into(), "second".into()],
+                has_credential: false,
+            },
+            credential_ref: None,
+        };
+        let mut snapshot = ConfigSnapshot {
+            providers: vec![make("one"), make("two")],
+            ..Default::default()
+        };
+        let record = |provider: &ProviderRecord, model: &str| ModelHealthRecord {
+            provider_id: provider.provider.id.clone(),
+            model_id: model.into(),
+            fingerprint: provider_fingerprint(provider),
+            inference_succeeded_ms: Some(1000),
+            ..Default::default()
+        };
+        let mut records = vec![
+            record(&snapshot.providers[1], "first"),
+            record(&snapshot.providers[0], "second"),
+            record(&snapshot.providers[0], "first"),
+        ];
+        assert_eq!(
+            select_first_cloud(&snapshot, &records, 1001).unwrap(),
+            crate::teams::CloudTarget {
+                provider_id: snapshot.providers[0].provider.id.clone(),
+                model_id: "first".into()
+            }
+        );
+        snapshot.providers[0].provider.models.reverse();
+        assert_eq!(
+            select_first_cloud(&snapshot, &records, 1001)
+                .unwrap()
+                .model_id,
+            "second"
+        );
+        snapshot.providers.swap(0, 1);
+        assert_eq!(
+            select_first_cloud(&snapshot, &records, 1001)
+                .unwrap()
+                .provider_id,
+            snapshot.providers[0].provider.id
+        );
+        snapshot.providers[0].provider.enabled = false;
+        assert_eq!(
+            select_first_cloud(&snapshot, &records, 1001)
+                .unwrap()
+                .provider_id,
+            snapshot.providers[1].provider.id
+        );
+        snapshot.providers[1].credential_ref = Some("changed-generation".into());
+        assert!(select_first_cloud(&snapshot, &records, 1001).is_none());
+        snapshot.providers[1].credential_ref = None;
+        assert!(select_first_cloud(&snapshot, &records, 1000 + HEALTH_TTL_MS).is_none());
+        assert!(select_first_cloud(&snapshot, &records, 999).is_none());
+        for record in &mut records {
+            record.inference_failed_ms = Some(1001);
+            record.failure = Some(HealthFailure::Authentication);
+        }
+        assert!(select_first_cloud(&snapshot, &records, 1002).is_none());
+        for record in &mut records {
+            record.inference_succeeded_ms = None;
+            record.inference_failed_ms = None;
+            record.catalog_seen_ms = Some(1001);
+        }
+        assert!(select_first_cloud(&snapshot, &records, 1002).is_none());
+    }
+    #[test]
+    fn unconfirmed_shutdown_preserves_success_history_but_requires_new_confirmation() {
+        let temp = tempfile::tempdir().unwrap();
+        let config =
+            ConfigService::open(temp.path(), Arc::new(crate::credentials::SystemCredentials))
+                .unwrap();
+        let p = config.save_provider(provider(0)).unwrap().providers[0].clone();
+        let snapshot = config.read_snapshot().unwrap().1;
+        let fingerprint = provider_fingerprint(&snapshot.providers[0]);
+        ConfigService::record_runtime_health(
+            temp.path(),
+            &p.id,
+            "model",
+            &fingerprint,
+            HealthObservation::InferenceSucceeded,
+        )
+        .unwrap();
+        let before = ConfigService::read_runtime_health(temp.path(), &snapshot).unwrap()[0]
+            .inference_succeeded_ms;
+        ConfigService::invalidate_unconfirmed_runtime_health(temp.path()).unwrap();
+        let view = config.view().unwrap();
+        assert_eq!(view.desired_revision, 1);
+        assert_eq!(view.model_health[0].inference, InferenceHealth::Stale);
+        assert_eq!(
+            view.model_health[0].failure,
+            Some(HealthFailure::ObservationUnconfirmed)
+        );
+        assert_eq!(
+            ConfigService::read_runtime_health(temp.path(), &snapshot).unwrap()[0]
+                .inference_succeeded_ms,
+            before
+        );
+        let failed_at = ConfigService::read_runtime_health(temp.path(), &snapshot).unwrap()[0]
+            .inference_failed_ms
+            .unwrap();
+        record_at(
+            temp.path(),
+            &p.id,
+            "model",
+            &fingerprint,
+            HealthObservation::InferenceSucceeded,
+            failed_at + 1,
+        )
+        .unwrap();
+        assert!(
+            ConfigService::read_runtime_health(temp.path(), &snapshot).unwrap()[0]
+                .is_ready(failed_at + 1)
+        );
+    }
+    #[test]
+    fn same_millisecond_failures_win_in_either_arrival_order() {
+        use HealthObservation::*;
+        let auth = InferenceFailed(HealthFailure::Authentication);
+        let rate = InferenceFailed(HealthFailure::RateLimited);
+        for events in [
+            vec![InferenceSucceeded, auth.clone()],
+            vec![auth.clone(), InferenceSucceeded],
+            vec![rate.clone(), auth.clone(), InferenceSucceeded],
+            vec![InferenceSucceeded, auth, rate],
+        ] {
+            let mut record = ModelHealthRecord::default();
+            for event in events {
+                record.observe(event, 1000);
+            }
+            assert!(!record.is_ready(1000));
+            assert_eq!(record.failure, Some(HealthFailure::Authentication));
+            record.observe(InferenceSucceeded, 999);
+            assert!(!record.is_ready(1000));
+            record.observe(InferenceSucceeded, 1001);
+            assert!(record.is_ready(1001));
+        }
+        let mut record = ModelHealthRecord::default();
+        record.observe(InferenceSucceeded, 2000);
+        record.observe(InferenceFailed(HealthFailure::Authentication), 1999);
+        assert!(record.is_ready(2000));
     }
 }

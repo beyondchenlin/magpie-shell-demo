@@ -16,6 +16,8 @@
 
 ## 当前批次
 
+- SUP-006按先失败后修复完成观测时刻校验：延迟到TTL后落盘不刷新成功时间；同毫秒失败优先、目录/推理分槽。原始before/after/core/final/regression结果保留。纯选择器与未确认退出围栏已验证，first_cloud发布/解析仍未开放；新增两项无窗口异常退出测试通过，禁止电脑控制持续有效。详见[SUP-006](SUP-006-OBSERVATION-TIME.md)及[P1-S07](P1-S07-HEALTH-UNCERTAINTY.md)。
+
 - P1-S06实际网关调用已接健康观测：单worker有界合并写入、世代固定、真实完成才刷新成功、错误及写入未确认分开，取消不刷新。网关6单元/直接HTTP1/小队HTTP1及Clippy通过；first_cloud仍未开放、UI未验、用户安装不变、禁止电脑控制有效。详见[P1-S06](P1-S06-OBSERVED-HEALTH.md)。
 
 - 源码候选dev.11/schema5开始模型健康记录：目录与真实推理分开、严格五分钟过期、身份代次保护、操作记录不改配置修订；核心与健康定向测试通过。尚未接网关观察/目录探测/first_cloud，不能当作自动选脑完成。无用户安装更新或电脑控制；详见[P1-S05](P1-S05-MODEL-HEALTH.md)。

@@ -1,0 +1,32 @@
+   Compiling tagma-core v0.2.0-dev.11 (D:\demo1\tagmaai\crates\tagma-core)
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+   Compiling tagma-runtime v0.2.0-dev.11 (D:\demo1\tagmaai\crates\tagma-runtime)
+   Compiling tagma-gateway v0.2.0-dev.11 (D:\demo1\tagmaai\crates\tagma-gateway)
+    Finished `test` profile [unoptimized] target(s) in 3.79s
+     Running unittests src\main.rs (target\debug\deps\tagma_gateway-fdbe8b91e008cfbd.exe)
+
+running 1 test
+SUP-006 observed_t0=1000 drain_t=301001 persisted_success=Some(301001) ready=true selected=true
+
+thread 'health::tests::delayed_health_write_does_not_refresh_an_expired_observation' (42828) panicked at crates\tagma-gateway\src\health.rs:392:9:
+Queue delay must not restart the five-minute health lifetime
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test health::tests::delayed_health_write_does_not_refresh_an_expired_observation ... FAILED
+
+failures:
+
+failures:
+    health::tests::delayed_health_write_does_not_refresh_an_expired_observation
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 6 filtered out; finished in 0.04s
+
+error: test failed, to rerun pass `-p tagma-gateway --bin tagma-gateway`

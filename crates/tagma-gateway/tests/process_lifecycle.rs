@@ -29,6 +29,106 @@ fn initialize(path: &Path) -> ConfigService {
 }
 
 #[tokio::test]
+async fn unclean_health_restart_preserves_success_facts_but_requires_new_confirmation() {
+    let temp = tempfile::tempdir().unwrap();
+    let config = initialize(temp.path());
+    let provider = config
+        .save_provider(SaveProvider {
+            protocol_version: 1,
+            expected_revision: 0,
+            id: None,
+            name: "health restart fixture".into(),
+            protocol: ProviderProtocol::OpenaiChatCompletions,
+            base_url: "https://example.invalid/v1".into(),
+            enabled: true,
+            models: vec!["model".into()],
+            credential: None,
+        })
+        .unwrap()
+        .providers[0]
+        .clone();
+    let snapshot = config.read_snapshot().unwrap().1;
+    let fingerprint = tagma_core::health::provider_fingerprint(&snapshot.providers[0]);
+    ConfigService::record_runtime_health(
+        temp.path(),
+        &provider.id,
+        "model",
+        &fingerprint,
+        tagma_core::health::HealthObservation::InferenceSucceeded,
+    )
+    .unwrap();
+    let before = ConfigService::read_runtime_health(temp.path(), &snapshot).unwrap()[0]
+        .inference_succeeded_ms;
+    let (mut child, _, _) = raw_start(temp.path(), false).await;
+    child.kill().await.unwrap();
+    child.wait().await.unwrap();
+    assert!(temp.path().join("runtime.json").exists());
+    let next = manager(temp.path());
+    next.start(free_port()).await.unwrap();
+    let after = ConfigService::read_runtime_health(temp.path(), &snapshot).unwrap();
+    assert_eq!(after[0].inference_succeeded_ms, before);
+    assert_eq!(
+        after[0].failure,
+        Some(tagma_core::health::HealthFailure::ObservationUnconfirmed)
+    );
+    assert!(!after[0].is_ready(tagma_core::health::now_ms().unwrap()));
+    assert_eq!(config.view().unwrap().desired_revision, 1);
+    next.stop().await.unwrap();
+}
+
+#[tokio::test]
+async fn unclean_health_invalidation_failure_prevents_readiness_and_preserves_marker() {
+    let temp = tempfile::tempdir().unwrap();
+    let config = initialize(temp.path());
+    let provider = config
+        .save_provider(SaveProvider {
+            protocol_version: 1,
+            expected_revision: 0,
+            id: None,
+            name: "health failure fixture".into(),
+            protocol: ProviderProtocol::OpenaiChatCompletions,
+            base_url: "https://example.invalid/v1".into(),
+            enabled: true,
+            models: vec!["model".into()],
+            credential: None,
+        })
+        .unwrap()
+        .providers[0]
+        .clone();
+    let snapshot = config.read_snapshot().unwrap().1;
+    let fingerprint = tagma_core::health::provider_fingerprint(&snapshot.providers[0]);
+    ConfigService::record_runtime_health(
+        temp.path(),
+        &provider.id,
+        "model",
+        &fingerprint,
+        tagma_core::health::HealthObservation::InferenceSucceeded,
+    )
+    .unwrap();
+    let (mut child, _, _) = raw_start(temp.path(), false).await;
+    child.kill().await.unwrap();
+    child.wait().await.unwrap();
+    let marker = std::fs::read(temp.path().join("runtime.json")).unwrap();
+    let db = rusqlite::Connection::open(temp.path().join("config.sqlite3")).unwrap();
+    db.execute(
+        "UPDATE model_health SET observation='corrupt-owned-fixture'",
+        [],
+    )
+    .unwrap();
+    drop(db);
+    let next = manager(temp.path());
+    assert_eq!(
+        next.start(free_port()).await.unwrap_err().code,
+        ErrorCode::StorageUnavailable
+    );
+    assert_eq!(
+        std::fs::read(temp.path().join("runtime.json")).unwrap(),
+        marker
+    );
+    assert_eq!(config.read_snapshot().unwrap().0, 1);
+}
+
+#[tokio::test]
 #[ignore = "Requires explicitly supplied retained dev.3 executable; no binary download or key access"]
 async fn real_old_binary_is_not_stopped_or_migrated_by_new_entrypoint() {
     let old = std::env::var_os("TAGMA_OLD_GATEWAY").expect("retained dev.3 executable");

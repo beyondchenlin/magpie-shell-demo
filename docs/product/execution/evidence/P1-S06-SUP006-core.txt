@@ -1,0 +1,48 @@
+   Compiling tagma-core v0.2.0-dev.11 (D:\demo1\tagmaai\crates\tagma-core)
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+    Finished `test` profile [unoptimized] target(s) in 3.01s
+     Running unittests src\lib.rs (target\debug\deps\tagma_core-e1f8e94d678be32f.exe)
+
+running 8 tests
+test health::tests::catalog_is_not_inference_and_five_minute_boundary_is_strict ... ok
+test health::tests::same_millisecond_failures_win_in_either_arrival_order ... ok
+test health::tests::credential_generation_changes_fingerprint_without_exposing_the_reference_in_views ... ok
+test health::tests::first_cloud_uses_both_global_orders_and_rejects_stale_failed_or_replaced_generations ... ok
+test health::tests::runtime_health_never_initializes_or_migrates_an_unknown_store ... ok
+test health::tests::runtime_health_is_persistent_generation_bound_and_does_not_change_revisions ... ok
+test health::tests::unconfirmed_shutdown_preserves_success_history_but_requires_new_confirmation ... ok
+test health::tests::model_reorder_and_enable_toggle_preserve_observations_but_removed_models_do_not ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 22 filtered out; finished in 0.15s
+
+     Running tests\config_service.rs (target\debug\deps\config_service-f10c8590b98f5c81.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 13 filtered out; finished in 0.00s
+
+     Running tests\teams.rs (target\debug\deps\teams-1accec84f0f00039.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 6 filtered out; finished in 0.00s
+

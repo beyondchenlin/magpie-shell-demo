@@ -1,0 +1,20 @@
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+   Compiling tagma-gateway v0.2.0-dev.11 (D:\demo1\tagmaai\crates\tagma-gateway)
+    Finished `test` profile [unoptimized] target(s) in 2.25s
+     Running tests\process_lifecycle.rs (target\debug\deps\process_lifecycle-0d0d7d7ad17339ae.exe)
+
+running 2 tests
+test unclean_health_restart_preserves_success_facts_but_requires_new_confirmation ... ok
+test unclean_health_invalidation_failure_prevents_readiness_and_preserves_marker ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 12 filtered out; finished in 0.42s
+

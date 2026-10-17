@@ -155,6 +155,7 @@ async fn run(
     if lock.try_lock_exclusive().is_err() {
         return 10;
     }
+    let previous_runtime_unconfirmed = directory.join("runtime.json").exists();
     let maintenance = match std::fs::OpenOptions::new()
         .read(true)
         .write(true)
@@ -226,6 +227,11 @@ async fn run(
         owned: false,
         error: None,
     };
+    if previous_runtime_unconfirmed
+        && ConfigService::invalidate_unconfirmed_runtime_health(&directory).is_err()
+    {
+        return 15;
+    }
     let health = health::Tracker::new(directory.clone(), shutdown.clone());
     health.reconcile(&snapshot);
     let state = Arc::new(Runtime {
@@ -321,8 +327,16 @@ async fn run(
     }
     shutdown.cancel();
     let _ = tokio::join!(management, synchronizer);
-    // Only remove the manifest while still owning the configuration's gateway lock.
-    let _ = std::fs::remove_file(directory.join("runtime.json"));
+    // Preserve the existing manifest as an uncertainty marker if metadata cannot be
+    // fenced. A future owner already treats an inactive manifest as stale, and must
+    // invalidate its health cache before reusing it for an automatic brain.
+    let settled = state.health.settle(Duration::from_millis(500)).await;
+    let health_fenced = settled
+        && (state.health.confirmed()
+            || ConfigService::invalidate_unconfirmed_runtime_health(&directory).is_ok());
+    if health_fenced {
+        let _ = std::fs::remove_file(directory.join("runtime.json"));
+    }
     0
 }
 
