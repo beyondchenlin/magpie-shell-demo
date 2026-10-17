@@ -1,0 +1,83 @@
+{
+  "recordedAtUtc": "2026-10-17T07:59:05.9883396Z",
+  "request": "Deliver visible actionable workspace without asking user to choose priorities",
+  "manifest": {
+    "purpose": "User-requested retained visible preview",
+    "owner": "User preview; Tagma executor maintains controlled updates",
+    "productVersion": "0.2.0-dev.6",
+    "schemaVersion": 3,
+    "sourceCommit": "c65597235fddf65f98d822c2748784135f451e5e",
+    "buildMode": "debug embedded-assets; unsigned internal preview",
+    "createdUtc": "2026-10-17T07:35:18.0952471Z",
+    "updatedUtc": "2026-10-17T07:58:42.4163977Z",
+    "files": [
+      {
+        "name": "tagma-desktop.exe",
+        "source": "D:\\demo1\\tagmaai\\target\\debug\\tagma-desktop.exe",
+        "destination": "D:\\demo1\\tagmaai-preview\\versions\\0.2.0-dev.6\\tagma-desktop.exe",
+        "bytes": 15908352,
+        "sha256": "cf2e39ecf7143e87849348c1269b0a2205c6f21f40d888e72b320cb0c592e35c"
+      },
+      {
+        "name": "tagma-gateway.exe",
+        "source": "D:\\demo1\\tagmaai\\target\\debug\\tagma-gateway.exe",
+        "destination": "D:\\demo1\\tagmaai-preview\\versions\\0.2.0-dev.6\\tagma-gateway.exe",
+        "bytes": 5265408,
+        "sha256": "82f6413789eda0410e6af79b8974d0d9db30cbf1c7f1e3519e7e2a5819d3e9b0"
+      }
+    ],
+    "launcher": "D:\\demo1\\tagmaai-preview\\Launch-TagmaPreview.vbs",
+    "shortcuts": [
+      "D:\\demo1\\tagmaai-preview\\打开Tagma预览.lnk",
+      "C:\\Users\\ai\\Desktop\\Tagma 最新预览.lnk"
+    ],
+    "priorVersion": "versions\\0.2.0-dev.5",
+    "priorLauncher": "D:\\demo1\\tagmaai-preview\\Launch-TagmaPreview-dev5.vbs",
+    "configDirectory": "D:\\demo1\\tagmaai-preview\\data",
+    "webviewDirectory": "D:\\demo1\\tagmaai-preview\\webview",
+    "retention": "Do not delete, uninstall, close or overwrite while the user is reviewing. Data is persistent user preview data, not a test fixture. Updates must preserve configuration and coordinate the running process."
+  },
+  "window": {
+    "observedText": "接入你的模型，开始组织工作流；开始接入0/3；添加供应商；配置模型ID；本机实时状态；已保存1/运行中1；你的模型清单；真实对话仍待接入",
+    "id": 42017198,
+    "app": "process:D:\\demo1\\tagmaai-preview\\versions\\0.2.0-dev.6\\tagma-desktop.exe",
+    "accessibilityObserved": true,
+    "title": "Tagma"
+  },
+  "processes": [
+    {
+      "ProcessId": 57532,
+      "ParentProcessId": 32492,
+      "Name": "tagma-desktop.exe",
+      "ExecutablePath": "D:\\demo1\\tagmaai-preview\\versions\\0.2.0-dev.6\\tagma-desktop.exe"
+    },
+    {
+      "ProcessId": 45736,
+      "ParentProcessId": 57532,
+      "Name": "tagma-gateway.exe",
+      "ExecutablePath": "D:\\demo1\\tagmaai-preview\\versions\\0.2.0-dev.6\\tagma-gateway.exe"
+    }
+  ],
+  "runtime": {
+    "port": 9168,
+    "productVersion": "0.2.0-dev.6",
+    "schemaVersion": 3,
+    "consoleAttached": false
+  },
+  "copiedLogicalBytes": 21173760.0,
+  "dataPreserved": true,
+  "previousVersionPreserved": true,
+  "notATestFixture": true,
+  "agentIssuedStopOrClose": false,
+  "diskAfter": [
+    {
+      "Name": "C",
+      "freeGiB": 48.84
+    },
+    {
+      "Name": "D",
+      "freeGiB": 24.52
+    }
+  ],
+  "verification": "Actual retained native window read via Sky accessibility. Visual layout evidence comes from separate native WebView fixture, not OS screenshot."
+}

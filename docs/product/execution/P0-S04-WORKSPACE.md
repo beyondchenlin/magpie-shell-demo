@@ -13,3 +13,5 @@
 测试端口override改为明确debug-only开关；release没有manager opt-in方法，CLI开关在release无效。该组使用override的进程fixture明确仅debug编译，不能冒充release安装验收。正式release二进制边界尚未单独实测，仍release_blocked。
 
 用户保留预览dev.5及data/webview从未被测试关闭或清理。dev.6验证后按独立版本目录和共同持久数据受控更新，不覆盖旧二进制。实际入口/运行版本以USER-PREVIEW及保留清单为准；旧dev.5的启动20次数据不当作dev.6重测结果。
+
+交付：2026-10-17 15:58稳定启动器/根快捷方式更新至dev.6，新增桌面“Tagma 最新预览”。更新前只读确认旧预览无进程，未停止用户进程；新两EXE逐个hash与构建一致，旧dev.5保留。真实打开后Sky确认首页工作台标题/功能入口/实时修订，实际runtime确认dev.6/schema3/9168/无附着控制台，见P0-S04-retained-preview-dev6.json。真实推理尚未接入，不将界面交付当作A09或完整A22通过。

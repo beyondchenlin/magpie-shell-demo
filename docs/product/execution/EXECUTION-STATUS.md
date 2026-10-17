@@ -4,12 +4,12 @@
 
 ## 用户保留预览（禁止按测试清理）
 
-2026-10-17已实际打开dev.5可见原生Tagma，已保存1/运行中1。入口[D:\demo1\tagmaai-preview\打开Tagma预览.lnk](D:/demo1/tagmaai-preview/打开Tagma预览.lnk)，桌面“Tagma dev.5 预览”；独立持久data/webview，不是fixture。运行EXE从36001a5已验构建复制后hash核对，无控制台。不要关闭/卸载/覆盖这个预览来解构建锁或执行测试清理；更新先协调并保留配置。完整保护约定见[USER-PREVIEW](USER-PREVIEW.md)，evidence/P0-S04-retained-preview.json记录实际窗口及版本。
+2026-10-17 15:58已实际打开dev.6可见接入工作台，已保存1/运行中1。入口[D:\demo1\tagmaai-preview\打开Tagma预览.lnk](D:/demo1/tagmaai-preview/打开Tagma预览.lnk)，桌面“Tagma 最新预览”；独立持久data/webview，不是fixture。运行EXE从c655972已验构建复制后hash核对，网关无附着控制台。更新前确认旧预览已退出，本执行器未关闭；旧dev.5及配置保留。不要关闭/卸载/覆盖这个预览来解构建锁或执行测试清理。完整保护约定见[USER-PREVIEW](USER-PREVIEW.md)，evidence/P0-S04-retained-preview-dev6.json记录实际窗口及版本，旧证据留存。
 
 ## 当前批次
 
 - 日期：2026-10-17（Asia/Shanghai）；P0-S04按用户最新反馈优先交付可见接入工作台，随后真实基础对话，再小队/ReachFlow；不再问用户排优先级，不以后台测试代替界面交付。P0整体及发行门槛仍未通过。
-- 源码起点03643407ed214f7e4d2a3804423028ee496b9a4a；S01提交7f5c5fb，S02提交6b24b95，恢复7cfb5a5，迁移6e618ef，档案c6c485a；当前codex/tagma-p0 S03 dirty+保留继承dirty。最终当前候选dev.5、IPC1/schema3，原生嵌入构建通过；安装包仍为历史dev.3证据，未冒充dev.5验收。
+- 源码起点03643407ed214f7e4d2a3804423028ee496b9a4a；S01提交7f5c5fb，S02提交6b24b95，恢复7cfb5a5，迁移6e618ef，档案c6c485a，网关36001a5，工作台c655972；当前codex/tagma-p0保留继承dirty。最终当前候选dev.6、IPC1/schema3，原生嵌入构建通过；安装包仍为历史dev.3证据，未冒充dev.6验收。
 - 启动盘点时仅有Electron/React mock；现已新增Tauri宿主、Rust核心/独立网关。继续复用npm/node_modules、Cargo registry、MSVC、Rust1.98.1、WebView2 155.0.4283.60，未重复安装环境。
 - 已实现：Tauri原生三页、受限异步IPC、共享Rust配置服务、SQLite乐观事务、系统凭据/journal恢复、单源生成DTO。详细边界与两遍自查见 [S01交接](P0-S01-HANDOFF.md)。
 - 已验证：S01历史6项故障集成/OS凭据1项/原生7项；S02新增安装后16项、最新进程8项、并发apply4项、初始化/诊断5项、OS凭据真实进程恢复。构建/DTO/lint和保留CIS guard通过；无完整A用例通过声明。
@@ -19,8 +19,8 @@
 - AppProfile切片：全局默认/自定义引用、跟随或独立序、过期编辑、供应商引用删除保护已接入Rust及原生UI。配置integration8通过，纠正后的原生8项通过，effective8确认；首轮驱动误点关闭dialog的同名取消，保留但不作为UI通过证据。详见[App档案记录](P0-S03-APP-PROFILES.md)。
 - 网关设置切片：持久端口/显式兼容鉴权、默认系统令牌与显示/隐藏、401数据鉴权已接入；schema3保护新增合同。最终核心16/配置10/网关单元4/进程9、指定系统令牌HTTP1、真实旧schema1/2二进制、原生网关10/主路径16通过；源/构建hash见evidence/P0-S03-gateway-settings-dev5.json。详见[网关设置记录](P0-S03-GATEWAY-SETTINGS.md)。轮换/持久撤销及真实推理未实施，不宣称A11通过。
 - 网关设置提交36001a5；S04已做20次原生进程冷启动，Windows debug交互p95 1033.31ms/网关987.12ms，3秒本地预算满足；OS/磁盘缓存未清空，不冒充正式包/macOS结果，详见[启动测量](P0-S04-STARTUP.md)。用户查看预览期间，不抢焦点运行额外原生UI测试。
-- 最新dev.6/schema3：首页已改成可操作的接入工作台，真实模型清单/三步进度/状态/直接表单；原生8项、进程10项、构建/Clippy/lint/CIS通过。界面“已生效”提示与端口崩溃重启误确认边界一并修正，详见[工作台交付](P0-S04-WORKSPACE.md)。用户dev.5预览仍独立保留，更新入口不覆盖其持久数据。
-- 下一步：先更新可见工作台预览，再打通一条经本机网关的真实基础对话（选模型/发送/流式/停止/错误）。先用可控本地上游验证，不扫描其他应用密钥、不擅自发生付费真实调用；真实服务和平台发行仍按原授权与门槛验证。P0余项继续记录，不因界面改版宣称全通过。
+- 最新dev.6/schema3：首页已改成可操作的接入工作台，真实模型清单/三步进度/状态/直接表单；原生8项、进程10项、构建/Clippy/lint/CIS通过。界面“已生效”提示与端口崩溃重启误确认边界一并修正，详见[工作台交付](P0-S04-WORKSPACE.md)。已更新稳定预览入口并核对实际dev.6窗口；dev.5二进制和共同持久数据保留。
+- 下一步：打通一条经本机网关的真实基础对话（选模型/发送/流式/停止/错误）。先用可控本地上游验证，不扫描其他应用密钥、不擅自发生付费真实调用；真实服务和平台发行仍按原授权与门槛验证。P0余项继续记录，不因界面改版宣称全通过。
 - 外部依赖：macOS/Linux 目标环境、发行签名、已授权真实上游及预算、ReachFlow 发行与服务授权。当前可独立实施的 P0 工作不依赖它们。
 - release_blocked：是；Windows内部debug NSIS安装/升级/卸载已验证；正式签名、干净无开发环境机器、macOS/Linux及完整P0门槛仍未通过。
 
@@ -66,7 +66,7 @@
 | A19 | PACK-05/06 DATA-02 | P2 未开始 |
 | A20 | PACK-05/07 | P2 未开始 |
 | A21 | ENTRY-01/02 | P3 未开始 |
-| A22 | CHAT-01/02 | P0 未接入态待实现；真实对话待独立切片；Pi 后续 |
+| A22 | CHAT-01/02 | P0真实未接入态/供应商引导及原生工作台8项已验证；真实对话待独立切片；Pi 后续 |
 | A23 | DATA-04 REL-01/02/03/04 | Windows debug NSIS安装/升级/卸载保留配置通过；迁移/正式签名/macOS/Linux待验 |
 | A24 | NFR-02/03/04 | 设备登记后测量，未验证 |
 | A25 | REL-05 NFR-05 | 有界日志/诊断/新finally清理通过；旧六合成目录批量清理被自动审批拒绝，已留账 |
