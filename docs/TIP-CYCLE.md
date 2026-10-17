@@ -1,7 +1,9 @@
 # Tip cycle · 循环检测（consume 前必过）
 
+2026-10-16：设计/交互唯一规则入口为 [CIS-CONTROLS](CIS-CONTROLS.md) R01–R25，监督19:43消息已批准028dab5规格冻结。本页只管交付流程，旧CIS/Appearance说明/历史nest不作为并列设计标准。当前候选身份、证据与门禁见 [EXECUTION-STATUS](cis/EXECUTION-STATUS.md)。
+
 **目的：** 每个 tip 只能 **改进 nest 切片**，不能 silently 冲掉壳 chrome。  
-金标（CIS / SHELL-APPEARANCE-LOGIC + Magpie 开源）：**桌面默认 = Windows Magpie**（系统标题栏 + `html.win` Segoe；页内无 brand/winclose）+ **顶栏 tabs**（`SIDE_AT=1024` 以下）；宽窗 / 用户强制才侧栏。Web 框 **752×652** 对齐 nest responsive，不是把侧栏硬塞进窄窗。不以 Linux nest 截图当 Win 外观金标。
+金标（CIS / SHELL-APPEARANCE-LOGIC + Magpie 开源）：**桌面默认 = Windows Magpie**（系统标题栏 + `html.win` Segoe；页内无 brand/winclose）+ **顶栏 tabs**（`SIDE_AT=1024` 以下）；宽窗 / 用户强制才侧栏。Web 紧凑框 **752×652** 对齐 nest responsive，宽视口框最大 **1100×720**；两者按视口选择，折叠导航不改变窗口尺寸。不以 Linux nest 截图当 Win 外观金标。
 
 **反面教材：**
 - **v0.1.91** 把 Web `#root` 锁到 752×652（对齐 nest，**故意**）；窄/中宽仍顶栏 = 金标。
@@ -30,7 +32,7 @@
 |------|------|----------|
 | `SIDE_AT`（金标 **1024**） | 不动 | nest NOTES 明文要求 native 断点 |
 | `wantSide` / 顶栏↔侧栏门槛 | 不动 | 修复**已证明**的回归，且 changelog 写 CAUSE；**禁止**为「Vercel 看起来要侧栏」降门槛 |
-| Web `#root` 752×652 框 | 不动 | nest responsive NOTES 明文改尺寸 |
+| Web `#root` 窗口尺寸契约 | 不动 | 用户 2026-10-16 明确要求 1:1：折叠时保持窗口大小；752×652 / 1100×720 只由视口选择，禁止由 `.side-nav` 选择 |
 | 侧栏 / 顶栏 `.on`（白卡 + `seg-edge`） | 不动 | 同上 |
 | Routing / Agents / … 页内 | 可改 | 限本 tip nest 切片 |
 
@@ -52,12 +54,19 @@ npm run chrome-guard
 - [ ] 侧栏开关（`#sideToggle` / `magpie.navLayout`）仍可用
 - [ ] 本 tip **没有**改无关页的壳 chrome
 
-### 4. Ship
+### 4. PR → 临时预览 → 查看验收
 
 1. `npm run chrome-guard`
-2. Bump `package.json`；`ACCEPTANCE.md` 顶条；`docs/TIP-CHANGELOG.md`；`docs/last-cycle.md`
-3. Commit：`v0.1.xx: <slice> (no portable)` 或 chrome 修复说明
-4. `git push origin main`（**不要**打 portable，除非用户明文要求）
+   同时运行 `npm run cis-guard`，校验六份基础样式与固定参考提交一致；兼容层变化另做浏览器回归。
+2. UI tip 更新 `package.json`、`ACCEPTANCE.md` 顶条、`docs/TIP-CHANGELOG.md`、`docs/last-cycle.md`；纯流程文档修改不虚增 UI 版本。
+3. Commit：`v0.1.xx: <slice> (no portable)` 或对应文档修正说明。
+4. 推送当前 tip 分支：`git push origin tip/0.1.121-cis-appearance-shell`，更新 [PR #1](https://github.com/beyondchenlin/magpie-shell-demo/pull/1) 的标题、范围与验证结果。后续若换 PR，以经确认的工作分支为准；不要直接推送或合并 `main`。
+5. PR 更新后，同步该分支的临时预览；记录预览 URL、对应 commit SHA、UI 版本和检查结果。优先沿用已有分支预览；本机预览须注明仅本机可访问。
+6. 打开预览查看受影响的切片与上述 chrome 清单。构建失败、部署限额或预览需登录时，明确说明实际状态；不得把旧预览称为当前版本。
+
+**当前范围（2026-10-16 用户确认）：** 继续 Magpie 复刻，沉淀自有 CIS 与可复用组件，再开展其他产品功能。Appearance 交互金标沿用用户 Mac；没有新证据不编造点录。
+
+**发布边界：** 仅更新工作分支与临时预览；不擅自发布生产环境、不强推 Vercel，不打 portable / exe。已有云预览不可用时，先提供标明版本的本机预览，不用升级套餐或反复部署绕过限额。
 
 ---
 
@@ -69,5 +78,5 @@ npm run chrome-guard
 2. `wantSide` 只用 `SIDE_AT`
 3. App 仍渲染 `aside.sidebar` / `#side`
 4. `app.css` 仍有 `body.side-nav … .on` + `seg-edge` / `--card`
-5. `shell-patch`：非 side-nav 时 `#root` 仍有 **752** 框；`@media (min-width: 1024px)` 才扩 side-nav 卡
+5. `shell-patch`：紧凑 `#root` 仍有 **752** 框；`@media (min-width: 1024px)` 才扩宽窗；`.side-nav #root` 不得覆盖宽高。浏览器还须验证折叠前后外框与标题栏矩形不变。
 6. Web `#root` 宽高必须对 `--zoom` 敏感（`calc((100vw|vh - …) / var(--zoom, …))`），禁止再用裸 `100vw` 把 110% 卡撑出视口

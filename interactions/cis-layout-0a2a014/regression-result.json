@@ -1,0 +1,110 @@
+{
+  "source": "0a2a014ff881e37a636d05605849f246485888ff",
+  "scope": "affected N1/N2 geometry regression only, not another N3 motion acceptance",
+  "toggles": 12,
+  "pages": [
+    "agents",
+    "providers",
+    "routing",
+    "gateway",
+    "usage",
+    "plugins"
+  ],
+  "failures": [],
+  "N4": {
+    "source": "874268b83c40d3b1a621b152d54aeaed51732334",
+    "cases": [
+      {
+        "case": "default-900",
+        "viewport": [
+          900,
+          941
+        ],
+        "side": "false",
+        "zoom": "1.1",
+        "initialPreference": null
+      },
+      {
+        "case": "default-1023",
+        "viewport": [
+          1023,
+          941
+        ],
+        "side": "false",
+        "zoom": "1.1",
+        "initialPreference": null
+      },
+      {
+        "case": "default-1024",
+        "viewport": [
+          1024,
+          941
+        ],
+        "side": "true",
+        "zoom": "1.1",
+        "initialPreference": null
+      },
+      {
+        "case": "default-1364",
+        "viewport": [
+          1364,
+          941
+        ],
+        "side": "true",
+        "zoom": "1.1",
+        "initialPreference": null
+      },
+      {
+        "case": "explicit-top-fresh-document",
+        "viewport": [
+          1280,
+          720
+        ],
+        "side": "false",
+        "zoom": "1.1",
+        "initialPreference": "top"
+      },
+      {
+        "case": "preflight-side-fresh-document-default-1280",
+        "viewport": [
+          1280,
+          720
+        ],
+        "side": "true",
+        "zoom": "1.1",
+        "initialPreference": "side"
+      },
+      {
+        "case": "phone-390-explicit-side-suppressed",
+        "viewport": [
+          390,
+          844
+        ],
+        "side": "false",
+        "zoom": "1",
+        "initialPreference": null
+      },
+      {
+        "case": "return-wide-restores-explicit-side",
+        "viewport": [
+          1364,
+          941
+        ],
+        "side": "true",
+        "zoom": "1.1",
+        "initialPreference": null
+      },
+      {
+        "case": "explicit-side-cold-document-900",
+        "viewport": [
+          900,
+          941
+        ],
+        "side": "true",
+        "zoom": "1.1",
+        "initialPreference": "side"
+      }
+    ],
+    "reuse": "App/styles unchanged from 874268b; nav shared hook affected branch additionally checked above and phone wrap targeted separately"
+  }
+}

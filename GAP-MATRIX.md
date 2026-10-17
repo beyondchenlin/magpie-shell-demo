@@ -148,7 +148,7 @@
 - Chip Import Claude / file sheets from Magpie source + native NOTES **20–24** (Fetch models 54+ not on disk yet → PARTIAL wait).
 - **Import from other apps (20–21):** paths `~/.config/alma/chat_threads.db` · `~/.cc-switch/cc-switch.db` · `~/.claude/settings.json` · `~/.codex/config.toml`; tabs all **Not found on this computer** / count `–` / Import disabled; copy via `t()`; Import… tooltip **Bring over providers set up in other apps**.
 - **Claude risk → Import (22–23):** already Magpie `importSay` + risk note; Escape does **not** dismiss import sheet (Cancel only).
-- **Choose files GTK (24):** Select Files title; sidebar Recent · Home · Desktop · settings · + Other Locations; empty folder; Cancel / Open disabled; demo sample link only (no real file). Magpie itself uses OS `<input type=file>`.
+- **Choose files (24) · v0.1.156:** invent GTK Select Files sheet dropped. Magpie gold: OS `<input type=file multiple accept=.json,.txt,…>` on Choose files… (app.js L12425–12445); Sync import `.magpie-backup` input (L21668–21674). Demo reads picked files into signing.files / fname.
 - Still mock: true file read / Import persist / OAuth. Allowances quota **N/A**. Skip Vercel 402. **FETCH_MODELS:** waiting native providers/54+.
 
 ## v0.1.53 DETECT_APIS_DONE

@@ -1,0 +1,822 @@
+[
+  {
+    "case": "OpenAI-PowerShell-windows",
+    "copy": {
+      "insidePre": false,
+      "parent": "snip-wrap",
+      "rect": {
+        "bottom": 501.53125,
+        "height": 24.1875,
+        "left": 1210.234375,
+        "right": 1234.421875,
+        "top": 477.34375,
+        "width": 24.1875,
+        "x": 1210.234375,
+        "y": 477.34375
+      }
+    },
+    "offered": [
+      "PowerShell",
+      "curl",
+      "Python",
+      "Node",
+      "Windows",
+      "macOS · Linux"
+    ],
+    "osVisible": true,
+    "pre": {
+      "clientWidth": 727,
+      "overflowX": "auto",
+      "rect": {
+        "bottom": 539.0625,
+        "height": 68.3125,
+        "left": 439.75,
+        "right": 1241.015625,
+        "top": 470.75,
+        "width": 801.265625,
+        "x": 439.75,
+        "y": 470.75
+      },
+      "scrollLeft": 0,
+      "scrollWidth": 727,
+      "whiteSpace": "pre"
+    },
+    "root": {
+      "bottom": 816,
+      "height": 792,
+      "left": 77,
+      "right": 1287,
+      "top": 24,
+      "width": 1210,
+      "x": 77,
+      "y": 24
+    },
+    "selected": [
+      "OpenAI",
+      "PowerShell",
+      "Windows"
+    ],
+    "snippet": "$env:OPENAI_BASE_URL=\"http://127.0.0.1:3425/v1\"\n$env:OPENAI_API_KEY=\"magpie\"",
+    "source": "874268b83c40d3b1a621b152d54aeaed51732334",
+    "viewport": [
+      1364,
+      941
+    ],
+    "zoom": "1.1"
+  },
+  {
+    "case": "OpenAI-PowerShell-unix",
+    "copy": {
+      "insidePre": false,
+      "parent": "snip-wrap",
+      "rect": {
+        "bottom": 501.53125,
+        "height": 24.1875,
+        "left": 1210.234375,
+        "right": 1234.421875,
+        "top": 477.34375,
+        "width": 24.1875,
+        "x": 1210.234375,
+        "y": 477.34375
+      }
+    },
+    "offered": [
+      "Shell",
+      "curl",
+      "Python",
+      "Node",
+      "Windows",
+      "macOS · Linux"
+    ],
+    "osVisible": true,
+    "pre": {
+      "clientWidth": 727,
+      "overflowX": "auto",
+      "rect": {
+        "bottom": 539.0625,
+        "height": 68.3125,
+        "left": 439.75,
+        "right": 1241.015625,
+        "top": 470.75,
+        "width": 801.265625,
+        "x": 439.75,
+        "y": 470.75
+      },
+      "scrollLeft": 0,
+      "scrollWidth": 727,
+      "whiteSpace": "pre"
+    },
+    "root": {
+      "bottom": 816,
+      "height": 792,
+      "left": 77,
+      "right": 1287,
+      "top": 24,
+      "width": 1210,
+      "x": 77,
+      "y": 24
+    },
+    "selected": [
+      "OpenAI",
+      "Shell",
+      "macOS · Linux"
+    ],
+    "snippet": "export OPENAI_BASE_URL=http://127.0.0.1:3425/v1\nexport OPENAI_API_KEY=magpie",
+    "source": "874268b83c40d3b1a621b152d54aeaed51732334",
+    "viewport": [
+      1364,
+      941
+    ],
+    "zoom": "1.1"
+  },
+  {
+    "case": "OpenAI-curl-windows",
+    "copy": {
+      "insidePre": false,
+      "parent": "snip-wrap",
+      "rect": {
+        "bottom": 501.53125,
+        "height": 24.1875,
+        "left": 1210.234375,
+        "right": 1234.421875,
+        "top": 477.34375,
+        "width": 24.1875,
+        "x": 1210.234375,
+        "y": 477.34375
+      }
+    },
+    "offered": [
+      "PowerShell",
+      "curl",
+      "Python",
+      "Node",
+      "Windows",
+      "macOS · Linux"
+    ],
+    "osVisible": true,
+    "pre": {
+      "clientWidth": 727,
+      "overflowX": "auto",
+      "rect": {
+        "bottom": 649.84375,
+        "height": 179.09375,
+        "left": 439.75,
+        "right": 1241.015625,
+        "top": 470.75,
+        "width": 801.265625,
+        "x": 439.75,
+        "y": 470.75
+      },
+      "scrollLeft": 0,
+      "scrollWidth": 727,
+      "whiteSpace": "pre"
+    },
+    "root": {
+      "bottom": 816,
+      "height": 792,
+      "left": 77,
+      "right": 1287,
+      "top": 24,
+      "width": 1210,
+      "x": 77,
+      "y": 24
+    },
+    "selected": [
+      "OpenAI",
+      "curl",
+      "Windows"
+    ],
+    "snippet": "@'\n{\"model\": \"provider/model\",\n \"messages\": [{\"role\": \"user\", \"content\": \"hi\"}]}\n'@ | curl.exe http://127.0.0.1:3425/v1/chat/completions `\n  -H \"Authorization: Bearer magpie\" `\n  -H \"Content-Type: application/json\" `\n  --data-binary \"@-\"",
+    "source": "874268b83c40d3b1a621b152d54aeaed51732334",
+    "viewport": [
+      1364,
+      941
+    ],
+    "zoom": "1.1"
+  },
+  {
+    "case": "OpenAI-curl-unix",
+    "copy": {
+      "insidePre": false,
+      "parent": "snip-wrap",
+      "rect": {
+        "bottom": 501.53125,
+        "height": 24.1875,
+        "left": 1210.234375,
+        "right": 1234.421875,
+        "top": 477.34375,
+        "width": 24.1875,
+        "x": 1210.234375,
+        "y": 477.34375
+      }
+    },
+    "offered": [
+      "Shell",
+      "curl",
+      "Python",
+      "Node",
+      "Windows",
+      "macOS · Linux"
+    ],
+    "osVisible": true,
+    "pre": {
+      "clientWidth": 727,
+      "overflowX": "auto",
+      "rect": {
+        "bottom": 605.53125,
+        "height": 134.78125,
+        "left": 439.75,
+        "right": 1241.015625,
+        "top": 470.75,
+        "width": 801.265625,
+        "x": 439.75,
+        "y": 470.75
+      },
+      "scrollLeft": 0,
+      "scrollWidth": 727,
+      "whiteSpace": "pre"
+    },
+    "root": {
+      "bottom": 816,
+      "height": 792,
+      "left": 77,
+      "right": 1287,
+      "top": 24,
+      "width": 1210,
+      "x": 77,
+      "y": 24
+    },
+    "selected": [
+      "OpenAI",
+      "curl",
+      "macOS · Linux"
+    ],
+    "snippet": "curl http://127.0.0.1:3425/v1/chat/completions \\\n  -H \"Authorization: Bearer magpie\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"model\": \"provider/model\",\n       \"messages\": [{\"role\": \"user\", \"content\": \"hi\"}]}'",
+    "source": "874268b83c40d3b1a621b152d54aeaed51732334",
+    "viewport": [
+      1364,
+      941
+    ],
+    "zoom": "1.1"
+  },
+  {
+    "case": "OpenAI-Python-windows",
+    "copy": {
+      "insidePre": false,
+      "parent": "snip-wrap",
+      "rect": {
+        "bottom": 501.53125,
+        "height": 24.1875,
+        "left": 1210.234375,
+        "right": 1234.421875,
+        "top": 477.34375,
+        "width": 24.1875,
+        "x": 1210.234375,
+        "y": 477.34375
+      }
+    },
+    "offered": [
+      "PowerShell",
+      "curl",
+      "Python",
+      "Node"
+    ],
+    "osVisible": false,
+    "pre": {
+      "clientWidth": 727,
+      "overflowX": "auto",
+      "rect": {
+        "bottom": 672,
+        "height": 201.25,
+        "left": 439.75,
+        "right": 1241.015625,
+        "top": 470.75,
+        "width": 801.265625,
+        "x": 439.75,
+        "y": 470.75
+      },
+      "scrollLeft": 0,
+      "scrollWidth": 727,
+      "whiteSpace": "pre"
+    },
+    "root": {
+      "bottom": 816,
+      "height": 792,
+      "left": 77,
+      "right": 1287,
+      "top": 24,
+      "width": 1210,
+      "x": 77,
+      "y": 24
+    },
+    "selected": [
+      "OpenAI",
+      "Python"
+    ],
+    "snippet": "from openai import OpenAI\n\nclient = OpenAI(base_url=\"http://127.0.0.1:3425/v1\", api_key=\"magpie\")\nr = client.chat.completions.create(\n    model=\"provider/model\",\n    messages=[{\"role\": \"user\", \"content\": \"hi\"}],\n)\nprint(r.choices[0].message.content)",
+    "source": "874268b83c40d3b1a621b152d54aeaed51732334",
+    "viewport": [
+      1364,
+      941
+    ],
+    "zoom": "1.1"
+  },
+  {
+    "case": "OpenAI-Node-windows",
+    "copy": {
+      "insidePre": false,
+      "parent": "snip-wrap",
+      "rect": {
+        "bottom": 501.53125,
+        "height": 24.1875,
+        "left": 1210.234375,
+        "right": 1234.421875,
+        "top": 477.34375,
+        "width": 24.1875,
+        "x": 1210.234375,
+        "y": 477.34375
+      }
+    },
+    "offered": [
+      "PowerShell",
+      "curl",
+      "Python",
+      "Node"
+    ],
+    "osVisible": false,
+    "pre": {
+      "clientWidth": 727,
+      "overflowX": "auto",
+      "rect": {
+        "bottom": 672,
+        "height": 201.25,
+        "left": 439.75,
+        "right": 1241.015625,
+        "top": 470.75,
+        "width": 801.265625,
+        "x": 439.75,
+        "y": 470.75
+      },
+      "scrollLeft": 0,
+      "scrollWidth": 727,
+      "whiteSpace": "pre"
+    },
+    "root": {
+      "bottom": 816,
+      "height": 792,
+      "left": 77,
+      "right": 1287,
+      "top": 24,
+      "width": 1210,
+      "x": 77,
+      "y": 24
+    },
+    "selected": [
+      "OpenAI",
+      "Node"
+    ],
+    "snippet": "import OpenAI from \"openai\";\n\nconst client = new OpenAI({ baseURL: \"http://127.0.0.1:3425/v1\", apiKey: \"magpie\" });\nconst r = await client.chat.completions.create({\n  model: \"provider/model\",\n  messages: [{ role: \"user\", content: \"hi\" }],\n});\nconsole.log(r.choices[0].message.content);",
+    "source": "874268b83c40d3b1a621b152d54aeaed51732334",
+    "viewport": [
+      1364,
+      941
+    ],
+    "zoom": "1.1"
+  },
+  {
+    "case": "desktop-horizontal-scroll",
+    "before": {
+      "copy": {
+        "insidePre": false,
+        "parent": "snip-wrap",
+        "rect": {
+          "bottom": 328.53125,
+          "height": 24.1875,
+          "left": 1210.234375,
+          "right": 1234.421875,
+          "top": 304.34375,
+          "width": 24.1875,
+          "x": 1210.234375,
+          "y": 304.34375
+        }
+      },
+      "offered": [
+        "PowerShell",
+        "curl",
+        "Python",
+        "Node"
+      ],
+      "osVisible": false,
+      "pre": {
+        "clientWidth": 727,
+        "overflowX": "auto",
+        "rect": {
+          "bottom": 499,
+          "height": 201.25,
+          "left": 439.75,
+          "right": 1241.015625,
+          "top": 297.75,
+          "width": 801.265625,
+          "x": 439.75,
+          "y": 297.75
+        },
+        "scrollLeft": 0,
+        "scrollWidth": 727,
+        "whiteSpace": "pre"
+      },
+      "root": {
+        "bottom": 816,
+        "height": 792,
+        "left": 77,
+        "right": 1287,
+        "top": 24,
+        "width": 1210,
+        "x": 77,
+        "y": 24
+      },
+      "selected": [
+        "OpenAI",
+        "Node"
+      ],
+      "snippet": "import OpenAI from \"openai\";\n\nconst client = new OpenAI({ baseURL: \"http://127.0.0.1:3425/v1\", apiKey: \"magpie\" });\nconst r = await client.chat.completions.create({\n  model: \"provider/model\",\n  messages: [{ role: \"user\", content: \"hi\" }],\n});\nconsole.log(r.choices[0].message.content);",
+      "source": "874268b83c40d3b1a621b152d54aeaed51732334",
+      "viewport": [
+        1364,
+        941
+      ],
+      "zoom": "1.1"
+    },
+    "after": {
+      "copy": {
+        "insidePre": false,
+        "parent": "snip-wrap",
+        "rect": {
+          "bottom": 328.53125,
+          "height": 24.1875,
+          "left": 1210.234375,
+          "right": 1234.421875,
+          "top": 304.34375,
+          "width": 24.1875,
+          "x": 1210.234375,
+          "y": 304.34375
+        }
+      },
+      "offered": [
+        "PowerShell",
+        "curl",
+        "Python",
+        "Node"
+      ],
+      "osVisible": false,
+      "pre": {
+        "clientWidth": 727,
+        "overflowX": "auto",
+        "rect": {
+          "bottom": 499,
+          "height": 201.25,
+          "left": 439.75,
+          "right": 1241.015625,
+          "top": 297.75,
+          "width": 801.265625,
+          "x": 439.75,
+          "y": 297.75
+        },
+        "scrollLeft": 0,
+        "scrollWidth": 727,
+        "whiteSpace": "pre"
+      },
+      "root": {
+        "bottom": 816,
+        "height": 792,
+        "left": 77,
+        "right": 1287,
+        "top": 24,
+        "width": 1210,
+        "x": 77,
+        "y": 24
+      },
+      "selected": [
+        "OpenAI",
+        "Node"
+      ],
+      "snippet": "import OpenAI from \"openai\";\n\nconst client = new OpenAI({ baseURL: \"http://127.0.0.1:3425/v1\", apiKey: \"magpie\" });\nconst r = await client.chat.completions.create({\n  model: \"provider/model\",\n  messages: [{ role: \"user\", content: \"hi\" }],\n});\nconsole.log(r.choices[0].message.content);",
+      "source": "874268b83c40d3b1a621b152d54aeaed51732334",
+      "viewport": [
+        1364,
+        941
+      ],
+      "zoom": "1.1"
+    }
+  },
+  {
+    "case": "phone-horizontal-scroll",
+    "before": {
+      "copy": {
+        "insidePre": false,
+        "parent": "snip-wrap",
+        "rect": {
+          "bottom": 771.9898681640625,
+          "height": 44,
+          "left": 303,
+          "right": 347,
+          "top": 727.9898681640625,
+          "width": 44,
+          "x": 303,
+          "y": 727.9898681640625
+        }
+      },
+      "offered": [
+        "PowerShell",
+        "curl",
+        "Python",
+        "Node"
+      ],
+      "osVisible": false,
+      "pre": {
+        "clientWidth": 324,
+        "overflowX": "auto",
+        "rect": {
+          "bottom": 917.4898681640624,
+          "height": 195.5,
+          "left": 27,
+          "right": 353,
+          "top": 721.9898681640625,
+          "width": 326,
+          "x": 27,
+          "y": 721.9898681640625
+        },
+        "scrollLeft": 0,
+        "scrollWidth": 625,
+        "whiteSpace": "pre"
+      },
+      "root": {
+        "bottom": 844,
+        "height": 844,
+        "left": 0,
+        "right": 390,
+        "top": 0,
+        "width": 390,
+        "x": 0,
+        "y": 0
+      },
+      "selected": [
+        "OpenAI",
+        "Node"
+      ],
+      "snippet": "import OpenAI from \"openai\";\n\nconst client = new OpenAI({ baseURL: \"http://127.0.0.1:3425/v1\", apiKey: \"magpie\" });\nconst r = await client.chat.completions.create({\n  model: \"provider/model\",\n  messages: [{ role: \"user\", content: \"hi\" }],\n});\nconsole.log(r.choices[0].message.content);",
+      "source": "874268b83c40d3b1a621b152d54aeaed51732334",
+      "viewport": [
+        390,
+        844
+      ],
+      "zoom": "1"
+    },
+    "after": {
+      "copy": {
+        "insidePre": false,
+        "parent": "snip-wrap",
+        "rect": {
+          "bottom": 768.40625,
+          "height": 44,
+          "left": 303,
+          "right": 347,
+          "top": 724.40625,
+          "width": 44,
+          "x": 303,
+          "y": 724.40625
+        }
+      },
+      "offered": [
+        "PowerShell",
+        "curl",
+        "Python",
+        "Node"
+      ],
+      "osVisible": false,
+      "pre": {
+        "clientWidth": 324,
+        "overflowX": "auto",
+        "rect": {
+          "bottom": 913.90625,
+          "height": 195.5,
+          "left": 27,
+          "right": 353,
+          "top": 718.40625,
+          "width": 326,
+          "x": 27,
+          "y": 718.40625
+        },
+        "scrollLeft": 301,
+        "scrollWidth": 625,
+        "whiteSpace": "pre"
+      },
+      "root": {
+        "bottom": 844,
+        "height": 844,
+        "left": 0,
+        "right": 390,
+        "top": 0,
+        "width": 390,
+        "x": 0,
+        "y": 0
+      },
+      "selected": [
+        "OpenAI",
+        "Node"
+      ],
+      "snippet": "import OpenAI from \"openai\";\n\nconst client = new OpenAI({ baseURL: \"http://127.0.0.1:3425/v1\", apiKey: \"magpie\" });\nconst r = await client.chat.completions.create({\n  model: \"provider/model\",\n  messages: [{ role: \"user\", content: \"hi\" }],\n});\nconsole.log(r.choices[0].message.content);",
+      "source": "874268b83c40d3b1a621b152d54aeaed51732334",
+      "viewport": [
+        390,
+        844
+      ],
+      "zoom": "1"
+    }
+  },
+  {
+    "case": "phone-settled-horizontal-return",
+    "before": {
+      "copy": {
+        "insidePre": false,
+        "parent": "snip-wrap",
+        "rect": {
+          "bottom": 324.40625,
+          "height": 44,
+          "left": 303,
+          "right": 347,
+          "top": 280.40625,
+          "width": 44,
+          "x": 303,
+          "y": 280.40625
+        }
+      },
+      "offered": [
+        "PowerShell",
+        "curl",
+        "Python",
+        "Node"
+      ],
+      "osVisible": false,
+      "pre": {
+        "clientWidth": 324,
+        "overflowX": "auto",
+        "rect": {
+          "bottom": 469.90625,
+          "height": 195.5,
+          "left": 27,
+          "right": 353,
+          "top": 274.40625,
+          "width": 326,
+          "x": 27,
+          "y": 274.40625
+        },
+        "scrollLeft": 301,
+        "scrollWidth": 625,
+        "whiteSpace": "pre"
+      },
+      "root": {
+        "bottom": 844,
+        "height": 844,
+        "left": 0,
+        "right": 390,
+        "top": 0,
+        "width": 390,
+        "x": 0,
+        "y": 0
+      },
+      "selected": [
+        "OpenAI",
+        "Node"
+      ],
+      "snippet": "import OpenAI from \"openai\";\n\nconst client = new OpenAI({ baseURL: \"http://127.0.0.1:3425/v1\", apiKey: \"magpie\" });\nconst r = await client.chat.completions.create({\n  model: \"provider/model\",\n  messages: [{ role: \"user\", content: \"hi\" }],\n});\nconsole.log(r.choices[0].message.content);",
+      "source": "874268b83c40d3b1a621b152d54aeaed51732334",
+      "viewport": [
+        390,
+        844
+      ],
+      "zoom": "1"
+    },
+    "after": {
+      "copy": {
+        "insidePre": false,
+        "parent": "snip-wrap",
+        "rect": {
+          "bottom": 324.40625,
+          "height": 44,
+          "left": 303,
+          "right": 347,
+          "top": 280.40625,
+          "width": 44,
+          "x": 303,
+          "y": 280.40625
+        }
+      },
+      "offered": [
+        "PowerShell",
+        "curl",
+        "Python",
+        "Node"
+      ],
+      "osVisible": false,
+      "pre": {
+        "clientWidth": 324,
+        "overflowX": "auto",
+        "rect": {
+          "bottom": 469.90625,
+          "height": 195.5,
+          "left": 27,
+          "right": 353,
+          "top": 274.40625,
+          "width": 326,
+          "x": 27,
+          "y": 274.40625
+        },
+        "scrollLeft": 0,
+        "scrollWidth": 625,
+        "whiteSpace": "pre"
+      },
+      "root": {
+        "bottom": 844,
+        "height": 844,
+        "left": 0,
+        "right": 390,
+        "top": 0,
+        "width": 390,
+        "x": 0,
+        "y": 0
+      },
+      "selected": [
+        "OpenAI",
+        "Node"
+      ],
+      "snippet": "import OpenAI from \"openai\";\n\nconst client = new OpenAI({ baseURL: \"http://127.0.0.1:3425/v1\", apiKey: \"magpie\" });\nconst r = await client.chat.completions.create({\n  model: \"provider/model\",\n  messages: [{ role: \"user\", content: \"hi\" }],\n});\nconsole.log(r.choices[0].message.content);",
+      "source": "874268b83c40d3b1a621b152d54aeaed51732334",
+      "viewport": [
+        390,
+        844
+      ],
+      "zoom": "1"
+    }
+  },
+  {
+    "case": "phone-SystemOne-no-shell",
+    "copy": {
+      "insidePre": false,
+      "parent": "snip-wrap",
+      "rect": {
+        "bottom": 1022.578125,
+        "height": 44,
+        "left": 303,
+        "right": 347,
+        "top": 978.578125,
+        "width": 44,
+        "x": 303,
+        "y": 978.578125
+      }
+    },
+    "offered": [
+      "curl",
+      "Python",
+      "Node"
+    ],
+    "osVisible": false,
+    "pre": {
+      "clientWidth": 324,
+      "overflowX": "auto",
+      "rect": {
+        "bottom": 1319.890625,
+        "height": 347.3125,
+        "left": 27,
+        "right": 353,
+        "top": 972.578125,
+        "width": 326,
+        "x": 27,
+        "y": 972.578125
+      },
+      "scrollLeft": 0,
+      "scrollWidth": 726,
+      "whiteSpace": "pre"
+    },
+    "root": {
+      "bottom": 844,
+      "height": 844,
+      "left": 0,
+      "right": 390,
+      "top": 0,
+      "width": 390,
+      "x": 0,
+      "y": 0
+    },
+    "selected": [
+      "System One",
+      "Node"
+    ],
+    "snippet": "const r = await fetch(\"http://127.0.0.1:3425/v1/systemone\", {\n  method: \"POST\",\n  headers: { Authorization: \"Bearer magpie\", \"Content-Type\": \"application/json\" },\n  body: JSON.stringify({\n    model: \"provider/jev-latest\",\n    state: { message: \"My order never arrived, refund it\" },\n    questions: { team: {\n      type: \"choice\",\n      instructions: \"Which team should answer the message?\",\n      criteria: { billing: \"Payments and refunds\", shipping: \"Deliveries\", other: \"Anything else\" },\n    } },\n  }),\n});\nconst a = (await r.json()).answers.team;\nconsole.log(a.choice, a.confidence);",
+    "source": "874268b83c40d3b1a621b152d54aeaed51732334",
+    "viewport": [
+      390,
+      844
+    ],
+    "zoom": "1"
+  }
+]

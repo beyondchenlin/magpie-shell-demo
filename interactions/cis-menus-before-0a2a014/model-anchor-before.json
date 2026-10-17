@@ -1,0 +1,49 @@
+{
+  "anchor": {
+    "rect": {
+      "bottom": 425.9375,
+      "height": 27.5,
+      "left": 378.1875,
+      "right": 620.1875,
+      "top": 398.4375,
+      "width": 242,
+      "x": 378.1875,
+      "y": 398.4375
+    }
+  },
+  "active": {
+    "class": "",
+    "tag": "INPUT"
+  },
+  "popup": {
+    "class": "pop model-picker",
+    "height": 341,
+    "rect": {
+      "bottom": 805.9205322265625,
+      "height": 374.6069030761719,
+      "left": 378.0940551757813,
+      "right": 917.0230102539062,
+      "top": 431.3136291503906,
+      "width": 538.928955078125,
+      "x": 378.0940551757813,
+      "y": 431.3136291503906
+    },
+    "scrollHeight": 339,
+    "style": "width: 490px; max-width: 1082px; max-height: 340.602px; left: 272.807px; top: 369.398px; bottom: auto; --ox: 110px;"
+  },
+  "root": {
+    "caption": 32,
+    "height": 718,
+    "rect": {
+      "bottom": 816,
+      "height": 792,
+      "left": 77,
+      "right": 1287,
+      "top": 24,
+      "width": 1210,
+      "x": 77,
+      "y": 24
+    },
+    "width": 1098
+  }
+}

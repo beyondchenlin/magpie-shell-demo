@@ -1,0 +1,22 @@
+{
+  "checkedAt": "2026-10-16T18:04:32.379Z",
+  "localDeliveryCommit": "504d6333deedbd14bbffd9c720ce16ef0ff585b1",
+  "uiSource": "1ebfb663e4833e653bc621742cc342f3cdc7373a",
+  "remoteHeadConfirmedBeforePush": "e19fd5a8a0c346192d3d2cd6552160eabbab350c",
+  "newConnectivitySignal": "Authenticated fetch_pr succeeded; then one normal Git push attempted",
+  "push": {
+    "success": false,
+    "error": "schannel: failed to receive handshake, SSL/TLS connection failed",
+    "normalRef": "HEAD:refs/heads/tip/0.1.121-cis-appearance-shell",
+    "force": false,
+    "tlsVerificationDisabled": false
+  },
+  "prMetadataWrite": {
+    "success": false,
+    "error": "Connector transport send error",
+    "verifiedTitle": "Magpie 复刻：CIS 独立校核候选，待监督冻结后修复",
+    "bodyStartsAsBefore": true,
+    "draftSaved": "docs/cis/PR-DESCRIPTION-PENDING-SYNC.md"
+  },
+  "cloud": "Current local candidate not pushed; no claim cloud preview matches. No manual/forced deployment."
+}

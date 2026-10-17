@@ -1,0 +1,51 @@
+{
+  "sourceCommit": "396c11cb266f9e832c1cb9dfd0e1d75fc1c469a2",
+  "version": "0.1.198",
+  "files": [
+    {
+      "file": "agent-final-396c11c.png",
+      "bytes": 81831,
+      "sha256": "a3e712861ec0df5b2f67cef3746cf450c65e819544a80a170a78dd3d27d6fbd3"
+    },
+    {
+      "file": "build-info.json",
+      "bytes": 30027,
+      "sha256": "9b863acbaac1d236ed72b5035d358a25f6101e1e84df03595a55ffcf04172960"
+    },
+    {
+      "file": "candidate-5-restored.json",
+      "bytes": 2057,
+      "sha256": "5cefdce54c6a9d4e53c848d19cce5cafca3949894a537fbde947669518ca84bf"
+    },
+    {
+      "file": "direction-pairs.json",
+      "bytes": 406,
+      "sha256": "b9be4011fd6d4d710c417fb6a57cc7a8c0ed819d1adb734a2f00170112bbf8f1"
+    },
+    {
+      "file": "events-candidate-5.json",
+      "bytes": 27022,
+      "sha256": "7b91e76b917794c521108dd769993c1540d62aee705bb922f80bd0760cb13aa9"
+    },
+    {
+      "file": "last-layout-delta.txt",
+      "bytes": 1890,
+      "sha256": "2957dee6c78a92ace8ef8e77e2467cb279747cd89f8844c4489c8fa414e04092"
+    },
+    {
+      "file": "lint.txt",
+      "bytes": 17459,
+      "sha256": "ab32268656294f7cd313a826ec312cbb1112c5a0e13b2255344fd276c2922b34"
+    },
+    {
+      "file": "menu-candidate-5.json",
+      "bytes": 4800,
+      "sha256": "b302eaf52c78d587bb39d4272ee5c59759e3cef7355aeaaa7d00084e60f8175f"
+    },
+    {
+      "file": "NOTES.md",
+      "bytes": 5783,
+      "sha256": "84249dfa9d713f2a46847079576a3d19735e215d8dbc19808a4b4258ee50ea7d"
+    }
+  ]
+}

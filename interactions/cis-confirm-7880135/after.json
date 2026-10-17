@@ -1,0 +1,703 @@
+{
+  "source": "7880135320083e6192bfb4d5ab87b136cd59d4b5",
+  "version": "0.1.199",
+  "c3After": [
+    {
+      "case": "provider-open",
+      "active": {
+        "class": "text",
+        "tag": "BUTTON",
+        "text": "取消"
+      },
+      "dialog": {
+        "class": "action-confirm framed-confirm",
+        "open": true,
+        "rect": {
+          "bottom": 499.0703125,
+          "height": 158.140625,
+          "left": 451,
+          "right": 913,
+          "top": 340.9296875,
+          "width": 462,
+          "x": 451,
+          "y": 340.9296875
+        },
+        "style": "--confirm-x: 620px; --confirm-y: 381.8181818181818px; --confirm-width: 1067.9999999999998px; --confirm-height: 687.9999999999999px; --confirm-inset-top: 21.818181818181817px; --confirm-inset-left: 70px; --confirm-inset-right: 70px; --confirm-inset-bottom: 113.63636363636363px; --confirm-radius: 12px;"
+      },
+      "root": {
+        "bottom": 816,
+        "height": 792,
+        "left": 77,
+        "right": 1287,
+        "top": 24,
+        "width": 1210,
+        "x": 77,
+        "y": 24
+      },
+      "source": "7880135320083e6192bfb4d5ab87b136cd59d4b5"
+    },
+    {
+      "case": "provider-backtab",
+      "active": {
+        "class": "text primary danger-fill",
+        "tag": "BUTTON",
+        "text": "放弃"
+      },
+      "dialog": {
+        "class": "action-confirm framed-confirm",
+        "open": true,
+        "rect": {
+          "bottom": 499.0703125,
+          "height": 158.140625,
+          "left": 451,
+          "right": 913,
+          "top": 340.9296875,
+          "width": 462,
+          "x": 451,
+          "y": 340.9296875
+        },
+        "style": "--confirm-x: 620px; --confirm-y: 381.8181818181818px; --confirm-width: 1067.9999999999998px; --confirm-height: 687.9999999999999px; --confirm-inset-top: 21.818181818181817px; --confirm-inset-left: 70px; --confirm-inset-right: 70px; --confirm-inset-bottom: 113.63636363636363px; --confirm-radius: 12px;"
+      },
+      "root": {
+        "bottom": 816,
+        "height": 792,
+        "left": 77,
+        "right": 1287,
+        "top": 24,
+        "width": 1210,
+        "x": 77,
+        "y": 24
+      },
+      "source": "7880135320083e6192bfb4d5ab87b136cd59d4b5"
+    },
+    {
+      "case": "provider-tab",
+      "active": {
+        "class": "text",
+        "tag": "BUTTON",
+        "text": "取消"
+      },
+      "dialog": {
+        "class": "action-confirm framed-confirm",
+        "open": true,
+        "rect": {
+          "bottom": 499.0703125,
+          "height": 158.140625,
+          "left": 451,
+          "right": 913,
+          "top": 340.9296875,
+          "width": 462,
+          "x": 451,
+          "y": 340.9296875
+        },
+        "style": "--confirm-x: 620px; --confirm-y: 381.8181818181818px; --confirm-width: 1067.9999999999998px; --confirm-height: 687.9999999999999px; --confirm-inset-top: 21.818181818181817px; --confirm-inset-left: 70px; --confirm-inset-right: 70px; --confirm-inset-bottom: 113.63636363636363px; --confirm-radius: 12px;"
+      },
+      "root": {
+        "bottom": 816,
+        "height": 792,
+        "left": 77,
+        "right": 1287,
+        "top": 24,
+        "width": 1210,
+        "x": 77,
+        "y": 24
+      },
+      "source": "7880135320083e6192bfb4d5ab87b136cd59d4b5"
+    },
+    {
+      "case": "provider-body-drag",
+      "coords": {
+        "from": [
+          682,
+          415.3671875
+        ],
+        "to": [
+          973,
+          415.3671875
+        ]
+      },
+      "active": {
+        "class": "action-confirm framed-confirm",
+        "tag": "DIALOG",
+        "text": "放弃是否放弃未保存的修改？放弃后，这些修改将丢失。取消放弃"
+      },
+      "dialog": {
+        "class": "action-confirm framed-confirm",
+        "open": true,
+        "rect": {
+          "bottom": 499.0703125,
+          "height": 158.140625,
+          "left": 451,
+          "right": 913,
+          "top": 340.9296875,
+          "width": 462,
+          "x": 451,
+          "y": 340.9296875
+        },
+        "style": "--confirm-x: 620px; --confirm-y: 381.8181818181818px; --confirm-width: 1067.9999999999998px; --confirm-height: 687.9999999999999px; --confirm-inset-top: 21.818181818181817px; --confirm-inset-left: 70px; --confirm-inset-right: 70px; --confirm-inset-bottom: 113.63636363636363px; --confirm-radius: 12px;"
+      },
+      "root": {
+        "bottom": 816,
+        "height": 792,
+        "left": 77,
+        "right": 1287,
+        "top": 24,
+        "width": 1210,
+        "x": 77,
+        "y": 24
+      },
+      "source": "7880135320083e6192bfb4d5ab87b136cd59d4b5"
+    },
+    {
+      "case": "provider-escape",
+      "active": {
+        "class": "text",
+        "tag": "BUTTON",
+        "text": "取消"
+      },
+      "dialog": null,
+      "root": {
+        "bottom": 816,
+        "height": 792,
+        "left": 77,
+        "right": 1287,
+        "top": 24,
+        "width": 1210,
+        "x": 77,
+        "y": 24
+      },
+      "source": "7880135320083e6192bfb4d5ab87b136cd59d4b5",
+      "extra": "{\"cis\":true}"
+    },
+    {
+      "case": "provider-cancel",
+      "active": {
+        "class": "text",
+        "tag": "BUTTON",
+        "text": "取消"
+      },
+      "dialog": null,
+      "root": {
+        "bottom": 816,
+        "height": 792,
+        "left": 77,
+        "right": 1287,
+        "top": 24,
+        "width": 1210,
+        "x": 77,
+        "y": 24
+      },
+      "source": "7880135320083e6192bfb4d5ab87b136cd59d4b5"
+    },
+    {
+      "case": "provider-backdrop",
+      "active": {
+        "class": "text",
+        "tag": "BUTTON",
+        "text": "取消"
+      },
+      "dialog": null,
+      "root": {
+        "bottom": 816,
+        "height": 792,
+        "left": 77,
+        "right": 1287,
+        "top": 24,
+        "width": 1210,
+        "x": 77,
+        "y": 24
+      },
+      "source": "7880135320083e6192bfb4d5ab87b136cd59d4b5"
+    },
+    {
+      "case": "1048-fractional",
+      "active": {
+        "class": "text",
+        "tag": "BUTTON",
+        "text": "取消"
+      },
+      "dialog": {
+        "class": "action-confirm framed-confirm",
+        "open": true,
+        "rect": {
+          "bottom": 499.0703125,
+          "height": 158.140625,
+          "left": 293,
+          "right": 755,
+          "top": 340.9296875,
+          "width": 462,
+          "x": 293,
+          "y": 340.9296875
+        },
+        "style": "--confirm-x: 476.36368400000003px; --confirm-y: 381.81822px; --confirm-width: 877.091px; --confirm-height: 688.000072px; --confirm-inset-top: 21.818184000000002px; --confirm-inset-left: 21.818184000000002px; --confirm-inset-right: 21.818184000000002px; --confirm-inset-bottom: 113.636375px; --confirm-radius: 12px;"
+      },
+      "root": {
+        "bottom": 816,
+        "height": 792,
+        "left": 24,
+        "right": 1024,
+        "top": 24,
+        "width": 1000,
+        "x": 24,
+        "y": 24
+      },
+      "source": "7880135320083e6192bfb4d5ab87b136cd59d4b5"
+    },
+    {
+      "case": "phone-frame",
+      "active": {
+        "class": "text",
+        "tag": "BUTTON",
+        "text": "取消"
+      },
+      "dialog": {
+        "class": "action-confirm framed-confirm",
+        "open": true,
+        "rect": {
+          "bottom": 516.5859375,
+          "height": 189.171875,
+          "left": 17,
+          "right": 373,
+          "top": 327.4140625,
+          "width": 356,
+          "x": 17,
+          "y": 327.4140625
+        },
+        "style": "--confirm-x: 195px; --confirm-y: 422px; --confirm-width: 358px; --confirm-height: 812px; --confirm-inset-top: 0px; --confirm-inset-left: 0px; --confirm-inset-right: 0px; --confirm-inset-bottom: 0px; --confirm-radius: 0px;"
+      },
+      "root": {
+        "bottom": 844,
+        "height": 844,
+        "left": 0,
+        "right": 390,
+        "top": 0,
+        "width": 390,
+        "x": 0,
+        "y": 0
+      },
+      "source": "7880135320083e6192bfb4d5ab87b136cd59d4b5"
+    },
+    {
+      "case": "plugin-disabled-tab",
+      "before": {
+        "active": "取消",
+        "disabled": true,
+        "tag": "BUTTON"
+      },
+      "after": {
+        "active": "取消",
+        "disabled": true,
+        "tag": "BUTTON"
+      },
+      "active": {
+        "class": "text",
+        "tag": "BUTTON",
+        "text": "取消"
+      },
+      "dialog": {
+        "class": "action-confirm framed-confirm",
+        "open": true,
+        "rect": {
+          "bottom": 499.0703125,
+          "height": 158.140625,
+          "left": 451,
+          "right": 913,
+          "top": 340.9296875,
+          "width": 462,
+          "x": 451,
+          "y": 340.9296875
+        },
+        "style": "--confirm-x: 620px; --confirm-y: 381.8181818181818px; --confirm-width: 1067.9999999999998px; --confirm-height: 687.9999999999999px; --confirm-inset-top: 21.818181818181817px; --confirm-inset-left: 70px; --confirm-inset-right: 70px; --confirm-inset-bottom: 113.63636363636363px; --confirm-radius: 12px;"
+      },
+      "root": {
+        "bottom": 816,
+        "height": 792,
+        "left": 77,
+        "right": 1287,
+        "top": 24,
+        "width": 1210,
+        "x": 77,
+        "y": 24
+      },
+      "source": "7880135320083e6192bfb4d5ab87b136cd59d4b5"
+    },
+    {
+      "case": "plugin-open-ready",
+      "active": "取消",
+      "dialog": {
+        "class": "action-confirm framed-confirm",
+        "open": true,
+        "rect": {
+          "bottom": 499.0703125,
+          "height": 158.140625,
+          "left": 451,
+          "right": 913,
+          "top": 340.9296875,
+          "width": 462,
+          "x": 451,
+          "y": 340.9296875
+        },
+        "style": "--confirm-x: 620px; --confirm-y: 381.8181818181818px; --confirm-width: 1067.9999999999998px; --confirm-height: 687.9999999999999px; --confirm-inset-top: 21.818181818181817px; --confirm-inset-left: 70px; --confirm-inset-right: 70px; --confirm-inset-bottom: 113.63636363636363px; --confirm-radius: 12px;"
+      },
+      "root": {
+        "bottom": 816,
+        "height": 792,
+        "left": 77,
+        "right": 1287,
+        "top": 24,
+        "width": 1210,
+        "x": 77,
+        "y": 24
+      },
+      "source": "7880135320083e6192bfb4d5ab87b136cd59d4b5",
+      "disabled": false,
+      "tag": "BUTTON"
+    },
+    {
+      "case": "plugin-backtab",
+      "active": {
+        "class": "text primary danger-fill",
+        "tag": "BUTTON",
+        "text": "移除"
+      },
+      "dialog": {
+        "class": "action-confirm framed-confirm",
+        "open": true,
+        "rect": {
+          "bottom": 499.0703125,
+          "height": 158.140625,
+          "left": 451,
+          "right": 913,
+          "top": 340.9296875,
+          "width": 462,
+          "x": 451,
+          "y": 340.9296875
+        },
+        "style": "--confirm-x: 620px; --confirm-y: 381.8181818181818px; --confirm-width: 1067.9999999999998px; --confirm-height: 687.9999999999999px; --confirm-inset-top: 21.818181818181817px; --confirm-inset-left: 70px; --confirm-inset-right: 70px; --confirm-inset-bottom: 113.63636363636363px; --confirm-radius: 12px;"
+      },
+      "root": {
+        "bottom": 816,
+        "height": 792,
+        "left": 77,
+        "right": 1287,
+        "top": 24,
+        "width": 1210,
+        "x": 77,
+        "y": 24
+      },
+      "source": "7880135320083e6192bfb4d5ab87b136cd59d4b5"
+    },
+    {
+      "case": "plugin-tab",
+      "active": {
+        "class": "text",
+        "tag": "BUTTON",
+        "text": "取消"
+      },
+      "dialog": {
+        "class": "action-confirm framed-confirm",
+        "open": true,
+        "rect": {
+          "bottom": 499.0703125,
+          "height": 158.140625,
+          "left": 451,
+          "right": 913,
+          "top": 340.9296875,
+          "width": 462,
+          "x": 451,
+          "y": 340.9296875
+        },
+        "style": "--confirm-x: 620px; --confirm-y: 381.8181818181818px; --confirm-width: 1067.9999999999998px; --confirm-height: 687.9999999999999px; --confirm-inset-top: 21.818181818181817px; --confirm-inset-left: 70px; --confirm-inset-right: 70px; --confirm-inset-bottom: 113.63636363636363px; --confirm-radius: 12px;"
+      },
+      "root": {
+        "bottom": 816,
+        "height": 792,
+        "left": 77,
+        "right": 1287,
+        "top": 24,
+        "width": 1210,
+        "x": 77,
+        "y": 24
+      },
+      "source": "7880135320083e6192bfb4d5ab87b136cd59d4b5"
+    },
+    {
+      "case": "plugin-body-drag",
+      "coords": {
+        "from": [
+          682,
+          415.3671875
+        ],
+        "to": [
+          973,
+          415.3671875
+        ]
+      },
+      "active": {
+        "class": "action-confirm framed-confirm",
+        "tag": "DIALOG",
+        "text": "移除 Think Tags？移除插件及其安装的内容；它的登录会保留，直到你退出登录取消移除"
+      },
+      "dialog": {
+        "class": "action-confirm framed-confirm",
+        "open": true,
+        "rect": {
+          "bottom": 499.0703125,
+          "height": 158.140625,
+          "left": 451,
+          "right": 913,
+          "top": 340.9296875,
+          "width": 462,
+          "x": 451,
+          "y": 340.9296875
+        },
+        "style": "--confirm-x: 620px; --confirm-y: 381.8181818181818px; --confirm-width: 1067.9999999999998px; --confirm-height: 687.9999999999999px; --confirm-inset-top: 21.818181818181817px; --confirm-inset-left: 70px; --confirm-inset-right: 70px; --confirm-inset-bottom: 113.63636363636363px; --confirm-radius: 12px;"
+      },
+      "root": {
+        "bottom": 816,
+        "height": 792,
+        "left": 77,
+        "right": 1287,
+        "top": 24,
+        "width": 1210,
+        "x": 77,
+        "y": 24
+      },
+      "source": "7880135320083e6192bfb4d5ab87b136cd59d4b5"
+    },
+    {
+      "case": "plugin-escape",
+      "active": {
+        "class": "text quiet",
+        "tag": "BUTTON",
+        "text": "移除"
+      },
+      "dialog": null,
+      "root": {
+        "bottom": 816,
+        "height": 792,
+        "left": 77,
+        "right": 1287,
+        "top": 24,
+        "width": 1210,
+        "x": 77,
+        "y": 24
+      },
+      "source": "7880135320083e6192bfb4d5ab87b136cd59d4b5"
+    },
+    {
+      "case": "plugin-cancel",
+      "active": {
+        "class": "text quiet",
+        "tag": "BUTTON",
+        "text": "移除"
+      },
+      "dialog": null,
+      "root": {
+        "bottom": 816,
+        "height": 792,
+        "left": 77,
+        "right": 1287,
+        "top": 24,
+        "width": 1210,
+        "x": 77,
+        "y": 24
+      },
+      "source": "7880135320083e6192bfb4d5ab87b136cd59d4b5"
+    },
+    {
+      "case": "plugin-backdrop",
+      "active": {
+        "class": "text quiet",
+        "tag": "BUTTON",
+        "text": "移除"
+      },
+      "dialog": null,
+      "root": {
+        "bottom": 816,
+        "height": 792,
+        "left": 77,
+        "right": 1287,
+        "top": 24,
+        "width": 1210,
+        "x": 77,
+        "y": 24
+      },
+      "source": "7880135320083e6192bfb4d5ab87b136cd59d4b5"
+    },
+    {
+      "case": "plugin-disabled-shift-tab",
+      "before": {
+        "active": "取消",
+        "disabled": true,
+        "tag": "BUTTON"
+      },
+      "after": {
+        "active": "取消",
+        "disabled": true,
+        "tag": "BUTTON"
+      },
+      "active": {
+        "class": "text",
+        "tag": "BUTTON",
+        "text": "取消"
+      },
+      "dialog": {
+        "class": "action-confirm framed-confirm",
+        "open": true,
+        "rect": {
+          "bottom": 499.0703125,
+          "height": 158.140625,
+          "left": 451,
+          "right": 913,
+          "top": 340.9296875,
+          "width": 462,
+          "x": 451,
+          "y": 340.9296875
+        },
+        "style": "--confirm-x: 620px; --confirm-y: 381.8181818181818px; --confirm-width: 1067.9999999999998px; --confirm-height: 687.9999999999999px; --confirm-inset-top: 21.818181818181817px; --confirm-inset-left: 70px; --confirm-inset-right: 70px; --confirm-inset-bottom: 113.63636363636363px; --confirm-radius: 12px;"
+      },
+      "root": {
+        "bottom": 816,
+        "height": 792,
+        "left": 77,
+        "right": 1287,
+        "top": 24,
+        "width": 1210,
+        "x": 77,
+        "y": 24
+      },
+      "source": "7880135320083e6192bfb4d5ab87b136cd59d4b5"
+    }
+  ],
+  "p1After": [
+    {
+      "case": "empty",
+      "source": "7880135320083e6192bfb4d5ab87b136cd59d4b5",
+      "firstProvider": 1
+    },
+    {
+      "case": "gemini-endpoint",
+      "rows": [
+        "Geminihttps://generativelanguage.googleapis.com/v1beta"
+      ]
+    },
+    {
+      "case": "discard-confirm",
+      "editorCount": 0
+    },
+    {
+      "case": "discard-cleared",
+      "extra": ""
+    },
+    {
+      "case": "gemini-mock-test",
+      "rows": [
+        "Geminihttps://generativelanguage.googleapis.com/v1beta…"
+      ]
+    },
+    {
+      "case": "icon-choice",
+      "pressed": "true"
+    },
+    {
+      "case": "custom-add",
+      "rows": [
+        "CIS Demo Providerapi.example.invalid/v1beta · 2 个模型sk-…"
+      ]
+    },
+    {
+      "case": "custom-reopen",
+      "snapshot": "- banner \"Window title bar\":\n  - generic: Magpie\n  - button:\n  - button:\n  - button:\n- banner:\n  - heading \"供应商\" [level=1]\n  - button \"显示侧边栏\":\n  - navigation \"Main navigation\":\n    - button \"Agent\"\n    - button \"供应商\"\n    - button \"路由\"\n    - button \"网关\"\n    - button \"用量\"\n    - button \"插件\"\n  - button \"刷新模型列表（models.dev 与各供应商）\":\n  - button \"设置 (Ctrl+,)\":\n- main:\n  - searchbox \"查找供应商\"\n  - button \"调整 CIS Demo Provider\"\n  - generic: CIS Demo Provider\n  - generic: api.example.invalid/v1beta · 2 个模型\n  - generic \"sk-…\":\n    - generic: sk-…\n  - switch \"使用 CIS Demo Provider\" [checked]\n  - button \"＋ 添加供应商\"\n- dialog \"CIS Demo Provider\":\n  - generic: CIS Demo Provider\n  - generic \"Agent 以 custom/… 选用它的模型\":\n    - text: ID\n    - code: custom\n  - generic: 名称\n  - textbox \"例如 My Relay\" [active]: CIS Demo Provider\n  - generic: API 地址\n  - button \"OpenAI 兼容\"\n  - button \"OpenAI Responses\"\n  - button \"Anthropic 兼容\"\n  - button \"Gemini 兼容\" [pressed]\n  - button \"System One\"\n  - textbox \"…/v1beta — Google 的 Gemini API（generateContent），或与它应答方式相同的端点；密钥放在 x-goog-api-key 里\":\n    - /placeholder: https://…/v1beta\n    - text: https://api.example.invalid/v1beta\n  - button \"检测协议\"\n  - textbox \"试用的模型 · 留空则从供应商的模型列表中挑选\"\n  - button \"逐个检测已选模型\"\n  - generic: API 密钥\n  - textbox \"粘贴 API 密钥\"\n  - button \"显示\"\n  - button \"获取密钥 ↗\"\n  - generic: 保存在 ~/.config/magpie/providers.json，仅你本人可读。不读取 shell 中的任何内容。\n  - generic: 图标\n  - button \"选择图片…\"\n  - button \"从网站获取\"\n  - button \"内置图标\"\n  - generic: 请求头\n  - textbox \"请求头名称\"\n  - textbox \"值\"\n  - 'button \"{ }\"'\n  - button \"Remove\": ×\n  - button \"＋ 添加请求头\"\n  - generic: 发给供应商的额外 HTTP 请求头，在鉴权后应用，用于需要私有鉴权方案的网关。\n  - generic: 额外请求体\n  - 'textbox \"{ \\\"prompt_cache_key\\\": \\\"${sessionId}\\\" }\"':\n    - /placeholder: \"{\\n  \\\"prompt_cache_key\\\": \\\"${sessionId}\\\"\\n}\"\n    - text: \"{\\\"cis\\\":true}\"\n  - generic: \"JSON fields added to the body of every request to the vendor. A field the request has already is kept; write '!name' to replace it. ${sessionId} is the conversation's id.\"\n  - generic: 代理\n  - button \"全局代理\" [pressed]\n  - button \"直连\"\n  - button \"自定义\"\n  - generic: 跟随设置里的代理\n  - generic: 并发上限\n  - textbox \"不限制\"\n  - generic: 超出时排队，按顺序发出；0 或留空为不限制\n  - generic: 每分钟请求数\n  - textbox \"不限制\"\n  - generic: 每个密钥或账号在任意一分钟内最多发出的请求数，重试也计入；超出的请求等待空位，最多等 2 分钟。0 或留空为不限制\n  - generic: 排队上限\n  - textbox \"不限\"\n  - generic: 排队等待\n  - textbox \"一直等\"\n  - generic: 价格倍率\n  - textbox \"1，即官方价格\"\n  - generic: User-Agent\n  - checkbox \"发送 Agent 自己的 User-Agent\"\n  - text: 发送 Agent 自己的 User-Agent\n  - generic: 给只允许指定编程 Agent 使用的套餐：每个请求带上 Agent 自己发来的 User-Agent（pi、OpenCode、Claude Code…），而不是 magpie 的。magpie 自己发出的请求，以及 Agent 没带 User-Agent 的请求，仍以 magpie 的身份发送。上面请求头里设置的 User-Agent 始终优先。\n  - generic: 上下文窗口\n  - textbox \"如 128k · 或 gpt-6=1m，逗号分隔\"\n  - button \"128K\"\n  - button \"200K\"\n  - button \"256K\"\n  - button \"400K\"\n  - button \"512K\"\n  - button \"1M\"\n  - generic: 模型可接受的上下文长度，会告知 Agent；留空则按厂商和 models.dev\n  - generic: 最大输出\n  - textbox \"如 32k · 或 gpt-6=128k，逗号分隔\"\n  - button \"8K\"\n  - button \"16K\"\n  - button \"32K\"\n  - button \"64K\"\n  - button \"128K\"\n  - generic: 单次回复的最大 token 数，作为 max tokens 告知 Agent，Agent 没给时也作为 max_tokens 发给 Anthropic 的 API；留空则按厂商和 models.dev\n  - generic: 压缩阈值\n  - textbox \"如 500k · 或 deepseek-v4-flash=272k，逗号分隔\"\n  - button \"128K\"\n  - button \"200K\"\n  - button \"272K\"\n  - button \"500K\"\n  - button \"1M\"\n  - generic: Codex 和 Claude Code 在这些模型上压缩长对话的位置；留空按「设置 → 长对话」，大于等于模型窗口则用完整窗口\n  - generic: 模型\n  - textbox \"模型 ID，逗号分隔 · 例如 gpt-5.5, claude-sonnet-5\": cis-model, cis-model-2\n  - button \"获取模型\"\n  - generic: 可选：用「获取模型」从供应商列表中勾选，或直接填写模型 ID；不选则保存后自动获取模型列表。\n  - generic: 联网搜索\n  - checkbox \"自己能联网搜索\"\n  - text: 自己能联网搜索\n  - generic: 用于 Anthropic 或 OpenAI 官方 API 前的中转：Claude Code 的 WebSearch 和 Codex 的 web_search 原样发给它，不经 magpie 搜索。不会自动用它为其他模型搜索，但可手动选为代搜供应商。\n  - generic \"▸ 更多端点\"\n  - button \"移除\"\n  - button \"再添加一个 CIS Demo Provider\"\n  - button \"复制\"\n  - button \"取消\"\n  - button \"保存\"\n- contentinfo:\n  - status \"已添加 CIS Demo Provider\"\n  - generic: 127.0.0.1:3425",
+      "fields": "https://api.example.invalid/v1beta",
+      "name": "CIS Demo Provider",
+      "extra": "{\"cis\":true}"
+    },
+    {
+      "case": "unchanged-edit-cancel",
+      "confirmCount": 0
+    },
+    {
+      "case": "edit-save-reload",
+      "rows": [
+        "CIS Demo Editedapi.example.invalid/v1beta · 2 个模型sk-…"
+      ]
+    },
+    {
+      "case": "arrange-menu",
+      "snapshot": "- banner \"Window title bar\":\n  - generic: Magpie\n  - button:\n  - button:\n  - button:\n- banner:\n  - heading \"供应商\" [level=1]\n  - button \"显示侧边栏\":\n  - navigation \"Main navigation\":\n    - button \"Agent\"\n    - button \"供应商\"\n    - button \"路由\"\n    - button \"网关\"\n    - button \"用量\"\n    - button \"插件\"\n  - button \"刷新模型列表（models.dev 与各供应商）\":\n  - button \"设置 (Ctrl+,)\":\n- main:\n  - searchbox \"查找供应商\"\n  - button \"调整 CIS Demo Edited\" [active]\n  - generic: CIS Demo Edited\n  - generic: api.example.invalid/v1beta · 2 个模型\n  - generic \"sk-…\":\n    - generic: sk-…\n  - switch \"使用 CIS Demo Edited\" [checked]\n  - button \"＋ 添加供应商\"\n- contentinfo:\n  - status\n  - generic: 127.0.0.1:3425\n- menu:\n  - menuitem \"移到顶部 Alt+Shift+↑\" [disabled]:\n    - generic: 移到顶部\n    - generic: Alt+Shift+↑\n  - menuitem \"上移 Alt+↑\" [disabled]:\n    - generic: 上移\n    - generic: Alt+↑\n  - menuitem \"下移 Alt+↓\" [disabled]:\n    - generic: 下移\n    - generic: Alt+↓\n  - menuitem \"移到底部 Alt+Shift+↓\" [disabled]:\n    - generic: 移到底部\n    - generic: Alt+Shift+↓"
+    },
+    {
+      "case": "arrange-move",
+      "order": [
+        "google",
+        "custom"
+      ]
+    },
+    {
+      "case": "edit-after-reload-and-move",
+      "name": "CIS Demo Edited",
+      "apiSelected": "true",
+      "base": "https://api.example.invalid/v1beta",
+      "models": "cis-model, cis-model-2",
+      "extra": "{\"cis\":true}"
+    },
+    {
+      "case": "credential-excluded",
+      "persistedMockKey": false,
+      "providerOrder": "[\"google\",\"custom\"]"
+    }
+  ],
+  "p4After": [
+    {
+      "case": "discover-default",
+      "selected": "true"
+    },
+    {
+      "case": "builtin-toggle-on",
+      "checked": "true"
+    },
+    {
+      "case": "calls-menu",
+      "snapshot": "每次显示的最近调用\n10\n20\n50\n100"
+    },
+    {
+      "case": "calls-selected",
+      "button": "50"
+    },
+    {
+      "case": "discover-detail",
+      "text": "OpenCode Zen Free\nmagpie 社区 · @magpie-community/opencode-zen-free\n安装\n\nOpenCode Zen's free models with the public credential, automatic discovery and native streaming protocols.\n\n版本\nv0.1.1\n下载量\n3.0k/week\n许可证\nMIT\n更新于\nOct 10, 2026\n登录\nopencode-zen-free\nnpm\n源码\nOpenCode Zen's free models in magpie and OpenCode.\n\nOpenCode Zen's free models in magpie and OpenCode. Provider id: `opencode-zen-free`. ## Install ``` magpie plugin add @magpie-community/opencode-zen-free-auth magpie plugin login opencode-zen-free ``` ## Sign in Enter `public` in the key field. No personal API key is needed. The credential is kept in OpenCode's `auth.json` or magpie's `plugin-auth.json`.\n\n插件是他人的代码：由它登录并发出请求，或作为中间件看到请求。\n关闭"
+    },
+    {
+      "case": "remove-cancel-kept",
+      "rows": [
+        "OpenCode Zen Freev0.1.1供应商OpenCode Zen Free：未登录登录停用移除",
+        "Think Tagsv0.1.0已是最新中间件网关中间件：onEvent, onResponse · 调用 0 次，平均每次 0 µs选项停用移除",
+        "Word Guardv0.1.1中间件网关中间件：onRequest, onEvent, onResponse · 调用 0 次，平均每次 0 µs选项停用移除"
+      ]
+    },
+    {
+      "case": "installed-disabled",
+      "row": "Think Tags\nv0.1.0\n已是最新\n中间件\n关闭\n启用\n移除"
+    },
+    {
+      "case": "installed-enabled",
+      "row": "Think Tags\nv0.1.0\n已是最新\n中间件\n网关中间件：onEvent, onResponse · 调用 0 次，平均每次 0 µs\n选项\n停用\n移除"
+    },
+    {
+      "case": "installed-options",
+      "value": "{\n  \"mode\": \"strip\"\n}"
+    },
+    {
+      "case": "mock-install-finished",
+      "tab": "已安装 · 4",
+      "rows": [
+        "OpenCode Zen Freev0.1.1供应商OpenCode Zen Free：未登录登录停用移除",
+        "Think Tagsv0.1.0已是最新中间件网关中间件：onEvent, onResponse · 调用 0 次，平均每次 0 µs选项停用移除",
+        "Word Guardv0.1.1中间件网关中间件：onRequest, onEvent, onResponse · 调用 0 次，平均每次 0 µs选项停用移除",
+        "ZCodev0.1.18供应商ZCode：未登录登录停用移除"
+      ]
+    }
+  ]
+}

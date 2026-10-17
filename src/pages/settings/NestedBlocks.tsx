@@ -1,9 +1,22 @@
+import { CopyButton } from "../../components/CopyButton";
 import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
-import { createPortal } from "react-dom";
+import { PopoverPortal } from "../../components/PopoverPortal";
+import { useAnchoredPopover } from "../../lib/useAnchoredPopover";
+import { useProtocolMenu } from "../../lib/useProtocolMenu";
+import { MagpieIcon } from "../../components/MagpieIcon";
+import { menuKeyNavigation } from "../../lib/popover";
+import { menuHoverFocus } from "../../lib/menuScroll";
 import { ModelPop, PrefPickChip, type PopOption } from "../../components/ModelPop";
+import { PrefPick } from "../../components/PrefPick";
+import { PrefRow } from "../../components/PrefRow";
+import { TextBtn } from "../../components/TextBtn";
 import { Segs } from "../../components/Segs";
+import { Tick } from "../../components/Tick";
+import { WordsField } from "../../components/WordsField";
 import { WarmAt } from "../../components/WarmAt";
 import { demoCopy, t } from "../../i18n";
+
+const PM_CHECK = "M3.2 8.2 6.4 11.4 12.8 4.2";
 
 export const DEMO_MODELS: PopOption[] = [
   { value: "codex/gpt-5.4", label: "gpt-5.4", note: "OpenAI", group: "OpenAI", icon: "openai" },
@@ -28,14 +41,6 @@ const AUTO_RESET_CASES = [
 ];
 
 export type AutoResetMap = Record<string, { week: boolean; expiring: boolean }>;
-
-function OpenAIIcon() {
-  return (
-    <span className="ic" aria-hidden style={{ display: "inline-flex", width: 14, height: 14, alignItems: "center", justifyContent: "center", fontSize: 11 }}>
-      ◉
-    </span>
-  );
-}
 
 function named(id: string) {
   const m = DEMO_MODELS.find((x) => x.value === id);
@@ -79,8 +84,10 @@ export function CodexModelPick({ field, value, label, onChange }: CodexPickProps
 
   let display: ReactNode;
   if (value === "off") display = <span>{t("Off")}</span>;
-  else if (value) display = (<><OpenAIIcon /><span>{named(value)}</span></>);
-  else display = (<><OpenAIIcon /><span>{ownLabel}</span></>);
+  else if (value) {
+    const m = DEMO_MODELS.find((x) => x.value === value);
+    display = (<><MagpieIcon name={m?.icon || "generic"} /><span>{named(value)}</span></>);
+  } else display = (<><MagpieIcon name="openai" /><span>{ownLabel}</span></>);
 
   return (
     <>
@@ -100,7 +107,6 @@ export function CodexModelPick({ field, value, label, onChange }: CodexPickProps
         options={options}
         value={value}
         modelPicker
-        preferUp
         onPick={(v) => { onChange(v); setOpen(false); }}
         onClose={() => setOpen(false)}
       />
@@ -122,11 +128,9 @@ export function AutoResetOwn({
     <>
       {users.map((user) => {
         const was = map[user.toLowerCase()] || { week: false, expiring: false };
+        // Magpie app.js 22249–22280: .row.pref.ar-own → .who + .ar-own-cases (no .val)
         return (
-          <div className="row pref ar-own" key={user} data-user={user}>
-            <div className="who">
-              <div className="name" title={user}>{user}</div>
-            </div>
+          <PrefRow key={user} name={user} className="ar-own" dataUser={user} wrapVal={false}>
             <div className="ar-own-cases">
               {AUTO_RESET_CASES.map((c) => (
                 <div className="ar-own-case" key={c.id} data-case={c.id}>
@@ -145,7 +149,7 @@ export function AutoResetOwn({
                 </div>
               ))}
             </div>
-          </div>
+          </PrefRow>
         );
       })}
     </>
@@ -162,15 +166,9 @@ export function DailyWarmRow({
   sub: string;
 }) {
   return (
-    <div className="row pref">
-      <div className="who">
-        <div className="name">{t("Daily warm-up")}</div>
-        <div className="sub" title={sub}>{sub}</div>
-      </div>
-      <div className="val">
-        <WarmAt ats={ats} onChange={onChange} />
-      </div>
-    </div>
+    <PrefRow name={t("Daily warm-up")} sub={sub} subTitle={sub}>
+      <WarmAt ats={ats} onChange={onChange} />
+    </PrefRow>
   );
 }
 
@@ -212,18 +210,16 @@ export function ProxyBlock({
         : t("No system proxy found; requests to vendors without a proxy of their own, and update checks, go direct");
 
   return (
-    <div className="row pref">
-      <div className="who">
-        <div className="name">{t("Proxy")}</div>
-        <div className="sub">{sub}</div>
-        {testLine ? <div className="sub" id="proxyCheck">{testLine}</div> : null}
-      </div>
-      <div className="val">
+    <PrefRow
+      name={t("Proxy")}
+      sub={sub}
+      afterWho={testLine ? <div className="sub" id="proxyCheck">{testLine}</div> : null}
+    >
         <div className="proxy-segs" id="proxySegs">
           <div className="proxy-controls">
-            <button type="button" className="text proxy-test" title={t("Ask Cloudflare through the proxy and direct, and compare the addresses the two leave from")} onClick={onTest}>
+            <TextBtn className="proxy-test" title={t("Ask Cloudflare through the proxy and direct, and compare the addresses the two leave from")} onClick={onTest}>
               {t("Test")}
-            </button>
+            </TextBtn>
             {mode === "custom" ? (
               <input
                 className="proxy"
@@ -266,12 +262,11 @@ export function ProxyBlock({
                 onChange={(e) => onPass(e.target.value)}
                 onBlur={onSave}
               />
-              <button type="button" className="text" onClick={onSave}>{t("Save")}</button>
+              <TextBtn onClick={onSave}>{t("Save")}</TextBtn>
             </div>
           ) : null}
         </div>
-      </div>
-    </div>
+    </PrefRow>
   );
 }
 
@@ -298,22 +293,11 @@ export function LanAddressRow({
   const shown = cur + suffix;
   const [menu, setMenu] = useState(false);
   const btnRef = useRef<HTMLButtonElement>(null);
-
-  useEffect(() => {
-    if (!menu) return;
-    const onDoc = (e: MouseEvent) => {
-      if (!btnRef.current?.contains(e.target as Node)) setMenu(false);
-    };
-    document.addEventListener("mousedown", onDoc);
-    return () => document.removeEventListener("mousedown", onDoc);
-  }, [menu]);
+  const menuRef = useRef<HTMLDivElement>(null);
+  useProtocolMenu(menuRef, btnRef, menu, () => setMenu(false), { align: "right", maxHeight: 360 });
 
   return (
-    <div className={`row pref lan-address-row${urls.length > 1 ? " multi" : ""}`}>
-      <div className="who">
-        <div className="name">{t("Address")}</div>
-      </div>
-      <div className="val">
+    <PrefRow name={t("Address")} className={`lan-address-row${urls.length > 1 ? " multi" : ""}`}>
         <div className="lan-address-controls">
           <Segs
             value={protocol}
@@ -331,8 +315,7 @@ export function LanAddressRow({
               className={`proto pick lan-interface${menu ? " open" : ""}`}
               ref={btnRef}
               aria-label={t("Address")}
-              onClick={() => setMenu((m) => !m)}
-            >
+              onClick={() => setMenu((m) => !m)}>
               <span className="lan-url">{shown}</span>
               <svg viewBox="0 0 16 16" width={11} height={11} aria-hidden>
                 <path d="M4 6l4 4 4-4" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
@@ -340,43 +323,39 @@ export function LanAddressRow({
             </button>
           )}
           <span className="lan-copy">
-            <button
-              type="button"
-              className="copy"
-              title={t("Copy")}
-              aria-label={`${t("Copy")} ${t("{label} address", { label: protocol === "openai" ? "OpenAI" : "Anthropic" })}`}
-              onClick={async () => {
-                try { await navigator.clipboard.writeText(shown); } catch { /* */ }
-                onStatus?.(t("{what} copied", { what: t("{label} address", { label: protocol === "openai" ? "OpenAI" : "Anthropic" }) }), "ok");
-              }}
-            >
-              <svg viewBox="0 0 16 16" width={13} height={13}>
-                <rect x="5.5" y="5.5" width="7" height="7" rx="1.5" fill="none" stroke="currentColor" strokeWidth="1.4" />
-                <path d="M3.5 10.5V3.5h7" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
-              </svg>
-            </button>
+            <CopyButton text={shown} what={t("{label} address", { label: protocol === "openai" ? "OpenAI" : "Anthropic" })} onStatus={onStatus} />
           </span>
           {menu ? (
-            <div className="pop proto-menu lan-address-menu" style={{ position: "absolute", top: 44, right: 8, zIndex: 30 }} role="menu">
-              <ul style={{ listStyle: "none", margin: 0, padding: 4 }}>
-                {urls.map((u) => (
-                  <li
+            <PopoverPortal><div data-anchored className="pop proto-menu lan-address-menu" ref={menuRef} role="menu" aria-label={t("Address")}>
+              <div className="pm-head">{t("Address")}</div>
+              {urls.map((u) => {
+                const on = u === cur;
+                return (
+                  <button
+                    type="button"
                     key={u}
-                    className={u === cur ? "sel" : ""}
-                    role="menuitem"
-                    style={{ padding: "6px 8px", borderRadius: 7, cursor: "pointer", display: "flex", alignItems: "center", gap: 8 }}
-                    onClick={() => { onSelect(u); setMenu(false); }}
-                  >
-                    <span className="pm-name" style={{ flex: 1 }}>{u}{suffix}</span>
-                    {u === cur ? <span aria-hidden style={{ color: "var(--accent)" }}>✓</span> : null}
-                  </li>
-                ))}
-              </ul>
-            </div>
+                    className={`pm-item${on ? " on" : ""}`}
+                    role="menuitemradio"
+                    aria-checked={on}
+                    onClick={() => { onSelect(u); setMenu(false); }}>
+                    <span className="pm-tick" aria-hidden>
+                      {on ? (
+                        <svg viewBox="0 0 16 16" width={12} height={12} fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+                          <path d={PM_CHECK} />
+                        </svg>
+                      ) : null}
+                    </span>
+                    <span className="pm-words">
+                      <span className="pm-name">{u}{suffix}</span>
+                      <span className="pm-note" />
+                    </span>
+                  </button>
+                );
+              })}
+            </div></PopoverPortal>
           ) : null}
         </div>
-      </div>
-    </div>
+    </PrefRow>
   );
 }
 
@@ -408,13 +387,13 @@ export function RedactRulesBlock({
 
   return (
     <>
-      <div className="row pref rule-row">
-        <div className="who">
-          <div className="name">{t("Masking rules")}</div>
-          <div className="sub">{t("Secrets magpie doesn't know, such as a gateway's own keys: what they start with, or a regular expression. Masked while Mask secrets is on")}</div>
-        </div>
-        <div className="val rule-add">
-          <input className="words rule-kind" value={kind} placeholder="API_KEY" onChange={(e) => setKind(e.target.value)} />
+      <PrefRow
+        name={t("Masking rules")}
+        sub={t("Secrets magpie doesn't know, such as a gateway's own keys: what they start with, or a regular expression. Masked while Mask secrets is on")}
+        className="rule-row"
+        valClassName="rule-add"
+      >
+          <WordsField className="rule-kind" value={kind} placeholder="API_KEY" onChange={(e) => setKind(e.target.value)} />
           <Segs
             value={by}
             onChange={(v) => {
@@ -428,25 +407,25 @@ export function RedactRulesBlock({
               { id: "regex", label: t("Regex") },
             ]}
           />
-          <input
-            className="words rule-match"
+          <WordsField
+            className="rule-match"
             value={match}
             placeholder={by === "prefix" ? "oc_sk_" : "oc_sk_[A-Za-z0-9]{20,}"}
             onChange={(e) => setMatch(e.target.value)}
             onKeyDown={(e) => { if (e.key === "Enter") add(); }}
           />
-          <button type="button" className="text" onClick={add}>{t("Add")}</button>
-        </div>
-      </div>
+          <TextBtn onClick={add}>{t("Add")}</TextBtn>
+      </PrefRow>
       {rules.map((r, n) =>
         editAt === n ? (
-          <div className="row pref rule-row rule-editing" key={n}>
-            <div className="who">
-              <div className="name">{r.kind || t("Rule")}</div>
-              <div className="sub">{r.prefix ? t("Starts with {p}", { p: r.prefix }) : t("Matches {re}", { re: r.regex || "" })}</div>
-            </div>
-            <div className="val rule-add">
-              <input className="words rule-kind editing" value={ekind} onChange={(e) => setEkind(e.target.value)} aria-label={t("Name")} />
+          <PrefRow
+            key={n}
+            name={r.kind || t("Rule")}
+            sub={r.prefix ? t("Starts with {p}", { p: r.prefix }) : t("Matches {re}", { re: r.regex || "" })}
+            className="rule-row rule-editing"
+            valClassName="rule-add"
+          >
+              <WordsField className="rule-kind editing" value={ekind} onChange={(e) => setEkind(e.target.value)} aria-label={t("Name")} />
               <Segs value={eby} onChange={(v) => {
                 const next = v as "prefix" | "regex";
                 const samples = { prefix: "oc_sk_", regex: "oc_sk_[A-Za-z0-9]{20,}" } as const;
@@ -454,8 +433,8 @@ export function RedactRulesBlock({
                 setEby(next);
               }} items={[{ id: "prefix", label: t("Prefix") }, { id: "regex", label: t("Regex") }]} />
               <div className="rule-tail">
-                <input
-                  className="words rule-match editing"
+                <WordsField
+                  className="rule-match editing"
                   value={ematch}
                   onChange={(e) => setEmatch(e.target.value)}
                   onKeyDown={(e) => {
@@ -471,34 +450,31 @@ export function RedactRulesBlock({
                     }
                   }}
                 />
-                <button type="button" className="text rule-save" onClick={() => {
+                <TextBtn className="rule-save" onClick={() => {
                   const m = ematch.trim();
                   if (!m) return;
                   const next = rules.slice();
                   next[n] = { kind: ekind.trim(), ...(eby === "prefix" ? { prefix: m } : { regex: m }) };
                   onChange(next);
                   setEditAt(null);
-                }}>{t("Save")}</button>
-                <button type="button" className="text rule-cancel" onClick={() => setEditAt(null)}>{t("Cancel")}</button>
+                }}>{t("Save")}</TextBtn>
+                <TextBtn className="rule-cancel" onClick={() => setEditAt(null)}>{t("Cancel")}</TextBtn>
               </div>
-            </div>
-          </div>
+          </PrefRow>
         ) : (
-          <div className="row pref" key={n}>
-            <div className="who">
-              <div className="name">{r.kind || "—"}</div>
-              <div className="sub">{r.prefix ? t("Starts with {p}", { p: r.prefix }) : t("Matches {re}", { re: r.regex || "" })}</div>
-            </div>
-            <div className="val">
-              <button type="button" className="text rule-edit" onClick={() => {
+          <PrefRow
+            key={n}
+            name={r.kind || "—"}
+            sub={r.prefix ? t("Starts with {p}", { p: r.prefix }) : t("Matches {re}", { re: r.regex || "" })}
+          >
+              <TextBtn className="rule-edit" onClick={() => {
                 setEditAt(n);
                 setEkind(r.kind || "");
                 setEby(r.regex ? "regex" : "prefix");
                 setEmatch(r.regex || r.prefix || "");
-              }}>{t("Edit")}</button>
-              <button type="button" className="text" onClick={() => onChange(rules.filter((_, i) => i !== n))}>{t("Remove")}</button>
-            </div>
-          </div>
+              }}>{t("Edit")}</TextBtn>
+              <TextBtn onClick={() => onChange(rules.filter((_, i) => i !== n))}>{t("Remove")}</TextBtn>
+          </PrefRow>
         ),
       )}
     </>
@@ -528,63 +504,55 @@ export function OtelFull({ config, onChange }: { config: OtelConfig; onChange: (
     <div id="otelList">
       <div className="row-head"><span className="label">{t("Collector connection")}</span></div>
       <div className="list prefs">
-        <div className="row pref" id="otelExportRow">
-          <div className="who">
-            <div className="name">{t("OTLP export")}</div>
-            <div className="sub">{t("Send traces to your collector. Choose what to include below; account credentials stay local")}</div>
-          </div>
-          <div className="val">
-            <Segs value={config.enabled ? "on" : "off"} onChange={(v) => save({ enabled: v === "on" })} items={[{ id: "off", label: t("Off") }, { id: "on", label: t("On") }]} />
-          </div>
-        </div>
-        <div className="row pref otel-stacked" id="otelEndpointRow">
-          <div className="who">
-            <div className="name">{t("OTLP endpoint")}</div>
-            <div className="sub">{t("Base URL of your collector, or Langfuse's /api/public/otel endpoint")}</div>
-          </div>
-          <div className="val">
-            <input className="words" value={config.endpoint} placeholder="http://localhost:4318" aria-label={t("OTLP endpoint")} onChange={(e) => save({ endpoint: e.target.value })} />
-          </div>
-        </div>
-        <div className="row pref otel-stacked" id="otelHeadersRow">
-          <div className="who">
-            <div className="name">{t("OTLP headers")}</div>
-            <div className="sub">{t("Comma-separated name=value pairs; percent-encode spaces and commas in values")}</div>
-          </div>
-          <div className="val">
-            <input className="words" type="password" autoComplete="off" value={config.headers} placeholder="Authorization=Bearer%20token" aria-label={t("OTLP headers")} onChange={(e) => save({ headers: e.target.value })} />
-          </div>
-        </div>
+        <PrefRow
+          id="otelExportRow"
+          name={t("OTLP export")}
+          sub={t("Send traces to your collector. Choose what to include below; account credentials stay local")}
+        >
+          <Segs value={config.enabled ? "on" : "off"} onChange={(v) => save({ enabled: v === "on" })} items={[{ id: "off", label: t("Off") }, { id: "on", label: t("On") }]} />
+        </PrefRow>
+        <PrefRow
+          id="otelEndpointRow"
+          name={t("OTLP endpoint")}
+          sub={t("Base URL of your collector, or Langfuse's /api/public/otel endpoint")}
+          className="otel-stacked"
+        >
+          <WordsField className="full" value={config.endpoint} placeholder="http://localhost:4318" aria-label={t("OTLP endpoint")} onChange={(e) => save({ endpoint: e.target.value })} />
+        </PrefRow>
+        <PrefRow
+          id="otelHeadersRow"
+          name={t("OTLP headers")}
+          sub={t("Comma-separated name=value pairs; percent-encode spaces and commas in values")}
+          className="otel-stacked"
+        >
+          <WordsField className="full" type="password" autoComplete="off" value={config.headers} placeholder="Authorization=Bearer%20token" aria-label={t("OTLP headers")} onChange={(e) => save({ headers: e.target.value })} />
+        </PrefRow>
       </div>
       <div className="row-head"><span className="label">{t("Export scope")}</span></div>
       <div className="list prefs">
-        <div className="row pref" id="otelMetricsRow">
-          <div className="who">
-            <div className="name">{t("Export metrics")}</div>
-            <div className="sub">{t("Also send duration and token histograms. Leave off for a traces-only service such as Langfuse")}</div>
-          </div>
-          <div className="val">
-            <Segs value={config.metrics ? "on" : "off"} onChange={(v) => save({ metrics: v === "on" })} items={[{ id: "off", label: t("Off") }, { id: "on", label: t("On") }]} />
-          </div>
-        </div>
-        <div className="row pref" id="otelSessionsRow">
-          <div className="who">
-            <div className="name">{t("Trace agent conversations")}</div>
-            <div className="sub">{t("Reads all local sessions from Codex, Pi, Oh My Pi, Claude Code, Cowork, OpenCode and Gemini CLI, including calls not routed through Magpie. When content is included below, exports prompts, replies, tool arguments and tool output (including file contents and command output), with secrets masked")}</div>
-          </div>
-          <div className="val">
-            <Segs value={config.sessions ? "on" : "off"} onChange={(v) => save({ sessions: v === "on" })} items={[{ id: "off", label: t("Off") }, { id: "on", label: t("On") }]} />
-          </div>
-        </div>
+        <PrefRow
+          id="otelMetricsRow"
+          name={t("Export metrics")}
+          sub={t("Also send duration and token histograms. Leave off for a traces-only service such as Langfuse")}
+        >
+          <Segs value={config.metrics ? "on" : "off"} onChange={(v) => save({ metrics: v === "on" })} items={[{ id: "off", label: t("Off") }, { id: "on", label: t("On") }]} />
+        </PrefRow>
+        <PrefRow
+          id="otelSessionsRow"
+          name={t("Trace agent conversations")}
+          sub={t("Reads all local sessions from Codex, Pi, Oh My Pi, Claude Code, Cowork, OpenCode and Gemini CLI, including calls not routed through Magpie. When content is included below, exports prompts, replies, tool arguments and tool output (including file contents and command output), with secrets masked")}
+        >
+          <Segs value={config.sessions ? "on" : "off"} onChange={(v) => save({ sessions: v === "on" })} items={[{ id: "off", label: t("Off") }, { id: "on", label: t("On") }]} />
+        </PrefRow>
       </div>
       <div className="row-head"><span className="label">{t("Trace content")}</span></div>
       <div className="list prefs">
-        <div className="row pref otel-stacked" id="otelBodiesRow">
-          <div className="who">
-            <div className="name">{t("Request and response content")}</div>
-            <div className="sub">{t(descriptions[mode])}</div>
-          </div>
-          <div className="val">
+        <PrefRow
+          id="otelBodiesRow"
+          name={t("Request and response content")}
+          sub={t(descriptions[mode])}
+          className="otel-stacked"
+        >
             <Segs
               value={mode}
               onChange={(v) => save({ bodies: v !== "metadata", bodiesWhole: v === "full" })}
@@ -594,8 +562,7 @@ export function OtelFull({ config, onChange }: { config: OtelConfig; onChange: (
                 { id: "full", label: t("Full content") },
               ]}
             />
-          </div>
-        </div>
+        </PrefRow>
       </div>
     </div>
   );
@@ -643,44 +610,31 @@ export function SyncForms({
   const [expLib, setExpLib] = useState(true);
   const [impAgents, setImpAgents] = useState(true);
   const [impLib, setImpLib] = useState(true);
-  const [fname] = useState(t("No file chosen"));
-  const [chooser, setChooser] = useState(false);
-  const [chooserPlace, setChooserPlace] = useState<"home" | "desktop" | "workspace" | "other">("home");
+  const [fname, setFname] = useState(t("No file chosen"));
   const [err, setErr] = useState("");
-
-  useEffect(() => {
-    if (!chooser) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        e.preventDefault();
-        e.stopPropagation();
-        setChooser(false);
-      }
-    };
-    window.addEventListener("keydown", onKey, true);
-    return () => window.removeEventListener("keydown", onKey, true);
-  }, [chooser]);
+  /** Magpie app.js L21668–21674 importForm: OS <input type=file accept=.magpie-backup>, not invent GTK. */
+  const backupFileRef = useRef<HTMLInputElement>(null);
 
   const alsoSync = (
     <div className="stack">
-      <label className="tick"><input type="checkbox" checked={keys} onChange={(e) => setKeys(e.target.checked)} />{t("Providers' API keys")}</label>
-      <label className="tick"><input type="checkbox" checked={agents} onChange={(e) => setAgents(e.target.checked)} />{t("Agents' models")}</label>
-      <label className="tick"><input type="checkbox" checked={lib} onChange={(e) => setLib(e.target.checked)} />{t("Library: instructions, MCP servers and skills")}</label>
-      <label className="tick"><input type="checkbox" checked={usage} onChange={(e) => setUsage(e.target.checked)} />{t("Usage: this computer's calls, for the Usage page on the others")}</label>
+      <Tick checked={keys} onChange={(e) => setKeys(e.target.checked)}>{t("Providers' API keys")}</Tick>
+      <Tick checked={agents} onChange={(e) => setAgents(e.target.checked)}>{t("Agents' models")}</Tick>
+      <Tick checked={lib} onChange={(e) => setLib(e.target.checked)}>{t("Library: instructions, MCP servers and skills")}</Tick>
+      <Tick checked={usage} onChange={(e) => setUsage(e.target.checked)}>{t("Usage: this computer's calls, for the Usage page on the others")}</Tick>
       {usage ? (
         <div className="hint">{t("Usage goes as a file a day: times, tokens, models and costs, never what was said. Turn it on on each computer that shares its own.")}</div>
       ) : null}
     </div>
   );
 
+  // Magpie app.js 21603–21605: el("button","text danger"|"text"|"text primary")
   const formBar = (
     <div className="bar">
-      {onOff ? <button type="button" className="text danger" onClick={onOff}>{t("Turn off")}</button> : <span />}
+      {onOff ? <TextBtn variant="danger" onClick={onOff}>{t("Turn off")}</TextBtn> : <span />}
       <span className="grow" />
-      <button type="button" className="text" onClick={onClose}>{t("Cancel")}</button>
-      <button
-        type="button"
-        className="text primary"
+      <TextBtn onClick={onClose}>{t("Cancel")}</TextBtn>
+      <TextBtn
+        variant="primary"
         onClick={() => {
           if (!phrase) { setErr(t("Pick a passphrase: the file is sealed with it")); return; }
           setErr("");
@@ -689,64 +643,9 @@ export function SyncForms({
         }}
       >
         {t("Turn on")}
-      </button>
+      </TextBtn>
     </div>
   );
-
-  const chooserModal = chooser ? (
-    <div
-      className="modal open"
-      role="dialog"
-      aria-modal="true"
-      aria-label={t("Select File")}
-      onClick={(e) => { if (e.target === e.currentTarget) setChooser(false); }}
-    >
-      <div
-        className="dialog gtk-select-files"
-        style={{
-          width: "min(640px, 94vw)",
-          maxHeight: "min(520px, 84vh)",
-          display: "flex",
-          flexDirection: "column",
-          animation: "pop-in .42s cubic-bezier(.16,1,.3,1)",
-        }}
-      >
-        <div className="ebody" style={{ display: "grid", gridTemplateColumns: "160px 1fr", gap: 0, minHeight: 340, padding: 0, flex: 1 }}>
-          <nav style={{ borderRight: "1px solid var(--line)", padding: "10px 8px", display: "flex", flexDirection: "column", gap: 2 }}>
-            {([
-              ["home", t("Home")],
-              ["desktop", t("Desktop")],
-              ["workspace", "workspace"],
-              ["other", t("Other Locations")],
-            ] as const).map(([id, label]) => (
-              <button
-                key={id}
-                type="button"
-                className="text"
-                style={{
-                  justifyContent: "flex-start",
-                  padding: "7px 10px",
-                  borderRadius: 8,
-                  background: chooserPlace === id ? "color-mix(in srgb, var(--accent) 18%, transparent)" : "transparent",
-                }}
-                onClick={() => setChooserPlace(id)}
-              >
-                {label}
-              </button>
-            ))}
-          </nav>
-          <div style={{ padding: 16, color: "var(--muted)", fontSize: 12.5, border: "1px dashed var(--line)", margin: 12, borderRadius: 8, minHeight: 280 }}>
-            {/* empty list — accept .magpie-backup; NOTES 86 */}
-          </div>
-        </div>
-        <div className="bar" style={{ padding: "10px 14px", borderTop: "1px solid var(--line)" }}>
-          <span className="grow" />
-          <button type="button" className="text" onClick={() => setChooser(false)}>{t("Cancel")}</button>
-          <button type="button" className="text primary" disabled title={t("No file chosen")}>{t("Open")}</button>
-        </div>
-      </div>
-    </div>
-  ) : null;
 
   if (open === "dav") {
     return (
@@ -768,37 +667,37 @@ export function SyncForms({
             <>
               <label>{t("Address")}</label>
               <div>
-                <input className="words" style={{ width: "100%" }} value={url} placeholder="https://dav.jianguoyun.com/dav/" onChange={(e) => setUrl(e.target.value)} />
+                <WordsField className="full" value={url} placeholder="https://dav.jianguoyun.com/dav/" onChange={(e) => setUrl(e.target.value)} />
                 <div className="hint">{t("A folder named magpie is made in it.")}</div>
               </div>
               <label>{t("User")}</label>
-              <div><input className="words" style={{ width: "100%" }} value={user} placeholder={t("user name")} onChange={(e) => setUser(e.target.value)} /></div>
+              <div><WordsField className="full" value={user} placeholder={t("user name")} onChange={(e) => setUser(e.target.value)} /></div>
               <label>{t("Password")}</label>
-              <div><input className="words" type="password" style={{ width: "100%" }} value={pass} placeholder={t("password, or an app password")} onChange={(e) => setPass(e.target.value)} /></div>
+              <div><WordsField className="full" type="password" value={pass} placeholder={t("password, or an app password")} onChange={(e) => setPass(e.target.value)} /></div>
             </>
           ) : kind === "s3" ? (
             <>
               <label>{t("Endpoint")}</label>
               <div>
-                <input className="words" style={{ width: "100%" }} value={endpoint} placeholder="https://<account>.r2.cloudflarestorage.com" onChange={(e) => setEndpoint(e.target.value)} />
+                <WordsField className="full" value={endpoint} placeholder="https://<account>.r2.cloudflarestorage.com" onChange={(e) => setEndpoint(e.target.value)} />
                 <div className="hint">{t("Empty for AWS S3; for R2, B2, MinIO and the like, their S3 API address.")}</div>
               </div>
               <label>{t("Bucket")}</label>
-              <div><input className="words" style={{ width: "100%" }} value={bucket} placeholder={t("bucket name")} onChange={(e) => setBucket(e.target.value)} /></div>
+              <div><WordsField className="full" value={bucket} placeholder={t("bucket name")} onChange={(e) => setBucket(e.target.value)} /></div>
               <label>{t("Prefix")}</label>
               <div>
-                <input className="words" style={{ width: "100%" }} value={prefix} placeholder={t("optional")} onChange={(e) => setPrefix(e.target.value)} />
+                <WordsField className="full" value={prefix} placeholder={t("optional")} onChange={(e) => setPrefix(e.target.value)} />
                 <div className="hint">{t("The backup goes in a folder named magpie under it.")}</div>
               </div>
               <label>{t("Region")}</label>
-              <div><input className="words" style={{ width: "100%" }} value={region} placeholder="us-east-1, or auto for R2" onChange={(e) => setRegion(e.target.value)} /></div>
+              <div><WordsField className="full" value={region} placeholder="us-east-1, or auto for R2" onChange={(e) => setRegion(e.target.value)} /></div>
               <label>{t("Access key")}</label>
-              <div><input className="words" style={{ width: "100%" }} value={accessKey} placeholder="AKIA…" onChange={(e) => setAccessKey(e.target.value)} /></div>
+              <div><WordsField className="full" value={accessKey} placeholder="AKIA…" onChange={(e) => setAccessKey(e.target.value)} /></div>
               <label>{t("Secret")}</label>
-              <div><input className="words" type="password" style={{ width: "100%" }} value={secret} placeholder={t("secret access key")} onChange={(e) => setSecret(e.target.value)} /></div>
+              <div><WordsField className="full" type="password" value={secret} placeholder={t("secret access key")} onChange={(e) => setSecret(e.target.value)} /></div>
               <label />
               <div className="stack">
-                <label className="tick"><input type="checkbox" checked={pathStyle} onChange={(e) => setPathStyle(e.target.checked)} />{t("Path-style: the bucket in the path, not the host name")}</label>
+                <Tick checked={pathStyle} onChange={(e) => setPathStyle(e.target.checked)}>{t("Path-style: the bucket in the path, not the host name")}</Tick>
                 {pathStyle ? <div className="hint">{t("MinIO and most NAS servers need it.")}</div> : null}
               </div>
             </>
@@ -806,29 +705,29 @@ export function SyncForms({
             <>
               <label>{t("Repository")}</label>
               <div>
-                <input className="words" style={{ width: "100%" }} value={repo} placeholder="owner/repo" onChange={(e) => setRepo(e.target.value)} />
+                <WordsField className="full" value={repo} placeholder="owner/repo" onChange={(e) => setRepo(e.target.value)} />
                 <div className="hint">{t("An existing private GitHub repository, in owner/repo form.")}</div>
               </div>
               <label>{t("Branch")}</label>
               <div>
-                <input className="words" style={{ width: "100%" }} value={branch} placeholder={t("default branch")} onChange={(e) => setBranch(e.target.value)} />
+                <WordsField className="full" value={branch} placeholder={t("default branch")} onChange={(e) => setBranch(e.target.value)} />
                 <div className="hint">{t("Empty uses the repository's default branch. Empty repositories are initialized by the first sync; other branches must already exist.")}</div>
               </div>
               <label>{t("Folder")}</label>
               <div>
-                <input className="words" style={{ width: "100%" }} value={folder} placeholder={t("optional")} onChange={(e) => setFolder(e.target.value)} />
+                <WordsField className="full" value={folder} placeholder={t("optional")} onChange={(e) => setFolder(e.target.value)} />
                 <div className="hint">{t("The encrypted backup goes in <folder>/magpie/magpie.magpie-backup. Each update creates a commit.")}</div>
               </div>
               <label>{t("GitHub token")}</label>
               <div>
-                <input className="words" type="password" style={{ width: "100%" }} value={ghToken} placeholder={t("GitHub token")} onChange={(e) => setGhToken(e.target.value)} />
+                <WordsField className="full" type="password" value={ghToken} placeholder={t("GitHub token")} onChange={(e) => setGhToken(e.target.value)} />
                 <div className="hint">{t("A fine-grained token for this repository with Contents: read and write. Kept on this computer, separately from the library's GitHub token.")}</div>
               </div>
             </>
           )}
           <label>{t("Passphrase")}</label>
           <div>
-            <input className="words" type="password" style={{ width: "100%" }} value={phrase} placeholder={t("the same on every computer")} onChange={(e) => setPhrase(e.target.value)} />
+            <WordsField className="full" type="password" value={phrase} placeholder={t("the same on every computer")} onChange={(e) => setPhrase(e.target.value)} />
             <div className="hint">{t("The file is sealed with it on this computer; the server only ever sees it sealed. Keep it: without it the file can't be opened.")}</div>
           </div>
           <label>{t("Also sync")}</label>
@@ -836,7 +735,6 @@ export function SyncForms({
           {err ? <p className="editor-error">{err}</p> : null}
           {formBar}
         </div>
-        {chooserModal}
       </>
     );
   }
@@ -846,23 +744,22 @@ export function SyncForms({
       <div className="editor sync-form">
         <label>{t("Passphrase")}</label>
         <div>
-          <input className="words" type="password" style={{ width: "100%" }} value={p1} placeholder={t("passphrase")} onChange={(e) => setP1(e.target.value)} />
+          <WordsField className="full" type="password" value={p1} placeholder={t("passphrase")} onChange={(e) => setP1(e.target.value)} />
           <div className="hint">{t("Needed to open the file. Subscriptions aren't in it: sign in to them on the other computer.")}</div>
         </div>
         <label />
-        <div><input className="words" type="password" style={{ width: "100%" }} value={p2} placeholder={t("again")} onChange={(e) => setP2(e.target.value)} /></div>
+        <div><WordsField className="full" type="password" value={p2} placeholder={t("again")} onChange={(e) => setP2(e.target.value)} /></div>
         <label />
         <div className="stack">
-          <label className="tick"><input type="checkbox" checked={expKeys} onChange={(e) => setExpKeys(e.target.checked)} />{t("With the providers' API keys")}</label>
-          <label className="tick"><input type="checkbox" checked={expLib} onChange={(e) => setExpLib(e.target.checked)} />{t("With the library: instructions, MCP servers and skills")}</label>
+          <Tick checked={expKeys} onChange={(e) => setExpKeys(e.target.checked)}>{t("With the providers' API keys")}</Tick>
+          <Tick checked={expLib} onChange={(e) => setExpLib(e.target.checked)}>{t("With the library: instructions, MCP servers and skills")}</Tick>
         </div>
         {err ? <p className="editor-error">{err}</p> : null}
         <div className="bar">
           <span className="grow" />
-          <button type="button" className="text" onClick={onClose}>{t("Cancel")}</button>
-          <button
-            type="button"
-            className="text primary"
+          <TextBtn onClick={onClose}>{t("Cancel")}</TextBtn>
+          <TextBtn
+            variant="primary"
             onClick={() => {
               if (!p1) { setErr(t("Pick a passphrase: the file is sealed with it")); return; }
               if (p1 !== p2) { setErr(t("The two passphrases differ")); return; }
@@ -872,7 +769,7 @@ export function SyncForms({
             }}
           >
             {t("Export")}
-          </button>
+          </TextBtn>
         </div>
       </div>
     );
@@ -883,24 +780,36 @@ export function SyncForms({
       <>
         <div className="editor sync-form">
           <label>{t("File")}</label>
-          <div className="pair" style={{ display: "flex", gap: 8, alignItems: "center" }}>
+          <div className="pair">
             <span className="fname">{fname}</span>
-            <button type="button" className="text" onClick={() => { setChooserPlace("home"); setChooser(true); }}>{t("Choose…")}</button>
+            <TextBtn onClick={() => backupFileRef.current?.click()}>{t("Choose…")}</TextBtn>
+            <input
+              ref={backupFileRef}
+              type="file"
+              accept=".magpie-backup"
+              hidden
+              onChange={(e) => {
+                const f = e.target.files?.[0];
+                e.target.value = "";
+                if (!f) return;
+                setFname(f.name);
+                setErr("");
+              }}
+            />
           </div>
           <label>{t("Passphrase")}</label>
-          <div><input className="words" type="password" style={{ width: "100%" }} placeholder={t("passphrase")} /></div>
+          <div><WordsField className="full" type="password" placeholder={t("passphrase")} /></div>
           <label />
           <div className="stack">
-            <label className="tick"><input type="checkbox" checked={impAgents} onChange={(e) => setImpAgents(e.target.checked)} />{t("Set the agents' models too")}</label>
-            <label className="tick"><input type="checkbox" checked={impLib} onChange={(e) => setImpLib(e.target.checked)} />{t("Bring in the library too: instructions, MCP servers and skills")}</label>
+            <Tick checked={impAgents} onChange={(e) => setImpAgents(e.target.checked)}>{t("Set the agents' models too")}</Tick>
+            <Tick checked={impLib} onChange={(e) => setImpLib(e.target.checked)}>{t("Bring in the library too: instructions, MCP servers and skills")}</Tick>
             <div className="hint">{t("Providers with the same id are replaced; one that came without a key keeps the key it has here. The library replaces the one here, which is kept with its backups.")}</div>
           </div>
           <div className="bar">
             <span className="grow" />
-            <button type="button" className="text" onClick={onClose}>{t("Cancel")}</button>
-            <button
-              type="button"
-              className="text primary"
+            <TextBtn onClick={onClose}>{t("Cancel")}</TextBtn>
+            <TextBtn
+              variant="primary"
               onClick={() => {
                 if (fname === t("No file chosen")) { setErr(t("Choose a file first")); return; }
                 onStatus?.(demoCopy("演示：导入已模拟完成", "Demo: import simulated"), "ok");
@@ -908,11 +817,10 @@ export function SyncForms({
               }}
             >
               {t("Import")}
-            </button>
+            </TextBtn>
           </div>
           {err ? <p className="editor-error">{err}</p> : null}
         </div>
-        {chooserModal}
       </>
     );
   }
@@ -929,8 +837,8 @@ export function RestoreModal({ onClose, onConfirm }: { onClose: () => void; onCo
           <p className="lib-confirm">{t("What is here now is sealed into the sync folder first, and Undo puts it back.")}</p>
           <div className="bar">
             <span className="grow" />
-            <button type="button" className="text" onClick={onClose}>{t("Cancel")}</button>
-            <button type="button" className="text primary danger-fill" onClick={onConfirm}>{t("Restore setup")}</button>
+            <TextBtn onClick={onClose}>{t("Cancel")}</TextBtn>
+            <TextBtn variant="primary" className="danger-fill" onClick={onConfirm}>{t("Restore setup")}</TextBtn>
           </div>
         </div>
       </div>
@@ -943,24 +851,24 @@ export function WhatsNewModal({ onClose }: { onClose: () => void }) {
     <div className="modal lib" id="modal" onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}>
       <div className="dialog">
         <div className="editor whatsnew framed">
-          <div className="ehead"><b>{t("What's new in v{v}", { v: "0.1.1244" })}</b></div>
-          <div className="ebody" style={{ padding: "12px 18px", maxHeight: 360, overflow: "auto" }}>
-            <div className="wn-rel">
+          <div className="ehead"><b>{t("What's new in {v}", { v: "v0.1.1244" })}</b></div>
+          <div className="ebody">
+            <section className="wn-rel">
               <div className="wn-ver">
                 <b>v0.1.1244</b>
-                <span className="wn-badge">{t("NOT INSTALLED YET")}</span>
+                <span className="badge">{t("Not installed yet")}</span>
               </div>
               <div className="wn-notes">
                 <ul>
-                  <li><b>sessions:</b> Each reply in a session's conversation names the model its own line in the agent's file names (<span className="wn-ref">#2253</span>, cnlove7777777-art).</li>
-                  <li><b>library:</b> An agent whose CLI is gone (only its config folder left) is no Library write target, and nothing it already has is removed (<span className="wn-ref">#2254</span>, ggbdpq).</li>
-                  <li><b>provider:</b> magpie://import links take gemini=, and its host is named before adding (<span className="wn-ref">#2251</span>, ggbdpq).</li>
-                  <li><b>agent:</b> A Claude Code tier set to a model keeps it when the main model moves onto that model, not "Same as main model" (<span className="wn-ref">#2257</span>, luokinging).</li>
-                  <li><b>provider:</b> TestCopilotSecretToolUsername's fake secret-tool answers a loaded Mac's suite, not 'token ""' after two 5s waits (<span className="wn-ref">#1627</span>).</li>
+                  <li><b>sessions:</b> Each reply in a session's conversation names the model its own line in the agent's file names (<a className="wn-link" href="https://github.com/yetone/magpie/issues/2253">#2253</a>, cnlove7777777-art).</li>
+                  <li><b>library:</b> An agent whose CLI is gone (only its config folder left) is no Library write target, and nothing it already has is removed (<a className="wn-link" href="https://github.com/yetone/magpie/issues/2254">#2254</a>, ggbdpq).</li>
+                  <li><b>provider:</b> magpie://import links take gemini=, and its host is named before adding (<a className="wn-link" href="https://github.com/yetone/magpie/issues/2251">#2251</a>, ggbdpq).</li>
+                  <li><b>agent:</b> A Claude Code tier set to a model keeps it when the main model moves onto that model, not "Same as main model" (<a className="wn-link" href="https://github.com/yetone/magpie/issues/2257">#2257</a>, luokinging).</li>
+                  <li><b>provider:</b> TestCopilotSecretToolUsername's fake secret-tool answers a loaded Mac's suite, not 'token ""' after two 5s waits (<a className="wn-link" href="https://github.com/yetone/magpie/issues/1627">#1627</a>).</li>
                 </ul>
               </div>
-            </div>
-            <div className="wn-rel">
+            </section>
+            <section className="wn-rel">
               <div className="wn-ver"><b>v0.1.1240</b></div>
               <div className="wn-notes">
                 <ul>
@@ -968,11 +876,11 @@ export function WhatsNewModal({ onClose }: { onClose: () => void }) {
                   <li><b>proc, agent:</b> Asking Cline's version no longer starts an npm update of Cline (新v学员 on Discord).</li>
                 </ul>
               </div>
-            </div>
+            </section>
           </div>
           <div className="bar">
             <span className="grow" />
-            <button type="button" className="text primary" onClick={onClose}>{t("Close")}</button>
+            <TextBtn variant="primary" onClick={onClose}>{t("Close")}</TextBtn>
           </div>
         </div>
       </div>
@@ -981,47 +889,26 @@ export function WhatsNewModal({ onClose }: { onClose: () => void }) {
 }
 
 export function CliRow() {
-  const [copied, setCopied] = useState(false);
   return (
-    <div className="row pref cli-row">
-      <div className="who">
-        <div className="name">{t("Command line")}</div>
-        <div className="sub">{t("A new terminal can't find the magpie command")}</div>
-        <div className="cli-shells">
-          <div className="cli-shell on" data-shell="bash">
-            <span className="cli-dot" />
-            <span className="cli-sh">bash</span>
-            <span className="cli-state">{t("runs this app")}</span>
+    <PrefRow
+      name={t("Command line")}
+      sub={t("A new terminal can't find the magpie command")}
+      className="cli-row"
+      afterWho={
+        <>
+          <div className="cli-shells">
+            <div className="cli-shell on" data-shell="bash">
+              <span className="cli-dot" />
+              <span className="cli-sh">bash</span>
+              <span className="cli-state">{t("runs this app")}</span>
+            </div>
           </div>
-        </div>
-        <div className="cli-note">{t("A change reaches terminals opened after it")}</div>
-      </div>
-      <div className="val">
-        <button
-          type="button"
-          className={`copy${copied ? " done" : ""}`}
-          title={t("Copy")}
-          aria-label={t("Copy")}
-          onClick={async () => {
-            const tip = "magpie";
-            try { await navigator.clipboard.writeText(tip); } catch { /* demo */ }
-            setCopied(true);
-            window.setTimeout(() => setCopied(false), 1200);
-          }}
-        >
-          {copied ? (
-            <svg viewBox="0 0 16 16" width={13} height={13}>
-              <path d="M3.5 8.5 6.5 11.5 12.5 4.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          ) : (
-            <svg viewBox="0 0 16 16" width={13} height={13}>
-              <rect x="5.5" y="5.5" width="7" height="7" rx="1.5" fill="none" stroke="currentColor" strokeWidth="1.4" />
-              <path d="M3.5 10.5V3.5h7" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
-            </svg>
-          )}
-        </button>
-      </div>
-    </div>
+          <div className="cli-note">{t("A change reaches terminals opened after it")}</div>
+        </>
+      }
+    >
+        <CopyButton text="magpie" what={t("Command line")} />
+    </PrefRow>
   );
 }
 
@@ -1057,7 +944,7 @@ export function SideModelPick({
     const m = options.find((x) => x.value === value);
     display = (
       <>
-        <OpenAIIcon />
+        <MagpieIcon name={m?.icon || "generic"} />
         <span>{m ? `${m.label} · ${m.note}` : value}</span>
       </>
     );
@@ -1124,21 +1011,23 @@ export function UpdateMirrorRow({
       : t("Updates are downloaded from GitHub; a mirror can be used where GitHub is slow");
 
   return (
-    <div className="row pref update-mirror-row">
-      <div className="who">
-        <div className="name">{t("Download source")}</div>
-        <div className={`sub${err ? " err" : ""}`} title={t("The update and its checksum always come from usemagpie.ai; a file from the mirror that doesn't match it is not installed.")}>
+    <PrefRow
+      name={t("Download source")}
+      className="update-mirror-row"
+      afterWho={
+        <div
+          className={`sub${err ? " err" : ""}`}
+          title={t("The update and its checksum always come from usemagpie.ai; a file from the mirror that doesn't match it is not installed.")}
+        >
           {sub}
         </div>
-      </div>
-      <div className="val" style={{ display: "flex", gap: 6, alignItems: "center", flexWrap: "wrap" }}>
+      }
+    >
         {!editing ? (
           mirror ? (
             <>
               <code>{mirror}</code>
-              <button
-                type="button"
-                className="text"
+              <TextBtn
                 onClick={() => {
                   setEditing(true);
                   setDraft(mirror);
@@ -1146,24 +1035,20 @@ export function UpdateMirrorRow({
                 }}
               >
                 {t("Change")}
-              </button>
-              <button
-                type="button"
-                className="text"
+              </TextBtn>
+              <TextBtn
                 onClick={() => {
                   onChange("");
                   onStatus?.(t("Saved"), "ok");
                 }}
               >
                 {t("Use GitHub")}
-              </button>
+              </TextBtn>
             </>
           ) : (
             <>
               <code>GitHub</code>
-              <button
-                type="button"
-                className="text"
+              <TextBtn
                 onClick={() => {
                   setEditing(true);
                   setDraft("");
@@ -1171,13 +1056,13 @@ export function UpdateMirrorRow({
                 }}
               >
                 {t("Use a mirror…")}
-              </button>
+              </TextBtn>
             </>
           )
         ) : (
           <>
-            <input
-              className="words update-mirror-input"
+            <WordsField
+              className="update-mirror-input"
               value={draft}
               placeholder="https://mirror.example/"
               aria-label={t("Mirror address")}
@@ -1201,19 +1086,15 @@ export function UpdateMirrorRow({
                 }
               }}
             />
-            <button
-              type="button"
-              className="text"
+            <TextBtn
               onClick={() => {
                 setEditing(false);
                 setErr("");
               }}
             >
               {t("Cancel")}
-            </button>
-            <button
-              type="button"
-              className="text"
+            </TextBtn>
+            <TextBtn
               onClick={() => {
                 const v = draft.trim();
                 if (!v) return;
@@ -1228,15 +1109,14 @@ export function UpdateMirrorRow({
               }}
             >
               {t("Save")}
-            </button>
+            </TextBtn>
           </>
         )}
-      </div>
-    </div>
+    </PrefRow>
   );
 }
 
-/** Allowances › menu bar: Off ▾ / Today / 7 days (NOTES 20–23). */
+/** Allowances › menu bar — Magpie openProtoMenu (app.js L21910 / L13799–13828). */
 export function TrayUsagePick({
   value,
   onChange,
@@ -1247,64 +1127,62 @@ export function TrayUsagePick({
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLButtonElement | null>(null);
   const menuRef = useRef<HTMLDivElement | null>(null);
+  useProtocolMenu(menuRef, ref, open, () => setOpen(false), { align: "right", maxHeight: 360 });
+  // Magpie TRAY_TOTALS (app.js L21946) + Off; demo single-select stand-in for multi ids
   const opts = [
-    { v: "", name: "Off" },
-    { v: "usage:today", name: "Tokens and cost today" },
-    { v: "usage:7d", name: "Tokens and cost, last 7 days" },
+    { v: "", name: "Off", note: "" },
+    { v: "usage:today", name: "Tokens and cost today", note: "Every agent's, as the Usage page counts them" },
+    { v: "usage:7d", name: "Tokens and cost, last 7 days", note: "Every agent's, as the Usage page counts them" },
   ];
   const label =
     opts.find((o) => o.v === value)?.name ||
     (value ? value : "Off");
 
-  useEffect(() => {
-    if (!open) return;
-    const onDown = (e: MouseEvent) => {
-      if (ref.current?.contains(e.target as Node) || menuRef.current?.contains(e.target as Node)) return;
-      setOpen(false);
-    };
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setOpen(false);
-    };
-    document.addEventListener("mousedown", onDown, true);
-    document.addEventListener("keydown", onKey, true);
-    return () => {
-      document.removeEventListener("mousedown", onDown, true);
-      document.removeEventListener("keydown", onKey, true);
-    };
-  }, [open]);
-
   return (
-    <div style={{ position: "relative" }} id="trayUsagePick">
+    <div id="trayUsagePick" className="pref-anchor">
       <button
         type="button"
         ref={ref}
-        className={`sess-pick proto pick${value ? " set" : ""}${open ? " open" : ""}`}
+        className={`proto pick${value ? " set" : ""}${open ? " open" : ""}`}
         aria-haspopup="menu"
         aria-expanded={open}
-        onClick={() => setOpen((o) => !o)}
-      >
+        onClick={() => setOpen((o) => !o)}>
         <span>{t(label)}</span>
         <svg viewBox="0 0 12 12" width={11} height={11} aria-hidden>
           <path d="M3 4.5 6 7.5 9 4.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
         </svg>
       </button>
       {open ? (
-        <div className="pop proto-menu sess-menu" ref={menuRef} role="menu" style={{ position: "absolute", right: 0, top: "100%", zIndex: 40, minWidth: 220 }}>
-          {opts.map((o) => (
-            <button
-              type="button"
-              key={o.v || "off"}
-              className={o.v === value ? "on" : ""}
-              role="menuitem"
-              onClick={() => {
-                onChange(o.v);
-                setOpen(false);
-              }}
-            >
-              {t(o.name)}
-            </button>
-          ))}
-        </div>
+        <PopoverPortal><div data-anchored className="pop proto-menu" ref={menuRef} role="menu" aria-label={t("Shown beside the icon")}>
+          <div className="pm-head">{t("Shown beside the icon")}</div>
+          {opts.map((o) => {
+            const on = o.v === value;
+            return (
+              <button
+                type="button"
+                key={o.v || "off"}
+                className={`pm-item${on ? " on" : ""}`}
+                role="menuitemradio"
+                aria-checked={on}
+                onClick={() => {
+                  onChange(o.v);
+                  setOpen(false);
+                }}>
+                <span className="pm-tick" aria-hidden>
+                  {on ? (
+                    <svg viewBox="0 0 16 16" width={12} height={12} fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+                      <path d={PM_CHECK} />
+                    </svg>
+                  ) : null}
+                </span>
+                <span className="pm-words">
+                  <span className="pm-name">{t(o.name)}</span>
+                  {o.note ? <span className="pm-note">{t(o.note)}</span> : <span className="pm-note" />}
+                </span>
+              </button>
+            );
+          })}
+        </div></PopoverPortal>
       ) : null}
     </div>
   );
@@ -1334,17 +1212,15 @@ export function DisableModelsBlock({
 
   return (
     <>
-      <div className="row pref wraps" id="disabledAddRow">
-        <div className="who">
-          <div className="name">{t("Disable a model")}</div>
-          <div className="sub wraps">
-            {t("A disabled model is refused on every route through magpie (a request, a session, a routing group, a fallback, a sub-agent, a decision model) and left out of magpie's lists and agents' pickers. Only requests through magpie are covered. Type a pattern such as *fable* to disable every model it matches")}
-          </div>
-        </div>
-        <div className="val">
-          <button
-            type="button"
-            className="text action"
+      <PrefRow
+        id="disabledAddRow"
+        name={t("Disable a model")}
+        className="wraps"
+        subClassName="wraps"
+        sub={t("A disabled model is refused on every route through magpie (a request, a session, a routing group, a fallback, a sub-agent, a decision model) and left out of magpie's lists and agents' pickers. Only requests through magpie are covered. Type a pattern such as *fable* to disable every model it matches")}
+      >
+          <TextBtn
+            variant="action"
             id="disabledAdd"
             ref={btnRef}
             onClick={(e) => {
@@ -1353,33 +1229,31 @@ export function DisableModelsBlock({
             }}
           >
             {t("Disable…")}
-          </button>
-        </div>
-      </div>
+          </TextBtn>
+      </PrefRow>
       {models.map((pat) => (
-        <div className="row pref disabled-model" key={pat} data-pattern={pat}>
-          <div className="who">
-            <div className="name">{pat}</div>
-            <div className="sub wraps">
-              {DEMO_MODELS.some((m) => m.value === pat || m.label === pat)
-                ? t("Matches {n}: {list}", { n: 1, list: pat })
-                : t("Matches no model now; it is refused if one appears")}
-            </div>
-          </div>
-          <div className="val">
-            <button
-              type="button"
-              className="text"
+        <PrefRow
+          key={pat}
+          name={pat}
+          className="disabled-model"
+          dataPattern={pat}
+          subClassName="wraps"
+          sub={
+            DEMO_MODELS.some((m) => m.value === pat || m.label === pat)
+              ? t("Matches {n}: {list}", { n: 1, list: pat })
+              : t("Matches no model now; it is refused if one appears")
+          }
+        >
+            <TextBtn
               aria-label={t("Enable {model}", { model: pat })}
               onClick={() => onChange(models.filter((p) => p !== pat))}
             >
               {t("Enable")}
-            </button>
-          </div>
-        </div>
+            </TextBtn>
+        </PrefRow>
       ))}
       {!models.length ? (
-        <div className="empty-state" style={{ padding: "18px 12px" }}>
+        <div className="empty-state">
           {t("No disabled models")}
         </div>
       ) : null}
@@ -1428,15 +1302,8 @@ export function SearchApisBlock({
   const [err, setErr] = useState("");
   const [showKey, setShowKey] = useState<Record<string, boolean>>({});
   const pickRef = useRef<HTMLButtonElement>(null);
-
-  useEffect(() => {
-    if (!menu) return;
-    const onDoc = (e: MouseEvent) => {
-      if (!pickRef.current?.contains(e.target as Node)) setMenu(false);
-    };
-    document.addEventListener("mousedown", onDoc);
-    return () => document.removeEventListener("mousedown", onDoc);
-  }, [menu]);
+  const menuRef = useRef<HTMLDivElement>(null);
+  useProtocolMenu(menuRef, pickRef, menu, () => setMenu(false), { align: "right", maxHeight: 360 });
 
   const v = SEARCH_VENDORS.find((x) => x.id === vendor) || SEARCH_VENDORS[0];
   const saved = apis.find((a) => a.vendor === vendor);
@@ -1459,31 +1326,31 @@ export function SearchApisBlock({
 
   return (
     <>
-      <div className={`row pref rule-row search-add${err ? " err" : ""}`}>
-        <div className="who">
-          <div className="name">{t("Search APIs")}</div>
-          <div className={`sub${err ? " err" : ""}`}>
-            {err ||
-              t("When a model can't search the web, magpie searches for it with these, in this order, and gives it what they found") +
-                " · " +
-                t("No provider can search, so these are asked")}
-          </div>
-        </div>
-        <div className="val rule-add" style={{ position: "relative", display: "flex", flexWrap: "wrap", gap: 6, alignItems: "center" }}>
+      <PrefRow
+        name={t("Search APIs")}
+        className={`rule-row search-add${err ? " err" : ""}`}
+        subClassName={err ? "err" : undefined}
+        sub={
+          err ||
+          t("When a model can't search the web, magpie searches for it with these, in this order, and gives it what they found") +
+            " · " +
+            t("No provider can search, so these are asked")
+        }
+        valClassName="rule-add"
+      >
           <button
             type="button"
             className={`proto pick search-vendor${menu ? " open" : ""}`}
             ref={pickRef}
             aria-label={t("Search API")}
-            onClick={() => setMenu((m) => !m)}
-          >
+            onClick={() => setMenu((m) => !m)}>
             <span>{v.name}</span>
             <svg viewBox="0 0 16 16" width={11} height={11} aria-hidden>
               <path d="M4 6l4 4 4-4" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </button>
-          <input
-            className="words search-key"
+          <WordsField
+            className="search-key"
             type="password"
             value={key}
             placeholder={
@@ -1505,16 +1372,13 @@ export function SearchApisBlock({
             <button
               type="button"
               className="link"
-              onClick={() => onStatus?.(demoCopy("演示：打开密钥页", "Demo: open keys page") + " · " + v.keysURL, "ok")}
-            >
+              onClick={() => onStatus?.(demoCopy("演示：打开密钥页", "Demo: open keys page") + " · " + v.keysURL, "ok")}>
               {t("Get a key ↗")}
             </button>
           ) : null}
-          <button type="button" className="text" onClick={add}>
-            {t("Add")}
-          </button>
-          <input
-            className="words search-url"
+          <TextBtn onClick={add}>{t("Add")}</TextBtn>
+          <WordsField
+            className="search-url"
             value={url}
             placeholder={v.needURL ? "https://searx.example.com" : t("Base URL, empty for {url}", { url: v.base || "" })}
             aria-label={v.needURL ? t("Address") : t("Base URL")}
@@ -1524,50 +1388,57 @@ export function SearchApisBlock({
             }}
           />
           {menu ? (
-            <div className="pop proto-menu" style={{ position: "absolute", top: 32, left: 0, zIndex: 40, minWidth: 180 }} role="menu">
-              {SEARCH_VENDORS.map((x) => (
-                <button
-                  type="button"
-                  key={x.id}
-                  className={x.id === vendor ? "on" : ""}
-                  role="menuitem"
-                  onClick={() => {
-                    setVendor(x.id);
-                    setMenu(false);
-                    setErr("");
-                  }}
-                >
-                  <span className="pm-name">{x.name}</span>
-                  {x.needURL ? <span className="pm-note">{t("your own")}</span> : null}
-                </button>
-              ))}
-            </div>
+            <PopoverPortal><div data-anchored className="pop proto-menu" ref={menuRef} role="menu" aria-label={t("Search API")}>
+              <div className="pm-head">{t("Search API")}</div>
+              {SEARCH_VENDORS.map((x) => {
+                const on = x.id === vendor;
+                return (
+                  <button
+                    type="button"
+                    key={x.id}
+                    className={`pm-item${on ? " on" : ""}`}
+                    role="menuitemradio"
+                    aria-checked={on}
+                    onClick={() => {
+                      setVendor(x.id);
+                      setMenu(false);
+                      setErr("");
+                    }}>
+                    <span className="pm-tick" aria-hidden>
+                      {on ? (
+                        <svg viewBox="0 0 16 16" width={12} height={12} fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+                          <path d={PM_CHECK} />
+                        </svg>
+                      ) : null}
+                    </span>
+                    <span className="pm-words">
+                      <span className="pm-name">{x.name}</span>
+                      {x.needURL ? <span className="pm-note">{t("your own")}</span> : <span className="pm-note" />}
+                    </span>
+                  </button>
+                );
+              })}
+            </div></PopoverPortal>
           ) : null}
-        </div>
-      </div>
+      </PrefRow>
       {apis.map((a, n) => (
-        <div className="row pref search-api" key={a.vendor}>
-          <div className="who">
-            <div className="name">
-              {n + 1}. {a.name}
-            </div>
-            <div className={`sub${showKey[a.vendor] ? " revealed" : ""}`}>
-              {[showKey[a.vendor] ? a.key : a.key ? a.key.slice(0, 4) + "…" : "", a.url].filter(Boolean).join(" · ") || t("needs its key")}
-            </div>
-          </div>
-          <div className="val" style={{ display: "inline-flex", gap: 6 }}>
+        <PrefRow
+          key={a.vendor}
+          name={`${n + 1}. ${a.name}`}
+          className="search-api"
+          subClassName={showKey[a.vendor] ? "revealed" : undefined}
+          sub={[showKey[a.vendor] ? a.key : a.key ? a.key.slice(0, 4) + "…" : "", a.url].filter(Boolean).join(" · ") || t("needs its key")}
+        >
             {a.key ? (
               <>
-                <button
-                  type="button"
-                  className="text search-eye"
+                <TextBtn
+                  className="search-eye"
                   onClick={() => setShowKey((s) => ({ ...s, [a.vendor]: !s[a.vendor] }))}
                 >
                   {showKey[a.vendor] ? t("Hide") : t("Show")}
-                </button>
-                <button
-                  type="button"
-                  className="text search-copy"
+                </TextBtn>
+                <TextBtn
+                  className="search-copy"
                   onClick={async () => {
                     try {
                       await navigator.clipboard.writeText(a.key);
@@ -1578,14 +1449,13 @@ export function SearchApisBlock({
                   }}
                 >
                   {t("Copy")}
-                </button>
+                </TextBtn>
               </>
             ) : null}
-            <button type="button" className="text" onClick={() => onChange(apis.filter((x) => x.vendor !== a.vendor))}>
+            <TextBtn onClick={() => onChange(apis.filter((x) => x.vendor !== a.vendor))}>
               {t("Remove")}
-            </button>
-          </div>
-        </div>
+            </TextBtn>
+        </PrefRow>
       ))}
     </>
   );
@@ -1666,26 +1536,25 @@ export function AboutVersionRow({
   void st;
   void onStatus;
 
+  // Magpie app.js 21118–21130 row("Version","",version) + renderUpdate 23730–23768 ready:
+  // .who > .name "Version" + .sub "{v} is downloaded"; .val > code + .text Restart
   return (
-    <div className="row pref" id="aboutVersionRow">
-      <div className="who">
-        <div className="sub">{t("{v} is downloaded", { v: downloaded })}</div>
-      </div>
-      <div className="val" style={{ display: "flex", gap: 8, alignItems: "center" }}>
-        <code>{current}</code>
-        <button
-          type="button"
-          className="text"
-          title={t("Restart to update")}
-          onClick={(e) => {
-            // NOTES: Restart hovered only — demo keeps ready; no install.
-            e.preventDefault();
-          }}
-        >
-          {t("Restart to update")}
-        </button>
-      </div>
-    </div>
+    <PrefRow
+      id="aboutVersionRow"
+      name={t("Version")}
+      sub={t("{v} is downloaded", { v: downloaded })}
+    >
+      <code>{current}</code>
+      <TextBtn
+        title={t("Restart to update")}
+        onClick={(e) => {
+          // NOTES: Restart hovered only — demo keeps ready; no install.
+          e.preventDefault();
+        }}
+      >
+        {t("Restart to update")}
+      </TextBtn>
+    </PrefRow>
   );
 }
 
@@ -1870,7 +1739,7 @@ export function FontRow({
   const [open, setOpen] = useState<"" | "family" | "style">("");
   const [q, setQ] = useState("");
   const [list, setList] = useState(DEMO_FONT_LIST);
-  const [pos, setPos] = useState<{ top: number; left: number; up: boolean; maxH?: number } | null>(null);
+  const [menuAnchor, setMenuAnchor] = useState<HTMLElement | null>(null);
   const famRef = useRef<HTMLButtonElement | null>(null);
   const styleRef = useRef<HTMLButtonElement | null>(null);
   const menuRef = useRef<HTMLDivElement | null>(null);
@@ -1882,11 +1751,19 @@ export function FontRow({
   const closeMenu = () => {
     setOpen("");
     setQ("");
-    setPos(null);
   };
 
   useEffect(() => {
     if (!open) return;
+    // openProtoMenu distinguishes a reader's view scroll from focus/layout
+    // scrolling. Scrolling the menu itself (or an input) keeps it open.
+    let purposeUntil = 0;
+    const readerScrolls = () => { purposeUntil = performance.now() + 250; };
+    const onScroll = (e: Event) => {
+      const target = e.target as Element;
+      if (menuRef.current?.contains(target) || target.matches?.("input, textarea")) return;
+      if (!target.classList?.contains("view") || performance.now() < purposeUntil) closeMenu();
+    };
     const onDown = (e: MouseEvent) => {
       const n = e.target as Node;
       if (famRef.current?.contains(n) || styleRef.current?.contains(n) || menuRef.current?.contains(n)) return;
@@ -1898,45 +1775,40 @@ export function FontRow({
         e.stopPropagation();
         closeMenu();
         (open === "style" ? styleRef.current : famRef.current)?.focus({ preventScroll: true });
+      } else if (menuRef.current) {
+        // Home/End belong to the searchable family menu, not the style menu.
+        if (open === "family" || e.key === "ArrowDown" || e.key === "ArrowUp") menuKeyNavigation(menuRef.current, e);
+        const typing = (e.target as Element | null)?.matches("input, textarea");
+        if (e.key === "Tab" || !typing && ["PageUp", "PageDown", "Home", "End", "ArrowUp", "ArrowDown", " "].includes(e.key)) {
+          purposeUntil = performance.now() + 400;
+        }
       }
     };
     document.addEventListener("mousedown", onDown, true);
     document.addEventListener("keydown", onKey, true);
+    document.addEventListener("scroll", onScroll, true);
+    document.addEventListener("wheel", readerScrolls, { capture: true, passive: true });
+    document.addEventListener("touchmove", readerScrolls, { capture: true, passive: true });
+    window.addEventListener("resize", closeMenu);
     return () => {
       document.removeEventListener("mousedown", onDown, true);
       document.removeEventListener("keydown", onKey, true);
+      document.removeEventListener("scroll", onScroll, true);
+      document.removeEventListener("wheel", readerScrolls, true);
+      document.removeEventListener("touchmove", readerScrolls, true);
+      window.removeEventListener("resize", closeMenu);
     };
   }, [open]);
 
+  useAnchoredPopover(menuRef, menuAnchor, !!open, { align: "right", maxHeight: 360 });
   useLayoutEffect(() => {
-    if (!open) return;
-    const anchor = open === "family" ? famRef.current : styleRef.current;
-    const box = menuRef.current;
-    if (!anchor || !box) return;
-    const r = anchor.getBoundingClientRect();
-    const pad = 8;
-    const h = box.offsetHeight;
-    const w = box.offsetWidth;
-    let y = r.bottom + 5;
-    const below = window.innerHeight - pad - y;
-    const above = r.top - 5 - pad;
-    let up = false;
-    let maxH: number | undefined;
-    if (h > below && above >= h) {
-      y = r.top - 5 - h;
-      up = true;
-    } else if (h > below && above > below) {
-      maxH = above;
-      y = pad;
-      up = true;
-    } else if (h > below) {
-      maxH = Math.max(below, 0);
-    }
-    const left = Math.max(pad, Math.min(r.right - w, window.innerWidth - w - pad));
-    setPos({ top: Math.max(pad, y), left, up, maxH });
-    box.scrollTop = 0;
     if (open === "family") searchRef.current?.focus({ preventScroll: true });
-  }, [open, q, list.length]);
+    else if (open === "style") {
+      const current = menuRef.current?.querySelector<HTMLButtonElement>(".pm-item.on")
+        || menuRef.current?.querySelector<HTMLButtonElement>(".pm-item");
+      current?.focus({ preventScroll: true });
+    }
+  }, [open]);
 
   const qLower = q.trim().toLocaleLowerCase();
   const defaultLabel = t("System default");
@@ -1951,18 +1823,11 @@ export function FontRow({
 
   const menu = open ? (
     <div
-      className={`pop proto-menu sess-menu font-menu${pos?.up ? " up" : ""}`}
+      data-anchored
+      className="pop proto-menu sess-menu font-menu"
       ref={menuRef}
       role="menu"
-      style={{
-        position: "fixed",
-        top: pos ? pos.top : -9999,
-        left: pos ? pos.left : 0,
-        zIndex: 80,
-        maxHeight: pos?.maxH,
-        visibility: pos ? "visible" : "hidden",
-      }}
-    >
+>
       <div className="pm-head">{open === "family" ? t(label) : t("Font style")}</div>
       {open === "family" ? (
         <>
@@ -1984,12 +1849,11 @@ export function FontRow({
               role="menuitemradio"
               aria-checked={!value}
               className={`pm-item${!value ? " on" : ""}`}
-              onMouseEnter={(e) => (e.currentTarget as HTMLButtonElement).focus({ preventScroll: true })}
+              onMouseEnter={e => menuHoverFocus(e.currentTarget, e.nativeEvent)}
               onClick={() => {
                 onChange(null);
                 closeMenu();
-              }}
-            >
+              }}>
               <span className="pm-tick" aria-hidden>
                 {!value ? (
                   <svg viewBox="0 0 16 16" width={12} height={12} fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
@@ -2012,12 +1876,11 @@ export function FontRow({
                 aria-checked={on}
                 className={`pm-item${on ? " on" : ""}`}
                 style={{ fontFamily: `"${f.name.replace(/\\/g, "\\\\").replace(/"/g, '\\"')}", var(--font)` }}
-                onMouseEnter={(e) => (e.currentTarget as HTMLButtonElement).focus({ preventScroll: true })}
+                onMouseEnter={e => menuHoverFocus(e.currentTarget, e.nativeEvent)}
                 onClick={() => {
                   onChange(closestFont(f.styles, value));
                   closeMenu();
-                }}
-              >
+                }}>
                 <span className="pm-tick" aria-hidden>
                   {on ? (
                     <svg viewBox="0 0 16 16" width={12} height={12} fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
@@ -2035,9 +1898,8 @@ export function FontRow({
             type="button"
             role="menuitem"
             className="pm-item always"
-            onMouseEnter={(e) => (e.currentTarget as HTMLButtonElement).focus({ preventScroll: true })}
-            onClick={refresh}
-          >
+            onMouseEnter={e => menuHoverFocus(e.currentTarget, e.nativeEvent)}
+            onClick={refresh}>
             <span className="pm-tick" aria-hidden />
             <span className="pm-words">
               <span className="pm-name">{t("Refresh fonts")}</span>
@@ -2054,12 +1916,11 @@ export function FontRow({
               role="menuitemradio"
               aria-checked={on}
               className={`pm-item${on ? " on" : ""}`}
-              onMouseEnter={(e) => (e.currentTarget as HTMLButtonElement).focus({ preventScroll: true })}
+              onMouseEnter={e => menuHoverFocus(e.currentTarget, e.nativeEvent)}
               onClick={() => {
                 onChange(s);
                 closeMenu();
-              }}
-            >
+              }}>
               <span className="pm-tick" aria-hidden>
                 {on ? (
                   <svg viewBox="0 0 16 16" width={12} height={12} fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
@@ -2078,53 +1939,50 @@ export function FontRow({
   ) : null;
 
   return (
-    <div className="row pref font-row" id={`${kind}FontRow`}>
-      <div className="who">
-        <div className="name">{t(label)}</div>
-      </div>
-      <div className="font-controls" style={{ position: "relative" }}>
-        <button
-          type="button"
+    <PrefRow name={t(label)} className="font-row" id={`${kind}FontRow`} wrapVal={false}>
+      <div className="font-controls">
+        <PrefPick
           ref={famRef}
-          className={`proto pick sess-pick pref-pick font-family${open === "family" ? " open" : ""}`}
+          variant="protocol"
+          className="font-family"
+          label={value?.family || defaultLabel}
+          open={open === "family"}
           aria-haspopup="menu"
-          aria-expanded={open === "family"}
           aria-label={`${t(label)}: ${t("Font family")}`}
           title={value?.family || defaultLabel}
+          chevron={CHEV_PATH}
           onClick={(e) => {
             e.stopPropagation();
             if (open === "family") closeMenu();
             else {
               setQ("");
+              setMenuAnchor(e.currentTarget);
               setOpen("family");
             }
           }}
-        >
-          <span>{value?.family || defaultLabel}</span>
-          {CHEV_PATH}
-        </button>
-        <button
-          type="button"
+        />
+        <PrefPick
           ref={styleRef}
-          className={`proto pick sess-pick pref-pick font-style${open === "style" ? " open" : ""}`}
+          variant="protocol"
+          className="font-style"
+          label={value?.name || defaultLabel}
+          open={open === "style"}
+          set={!!value}
           aria-haspopup="menu"
-          aria-expanded={open === "style"}
           aria-label={`${t(label)}: ${t("Font style")}`}
           title={styleEnabled ? value?.name || defaultLabel : undefined}
           disabled={!styleEnabled}
+          chevron={CHEV_PATH}
           onClick={(e) => {
             e.stopPropagation();
             if (!styleEnabled) return;
             if (open === "style") closeMenu();
-            else setOpen("style");
+            else { setMenuAnchor(e.currentTarget); setOpen("style"); }
           }}
-        >
-          <span>{value?.name || defaultLabel}</span>
-          {CHEV_PATH}
-        </button>
+        />
         <div className="font-preview">{t("Aa 0123 · 中文")}</div>
-        {menu && createPortal(menu, document.body)}
+        {menu && <PopoverPortal>{menu}</PopoverPortal>}
       </div>
-    </div>
+    </PrefRow>
   );
 }

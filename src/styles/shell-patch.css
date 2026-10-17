@@ -12,14 +12,26 @@ body { margin: 0; }
   position: relative;
 }
 
-/* Web preview: Magpie nest footprint 752×652 (NOTES responsive).
+/* Web preview: compact Magpie nest footprint 752×652 (NOTES responsive).
+   Wide viewports use 1100×720 below; navigation never resizes the window.
    At text size 110%, Magpie clamps to min ~616 wide (windowMinW 560 × 1.10).
    CSS width uses un-zoomed px; html { zoom } scales the frame. */
+/* Nest preview canvas around #root card.
+   Light: #e8e8ec (slightly deeper than Magpie --bg #f4f4f6, app.css L3).
+   Dark: Magpie --bg #1a1a1e (app.css L46 / L81) so the frame is not a light strip. */
 body.web {
   background: #e8e8ec;
   min-height: 100%;
   /* html { zoom } scales #root; never let the card spill sideways */
   overflow-x: hidden;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) body.web {
+    background: #1a1a1e;
+  }
+}
+:root[data-theme="dark"] body.web {
+  background: #1a1a1e;
 }
 body.web #root {
   /* Magpie nest 752×652 CSS; visual = CSS × --zoom (default 1.1).
@@ -50,18 +62,26 @@ body.web #root {
   }
 }
 
-/* Appearance / top-bar selected chrome (NOTES responsive 01–08, 10) */
+/* Top-bar / Appearance selected thumbs — Magpie gold (SIDE_AT=1024 → top tabs).
+   Magpie app.css:227–232 .seg (no grey track) + .seg > .thumb → --seg-thumb / --seg-edge;
+   app.css:2798–2804 .thumb base (Appearance .segs use --card + light edge);
+   app.js slide() 8168–8267 / demo useSegThumb: 280ms + .still + thumbNow + ResizeObserver;
+   prefers-reduced-motion: Magpie slide() keeps WAAPI 280ms; CSS global zeros transitions.
+   Nest widths < SIDE_AT keep top #nav.seg. */
 body.web .seg > .thumb,
 .seg > .thumb {
-  background: var(--seg-thumb, var(--card));
+  background: var(--seg-thumb);
   box-shadow: var(--seg-edge);
 }
-body.web .segs .thumb,
-.segs .thumb {
+/* Appearance / in-page segs (not top #nav): Magpie .thumb base, not --seg-thumb */
+body.web .segs > .thumb,
+.segs > .thumb {
   background: var(--card);
   box-shadow: 0 1px 2px rgba(0, 0, 0, .12), 0 0 0 .5px rgba(0, 0, 0, .06);
 }
-/* Settings section nav wraps at narrow (shot 10) */
+/* Settings section nav wraps at narrow (shot 10).
+   Magpie app.css L3026 already #view-settings .set-head { flex-wrap: wrap; gap: 6px }.
+   .ptabs wrap is nest bridge (Magpie L1558 .ptabs has no wrap). */
 #view-settings .set-head,
 #view-settings .ptabs {
   flex-wrap: wrap;
@@ -69,28 +89,32 @@ body.web .segs .thumb,
 #view-settings .list.prefs {
   min-width: 0;
 }
-#view-settings .row.pref {
-  gap: 10px 16px;
-}
+/* v0.1.133: drop invent #view-settings .row.pref gap 10px 16px —
+   Magpie app.css L3052 .row.pref gap:14px. Keep min-width bridges for framed web: */
 #view-settings .row.pref .name {
   min-width: 0;
 }
 #view-settings .row.pref .val {
   min-width: 0;
-  max-width: 100%;
 }
-/* Routing peer card readable when narrow (09) */
-.rt-peer.pr-none {
-  max-width: 100%;
-  overflow-wrap: anywhere;
+/* React's menu anchor owns the row's width cap; the pick must use that
+   space, not take another 45% of its already shrink-wrapped parent. */
+.pref-anchor > .pref-pick { max-width: 100%; }
+/* Native pins page tools to its window title bar. In the framed Web demo,
+   root is that window; fixed top:0 would clip the search above its caption. */
+body.web.side-nav #view-settings .set-head {
+  position: absolute;
+  top: var(--win-caption-h, 32px);
+  left: auto;
+  right: 76px;
+  max-width: calc(100% - var(--side-w, 212px) - 170px);
+  height: 46px;
 }
-
-.sr-only {
-  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
-  overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
-}
-button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
-
+body.web.side-nav #view-settings .set-q { min-width: 0; }
+/* The Connect card keeps Magpie's label/value columns. Descriptions may
+   wrap at identifiers too; code blocks scroll within their own field. */
+.connect .hint { overflow-wrap: anywhere; }
+.connect .snip-tabs > .segs { align-self: center; }
 /* Top-tab mode: keep side-toggle visible (native Linux chrome). */
 body.window:not(.side-nav) #sideToggle { display: inline-flex; }
 body.window:not(.side-nav) .side-toggle .st-pane {
@@ -198,10 +222,33 @@ body.web .modal {
   inset: 0;
   border-radius: inherit;
 }
+/* showModal uses the browser's top layer; anchor its native control and
+   scrim to the preview window just like .modal above. No control restyling. */
+body.web .action-confirm.framed-confirm {
+  inset: auto;
+  left: var(--confirm-x);
+  top: var(--confirm-y);
+  margin: 0;
+  transform: translate(-50%, -50%);
+  width: min(420px, var(--confirm-width));
+  max-height: var(--confirm-height);
+}
+body.web .action-confirm.framed-confirm::backdrop {
+  inset: var(--confirm-inset-top) var(--confirm-inset-right) var(--confirm-inset-bottom) var(--confirm-inset-left);
+  border-radius: var(--confirm-radius);
+}
 body.web .pop {
   position: absolute !important;
   z-index: 40;
 }
+/* Browser snapshot layers sit above #root's overflow clip. Keep the native
+   navigation animation inside the same simulated OS window. */
+.nav-morph::view-transition { clip-path: var(--nav-frame-clip, none); }
+.pop[data-anchored] { position: absolute !important; z-index: 80; }
+/* React exposes the native Detect column count as a custom property. */
+.detect-grid { grid-template-columns: minmax(0, 1.3fr) repeat(var(--detect-n, 1), minmax(0, 1fr)); }
+/* A demo tray window can be unmapped without closing the browser tab. */
+.panel-unmapped { min-height: 100vh; background: transparent; }
 
 body.window .profiles.naming .chips .hint { display: none; }
 
@@ -230,34 +277,17 @@ body.window:not(.side-nav) .top.inrow .seg {
 body.window:not(.side-nav) .top.inrow .actions { margin-left: 0; }
 body.window:not(.side-nav) .top.tight .brand > span:not(.logo) { display: none; }
 
-.ag-native-note {
-  display: flex; align-items: center; gap: 6px;
-  margin-top: 2px; font-size: 12px; color: var(--muted);
-}
-.ag-native-note .sq {
-  width: 9px; height: 9px; border-radius: 2px; background: var(--seg-track, #e6e6eb);
-}
-.profiles .chips .hint { color: var(--muted); font-size: 12.5px; line-height: 30px; }
-.rt-accts li.idle {
-  justify-content: center; color: var(--muted); font-size: 12.5px;
-  border-style: dashed; cursor: default;
-}
+/* v0.1.143: drop invent .ag-native-note + .sq — Magpie connectLine kind "no"
+   is .ag-st > .ag-dot + .ag-st-t (app.js L1234–1240; app.css L3762–3765). */
+/* v0.1.128: idle row uses Magpie routing.css L74 (display:block + text-align:center) — no tip invent */
 .rt-flier-demo { pointer-events: none; }
 
-#view-agents .row.agent.conn {
-  display: flex; align-items: flex-start; gap: 10px;
-  flex-wrap: wrap;
-}
-#view-agents .row.agent.conn .who { flex: 1; min-width: 0; }
-#view-agents .row.agent.conn .ag-cant { margin-left: auto; align-self: center; }
+/* v0.1.131: drop invent #view-agents .row.agent.conn display:flex / gap / who flex —
+   Magpie app.css L3774–3776 body.window .row.agent.conn flex-wrap + min-height;
+   Magpie L3786 .who + .ag-cant { margin-left: auto } (not tip re-layout). */
 
-.lib-confirm {
-  margin: 0;
-  font-size: 12.5px;
-  line-height: 1.5;
-  color: var(--fg-2);
-  grid-column: 1 / -1;
-}
+/* v0.1.139: drop invent .lib-confirm (line-height 1.5) —
+   Magpie plugins/library/library.css L346 owns it (line-height 1.55). */
 .ag-manage-row .ic img,
 .ag-install-who .ic img {
   width: 100%;
@@ -267,79 +297,33 @@ body.window:not(.side-nav) .top.tight .brand > span:not(.logo) { display: none; 
 
 #view-providers .sheet { display: block; }
 #view-providers .sheet[hidden] { display: none !important; }
-.tile .ic, .tile img.ic-img {
-  width: 18px; height: 18px; flex: none; object-fit: contain;
-}
-.tile {
-  display: flex; align-items: center; gap: 8px; width: 100%;
-  height: 34px; padding: 0 8px; border-radius: 8px; text-align: left;
-}
+/* v0.1.133: drop invent .tile gap:8 / width:100% / missing transition —
+   Magpie app.css L2676–2682 owns .tile (gap:10px; min-width:0; transition background .12s)
+   + L2682 .tile .ic 18×18.
+   v0.1.179: drop invent .tile img.ic-img — Magpie pickRow uses span.ic>img;
+   .ic img (app.css L157) + .tile .ic (L2682) size the fill. */
 .row.agent .ic img { width: 100%; height: 100%; object-fit: contain; }
 
-.signing .mark {
-  flex: none; width: 22px; height: 22px; border-radius: 50%;
-  display: grid; place-items: center; font-weight: 700; font-size: 13px;
-  background: color-mix(in srgb, var(--amber, #d97706) 22%, transparent);
-  color: var(--amber, #b45309);
-}
+/* v0.1.145: drop invent .signing .mark amber 22px —
+   Magpie app.css L2603: 16px / var(--fg) on var(--card). */
+/* React bridge: Magpie .editor .ehead .ic is 20×20 (app.css L2695); img fill */
 .editor .ehead .ic img { width: 20px; height: 20px; object-fit: contain; }
-.editor .extra-body textarea.json {
-  width: 100%; box-sizing: border-box; padding: 8px 10px;
-  border: 1px solid var(--line); border-radius: 8px; background: var(--card);
-  color: var(--fg);
-  font: var(--code-style, normal) var(--code-weight, 400) 12px/1.45 var(--code-font, var(--code));
-  resize: vertical;
-}
-.editor .stack { display: flex; flex-direction: column; gap: 6px; }
-.editor details.more {
-  grid-column: 1 / -1; border: 1px solid var(--line); border-radius: 10px;
-  padding: 6px 10px; background: var(--card);
-}
-.editor details.more summary { cursor: pointer; font-size: 12.5px; color: var(--fg-2); }
-.editor details.more .inner {
-  display: grid; grid-template-columns: 72px minmax(0, 1fr);
-  gap: 10px 14px; margin-top: 8px;
-}
-body.web .editor details.more .inner { grid-template-columns: minmax(0, 1fr); }
-.editor .chips .chip, .editor button.chip {
-  height: 24px; padding: 0 8px; border-radius: 6px; border: 1px solid var(--line);
-  background: var(--card); font-size: 11.5px; color: var(--fg-2);
-  margin-right: 4px; margin-bottom: 4px;
-}
-.importapps .appnote { font-size: 12.5px; color: var(--fg-2); line-height: 1.45; margin-bottom: 8px; }
-.importapps .apptabs { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 8px; }
-.importapps .apptab {
-  display: inline-flex; align-items: center; gap: 6px; height: 30px;
-  padding: 0 10px; border-radius: 8px; border: 1px solid transparent;
-  background: var(--card-2, var(--pill)); font-size: 12px;
-}
-.importapps .apptab.on {
-  background: var(--card); border-color: var(--line);
-  box-shadow: 0 1px 2px rgba(0,0,0,.04);
-}
-.importapps .apptab.missing { color: var(--muted); }
-.importapps .apptab .count { color: var(--faint); font-variant-numeric: tabular-nums; }
-.importapps .applogo { width: 16px; height: 16px; object-fit: contain; }
-.importapps .apphead { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
-.importapps .apphead code { font-size: 11.5px; color: var(--muted); }
-.importapps .appempty { font-size: 13px; color: var(--fg-2); padding: 18px 4px; }
+/* v0.1.131: drop invent .editor .extra-body textarea.json (padding 8/radius 8) —
+   Magpie app.css L2775 padding 7px 9px / radius 7px + transition / white-space:pre */
+/* v0.1.131: drop invent duplicate .editor .stack — Magpie app.css L2757 */
+/* v0.1.131: drop invent details.more bordered card / summary / inner / body.web 1-col —
+   Magpie app.css L2834–2843: plain .editor .more disclosure; summary margin-left:86px;
+   .inner grid minmax(72px,max-content) minmax(0,1fr) (no tip card chrome) */
+/* v0.1.131: drop invent .editor .chips .chip height 24 / radius 6 —
+   Magpie app.css L1848–1858 .chip height 25 / radius 999px */
+/* v0.1.134: drop invent .importapps* (apptabs height/border/logo 16) —
+   Magpie app.css L3435–3464 .editor.importapps owns tabs/list/empty */
 
-/* Settings search beside set-tabs */
-#view-settings .set-q {
-  flex: 0 1 180px; margin-left: auto; min-width: 120px;
-  height: 27px; padding: 0 9px; border-radius: 7px;
-  border: 1px solid var(--line); background: var(--card); font-size: 12.5px;
-}
+/* v0.1.136: drop invent #view-settings .set-q height/padding/border/radius/bg/font —
+   Magpie app.css L3027 .set-q flex only; chrome from .sess-filter L1366 (height 26 / font 12). */
 
 
 /* Side-nav inside web frame: Magpie uses fixed sidebar; pin it to #root. */
-body.web.side-nav #root {
-  width: min(1100px, calc((100vw - 48px) / var(--zoom, 1.1)));
-  max-width: min(1100px, calc((100vw - 48px) / var(--zoom, 1.1)));
-  height: min(720px, calc((100vh - 48px) / var(--zoom, 1.1)));
-  max-height: min(720px, calc((100vh - 48px) / var(--zoom, 1.1)));
-  position: relative;
-}
 body.web .sidebar {
   position: absolute;
 }
@@ -349,6 +333,10 @@ body.web.side-nav {
 body.web.side-nav #root {
   padding-left: var(--side-w, 212px);
 }
+/* The OS caption spans the same window in either navigation layout. */
+body.web.side-nav .win-caption {
+  margin-left: calc(-1 * var(--side-w, 212px));
+}
 body.web.side-nav .sidebar {
   left: 0; top: 0; bottom: 0;
 }
@@ -357,406 +345,103 @@ body.web.side-nav {
   padding-left: 0 !important;
 }
 
-/* Settings: language pref-pick menu (demo popover; Magpie uses .pop.proto-menu.sess-menu) */
-.pref-pick {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 0 8px 0 10px;
-  border-radius: 7px;
-  background: var(--pill);
-  transition: background .12s, color .12s;
-}
-.pref-pick:hover, .pref-pick.open { background: var(--pill-hover); color: var(--fg); }
-.pref-pick svg { opacity: .7; transition: transform .15s var(--ease); }
-.pref-pick.open svg { transform: rotate(180deg); }
-.sess-menu {
-  min-width: 160px;
-  padding: 4px;
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  background: var(--card);
-  box-shadow: 0 8px 24px rgba(0,0,0,.12);
-  list-style: none;
-  margin: 0;
-}
-.sess-menu button {
-  display: block;
-  width: 100%;
-  text-align: left;
-  padding: 6px 10px;
-  border-radius: 6px;
-  font-size: 12.5px;
-  color: var(--fg-2);
-  transition: background .12s, color .12s;
-}
-.sess-menu button:hover { background: var(--pill); color: var(--fg); }
-.sess-menu button.on { background: var(--pill); color: var(--fg); font-weight: 600; }
+/* v0.1.136: drop invent .pref-pick re-paint (pill bg / padding / pill-hover open) —
+   Magpie .sess-pick L1369–1374 + .pref-pick L3080 (max-width/height/color only).
+   Drop invent bare .sess-menu button list — Magpie openProtoMenu → .pop.proto-menu.sess-menu
+   (app.js L21217–21229 / L13799–13808; app.css L2499–2506 / L1375–1377).
+   Drop invent #view-settings.set-searching duplicates — Magpie L3028–3035. */
 
-/* Settings search: Magpie puts .set-searching on #view-settings */
-#view-settings.set-searching .set-tabs { display: none; }
-#view-settings.set-searching .set-q { flex: 1 1 100%; width: 100%; margin-left: 0; }
-#view-settings.set-searching .set-page::before {
-  content: attr(data-part);
-  display: block;
-  margin: 4px 2px 6px;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: .05em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-
-/* Motion backfill: lib-switch thumb (Agents/Providers) */
-.lib-switch {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  width: 32px;
-  height: 18px;
-  padding: 0;
-  border: 0;
-  border-radius: 999px;
-  background: var(--pill);
-  cursor: pointer;
-  transition: background .18s var(--ease);
-  flex: none;
-}
-.lib-switch i {
-  display: block;
-  width: 14px;
-  height: 14px;
-  margin-left: 2px;
-  border-radius: 50%;
-  background: var(--card);
-  box-shadow: 0 1px 2px rgba(0,0,0,.12);
-  transition: transform .18s var(--ease);
-}
-/* Magpie library.css: .lib-switch.on = var(--fg) (black track), not accent */
-.lib-switch.on { background: var(--fg); }
-.lib-switch.on i { transform: translateX(14px); }
-.lib-switch:disabled { opacity: .5; cursor: default; }
+/* v0.1.129: drop invent .lib-switch geometry (height 18 / thumb 14 / translateX 14 / --pill).
+   Magpie library.css L141–146 owns .lib-switch (32×19, thumb 15, translateX 13, --line/--fg). */
 
 /* text.action / icon hover already in app.css — ensure copy-pop available */
 @media (prefers-reduced-motion: reduce) {
   .lib-switch i, .pref-pick svg, .copy.done { transition: none !important; animation: none !important; }
 }
 
-/* —— Usage deep shell —— */
-.usage-head { display: flex; align-items: center; gap: 10px; min-height: 34px; margin: 4px 0 6px; flex-wrap: wrap; }
-.usage-head > .grow { flex: 1; }
-.usage-refresh { display: inline-flex; align-items: center; gap: 2px; margin-right: 10px; position: relative; }
-.usage-refresh .icon { width: 24px; height: 24px; display: inline-grid; place-items: center; border: 0; background: none; color: var(--muted); border-radius: 7px; cursor: pointer; transition: background .12s var(--ease), color .12s var(--ease); }
-.usage-refresh .icon:hover { background: var(--pill); color: var(--fg); }
-.usage-cost { display: inline-flex; align-items: baseline; gap: 6px; font-variant-numeric: tabular-nums; color: var(--muted); font-size: 12px; }
-.usage-cost b { font-size: 15px; font-weight: 600; color: var(--fg); }
-.usage-note { margin: 6px 2px 10px; font-size: 12px; color: var(--muted); line-height: 1.45; }
-.sess-pick { flex: none; display: inline-flex; align-items: center; gap: 4px; max-width: 180px; height: 26px; padding: 0 7px 0 9px; border-radius: 7px; border: 1px solid var(--line); background: var(--card); color: var(--muted); font: inherit; font-size: 12px; cursor: default; transition: background .12s var(--ease), color .12s var(--ease), border-color .12s var(--ease); }
-.sess-pick span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.sess-pick svg { flex: none; opacity: .7; transition: transform .15s var(--ease); }
-.sess-pick:hover { background: var(--pill); }
-.sess-pick.set { color: var(--fg); border-color: var(--line-2); background: var(--pill); }
-.sess-pick.open svg { transform: rotate(180deg); }
-.sess-filter { height: 26px; padding: 0 10px; border-radius: 7px; border: 1px solid var(--line); background: var(--card); color: var(--fg); font: inherit; font-size: 12.5px; min-width: 160px; transition: border-color .12s var(--ease), box-shadow .12s var(--ease); }
-.sess-filter:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent); }
-.rm-span { font-size: 12px !important; }
-.range-menu { box-shadow: 0 8px 28px rgba(20,22,30,.12), 0 0 0 1px var(--line); border-radius: 12px; background: var(--card); }
+/* —— Usage: Magpie app.css gold (v0.1.130) ——
+   Drop tip invent always-wrap head / invent icon button chrome / wrong note.
+   Gold: app.css L773 usage-head height:34px flex:none (wrap only @640/.tight);
+   L3589–3591 usage-refresh + .icon width/busy only (shared .icon L240–246 hover);
+   L984–985 usage-cost overflow; L1074 usage-note 11px faint;
+   L1369–1374 sess-pick; L1366–1367 sess-filter; L2506+ range-menu.
+   React pop anchor: #view-usage .usage-refresh { position:relative } in CIS bridge. */
 
-/* —— Plugins deep shell —— */
-.pm-head { gap: 10px; }
-.pm-mirror { display: inline-flex; align-items: center; gap: 7px; padding: 2px 0; background: none; border: 0; font: inherit; font-size: 12px; color: var(--muted); cursor: pointer; white-space: nowrap; transition: color .12s var(--ease); }
-.pm-mirror:hover, .pm-mirror.on { color: var(--fg); }
-.pm-mirror:disabled { opacity: .6; cursor: default; }
-.pm-mirror .lib-switch { width: 28px; height: 16px; }
-.pm-mirror .lib-switch i { width: 12px; height: 12px; }
-.pm-mirror .lib-switch.on i { transform: translateX(12px); }
-.pm-find { display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 10px; border-radius: 8px; background: var(--pill); min-width: 180px; max-width: 260px; transition: background .12s var(--ease), box-shadow .12s var(--ease); }
-.pm-find:focus-within { background: var(--card); box-shadow: inset 0 0 0 1px var(--accent), 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent); }
-.pm-find input { flex: 1; min-width: 0; border: 0; outline: none; background: none; color: var(--fg); font: inherit; font-size: 12.5px; }
-.pm-find input[type="search"]::-webkit-search-cancel-button { -webkit-appearance: none; appearance: none; display: none; }
-.pm-find-clear {
-  flex: none; width: 18px; height: 18px; padding: 0; border: 0; border-radius: 5px;
-  background: transparent; color: var(--muted); font-size: 14px; line-height: 1; cursor: pointer;
-  display: inline-flex; align-items: center; justify-content: center;
-  transition: background .12s var(--ease), color .12s var(--ease);
-}
-.pm-find-clear:hover { background: var(--pill-hover); color: var(--fg); }
-.pm-body { display: flex; flex-direction: column; gap: 18px; padding: 10px 0 18px; }
-.pm-body.enter { animation: view-in .24s var(--ease); }
-.pm-intro { display: flex; gap: 14px; align-items: flex-start; padding: 4px 2px 2px; }
-.pm-introtext { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 5px; }
-.pm-intro h2 { margin: 0; font-size: 15px; font-weight: 650; letter-spacing: -.01em; }
-.pm-intro p { margin: 0; font-size: 12px; line-height: 1.55; color: var(--fg-2); max-width: 560px; }
-.pm-intro .pm-trust { display: flex; align-items: center; gap: 6px; margin-top: 3px; font-size: 11.5px; color: var(--muted); }
-.pm-intro .pm-trust svg { flex: none; color: var(--green); }
-.pm-sec { display: flex; flex-direction: column; gap: 9px; }
-.pm-sechead { display: flex; align-items: baseline; gap: 8px; padding: 0 2px; flex-wrap: wrap; }
-.pm-sechead h3 { margin: 0; font-size: 12.5px; font-weight: 650; }
-.pm-sechead span { font-size: 11.5px; color: var(--muted); }
-.pm-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(262px, 1fr)); gap: 10px; }
-.pm-card { display: flex; gap: 10px; align-items: flex-start; padding: 12px; border-radius: 12px; border: 1px solid var(--line); background: var(--card); transition: border-color .16s var(--ease), box-shadow .16s var(--ease), transform .16s var(--ease); }
-.pm-card:hover { border-color: color-mix(in srgb, var(--fg) 16%, var(--line)); box-shadow: 0 4px 14px rgba(20, 22, 30, .07); }
-.pm-card:active { transform: scale(.98); }
-.pm-logo { flex: none; width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center; background: var(--pill); color: var(--fg-2); font-size: 14px; }
-.pm-logo.big { width: 44px; height: 44px; border-radius: 12px; }
-.pm-act { flex: none; height: 28px; padding: 0 12px; border-radius: 8px; border: 1px solid var(--line); background: var(--fg); color: var(--card); font: inherit; font-size: 12px; font-weight: 600; cursor: pointer; transition: background .12s var(--ease), opacity .12s var(--ease), transform .12s var(--ease); }
-.pm-act:hover { filter: brightness(1.05); }
-.pm-act:active { transform: scale(.96); }
-.pm-act:disabled { opacity: .55; cursor: default; }
-.pm-act.get { background: var(--card); color: var(--fg); }
-.pm-none { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 36px 16px; text-align: center; color: var(--muted); }
-.pm-none b { color: var(--fg); font-size: 14px; }
-.pm-none p { margin: 0; font-size: 12.5px; max-width: 360px; line-height: 1.5; }
-.pm-ghnone { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 22px 12px; border-radius: 12px; border: 1px dashed var(--line); font-size: 12px; color: var(--muted); text-align: center; }
-.pm-foot { font-size: 12px; }
-.link { background: none; border: 0; color: var(--accent); font: inherit; font-size: 12px; cursor: pointer; padding: 0; text-decoration: underline; text-underline-offset: 2px; }
-.link:hover { filter: brightness(1.1); }
-.update-mirror-input { min-width: 180px; }
-@keyframes spin { to { transform: rotate(360deg); } }
+/* —— Plugins: Magpie plugins.css gold (v0.1.130 / v0.1.178) ——
+   Drop tip invent duplicates that fought Magpie: pm-mirror color transition,
+   pm-find min/max-width + hide webkit cancel, invent pm-card:active scale,
+   invent pm-act fg/black + height 28, invent pm-mlabel weight 600,
+   invent row-ish pm-card / first pm-intro flex-start, duplicate nest pm-*,
+   invent .pm-find-clear (v0.1.178 → Magpie native type=search cancel).
+   Gold: plugins.css L3–19 pm-mirror/pm-find; L23–38 pm-intro; L58–64 pm-card
+   (column, no :active scale); L114–131 pm-act; L149–150 pm-mlabel 12px muted. */
+/* Mirror and token inputs keep native .words sizing (app.js 18898/20112). */
 
-
-/* —— Plugins nest v0.1.38 (native 01–34) —— */
-.pm-intro {
-  position: relative; overflow: hidden; display: flex; align-items: center; gap: 18px;
-  padding: 16px 18px; border-radius: 14px; border: 1px solid var(--line);
-  background:
-    radial-gradient(120% 140% at 100% 0%, color-mix(in srgb, var(--accent) 11%, transparent), transparent 60%),
-    var(--card);
-}
-.pm-art { flex: none; display: grid; grid-template-columns: repeat(3, 34px); gap: 8px; transform: rotate(-6deg); margin-right: 6px; }
-.pm-art .pm-logo { width: 34px; height: 34px; border-radius: 10px; box-shadow: 0 1px 2px rgba(0, 0, 0, .06), 0 0 0 1px var(--line-2, var(--line)); background: var(--card); font-size: 13px; }
-.pm-art .pm-logo:nth-child(4) { grid-column: 2; }
-.pm-art .pm-logo:nth-child(odd) { transform: translateY(4px); }
-.pm-manual { display: flex; align-items: center; gap: 8px; padding: 10px 12px; border-radius: 12px; border: 1px dashed var(--line); flex-wrap: wrap; }
-.pm-mlabel { font-size: 12.5px; font-weight: 600; }
-.pm-minput { flex: 1; min-width: 180px; height: 26px; padding: 0 9px; border-radius: 7px; border: 1px solid var(--line); background: var(--card); color: var(--fg); font: inherit; font-size: 12px; outline: none; }
-.pm-minput:focus { border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent); }
-.pm-browse { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; flex: none; padding: 0; border-radius: 7px; border: 1px solid var(--line); background: var(--card); color: var(--muted); cursor: pointer; transition: color .14s var(--ease), border-color .14s var(--ease); }
-.pm-browse:hover:not(:disabled) { color: var(--fg); border-color: var(--faint); }
-.pm-browse:disabled { opacity: .5; cursor: default; }
-.pm-manual .text.primary:disabled { opacity: 1; cursor: default; filter: none; }
-.pm-manual .text.primary:disabled:hover { filter: none; }
-.pm-link { display: inline-flex; align-items: center; gap: 4px; height: 24px; padding: 0 9px; border-radius: 7px; border: 0; background: var(--pill); color: var(--fg-2); font: inherit; font-size: 11.5px; cursor: pointer; text-decoration: none; }
-.pm-link:hover { background: var(--pill-hover, color-mix(in srgb, var(--fg) 6%, var(--pill))); color: var(--fg); }
-.pm-chip.warn { gap: 5px; background: none; box-shadow: inset 0 0 0 1px var(--line); color: var(--fg-2); font-weight: 400; }
-.pm-chip.warn .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--amber, #d97706); flex: none; }
-.pm-facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 1px; border-radius: 10px; overflow: hidden; background: var(--line-2, var(--line)); border: 1px solid var(--line-2, var(--line)); }
-.pm-fact { display: flex; flex-direction: column; gap: 2px; padding: 8px 11px; background: var(--card); min-width: 0; }
-.pm-fact .k { font-size: 10.5px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); }
-.pm-fact .v { font-size: 12.5px; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
-.pm-mirror-tip { position: absolute; top: 100%; right: 0; margin-top: 6px; z-index: 30; max-width: 280px; padding: 8px 10px; border-radius: 8px; background: var(--fg); color: var(--card); font-size: 11.5px; line-height: 1.4; box-shadow: 0 8px 24px color-mix(in srgb, var(--fg) 25%, transparent); animation: fade-in .12s var(--ease); pointer-events: none; }
-.feat-say { margin: 8px 2px 10px; font-size: 12.5px; color: var(--fg-2); line-height: 1.5; }
-.pm-note.warn { color: var(--fg); }
-@media (max-width: 560px) {
-  .pm-art { display: none; }
-}
-
-/* —— Plugins Options (Magpie pm-opts) —— */
-.pm-opts { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; width: 100%; }
-.pm-opts textarea {
-  width: 100%; min-height: 84px; padding: 8px 10px; border-radius: 8px; border: 1px solid var(--line);
-  background: var(--bg); color: var(--fg); font: var(--code-style, normal) 12px var(--code-font, var(--code));
-  resize: vertical; outline: none; transition: border-color .12s var(--ease), box-shadow .12s var(--ease);
-}
-.pm-opts textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent); }
-.pm-opts-err { font-size: 11.5px; color: var(--red); }
-.pm-opts-err:empty { display: none; }
-.pm-opts-bar { display: flex; align-items: center; gap: 2px; flex-wrap: wrap; }
-.pm-opts-bar > span { flex: 1; min-width: 120px; font-size: 11.5px; color: var(--muted); }
-.pm-opts-bar .text.primary { color: var(--accent); font-weight: 600; }
-.pm-opts-bar .text.quiet { color: var(--muted); }
-.pm-mw { font-size: 11.5px; color: var(--muted); }
-.pm-act.get { background: var(--accent-soft, color-mix(in srgb, var(--accent) 16%, var(--card))); color: var(--accent); border-color: transparent; }
-.pm-act.get:hover:not(:disabled) { background: var(--accent); color: var(--accent-fg, #fff); }
-.pm-act.busy { display: inline-flex; align-items: center; gap: 6px; background: transparent; color: var(--muted); border-color: transparent; font-weight: 500; cursor: default; }
-.pm-act.go { background: var(--accent); color: var(--accent-fg, #fff); border-color: transparent; }
-.pm-act.go:hover:not(:disabled) { filter: brightness(1.08); background: var(--accent); color: var(--accent-fg, #fff); }
-.pm-act.done { display: inline-flex; align-items: center; gap: 4px; background: none; color: var(--green); border-color: transparent; padding: 0 8px; min-width: 0; font-weight: 500; cursor: default; }
-.pm-act.done:hover:not(:disabled) { background: var(--green-soft, color-mix(in srgb, var(--green) 14%, var(--card))); color: var(--green); }
-.pm-act .spin { width: 10px; height: 10px; border-radius: 50%; border: 1.5px solid currentColor; border-right-color: transparent; animation: spin .7s linear infinite; flex: none; }
-.pm-card .pm-act { transition: background .12s var(--ease), color .12s var(--ease), transform .12s var(--ease), filter .12s var(--ease); }
+/* v0.1.144: drop invent .pm-opts* / .pm-mw / .pm-act.get|busy|go|done|.spin /
+   .pm-card .pm-act transition — Magpie plugins.css L114–132 + L173–182 (OSS). */
 
 /* —— Usage led chart demo —— */
-.led-chart { transition: opacity .18s var(--ease); }
-.led-rank { transition: opacity .18s var(--ease); }
-
 /* —— Search API / Disable —— */
 .search-add .proto.pick.search-vendor svg { transition: transform .15s var(--ease); }
 .search-add .proto.pick.search-vendor.open svg { transform: rotate(180deg); }
 .disabled-model .name { font-family: var(--code); font-size: 12px; overflow-wrap: anywhere; }
 
-/* —— Range menu head —— */
-.range-menu .pm-head { padding: 6px 4px 4px; font-size: 11.5px; color: var(--muted); }
-.range-menu .rm-span { border: 0; cursor: pointer; font: inherit; transition: color .12s var(--ease), background .12s var(--ease); }
-.range-menu .rm-day { border: 0; background: none; cursor: pointer; font: inherit; transition: background .12s var(--ease), color .12s var(--ease); }
-.range-menu .rm-step { border: 0; background: none; cursor: pointer; }
-
-
-/* ---- Usage filled: ledger detail / sess list / plugins ask (v0.1.16) ---- */
-.led tr.led-row.open td { background: var(--pill); }
-.led tr.led-detail td { padding: 0; border-top: 0; background: color-mix(in srgb, var(--card) 70%, var(--pill)); }
-.led-detail-inner { animation: fade-in .18s var(--ease, ease); }
+/* Date headers use the native .proto-menu .pm-head recipe unchanged. */
+/* ---- Usage filled: ledger detail / sess list / plugins ask ---- */
+/* v0.1.136: drop invent led-row.open/led-detail bg + led-detail-inner fade —
+   Magpie app.css L1326–1328 (.open td / .led-detail td = card-2); L1329 .led-box; L1330 .led-dl.
+   Drop invent .sess-list .row.sess display:grid + sess-go opacity/translate —
+   Magpie L1514–1527 flex .row.sess + sess-go color-only hover.
+   Drop invent .stats.six re-own Magpie .stats L1019 + .stats.six L1395 (columns only). */
 .led .who .ic img { width: 14px; height: 14px; display: block; }
-.sess-list .sess-item + .sess-item { border-top: 1px solid var(--line-2); }
-.sess-list .row.sess { display: grid; grid-template-columns: 22px minmax(0, 1.4fr) minmax(100px, 0.7fr) 72px 16px; align-items: center; gap: 10px; padding: 10px 12px; cursor: pointer; transition: background .12s var(--ease); }
-.sess-list .row.sess:hover { background: var(--pill); }
 .sess-list .row.sess .ic img { width: 18px; height: 18px; display: block; }
-.sess-list .row.sess .num { text-align: right; font-variant-numeric: tabular-nums; }
-.sess-list .row.sess .num b { display: block; font-size: 13px; font-weight: 600; }
-.sess-list .row.sess .num small { display: block; font-size: 10.5px; color: var(--muted); }
-.sess-list .row.sess .cost { text-align: right; font-size: 12.5px; color: var(--green); font-weight: 600; }
-.sess-list .row.sess .cost.none, .sess-list .row.sess .num.none { color: var(--faint); }
-.sess-list .sess-go { opacity: .45; transition: opacity .12s, transform .15s var(--ease); }
-.sess-list .row.sess:hover .sess-go { opacity: 1; transform: translateX(2px); }
-.stats.six { display: grid; gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; margin-bottom: 10px; }
-.stats.six .kpi { background: var(--card); }
-.pm-ask { margin-top: 10px; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--line); background: var(--pill); display: flex; flex-direction: column; gap: 6px; animation: fade-in .18s var(--ease); }
-.pm-ask-say { margin: 0; font-size: 13px; font-weight: 600; color: var(--fg); }
-.pm-ask-sub { margin: 0; font-size: 12px; color: var(--muted); line-height: 1.45; }
-.pm-ask-acts { display: flex; gap: 8px; margin-top: 2px; }
-.pm-card.installing { opacity: .72; pointer-events: none; }
-.pm-card.installing .pm-act { min-width: 88px; }
-.pm-card.has { border-color: color-mix(in srgb, var(--accent) 35%, var(--line)); }
-.ctx-share i.k-system, .dot.k-system { --k: var(--c1, #5b8def); background: var(--k); }
-.ctx-share i.k-tools, .dot.k-tools { --k: var(--c2, #7c5cff); background: var(--k); }
-.ctx-share i.k-memory, .dot.k-memory { --k: var(--c3, #2bb673); background: var(--k); }
-.ctx-share i.k-files, .dot.k-files { --k: var(--c4, #e6a23c); background: var(--k); }
-.ctx-share i.k-results, .dot.k-results { --k: var(--c5, #e06c75); background: var(--k); }
-.ctx-share i.k-chat, .dot.k-chat { --k: var(--c6, #56b6c2); background: var(--k); }
-.ctx-mix-keys .dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; }
+/* v0.1.144: drop invent .pm-ask* card — Magpie ask is .sub.ask in-row (plugins.js
+   L1025–1108 / plugins.css L88). Drop invent .pm-card.installing / .pm-card.has. */
+/* v0.1.161: drop invent .ctx-share i.k-* / .dot.k-* hardcode + .ctx-mix-keys .dot 6px
+   circle — Magpie context.css L4–14 (.k-* → --k-*; i.dot 8×8 / radius 2.5). */
 
-.rt-groups { display: flex; flex-direction: column; gap: 10px; margin: 8px 0 12px; }
-.rt-group.card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; transition: border-color .12s var(--ease), box-shadow .18s var(--ease); }
-.rt-group.card:hover { border-color: var(--line-2); }
-.rt-group.card.muted { opacity: .85; }
-.rt-ghead { display: flex; align-items: center; gap: 8px; min-width: 0; }
-.rt-ghead b { font-size: 13px; }
-.rt-group .fold svg { transition: transform .15s ease-out; }
-.rt-group .fold.open svg, .rt-group .fold[aria-expanded="true"] svg { transform: rotate(90deg); }
-.provider .fold svg { transition: transform .15s ease-out; display: inline-block; vertical-align: -1px; margin-right: 4px; }
-.provider .fold.open svg, .provider .fold[aria-expanded="true"] svg { transform: rotate(90deg); }
-.provider .who .fold { margin-top: 6px; }
+/* v0.1.132: drop invent .rt-groups card / .rt-ghead — Magpie routing.css
+   L414–416 list separators + .rt-group row (not bordered cards).
+   Empty list: routing.js L3597–3599 .none.rt-gnone.
+   v0.1.130: drop invent .provider/.rt-group .fold.open rotate —
+   Magpie app.css L2121–2122: .fold svg default rotate(90deg); [aria-expanded=false] none.
+   Fold.tsx sets aria-expanded; no tip invent display/margin/open class. */
 
 /* ---- v0.1.17 heatmap / sess detail / plugins movable / routing live ---- */
-.heat-tip {
-  position: absolute;
-  z-index: 3;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  padding: 6px 9px;
-  background: var(--pop-bg, var(--card));
-  border-radius: 8px;
-  box-shadow: var(--shadow);
-  font-size: 11.5px;
-  white-space: nowrap;
-  pointer-events: none;
-  font-variant-numeric: tabular-nums;
-}
-.heat-tip[hidden] { display: none; }
-.heat-tip b { font-weight: 600; }
-.heat-tip span { color: var(--muted); }
-.heat-grid i { transition: background .18s var(--ease), outline-color .12s; cursor: default; }
+/* v0.1.169: drop invent .heat-tip* (dup Magpie app.css L1208–1211; invent --pop-bg fallback)
+   + invent .heat-grid i transition/cursor (Magpie L1202–1203: aspect/radius only; hover outline). */
 
-.sess-item.open { background: color-mix(in srgb, var(--pill) 45%, transparent); }
-.sess-item .sess-detail {
-  animation: fade-in .18s var(--ease);
-}
-.sess-list .sess-go.open svg { transform: rotate(90deg); }
-.sess-list .sess-go svg { transition: transform .15s var(--ease); }
-.sess-show-more { transition: color .12s var(--ease), background .12s var(--ease); }
+/* v0.1.136: drop invent sess-item.open redeclare (Magpie L1515) + sess-detail fade +
+   sess-go.open rotate (Magpie sess-go L1526–1527 is color only, no .open rotate). */
+/* v0.1.172: drop invent .sess-show-more — Magpie list pager is .sess-page-more
+   (app.css L1392; app.js L19681; sessions/client.js L656).
+   v0.1.173: empty-range "All sessions" wired as .sess-show-history (app.js L19611). */
 
-.pm-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  height: 20px;
-  padding: 0 7px;
-  border-radius: 999px;
-  font-size: 10.5px;
-  font-weight: 500;
-  background: var(--pill);
-  color: var(--fg-2);
-}
-.pm-chip.moved { background: color-mix(in srgb, var(--accent) 16%, var(--pill)); color: var(--fg); }
-.pm-chip .dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--accent);
-}
-.sub.ask { color: var(--fg-2); font-size: 12px; line-height: 1.45; }
+/* v0.1.144: drop invent .pm-chip height20/pill999 + .moved/.dot + invent .sub.ask
+   (fg-2/12px) — Magpie plugins.css L79–87 / L88 .pm-row .sub.ask = var(--fg).
+   Drop dead invent .pv-add-steps / .pv-step-body (no Magpie selectors; unused). */
+/* v0.1.128: drop invent .rt-accts .bar-as-fill — Magpie routing.css L84–90:
+   .bar = track (card-2), .bar i = fill (muted → fg when li.on), width on i. */
+/* v0.1.127: removed invented .rt-livedot.on 7px glow — Magpie routing.css L405
+   is always-green 6px + rtlive (no .on / no ring). Tip JSX may keep class "on" harmlessly. */
 
-.rt-accts li.on .bar,
-.rt-accts li .bar {
-  display: block;
-  height: 3px;
-  margin-top: 4px;
-  border-radius: 2px;
-  background: color-mix(in srgb, var(--agent, var(--accent)) 55%, var(--pill));
-  transition: width .35s var(--ease);
-}
-.rt-livedot.on {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--green, #2fb087);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--green, #2fb087) 25%, transparent);
-  display: inline-block;
-  vertical-align: middle;
-}
-
-.ag-relocate input.words,
-.pv-add-steps input.words {
-  height: 26px;
-  padding: 0 9px;
-  border-radius: 7px;
-  border: 1px solid var(--line);
-  background: var(--card);
-  color: var(--fg);
-  font: inherit;
-  font-size: 12.5px;
-}
-.pv-step-body { animation: fade-in .16s var(--ease); }
-
-/* v0.1.21 — Routing Purpose/Metrics menus + Accounts column outside .rt-more */
-.rt-cols.min1150 {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) clamp(260px, 28%, 360px);
-  column-gap: 16px;
-  align-items: start;
-}
-.rt-cols.min1150:not(.solo) .rt-col:last-child {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-}
-.rt-cols.min1150:not(.solo) .rt-acts {
-  flex: 1 1 auto;
-  min-height: 216px;
-  overflow-y: auto;
-  overscroll-behavior: contain;
-}
-
-.rt-req.on { border-color: var(--fg-2); background: var(--pill); }
-.rt-purpose.open svg,
-.rt-metric-pick.open svg { transform: rotate(180deg); }
-.pop.proto-menu.rt-purpose-menu .pm-head,
-.pop.proto-menu.rt-purpose-menu .pm-note { display: none; }
+/* v0.1.146: drop invent .rt-cols.min1150* + .rt-req.on + purpose/metric re-owns —
+   Magpie puts min1150 on .rt-more (routing.js L260 byWidth; routing.css L237–239);
+   selected req is [aria-pressed=true] (routing.css L251), not invent .on / pill;
+   .rt-purpose.open / .rt-metric-pick.open / purpose-menu pm-head|pm-note = routing.css L324–335. */
 
 
 /* USAGE_NEST v0.1.37 — native usage/01–50 calendar + refresh */
-.usage-head .period-wrap { flex-wrap: wrap; max-width: min(100%, 420px); }
-.usage-head .range-opt { display: inline-flex; align-items: center; gap: 5px; }
-.usage-head .range-opt > span { max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.usage-head .range-opt.on > span { max-width: 220px; white-space: normal; }
-.usage-refresh .pop.proto-menu.sess-menu { width: 148px; min-width: 148px; }
-.ctx-tune-note { margin: 0 0 10px; }
-.ctx-empty-dash b { display: block; font-weight: 600; }
-.led-q-wrap .sess-filter { min-width: 180px; }
+/* v0.1.177: drop invent .period-wrap / .led-q-wrap — Magpie #period is plain .segs
+   (index.html L138; app.css L2782 position:relative + L3359 body.web .usage-head > .segs);
+   Magpie #ledQ is bare .sess-filter (index.html L182; Escape clears app.js L18964–65). */
+/* v0.1.181: drop invent .usage-head .range-opt > span max-width/ellipsis —
+   Magpie app.css L2504–05 .range-opt flex+gap / svg flex:none only; L1018 tight +
+   L2528 @640 hide :not(.on)>span — no span max-width / text-overflow. */
+/* Context's native .ctx-tune-note owns its padding; no extra bottom margin. */
 
-/* v0.1.43 MOTION — Magpie control transitions still unmatched */
-.guide-x { transition: background .12s var(--ease, ease), color .12s var(--ease, ease); }
+/* v0.1.43 MOTION — Magpie control transitions still unmatched
+   v0.1.128: drop invent .guide-x transition (Magpie app.css L3728–3729: snap hover) */
 .ag-install-head .chev { transition: transform .3s cubic-bezier(.22, 1, .36, 1); }
 @media (prefers-reduced-motion: reduce) {
   .agent-more .chev,
@@ -764,7 +449,6 @@ body.web.side-nav {
   .agent-fold .row,
   .agent-fold .agent-fold-cap,
   .ag-install-head .chev,
-  .guide-x,
   .guide-agent { transition: none !important; }
   .agent-fold.open .row,
   .agent-fold.open .agent-fold-cap { transition: none !important; }
@@ -777,80 +461,21 @@ body.web.side-nav {
 
 /* ---- v0.1.44 MOTION_GAP — Magpie-only keyframes / control motions ---- */
 /* plugins: askNPM ghost cards + README skeleton (plugins.css) */
-.pm-card.ghost { gap: 10px; pointer-events: none; min-height: 72px; flex-direction: column; justify-content: center; }
-.pm-card.ghost > div { border-radius: 6px; background: var(--pill); animation: pm-pulse 1.3s ease-in-out infinite; }
-.pm-card.ghost .g1 { height: 36px; width: 60%; }
-.pm-card.ghost .g2 { height: 11px; width: 88%; }
-.pm-card.ghost .g3 { height: 11px; width: 40%; }
-@keyframes pm-pulse { 50% { opacity: .5; } }
-.pm-rskel { height: 11px; margin: 8px 0; border-radius: 5px; background: var(--pill); animation: pm-pulse 1.3s ease-in-out infinite; }
-.pm-rskel.short { width: 55%; }
-.pm-act .spin { width: 10px; height: 10px; border-radius: 50%; border: 1.5px solid currentColor; border-right-color: transparent; display: inline-block; vertical-align: -1px; margin-right: 6px; animation: spin .7s linear infinite; }
+/* v0.1.144: drop invent ghost min-height/flex/g2-width88 + duplicate pm-pulse /
+   pm-rskel / pm-act .spin — Magpie plugins.css L135–140 / L206–207 / L132. */
 
-/* library plugin motions (library.css) */
-.lib-savebar {
-  position: sticky; bottom: 8px; z-index: 3; margin-top: 12px; display: flex; align-items: center; gap: 6px;
-  padding: 7px 8px 7px 14px; border-radius: 11px; background: var(--pop-bg, var(--card)); box-shadow: var(--shadow, 0 8px 24px rgba(0,0,0,.12));
-  animation: lib-rise .22s var(--ease);
-}
-.lib-savebar[hidden] { display: none; }
-@keyframes lib-rise { from { opacity: 0; transform: translateY(8px); } }
-.lib-icon { width: 26px; height: 26px; padding: 0; display: inline-grid; place-items: center; }
-.lib-icon.busy svg { animation: lib-bob .8s var(--ease) infinite alternate; }
-@keyframes lib-bob { to { transform: translateY(-2px); } }
-.lib-probe { animation: content-in .22s var(--ease); }
-.lib-skel { animation: lib-skel-in .3s var(--ease) .18s backwards; }
-@keyframes lib-skel-in { from { opacity: 0; } }
-.lib-skel .skeleton {
-  background-color: var(--skel, var(--pill)); background-attachment: fixed; background-size: 200vw 100%;
-  background-repeat: no-repeat; background-position: 20vw 0; animation-name: lib-skel-shift; animation-duration: 1.8s;
-}
-@keyframes lib-skel-shift { from { background-position: 20vw 0; } to { background-position: -100vw 0; } }
-.mk-spin { flex: none; width: 12px; height: 12px; border-radius: 50%; border: 1.5px solid var(--line); border-top-color: var(--fg-2); opacity: 0; transition: opacity .15s; }
-.mk.loading .mk-spin { opacity: 1; animation: mk-spin .7s linear infinite; }
-@keyframes mk-spin { to { transform: rotate(360deg); } }
-.mk.loading .mk-grid { opacity: .55; transition: opacity .2s var(--ease); }
-.lib-health.checking::before { animation: lib-health-pulse 1s ease-in-out infinite alternate; }
-@keyframes lib-health-pulse { to { opacity: .25; } }
-@media (prefers-reduced-motion: reduce) {
-  .pm-card.ghost > div, .pm-rskel { animation: none; }
-  .lib-icon.busy svg, .lib-skel, .lib-skel .skeleton, .lib-health.checking::before, .mk.loading .mk-spin { animation: none !important; }
-  .lib-savebar, .lib-probe { animation: none; }
-}
+/* v0.1.144: drop invent duplicate .pm-chip.kind* / .pm-row .pm-logo radius8 /
+   .pm-act.busy min-width / .pm-dhead* — Magpie plugins.css L102–110 / L163 /
+   L130 / L193–203 / L191. Keep Magpie .modal .editor.pm-detail framed path. */
 
-/* —— Plugins Install nest (v0.1.45) —— */
-.pm-chip.kind { gap: 4px; flex: none; padding: 0; background: none; color: var(--fg-2); font-weight: 400; height: auto; }
-.pm-chip.kind svg { flex: none; }
-.pm-chip.kind.pv { color: color-mix(in srgb, var(--accent) 80%, var(--fg-2)); }
-.pm-chip.kind.mw { color: color-mix(in srgb, color-mix(in oklch, var(--green) 60%, var(--accent)) 80%, var(--fg-2)); }
-.pm-chip.kind.ag { color: color-mix(in srgb, color-mix(in oklch, var(--amber) 55%, var(--accent)) 80%, var(--fg-2)); }
-.pm-row .pm-logo { border-radius: 8px; }
-.pm-act.busy { min-width: 108px; justify-content: center; }
-
-/* —— Plugins detail (Magpie pm-detail / NOTES Install path) —— */
-.pm-dhead .pm-name b { font-size: 15px; }
-.pm-dhead .pm-by { font-size: 11.5px; color: var(--muted); }
-.pm-dact .pm-act { height: 28px; min-width: 80px; border-radius: 14px; }
-.pm-dbody { display: flex; flex-direction: column; gap: 12px; }
-.pm-dsum { margin: 0; font-size: 13px; line-height: 1.5; color: var(--fg); }
-.pm-links { display: flex; gap: 6px; flex-wrap: wrap; }
-.dialog.pm-detail .ehead.pm-dhead { min-height: 76px; gap: 12px; }
-
-/* v0.1.61 RTK card — Magpie library.css lib-rtk-* (NOTES 38 + renderRTK) */
-.lib-rtk-logo { display: inline-flex; align-items: center; flex: none; }
-.lib-rtk-logo img { width: 20px; height: 20px; }
-.lib-rtk-gain { margin: 6px 0 10px; font-size: 12.5px; line-height: 1.5; color: var(--muted); }
-.lib-rtk-cmd { margin: -4px 0 10px; font-size: 11.5px; color: var(--muted); user-select: text; word-break: break-all; }
-.lib-rtk-card .text.action:disabled { opacity: .55; cursor: default; }
+/* v0.1.148: drop invent .lib-rtk-logo / img / gain / cmd / .lib-rtk-card .text.action:disabled —
+   Magpie library.css L51–53 .lib-glyph + .lib-rtk-logo .mask; L452 .lib-rtk-gain
+   (margin 6px 12px 10px, font-size 12px); L465 .lib-rtk-cmd (margin -4px 12px 10px). */
 
 
-/* Magpie skillHow change() — pressed seg says Saving… (CU 76) */
-.lib-skillhow .opt.saving { opacity: 1; cursor: default; gap: 5px; }
-.lib-skillhow .opt:disabled { cursor: default; }
-.lib-skillhow .opt .spin {
-  width: 11px; height: 11px; border: 1.5px solid color-mix(in srgb, var(--fg) 35%, transparent);
-  border-top-color: var(--fg); border-radius: 50%; animation: spin .7s linear infinite; box-sizing: border-box;
-}
+/* v0.1.148: drop invent .lib-skillhow .opt.saving / :disabled / .spin —
+   Magpie saving() → .busy.saving + SVG (app.js L14058–14062; app.css L2852–2855);
+   library.css L357–361 owns .lib-skillhow layout only. */
 
 
 /* —— RESPONSIVE WEB (phoneWeb + framed 752 / min 560) ——
@@ -934,7 +559,6 @@ body.web.side-nav {
     gap: 6px 8px;
   }
   body.web .lib-tabs,
-  body.web .pm-tabs,
   body.web .lib-headacts {
     flex-wrap: wrap;
     max-width: 100%;
@@ -963,9 +587,9 @@ body.web.side-nav {
   }
   body.web .pm-art { display: none; }
   body.web .sess-filter { min-width: 0; width: 100%; }
-  body.web .usage-head .period-wrap { max-width: 100%; }
+  /* v0.1.177: drop invent body.web .usage-head .period-wrap — Magpie app.css L3359 */
   body.web .ag-install-cmds { flex-wrap: wrap; }
-  body.web .row.agent.conn { flex-wrap: wrap; }
+  /* v0.1.131: drop invent body.web .row.agent.conn flex-wrap — Magpie app.css L3329 body.web .row.agent */
   body.web .modal .editor,
   body.web .editor.pm-detail {
     max-width: calc(100vw - 16px);
@@ -987,11 +611,11 @@ body.web.side-nav {
   }
 }
 
-/* Tablet / short side-nav (Magpie --side-w: 184 @ ≤859) already in app.css.
-   Web framed card stays 752 until viewport past SIDE_AT with side layout. */
+/* Preview window sizing follows the viewport, never side-nav state.
+   Native layoutNav changes the contents of an existing OS window. */
 @media (min-width: 1024px) {
-  body.web.side-nav #root {
-    /* Wide web with side-nav: use more of the viewport, keep card chrome soft.
+  body.web #root {
+    /* Wide preview: use more of the viewport, keep card chrome soft.
        Still divide by --zoom so 1100 CSS × 1.1 never exceeds the viewport. */
     width: min(1100px, calc((100vw - 48px) / var(--zoom, 1.1)));
     max-width: min(1100px, calc((100vw - 48px) / var(--zoom, 1.1)));
@@ -1000,11 +624,204 @@ body.web.side-nav {
   }
 }
 
-/* Providers Turned off fold (NOTES 109–113) */
-#view-providers .badge.off {
-  text-transform: uppercase;
-  letter-spacing: .04em;
-  font-size: 10px;
-  font-weight: 600;
-  margin-left: 6px;
+/* v0.1.133: drop invent #view-providers .badge.off uppercase/size/margin —
+   Magpie app.css L2261 .badge + L2266 .badge.off (pill/muted only).
+   .provider .name .badge margin: Magpie L2256. */
+
+
+/* —— v0.1.104 CIS P0: Settings / Tick / WordsField helpers (no chrome) —— */
+.pref-anchor { position: relative; display: inline-flex; align-items: center; }
+/* React nest: Magpie placeMenu appends to body; framed web anchors .pop under pick */
+.pref-anchor > .pop.proto-menu {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  z-index: 20;
+  margin-top: 4px;
 }
+/* Magpie .editor label.tick already in app.css; allow Tick outside editor too */
+label.tick {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--fg-2);
+  font-size: 13px;
+  cursor: pointer;
+  text-align: left;
+}
+label.tick input { margin: 0; }
+.words.full { width: 100%; max-width: 100%; }
+/* Redaction rows are inserted without an additional native fade animation. */
+/* v0.1.131: drop invent .editor .more > .inner flex-column —
+   Magpie app.css L2842 grid minmax(72px,max-content) minmax(0,1fr) */
+/* v0.1.131: drop invent .editor .chips { margin-top: 6px } — Magpie L1848 chips padding only */
+
+
+/* —— v0.1.105 CIS P1: Providers editor layout (Magpie classes) —— */
+/* Magpie sets detect-grid columns inline (app.js L10024); tip keeps --detect-n in app.css.
+   v0.1.175: drop invent .dg-row display:contents — Magpie flattens dg-model/dg-cell onto grid. */
+.hint.err { color: var(--red); }
+/* v0.1.131: drop invent .icon-pick fade-in .18s — Magpie app.css L2696 no animation */
+/* v0.1.131: drop invent icon-grid button column + .n label —
+   Magpie app.css L2701–2704 34×34 place-items; app.js ~7948–7953 icon(n) only (title=name) */
+/* v0.1.131: drop invent .bar .text.danger always-red —
+   Magpie app.css L1842 .text.danger:hover only; L2848 .editor .bar .danger margin-left:-7px */
+
+
+/* —— v0.1.106 CIS P2: PrefPick / FieldPill helpers —— */
+/* v0.1.147: drop invent .ag-vl > .field / .ag-open .fields.inline / .fields.inline —
+   Magpie New sessions is line(fields) → .ag-vl > .fields (app.js L1903);
+   #agents .ag-exp .ag-vl > .fields flex wrap + .field min-width 170 (app.css L3814–3820);
+   .ag-vl .field.ag-pick width 220 (app.css L3840). No invent "inline" class. */
+/* Font controls use app.css's two-column grid. A flex bridge here used to
+   override it, stretching both picks onto separate lines. */
+/* v0.1.134: drop invent pv-tools / find.pv-find / none.pv-none / rt-gadd.pv-gap —
+   Magpie index.html L112–120 + app.css L2113–2115 / L1366 / L3036 / L2611–2617
+   (.pv-head > .sess-filter.pv-q; .set-none.pv-none; .after-list > #addProvider.text) */
+
+/* v0.1.139: drop invent `.modal .dialog.lib-editor` (+ `.sm` / dialog padding /
+   invent ehead/bar) + invent pill `button.lib-ag` —
+   Magpie: openLib → `.modal.lib` > `.dialog` > `.editor.lib-editor`
+   (plugins/library/client.js L4944 openLib; app.js openModal L8062+);
+   Magpie `.editor` app.css L2693–2706 / L2847 bar; library.css L330+ / L346;
+   Magpie `.lib-ag` library.css L187–217 (radius 7, not invent 999 pill).
+   v0.1.154: drop invent label.field / field-block / .pair / .hrow / .agents —
+   Magpie app.js field() L7219–7238 + library/client.js editServer/editHook
+   (bare <label> + wrap <div> on .editor 2-col grid; lib-slot/lib-grid;
+   lib-pairs/lib-pair/lib-addpair). WordsField = Magpie field2 input.words. */
+/* v0.1.157: drop invent .ehead.detail / .blurb / .bar .note —
+   Magpie market sheets: editor.lib-editor.mk-sheet + mk-sheethead / mk-about / mk-hint /
+   mk-id (library/client.js serverSheet L4795–4849 / skillSheet L4899–4939;
+   library.css L441–451). */
+/* v0.1.155: drop invent .acts MCP Remove — Magpie editServer puts
+   Remove from the library + copyConfigButton in .bar (client.js L2046–2091;
+   button danger → text danger; app.css L2847–2848 .editor .bar / .bar .danger). */
+/* v0.1.152: drop invent .pop.menu / .gl / .text.item —
+   Magpie openProtoMenu (library/client.js L2305–2311 event + L2345 tools;
+   app.js L13799–13849) → .pop.proto-menu + .pm-head / .pm-item / .sc-top .sc-q.
+   React nest: Magpie placeMenu→body; framed web anchors under .pref-anchor.lib-hookpick. */
+.pref-anchor.lib-hookpick > .pop.proto-menu {
+  left: 0;
+  right: auto;
+}
+/* v0.1.154: drop invent .field-block / .field-block > .k — Magpie field() + lib-agents. */
+/* v0.1.145: drop invent .oauth-pair / .sign-row —
+   Magpie OAuth app = .lib-app (+ .lib-x / .lib-addpair) library.css L133–135 / L341–343
+   (client.js drawApp L1971–2031); Sign-in = .lib-signin > .lib-signin-line (L131–132;
+   signInBox L1714–1733). */
+/* v0.1.140: drop invent .action-confirm .extra / label.tick.keep — Magpie confirmRemoveProject uses lib-pick.lib-keep in openLib (library/client.js L3668–3703), not ActionConfirm.extra */
+
+/* Magpie Providers signing / Move menu — CIS v0.1.112
+   v0.1.145: drop invent .signing .s.note + .signing > .text { align-self } —
+   Magpie app.css L2563 .signing .s; L2564 .signing > .text { margin: -3px 0 }. */
+
+/* v0.1.156: drop invent .dialog.gtk-select-files / .places / .pane —
+   Magpie has no in-app GTK Select Files. Providers import = OS
+   <input type=file multiple> (app.js L12425–12445 Choose files…);
+   Sync importForm = OS <input accept=.magpie-backup> (app.js L21668–21674). */
+
+/* v0.1.153: drop invent .scrim / .pop.move — Providers use Magpie openRowMenu
+   .pop.row-menu (app.js L3497–3538 / L5713–5726; app.css L694–700). */
+
+/* v0.1.149: drop invent .lib-thunar* / .modal.lib-thunar-scrim / .modal.lib-choose-scrim /
+   .dialog.gtk-choose-project* — Magpie has no in-app Thunar/GTK chooser.
+   Library folder/Backups → reveal() api library/reveal (client.js L88–94, L750–757);
+   Choose… only when !web via library/projects/choose (client.js L3500–3508).
+   Web demo: path input only; reveal toasts path (no invent file-manager UI). */
+
+/* ── CIS v0.1.151 LibraryView: Magpie projectCard / hookRow / oauth modal / intro ──
+   Deleted tip invent (0.1.150 leftovers):
+   - #view-library .lib-intro b/p (Magpie intro() is plain <p class="lib-intro"> client.js L810)
+   - #view-library .lib-addmenu.* (Magpie copyConfigButton → openProtoMenu / .pop.proto-menu L3183–3205)
+   - #view-library .lib-mini / .grow-min / .lib-find .words (library.css L42–43 / L288–291 already own)
+   - #view-library .lib-project* invent card/prow/chip/agent-chip/detail/chev (Magpie list.lib-card.lib-project + row.lib-row.lib-projhead L3535–3565; library.css L468–517)
+   - #view-library .lib-hook.row invent (Magpie row.lib-row.click.lib-hook L2247–2262; library.css L616–618)
+   - .lib-oauth-* / .modal.lib-oauth invent (nest oauth = browser; Magpie modal.dialog.editor.bar app.css L3250+ / L2847)
+   Magpie gold: client.js projectCard L3535–3605; projectServers L3643–3665; hookRow L2247–2262;
+   empty L803–808; intro L810; copyConfigButton L3183–3205; library.css L42–48 / L288–291 / L310–312 / L468–517 / L616–618.
+   No remaining Library invent bridges in this block. */
+/* ── CIS v0.1.115 / v0.1.161 SimpleViews (Usage + Plugins) chrome bridge ──
+   v0.1.161: drop dead invent CSS with no JSX/JS selectors —
+   .usage-relative / .pop.anchored-tr / .us-empty-copy / .us-fade / .us-col /
+   .us-acts / .us-tools / .us-find* / .led-legend / .us-kpi / .muted-12 /
+   .us-detail / .us-end / .us-rowacts / .us-tick / .sess-more (app.css L1438) /
+   .usage-note.sm / .ctx-block / invent .ctx-empty dashed card /
+   .pm-body-rel / invent --bar|--h|--grow chart/share/meter/ctx-fill bridges
+   (Magpie sets style.width / style.height / flexGrow — app.js Usage +
+   context.js shareBar L834–844 / score bar L865–868).
+   Restore Magpie context.css k-* (not invent c1… palette).
+   v0.1.162: drop invent us-miniplot → Magpie led-chart SVG (app.js drawLedColumns).
+   v0.1.164: LedChart speed marks/stems (metric===speed; Magpie L18030–55).
+   v0.1.171: drop invent #view-usage .us-empty — Magpie Usage empty is
+   #stats.stats.empty > .none (app.js L17250–55; app.css L1020–21), not
+   card.empty-state.us-empty. Keep nest bridge: usage-refresh relative for pops;
+   #period is Magpie .segs (already position:relative). */
+/* v0.1.162: drop invent #view-usage .us-miniplot — Magpie app.css .led-chart SVG */
+/* v0.1.174: drop invent #view-plugins .pm-headrow wrap + ProtoMenu pm-headrow /
+   invent Plugins folderPicker .pm-folder-row dialog —
+   Magpie openProtoMenu/openSessCombo use .pm-head only (app.js L13806 / L19442;
+   app.css L2495); Magpie browse is .pm-browse → api("plugins/choose")
+   (plugins.js L853–868 / plugins.css L153–156), no in-app folder rows. */
+/* v0.1.150: drop invent .pm-mirror-tip fade-in — Magpie plugins.js L695 native title only;
+   plugins.css L4–9 owns .pm-mirror. */
+/* v0.1.148: drop invent #view-plugins .pm-ghbar margin / .pm-ghkinds* seg-track /
+   .pm-ghfind / .pm-ghnone / .pm-who / .pm-name-row* / .pm-verified / .pm-byline /
+   .pm-sum / .pm-meta* / .pm-card.enter* / .pm-manual-hint / .pm-gap / .pm-mb /
+   .pm-logo.sm / .pm-tags / .pm-inst-row* / .pm-dot —
+   Magpie plugins.css L48–76 (.pm-ghbar / .segs / .pm-ghfind / .pm-ghnone / .pm-who /
+   .pm-name / .pm-by / .pm-verified / .pm-sum / .pm-meta); ghkinds is class on Magpie
+   segs (plugins.js L609). Drop invent .modal .pm-detail.dialog* + .modal .pm-plugin* —
+   Magpie .modal .editor.pm-detail.framed (plugins.css L191–192) + .pm-d* L193–207. */
+/* v0.1.148: drop invent #view-plugins .pm-ghkinds .opt --ctl-fg + invent .pm-note.warn
+   recolor — Magpie segs .opt + plugins.css L144 .pm-note.warn (--amber-soft). */
+
+/* ── CIS v0.1.116 RoutingView chrome bridge ── */
+/* v0.1.142: drop invent .rt-req-head.note / .rt-filters+mb / .rt-days /
+   .empty-state re-own / .rt-cols margin-top / .rt-pick-clear / .rt-add-stack —
+   Magpie routing.css L314–315 filters; L340 .rt-req-head .note child;
+   app.css L521–522 + routing.css L352–353 empty-state; routing.js L3778
+   text danger rt-gremove (no tip rt-pick-clear). */
+.pop.row-menu.fixed { position: fixed; z-index: 80; }
+/* v0.1.180: drop invent .rt-fade — Magpie rt-replay/rt-log have no fade class (routing.js L71/L100). */
+#view-routing .rt-filters[hidden] { display: none !important; }
+/* v0.1.132: drop invent #view-routing .rt-group-by inline-flex — Magpie routing.css L316/L667 */
+/* v0.1.161: drop dead invent .rt-col-live + --bar fill — demo uses .rt-col +
+   Magpie style.width on .bar i (routing.css L396–397). */
+/* Native activity rows have no additional rtin animation. */
+/* v0.1.132: drop invent rt-tpl / rt-group.row.who / rt-dim / rt-pick-empty|title|gap /
+   rt-ic.sm / modal.rt-confirm — Magpie has none; groups use .main/.nm (routing.css L442–444). */
+
+
+/* ── CIS v0.1.117 AgentsView + NestedBlocks chrome bridge ── */
+.display-contents { display: contents; }
+/* v0.1.147: drop invent #view-agents .sub.faint + .ag-cant cursor/user-select —
+   Magpie connectLine unplugged is .ag-st/.ag-dot/.ag-st-t (app.js L1234–1272);
+   Magpie .ag-cant is flex/font/color only (app.css L3800). */
+/* v0.1.159: drop invent #view-agents .row.agent .val.acts — Magpie connectRow
+   appends expandLink (.ag-link) + connectSwitch (lib-switch.ag-conn), never
+   .val.acts (app.js L1067–1094 / L1308–1344 / L1389–1423; app.css L3780–3794).
+   Relocate is Sessions askRelocate (sessions/client.js L633 / L900+), not Agents. */
+/* v0.1.140: drop invent #view-agents .ag-relocate* — Magpie askRelocate is editor.sm-ask modal (sessions/client.js L901–959) */
+/* v0.1.143: drop invent #view-agents .ag-exp.enter / .mt6 / .mt2 / .ag-tick /
+   .ag-json-preview — Magpie ag-exp has none (app.css L3804+); longest tick is
+   label.ag-vl.ag-longest (app.js L1713). */
+
+/* Settings NestedBlocks */
+/* v0.1.190: drop invent .ic.openai-mark — Magpie icon("openai") is span.ic[data-icon]
+   > img (app.js L284–318 / L22407+); tip NestedBlocks MagpieIcon. */
+/* v0.1.142: drop invent .lan-pop* — Magpie LAN is openProtoMenu
+   lan-address-menu (app.js L23639–23640; NestedBlocks 0.1.137). */
+/* v0.1.143: drop invent #view-settings .whatsnew-body — Magpie showWhatsNew
+   uses .modal .editor.whatsnew > .ebody (app.js L4144; app.css L3279 / framed L3268). */
+/* v0.1.146: drop dead invent Settings chrome — .sync-row / .mirror-row /
+   .tray-usage-wrap / .models-empty / .search-apis* / .about-ver / empty
+   #view-settings .font-preview / invent .font-menu .opt .preview.
+   Magpie: update-mirror-row (app.js L20952); .search-api (app.css L3117);
+   .font-preview (app.css L3063–3065); About = PrefRow Version (app.js L21118);
+   TrayUsage = #trayUsagePick proto pick (app.js L21812+); SyncForms editor.sync-form. */
+
+/* leftovers — v0.1.161: drop dead invent .led-heat-legend / .model-pop .hint-sm */
+.pop.row-menu.fixed-z50 { position: fixed; z-index: 50; }
+/* v0.1.170: drop invent .ge-add-sheet / .ge-full-row / dead .am-pop .empty —
+   Magpie groupEditor is editor.rt-gedit + .bar (routing.js L4097 / L4888;
+   app.css L2847 .editor .bar already grid-column 1/-1). am-pop empty = .am-none. */

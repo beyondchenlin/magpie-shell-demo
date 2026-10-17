@@ -3,10 +3,30 @@ import { ZH as ZH_ZH } from "./data/mock";
 import zhTable from "./data/zh.json";
 
 /** Magpie i18n: English source keys, zh map from i18n.js. Default zh-CN. */
-export type Lang = "zh" | "en";
+export type Lang = "zh" | "en" | "zh-TW" | "ja" | "de";
+export const LANGS: readonly Lang[] = ["en", "zh", "zh-TW", "ja", "de"];
+
+export function systemLang(): Lang {
+  const locale = navigator.language.toLowerCase();
+  if (locale.startsWith("zh")) return /tw|hk|hant/.test(locale) ? "zh-TW" : "zh";
+  if (locale.startsWith("ja")) return "ja";
+  if (locale.startsWith("de")) return "de";
+  return "en";
+}
 
 const LANG_KEY = "magpie.lang";
 const table = zhTable as Record<string, string>;
+const extraTables: Partial<Record<Lang, Record<string, string>>> = {};
+const loaders = {
+  "zh-TW": () => import("./data/zh-TW.json"),
+  ja: () => import("./data/ja.json"),
+  de: () => import("./data/de.json"),
+};
+async function loadLanguage(next: Lang) {
+  if (next === "zh" || next === "en" || extraTables[next]) return;
+  extraTables[next] = (await loaders[next]()).default;
+}
+export function prepareLanguage() { return loadLanguage(lang); }
 
 const EN_EXTRA: Record<string, string> = {
   ofDone: "0 of 2 done",
@@ -37,7 +57,8 @@ const rev = new Map<string, string>();
 let lang: Lang = "zh";
 try {
   const saved = localStorage.getItem(LANG_KEY);
-  if (saved === "en" || saved === "zh") lang = saved;
+  if (saved && LANGS.includes(saved as Lang)) lang = saved as Lang;
+  if (localStorage.getItem("magpie.uiLocale") === "system") lang = systemLang();
 } catch {
   /* default zh */
 }
@@ -48,19 +69,25 @@ export function getLang(): Lang {
   return lang;
 }
 
-export function setLang(next: Lang) {
+let languageRequest = 0;
+export async function setLang(next: Lang) {
+  const request = ++languageRequest;
+  try { await loadLanguage(next); } catch { return false; }
+  if (request !== languageRequest) return false;
   lang = next;
   try {
     localStorage.setItem(LANG_KEY, next);
   } catch {
     /* this time only */
   }
-  document.documentElement.lang = next === "zh" ? "zh-CN" : "en";
+  document.documentElement.lang = next === "zh" ? "zh-CN" : next;
   for (const fn of listeners) fn();
+  return true;
 }
 
 export function t(en: string, vars?: Record<string, string | number>): string {
-  let out = lang === "zh" ? (table[en] ?? en) : en;
+  const selected = lang === "zh" ? table : extraTables[lang];
+  let out = selected?.[en] ?? en;
   if (vars) {
     for (const k of Object.keys(vars)) out = out.split("{" + k + "}").join(String(vars[k]));
   }
@@ -69,15 +96,14 @@ export function t(en: string, vars?: Record<string, string | number>): string {
 
 /** Demo-only lines that are not Magpie copy. */
 export function demoCopy(zh: string, en: string): string {
-  return lang === "en" ? en : zh;
+  return lang === "zh" || lang === "zh-TW" ? zh : en;
 }
 
 function fieldText(prop: string): string {
   const zhVal = ZH_ZH[prop as keyof typeof ZH_ZH];
   if (typeof zhVal !== "string") return String(zhVal ?? "");
   const en = EN_EXTRA[prop] || rev.get(zhVal);
-  if (lang === "en") return en || zhVal;
-  if (en && table[en]) return table[en];
+  if (en) return t(en);
   return zhVal;
 }
 
@@ -102,5 +128,5 @@ export function useLang(): Lang {
 }
 
 if (typeof document !== "undefined") {
-  document.documentElement.lang = lang === "zh" ? "zh-CN" : "en";
+  document.documentElement.lang = lang === "zh" ? "zh-CN" : lang;
 }

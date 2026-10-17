@@ -1,0 +1,2404 @@
+{
+  "candidate": "5f7f9bc0b7da8efaacbb6ae0b5e15587538a240c",
+  "file": "src/styles/shell-patch.css",
+  "blob": "af3c1aec57f41c38b22341594e6b9c45184fe557",
+  "sha256": "29ca8bfb67a1506362bb4d9ea38279ae2ab68889f3fb085108c17bc040e3e19b",
+  "groups": {
+    "frame": {
+      "CAUSE": "Native owns an OS window; Web preview needs an explicit bounded root canvas.",
+      "kept": "R17 approved 752×652 / 1100×720, zoom and phone variants; size independent of side state.",
+      "changed": "Only Web canvas/root/foot positioning and outer background.",
+      "source": "CIS R17/R19; explicit user window contract",
+      "evidence": "main-flow.json; cis-nav-2660400; cis-layout-0a2a014"
+    },
+    "windows": {
+      "CAUSE": "Browser has no native Windows caption and native selectors exclude body.web.",
+      "kept": "Native Windows font/chrome/brand rules.",
+      "changed": "32px simulated OS caption, mirrored Windows selectors, sidebar offset under caption.",
+      "source": "layout.js:16; app.css:108–111/184/187/347; CIS R17",
+      "evidence": "main-flow.json three equal caption/root pairs; agents-side/settings-side/gateway-side PNGs"
+    },
+    "nav": {
+      "CAUSE": "Native fixed header/sidebar uses window coordinates; Web root is framed.",
+      "kept": "SIDE_AT1024, native thumb tokens and native 320ms controller.",
+      "changed": "Root-relative sidebar/header/tool positioning and overflow/wrapping.",
+      "source": "CIS R16/R17/R19; app.js fitTop/layoutNav",
+      "evidence": "main-flow.json; cis-layout-0a2a014; cis-nav-2660400"
+    },
+    "settings": {
+      "CAUSE": "React anchor and framed header add wrappers to native Settings DOM.",
+      "kept": "Native PrefRow/font/word and language recipes, no double 45% cap.",
+      "changed": "min-width bridges, header positioning, anchor max-width and tab wrapping.",
+      "source": "CIS R01/R07/R21; app.css:3176–3205",
+      "evidence": "cis-settings-90099b9; cis-layout-0a2a014; main-flow.json"
+    },
+    "gateway": {
+      "CAUSE": "Long mock identifiers and code live in a framed Web window.",
+      "kept": "Native Connect columns and field geometry.",
+      "changed": "Hint word breaking and snippet-tab alignment only.",
+      "source": "CIS R22/R19",
+      "evidence": "cis-layout-0a2a014; gateway-side.png; gateway-390.png"
+    },
+    "overlays": {
+      "CAUSE": "Native appends overlays to window body; React portals target framed root.",
+      "kept": "Native menu/dialog visual CSS and distinct lifecycle per R11–R13.",
+      "changed": "Root positioning/stacking, framed top-layer dialog scrim; old nonmatching anchor descendant selectors retained dormant.",
+      "source": "CIS R11–R13/R18; app.js placeMenu/placePop/confirmAction",
+      "evidence": "cis-confirm-7880135; cis-menus-862789f; cis-controls-a8976e0"
+    },
+    "thumbs": {
+      "CAUSE": "Shared React thumb nodes must receive native selected surfaces.",
+      "kept": "Native card/seg-thumb/seg-edge values, useSegThumb positioning.",
+      "changed": "Duplicate native selected-surface declarations under Web wrapper.",
+      "source": "app.css:227–238/2878–2900; CIS R02/R17",
+      "evidence": "cis-nav-2660400; cis-layout-0a2a014; main-flow.json"
+    },
+    "mobile": {
+      "CAUSE": "Web phone viewport must keep existing mock controls usable.",
+      "kept": "Native phoneWeb media gate and R19 touch sizes; not native desktop gold.",
+      "changed": "Viewport-specific wrapping, local horizontal scrolling, one-column cards and editor bounds.",
+      "source": "CIS R19 frozen Web compatibility scope",
+      "evidence": "cis-controls-a8976e0 B4; 390-light-network/context; gateway-390.png"
+    },
+    "motion": {
+      "CAUSE": "Shared wrappers need native sort/chevron/reduced-motion behavior.",
+      "kept": "Native transition values and user reduced-motion suppression.",
+      "changed": "Duplicate motion declarations and suppression selectors for React compounds.",
+      "source": "app.css:651/697/709/3653 and global reduce block; CIS R02/R03/R19",
+      "evidence": "cis-confirm-7880135 provider sort; cis-menus-396c11c; source comparison"
+    },
+    "images": {
+      "CAUSE": "Native icon wrapper sizes an image supplied by React.",
+      "kept": "Original image resources and native contextual sizes.",
+      "changed": "Image fills its existing icon box; no replacement glyph or palette.",
+      "source": "app.css .ic and specific icon contexts; CIS R15",
+      "evidence": "cis-controls-a8976e0 explicit light/dark icon fixture; B4"
+    },
+    "tick": {
+      "CAUSE": "Native Tick is used outside .editor in the React mock.",
+      "kept": "Native checkbox rendering and 7px label layout.",
+      "changed": "Extends native label layout to shared Tick callers; no checkbox re-paint.",
+      "source": "app.css:3613–3614/4064–4081; CIS R06",
+      "evidence": "cis-controls-a8976e0 Tick states/focus; C3"
+    },
+    "helpers": {
+      "CAUSE": "Native imperative DOM/inline styles need bounded React equivalents.",
+      "kept": "Native grid, form, hidden-state and text semantics.",
+      "changed": "Detect columns custom property; sheet hidden/display; full-width form input; wrapper display:contents; contextual error color.",
+      "source": "app.js detect-grid/field; native editor/sync form recipes; CIS R01/R04/R23–R25",
+      "evidence": "cis-confirm-7880135; cis-pages-1100d15; S4 Export cancel; raw recipe classification"
+    },
+    "boundedDemo": {
+      "CAUSE": "Mock reuses panel/profile UI or shows an illustrative routing graphic.",
+      "kept": "Frozen mock-only behavior and native source recipe.",
+      "changed": "Unmapped panel canvas; hide redundant naming hint in main-window profile reuse; decorative graphic does not intercept pointer.",
+      "source": "app.css:1738; App panel visibility and mock routing view; R08 bounded tray scope",
+      "evidence": "source only for excluded tray; default main B4 and frozen scope boundary"
+    }
+  },
+  "rules": [
+    {
+      "line": 3,
+      "selector": "html, body, #root",
+      "atRule": null,
+      "group": "frame",
+      "declarations": [
+        {
+          "property": "height",
+          "value": "100%",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 4,
+      "selector": "body",
+      "atRule": null,
+      "group": "frame",
+      "declarations": [
+        {
+          "property": "margin",
+          "value": "0",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 5,
+      "selector": "#root",
+      "atRule": null,
+      "group": "frame",
+      "declarations": [
+        {
+          "property": "display",
+          "value": "flex",
+          "important": false
+        },
+        {
+          "property": "flex-direction",
+          "value": "column",
+          "important": false
+        },
+        {
+          "property": "height",
+          "value": "100%",
+          "important": false
+        },
+        {
+          "property": "min-height",
+          "value": "0",
+          "important": false
+        },
+        {
+          "property": "overflow",
+          "value": "hidden",
+          "important": false
+        },
+        {
+          "property": "background",
+          "value": "var(--bg)",
+          "important": false
+        },
+        {
+          "property": "position",
+          "value": "relative",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 22,
+      "selector": "body.web",
+      "atRule": null,
+      "group": "frame",
+      "declarations": [
+        {
+          "property": "background",
+          "value": "#e8e8ec",
+          "important": false
+        },
+        {
+          "property": "min-height",
+          "value": "100%",
+          "important": false
+        },
+        {
+          "property": "overflow-x",
+          "value": "hidden",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 29,
+      "selector": ":root:not([data-theme=\"light\"]) body.web",
+      "atRule": "@media (prefers-color-scheme: dark)",
+      "group": "frame",
+      "declarations": [
+        {
+          "property": "background",
+          "value": "#1a1a1e",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 33,
+      "selector": ":root[data-theme=\"dark\"] body.web",
+      "atRule": null,
+      "group": "frame",
+      "declarations": [
+        {
+          "property": "background",
+          "value": "#1a1a1e",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 36,
+      "selector": "body.web #root",
+      "atRule": null,
+      "group": "frame",
+      "declarations": [
+        {
+          "property": "width",
+          "value": "min(752px, calc((100vw - 48px) / var(--zoom, 1.1)))",
+          "important": false
+        },
+        {
+          "property": "max-width",
+          "value": "min(752px, calc((100vw - 48px) / var(--zoom, 1.1)))",
+          "important": false
+        },
+        {
+          "property": "min-width",
+          "value": "0",
+          "important": false
+        },
+        {
+          "property": "height",
+          "value": "min(652px, calc((100vh - 48px) / var(--zoom, 1.1)))",
+          "important": false
+        },
+        {
+          "property": "min-height",
+          "value": "min(520px, calc((100vh - 48px) / var(--zoom, 1.1)))",
+          "important": false
+        },
+        {
+          "property": "margin",
+          "value": "calc(24px / var(--zoom, 1.1)) auto",
+          "important": false
+        },
+        {
+          "property": "border",
+          "value": "1px solid var(--line)",
+          "important": false
+        },
+        {
+          "property": "border-radius",
+          "value": "12px",
+          "important": false
+        },
+        {
+          "property": "box-shadow",
+          "value": "0 8px 28px rgba(0,0,0,.08)",
+          "important": false
+        },
+        {
+          "property": "overflow",
+          "value": "hidden",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 52,
+      "selector": "body.web #root",
+      "atRule": "@media (max-width: 600px)",
+      "group": "frame",
+      "declarations": [
+        {
+          "property": "width",
+          "value": "100%",
+          "important": false
+        },
+        {
+          "property": "min-width",
+          "value": "0",
+          "important": false
+        },
+        {
+          "property": "max-width",
+          "value": "100%",
+          "important": false
+        },
+        {
+          "property": "height",
+          "value": "100%",
+          "important": false
+        },
+        {
+          "property": "min-height",
+          "value": "100%",
+          "important": false
+        },
+        {
+          "property": "margin",
+          "value": "0",
+          "important": false
+        },
+        {
+          "property": "border",
+          "value": "0",
+          "important": false
+        },
+        {
+          "property": "border-radius",
+          "value": "0",
+          "important": false
+        },
+        {
+          "property": "box-shadow",
+          "value": "none",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 71,
+      "selector": "body.web .seg > .thumb,\r\n.seg > .thumb",
+      "atRule": null,
+      "group": "thumbs",
+      "declarations": [
+        {
+          "property": "background",
+          "value": "var(--seg-thumb)",
+          "important": false
+        },
+        {
+          "property": "box-shadow",
+          "value": "var(--seg-edge)",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 77,
+      "selector": "body.web .segs > .thumb,\r\n.segs > .thumb",
+      "atRule": null,
+      "group": "thumbs",
+      "declarations": [
+        {
+          "property": "background",
+          "value": "var(--card)",
+          "important": false
+        },
+        {
+          "property": "box-shadow",
+          "value": "0 1px 2px rgba(0, 0, 0, .12), 0 0 0 .5px rgba(0, 0, 0, .06)",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 85,
+      "selector": "#view-settings .set-head,\r\n#view-settings .ptabs",
+      "atRule": null,
+      "group": "settings",
+      "declarations": [
+        {
+          "property": "flex-wrap",
+          "value": "wrap",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 89,
+      "selector": "#view-settings .list.prefs",
+      "atRule": null,
+      "group": "settings",
+      "declarations": [
+        {
+          "property": "min-width",
+          "value": "0",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 94,
+      "selector": "#view-settings .row.pref .name",
+      "atRule": null,
+      "group": "settings",
+      "declarations": [
+        {
+          "property": "min-width",
+          "value": "0",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 97,
+      "selector": "#view-settings .row.pref .val",
+      "atRule": null,
+      "group": "settings",
+      "declarations": [
+        {
+          "property": "min-width",
+          "value": "0",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 102,
+      "selector": ".pref-anchor > .pref-pick",
+      "atRule": null,
+      "group": "overlays",
+      "declarations": [
+        {
+          "property": "max-width",
+          "value": "100%",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 105,
+      "selector": "body.web.side-nav #view-settings .set-head",
+      "atRule": null,
+      "group": "settings",
+      "declarations": [
+        {
+          "property": "position",
+          "value": "absolute",
+          "important": false
+        },
+        {
+          "property": "top",
+          "value": "var(--win-caption-h, 32px)",
+          "important": false
+        },
+        {
+          "property": "left",
+          "value": "auto",
+          "important": false
+        },
+        {
+          "property": "right",
+          "value": "76px",
+          "important": false
+        },
+        {
+          "property": "max-width",
+          "value": "calc(100% - var(--side-w, 212px) - 170px)",
+          "important": false
+        },
+        {
+          "property": "height",
+          "value": "46px",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 113,
+      "selector": "body.web.side-nav #view-settings .set-q",
+      "atRule": null,
+      "group": "settings",
+      "declarations": [
+        {
+          "property": "min-width",
+          "value": "0",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 116,
+      "selector": ".connect .hint",
+      "atRule": null,
+      "group": "gateway",
+      "declarations": [
+        {
+          "property": "overflow-wrap",
+          "value": "anywhere",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 117,
+      "selector": ".connect .snip-tabs > .segs",
+      "atRule": null,
+      "group": "gateway",
+      "declarations": [
+        {
+          "property": "align-self",
+          "value": "center",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 119,
+      "selector": "body.window:not(.side-nav) #sideToggle",
+      "atRule": null,
+      "group": "nav",
+      "declarations": [
+        {
+          "property": "display",
+          "value": "inline-flex",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 120,
+      "selector": "body.window:not(.side-nav) .side-toggle .st-pane",
+      "atRule": null,
+      "group": "nav",
+      "declarations": [
+        {
+          "property": "fill",
+          "value": "color-mix(in srgb, var(--fg) 18%, transparent)",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 136,
+      "selector": "body.web[data-sim-platform=\"win\"],\r\nbody.window[data-sim-platform=\"win\"]",
+      "atRule": null,
+      "group": "windows",
+      "declarations": [
+        {
+          "property": "--win-caption-h",
+          "value": "32px",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 140,
+      "selector": ".win-caption",
+      "atRule": null,
+      "group": "windows",
+      "declarations": [
+        {
+          "property": "flex",
+          "value": "none",
+          "important": false
+        },
+        {
+          "property": "display",
+          "value": "none",
+          "important": false
+        },
+        {
+          "property": "align-items",
+          "value": "center",
+          "important": false
+        },
+        {
+          "property": "height",
+          "value": "var(--win-caption-h, 32px)",
+          "important": false
+        },
+        {
+          "property": "padding",
+          "value": "0 0 0 12px",
+          "important": false
+        },
+        {
+          "property": "background",
+          "value": "var(--bg)",
+          "important": false
+        },
+        {
+          "property": "border-bottom",
+          "value": ".5px solid var(--line)",
+          "important": false
+        },
+        {
+          "property": "position",
+          "value": "relative",
+          "important": false
+        },
+        {
+          "property": "z-index",
+          "value": "30",
+          "important": false
+        },
+        {
+          "property": "user-select",
+          "value": "none",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 152,
+      "selector": "body[data-sim-platform=\"win\"] .win-caption",
+      "atRule": null,
+      "group": "windows",
+      "declarations": [
+        {
+          "property": "display",
+          "value": "flex",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 153,
+      "selector": ".win-caption-brand",
+      "atRule": null,
+      "group": "windows",
+      "declarations": [
+        {
+          "property": "display",
+          "value": "flex",
+          "important": false
+        },
+        {
+          "property": "align-items",
+          "value": "center",
+          "important": false
+        },
+        {
+          "property": "gap",
+          "value": "8px",
+          "important": false
+        },
+        {
+          "property": "min-width",
+          "value": "0",
+          "important": false
+        },
+        {
+          "property": "font-size",
+          "value": "12px",
+          "important": false
+        },
+        {
+          "property": "font-weight",
+          "value": "500",
+          "important": false
+        },
+        {
+          "property": "color",
+          "value": "var(--fg-2, var(--fg))",
+          "important": false
+        },
+        {
+          "property": "letter-spacing",
+          "value": ".01em",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 163,
+      "selector": ".win-caption-ico",
+      "atRule": null,
+      "group": "windows",
+      "declarations": [
+        {
+          "property": "display",
+          "value": "inline-flex",
+          "important": false
+        },
+        {
+          "property": "width",
+          "value": "16px",
+          "important": false
+        },
+        {
+          "property": "height",
+          "value": "16px",
+          "important": false
+        },
+        {
+          "property": "flex",
+          "value": "none",
+          "important": false
+        },
+        {
+          "property": "align-items",
+          "value": "center",
+          "important": false
+        },
+        {
+          "property": "justify-content",
+          "value": "center",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 171,
+      "selector": ".win-caption-ico svg",
+      "atRule": null,
+      "group": "windows",
+      "declarations": [
+        {
+          "property": "display",
+          "value": "block",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 172,
+      "selector": ".win-caption-title",
+      "atRule": null,
+      "group": "windows",
+      "declarations": [
+        {
+          "property": "overflow",
+          "value": "hidden",
+          "important": false
+        },
+        {
+          "property": "text-overflow",
+          "value": "ellipsis",
+          "important": false
+        },
+        {
+          "property": "white-space",
+          "value": "nowrap",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 177,
+      "selector": ".win-caption-btns",
+      "atRule": null,
+      "group": "windows",
+      "declarations": [
+        {
+          "property": "display",
+          "value": "flex",
+          "important": false
+        },
+        {
+          "property": "align-items",
+          "value": "stretch",
+          "important": false
+        },
+        {
+          "property": "height",
+          "value": "100%",
+          "important": false
+        },
+        {
+          "property": "margin-left",
+          "value": "8px",
+          "important": false
+        },
+        {
+          "property": "flex",
+          "value": "none",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 184,
+      "selector": ".win-cap-btn",
+      "atRule": null,
+      "group": "windows",
+      "declarations": [
+        {
+          "property": "width",
+          "value": "46px",
+          "important": false
+        },
+        {
+          "property": "height",
+          "value": "100%",
+          "important": false
+        },
+        {
+          "property": "display",
+          "value": "inline-flex",
+          "important": false
+        },
+        {
+          "property": "align-items",
+          "value": "center",
+          "important": false
+        },
+        {
+          "property": "justify-content",
+          "value": "center",
+          "important": false
+        },
+        {
+          "property": "color",
+          "value": "var(--fg-2, var(--fg))",
+          "important": false
+        },
+        {
+          "property": "border-radius",
+          "value": "0",
+          "important": false
+        },
+        {
+          "property": "cursor",
+          "value": "default",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 194,
+      "selector": ".win-cap-btn:hover",
+      "atRule": null,
+      "group": "windows",
+      "declarations": [
+        {
+          "property": "background",
+          "value": "color-mix(in srgb, var(--fg) 8%, transparent)",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 195,
+      "selector": ".win-cap-btn.close:hover",
+      "atRule": null,
+      "group": "windows",
+      "declarations": [
+        {
+          "property": "background",
+          "value": "#e81123",
+          "important": false
+        },
+        {
+          "property": "color",
+          "value": "#fff",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 200,
+      "selector": "body[data-sim-platform=\"win\"] header.top > .brand,\r\nbody[data-sim-platform=\"win\"] .side-top .brand",
+      "atRule": null,
+      "group": "windows",
+      "declarations": [
+        {
+          "property": "display",
+          "value": "none",
+          "important": true
+        }
+      ]
+    },
+    {
+      "line": 205,
+      "selector": "body[data-sim-platform=\"win\"] .side-top",
+      "atRule": null,
+      "group": "windows",
+      "declarations": [
+        {
+          "property": "height",
+          "value": "10px",
+          "important": false
+        },
+        {
+          "property": "padding",
+          "value": "0",
+          "important": false
+        },
+        {
+          "property": "min-height",
+          "value": "10px",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 211,
+      "selector": "body.web[data-sim-platform=\"win\"] .sidebar",
+      "atRule": null,
+      "group": "windows",
+      "declarations": [
+        {
+          "property": "top",
+          "value": "var(--win-caption-h, 32px)",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 214,
+      "selector": "body.web[data-sim-platform=\"win\"].side-nav .sidebar",
+      "atRule": null,
+      "group": "windows",
+      "declarations": [
+        {
+          "property": "top",
+          "value": "var(--win-caption-h, 32px)",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 220,
+      "selector": "body.web .modal",
+      "atRule": null,
+      "group": "overlays",
+      "declarations": [
+        {
+          "property": "position",
+          "value": "absolute",
+          "important": true
+        },
+        {
+          "property": "inset",
+          "value": "0",
+          "important": false
+        },
+        {
+          "property": "border-radius",
+          "value": "inherit",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 227,
+      "selector": "body.web .action-confirm.framed-confirm",
+      "atRule": null,
+      "group": "overlays",
+      "declarations": [
+        {
+          "property": "inset",
+          "value": "auto",
+          "important": false
+        },
+        {
+          "property": "left",
+          "value": "var(--confirm-x)",
+          "important": false
+        },
+        {
+          "property": "top",
+          "value": "var(--confirm-y)",
+          "important": false
+        },
+        {
+          "property": "margin",
+          "value": "0",
+          "important": false
+        },
+        {
+          "property": "transform",
+          "value": "translate(-50%, -50%)",
+          "important": false
+        },
+        {
+          "property": "width",
+          "value": "min(420px, var(--confirm-width))",
+          "important": false
+        },
+        {
+          "property": "max-height",
+          "value": "var(--confirm-height)",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 236,
+      "selector": "body.web .action-confirm.framed-confirm::backdrop",
+      "atRule": null,
+      "group": "overlays",
+      "declarations": [
+        {
+          "property": "inset",
+          "value": "var(--confirm-inset-top) var(--confirm-inset-right) var(--confirm-inset-bottom) var(--confirm-inset-left)",
+          "important": false
+        },
+        {
+          "property": "border-radius",
+          "value": "var(--confirm-radius)",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 240,
+      "selector": "body.web .pop",
+      "atRule": null,
+      "group": "overlays",
+      "declarations": [
+        {
+          "property": "position",
+          "value": "absolute",
+          "important": true
+        },
+        {
+          "property": "z-index",
+          "value": "40",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 244,
+      "selector": ".pop[data-anchored]",
+      "atRule": null,
+      "group": "overlays",
+      "declarations": [
+        {
+          "property": "position",
+          "value": "absolute",
+          "important": true
+        },
+        {
+          "property": "z-index",
+          "value": "80",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 246,
+      "selector": ".detect-grid",
+      "atRule": null,
+      "group": "helpers",
+      "declarations": [
+        {
+          "property": "grid-template-columns",
+          "value": "minmax(0, 1.3fr) repeat(var(--detect-n, 1), minmax(0, 1fr))",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 248,
+      "selector": ".panel-unmapped",
+      "atRule": null,
+      "group": "boundedDemo",
+      "declarations": [
+        {
+          "property": "min-height",
+          "value": "100vh",
+          "important": false
+        },
+        {
+          "property": "background",
+          "value": "transparent",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 250,
+      "selector": "body.window .profiles.naming .chips .hint",
+      "atRule": null,
+      "group": "boundedDemo",
+      "declarations": [
+        {
+          "property": "display",
+          "value": "none",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 252,
+      "selector": "body.web .foot",
+      "atRule": null,
+      "group": "frame",
+      "declarations": [
+        {
+          "property": "position",
+          "value": "relative",
+          "important": false
+        },
+        {
+          "property": "z-index",
+          "value": "5",
+          "important": false
+        },
+        {
+          "property": "flex",
+          "value": "none",
+          "important": false
+        },
+        {
+          "property": "min-height",
+          "value": "28px",
+          "important": false
+        },
+        {
+          "property": "padding",
+          "value": "0 8px 6px 18px",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 261,
+      "selector": "body.window:not(.side-nav) .top.inrow",
+      "atRule": null,
+      "group": "nav",
+      "declarations": [
+        {
+          "property": "display",
+          "value": "flex",
+          "important": false
+        },
+        {
+          "property": "align-items",
+          "value": "center",
+          "important": false
+        },
+        {
+          "property": "gap",
+          "value": "6px",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 266,
+      "selector": "body.window:not(.side-nav) .top.inrow .seg",
+      "atRule": null,
+      "group": "nav",
+      "declarations": [
+        {
+          "property": "position",
+          "value": "relative",
+          "important": false
+        },
+        {
+          "property": "left",
+          "value": "auto",
+          "important": false
+        },
+        {
+          "property": "top",
+          "value": "auto",
+          "important": false
+        },
+        {
+          "property": "transform",
+          "value": "none",
+          "important": false
+        },
+        {
+          "property": "margin",
+          "value": "0 auto",
+          "important": false
+        },
+        {
+          "property": "flex",
+          "value": "0 1 auto",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 274,
+      "selector": "body.window:not(.side-nav) .top.inrow .actions",
+      "atRule": null,
+      "group": "nav",
+      "declarations": [
+        {
+          "property": "margin-left",
+          "value": "0",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 275,
+      "selector": "body.window:not(.side-nav) .top.tight .brand > span:not(.logo)",
+      "atRule": null,
+      "group": "nav",
+      "declarations": [
+        {
+          "property": "display",
+          "value": "none",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 280,
+      "selector": ".rt-flier-demo",
+      "atRule": null,
+      "group": "boundedDemo",
+      "declarations": [
+        {
+          "property": "pointer-events",
+          "value": "none",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 288,
+      "selector": ".ag-manage-row .ic img,\r\n.ag-install-who .ic img",
+      "atRule": null,
+      "group": "images",
+      "declarations": [
+        {
+          "property": "width",
+          "value": "100%",
+          "important": false
+        },
+        {
+          "property": "height",
+          "value": "100%",
+          "important": false
+        },
+        {
+          "property": "object-fit",
+          "value": "contain",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 295,
+      "selector": "#view-providers .sheet",
+      "atRule": null,
+      "group": "helpers",
+      "declarations": [
+        {
+          "property": "display",
+          "value": "block",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 296,
+      "selector": "#view-providers .sheet[hidden]",
+      "atRule": null,
+      "group": "helpers",
+      "declarations": [
+        {
+          "property": "display",
+          "value": "none",
+          "important": true
+        }
+      ]
+    },
+    {
+      "line": 302,
+      "selector": ".row.agent .ic img",
+      "atRule": null,
+      "group": "images",
+      "declarations": [
+        {
+          "property": "width",
+          "value": "100%",
+          "important": false
+        },
+        {
+          "property": "height",
+          "value": "100%",
+          "important": false
+        },
+        {
+          "property": "object-fit",
+          "value": "contain",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 307,
+      "selector": ".editor .ehead .ic img",
+      "atRule": null,
+      "group": "images",
+      "declarations": [
+        {
+          "property": "width",
+          "value": "20px",
+          "important": false
+        },
+        {
+          "property": "height",
+          "value": "20px",
+          "important": false
+        },
+        {
+          "property": "object-fit",
+          "value": "contain",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 324,
+      "selector": "body.web .sidebar",
+      "atRule": null,
+      "group": "nav",
+      "declarations": [
+        {
+          "property": "position",
+          "value": "absolute",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 327,
+      "selector": "body.web.side-nav",
+      "atRule": null,
+      "group": "nav",
+      "declarations": [
+        {
+          "property": "padding-left",
+          "value": "0",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 330,
+      "selector": "body.web.side-nav #root",
+      "atRule": null,
+      "group": "nav",
+      "declarations": [
+        {
+          "property": "padding-left",
+          "value": "var(--side-w, 212px)",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 334,
+      "selector": "body.web.side-nav .win-caption",
+      "atRule": null,
+      "group": "windows",
+      "declarations": [
+        {
+          "property": "margin-left",
+          "value": "calc(-1 * var(--side-w, 212px))",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 337,
+      "selector": "body.web.side-nav .sidebar",
+      "atRule": null,
+      "group": "nav",
+      "declarations": [
+        {
+          "property": "left",
+          "value": "0",
+          "important": false
+        },
+        {
+          "property": "top",
+          "value": "0",
+          "important": false
+        },
+        {
+          "property": "bottom",
+          "value": "0",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 341,
+      "selector": "body.web.side-nav",
+      "atRule": null,
+      "group": "nav",
+      "declarations": [
+        {
+          "property": "padding-left",
+          "value": "0",
+          "important": true
+        }
+      ]
+    },
+    {
+      "line": 356,
+      "selector": ".lib-switch i, .pref-pick svg, .copy.done",
+      "atRule": "@media (prefers-reduced-motion: reduce)",
+      "group": "motion",
+      "declarations": [
+        {
+          "property": "transition",
+          "value": "none",
+          "important": true
+        },
+        {
+          "property": "animation",
+          "value": "none",
+          "important": true
+        }
+      ]
+    },
+    {
+      "line": 382,
+      "selector": ".search-add .proto.pick.search-vendor svg",
+      "atRule": null,
+      "group": "helpers",
+      "declarations": [
+        {
+          "property": "transition",
+          "value": "transform .15s var(--ease)",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 383,
+      "selector": ".search-add .proto.pick.search-vendor.open svg",
+      "atRule": null,
+      "group": "helpers",
+      "declarations": [
+        {
+          "property": "transform",
+          "value": "rotate(180deg)",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 384,
+      "selector": ".disabled-model .name",
+      "atRule": null,
+      "group": "helpers",
+      "declarations": [
+        {
+          "property": "font-family",
+          "value": "var(--code)",
+          "important": false
+        },
+        {
+          "property": "font-size",
+          "value": "12px",
+          "important": false
+        },
+        {
+          "property": "overflow-wrap",
+          "value": "anywhere",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 393,
+      "selector": ".led .who .ic img",
+      "atRule": null,
+      "group": "images",
+      "declarations": [
+        {
+          "property": "width",
+          "value": "14px",
+          "important": false
+        },
+        {
+          "property": "height",
+          "value": "14px",
+          "important": false
+        },
+        {
+          "property": "display",
+          "value": "block",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 394,
+      "selector": ".sess-list .row.sess .ic img",
+      "atRule": null,
+      "group": "images",
+      "declarations": [
+        {
+          "property": "width",
+          "value": "18px",
+          "important": false
+        },
+        {
+          "property": "height",
+          "value": "18px",
+          "important": false
+        },
+        {
+          "property": "display",
+          "value": "block",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 442,
+      "selector": ".ag-install-head .chev",
+      "atRule": null,
+      "group": "motion",
+      "declarations": [
+        {
+          "property": "transition",
+          "value": "transform .3s cubic-bezier(.22, 1, .36, 1)",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 444,
+      "selector": ".agent-more .chev,\r\n  .agent-fold,\r\n  .agent-fold .row,\r\n  .agent-fold .agent-fold-cap,\r\n  .ag-install-head .chev,\r\n  .guide-agent",
+      "atRule": "@media (prefers-reduced-motion: reduce)",
+      "group": "motion",
+      "declarations": [
+        {
+          "property": "transition",
+          "value": "none",
+          "important": true
+        }
+      ]
+    },
+    {
+      "line": 450,
+      "selector": ".agent-fold.open .row,\r\n  .agent-fold.open .agent-fold-cap",
+      "atRule": "@media (prefers-reduced-motion: reduce)",
+      "group": "motion",
+      "declarations": [
+        {
+          "property": "transition",
+          "value": "none",
+          "important": true
+        }
+      ]
+    },
+    {
+      "line": 453,
+      "selector": "#providers.sorting > .row",
+      "atRule": null,
+      "group": "motion",
+      "declarations": [
+        {
+          "property": "transition",
+          "value": "transform .22s cubic-bezier(.22, 1, .36, 1)",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 455,
+      "selector": "#providers.sorting > .row,\r\n  #agents.sorting > .row",
+      "atRule": "@media (prefers-reduced-motion: reduce)",
+      "group": "motion",
+      "declarations": [
+        {
+          "property": "transition",
+          "value": "none",
+          "important": true
+        }
+      ]
+    },
+    {
+      "line": 482,
+      "selector": "body.web",
+      "atRule": "@media (max-width: 520px)",
+      "group": "frame",
+      "declarations": [
+        {
+          "property": "background",
+          "value": "var(--bg)",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 485,
+      "selector": "body.web #root",
+      "atRule": "@media (max-width: 520px)",
+      "group": "frame",
+      "declarations": [
+        {
+          "property": "width",
+          "value": "100%",
+          "important": true
+        },
+        {
+          "property": "height",
+          "value": "100%",
+          "important": true
+        },
+        {
+          "property": "min-width",
+          "value": "0",
+          "important": true
+        },
+        {
+          "property": "max-width",
+          "value": "none",
+          "important": true
+        },
+        {
+          "property": "max-height",
+          "value": "none",
+          "important": true
+        },
+        {
+          "property": "margin",
+          "value": "0",
+          "important": true
+        },
+        {
+          "property": "border",
+          "value": "0",
+          "important": true
+        },
+        {
+          "property": "border-radius",
+          "value": "0",
+          "important": true
+        },
+        {
+          "property": "box-shadow",
+          "value": "none",
+          "important": true
+        }
+      ]
+    },
+    {
+      "line": 500,
+      "selector": "body.web:not(.side-nav) .top.inrow",
+      "atRule": "@media (max-width: 760px), (pointer: coarse) and (max-width: 1024px)",
+      "group": "mobile",
+      "declarations": [
+        {
+          "property": "height",
+          "value": "auto",
+          "important": false
+        },
+        {
+          "property": "min-height",
+          "value": "48px",
+          "important": false
+        },
+        {
+          "property": "flex-wrap",
+          "value": "wrap",
+          "important": false
+        },
+        {
+          "property": "gap",
+          "value": "4px 8px",
+          "important": false
+        },
+        {
+          "property": "align-items",
+          "value": "center",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 507,
+      "selector": "body.web:not(.side-nav) .top.inrow .seg,\r\n  body.web:not(.side-nav) .top.inrow #nav",
+      "atRule": "@media (max-width: 760px), (pointer: coarse) and (max-width: 1024px)",
+      "group": "mobile",
+      "declarations": [
+        {
+          "property": "position",
+          "value": "relative",
+          "important": true
+        },
+        {
+          "property": "left",
+          "value": "auto",
+          "important": true
+        },
+        {
+          "property": "top",
+          "value": "auto",
+          "important": true
+        },
+        {
+          "property": "transform",
+          "value": "none",
+          "important": true
+        },
+        {
+          "property": "order",
+          "value": "3",
+          "important": false
+        },
+        {
+          "property": "flex",
+          "value": "0 0 100%",
+          "important": true
+        },
+        {
+          "property": "margin",
+          "value": "0",
+          "important": true
+        },
+        {
+          "property": "min-width",
+          "value": "0",
+          "important": false
+        },
+        {
+          "property": "max-width",
+          "value": "100%",
+          "important": false
+        },
+        {
+          "property": "overflow-x",
+          "value": "auto",
+          "important": false
+        },
+        {
+          "property": "overflow-y",
+          "value": "hidden",
+          "important": false
+        },
+        {
+          "property": "overscroll-behavior-x",
+          "value": "contain",
+          "important": false
+        },
+        {
+          "property": "scrollbar-width",
+          "value": "none",
+          "important": false
+        },
+        {
+          "property": "padding-inline-end",
+          "value": "12px",
+          "important": false
+        },
+        {
+          "property": "scroll-padding-inline-end",
+          "value": "12px",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 526,
+      "selector": "body.web:not(.side-nav) .top.inrow .seg::-webkit-scrollbar,\r\n  body.web:not(.side-nav) .top.inrow #nav::-webkit-scrollbar",
+      "atRule": "@media (max-width: 760px), (pointer: coarse) and (max-width: 1024px)",
+      "group": "mobile",
+      "declarations": [
+        {
+          "property": "display",
+          "value": "none",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 528,
+      "selector": "body.web:not(.side-nav) .top.inrow .seg button,\r\n  body.web:not(.side-nav) .top.inrow #nav button",
+      "atRule": "@media (max-width: 760px), (pointer: coarse) and (max-width: 1024px)",
+      "group": "mobile",
+      "declarations": [
+        {
+          "property": "flex",
+          "value": "none",
+          "important": false
+        },
+        {
+          "property": "height",
+          "value": "40px",
+          "important": false
+        },
+        {
+          "property": "padding",
+          "value": "0 14px",
+          "important": false
+        },
+        {
+          "property": "font-size",
+          "value": "14px",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 535,
+      "selector": "body.web:not(.side-nav) .top.inrow .brand,\r\n  body.web:not(.side-nav) .top.inrow .actions",
+      "atRule": "@media (max-width: 760px), (pointer: coarse) and (max-width: 1024px)",
+      "group": "mobile",
+      "declarations": [
+        {
+          "property": "min-height",
+          "value": "40px",
+          "important": false
+        },
+        {
+          "property": "align-items",
+          "value": "center",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 540,
+      "selector": "body.web:not(.side-nav) .top.tight .brand > span:not(.logo)",
+      "atRule": "@media (max-width: 760px), (pointer: coarse) and (max-width: 1024px)",
+      "group": "mobile",
+      "declarations": [
+        {
+          "property": "display",
+          "value": "none",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 543,
+      "selector": "body.web .pm-find,\r\n  body.web .pm-ghfind",
+      "atRule": "@media (max-width: 760px), (pointer: coarse) and (max-width: 1024px)",
+      "group": "mobile",
+      "declarations": [
+        {
+          "property": "min-width",
+          "value": "0",
+          "important": false
+        },
+        {
+          "property": "max-width",
+          "value": "100%",
+          "important": false
+        },
+        {
+          "property": "flex",
+          "value": "1 1 140px",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 549,
+      "selector": "body.web .pm-minput",
+      "atRule": "@media (max-width: 760px), (pointer: coarse) and (max-width: 1024px)",
+      "group": "mobile",
+      "declarations": [
+        {
+          "property": "min-width",
+          "value": "0",
+          "important": false
+        },
+        {
+          "property": "flex",
+          "value": "1 1 120px",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 550,
+      "selector": "body.web .pm-manual",
+      "atRule": "@media (max-width: 760px), (pointer: coarse) and (max-width: 1024px)",
+      "group": "mobile",
+      "declarations": [
+        {
+          "property": "flex-wrap",
+          "value": "wrap",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 551,
+      "selector": "body.web .pm-head,\r\n  body.web .lib-head",
+      "atRule": "@media (max-width: 760px), (pointer: coarse) and (max-width: 1024px)",
+      "group": "mobile",
+      "declarations": [
+        {
+          "property": "flex-wrap",
+          "value": "wrap",
+          "important": false
+        },
+        {
+          "property": "height",
+          "value": "auto",
+          "important": false
+        },
+        {
+          "property": "min-height",
+          "value": "36px",
+          "important": false
+        },
+        {
+          "property": "gap",
+          "value": "6px 8px",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 558,
+      "selector": "body.web .lib-tabs,\r\n  body.web .lib-headacts",
+      "atRule": "@media (max-width: 760px), (pointer: coarse) and (max-width: 1024px)",
+      "group": "mobile",
+      "declarations": [
+        {
+          "property": "flex-wrap",
+          "value": "wrap",
+          "important": false
+        },
+        {
+          "property": "max-width",
+          "value": "100%",
+          "important": false
+        },
+        {
+          "property": "min-width",
+          "value": "0",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 564,
+      "selector": "body.web .lib-headacts",
+      "atRule": "@media (max-width: 760px), (pointer: coarse) and (max-width: 1024px)",
+      "group": "mobile",
+      "declarations": [
+        {
+          "property": "display",
+          "value": "flex",
+          "important": false
+        },
+        {
+          "property": "gap",
+          "value": "4px 10px",
+          "important": false
+        },
+        {
+          "property": "width",
+          "value": "100%",
+          "important": false
+        },
+        {
+          "property": "justify-content",
+          "value": "flex-start",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 570,
+      "selector": "body.web .pm-ghbar",
+      "atRule": "@media (max-width: 760px), (pointer: coarse) and (max-width: 1024px)",
+      "group": "mobile",
+      "declarations": [
+        {
+          "property": "flex-direction",
+          "value": "column",
+          "important": false
+        },
+        {
+          "property": "align-items",
+          "value": "stretch",
+          "important": true
+        }
+      ]
+    },
+    {
+      "line": 574,
+      "selector": "body.web .pm-ghkinds",
+      "atRule": "@media (max-width: 760px), (pointer: coarse) and (max-width: 1024px)",
+      "group": "mobile",
+      "declarations": [
+        {
+          "property": "max-width",
+          "value": "100%",
+          "important": false
+        },
+        {
+          "property": "overflow-x",
+          "value": "auto",
+          "important": false
+        },
+        {
+          "property": "scrollbar-width",
+          "value": "none",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 579,
+      "selector": "body.web .pm-grid",
+      "atRule": "@media (max-width: 760px), (pointer: coarse) and (max-width: 1024px)",
+      "group": "mobile",
+      "declarations": [
+        {
+          "property": "grid-template-columns",
+          "value": "minmax(0, 1fr)",
+          "important": true
+        }
+      ]
+    },
+    {
+      "line": 582,
+      "selector": "body.web .pm-intro",
+      "atRule": "@media (max-width: 760px), (pointer: coarse) and (max-width: 1024px)",
+      "group": "mobile",
+      "declarations": [
+        {
+          "property": "flex-direction",
+          "value": "column",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 585,
+      "selector": "body.web .pm-art",
+      "atRule": "@media (max-width: 760px), (pointer: coarse) and (max-width: 1024px)",
+      "group": "mobile",
+      "declarations": [
+        {
+          "property": "display",
+          "value": "none",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 586,
+      "selector": "body.web .sess-filter",
+      "atRule": "@media (max-width: 760px), (pointer: coarse) and (max-width: 1024px)",
+      "group": "mobile",
+      "declarations": [
+        {
+          "property": "min-width",
+          "value": "0",
+          "important": false
+        },
+        {
+          "property": "width",
+          "value": "100%",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 588,
+      "selector": "body.web .ag-install-cmds",
+      "atRule": "@media (max-width: 760px), (pointer: coarse) and (max-width: 1024px)",
+      "group": "mobile",
+      "declarations": [
+        {
+          "property": "flex-wrap",
+          "value": "wrap",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 590,
+      "selector": "body.web .modal .editor,\r\n  body.web .editor.pm-detail",
+      "atRule": "@media (max-width: 760px), (pointer: coarse) and (max-width: 1024px)",
+      "group": "overlays",
+      "declarations": [
+        {
+          "property": "max-width",
+          "value": "calc(100vw - 16px)",
+          "important": false
+        },
+        {
+          "property": "max-height",
+          "value": "calc(100dvh - 24px)",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 599,
+      "selector": "body.web .top.inrow #nav button,\r\n  body.web .top.inrow .seg button",
+      "atRule": "@media (max-width: 420px)",
+      "group": "mobile",
+      "declarations": [
+        {
+          "property": "padding",
+          "value": "0 10px",
+          "important": false
+        },
+        {
+          "property": "font-size",
+          "value": "13px",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 604,
+      "selector": "body.web .pm-mirror span:first-child",
+      "atRule": "@media (max-width: 420px)",
+      "group": "mobile",
+      "declarations": [
+        {
+          "property": "max-width",
+          "value": "7em",
+          "important": false
+        },
+        {
+          "property": "overflow",
+          "value": "hidden",
+          "important": false
+        },
+        {
+          "property": "text-overflow",
+          "value": "ellipsis",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 614,
+      "selector": "body.web #root",
+      "atRule": "@media (min-width: 1024px)",
+      "group": "frame",
+      "declarations": [
+        {
+          "property": "width",
+          "value": "min(1100px, calc((100vw - 48px) / var(--zoom, 1.1)))",
+          "important": false
+        },
+        {
+          "property": "max-width",
+          "value": "min(1100px, calc((100vw - 48px) / var(--zoom, 1.1)))",
+          "important": false
+        },
+        {
+          "property": "height",
+          "value": "min(720px, calc((100vh - 48px) / var(--zoom, 1.1)))",
+          "important": false
+        },
+        {
+          "property": "max-height",
+          "value": "min(720px, calc((100vh - 48px) / var(--zoom, 1.1)))",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 630,
+      "selector": ".pref-anchor",
+      "atRule": null,
+      "group": "overlays",
+      "declarations": [
+        {
+          "property": "position",
+          "value": "relative",
+          "important": false
+        },
+        {
+          "property": "display",
+          "value": "inline-flex",
+          "important": false
+        },
+        {
+          "property": "align-items",
+          "value": "center",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 632,
+      "selector": ".pref-anchor > .pop.proto-menu",
+      "atRule": null,
+      "group": "overlays",
+      "declarations": [
+        {
+          "property": "position",
+          "value": "absolute",
+          "important": false
+        },
+        {
+          "property": "right",
+          "value": "0",
+          "important": false
+        },
+        {
+          "property": "top",
+          "value": "100%",
+          "important": false
+        },
+        {
+          "property": "z-index",
+          "value": "20",
+          "important": false
+        },
+        {
+          "property": "margin-top",
+          "value": "4px",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 640,
+      "selector": "label.tick",
+      "atRule": null,
+      "group": "tick",
+      "declarations": [
+        {
+          "property": "display",
+          "value": "inline-flex",
+          "important": false
+        },
+        {
+          "property": "align-items",
+          "value": "center",
+          "important": false
+        },
+        {
+          "property": "gap",
+          "value": "7px",
+          "important": false
+        },
+        {
+          "property": "color",
+          "value": "var(--fg-2)",
+          "important": false
+        },
+        {
+          "property": "font-size",
+          "value": "13px",
+          "important": false
+        },
+        {
+          "property": "cursor",
+          "value": "pointer",
+          "important": false
+        },
+        {
+          "property": "text-align",
+          "value": "left",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 649,
+      "selector": "label.tick input",
+      "atRule": null,
+      "group": "tick",
+      "declarations": [
+        {
+          "property": "margin",
+          "value": "0",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 650,
+      "selector": ".words.full",
+      "atRule": null,
+      "group": "helpers",
+      "declarations": [
+        {
+          "property": "width",
+          "value": "100%",
+          "important": false
+        },
+        {
+          "property": "max-width",
+          "value": "100%",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 660,
+      "selector": ".hint.err",
+      "atRule": null,
+      "group": "helpers",
+      "declarations": [
+        {
+          "property": "color",
+          "value": "var(--red)",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 700,
+      "selector": ".pref-anchor.lib-hookpick > .pop.proto-menu",
+      "atRule": null,
+      "group": "overlays",
+      "declarations": [
+        {
+          "property": "left",
+          "value": "0",
+          "important": false
+        },
+        {
+          "property": "right",
+          "value": "auto",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 781,
+      "selector": ".pop.row-menu.fixed",
+      "atRule": null,
+      "group": "overlays",
+      "declarations": [
+        {
+          "property": "position",
+          "value": "fixed",
+          "important": false
+        },
+        {
+          "property": "z-index",
+          "value": "80",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 783,
+      "selector": "#view-routing .rt-filters[hidden]",
+      "atRule": null,
+      "group": "helpers",
+      "declarations": [
+        {
+          "property": "display",
+          "value": "none",
+          "important": true
+        }
+      ]
+    },
+    {
+      "line": 793,
+      "selector": ".display-contents",
+      "atRule": null,
+      "group": "helpers",
+      "declarations": [
+        {
+          "property": "display",
+          "value": "contents",
+          "important": false
+        }
+      ]
+    },
+    {
+      "line": 821,
+      "selector": ".pop.row-menu.fixed-z50",
+      "atRule": null,
+      "group": "overlays",
+      "declarations": [
+        {
+          "property": "position",
+          "value": "fixed",
+          "important": false
+        },
+        {
+          "property": "z-index",
+          "value": "50",
+          "important": false
+        }
+      ]
+    }
+  ],
+  "unclassified": 0,
+  "removed": [
+    {
+      "selector": ".range-menu .pm-head",
+      "native": "app.css:2581; padding6 8 5/font11",
+      "proof": "bridge-before.json / bridge-after.json"
+    },
+    {
+      "selector": ".ctx-tune-note",
+      "native": "app.css reset margin0 + context.css:298 padding; fixed context.js:1142 creates p",
+      "sourceUrl": "https://raw.githubusercontent.com/yetone/magpie/63be47717a9ca91fc89102078a1f1fff3e03e0ce/internal/gui/assets/context.js",
+      "proof": "bridge-before.json / bridge-after.json; eight affected B4 defaults"
+    },
+    {
+      "selector": ".github-token-input / .update-mirror-input",
+      "native": "app.js:18898/20112 uses plain words class sizing, no arbitrary160/180",
+      "proof": "bridge-after.json 240px/min0"
+    },
+    {
+      "selector": ".row.pref.redact-kind / .hint.fade / #view-routing .rt-act.enter",
+      "native": "No extra fade/rtin recipe in pinned source; rtin has no native keyframe",
+      "proof": "Source removal; ten redaction rows animation none/opacity1. No runtime claim for inactive hint/rtin."
+    }
+  ]
+}

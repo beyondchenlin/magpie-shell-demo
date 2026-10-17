@@ -1,8 +1,16 @@
+import { CopyButton } from "../components/CopyButton";
+import { MagpieIcon } from "../components/MagpieIcon";
+import { PopoverPortal } from "../components/PopoverPortal";
+import { useRowMenu } from "../lib/useRowMenu";
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
-import { AgentModelsPop, type AmModel } from "../components/AgentModelsPop";
+import { AgentModelsPop, type AmModel, type AmPreferences } from "../components/AgentModelsPop";
+import { FieldPill } from "../components/FieldPill";
+import { LibSwitch } from "../components/LibSwitch";
+import { TextBtn } from "../components/TextBtn";
 import { ModelPop, type PopOption } from "../components/ModelPop";
 import installsData from "../data/installs.json";
-import { VIA_LABEL, iconSrc } from "../data/mock";
+import { VIA_LABEL } from "../data/mock";
+import { COMPARISON_AGENTS, COMPARISON_MODELS, isAgentComparison } from "../data/agentComparison";
 import { ZH, demoCopy, t } from "../i18n";
 
 type InstallCmd = { via: string; command: string; node?: string };
@@ -25,7 +33,10 @@ const DEMO_CONNECTABLES = [
   { id: "opencode", name: "OpenCode", icon: "openai", connectable: true },
   { id: "pi", name: "Pi", icon: "openai", connectable: true },
 ] as const;
-type AgentDef = typeof CURSOR_AGENT | (typeof DEMO_CONNECTABLES)[number];
+type AgentDef = {
+  id: string; name: string; icon: string; connectable: boolean;
+  version?: string; missing?: boolean;
+};
 function readDemoAgents(): boolean {
   try {
     const q = new URLSearchParams(location.search);
@@ -48,16 +59,40 @@ const DEMO_POP_OPTS: PopOption[] = [
 ];
 
 const DEMO_AM_MODELS: AmModel[] = [
-  { id: "claude-opus-4", name: "claude-opus-4", group: "Anthropic", on: true },
-  { id: "claude-sonnet-4-5", name: "claude-sonnet-4-5", group: "Anthropic", on: true },
-  { id: "claude-haiku-4", name: "claude-haiku-4", group: "Anthropic", on: true },
-  { id: "claude-3-5-haiku", name: "claude-3-5-haiku", group: "Anthropic", on: false },
-  { id: "gpt-5", name: "gpt-5", group: "OpenAI", on: true },
-  { id: "gpt-5-mini", name: "gpt-5-mini", group: "OpenAI", on: true },
-  { id: "o4-mini", name: "o4-mini", group: "OpenAI", on: false },
-  { id: "gemini-2.5-pro", name: "gemini-2.5-pro", group: "Google", on: true },
+  { id: "claude-opus-4", name: "claude-opus-4", group: "Anthropic", icon: "anthropic", logo: "anthropic", on: true },
+  { id: "claude-sonnet-4-5", name: "claude-sonnet-4-5", group: "Anthropic", icon: "anthropic", logo: "anthropic", on: true },
+  { id: "claude-haiku-4", name: "claude-haiku-4", group: "Anthropic", icon: "anthropic", logo: "anthropic", on: true },
+  { id: "claude-3-5-haiku", name: "claude-3-5-haiku", group: "Anthropic", icon: "anthropic", logo: "anthropic", on: false },
+  { id: "gpt-5", name: "gpt-5", group: "OpenAI", icon: "openai", logo: "openai", on: true },
+  { id: "gpt-5-mini", name: "gpt-5-mini", group: "OpenAI", icon: "openai", logo: "openai", on: true },
+  { id: "o4-mini", name: "o4-mini", group: "OpenAI", icon: "openai", logo: "openai", on: false },
+  { id: "gemini-2.5-pro", name: "gemini-2.5-pro", group: "Google", icon: "gemini-color", logo: "gemini-color", on: true },
   { id: "magpie/fast", name: "magpie/fast", group: "Routing groups", on: true },
 ];
+
+// Explicit test-only depth for the frozen >8-model fold and own-order cases.
+// The normal mock catalog stays unchanged; these are labels, never API models.
+const DEEP_AM_MODELS: AmModel[] = [
+  ...DEMO_AM_MODELS,
+  ...Array.from({ length: 9 }, (_, i) => ({ id: `mock/openai-${i + 1}`, name: `Mock OpenAI ${i + 1}`, group: "OpenAI", icon: "openai", on: true })),
+  { id: "mock/own-model", name: "Mock own model", group: "ChatGPT", icon: "openai", own: true, on: true },
+];
+
+function readAmModels(key: string): Record<string, AmModel[]> {
+  try {
+    const data = JSON.parse(localStorage.getItem(key) || "{}");
+    if (!data || typeof data !== "object" || Array.isArray(data)) return {};
+    return Object.fromEntries(Object.entries(data).filter(([, rows]) => Array.isArray(rows) && rows.every(m => m && [m.id, m.name, m.group].every(s => typeof s === "string") && typeof m.on === "boolean"))) as Record<string, AmModel[]>;
+  } catch { return {}; }
+}
+
+function readAmPreferences(key: string): Record<string, AmPreferences> {
+  try {
+    const data = JSON.parse(localStorage.getItem(key) || "{}");
+    if (!data || typeof data !== "object" || Array.isArray(data)) return {};
+    return Object.fromEntries(Object.entries(data).filter(([, value]) => value && typeof value === "object" && "only" in value && "ordered" in value && typeof value.only === "boolean" && typeof value.ordered === "boolean")) as Record<string, AmPreferences>;
+  } catch { return {}; }
+}
 
 type StaleCopy = { kind: "app" | "ide" | "daemon" | "embedded" | "cli"; since: number; app?: string };
 const STALE_HOW: Record<string, [string, string?]> = {
@@ -127,6 +162,8 @@ const calm = () =>
 
 type Props = {
   onAddProvider: () => void;
+  /** Magpie app.js L1611–1615 guide-open → show("routing") */
+  onGoRouting: () => void;
   /** Incremented by App on #sync — closes naming like Magpie renderProfiles. */
   refreshNonce: number;
   onStatus: (msg: string, kind?: string) => void;
@@ -141,43 +178,7 @@ function CopyBtn({
   agentName: string;
   onStatus: (msg: string, kind?: string) => void;
 }) {
-  const [done, setDone] = useState(false);
-  return (
-    <button
-      type="button"
-      className={`copy${done ? " done" : ""}`}
-      title={t("Copy")}
-      aria-label={t("Copy")}
-      onClick={(e) => {
-        e.stopPropagation();
-        void navigator.clipboard?.writeText(text).catch(() => {});
-        setDone(true);
-        setTimeout(() => setDone(false), 900);
-        // Magpie: status(t("{what} copied", { what: t("{agent}'s install command", …) }))
-        onStatus(t("{what} copied", { what: t("{agent}'s install command", { agent: agentName }) }), "ok");
-      }}
-    >
-      <svg viewBox="0 0 16 16" width={12} height={12} aria-hidden>
-        <rect
-          x="5.5"
-          y="5.5"
-          width="7"
-          height="7"
-          rx="1.2"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.5"
-        />
-        <path
-          d="M3.5 10.5v-7A1.5 1.5 0 0 1 5 2h7"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-        />
-      </svg>
-    </button>
-  );
+  return <CopyButton text={text} what={t("{agent}'s install command", { agent: agentName })} onStatus={onStatus} />;
 }
 
 type ManageProps = {
@@ -332,16 +333,14 @@ function ManageAgentsModal({
       ref={modalRef}
       onClick={(e) => {
         if (e.target === e.currentTarget) close();
-      }}
-    >
+      }}>
       <div
         className="dialog"
         ref={dialogRef}
         role="dialog"
         aria-modal="true"
         aria-labelledby="modalTitle"
-        tabIndex={-1}
-      >
+        tabIndex={-1}>
         <div className="editor ag-manager framed">
           <div className="ehead">
             <b id="modalTitle">{ZH.manageAgents}</b>
@@ -357,18 +356,13 @@ function ManageAgentsModal({
               onChange={(e) => setQ(e.target.value)}
             />
             <div className="ag-manage-actions">
-              <button
-                type="button"
-                className="text"
+              <TextBtn
                 onClick={() =>
                   setSelected(new Set(matching.map((a) => a.id)))
-                }
-              >
+                }>
                 {t("Select search results")}
-              </button>
-              <button
-                type="button"
-                className="text"
+              </TextBtn>
+              <TextBtn
                 onClick={() => {
                   setSelected((prev) => {
                     const n = new Set(prev);
@@ -378,13 +372,10 @@ function ManageAgentsModal({
                     }
                     return n;
                   });
-                }}
-              >
+                }}>
                 {t("Invert search selection")}
-              </button>
-              <button
-                type="button"
-                className="text"
+              </TextBtn>
+              <TextBtn
                 onClick={() => {
                   // Magpie: clear then add matching !onMagpie(a)
                   setSelected(
@@ -392,17 +383,13 @@ function ManageAgentsModal({
                       matching.filter((a) => !wired[a.id]).map((a) => a.id),
                     ),
                   );
-                }}
-              >
+                }}>
                 {t("Select unconnected agents")}
-              </button>
-              <button
-                type="button"
-                className="text"
-                onClick={() => setSelected(new Set())}
-              >
+              </TextBtn>
+              <TextBtn
+                onClick={() => setSelected(new Set())}>
                 {t("Clear selection")}
-              </button>
+              </TextBtn>
             </div>
             <span className="ag-manage-count">
               {ZH.agentsSelected.replace("{n}", String(selected.size))}
@@ -416,17 +403,14 @@ function ManageAgentsModal({
                     key={a.id}
                     className="ag-manage-row"
                     data-id={a.id}
-                    title={hiddenIds.has(a.id) ? t("Hidden") : t("Not hidden")}
-                  >
+                    title={hiddenIds.has(a.id) ? t("Hidden") : t("Not hidden")}>
                     <input
                       type="checkbox"
                       checked={selected.has(a.id)}
                       aria-label={a.name}
                       onChange={(e) => toggle(a.id, e.target.checked)}
                     />
-                    <span className="ic">
-                      <img src={iconSrc(a.icon)} alt="" />
-                    </span>
+                    <MagpieIcon name={a.icon} />
                     <span className="ag-manage-name">{a.name}</span>
                     <span className="ag-manage-state">
                       {hiddenIds.has(a.id) ? t("Hidden") : t("Not hidden")}
@@ -440,26 +424,20 @@ function ManageAgentsModal({
             </p>
           </div>
           <div className="bar">
-            <button
-              type="button"
-              className="text"
+            <TextBtn
               disabled={!canHide}
-              onClick={() => applyVisibility(true)}
-            >
+              onClick={() => applyVisibility(true)}>
               {ZH.hideSelected}
-            </button>
-            <button
-              type="button"
-              className="text"
+            </TextBtn>
+            <TextBtn
               disabled={!canUnhide}
-              onClick={() => applyVisibility(false)}
-            >
+              onClick={() => applyVisibility(false)}>
               {ZH.unhideSelected}
-            </button>
+            </TextBtn>
             <span className="grow" />
-            <button type="button" className="text" onClick={close}>
+            <TextBtn onClick={close}>
               {ZH.done}
-            </button>
+            </TextBtn>
           </div>
         </div>
       </div>
@@ -497,47 +475,7 @@ function ArrangeMenu({
   onClose,
 }: ArrangeProps) {
   const boxRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const box = boxRef.current;
-    if (!box) return;
-    const r = anchor.getBoundingClientRect();
-    const pad = 8;
-    const w = box.offsetWidth || 176;
-    const h = box.offsetHeight || 100;
-    let y = r.bottom + 5;
-    if (y + h > window.innerHeight - pad && r.top - 5 - h >= pad) {
-      y = r.top - 5 - h;
-      box.classList.add("up");
-    }
-    const left = Math.max(pad, Math.min(r.left - 4, window.innerWidth - w - pad));
-    box.style.left = `${left}px`;
-    box.style.top = `${Math.max(pad, y)}px`;
-    anchor.classList.add("open");
-    const outside = (e: MouseEvent) => {
-      if (!box.contains(e.target as Node) && !anchor.contains(e.target as Node))
-        onClose();
-    };
-    const keys = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        e.preventDefault();
-        e.stopPropagation();
-        onClose();
-        anchor.focus({ preventScroll: true });
-      } else if (e.key === "Tab") onClose();
-    };
-    document.addEventListener("mousedown", outside, true);
-    document.addEventListener("keydown", keys, true);
-    const first = box.querySelector<HTMLButtonElement>(
-      "button.rm-item:not(:disabled)",
-    );
-    first?.focus({ preventScroll: true });
-    return () => {
-      anchor.classList.remove("open");
-      document.removeEventListener("mousedown", outside, true);
-      document.removeEventListener("keydown", keys, true);
-    };
-  }, [anchor, onClose]);
+  useRowMenu(boxRef, anchor, onClose);
 
   const items: {
     name: string;
@@ -572,9 +510,9 @@ function ArrangeMenu({
   ];
 
   return (
-    <div className="pop row-menu" role="menu" ref={boxRef}>
+    <PopoverPortal><div data-anchored className="pop row-menu" role="menu" ref={boxRef}>
       {items.map((o) => (
-        <span key={o.name} style={{ display: "contents" }}>
+        <span key={o.name} className="display-contents">
           {o.sep ? <div className="rm-sep" /> : null}
           <button
             type="button"
@@ -585,8 +523,7 @@ function ArrangeMenu({
               e.stopPropagation();
               onClose();
               o.run();
-            }}
-          >
+            }}>
             <svg viewBox="0 0 16 16" width={13} height={13} aria-hidden>
               <path
                 d={o.icon}
@@ -602,20 +539,22 @@ function ArrangeMenu({
           </button>
         </span>
       ))}
-    </div>
+    </div></PopoverPortal>
   );
 }
 
 
 export function AgentsView({
   onAddProvider,
+  onGoRouting,
   refreshNonce,
   onStatus,
 }: Props) {
   const [demoAgents] = useState(() => readDemoAgents());
+  const [comparison] = useState(isAgentComparison);
   const ALL_AGENTS = useMemo<readonly AgentDef[]>(
-    () => (demoAgents ? [CURSOR_AGENT, ...DEMO_CONNECTABLES] : [CURSOR_AGENT]),
-    [demoAgents],
+    () => comparison ? COMPARISON_AGENTS : (demoAgents ? [CURSOR_AGENT, ...DEMO_CONNECTABLES] : [CURSOR_AGENT]),
+    [demoAgents, comparison],
   );
   const [guideHidden, setGuideHidden] = useState(() => {
     try {
@@ -646,7 +585,11 @@ export function AgentsView({
   const [wired, setWired] = useState<Record<string, boolean>>(() => {
     try {
       const raw = localStorage.getItem("magpie.demoAgentWired");
-      if (raw) return JSON.parse(raw) as Record<string, boolean>;
+      const saved: unknown = raw ? JSON.parse(raw) : null;
+      if (saved && typeof saved === "object" && !Array.isArray(saved)) {
+        return Object.fromEntries(Object.entries(saved).filter(([id, value]) =>
+          ALL_AGENTS.some(agent => agent.id === id && agent.connectable) && typeof value === "boolean"));
+      }
     } catch {
       /* ignore */
     }
@@ -656,7 +599,28 @@ export function AgentsView({
   const [relPreview, setRelPreview] = useState<string | null>(null);
   const [relPhase, setRelPhase] = useState<"edit" | "preview" | "done">("edit");
   const [expandOpen, setExpandOpen] = useState<string | null>(null);
-  const [connectBusy, setConnectBusy] = useState<string | null>(null);
+  const [connectBusy, setConnectBusy] = useState<Set<string>>(() => new Set());
+  const connectTimers = useRef(new Map<string, number>());
+  useEffect(() => {
+    const timers = connectTimers.current;
+    return () => {
+      for (const timer of timers.values()) window.clearTimeout(timer);
+      timers.clear();
+    };
+  }, []);
+  const connectAgent = (id: string, closeOtherAgents = false) => {
+    if (connectTimers.current.has(id)) return;
+    setConnectBusy(previous => new Set(previous).add(id));
+    const timer = window.setTimeout(() => {
+      connectTimers.current.delete(id);
+      setWired(previous => ({ ...previous, [id]: true }));
+      setExpandOpen(id);
+      setConnectBusy(previous => { const next = new Set(previous); next.delete(id); return next; });
+      if (closeOtherAgents) setShowAllAgents(false);
+      onStatus(demoCopy("演示：已接入 · 新开的会话生效", "Demo: connected · new sessions take it"), "ok");
+    }, 380);
+    connectTimers.current.set(id, timer);
+  };
   const [diffOpen, setDiffOpen] = useState<string | null>(null);
   const [relFrom, setRelFrom] = useState("~/.claude/projects/old");
   const [relTo, setRelTo] = useState("~/.claude/projects/new");
@@ -673,16 +637,36 @@ export function AgentsView({
     "claude:sonnet": "claude-sonnet-4-5",
     "claude:haiku": "claude-haiku-4",
     "claude:model": "claude-sonnet-4-5",
-    "codex:model": "gpt-5",
+    "codex:model": comparison ? "gpt-6.1-sol" : "gpt-5",
+    "deepseek:model": "default",
+    "workbuddy:model": "default",
     "opencode:model": "claude-sonnet-4-5",
     "pi:model": "gpt-5-mini",
   }));
   /** Magpie am-pop (Pick on Model list) */
   const [amPop, setAmPop] = useState<{ agentId: string; el: HTMLElement } | null>(null);
-  const [amModels, setAmModels] = useState<Record<string, AmModel[]>>({});
+  const [amCatalog] = useState(() => new URLSearchParams(location.search).get("amFixture") === "deep" ? DEEP_AM_MODELS : DEMO_AM_MODELS);
+  const modelStorageKey = comparison ? "magpie.comparison.v1.models" : "magpie.demoAmModels";
+  const prefsStorageKey = comparison ? "magpie.comparison.v1.modelPrefs" : "magpie.demoAmPrefs";
+  const [amModels, setAmModels] = useState<Record<string, AmModel[]>>(() => readAmModels(modelStorageKey));
+  const [amPreferences, setAmPreferences] = useState<Record<string, AmPreferences>>(() => readAmPreferences(prefsStorageKey));
+  const catalogFor = (id: string) => comparison ? (COMPARISON_MODELS[id] || []) : amCatalog;
+  const modelsFor = (id: string) => {
+    const catalog = catalogFor(id);
+    const saved = amModels[id];
+    if (!saved) return catalog;
+    // A screenshot fixture cannot acquire another agent's legacy mock models.
+    return comparison ? catalog.map(model => ({ ...model, on: saved.find(row => row.id === model.id)?.on ?? model.on })) : saved;
+  };
+  useEffect(() => {
+    if (Object.keys(amModels).length) try { localStorage.setItem(modelStorageKey, JSON.stringify(amModels)); } catch { /* local mock only */ }
+  }, [amModels, modelStorageKey]);
+  useEffect(() => {
+    if (Object.keys(amPreferences).length) try { localStorage.setItem(prefsStorageKey, JSON.stringify(amPreferences)); } catch { /* local mock only */ }
+  }, [amPreferences, prefsStorageKey]);
   /** Magpie staleSeen — dismiss "Got it" per agent */
   const [staleSeen, setStaleSeen] = useState<Record<string, number>>({});
-  const [staleDemo, setStaleDemo] = useState(true);
+  const [staleDemo] = useState(() => !comparison && new URLSearchParams(location.search).get("stale") !== "0");
 
   useEffect(() => {
     try {
@@ -734,7 +718,7 @@ export function AgentsView({
   })();
   // Magpie agentUsed / onMagpie: Cursor stays up; connectable rows stay up once wired.
   const isUsed = (a: AgentDef) =>
-    a.id === "cursor" || !a.connectable || !!wired[a.id];
+    comparison || a.id === "cursor" || !a.connectable || !!wired[a.id];
   const visibleAll = orderedAll.filter((a) => !hiddenIds.has(a.id));
   const used = visibleAll.filter(isUsed);
   const unset = visibleAll.filter((a) => !isUsed(a));
@@ -776,21 +760,10 @@ export function AgentsView({
                   aria-label={ZH.hideGetStarted}
                   onClick={(e) => {
                     e.stopPropagation();
-                    const lead = document.getElementById("agentsLead");
-                    if (lead && !calm()) {
-                      lead.style.transition = "opacity .22s var(--ease), transform .22s var(--ease)";
-                      lead.style.opacity = "0";
-                      lead.style.transform = "translateY(-6px)";
-                      window.setTimeout(() => {
-                        setGuideHidden(true);
-                        try { localStorage.setItem(GUIDE_KEY, "1"); } catch { /* ignore */ }
-                      }, 220);
-                    } else {
-                      setGuideHidden(true);
-                      try { localStorage.setItem(GUIDE_KEY, "1"); } catch { /* ignore */ }
-                    }
-                  }}
-                >
+                    /* Magpie hideGuide (app.js ~1682): instant prefs write, no fade invent */
+                    setGuideHidden(true);
+                    try { localStorage.setItem(GUIDE_KEY, "1"); } catch { /* ignore */ }
+                  }}>
                   <svg viewBox="0 0 16 16" width={12} height={12} aria-hidden>
                     <path
                       d="M4.5 4.5l7 7M11.5 4.5l-7 7"
@@ -814,8 +787,7 @@ export function AgentsView({
                       <button
                         type="button"
                         className="text primary guide-go"
-                        onClick={onAddProvider}
-                      >
+                        onClick={onAddProvider}>
                         {ZH.addProvider}
                       </button>
                     </div>
@@ -827,11 +799,52 @@ export function AgentsView({
                   </span>
                   <div className="guide-body">
                     <b className="guide-title">{ZH.connectAgent}</b>
-                    <span className="guide-say">{ZH.connectAgentSay}</span>
-                    {/* Native: no connectable agents detected → no chips (Cursor can't connect) */}
-                    <div className="guide-acts" />
+                    <span className="guide-say">{comparison
+                      ? demoCopy("对照样例中的 Agent，点一下即可演示接入：", "Agents in the comparison sample; click to preview connecting:")
+                      : ZH.connectAgentSay}</span>
+                    <div className="guide-agents">
+                      {comparison ? ALL_AGENTS.filter(a => a.connectable).map(a => (
+                        <button key={a.id} type="button" className="guide-agent" onClick={() => {
+                          document.querySelector<HTMLButtonElement>(`#agents [data-id="${a.id}"] .ag-conn`)?.click();
+                        }}><MagpieIcon name={a.icon} /><span>{a.name}</span></button>
+                      )) : null}
+                    </div>
                   </div>
                 </li>
+                {/* Magpie app.js L1591–1622: optional routing step (counter still 2 of source+agent) */}
+                {!comparison ? <li
+                  className="guide-step optional"
+                  data-step="routing"
+                  data-feature="groups"
+                  aria-label={t("Set up routing (optional)")}
+                >
+                  <span className="guide-tick" aria-hidden>
+                    3
+                  </span>
+                  <div className="guide-body">
+                    <b className="guide-title">{t("Set up routing (optional)")}</b>
+                    <span className="guide-say">
+                      {t(
+                        "A routing group sends each request to the right model, and to the next one when a model fails",
+                      )}
+                    </span>
+                    {typeof window !== "undefined" &&
+                    sessionStorage.getItem("magpie-demo-providerAdded") === "1" ? (
+                      <div className="guide-acts">
+                        <button
+                          type="button"
+                          className="text guide-open"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onGoRouting();
+                          }}
+                        >
+                          {t("Open Routing")}
+                        </button>
+                      </div>
+                    ) : null}
+                  </div>
+                </li> : null}
               </ol>
             </section>
           </div>
@@ -841,11 +854,10 @@ export function AgentsView({
           {visible.map((a) => (
             <div
               key={a.id}
-              className={`row agent conn${draggingId === a.id ? " dragging" : ""}`}
+              className={`row agent${a.missing ? "" : " conn"}${a.connectable && !wired[a.id] ? " unplugged" : ""}${draggingId === a.id ? " dragging" : ""}`}
               data-id={a.id}
               title={a.id === "cursor" ? "~/.cursor/cli-config.json" : a.name}
-              style={draggingId === a.id ? { transition: "none" } : undefined}
-            >
+              style={draggingId === a.id ? { transition: "none" } : undefined}>
               <button
                 type="button"
                 className="ag-handle"
@@ -1003,19 +1015,17 @@ export function AgentsView({
                   handle.addEventListener("lostpointercapture", cancel);
                   window.addEventListener("blur", cancel);
                   window.addEventListener("resize", cancel);
-                }}
-              >
-                <span className="ic">
-                  <img src={iconSrc(a.icon)} alt="" />
-                </span>
+                }}>
+                <MagpieIcon name={a.icon} />
               </button>
-              <div className="who">
+              <div className={`who${a.missing ? "" : " with-models"}`}>
                 <div className="name">{a.name}</div>
-                {a.id === "cursor" ? (
-                  <div className="ag-native-note" title="~/.cursor/cli-config.json">
-                    <span className="sq" aria-hidden />
-                    <span className="sq" aria-hidden />
-                    <span>{t("Only Cursor's own models")}</span>
+                {a.version ? <span className="ag-cli"><span className="ag-ver">{a.version}</span></span> : null}
+                {a.missing ? <span className="ag-cli ag-missing">{t("CLI not found")}</span> : null}
+                {a.missing ? null : a.id === "cursor" ? (
+                  <div className="ag-st">
+                    <span className="ag-dot" />
+                    <span className="ag-st-t">{t("Only Cursor's own models")}</span>
                   </div>
                 ) : wired[a.id] ? (
                   <div
@@ -1024,8 +1034,7 @@ export function AgentsView({
                       staleDemo && DEMO_STALE[a.id] && staleSeen[a.id] !== DEMO_STALE[a.id].stale
                         ? staleSaid(a.name, DEMO_STALE[a.id].copies).title
                         : undefined
-                    }
-                  >
+                    }>
                     <span className="ag-dot" />
                     <span className="ag-st-t">
                       {staleDemo && DEMO_STALE[a.id] && staleSeen[a.id] !== DEMO_STALE[a.id].stale
@@ -1034,169 +1043,96 @@ export function AgentsView({
                     </span>
                   </div>
                 ) : (
-                  <div className="sub" style={{ fontSize: 12, color: "var(--faint)" }}>
-                    {demoCopy("演示：可接入 Magpie 模型列表", "Demo: can connect Magpie models")}
+                  <div className="ag-st">
+                    <span className="ag-dot" aria-hidden />
+                    <span className="ag-st-t">
+                      {comparison && a.id === "codex"
+                        ? t("Not connected · now signed in with ChatGPT · OpenAI's models stay available once connected")
+                        : t("Not connected · {agent} uses its own settings", { agent: a.name })}
+                    </span>
                   </div>
                 )}
               </div>
-              {a.id === "cursor" || !a.connectable ? (
-                <span className="ag-cant" style={{ cursor: "default", userSelect: "none" }}>{t("Can't connect")}</span>
+              {a.missing ? null : a.id === "cursor" || !a.connectable ? (
+                <span className="ag-cant">{t("Can't connect")}</span>
               ) : (
-                <div className="val" style={{ display: "flex", gap: 6, flexWrap: "wrap", alignItems: "center" }}>
-                  {a.id === "claude" ? (
+                <>
+                  {comparison && (a.id === "codex" || a.id === "deepseek") ? (
+                    <FieldPill kind="main" className="ag-start" leading={<MagpieIcon name={a.id === "codex" ? "openai" : a.icon} />}
+                      v={fieldVals[`${a.id}:model`] === "default" ? t("Default") : fieldVals[`${a.id}:model`]}
+                      aria-label={t("Model")} aria-haspopup="listbox" open={fieldPop?.agentId === a.id}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        const el = e.currentTarget;
+                        setAmPop(null);
+                        setFieldPop(cur => cur?.agentId === a.id ? null : { agentId: a.id, key: `${a.id}:model`, el });
+                      }} />
+                  ) : null}
+                  {/* Magpie connectRow: expandLink + connectSwitch (app.js L1067–1094 / L1308–1344 / L1406–1423) — not invent .val.acts */}
+                  {wired[a.id] ? (
                     <button
                       type="button"
-                      className="text"
-                      aria-expanded={relocateFor === a.id}
-                      onClick={() => {
-                        setRelocateFor((cur) => {
-                          const next = cur === a.id ? null : a.id;
-                          if (next) {
-                            setRelPhase("edit");
-                            setRelPreview(null);
-                            if (!relFrom) setRelFrom("~/code/magpie");
-                            if (!relTo) setRelTo("~/code/magpie-moved");
-                          }
-                          return next;
-                        });
-                      }}
-                    >
-                      {t("Relocate")}
+                      className={`ag-link${expandOpen === a.id ? " open" : ""}`}
+                      aria-expanded={expandOpen === a.id}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setExpandOpen((cur) => (cur === a.id ? null : a.id));
+                      }}>
+                      <span>
+                        {expandOpen === a.id
+                          ? t("Collapse")
+                          : a.id === "claude"
+                            ? t("Tiers")
+                            : t("Details")}
+                      </span>
+                      {expandOpen === a.id ? null : (
+                        <span className="chev">
+                          <svg viewBox="0 0 12 12" width={10} height={10} aria-hidden>
+                            <path
+                              d="M4.5 3 7.5 6 4.5 9"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="1.6"
+                              strokeLinecap="round"
+                            />
+                          </svg>
+                        </span>
+                      )}
                     </button>
                   ) : null}
-                  <button
-                    type="button"
-                    className={`text${wired[a.id] ? "" : " primary"}${connectBusy === a.id ? " busy" : ""}`}
-                    aria-pressed={!!wired[a.id]}
-                    aria-expanded={expandOpen === a.id}
+                  <LibSwitch
+                    kind="ag-conn"
+                    on={!!wired[a.id]}
+                    disabled={connectBusy.has(a.id)}
                     aria-label={t("Connect {agent} to magpie", { agent: a.name })}
                     title={
                       wired[a.id]
-                        ? t("Connected · new sessions take it")
-                        : t("Connect {agent}", { agent: a.name })
+                        ? t("Connected · switch off to put back what {agent} had before magpie", {
+                            agent: a.name,
+                          })
+                        : t("Switch on and {agent}'s model list gets magpie's models", {
+                            agent: a.name,
+                          })
                     }
-                    disabled={connectBusy === a.id}
-                    onClick={() => {
+                    onClick={(e) => {
+                      e.stopPropagation();
                       if (wired[a.id]) {
-                        setExpandOpen((cur) => (cur === a.id ? null : a.id));
+                        /* Magpie connectSwitch → askDisconnect; demo: restore like foot */
+                        setWired((w) => ({ ...w, [a.id]: false }));
+                        setExpandOpen(null);
+                        setDiffOpen(null);
+                        setFieldPop(null);
+                        setAmPop(null);
+                        onStatus(demoCopy("演示：已断开并还原", "Demo: disconnected and restored"), "ok");
                         return;
                       }
-                      setConnectBusy(a.id);
-                      window.setTimeout(() => {
-                        setWired((w) => ({ ...w, [a.id]: true }));
-                        setExpandOpen(a.id);
-                        setConnectBusy(null);
-                        onStatus(t("Connected · new sessions take it"), "ok");
-                      }, 380);
+                      connectAgent(a.id);
                     }}
-                  >
-                    {connectBusy === a.id
-                      ? "…"
-                      : wired[a.id]
-                        ? expandOpen === a.id
-                          ? t("Connected · new sessions take it")
-                          : t("Connected · new sessions take it")
-                        : demoCopy("接入", "Connect")}
-                  </button>
-                </div>
+                  />
+                </>
               )}
-              {relocateFor === a.id ? (
-                <div
-                  className="ag-relocate ag-exp"
-                  style={{ animation: "fade-in .18s var(--ease)" }}
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <div className="ag-settings">
-                    <div className="ag-kv">
-                      <div className="ag-k" style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                        <img src={iconSrc("claude-color")} alt="" width={16} height={16} style={{ borderRadius: 3 }} />
-                        <span>{t("Relocate Claude Code project")}</span>
-                      </div>
-                      <div className="ag-v">
-                        <div className="ag-vl" style={{ flexDirection: "column", alignItems: "stretch", gap: 8 }}>
-                          <p className="sub sm-ask-path" style={{ margin: 0, fontFamily: "var(--code-font, var(--code))", fontSize: 11.5, color: "var(--fg-2)", wordBreak: "break-all" }}>
-                            {relFrom || "~/code/magpie"}
-                          </p>
-                          <p className="lib-confirm" style={{ margin: 0, fontSize: 12, color: "var(--muted)", lineHeight: 1.45 }}>
-                            {t("Close Claude Code and its editor sessions first. This moves the entire project's sessions, not just filtered or selected rows. Existing target storage is never overwritten. Desktop-only sessions are not changed.")}
-                          </p>
-                          <label className="sm-ask-field" style={{ display: "flex", flexDirection: "column", gap: 4, fontSize: 12 }}>
-                            <span style={{ color: "var(--muted)", fontWeight: 560 }}>{t("New absolute project path")}</span>
-                            <input
-                              className="words"
-                              spellCheck={false}
-                              autoComplete="off"
-                              style={{ width: "100%", fontFamily: "var(--code-font, var(--code))", fontSize: 12.5 }}
-                              value={relTo}
-                              disabled={relPhase === "done"}
-                              onChange={(e) => {
-                                setRelTo(e.target.value);
-                                setRelPhase("edit");
-                                setRelPreview(null);
-                              }}
-                            />
-                          </label>
-                          {relPreview ? (
-                            <p className="lib-confirm" aria-live="polite" style={{ margin: 0, fontSize: 12, color: "var(--fg-2)", lineHeight: 1.45 }}>
-                              {relPreview}
-                            </p>
-                          ) : null}
-                          <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-                            <span className="grow" />
-                            <button
-                              type="button"
-                              className="ag-quiet"
-                              onClick={() => {
-                                setRelocateFor(null);
-                                setRelPhase("edit");
-                                setRelPreview(null);
-                              }}
-                            >
-                              {relPhase === "done" ? t("Close") : t("Cancel")}
-                            </button>
-                            {relPhase !== "done" ? (
-                              <button
-                                type="button"
-                                className="ag-quiet accent"
-                                disabled={relBusy || !relTo.trim()}
-                                onClick={() => {
-                                  setRelBusy(true);
-                                  window.setTimeout(() => {
-                                    setRelBusy(false);
-                                    if (relPhase === "edit") {
-                                      setRelPhase("preview");
-                                      setRelPreview(
-                                        t("Move {n} sessions ({size}) from {from} to {to}. Originals are retained outside Claude's project list. Historical message text is unchanged.", {
-                                          n: 12,
-                                          size: "48 MB",
-                                          from: relFrom || "~/code/magpie",
-                                          to: relTo.trim(),
-                                        }),
-                                      );
-                                    } else {
-                                      setRelPhase("done");
-                                      setRelPreview(
-                                        t("Relocation complete. Original files and recovery manifest: {dir}", {
-                                          dir: "~/.config/magpie/relocate-demo",
-                                        }),
-                                      );
-                                      onStatus(demoCopy("演示：会话路径已迁移（本地）", "Demo: sessions relocated (local)"), "ok");
-                                    }
-                                  }, 420);
-                                }}
-                              >
-                                {relBusy ? "…" : relPhase === "preview" ? t("Confirm relocation") : t("Preview relocation")}
-                              </button>
-                            ) : null}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ) : null}
               {wired[a.id] && expandOpen === a.id && a.connectable ? (
-                <div className="ag-exp" onClick={(e) => e.stopPropagation()} style={{ animation: "fade-in .22s var(--ease)" }}>
+                <div className="ag-exp" onClick={(e) => e.stopPropagation()}>
                   <div className="ag-settings">
                     <div className="ag-kv">
                       <div className="ag-k">{t("In {agent}", { agent: a.name })}</div>
@@ -1216,7 +1152,7 @@ export function AgentsView({
                         </div>
                         {staleDemo && DEMO_STALE[a.id] && staleSeen[a.id] !== DEMO_STALE[a.id].stale ? (
                           <>
-                            <div className="ag-vl ag-warn" style={{ marginTop: 6 }}>
+                            <div className="ag-vl ag-warn">
                               <span className="ag-dot" />
                               <span>
                                 {t(
@@ -1231,8 +1167,7 @@ export function AgentsView({
                                 className="ag-quiet"
                                 onClick={() =>
                                   setStaleSeen((s) => ({ ...s, [a.id]: DEMO_STALE[a.id].stale }))
-                                }
-                              >
+                                }>
                                 {t("Got it")}
                               </button>
                             </div>
@@ -1259,8 +1194,7 @@ export function AgentsView({
                                           demoCopy("演示：已重启 app-server", "Demo: app-server restarted"),
                                           "ok",
                                         )
-                                      }
-                                    >
+                                      }>
                                       {t("Restart")}
                                     </button>
                                   ) : null}
@@ -1282,24 +1216,11 @@ export function AgentsView({
                             return (
                               <div className="ag-vl" key={tier}>
                                 <span className="ag-tier">{tier[0].toUpperCase() + tier.slice(1)}</span>
-                                <button
-                                  type="button"
-                                  className={`field ag-pick${open ? " open" : ""}`}
-                                  style={{
-                                    height: 28,
-                                    padding: "0 10px",
-                                    borderRadius: 8,
-                                    border: "1px solid var(--line)",
-                                    background: "var(--card)",
-                                    display: "inline-flex",
-                                    alignItems: "center",
-                                    gap: 6,
-                                    width: 220,
-                                    justifyContent: "flex-start",
-                                    cursor: "pointer",
-                                  }}
+                                <FieldPill
+                                  className="ag-pick"
+                                  open={open}
+                                  v={val}
                                   aria-haspopup="listbox"
-                                  aria-expanded={open}
                                   onClick={(e) => {
                                     const el = e.currentTarget;
                                     setAmPop(null);
@@ -1309,14 +1230,7 @@ export function AgentsView({
                                         : { agentId: a.id, key: fk, el },
                                     );
                                   }}
-                                >
-                                  <span className="v" style={{ flex: 1, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", textAlign: "left" }}>
-                                    {val}
-                                  </span>
-                                  <svg viewBox="0 0 12 12" width={10} height={10} aria-hidden>
-                                    <path d="M3 4.5 6 7.5 9 4.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-                                  </svg>
-                                </button>
+                                />
                                 <span className="ag-hint">
                                   /model {tier}
                                   {tier === "sonnet"
@@ -1336,7 +1250,7 @@ export function AgentsView({
                       <div className="ag-v">
                         <div className="ag-vl ag-chips">
                           {(() => {
-                            const list = amModels[a.id] || DEMO_AM_MODELS;
+                            const list = modelsFor(a.id);
                             const by = new Map<string, number>();
                             for (const m of list.filter((x) => x.on)) by.set(m.group, (by.get(m.group) || 0) + 1);
                             const hidden = list.filter((x) => !x.on).length;
@@ -1366,10 +1280,9 @@ export function AgentsView({
                                 cur?.agentId === a.id ? null : { agentId: a.id, el },
                               );
                               if (!amModels[a.id]) {
-                                setAmModels((m) => ({ ...m, [a.id]: DEMO_AM_MODELS.map((x) => ({ ...x })) }));
+                                setAmModels((m) => ({ ...m, [a.id]: catalogFor(a.id).map((x) => ({ ...x })) }));
                               }
-                            }}
-                          >
+                            }}>
                             <span>{t("Pick")}</span>
                             <span className="chev">
                               <svg viewBox="0 0 12 12" width={10} height={10} aria-hidden>
@@ -1384,29 +1297,19 @@ export function AgentsView({
                       <div className="ag-k">{t("New sessions")}</div>
                       <div className="ag-v">
                         <div className="ag-vl">
-                          <div className="fields" style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+                          <div className="fields">
                             {(() => {
                               const fk = `${a.id}:model`;
                               const val = fieldVals[fk] || "claude-sonnet-4-5";
                               const open = fieldPop?.agentId === a.id && fieldPop.key === fk;
                               return (
-                                <button
-                                  type="button"
-                                  className={`field main ag-pick${open ? " open" : ""}`}
-                                  style={{
-                                    height: 28,
-                                    minWidth: 170,
-                                    padding: "0 10px",
-                                    borderRadius: 8,
-                                    border: "1px solid var(--line)",
-                                    background: "var(--card)",
-                                    display: "inline-flex",
-                                    alignItems: "center",
-                                    gap: 6,
-                                    cursor: "pointer",
-                                  }}
+                                <FieldPill
+                                  kind="main"
+                                  className="ag-pick"
+                                  open={open}
+                                  k={t("Model")}
+                                  v={val === "default" ? t("Default") : val}
                                   aria-haspopup="listbox"
-                                  aria-expanded={open}
                                   onClick={(e) => {
                                     const el = e.currentTarget;
                                     setAmPop(null);
@@ -1416,40 +1319,34 @@ export function AgentsView({
                                         : { agentId: a.id, key: fk, el },
                                     );
                                   }}
-                                >
-                                  <span className="k" style={{ fontSize: 11, color: "var(--muted)" }}>
-                                    {t("Model")}
-                                  </span>
-                                  <span className="v">{val}</span>
-                                  <svg viewBox="0 0 12 12" width={10} height={10} aria-hidden style={{ marginLeft: "auto" }}>
-                                    <path d="M3 4.5 6 7.5 9 4.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-                                  </svg>
-                                </button>
+                                />
                               );
                             })()}
                           </div>
                         </div>
                       </div>
                     </div>
-                    {a.id === "claude" || a.id === "codex" ? (
-                      <div className="ag-kv" style={{ marginTop: 2 }}>
-                        <div className="ag-k" />
-                        <div className="ag-v">
-                          <label style={{ display: "inline-flex", alignItems: "center", gap: 8, fontSize: 11.5, color: "var(--muted)", cursor: "pointer" }}>
-                            <input
-                              type="checkbox"
-                              checked={staleDemo}
-                              onChange={(e) => {
-                                setStaleDemo(e.target.checked);
-                                if (e.target.checked) setStaleSeen({});
-                              }}
-                            />
-                            {demoCopy("演示：显示 stale copies UI", "Demo: show stale copies UI")}
-                          </label>
-                        </div>
-                      </div>
-                    ) : null}
+
                   </div>
+                  {a.id === "claude" ? (
+                    <div className="ag-kv">
+                      <div className="ag-k" />
+                      <div className="ag-v">
+                        <button
+                          type="button"
+                          className="text"
+                          onClick={() => {
+                            setRelPhase("edit");
+                            setRelPreview(null);
+                            if (!relFrom) setRelFrom("~/code/magpie");
+                            if (!relTo) setRelTo("~/code/magpie-moved");
+                            setRelocateFor(a.id);
+                          }}>
+                          {t("Relocate project")}
+                        </button>
+                      </div>
+                    </div>
+                  ) : null}
                   <div className="ag-foot">
                     <span className="ag-files">
                       {t("Changed ")}
@@ -1458,8 +1355,7 @@ export function AgentsView({
                     <button
                       type="button"
                       className={`ag-quiet${diffOpen === a.id ? " open" : ""}`}
-                      onClick={() => setDiffOpen((cur) => (cur === a.id ? null : a.id))}
-                    >
+                      onClick={() => setDiffOpen((cur) => (cur === a.id ? null : a.id))}>
                       <span>{diffOpen === a.id ? t("Hide changes") : t("View")}</span>
                       <span className="chev">
                         <svg viewBox="0 0 12 12" width={10} height={10} aria-hidden>
@@ -1478,20 +1374,31 @@ export function AgentsView({
                         setFieldPop(null);
                         setAmPop(null);
                         onStatus(demoCopy("演示：已断开并还原", "Demo: disconnected and restored"), "ok");
-                      }}
-                    >
+                      }}>
                       {t("Disconnect and restore")}
                     </button>
                   </div>
                   {diffOpen === a.id ? (
-                    <div className="ag-diff-box" style={{ marginTop: 8, animation: "fade-in .15s var(--ease)" }}>
+                    <div className="ag-diff-box">
                       <div className="ag-diff">
                         <div className="ag-diff-file">
                           <div className="ag-diff-path">~/.{a.id === "claude" ? "claude" : a.id}/settings.json</div>
-                          <pre className="ag-diff-body" style={{ margin: "6px 0 0", padding: 10, borderRadius: 8, background: "var(--pill)", fontSize: 11.5, lineHeight: 1.45, overflow: "auto" }}>
-{`+ "model": "${fieldVals[a.id + ":model"] || "claude-sonnet-4-5"}"
-+ "env": { "ANTHROPIC_BASE_URL": "http://127.0.0.1:3425" }`}
-                          </pre>
+                          <div className="ag-diff-line back">
+                            <span className="op">↺</span>
+                            <code>
+                              <span className="ind" />
+                              <span className="t">{`"model": "${fieldVals[a.id + ":model"] || "claude-sonnet-4-5"}"`}</span>
+                            </code>
+                            <span className="ag-tag">{t("value before connecting")}</span>
+                          </div>
+                          <div className="ag-diff-line back">
+                            <span className="op">↺</span>
+                            <code>
+                              <span className="ind" />
+                              <span className="t">{`"env": { "ANTHROPIC_BASE_URL": "http://127.0.0.1:3425" }`}</span>
+                            </code>
+                            <span className="ag-tag">{t("value before connecting")}</span>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -1505,8 +1412,7 @@ export function AgentsView({
             <>
               <div
                 className={`agent-fold${showAllAgents ? " open" : ""}`}
-                style={{ ["--n" as string]: unset.length + (hidden.length && !unset.length ? hidden.length : 0) }}
-              >
+                style={{ ["--n" as string]: unset.length + (hidden.length && !unset.length ? hidden.length : 0) }}>
                 <div className="agent-fold-inner" inert={!showAllAgents ? true : undefined}>
                   {unset.length ? (
                     <>
@@ -1519,36 +1425,32 @@ export function AgentsView({
                           className="row agent conn put-away"
                           data-id={a.id}
                           title={a.name}
-                          style={{ ["--i" as string]: i + 1 }}
-                        >
+                          style={{ ["--i" as string]: i + 1 }}>
                           <button type="button" className="ag-handle" aria-label={a.name}>
-                            <span className="ic">
-                              <img src={iconSrc(a.icon)} alt="" />
-                            </span>
+                            <MagpieIcon name={a.icon} />
                           </button>
                           <div className="who">
                             <div className="name">{a.name}</div>
-                            <div className="sub" style={{ fontSize: 12, color: "var(--faint)" }}>
-                              {demoCopy("演示：可接入 Magpie 模型列表", "Demo: can connect Magpie models")}
+                            <div className="ag-st">
+                              <span className="ag-dot" aria-hidden />
+                              <span className="ag-st-t">
+                                {t("Not connected · {agent} uses its own settings", { agent: a.name })}
+                              </span>
                             </div>
                           </div>
-                          <button
-                            type="button"
-                            className={`text primary${connectBusy === a.id ? " busy" : ""}`}
-                            disabled={connectBusy === a.id}
-                            onClick={() => {
-                              setConnectBusy(a.id);
-                              window.setTimeout(() => {
-                                setWired((w) => ({ ...w, [a.id]: true }));
-                                setExpandOpen(a.id);
-                                setConnectBusy(null);
-                                setShowAllAgents(false);
-                                onStatus(t("Connected · new sessions take it"), "ok");
-                              }, 380);
+                          <LibSwitch
+                            kind="ag-conn"
+                            on={false}
+                            disabled={connectBusy.has(a.id)}
+                            aria-label={t("Connect {agent} to magpie", { agent: a.name })}
+                            title={t("Switch on and {agent}'s model list gets magpie's models", {
+                              agent: a.name,
+                            })}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              connectAgent(a.id, true);
                             }}
-                          >
-                            {connectBusy === a.id ? "…" : demoCopy("接入", "Connect")}
-                          </button>
+                          />
                         </div>
                       ))}
                     </>
@@ -1564,12 +1466,9 @@ export function AgentsView({
                           className="row agent conn hid put-away"
                           data-id={a.id}
                           title={a.name}
-                          style={{ ["--i" as string]: i + 1 }}
-                        >
+                          style={{ ["--i" as string]: i + 1 }}>
                           <button type="button" className="ag-handle" aria-label={a.name}>
-                            <span className="ic">
-                              <img src={iconSrc(a.icon)} alt="" />
-                            </span>
+                            <MagpieIcon name={a.icon} />
                           </button>
                           <div className="who">
                             <div className="name">{a.name}</div>
@@ -1582,8 +1481,7 @@ export function AgentsView({
                               const next = new Set(hiddenIds);
                               next.delete(a.id);
                               setHiddenIds(next);
-                            }}
-                          >
+                            }}>
                             <span>{ZH.showAgain}</span>
                           </button>
                         </div>
@@ -1598,8 +1496,7 @@ export function AgentsView({
                         aria-expanded={showHiddenFold}
                         title={t("Hidden by you · click to see them")}
                         style={{ ["--i" as string]: unset.length + 1 }}
-                        onClick={() => setShowHiddenFold((o) => !o)}
-                      >
+                        onClick={() => setShowHiddenFold((o) => !o)}>
                         <span>{t("Hidden ({n})", { n: hidden.length })}</span>
                         <span className="chev" aria-hidden>
                           <svg viewBox="0 0 16 16" width={9} height={9}>
@@ -1611,9 +1508,7 @@ export function AgentsView({
                         ? hidden.map((a) => (
                             <div key={a.id} className="row agent conn hid put-away" data-id={a.id} title={a.name}>
                               <button type="button" className="ag-handle" aria-label={a.name}>
-                                <span className="ic">
-                                  <img src={iconSrc(a.icon)} alt="" />
-                                </span>
+                                <MagpieIcon name={a.icon} />
                               </button>
                               <div className="who">
                                 <div className="name">{a.name}</div>
@@ -1626,8 +1521,7 @@ export function AgentsView({
                                   const next = new Set(hiddenIds);
                                   next.delete(a.id);
                                   setHiddenIds(next);
-                                }}
-                              >
+                                }}>
                                 <span>{ZH.showAgain}</span>
                               </button>
                             </div>
@@ -1642,8 +1536,7 @@ export function AgentsView({
                 className="agent-more"
                 data-unrolls=""
                 aria-expanded={showAllAgents}
-                onClick={() => setShowAllAgents((o) => !o)}
-              >
+                onClick={() => setShowAllAgents((o) => !o)}>
                 <span>
                   {showAllAgents
                     ? t("Show less")
@@ -1666,15 +1559,13 @@ export function AgentsView({
               className="ag-manage-button"
               title={ZH.manageAgentsAria}
               aria-label={ZH.manageAgentsAria}
-              onClick={() => setManageOpen(true)}
-            >
+              onClick={() => setManageOpen(true)}>
               <svg viewBox="0 0 16 16" width={14} height={14} aria-hidden>
                 <g
                   fill="none"
                   stroke="currentColor"
                   strokeWidth="1.5"
-                  strokeLinecap="round"
-                >
+                  strokeLinecap="round">
                   <path d="M2 3.5h2M6 3.5h8M2 8h2M6 8h8M2 12.5h2M6 12.5h8" />
                 </g>
               </svg>
@@ -1692,8 +1583,7 @@ export function AgentsView({
             onClick={(e) => {
               e.stopPropagation();
               setInstallsOpen((o) => !o);
-            }}
-          >
+            }}>
             <span>{t("Install another agent ({n})", { n: INSTALLS.length })}</span>
             <span className="chev" aria-hidden>
               <svg viewBox="0 0 16 16" width={11} height={11}>
@@ -1709,24 +1599,12 @@ export function AgentsView({
             </span>
           </button>
           {installsOpen ? (
-            <div className="ag-install-body" style={{ animation: "fade-in .22s var(--ease)" }}>
+            <>
               <p className="ag-install-note">{ZH.installNote}</p>
               {INSTALLS.map((x) => (
                 <div key={x.id} className="ag-install-row" data-id={x.id}>
                   <div className="ag-install-who">
-                    <span className="ic">
-                      <img
-                        src={iconSrc(x.icon || x.id)}
-                        alt=""
-                        onError={(e) => {
-                          const el = e.currentTarget;
-                          if (!el.dataset.fallback) {
-                            el.dataset.fallback = "1";
-                            el.src = `/icons/${x.icon || x.id}.png`;
-                          }
-                        }}
-                      />
-                    </span>
+                    <MagpieIcon name={x.icon || x.id} />
                     <span className="ag-install-name">
                       <b>{x.name}</b>
                     </span>
@@ -1748,7 +1626,7 @@ export function AgentsView({
                   </div>
                 </div>
               ))}
-            </div>
+            </>
           ) : null}
         </section>
 
@@ -1783,20 +1661,115 @@ export function AgentsView({
             onMouseDown={(e) => {
               if (naming) e.preventDefault();
             }}
-            onClick={onSaveClick}
-          >
+            onClick={onSaveClick}>
             {naming ? ZH.save : ZH.saveCurrent}
           </button>
         </section>
       </main>
 
+      {/* Magpie askRelocate: openModal editor.sm-ask + modal.lib
+          (plugins/sessions/client.js L901–959; sessions.css sm-ask-*) —
+          drop invent inline ag-relocate / ag-settings / ag-quiet bar */}
+      {relocateFor ? (
+        <div
+          className="modal lib"
+          role="presentation"
+          onMouseDown={(e) => {
+            if (e.target === e.currentTarget) {
+              setRelocateFor(null);
+              setRelPhase("edit");
+              setRelPreview(null);
+            }
+          }}>
+          <div className="dialog" role="dialog" aria-modal onMouseDown={(e) => e.stopPropagation()}>
+            <div className="editor sm-ask">
+              <div className="ehead">
+                <MagpieIcon name={"claude-color"} />
+                <b>{t("Relocate Claude Code project")}</b>
+              </div>
+              <p className="sub sm-ask-path">{relFrom || "~/code/magpie"}</p>
+              <p className="lib-confirm">
+                {t("Close Claude Code and its editor sessions first. This moves the entire project's sessions, not just filtered or selected rows. Existing target storage is never overwritten. Desktop-only sessions are not changed.")}
+              </p>
+              <label className="sm-ask-field">
+                {t("New absolute project path")}
+                <input
+                  type="text"
+                  spellCheck={false}
+                  autoComplete="off"
+                  value={relTo}
+                  disabled={relPhase === "done"}
+                  onChange={(e) => {
+                    setRelTo(e.target.value);
+                    setRelPhase("edit");
+                    setRelPreview(null);
+                  }}
+                />
+              </label>
+              <p className="lib-confirm" aria-live="polite">
+                {relPreview || ""}
+              </p>
+              <div className="bar">
+                <span className="grow" />
+                <button
+                  type="button"
+                  className="text"
+                  onClick={() => {
+                    setRelocateFor(null);
+                    setRelPhase("edit");
+                    setRelPreview(null);
+                  }}>
+                  {relPhase === "done" ? t("Close") : t("Cancel")}
+                </button>
+                {relPhase !== "done" ? (
+                  <button
+                    type="button"
+                    className={`text primary${relBusy ? " busy" : ""}`}
+                    disabled={relBusy || !relTo.trim()}
+                    onClick={() => {
+                      setRelBusy(true);
+                      window.setTimeout(() => {
+                        setRelBusy(false);
+                        if (relPhase === "edit") {
+                          setRelPhase("preview");
+                          setRelPreview(
+                            t("Move {n} sessions ({size}) from {from} to {to}. Originals are retained outside Claude's project list. Historical message text is unchanged.", {
+                              n: 12,
+                              size: "48 MB",
+                              from: relFrom || "~/code/magpie",
+                              to: relTo.trim(),
+                            }),
+                          );
+                        } else {
+                          setRelPhase("done");
+                          setRelPreview(
+                            t("Relocation complete. Original files and recovery manifest: {dir}", {
+                              dir: "~/.config/magpie/relocate-demo",
+                            }),
+                          );
+                          onStatus(demoCopy("演示：会话路径已迁移（本地）", "Demo: sessions relocated (local)"), "ok");
+                        }
+                      }, 420);
+                    }}>
+                    {relBusy ? "…" : relPhase === "preview" ? t("Confirm relocation") : t("Preview relocation")}
+                  </button>
+                ) : null}
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : null}
+
       {fieldPop ? (
         <ModelPop
+          key={`${fieldPop.agentId}:${fieldPop.key}`}
           open
           anchor={fieldPop.el}
           value={fieldVals[fieldPop.key] || ""}
           modelPicker
-          options={DEMO_POP_OPTS}
+          options={(comparison ? catalogFor(fieldPop.agentId).map(model => ({ value: model.id,
+            label: model.id === "default" ? t("Default") : model.name, group: model.group }))
+            : DEMO_POP_OPTS).filter(option => modelsFor(fieldPop.agentId).find(model => model.id === option.value)?.on !== false || fieldVals[fieldPop.key] === option.value)}
           onPick={(v) => {
             setFieldVals((f) => ({ ...f, [fieldPop.key]: v }));
             setFieldPop(null);
@@ -1808,10 +1781,16 @@ export function AgentsView({
 
       {amPop ? (
         <AgentModelsPop
+          key={amPop.agentId}
           open
           anchor={amPop.el}
           agentName={ALL_AGENTS.find((x) => x.id === amPop.agentId)?.name || amPop.agentId}
-          models={amModels[amPop.agentId] || DEMO_AM_MODELS}
+          agentId={amPop.agentId}
+          currentModels={Object.entries(fieldVals).filter(([key]) => key.startsWith(amPop.agentId + ":")).map(([, value]) => value)}
+          defaultOrder={catalogFor(amPop.agentId).map(m => m.id)}
+          preferences={amPreferences[amPop.agentId] || { only: false, ordered: false }}
+          onPreferences={next => setAmPreferences(previous => ({ ...previous, [amPop.agentId]: next }))}
+          models={modelsFor(amPop.agentId).map(model => model.id === "default" ? { ...model, name: t("Default") } : model)}
           onChange={(next) => setAmModels((m) => ({ ...m, [amPop.agentId]: next }))}
           onClose={() => setAmPop(null)}
         />

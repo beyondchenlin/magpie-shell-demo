@@ -1,0 +1,613 @@
+{
+  "source": "5f7f9bc0b7da8efaacbb6ae0b5e15587538a240c",
+  "clickAt": 1792172931047,
+  "screenshots": [
+    {
+      "i": 0,
+      "fromClickMs": 17,
+      "toClickMs": 64
+    },
+    {
+      "i": 1,
+      "fromClickMs": 64,
+      "toClickMs": 112
+    },
+    {
+      "i": 2,
+      "fromClickMs": 112,
+      "toClickMs": 168
+    },
+    {
+      "i": 3,
+      "fromClickMs": 169,
+      "toClickMs": 218
+    },
+    {
+      "i": 4,
+      "fromClickMs": 219,
+      "toClickMs": 267
+    },
+    {
+      "i": 5,
+      "fromClickMs": 268,
+      "toClickMs": 302
+    },
+    {
+      "i": 6,
+      "fromClickMs": 303,
+      "toClickMs": 350
+    },
+    {
+      "i": 7,
+      "fromClickMs": 352,
+      "toClickMs": 395
+    },
+    {
+      "i": 8,
+      "fromClickMs": 396,
+      "toClickMs": 441
+    }
+  ],
+  "rawSha256": "9fed6a1ddfb3f6a0128d5f975ec9143f4b4bf61717c35551705ad474fe6d942e",
+  "rawPath": ".cache/cis-final-20261017/nav-diagnostic/collapse-observations.json",
+  "runs": [
+    {
+      "source": "5f7f9bc0b7da8efaacbb6ae0b5e15587538a240c",
+      "observedFrames": 23,
+      "tailFramesExcluded": 14,
+      "pageGroup": {
+        "name": "-ua-view-transition-group-anim-page",
+        "state": "running",
+        "pseudo": "::view-transition-group(page)",
+        "target": "HTML",
+        "time": 0,
+        "timing": {
+          "delay": 0,
+          "direction": "normal",
+          "duration": 320,
+          "easing": "linear",
+          "endDelay": 0,
+          "fill": "both",
+          "iterationStart": 0,
+          "iterations": 1,
+          "activeDuration": 320,
+          "currentIteration": 0,
+          "endTime": 320,
+          "localTime": 0,
+          "progress": 0
+        },
+        "keyframes": [
+          {
+            "offset": 0,
+            "easing": "cubic-bezier(0.42, 0, 0.58, 1)",
+            "composite": "auto",
+            "width": "1098.17px",
+            "transform": "matrix(1, 0, 0, 1, 70.9091, 100.909)",
+            "height": "612.188px",
+            "backdropFilter": "none",
+            "computedOffset": 0
+          },
+          {
+            "offset": 1,
+            "easing": "cubic-bezier(0.42, 0, 0.58, 1)",
+            "composite": "replace",
+            "width": "886.188px",
+            "transform": "matrix(1, 0, 0, 1, 282.727, 100.909)",
+            "height": "612.188px",
+            "backdropFilter": "none",
+            "computedOffset": 1
+          }
+        ]
+      },
+      "frames": [
+        {
+          "t": 6.699999997019404,
+          "morph": true,
+          "visible": "visible",
+          "mainName": "page",
+          "mainAnimation": "view-in",
+          "pageOldDisplay": "none",
+          "pageNewAnimation": "none"
+        },
+        {
+          "t": 23.09999999701904,
+          "morph": true,
+          "visible": "visible",
+          "mainName": "page",
+          "mainAnimation": "fade-in",
+          "pageOldDisplay": "none",
+          "pageNewAnimation": "none",
+          "groupTime": 0
+        },
+        {
+          "t": 39.79999999701977,
+          "morph": true,
+          "visible": "visible",
+          "mainName": "page",
+          "mainAnimation": "fade-in",
+          "pageOldDisplay": "none",
+          "pageNewAnimation": "none",
+          "groupTime": 16.692000014357333
+        },
+        {
+          "t": 56.39999999702013,
+          "morph": true,
+          "visible": "visible",
+          "mainName": "page",
+          "mainAnimation": "fade-in",
+          "pageOldDisplay": "none",
+          "pageNewAnimation": "none",
+          "groupTime": 33.292000014357725
+        },
+        {
+          "t": 73.09999999701904,
+          "morph": true,
+          "visible": "visible",
+          "mainName": "page",
+          "mainAnimation": "fade-in",
+          "pageOldDisplay": "none",
+          "pageNewAnimation": "none",
+          "groupTime": 49.992000014357885
+        },
+        {
+          "t": 89.79999999701977,
+          "morph": true,
+          "visible": "visible",
+          "mainName": "page",
+          "mainAnimation": "fade-in",
+          "pageOldDisplay": "none",
+          "pageNewAnimation": "none",
+          "groupTime": 66.69200001435804
+        },
+        {
+          "t": 106.6999999970194,
+          "morph": true,
+          "visible": "visible",
+          "mainName": "page",
+          "mainAnimation": "fade-in",
+          "pageOldDisplay": "none",
+          "pageNewAnimation": "none",
+          "groupTime": 83.59200001435774
+        },
+        {
+          "t": 123.29999999701977,
+          "morph": true,
+          "visible": "visible",
+          "mainName": "page",
+          "mainAnimation": "fade-in",
+          "pageOldDisplay": "none",
+          "pageNewAnimation": "none",
+          "groupTime": 100.19200001435813
+        },
+        {
+          "t": 139.9999999970205,
+          "morph": true,
+          "visible": "visible",
+          "mainName": "page",
+          "mainAnimation": "fade-in",
+          "pageOldDisplay": "none",
+          "pageNewAnimation": "none",
+          "groupTime": 116.89200001435829
+        },
+        {
+          "t": 156.39999999702013,
+          "morph": true,
+          "visible": "visible",
+          "mainName": "page",
+          "mainAnimation": "fade-in",
+          "pageOldDisplay": "none",
+          "pageNewAnimation": "none",
+          "groupTime": 133.29200001435737
+        },
+        {
+          "t": 173.29999999701977,
+          "morph": true,
+          "visible": "visible",
+          "mainName": "page",
+          "mainAnimation": "fade-in",
+          "pageOldDisplay": "none",
+          "pageNewAnimation": "none",
+          "groupTime": 150.19200001435883
+        },
+        {
+          "t": 189.79999999701977,
+          "morph": true,
+          "visible": "visible",
+          "mainName": "page",
+          "mainAnimation": "fade-in",
+          "pageOldDisplay": "none",
+          "pageNewAnimation": "none",
+          "groupTime": 166.6920000143577
+        },
+        {
+          "t": 206.6999999970194,
+          "morph": true,
+          "visible": "visible",
+          "mainName": "page",
+          "mainAnimation": "fade-in",
+          "pageOldDisplay": "none",
+          "pageNewAnimation": "none",
+          "groupTime": 183.59200001435738
+        },
+        {
+          "t": 223.1999999970194,
+          "morph": true,
+          "visible": "visible",
+          "mainName": "page",
+          "mainAnimation": "fade-in",
+          "pageOldDisplay": "none",
+          "pageNewAnimation": "none",
+          "groupTime": 200.092000014358
+        },
+        {
+          "t": 240.09999999701904,
+          "morph": true,
+          "visible": "visible",
+          "mainName": "page",
+          "mainAnimation": "fade-in",
+          "pageOldDisplay": "none",
+          "pageNewAnimation": "none",
+          "groupTime": 216.9920000143577
+        },
+        {
+          "t": 256.39999999702013,
+          "morph": true,
+          "visible": "visible",
+          "mainName": "page",
+          "mainAnimation": "fade-in",
+          "pageOldDisplay": "none",
+          "pageNewAnimation": "none",
+          "groupTime": 233.2920000143588
+        },
+        {
+          "t": 273.29999999701977,
+          "morph": true,
+          "visible": "visible",
+          "mainName": "page",
+          "mainAnimation": "fade-in",
+          "pageOldDisplay": "none",
+          "pageNewAnimation": "none",
+          "groupTime": 250.19200001435848
+        },
+        {
+          "t": 289.9999999970205,
+          "morph": true,
+          "visible": "visible",
+          "mainName": "page",
+          "mainAnimation": "fade-in",
+          "pageOldDisplay": "none",
+          "pageNewAnimation": "none",
+          "groupTime": 266.89200001435864
+        },
+        {
+          "t": 306.59999999701904,
+          "morph": true,
+          "visible": "visible",
+          "mainName": "page",
+          "mainAnimation": "fade-in",
+          "pageOldDisplay": "none",
+          "pageNewAnimation": "none",
+          "groupTime": 283.49200001435906
+        },
+        {
+          "t": 323.09999999701904,
+          "morph": true,
+          "visible": "visible",
+          "mainName": "page",
+          "mainAnimation": "fade-in",
+          "pageOldDisplay": "none",
+          "pageNewAnimation": "none",
+          "groupTime": 299.99200001435787
+        },
+        {
+          "t": 339.9999999970205,
+          "morph": true,
+          "visible": "visible",
+          "mainName": "page",
+          "mainAnimation": "fade-in",
+          "pageOldDisplay": "none",
+          "pageNewAnimation": "none",
+          "groupTime": 316.89200001435756
+        },
+        {
+          "t": 356.39999999702013,
+          "morph": true,
+          "visible": "visible",
+          "mainName": "page",
+          "mainAnimation": "fade-in",
+          "pageOldDisplay": "none",
+          "pageNewAnimation": "none",
+          "groupTime": 320
+        },
+        {
+          "t": 373.39999999702013,
+          "morph": false,
+          "visible": "visible",
+          "mainName": "none",
+          "mainAnimation": "fade-in",
+          "pageOldDisplay": "none",
+          "pageNewAnimation": "none"
+        }
+      ]
+    },
+    {
+      "source": "5f7f9bc0b7da8efaacbb6ae0b5e15587538a240c",
+      "observedFrames": 23,
+      "tailFramesExcluded": 3,
+      "pageGroup": {
+        "name": "-ua-view-transition-group-anim-page",
+        "state": "running",
+        "pseudo": "::view-transition-group(page)",
+        "target": "HTML",
+        "time": 0,
+        "timing": {
+          "delay": 0,
+          "direction": "normal",
+          "duration": 320,
+          "easing": "linear",
+          "endDelay": 0,
+          "fill": "both",
+          "iterationStart": 0,
+          "iterations": 1,
+          "activeDuration": 320,
+          "currentIteration": 0,
+          "endTime": 320,
+          "localTime": 0,
+          "progress": 0
+        },
+        "keyframes": [
+          {
+            "offset": 0,
+            "easing": "cubic-bezier(0.42, 0, 0.58, 1)",
+            "composite": "auto",
+            "width": "886.188px",
+            "transform": "matrix(1, 0, 0, 1, 282.727, 100.909)",
+            "height": "612.188px",
+            "backdropFilter": "none",
+            "computedOffset": 0
+          },
+          {
+            "offset": 1,
+            "easing": "cubic-bezier(0.42, 0, 0.58, 1)",
+            "composite": "replace",
+            "width": "1098.17px",
+            "transform": "matrix(1, 0, 0, 1, 70.9091, 105.909)",
+            "height": "612.188px",
+            "backdropFilter": "none",
+            "computedOffset": 1
+          }
+        ]
+      },
+      "frames": [
+        {
+          "t": -6.199999997013947,
+          "morph": true,
+          "visible": "visible",
+          "mainName": "page",
+          "mainAnimation": "fade-in",
+          "pageOldDisplay": "none",
+          "pageNewAnimation": "none"
+        },
+        {
+          "t": 27.00000000296859,
+          "morph": true,
+          "visible": "visible",
+          "mainName": "page",
+          "mainAnimation": "view-in",
+          "pageOldDisplay": "none",
+          "pageNewAnimation": "none",
+          "groupTime": 0
+        },
+        {
+          "t": 43.60000000297441,
+          "morph": true,
+          "visible": "visible",
+          "mainName": "page",
+          "mainAnimation": "view-in",
+          "pageOldDisplay": "none",
+          "pageNewAnimation": "none",
+          "groupTime": 16.519000007519935
+        },
+        {
+          "t": 60.20000000298023,
+          "morph": true,
+          "visible": "visible",
+          "mainName": "page",
+          "mainAnimation": "view-in",
+          "pageOldDisplay": "none",
+          "pageNewAnimation": "none",
+          "groupTime": 33.119000007502564
+        },
+        {
+          "t": 76.90000000299187,
+          "morph": true,
+          "visible": "visible",
+          "mainName": "page",
+          "mainAnimation": "view-in",
+          "pageOldDisplay": "none",
+          "pageNewAnimation": "none",
+          "groupTime": 49.819000007516934
+        },
+        {
+          "t": 93.50000000296859,
+          "morph": true,
+          "visible": "visible",
+          "mainName": "page",
+          "mainAnimation": "view-in",
+          "pageOldDisplay": "none",
+          "pageNewAnimation": "none",
+          "groupTime": 66.41900000752798
+        },
+        {
+          "t": 110.40000000299187,
+          "morph": true,
+          "visible": "visible",
+          "mainName": "page",
+          "mainAnimation": "view-in",
+          "pageOldDisplay": "none",
+          "pageNewAnimation": "none",
+          "groupTime": 83.31900000752057
+        },
+        {
+          "t": 127.00000000296859,
+          "morph": true,
+          "visible": "visible",
+          "mainName": "page",
+          "mainAnimation": "view-in",
+          "pageOldDisplay": "none",
+          "pageNewAnimation": "none",
+          "groupTime": 99.9190000075032
+        },
+        {
+          "t": 143.5000000029686,
+          "morph": true,
+          "visible": "visible",
+          "mainName": "page",
+          "mainAnimation": "view-in",
+          "pageOldDisplay": "none",
+          "pageNewAnimation": "none",
+          "groupTime": 116.41900000751093
+        },
+        {
+          "t": 160.30000000298605,
+          "morph": true,
+          "visible": "visible",
+          "mainName": "page",
+          "mainAnimation": "view-in",
+          "pageOldDisplay": "none",
+          "pageNewAnimation": "none",
+          "groupTime": 133.21900000752862
+        },
+        {
+          "t": 176.90000000299187,
+          "morph": true,
+          "visible": "visible",
+          "mainName": "page",
+          "mainAnimation": "view-in",
+          "pageOldDisplay": "none",
+          "pageNewAnimation": "none",
+          "groupTime": 149.81900000751125
+        },
+        {
+          "t": 193.5000000029686,
+          "morph": true,
+          "visible": "visible",
+          "mainName": "page",
+          "mainAnimation": "view-in",
+          "pageOldDisplay": "none",
+          "pageNewAnimation": "none",
+          "groupTime": 166.4190000075223
+        },
+        {
+          "t": 210.20000000298023,
+          "morph": true,
+          "visible": "visible",
+          "mainName": "page",
+          "mainAnimation": "view-in",
+          "pageOldDisplay": "none",
+          "pageNewAnimation": "none",
+          "groupTime": 183.11900000750825
+        },
+        {
+          "t": 227.1000000029744,
+          "morph": true,
+          "visible": "visible",
+          "mainName": "page",
+          "mainAnimation": "view-in",
+          "pageOldDisplay": "none",
+          "pageNewAnimation": "none",
+          "groupTime": 200.01900000750084
+        },
+        {
+          "t": 243.5000000029686,
+          "morph": true,
+          "visible": "visible",
+          "mainName": "page",
+          "mainAnimation": "view-in",
+          "pageOldDisplay": "none",
+          "pageNewAnimation": "none",
+          "groupTime": 216.41900000750525
+        },
+        {
+          "t": 260.4000000029919,
+          "morph": true,
+          "visible": "visible",
+          "mainName": "page",
+          "mainAnimation": "view-in",
+          "pageOldDisplay": "none",
+          "pageNewAnimation": "none",
+          "groupTime": 233.31900000752626
+        },
+        {
+          "t": 276.9000000029919,
+          "morph": true,
+          "visible": "visible",
+          "mainName": "page",
+          "mainAnimation": "view-in",
+          "pageOldDisplay": "none",
+          "pageNewAnimation": "none",
+          "groupTime": 249.81900000750557
+        },
+        {
+          "t": 293.70000000298023,
+          "morph": true,
+          "visible": "visible",
+          "mainName": "page",
+          "mainAnimation": "view-in",
+          "pageOldDisplay": "none",
+          "pageNewAnimation": "none",
+          "groupTime": 266.61900000752325
+        },
+        {
+          "t": 310.5000000029686,
+          "morph": true,
+          "visible": "visible",
+          "mainName": "page",
+          "mainAnimation": "view-in",
+          "pageOldDisplay": "none",
+          "pageNewAnimation": "none",
+          "groupTime": 283.4190000075125
+        },
+        {
+          "t": 327.1000000029744,
+          "morph": true,
+          "visible": "visible",
+          "mainName": "page",
+          "mainAnimation": "view-in",
+          "pageOldDisplay": "none",
+          "pageNewAnimation": "none",
+          "groupTime": 300.0190000075236
+        },
+        {
+          "t": 343.70000000298023,
+          "morph": true,
+          "visible": "visible",
+          "mainName": "page",
+          "mainAnimation": "view-in",
+          "pageOldDisplay": "none",
+          "pageNewAnimation": "none",
+          "groupTime": 316.6190000075062
+        },
+        {
+          "t": 360.4000000029919,
+          "morph": true,
+          "visible": "visible",
+          "mainName": "page",
+          "mainAnimation": "view-in",
+          "pageOldDisplay": "none",
+          "pageNewAnimation": "none",
+          "groupTime": 320
+        },
+        {
+          "t": 377.1000000029744,
+          "morph": false,
+          "visible": "visible",
+          "mainName": "none",
+          "mainAnimation": "view-in",
+          "pageOldDisplay": "none",
+          "pageNewAnimation": "none"
+        }
+      ]
+    }
+  ]
+}

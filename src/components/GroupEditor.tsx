@@ -1,4 +1,9 @@
+import { MagpieIcon } from "./MagpieIcon";
+import { InfoTip } from "./InfoTip";
+import { PopoverPortal } from "./PopoverPortal";
+import { useRowMenu } from "../lib/useRowMenu";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { ActionConfirm } from "./ActionConfirm";
 import { ModelPop, type PopOption } from "./ModelPop";
 import { ProtoMultiMenu } from "./ProtoMultiMenu";
 import { Segs } from "./Segs";
@@ -99,6 +104,13 @@ const DEMO_MODELS: PopOption[] = [
 
 const EFFORTS = ["low", "medium", "high", "xhigh", "max"] as const;
 const WEEK = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"] as const;
+const CONDITIONS = [
+  ["intent", "asks for", false], ["tokens", "Conversation length", false],
+  ["images", "has an image", false], ["effort", "Reasoning level", false],
+  ["compact", "compacting", false], ["agents", "Agents", true],
+  ["folders", "in folder", true], ["exceptFolders", "not in folder", true],
+  ["time", "Hours and days", true],
+] as const;
 const DAY_NAMES: Record<(typeof WEEK)[number], string> = {
   mon: "Mon",
   tue: "Tue",
@@ -268,7 +280,7 @@ function emptyRule(use: string): Rule {
     folders: [],
     exceptFolders: [],
     time: null,
-    pins: [],
+    pins: ["intent"],
   };
 }
 
@@ -279,6 +291,7 @@ function pinRule(r: Rule, pin: string): Rule {
 function unpinRule(r: Rule, pin: string): Rule {
   const pins = r.pins.filter((p) => p !== pin);
   const next: Rule = { ...r, pins };
+  if (pin === "intent") next.intent = "";
   if (pin === "tokens") next.tokens = 0;
   if (pin === "images") next.images = false;
   if (pin === "effort") next.effort = "";
@@ -292,6 +305,7 @@ function unpinRule(r: Rule, pin: string): Rule {
 
 function ruleHasPin(r: Rule, pin: string): boolean {
   if (r.pins.includes(pin)) return true;
+  if (pin === "intent") return !!r.intent;
   if (pin === "tokens") return !!r.tokens;
   if (pin === "images") return !!r.images;
   if (pin === "effort") return !!r.effort;
@@ -375,39 +389,7 @@ function RuleMoreMenu({
   onClose: () => void;
 }) {
   const boxRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    const box = boxRef.current;
-    if (!box) return;
-    const r = anchor.getBoundingClientRect();
-    const pad = 8;
-    const w = box.offsetWidth || 200;
-    const h = box.offsetHeight || 120;
-    let y = r.bottom + 5;
-    if (y + h > window.innerHeight - pad && r.top - 5 - h >= pad) {
-      y = r.top - 5 - h;
-      box.classList.add("up");
-    }
-    const left = Math.max(pad, Math.min(r.right - w, window.innerWidth - w - pad));
-    box.style.left = `${left}px`;
-    box.style.top = `${Math.max(pad, y)}px`;
-    const outside = (e: MouseEvent) => {
-      if (!box.contains(e.target as Node) && !anchor.contains(e.target as Node)) onClose();
-    };
-    const keys = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        e.preventDefault();
-        e.stopPropagation();
-        onClose();
-        anchor.focus({ preventScroll: true });
-      }
-    };
-    document.addEventListener("mousedown", outside, true);
-    document.addEventListener("keydown", keys, true);
-    return () => {
-      document.removeEventListener("mousedown", outside, true);
-      document.removeEventListener("keydown", keys, true);
-    };
-  }, [anchor, onClose]);
+  useRowMenu(boxRef, anchor, onClose);
 
   const items: { name: string; icon: string; off?: boolean; sep?: boolean; run: () => void }[] = [
     {
@@ -436,9 +418,9 @@ function RuleMoreMenu({
   ];
 
   return (
-    <div className="pop row-menu" role="menu" ref={boxRef} style={{ position: "fixed", zIndex: 50 }}>
+    <PopoverPortal><div data-anchored className="pop row-menu fixed-z50" role="menu" ref={boxRef}>
       {items.map((o) => (
-        <span key={o.name} style={{ display: "contents" }}>
+        <span key={o.name} className="display-contents">
           {o.sep ? <div className="rm-sep" /> : null}
           <button
             type="button"
@@ -449,8 +431,7 @@ function RuleMoreMenu({
               e.stopPropagation();
               onClose();
               o.run();
-            }}
-          >
+            }}>
             <svg viewBox="0 0 16 16" width={13} height={13} aria-hidden>
               <path d={o.icon} fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
@@ -458,7 +439,7 @@ function RuleMoreMenu({
           </button>
         </span>
       ))}
-    </div>
+    </div></PopoverPortal>
   );
 }
 
@@ -477,6 +458,8 @@ export type SavedGroupDraft = {
   rules: number;
   levels: string[];
   on: boolean;
+  /** Complete mock form state, retained when reopening the group's editor. */
+  form?: Draft;
 };
 
 type Props = {
@@ -526,23 +509,26 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
     if (!open) return;
     const d = emptyDraft();
     if (editGroup) {
+      if (editGroup.form) Object.assign(d, structuredClone(editGroup.form));
       d.name = editGroup.name === editGroup.slug ? "" : editGroup.name;
-      d.members = editGroup.members.map((id, i) => {
-        const known = DEMO_MODELS.find((m) => m.value === id || m.label === id);
-        const name = editGroup.memberNames[i] || known?.label || id.split("/").pop() || id;
-        const [, fixed] = splitMember(id);
-        return { id, name: name.includes(":") ? name.split(":")[0] : name, on: true, fixed };
-      });
-      d.routing = editGroup.routing;
-      d.patterns = editGroup.patterns ? [...editGroup.patterns] : [];
-      d.weights = editGroup.weights ? { ...editGroup.weights } : {};
-      d.levelsOwn = true;
-      d.levels = editGroup.levels.length ? [...editGroup.levels] : ["low", "medium", "high"];
-      if (d.members.length >= 2 && editGroup.rules > 0) {
-        const r = emptyRule(d.members[d.members.length - 1].id);
-        r.effort = "high";
-        r.pins = ["effort"];
-        d.rules = [r];
+      if (!editGroup.form) {
+        d.members = editGroup.members.map((id, i) => {
+          const known = DEMO_MODELS.find((m) => m.value === id || m.label === id);
+          const name = editGroup.memberNames[i] || known?.label || id.split("/").pop() || id;
+          const [, fixed] = splitMember(id);
+          return { id, name: name.includes(":") ? name.split(":")[0] : name, on: true, fixed };
+        });
+        d.routing = editGroup.routing;
+        d.patterns = editGroup.patterns ? [...editGroup.patterns] : [];
+        d.weights = editGroup.weights ? { ...editGroup.weights } : {};
+        d.levelsOwn = true;
+        d.levels = editGroup.levels.length ? [...editGroup.levels] : ["low", "medium", "high"];
+        if (d.members.length >= 2 && editGroup.rules > 0) {
+          const r = emptyRule(d.members[d.members.length - 1].id);
+          r.effort = "high";
+          r.pins = ["effort"];
+          d.rules = [r];
+        }
       }
     } else if (templateSeed) {
       d.name = templateSeed.name;
@@ -770,6 +756,7 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
       rules: rules.length,
       levels: draft.levelsOwn ? [...draft.levels] : ["low", "medium", "high"],
       on: true,
+      form: structuredClone({ ...draft, rules }),
     };
     onStatus?.(t(editGroup ? "{name} saved" : "{name} added", { name }), "ok");
     onSaved(payload);
@@ -787,7 +774,7 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
 
   return (
     <>
-      <div className="editor rt-gedit card" style={{ marginTop: 8, animation: "pop-in .42s cubic-bezier(.16,1,.3,1)" }}>
+      <div className="editor rt-gedit">
         <div className="ehead">
           <b>{t(editGroup ? "Edit group" : "New group")}</b>
         </div>
@@ -842,8 +829,7 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
                         ...d,
                         members: d.members.map((x, j) => (j === i ? { ...x, on: !x.on } : x)),
                       }))
-                    }
-                  >
+                    }>
                     <i />
                   </button>
                   <button
@@ -878,13 +864,10 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
                         e.preventDefault();
                         moveMember(i, i + 1);
                       }
-                    }}
-                  >
+                    }}>
                     {i + 1}
                   </button>
-                  <svg className="ic" viewBox="0 0 16 16" width={14} height={14} aria-hidden>
-                    <path d="M3 3h4v4H3zM9 3h4v4H9zM3 9h4v4H3zM9 9h4v4H9z" fill="none" stroke="currentColor" strokeWidth="1.3" />
-                  </svg>
+                  <MagpieIcon name={DEMO_MODELS.find(x => x.value === splitMember(m.id)[0])?.icon} />
                   <span className="n">
                     <span style={m.on ? undefined : { textDecoration: "line-through", color: "var(--muted)" }}>{memberDisplay(m)}</span>
                   </span>
@@ -900,8 +883,7 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
                         ? t("Sent at {level} reasoning whatever the agent asks, at the model's nearest level", { level: m.fixed })
                         : t("Reasons as the group's effort says")
                     }
-                    onClick={() => setReasonFor((cur) => (cur === i ? null : i))}
-                  >
+                    onClick={() => setReasonFor((cur) => (cur === i ? null : i))}>
                     {m.fixed ? fixedWords(m.fixed) : t("Group's reasoning")}
                   </button>
                   {draft.routing === "weight" ? (
@@ -958,8 +940,7 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
                           const w = Math.max(draft.weights[m.id] || 0, 1);
                           setWeightDraft(String(w));
                           setWeightEdit(m.id);
-                        }}
-                      >
+                        }}>
                         {(() => {
                           const w = Math.max(draft.weights[m.id] || 0, 1);
                           const total = draft.members.filter((x) => x.on).reduce((n, x) => n + Math.max(draft.weights[x.id] || 0, 1), 0);
@@ -986,8 +967,7 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
                           .filter((r) => members.some((m) => m.id === r.use));
                         return { ...d, members, weights, rules: members.length >= 2 ? rules : [] };
                       })
-                    }
-                  >
+                    }>
                     {t("Remove")}
                   </button>
                 </div>
@@ -997,8 +977,7 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
               type="button"
               className={`rt-gadd${addOpen ? " open" : ""}`}
               ref={addBtnRef}
-              onClick={() => setAddOpen((o) => !o)}
-            >
+              onClick={() => setAddOpen((o) => !o)}>
               <svg viewBox="0 0 16 16" width={11} height={11} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden>
                 <path d="M8 3.5v9M3.5 8h9" />
               </svg>
@@ -1010,7 +989,7 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
               value=""
               modelPicker
               keepOpen
-              options={DEMO_MODELS}
+              options={new URLSearchParams(location.search).get("fixture") === "filled" || localStorage.getItem("magpie.demoProviders") === "1" ? DEMO_MODELS : []}
               onPick={addMember}
               onClose={() => setAddOpen(false)}
             />
@@ -1044,8 +1023,7 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
                   <button
                     type="button"
                     className="text"
-                    onClick={() => setDraft((d) => ({ ...d, patterns: d.patterns.filter((x) => x !== p) }))}
-                  >
+                    onClick={() => setDraft((d) => ({ ...d, patterns: d.patterns.filter((x) => x !== p) }))}>
                     {t("Remove")}
                   </button>
                 </div>
@@ -1238,16 +1216,22 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
                 const showFolders = ruleHasPin(r, "folders");
                 const showExcept = ruleHasPin(r, "exceptFolders");
                 const showTime = ruleHasPin(r, "time");
+                const present = CONDITIONS.filter(([key, , pause]) => (pause || !r.pause) && ruleHasPin(r, key));
+                const free = CONDITIONS.filter(([key, , pause]) => (pause || !r.pause) && !ruleHasPin(r, key));
                 return (
-                  <div key={ri} className="rt-rule">
+                  <div key={ri} className="rt-rule" onClickCapture={e => {
+                    if ((e.target as Element).closest(".rt-cx")) {
+                      const add = e.currentTarget.querySelector<HTMLButtonElement>(".rt-addc");
+                      requestAnimationFrame(() => { if (add?.isConnected) add.focus({ preventScroll: true }); });
+                    }
+                  }}>
                     <span className="i">{ri + 1}</span>
-                    <div className="when">
+                    <div className="rt-line rt-when">
                       {!r.pause ? (
                         <>
-                          <span
+                          {ruleHasPin(r, "intent") ? (<span className="rt-c"><span
                             className={`rt-cond in${r.intent ? " on" : ""}`}
-                            onClick={() => intentFocusRef.current?.focus()}
-                          >
+                            onClick={() => intentFocusRef.current?.focus()}>
                             <span>{t("asks for")}</span>
                             <input
                               ref={(el) => {
@@ -1266,23 +1250,20 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
                               }}
                               onKeyDown={(e) => e.stopPropagation()}
                             />
-                            <button
+
+                          </span><button
                               type="button"
-                              className="rt-cond-x"
+                              className="rt-cx"
                               aria-label={t("Remove")}
                               onClick={(e) => {
                                 e.stopPropagation();
                                 setDraft((d) => ({
                                   ...d,
-                                  rules: d.rules.map((x, j) => (j === ri ? { ...x, intent: "" } : x)),
+                                  rules: d.rules.map((x, j) => (j === ri ? unpinRule(x, "intent") : x)),
                                 }));
-                              }}
-                            >
-                              ×
-                            </button>
-                          </span>
+                              }}><svg viewBox="0 0 16 16" width={9} height={9} fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" /></svg></button></span>) : null}
                           {showTokens ? (
-                            <span className={`rt-cond tk${r.tokens ? " on" : ""}`}>
+                            <span className="rt-c"><span className={`rt-cond tk${r.tokens ? " on" : ""}`}>
                               <span>≥</span>
                               <input
                                 ref={(el) => {
@@ -1303,23 +1284,20 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
                                 onKeyDown={(e) => e.stopPropagation()}
                               />
                               <span>{t("tokens")}</span>
-                              <button
+
+                            </span><button
                                 type="button"
-                                className="rt-cond-x"
+                                className="rt-cx"
                                 aria-label={t("Remove")}
                                 onClick={() =>
                                   setDraft((d) => ({
                                     ...d,
                                     rules: d.rules.map((x, j) => (j === ri ? unpinRule(x, "tokens") : x)),
                                   }))
-                                }
-                              >
-                                ×
-                              </button>
-                            </span>
+                                }><svg viewBox="0 0 16 16" width={9} height={9} fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" /></svg></button></span>
                           ) : null}
                           {showImages ? (
-                            <button
+                            <span className="rt-c"><button
                               type="button"
                               className={`rt-cond${r.images ? " on" : ""}`}
                               onClick={() =>
@@ -1327,49 +1305,41 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
                                   ...d,
                                   rules: d.rules.map((x, j) => (j === ri ? { ...x, images: !x.images } : x)),
                                 }))
-                              }
-                            >
+                              }>
                               {t("has an image")}
-                              <span
-                                className="rt-cond-x"
+
+                            </button><button type="button" aria-label={t("Remove")}
+                                className="rt-cx"
                                 onClick={(e) => {
                                   e.stopPropagation();
                                   setDraft((d) => ({
                                     ...d,
                                     rules: d.rules.map((x, j) => (j === ri ? unpinRule(x, "images") : x)),
                                   }));
-                                }}
-                              >
-                                ×
-                              </span>
-                            </button>
+                                }}><svg viewBox="0 0 16 16" width={9} height={9} fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" /></svg></button></span>
                           ) : null}
                           {showEffort ? (
-                            <button
+                            <span className="rt-c"><button
                               type="button"
                               className={`rt-cond${r.effort ? " on" : ""}`}
                               ref={(el) => {
                                 condBtnRefs.current[`ef${ri}`] = el;
                               }}
-                              onClick={() => setPopKind((cur) => (cur?.kind === "effort" && cur.rule === ri ? null : { kind: "effort", rule: ri }))}
-                            >
+                              onClick={() => setPopKind((cur) => (cur?.kind === "effort" && cur.rule === ri ? null : { kind: "effort", rule: ri }))}>
                               {effortName(r.effort)}
-                              <span
-                                className="rt-cond-x"
+
+                            </button><button type="button" aria-label={t("Remove")}
+                                className="rt-cx"
                                 onClick={(e) => {
                                   e.stopPropagation();
                                   setDraft((d) => ({
                                     ...d,
                                     rules: d.rules.map((x, j) => (j === ri ? unpinRule(x, "effort") : x)),
                                   }));
-                                }}
-                              >
-                                ×
-                              </span>
-                            </button>
+                                }}><svg viewBox="0 0 16 16" width={9} height={9} fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" /></svg></button></span>
                           ) : null}
                           {showCompact ? (
-                            <button
+                            <span className="rt-c"><button
                               type="button"
                               className={`rt-cond${r.compact ? " on" : ""}`}
                               title={t(
@@ -1380,53 +1350,44 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
                                   ...d,
                                   rules: d.rules.map((x, j) => (j === ri ? { ...x, compact: !x.compact } : x)),
                                 }))
-                              }
-                            >
+                              }>
                               {t("compacting")}
-                              <span
-                                className="rt-cond-x"
+
+                            </button><button type="button" aria-label={t("Remove")}
+                                className="rt-cx"
                                 onClick={(e) => {
                                   e.stopPropagation();
                                   setDraft((d) => ({
                                     ...d,
                                     rules: d.rules.map((x, j) => (j === ri ? unpinRule(x, "compact") : x)),
                                   }));
-                                }}
-                              >
-                                ×
-                              </span>
-                            </button>
+                                }}><svg viewBox="0 0 16 16" width={9} height={9} fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" /></svg></button></span>
                           ) : null}
                         </>
                       ) : null}
                       {showAgents ? (
-                        <button
+                        <span className="rt-c"><button
                           type="button"
                           className={`rt-cond${r.agents.length ? " on" : ""}`}
                           ref={(el) => {
                             condBtnRefs.current[`ag${ri}`] = el;
                           }}
-                          onClick={() => setPopKind((cur) => (cur?.kind === "agent" && cur.rule === ri ? null : { kind: "agent", rule: ri }))}
-                        >
+                          onClick={() => setPopKind((cur) => (cur?.kind === "agent" && cur.rule === ri ? null : { kind: "agent", rule: ri }))}>
                           {agentsName()}
-                          <span
-                            className="rt-cond-x"
+
+                        </button><button type="button" aria-label={t("Remove")}
+                            className="rt-cx"
                             onClick={(e) => {
                               e.stopPropagation();
                               setDraft((d) => ({
                                 ...d,
                                 rules: d.rules.map((x, j) => (j === ri ? unpinRule(x, "agents") : x)),
                               }));
-                            }}
-                          >
-                            ×
-                          </span>
-                        </button>
+                            }}><svg viewBox="0 0 16 16" width={9} height={9} fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" /></svg></button></span>
                       ) : null}
                       {showFolders ? (
-                        <span
-                          className={`rt-cond fd${r.folders.length ? " on" : ""}`}
-                        >
+                        <span className="rt-c"><span
+                          className={`rt-cond fd${r.folders.length ? " on" : ""}`}>
                           <span>{t("in folder")}</span>
                           <input
                             type="text"
@@ -1444,26 +1405,22 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
                             }}
                             onKeyDown={(e) => e.stopPropagation()}
                           />
-                          <button
+
+                        </span><button
                             type="button"
-                            className="rt-cond-x"
+                            className="rt-cx"
                             aria-label={t("Remove")}
                             onClick={() =>
                               setDraft((d) => ({
                                 ...d,
                                 rules: d.rules.map((x, j) => (j === ri ? unpinRule(x, "folders") : x)),
                               }))
-                            }
-                          >
-                            ×
-                          </button>
-                        </span>
+                            }><svg viewBox="0 0 16 16" width={9} height={9} fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" /></svg></button></span>
                       ) : null}
                       {showExcept ? (
-                        <span
+                        <span className="rt-c"><span
                           className={`rt-cond xf${r.exceptFolders.length ? " on" : ""}`}
-                          title={t("not in folder")}
-                        >
+                          title={t("not in folder")}>
                           <span title={t("not in folder")}>{t("not in folder")}</span>
                           <input
                             type="text"
@@ -1481,29 +1438,24 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
                             }}
                             onKeyDown={(e) => e.stopPropagation()}
                           />
-                          <button
+
+                        </span><button
                             type="button"
-                            className="rt-cond-x"
+                            className="rt-cx"
                             aria-label={t("Remove")}
                             onClick={() =>
                               setDraft((d) => ({
                                 ...d,
                                 rules: d.rules.map((x, j) => (j === ri ? unpinRule(x, "exceptFolders") : x)),
                               }))
-                            }
-                          >
-                            ×
-                          </button>
-                        </span>
+                            }><svg viewBox="0 0 16 16" width={9} height={9} fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" /></svg></button></span>
                       ) : null}
                       {showTime ? (
-                        <>
-                          <span
+                        <span className="rt-c"><span
                             className={`rt-cond tm${from && to ? " on" : ""}${r.time && ((r.time.from && !from) || (r.time.to && !to)) ? " bad" : ""}`}
                             title={t(
                               "The turn begins within these hours, on this computer's clock — a provider's peak-price hours sent to another, say",
-                            )}
-                          >
+                            )}>
                             <span>{t("from")}</span>
                             <input
                               className="clock"
@@ -1570,82 +1522,72 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
                               }}
                               onKeyDown={(e) => e.stopPropagation()}
                             />
-                          </span>
-                          <button
+                          </span><button
                             type="button"
                             className={`rt-cond${daysText(r.time?.days) ? " on" : ""}`}
                             ref={(el) => {
                               condBtnRefs.current[`day${ri}`] = el;
                             }}
-                            onClick={() => setPopKind((cur) => (cur?.kind === "days" && cur.rule === ri ? null : { kind: "days", rule: ri }))}
-                          >
+                            onClick={() => setPopKind((cur) => (cur?.kind === "days" && cur.rule === ri ? null : { kind: "days", rule: ri }))}>
                             {daysText(r.time?.days) || t("every day")}
-                            <span
-                              className="rt-cond-x"
+
+                          </button><button type="button" aria-label={t("Remove")}
+                              className="rt-cx"
                               onClick={(e) => {
                                 e.stopPropagation();
                                 setDraft((d) => ({
                                   ...d,
                                   rules: d.rules.map((x, j) => (j === ri ? unpinRule(x, "time") : x)),
                                 }));
-                              }}
-                            >
-                              ×
-                            </span>
-                          </button>
-                        </>
+                              }}><svg viewBox="0 0 16 16" width={9} height={9} fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" /></svg></button></span>
                       ) : null}
-                      <button
+                      {free.length ? <button
                         type="button"
-                        className={`rt-cond rt-cond-plus${condMenuFor === ri ? " open" : ""}`}
+                        className={`rt-addc${condMenuFor === ri ? " open" : ""}${present.length ? "" : " wide"}`}
                         ref={(el) => {
                           condBtnRefs.current[`plus${ri}`] = el;
                         }}
                         title={t("Add a condition")}
                         aria-label={t("Add a condition")}
-                        onClick={() => setCondMenuFor((cur) => (cur === ri ? null : ri))}
-                      >
+                        onClick={() => setCondMenuFor((cur) => (cur === ri ? null : ri))}>
                         <svg viewBox="0 0 16 16" width={11} height={11} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden>
                           <path d="M8 3.5v9M3.5 8h9" />
                         </svg>
-                      </button>
+                        {!present.length ? <span>{t("Add a condition")}</span> : null}
+                      </button> : null}
+                    </div>
+                    <div className="rt-line rt-then">
                       <span className="rt-arrow" aria-hidden>
                         →
                       </span>
                       {r.pause ? (
                         <button
                           type="button"
-                          className="rt-cond on rt-pause-chip"
+                          className="rt-cond rt-act on"
                           ref={(el) => {
                             condBtnRefs.current[`act${ri}`] = el;
                           }}
-                          onClick={() => setPopKind((cur) => (cur?.kind === "action" && cur.rule === ri ? null : { kind: "action", rule: ri }))}
-                        >
+                          onClick={() => setPopKind((cur) => (cur?.kind === "action" && cur.rule === ri ? null : { kind: "action", rule: ri }))}>
                           {t("pause")}
                         </button>
                       ) : null}
                       <button
                         type="button"
-                        className="rt-cond on"
+                        className="rt-cond on rt-model"
                         ref={(el) => {
                           condBtnRefs.current[`use${ri}`] = el;
                         }}
-                        onClick={() => setPopKind((cur) => (cur?.kind === "use" && cur.rule === ri ? null : { kind: "use", rule: ri }))}
-                      >
-                        <svg className="ic" viewBox="0 0 16 16" width={14} height={14} aria-hidden>
-                          <rect x="3" y="3" width="10" height="10" rx="2" fill="none" stroke="currentColor" strokeWidth="1.4" />
-                          <path d="M6 8h4M8 6v4" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
-                        </svg>
+                        onClick={() => setPopKind((cur) => (cur?.kind === "use" && cur.rule === ri ? null : { kind: "use", rule: ri }))}>
+                        <MagpieIcon name={DEMO_MODELS.find(x => x.value === splitMember(useMember?.id || "")[0])?.icon} />
                         <span>{useMember ? memberDisplay(useMember) : r.use}</span>
                       </button>
                       {r.pause ? (
-                        <div className="rt-pause-note">{t("left out of the group then: not tried, not a fallback")}</div>
+                        <div className="rt-rwarn">{t("left out of the group then: not tried, not a fallback")}</div>
                       ) : null}
                     </div>
-                    <span className="ctl">
                       <button
                         type="button"
-                        className={`text rt-rule-more${ruleMenuFor === ri ? " open" : ""}`}
+                        className={`icon rt-rmore${ruleMenuFor === ri ? " open" : ""}`}
                         ref={(el) => {
                           condBtnRefs.current[`more${ri}`] = el;
                         }}
@@ -1658,11 +1600,9 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
                           setRuleMenuFor((cur) => (cur === ri ? null : ri));
                           setCondMenuFor(null);
                           setPopKind(null);
-                        }}
-                      >
-                        ⋯
+                        }}>
+                        <svg viewBox="0 0 16 16" width={14} height={14} fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" aria-hidden="true"><path d="M3.5 8h.01M8 8h.01M12.5 8h.01" /></svg>
                       </button>
-                    </span>
                   </div>
                 );
               })}
@@ -1677,23 +1617,15 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
                     setDraft((d) => ({ ...d, rules: [...d.rules, emptyRule(use)] }));
                     setAskingRule(draft.rules.length);
                     window.setTimeout(() => intentFocusRef.current?.focus({ preventScroll: true }), 0);
-                  }}
-                >
+                  }}>
                   <svg viewBox="0 0 16 16" width={11} height={11} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden>
                     <path d="M8 3.5v9M3.5 8h9" />
                   </svg>
                   <span>{t("Add a rule")}</span>
                 </button>
-                <button
-                  type="button"
-                  className="rt-info"
-                  title={t(
+                <InfoTip text={t(
                     "Checked top first when you send a message: the first that matches sends that turn to its model first; the rest stay behind it if it fails. A turn under way is never moved.",
-                  )}
-                  aria-label={t("About rules")}
-                >
-                  i
-                </button>
+                  )} />
               </div>
             ) : null}
           </div>
@@ -1708,7 +1640,7 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
 
         <label>{t("Effort")}</label>
         <div>
-          <div className="rt-effort-row">
+          <div className="rt-pickrow">
             <Segs
               value={draft.effort}
               items={[
@@ -1724,32 +1656,24 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
               }
               aria-label={t("Effort")}
             />
-            <button
-              type="button"
-              className="rt-info"
-              title={t(
+            <InfoTip text={t(
                 draft.effort === "auto"
                   ? "As a turn begins, the classifier rates how hard it is and the turn's requests ask their model for low, medium, high or xhigh reasoning — the level each model has nearest. Only where the agent asked for reasoning: a request without any (a session title) stays without."
                   : "Each request reasons as much as the agent asked.",
-              )}
-              aria-label={t("About effort")}
-            >
-              i
-            </button>
+              )} />
           </div>
         </div>
 
-        {draft.effort === "auto" || draft.rules.some((r) => !r.pause) ? (
+        {draft.effort === "auto" || draft.rules.some((r) => !r.pause && ruleHasPin(r, "intent")) ? (
           <>
             <label>{t(draft.effort === "auto" && !draft.rules.some((r) => r.intent.trim()) ? "Decided by" : "Intent told by")}</label>
             <div>
               <div className="rt-classifier">
-                <button
+                <div className="rt-pickrow"><button
                   type="button"
                   className={`rt-cond${draft.classifier ? " on" : ""}`}
                   ref={clsBtnRef}
-                  onClick={() => setClsOpen((o) => !o)}
-                >
+                  onClick={() => setClsOpen((o) => !o)}>
                   <span>
                     {draft.classifier
                       ? (() => {
@@ -1760,16 +1684,17 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
                       : t("choose a model")}
                   </span>
                 </button>
-                <button
-                  type="button"
-                  className="rt-info"
-                  title={t(
-                    "As a turn begins, this model is asked which of the intents the message is — once; a small, fast one without reasoning is best. If it fails or can't say, no intent matches. Its calls show in the usage as magpie’s own.",
-                  )}
-                  aria-label={t("About intent")}
-                >
-                  i
-                </button>
+                <InfoTip text={t(
+                    draft.classifier.startsWith("jev/")
+                      ? draft.rules.some((r) => r.intent.trim())
+                        ? "As a turn begins, Jev is asked once which of the intents the message is, and how hard the turn is when it picks the effort. An intent it isn't sure of matches no rule. Its calls show in the usage as magpie’s own."
+                        : "Jev is asked once as each turn begins, with the message and what it said of the turn before. Its calls show in the usage as magpie’s own."
+                      : draft.effort === "auto" && !draft.rules.some((r) => r.intent.trim())
+                        ? "As a turn begins, this model is asked how hard the turn is — once; a small, fast one without reasoning is best. If it fails or can't say, the turn reasons as the agent asked. Its calls show in the usage as magpie’s own."
+                        : draft.effort === "auto"
+                          ? "As a turn begins, this model is asked which of the intents the message is and how hard the turn is, each once; a small, fast one without reasoning is best. If it can't say, no intent matches and the turn reasons as the agent asked. Its calls show in the usage as magpie’s own."
+                          : "As a turn begins, this model is asked which of the intents the message is — once; a small, fast one without reasoning is best. If it fails or can't say, no intent matches. Its calls show in the usage as magpie’s own.",
+                  )} /></div>
                 <ModelPop
                   open={clsOpen}
                   anchor={clsBtnRef.current}
@@ -1782,19 +1707,7 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
                   }}
                   onClose={() => setClsOpen(false)}
                 />
-                <div className="hint">
-                  {t(
-                    draft.classifier.startsWith("jev/")
-                      ? draft.rules.some((r) => r.intent.trim())
-                        ? "As a turn begins, Jev is asked once which of the intents the message is, and how hard the turn is when it picks the effort. An intent it isn't sure of matches no rule. Its calls show in the usage as magpie’s own."
-                        : "Jev is asked once as each turn begins, with the message and what it said of the turn before. Its calls show in the usage as magpie’s own."
-                      : draft.effort === "auto" && !draft.rules.some((r) => r.intent.trim())
-                        ? "As a turn begins, this model is asked how hard the turn is — once; a small, fast one without reasoning is best. If it fails or can't say, the turn reasons as the agent asked. Its calls show in the usage as magpie’s own."
-                        : draft.effort === "auto"
-                          ? "As a turn begins, this model is asked which of the intents the message is and how hard the turn is, each once; a small, fast one without reasoning is best. If it can't say, no intent matches and the turn reasons as the agent asked. Its calls show in the usage as magpie’s own."
-                          : "As a turn begins, this model is asked which of the intents the message is — once; a small, fast one without reasoning is best. If it fails or can't say, no intent matches. Its calls show in the usage as magpie’s own.",
-                  )}
-                </div>
+
                 {draft.effort === "auto" && !draft.rules.some((r) => r.intent.trim()) && draft.members.length > 1 ? (
                   <button
                     type="button"
@@ -1808,8 +1721,7 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
                       }));
                       setAskingRule(draft.rules.length);
                       window.setTimeout(() => intentFocusRef.current?.focus({ preventScroll: true }), 0);
-                    }}
-                  >
+                    }}>
                     {t("It can pick the model too: add a rule with an intent")}
                   </button>
                 ) : null}
@@ -1841,8 +1753,7 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
                       ...d,
                       levels: d.levels.includes(v) ? d.levels.filter((x) => x !== v) : LEVELS.filter((x) => x === v || d.levels.includes(x)),
                     }))
-                  }
-                >
+                  }>
                   {v}
                 </button>
               ))}
@@ -1857,9 +1768,9 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
           </div>
         </div>
 
-        <div className="bar" style={{ gridColumn: "1 / -1" }}>
+        <div className="bar">
           {editGroup ? (
-            <button type="button" className="text" onClick={() => setRemoveOpen(true)}>
+            <button type="button" className="text danger" onClick={() => setRemoveOpen(true)}>
               {t("Remove")}
             </button>
           ) : null}
@@ -2044,20 +1955,10 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
           live={false}
           value=""
           align="left"
-          options={(
-            [
-              ["tokens", "Conversation length"],
-              ["images", "has an image"],
-              ["effort", "Reasoning level"],
-              ["compact", "compacting"],
-              ["agents", "Agents"],
-              ["folders", "in folder"],
-              ["exceptFolders", "not in folder"],
-              ["time", "Hours and days"],
-            ] as const
-          )
-            .filter(([id]) => !ruleHasPin(draft.rules[condMenuFor] || emptyRule(""), id))
-            .map(([id, label]) => ({ v: id, name: label }))}
+          options={CONDITIONS.filter(([key, , pause]) => {
+            const rule = draft.rules[condMenuFor] || emptyRule("");
+            return (pause || !rule.pause) && !ruleHasPin(rule, key);
+          }).map(([v, name]) => ({ v, name }))}
           onChange={(v) => {
             const ri = condMenuFor;
             const id = typeof v === "string" ? v : "";
@@ -2074,6 +1975,10 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
               });
               return { ...d, rules };
             });
+            if (id === "intent") {
+              setAskingRule(ri);
+              requestAnimationFrame(() => intentFocusRef.current?.focus({ preventScroll: true }));
+            }
             if (id === "effort") setPopKind({ kind: "effort", rule: ri });
             if (id === "agents") setPopKind({ kind: "agent", rule: ri });
             if (id === "tokens") {
@@ -2131,77 +2036,33 @@ export function GroupEditor({ open, nameSuffixOn, onClose, onSaved, onRemoved, o
         />
       ) : null}
 
-      {discardOpen ? (
-        <div
-          className="modal"
-          style={{ zIndex: 40, background: "rgba(20,22,30,.35)" }}
-          onClick={(e) => {
-            if (e.target === e.currentTarget) setDiscardOpen(false);
-          }}
-        >
-          <div className="dialog sm" role="alertdialog" aria-labelledby="rtDiscardTitle" style={{ animation: "pop-in .28s var(--ease)", maxWidth: 360 }}>
-            <div className="ehead" style={{ padding: "14px 16px 0" }}>
-              <b id="rtDiscardTitle">{t("Discard")}</b>
-            </div>
-            <p style={{ margin: "10px 16px 0", fontSize: 13, color: "var(--fg-2)", lineHeight: 1.45 }}>
-              {t("Discard unsaved changes? Your changes will be lost.")}
-            </p>
-            <div className="bar" style={{ padding: "14px 16px" }}>
-              <span className="grow" />
-              <button type="button" className="text" onClick={() => setDiscardOpen(false)}>
-                {t("Cancel")}
-              </button>
-              <button
-                type="button"
-                className="text"
-                style={{ background: "var(--red)", color: "#fff", borderColor: "var(--red)" }}
-                onClick={doDiscard}
-              >
-                {t("Discard")}
-              </button>
-            </div>
-          </div>
-        </div>
-      ) : null}
+      <ActionConfirm
+        open={discardOpen}
+        titleId="rtDiscardTitle"
+        title={t("Discard")}
+        message={t("Discard unsaved changes? Your changes will be lost.")}
+        cancelLabel={t("Cancel")}
+        acceptLabel={t("Discard")}
+        onCancel={() => setDiscardOpen(false)}
+        onAccept={doDiscard}
+      />
 
-      {removeOpen ? (
-        <div
-          className="modal"
-          style={{ zIndex: 40, background: "rgba(20,22,30,.35)" }}
-          onClick={(e) => {
-            if (e.target === e.currentTarget) setRemoveOpen(false);
-          }}
-        >
-          <div className="dialog sm" role="alertdialog" aria-labelledby="rtRemoveGroupTitle" style={{ animation: "pop-in .28s var(--ease)", maxWidth: 360 }}>
-            <div className="ehead" style={{ padding: "14px 16px 0" }}>
-              <b id="rtRemoveGroupTitle">{t("Remove {name}?", { name: draft.name.trim() || idOf() })}</b>
-            </div>
-            <p style={{ margin: "10px 16px 0", fontSize: 13, color: "var(--fg-2)", lineHeight: 1.45 }}>
-              {t("This routing group will no longer be available to agents.")}
-            </p>
-            <div className="bar" style={{ padding: "14px 16px" }}>
-              <span className="grow" />
-              <button type="button" className="text" onClick={() => setRemoveOpen(false)}>
-                {t("Cancel")}
-              </button>
-              <button
-                type="button"
-                className="text"
-                style={{ background: "var(--red)", color: "#fff", borderColor: "var(--red)" }}
-                onClick={() => {
-                  const name = draft.name.trim() || idOf();
-                  setRemoveOpen(false);
-                  onStatus?.(t("{name} removed", { name }), "ok");
-                  onRemoved?.();
-                  onClose();
-                }}
-              >
-                {t("Remove")}
-              </button>
-            </div>
-          </div>
-        </div>
-      ) : null}
+      <ActionConfirm
+        open={removeOpen}
+        titleId="rtRemoveGroupTitle"
+        title={t("Remove {name}?", { name: draft.name.trim() || idOf() })}
+        message={t("This routing group will no longer be available to agents.")}
+        cancelLabel={t("Cancel")}
+        acceptLabel={t("Remove")}
+        onCancel={() => setRemoveOpen(false)}
+        onAccept={() => {
+          const name = draft.name.trim() || idOf();
+          setRemoveOpen(false);
+          onStatus?.(t("{name} removed", { name }), "ok");
+          onRemoved?.();
+          onClose();
+        }}
+      />
     </>
   );
 }

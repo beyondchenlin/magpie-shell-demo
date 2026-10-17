@@ -1,0 +1,1149 @@
+{
+  "source": "faea7942cd9cdc83e388e1a607176408312822f1",
+  "checks": [
+    {
+      "case": "initial-deep-fold-and-current",
+      "active": {
+        "class": "",
+        "pop": "pop am-pop railed up",
+        "tag": "INPUT"
+      },
+      "armed": [],
+      "only": "false",
+      "order": [],
+      "rows": [
+        {
+          "checked": "true",
+          "locked": null,
+          "text": "magpie/fast"
+        },
+        {
+          "checked": "true",
+          "locked": "true",
+          "text": "claude-opus-4在用"
+        },
+        {
+          "checked": "true",
+          "locked": "true",
+          "text": "claude-sonnet-4-5在用"
+        },
+        {
+          "checked": "true",
+          "locked": "true",
+          "text": "claude-haiku-4在用"
+        },
+        {
+          "checked": "false",
+          "locked": null,
+          "text": "claude-3-5-haiku"
+        },
+        {
+          "checked": "true",
+          "locked": null,
+          "text": "gemini-2.5-pro"
+        },
+        {
+          "checked": "true",
+          "locked": null,
+          "text": "Mock own model"
+        }
+      ],
+      "sections": [
+        {
+          "folded": false,
+          "name": "路由组",
+          "rows": 1
+        },
+        {
+          "folded": false,
+          "name": "Anthropic",
+          "rows": 4
+        },
+        {
+          "folded": true,
+          "name": "OpenAI",
+          "rows": 0
+        },
+        {
+          "folded": false,
+          "name": "Google",
+          "rows": 1
+        },
+        {
+          "folded": false,
+          "name": "ChatGPT",
+          "rows": 1
+        }
+      ]
+    },
+    {
+      "case": "search-across-groups",
+      "active": {
+        "class": "",
+        "pop": "pop am-pop railed up",
+        "tag": "INPUT"
+      },
+      "armed": [],
+      "only": "false",
+      "order": [],
+      "rows": [
+        {
+          "checked": "true",
+          "locked": null,
+          "text": "Mock OpenAI 1"
+        },
+        {
+          "checked": "true",
+          "locked": null,
+          "text": "Mock OpenAI 2"
+        },
+        {
+          "checked": "true",
+          "locked": null,
+          "text": "Mock OpenAI 3"
+        },
+        {
+          "checked": "true",
+          "locked": null,
+          "text": "Mock OpenAI 4"
+        },
+        {
+          "checked": "true",
+          "locked": null,
+          "text": "Mock OpenAI 5"
+        },
+        {
+          "checked": "true",
+          "locked": null,
+          "text": "Mock OpenAI 6"
+        },
+        {
+          "checked": "true",
+          "locked": null,
+          "text": "Mock OpenAI 7"
+        },
+        {
+          "checked": "true",
+          "locked": null,
+          "text": "Mock OpenAI 8"
+        },
+        {
+          "checked": "true",
+          "locked": null,
+          "text": "Mock OpenAI 9"
+        },
+        {
+          "checked": "true",
+          "locked": null,
+          "text": "Mock own model"
+        }
+      ],
+      "sections": [
+        {
+          "folded": false,
+          "name": "OpenAI",
+          "rows": 9
+        },
+        {
+          "folded": false,
+          "name": "ChatGPT",
+          "rows": 1
+        }
+      ]
+    },
+    {
+      "case": "shown-retains-hidden-row",
+      "active": {
+        "class": "window web",
+        "tag": "BODY"
+      },
+      "armed": [],
+      "order": [],
+      "rows": [],
+      "sections": []
+    },
+    {
+      "case": "shown-filter-visible-gemini-off",
+      "state": {
+        "active": {
+          "class": "am-mr off",
+          "pop": "pop am-pop railed up",
+          "tag": "BUTTON"
+        },
+        "armed": [],
+        "only": "false",
+        "order": [],
+        "rows": [
+          {
+            "checked": "false",
+            "locked": null,
+            "text": "gemini-2.5-pro"
+          }
+        ],
+        "sections": [
+          {
+            "folded": false,
+            "name": "Google",
+            "rows": 1
+          }
+        ]
+      }
+    },
+    {
+      "case": "shown-reset-after-view-change",
+      "state": {
+        "active": {
+          "class": "on",
+          "pop": "pop am-pop railed up",
+          "tag": "BUTTON"
+        },
+        "armed": [],
+        "only": "false",
+        "order": [],
+        "rows": [],
+        "sections": []
+      }
+    },
+    {
+      "case": "current-locked",
+      "state": {
+        "active": {
+          "class": "on",
+          "pop": "pop am-pop railed up",
+          "tag": "BUTTON"
+        },
+        "armed": [],
+        "only": "false",
+        "order": [],
+        "rows": [
+          {
+            "checked": "true",
+            "locked": "true",
+            "text": "claude-opus-4在用"
+          },
+          {
+            "checked": "true",
+            "locked": "true",
+            "text": "claude-sonnet-4-5在用"
+          },
+          {
+            "checked": "true",
+            "locked": "true",
+            "text": "claude-haiku-4在用"
+          },
+          {
+            "checked": "false",
+            "locked": null,
+            "text": "claude-3-5-haiku"
+          }
+        ],
+        "sections": [
+          {
+            "folded": false,
+            "name": "Anthropic",
+            "rows": 4
+          }
+        ]
+      },
+      "enabled": false
+    },
+    {
+      "case": "anthropic-group-show",
+      "state": {
+        "active": {
+          "class": "am-all",
+          "pop": "pop am-pop railed up",
+          "tag": "BUTTON"
+        },
+        "armed": [],
+        "only": "false",
+        "order": [],
+        "rows": [
+          {
+            "checked": "true",
+            "locked": "true",
+            "text": "claude-opus-4在用"
+          },
+          {
+            "checked": "true",
+            "locked": "true",
+            "text": "claude-sonnet-4-5在用"
+          },
+          {
+            "checked": "true",
+            "locked": "true",
+            "text": "claude-haiku-4在用"
+          },
+          {
+            "checked": "true",
+            "locked": null,
+            "text": "claude-3-5-haiku"
+          }
+        ],
+        "sections": [
+          {
+            "folded": false,
+            "name": "Anthropic",
+            "rows": 4
+          }
+        ]
+      }
+    },
+    {
+      "case": "anthropic-group-hide-preserves-current",
+      "state": {
+        "active": {
+          "class": "am-all",
+          "pop": "pop am-pop railed up",
+          "tag": "BUTTON"
+        },
+        "armed": [],
+        "only": "false",
+        "order": [],
+        "rows": [
+          {
+            "checked": "true",
+            "locked": "true",
+            "text": "claude-opus-4在用"
+          },
+          {
+            "checked": "true",
+            "locked": "true",
+            "text": "claude-sonnet-4-5在用"
+          },
+          {
+            "checked": "true",
+            "locked": "true",
+            "text": "claude-haiku-4在用"
+          },
+          {
+            "checked": "false",
+            "locked": null,
+            "text": "claude-3-5-haiku"
+          }
+        ],
+        "sections": [
+          {
+            "folded": false,
+            "name": "Anthropic",
+            "rows": 4
+          }
+        ]
+      }
+    },
+    {
+      "case": "global-hide-arm",
+      "state": {
+        "active": {
+          "class": "am-reset am-hide",
+          "pop": "pop am-pop railed up",
+          "tag": "BUTTON"
+        },
+        "armed": [
+          "隐藏所有供应商的 13 个模型？再点一次"
+        ],
+        "only": "false",
+        "order": [],
+        "rows": [
+          {
+            "checked": "true",
+            "locked": "true",
+            "text": "claude-opus-4在用"
+          },
+          {
+            "checked": "true",
+            "locked": "true",
+            "text": "claude-sonnet-4-5在用"
+          },
+          {
+            "checked": "true",
+            "locked": "true",
+            "text": "claude-haiku-4在用"
+          },
+          {
+            "checked": "false",
+            "locked": null,
+            "text": "claude-3-5-haiku"
+          }
+        ],
+        "sections": [
+          {
+            "folded": false,
+            "name": "Anthropic",
+            "rows": 4
+          }
+        ]
+      }
+    },
+    {
+      "case": "timeout-armed",
+      "at": 1792157874906,
+      "state": {
+        "active": {
+          "class": "am-reset am-hide",
+          "pop": "pop am-pop railed up",
+          "tag": "BUTTON"
+        },
+        "armed": [
+          "隐藏所有供应商的 13 个模型？再点一次"
+        ],
+        "only": "false",
+        "order": [],
+        "rows": [
+          {
+            "checked": "true",
+            "locked": "true",
+            "text": "claude-opus-4在用"
+          },
+          {
+            "checked": "true",
+            "locked": "true",
+            "text": "claude-sonnet-4-5在用"
+          },
+          {
+            "checked": "true",
+            "locked": "true",
+            "text": "claude-haiku-4在用"
+          },
+          {
+            "checked": "false",
+            "locked": null,
+            "text": "claude-3-5-haiku"
+          }
+        ],
+        "sections": [
+          {
+            "folded": false,
+            "name": "Anthropic",
+            "rows": 4
+          }
+        ]
+      }
+    },
+    {
+      "case": "timeout-reset-observed-later",
+      "elapsedMs": 14150,
+      "state": {
+        "active": {
+          "class": "am-reset am-hide",
+          "pop": "pop am-pop railed up",
+          "tag": "BUTTON"
+        },
+        "armed": [],
+        "only": "false",
+        "order": [],
+        "rows": [
+          {
+            "checked": "true",
+            "locked": "true",
+            "text": "claude-opus-4在用"
+          },
+          {
+            "checked": "true",
+            "locked": "true",
+            "text": "claude-sonnet-4-5在用"
+          },
+          {
+            "checked": "true",
+            "locked": "true",
+            "text": "claude-haiku-4在用"
+          },
+          {
+            "checked": "false",
+            "locked": null,
+            "text": "claude-3-5-haiku"
+          }
+        ],
+        "sections": [
+          {
+            "folded": false,
+            "name": "Anthropic",
+            "rows": 4
+          }
+        ]
+      },
+      "note": "waitFor backend capped before 4000ms; later state observation only"
+    },
+    {
+      "case": "global-hide-confirm-preserves-current",
+      "state": {
+        "active": {
+          "class": "window web",
+          "tag": "BODY"
+        },
+        "armed": [],
+        "only": "false",
+        "order": [],
+        "rows": [
+          {
+            "checked": "true",
+            "locked": "true",
+            "text": "claude-opus-4在用"
+          },
+          {
+            "checked": "true",
+            "locked": "true",
+            "text": "claude-sonnet-4-5在用"
+          },
+          {
+            "checked": "true",
+            "locked": "true",
+            "text": "claude-haiku-4在用"
+          },
+          {
+            "checked": "false",
+            "locked": null,
+            "text": "claude-3-5-haiku"
+          }
+        ],
+        "sections": [
+          {
+            "folded": false,
+            "name": "Anthropic",
+            "rows": 4
+          }
+        ]
+      }
+    },
+    {
+      "case": "other-action-disarms",
+      "state": {
+        "active": {
+          "class": "",
+          "pop": "pop am-pop railed up",
+          "tag": "INPUT"
+        },
+        "armed": [],
+        "only": "false",
+        "order": [],
+        "rows": [
+          {
+            "checked": "true",
+            "locked": "true",
+            "text": "claude-haiku-4在用"
+          },
+          {
+            "checked": "false",
+            "locked": null,
+            "text": "claude-3-5-haiku"
+          }
+        ],
+        "sections": [
+          {
+            "folded": false,
+            "name": "Anthropic",
+            "rows": 2
+          }
+        ]
+      }
+    },
+    {
+      "case": "only-on-does-not-change-shown",
+      "state": {
+        "active": {
+          "class": "lib-switch use-credits on",
+          "pop": "pop am-pop railed up",
+          "tag": "BUTTON"
+        },
+        "armed": [],
+        "only": "true",
+        "order": [],
+        "rows": [
+          {
+            "checked": "true",
+            "locked": "true",
+            "text": "claude-haiku-4在用"
+          },
+          {
+            "checked": "true",
+            "locked": null,
+            "text": "claude-3-5-haiku"
+          }
+        ],
+        "sections": [
+          {
+            "folded": false,
+            "name": "Anthropic",
+            "rows": 2
+          }
+        ]
+      }
+    },
+    {
+      "case": "order-default-own-first",
+      "state": {
+        "active": {
+          "class": "on",
+          "pop": "pop am-pop railed ordering",
+          "tag": "BUTTON"
+        },
+        "armed": [],
+        "order": [
+          "mock/own-model",
+          "claude-opus-4",
+          "claude-sonnet-4-5",
+          "claude-haiku-4",
+          "claude-3-5-haiku",
+          "gpt-5",
+          "gpt-5-mini",
+          "o4-mini",
+          "gemini-2.5-pro",
+          "magpie/fast",
+          "mock/openai-1",
+          "mock/openai-2",
+          "mock/openai-3",
+          "mock/openai-4",
+          "mock/openai-5",
+          "mock/openai-6",
+          "mock/openai-7",
+          "mock/openai-8",
+          "mock/openai-9"
+        ],
+        "rows": [],
+        "sections": []
+      }
+    },
+    {
+      "case": "alt-down-one",
+      "state": {
+        "active": {
+          "class": "am-mr am-or",
+          "pop": "pop am-pop railed ordering",
+          "tag": "DIV"
+        },
+        "armed": [],
+        "focusedOrder": "claude-opus-4",
+        "order": [
+          "mock/own-model",
+          "claude-sonnet-4-5",
+          "claude-opus-4",
+          "claude-haiku-4",
+          "claude-3-5-haiku",
+          "gpt-5",
+          "gpt-5-mini",
+          "o4-mini",
+          "gemini-2.5-pro",
+          "magpie/fast",
+          "mock/openai-1",
+          "mock/openai-2",
+          "mock/openai-3",
+          "mock/openai-4",
+          "mock/openai-5",
+          "mock/openai-6",
+          "mock/openai-7",
+          "mock/openai-8",
+          "mock/openai-9"
+        ],
+        "rows": [],
+        "sections": []
+      }
+    },
+    {
+      "case": "alt-down-two",
+      "state": {
+        "active": {
+          "class": "am-mr am-or",
+          "pop": "pop am-pop railed ordering",
+          "tag": "DIV"
+        },
+        "armed": [],
+        "focusedOrder": "claude-opus-4",
+        "order": [
+          "mock/own-model",
+          "claude-sonnet-4-5",
+          "claude-haiku-4",
+          "claude-opus-4",
+          "claude-3-5-haiku",
+          "gpt-5",
+          "gpt-5-mini",
+          "o4-mini",
+          "gemini-2.5-pro",
+          "magpie/fast",
+          "mock/openai-1",
+          "mock/openai-2",
+          "mock/openai-3",
+          "mock/openai-4",
+          "mock/openai-5",
+          "mock/openai-6",
+          "mock/openai-7",
+          "mock/openai-8",
+          "mock/openai-9"
+        ],
+        "rows": [],
+        "sections": []
+      }
+    },
+    {
+      "case": "pointer-drag-opus-four-to-two",
+      "state": {
+        "active": {
+          "class": "am-mr am-or",
+          "pop": "pop am-pop railed ordering",
+          "tag": "DIV"
+        },
+        "armed": [],
+        "focusedOrder": "claude-opus-4",
+        "order": [
+          "mock/own-model",
+          "claude-sonnet-4-5",
+          "claude-haiku-4",
+          "claude-opus-4",
+          "claude-3-5-haiku",
+          "gpt-5",
+          "gpt-5-mini",
+          "o4-mini",
+          "gemini-2.5-pro",
+          "magpie/fast",
+          "mock/openai-1",
+          "mock/openai-2",
+          "mock/openai-3",
+          "mock/openai-4",
+          "mock/openai-5",
+          "mock/openai-6",
+          "mock/openai-7",
+          "mock/openai-8",
+          "mock/openai-9"
+        ],
+        "rows": [],
+        "sections": []
+      }
+    },
+    {
+      "case": "default-order-restored",
+      "state": {
+        "active": {
+          "class": "window web",
+          "tag": "BODY"
+        },
+        "armed": [],
+        "order": [
+          "mock/own-model",
+          "claude-opus-4",
+          "claude-sonnet-4-5",
+          "claude-haiku-4",
+          "claude-3-5-haiku",
+          "gpt-5",
+          "gpt-5-mini",
+          "o4-mini",
+          "gemini-2.5-pro",
+          "magpie/fast",
+          "mock/openai-1",
+          "mock/openai-2",
+          "mock/openai-3",
+          "mock/openai-4",
+          "mock/openai-5",
+          "mock/openai-6",
+          "mock/openai-7",
+          "mock/openai-8",
+          "mock/openai-9"
+        ],
+        "rows": [],
+        "sections": []
+      },
+      "resetEnabled": false
+    },
+    {
+      "case": "pointer-drag-opus-second-to-fourth",
+      "state": {
+        "active": {
+          "class": "am-mr am-or",
+          "pop": "pop am-pop railed ordering",
+          "tag": "DIV"
+        },
+        "armed": [],
+        "focusedOrder": "claude-opus-4",
+        "order": [
+          "mock/own-model",
+          "claude-sonnet-4-5",
+          "claude-haiku-4",
+          "claude-opus-4",
+          "claude-3-5-haiku",
+          "gpt-5",
+          "gpt-5-mini",
+          "o4-mini",
+          "gemini-2.5-pro",
+          "magpie/fast",
+          "mock/openai-1",
+          "mock/openai-2",
+          "mock/openai-3",
+          "mock/openai-4",
+          "mock/openai-5",
+          "mock/openai-6",
+          "mock/openai-7",
+          "mock/openai-8",
+          "mock/openai-9"
+        ],
+        "rows": [],
+        "sections": []
+      }
+    },
+    {
+      "case": "claude-only-persists-on-reopen",
+      "state": {
+        "active": {
+          "class": "",
+          "pop": "pop am-pop railed up",
+          "tag": "INPUT"
+        },
+        "armed": [],
+        "only": "true",
+        "order": [],
+        "rows": [
+          {
+            "checked": "true",
+            "locked": null,
+            "text": "magpie/fast"
+          },
+          {
+            "checked": "true",
+            "locked": "true",
+            "text": "claude-opus-4在用"
+          },
+          {
+            "checked": "true",
+            "locked": "true",
+            "text": "claude-sonnet-4-5在用"
+          },
+          {
+            "checked": "true",
+            "locked": "true",
+            "text": "claude-haiku-4在用"
+          },
+          {
+            "checked": "true",
+            "locked": null,
+            "text": "claude-3-5-haiku"
+          },
+          {
+            "checked": "true",
+            "locked": null,
+            "text": "gemini-2.5-pro"
+          },
+          {
+            "checked": "true",
+            "locked": null,
+            "text": "Mock own model"
+          }
+        ],
+        "sections": [
+          {
+            "folded": false,
+            "name": "路由组",
+            "rows": 1
+          },
+          {
+            "folded": false,
+            "name": "Anthropic",
+            "rows": 4
+          },
+          {
+            "folded": true,
+            "name": "OpenAI",
+            "rows": 0
+          },
+          {
+            "folded": false,
+            "name": "Google",
+            "rows": 1
+          },
+          {
+            "folded": false,
+            "name": "ChatGPT",
+            "rows": 1
+          }
+        ]
+      }
+    },
+    {
+      "case": "codex-only-independent-default-off",
+      "state": {
+        "active": {
+          "class": "",
+          "pop": "pop am-pop railed up",
+          "tag": "INPUT"
+        },
+        "armed": [],
+        "only": "false",
+        "order": [],
+        "rows": [
+          {
+            "checked": "true",
+            "locked": null,
+            "text": "magpie/fast"
+          },
+          {
+            "checked": "true",
+            "locked": null,
+            "text": "claude-opus-4"
+          },
+          {
+            "checked": "true",
+            "locked": null,
+            "text": "claude-sonnet-4-5"
+          },
+          {
+            "checked": "true",
+            "locked": null,
+            "text": "claude-haiku-4"
+          },
+          {
+            "checked": "false",
+            "locked": null,
+            "text": "claude-3-5-haiku"
+          },
+          {
+            "checked": "true",
+            "locked": "true",
+            "text": "gpt-5在用"
+          },
+          {
+            "checked": "true",
+            "locked": null,
+            "text": "gpt-5-mini"
+          },
+          {
+            "checked": "false",
+            "locked": null,
+            "text": "o4-mini"
+          },
+          {
+            "checked": "true",
+            "locked": null,
+            "text": "Mock OpenAI 1"
+          },
+          {
+            "checked": "true",
+            "locked": null,
+            "text": "Mock OpenAI 2"
+          },
+          {
+            "checked": "true",
+            "locked": null,
+            "text": "Mock OpenAI 3"
+          },
+          {
+            "checked": "true",
+            "locked": null,
+            "text": "Mock OpenAI 4"
+          },
+          {
+            "checked": "true",
+            "locked": null,
+            "text": "Mock OpenAI 5"
+          },
+          {
+            "checked": "true",
+            "locked": null,
+            "text": "Mock OpenAI 6"
+          },
+          {
+            "checked": "true",
+            "locked": null,
+            "text": "Mock OpenAI 7"
+          },
+          {
+            "checked": "true",
+            "locked": null,
+            "text": "Mock OpenAI 8"
+          },
+          {
+            "checked": "true",
+            "locked": null,
+            "text": "Mock OpenAI 9"
+          },
+          {
+            "checked": "true",
+            "locked": null,
+            "text": "gemini-2.5-pro"
+          },
+          {
+            "checked": "true",
+            "locked": null,
+            "text": "Mock own model"
+          }
+        ],
+        "sections": [
+          {
+            "folded": false,
+            "name": "路由组",
+            "rows": 1
+          },
+          {
+            "folded": false,
+            "name": "Anthropic",
+            "rows": 4
+          },
+          {
+            "folded": false,
+            "name": "OpenAI",
+            "rows": 12
+          },
+          {
+            "folded": false,
+            "name": "Google",
+            "rows": 1
+          },
+          {
+            "folded": false,
+            "name": "ChatGPT",
+            "rows": 1
+          }
+        ]
+      }
+    },
+    {
+      "case": "claude-only-remains-after-other-agent",
+      "state": {
+        "active": {
+          "class": "",
+          "pop": "pop am-pop railed up",
+          "tag": "INPUT"
+        },
+        "armed": [],
+        "only": "true",
+        "order": [],
+        "rows": [
+          {
+            "checked": "true",
+            "locked": null,
+            "text": "magpie/fast"
+          },
+          {
+            "checked": "true",
+            "locked": "true",
+            "text": "claude-opus-4在用"
+          },
+          {
+            "checked": "true",
+            "locked": "true",
+            "text": "claude-sonnet-4-5在用"
+          },
+          {
+            "checked": "true",
+            "locked": "true",
+            "text": "claude-haiku-4在用"
+          },
+          {
+            "checked": "true",
+            "locked": null,
+            "text": "claude-3-5-haiku"
+          },
+          {
+            "checked": "true",
+            "locked": null,
+            "text": "gemini-2.5-pro"
+          },
+          {
+            "checked": "true",
+            "locked": null,
+            "text": "Mock own model"
+          }
+        ],
+        "sections": [
+          {
+            "folded": false,
+            "name": "路由组",
+            "rows": 1
+          },
+          {
+            "folded": false,
+            "name": "Anthropic",
+            "rows": 4
+          },
+          {
+            "folded": true,
+            "name": "OpenAI",
+            "rows": 0
+          },
+          {
+            "folded": false,
+            "name": "Google",
+            "rows": 1
+          },
+          {
+            "folded": false,
+            "name": "ChatGPT",
+            "rows": 1
+          }
+        ]
+      }
+    },
+    {
+      "case": "claude-only-and-models-persist-reload",
+      "state": {
+        "active": {
+          "class": "",
+          "pop": "pop am-pop railed up",
+          "tag": "INPUT"
+        },
+        "armed": [],
+        "only": "true",
+        "order": [],
+        "rows": [
+          {
+            "checked": "true",
+            "locked": null,
+            "text": "magpie/fast"
+          },
+          {
+            "checked": "true",
+            "locked": "true",
+            "text": "claude-opus-4在用"
+          },
+          {
+            "checked": "true",
+            "locked": "true",
+            "text": "claude-sonnet-4-5在用"
+          },
+          {
+            "checked": "true",
+            "locked": "true",
+            "text": "claude-haiku-4在用"
+          },
+          {
+            "checked": "true",
+            "locked": null,
+            "text": "claude-3-5-haiku"
+          },
+          {
+            "checked": "true",
+            "locked": null,
+            "text": "gemini-2.5-pro"
+          },
+          {
+            "checked": "true",
+            "locked": null,
+            "text": "Mock own model"
+          }
+        ],
+        "sections": [
+          {
+            "folded": false,
+            "name": "路由组",
+            "rows": 1
+          },
+          {
+            "folded": false,
+            "name": "Anthropic",
+            "rows": 4
+          },
+          {
+            "folded": true,
+            "name": "OpenAI",
+            "rows": 0
+          },
+          {
+            "folded": false,
+            "name": "Google",
+            "rows": 1
+          },
+          {
+            "folded": false,
+            "name": "ChatGPT",
+            "rows": 1
+          }
+        ]
+      }
+    }
+  ]
+}

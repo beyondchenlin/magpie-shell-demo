@@ -1,0 +1,51 @@
+{
+  "checkedAt": "2026-10-16T18:27:01.946Z",
+  "uiSource": "1ebfb663e4833e653bc621742cc342f3cdc7373a",
+  "publishedCheckpoint": "6a6d47bce7e96b262a1c47a46855713341a566ee",
+  "git": {
+    "normalPush": true,
+    "remoteReadbackMatched": true,
+    "backend": "openssl",
+    "httpVersion": "HTTP/1.1",
+    "forced": false,
+    "disabledTlsValidation": false,
+    "authority": "Supervisor independently read remote with this backend; executor then performed the only Git mutation and readback."
+  },
+  "pr": {
+    "url": "https://github.com/beyondchenlin/magpie-shell-demo/pull/1",
+    "title": "Magpie 复刻：冻结 CIS 修复与验收（v0.1.206）",
+    "headSha": "6a6d47bce7e96b262a1c47a46855713341a566ee",
+    "bodyMatches": true,
+    "titleMatches": true,
+    "tlsVerification": "default enabled",
+    "credentialHandling": "Existing gh credential used in memory; no plaintext persisted or logged."
+  },
+  "deployment": {
+    "source": "GitHub commit combined status API",
+    "sha": "6a6d47bce7e96b262a1c47a46855713341a566ee",
+    "context": "Vercel",
+    "state": "success",
+    "description": "Deployment has completed",
+    "targetUrl": "https://vercel.com/beyondchenlins-projects/magpie-shell-demo/Tway5xycG9TCj3jvYui8WXZ9VSSP",
+    "updatedAt": "2026-10-16T18:14:38Z",
+    "previewUrl": "https://magpie-shell-demo-git-tip-01121-4a6504-beyondchenlins-projects.vercel.app"
+  },
+  "cloudVerification": {
+    "browserResult": "Preview redirects to Vercel Login; no authenticated cloud UI/resource inspection claimed",
+    "connectorListingStatus": 403,
+    "protectedFetchStatus": 403,
+    "stage": "read_protection_bypass",
+    "message": "Vercel denied access to this deployment. Ask the user to update their Vercel connection to authorize the deployment's project and team, then retry. If those are already authorized, ask them to confirm their Vercel account has permission to access the deployment.",
+    "cliAvailable": false,
+    "protectionChanged": false,
+    "requestedUserAction": "Authorize existing Vercel connection for beyondchenlins-projects / magpie-shell-demo, then verify protected preview."
+  },
+  "status": {
+    "passed": 27,
+    "failed": 0,
+    "pending": [
+      "D2",
+      "D4"
+    ]
+  }
+}

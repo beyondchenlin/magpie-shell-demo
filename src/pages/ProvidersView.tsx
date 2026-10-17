@@ -1,4 +1,9 @@
+import { CopyButton } from "../components/CopyButton";
+import { MagpieIcon } from "../components/MagpieIcon";
+import { PopoverPortal } from "../components/PopoverPortal";
+import { useRowMenu } from "../lib/useRowMenu";
 import {
+  Fragment,
   useEffect,
   useMemo,
   useRef,
@@ -9,7 +14,12 @@ import {
 import presets from "../data/presets.json";
 import { SUB_TILES, iconSrc } from "../data/mock";
 import { ZH, t, demoCopy } from "../i18n";
+import { ActionConfirm } from "../components/ActionConfirm";
+import { Fold } from "../components/Fold";
 import { ProtoMultiMenu } from "../components/ProtoMultiMenu";
+import { LibSwitch } from "../components/LibSwitch";
+import { Tick } from "../components/Tick";
+import { Segs } from "../components/Segs";
 
 type Preset = { id: string; name: string; icon: string; kind: string };
 const PRESETS = presets as Preset[];
@@ -32,7 +42,10 @@ const calm = () =>
 const EXTRA_BODY_PLACEHOLDER = '{\n  "prompt_cache_key": "${sessionId}"\n}';
 
 const CTX_CHIPS = ["128K", "200K", "256K", "400K", "512K", "1M"];
+/** Magpie outputField sizes (app.js L9315). */
 const OUT_CHIPS = ["8K", "16K", "32K", "64K", "128K"];
+/** Magpie compactField sizes (app.js L9342). */
+const COMPACT_CHIPS = ["128K", "200K", "272K", "500K", "1M"];
 
 const IMPORT_APPS = [
   {
@@ -134,6 +147,12 @@ type EditorState = {
   note?: string;
 } | null;
 
+/** Local demo configuration. Credentials remain blank when an editor reopens. */
+type ProviderFormData = {
+  kind: EditorForm;
+  values: Record<string, string | boolean>;
+};
+
 type Props = {
   onStatus: (msg: string, kind?: string) => void;
   onGoPlugins?: () => void;
@@ -162,18 +181,7 @@ function Tile({
       title={tip || name}
       onClick={() => onPick(id)}
     >
-      <img
-        className="ic-img ic"
-        src={iconSrc(icon)}
-        alt=""
-        onError={(e) => {
-          const el = e.currentTarget;
-          if (!el.dataset.fallback) {
-            el.dataset.fallback = "1";
-            el.src = `/icons/${icon}.png`;
-          }
-        }}
-      />
+      <MagpieIcon name={icon} />
       <span className="nm">
         <span className="n">{name}</span>
       </span>
@@ -194,28 +202,7 @@ function SignCopy({
   /** NOTES 97–98: code → Copy; link → Copy link */
   tip?: string;
 }) {
-  const [done, setDone] = useState(false);
-  const tipTitle = tip || t("Copy");
-  return (
-    <button
-      type="button"
-      className={`copy${done ? " done" : ""}`}
-      title={tipTitle}
-      aria-label={tipTitle}
-      onClick={(e) => {
-        e.stopPropagation();
-        void navigator.clipboard?.writeText(text).catch(() => {});
-        setDone(true);
-        window.setTimeout(() => setDone(false), 1200);
-        onStatus(t("{what} copied", { what }), "ok");
-      }}
-    >
-      <svg viewBox="0 0 16 16" width={12} height={12} aria-hidden>
-        <rect x="5.5" y="5.5" width="7" height="7" rx="1.2" fill="none" stroke="currentColor" strokeWidth="1.5" />
-        <path d="M3.5 10.5v-7A1.5 1.5 0 0 1 5 2h7" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-      </svg>
-    </button>
-  );
+  return <CopyButton text={text} what={what} onStatus={onStatus} title={tip} />;
 }
 
 const GHE_HOST = /^(https?:\/\/)?[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?\.ghe\.com\/?$/i;
@@ -260,32 +247,6 @@ function Section({
       </div>
       <div className="grid">{children}</div>
     </>
-  );
-}
-
-function Segs({
-  value,
-  options,
-  onChange,
-}: {
-  value: string;
-  options: { v: string; label: string; title?: string }[];
-  onChange: (v: string) => void;
-}) {
-  return (
-    <div className="segs">
-      {options.map((o) => (
-        <button
-          key={o.v}
-          type="button"
-          className={`opt${value === o.v ? " on" : ""}`}
-          title={o.title}
-          onClick={() => onChange(o.v)}
-        >
-          {o.label}
-        </button>
-      ))}
-    </div>
   );
 }
 
@@ -386,6 +347,7 @@ function useModalAnim(open: boolean, onGone: () => void) {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
+        if (document.querySelector(".pop:not(.leaving), dialog[open]")) return;
         e.preventDefault();
         e.stopPropagation();
         close();
@@ -423,42 +385,41 @@ function ImportAppsModal({ onClose }: { onClose: () => void }) {
         aria-labelledby="modalTitle"
         tabIndex={-1}
       >
-        <div className="editor new importapps framed">
+        {/* Magpie app.js L9489–9490 renderImportApps: editor.new.importapps (no framed/ebody) */}
+        <div className="editor new importapps">
           <div className="ehead">
             <b id="modalTitle">{t("Import from other apps")}</b>
           </div>
-          <div className="ebody">
-            <div className="appnote">
-              {t(
-                "magpie reads these apps' settings and changes nothing in them. Pick the providers to bring over.",
-              )}
-            </div>
-            <div className="apptabs" role="tablist">
-              {IMPORT_APPS.map((a) => (
-                <button
-                  key={a.id}
-                  type="button"
-                  role="tab"
-                  className={`apptab missing${tab === a.id ? " on" : ""}`}
-                  aria-selected={tab === a.id}
-                  title={miss}
-                  onClick={() => setTab(a.id)}
-                >
-                  <img className="applogo" src={iconSrc(a.icon)} alt="" />
-                  <span>{a.name}</span>
-                  <span className="count">–</span>
-                </button>
-              ))}
-            </div>
-            <div className="applist">
-              <div className="appsrc">
-                <div className="apphead">
-                  <img className="applogo" src={iconSrc(cur.icon)} alt="" />
-                  <b>{cur.name}</b>
-                  <code>{cur.path}</code>
-                </div>
-                <div className="appempty">{miss}</div>
+          <div className="appnote">
+            {t(
+              "magpie reads these apps' settings and changes nothing in them. Pick the providers to bring over.",
+            )}
+          </div>
+          <div className="apptabs" role="tablist">
+            {IMPORT_APPS.map((a) => (
+              <button
+                key={a.id}
+                type="button"
+                role="tab"
+                className={`apptab missing${tab === a.id ? " on" : ""}`}
+                aria-selected={tab === a.id}
+                title={miss}
+                onClick={() => setTab(a.id)}
+              >
+                <img className="applogo" src={iconSrc(a.icon)} alt="" />
+                <span>{a.name}</span>
+                <span className="count">–</span>
+              </button>
+            ))}
+          </div>
+          <div className="applist">
+            <div className="appsrc">
+              <div className="apphead">
+                <img className="applogo" src={iconSrc(cur.icon)} alt="" />
+                <b>{cur.name}</b>
+                <code>{cur.path}</code>
               </div>
+              <div className="appempty">{miss}</div>
             </div>
           </div>
           <div className="bar">
@@ -479,7 +440,8 @@ function ImportAppsModal({ onClose }: { onClose: () => void }) {
 type EditorProps = {
   state: NonNullable<EditorState>;
   onClose: () => void;
-  onAdd: (info?: { key: string }) => void;
+  onAdd: (info: { key: string; form: ProviderFormData }) => void;
+  initial?: ProviderFormData;
   onStatus?: (msg: string, kind?: string) => void;
   /** When editing a saved provider (NOTES 91) */
   saved?: boolean;
@@ -488,8 +450,10 @@ type EditorProps = {
   onAddAnother?: () => void;
 };
 
-function ProviderEditorModal({ state, onClose, onAdd, onStatus, saved, onRemove, onDuplicate, onAddAnother }: EditorProps) {
+function ProviderEditorModal({ state, onClose, onAdd, initial, onStatus, saved, onRemove, onDuplicate, onAddAnother }: EditorProps) {
   const kind = state.form;
+  const text = (field: string, fallback = "") => typeof initial?.values[field] === "string" ? initial.values[field] as string : fallback;
+  const flag = (field: string) => initial?.values[field] === true;
   const isLocal = kind === "local" || kind === "ollama" || !!LOCAL_PRESETS[state.id];
   const localMeta = LOCAL_PRESETS[state.id] || LOCAL_PRESETS.ollama;
   const { modalRef, dialogRef, close } = useModalAnim(true, onClose);
@@ -528,7 +492,7 @@ function ProviderEditorModal({ state, onClose, onAdd, onStatus, saved, onRemove,
         keyless?: boolean;
       };
   const [detectView, setDetectView] = useState<DetectView>(null);
-  const [modelIds, setModelIds] = useState("");
+  const [modelIds, setModelIds] = useState(() => text("modelIds"));
   const [fetchBusy, setFetchBusy] = useState(false);
   type FetchView =
     | null
@@ -538,21 +502,21 @@ function ProviderEditorModal({ state, onClose, onAdd, onStatus, saved, onRemove,
     | { mode: "list"; models: { id: string; name?: string }[]; filter: string; picked: string[] };
   const [fetchView, setFetchView] = useState<FetchView>(null);
   const [moreOpen, setMoreOpen] = useState(false);
-  const [epChat, setEpChat] = useState("");
-  const [epAnthropic, setEpAnthropic] = useState("");
-  const [epResponses, setEpResponses] = useState("");
-  const [epGemini, setEpGemini] = useState("");
-  const [modelsURL, setModelsURL] = useState("");
-  const [catalog, setCatalog] = useState("");
-  const [balanceURL, setBalanceURL] = useState("");
-  const [balancePath, setBalancePath] = useState("");
-  const [webSearch, setWebSearch] = useState(false);
+  const [epChat, setEpChat] = useState(() => text("epChat"));
+  const [epAnthropic, setEpAnthropic] = useState(() => text("epAnthropic"));
+  const [epResponses, setEpResponses] = useState(() => text("epResponses"));
+  const [epGemini, setEpGemini] = useState(() => text("epGemini"));
+  const [modelsURL, setModelsURL] = useState(() => text("modelsURL"));
+  const [catalog, setCatalog] = useState(() => text("catalog"));
+  const [balanceURL, setBalanceURL] = useState(() => text("balanceURL"));
+  const [balancePath, setBalancePath] = useState(() => text("balancePath"));
+  const [webSearch, setWebSearch] = useState(() => flag("webSearch"));
   type EpTest = { protocol: string; label: string; url: string; status: "idle" | "wait" | "ok" | "bad"; text: string };
   const [epTests, setEpTests] = useState<EpTest[]>([]);
   const [epTestBusy, setEpTestBusy] = useState(false);
   const [iconsOpen, setIconsOpen] = useState(false);
   const [iconQ, setIconQ] = useState("");
-  const [pickedIcon, setPickedIcon] = useState(state.icon || "aside");
+  const [pickedIcon, setPickedIcon] = useState(() => text("pickedIcon", state.icon || "aside"));
   const [hdrs, setHdrs] = useState<{ name: string; value: string; json?: boolean }[]>([{ name: "", value: "" }]);
   const [discardOpen, setDiscardOpen] = useState(false);
   const API_HINTS: Record<string, string> = {
@@ -567,42 +531,31 @@ function ProviderEditorModal({ state, onClose, onAdd, onStatus, saved, onRemove,
     "deepseek-color", "xai", "kimi", "zhipu-color", "zai", "cohere-color", "mistral-color",
   ];
   const [key, setKey] = useState("");
-  const [proxy, setProxy] = useState("");
-  const [authHdr, setAuthHdr] = useState(""); // openrouter: "" both
-  const [api, setApi] = useState("openai");
-  const [name, setName] = useState("");
-  const [baseUrl, setBaseUrl] = useState("");
-  const [endpoint, setEndpoint] = useState("");
-  const [extra, setExtra] = useState("");
+  const [proxy, setProxy] = useState(() => text("proxy"));
+  const [authHdr, setAuthHdr] = useState(() => text("authHdr")); // openrouter: "" both
+  const [api, setApi] = useState(() => text("api", "openai"));
+  const [name, setName] = useState(() => text("name"));
+  const [baseUrl, setBaseUrl] = useState(() => text("baseUrl"));
+  const [endpoint, setEndpoint] = useState(() => text("endpoint"));
+  const [extra, setExtra] = useState(() => text("extra"));
   const [addrOpen, setAddrOpen] = useState(false);
-  const [serverAddr, setServerAddr] = useState(localMeta.address);
-  const [unmasked, setUnmasked] = useState(false);
+  const [serverAddr, setServerAddr] = useState(() => text("serverAddr", localMeta.address));
+  const [unmasked, setUnmasked] = useState(() => flag("unmasked"));
 
-  const [proxyUrl, setProxyUrl] = useState("http://127.0.0.1:7890");
+  const [proxyUrl, setProxyUrl] = useState(() => text("proxyUrl", "http://127.0.0.1:7890"));
   const [region, setRegion] = useState(
-    state.id.endsWith("-cn") ? "china" : "global",
+    () => text("region", state.id.endsWith("-cn") ? "china" : "global"),
   );
-  const [vxProject, setVxProject] = useState("");
-  const [vxLoc, setVxLoc] = useState("global");
+  const [vxProject, setVxProject] = useState(() => text("vxProject"));
+  const [vxLoc, setVxLoc] = useState(() => text("vxLoc", "global"));
   const [vxCred, setVxCred] = useState("");
   const [vxImp, setVxImp] = useState("");
-  const dirty =
-    !!(
-      name.trim() ||
-      baseUrl.trim() ||
-      key.trim() ||
-      tryModel.trim() ||
-      endpoint.trim() ||
-      vxProject.trim() ||
-      vxCred.trim() ||
-      vxImp.trim() ||
-      (isLocal && serverAddr.trim() !== localMeta.address) ||
-      unmasked ||
-      proxy === "direct" ||
-      proxy === "custom" ||
-      extra.trim() ||
-      hdrs.some((h) => h.name || h.value)
-    );
+  const values = { name, baseUrl, api, modelIds, pickedIcon, endpoint, extra, proxy, proxyUrl,
+    authHdr, serverAddr, unmasked, epChat, epAnthropic, epResponses, epGemini,
+    modelsURL, catalog, balanceURL, balancePath, webSearch, vxProject, vxLoc };
+  const [initialValues] = useState(() => JSON.stringify(values));
+  const dirty = JSON.stringify(values) !== initialValues || !!(
+    key.trim() || tryModel.trim() || vxCred.trim() || vxImp.trim() || hdrs.some((h) => h.name || h.value));
   /* Region switch alone is NOT dirty (native NOTES shot 32). */
   const requestClose = () => {
     /* Magpie: Cancel on dirty editor → Discard (shot 28 Gemini) */
@@ -646,7 +599,7 @@ function ProviderEditorModal({ state, onClose, onAdd, onStatus, saved, onRemove,
 
   const onSubmit = (e: FormEvent) => {
     e.preventDefault();
-    onAdd({ key });
+    onAdd({ key, form: { kind, values: { ...values, region } } });
     close();
   };
 
@@ -669,9 +622,7 @@ function ProviderEditorModal({ state, onClose, onAdd, onStatus, saved, onRemove,
       >
         <form className="editor new framed" onSubmit={onSubmit}>
           <div className="ehead">
-            <span className="ic">
-              <img src={iconSrc(kind === "custom" ? pickedIcon : meta.icon)} alt="" />
-            </span>
+            <MagpieIcon name={kind === "custom" ? pickedIcon : meta.icon} />
             <b id="modalTitle">{meta.title}</b>
             {meta.note ? <span className="note">{meta.note}</span> : null}
             {saved ? (
@@ -697,14 +648,14 @@ function ProviderEditorModal({ state, onClose, onAdd, onStatus, saved, onRemove,
                 <Segs
                   value={region}
                   onChange={setRegion}
-                  options={[
+                  items={[
                     {
-                      v: "global",
+                      id: "global",
                       label: t("Global"),
                       title: "api.moonshot.ai",
                     },
                     {
-                      v: "china",
+                      id: "china",
                       label: t("China"),
                       title: "api.moonshot.cn",
                     },
@@ -791,12 +742,12 @@ function ProviderEditorModal({ state, onClose, onAdd, onStatus, saved, onRemove,
                       setDetectHint("");
                       setDetectView(null);
                     }}
-                    options={[
-                      { v: "openai", label: ZH.openaiCompat, title: t(API_HINTS.openai) },
-                      { v: "responses", label: ZH.openaiResponses, title: t(API_HINTS.responses) },
-                      { v: "anthropic", label: ZH.anthropicCompat, title: t(API_HINTS.anthropic) },
-                      { v: "gemini", label: ZH.geminiCompat, title: t(API_HINTS.gemini) },
-                      { v: "decide", label: ZH.systemOne, title: t(API_HINTS.decide) },
+                    items={[
+                      { id: "openai", label: ZH.openaiCompat, title: t(API_HINTS.openai) },
+                      { id: "responses", label: ZH.openaiResponses, title: t(API_HINTS.responses) },
+                      { id: "anthropic", label: ZH.anthropicCompat, title: t(API_HINTS.anthropic) },
+                      { id: "gemini", label: ZH.geminiCompat, title: t(API_HINTS.gemini) },
+                      { id: "decide", label: ZH.systemOne, title: t(API_HINTS.decide) },
                     ]}
                   />
                   <input
@@ -1135,9 +1086,7 @@ function ProviderEditorModal({ state, onClose, onAdd, onStatus, saved, onRemove,
                             ))}
                             <div
                               className="detect-grid"
-                              style={{
-                                gridTemplateColumns: `minmax(0, 1.3fr) repeat(${detectView.asked.length}, minmax(0, 1fr))`,
-                              }}
+                              style={{ ["--detect-n" as string]: detectView.asked.length }}
                             >
                               <span className="dg-head">{t("Model")}</span>
                               {detectView.asked.map((a) => (
@@ -1145,8 +1094,9 @@ function ProviderEditorModal({ state, onClose, onAdd, onStatus, saved, onRemove,
                                   {a.label}
                                 </span>
                               ))}
+                              {/* Magpie app.js L10034–45: flat dg-model + dg-cell on detect-grid (no invent dg-row) */}
                               {detectView.models.map((md) => (
-                                <div key={md.model} style={{ display: "contents" }}>
+                                <Fragment key={md.model}>
                                   <code className="dg-model" title={md.model}>
                                     {md.model}
                                   </code>
@@ -1191,7 +1141,7 @@ function ProviderEditorModal({ state, onClose, onAdd, onStatus, saved, onRemove,
                                       </span>
                                     </span>
                                   ))}
-                                </div>
+                                </Fragment>
                               ))}
                             </div>
                             {detectView.truncated ? (
@@ -1243,17 +1193,13 @@ function ProviderEditorModal({ state, onClose, onAdd, onStatus, saved, onRemove,
                     {/* favicon / file-picker demo hints still use detectHint */}
                     {detectHint ? (
                       <div
-                        className="hint"
-                        style={{
-                          color:
-                            detectHint.includes("base URL first") ||
-                            detectHint.includes("先填写") ||
-                            detectHint.includes("type the provider")
-                              ? "var(--red)"
-                              : "var(--muted)",
-                          fontSize: 11.5,
-                          animation: "fade-in .15s var(--ease)",
-                        }}
+                        className={`hint fade${
+                          detectHint.includes("base URL first") ||
+                          detectHint.includes("先填写") ||
+                          detectHint.includes("type the provider")
+                            ? " err"
+                            : ""
+                        }`}
                       >
                         {detectHint}
                       </div>
@@ -1336,62 +1282,58 @@ function ProviderEditorModal({ state, onClose, onAdd, onStatus, saved, onRemove,
 
             {kind === "custom" ? (
               <Field label={t("Icon")}>
-                <div className="stack" style={{ gap: 8 }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
-                    <span className="ic" style={{ width: 36, height: 36, display: "inline-flex", border: "1px solid var(--line)", borderRadius: 8, alignItems: "center", justifyContent: "center" }}>
-                      <img src={iconSrc(pickedIcon)} alt="" width={22} height={22} />
-                    </span>
-                    <button type="button" className="text" onClick={() => setDetectHint(demoCopy("演示：未打开文件选择器", "Demo: no file picker"))}>
-                      {t("Choose a picture…")}
-                    </button>
-                    <button
-                      type="button"
-                      className="text"
-                      title={t("Look for the icon of the site the base URL is on.")}
-                      onClick={() => {
-                        if (!baseUrl.trim()) {
-                          setDetectHint(t("type the provider's base URL first: its site's icon is looked for there."));
-                          return;
-                        }
-                        setDetectHint(demoCopy("演示：未从网站拉取图标", "Demo: fetched favicon skipped (local)"));
-                      }}
-                    >
-                      {t("From the website")}
-                    </button>
-                    <button
-                      type="button"
-                      className={`text${iconsOpen ? " on" : ""}`}
-                      aria-pressed={iconsOpen}
-                      onClick={() => setIconsOpen((o) => !o)}
-                    >
-                      {t("Built-in icons")}
-                    </button>
-                  </div>
+                <div className="icon-pick">
+                  <span className="icon-now" aria-hidden>
+                    <MagpieIcon name={pickedIcon} />
+                  </span>
+                  <button type="button" className="text" onClick={() => setDetectHint(demoCopy("演示：未打开文件选择器", "Demo: no file picker"))}>
+                    {t("Choose a picture…")}
+                  </button>
+                  <button
+                    type="button"
+                    className="text"
+                    title={t("Look for the icon of the site the base URL is on.")}
+                    onClick={() => {
+                      if (!baseUrl.trim()) {
+                        setDetectHint(t("type the provider's base URL first: its site's icon is looked for there."));
+                        return;
+                      }
+                      setDetectHint(demoCopy("演示：未从网站拉取图标", "Demo: fetched favicon skipped (local)"));
+                    }}
+                  >
+                    {t("From the website")}
+                  </button>
+                  <button
+                    type="button"
+                    className={`text${iconsOpen ? " on" : ""}`}
+                    aria-pressed={iconsOpen}
+                    onClick={() => setIconsOpen((o) => !o)}
+                  >
+                    {t("Built-in icons")}
+                  </button>
                   {iconsOpen ? (
-                    <div className="icon-pick" style={{ animation: "fade-in .18s var(--ease)" }}>
+                    <>
                       <input
                         type="search"
                         placeholder={t("Find an icon…")}
                         value={iconQ}
                         onChange={(e) => setIconQ(e.target.value)}
-                        style={{ width: "100%", marginBottom: 8 }}
+                        aria-label={t("Find an icon…")}
                       />
-                      <div className="grid" style={{ gridTemplateColumns: "repeat(auto-fill, minmax(72px, 1fr))", gap: 6, maxHeight: 160, overflow: "auto" }}>
+                      <div className="icon-grid">
                         {BUILTIN_ICONS.filter((id) => !iconQ.trim() || id.toLowerCase().includes(iconQ.trim().toLowerCase())).map((id) => (
                           <button
                             key={id}
                             type="button"
-                            className={`tile${pickedIcon === id ? " on" : ""}`}
-                            title={id}
+                            className={pickedIcon === id ? "on" : undefined}
+                            title={id.replace(/-color$/, "")}
                             onClick={() => setPickedIcon(id)}
-                            style={{ padding: 8 }}
                           >
-                            <img className="ic-img ic" src={iconSrc(id)} alt="" />
-                            <span className="nm"><span className="n" style={{ fontSize: 10 }}>{id.split("-")[0]}</span></span>
+                            <MagpieIcon name={id} />
                           </button>
                         ))}
                       </div>
-                    </div>
+                    </>
                   ) : null}
                 </div>
               </Field>
@@ -1410,29 +1352,72 @@ function ProviderEditorModal({ state, onClose, onAdd, onStatus, saved, onRemove,
               }
             >
               {kind === "custom" ? (
-                <div className="stack headers" style={{ gap: 6 }}>
+                <div className="headers">
                   {hdrs.map((h, i) => (
-                    <div
-                      key={i}
-                      className={`pair${h.json ? " col" : ""}`}
-                      style={
-                        h.json
-                          ? { gap: 6, flexDirection: "column", alignItems: "stretch" }
-                          : { gap: 6 }
-                      }
-                    >
-                      <div className="pair" style={{ gap: 6, width: "100%" }}>
-                        <input
-                          type="text"
-                          placeholder={t("Header-Name")}
-                          value={h.name}
-                          onChange={(e) =>
-                            setHdrs((rows) =>
-                              rows.map((r, j) => (j === i ? { ...r, name: e.target.value } : r)),
-                            )
-                          }
-                        />
-                        {!h.json ? (
+                    <div key={i} className={`pair${h.json ? " col" : ""}`}>
+                      {h.json ? (
+                        <div className="hhead">
+                          <input
+                            type="text"
+                            placeholder={t("Header-Name")}
+                            value={h.name}
+                            onChange={(e) =>
+                              setHdrs((rows) =>
+                                rows.map((r, j) => (j === i ? { ...r, name: e.target.value } : r)),
+                              )
+                            }
+                          />
+                          <div className="side">
+                            <button
+                              type="button"
+                              className="text on"
+                              title={t("Collapse to one line")}
+                              onClick={() =>
+                                setHdrs((rows) =>
+                                  rows.map((r, j) => {
+                                    if (j !== i) return r;
+                                    let v = r.value;
+                                    try {
+                                      v = JSON.stringify(JSON.parse(r.value));
+                                    } catch {
+                                      v = r.value.replace(/\s+/g, " ").trim();
+                                    }
+                                    return { ...r, json: false, value: v };
+                                  }),
+                                )
+                              }
+                            >
+                              {"{ }"}
+                            </button>
+                            <button
+                              type="button"
+                              className="text danger"
+                              title={t("Remove header")}
+                              aria-label="Remove"
+                              onClick={() =>
+                                setHdrs((rows) =>
+                                  rows.length <= 1
+                                    ? [{ name: "", value: "" }]
+                                    : rows.filter((_, j) => j !== i),
+                                )
+                              }
+                            >
+                              ×
+                            </button>
+                          </div>
+                        </div>
+                      ) : (
+                        <>
+                          <input
+                            type="text"
+                            placeholder={t("Header-Name")}
+                            value={h.name}
+                            onChange={(e) =>
+                              setHdrs((rows) =>
+                                rows.map((r, j) => (j === i ? { ...r, name: e.target.value } : r)),
+                              )
+                            }
+                          />
                           <input
                             type="text"
                             placeholder={t("value")}
@@ -1443,56 +1428,46 @@ function ProviderEditorModal({ state, onClose, onAdd, onStatus, saved, onRemove,
                               )
                             }
                           />
-                        ) : null}
-                        <div className="side" style={{ display: "flex", gap: 4 }}>
-                          <button
-                            type="button"
-                            className={`text${h.json ? " on" : ""}`}
-                            title={h.json ? t("Collapse to one line") : t("Edit as JSON")}
-                            onClick={() =>
-                              setHdrs((rows) =>
-                                rows.map((r, j) => {
-                                  if (j !== i) return r;
-                                  if (r.json) {
-                                    /* minify: collapse whitespace like Magpie minifyJSON */
+                          <div className="side">
+                            <button
+                              type="button"
+                              className="text"
+                              title={t("Edit as JSON")}
+                              onClick={() =>
+                                setHdrs((rows) =>
+                                  rows.map((r, j) => {
+                                    if (j !== i) return r;
                                     let v = r.value;
                                     try {
-                                      v = JSON.stringify(JSON.parse(r.value));
+                                      v = JSON.stringify(JSON.parse(r.value || "{}"), null, 2);
                                     } catch {
-                                      v = r.value.replace(/\s+/g, " ").trim();
+                                      /* keep as typed */
                                     }
-                                    return { ...r, json: false, value: v };
-                                  }
-                                  let v = r.value;
-                                  try {
-                                    v = JSON.stringify(JSON.parse(r.value || "{}"), null, 2);
-                                  } catch {
-                                    /* keep as typed */
-                                  }
-                                  return { ...r, json: true, value: v };
-                                }),
-                              )
-                            }
-                          >
-                            {"{ }"}
-                          </button>
-                          <button
-                            type="button"
-                            className="text danger"
-                            title={t("Remove header")}
-                            aria-label="Remove"
-                            onClick={() =>
-                              setHdrs((rows) =>
-                                rows.length <= 1
-                                  ? [{ name: "", value: "" }]
-                                  : rows.filter((_, j) => j !== i),
-                              )
-                            }
-                          >
-                            ×
-                          </button>
-                        </div>
-                      </div>
+                                    return { ...r, json: true, value: v };
+                                  }),
+                                )
+                              }
+                            >
+                              {"{ }"}
+                            </button>
+                            <button
+                              type="button"
+                              className="text danger"
+                              title={t("Remove header")}
+                              aria-label="Remove"
+                              onClick={() =>
+                                setHdrs((rows) =>
+                                  rows.length <= 1
+                                    ? [{ name: "", value: "" }]
+                                    : rows.filter((_, j) => j !== i),
+                                )
+                              }
+                            >
+                              ×
+                            </button>
+                          </div>
+                        </>
+                      )}
                       {h.json ? (
                         <textarea
                           className="json"
@@ -1506,7 +1481,6 @@ function ProviderEditorModal({ state, onClose, onAdd, onStatus, saved, onRemove,
                               rows.map((r, j) => (j === i ? { ...r, value: e.target.value } : r)),
                             )
                           }
-                          style={{ width: "100%", fontFamily: "var(--code-font, ui-monospace, monospace)", fontSize: 12 }}
                         />
                       ) : null}
                     </div>
@@ -1520,7 +1494,7 @@ function ProviderEditorModal({ state, onClose, onAdd, onStatus, saved, onRemove,
                   </button>
                 </div>
               ) : (
-                <div className="stack" style={{ gap: 4 }}>
+                <div className="stack">
                   <button type="button" className="text">
                     {t("+ Add header")}
                   </button>
@@ -1586,23 +1560,23 @@ function ProviderEditorModal({ state, onClose, onAdd, onStatus, saved, onRemove,
                     : t("Follows the proxy in Settings")
               }
             >
-              <div className="pair" style={{ gap: 8, flexWrap: "wrap", alignItems: "center" }}>
+              <div className="pair proxy-row">
                 <Segs
                   value={proxy}
                   onChange={setProxy}
-                  options={[
-                    { v: "", label: t("Global proxy") },
-                    { v: "direct", label: t("Direct") },
-                    { v: "custom", label: t("Custom") },
+                  items={[
+                    { id: "", label: t("Global proxy") },
+                    { id: "direct", label: t("Direct") },
+                    { id: "custom", label: t("Custom") },
                   ]}
                 />
                 {proxy === "custom" ? (
                   <input
                     type="url"
+                    className="proxy-url"
                     placeholder="http://127.0.0.1:7890"
                     value={proxyUrl}
                     onChange={(e) => setProxyUrl(e.target.value)}
-                    style={{ flex: 1, minWidth: 160, animation: "fade-in .2s var(--ease)" }}
                   />
                 ) : null}
               </div>
@@ -1612,7 +1586,7 @@ function ProviderEditorModal({ state, onClose, onAdd, onStatus, saved, onRemove,
               label={t("Concurrency")}
               hint={t("Over it, requests queue and go out in order; 0 or empty is no limit")}
             >
-              <input type="text" placeholder={t("No limit")} />
+              <input type="text" className="concurrency" placeholder={t("No limit")} />
             </Field>
             <Field
               label={t("Requests per minute")}
@@ -1620,16 +1594,16 @@ function ProviderEditorModal({ state, onClose, onAdd, onStatus, saved, onRemove,
                 "How many requests each key or account sends in any minute, retries included; one more waits for room, up to 2 minutes. 0 or empty is no limit",
               )}
             >
-              <input type="text" placeholder={t("No limit")} />
+              <input type="text" className="rpm" placeholder={t("No limit")} />
             </Field>
             <Field label={ZH.queueSize}>
-              <input type="text" placeholder={ZH.noBound} />
+              <input type="text" className="queue-limit" placeholder={ZH.noBound} />
             </Field>
             <Field label={ZH.queueWait}>
-              <input type="text" placeholder={ZH.asLong} />
+              <input type="text" className="queue-wait" placeholder={ZH.asLong} />
             </Field>
             <Field label={ZH.priceRate}>
-              <input type="text" placeholder={ZH.priceOne} />
+              <input type="text" className="price-rate" placeholder={ZH.priceOne} />
             </Field>
 
             {kind === "openrouter" || isLocal || (kind === "custom" && api === "anthropic") ? (
@@ -1637,11 +1611,11 @@ function ProviderEditorModal({ state, onClose, onAdd, onStatus, saved, onRemove,
                 <Segs
                   value={authHdr}
                   onChange={setAuthHdr}
-                  options={[
-                    { v: "", label: ZH.both },
-                    { v: "x-api-key", label: "x-api-key" },
+                  items={[
+                    { id: "", label: ZH.both },
+                    { id: "x-api-key", label: "x-api-key" },
                     {
-                      v: "bearer",
+                      id: "bearer",
                       label: "Authorization: Bearer",
                     },
                   ]}
@@ -1662,10 +1636,7 @@ function ProviderEditorModal({ state, onClose, onAdd, onStatus, saved, onRemove,
                       "For a plan that serves only the coding agents it names: each request goes with the User-Agent the agent sent (pi, OpenCode, Claude Code…), not magpie's. Requests magpie makes itself, and ones the agent sent without one, still go as magpie. A User-Agent set in Headers above always wins.",
                     )}
                   >
-                    <label className="tick" style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13 }}>
-                      <input type="checkbox" />
-                      <span>{t("Send the agent's own User-Agent")}</span>
-                    </label>
+                    <Tick>{t("Send the agent's own User-Agent")}</Tick>
                   </Field>
                 ) : null}
                 {isLocal ? (
@@ -1675,14 +1646,9 @@ function ProviderEditorModal({ state, onClose, onAdd, onStatus, saved, onRemove,
                       "For a model running on this computer or your local network: secrets, personal data and your masked words go to it as written. Leave it off for a local relay or proxy that passes requests on to a vendor.",
                     )}
                   >
-                    <label className="tick" style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13 }}>
-                      <input
-                        type="checkbox"
-                        checked={unmasked}
-                        onChange={(e) => setUnmasked(e.target.checked)}
-                      />
-                      <span>{t("Send requests unmasked")}</span>
-                    </label>
+                    <Tick checked={unmasked} onChange={(e) => setUnmasked(e.target.checked)}>
+                      {t("Send requests unmasked")}
+                    </Tick>
                   </Field>
                 ) : null}
                 <Field
@@ -1691,13 +1657,15 @@ function ProviderEditorModal({ state, onClose, onAdd, onStatus, saved, onRemove,
                     "How long a request the models take, told to the agents; empty leaves it to the vendor and models.dev",
                   )}
                 >
-                  <input type="text" placeholder={t("e.g. 128k · or gpt-6=1m, comma separated")} />
-                  <div className="chips" style={{ marginTop: 6 }}>
-                    {CTX_CHIPS.map((c) => (
-                      <button key={c} type="button" className="chip">
-                        {c}
-                      </button>
-                    ))}
+                  <div className="cxfield">
+                    <input type="text" placeholder={t("e.g. 128k · or gpt-6=1m, comma separated")} />
+                    <div className="cxpicks">
+                      {CTX_CHIPS.map((c) => (
+                        <button key={c} type="button" className="cxpick">
+                          {c}
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 </Field>
                 <Field
@@ -1706,13 +1674,16 @@ function ProviderEditorModal({ state, onClose, onAdd, onStatus, saved, onRemove,
                     "The most a reply may hold, told to the agents as their max tokens and sent as max_tokens on Anthropic's API when the agent names none; empty leaves it to the vendor and models.dev",
                   )}
                 >
-                  <input type="text" placeholder={t("e.g. 32k · or gpt-6=128k, comma separated")} />
-                  <div className="chips" style={{ marginTop: 6 }}>
-                    {OUT_CHIPS.map((c) => (
-                      <button key={c} type="button" className="chip">
-                        {c}
-                      </button>
-                    ))}
+                  {/* Magpie outputField: input.outputs in .cxfield + .cxpicks/.cxpick (app.js L9312–9331) */}
+                  <div className="cxfield">
+                    <input type="text" className="outputs" placeholder={t("e.g. 32k · or gpt-6=128k, comma separated")} />
+                    <div className="cxpicks">
+                      {OUT_CHIPS.map((c) => (
+                        <button key={c} type="button" className="cxpick">
+                          {c}
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 </Field>
                 <Field
@@ -1721,13 +1692,16 @@ function ProviderEditorModal({ state, onClose, onAdd, onStatus, saved, onRemove,
                     "Where Codex and Claude Code compact a long conversation on these models; empty follows Settings → Long conversations, and a size at or above a model's window runs it to its whole window",
                   )}
                 >
-                  <input type="text" placeholder={t("e.g. 500k · or deepseek-v4-flash=272k, comma separated")} />
-                  <div className="chips" style={{ marginTop: 6 }}>
-                    {["128K", "200K", "272K", "500K", "1M"].map((c) => (
-                      <button key={c} type="button" className="chip">
-                        {c}
-                      </button>
-                    ))}
+                  {/* Magpie compactField: input.compacts in .cxfield + .cxpicks/.cxpick (app.js L9339–9358) */}
+                  <div className="cxfield">
+                    <input type="text" className="compacts" placeholder={t("e.g. 500k · or deepseek-v4-flash=272k, comma separated")} />
+                    <div className="cxpicks">
+                      {COMPACT_CHIPS.map((c) => (
+                        <button key={c} type="button" className="cxpick">
+                          {c}
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 </Field>
 
@@ -1934,14 +1908,9 @@ function ProviderEditorModal({ state, onClose, onAdd, onStatus, saved, onRemove,
                   "For a relay in front of Anthropic's or OpenAI's own API: Claude Code's WebSearch and Codex's web_search go to it as they were sent, not through magpie's search. magpie doesn't automatically search with it for other models, but you can name it as the searcher.",
                 )}
               >
-                <label className="tick" style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13 }}>
-                  <input
-                    type="checkbox"
-                    checked={webSearch}
-                    onChange={(e) => setWebSearch(e.target.checked)}
-                  />
-                  <span>{t("Searches the web by itself")}</span>
-                </label>
+                <Tick checked={webSearch} onChange={(e) => setWebSearch(e.target.checked)}>
+                  {t("Searches the web by itself")}
+                </Tick>
               </Field>
             ) : null}
 
@@ -1952,7 +1921,7 @@ function ProviderEditorModal({ state, onClose, onAdd, onStatus, saved, onRemove,
                 onToggle={(e) => setMoreOpen(e.currentTarget.open)}
               >
                 <summary>{t("More endpoints")}</summary>
-                <div className="inner" style={{ display: "flex", flexDirection: "column", gap: 10, paddingTop: 8 }}>
+                <div className="inner">
                   {api !== "openai" ? (
                     <Field
                       label={t("OpenAI URL")}
@@ -2065,7 +2034,8 @@ function ProviderEditorModal({ state, onClose, onAdd, onStatus, saved, onRemove,
                 <div className="eps">
                   {(epTests.length
                     ? epTests
-                    : [
+                    : state.id === "google" ? [{ protocol: "gemini", label: "Gemini",
+                        url: `https://${VENDOR_HOST.google}/v1beta`, status: "idle" as const, text: "" }] : [
                         {
                           protocol: "openai",
                           label: "OpenAI",
@@ -2126,6 +2096,10 @@ function ProviderEditorModal({ state, onClose, onAdd, onStatus, saved, onRemove,
                           text: "…",
                         };
                       }
+                      if (state.id === "google") {
+                        rows[0] = { protocol: "gemini", label: "Gemini",
+                          url: `https://${VENDOR_HOST.google}/v1beta`, status: "wait", text: "…" };
+                      }
                       setEpTests(rows);
                       setEpTestBusy(true);
                       window.setTimeout(() => {
@@ -2157,7 +2131,7 @@ function ProviderEditorModal({ state, onClose, onAdd, onStatus, saved, onRemove,
                     <div className="bar">
             {saved ? (
               <>
-                <button type="button" className="text" style={{ color: "var(--red)" }} onClick={() => onRemove?.()}>
+                <button type="button" className="text danger" onClick={() => onRemove?.()}>
                   {t("Remove")}
                 </button>
                 {onAddAnother ? (
@@ -2192,42 +2166,126 @@ function ProviderEditorModal({ state, onClose, onAdd, onStatus, saved, onRemove,
           </div>
         </form>
       </div>
-      {discardOpen ? (
-        <div
-          className="modal"
-          style={{ zIndex: 40, background: "rgba(20,22,30,.35)" }}
+      <ActionConfirm
+        open={discardOpen}
+        titleId="discardTitle"
+        messageId="discardMsg"
+        title={t("Discard")}
+        message={t("Discard unsaved changes? Your changes will be lost.")}
+        cancelLabel={ZH.cancel}
+        acceptLabel={t("Discard")}
+        onCancel={() => setDiscardOpen(false)}
+        onAccept={() => {
+          setDiscardOpen(false);
+          close();
+        }}
+      />
+    </div>
+  );
+}
+
+/** Magpie app.js L2670–2675 + openProviderMenu L5713–5726 → openRowMenu L3497–3538. */
+const ALT = typeof navigator !== "undefined" && /^Mac/.test(navigator.platform) ? "⌥" : "Alt+";
+const SHIFT = typeof navigator !== "undefined" && /^Mac/.test(navigator.platform) ? "⇧" : "Shift+";
+const MOVE_UP = "M8 12.5v-9M4 7.25l4-3.75 4 3.75";
+const MOVE_DOWN = "M8 3.5v9M4 8.75l4 3.75 4-3.75";
+const MOVE_TOP = "M8 13v-7.5M4.5 9l3.5-3.5 3.5 3.5M3.5 2.75h9";
+const MOVE_BOTTOM = "M8 3v7.5M4.5 7l3.5 3.5 3.5-3.5M3.5 13.25h9";
+
+type ProvMoveMenuProps = {
+  anchor: HTMLElement;
+  /** index among providers that are on */
+  onIndex: number;
+  onCount: number;
+  /** index among currently shown (search-filtered) on rows */
+  shownIndex: number;
+  shownCount: number;
+  onArrange: (toAmongOn: number) => void;
+  onStep: (by: -1 | 1) => void;
+  onClose: () => void;
+};
+
+/** Magpie openRowMenu DOM: .pop.row-menu + .rm-item / .rm-name / .rm-key (not invent .pop.move). */
+function ProviderMoveMenu({
+  anchor,
+  onIndex,
+  onCount,
+  shownIndex,
+  shownCount,
+  onArrange,
+  onStep,
+  onClose,
+}: ProvMoveMenuProps) {
+  const boxRef = useRef<HTMLDivElement>(null);
+  useRowMenu(boxRef, anchor, onClose);
+
+  const items: {
+    name: string;
+    icon: string;
+    key: string;
+    off: boolean;
+    run: () => void;
+  }[] = [
+    {
+      name: t("Move to top"),
+      icon: MOVE_TOP,
+      key: ALT + SHIFT + "↑",
+      off: onIndex === 0,
+      run: () => onArrange(0),
+    },
+    {
+      name: t("Move up"),
+      icon: MOVE_UP,
+      key: ALT + "↑",
+      off: shownIndex <= 0,
+      run: () => onStep(-1),
+    },
+    {
+      name: t("Move down"),
+      icon: MOVE_DOWN,
+      key: ALT + "↓",
+      off: shownIndex < 0 || shownIndex >= shownCount - 1,
+      run: () => onStep(1),
+    },
+    {
+      name: t("Move to bottom"),
+      icon: MOVE_BOTTOM,
+      key: ALT + SHIFT + "↓",
+      off: onIndex === onCount - 1,
+      run: () => onArrange(onCount - 1),
+    },
+  ];
+
+  return (
+    <PopoverPortal><div data-anchored className="pop row-menu" role="menu" ref={boxRef}>
+      {items.map((o) => (
+        <button
+          type="button"
+          key={o.name}
+          className="rm-item"
+          role="menuitem"
+          disabled={o.off}
           onClick={(e) => {
-            if (e.target === e.currentTarget) setDiscardOpen(false);
+            e.stopPropagation();
+            onClose();
+            o.run();
           }}
         >
-          <div className="dialog sm" role="alertdialog" aria-labelledby="discardTitle" style={{ animation: "pop-in .28s var(--ease)", maxWidth: 360 }}>
-            <div className="ehead" style={{ padding: "14px 16px 0" }}>
-              <b id="discardTitle">{t("Discard")}</b>
-            </div>
-            <p style={{ margin: "10px 16px 0", fontSize: 13, color: "var(--fg-2)", lineHeight: 1.45 }}>
-              {t("Discard unsaved changes? Your changes will be lost.")}
-            </p>
-            <div className="bar" style={{ padding: "14px 16px" }}>
-              <span className="grow" />
-              <button type="button" className="text" onClick={() => setDiscardOpen(false)}>
-                {ZH.cancel}
-              </button>
-              <button
-                type="button"
-                className="text"
-                style={{ background: "var(--red)", color: "#fff", borderColor: "var(--red)" }}
-                onClick={() => {
-                  setDiscardOpen(false);
-                  close();
-                }}
-              >
-                {t("Discard")}
-              </button>
-            </div>
-          </div>
-        </div>
-      ) : null}
-    </div>
+          <svg viewBox="0 0 16 16" width={13} height={13} aria-hidden>
+            <path
+              d={o.icon}
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+          <span className="rm-name">{o.name}</span>
+          <span className="rm-key">{o.key}</span>
+        </button>
+      ))}
+    </div></PopoverPortal>
   );
 }
 
@@ -2248,8 +2306,6 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
     | { state: "importing" }
     | { state: "imported"; results: { user: string; status: string; error?: string }[] };
   const [claudeSign, setClaudeSign] = useState<ClaudeSign>(null);
-  const [claudeFilePick, setClaudeFilePick] = useState(false);
-  const [claudeFileLoc, setClaudeFileLoc] = useState<"recent" | "home" | "desktop" | "settings" | "other">("recent");
   /** Magpie Antigravity: independent risk card (risk:true, importable) — Google riskNote + Cockpit/Manager/CLIProxyAPI import. Mock only. */
   type AgySign =
     | null
@@ -2264,27 +2320,17 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
     | { state: "importing" }
     | { state: "imported"; results: { user: string; status: string; error?: string }[] };
   const [agySign, setAgySign] = useState<AgySign>(null);
-  const [filePickFor, setFilePickFor] = useState<"claude" | "antigravity" | null>(null);
-  useEffect(() => {
-    if (!claudeFilePick) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key !== "Escape") return;
-      e.preventDefault();
-      e.stopPropagation();
-      setClaudeFilePick(false);
-      setFilePickFor(null);
-    };
-    document.addEventListener("keydown", onKey, true);
-    return () => document.removeEventListener("keydown", onKey, true);
-  }, [claudeFilePick]);
-  /** NOTES 23–24: Escape does not dismiss Claude/Antigravity import sheet — only Cancel. */
+  /** Magpie app.js L12425–12445: OS <input type=file>, not invent GTK Select Files. */
+  const claudeFileRef = useRef<HTMLInputElement>(null);
+  const agyFileRef = useRef<HTMLInputElement>(null);
+  /** NOTES 23: Escape does not dismiss Claude/Antigravity import sheet — only Cancel. */
   useEffect(() => {
     const importing =
       claudeSign?.state === "import" ||
       claudeSign?.state === "importing" ||
       agySign?.state === "import" ||
       agySign?.state === "importing";
-    if (!importing || claudeFilePick) return;
+    if (!importing) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== "Escape") return;
       e.preventDefault();
@@ -2292,7 +2338,7 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
     };
     document.addEventListener("keydown", onKey, true);
     return () => document.removeEventListener("keydown", onKey, true);
-  }, [claudeSign, agySign, claudeFilePick]);
+  }, [claudeSign, agySign]);
   /** Magpie Copilot device-code (NOTES): mock only — no real GitHub OAuth. */
   type CopilotSign =
     | null
@@ -2326,6 +2372,8 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
     /** Magpie sub: signed in as {user} · {n} models */
     user?: string;
     host?: string;
+    site?: string;
+    formData?: ProviderFormData;
     keyKind: "acct" | "on" | "none" | "free";
     keyLabel: string;
     accounts: DemoAcct[];
@@ -2351,6 +2399,11 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
       off: !!raw.off,
       user: raw.user ? String(raw.user) : accounts[0]?.label,
       host: raw.host ? String(raw.host) : undefined,
+      site: typeof raw.site === "string" ? raw.site : undefined,
+      formData: raw.formData && typeof raw.formData === "object" &&
+        ["anthropic", "openrouter", "ollama", "local", "remote", "vertex", "custom", "generic"].includes((raw.formData as ProviderFormData).kind) &&
+        (raw.formData as ProviderFormData).values && typeof (raw.formData as ProviderFormData).values === "object"
+        ? raw.formData as ProviderFormData : undefined,
       keyKind,
       keyLabel: String(raw.keyLabel || (keyKind === "acct" ? "Pro" : accounts[0]?.label || "needs a key")),
       accounts,
@@ -2390,7 +2443,7 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
     return true;
   });
   const [listQ, setListQ] = useState("");
-  const [moveMenu, setMoveMenu] = useState<{ id: string; x: number; y: number } | null>(null);
+  const [moveMenu, setMoveMenu] = useState<{ id: string; anchor: HTMLElement } | null>(null);
   const [removeAsk, setRemoveAsk] = useState<{ id: string; name: string } | null>(null);
   /** NOTES 118: drag-in-motion; Escape cancels (no order change) */
   const [dragId, setDragId] = useState<string | null>(null);
@@ -2624,29 +2677,27 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
   return (
     <>
       <main className="view" id="view-providers">
-        {!sheetOpen && demoProvs.length > 0 ? (
-          <div className="row-head" style={{ marginBottom: 8, gap: 8 }}>
-            <input
-              ref={listFindRef}
-              className="find"
-              type="search"
-              spellCheck={false}
-              autoComplete="off"
-              placeholder={t("Find a provider")}
-              aria-label={t("Find a provider")}
-              value={listQ}
-              onChange={(e) => setListQ(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key !== "Escape") return;
-                e.preventDefault();
-                e.stopPropagation();
-                if (listQ) setListQ("");
-              }}
-              style={{ width: 180 }}
-            />
-            <span className="grow" />
-          </div>
-        ) : null}
+        {/* Magpie index.html L112–113: .pv-head > .sess-filter.pv-q; .set-none.pv-none */}
+        <div className="pv-head" id="pvHead" hidden={sheetOpen || demoProvs.length === 0}>
+          <input
+            ref={listFindRef}
+            className="sess-filter pv-q"
+            id="pvQ"
+            type="search"
+            spellCheck={false}
+            autoComplete="off"
+            placeholder={t("Find a provider")}
+            aria-label={t("Find a provider")}
+            value={listQ}
+            onChange={(e) => setListQ(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key !== "Escape") return;
+              e.preventDefault();
+              e.stopPropagation();
+              if (listQ) setListQ("");
+            }}
+          />
+        </div>
         <div
           className={`list${dragId ? " sorting" : ""}`}
           id="providers"
@@ -2690,7 +2741,9 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
                     if (dragId) return;
                     // NOTES 91: row opens saved editor
                     setListEditId(pv.id);
-                    if (LOCAL_PRESETS[pv.id] || pv.keyKind === "none" || pv.keyKind === "free") {
+                    if (pv.formData) {
+                      setEditor({ form: pv.formData.kind, id: pv.id, name: pv.name, icon: pv.icon, site: pv.site });
+                    } else if (LOCAL_PRESETS[pv.id] || pv.keyKind === "none" || pv.keyKind === "free") {
                       const loc = LOCAL_PRESETS[pv.id];
                       setEditor({
                         form: "local",
@@ -2709,6 +2762,18 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
                         site: pv.host,
                       });
                     }
+                  }}
+                  onContextMenu={(e) => {
+                    // Magpie app.js L5635: row right-click → openProviderMenu(handle)
+                    e.preventDefault();
+                    if (dragId) return;
+                    const handle = (e.currentTarget as HTMLElement).querySelector(
+                      ".pv-handle",
+                    ) as HTMLElement | null;
+                    if (!handle) return;
+                    setMoveMenu((cur) =>
+                      cur?.anchor === handle ? null : { id: pv.id, anchor: handle },
+                    );
                   }}
                 >
                   <button
@@ -2751,10 +2816,13 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
                       e.preventDefault();
                       e.stopPropagation();
                       if (dragId) return;
-                      setMoveMenu({ id: pv.id, x: e.clientX, y: e.clientY });
+                      const handle = e.currentTarget as HTMLElement;
+                      setMoveMenu((cur) =>
+                        cur?.anchor === handle ? null : { id: pv.id, anchor: handle },
+                      );
                     }}
                   >
-                    <img className="ic" src={iconSrc(pv.icon)} alt="" />
+                    <MagpieIcon name={pv.icon} />
                   </button>
                   <div className="who">
                     <div className="name">{pv.name}</div>
@@ -2772,7 +2840,7 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
                           onStatus(t("{name} · {model} — click to change", { name: a.name, model: "default" }), "ok");
                         }}
                       >
-                        <img className="ic" src={iconSrc(a.icon)} alt="" />
+                        <MagpieIcon name={a.icon} />
                       </button>
                     ))}
                   </div>
@@ -2786,11 +2854,9 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
                   >
                     <span>{pv.keyLabel}</span>
                   </span>
-                  <button
-                    type="button"
-                    className={`lib-switch pswitch${pv.off ? "" : " on"}`}
-                    role="switch"
-                    aria-checked={!pv.off}
+                  <LibSwitch
+                    kind="pswitch"
+                    on={!pv.off}
                     aria-label={t("Use {name}", { name: pv.name })}
                     title={
                       pv.off
@@ -2811,9 +2877,7 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
                         "ok",
                       );
                     }}
-                  >
-                    <i />
-                  </button>
+                  />
                   <span className="chev" aria-hidden>
                     <svg viewBox="0 0 12 12" width={11} height={11}>
                       <path
@@ -2829,50 +2893,58 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
               );
             })}
         </div>
-        {!sheetOpen && demoProvs.length > 0 && lf && !demoProvs.some((pv) => !pv.off && (pv.name.toLowerCase().includes(lf) || pv.id.toLowerCase().includes(lf))) ? (
-          <div className="none" style={{ padding: "12px 2px", color: "var(--muted)", fontSize: 13 }}>
-            {t("No provider matches “{q}”", { q: listQ.trim() })}
+        {/* Magpie index.html L113 + app.css L3036 / L2115: p.set-none.pv-none */}
+        <p
+          className="set-none pv-none"
+          id="pvNone"
+          role="status"
+          hidden={
+            !(
+              !sheetOpen &&
+              demoProvs.length > 0 &&
+              !!lf &&
+              !demoProvs.some(
+                (pv) =>
+                  !pv.off &&
+                  (pv.name.toLowerCase().includes(lf) || pv.id.toLowerCase().includes(lf)),
+              )
+            )
+          }
+        >
+          {t("No provider matches “{q}”", { q: listQ.trim() })}
+        </p>
+        {/* Magpie index.html L118–120 + app.css L2611/L2616: .after-list > #addProvider.text */}
+        {!sheetOpen ? (
+          <div className="after-list">
+            <button
+              type="button"
+              className="text"
+              id="addProvider"
+              onClick={() => {
+                setSheetOpen(true);
+                setQ("");
+                window.setTimeout(() => findRef.current?.focus(), 0);
+              }}
+            >
+              {t("＋ Add provider")}
+            </button>
           </div>
         ) : null}
-        {!sheetOpen ? (
-          <button
-            type="button"
-            className="rt-gadd"
-            style={{ marginTop: 8 }}
-            onClick={() => {
-              setSheetOpen(true);
-              setQ("");
-              window.setTimeout(() => findRef.current?.focus(), 0);
-            }}
-          >
-            <svg viewBox="0 0 16 16" width={11} height={11} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden>
-              <path d="M8 3.5v9M3.5 8h9" />
-            </svg>
-            <span>{t("+ Add provider")}</span>
-          </button>
-        ) : null}
         <div className="row-head off-head" id="offHead" hidden={sheetOpen || !demoProvs.some((p) => p.off)}>
-          <button
-            type="button"
-            className="fold"
+          <Fold
             id="foldOff"
-            aria-expanded={!offFolded}
+            expanded={!offFolded}
             aria-controls="offProviders"
+            label={t("Turned off")}
+            note={demoProvs.filter((p) => p.off).length || ""}
+            noteId="offCount"
             title={
               offFolded
                 ? t("Show the providers turned off")
                 : t("Fold the providers turned off away")
             }
             onClick={() => setOffFolded((f) => !f)}
-          >
-            <svg viewBox="0 0 12 12" width={10} height={10} aria-hidden>
-              <path d="M4.5 2.5 8 6l-3.5 3.5" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
-            </svg>
-            <span className="label">{t("Turned off")}</span>
-            <span className="note" id="offCount">
-              {demoProvs.filter((p) => p.off).length || ""}
-            </span>
-          </button>
+          />
         </div>
         <div className="list" id="offProviders" hidden={sheetOpen || !demoProvs.some((p) => p.off) || offFolded}>
           {demoProvs
@@ -2895,20 +2967,18 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
                   setListEditId(pv.id);
                   const loc = LOCAL_PRESETS[pv.id];
                   setEditor({
-                    form: loc ? "local" : "generic",
+                    form: pv.formData?.kind || (loc ? "local" : "generic"),
                     id: pv.id,
                     name: pv.name,
                     icon: pv.icon,
-                    site: loc?.site,
+                    site: pv.site || loc?.site,
                     note: t(
                       "Switched off: agents aren't given its models and no request goes to it. Its keys and settings are kept; switch it on to use it again.",
                     ),
                   });
                 }}
               >
-                <span className="ic">
-                  <img src={iconSrc(pv.icon)} alt="" />
-                </span>
+                <MagpieIcon name={pv.icon} />
                 <div className="who">
                   <div className="name">
                     {pv.name}
@@ -2919,11 +2989,9 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
                 <span className={`key ${pv.keyKind}`}>
                   <span>{pv.keyLabel}</span>
                 </span>
-                <button
-                  type="button"
-                  className="lib-switch pswitch"
-                  role="switch"
-                  aria-checked={false}
+                <LibSwitch
+                  kind="pswitch"
+                  on={false}
                   title={t("Off · switch it on and agents get its models again")}
                   onClick={(e) => {
                     e.stopPropagation();
@@ -2932,9 +3000,7 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
                     );
                     onStatus(t("{name} is on", { name: pv.name }), "ok");
                   }}
-                >
-                  <i />
-                </button>
+                />
                 <span className="chev" aria-hidden>
                   <svg viewBox="0 0 12 12" width={11} height={11}>
                     <path d="M4.5 2.5 8 6l-3.5 3.5" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
@@ -3141,19 +3207,35 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
                             <button
                               type="button"
                               className="link"
-                              onClick={() => {
-                                setClaudeFileLoc("recent");
-                                setFilePickFor("claude");
-                                setClaudeFilePick(true);
-                              }}
+                              onClick={() => claudeFileRef.current?.click()}
                             >
                               {t("Choose files…")}
                             </button>
-                            {claudeSign.files.length ? (
-                              <span className="fname">
-                                {claudeSign.files.map((f) => f.name).join(", ")}
-                              </span>
-                            ) : null}
+                            <span className="fname">
+                              {claudeSign.files.map((f) => f.name).join(", ")}
+                            </span>
+                            <input
+                              ref={claudeFileRef}
+                              type="file"
+                              multiple
+                              accept=".json,.txt,application/json,text/plain"
+                              hidden
+                              onChange={async (e) => {
+                                const list = e.target.files;
+                                if (!list?.length) return;
+                                const picked: { name: string; text: string }[] = [];
+                                for (const f of Array.from(list)) {
+                                  if (f.size > 4 << 20) continue;
+                                  picked.push({ name: f.name, text: await f.text() });
+                                }
+                                e.target.value = "";
+                                setClaudeSign((s) =>
+                                  s?.state === "import"
+                                    ? { ...s, files: picked }
+                                    : s,
+                                );
+                              }}
+                            />
                           </span>
                           <textarea
                             rows={3}
@@ -3385,19 +3467,35 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
                             <button
                               type="button"
                               className="link"
-                              onClick={() => {
-                                setClaudeFileLoc("recent");
-                                setFilePickFor("antigravity");
-                                setClaudeFilePick(true);
-                              }}
+                              onClick={() => agyFileRef.current?.click()}
                             >
                               {t("Choose files…")}
                             </button>
-                            {agySign.files.length ? (
-                              <span className="fname">
-                                {agySign.files.map((f) => f.name).join(", ")}
-                              </span>
-                            ) : null}
+                            <span className="fname">
+                              {agySign.files.map((f) => f.name).join(", ")}
+                            </span>
+                            <input
+                              ref={agyFileRef}
+                              type="file"
+                              multiple
+                              accept=".json,.txt,application/json,text/plain"
+                              hidden
+                              onChange={async (e) => {
+                                const list = e.target.files;
+                                if (!list?.length) return;
+                                const picked: { name: string; text: string }[] = [];
+                                for (const f of Array.from(list)) {
+                                  if (f.size > 4 << 20) continue;
+                                  picked.push({ name: f.name, text: await f.text() });
+                                }
+                                e.target.value = "";
+                                setAgySign((s) =>
+                                  s?.state === "import"
+                                    ? { ...s, files: picked }
+                                    : s,
+                                );
+                              }}
+                            />
                           </span>
                           <textarea
                             rows={3}
@@ -3522,7 +3620,7 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
                         ) : null}
                       </span>
                       {browserSign.id === "codex" ? (
-                        <span className="s" style={{ display: "block", marginTop: 6 }}>
+                        <span className="s">
                           {t("Note for a server or Docker: copy the address the browser ends on.")}
                         </span>
                       ) : null}
@@ -3532,7 +3630,6 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
                       className="text"
                       title={t("Stop waiting for this sign-in")}
                       onClick={() => setBrowserSign(null)}
-                      style={{ alignSelf: "flex-start" }}
                     >
                       {t("Cancel")}
                     </button>
@@ -3991,310 +4088,83 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
       {importOpen ? (
         <ImportAppsModal onClose={() => setImportOpen(false)} />
       ) : null}
-      {claudeFilePick ? (
-        <div
-          className="modal open"
-          role="dialog"
-          aria-modal="true"
-          aria-label={t("Select Files")}
-          onClick={(e) => {
-            if (e.target === e.currentTarget) {
-              setClaudeFilePick(false);
-              setFilePickFor(null);
-            }
-          }}
-        >
-          {/* Magpie uses OS file input; NOTES 24 = GTK Select Files (Recent). Demo sheet mirrors that chrome. */}
-          <div
-            className="dialog gtk-select-files"
-            style={{
-              width: "min(560px, 92vw)",
-              maxHeight: "min(480px, 82vh)",
-              display: "flex",
-              flexDirection: "column",
-              animation: "pop-in .42s cubic-bezier(.16,1,.3,1)",
-            }}
-          >
-            <div
-              className="ehead"
-              style={{
-                padding: "10px 14px",
-                borderBottom: "1px solid var(--line)",
-                fontWeight: 600,
-                fontSize: 13,
-              }}
-            >
-              {t("Select Files")}
-            </div>
-            <div
-              className="ebody"
-              style={{
-                display: "grid",
-                gridTemplateColumns: "148px 1fr",
-                gap: 0,
-                minHeight: 300,
-                padding: 0,
-                flex: 1,
-              }}
-            >
-              <nav
-                style={{
-                  borderRight: "1px solid var(--line)",
-                  padding: "10px 8px",
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 2,
-                }}
-              >
-                {(
-                  [
-                    ["recent", t("Recent")],
-                    ["home", t("Home")],
-                    ["desktop", t("Desktop")],
-                    ["settings", "settings"],
-                    ["other", t("Other Locations")],
-                  ] as const
-                ).map(([id, label]) => (
-                  <button
-                    key={id}
-                    type="button"
-                    className="text"
-                    style={{
-                      justifyContent: "flex-start",
-                      padding: "7px 10px",
-                      borderRadius: 8,
-                      background:
-                        claudeFileLoc === id ? "var(--accent-soft, #dbe4ff)" : "transparent",
-                      color: claudeFileLoc === id ? "var(--accent)" : "var(--fg)",
-                      fontWeight: claudeFileLoc === id ? 600 : 450,
-                    }}
-                    onClick={() => setClaudeFileLoc(id)}
-                  >
-                    {id === "other" ? `+ ${label}` : label}
-                  </button>
-                ))}
-              </nav>
-              <div
-                style={{
-                  padding: 12,
-                  overflow: "auto",
-                  margin: 10,
-                  borderRadius: 8,
-                  minHeight: 220,
-                  background: "var(--card)",
-                }}
-              >
-                <p
-                  style={{
-                    color: "var(--muted)",
-                    fontSize: 12.5,
-                    textAlign: "center",
-                    padding: "48px 12px",
-                    margin: 0,
-                  }}
-                >
-                  {demoCopy("此文件夹为空", "This folder is empty")}
-                </p>
-                <p style={{ textAlign: "center", margin: "0 0 8px" }}>
-                  <button
-                    type="button"
-                    className="link"
-                    onClick={() => {
-                      if (filePickFor === "antigravity" && agySign?.state === "import") {
-                        setAgySign({
-                          state: "import",
-                          text: agySign.text,
-                          files: [
-                            {
-                              name: "antigravity-export.json",
-                              text: '{"demo":true,"refresh_tokens":[]}',
-                            },
-                          ],
-                        });
-                      } else if (claudeSign?.state === "import") {
-                        setClaudeSign({
-                          state: "import",
-                          text: claudeSign.text,
-                          files: [
-                            {
-                              name: ".credentials.json",
-                              text: '{"demo":true}',
-                            },
-                          ],
-                        });
-                      }
-                      setClaudeFilePick(false);
-                      setFilePickFor(null);
-                    }}
-                  >
-                    {demoCopy("演示选用示例文件", "Demo: pick a sample file")}
-                  </button>
-                </p>
-              </div>
-            </div>
-            <div
-              className="bar"
-              style={{
-                display: "flex",
-                gap: 8,
-                justifyContent: "flex-end",
-                padding: "10px 14px",
-              }}
-            >
-              <button
-                type="button"
-                className="text"
-                onClick={() => {
-                  setClaudeFilePick(false);
-                  setFilePickFor(null);
-                }}
-              >
-                {t("Cancel")}
-              </button>
-              <button
-                type="button"
-                className="text primary"
-                disabled
-                title={demoCopy("未选文件时 Open 禁用", "Open disabled with no selection")}
-              >
-                {t("Open")}
-              </button>
-            </div>
-          </div>
-        </div>
-      ) : null}
-      {moveMenu ? (
-        <div
-          role="presentation"
-          style={{ position: "fixed", inset: 0, zIndex: 90 }}
-          onClick={() => setMoveMenu(null)}
-          onContextMenu={(e) => {
-            e.preventDefault();
-            setMoveMenu(null);
-          }}
-          onKeyDown={(e) => {
-            if (e.key === "Escape") setMoveMenu(null);
-          }}
-        >
-          <div
-            role="menu"
-            style={{
-              position: "fixed",
-              left: moveMenu.x,
-              top: moveMenu.y,
-              minWidth: 200,
-              padding: "4px 0",
-              borderRadius: 10,
-              border: "1px solid var(--line)",
-              background: "var(--card)",
-              boxShadow: "0 10px 28px rgba(20,22,30,.16)",
-              zIndex: 91,
-            }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            {(
-              [
-                ["top", t("Move to top"), "Alt+Shift+↑"],
-                ["up", t("Move up"), "Alt+↑"],
-                ["down", t("Move down"), "Alt+↓"],
-                ["bottom", t("Move to bottom"), "Alt+Shift+↓"],
-              ] as const
-            ).map(([act, lab, kbd]) => (
-              <button
-                key={act}
-                type="button"
-                role="menuitem"
-                className="text"
-                style={{
-                  display: "flex",
-                  width: "100%",
-                  alignItems: "center",
-                  gap: 12,
-                  padding: "7px 12px",
-                  border: 0,
-                  background: "transparent",
-                  font: "inherit",
-                  fontSize: 13,
-                  cursor: "pointer",
-                  textAlign: "left",
-                }}
-                onClick={() => {
-                  const id = moveMenu.id;
-                  setDemoProvs((list) => {
-                    const i = list.findIndex((x) => x.id === id);
-                    if (i < 0) return list;
-                    const next = [...list];
-                    const [row] = next.splice(i, 1);
-                    if (act === "top") next.unshift(row);
-                    else if (act === "bottom") next.push(row);
-                    else if (act === "up") next.splice(Math.max(0, i - 1), 0, row);
-                    else next.splice(Math.min(next.length, i + 1), 0, row);
-                    const changed = next.map((x) => x.id).join() !== list.map((x) => x.id).join();
-                    if (changed) {
-                      // NOTES 108: toast after Move down (or any reorder)
-                      queueMicrotask(() => onStatus(t("Provider order saved"), "ok"));
-                    }
-                    return changed ? next : list;
-                  });
-                  setMoveMenu(null);
-                }}
-              >
-                <span style={{ flex: 1 }}>{lab}</span>
-                <span style={{ fontSize: 11, color: "var(--muted)" }}>{kbd}</span>
-              </button>
-            ))}
-          </div>
-        </div>
-      ) : null}
+      {moveMenu ? (() => {
+        // Magpie app.js L5701–5726: on = providers !off; shown = search-visible on rows
+        const onIds = demoProvs.filter((p) => !p.off).map((p) => p.id);
+        const shownIds = demoProvs
+          .filter((p) => !p.off)
+          .filter(
+            (p) =>
+              !lf ||
+              p.name.toLowerCase().includes(lf) ||
+              p.id.toLowerCase().includes(lf),
+          )
+          .map((p) => p.id);
+        const onIndex = onIds.indexOf(moveMenu.id);
+        const shownIndex = shownIds.indexOf(moveMenu.id);
+        if (onIndex < 0) return null;
+        const arrangeAmongOn = (to: number) => {
+          setDemoProvs((list) => {
+            const on = list.filter((p) => !p.off).map((p) => p.id);
+            const from = on.indexOf(moveMenu.id);
+            if (from < 0 || to < 0 || to >= on.length || to === from) return list;
+            on.splice(to, 0, ...on.splice(from, 1));
+            let k = 0;
+            const order = list.map((p) => (p.off ? p.id : on[k++]));
+            const byId = new Map(list.map((x) => [x.id, x]));
+            const next = order.map((id) => byId.get(id)!).filter(Boolean);
+            queueMicrotask(() => onStatus(t("Provider order saved"), "ok"));
+            return next;
+          });
+        };
+        const stepAmongShown = (by: -1 | 1) => {
+          const k = shownIds.indexOf(moveMenu.id);
+          if (k < 0 || k + by < 0 || k + by >= shownIds.length) return;
+          const targetShown = shownIds[k + by];
+          const to = onIds.indexOf(targetShown);
+          if (to < 0) return;
+          arrangeAmongOn(to);
+        };
+        return (
+          <ProviderMoveMenu
+            anchor={moveMenu.anchor}
+            onIndex={onIndex}
+            onCount={onIds.length}
+            shownIndex={shownIndex}
+            shownCount={shownIds.length}
+            onArrange={arrangeAmongOn}
+            onStep={stepAmongShown}
+            onClose={() => setMoveMenu(null)}
+          />
+        );
+      })() : null}
 
-      {removeAsk ? (
-        <div
-          className="modal open"
-          role="alertdialog"
-          aria-modal="true"
-          onClick={(e) => {
-            if (e.target === e.currentTarget) setRemoveAsk(null);
-          }}
-        >
-          <div className="dialog sm" style={{ maxWidth: 380, padding: "16px 18px", animation: "pop-in .28s var(--ease)" }}>
-            <b style={{ display: "block", fontSize: 15, marginBottom: 8 }}>
-              {t("Remove {name}?", { name: removeAsk.name })}
-            </b>
-            <p style={{ margin: "0 0 14px", fontSize: 13, color: "var(--fg-2)", lineHeight: 1.45 }}>
-              {t(
-                "Its saved configuration will be removed. Agents using it may switch to another provider or their default model.",
-              )}
-            </p>
-            <div className="bar" style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
-              <button type="button" className="text" autoFocus onClick={() => setRemoveAsk(null)}>
-                {t("Cancel")}
-              </button>
-              <button
-                type="button"
-                className="text"
-                style={{ background: "var(--red)", color: "#fff", borderColor: "transparent" }}
-                onClick={() => {
-                  const { id, name } = removeAsk;
-                  setDemoProvs((list) => list.filter((x) => x.id !== id));
-                  setRemoveAsk(null);
-                  setListEditId(null);
-                  setEditor(null);
-                  // NOTES 93: empty list stays on + Add provider — do not force first-provider sheet… length===0 effect opens sheet; Magpie keeps sheet closed
-                  // Override: after remove-to-empty, Magpie does NOT reopen first sheet
-                  window.setTimeout(() => setSheetOpen(false), 0);
-                  onStatus(t("{name} removed", { name }), "ok");
-                }}
-              >
-                {t("Remove")}
-              </button>
-            </div>
-          </div>
-        </div>
-      ) : null}
+      <ActionConfirm
+        open={!!removeAsk}
+        title={removeAsk ? t("Remove {name}?", { name: removeAsk.name }) : ""}
+        message={t(
+          "Its saved configuration will be removed. Agents using it may switch to another provider or their default model.",
+        )}
+        cancelLabel={t("Cancel")}
+        acceptLabel={t("Remove")}
+        onCancel={() => setRemoveAsk(null)}
+        onAccept={() => {
+          if (!removeAsk) return;
+          const { id, name } = removeAsk;
+          setDemoProvs((list) => list.filter((x) => x.id !== id));
+          setRemoveAsk(null);
+          setListEditId(null);
+          setEditor(null);
+          // NOTES 93: empty list stays on + Add provider — Magpie does NOT reopen first sheet
+          window.setTimeout(() => setSheetOpen(false), 0);
+          onStatus(t("{name} removed", { name }), "ok");
+        }}
+      />
 
       {editor ? (
         <ProviderEditorModal
           state={editor}
+          initial={demoProvs.find((p) => p.id === listEditId)?.formData}
           saved={!!listEditId && listEditId === editor.id}
           onClose={() => {
             setEditor(null);
@@ -4338,11 +4208,16 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
           }}
           onAdd={(info) => {
             if (!editor) return;
-            const keyEmpty = !(info?.key || "").trim();
+            const keyEmpty = !info.key.trim();
             const isLocal = !!LOCAL_PRESETS[editor.id] || editor.form === "local";
-            const host = isLocal
-              ? (LOCAL_PRESETS[editor.id]?.address || "http://localhost:11434").replace(/^https?:\/\//, "")
-              : undefined;
+            const fields = info.form.values;
+            const name = typeof fields.name === "string" && fields.name.trim() ? fields.name.trim() : editor.name;
+            const address = isLocal ? fields.serverAddr : fields.baseUrl;
+            const host = typeof address === "string" && address.trim() ? address.trim().replace(/^https?:\/\//, "") : undefined;
+            const modelIds = typeof fields.modelIds === "string"
+              ? [...new Set(fields.modelIds.split(/[,\n]/).map((id) => id.trim()).filter(Boolean))] : [];
+            const details = { name, icon: typeof fields.pickedIcon === "string" ? fields.pickedIcon : editor.icon,
+              host, site: editor.site, formData: info.form, models: modelIds };
             if (listEditId && listEditId === editor.id) {
               // Save existing
               setDemoProvs((list) =>
@@ -4350,13 +4225,15 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
                   x.id === editor.id
                     ? {
                         ...x,
-                        keyKind: keyEmpty && isLocal ? ("none" as const) : x.keyKind,
-                        keyLabel: keyEmpty && isLocal ? t("no key") : x.keyLabel,
+                        ...details,
+                        models: editor.form === "custom" || modelIds.length ? modelIds : x.models,
+                        keyKind: keyEmpty ? x.keyKind : ("on" as const),
+                        keyLabel: keyEmpty ? x.keyLabel : "sk-…",
                       }
                     : x,
                 ),
               );
-              onStatus(t("{name} saved", { name: editor.name }), "ok");
+              onStatus(t("{name} saved", { name }), "ok");
               setListEditId(null);
               return;
             }
@@ -4366,19 +4243,16 @@ export function ProvidersView({ onStatus, onGoPlugins }: Props) {
                 ...list,
                 {
                   id: editor.id,
-                  name: editor.name,
-                  icon: editor.icon,
-                  host: host ? host.replace(/\/v1$/, "") : undefined,
+                  ...details,
                   keyKind: keyEmpty && isLocal ? ("none" as const) : ("on" as const),
                   keyLabel: keyEmpty && isLocal ? t("no key") : keyEmpty ? t("no key") : "sk-…",
                   accounts: [],
-                  models: [],
                   agentsUsing: [],
                 },
               ];
             });
             setSheetOpen(false);
-            onStatus(t("{name} added", { name: editor.name }), "ok");
+            onStatus(t("{name} added", { name }), "ok");
           }}
         />
       ) : null}

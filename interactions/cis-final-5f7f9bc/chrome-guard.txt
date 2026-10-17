@@ -1,0 +1,16 @@
+chrome-guard OK: SIDE_AT = 1024
+chrome-guard OK: no WEB_SIDE_AT
+chrome-guard OK: wantSide uses SIDE_AT
+chrome-guard OK: sidebar aside present
+chrome-guard OK: side-nav .on graphite in app.css
+chrome-guard OK: web #root 752 frame
+chrome-guard OK: web #root zoom-aware width
+chrome-guard OK: preview sizing independent of navigation; wide frame gated at 1024
+chrome-guard OK: WinCaption.tsx present
+chrome-guard OK: html.win forced
+chrome-guard OK: data-sim-platform=win
+chrome-guard OK: App renders WinCaption
+chrome-guard OK: Win brand-hide in shell-patch
+chrome-guard OK: win-caption styles
+chrome-guard OK: :root.win fonts in app.css
+chrome-guard: all checks passed

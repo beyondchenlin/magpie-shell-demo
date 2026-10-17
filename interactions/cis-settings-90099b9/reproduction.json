@@ -1,0 +1,490 @@
+[
+  {
+    "label": "initial-family-open",
+    "active": {
+      "cls": "sc-q",
+      "tag": "INPUT",
+      "text": ""
+    },
+    "lang": "zh-CN",
+    "menu": [
+      {
+        "rect": {
+          "bottom": 771.734375,
+          "height": 396,
+          "left": 777.828125,
+          "right": 1151.828125,
+          "top": 375.734375,
+          "width": 374,
+          "x": 777.828125,
+          "y": 375.734375
+        },
+        "text": "界面字体系统默认ABeeZeeAbelAbhaya LibreAbhaya Libre ExtraBoldAbhaya Libre MediumAbhaya Libre SemiBoldAboretoDejaVu SansDejaVu Sans MonoDejaVu SerifFira CodeInterJetBrains MonoMonotonNoto Color EmojiNoto Kufi ArabicNoto Naskh ArabicNoto SansNoto Sans ArabicNoto Sans CJK HKNoto Sans CJK JPNoto Sans CJK KRNoto Sans CJK SCNoto Sans CJK TCNoto Sans DevanagariNoto Sans GujaratiNoto Sans MalayalamNoto Sans MonoNoto Sans Mono CJK SCNoto Sans SymbolsNoto SerifNoto Serif CJK SCNoto Serif DevanagariNoto Serif DisplayNoto Serif EthiopicSource Code Pro刷新字体列表"
+      }
+    ],
+    "rows": [
+      {
+        "controls": [
+          {
+            "disabled": false,
+            "rect": {
+              "bottom": 370.34375,
+              "height": 26.390625,
+              "left": 902.21875,
+              "right": 1151.9375,
+              "top": 343.953125,
+              "width": 249.71875,
+              "x": 902.21875,
+              "y": 343.953125
+            },
+            "text": "系统默认"
+          },
+          {
+            "disabled": true,
+            "rect": {
+              "bottom": 370.34375,
+              "height": 26.390625,
+              "left": 1158.53125,
+              "right": 1243.21875,
+              "top": 343.953125,
+              "width": 84.6875,
+              "x": 1158.53125,
+              "y": 343.953125
+            },
+            "text": "系统默认"
+          }
+        ],
+        "gap": "5px 6px",
+        "grid": "227.017px 76.9886px",
+        "id": "uiFontRow",
+        "rect": {
+          "bottom": 409.34375,
+          "height": 74.078125,
+          "left": 329.78125,
+          "right": 1256.40625,
+          "top": 335.265625,
+          "width": 926.625,
+          "x": 329.78125,
+          "y": 335.265625
+        }
+      },
+      {
+        "controls": [
+          {
+            "disabled": false,
+            "rect": {
+              "bottom": 444.421875,
+              "height": 26.390625,
+              "left": 902.21875,
+              "right": 1151.9375,
+              "top": 418.03125,
+              "width": 249.71875,
+              "x": 902.21875,
+              "y": 418.03125
+            },
+            "text": "系统默认"
+          },
+          {
+            "disabled": true,
+            "rect": {
+              "bottom": 444.421875,
+              "height": 26.390625,
+              "left": 1158.53125,
+              "right": 1243.21875,
+              "top": 418.03125,
+              "width": 84.6875,
+              "x": 1158.53125,
+              "y": 418.03125
+            },
+            "text": "系统默认"
+          }
+        ],
+        "gap": "5px 6px",
+        "grid": "227.017px 76.9886px",
+        "id": "codeFontRow",
+        "rect": {
+          "bottom": 483.421875,
+          "height": 74.078125,
+          "left": 329.78125,
+          "right": 1256.40625,
+          "top": 409.34375,
+          "width": 926.625,
+          "x": 329.78125,
+          "y": 409.34375
+        }
+      }
+    ],
+    "source": "26604006a932b564ed6468a100c37a15f5bc4644",
+    "viewport": [
+      1364,
+      941
+    ],
+    "zoom": "1"
+  },
+  {
+    "label": "before-style-open-focus",
+    "active": {
+      "cls": "proto pick set open font-style",
+      "tag": "BUTTON",
+      "text": "Regular"
+    },
+    "lang": "zh-CN",
+    "menu": [
+      {
+        "rect": {
+          "bottom": 506.2744445800781,
+          "height": 130.76422119140625,
+          "left": 869.7908935546875,
+          "right": 1243.0286865234375,
+          "top": 375.5102233886719,
+          "width": 373.23779296875,
+          "x": 869.7908935546875,
+          "y": 375.5102233886719
+        },
+        "text": "样式RegularMediumBold"
+      }
+    ],
+    "rows": [
+      {
+        "controls": [
+          {
+            "disabled": false,
+            "rect": {
+              "bottom": 370.34375,
+              "height": 26.390625,
+              "left": 902.21875,
+              "right": 1157.4375,
+              "top": 343.953125,
+              "width": 255.21875,
+              "x": 902.21875,
+              "y": 343.953125
+            },
+            "text": "Inter"
+          },
+          {
+            "disabled": false,
+            "rect": {
+              "bottom": 370.34375,
+              "height": 26.390625,
+              "left": 1164.03125,
+              "right": 1243.21875,
+              "top": 343.953125,
+              "width": 79.1875,
+              "x": 1164.03125,
+              "y": 343.953125
+            },
+            "text": "Regular"
+          }
+        ],
+        "gap": "5px 6px",
+        "grid": "232.017px 71.9886px",
+        "id": "uiFontRow",
+        "rect": {
+          "bottom": 409.34375,
+          "height": 74.078125,
+          "left": 329.78125,
+          "right": 1256.40625,
+          "top": 335.265625,
+          "width": 926.625,
+          "x": 329.78125,
+          "y": 335.265625
+        }
+      },
+      {
+        "controls": [
+          {
+            "disabled": false,
+            "rect": {
+              "bottom": 444.421875,
+              "height": 26.390625,
+              "left": 902.21875,
+              "right": 1151.9375,
+              "top": 418.03125,
+              "width": 249.71875,
+              "x": 902.21875,
+              "y": 418.03125
+            },
+            "text": "系统默认"
+          },
+          {
+            "disabled": true,
+            "rect": {
+              "bottom": 444.421875,
+              "height": 26.390625,
+              "left": 1158.53125,
+              "right": 1243.21875,
+              "top": 418.03125,
+              "width": 84.6875,
+              "x": 1158.53125,
+              "y": 418.03125
+            },
+            "text": "系统默认"
+          }
+        ],
+        "gap": "5px 6px",
+        "grid": "227.017px 76.9886px",
+        "id": "codeFontRow",
+        "rect": {
+          "bottom": 483.421875,
+          "height": 74.078125,
+          "left": 329.78125,
+          "right": 1256.40625,
+          "top": 409.34375,
+          "width": 926.625,
+          "x": 329.78125,
+          "y": 409.34375
+        }
+      }
+    ],
+    "source": "26604006a932b564ed6468a100c37a15f5bc4644",
+    "viewport": [
+      1364,
+      941
+    ],
+    "zoom": "1"
+  },
+  {
+    "label": "before-style-after-resize",
+    "active": {
+      "cls": "proto pick set open font-style",
+      "tag": "BUTTON",
+      "text": "Regular"
+    },
+    "lang": "zh-CN",
+    "menu": [
+      {
+        "rect": {
+          "bottom": 506.765625,
+          "height": 131.03125,
+          "left": 837.109375,
+          "right": 1211.109375,
+          "top": 375.734375,
+          "width": 374,
+          "x": 837.109375,
+          "y": 375.734375
+        },
+        "text": "样式RegularMediumBold"
+      }
+    ],
+    "rows": [
+      {
+        "controls": [
+          {
+            "disabled": false,
+            "rect": {
+              "bottom": 370.34375,
+              "height": 26.390625,
+              "left": 870.21875,
+              "right": 1125.4375,
+              "top": 343.953125,
+              "width": 255.21875,
+              "x": 870.21875,
+              "y": 343.953125
+            },
+            "text": "Inter"
+          },
+          {
+            "disabled": false,
+            "rect": {
+              "bottom": 370.34375,
+              "height": 26.390625,
+              "left": 1132.03125,
+              "right": 1211.21875,
+              "top": 343.953125,
+              "width": 79.1875,
+              "x": 1132.03125,
+              "y": 343.953125
+            },
+            "text": "Regular"
+          }
+        ],
+        "gap": "5px 6px",
+        "grid": "232.017px 71.9886px",
+        "id": "uiFontRow",
+        "rect": {
+          "bottom": 409.34375,
+          "height": 74.078125,
+          "left": 297.78125,
+          "right": 1224.40625,
+          "top": 335.265625,
+          "width": 926.625,
+          "x": 297.78125,
+          "y": 335.265625
+        }
+      },
+      {
+        "controls": [
+          {
+            "disabled": false,
+            "rect": {
+              "bottom": 444.421875,
+              "height": 26.390625,
+              "left": 870.21875,
+              "right": 1119.9375,
+              "top": 418.03125,
+              "width": 249.71875,
+              "x": 870.21875,
+              "y": 418.03125
+            },
+            "text": "系统默认"
+          },
+          {
+            "disabled": true,
+            "rect": {
+              "bottom": 444.421875,
+              "height": 26.390625,
+              "left": 1126.53125,
+              "right": 1211.21875,
+              "top": 418.03125,
+              "width": 84.6875,
+              "x": 1126.53125,
+              "y": 418.03125
+            },
+            "text": "系统默认"
+          }
+        ],
+        "gap": "5px 6px",
+        "grid": "227.017px 76.9886px",
+        "id": "codeFontRow",
+        "rect": {
+          "bottom": 483.421875,
+          "height": 74.078125,
+          "left": 297.78125,
+          "right": 1224.40625,
+          "top": 409.34375,
+          "width": 926.625,
+          "x": 297.78125,
+          "y": 409.34375
+        }
+      }
+    ],
+    "source": "26604006a932b564ed6468a100c37a15f5bc4644",
+    "viewport": [
+      1300,
+      900
+    ],
+    "zoom": "1"
+  },
+  {
+    "label": "before-style-after-reader-scroll",
+    "active": {
+      "cls": "proto pick set open font-style",
+      "tag": "BUTTON",
+      "text": "Regular"
+    },
+    "lang": "zh-CN",
+    "menu": [
+      {
+        "rect": {
+          "bottom": 202.765625,
+          "height": 131.03125,
+          "left": 837.109375,
+          "right": 1211.109375,
+          "top": 71.734375,
+          "width": 374,
+          "x": 837.109375,
+          "y": 71.734375
+        },
+        "text": "样式RegularMediumBold"
+      }
+    ],
+    "rows": [
+      {
+        "controls": [
+          {
+            "disabled": false,
+            "rect": {
+              "bottom": 66.34375,
+              "height": 26.390625,
+              "left": 870.21875,
+              "right": 1125.4375,
+              "top": 39.953125,
+              "width": 255.21875,
+              "x": 870.21875,
+              "y": 39.953125
+            },
+            "text": "Inter"
+          },
+          {
+            "disabled": false,
+            "rect": {
+              "bottom": 66.34375,
+              "height": 26.390625,
+              "left": 1132.03125,
+              "right": 1211.21875,
+              "top": 39.953125,
+              "width": 79.1875,
+              "x": 1132.03125,
+              "y": 39.953125
+            },
+            "text": "Regular"
+          }
+        ],
+        "gap": "5px 6px",
+        "grid": "232.017px 71.9886px",
+        "id": "uiFontRow",
+        "rect": {
+          "bottom": 105.34375,
+          "height": 74.078125,
+          "left": 297.78125,
+          "right": 1224.40625,
+          "top": 31.265625,
+          "width": 926.625,
+          "x": 297.78125,
+          "y": 31.265625
+        }
+      },
+      {
+        "controls": [
+          {
+            "disabled": false,
+            "rect": {
+              "bottom": 140.421875,
+              "height": 26.390625,
+              "left": 870.21875,
+              "right": 1119.9375,
+              "top": 114.03125,
+              "width": 249.71875,
+              "x": 870.21875,
+              "y": 114.03125
+            },
+            "text": "系统默认"
+          },
+          {
+            "disabled": true,
+            "rect": {
+              "bottom": 140.421875,
+              "height": 26.390625,
+              "left": 1126.53125,
+              "right": 1211.21875,
+              "top": 114.03125,
+              "width": 84.6875,
+              "x": 1126.53125,
+              "y": 114.03125
+            },
+            "text": "系统默认"
+          }
+        ],
+        "gap": "5px 6px",
+        "grid": "227.017px 76.9886px",
+        "id": "codeFontRow",
+        "rect": {
+          "bottom": 179.421875,
+          "height": 74.078125,
+          "left": 297.78125,
+          "right": 1224.40625,
+          "top": 105.34375,
+          "width": 926.625,
+          "x": 297.78125,
+          "y": 105.34375
+        }
+      }
+    ],
+    "source": "26604006a932b564ed6468a100c37a15f5bc4644",
+    "viewport": [
+      1300,
+      900
+    ],
+    "zoom": "1"
+  }
+]

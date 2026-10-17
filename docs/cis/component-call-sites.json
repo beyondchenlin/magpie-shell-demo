@@ -1,0 +1,4578 @@
+{
+  "purpose": "Audit index only; a call site is not proof of correct runtime behavior. Raw DOM is a review queue, not an automatic defect.",
+  "baseline": "e94edc6713da405285854e7d6548f3f8364bf84f",
+  "specification": "028dab55a3877656c115439835d1d0d14465e4ee",
+  "candidate": "1ebfb663e4833e653bc621742cc342f3cdc7373a",
+  "scope": "committed source snapshot, excludes inherited working-tree draft",
+  "files": [
+    {
+      "file": "src/App.tsx",
+      "sha256": "3caec3d448bc6df9612037b33e148c7d0053bc8a86b1130dc3b707cde72665e0"
+    },
+    {
+      "file": "src/components/AgentModelsPop.tsx",
+      "sha256": "b3784695cf67ade2cdcc2b4c54aaa1d8df2a79a0efa06cae1a2783cd3109f01e"
+    },
+    {
+      "file": "src/components/Fold.tsx",
+      "sha256": "b6dfdc8b72da910f3c1881c7b854fd45ef91cef32be7943832a7fc6751a2e38e"
+    },
+    {
+      "file": "src/components/GroupEditor.tsx",
+      "sha256": "7dc85568819e68f2167a5de1dd7c6e1fee7ef3dde1d7d2c3cc348ae9a21deef3"
+    },
+    {
+      "file": "src/components/LedHeat.tsx",
+      "sha256": "2ee669f3d72c477d71ccebd617f639455874bfd9fb8b9778ccaa154a6bb56169"
+    },
+    {
+      "file": "src/components/ModelPop.tsx",
+      "sha256": "fc638c7fd86b9e47a9ef86381a89cfb5b9299bfd8651ff9f1674c0d5e707fcb1"
+    },
+    {
+      "file": "src/components/PluginLogo.tsx",
+      "sha256": "a930dc62a78ccd60ad21a15a52451c14747c174f26357802ff31907ce78ee0c2"
+    },
+    {
+      "file": "src/components/ProtoMultiMenu.tsx",
+      "sha256": "d503d0a6387bbd0c428aa0bda60377759cbfc8607f62ee2d2c6c805f38a4c8c3"
+    },
+    {
+      "file": "src/components/Segs.tsx",
+      "sha256": "2df605d9919473e4f8af815a47591f862eeb6366184d90d58ae7ebdb072e67fa"
+    },
+    {
+      "file": "src/components/WarmAt.tsx",
+      "sha256": "0e58e4940013a1854283f2bdce700f3fb0b1f732d7ed2be420d57667a8ddb32c"
+    },
+    {
+      "file": "src/lib/useProtocolMenu.ts",
+      "sha256": "e67a9e586bfde363bd82c0f41f00be331f2c19451b2d42655e4d671e156c3f03"
+    },
+    {
+      "file": "src/lib/useRowMenu.ts",
+      "sha256": "14ab5e68c620c5498e55fc8b13ea6b474d92c2f26a221d448a712e3d14549565"
+    },
+    {
+      "file": "src/pages/AgentsView.tsx",
+      "sha256": "32059540d4e2b16108b9ca32f3afa40f8cd6bff6e09bc76c1f6e756c9ae89d81"
+    },
+    {
+      "file": "src/pages/GatewayView.tsx",
+      "sha256": "bbd9ddafa543628eff87f13b95f9e9ede4c8c32f550d258dc4db3ce4f7ebc2ac"
+    },
+    {
+      "file": "src/pages/LibraryView.tsx",
+      "sha256": "2a4e99231a62e0698700083fcd4b6c76ada9e4b7f60d17c744e1445a3d64f8a2"
+    },
+    {
+      "file": "src/pages/ProvidersView.tsx",
+      "sha256": "9931478334df63ad59d1864410bf9b0b72078c53b093993edd44981d7c64c28b"
+    },
+    {
+      "file": "src/pages/RoutingView.tsx",
+      "sha256": "c288794d373255fd7aa925913705ff2c10a3d8e3471b9f73f770f4c624da4fe7"
+    },
+    {
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "sha256": "df36ee6ca65e73f2bc049f7f1ffd45f2b92ba2281bc8d37615ec60405189fb41"
+    },
+    {
+      "file": "src/pages/SettingsView.tsx",
+      "sha256": "0c7432003d07fe46fcae247a572ed1203fd7d9a47a2538fa20d2bc311bdabe33"
+    },
+    {
+      "file": "src/pages/SimpleViews.tsx",
+      "sha256": "e93f62b171286a9e7b7f055a92f2b8c20e6e8a0a482bcde95859405d95434764"
+    },
+    {
+      "file": "src/pages/TrayPanel.tsx",
+      "sha256": "0fb11bbc9631e784e6ac8e43e7f19540fee738ae05a9eb154698492f2db5dfbf"
+    }
+  ],
+  "counts": {
+    "PrefRow": 92,
+    "TextBtn": 73,
+    "WordsField": 41,
+    "LibSwitch": 9,
+    "Tick": 12,
+    "PrefPick": 5,
+    "FieldPill": 3,
+    "Fold": 3,
+    "FoldChev": 2,
+    "StatusToast": 1,
+    "ActionConfirm": 14,
+    "Segs": 85,
+    "useSegThumb": 6,
+    "CopyButton": 18,
+    "MagpieIcon": 35,
+    "PluginLogo": 6,
+    "ModelPop": 13,
+    "ProtoMultiMenu": 8,
+    "AgentModelsPop": 1,
+    "PopoverPortal": 17,
+    "useAnchoredPopover": 7,
+    "useRowMenu": 5,
+    "useProtocolMenu": 6,
+    "SidebarTabs": 1,
+    "ConnectionField": 5,
+    "RequestArchive": 2,
+    "InfoTip": 3
+  },
+  "callSites": [
+    {
+      "control": "useSegThumb",
+      "file": "src/App.tsx",
+      "line": 294,
+      "local": "useSegThumb",
+      "import": "./components/SegThumb"
+    },
+    {
+      "control": "SidebarTabs",
+      "file": "src/App.tsx",
+      "line": 605,
+      "local": "SidebarTabs",
+      "import": "./components/SidebarTabs",
+      "attributes": {}
+    },
+    {
+      "control": "StatusToast",
+      "file": "src/App.tsx",
+      "line": 796,
+      "local": "StatusToast",
+      "import": "./components/StatusToast",
+      "attributes": {
+        "kind": "{status?.kind}"
+      }
+    },
+    {
+      "control": "MagpieIcon",
+      "file": "src/components/AgentModelsPop.tsx",
+      "line": 41,
+      "local": "MagpieIcon",
+      "import": "./MagpieIcon",
+      "attributes": {
+        "className": "{className}"
+      }
+    },
+    {
+      "control": "useAnchoredPopover",
+      "file": "src/components/AgentModelsPop.tsx",
+      "line": 85,
+      "local": "useAnchoredPopover",
+      "import": "../lib/useAnchoredPopover"
+    },
+    {
+      "control": "MagpieIcon",
+      "file": "src/components/AgentModelsPop.tsx",
+      "line": 140,
+      "local": "MagpieIcon",
+      "import": "./MagpieIcon",
+      "attributes": {
+        "className": "\"lg\""
+      }
+    },
+    {
+      "control": "PopoverPortal",
+      "file": "src/components/AgentModelsPop.tsx",
+      "line": 197,
+      "local": "PopoverPortal",
+      "import": "./PopoverPortal",
+      "attributes": {}
+    },
+    {
+      "control": "FoldChev",
+      "file": "src/components/Fold.tsx",
+      "line": 60,
+      "local": "FoldChev",
+      "attributes": {}
+    },
+    {
+      "control": "useRowMenu",
+      "file": "src/components/GroupEditor.tsx",
+      "line": 392,
+      "local": "useRowMenu",
+      "import": "../lib/useRowMenu"
+    },
+    {
+      "control": "PopoverPortal",
+      "file": "src/components/GroupEditor.tsx",
+      "line": 421,
+      "local": "PopoverPortal",
+      "import": "./PopoverPortal",
+      "attributes": {}
+    },
+    {
+      "control": "MagpieIcon",
+      "file": "src/components/GroupEditor.tsx",
+      "line": 870,
+      "local": "MagpieIcon",
+      "import": "./MagpieIcon",
+      "attributes": {}
+    },
+    {
+      "control": "ModelPop",
+      "file": "src/components/GroupEditor.tsx",
+      "line": 986,
+      "local": "ModelPop",
+      "import": "./ModelPop",
+      "attributes": {
+        "modelPicker": "true",
+        "keepOpen": "true"
+      }
+    },
+    {
+      "control": "ModelPop",
+      "file": "src/components/GroupEditor.tsx",
+      "line": 997,
+      "local": "ModelPop",
+      "import": "./ModelPop",
+      "attributes": {
+        "modelPicker": "{false}"
+      }
+    },
+    {
+      "control": "Segs",
+      "file": "src/components/GroupEditor.tsx",
+      "line": 1058,
+      "local": "Segs",
+      "import": "./Segs",
+      "attributes": {
+        "className": "\"list-pick\"",
+        "aria-label": "{t(\"Model lists\")}"
+      }
+    },
+    {
+      "control": "Segs",
+      "file": "src/components/GroupEditor.tsx",
+      "line": 1070,
+      "local": "Segs",
+      "import": "./Segs",
+      "attributes": {
+        "aria-label": "{t(\"Routing\")}"
+      }
+    },
+    {
+      "control": "Segs",
+      "file": "src/components/GroupEditor.tsx",
+      "line": 1084,
+      "local": "Segs",
+      "import": "./Segs",
+      "attributes": {
+        "className": "\"sink-pick\"",
+        "aria-label": "{t(\"Rate limited\")}"
+      }
+    },
+    {
+      "control": "Segs",
+      "file": "src/components/GroupEditor.tsx",
+      "line": 1098,
+      "local": "Segs",
+      "import": "./Segs",
+      "attributes": {
+        "aria-label": "{t(\"Slow to start\")}"
+      }
+    },
+    {
+      "control": "Segs",
+      "file": "src/components/GroupEditor.tsx",
+      "line": 1140,
+      "local": "Segs",
+      "import": "./Segs",
+      "attributes": {
+        "aria-label": "{t(\"Every member busy\")}"
+      }
+    },
+    {
+      "control": "Segs",
+      "file": "src/components/GroupEditor.tsx",
+      "line": 1151,
+      "local": "Segs",
+      "import": "./Segs",
+      "attributes": {
+        "aria-label": "{t(\"Context\")}"
+      }
+    },
+    {
+      "control": "Segs",
+      "file": "src/components/GroupEditor.tsx",
+      "line": 1188,
+      "local": "Segs",
+      "import": "./Segs",
+      "attributes": {
+        "aria-label": "{t(\"Stays\")}"
+      }
+    },
+    {
+      "control": "MagpieIcon",
+      "file": "src/components/GroupEditor.tsx",
+      "line": 1581,
+      "local": "MagpieIcon",
+      "import": "./MagpieIcon",
+      "attributes": {}
+    },
+    {
+      "control": "InfoTip",
+      "file": "src/components/GroupEditor.tsx",
+      "line": 1626,
+      "local": "InfoTip",
+      "import": "./InfoTip",
+      "attributes": {}
+    },
+    {
+      "control": "Segs",
+      "file": "src/components/GroupEditor.tsx",
+      "line": 1644,
+      "local": "Segs",
+      "import": "./Segs",
+      "attributes": {
+        "aria-label": "{t(\"Effort\")}"
+      }
+    },
+    {
+      "control": "InfoTip",
+      "file": "src/components/GroupEditor.tsx",
+      "line": 1659,
+      "local": "InfoTip",
+      "import": "./InfoTip",
+      "attributes": {}
+    },
+    {
+      "control": "InfoTip",
+      "file": "src/components/GroupEditor.tsx",
+      "line": 1687,
+      "local": "InfoTip",
+      "import": "./InfoTip",
+      "attributes": {}
+    },
+    {
+      "control": "ModelPop",
+      "file": "src/components/GroupEditor.tsx",
+      "line": 1698,
+      "local": "ModelPop",
+      "import": "./ModelPop",
+      "attributes": {
+        "modelPicker": "true"
+      }
+    },
+    {
+      "control": "Segs",
+      "file": "src/components/GroupEditor.tsx",
+      "line": 1735,
+      "local": "Segs",
+      "import": "./Segs",
+      "attributes": {
+        "aria-label": "{t(\"Levels\")}"
+      }
+    },
+    {
+      "control": "ModelPop",
+      "file": "src/components/GroupEditor.tsx",
+      "line": 1788,
+      "local": "ModelPop",
+      "import": "./ModelPop",
+      "attributes": {
+        "modelPicker": "{false}"
+      }
+    },
+    {
+      "control": "ModelPop",
+      "file": "src/components/GroupEditor.tsx",
+      "line": 1811,
+      "local": "ModelPop",
+      "import": "./ModelPop",
+      "attributes": {
+        "modelPicker": "{false}",
+        "keepOpen": "true"
+      }
+    },
+    {
+      "control": "ModelPop",
+      "file": "src/components/GroupEditor.tsx",
+      "line": 1851,
+      "local": "ModelPop",
+      "import": "./ModelPop",
+      "attributes": {
+        "modelPicker": "{false}",
+        "keepOpen": "true"
+      }
+    },
+    {
+      "control": "ModelPop",
+      "file": "src/components/GroupEditor.tsx",
+      "line": 1892,
+      "local": "ModelPop",
+      "import": "./ModelPop",
+      "attributes": {
+        "modelPicker": "{false}"
+      }
+    },
+    {
+      "control": "ModelPop",
+      "file": "src/components/GroupEditor.tsx",
+      "line": 1929,
+      "local": "ModelPop",
+      "import": "./ModelPop",
+      "attributes": {
+        "modelPicker": "{false}"
+      }
+    },
+    {
+      "control": "ProtoMultiMenu",
+      "file": "src/components/GroupEditor.tsx",
+      "line": 1950,
+      "local": "ProtoMultiMenu",
+      "import": "./ProtoMultiMenu",
+      "attributes": {
+        "live": "{false}",
+        "align": "\"left\""
+      }
+    },
+    {
+      "control": "ActionConfirm",
+      "file": "src/components/GroupEditor.tsx",
+      "line": 2039,
+      "local": "ActionConfirm",
+      "import": "./ActionConfirm",
+      "attributes": {}
+    },
+    {
+      "control": "ActionConfirm",
+      "file": "src/components/GroupEditor.tsx",
+      "line": 2050,
+      "local": "ActionConfirm",
+      "import": "./ActionConfirm",
+      "attributes": {}
+    },
+    {
+      "control": "Segs",
+      "file": "src/components/LedHeat.tsx",
+      "line": 197,
+      "local": "Segs",
+      "import": "./Segs",
+      "attributes": {
+        "id": "\"ledHeatMetric\""
+      }
+    },
+    {
+      "control": "useAnchoredPopover",
+      "file": "src/components/ModelPop.tsx",
+      "line": 79,
+      "local": "useAnchoredPopover",
+      "import": "../lib/useAnchoredPopover"
+    },
+    {
+      "control": "PopoverPortal",
+      "file": "src/components/ModelPop.tsx",
+      "line": 196,
+      "local": "PopoverPortal",
+      "import": "./PopoverPortal",
+      "attributes": {}
+    },
+    {
+      "control": "MagpieIcon",
+      "file": "src/components/ModelPop.tsx",
+      "line": 261,
+      "local": "MagpieIcon",
+      "import": "./MagpieIcon",
+      "attributes": {}
+    },
+    {
+      "control": "MagpieIcon",
+      "file": "src/components/ModelPop.tsx",
+      "line": 279,
+      "local": "MagpieIcon",
+      "import": "./MagpieIcon",
+      "attributes": {}
+    },
+    {
+      "control": "MagpieIcon",
+      "file": "src/components/PluginLogo.tsx",
+      "line": 14,
+      "local": "MagpieIcon",
+      "import": "./MagpieIcon",
+      "attributes": {}
+    },
+    {
+      "control": "useAnchoredPopover",
+      "file": "src/components/ProtoMultiMenu.tsx",
+      "line": 73,
+      "local": "useAnchoredPopover",
+      "import": "../lib/useAnchoredPopover"
+    },
+    {
+      "control": "PopoverPortal",
+      "file": "src/components/ProtoMultiMenu.tsx",
+      "line": 142,
+      "local": "PopoverPortal",
+      "import": "./PopoverPortal",
+      "attributes": {}
+    },
+    {
+      "control": "useSegThumb",
+      "file": "src/components/Segs.tsx",
+      "line": 34,
+      "local": "useSegThumb",
+      "import": "./SegThumb"
+    },
+    {
+      "control": "Segs",
+      "file": "src/components/WarmAt.tsx",
+      "line": 64,
+      "local": "Segs",
+      "import": "./Segs",
+      "attributes": {}
+    },
+    {
+      "control": "useAnchoredPopover",
+      "file": "src/lib/useProtocolMenu.ts",
+      "line": 11,
+      "local": "useAnchoredPopover",
+      "import": "./useAnchoredPopover"
+    },
+    {
+      "control": "useAnchoredPopover",
+      "file": "src/lib/useRowMenu.ts",
+      "line": 10,
+      "local": "useAnchoredPopover",
+      "import": "./useAnchoredPopover"
+    },
+    {
+      "control": "CopyButton",
+      "file": "src/pages/AgentsView.tsx",
+      "line": 177,
+      "local": "CopyButton",
+      "import": "../components/CopyButton",
+      "attributes": {}
+    },
+    {
+      "control": "TextBtn",
+      "file": "src/pages/AgentsView.tsx",
+      "line": 355,
+      "local": "TextBtn",
+      "import": "../components/TextBtn",
+      "attributes": {}
+    },
+    {
+      "control": "TextBtn",
+      "file": "src/pages/AgentsView.tsx",
+      "line": 361,
+      "local": "TextBtn",
+      "import": "../components/TextBtn",
+      "attributes": {}
+    },
+    {
+      "control": "TextBtn",
+      "file": "src/pages/AgentsView.tsx",
+      "line": 374,
+      "local": "TextBtn",
+      "import": "../components/TextBtn",
+      "attributes": {}
+    },
+    {
+      "control": "TextBtn",
+      "file": "src/pages/AgentsView.tsx",
+      "line": 385,
+      "local": "TextBtn",
+      "import": "../components/TextBtn",
+      "attributes": {}
+    },
+    {
+      "control": "MagpieIcon",
+      "file": "src/pages/AgentsView.tsx",
+      "line": 409,
+      "local": "MagpieIcon",
+      "import": "../components/MagpieIcon",
+      "attributes": {}
+    },
+    {
+      "control": "TextBtn",
+      "file": "src/pages/AgentsView.tsx",
+      "line": 423,
+      "local": "TextBtn",
+      "import": "../components/TextBtn",
+      "attributes": {}
+    },
+    {
+      "control": "TextBtn",
+      "file": "src/pages/AgentsView.tsx",
+      "line": 428,
+      "local": "TextBtn",
+      "import": "../components/TextBtn",
+      "attributes": {}
+    },
+    {
+      "control": "TextBtn",
+      "file": "src/pages/AgentsView.tsx",
+      "line": 434,
+      "local": "TextBtn",
+      "import": "../components/TextBtn",
+      "attributes": {}
+    },
+    {
+      "control": "useRowMenu",
+      "file": "src/pages/AgentsView.tsx",
+      "line": 474,
+      "local": "useRowMenu",
+      "import": "../lib/useRowMenu"
+    },
+    {
+      "control": "PopoverPortal",
+      "file": "src/pages/AgentsView.tsx",
+      "line": 509,
+      "local": "PopoverPortal",
+      "import": "../components/PopoverPortal",
+      "attributes": {}
+    },
+    {
+      "control": "MagpieIcon",
+      "file": "src/pages/AgentsView.tsx",
+      "line": 970,
+      "local": "MagpieIcon",
+      "import": "../components/MagpieIcon",
+      "attributes": {}
+    },
+    {
+      "control": "LibSwitch",
+      "file": "src/pages/AgentsView.tsx",
+      "line": 1039,
+      "local": "LibSwitch",
+      "import": "../components/LibSwitch",
+      "attributes": {
+        "kind": "\"ag-conn\"",
+        "aria-label": "{t(\"Connect {agent} to magpie\", { agent: a.name })}"
+      }
+    },
+    {
+      "control": "FieldPill",
+      "file": "src/pages/AgentsView.tsx",
+      "line": 1161,
+      "local": "FieldPill",
+      "import": "../components/FieldPill",
+      "attributes": {
+        "className": "\"ag-pick\"",
+        "aria-haspopup": "\"listbox\""
+      }
+    },
+    {
+      "control": "FieldPill",
+      "file": "src/pages/AgentsView.tsx",
+      "line": 1248,
+      "local": "FieldPill",
+      "import": "../components/FieldPill",
+      "attributes": {
+        "kind": "\"main\"",
+        "className": "\"ag-pick\"",
+        "aria-haspopup": "\"listbox\""
+      }
+    },
+    {
+      "control": "MagpieIcon",
+      "file": "src/pages/AgentsView.tsx",
+      "line": 1372,
+      "local": "MagpieIcon",
+      "import": "../components/MagpieIcon",
+      "attributes": {}
+    },
+    {
+      "control": "LibSwitch",
+      "file": "src/pages/AgentsView.tsx",
+      "line": 1383,
+      "local": "LibSwitch",
+      "import": "../components/LibSwitch",
+      "attributes": {
+        "kind": "\"ag-conn\"",
+        "aria-label": "{t(\"Connect {agent} to magpie\", { agent: a.name })}"
+      }
+    },
+    {
+      "control": "MagpieIcon",
+      "file": "src/pages/AgentsView.tsx",
+      "line": 1420,
+      "local": "MagpieIcon",
+      "import": "../components/MagpieIcon",
+      "attributes": {}
+    },
+    {
+      "control": "MagpieIcon",
+      "file": "src/pages/AgentsView.tsx",
+      "line": 1460,
+      "local": "MagpieIcon",
+      "import": "../components/MagpieIcon",
+      "attributes": {}
+    },
+    {
+      "control": "MagpieIcon",
+      "file": "src/pages/AgentsView.tsx",
+      "line": 1556,
+      "local": "MagpieIcon",
+      "import": "../components/MagpieIcon",
+      "attributes": {}
+    },
+    {
+      "control": "MagpieIcon",
+      "file": "src/pages/AgentsView.tsx",
+      "line": 1636,
+      "local": "MagpieIcon",
+      "import": "../components/MagpieIcon",
+      "attributes": {}
+    },
+    {
+      "control": "ModelPop",
+      "file": "src/pages/AgentsView.tsx",
+      "line": 1713,
+      "local": "ModelPop",
+      "import": "../components/ModelPop",
+      "attributes": {
+        "modelPicker": "true"
+      }
+    },
+    {
+      "control": "AgentModelsPop",
+      "file": "src/pages/AgentsView.tsx",
+      "line": 1730,
+      "local": "AgentModelsPop",
+      "import": "../components/AgentModelsPop",
+      "attributes": {}
+    },
+    {
+      "control": "TextBtn",
+      "file": "src/pages/GatewayView.tsx",
+      "line": 407,
+      "local": "TextBtn",
+      "import": "../components/TextBtn",
+      "attributes": {
+        "variant": "\"action\"",
+        "className": "\"gw-fix\""
+      }
+    },
+    {
+      "control": "TextBtn",
+      "file": "src/pages/GatewayView.tsx",
+      "line": 440,
+      "local": "TextBtn",
+      "import": "../components/TextBtn",
+      "attributes": {
+        "id": "\"addGatewayKey\""
+      }
+    },
+    {
+      "control": "CopyButton",
+      "file": "src/pages/GatewayView.tsx",
+      "line": 494,
+      "local": "CopyBtn",
+      "import": "../components/CopyButton",
+      "attributes": {}
+    },
+    {
+      "control": "TextBtn",
+      "file": "src/pages/GatewayView.tsx",
+      "line": 499,
+      "local": "TextBtn",
+      "import": "../components/TextBtn",
+      "attributes": {
+        "className": "\"quiet\""
+      }
+    },
+    {
+      "control": "TextBtn",
+      "file": "src/pages/GatewayView.tsx",
+      "line": 515,
+      "local": "TextBtn",
+      "import": "../components/TextBtn",
+      "attributes": {
+        "className": "\"quiet\""
+      }
+    },
+    {
+      "control": "TextBtn",
+      "file": "src/pages/GatewayView.tsx",
+      "line": 536,
+      "local": "TextBtn",
+      "import": "../components/TextBtn",
+      "attributes": {
+        "id": "\"openLanSettings\""
+      }
+    },
+    {
+      "control": "Fold",
+      "file": "src/pages/GatewayView.tsx",
+      "line": 543,
+      "local": "Fold",
+      "import": "../components/Fold",
+      "attributes": {
+        "id": "\"foldConnect\"",
+        "aria-controls": "\"connect\""
+      }
+    },
+    {
+      "control": "CopyButton",
+      "file": "src/pages/GatewayView.tsx",
+      "line": 560,
+      "local": "CopyBtn",
+      "import": "../components/CopyButton",
+      "attributes": {}
+    },
+    {
+      "control": "ConnectionField",
+      "file": "src/pages/GatewayView.tsx",
+      "line": 569,
+      "local": "ConnectionField",
+      "import": "../components/ConnectionField",
+      "attributes": {
+        "id": "\"connect-api\""
+      }
+    },
+    {
+      "control": "Segs",
+      "file": "src/pages/GatewayView.tsx",
+      "line": 570,
+      "local": "Segs",
+      "import": "../components/Segs",
+      "attributes": {
+        "aria-label": "\"API\""
+      }
+    },
+    {
+      "control": "ConnectionField",
+      "file": "src/pages/GatewayView.tsx",
+      "line": 578,
+      "local": "ConnectionField",
+      "import": "../components/ConnectionField",
+      "attributes": {
+        "id": "\"connect-url\""
+      }
+    },
+    {
+      "control": "CopyButton",
+      "file": "src/pages/GatewayView.tsx",
+      "line": 583,
+      "local": "CopyBtn",
+      "import": "../components/CopyButton",
+      "attributes": {}
+    },
+    {
+      "control": "ConnectionField",
+      "file": "src/pages/GatewayView.tsx",
+      "line": 587,
+      "local": "ConnectionField",
+      "import": "../components/ConnectionField",
+      "attributes": {
+        "id": "\"connect-key\""
+      }
+    },
+    {
+      "control": "CopyButton",
+      "file": "src/pages/GatewayView.tsx",
+      "line": 598,
+      "local": "CopyBtn",
+      "import": "../components/CopyButton",
+      "attributes": {}
+    },
+    {
+      "control": "CopyButton",
+      "file": "src/pages/GatewayView.tsx",
+      "line": 603,
+      "local": "CopyBtn",
+      "import": "../components/CopyButton",
+      "attributes": {}
+    },
+    {
+      "control": "ConnectionField",
+      "file": "src/pages/GatewayView.tsx",
+      "line": 611,
+      "local": "ConnectionField",
+      "import": "../components/ConnectionField",
+      "attributes": {
+        "id": "\"connect-model\""
+      }
+    },
+    {
+      "control": "CopyButton",
+      "file": "src/pages/GatewayView.tsx",
+      "line": 620,
+      "local": "CopyBtn",
+      "import": "../components/CopyButton",
+      "attributes": {}
+    },
+    {
+      "control": "ConnectionField",
+      "file": "src/pages/GatewayView.tsx",
+      "line": 628,
+      "local": "ConnectionField",
+      "import": "../components/ConnectionField",
+      "attributes": {
+        "id": "\"connect-example\""
+      }
+    },
+    {
+      "control": "Segs",
+      "file": "src/pages/GatewayView.tsx",
+      "line": 632,
+      "local": "Segs",
+      "import": "../components/Segs",
+      "attributes": {
+        "aria-label": "{t(\"Example\")}"
+      }
+    },
+    {
+      "control": "Segs",
+      "file": "src/pages/GatewayView.tsx",
+      "line": 639,
+      "local": "Segs",
+      "import": "../components/Segs",
+      "attributes": {
+        "className": "\"snip-os\"",
+        "aria-label": "{t(\"Where the snippet runs\")}"
+      }
+    },
+    {
+      "control": "CopyButton",
+      "file": "src/pages/GatewayView.tsx",
+      "line": 661,
+      "local": "CopyBtn",
+      "import": "../components/CopyButton",
+      "attributes": {}
+    },
+    {
+      "control": "Fold",
+      "file": "src/pages/GatewayView.tsx",
+      "line": 669,
+      "local": "Fold",
+      "import": "../components/Fold",
+      "attributes": {
+        "id": "\"foldModels\"",
+        "aria-controls": "\"gwModels\""
+      }
+    },
+    {
+      "control": "TextBtn",
+      "file": "src/pages/GatewayView.tsx",
+      "line": 700,
+      "local": "TextBtn",
+      "import": "../components/TextBtn",
+      "attributes": {
+        "id": "\"copyModels\""
+      }
+    },
+    {
+      "control": "MagpieIcon",
+      "file": "src/pages/GatewayView.tsx",
+      "line": 729,
+      "local": "MagpieIcon",
+      "import": "../components/MagpieIcon",
+      "attributes": {}
+    },
+    {
+      "control": "CopyButton",
+      "file": "src/pages/GatewayView.tsx",
+      "line": 734,
+      "local": "CopyBtn",
+      "import": "../components/CopyButton",
+      "attributes": {}
+    },
+    {
+      "control": "FoldChev",
+      "file": "src/pages/GatewayView.tsx",
+      "line": 776,
+      "local": "FoldChev",
+      "import": "../components/Fold",
+      "attributes": {}
+    },
+    {
+      "control": "WordsField",
+      "file": "src/pages/LibraryView.tsx",
+      "line": 319,
+      "local": "WordsField",
+      "import": "../components/WordsField",
+      "attributes": {}
+    },
+    {
+      "control": "WordsField",
+      "file": "src/pages/LibraryView.tsx",
+      "line": 328,
+      "local": "WordsField",
+      "import": "../components/WordsField",
+      "attributes": {}
+    },
+    {
+      "control": "useProtocolMenu",
+      "file": "src/pages/LibraryView.tsx",
+      "line": 451,
+      "local": "useProtocolMenu",
+      "import": "../lib/useProtocolMenu"
+    },
+    {
+      "control": "useProtocolMenu",
+      "file": "src/pages/LibraryView.tsx",
+      "line": 518,
+      "local": "useProtocolMenu",
+      "import": "../lib/useProtocolMenu"
+    },
+    {
+      "control": "useProtocolMenu",
+      "file": "src/pages/LibraryView.tsx",
+      "line": 520,
+      "local": "useProtocolMenu",
+      "import": "../lib/useProtocolMenu"
+    },
+    {
+      "control": "useSegThumb",
+      "file": "src/pages/LibraryView.tsx",
+      "line": 529,
+      "local": "useSegThumb",
+      "import": "../components/SegThumb"
+    },
+    {
+      "control": "Segs",
+      "file": "src/pages/LibraryView.tsx",
+      "line": 865,
+      "local": "Segs",
+      "import": "../components/Segs",
+      "attributes": {
+        "className": "\"lib-tabs\"",
+        "aria-label": "{t(\"Library\")}"
+      }
+    },
+    {
+      "control": "Segs",
+      "file": "src/pages/LibraryView.tsx",
+      "line": 1221,
+      "local": "Segs",
+      "import": "../components/Segs",
+      "attributes": {
+        "aria-label": "\"A→Z\""
+      }
+    },
+    {
+      "control": "TextBtn",
+      "file": "src/pages/LibraryView.tsx",
+      "line": 1230,
+      "local": "TextBtn",
+      "import": "../components/TextBtn",
+      "attributes": {
+        "variant": "\"action\""
+      }
+    },
+    {
+      "control": "TextBtn",
+      "file": "src/pages/LibraryView.tsx",
+      "line": 1245,
+      "local": "TextBtn",
+      "import": "../components/TextBtn",
+      "attributes": {
+        "variant": "\"action\""
+      }
+    },
+    {
+      "control": "TextBtn",
+      "file": "src/pages/LibraryView.tsx",
+      "line": 1261,
+      "local": "TextBtn",
+      "import": "../components/TextBtn",
+      "attributes": {
+        "variant": "\"action\""
+      }
+    },
+    {
+      "control": "TextBtn",
+      "file": "src/pages/LibraryView.tsx",
+      "line": 1266,
+      "local": "TextBtn",
+      "import": "../components/TextBtn",
+      "attributes": {
+        "variant": "\"action\"",
+        "className": "\"lib-updall\""
+      }
+    },
+    {
+      "control": "TextBtn",
+      "file": "src/pages/LibraryView.tsx",
+      "line": 1268,
+      "local": "TextBtn",
+      "import": "../components/TextBtn",
+      "attributes": {}
+    },
+    {
+      "control": "LibSwitch",
+      "file": "src/pages/LibraryView.tsx",
+      "line": 1391,
+      "local": "LibSwitch",
+      "import": "../components/LibSwitch",
+      "attributes": {
+        "aria-label": "{tool.name}"
+      }
+    },
+    {
+      "control": "PopoverPortal",
+      "file": "src/pages/LibraryView.tsx",
+      "line": 1505,
+      "local": "PopoverPortal",
+      "import": "../components/PopoverPortal",
+      "attributes": {}
+    },
+    {
+      "control": "LibSwitch",
+      "file": "src/pages/LibraryView.tsx",
+      "line": 2290,
+      "local": "LibSwitch",
+      "import": "../components/LibSwitch",
+      "attributes": {
+        "aria-label": "{t(\"Copy files instead of linking\")}"
+      }
+    },
+    {
+      "control": "LibSwitch",
+      "file": "src/pages/LibraryView.tsx",
+      "line": 2615,
+      "local": "LibSwitch",
+      "import": "../components/LibSwitch",
+      "attributes": {
+        "aria-label": "{t(\"{agent} runs its commands through RTK\", { agent: a.name })}"
+      }
+    },
+    {
+      "control": "WordsField",
+      "file": "src/pages/LibraryView.tsx",
+      "line": 2692,
+      "local": "WordsField",
+      "import": "../components/WordsField",
+      "attributes": {
+        "className": "\"full\""
+      }
+    },
+    {
+      "control": "Segs",
+      "file": "src/pages/LibraryView.tsx",
+      "line": 2701,
+      "local": "Segs",
+      "import": "../components/Segs",
+      "attributes": {}
+    },
+    {
+      "control": "WordsField",
+      "file": "src/pages/LibraryView.tsx",
+      "line": 2717,
+      "local": "WordsField",
+      "import": "../components/WordsField",
+      "attributes": {
+        "className": "\"full mono\""
+      }
+    },
+    {
+      "control": "WordsField",
+      "file": "src/pages/LibraryView.tsx",
+      "line": 2739,
+      "local": "WordsField",
+      "import": "../components/WordsField",
+      "attributes": {
+        "className": "\"full mono\""
+      }
+    },
+    {
+      "control": "PopoverPortal",
+      "file": "src/pages/LibraryView.tsx",
+      "line": 2886,
+      "local": "PopoverPortal",
+      "import": "../components/PopoverPortal",
+      "attributes": {}
+    },
+    {
+      "control": "WordsField",
+      "file": "src/pages/LibraryView.tsx",
+      "line": 3065,
+      "local": "WordsField",
+      "import": "../components/WordsField",
+      "attributes": {
+        "className": "\"full\""
+      }
+    },
+    {
+      "control": "PrefPick",
+      "file": "src/pages/LibraryView.tsx",
+      "line": 3084,
+      "local": "PrefPick",
+      "import": "../components/PrefPick",
+      "attributes": {
+        "className": "\"lib-menu lib-hookevent\"",
+        "aria-haspopup": "\"menu\""
+      }
+    },
+    {
+      "control": "PopoverPortal",
+      "file": "src/pages/LibraryView.tsx",
+      "line": 3096,
+      "local": "PopoverPortal",
+      "import": "../components/PopoverPortal",
+      "attributes": {}
+    },
+    {
+      "control": "WordsField",
+      "file": "src/pages/LibraryView.tsx",
+      "line": 3190,
+      "local": "WordsField",
+      "import": "../components/WordsField",
+      "attributes": {
+        "className": "\"full mono lib-hookmatcher\""
+      }
+    },
+    {
+      "control": "PrefPick",
+      "file": "src/pages/LibraryView.tsx",
+      "line": 3201,
+      "local": "PrefPick",
+      "import": "../components/PrefPick",
+      "attributes": {
+        "className": "\"lib-menu lib-hooktool\"",
+        "aria-haspopup": "\"menu\""
+      }
+    },
+    {
+      "control": "PopoverPortal",
+      "file": "src/pages/LibraryView.tsx",
+      "line": 3210,
+      "local": "PopoverPortal",
+      "import": "../components/PopoverPortal",
+      "attributes": {}
+    },
+    {
+      "control": "WordsField",
+      "file": "src/pages/LibraryView.tsx",
+      "line": 3244,
+      "local": "WordsField",
+      "import": "../components/WordsField",
+      "attributes": {
+        "className": "\"full mono\""
+      }
+    },
+    {
+      "control": "WordsField",
+      "file": "src/pages/LibraryView.tsx",
+      "line": 3252,
+      "local": "WordsField",
+      "import": "../components/WordsField",
+      "attributes": {
+        "className": "\"lib-hooktimeout\""
+      }
+    },
+    {
+      "control": "ActionConfirm",
+      "file": "src/pages/LibraryView.tsx",
+      "line": 3274,
+      "local": "ActionConfirm",
+      "import": "../components/ActionConfirm",
+      "attributes": {}
+    },
+    {
+      "control": "Segs",
+      "file": "src/pages/LibraryView.tsx",
+      "line": 3308,
+      "local": "Segs",
+      "import": "../components/Segs",
+      "attributes": {}
+    },
+    {
+      "control": "ActionConfirm",
+      "file": "src/pages/LibraryView.tsx",
+      "line": 3364,
+      "local": "ActionConfirm",
+      "import": "../components/ActionConfirm",
+      "attributes": {}
+    },
+    {
+      "control": "ActionConfirm",
+      "file": "src/pages/LibraryView.tsx",
+      "line": 3383,
+      "local": "ActionConfirm",
+      "import": "../components/ActionConfirm",
+      "attributes": {}
+    },
+    {
+      "control": "ActionConfirm",
+      "file": "src/pages/LibraryView.tsx",
+      "line": 3505,
+      "local": "ActionConfirm",
+      "import": "../components/ActionConfirm",
+      "attributes": {}
+    },
+    {
+      "control": "ActionConfirm",
+      "file": "src/pages/LibraryView.tsx",
+      "line": 3578,
+      "local": "ActionConfirm",
+      "import": "../components/ActionConfirm",
+      "attributes": {}
+    },
+    {
+      "control": "ActionConfirm",
+      "file": "src/pages/LibraryView.tsx",
+      "line": 3599,
+      "local": "ActionConfirm",
+      "import": "../components/ActionConfirm",
+      "attributes": {}
+    },
+    {
+      "control": "ActionConfirm",
+      "file": "src/pages/LibraryView.tsx",
+      "line": 3617,
+      "local": "ActionConfirm",
+      "import": "../components/ActionConfirm",
+      "attributes": {}
+    },
+    {
+      "control": "ActionConfirm",
+      "file": "src/pages/LibraryView.tsx",
+      "line": 3636,
+      "local": "ActionConfirm",
+      "import": "../components/ActionConfirm",
+      "attributes": {}
+    },
+    {
+      "control": "MagpieIcon",
+      "file": "src/pages/ProvidersView.tsx",
+      "line": 184,
+      "local": "MagpieIcon",
+      "import": "../components/MagpieIcon",
+      "attributes": {}
+    },
+    {
+      "control": "CopyButton",
+      "file": "src/pages/ProvidersView.tsx",
+      "line": 205,
+      "local": "CopyButton",
+      "import": "../components/CopyButton",
+      "attributes": {}
+    },
+    {
+      "control": "MagpieIcon",
+      "file": "src/pages/ProvidersView.tsx",
+      "line": 625,
+      "local": "MagpieIcon",
+      "import": "../components/MagpieIcon",
+      "attributes": {}
+    },
+    {
+      "control": "Segs",
+      "file": "src/pages/ProvidersView.tsx",
+      "line": 648,
+      "local": "Segs",
+      "import": "../components/Segs",
+      "attributes": {}
+    },
+    {
+      "control": "Segs",
+      "file": "src/pages/ProvidersView.tsx",
+      "line": 738,
+      "local": "Segs",
+      "import": "../components/Segs",
+      "attributes": {}
+    },
+    {
+      "control": "MagpieIcon",
+      "file": "src/pages/ProvidersView.tsx",
+      "line": 1287,
+      "local": "MagpieIcon",
+      "import": "../components/MagpieIcon",
+      "attributes": {}
+    },
+    {
+      "control": "MagpieIcon",
+      "file": "src/pages/ProvidersView.tsx",
+      "line": 1332,
+      "local": "MagpieIcon",
+      "import": "../components/MagpieIcon",
+      "attributes": {}
+    },
+    {
+      "control": "Segs",
+      "file": "src/pages/ProvidersView.tsx",
+      "line": 1564,
+      "local": "Segs",
+      "import": "../components/Segs",
+      "attributes": {}
+    },
+    {
+      "control": "Segs",
+      "file": "src/pages/ProvidersView.tsx",
+      "line": 1611,
+      "local": "Segs",
+      "import": "../components/Segs",
+      "attributes": {}
+    },
+    {
+      "control": "Tick",
+      "file": "src/pages/ProvidersView.tsx",
+      "line": 1639,
+      "local": "Tick",
+      "import": "../components/Tick",
+      "attributes": {}
+    },
+    {
+      "control": "Tick",
+      "file": "src/pages/ProvidersView.tsx",
+      "line": 1649,
+      "local": "Tick",
+      "import": "../components/Tick",
+      "attributes": {}
+    },
+    {
+      "control": "Tick",
+      "file": "src/pages/ProvidersView.tsx",
+      "line": 1911,
+      "local": "Tick",
+      "import": "../components/Tick",
+      "attributes": {}
+    },
+    {
+      "control": "ActionConfirm",
+      "file": "src/pages/ProvidersView.tsx",
+      "line": 2169,
+      "local": "ActionConfirm",
+      "import": "../components/ActionConfirm",
+      "attributes": {}
+    },
+    {
+      "control": "useRowMenu",
+      "file": "src/pages/ProvidersView.tsx",
+      "line": 2220,
+      "local": "useRowMenu",
+      "import": "../lib/useRowMenu"
+    },
+    {
+      "control": "PopoverPortal",
+      "file": "src/pages/ProvidersView.tsx",
+      "line": 2260,
+      "local": "PopoverPortal",
+      "import": "../components/PopoverPortal",
+      "attributes": {}
+    },
+    {
+      "control": "MagpieIcon",
+      "file": "src/pages/ProvidersView.tsx",
+      "line": 2825,
+      "local": "MagpieIcon",
+      "import": "../components/MagpieIcon",
+      "attributes": {}
+    },
+    {
+      "control": "MagpieIcon",
+      "file": "src/pages/ProvidersView.tsx",
+      "line": 2843,
+      "local": "MagpieIcon",
+      "import": "../components/MagpieIcon",
+      "attributes": {}
+    },
+    {
+      "control": "LibSwitch",
+      "file": "src/pages/ProvidersView.tsx",
+      "line": 2857,
+      "local": "LibSwitch",
+      "import": "../components/LibSwitch",
+      "attributes": {
+        "kind": "\"pswitch\"",
+        "aria-label": "{t(\"Use {name}\", { name: pv.name })}"
+      }
+    },
+    {
+      "control": "Fold",
+      "file": "src/pages/ProvidersView.tsx",
+      "line": 2934,
+      "local": "Fold",
+      "import": "../components/Fold",
+      "attributes": {
+        "id": "\"foldOff\"",
+        "aria-controls": "\"offProviders\""
+      }
+    },
+    {
+      "control": "MagpieIcon",
+      "file": "src/pages/ProvidersView.tsx",
+      "line": 2981,
+      "local": "MagpieIcon",
+      "import": "../components/MagpieIcon",
+      "attributes": {}
+    },
+    {
+      "control": "LibSwitch",
+      "file": "src/pages/ProvidersView.tsx",
+      "line": 2992,
+      "local": "LibSwitch",
+      "import": "../components/LibSwitch",
+      "attributes": {
+        "kind": "\"pswitch\""
+      }
+    },
+    {
+      "control": "ProtoMultiMenu",
+      "file": "src/pages/ProvidersView.tsx",
+      "line": 3797,
+      "local": "ProtoMultiMenu",
+      "import": "../components/ProtoMultiMenu",
+      "attributes": {
+        "align": "\"left\"",
+        "live": "{false}"
+      }
+    },
+    {
+      "control": "ActionConfirm",
+      "file": "src/pages/ProvidersView.tsx",
+      "line": 4142,
+      "local": "ActionConfirm",
+      "import": "../components/ActionConfirm",
+      "attributes": {}
+    },
+    {
+      "control": "useRowMenu",
+      "file": "src/pages/RoutingView.tsx",
+      "line": 274,
+      "local": "useRowMenu",
+      "import": "../lib/useRowMenu"
+    },
+    {
+      "control": "PopoverPortal",
+      "file": "src/pages/RoutingView.tsx",
+      "line": 317,
+      "local": "PopoverPortal",
+      "import": "../components/PopoverPortal",
+      "attributes": {}
+    },
+    {
+      "control": "ProtoMultiMenu",
+      "file": "src/pages/RoutingView.tsx",
+      "line": 1068,
+      "local": "ProtoMultiMenu",
+      "import": "../components/ProtoMultiMenu",
+      "attributes": {
+        "live": "true"
+      }
+    },
+    {
+      "control": "ProtoMultiMenu",
+      "file": "src/pages/RoutingView.tsx",
+      "line": 1093,
+      "local": "ProtoMultiMenu",
+      "import": "../components/ProtoMultiMenu",
+      "attributes": {
+        "live": "true"
+      }
+    },
+    {
+      "control": "ProtoMultiMenu",
+      "file": "src/pages/RoutingView.tsx",
+      "line": 1160,
+      "local": "ProtoMultiMenu",
+      "import": "../components/ProtoMultiMenu",
+      "attributes": {
+        "live": "{false}"
+      }
+    },
+    {
+      "control": "MagpieIcon",
+      "file": "src/pages/RoutingView.tsx",
+      "line": 1437,
+      "local": "MagpieIcon",
+      "import": "../components/MagpieIcon",
+      "attributes": {}
+    },
+    {
+      "control": "Segs",
+      "file": "src/pages/RoutingView.tsx",
+      "line": 1535,
+      "local": "Segs",
+      "import": "../components/Segs",
+      "attributes": {
+        "aria-label": "{t(\"Routing\")}"
+      }
+    },
+    {
+      "control": "Segs",
+      "file": "src/pages/RoutingView.tsx",
+      "line": 1550,
+      "local": "Segs",
+      "import": "../components/Segs",
+      "attributes": {
+        "aria-label": "{t(\"Stays\")}"
+      }
+    },
+    {
+      "control": "LibSwitch",
+      "file": "src/pages/RoutingView.tsx",
+      "line": 1671,
+      "local": "LibSwitch",
+      "import": "../components/LibSwitch",
+      "attributes": {
+        "aria-label": "{t(\"Find groups on their own\")}"
+      }
+    },
+    {
+      "control": "Segs",
+      "file": "src/pages/RoutingView.tsx",
+      "line": 1697,
+      "local": "Segs",
+      "import": "../components/Segs",
+      "attributes": {
+        "aria-label": "{t(\"Names in agents’ lists\")}"
+      }
+    },
+    {
+      "control": "ProtoMultiMenu",
+      "file": "src/pages/RoutingView.tsx",
+      "line": 2005,
+      "local": "ProtoMultiMenu",
+      "import": "../components/ProtoMultiMenu",
+      "attributes": {
+        "live": "{false}",
+        "align": "\"right\""
+      }
+    },
+    {
+      "control": "MagpieIcon",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 89,
+      "local": "MagpieIcon",
+      "import": "../../components/MagpieIcon",
+      "attributes": {}
+    },
+    {
+      "control": "MagpieIcon",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 90,
+      "local": "MagpieIcon",
+      "import": "../../components/MagpieIcon",
+      "attributes": {}
+    },
+    {
+      "control": "ModelPop",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 104,
+      "local": "ModelPop",
+      "import": "../../components/ModelPop",
+      "attributes": {
+        "modelPicker": "true"
+      }
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 133,
+      "local": "PrefRow",
+      "import": "../../components/PrefRow",
+      "attributes": {
+        "className": "\"ar-own\"",
+        "dataUser": "{user}",
+        "wrapVal": "{false}"
+      }
+    },
+    {
+      "control": "Segs",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 138,
+      "local": "Segs",
+      "import": "../../components/Segs",
+      "attributes": {}
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 169,
+      "local": "PrefRow",
+      "import": "../../components/PrefRow",
+      "attributes": {}
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 213,
+      "local": "PrefRow",
+      "import": "../../components/PrefRow",
+      "attributes": {}
+    },
+    {
+      "control": "TextBtn",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 220,
+      "local": "TextBtn",
+      "import": "../../components/TextBtn",
+      "attributes": {
+        "className": "\"proxy-test\""
+      }
+    },
+    {
+      "control": "Segs",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 236,
+      "local": "Segs",
+      "import": "../../components/Segs",
+      "attributes": {}
+    },
+    {
+      "control": "TextBtn",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 265,
+      "local": "TextBtn",
+      "import": "../../components/TextBtn",
+      "attributes": {}
+    },
+    {
+      "control": "useProtocolMenu",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 297,
+      "local": "useProtocolMenu",
+      "import": "../../lib/useProtocolMenu"
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 300,
+      "local": "PrefRow",
+      "import": "../../components/PrefRow",
+      "attributes": {
+        "className": "{`lan-address-row${urls.length > 1 ? \" multi\" : \"\"}`}"
+      }
+    },
+    {
+      "control": "Segs",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 302,
+      "local": "Segs",
+      "import": "../../components/Segs",
+      "attributes": {}
+    },
+    {
+      "control": "CopyButton",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 326,
+      "local": "CopyButton",
+      "import": "../../components/CopyButton",
+      "attributes": {}
+    },
+    {
+      "control": "PopoverPortal",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 329,
+      "local": "PopoverPortal",
+      "import": "../../components/PopoverPortal",
+      "attributes": {}
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 390,
+      "local": "PrefRow",
+      "import": "../../components/PrefRow",
+      "attributes": {
+        "className": "\"rule-row\""
+      }
+    },
+    {
+      "control": "WordsField",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 396,
+      "local": "WordsField",
+      "import": "../../components/WordsField",
+      "attributes": {
+        "className": "\"rule-kind\""
+      }
+    },
+    {
+      "control": "Segs",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 397,
+      "local": "Segs",
+      "import": "../../components/Segs",
+      "attributes": {}
+    },
+    {
+      "control": "WordsField",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 410,
+      "local": "WordsField",
+      "import": "../../components/WordsField",
+      "attributes": {
+        "className": "\"rule-match\""
+      }
+    },
+    {
+      "control": "TextBtn",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 417,
+      "local": "TextBtn",
+      "import": "../../components/TextBtn",
+      "attributes": {}
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 421,
+      "local": "PrefRow",
+      "import": "../../components/PrefRow",
+      "attributes": {
+        "className": "\"rule-row rule-editing\""
+      }
+    },
+    {
+      "control": "WordsField",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 428,
+      "local": "WordsField",
+      "import": "../../components/WordsField",
+      "attributes": {
+        "className": "\"rule-kind editing\"",
+        "aria-label": "{t(\"Name\")}"
+      }
+    },
+    {
+      "control": "Segs",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 429,
+      "local": "Segs",
+      "import": "../../components/Segs",
+      "attributes": {}
+    },
+    {
+      "control": "WordsField",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 436,
+      "local": "WordsField",
+      "import": "../../components/WordsField",
+      "attributes": {
+        "className": "\"rule-match editing\""
+      }
+    },
+    {
+      "control": "TextBtn",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 453,
+      "local": "TextBtn",
+      "import": "../../components/TextBtn",
+      "attributes": {
+        "className": "\"rule-save\""
+      }
+    },
+    {
+      "control": "TextBtn",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 461,
+      "local": "TextBtn",
+      "import": "../../components/TextBtn",
+      "attributes": {
+        "className": "\"rule-cancel\""
+      }
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 465,
+      "local": "PrefRow",
+      "import": "../../components/PrefRow",
+      "attributes": {}
+    },
+    {
+      "control": "TextBtn",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 470,
+      "local": "TextBtn",
+      "import": "../../components/TextBtn",
+      "attributes": {
+        "className": "\"rule-edit\""
+      }
+    },
+    {
+      "control": "TextBtn",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 476,
+      "local": "TextBtn",
+      "import": "../../components/TextBtn",
+      "attributes": {}
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 507,
+      "local": "PrefRow",
+      "import": "../../components/PrefRow",
+      "attributes": {
+        "id": "\"otelExportRow\""
+      }
+    },
+    {
+      "control": "Segs",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 512,
+      "local": "Segs",
+      "import": "../../components/Segs",
+      "attributes": {}
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 514,
+      "local": "PrefRow",
+      "import": "../../components/PrefRow",
+      "attributes": {
+        "id": "\"otelEndpointRow\"",
+        "className": "\"otel-stacked\""
+      }
+    },
+    {
+      "control": "WordsField",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 520,
+      "local": "WordsField",
+      "import": "../../components/WordsField",
+      "attributes": {
+        "className": "\"full\"",
+        "aria-label": "{t(\"OTLP endpoint\")}"
+      }
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 522,
+      "local": "PrefRow",
+      "import": "../../components/PrefRow",
+      "attributes": {
+        "id": "\"otelHeadersRow\"",
+        "className": "\"otel-stacked\""
+      }
+    },
+    {
+      "control": "WordsField",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 528,
+      "local": "WordsField",
+      "import": "../../components/WordsField",
+      "attributes": {
+        "className": "\"full\"",
+        "aria-label": "{t(\"OTLP headers\")}"
+      }
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 533,
+      "local": "PrefRow",
+      "import": "../../components/PrefRow",
+      "attributes": {
+        "id": "\"otelMetricsRow\""
+      }
+    },
+    {
+      "control": "Segs",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 538,
+      "local": "Segs",
+      "import": "../../components/Segs",
+      "attributes": {}
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 540,
+      "local": "PrefRow",
+      "import": "../../components/PrefRow",
+      "attributes": {
+        "id": "\"otelSessionsRow\""
+      }
+    },
+    {
+      "control": "Segs",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 545,
+      "local": "Segs",
+      "import": "../../components/Segs",
+      "attributes": {}
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 550,
+      "local": "PrefRow",
+      "import": "../../components/PrefRow",
+      "attributes": {
+        "id": "\"otelBodiesRow\"",
+        "className": "\"otel-stacked\""
+      }
+    },
+    {
+      "control": "Segs",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 556,
+      "local": "Segs",
+      "import": "../../components/Segs",
+      "attributes": {}
+    },
+    {
+      "control": "Tick",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 620,
+      "local": "Tick",
+      "import": "../../components/Tick",
+      "attributes": {}
+    },
+    {
+      "control": "Tick",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 621,
+      "local": "Tick",
+      "import": "../../components/Tick",
+      "attributes": {}
+    },
+    {
+      "control": "Tick",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 622,
+      "local": "Tick",
+      "import": "../../components/Tick",
+      "attributes": {}
+    },
+    {
+      "control": "Tick",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 623,
+      "local": "Tick",
+      "import": "../../components/Tick",
+      "attributes": {}
+    },
+    {
+      "control": "TextBtn",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 633,
+      "local": "TextBtn",
+      "import": "../../components/TextBtn",
+      "attributes": {
+        "variant": "\"danger\""
+      }
+    },
+    {
+      "control": "TextBtn",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 635,
+      "local": "TextBtn",
+      "import": "../../components/TextBtn",
+      "attributes": {}
+    },
+    {
+      "control": "TextBtn",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 636,
+      "local": "TextBtn",
+      "import": "../../components/TextBtn",
+      "attributes": {
+        "variant": "\"primary\""
+      }
+    },
+    {
+      "control": "Segs",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 656,
+      "local": "Segs",
+      "import": "../../components/Segs",
+      "attributes": {}
+    },
+    {
+      "control": "WordsField",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 670,
+      "local": "WordsField",
+      "import": "../../components/WordsField",
+      "attributes": {
+        "className": "\"full\""
+      }
+    },
+    {
+      "control": "WordsField",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 674,
+      "local": "WordsField",
+      "import": "../../components/WordsField",
+      "attributes": {
+        "className": "\"full\""
+      }
+    },
+    {
+      "control": "WordsField",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 676,
+      "local": "WordsField",
+      "import": "../../components/WordsField",
+      "attributes": {
+        "className": "\"full\""
+      }
+    },
+    {
+      "control": "WordsField",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 682,
+      "local": "WordsField",
+      "import": "../../components/WordsField",
+      "attributes": {
+        "className": "\"full\""
+      }
+    },
+    {
+      "control": "WordsField",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 686,
+      "local": "WordsField",
+      "import": "../../components/WordsField",
+      "attributes": {
+        "className": "\"full\""
+      }
+    },
+    {
+      "control": "WordsField",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 689,
+      "local": "WordsField",
+      "import": "../../components/WordsField",
+      "attributes": {
+        "className": "\"full\""
+      }
+    },
+    {
+      "control": "WordsField",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 693,
+      "local": "WordsField",
+      "import": "../../components/WordsField",
+      "attributes": {
+        "className": "\"full\""
+      }
+    },
+    {
+      "control": "WordsField",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 695,
+      "local": "WordsField",
+      "import": "../../components/WordsField",
+      "attributes": {
+        "className": "\"full\""
+      }
+    },
+    {
+      "control": "WordsField",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 697,
+      "local": "WordsField",
+      "import": "../../components/WordsField",
+      "attributes": {
+        "className": "\"full\""
+      }
+    },
+    {
+      "control": "Tick",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 700,
+      "local": "Tick",
+      "import": "../../components/Tick",
+      "attributes": {}
+    },
+    {
+      "control": "WordsField",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 708,
+      "local": "WordsField",
+      "import": "../../components/WordsField",
+      "attributes": {
+        "className": "\"full\""
+      }
+    },
+    {
+      "control": "WordsField",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 713,
+      "local": "WordsField",
+      "import": "../../components/WordsField",
+      "attributes": {
+        "className": "\"full\""
+      }
+    },
+    {
+      "control": "WordsField",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 718,
+      "local": "WordsField",
+      "import": "../../components/WordsField",
+      "attributes": {
+        "className": "\"full\""
+      }
+    },
+    {
+      "control": "WordsField",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 723,
+      "local": "WordsField",
+      "import": "../../components/WordsField",
+      "attributes": {
+        "className": "\"full\""
+      }
+    },
+    {
+      "control": "WordsField",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 730,
+      "local": "WordsField",
+      "import": "../../components/WordsField",
+      "attributes": {
+        "className": "\"full\""
+      }
+    },
+    {
+      "control": "WordsField",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 747,
+      "local": "WordsField",
+      "import": "../../components/WordsField",
+      "attributes": {
+        "className": "\"full\""
+      }
+    },
+    {
+      "control": "WordsField",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 751,
+      "local": "WordsField",
+      "import": "../../components/WordsField",
+      "attributes": {
+        "className": "\"full\""
+      }
+    },
+    {
+      "control": "Tick",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 754,
+      "local": "Tick",
+      "import": "../../components/Tick",
+      "attributes": {}
+    },
+    {
+      "control": "Tick",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 755,
+      "local": "Tick",
+      "import": "../../components/Tick",
+      "attributes": {}
+    },
+    {
+      "control": "TextBtn",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 760,
+      "local": "TextBtn",
+      "import": "../../components/TextBtn",
+      "attributes": {}
+    },
+    {
+      "control": "TextBtn",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 761,
+      "local": "TextBtn",
+      "import": "../../components/TextBtn",
+      "attributes": {
+        "variant": "\"primary\""
+      }
+    },
+    {
+      "control": "TextBtn",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 785,
+      "local": "TextBtn",
+      "import": "../../components/TextBtn",
+      "attributes": {}
+    },
+    {
+      "control": "WordsField",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 801,
+      "local": "WordsField",
+      "import": "../../components/WordsField",
+      "attributes": {
+        "className": "\"full\""
+      }
+    },
+    {
+      "control": "Tick",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 804,
+      "local": "Tick",
+      "import": "../../components/Tick",
+      "attributes": {}
+    },
+    {
+      "control": "Tick",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 805,
+      "local": "Tick",
+      "import": "../../components/Tick",
+      "attributes": {}
+    },
+    {
+      "control": "TextBtn",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 810,
+      "local": "TextBtn",
+      "import": "../../components/TextBtn",
+      "attributes": {}
+    },
+    {
+      "control": "TextBtn",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 811,
+      "local": "TextBtn",
+      "import": "../../components/TextBtn",
+      "attributes": {
+        "variant": "\"primary\""
+      }
+    },
+    {
+      "control": "TextBtn",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 840,
+      "local": "TextBtn",
+      "import": "../../components/TextBtn",
+      "attributes": {}
+    },
+    {
+      "control": "TextBtn",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 841,
+      "local": "TextBtn",
+      "import": "../../components/TextBtn",
+      "attributes": {
+        "variant": "\"primary\"",
+        "className": "\"danger-fill\""
+      }
+    },
+    {
+      "control": "TextBtn",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 883,
+      "local": "TextBtn",
+      "import": "../../components/TextBtn",
+      "attributes": {
+        "variant": "\"primary\""
+      }
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 893,
+      "local": "PrefRow",
+      "import": "../../components/PrefRow",
+      "attributes": {
+        "className": "\"cli-row\""
+      }
+    },
+    {
+      "control": "CopyButton",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 910,
+      "local": "CopyButton",
+      "import": "../../components/CopyButton",
+      "attributes": {}
+    },
+    {
+      "control": "MagpieIcon",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 947,
+      "local": "MagpieIcon",
+      "import": "../../components/MagpieIcon",
+      "attributes": {}
+    },
+    {
+      "control": "ModelPop",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 976,
+      "local": "ModelPop",
+      "import": "../../components/ModelPop",
+      "attributes": {
+        "modelPicker": "true"
+      }
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 1014,
+      "local": "PrefRow",
+      "import": "../../components/PrefRow",
+      "attributes": {
+        "className": "\"update-mirror-row\""
+      }
+    },
+    {
+      "control": "TextBtn",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 1030,
+      "local": "TextBtn",
+      "import": "../../components/TextBtn",
+      "attributes": {}
+    },
+    {
+      "control": "TextBtn",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 1039,
+      "local": "TextBtn",
+      "import": "../../components/TextBtn",
+      "attributes": {}
+    },
+    {
+      "control": "TextBtn",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 1051,
+      "local": "TextBtn",
+      "import": "../../components/TextBtn",
+      "attributes": {}
+    },
+    {
+      "control": "WordsField",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 1064,
+      "local": "WordsField",
+      "import": "../../components/WordsField",
+      "attributes": {
+        "className": "\"update-mirror-input\"",
+        "aria-label": "{t(\"Mirror address\")}"
+      }
+    },
+    {
+      "control": "TextBtn",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 1089,
+      "local": "TextBtn",
+      "import": "../../components/TextBtn",
+      "attributes": {}
+    },
+    {
+      "control": "TextBtn",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 1097,
+      "local": "TextBtn",
+      "import": "../../components/TextBtn",
+      "attributes": {}
+    },
+    {
+      "control": "useProtocolMenu",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 1130,
+      "local": "useProtocolMenu",
+      "import": "../../lib/useProtocolMenu"
+    },
+    {
+      "control": "PopoverPortal",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 1156,
+      "local": "PopoverPortal",
+      "import": "../../components/PopoverPortal",
+      "attributes": {}
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 1215,
+      "local": "PrefRow",
+      "import": "../../components/PrefRow",
+      "attributes": {
+        "id": "\"disabledAddRow\"",
+        "className": "\"wraps\""
+      }
+    },
+    {
+      "control": "TextBtn",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 1222,
+      "local": "TextBtn",
+      "import": "../../components/TextBtn",
+      "attributes": {
+        "variant": "\"action\"",
+        "id": "\"disabledAdd\""
+      }
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 1235,
+      "local": "PrefRow",
+      "import": "../../components/PrefRow",
+      "attributes": {
+        "className": "\"disabled-model\"",
+        "dataPattern": "{pat}"
+      }
+    },
+    {
+      "control": "TextBtn",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 1247,
+      "local": "TextBtn",
+      "import": "../../components/TextBtn",
+      "attributes": {
+        "aria-label": "{t(\"Enable {model}\", { model: pat })}"
+      }
+    },
+    {
+      "control": "ModelPop",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 1260,
+      "local": "ModelPop",
+      "import": "../../components/ModelPop",
+      "attributes": {
+        "modelPicker": "true"
+      }
+    },
+    {
+      "control": "useProtocolMenu",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 1306,
+      "local": "useProtocolMenu",
+      "import": "../../lib/useProtocolMenu"
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 1329,
+      "local": "PrefRow",
+      "import": "../../components/PrefRow",
+      "attributes": {
+        "className": "{`rule-row search-add${err ? \" err\" : \"\"}`}"
+      }
+    },
+    {
+      "control": "WordsField",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 1352,
+      "local": "WordsField",
+      "import": "../../components/WordsField",
+      "attributes": {
+        "className": "\"search-key\"",
+        "aria-label": "{t(\"API key\")}"
+      }
+    },
+    {
+      "control": "TextBtn",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 1379,
+      "local": "TextBtn",
+      "import": "../../components/TextBtn",
+      "attributes": {}
+    },
+    {
+      "control": "WordsField",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 1380,
+      "local": "WordsField",
+      "import": "../../components/WordsField",
+      "attributes": {
+        "className": "\"search-url\"",
+        "aria-label": "{v.needURL ? t(\"Address\") : t(\"Base URL\")}"
+      }
+    },
+    {
+      "control": "PopoverPortal",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 1391,
+      "local": "PopoverPortal",
+      "import": "../../components/PopoverPortal",
+      "attributes": {}
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 1425,
+      "local": "PrefRow",
+      "import": "../../components/PrefRow",
+      "attributes": {
+        "className": "\"search-api\""
+      }
+    },
+    {
+      "control": "TextBtn",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 1434,
+      "local": "TextBtn",
+      "import": "../../components/TextBtn",
+      "attributes": {
+        "className": "\"search-eye\""
+      }
+    },
+    {
+      "control": "TextBtn",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 1440,
+      "local": "TextBtn",
+      "import": "../../components/TextBtn",
+      "attributes": {
+        "className": "\"search-copy\""
+      }
+    },
+    {
+      "control": "TextBtn",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 1455,
+      "local": "TextBtn",
+      "import": "../../components/TextBtn",
+      "attributes": {}
+    },
+    {
+      "control": "Segs",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 1512,
+      "local": "Segs",
+      "import": "../../components/Segs",
+      "attributes": {}
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 1542,
+      "local": "PrefRow",
+      "import": "../../components/PrefRow",
+      "attributes": {
+        "id": "\"aboutVersionRow\""
+      }
+    },
+    {
+      "control": "TextBtn",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 1548,
+      "local": "TextBtn",
+      "import": "../../components/TextBtn",
+      "attributes": {}
+    },
+    {
+      "control": "useAnchoredPopover",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 1803,
+      "local": "useAnchoredPopover",
+      "import": "../../lib/useAnchoredPopover"
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 1942,
+      "local": "PrefRow",
+      "import": "../../components/PrefRow",
+      "attributes": {
+        "className": "\"font-row\"",
+        "id": "{`${kind}FontRow`}",
+        "wrapVal": "{false}"
+      }
+    },
+    {
+      "control": "PrefPick",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 1944,
+      "local": "PrefPick",
+      "import": "../../components/PrefPick",
+      "attributes": {
+        "variant": "\"protocol\"",
+        "className": "\"font-family\"",
+        "aria-haspopup": "\"menu\"",
+        "aria-label": "{`${t(label)}: ${t(\"Font family\")}`}"
+      }
+    },
+    {
+      "control": "PrefPick",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 1964,
+      "local": "PrefPick",
+      "import": "../../components/PrefPick",
+      "attributes": {
+        "variant": "\"protocol\"",
+        "className": "\"font-style\"",
+        "aria-haspopup": "\"menu\"",
+        "aria-label": "{`${t(label)}: ${t(\"Font style\")}`}"
+      }
+    },
+    {
+      "control": "PopoverPortal",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 1984,
+      "local": "PopoverPortal",
+      "import": "../../components/PopoverPortal",
+      "attributes": {}
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 564,
+      "local": "PrefRow",
+      "import": "../components/PrefRow",
+      "attributes": {}
+    },
+    {
+      "control": "Segs",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 565,
+      "local": "Segs",
+      "import": "../components/Segs",
+      "attributes": {}
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 584,
+      "local": "PrefRow",
+      "import": "../components/PrefRow",
+      "attributes": {
+        "id": "\"colorblindRow\""
+      }
+    },
+    {
+      "control": "Segs",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 588,
+      "local": "Segs",
+      "import": "../components/Segs",
+      "attributes": {}
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 600,
+      "local": "PrefRow",
+      "import": "../components/PrefRow",
+      "attributes": {}
+    },
+    {
+      "control": "PrefPick",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 602,
+      "local": "PrefPick",
+      "import": "../components/PrefPick",
+      "attributes": {
+        "id": "\"langPick\"",
+        "aria-label": "{t(\"Language\")}",
+        "aria-haspopup": "\"menu\""
+      }
+    },
+    {
+      "control": "ProtoMultiMenu",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 611,
+      "local": "ProtoMultiMenu",
+      "import": "../components/ProtoMultiMenu",
+      "attributes": {
+        "align": "\"right\""
+      }
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 617,
+      "local": "PrefRow",
+      "import": "../components/PrefRow",
+      "attributes": {
+        "id": "\"textSizeRow\""
+      }
+    },
+    {
+      "control": "Segs",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 623,
+      "local": "Segs",
+      "import": "../components/Segs",
+      "attributes": {}
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 651,
+      "local": "PrefRow",
+      "import": "../components/PrefRow",
+      "attributes": {}
+    },
+    {
+      "control": "Segs",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 652,
+      "local": "Segs",
+      "import": "../components/Segs",
+      "attributes": {}
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 663,
+      "local": "PrefRow",
+      "import": "../components/PrefRow",
+      "attributes": {
+        "id": "\"plainNamesRow\""
+      }
+    },
+    {
+      "control": "Segs",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 664,
+      "local": "Segs",
+      "import": "../components/Segs",
+      "attributes": {}
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 676,
+      "local": "PrefRow",
+      "import": "../components/PrefRow",
+      "attributes": {}
+    },
+    {
+      "control": "Segs",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 681,
+      "local": "Segs",
+      "import": "../components/Segs",
+      "attributes": {}
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 692,
+      "local": "PrefRow",
+      "import": "../components/PrefRow",
+      "attributes": {}
+    },
+    {
+      "control": "Segs",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 698,
+      "local": "Segs",
+      "import": "../components/Segs",
+      "attributes": {}
+    },
+    {
+      "control": "WordsField",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 710,
+      "local": "WordsField",
+      "import": "../components/WordsField",
+      "attributes": {
+        "className": "\"compact-num\"",
+        "aria-label": "{t(\"Compact at\")}"
+      }
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 747,
+      "local": "PrefRow",
+      "import": "../components/PrefRow",
+      "attributes": {
+        "id": "\"codexTitlesRow\""
+      }
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 752,
+      "local": "PrefRow",
+      "import": "../components/PrefRow",
+      "attributes": {
+        "id": "\"codexDescriptionsRow\""
+      }
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 757,
+      "local": "PrefRow",
+      "import": "../components/PrefRow",
+      "attributes": {
+        "id": "\"codexPredictionsRow\""
+      }
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 762,
+      "local": "PrefRow",
+      "import": "../components/PrefRow",
+      "attributes": {
+        "id": "\"codexAutoReviewRow\""
+      }
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 767,
+      "local": "PrefRow",
+      "import": "../components/PrefRow",
+      "attributes": {}
+    },
+    {
+      "control": "Segs",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 768,
+      "local": "Segs",
+      "import": "../components/Segs",
+      "attributes": {}
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 799,
+      "local": "PrefRow",
+      "import": "../components/PrefRow",
+      "attributes": {
+        "id": "\"lightweightRow\""
+      }
+    },
+    {
+      "control": "Segs",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 805,
+      "local": "Segs",
+      "import": "../components/Segs",
+      "attributes": {}
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 816,
+      "local": "PrefRow",
+      "import": "../components/PrefRow",
+      "attributes": {
+        "id": "\"keepAwakeRow\""
+      }
+    },
+    {
+      "control": "Segs",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 826,
+      "local": "Segs",
+      "import": "../components/Segs",
+      "attributes": {}
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 851,
+      "local": "PrefRow",
+      "import": "../components/PrefRow",
+      "attributes": {
+        "id": "\"trayUsageRow\""
+      }
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 863,
+      "local": "PrefRow",
+      "import": "../components/PrefRow",
+      "attributes": {
+        "id": "\"trayEveryRow\""
+      }
+    },
+    {
+      "control": "Segs",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 864,
+      "local": "Segs",
+      "import": "../components/Segs",
+      "attributes": {}
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 878,
+      "local": "PrefRow",
+      "import": "../components/PrefRow",
+      "attributes": {
+        "id": "\"trayLogosRow\""
+      }
+    },
+    {
+      "control": "Segs",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 883,
+      "local": "Segs",
+      "import": "../components/Segs",
+      "attributes": {}
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 894,
+      "local": "PrefRow",
+      "import": "../components/PrefRow",
+      "attributes": {
+        "id": "\"trayBirdRow\""
+      }
+    },
+    {
+      "control": "Segs",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 899,
+      "local": "Segs",
+      "import": "../components/Segs",
+      "attributes": {}
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 910,
+      "local": "PrefRow",
+      "import": "../components/PrefRow",
+      "attributes": {
+        "id": "\"trayPaceRow\""
+      }
+    },
+    {
+      "control": "Segs",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 915,
+      "local": "Segs",
+      "import": "../components/Segs",
+      "attributes": {}
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 926,
+      "local": "PrefRow",
+      "import": "../components/PrefRow",
+      "attributes": {}
+    },
+    {
+      "control": "Segs",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 930,
+      "local": "Segs",
+      "import": "../components/Segs",
+      "attributes": {}
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 941,
+      "local": "PrefRow",
+      "import": "../components/PrefRow",
+      "attributes": {
+        "id": "\"quotaReadsRow\""
+      }
+    },
+    {
+      "control": "Segs",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 946,
+      "local": "Segs",
+      "import": "../components/Segs",
+      "attributes": {}
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 957,
+      "local": "PrefRow",
+      "import": "../components/PrefRow",
+      "attributes": {}
+    },
+    {
+      "control": "Segs",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 961,
+      "local": "Segs",
+      "import": "../components/Segs",
+      "attributes": {}
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 972,
+      "local": "PrefRow",
+      "import": "../components/PrefRow",
+      "attributes": {
+        "id": "\"unitsRow\""
+      }
+    },
+    {
+      "control": "Segs",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 977,
+      "local": "Segs",
+      "import": "../components/Segs",
+      "attributes": {}
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 988,
+      "local": "PrefRow",
+      "import": "../components/PrefRow",
+      "attributes": {
+        "id": "\"usageAlertRow\""
+      }
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 1004,
+      "local": "PrefRow",
+      "import": "../components/PrefRow",
+      "attributes": {
+        "id": "\"balanceAlertRow\""
+      }
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 1019,
+      "local": "PrefRow",
+      "import": "../components/PrefRow",
+      "attributes": {
+        "id": "\"resetReminderRow\""
+      }
+    },
+    {
+      "control": "Segs",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 1024,
+      "local": "Segs",
+      "import": "../components/Segs",
+      "attributes": {}
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 1037,
+      "local": "PrefRow",
+      "import": "../components/PrefRow",
+      "attributes": {
+        "id": "\"turnDoneRow\""
+      }
+    },
+    {
+      "control": "Segs",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 1038,
+      "local": "Segs",
+      "import": "../components/Segs",
+      "attributes": {}
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 1050,
+      "local": "PrefRow",
+      "import": "../components/PrefRow",
+      "attributes": {
+        "id": "\"codexAutoResetRow\"",
+        "className": "\"wraps\""
+      }
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 1078,
+      "local": "PrefRow",
+      "import": "../components/PrefRow",
+      "attributes": {}
+    },
+    {
+      "control": "Segs",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 1079,
+      "local": "Segs",
+      "import": "../components/Segs",
+      "attributes": {}
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 1102,
+      "local": "PrefRow",
+      "import": "../components/PrefRow",
+      "attributes": {}
+    },
+    {
+      "control": "Segs",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 1103,
+      "local": "Segs",
+      "import": "../components/Segs",
+      "attributes": {}
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 1155,
+      "local": "PrefRow",
+      "import": "../components/PrefRow",
+      "attributes": {
+        "className": "\"github-token\""
+      }
+    },
+    {
+      "control": "WordsField",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 1160,
+      "local": "WordsField",
+      "import": "../components/WordsField",
+      "attributes": {
+        "className": "\"github-token-input\"",
+        "aria-label": "{t(\"GitHub token\")}"
+      }
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 1197,
+      "local": "PrefRow",
+      "import": "../components/PrefRow",
+      "attributes": {
+        "className": "\"port-row\""
+      }
+    },
+    {
+      "control": "WordsField",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 1202,
+      "local": "WordsField",
+      "import": "../components/WordsField",
+      "attributes": {
+        "className": "\"gateway-port\"",
+        "aria-label": "{t(\"Gateway port\")}"
+      }
+    },
+    {
+      "control": "TextBtn",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 1209,
+      "local": "TextBtn",
+      "import": "../components/TextBtn",
+      "attributes": {}
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 1226,
+      "local": "PrefRow",
+      "import": "../components/PrefRow",
+      "attributes": {
+        "id": "\"bareIdsRow\""
+      }
+    },
+    {
+      "control": "Segs",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 1231,
+      "local": "Segs",
+      "import": "../components/Segs",
+      "attributes": {}
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 1246,
+      "local": "PrefRow",
+      "import": "../components/PrefRow",
+      "attributes": {}
+    },
+    {
+      "control": "Segs",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 1250,
+      "local": "Segs",
+      "import": "../components/Segs",
+      "attributes": {}
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 1272,
+      "local": "PrefRow",
+      "import": "../components/PrefRow",
+      "attributes": {
+        "className": "\"rule-row\""
+      }
+    },
+    {
+      "control": "WordsField",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 1278,
+      "local": "WordsField",
+      "import": "../components/WordsField",
+      "attributes": {
+        "className": "\"rule-match allow-ip\"",
+        "aria-label": "{t(\"IP address or range\")}"
+      }
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 1304,
+      "local": "PrefRow",
+      "import": "../components/PrefRow",
+      "attributes": {
+        "className": "\"allow-ip-row\""
+      }
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 1322,
+      "local": "PrefRow",
+      "import": "../components/PrefRow",
+      "attributes": {
+        "className": "\"rule-row\""
+      }
+    },
+    {
+      "control": "WordsField",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 1328,
+      "local": "WordsField",
+      "import": "../components/WordsField",
+      "attributes": {
+        "className": "\"rule-match\"",
+        "aria-label": "{t(\"Web page origin\")}"
+      }
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 1355,
+      "local": "PrefRow",
+      "import": "../components/PrefRow",
+      "attributes": {
+        "className": "\"cors-origin\""
+      }
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 1381,
+      "local": "PrefRow",
+      "import": "../components/PrefRow",
+      "attributes": {}
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 1396,
+      "local": "PrefRow",
+      "import": "../components/PrefRow",
+      "attributes": {}
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 1423,
+      "local": "PrefRow",
+      "import": "../components/PrefRow",
+      "attributes": {}
+    },
+    {
+      "control": "CopyButton",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 1425,
+      "local": "CopyBtn",
+      "import": "../components/CopyButton",
+      "attributes": {}
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 1430,
+      "local": "PrefRow",
+      "import": "../components/PrefRow",
+      "attributes": {}
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 1450,
+      "local": "PrefRow",
+      "import": "../components/PrefRow",
+      "attributes": {}
+    },
+    {
+      "control": "CopyButton",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 1452,
+      "local": "CopyBtn",
+      "import": "../components/CopyButton",
+      "attributes": {}
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 1457,
+      "local": "PrefRow",
+      "import": "../components/PrefRow",
+      "attributes": {
+        "id": "\"memberModelRow\""
+      }
+    },
+    {
+      "control": "Segs",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 1462,
+      "local": "Segs",
+      "import": "../components/Segs",
+      "attributes": {}
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 1468,
+      "local": "PrefRow",
+      "import": "../components/PrefRow",
+      "attributes": {
+        "id": "\"loopGuardRow\"",
+        "className": "\"wraps\""
+      }
+    },
+    {
+      "control": "Segs",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 1474,
+      "local": "Segs",
+      "import": "../components/Segs",
+      "attributes": {}
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 1480,
+      "local": "PrefRow",
+      "import": "../components/PrefRow",
+      "attributes": {
+        "id": "\"refusalRetriesRow\"",
+        "className": "\"wraps\""
+      }
+    },
+    {
+      "control": "Segs",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 1486,
+      "local": "Segs",
+      "import": "../components/Segs",
+      "attributes": {}
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 1518,
+      "local": "PrefRow",
+      "import": "../components/PrefRow",
+      "attributes": {}
+    },
+    {
+      "control": "Segs",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 1519,
+      "local": "Segs",
+      "import": "../components/Segs",
+      "attributes": {}
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 1521,
+      "local": "PrefRow",
+      "import": "../components/PrefRow",
+      "attributes": {}
+    },
+    {
+      "control": "Segs",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 1522,
+      "local": "Segs",
+      "import": "../components/Segs",
+      "attributes": {}
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 1537,
+      "local": "PrefRow",
+      "import": "../components/PrefRow",
+      "attributes": {
+        "className": "\"redact-kind\"",
+        "id": "{`redact-${id}`}"
+      }
+    },
+    {
+      "control": "Segs",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 1544,
+      "local": "Segs",
+      "import": "../components/Segs",
+      "attributes": {}
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 1557,
+      "local": "PrefRow",
+      "import": "../components/PrefRow",
+      "attributes": {}
+    },
+    {
+      "control": "Segs",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 1558,
+      "local": "Segs",
+      "import": "../components/Segs",
+      "attributes": {}
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 1560,
+      "local": "PrefRow",
+      "import": "../components/PrefRow",
+      "attributes": {}
+    },
+    {
+      "control": "WordsField",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 1561,
+      "local": "WordsField",
+      "import": "../components/WordsField",
+      "attributes": {
+        "aria-label": "{t(\"Masked words\")}"
+      }
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 1594,
+      "local": "PrefRow",
+      "import": "../components/PrefRow",
+      "attributes": {}
+    },
+    {
+      "control": "Segs",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 1595,
+      "local": "Segs",
+      "import": "../components/Segs",
+      "attributes": {}
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 1598,
+      "local": "PrefRow",
+      "import": "../components/PrefRow",
+      "attributes": {}
+    },
+    {
+      "control": "Segs",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 1599,
+      "local": "Segs",
+      "import": "../components/Segs",
+      "attributes": {}
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 1605,
+      "local": "PrefRow",
+      "import": "../components/PrefRow",
+      "attributes": {}
+    },
+    {
+      "control": "Segs",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 1609,
+      "local": "Segs",
+      "import": "../components/Segs",
+      "attributes": {}
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 1654,
+      "local": "PrefRow",
+      "import": "../components/PrefRow",
+      "attributes": {}
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 1696,
+      "local": "PrefRow",
+      "import": "../components/PrefRow",
+      "attributes": {}
+    },
+    {
+      "control": "Segs",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 1697,
+      "local": "Segs",
+      "import": "../components/Segs",
+      "attributes": {}
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 1699,
+      "local": "PrefRow",
+      "import": "../components/PrefRow",
+      "attributes": {}
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 1704,
+      "local": "PrefRow",
+      "import": "../components/PrefRow",
+      "attributes": {}
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 1710,
+      "local": "PrefRow",
+      "import": "../components/PrefRow",
+      "attributes": {}
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 1730,
+      "local": "PrefRow",
+      "import": "../components/PrefRow",
+      "attributes": {
+        "className": "\"whatsnew-row\""
+      }
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 1735,
+      "local": "PrefRow",
+      "import": "../components/PrefRow",
+      "attributes": {
+        "className": "\"update-pill-row\""
+      }
+    },
+    {
+      "control": "Segs",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 1736,
+      "local": "Segs",
+      "import": "../components/Segs",
+      "attributes": {}
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 1745,
+      "local": "PrefRow",
+      "import": "../components/PrefRow",
+      "attributes": {
+        "className": "\"update-auto-row\""
+      }
+    },
+    {
+      "control": "Segs",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 1746,
+      "local": "Segs",
+      "import": "../components/Segs",
+      "attributes": {}
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 1755,
+      "local": "PrefRow",
+      "import": "../components/PrefRow",
+      "attributes": {
+        "className": "{`update-every-row${prefs.noAutoUpdate ? \" off\" : \"\"}`}"
+      }
+    },
+    {
+      "control": "Segs",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 1760,
+      "local": "Segs",
+      "import": "../components/Segs",
+      "attributes": {}
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 1771,
+      "local": "PrefRow",
+      "import": "../components/PrefRow",
+      "attributes": {
+        "className": "{`update-restart-row${prefs.noAutoUpdate ? \" off\" : \"\"}`}"
+      }
+    },
+    {
+      "control": "Segs",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 1780,
+      "local": "Segs",
+      "import": "../components/Segs",
+      "attributes": {}
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 1794,
+      "local": "PrefRow",
+      "import": "../components/PrefRow",
+      "attributes": {}
+    },
+    {
+      "control": "CopyButton",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 1796,
+      "local": "CopyBtn",
+      "import": "../components/CopyButton",
+      "attributes": {}
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 1802,
+      "local": "PrefRow",
+      "import": "../components/PrefRow",
+      "attributes": {}
+    },
+    {
+      "control": "CopyButton",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 1804,
+      "local": "CopyBtn",
+      "import": "../components/CopyButton",
+      "attributes": {}
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 1806,
+      "local": "PrefRow",
+      "import": "../components/PrefRow",
+      "attributes": {}
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 1830,
+      "local": "PrefRow",
+      "import": "../components/PrefRow",
+      "attributes": {}
+    },
+    {
+      "control": "useRowMenu",
+      "file": "src/pages/SimpleViews.tsx",
+      "line": 70,
+      "local": "useRowMenu",
+      "import": "../lib/useRowMenu"
+    },
+    {
+      "control": "PopoverPortal",
+      "file": "src/pages/SimpleViews.tsx",
+      "line": 73,
+      "local": "PopoverPortal",
+      "import": "../components/PopoverPortal",
+      "attributes": {}
+    },
+    {
+      "control": "ProtoMultiMenu",
+      "file": "src/pages/SimpleViews.tsx",
+      "line": 240,
+      "local": "ProtoMultiMenu",
+      "import": "../components/ProtoMultiMenu",
+      "attributes": {
+        "align": "\"left\""
+      }
+    },
+    {
+      "control": "useAnchoredPopover",
+      "file": "src/pages/SimpleViews.tsx",
+      "line": 281,
+      "local": "useAnchoredPopover",
+      "import": "../lib/useAnchoredPopover"
+    },
+    {
+      "control": "PopoverPortal",
+      "file": "src/pages/SimpleViews.tsx",
+      "line": 399,
+      "local": "PopoverPortal",
+      "import": "../components/PopoverPortal",
+      "attributes": {}
+    },
+    {
+      "control": "useSegThumb",
+      "file": "src/pages/SimpleViews.tsx",
+      "line": 669,
+      "local": "useSegThumb",
+      "import": "../components/SegThumb"
+    },
+    {
+      "control": "Segs",
+      "file": "src/pages/SimpleViews.tsx",
+      "line": 772,
+      "local": "Segs",
+      "import": "../components/Segs",
+      "attributes": {}
+    },
+    {
+      "control": "Segs",
+      "file": "src/pages/SimpleViews.tsx",
+      "line": 824,
+      "local": "Segs",
+      "import": "../components/Segs",
+      "attributes": {}
+    },
+    {
+      "control": "Segs",
+      "file": "src/pages/SimpleViews.tsx",
+      "line": 832,
+      "local": "Segs",
+      "import": "../components/Segs",
+      "attributes": {}
+    },
+    {
+      "control": "TextBtn",
+      "file": "src/pages/SimpleViews.tsx",
+      "line": 886,
+      "local": "TextBtn",
+      "import": "../components/TextBtn",
+      "attributes": {
+        "className": "\"rt-mask\"",
+        "id": "\"usageMask\"",
+        "aria-pressed": "{mask}"
+      }
+    },
+    {
+      "control": "MagpieIcon",
+      "file": "src/pages/SimpleViews.tsx",
+      "line": 1000,
+      "local": "MagpieIcon",
+      "import": "../components/MagpieIcon",
+      "attributes": {}
+    },
+    {
+      "control": "TextBtn",
+      "file": "src/pages/SimpleViews.tsx",
+      "line": 1046,
+      "local": "TextBtn",
+      "import": "../components/TextBtn",
+      "attributes": {
+        "className": "\"us-hidline\"",
+        "aria-expanded": "{usageHidOpen}"
+      }
+    },
+    {
+      "control": "MagpieIcon",
+      "file": "src/pages/SimpleViews.tsx",
+      "line": 1063,
+      "local": "MagpieIcon",
+      "import": "../components/MagpieIcon",
+      "attributes": {}
+    },
+    {
+      "control": "TextBtn",
+      "file": "src/pages/SimpleViews.tsx",
+      "line": 1068,
+      "local": "TextBtn",
+      "import": "../components/TextBtn",
+      "attributes": {
+        "className": "\"us-unhide\""
+      }
+    },
+    {
+      "control": "MagpieIcon",
+      "file": "src/pages/SimpleViews.tsx",
+      "line": 1102,
+      "local": "MagpieIcon",
+      "import": "../components/MagpieIcon",
+      "attributes": {}
+    },
+    {
+      "control": "MagpieIcon",
+      "file": "src/pages/SimpleViews.tsx",
+      "line": 1131,
+      "local": "MagpieIcon",
+      "import": "../components/MagpieIcon",
+      "attributes": {}
+    },
+    {
+      "control": "Segs",
+      "file": "src/pages/SimpleViews.tsx",
+      "line": 1160,
+      "local": "Segs",
+      "import": "../components/Segs",
+      "attributes": {}
+    },
+    {
+      "control": "TextBtn",
+      "file": "src/pages/SimpleViews.tsx",
+      "line": 1195,
+      "local": "TextBtn",
+      "import": "../components/TextBtn",
+      "attributes": {
+        "id": "\"ledExport\""
+      }
+    },
+    {
+      "control": "Segs",
+      "file": "src/pages/SimpleViews.tsx",
+      "line": 1260,
+      "local": "Segs",
+      "import": "../components/Segs",
+      "attributes": {}
+    },
+    {
+      "control": "Segs",
+      "file": "src/pages/SimpleViews.tsx",
+      "line": 1266,
+      "local": "Segs",
+      "import": "../components/Segs",
+      "attributes": {}
+    },
+    {
+      "control": "RequestArchive",
+      "file": "src/pages/SimpleViews.tsx",
+      "line": 1307,
+      "local": "RequestArchive",
+      "import": "../components/RequestArchive",
+      "attributes": {}
+    },
+    {
+      "control": "MagpieIcon",
+      "file": "src/pages/SimpleViews.tsx",
+      "line": 1342,
+      "local": "MagpieIcon",
+      "import": "../components/MagpieIcon",
+      "attributes": {}
+    },
+    {
+      "control": "TextBtn",
+      "file": "src/pages/SimpleViews.tsx",
+      "line": 1434,
+      "local": "TextBtn",
+      "import": "../components/TextBtn",
+      "attributes": {}
+    },
+    {
+      "control": "TextBtn",
+      "file": "src/pages/SimpleViews.tsx",
+      "line": 1440,
+      "local": "TextBtn",
+      "import": "../components/TextBtn",
+      "attributes": {}
+    },
+    {
+      "control": "RequestArchive",
+      "file": "src/pages/SimpleViews.tsx",
+      "line": 1474,
+      "local": "RequestArchive",
+      "import": "../components/RequestArchive",
+      "attributes": {}
+    },
+    {
+      "control": "Segs",
+      "file": "src/pages/SimpleViews.tsx",
+      "line": 1495,
+      "local": "Segs",
+      "import": "../components/Segs",
+      "attributes": {}
+    },
+    {
+      "control": "TextBtn",
+      "file": "src/pages/SimpleViews.tsx",
+      "line": 1543,
+      "local": "TextBtn",
+      "import": "../components/TextBtn",
+      "attributes": {
+        "className": "\"sess-all\"",
+        "id": "\"sessAll\"",
+        "data-feature": "\"sessions\""
+      }
+    },
+    {
+      "control": "MagpieIcon",
+      "file": "src/pages/SimpleViews.tsx",
+      "line": 1577,
+      "local": "MagpieIcon",
+      "import": "../components/MagpieIcon",
+      "attributes": {}
+    },
+    {
+      "control": "CopyButton",
+      "file": "src/pages/SimpleViews.tsx",
+      "line": 1615,
+      "local": "CopyButton",
+      "import": "../components/CopyButton",
+      "attributes": {}
+    },
+    {
+      "control": "CopyButton",
+      "file": "src/pages/SimpleViews.tsx",
+      "line": 1620,
+      "local": "CopyButton",
+      "import": "../components/CopyButton",
+      "attributes": {}
+    },
+    {
+      "control": "TextBtn",
+      "file": "src/pages/SimpleViews.tsx",
+      "line": 1658,
+      "local": "TextBtn",
+      "import": "../components/TextBtn",
+      "attributes": {
+        "className": "\"sess-page-more\""
+      }
+    },
+    {
+      "control": "TextBtn",
+      "file": "src/pages/SimpleViews.tsx",
+      "line": 1682,
+      "local": "TextBtn",
+      "import": "../components/TextBtn",
+      "attributes": {
+        "className": "\"sess-show-history\""
+      }
+    },
+    {
+      "control": "MagpieIcon",
+      "file": "src/pages/SimpleViews.tsx",
+      "line": 1740,
+      "local": "MagpieIcon",
+      "import": "../components/MagpieIcon",
+      "attributes": {}
+    },
+    {
+      "control": "TextBtn",
+      "file": "src/pages/SimpleViews.tsx",
+      "line": 1835,
+      "local": "TextBtn",
+      "import": "../components/TextBtn",
+      "attributes": {}
+    },
+    {
+      "control": "Segs",
+      "file": "src/pages/SimpleViews.tsx",
+      "line": 2279,
+      "local": "Segs",
+      "import": "../components/Segs",
+      "attributes": {}
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/SimpleViews.tsx",
+      "line": 2356,
+      "local": "PrefRow",
+      "import": "../components/PrefRow",
+      "attributes": {
+        "className": "\"feat-row\"",
+        "dataFeature": "{b.feature}",
+        "dataId": "{b.id}",
+        "wrapVal": "{false}"
+      }
+    },
+    {
+      "control": "LibSwitch",
+      "file": "src/pages/SimpleViews.tsx",
+      "line": 2370,
+      "local": "LibSwitch",
+      "import": "../components/LibSwitch",
+      "attributes": {
+        "kind": "\"use-credits\"",
+        "aria-label": "{t(b.name)}"
+      }
+    },
+    {
+      "control": "PrefRow",
+      "file": "src/pages/SimpleViews.tsx",
+      "line": 2396,
+      "local": "PrefRow",
+      "import": "../components/PrefRow",
+      "attributes": {
+        "className": "\"feat-set\"",
+        "dataOf": "\"gateway\""
+      }
+    },
+    {
+      "control": "Segs",
+      "file": "src/pages/SimpleViews.tsx",
+      "line": 2506,
+      "local": "Segs",
+      "import": "../components/Segs",
+      "attributes": {
+        "className": "\"pm-ghkinds\"",
+        "aria-label": "{t(\"Kind of plugin\")}"
+      }
+    },
+    {
+      "control": "TextBtn",
+      "file": "src/pages/SimpleViews.tsx",
+      "line": 2544,
+      "local": "TextBtn",
+      "import": "../components/TextBtn",
+      "attributes": {}
+    },
+    {
+      "control": "PluginLogo",
+      "file": "src/pages/SimpleViews.tsx",
+      "line": 2565,
+      "local": "PluginLogo",
+      "import": "../components/PluginLogo",
+      "attributes": {
+        "kind": "{\"kind\" in c ? String(c.kind) : undefined}"
+      }
+    },
+    {
+      "control": "PluginLogo",
+      "file": "src/pages/SimpleViews.tsx",
+      "line": 2626,
+      "local": "PluginLogo",
+      "import": "../components/PluginLogo",
+      "attributes": {
+        "kind": "{\"kind\" in c ? String(c.kind) : undefined}"
+      }
+    },
+    {
+      "control": "PluginLogo",
+      "file": "src/pages/SimpleViews.tsx",
+      "line": 2689,
+      "local": "PluginLogo",
+      "import": "../components/PluginLogo",
+      "attributes": {
+        "kind": "{\"kind\" in c ? String(c.kind) : undefined}"
+      }
+    },
+    {
+      "control": "TextBtn",
+      "file": "src/pages/SimpleViews.tsx",
+      "line": 2812,
+      "local": "TextBtn",
+      "import": "../components/TextBtn",
+      "attributes": {
+        "variant": "\"primary\"",
+        "aria-busy": "{busy === \"__manual__\" || undefined}"
+      }
+    },
+    {
+      "control": "PluginLogo",
+      "file": "src/pages/SimpleViews.tsx",
+      "line": 2828,
+      "local": "PluginLogo",
+      "import": "../components/PluginLogo",
+      "attributes": {}
+    },
+    {
+      "control": "Segs",
+      "file": "src/pages/SimpleViews.tsx",
+      "line": 2840,
+      "local": "Segs",
+      "import": "../components/Segs",
+      "attributes": {
+        "className": "\"sortby\"",
+        "dataSort": "\"plugins\"",
+        "aria-label": "{t(\"Names from A to Z\")}"
+      }
+    },
+    {
+      "control": "PluginLogo",
+      "file": "src/pages/SimpleViews.tsx",
+      "line": 2864,
+      "local": "PluginLogo",
+      "import": "../components/PluginLogo",
+      "attributes": {
+        "kind": "{\"kind\" in e ? String(e.kind) : undefined}"
+      }
+    },
+    {
+      "control": "TextBtn",
+      "file": "src/pages/SimpleViews.tsx",
+      "line": 2995,
+      "local": "TextBtn",
+      "import": "../components/TextBtn",
+      "attributes": {
+        "className": "\"quiet\""
+      }
+    },
+    {
+      "control": "TextBtn",
+      "file": "src/pages/SimpleViews.tsx",
+      "line": 3005,
+      "local": "TextBtn",
+      "import": "../components/TextBtn",
+      "attributes": {}
+    },
+    {
+      "control": "TextBtn",
+      "file": "src/pages/SimpleViews.tsx",
+      "line": 3015,
+      "local": "TextBtn",
+      "import": "../components/TextBtn",
+      "attributes": {
+        "variant": "\"primary\""
+      }
+    },
+    {
+      "control": "TextBtn",
+      "file": "src/pages/SimpleViews.tsx",
+      "line": 3073,
+      "local": "TextBtn",
+      "import": "../components/TextBtn",
+      "attributes": {}
+    },
+    {
+      "control": "TextBtn",
+      "file": "src/pages/SimpleViews.tsx",
+      "line": 3076,
+      "local": "TextBtn",
+      "import": "../components/TextBtn",
+      "attributes": {
+        "variant": "\"primary\""
+      }
+    },
+    {
+      "control": "TextBtn",
+      "file": "src/pages/SimpleViews.tsx",
+      "line": 3097,
+      "local": "TextBtn",
+      "import": "../components/TextBtn",
+      "attributes": {
+        "variant": "\"primary\""
+      }
+    },
+    {
+      "control": "TextBtn",
+      "file": "src/pages/SimpleViews.tsx",
+      "line": 3113,
+      "local": "TextBtn",
+      "import": "../components/TextBtn",
+      "attributes": {
+        "variant": "\"primary\""
+      }
+    },
+    {
+      "control": "TextBtn",
+      "file": "src/pages/SimpleViews.tsx",
+      "line": 3124,
+      "local": "TextBtn",
+      "import": "../components/TextBtn",
+      "attributes": {}
+    },
+    {
+      "control": "TextBtn",
+      "file": "src/pages/SimpleViews.tsx",
+      "line": 3145,
+      "local": "TextBtn",
+      "import": "../components/TextBtn",
+      "attributes": {}
+    },
+    {
+      "control": "TextBtn",
+      "file": "src/pages/SimpleViews.tsx",
+      "line": 3164,
+      "local": "TextBtn",
+      "import": "../components/TextBtn",
+      "attributes": {
+        "className": "\"quiet\""
+      }
+    },
+    {
+      "control": "TextBtn",
+      "file": "src/pages/SimpleViews.tsx",
+      "line": 3192,
+      "local": "TextBtn",
+      "import": "../components/TextBtn",
+      "attributes": {
+        "className": "\"pm-check\""
+      }
+    },
+    {
+      "control": "ActionConfirm",
+      "file": "src/pages/SimpleViews.tsx",
+      "line": 3227,
+      "local": "ActionConfirm",
+      "import": "../components/ActionConfirm",
+      "attributes": {}
+    },
+    {
+      "control": "ActionConfirm",
+      "file": "src/pages/SimpleViews.tsx",
+      "line": 3258,
+      "local": "ActionConfirm",
+      "import": "../components/ActionConfirm",
+      "attributes": {}
+    },
+    {
+      "control": "PluginLogo",
+      "file": "src/pages/SimpleViews.tsx",
+      "line": 3297,
+      "local": "PluginLogo",
+      "import": "../components/PluginLogo",
+      "attributes": {
+        "kind": "{\"kind\" in pluginDetail ? String(pluginDetail.kind) : undefined}"
+      }
+    },
+    {
+      "control": "TextBtn",
+      "file": "src/pages/SimpleViews.tsx",
+      "line": 3420,
+      "local": "TextBtn",
+      "import": "../components/TextBtn",
+      "attributes": {}
+    },
+    {
+      "control": "useSegThumb",
+      "file": "src/pages/TrayPanel.tsx",
+      "line": 85,
+      "local": "useSegThumb",
+      "import": "../components/SegThumb"
+    },
+    {
+      "control": "useSegThumb",
+      "file": "src/pages/TrayPanel.tsx",
+      "line": 87,
+      "local": "useSegThumb",
+      "import": "../components/SegThumb"
+    },
+    {
+      "control": "MagpieIcon",
+      "file": "src/pages/TrayPanel.tsx",
+      "line": 334,
+      "local": "MagpieIcon",
+      "import": "../components/MagpieIcon",
+      "attributes": {}
+    },
+    {
+      "control": "FieldPill",
+      "file": "src/pages/TrayPanel.tsx",
+      "line": 354,
+      "local": "FieldPill",
+      "import": "../components/FieldPill",
+      "attributes": {
+        "kind": "\"solo\""
+      }
+    },
+    {
+      "control": "MagpieIcon",
+      "file": "src/pages/TrayPanel.tsx",
+      "line": 360,
+      "local": "MagpieIcon",
+      "import": "../components/MagpieIcon",
+      "attributes": {}
+    },
+    {
+      "control": "ModelPop",
+      "file": "src/pages/TrayPanel.tsx",
+      "line": 587,
+      "local": "ModelPop",
+      "import": "../components/ModelPop",
+      "attributes": {
+        "modelPicker": "true"
+      }
+    }
+  ],
+  "rawRecipeCandidates": [
+    {
+      "tag": "dialog",
+      "file": "src/components/ActionConfirm.tsx",
+      "line": 117,
+      "className": "\"action-confirm\""
+    },
+    {
+      "tag": "button",
+      "file": "src/components/AgentModelsPop.tsx",
+      "line": 225,
+      "className": "{`lib-switch use-credits${preferences.only ? \" on\" : \"\"}`}"
+    },
+    {
+      "tag": "div",
+      "file": "src/components/GroupEditor.tsx",
+      "line": 421,
+      "className": "\"pop row-menu fixed-z50\""
+    },
+    {
+      "tag": "button",
+      "file": "src/components/GroupEditor.tsx",
+      "line": 816,
+      "className": "{`lib-switch rt-mon${m.on ? \" on\" : \"\"}`}"
+    },
+    {
+      "tag": "div",
+      "file": "src/components/PrefRow.tsx",
+      "line": 62,
+      "className": "{`row pref${className ? ` ${className}` : \"\"}`}"
+    },
+    {
+      "tag": "div",
+      "file": "src/components/ProtoMultiMenu.tsx",
+      "line": 142,
+      "className": "{`pop proto-menu${menuClass ? \" \" + menuClass : \"\"}`}"
+    },
+    {
+      "tag": "span",
+      "file": "src/components/RequestArchive.tsx",
+      "line": 11,
+      "className": "{`lib-switch${on ? \" on\" : \"\"}`}"
+    },
+    {
+      "tag": "div",
+      "file": "src/components/Segs.tsx",
+      "line": 37,
+      "className": "{`segs${className ? ` ${className}` : \"\"}`}"
+    },
+    {
+      "tag": "label",
+      "file": "src/components/Tick.tsx",
+      "line": 30,
+      "className": "{`tick${className ? ` ${className}` : \"\"}`}"
+    },
+    {
+      "tag": "input",
+      "file": "src/components/WordsField.tsx",
+      "line": 16,
+      "className": "{`words${className ? ` ${className}` : \"\"}`}"
+    },
+    {
+      "tag": "input",
+      "file": "src/pages/AgentsView.tsx",
+      "line": 346,
+      "className": "\"words ag-manage-search\""
+    },
+    {
+      "tag": "div",
+      "file": "src/pages/AgentsView.tsx",
+      "line": 509,
+      "className": "\"pop row-menu\""
+    },
+    {
+      "tag": "button",
+      "file": "src/pages/GatewayView.tsx",
+      "line": 465,
+      "className": "\"dot tick\""
+    },
+    {
+      "tag": "div",
+      "file": "src/pages/LibraryView.tsx",
+      "line": 1505,
+      "className": "\"pop proto-menu\""
+    },
+    {
+      "tag": "div",
+      "file": "src/pages/LibraryView.tsx",
+      "line": 2077,
+      "className": "\"segs\""
+    },
+    {
+      "tag": "div",
+      "file": "src/pages/LibraryView.tsx",
+      "line": 2886,
+      "className": "\"pop proto-menu\""
+    },
+    {
+      "tag": "div",
+      "file": "src/pages/LibraryView.tsx",
+      "line": 3096,
+      "className": "\"pop proto-menu\""
+    },
+    {
+      "tag": "div",
+      "file": "src/pages/LibraryView.tsx",
+      "line": 3210,
+      "className": "\"pop proto-menu\""
+    },
+    {
+      "tag": "div",
+      "file": "src/pages/ProvidersView.tsx",
+      "line": 2260,
+      "className": "\"pop row-menu\""
+    },
+    {
+      "tag": "div",
+      "file": "src/pages/RoutingView.tsx",
+      "line": 317,
+      "className": "\"pop row-menu fixed\""
+    },
+    {
+      "tag": "div",
+      "file": "src/pages/RoutingView.tsx",
+      "line": 1658,
+      "className": "\"rt-gfound row pref\""
+    },
+    {
+      "tag": "div",
+      "file": "src/pages/RoutingView.tsx",
+      "line": 1688,
+      "className": "\"rt-gnames row pref\""
+    },
+    {
+      "tag": "button",
+      "file": "src/pages/RoutingView.tsx",
+      "line": 2253,
+      "className": "{`lib-switch rt-gon${g.on ? \" on\" : \"\"}`}"
+    },
+    {
+      "tag": "div",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 329,
+      "className": "\"pop proto-menu lan-address-menu\""
+    },
+    {
+      "tag": "div",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 1156,
+      "className": "\"pop proto-menu\""
+    },
+    {
+      "tag": "div",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 1391,
+      "className": "\"pop proto-menu\""
+    },
+    {
+      "tag": "div",
+      "file": "src/pages/settings/NestedBlocks.tsx",
+      "line": 1825,
+      "className": "\"pop proto-menu sess-menu font-menu\""
+    },
+    {
+      "tag": "div",
+      "file": "src/pages/SettingsView.tsx",
+      "line": 1412,
+      "className": "\"row pref\""
+    },
+    {
+      "tag": "div",
+      "file": "src/pages/SimpleViews.tsx",
+      "line": 73,
+      "className": "\"pop row-menu fixed\""
+    },
+    {
+      "tag": "div",
+      "file": "src/pages/SimpleViews.tsx",
+      "line": 399,
+      "className": "\"pop proto-menu range-menu\""
+    },
+    {
+      "tag": "div",
+      "file": "src/pages/SimpleViews.tsx",
+      "line": 778,
+      "className": "\"segs\""
+    },
+    {
+      "tag": "div",
+      "file": "src/pages/SimpleViews.tsx",
+      "line": 1494,
+      "className": "\"segs\""
+    },
+    {
+      "tag": "span",
+      "file": "src/pages/SimpleViews.tsx",
+      "line": 2310,
+      "className": "{`lib-switch${mirror ? \" on\" : \"\"}`}"
+    },
+    {
+      "tag": "div",
+      "file": "src/pages/TrayPanel.tsx",
+      "line": 376,
+      "className": "\"segs\""
+    }
+  ]
+}

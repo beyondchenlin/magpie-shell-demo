@@ -1,0 +1,763 @@
+{
+  "version": "0.1.194",
+  "initialLayoutCases": [
+    {
+      "documentOverflow": false,
+      "root": {
+        "bottom": 741.1875,
+        "height": 717.1875,
+        "left": 36.40625,
+        "right": 863.59375,
+        "top": 24,
+        "width": 827.1875,
+        "x": 36.40625,
+        "y": 24
+      },
+      "side": false,
+      "view": "view-agents",
+      "viewOverflow": false,
+      "width": 900
+    },
+    {
+      "documentOverflow": false,
+      "root": {
+        "bottom": 741.1875,
+        "height": 717.1875,
+        "left": 36.40625,
+        "right": 863.59375,
+        "top": 24,
+        "width": 827.1875,
+        "x": 36.40625,
+        "y": 24
+      },
+      "side": false,
+      "view": "view-providers",
+      "viewOverflow": false,
+      "width": 900
+    },
+    {
+      "documentOverflow": false,
+      "root": {
+        "bottom": 741.1875,
+        "height": 717.1875,
+        "left": 36.40625,
+        "right": 863.59375,
+        "top": 24,
+        "width": 827.1875,
+        "x": 36.40625,
+        "y": 24
+      },
+      "side": false,
+      "view": "view-routing",
+      "viewOverflow": false,
+      "width": 900
+    },
+    {
+      "documentOverflow": false,
+      "root": {
+        "bottom": 741.1875,
+        "height": 717.1875,
+        "left": 36.40625,
+        "right": 863.59375,
+        "top": 24,
+        "width": 827.1875,
+        "x": 36.40625,
+        "y": 24
+      },
+      "side": false,
+      "view": "view-gateway",
+      "viewOverflow": false,
+      "width": 900
+    },
+    {
+      "documentOverflow": false,
+      "root": {
+        "bottom": 741.1875,
+        "height": 717.1875,
+        "left": 36.40625,
+        "right": 863.59375,
+        "top": 24,
+        "width": 827.1875,
+        "x": 36.40625,
+        "y": 24
+      },
+      "side": false,
+      "view": "view-usage",
+      "viewOverflow": false,
+      "width": 900
+    },
+    {
+      "documentOverflow": false,
+      "root": {
+        "bottom": 741.1875,
+        "height": 717.1875,
+        "left": 36.40625,
+        "right": 863.59375,
+        "top": 24,
+        "width": 827.1875,
+        "x": 36.40625,
+        "y": 24
+      },
+      "side": false,
+      "view": "view-plugins",
+      "viewOverflow": false,
+      "width": 900
+    },
+    {
+      "documentOverflow": false,
+      "view": "settings:常规",
+      "viewOverflow": false,
+      "width": 900,
+      "section": "general"
+    },
+    {
+      "documentOverflow": false,
+      "view": "settings:额度",
+      "viewOverflow": false,
+      "width": 900,
+      "section": "usage"
+    },
+    {
+      "documentOverflow": false,
+      "view": "settings:网络与共享",
+      "viewOverflow": false,
+      "width": 900,
+      "section": "network"
+    },
+    {
+      "documentOverflow": false,
+      "view": "settings:模型",
+      "viewOverflow": false,
+      "width": 900,
+      "section": "models"
+    },
+    {
+      "documentOverflow": false,
+      "view": "settings:隐私",
+      "viewOverflow": false,
+      "width": 900,
+      "section": "privacy"
+    },
+    {
+      "documentOverflow": false,
+      "view": "settings:同步与备份",
+      "viewOverflow": false,
+      "width": 900,
+      "section": "sync"
+    },
+    {
+      "documentOverflow": false,
+      "view": "settings:关于",
+      "viewOverflow": false,
+      "width": 900,
+      "section": "about"
+    },
+    {
+      "documentOverflow": false,
+      "root": {
+        "bottom": 816,
+        "height": 792,
+        "left": 24,
+        "right": 1024,
+        "top": 24,
+        "width": 1000,
+        "x": 24,
+        "y": 24
+      },
+      "side": false,
+      "view": "view-agents",
+      "viewOverflow": false,
+      "width": 1048
+    },
+    {
+      "documentOverflow": false,
+      "root": {
+        "bottom": 816,
+        "height": 792,
+        "left": 24,
+        "right": 1024,
+        "top": 24,
+        "width": 1000,
+        "x": 24,
+        "y": 24
+      },
+      "side": false,
+      "view": "view-providers",
+      "viewOverflow": false,
+      "width": 1048
+    },
+    {
+      "documentOverflow": false,
+      "root": {
+        "bottom": 816,
+        "height": 792,
+        "left": 24,
+        "right": 1024,
+        "top": 24,
+        "width": 1000,
+        "x": 24,
+        "y": 24
+      },
+      "side": false,
+      "view": "view-routing",
+      "viewOverflow": false,
+      "width": 1048
+    },
+    {
+      "documentOverflow": false,
+      "root": {
+        "bottom": 816,
+        "height": 792,
+        "left": 24,
+        "right": 1024,
+        "top": 24,
+        "width": 1000,
+        "x": 24,
+        "y": 24
+      },
+      "side": false,
+      "view": "view-gateway",
+      "viewOverflow": false,
+      "width": 1048
+    },
+    {
+      "documentOverflow": false,
+      "root": {
+        "bottom": 816,
+        "height": 792,
+        "left": 24,
+        "right": 1024,
+        "top": 24,
+        "width": 1000,
+        "x": 24,
+        "y": 24
+      },
+      "side": false,
+      "view": "view-usage",
+      "viewOverflow": false,
+      "width": 1048
+    },
+    {
+      "documentOverflow": false,
+      "root": {
+        "bottom": 816,
+        "height": 792,
+        "left": 24,
+        "right": 1024,
+        "top": 24,
+        "width": 1000,
+        "x": 24,
+        "y": 24
+      },
+      "side": false,
+      "view": "view-plugins",
+      "viewOverflow": false,
+      "width": 1048
+    },
+    {
+      "documentOverflow": false,
+      "view": "settings:常规",
+      "viewOverflow": false,
+      "width": 1048,
+      "section": "general"
+    },
+    {
+      "documentOverflow": false,
+      "view": "settings:额度",
+      "viewOverflow": false,
+      "width": 1048,
+      "section": "usage"
+    },
+    {
+      "documentOverflow": false,
+      "view": "settings:网络与共享",
+      "viewOverflow": false,
+      "width": 1048,
+      "section": "network"
+    },
+    {
+      "documentOverflow": false,
+      "view": "settings:模型",
+      "viewOverflow": false,
+      "width": 1048,
+      "section": "models"
+    },
+    {
+      "documentOverflow": false,
+      "view": "settings:隐私",
+      "viewOverflow": false,
+      "width": 1048,
+      "section": "privacy"
+    },
+    {
+      "documentOverflow": false,
+      "view": "settings:同步与备份",
+      "viewOverflow": false,
+      "width": 1048,
+      "section": "sync"
+    },
+    {
+      "documentOverflow": false,
+      "view": "settings:关于",
+      "viewOverflow": false,
+      "width": 1048,
+      "section": "about"
+    },
+    {
+      "documentOverflow": false,
+      "root": {
+        "bottom": 816,
+        "height": 792,
+        "left": 77,
+        "right": 1287,
+        "top": 24,
+        "width": 1210,
+        "x": 77,
+        "y": 24
+      },
+      "side": false,
+      "view": "view-agents",
+      "viewOverflow": false,
+      "width": 1364
+    },
+    {
+      "documentOverflow": false,
+      "root": {
+        "bottom": 816,
+        "height": 792,
+        "left": 77,
+        "right": 1287,
+        "top": 24,
+        "width": 1210,
+        "x": 77,
+        "y": 24
+      },
+      "side": false,
+      "view": "view-providers",
+      "viewOverflow": false,
+      "width": 1364
+    },
+    {
+      "documentOverflow": false,
+      "root": {
+        "bottom": 816,
+        "height": 792,
+        "left": 77,
+        "right": 1287,
+        "top": 24,
+        "width": 1210,
+        "x": 77,
+        "y": 24
+      },
+      "side": false,
+      "view": "view-routing",
+      "viewOverflow": false,
+      "width": 1364
+    },
+    {
+      "documentOverflow": false,
+      "root": {
+        "bottom": 816,
+        "height": 792,
+        "left": 77,
+        "right": 1287,
+        "top": 24,
+        "width": 1210,
+        "x": 77,
+        "y": 24
+      },
+      "side": false,
+      "view": "view-gateway",
+      "viewOverflow": false,
+      "width": 1364
+    },
+    {
+      "documentOverflow": false,
+      "root": {
+        "bottom": 816,
+        "height": 792,
+        "left": 77,
+        "right": 1287,
+        "top": 24,
+        "width": 1210,
+        "x": 77,
+        "y": 24
+      },
+      "side": false,
+      "view": "view-usage",
+      "viewOverflow": false,
+      "width": 1364
+    },
+    {
+      "documentOverflow": false,
+      "root": {
+        "bottom": 816,
+        "height": 792,
+        "left": 77,
+        "right": 1287,
+        "top": 24,
+        "width": 1210,
+        "x": 77,
+        "y": 24
+      },
+      "side": false,
+      "view": "view-plugins",
+      "viewOverflow": false,
+      "width": 1364
+    },
+    {
+      "documentOverflow": false,
+      "view": "settings:常规",
+      "viewOverflow": false,
+      "width": 1364,
+      "section": "general"
+    },
+    {
+      "documentOverflow": false,
+      "view": "settings:额度",
+      "viewOverflow": false,
+      "width": 1364,
+      "section": "usage"
+    },
+    {
+      "documentOverflow": false,
+      "view": "settings:网络与共享",
+      "viewOverflow": false,
+      "width": 1364,
+      "section": "network"
+    },
+    {
+      "documentOverflow": false,
+      "view": "settings:模型",
+      "viewOverflow": false,
+      "width": 1364,
+      "section": "models"
+    },
+    {
+      "documentOverflow": false,
+      "view": "settings:隐私",
+      "viewOverflow": false,
+      "width": 1364,
+      "section": "privacy"
+    },
+    {
+      "documentOverflow": false,
+      "view": "settings:同步与备份",
+      "viewOverflow": false,
+      "width": 1364,
+      "section": "sync"
+    },
+    {
+      "documentOverflow": false,
+      "view": "settings:关于",
+      "viewOverflow": false,
+      "width": 1364,
+      "section": "about"
+    },
+    {
+      "documentOverflow": false,
+      "root": {
+        "bottom": 844,
+        "height": 844,
+        "left": 0,
+        "right": 390,
+        "top": 0,
+        "width": 390,
+        "x": 0,
+        "y": 0
+      },
+      "side": false,
+      "view": "view-agents",
+      "viewOverflow": false,
+      "width": 390
+    },
+    {
+      "documentOverflow": false,
+      "root": {
+        "bottom": 844,
+        "height": 844,
+        "left": 0,
+        "right": 390,
+        "top": 0,
+        "width": 390,
+        "x": 0,
+        "y": 0
+      },
+      "side": false,
+      "view": "view-providers",
+      "viewOverflow": false,
+      "width": 390
+    },
+    {
+      "documentOverflow": false,
+      "root": {
+        "bottom": 844,
+        "height": 844,
+        "left": 0,
+        "right": 390,
+        "top": 0,
+        "width": 390,
+        "x": 0,
+        "y": 0
+      },
+      "side": false,
+      "view": "view-routing",
+      "viewOverflow": true,
+      "width": 390
+    },
+    {
+      "documentOverflow": false,
+      "root": {
+        "bottom": 844,
+        "height": 844,
+        "left": 0,
+        "right": 390,
+        "top": 0,
+        "width": 390,
+        "x": 0,
+        "y": 0
+      },
+      "side": false,
+      "view": "view-gateway",
+      "viewOverflow": false,
+      "width": 390
+    },
+    {
+      "documentOverflow": false,
+      "root": {
+        "bottom": 844,
+        "height": 844,
+        "left": 0,
+        "right": 390,
+        "top": 0,
+        "width": 390,
+        "x": 0,
+        "y": 0
+      },
+      "side": false,
+      "view": "view-usage",
+      "viewOverflow": false,
+      "width": 390
+    },
+    {
+      "documentOverflow": false,
+      "root": {
+        "bottom": 844,
+        "height": 844,
+        "left": 0,
+        "right": 390,
+        "top": 0,
+        "width": 390,
+        "x": 0,
+        "y": 0
+      },
+      "side": false,
+      "view": "view-plugins",
+      "viewOverflow": false,
+      "width": 390
+    },
+    {
+      "documentOverflow": false,
+      "view": "settings:常规",
+      "viewOverflow": false,
+      "width": 390,
+      "section": "general"
+    },
+    {
+      "documentOverflow": false,
+      "view": "settings:额度",
+      "viewOverflow": false,
+      "width": 390,
+      "section": "usage"
+    },
+    {
+      "documentOverflow": false,
+      "view": "settings:网络与共享",
+      "viewOverflow": false,
+      "width": 390,
+      "section": "network"
+    },
+    {
+      "documentOverflow": false,
+      "view": "settings:模型",
+      "viewOverflow": false,
+      "width": 390,
+      "section": "models"
+    },
+    {
+      "documentOverflow": false,
+      "view": "settings:隐私",
+      "viewOverflow": false,
+      "width": 390,
+      "section": "privacy"
+    },
+    {
+      "documentOverflow": false,
+      "view": "settings:同步与备份",
+      "viewOverflow": false,
+      "width": 390,
+      "section": "sync"
+    },
+    {
+      "documentOverflow": false,
+      "view": "settings:关于",
+      "viewOverflow": false,
+      "width": 390,
+      "section": "about"
+    }
+  ],
+  "phoneRetest": [
+    {
+      "overflow": false,
+      "root": {
+        "bottom": 844,
+        "height": 844,
+        "left": 0,
+        "right": 390,
+        "top": 0,
+        "width": 390,
+        "x": 0,
+        "y": 0
+      },
+      "view": "view-agents",
+      "zoom": "1"
+    },
+    {
+      "overflow": false,
+      "root": {
+        "bottom": 844,
+        "height": 844,
+        "left": 0,
+        "right": 390,
+        "top": 0,
+        "width": 390,
+        "x": 0,
+        "y": 0
+      },
+      "view": "view-providers",
+      "zoom": "1"
+    },
+    {
+      "overflow": false,
+      "root": {
+        "bottom": 844,
+        "height": 844,
+        "left": 0,
+        "right": 390,
+        "top": 0,
+        "width": 390,
+        "x": 0,
+        "y": 0
+      },
+      "view": "view-routing",
+      "zoom": "1"
+    },
+    {
+      "overflow": false,
+      "root": {
+        "bottom": 844,
+        "height": 844,
+        "left": 0,
+        "right": 390,
+        "top": 0,
+        "width": 390,
+        "x": 0,
+        "y": 0
+      },
+      "view": "view-gateway",
+      "zoom": "1"
+    },
+    {
+      "overflow": false,
+      "root": {
+        "bottom": 844,
+        "height": 844,
+        "left": 0,
+        "right": 390,
+        "top": 0,
+        "width": 390,
+        "x": 0,
+        "y": 0
+      },
+      "view": "view-usage",
+      "zoom": "1"
+    },
+    {
+      "overflow": false,
+      "root": {
+        "bottom": 844,
+        "height": 844,
+        "left": 0,
+        "right": 390,
+        "top": 0,
+        "width": 390,
+        "x": 0,
+        "y": 0
+      },
+      "view": "view-plugins",
+      "zoom": "1"
+    },
+    {
+      "overflow": false,
+      "view": "settings:常规",
+      "zoom": "1"
+    },
+    {
+      "overflow": false,
+      "view": "settings:额度",
+      "zoom": "1"
+    },
+    {
+      "overflow": false,
+      "view": "settings:网络与共享",
+      "zoom": "1"
+    },
+    {
+      "overflow": false,
+      "view": "settings:模型",
+      "zoom": "1"
+    },
+    {
+      "overflow": false,
+      "view": "settings:隐私",
+      "zoom": "1"
+    },
+    {
+      "overflow": false,
+      "view": "settings:同步与备份",
+      "zoom": "1"
+    },
+    {
+      "overflow": false,
+      "view": "settings:关于",
+      "zoom": "1"
+    }
+  ],
+  "languages": [
+    {
+      "heading": "Einstellungen",
+      "lang": "de",
+      "languageLabel": "Deutsch",
+      "menus": 0
+    },
+    {
+      "heading": "設定",
+      "lang": "zh-TW",
+      "languageLabel": "繁體中文",
+      "menus": 0
+    },
+    {
+      "heading": "設定",
+      "lang": "ja",
+      "languageLabel": "日本語",
+      "menus": 0
+    },
+    {
+      "heading": "设置",
+      "lang": "zh-CN",
+      "languageLabel": "简体中文",
+      "menus": 0
+    }
+  ],
+  "knownInitialFailure": "390px Routing max560 class on old container; fixed and phone retested"
+}

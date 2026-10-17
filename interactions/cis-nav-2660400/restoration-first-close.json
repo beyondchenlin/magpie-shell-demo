@@ -1,0 +1,14 @@
+{
+  "bg": "#f4f4f6",
+  "body": "window web side-nav",
+  "height": 720,
+  "probe": {
+    "entries": [],
+    "initialNavPreference": "side",
+    "probe": "cis-motion-probe-v1",
+    "schema": 1,
+    "source": "26604006a932b564ed6468a100c37a15f5bc4644"
+  },
+  "width": 1280,
+  "zoom": "1.1"
+}

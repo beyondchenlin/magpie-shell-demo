@@ -1,0 +1,31 @@
+/** Add a separate primitive-state entry to one owned immutable candidate. */
+import {build} from 'vite';
+import react from '@vitejs/plugin-react';
+import {readFileSync,writeFileSync,existsSync,readdirSync,lstatSync,mkdirSync,copyFileSync} from 'node:fs';
+import {resolve,join,relative} from 'node:path';
+import {createHash} from 'node:crypto';
+import {execFileSync} from 'node:child_process';
+const root=process.cwd(),src=resolve(process.argv[2]||'');
+const boundary=resolve(root,'.cache/cis-navigation-20261016')+'\\';
+if(!src.startsWith(boundary)||!src.endsWith('\\source')||lstatSync(src).isSymbolicLink())throw Error('Use an owned immutable snapshot');
+const tag=process.argv[3]||'';
+if(tag&&!/^[a-z0-9-]{1,24}$/.test(tag))throw Error('Use a bounded fixture label');
+const stem=tag?`cis-controls-${tag}`:'cis-controls-fixture';
+const dist=join(src,'dist'),entry=stem+'.html';
+if(existsSync(join(dist,entry)))throw Error('Fixture already exists; reuse it');
+const sha=bytes=>createHash('sha256').update(bytes).digest('hex'),before=new Map();
+function walk(dir,visit){for(const e of readdirSync(dir,{withFileTypes:true})){const path=join(dir,e.name);if(e.isDirectory())walk(path,visit);else visit(path);}}
+walk(dist,path=>before.set(path,sha(readFileSync(path))));
+const fixture=readFileSync(join(root,'scripts/cis-controls-fixture.tsx'));
+writeFileSync(join(src,stem+'.tsx'),fixture);
+writeFileSync(join(src,entry),'<!doctype html><html class="win" data-theme="light"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>CIS component states</title><script>document.documentElement.dataset.theme=new URLSearchParams(location.search).get("theme")==="dark"?"dark":"light"</script><body class="window web"><div id="root"></div><script type="module" src="./'+stem+'.tsx"></script></body></html>');
+writeFileSync(join(src,'tsconfig.'+stem+'.json'),JSON.stringify({extends:'./tsconfig.app.json',compilerOptions:{tsBuildInfoFile:'./.'+stem+'.tsbuildinfo'},include:['src',stem+'.tsx']}));
+execFileSync(process.execPath,[join(root,'node_modules/typescript/bin/tsc'),'-p',join(src,'tsconfig.'+stem+'.json')],{cwd:src,stdio:'inherit'});
+await build({root:src,configFile:false,plugins:[react()],build:{outDir:dist,emptyOutDir:false,assetsDir:stem+'-assets',rollupOptions:{input:join(src,entry)}}});
+mkdirSync(join(dist,'api/icons'),{recursive:true});copyFileSync(join(src,'public/icons/alma.png'),join(dist,'api/icons/cis-valid.png'));
+for(const [path,hash] of before)if(sha(readFileSync(path))!==hash)throw Error('Existing artifact changed: '+path);
+const artifacts=[];walk(dist,path=>{if(!before.has(path)){const bytes=readFileSync(path);artifacts.push({path:relative(dist,path).replaceAll('\\','/'),bytes:bytes.length,sha256:sha(bytes)});}});
+const binding=JSON.parse(readFileSync(join(dist,'build-info.json'),'utf8'));
+const report={sourceCommit:binding.sourceCommit,fixtureSha256:sha(fixture),componentSha256:sha(readFileSync(join(src,'src/components/MagpieIcon.tsx'))),method:'separate test-only entry; all existing artifacts unchanged; valid file icon uses an owned static PNG, not an API',artifacts};
+writeFileSync(join(dist,stem+'-info.json'),JSON.stringify(report,null,2));
+console.log(JSON.stringify(report));

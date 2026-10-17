@@ -1,0 +1,23 @@
+{
+  "sourceCommit": "862789fc81599c9f70c966f53fed1386e3f74fae",
+  "fixtureSha256": "eaa895c17d72c0a11151754dad002f270db70e0d2404b7b175f15eacdbd574c1",
+  "componentSha256": "7a992e811b307a27a61fc7363d4fab4d752419cfd5373590915fb9ccf30d561d",
+  "method": "separate test-only entry; every existing production artifact hash unchanged",
+  "artifacts": [
+    {
+      "path": "cis-component-assets/cis-component-fixture-B2mYb5f_.js",
+      "bytes": 746133,
+      "sha256": "add28bbf2df435191d4418edfb178a958fbd2a018187b109c8fdb5db6bee5cec"
+    },
+    {
+      "path": "cis-component-assets/cis-component-fixture-PZiXBwXU.css",
+      "bytes": 255933,
+      "sha256": "cdd0b36f1b417ecdb24b8dee7387d4aae58864eba9c21d5718a7387d945545cf"
+    },
+    {
+      "path": "cis-component-fixture.html",
+      "bytes": 435,
+      "sha256": "0b1cab937628ab98a15ef806876c1241005fb71385e405b329aef9cb1afe3840"
+    }
+  ]
+}

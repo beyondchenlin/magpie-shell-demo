@@ -1,0 +1,6 @@
+{
+  "source": "7880135320083e6192bfb4d5ab87b136cd59d4b5",
+  "passed": true,
+  "cases": 18,
+  "scope": "Exact frame centers, both body drags, all cancel focus paths, both disabled Tab directions; provider configuration and order"
+}

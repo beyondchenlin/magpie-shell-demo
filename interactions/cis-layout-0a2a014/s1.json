@@ -1,0 +1,596 @@
+{
+  "bodySize": "13px",
+  "caption": {
+    "bottom": 60.1875,
+    "height": 35.1875,
+    "left": 78,
+    "right": 1286,
+    "top": 25,
+    "width": 1208,
+    "x": 78,
+    "y": 25
+  },
+  "font": "\"Segoe UI Variable Text\", \"Segoe UI\", \"Microsoft YaHei UI\", \"Microsoft YaHei\", system-ui, sans-serif",
+  "fontControls": [
+    {
+      "cols": "227.017px 76.9886px",
+      "gap": "5px 6px",
+      "picks": [
+        {
+          "cls": "proto pick font-family",
+          "disabled": false,
+          "fontSize": "12px",
+          "rect": {
+            "bottom": 370.34375,
+            "height": 26.390625,
+            "left": 902.21875,
+            "right": 1151.9375,
+            "top": 343.953125,
+            "width": 249.71875,
+            "x": 902.21875,
+            "y": 343.953125
+          }
+        },
+        {
+          "cls": "proto pick font-style",
+          "disabled": true,
+          "fontSize": "12px",
+          "rect": {
+            "bottom": 370.34375,
+            "height": 26.390625,
+            "left": 1158.53125,
+            "right": 1243.21875,
+            "top": 343.953125,
+            "width": 84.6875,
+            "x": 1158.53125,
+            "y": 343.953125
+          }
+        }
+      ],
+      "width": "310px"
+    },
+    {
+      "cols": "227.017px 76.9886px",
+      "gap": "5px 6px",
+      "picks": [
+        {
+          "cls": "proto pick font-family",
+          "disabled": false,
+          "fontSize": "12px",
+          "rect": {
+            "bottom": 444.421875,
+            "height": 26.390625,
+            "left": 902.21875,
+            "right": 1151.9375,
+            "top": 418.03125,
+            "width": 249.71875,
+            "x": 902.21875,
+            "y": 418.03125
+          }
+        },
+        {
+          "cls": "proto pick font-style",
+          "disabled": true,
+          "fontSize": "12px",
+          "rect": {
+            "bottom": 444.421875,
+            "height": 26.390625,
+            "left": 1158.53125,
+            "right": 1243.21875,
+            "top": 418.03125,
+            "width": 84.6875,
+            "x": 1158.53125,
+            "y": 418.03125
+          }
+        }
+      ],
+      "width": "310px"
+    }
+  ],
+  "root": {
+    "bottom": 816,
+    "height": 792,
+    "left": 77,
+    "right": 1287,
+    "top": 24,
+    "width": 1210,
+    "x": 77,
+    "y": 24
+  },
+  "rows": [
+    {
+      "borderTop": "0px none rgb(28, 28, 33)",
+      "color": "rgb(28, 28, 33)",
+      "gap": "12px",
+      "height": 52.796875,
+      "minHeight": "48px",
+      "padding": "7px 12px 7px 14px",
+      "selected": [
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "fontSize": "12px",
+          "rect": {
+            "bottom": 159.0625,
+            "height": 24.1875,
+            "left": 1144.21875,
+            "right": 1192.625,
+            "top": 134.875,
+            "width": 48.40625,
+            "x": 1144.21875,
+            "y": 134.875
+          },
+          "text": "浅色"
+        }
+      ],
+      "text": "外观",
+      "values": [
+        {
+          "display": "flex",
+          "gap": "2px",
+          "maxWidth": "60%"
+        }
+      ]
+    },
+    {
+      "borderTop": "0.909091px solid rgb(236, 236, 240)",
+      "color": "rgb(28, 28, 33)",
+      "gap": "12px",
+      "height": 52.796875,
+      "minHeight": "48px",
+      "padding": "7px 12px 7px 14px",
+      "selected": [
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "fontSize": "12px",
+          "rect": {
+            "bottom": 212.359375,
+            "height": 24.1875,
+            "left": 1144.21875,
+            "right": 1192.625,
+            "top": 188.171875,
+            "width": 48.40625,
+            "x": 1144.21875,
+            "y": 188.171875
+          },
+          "text": "关闭"
+        }
+      ],
+      "text": "色盲模式",
+      "values": [
+        {
+          "display": "flex",
+          "gap": "2px",
+          "maxWidth": "60%"
+        }
+      ]
+    },
+    {
+      "borderTop": "0.909091px solid rgb(236, 236, 240)",
+      "color": "rgb(28, 28, 33)",
+      "gap": "12px",
+      "height": 52.796875,
+      "minHeight": "48px",
+      "padding": "7px 12px 7px 14px",
+      "selected": [],
+      "text": "语言",
+      "values": [
+        {
+          "display": "flex",
+          "gap": "2px",
+          "maxWidth": "60%"
+        }
+      ]
+    },
+    {
+      "borderTop": "0.909091px solid rgb(236, 236, 240)",
+      "color": "rgb(28, 28, 33)",
+      "gap": "12px",
+      "height": 56.296875,
+      "minHeight": "48px",
+      "padding": "7px 12px 7px 14px",
+      "selected": [
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "fontSize": "12px",
+          "rect": {
+            "bottom": 319.703125,
+            "height": 24.1875,
+            "left": 1078.5625,
+            "right": 1132.71875,
+            "top": 295.515625,
+            "width": 54.15625,
+            "x": 1078.5625,
+            "y": 295.515625
+          },
+          "text": "110%"
+        }
+      ],
+      "text": "文字大小",
+      "values": [
+        {
+          "display": "flex",
+          "gap": "2px",
+          "maxWidth": "60%"
+        }
+      ]
+    },
+    {
+      "borderTop": "0.909091px solid rgb(236, 236, 240)",
+      "color": "rgb(28, 28, 33)",
+      "gap": "8px 14px",
+      "height": 74.078125,
+      "minHeight": "48px",
+      "padding": "7px 12px 7px 14px",
+      "selected": [],
+      "text": "界面字体",
+      "values": []
+    },
+    {
+      "borderTop": "0.909091px solid rgb(236, 236, 240)",
+      "color": "rgb(28, 28, 33)",
+      "gap": "8px 14px",
+      "height": 74.078125,
+      "minHeight": "48px",
+      "padding": "7px 12px 7px 14px",
+      "selected": [],
+      "text": "代码字体",
+      "values": []
+    },
+    {
+      "borderTop": "0.909091px solid rgb(236, 236, 240)",
+      "color": "rgb(28, 28, 33)",
+      "gap": "12px",
+      "height": 52.796875,
+      "minHeight": "48px",
+      "padding": "7px 12px 7px 14px",
+      "selected": [
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "fontSize": "12px",
+          "rect": {
+            "bottom": 522.40625,
+            "height": 24.1875,
+            "left": 1051.828125,
+            "right": 1153.03125,
+            "top": 498.21875,
+            "width": 101.203125,
+            "x": 1051.828125,
+            "y": 498.21875
+          },
+          "text": "打开快捷面板"
+        }
+      ],
+      "text": "点击托盘图标",
+      "values": [
+        {
+          "display": "flex",
+          "gap": "2px",
+          "maxWidth": "60%"
+        }
+      ]
+    },
+    {
+      "borderTop": "0.909091px solid rgb(236, 236, 240)",
+      "color": "rgb(28, 28, 33)",
+      "gap": "12px",
+      "height": 52.796875,
+      "minHeight": "48px",
+      "padding": "7px 12px 7px 14px",
+      "selected": [
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "fontSize": "12px",
+          "rect": {
+            "bottom": 575.203125,
+            "height": 24.1875,
+            "left": 1192.625,
+            "right": 1241.03125,
+            "top": 551.015625,
+            "width": 48.40625,
+            "x": 1192.625,
+            "y": 551.015625
+          },
+          "text": "开启"
+        }
+      ],
+      "text": "模型名带供应商",
+      "values": [
+        {
+          "display": "flex",
+          "gap": "2px",
+          "maxWidth": "60%"
+        }
+      ]
+    },
+    {
+      "borderTop": "0.909091px solid rgb(236, 236, 240)",
+      "color": "rgb(28, 28, 33)",
+      "gap": "12px",
+      "height": 56.296875,
+      "minHeight": "48px",
+      "padding": "7px 12px 7px 14px",
+      "selected": [
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "fontSize": "12px",
+          "rect": {
+            "bottom": 629.75,
+            "height": 24.1875,
+            "left": 1144.21875,
+            "right": 1192.625,
+            "top": 605.5625,
+            "width": 48.40625,
+            "x": 1144.21875,
+            "y": 605.5625
+          },
+          "text": "关闭"
+        }
+      ],
+      "text": "Codex 子代理可用任意模型",
+      "values": [
+        {
+          "display": "flex",
+          "gap": "2px",
+          "maxWidth": "60%"
+        }
+      ]
+    },
+    {
+      "borderTop": "0.909091px solid rgb(236, 236, 240)",
+      "color": "rgb(28, 28, 33)",
+      "gap": "12px",
+      "height": 56.296875,
+      "minHeight": "48px",
+      "padding": "7px 12px 7px 14px",
+      "selected": [
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "fontSize": "12px",
+          "rect": {
+            "bottom": 685.484375,
+            "height": 24.1875,
+            "left": 979.59375,
+            "right": 1073.828125,
+            "top": 661.296875,
+            "width": 94.234375,
+            "x": 979.59375,
+            "y": 661.296875
+          },
+          "text": "272K 时压缩"
+        }
+      ],
+      "text": "长对话",
+      "values": [
+        {
+          "display": "flex",
+          "gap": "2px",
+          "maxWidth": "60%"
+        }
+      ]
+    },
+    {
+      "borderTop": "0.909091px solid rgb(236, 236, 240)",
+      "color": "rgb(28, 28, 33)",
+      "gap": "12px",
+      "height": 52.796875,
+      "minHeight": "48px",
+      "padding": "7px 12px 7px 14px",
+      "selected": [],
+      "text": "Codex 会话标题",
+      "values": [
+        {
+          "display": "flex",
+          "gap": "2px",
+          "maxWidth": "60%"
+        }
+      ]
+    },
+    {
+      "borderTop": "0.909091px solid rgb(236, 236, 240)",
+      "color": "rgb(28, 28, 33)",
+      "gap": "12px",
+      "height": 52.796875,
+      "minHeight": "48px",
+      "padding": "7px 12px 7px 14px",
+      "selected": [],
+      "text": "Codex 会话描述",
+      "values": [
+        {
+          "display": "flex",
+          "gap": "2px",
+          "maxWidth": "60%"
+        }
+      ]
+    },
+    {
+      "borderTop": "0.909091px solid rgb(236, 236, 240)",
+      "color": "rgb(28, 28, 33)",
+      "gap": "12px",
+      "height": 52.796875,
+      "minHeight": "48px",
+      "padding": "7px 12px 7px 14px",
+      "selected": [],
+      "text": "Codex 输入框预测",
+      "values": [
+        {
+          "display": "flex",
+          "gap": "2px",
+          "maxWidth": "60%"
+        }
+      ]
+    },
+    {
+      "borderTop": "0.909091px solid rgb(236, 236, 240)",
+      "color": "rgb(28, 28, 33)",
+      "gap": "12px",
+      "height": 52.796875,
+      "minHeight": "48px",
+      "padding": "7px 12px 7px 14px",
+      "selected": [],
+      "text": "Codex 自动审批模型",
+      "values": [
+        {
+          "display": "flex",
+          "gap": "2px",
+          "maxWidth": "60%"
+        }
+      ]
+    },
+    {
+      "borderTop": "0.909091px solid rgb(236, 236, 240)",
+      "color": "rgb(28, 28, 33)",
+      "gap": "12px",
+      "height": 52.796875,
+      "minHeight": "48px",
+      "padding": "7px 12px 7px 14px",
+      "selected": [
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "fontSize": "12px",
+          "rect": {
+            "bottom": 951.78125,
+            "height": 24.1875,
+            "left": 1144.21875,
+            "right": 1192.625,
+            "top": 927.59375,
+            "width": 48.40625,
+            "x": 1144.21875,
+            "y": 927.59375
+          },
+          "text": "关闭"
+        }
+      ],
+      "text": "开机自启",
+      "values": [
+        {
+          "display": "flex",
+          "gap": "2px",
+          "maxWidth": "60%"
+        }
+      ]
+    },
+    {
+      "borderTop": "0.909091px solid rgb(236, 236, 240)",
+      "color": "rgb(28, 28, 33)",
+      "gap": "12px",
+      "height": 56.296875,
+      "minHeight": "48px",
+      "padding": "7px 12px 7px 14px",
+      "selected": [
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "fontSize": "12px",
+          "rect": {
+            "bottom": 1006.328125,
+            "height": 24.1875,
+            "left": 1144.21875,
+            "right": 1192.625,
+            "top": 982.140625,
+            "width": 48.40625,
+            "x": 1144.21875,
+            "y": 982.140625
+          },
+          "text": "关闭"
+        }
+      ],
+      "text": "轻量模式",
+      "values": [
+        {
+          "display": "flex",
+          "gap": "2px",
+          "maxWidth": "60%"
+        }
+      ]
+    },
+    {
+      "borderTop": "0.909091px solid rgb(236, 236, 240)",
+      "color": "rgb(28, 28, 33)",
+      "gap": "12px",
+      "height": 56.296875,
+      "minHeight": "48px",
+      "padding": "7px 12px 7px 14px",
+      "selected": [
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "fontSize": "12px",
+          "rect": {
+            "bottom": 1062.625,
+            "height": 24.1875,
+            "left": 1056.21875,
+            "right": 1104.625,
+            "top": 1038.4375,
+            "width": 48.40625,
+            "x": 1056.21875,
+            "y": 1038.4375
+          },
+          "text": "关闭"
+        }
+      ],
+      "text": "防止休眠",
+      "values": [
+        {
+          "display": "flex",
+          "gap": "2px",
+          "maxWidth": "60%"
+        }
+      ]
+    }
+  ],
+  "source": "874268b83c40d3b1a621b152d54aeaed51732334",
+  "tabs": [
+    {
+      "selected": "true",
+      "text": "常规"
+    },
+    {
+      "selected": "false",
+      "text": "额度"
+    },
+    {
+      "selected": "false",
+      "text": "网络与共享"
+    },
+    {
+      "selected": "false",
+      "text": "模型"
+    },
+    {
+      "selected": "false",
+      "text": "隐私"
+    },
+    {
+      "selected": "false",
+      "text": "同步与备份"
+    },
+    {
+      "selected": "false",
+      "text": "关于"
+    }
+  ],
+  "theme": "light",
+  "zoom": "1.1",
+  "scrolled": {
+    "caption": {
+      "bottom": 60.1875,
+      "height": 35.1875,
+      "left": 78,
+      "right": 1286,
+      "top": 25,
+      "width": 1208,
+      "x": 78,
+      "y": 25
+    },
+    "generalSelected": "常规",
+    "root": {
+      "bottom": 816,
+      "height": 792,
+      "left": 77,
+      "right": 1287,
+      "top": 24,
+      "width": 1210,
+      "x": 77,
+      "y": 24
+    },
+    "scrollTop": 276.3636169433594
+  }
+}

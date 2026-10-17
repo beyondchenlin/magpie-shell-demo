@@ -1,0 +1,37 @@
+{
+  "repository": "https://github.com/yetone/magpie",
+  "commit": "63be47717a9ca91fc89102078a1f1fff3e03e0ce",
+  "normalization": "UTF-8, LF",
+  "files": [
+    {
+      "file": "src/styles/app.css",
+      "source": "internal/gui/assets/app.css",
+      "sha256": "8969296912372d495dcfad9f71b92f58af269eb9dad4e53da14996b2c754d0b8"
+    },
+    {
+      "file": "src/styles/routing.css",
+      "source": "internal/gui/assets/plugins/routing/routing.css",
+      "sha256": "0e7e5d28c81e0cd98d6df87dcc8c5cbb966f96db3870762da463c02b49a5b003"
+    },
+    {
+      "file": "src/styles/library.css",
+      "source": "internal/gui/assets/plugins/library/library.css",
+      "sha256": "646d256f1fa0f0187d3d8c550c814f2b7368c6b6eeee1fdb695cb9c2596fb266"
+    },
+    {
+      "file": "src/styles/plugins.css",
+      "source": "internal/gui/assets/plugins.css",
+      "sha256": "4dcc0e2695f89ce64059684ed66a18c55f0bfdf5cbff520c20179b3baf6d7e78"
+    },
+    {
+      "file": "src/styles/sessions.css",
+      "source": "internal/gui/assets/plugins/sessions/sessions.css",
+      "sha256": "daf0c1603ceb5be19cca631f5671b404f7e64f1026bafed38331018ea6fd5c5e"
+    },
+    {
+      "file": "src/styles/context.css",
+      "source": "internal/gui/assets/context.css",
+      "sha256": "2fd627c6f36fe332ab3f55a29e7fe51e7d9d75db2fc4e5e93e17848afcfe70c8"
+    }
+  ]
+}

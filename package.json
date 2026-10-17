@@ -1,7 +1,7 @@
 {
   "name": "magpie-shell-demo",
   "private": true,
-  "version": "0.1.102",
+  "version": "0.1.208",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -13,7 +13,8 @@
     "dist:linux": "tsc -b && vite build && electron-builder --linux AppImage --publish never",
     "dist:dir": "tsc -b && vite build && electron-builder --linux dir",
     "dist:win": "tsc -b && vite build && electron-builder --win --publish never",
-    "chrome-guard": "node scripts/chrome-guard.mjs"
+    "chrome-guard": "node scripts/chrome-guard.mjs",
+    "cis-guard": "node scripts/cis-guard.mjs"
   },
   "dependencies": {
     "react": "^19.2.8",

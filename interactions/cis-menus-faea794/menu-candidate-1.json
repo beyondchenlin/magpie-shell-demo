@@ -1,0 +1,385 @@
+[
+  {
+    "case": "model-1364",
+    "active": {
+      "class": "",
+      "pop": "pop model-picker",
+      "tag": "INPUT"
+    },
+    "anchor": {
+      "bottom": 461.640625,
+      "height": 27.5,
+      "left": 378.1875,
+      "right": 620.1875,
+      "top": 434.140625,
+      "width": 242,
+      "x": 378.1875,
+      "y": 434.140625
+    },
+    "popup": {
+      "class": "pop model-picker",
+      "height": 420,
+      "rect": {
+        "bottom": 806,
+        "height": 462,
+        "left": 378.078125,
+        "right": 917.078125,
+        "top": 344,
+        "width": 539,
+        "x": 378.078125,
+        "y": 344
+      },
+      "scrollHeight": 418,
+      "style": "width: 490px; max-width: 1082px; left: 272.807px; --ox: 110px; top: 290px; bottom: auto; max-height: 420px;",
+      "transform": "none",
+      "width": 490
+    },
+    "root": {
+      "caption": 32,
+      "clientHeight": 718,
+      "clientLeft": 1,
+      "clientTop": 1,
+      "clientWidth": 1098,
+      "offsetWidth": 1100,
+      "rect": {
+        "bottom": 816,
+        "height": 792,
+        "left": 77,
+        "right": 1287,
+        "top": 24,
+        "width": 1210,
+        "x": 77,
+        "y": 24
+      }
+    },
+    "source": "faea7942cd9cdc83e388e1a607176408312822f1",
+    "viewport": [
+      1364,
+      941
+    ]
+  },
+  {
+    "case": "agent-model-1364",
+    "active": {
+      "class": "",
+      "pop": "pop am-pop railed up",
+      "tag": "INPUT"
+    },
+    "popup": {
+      "class": "pop am-pop railed up",
+      "height": 324,
+      "rect": {
+        "bottom": 425.921875,
+        "height": 356.703125,
+        "left": 639,
+        "right": 1277,
+        "top": 69.21875,
+        "width": 638,
+        "x": 639,
+        "y": 69.21875
+      },
+      "scrollHeight": 332,
+      "style": "width: 580px; max-width: 1082px; max-height: 324.281px; left: 510px; --ox: 177.075284090909px; top: auto; bottom: 353.719px;",
+      "transform": "none",
+      "width": 580
+    },
+    "root": {
+      "caption": 32,
+      "clientHeight": 718,
+      "clientLeft": 1,
+      "clientTop": 1,
+      "clientWidth": 1098,
+      "offsetWidth": 1100,
+      "rect": {
+        "bottom": 816,
+        "height": 792,
+        "left": 77,
+        "right": 1287,
+        "top": 24,
+        "width": 1210,
+        "x": 77,
+        "y": 24
+      }
+    },
+    "source": "faea7942cd9cdc83e388e1a607176408312822f1",
+    "viewport": [
+      1364,
+      941
+    ]
+  },
+  {
+    "case": "agent-internal-scroll-keeps-open",
+    "state": {
+      "active": {
+        "class": "",
+        "pop": "pop am-pop railed up",
+        "tag": "INPUT"
+      },
+      "armed": [],
+      "only": "true",
+      "order": [],
+      "rows": [
+        {
+          "checked": "true",
+          "locked": null,
+          "text": "magpie/fast"
+        },
+        {
+          "checked": "true",
+          "locked": "true",
+          "text": "claude-opus-4在用"
+        },
+        {
+          "checked": "true",
+          "locked": "true",
+          "text": "claude-sonnet-4-5在用"
+        },
+        {
+          "checked": "true",
+          "locked": "true",
+          "text": "claude-haiku-4在用"
+        },
+        {
+          "checked": "true",
+          "locked": null,
+          "text": "claude-3-5-haiku"
+        },
+        {
+          "checked": "true",
+          "locked": null,
+          "text": "gemini-2.5-pro"
+        },
+        {
+          "checked": "true",
+          "locked": null,
+          "text": "Mock own model"
+        }
+      ],
+      "sections": [
+        {
+          "folded": false,
+          "name": "路由组",
+          "rows": 1
+        },
+        {
+          "folded": false,
+          "name": "Anthropic",
+          "rows": 4
+        },
+        {
+          "folded": true,
+          "name": "OpenAI",
+          "rows": 0
+        },
+        {
+          "folded": false,
+          "name": "Google",
+          "rows": 1
+        },
+        {
+          "folded": false,
+          "name": "ChatGPT",
+          "rows": 1
+        }
+      ]
+    },
+    "geometry": {
+      "active": {
+        "class": "",
+        "pop": "pop am-pop railed up",
+        "tag": "INPUT"
+      },
+      "anchor": {
+        "bottom": 460.7395839691162,
+        "height": 26.39583396911621,
+        "left": 960.6666870117188,
+        "right": 1020.0521049499512,
+        "top": 434.34375,
+        "width": 59.38541793823242,
+        "x": 960.6666870117188,
+        "y": 434.34375
+      },
+      "popup": {
+        "class": "pop am-pop railed up",
+        "height": 324,
+        "rect": {
+          "bottom": 424.8854217529297,
+          "height": 356.4375,
+          "left": 639.7604370117188,
+          "right": 1277.7604370117188,
+          "top": 68.44792175292969,
+          "width": 638,
+          "x": 639.7604370117188,
+          "y": 68.44792175292969
+        },
+        "scrollHeight": 332,
+        "style": "width: 580px; max-width: 1083px; max-height: 324.04px; left: 511px; --ox: 318.32672361894083px; top: auto; bottom: 354.96px;",
+        "transform": "none",
+        "width": 580
+      },
+      "root": {
+        "caption": 32,
+        "clientHeight": 719,
+        "clientLeft": 1,
+        "clientTop": 1,
+        "clientWidth": 1099,
+        "offsetWidth": 1100,
+        "rect": {
+          "bottom": 816,
+          "height": 792,
+          "left": 77,
+          "right": 1287,
+          "top": 24,
+          "width": 1210,
+          "x": 77,
+          "y": 24
+        }
+      },
+      "source": "faea7942cd9cdc83e388e1a607176408312822f1",
+      "viewport": [
+        1364,
+        941
+      ]
+    },
+    "scroll": 0
+  },
+  {
+    "case": "agent-external-user-scroll-closes",
+    "live": 0
+  },
+  {
+    "case": "model-search-before-enter",
+    "dom": "的后台 app-server 后生效\n    - button \"详情\":\n      - generic: 详情\n    - switch \"将 Codex 接入 magpie\" [checked]\n  - generic: 未设置\n  - generic \"OpenCode\":\n    - button \"OpenCode\"\n    - generic: OpenCode\n    - generic: 未接入 · 用 OpenCode 自己的设置\n    - switch \"将 OpenCode 接入 magpie\"\n  - generic \"Pi\":\n    - button \"Pi\"\n    - generic: Pi\n    - generic: 未接入 · 用 Pi 自己的设置\n    - switch \"将 Pi 接入 magpie\"\n  - button \"显示其余 2 个\":\n    - generic: 显示其余 2 个\n  - button \"批量管理\":\n    - generic: 管理\n  - button \"安装其他 Agent（14）\":\n    - generic: 安装其他 Agent（14）\n  - generic: 方案\n  - generic: 还没有 · 保存当前设置，之后一键切回\n  - button \"＋ 保存当前\"\n- contentinfo:\n  - status\n  - generic: 127.0.0.1:3425\n- listbox:\n  - textbox \"筛选，或输入任意模型 ID…\" [active]: gpt\n  - navigation \"模型供应商\":\n    - button \"全部模型\":\n    - button \"收藏\":\n    - button \"Anthropic\":\n    - button \"OpenAI\":\n    - button \"Google\":\n    - button \"Routing groups\":\n  - list:\n    - option \"gpt-5\":\n      - generic: gpt-5\n    - option \"gpt-5-mini\":\n      - generic: gpt-5-mini\n      - button \"添加到收藏\":",
+    "selection": 0
+  },
+  {
+    "case": "model-search-enter-result",
+    "dom": "- banner \"Window title bar\":\n  - generic: Magpie\n  - button:\n  - button:\n  - button:\n- complementary:\n  - navigation \"Agent\":\n    - generic: 使用\n    - button \"Agent\":\n      - generic: Agent\n    - generic: 模型\n    - button \"供应商\":\n      - generic: 供应商\n    - button \"路由\":\n      - generic: 路由\n    - button \"网关\":\n      - generic: 网关\n    - generic: 观测\n    - button \"用量\":\n      - generic: 用量\n    - generic: 扩展\n    - button \"插件\":\n      - generic: 插件\n  - button \"设置\":\n    - generic: 设置\n  - button \"网关 127.0.0.1:3425\":\n    - generic: 网关 127.0.0.1:3425\n  - separator \"侧边栏宽度\"\n- banner:\n  - heading \"Agent\" [level=1]\n  - button \"隐藏侧边栏\" [pressed]:\n  - generic: 使用\n  - generic: /\n  - generic: Agent\n  - button \"重新检测本机的 Agent：刚安装或卸载的，或在别处改过配置的\":\n- main:\n  - region \"快速上手\":\n    - generic: 快速上手\n    - generic: 已完成 1/2\n    - button \"隐藏快速上手\":\n    - list:\n      - generic: \"1\"\n      - generic: 添加模型来源\n      - generic: 你已经付费的订阅、一个供应商，或一个 API 密钥\n      - button \"添加供应商\"\n      - generic: \"2\"\n      - generic: 接入一个 agent\n      - generic: 安装 Claude Code、Codex、Gemini CLI、OpenCode 等之后，会列在这里。\n      - listitem \"设置路由（可选）\":\n        - generic: \"3\"\n        - generic: 设置路由（可选）\n        - generic: 路由组把每个请求发给合适的模型，一个模型出错时交给下一个\n  - generic \"~/.cursor/cli-config.json\":\n    - button \"调整 Cursor\"\n    - generic: Cursor\n    - generic: 只能用 Cursor 自己的模型\n    - generic: 不能接入\n  - generic \"Claude Code\":\n    - button \"调整 Claude Code\"\n    - generic: Claude Code\n    - generic \"14m ago启动的编辑器（VS Code、Cursor…）里的 Claude Code：重新加载那个编辑器的窗口。 5m ago在终端里启动的 Claude Code：退出后重新启动。\":\n      - generic: 已接入 · 2 个运行中的 Claude Code 待重开\n    - button \"收起\" [expanded]:\n      - generic: 收起\n    - switch \"将 Claude Code 接入 magpie\" [checked]\n    - generic: 在 Claude Code 里\n    - generic: 新开的会话生效，在 里切换档位。\n    - code: /model\n    - generic: 2 个正在运行的 Claude Code 还是旧列表\n    - button \"知道了\"\n    - generic: 14m ago启动的编辑器（VS Code、Cursor…）里的 Claude Code：重新加载那个编辑器的窗口。\n    - generic: 5m ago在终端里启动的 Claude Code：退出后重新启动。\n    - generic: 档位\n    - generic: Opus\n    - button \"gpt\":\n      - generic: gpt\n    - generic: /model opus\n    - generic: Sonnet\n    - button \"claude-sonnet-4-5\":\n      - generic: claude-sonnet-4-5\n    - generic: /model sonnet · 默认档位\n    - generic: Haiku\n    - button \"claude-haiku-4\":\n      - generic: claude-haiku-4\n    - generic: /model haiku · 也用于后台小任务\n    - generic: 模型列表\n    - generic: Anthropic\n    - generic: \"4\"\n    - generic: OpenAI\n    - generic: \"12\"\n    - generic: Google\n    - generic: \"1\"\n    - generic: 路由组\n    - generic: \"1\"\n    - generic: ChatGPT\n    - generic: \"1\"\n    - button \"挑选\":\n      - generic: 挑选\n    - generic: 新会话默认\n    - button \"模型 claude-sonnet-4-5\":\n      - generic: 模型\n      - generic: claude-sonnet-4-5\n    - button \"迁移项目会话\"\n    - text: 改动了\n    - generic: ~/.claude/settings.json\n    - button \"查看\":\n      - generic: 查看\n    - button \"断开并还原\"\n  - generic \"Codex\":\n    - button \"调整 Codex\"\n    - generic: Codex\n    - generic \"27m ago启动的 Codex 后台 app-server：用 codex app-server daemon restart 重启它。\":\n      - generic: 已接入 · 重启 Codex 的后台 app-server 后生效\n    - button \"详情\":\n      - generic: 详情\n    - switch \"将 Codex 接入 magpie\" [checked]\n  - generic: 未设置\n  - generic \"OpenCode\":\n    - button \"OpenCode\"\n    - generic: OpenCode\n    - generic: 未接入 · 用 OpenCode 自己的设置\n    - switch \"将 OpenCode 接入 magpie\"\n  - generic \"Pi\":\n    - button \"Pi\"\n    - generic: Pi\n    - generic: 未接入 · 用 Pi 自己的设置\n    - switch \"将 Pi 接入 magpie\"\n  - button \"显示其余 2 个\":\n    - generic: 显示其余 2 个\n  - button \"批量管理\":\n    - generic: 管理\n  - button \"安装其他 Agent（14）\":\n    - generic: 安装其他 Agent（14）\n  - generic: 方案\n  - generic: 还没有 · 保存当前设置，之后一键切回\n  - button \"＋ 保存当前\"\n- contentinfo:\n  - status \"已保存\"\n  - generic: 127.0.0.1:3425\n- listbox:\n  - textbox:\n    - /placeholder: 筛选，或输入任意模型 ID…\n    - text: gpt\n  - navigation:\n    - button:\n    - button:\n    - button:\n    - button:\n    - button:\n    - button:\n  - list:\n    - option:\n      - generic: gpt-5\n    - option:\n      - generic: gpt-5-mini"
+  },
+  {
+    "case": "model-1364-filter-candidate-before-patch",
+    "geometry": {
+      "active": {
+        "class": "",
+        "pop": "pop model-picker",
+        "tag": "INPUT"
+      },
+      "anchor": {
+        "bottom": 461.03125,
+        "height": 27.5,
+        "left": 610.7083740234375,
+        "right": 852.7083740234375,
+        "top": 433.53125,
+        "width": 242,
+        "x": 610.7083740234375,
+        "y": 433.53125
+      },
+      "popup": {
+        "class": "pop model-picker",
+        "height": 420,
+        "rect": {
+          "bottom": 772.4404602050781,
+          "height": 434.280029296875,
+          "left": 617.5308837890625,
+          "right": 1124.190887451172,
+          "top": 338.1604309082031,
+          "width": 506.6600036621094,
+          "x": 617.5308837890625,
+          "y": 338.1604309082031
+        },
+        "scrollHeight": 419,
+        "style": "width: 490px; max-width: 1083px; left: 484.189px; --ox: 109.99999999999994px; top: 291px; bottom: auto; max-height: 420px;",
+        "transform": "matrix(0.94, 0, 0, 0.94, 0, -6)",
+        "width": 490
+      },
+      "root": {
+        "caption": 32,
+        "clientHeight": 719,
+        "clientLeft": 1,
+        "clientTop": 1,
+        "clientWidth": 1099,
+        "offsetWidth": 1100,
+        "rect": {
+          "bottom": 816,
+          "height": 792,
+          "left": 77,
+          "right": 1287,
+          "top": 24,
+          "width": 1210,
+          "x": 77,
+          "y": 24
+        }
+      },
+      "source": "faea7942cd9cdc83e388e1a607176408312822f1",
+      "viewport": [
+        1364,
+        941
+      ]
+    }
+  },
+  {
+    "case": "model-border-before",
+    "geometry": {
+      "active": {
+        "class": "",
+        "pop": "pop model-picker",
+        "tag": "INPUT"
+      },
+      "anchor": {
+        "bottom": 461.03125,
+        "height": 27.5,
+        "left": 610.7083740234375,
+        "right": 852.7083740234375,
+        "top": 433.53125,
+        "width": 242,
+        "x": 610.7083740234375,
+        "y": 433.53125
+      },
+      "popup": {
+        "class": "pop model-picker",
+        "height": 420,
+        "rect": {
+          "bottom": 806.7604370117188,
+          "height": 462,
+          "left": 610.2708740234375,
+          "right": 1149.2708740234375,
+          "top": 344.76043701171875,
+          "width": 539,
+          "x": 610.2708740234375,
+          "y": 344.76043701171875
+        },
+        "scrollHeight": 419,
+        "style": "width: 490px; max-width: 1083px; left: 484.189px; --ox: 109.99999999999994px; top: 291px; bottom: auto; max-height: 420px;",
+        "transform": "none",
+        "width": 490
+      },
+      "root": {
+        "caption": 32,
+        "clientHeight": 719,
+        "clientLeft": 1,
+        "clientTop": 1,
+        "clientWidth": 1099,
+        "offsetWidth": 1100,
+        "rect": {
+          "bottom": 816,
+          "height": 792,
+          "left": 77,
+          "right": 1287,
+          "top": 24,
+          "width": 1210,
+          "x": 77,
+          "y": 24
+        }
+      },
+      "source": "faea7942cd9cdc83e388e1a607176408312822f1",
+      "viewport": [
+        1364,
+        941
+      ]
+    },
+    "border": {
+      "left": "0.606061px",
+      "top": "0.606061px"
+    }
+  }
+]

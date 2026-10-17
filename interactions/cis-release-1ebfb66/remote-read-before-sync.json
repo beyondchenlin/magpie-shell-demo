@@ -1,0 +1,9 @@
+{
+  "readAt": "2026-10-16T18:02:11.698Z",
+  "url": "https://github.com/beyondchenlin/magpie-shell-demo/pull/1",
+  "head": "tip/0.1.121-cis-appearance-shell",
+  "headSha": "e19fd5a8a0c346192d3d2cd6552160eabbab350c",
+  "title": "Magpie 复刻：CIS 独立校核候选，待监督冻结后修复",
+  "base": "main",
+  "meaning": "New successful authenticated read after earlier transport failures; permits one bounded normal push. Not evidence current local commits have been pushed or cloud preview matches."
+}

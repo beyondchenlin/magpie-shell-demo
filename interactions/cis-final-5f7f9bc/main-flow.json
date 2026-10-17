@@ -1,0 +1,2170 @@
+{
+  "source": "5f7f9bc0b7da8efaacbb6ae0b5e15587538a240c",
+  "version": "0.1.205",
+  "main": [
+    {
+      "key": "agents",
+      "bodyClass": "window web",
+      "brokenImages": [],
+      "caption": {
+        "bottom": 60.1875,
+        "height": 35.1875,
+        "left": 78,
+        "right": 1286,
+        "top": 25,
+        "width": 1208,
+        "x": 78,
+        "y": 25
+      },
+      "documentWidth": {
+        "client": 1364,
+        "scroll": 1364
+      },
+      "heading": "Agent",
+      "invalidNesting": 0,
+      "lang": "zh-CN",
+      "navId": "agents",
+      "root": {
+        "bottom": 816,
+        "height": 792,
+        "left": 77,
+        "right": 1287,
+        "top": 24,
+        "width": 1210,
+        "x": 77,
+        "y": 24
+      },
+      "selected": "Agent",
+      "selectedOffset": {
+        "left": 2,
+        "width": 57
+      },
+      "selectedRect": {
+        "bottom": 98.6796875,
+        "height": 26.390625,
+        "left": 508.9453125,
+        "right": 571.9296875,
+        "top": 72.2890625,
+        "width": 62.984375,
+        "x": 508.9453125,
+        "y": 72.2890625
+      },
+      "source": "5f7f9bc0b7da8efaacbb6ae0b5e15587538a240c",
+      "status": "",
+      "theme": "light",
+      "thumb": {
+        "rect": {
+          "bottom": 98.6796875,
+          "height": 26.390625,
+          "left": 509.0169372558594,
+          "right": 571.7044677734375,
+          "top": 72.2890625,
+          "width": 62.687530517578125,
+          "x": 509.0169372558594,
+          "y": 72.2890625
+        },
+        "transform": "translateX(2px)",
+        "width": "57px"
+      },
+      "version": "0.1.205",
+      "viewport": {
+        "dpr": 1,
+        "h": 941,
+        "w": 1364
+      },
+      "visibleViews": [
+        "view-agents"
+      ],
+      "zoom": "1.1",
+      "ax": "- banner \"Window title bar\":\n  - generic: Magpie\n  - button:\n  - button:\n  - button:\n- banner:\n  - heading \"Agent\" [level=1]\n  - button \"显示侧边栏\":\n  - navigation \"Main navigation\":\n    - button \"Agent\" [active]\n    - button \"供应商\"\n    - button \"路由\"\n    - button \"网关\"\n    - button \"用量\"\n    - button \"插件\"\n  - button \"重新检测本机的 Agent：刚安装或卸载的，或在别处改过配置的\":\n  - button \"设置 (Ctrl+,)\":\n- main:\n  - region \"快速上手\":\n    - generic: 快速上手\n    - generic: 已完成 0/2\n    - button \"隐藏快速上手\":\n    - list:\n      - generic: \"1\"\n      - generic: 添加模型来源\n      - generic: 你已经付费的订阅、一个供应商，或一个 API 密钥\n      - button \"添加供应商\"\n      - generic: \"2\"\n      - generic: 接入一个 agent\n      - generic: 安装 Claude Code、Codex、Gemini CLI、OpenCode 等之后，会列在这里。\n      - listitem \"设置路由（可选）\":\n        - generic: \"3\"\n        - generic: 设置路由（可选）\n        - generic: 路由组把每个请求发给合适的模型，一个模型出错时交给下一个\n  - generic \"~/.cursor/cli-config.json\":\n    - button \"调整 Cursor\"\n    - generic: Cursor\n    - generic: 只能用 Cursor 自己的模型\n    - generic: 不能接入\n  - button \"批量管理\":\n    - generic: 管理\n  - button \"安装其他 Agent（14）\":\n    - generic: 安装其他 Agent（14）\n  - generic: 方案\n  - generic: 还没有 · 保存当前设置，之后一键切回\n  - button \"＋ 保存当前\"\n- contentinfo:\n  - status\n  - generic: 127.0.0.1:3425"
+    },
+    {
+      "key": "agents-side",
+      "bodyClass": "window web side-nav",
+      "brokenImages": [],
+      "caption": {
+        "bottom": 60.1875,
+        "height": 35.1875,
+        "left": 78,
+        "right": 1286,
+        "top": 25,
+        "width": 1208,
+        "x": 78,
+        "y": 25
+      },
+      "documentWidth": {
+        "client": 1364,
+        "scroll": 1364
+      },
+      "heading": "Agent",
+      "invalidNesting": 0,
+      "lang": "zh-CN",
+      "navId": "agents",
+      "root": {
+        "bottom": 816,
+        "height": 792,
+        "left": 77,
+        "right": 1287,
+        "top": 24,
+        "width": 1210,
+        "x": 77,
+        "y": 24
+      },
+      "selected": "Agent",
+      "selectedOffset": {
+        "left": 10,
+        "width": 191
+      },
+      "selectedRect": {
+        "bottom": 128.78125,
+        "height": 33,
+        "left": 89,
+        "right": 299.1875,
+        "top": 95.78125,
+        "width": 210.1875,
+        "x": 89,
+        "y": 95.78125
+      },
+      "source": "5f7f9bc0b7da8efaacbb6ae0b5e15587538a240c",
+      "status": "",
+      "theme": "light",
+      "thumb": null,
+      "version": "0.1.205",
+      "viewport": {
+        "dpr": 1,
+        "h": 941,
+        "w": 1364
+      },
+      "visibleViews": [
+        "view-agents"
+      ],
+      "zoom": "1.1",
+      "ax": "- banner \"Window title bar\":\n  - generic: Magpie\n  - button:\n  - button:\n  - button:\n- complementary:\n  - navigation \"Agent\":\n    - generic: 使用\n    - button \"Agent\":\n      - generic: Agent\n    - generic: 模型\n    - button \"供应商\":\n      - generic: 供应商\n    - button \"路由\":\n      - generic: 路由\n    - button \"网关\":\n      - generic: 网关\n    - generic: 观测\n    - button \"用量\":\n      - generic: 用量\n    - generic: 扩展\n    - button \"插件\":\n      - generic: 插件\n  - button \"设置\":\n    - generic: 设置\n  - button \"网关 127.0.0.1:3425\":\n    - generic: 网关 127.0.0.1:3425\n  - separator \"侧边栏宽度\"\n- banner:\n  - heading \"Agent\" [level=1]\n  - button \"隐藏侧边栏\" [active] [pressed]:\n  - generic: 使用\n  - generic: /\n  - generic: Agent\n  - button \"重新检测本机的 Agent：刚安装或卸载的，或在别处改过配置的\":\n- main:\n  - region \"快速上手\":\n    - generic: 快速上手\n    - generic: 已完成 0/2\n    - button \"隐藏快速上手\":\n    - list:\n      - generic: \"1\"\n      - generic: 添加模型来源\n      - generic: 你已经付费的订阅、一个供应商，或一个 API 密钥\n      - button \"添加供应商\"\n      - generic: \"2\"\n      - generic: 接入一个 agent\n      - generic: 安装 Claude Code、Codex、Gemini CLI、OpenCode 等之后，会列在这里。\n      - listitem \"设置路由（可选）\":\n        - generic: \"3\"\n        - generic: 设置路由（可选）\n        - generic: 路由组把每个请求发给合适的模型，一个模型出错时交给下一个\n  - generic \"~/.cursor/cli-config.json\":\n    - button \"调整 Cursor\"\n    - generic: Cursor\n    - generic: 只能用 Cursor 自己的模型\n    - generic: 不能接入\n  - button \"批量管理\":\n    - generic: 管理\n  - button \"安装其他 Agent（14）\":\n    - generic: 安装其他 Agent（14）\n  - generic: 方案\n  - generic: 还没有 · 保存当前设置，之后一键切回\n  - button \"＋ 保存当前\"\n- contentinfo:\n  - status\n  - generic: 127.0.0.1:3425"
+    },
+    {
+      "key": "agents-top",
+      "bodyClass": "window web",
+      "brokenImages": [],
+      "caption": {
+        "bottom": 60.1875,
+        "height": 35.1875,
+        "left": 78,
+        "right": 1286,
+        "top": 25,
+        "width": 1208,
+        "x": 78,
+        "y": 25
+      },
+      "documentWidth": {
+        "client": 1364,
+        "scroll": 1364
+      },
+      "heading": "Agent",
+      "invalidNesting": 0,
+      "lang": "zh-CN",
+      "navId": "agents",
+      "root": {
+        "bottom": 816,
+        "height": 792,
+        "left": 77,
+        "right": 1287,
+        "top": 24,
+        "width": 1210,
+        "x": 77,
+        "y": 24
+      },
+      "selected": "Agent",
+      "selectedOffset": {
+        "left": 2,
+        "width": 57
+      },
+      "selectedRect": {
+        "bottom": 98.6796875,
+        "height": 26.390625,
+        "left": 508.9453125,
+        "right": 571.9296875,
+        "top": 72.2890625,
+        "width": 62.984375,
+        "x": 508.9453125,
+        "y": 72.2890625
+      },
+      "source": "5f7f9bc0b7da8efaacbb6ae0b5e15587538a240c",
+      "status": "",
+      "theme": "light",
+      "thumb": {
+        "rect": {
+          "bottom": 98.6796875,
+          "height": 26.390625,
+          "left": 508.9578247070313,
+          "right": 571.6453247070312,
+          "top": 72.2890625,
+          "width": 62.6875,
+          "x": 508.9578247070313,
+          "y": 72.2890625
+        },
+        "transform": "translateX(2px)",
+        "width": "57px"
+      },
+      "version": "0.1.205",
+      "viewport": {
+        "dpr": 1,
+        "h": 941,
+        "w": 1364
+      },
+      "visibleViews": [
+        "view-agents"
+      ],
+      "zoom": "1.1",
+      "ax": "- banner \"Window title bar\":\n  - generic: Magpie\n  - button:\n  - button:\n  - button:\n- banner:\n  - heading \"Agent\" [level=1]\n  - button \"显示侧边栏\" [active]:\n  - navigation \"Main navigation\":\n    - button \"Agent\"\n    - button \"供应商\"\n    - button \"路由\"\n    - button \"网关\"\n    - button \"用量\"\n    - button \"插件\"\n  - button \"重新检测本机的 Agent：刚安装或卸载的，或在别处改过配置的\":\n  - button \"设置 (Ctrl+,)\":\n- main:\n  - region \"快速上手\":\n    - generic: 快速上手\n    - generic: 已完成 0/2\n    - button \"隐藏快速上手\":\n    - list:\n      - generic: \"1\"\n      - generic: 添加模型来源\n      - generic: 你已经付费的订阅、一个供应商，或一个 API 密钥\n      - button \"添加供应商\"\n      - generic: \"2\"\n      - generic: 接入一个 agent\n      - generic: 安装 Claude Code、Codex、Gemini CLI、OpenCode 等之后，会列在这里。\n      - listitem \"设置路由（可选）\":\n        - generic: \"3\"\n        - generic: 设置路由（可选）\n        - generic: 路由组把每个请求发给合适的模型，一个模型出错时交给下一个\n  - generic \"~/.cursor/cli-config.json\":\n    - button \"调整 Cursor\"\n    - generic: Cursor\n    - generic: 只能用 Cursor 自己的模型\n    - generic: 不能接入\n  - button \"批量管理\":\n    - generic: 管理\n  - button \"安装其他 Agent（14）\":\n    - generic: 安装其他 Agent（14）\n  - generic: 方案\n  - generic: 还没有 · 保存当前设置，之后一键切回\n  - button \"＋ 保存当前\"\n- contentinfo:\n  - status\n  - generic: 127.0.0.1:3425"
+    },
+    {
+      "key": "providers",
+      "bodyClass": "window web",
+      "brokenImages": [],
+      "caption": {
+        "bottom": 60.1875,
+        "height": 35.1875,
+        "left": 78,
+        "right": 1286,
+        "top": 25,
+        "width": 1208,
+        "x": 78,
+        "y": 25
+      },
+      "documentWidth": {
+        "client": 1364,
+        "scroll": 1364
+      },
+      "heading": "供应商",
+      "invalidNesting": 0,
+      "lang": "zh-CN",
+      "navId": "providers",
+      "root": {
+        "bottom": 816,
+        "height": 792,
+        "left": 77,
+        "right": 1287,
+        "top": 24,
+        "width": 1210,
+        "x": 77,
+        "y": 24
+      },
+      "selected": "供应商",
+      "selectedOffset": {
+        "left": 59,
+        "width": 61
+      },
+      "selectedRect": {
+        "bottom": 98.6796875,
+        "height": 26.390625,
+        "left": 571.9296875,
+        "right": 639.5546875,
+        "top": 72.2890625,
+        "width": 67.625,
+        "x": 571.9296875,
+        "y": 72.2890625
+      },
+      "source": "5f7f9bc0b7da8efaacbb6ae0b5e15587538a240c",
+      "status": "",
+      "theme": "light",
+      "thumb": {
+        "rect": {
+          "bottom": 98.6796875,
+          "height": 26.390625,
+          "left": 571.57421875,
+          "right": 638.66796875,
+          "top": 72.2890625,
+          "width": 67.09375,
+          "x": 571.57421875,
+          "y": 72.2890625
+        },
+        "transform": "translateX(59px)",
+        "width": "61px"
+      },
+      "version": "0.1.205",
+      "viewport": {
+        "dpr": 1,
+        "h": 941,
+        "w": 1364
+      },
+      "visibleViews": [
+        "view-providers"
+      ],
+      "zoom": "1.1",
+      "ax": "- banner \"Window title bar\":\n  - generic: Magpie\n  - button:\n  - button:\n  - button:\n- banner:\n  - heading \"供应商\" [level=1]\n  - button \"显示侧边栏\":\n  - navigation \"Main navigation\":\n    - button \"Agent\"\n    - button \"供应商\" [active]\n    - button \"路由\"\n    - button \"网关\"\n    - button \"用量\"\n    - button \"插件\"\n  - button \"刷新模型列表（models.dev 与各供应商）\":\n  - button \"设置 (Ctrl+,)\":\n- main:\n  - generic: 添加第一个供应商\n  - searchbox \"查找供应商…\"\n  - button \"导入…\"\n  - generic: 订阅\n  - generic: 登录即可，无需密钥\n  - button \"Claude\":\n    - generic: Claude\n  - button \"ChatGPT\":\n    - generic: ChatGPT\n  - button \"ChatGPT API\":\n    - generic: ChatGPT API\n  - button \"Copilot\":\n    - generic: Copilot\n  - button \"Gemini CLI\":\n    - generic: Gemini CLI\n  - button \"Antigravity\":\n    - generic: Antigravity\n  - button \"插件中还有更多\":\n    - generic: 插件中还有更多\n  - generic: 供应商\n  - generic: 模型厂商的 API\n  - button \"Anthropic\":\n    - generic: Anthropic\n  - button \"OpenAI\":\n    - generic: OpenAI\n  - button \"Google Gemini\":\n    - generic: Google Gemini\n  - button \"Vertex AI\":\n    - generic: Vertex AI\n  - button \"DeepSeek\":\n    - generic: DeepSeek\n  - button \"xAI\":\n    - generic: xAI\n  - button \"Kimi\":\n    - generic: Kimi\n  - button \"Kimi Code\":\n    - generic: Kimi Code\n  - button \"Zhipu GLM\":\n    - generic: Zhipu GLM\n  - button \"Z.ai\":\n    - generic: Z.ai\n  - button \"MiniMax\":\n    - generic: MiniMax\n  - button \"StepFun\":\n    - generic: StepFun\n  - button \"Xiaomi MiMo\":\n    - generic: Xiaomi MiMo\n  - button \"Baidu Qianfan\":\n    - generic: Baidu Qianfan\n  - button \"Tencent Cloud\":\n    - generic: Tencent Cloud\n  - button \"Huawei Cloud\":\n    - generic: Huawei Cloud\n  - button \"Volcengine Ark\":\n    - generic: Volcengine Ark\n  - button \"Qwen\":\n    - generic: Qwen\n  - button \"Qwen Plan\":\n    - generic: Qwen Plan\n  - button \"Bailian Plan\":\n    - generic: Bailian Plan\n  - button \"Mistral\":\n    - generic: Mistral\n  - button \"Groq\":\n    - generic: Groq\n  - button \"Amazon Bedrock\":\n    - generic: Amazon Bedrock\n  - button \"Azure OpenAI\":\n    - generic: Azure OpenAI\n  - button \"Ollama Cloud\":\n    - generic: Ollama Cloud\n  - button \"Nous Portal\":\n    - generic: Nous Portal\n  - button \"TypeSafe Jev\":\n    - generic: TypeSafe Jev\n  - button \"Bailian Decision\":\n    - generic: Bailian Decision\n  - button \"Qwen Decision\":\n    - generic: Qwen Decision\n  - generic: 中转\n  - generic: 一个密钥，多家模型\n  - button \"OpenRouter\":\n    - generic: OpenRouter\n  - button \"OpenCode Go\":\n    - generic: OpenCode Go\n  - button \"ClinePass\":\n    - generic: ClinePass\n  - button \"OpenCode Zen\":\n    - generic: OpenCode Zen\n  - button \"Kilo Gateway\":\n    - generic: Kilo Gateway\n  - button \"Command Code\":\n    - generic: Command Code\n  - button \"Together AI\":\n    - generic: Together AI\n  - button \"Fireworks\":\n    - generic: Fireworks\n  - button \"SiliconFlow\":\n    - generic: SiliconFlow\n  - button \"NVIDIA NIM\":\n    - generic: NVIDIA NIM\n  - button \"ModelScope\":\n    - generic: ModelScope\n  - button \"AiHubMix\":\n    - generic: AiHubMix\n  - button \"PipeLLM\":\n    - generic: PipeLLM\n  - button \"302.AI\":\n    - generic: 302.AI\n  - button \"CherryIN\":\n    - generic: CherryIN\n  - button \"鱼鱼连线\":\n    - generic: 鱼鱼连线\n  - button \"Jev · Vercel AI Gateway\":\n    - generic: Jev · Vercel AI Gateway\n  - button \"Cloudflare Workers AI · Jev, Clef\":\n    - generic: Cloudflare Workers AI · Jev, Clef\n  - generic: 本机\n  - button \"Ollama\":\n    - generic: Ollama\n  - button \"LM Studio\":\n    - generic: LM Studio\n  - button \"oMLX\":\n    - generic: oMLX\n  - button \"MLX-Serve\":\n    - generic: MLX-Serve\n  - generic: 另一台电脑上的 magpie\n  - generic: 在它的局域网上共享\n  - button \"Remote magpie\":\n    - generic: Remote magpie\n  - button \"自定义供应商\":\n    - generic: 自定义供应商\n  - generic: 任意 OpenAI / Anthropic 兼容的 URL\n- contentinfo:\n  - status\n  - generic: 127.0.0.1:3425"
+    },
+    {
+      "key": "routing",
+      "bodyClass": "window web",
+      "brokenImages": [],
+      "caption": {
+        "bottom": 60.1875,
+        "height": 35.1875,
+        "left": 78,
+        "right": 1286,
+        "top": 25,
+        "width": 1208,
+        "x": 78,
+        "y": 25
+      },
+      "documentWidth": {
+        "client": 1364,
+        "scroll": 1364
+      },
+      "heading": "路由",
+      "invalidNesting": 0,
+      "lang": "zh-CN",
+      "navId": "routing",
+      "root": {
+        "bottom": 816,
+        "height": 792,
+        "left": 77,
+        "right": 1287,
+        "top": 24,
+        "width": 1210,
+        "x": 77,
+        "y": 24
+      },
+      "selected": "路由",
+      "selectedOffset": {
+        "left": 121,
+        "width": 49
+      },
+      "selectedRect": {
+        "bottom": 98.6796875,
+        "height": 26.390625,
+        "left": 639.5546875,
+        "right": 693.4296875,
+        "top": 72.2890625,
+        "width": 53.875,
+        "x": 639.5546875,
+        "y": 72.2890625
+      },
+      "source": "5f7f9bc0b7da8efaacbb6ae0b5e15587538a240c",
+      "status": "",
+      "theme": "light",
+      "thumb": {
+        "rect": {
+          "bottom": 98.6796875,
+          "height": 26.390625,
+          "left": 639.7655029296875,
+          "right": 693.6717529296875,
+          "top": 72.2890625,
+          "width": 53.90625,
+          "x": 639.7655029296875,
+          "y": 72.2890625
+        },
+        "transform": "translateX(121px)",
+        "width": "49px"
+      },
+      "version": "0.1.205",
+      "viewport": {
+        "dpr": 1,
+        "h": 941,
+        "w": 1364
+      },
+      "visibleViews": [
+        "view-routing"
+      ],
+      "zoom": "1.1",
+      "ax": "- banner \"Window title bar\":\n  - generic: Magpie\n  - button:\n  - button:\n  - button:\n- banner:\n  - heading \"路由\" [level=1]\n  - button \"显示侧边栏\":\n  - navigation \"Main navigation\":\n    - button \"Agent\"\n    - button \"供应商\"\n    - button \"路由\" [active]\n    - button \"网关\"\n    - button \"用量\"\n    - button \"插件\"\n  - button \"刷新模型列表（models.dev 与各供应商）\":\n  - button \"设置 (Ctrl+,)\":\n- main:\n  - generic: 路由\n  - generic: 实时 · 网关正在做的决定\n  - button \"账号已打码\" [pressed]:\n    - generic: 账号已打码\n  - generic: 等待请求\n  - paragraph: 经 magpie 的 Agent 发出请求后，这里实时播放：路由把谁排第一及原因、每次尝试和各自的回应。\n  - generic: 你的 Agent\n  - generic: magpie\n  - generic: 127.0.0.1:3425\n  - list:\n    - listitem: 还没有请求\n  - paragraph: Agent 发给 magpie 的每个请求都会在此显示，均为真实路由。\n  - generic: \"0\"\n  - generic: 请求\n  - generic: \"0\"\n  - generic: 改道\n  - generic \"当前列表中没有失败的请求\":\n    - generic: \"0\"\n    - generic: Agent 收到的错误\n  - generic: 请求\n  - generic: magpie 启动以来还没有请求\n  - text: agent 经 magpie 发出的每个请求都列在这里：由谁应答、为何选它，以及每次尝试。\n- contentinfo:\n  - status\n  - generic: 127.0.0.1:3425"
+    },
+    {
+      "key": "gateway",
+      "bodyClass": "window web",
+      "brokenImages": [],
+      "caption": {
+        "bottom": 60.1875,
+        "height": 35.1875,
+        "left": 78,
+        "right": 1286,
+        "top": 25,
+        "width": 1208,
+        "x": 78,
+        "y": 25
+      },
+      "documentWidth": {
+        "client": 1364,
+        "scroll": 1364
+      },
+      "heading": "网关",
+      "invalidNesting": 0,
+      "lang": "zh-CN",
+      "navId": "gateway",
+      "root": {
+        "bottom": 816,
+        "height": 792,
+        "left": 77,
+        "right": 1287,
+        "top": 24,
+        "width": 1210,
+        "x": 77,
+        "y": 24
+      },
+      "selected": "网关",
+      "selectedOffset": {
+        "left": 170,
+        "width": 49
+      },
+      "selectedRect": {
+        "bottom": 98.6796875,
+        "height": 26.390625,
+        "left": 693.4296875,
+        "right": 747.3046875,
+        "top": 72.2890625,
+        "width": 53.875,
+        "x": 693.4296875,
+        "y": 72.2890625
+      },
+      "source": "5f7f9bc0b7da8efaacbb6ae0b5e15587538a240c",
+      "status": "",
+      "theme": "light",
+      "thumb": {
+        "rect": {
+          "bottom": 98.6796875,
+          "height": 26.390625,
+          "left": 693.6846313476562,
+          "right": 747.5752563476562,
+          "top": 72.2890625,
+          "width": 53.890625,
+          "x": 693.6846313476562,
+          "y": 72.2890625
+        },
+        "transform": "translateX(170px)",
+        "width": "49px"
+      },
+      "version": "0.1.205",
+      "viewport": {
+        "dpr": 1,
+        "h": 941,
+        "w": 1364
+      },
+      "visibleViews": [
+        "view-gateway"
+      ],
+      "zoom": "1.1",
+      "ax": "- banner \"Window title bar\":\n  - generic: Magpie\n  - button:\n  - button:\n  - button:\n- banner:\n  - heading \"网关\" [level=1]\n  - button \"显示侧边栏\":\n  - navigation \"Main navigation\":\n    - button \"Agent\"\n    - button \"供应商\"\n    - button \"路由\"\n    - button \"网关\" [active]\n    - button \"用量\"\n    - button \"插件\"\n  - button \"刷新模型列表（models.dev 与各供应商）\":\n  - button \"设置 (Ctrl+,)\":\n- main:\n  - generic: 网关运行中\n  - generic: 0 个模型 · 尚无 Agent 经由此路由 · 五种 API，一个地址\n  - button \"重启网关\"\n  - button \"http://127.0.0.1:3425\":\n    - code: http://127.0.0.1:3425\n  - paragraph:\n    - text: 网关密钥给其他电脑用，也给连到这台电脑的隧道（如 Cloudflare Tunnel）用：打开「局域网共享」后在这里添加。这台电脑上的 Agent 不需要密钥。\n    - button \"网络与共享\"\n  - button \"接入\" [expanded]:\n    - generic: 接入\n  - generic: 仅限本机回环 · 密钥可以随意填\n  - generic: API\n  - group \"API\":\n    - generic \"API\":\n      - button \"OpenAI\" [pressed]\n      - button \"Responses\"\n      - button \"Anthropic\"\n      - button \"Gemini\"\n      - button \"System One\"\n    - generic: Chat Completions，多数工具使用的 API。任何可设置 OpenAI base URL 的工具都能用。\n  - generic: API 地址\n  - group \"API 地址\":\n    - code: http://127.0.0.1:3425/v1\n    - button \"复制 API 地址\":\n    - generic: 填入 OPENAI_BASE_URL。\n  - generic: API 密钥\n  - group \"API 密钥\":\n    - code: magpie\n    - button \"复制 密钥\":\n    - generic: OPENAI_API_KEY=magpie。网关信任本机回环请求，可填任意值。\n  - generic: 模型\n  - group \"模型\":\n    - code: provider/model\n    - button \"复制 模型 ID\":\n    - generic: 还没有模型。添加一个供应商，或登录 Codex / Copilot。\n  - generic: 示例\n  - group \"示例\":\n    - generic \"示例\":\n      - button \"PowerShell\" [pressed]\n      - button \"curl\"\n      - button \"Python\"\n      - button \"Node\"\n    - generic \"在哪里运行这段代码\":\n      - button \"Windows\" [pressed]\n      - button \"macOS · Linux\"\n    - code:\n      - generic: $env:OPENAI_BASE_URL=\"http://127.0.0.1:3425/v1\"\n      - generic: $env:OPENAI_API_KEY=\"magpie\"\n    - button \"复制 代码片段\":\n    - generic: 将这些写入 shell（或工具设置），工具即改连 magpie，而非直连供应商。\n  - button \"模型\" [expanded]:\n    - generic: 模型\n  - generic: 尚未暴露任何模型\n  - text: 添加供应商，或登录 Codex / Copilot；其模型会列在这里，供所有 Agent 使用。\n  - generic: 最近调用\n  - generic: 还没有请求。让 Agent 使用某个模型，或运行上面的示例；调用会实时显示在这里。\n- contentinfo:\n  - status\n  - generic: 127.0.0.1:3425"
+    },
+    {
+      "key": "gateway-side",
+      "bodyClass": "window web side-nav",
+      "brokenImages": [],
+      "caption": {
+        "bottom": 60.1875,
+        "height": 35.1875,
+        "left": 78,
+        "right": 1286,
+        "top": 25,
+        "width": 1208,
+        "x": 78,
+        "y": 25
+      },
+      "documentWidth": {
+        "client": 1364,
+        "scroll": 1364
+      },
+      "heading": "网关",
+      "invalidNesting": 0,
+      "lang": "zh-CN",
+      "navId": "gateway",
+      "root": {
+        "bottom": 816,
+        "height": 792,
+        "left": 77,
+        "right": 1287,
+        "top": 24,
+        "width": 1210,
+        "x": 77,
+        "y": 24
+      },
+      "selected": "网关",
+      "selectedOffset": {
+        "left": 10,
+        "width": 191
+      },
+      "selectedRect": {
+        "bottom": 268.859375,
+        "height": 33,
+        "left": 89,
+        "right": 299.1875,
+        "top": 235.859375,
+        "width": 210.1875,
+        "x": 89,
+        "y": 235.859375
+      },
+      "source": "5f7f9bc0b7da8efaacbb6ae0b5e15587538a240c",
+      "status": "",
+      "theme": "light",
+      "thumb": null,
+      "version": "0.1.205",
+      "viewport": {
+        "dpr": 1,
+        "h": 941,
+        "w": 1364
+      },
+      "visibleViews": [
+        "view-gateway"
+      ],
+      "zoom": "1.1",
+      "ax": "- banner \"Window title bar\":\n  - generic: Magpie\n  - button:\n  - button:\n  - button:\n- complementary:\n  - navigation \"Agent\":\n    - generic: 使用\n    - button \"Agent\":\n      - generic: Agent\n    - generic: 模型\n    - button \"供应商\":\n      - generic: 供应商\n    - button \"路由\":\n      - generic: 路由\n    - button \"网关\":\n      - generic: 网关\n    - generic: 观测\n    - button \"用量\":\n      - generic: 用量\n    - generic: 扩展\n    - button \"插件\":\n      - generic: 插件\n  - button \"设置\":\n    - generic: 设置\n  - button \"网关 127.0.0.1:3425\":\n    - generic: 网关 127.0.0.1:3425\n  - separator \"侧边栏宽度\"\n- banner:\n  - heading \"网关\" [level=1]\n  - button \"隐藏侧边栏\" [active] [pressed]:\n  - generic: 模型\n  - generic: /\n  - generic: 网关\n  - button \"刷新模型列表（models.dev 与各供应商）\":\n- main:\n  - generic: 网关运行中\n  - generic: 0 个模型 · 尚无 Agent 经由此路由 · 五种 API，一个地址\n  - button \"重启网关\"\n  - button \"http://127.0.0.1:3425\":\n    - code: http://127.0.0.1:3425\n  - paragraph:\n    - text: 网关密钥给其他电脑用，也给连到这台电脑的隧道（如 Cloudflare Tunnel）用：打开「局域网共享」后在这里添加。这台电脑上的 Agent 不需要密钥。\n    - button \"网络与共享\"\n  - button \"接入\" [expanded]:\n    - generic: 接入\n  - generic: 仅限本机回环 · 密钥可以随意填\n  - generic: API\n  - group \"API\":\n    - generic \"API\":\n      - button \"OpenAI\" [pressed]\n      - button \"Responses\"\n      - button \"Anthropic\"\n      - button \"Gemini\"\n      - button \"System One\"\n    - generic: Chat Completions，多数工具使用的 API。任何可设置 OpenAI base URL 的工具都能用。\n  - generic: API 地址\n  - group \"API 地址\":\n    - code: http://127.0.0.1:3425/v1\n    - button \"复制 API 地址\":\n    - generic: 填入 OPENAI_BASE_URL。\n  - generic: API 密钥\n  - group \"API 密钥\":\n    - code: magpie\n    - button \"复制 密钥\":\n    - generic: OPENAI_API_KEY=magpie。网关信任本机回环请求，可填任意值。\n  - generic: 模型\n  - group \"模型\":\n    - code: provider/model\n    - button \"复制 模型 ID\":\n    - generic: 还没有模型。添加一个供应商，或登录 Codex / Copilot。\n  - generic: 示例\n  - group \"示例\":\n    - generic \"示例\":\n      - button \"PowerShell\" [pressed]\n      - button \"curl\"\n      - button \"Python\"\n      - button \"Node\"\n    - generic \"在哪里运行这段代码\":\n      - button \"Windows\" [pressed]\n      - button \"macOS · Linux\"\n    - code:\n      - generic: $env:OPENAI_BASE_URL=\"http://127.0.0.1:3425/v1\"\n      - generic: $env:OPENAI_API_KEY=\"magpie\"\n    - button \"复制 代码片段\":\n    - generic: 将这些写入 shell（或工具设置），工具即改连 magpie，而非直连供应商。\n  - button \"模型\" [expanded]:\n    - generic: 模型\n  - generic: 尚未暴露任何模型\n  - text: 添加供应商，或登录 Codex / Copilot；其模型会列在这里，供所有 Agent 使用。\n  - generic: 最近调用\n  - generic: 还没有请求。让 Agent 使用某个模型，或运行上面的示例；调用会实时显示在这里。\n- contentinfo:\n  - status\n  - generic: 127.0.0.1:3425"
+    },
+    {
+      "key": "gateway-top",
+      "bodyClass": "window web",
+      "brokenImages": [],
+      "caption": {
+        "bottom": 60.1875,
+        "height": 35.1875,
+        "left": 78,
+        "right": 1286,
+        "top": 25,
+        "width": 1208,
+        "x": 78,
+        "y": 25
+      },
+      "documentWidth": {
+        "client": 1364,
+        "scroll": 1364
+      },
+      "heading": "网关",
+      "invalidNesting": 0,
+      "lang": "zh-CN",
+      "navId": "gateway",
+      "root": {
+        "bottom": 816,
+        "height": 792,
+        "left": 77,
+        "right": 1287,
+        "top": 24,
+        "width": 1210,
+        "x": 77,
+        "y": 24
+      },
+      "selected": "网关",
+      "selectedOffset": {
+        "left": 170,
+        "width": 49
+      },
+      "selectedRect": {
+        "bottom": 98.6796875,
+        "height": 26.390625,
+        "left": 693.4296875,
+        "right": 747.3046875,
+        "top": 72.2890625,
+        "width": 53.875,
+        "x": 693.4296875,
+        "y": 72.2890625
+      },
+      "source": "5f7f9bc0b7da8efaacbb6ae0b5e15587538a240c",
+      "status": "",
+      "theme": "light",
+      "thumb": {
+        "rect": {
+          "bottom": 98.6796875,
+          "height": 26.390625,
+          "left": 693.7578125,
+          "right": 747.6484375,
+          "top": 72.2890625,
+          "width": 53.890625,
+          "x": 693.7578125,
+          "y": 72.2890625
+        },
+        "transform": "translateX(170px)",
+        "width": "49px"
+      },
+      "version": "0.1.205",
+      "viewport": {
+        "dpr": 1,
+        "h": 941,
+        "w": 1364
+      },
+      "visibleViews": [
+        "view-gateway"
+      ],
+      "zoom": "1.1",
+      "ax": "- banner \"Window title bar\":\n  - generic: Magpie\n  - button:\n  - button:\n  - button:\n- banner:\n  - heading \"网关\" [level=1]\n  - button \"显示侧边栏\" [active]:\n  - navigation \"Main navigation\":\n    - button \"Agent\"\n    - button \"供应商\"\n    - button \"路由\"\n    - button \"网关\"\n    - button \"用量\"\n    - button \"插件\"\n  - button \"刷新模型列表（models.dev 与各供应商）\":\n  - button \"设置 (Ctrl+,)\":\n- main:\n  - generic: 网关运行中\n  - generic: 0 个模型 · 尚无 Agent 经由此路由 · 五种 API，一个地址\n  - button \"重启网关\"\n  - button \"http://127.0.0.1:3425\":\n    - code: http://127.0.0.1:3425\n  - paragraph:\n    - text: 网关密钥给其他电脑用，也给连到这台电脑的隧道（如 Cloudflare Tunnel）用：打开「局域网共享」后在这里添加。这台电脑上的 Agent 不需要密钥。\n    - button \"网络与共享\"\n  - button \"接入\" [expanded]:\n    - generic: 接入\n  - generic: 仅限本机回环 · 密钥可以随意填\n  - generic: API\n  - group \"API\":\n    - generic \"API\":\n      - button \"OpenAI\" [pressed]\n      - button \"Responses\"\n      - button \"Anthropic\"\n      - button \"Gemini\"\n      - button \"System One\"\n    - generic: Chat Completions，多数工具使用的 API。任何可设置 OpenAI base URL 的工具都能用。\n  - generic: API 地址\n  - group \"API 地址\":\n    - code: http://127.0.0.1:3425/v1\n    - button \"复制 API 地址\":\n    - generic: 填入 OPENAI_BASE_URL。\n  - generic: API 密钥\n  - group \"API 密钥\":\n    - code: magpie\n    - button \"复制 密钥\":\n    - generic: OPENAI_API_KEY=magpie。网关信任本机回环请求，可填任意值。\n  - generic: 模型\n  - group \"模型\":\n    - code: provider/model\n    - button \"复制 模型 ID\":\n    - generic: 还没有模型。添加一个供应商，或登录 Codex / Copilot。\n  - generic: 示例\n  - group \"示例\":\n    - generic \"示例\":\n      - button \"PowerShell\" [pressed]\n      - button \"curl\"\n      - button \"Python\"\n      - button \"Node\"\n    - generic \"在哪里运行这段代码\":\n      - button \"Windows\" [pressed]\n      - button \"macOS · Linux\"\n    - code:\n      - generic: $env:OPENAI_BASE_URL=\"http://127.0.0.1:3425/v1\"\n      - generic: $env:OPENAI_API_KEY=\"magpie\"\n    - button \"复制 代码片段\":\n    - generic: 将这些写入 shell（或工具设置），工具即改连 magpie，而非直连供应商。\n  - button \"模型\" [expanded]:\n    - generic: 模型\n  - generic: 尚未暴露任何模型\n  - text: 添加供应商，或登录 Codex / Copilot；其模型会列在这里，供所有 Agent 使用。\n  - generic: 最近调用\n  - generic: 还没有请求。让 Agent 使用某个模型，或运行上面的示例；调用会实时显示在这里。\n- contentinfo:\n  - status\n  - generic: 127.0.0.1:3425"
+    },
+    {
+      "key": "usage",
+      "bodyClass": "window web",
+      "brokenImages": [],
+      "caption": {
+        "bottom": 60.1875,
+        "height": 35.1875,
+        "left": 78,
+        "right": 1286,
+        "top": 25,
+        "width": 1208,
+        "x": 78,
+        "y": 25
+      },
+      "documentWidth": {
+        "client": 1364,
+        "scroll": 1364
+      },
+      "heading": "用量",
+      "invalidNesting": 0,
+      "lang": "zh-CN",
+      "navId": "usage",
+      "root": {
+        "bottom": 816,
+        "height": 792,
+        "left": 77,
+        "right": 1287,
+        "top": 24,
+        "width": 1210,
+        "x": 77,
+        "y": 24
+      },
+      "selected": "用量",
+      "selectedOffset": {
+        "left": 219,
+        "width": 49
+      },
+      "selectedRect": {
+        "bottom": 98.6796875,
+        "height": 26.390625,
+        "left": 747.3046875,
+        "right": 801.1796875,
+        "top": 72.2890625,
+        "width": 53.875,
+        "x": 747.3046875,
+        "y": 72.2890625
+      },
+      "source": "5f7f9bc0b7da8efaacbb6ae0b5e15587538a240c",
+      "status": "",
+      "theme": "light",
+      "thumb": {
+        "rect": {
+          "bottom": 98.6796875,
+          "height": 26.390625,
+          "left": 747.585205078125,
+          "right": 801.475830078125,
+          "top": 72.2890625,
+          "width": 53.890625,
+          "x": 747.585205078125,
+          "y": 72.2890625
+        },
+        "transform": "translateX(219px)",
+        "width": "49px"
+      },
+      "version": "0.1.205",
+      "viewport": {
+        "dpr": 1,
+        "h": 941,
+        "w": 1364
+      },
+      "visibleViews": [
+        "view-usage"
+      ],
+      "zoom": "1.1",
+      "ax": "- banner \"Window title bar\":\n  - generic: Magpie\n  - button:\n  - button:\n  - button:\n- banner:\n  - heading \"用量\" [level=1]\n  - button \"显示侧边栏\":\n  - navigation \"Main navigation\":\n    - button \"Agent\"\n    - button \"供应商\"\n    - button \"路由\"\n    - button \"网关\"\n    - button \"用量\" [active]\n    - button \"插件\"\n  - button \"刷新模型列表（models.dev 与各供应商）\":\n  - button \"设置 (Ctrl+,)\":\n- main:\n  - button \"概览\"\n  - button \"请求\"\n  - button \"会话\"\n  - button \"上下文\" [pressed]\n  - button \"今天\"\n  - button \"7 天\" [pressed]\n  - button \"30 天\"\n  - button \"立即刷新\":\n  - button \"关闭\":\n    - generic: 关闭\n  - generic: ≈$0.000\n  - generic: 生效价格\n  - generic: 为你调优\n  - paragraph: 用你这段时间自己的调用（来自 agent 的会话文件）逐个设置重放：按你的用法，哪组设置花的 Token 最少。Token 按厂商计费的方式加权：一次缓存读取算十分之一。\n  - generic: 这段时间的调用太少，还算不出建议\n  - generic: 经过 magpie 的\n  - paragraph: 每个 agent 的提示词里装了什么，由 magpie 网关读取；评分和标签根据所选时间范围内的请求算出。\n  - generic: 还没有读到提示词\n  - generic: 你的 agent 经 magpie 发出的请求会显示在这里。\n- contentinfo:\n  - status\n  - generic: 127.0.0.1:3425"
+    },
+    {
+      "key": "plugins",
+      "bodyClass": "window web",
+      "brokenImages": [],
+      "caption": {
+        "bottom": 60.1875,
+        "height": 35.1875,
+        "left": 78,
+        "right": 1286,
+        "top": 25,
+        "width": 1208,
+        "x": 78,
+        "y": 25
+      },
+      "documentWidth": {
+        "client": 1364,
+        "scroll": 1364
+      },
+      "heading": "插件",
+      "invalidNesting": 0,
+      "lang": "zh-CN",
+      "navId": "plugins",
+      "root": {
+        "bottom": 816,
+        "height": 792,
+        "left": 77,
+        "right": 1287,
+        "top": 24,
+        "width": 1210,
+        "x": 77,
+        "y": 24
+      },
+      "selected": "插件",
+      "selectedOffset": {
+        "left": 268,
+        "width": 49
+      },
+      "selectedRect": {
+        "bottom": 98.6796875,
+        "height": 26.390625,
+        "left": 801.1796875,
+        "right": 855.0546875,
+        "top": 72.2890625,
+        "width": 53.875,
+        "x": 801.1796875,
+        "y": 72.2890625
+      },
+      "source": "5f7f9bc0b7da8efaacbb6ae0b5e15587538a240c",
+      "status": "",
+      "theme": "light",
+      "thumb": {
+        "rect": {
+          "bottom": 98.6796875,
+          "height": 26.390625,
+          "left": 801.4852294921875,
+          "right": 855.3758544921875,
+          "top": 72.2890625,
+          "width": 53.890625,
+          "x": 801.4852294921875,
+          "y": 72.2890625
+        },
+        "transform": "translateX(268px)",
+        "width": "49px"
+      },
+      "version": "0.1.205",
+      "viewport": {
+        "dpr": 1,
+        "h": 941,
+        "w": 1364
+      },
+      "visibleViews": [
+        "view-plugins"
+      ],
+      "zoom": "1.1",
+      "ax": "- banner \"Window title bar\":\n  - generic: Magpie\n  - button:\n  - button:\n  - button:\n- banner:\n  - heading \"插件\" [level=1]\n  - button \"显示侧边栏\":\n  - navigation \"Main navigation\":\n    - button \"Agent\"\n    - button \"供应商\"\n    - button \"路由\"\n    - button \"网关\"\n    - button \"用量\"\n    - button \"插件\" [active]\n  - button \"刷新模型列表（models.dev 与各供应商）\":\n  - button \"设置 (Ctrl+,)\":\n- main:\n  - button \"内置\"\n  - button \"发现\" [pressed]\n  - button \"已安装 · 2\"\n  - switch \"国内镜像\":\n    - generic: 国内镜像\n  - searchbox \"搜索插件\"\n  - heading \"订阅与网关中间件\" [level=2]\n  - paragraph: 插件负责登录编程套餐并发出请求，其模型可像其他供应商的一样用于所有 agent。插件为 OpenCode 的供应商插件或 pi 扩展包，运行在 Bun 上。\n  - paragraph:\n    - text: 插件也可以是 magpie 网关里的中间件：读取并改写 Agent 发出和收到的内容，对每个 provider 都有效。\n    - button \"编写中间件\":\n      - text: 编写中间件\n  - generic: 插件是他人的代码，会拿到你的登录或看到你的请求：只安装你信任的。\n  - generic: Z\n  - generic: ✦\n  - generic: G\n  - generic: ◇\n  - generic: ◈\n  - heading \"订阅\" [level=3]\n  - generic: 为 magpie 编写，与内置登录对照验证过\n  - button \"OpenCode Zen Free magpie 社区 OpenCode Zen's free models with the public credential, automatic discovery and native streaming protocols. 供应商 3.0k/week v0.1.1 安装\":\n    - generic: OpenCode Zen Free\n    - generic: magpie 社区\n    - paragraph: OpenCode Zen's free models with the public credential, automatic discovery and native streaming protocols.\n    - generic: 供应商\n    - generic: 3.0k/week\n    - generic: v0.1.1\n    - button \"安装\"\n  - button \"ZCode 也有内置 magpie 社区 Z.ai and BigModel GLM Coding Plan, team seats and ZCode's free Start Plan. 供应商 9.0k/week v0.1.18 安装\":\n    - generic: ZCode\n    - generic: 也有内置\n    - generic: magpie 社区\n    - paragraph: Z.ai and BigModel GLM Coding Plan, team seats and ZCode's free Start Plan.\n    - generic: 供应商\n    - generic: 9.0k/week\n    - generic: v0.1.18\n    - button \"安装\"\n  - button \"Qoder 也有内置 magpie 社区 Your Qoder subscription, international (qoder.com) or Qoder CN (qoder.cn). 供应商 5.6k/week v0.2.15 安装\":\n    - generic: Qoder\n    - generic: 也有内置\n    - generic: magpie 社区\n    - paragraph: Your Qoder subscription, international (qoder.com) or Qoder CN (qoder.cn).\n    - generic: 供应商\n    - generic: 5.6k/week\n    - generic: v0.2.15\n    - button \"安装\"\n  - button \"Devin 也有内置 magpie 社区 Devin's models with your Devin account — a browser sign-in or the devin CLI's. 供应商 2.9k/week v0.1.16 安装\":\n    - generic: Devin\n    - generic: 也有内置\n    - generic: magpie 社区\n    - paragraph: Devin's models with your Devin account — a browser sign-in or the devin CLI's.\n    - generic: 供应商\n    - generic: 2.9k/week\n    - generic: v0.1.16\n    - button \"安装\"\n  - heading \"网关中间件\" [level=3]\n  - generic: 在 magpie 的网关里处理每个 agent 发出的请求和收到的回复，不论由哪个供应商提供\n  - button \"Think Tags magpie 社区 Take a model's <think>...</think> out of its reply's text, or put a Chat reply's reasoning into it. 中间件 159/week v0.1.0 已安装\":\n    - generic: Think Tags\n    - generic: magpie 社区\n    - paragraph: Take a model's <think>...</think> out of its reply's text, or put a Chat reply's reasoning into it.\n    - generic: 中间件\n    - generic: 159/week\n    - generic: v0.1.0\n    - button \"已安装\" [disabled]:\n      - generic: 已安装\n  - button \"Word Guard magpie 社区 Block or rewrite words in what every agent sends and gets back. 中间件 403/week v0.1.1 已安装\":\n    - generic: Word Guard\n    - generic: magpie 社区\n    - paragraph: Block or rewrite words in what every agent sends and gets back.\n    - generic: 中间件\n    - generic: 403/week\n    - generic: v0.1.1\n    - button \"已安装\" [disabled]:\n      - generic: 已安装\n  - button \"Request logger magpie 社区 Logs each gateway call's request and reply — demo fold for options JSON. 中间件 1.4k/week v0.1.0 安装\":\n    - generic: Request logger\n    - generic: magpie 社区\n    - paragraph: Logs each gateway call's request and reply — demo fold for options JSON.\n    - generic: 中间件\n    - generic: 1.4k/week\n    - generic: v0.1.0\n    - button \"安装\"\n  - heading \"Agent\" [level=3]\n  - generic: agents magpie has no setup of its own for\n  - button \"Demo agent bridge magpie 社区 Connect a third-party agent the way Magpie wires its own. Agent 620/week v0.0.9 安装\":\n    - generic: Demo agent bridge\n    - generic: magpie 社区\n    - paragraph: Connect a third-party agent the way Magpie wires its own.\n    - generic: Agent\n    - generic: 620/week\n    - generic: v0.0.9\n    - button \"安装\"\n  - heading \"非官方插件 · GitHub\" [level=3]\n  - generic: repositories their authors tagged magpie-plugin — nobody has reviewed them; read the code before you install one\n  - generic \"插件类型\":\n    - button \"全部 · 12\" [pressed]\n    - button \"供应商 · 6\"\n    - button \"中间件 · 4\"\n    - button \"Agent · 2\"\n  - searchbox \"筛选 GitHub 上的插件\"\n  - button \"magpie-our-free-models mu-zi-lee Our Free Model 的 Magpie 适配插件：整合免费模型池、EAC 授权与多账号渠道，支持自动服务… 供应商 非官方 ★ 225 225★ v0.9.0 安装\":\n    - generic: magpie-our-free-models\n    - generic: mu-zi-lee\n    - paragraph: Our Free Model 的 Magpie 适配插件：整合免费模型池、EAC 授权与多账号渠道，支持自动服务…\n    - generic: 供应商\n    - generic: 非官方\n    - generic: ★ 225\n    - generic: 225★\n    - generic: v0.9.0\n    - button \"安装\"\n  - button \"magpie-intelligence mu-zi-lee Magpie 模型质量检测插件：对指定主力模型进行自动探针、请求门禁和人工确认，支持本地与… 供应商 非官方 ★ 50 50★ v0.3.0 安装\":\n    - generic: magpie-intelligence\n    - generic: mu-zi-lee\n    - paragraph: Magpie 模型质量检测插件：对指定主力模型进行自动探针、请求门禁和人工确认，支持本地与…\n    - generic: 供应商\n    - generic: 非官方\n    - generic: ★ 50\n    - generic: 50★\n    - generic: v0.3.0\n    - button \"安装\"\n  - button \"magpie-gemini-web BUKOWSKIREAL Gemini Web provider for Magpie with a local backend and experimental Argon support. 供应商 非官方 ★ 12 12★ v0.2.0 安装\":\n    - generic: magpie-gemini-web\n    - generic: BUKOWSKIREAL\n    - paragraph: Gemini Web provider for Magpie with a local backend and experimental Argon support.\n    - generic: 供应商\n    - generic: 非官方\n    - generic: ★ 12\n    - generic: 12★\n    - generic: v0.2.0\n    - button \"安装\"\n  - 'button \"magpie-muse-web JohnWangggg Magpie plugin for muse.ai: sign in to each account in a browser, use Muse Spark with… 供应商 非官方 ★ 8 8★ v0.1.4 安装\"':\n    - generic: magpie-muse-web\n    - generic: JohnWangggg\n    - paragraph: \"Magpie plugin for muse.ai: sign in to each account in a browser, use Muse Spark with…\"\n    - generic: 供应商\n    - generic: 非官方\n    - generic: ★ 8\n    - generic: 8★\n    - generic: v0.1.4\n    - button \"安装\"\n  - 'button \"magpie-middleware-image-keep euanguo magpie gateway middleware: keep the newest images and replace older inline images with… 中间件 非官方 ★ 2 2★ v0.2.0 安装\"':\n    - generic: magpie-middleware-image-keep\n    - generic: euanguo\n    - paragraph: \"magpie gateway middleware: keep the newest images and replace older inline images with…\"\n    - generic: 中间件\n    - generic: 非官方\n    - generic: ★ 2\n    - generic: 2★\n    - generic: v0.2.0\n    - button \"安装\"\n  - button \"magpie-claude-science shiyang1026 Use Magpie models in Claude Science with the original macOS app. 中间件 非官方 ★ 4 4★ v0.1.3 安装\":\n    - generic: magpie-claude-science\n    - generic: shiyang1026\n    - paragraph: Use Magpie models in Claude Science with the original macOS app.\n    - generic: 中间件\n    - generic: 非官方\n    - generic: ★ 4\n    - generic: 4★\n    - generic: v0.1.3\n    - button \"安装\"\n  - button \"magpie-haiku55-think ezdemo Magpie Haiku 5.5 thinking middleware with a verified OpenDesign compatibility workaround 中间件 非官方 ★ 1 1★ v0.1.0 安装\":\n    - generic: magpie-haiku55-think\n    - generic: ezdemo\n    - paragraph: Magpie Haiku 5.5 thinking middleware with a verified OpenDesign compatibility workaround\n    - generic: 中间件\n    - generic: 非官方\n    - generic: ★ 1\n    - generic: 1★\n    - generic: v0.1.0\n    - button \"安装\"\n  - button \"claude-api-billing Lixsp11 Claude API billing middleware for Magpie gateway traces. 中间件 非官方 ★ 0 0★ v0.1.0 安装\":\n    - generic: claude-api-billing\n    - generic: Lixsp11\n    - paragraph: Claude API billing middleware for Magpie gateway traces.\n    - generic: 中间件\n    - generic: 非官方\n    - generic: ★ 0\n    - generic: 0★\n    - generic: v0.1.0\n    - button \"安装\"\n  - button \"magpie-agent-cursor nodlles Use Magpie models in Cursor through a local protocol bridge (Apple Silicon macOS) Agent 非官方 ★ 0 0★ v0.2.1 安装\":\n    - generic: magpie-agent-cursor\n    - generic: nodlles\n    - paragraph: Use Magpie models in Cursor through a local protocol bridge (Apple Silicon macOS)\n    - generic: Agent\n    - generic: 非官方\n    - generic: ★ 0\n    - generic: 0★\n    - generic: v0.2.1\n    - button \"安装\"\n  - button \"magpie-gaccode SadWood Unofficial GACCode provider for magpie and OpenCode, with quota reporting and optiona… 供应商 非官方 ★ 1 1★ v0.1.2 安装\":\n    - generic: magpie-gaccode\n    - generic: SadWood\n    - paragraph: Unofficial GACCode provider for magpie and OpenCode, with quota reporting and optiona…\n    - generic: 供应商\n    - generic: 非官方\n    - generic: ★ 1\n    - generic: 1★\n    - generic: v0.1.2\n    - button \"安装\"\n  - button \"magpie-chatgptweb mu-zi-lee Magpie 的实验性 ChatGPT 网页接入插件：基于 Playwright 和独立浏览器配置，支持匿名聊天… 供应商 非官方 ★ 1 1★ v0.1.0 安装\":\n    - generic: magpie-chatgptweb\n    - generic: mu-zi-lee\n    - paragraph: Magpie 的实验性 ChatGPT 网页接入插件：基于 Playwright 和独立浏览器配置，支持匿名聊天…\n    - generic: 供应商\n    - generic: 非官方\n    - generic: ★ 1\n    - generic: 1★\n    - generic: v0.1.0\n    - button \"安装\"\n  - button \"magpie-agent-bridge-gh demo Third-party agent bridge tagged magpie-plugin on GitHub. Agent 非官方 ★ 0 0★ v0.0.3 安装\":\n    - generic: magpie-agent-bridge-gh\n    - generic: demo\n    - paragraph: Third-party agent bridge tagged magpie-plugin on GitHub.\n    - generic: Agent\n    - generic: 非官方\n    - generic: ★ 0\n    - generic: 0★\n    - generic: v0.0.3\n    - button \"安装\"\n  - generic: 已有想装的？\n  - textbox \"插件\":\n    - /placeholder: npm 包名、GitHub 仓库（github:owner/repo）或本机文件夹\n  - button \"选择文件夹\":\n  - button \"安装\"\n- contentinfo:\n  - status\n  - generic: 127.0.0.1:3425"
+    },
+    {
+      "key": "settings-general",
+      "bodyClass": "window web",
+      "brokenImages": [],
+      "caption": {
+        "bottom": 60.1875,
+        "height": 35.1875,
+        "left": 78,
+        "right": 1286,
+        "top": 25,
+        "width": 1208,
+        "x": 78,
+        "y": 25
+      },
+      "documentWidth": {
+        "client": 1364,
+        "scroll": 1364
+      },
+      "heading": "设置",
+      "invalidNesting": 0,
+      "lang": "zh-CN",
+      "root": {
+        "bottom": 816,
+        "height": 792,
+        "left": 77,
+        "right": 1287,
+        "top": 24,
+        "width": 1210,
+        "x": 77,
+        "y": 24
+      },
+      "selectedOffset": null,
+      "selectedRect": null,
+      "source": "5f7f9bc0b7da8efaacbb6ae0b5e15587538a240c",
+      "status": "",
+      "theme": "light",
+      "thumb": {
+        "rect": {
+          "bottom": 98.6796875,
+          "height": 26.390625,
+          "left": 801.557861328125,
+          "right": 855.448486328125,
+          "top": 72.2890625,
+          "width": 53.890625,
+          "x": 801.557861328125,
+          "y": 72.2890625
+        },
+        "transform": "translateX(268px)",
+        "width": "49px"
+      },
+      "version": "0.1.205",
+      "viewport": {
+        "dpr": 1,
+        "h": 941,
+        "w": 1364
+      },
+      "visibleViews": [
+        "view-settings"
+      ],
+      "zoom": "1.1",
+      "ax": "- banner \"Window title bar\":\n  - generic: Magpie\n  - button:\n  - button:\n  - button:\n- banner:\n  - heading \"设置\" [level=1]\n  - button \"显示侧边栏\":\n  - navigation \"Main navigation\":\n    - button \"Agent\"\n    - button \"供应商\"\n    - button \"路由\"\n    - button \"网关\"\n    - button \"用量\"\n    - button \"插件\"\n  - button \"刷新模型列表（models.dev 与各供应商）\":\n  - button \"设置 (Ctrl+,)\" [active]:\n- main:\n  - tablist \"设置\":\n    - tab \"常规\" [selected]\n    - tab \"额度\"\n    - tab \"网络与共享\"\n    - tab \"模型\"\n    - tab \"隐私\"\n    - tab \"同步与备份\"\n    - tab \"关于\"\n  - searchbox \"查找设置\"\n  - tabpanel \"常规\":\n    - generic \"外观\"\n    - button \"跟随系统\"\n    - button \"浅色\" [pressed]\n    - button \"深色\"\n    - generic \"色盲模式\"\n    - generic \"图表改用色盲友好配色，每个额度窗口的走势线使用各自的线型\":\n      - button \"关闭\" [pressed]\n      - button \"开启\"\n    - generic \"语言\"\n    - button \"语言\":\n      - generic: 简体中文\n    - generic \"文字大小\"\n    - generic \"放大 magpie 窗口里的一切；也可用 Ctrl+ / Ctrl− / Ctrl+0\"\n    - generic \"放大 magpie 窗口里的一切；也可用 Ctrl+ / Ctrl− / Ctrl+0\":\n      - button \"100%\"\n      - button \"110%\" [pressed]\n      - button \"125%\"\n      - button \"150%\"\n    - generic \"界面字体\"\n    - 'button \"界面字体: 字体\"':\n      - generic: 系统默认\n    - 'button \"界面字体: 样式\" [disabled]':\n      - generic: 系统默认\n    - generic: Aa 0123 · 中文\n    - generic \"代码字体\"\n    - 'button \"代码字体: 字体\"':\n      - generic: 系统默认\n    - 'button \"代码字体: 样式\" [disabled]':\n      - generic: 系统默认\n    - generic: Aa 0123 · 中文\n    - generic \"点击托盘图标\"\n    - button \"打开快捷面板\" [pressed]\n    - button \"打开主窗口\"\n    - generic \"模型名带供应商\"\n    - button \"关闭\"\n    - button \"自定义名称不带供应商\"\n    - button \"开启\" [pressed]\n    - generic \"Codex 子代理可用任意模型\"\n    - generic \"GPT 主代理可在 magpie 的其他模型上开子代理。仅对新会话生效；Codex 自身的 multi_agent_v2 优先\"\n    - button \"关闭\" [pressed]\n    - button \"开启\"\n    - generic \"长对话\"\n    - generic \"Codex 和 Claude Code 在 272K（非 Claude 的 [1m] 模型也是）或这里填的大小时压缩；完整窗口每轮更慢更贵\"\n    - button \"272K 时压缩\" [pressed]\n    - button \"完整窗口\"\n    - textbox \"压缩阈值\":\n      - /placeholder: 272k\n    - generic \"Codex 会话标题\"\n    - button \"Codex 会话标题\":\n      - generic: Codex 自带（ChatGPT）\n    - generic \"Codex 会话描述\"\n    - button \"Codex 会话描述\":\n      - generic: Codex 自带（ChatGPT）\n    - generic \"Codex 输入框预测\"\n    - button \"Codex 输入框预测\":\n      - generic: Codex 自带（ChatGPT）\n    - generic \"Codex 自动审批模型\"\n    - button \"Codex 自动审批模型\":\n      - generic: 由 Codex 决定\n    - generic \"开机自启\"\n    - button \"关闭\" [pressed]\n    - button \"开启\"\n    - generic \"轻量模式\"\n    - generic \"窗口关闭一分钟后释放约 100 MB；网关和后台任务照常运行，只重新加载页面\"\n    - button \"关闭\" [pressed]\n    - button \"开启\"\n    - generic \"防止休眠\"\n    - generic \"在 magpie 运行任务时，让电脑保持唤醒状态\"\n    - button \"关闭\" [pressed]\n    - button \"开启\"\n    - button \"屏幕也常亮\"\n- contentinfo:\n  - status\n  - generic: 127.0.0.1:3425"
+    },
+    {
+      "key": "settings-side",
+      "bodyClass": "window web side-nav",
+      "brokenImages": [],
+      "caption": {
+        "bottom": 60.1875,
+        "height": 35.1875,
+        "left": 78,
+        "right": 1286,
+        "top": 25,
+        "width": 1208,
+        "x": 78,
+        "y": 25
+      },
+      "documentWidth": {
+        "client": 1364,
+        "scroll": 1364
+      },
+      "heading": "设置",
+      "invalidNesting": 0,
+      "lang": "zh-CN",
+      "root": {
+        "bottom": 816,
+        "height": 792,
+        "left": 77,
+        "right": 1287,
+        "top": 24,
+        "width": 1210,
+        "x": 77,
+        "y": 24
+      },
+      "selectedOffset": null,
+      "selectedRect": null,
+      "source": "5f7f9bc0b7da8efaacbb6ae0b5e15587538a240c",
+      "status": "",
+      "theme": "light",
+      "thumb": null,
+      "version": "0.1.205",
+      "viewport": {
+        "dpr": 1,
+        "h": 941,
+        "w": 1364
+      },
+      "visibleViews": [
+        "view-settings"
+      ],
+      "zoom": "1.1",
+      "ax": "- banner \"Window title bar\":\n  - generic: Magpie\n  - button:\n  - button:\n  - button:\n- complementary:\n  - navigation \"Agent\":\n    - generic: 使用\n    - button \"Agent\":\n      - generic: Agent\n    - generic: 模型\n    - button \"供应商\":\n      - generic: 供应商\n    - button \"路由\":\n      - generic: 路由\n    - button \"网关\":\n      - generic: 网关\n    - generic: 观测\n    - button \"用量\":\n      - generic: 用量\n    - generic: 扩展\n    - button \"插件\":\n      - generic: 插件\n  - button \"设置\":\n    - generic: 设置\n  - tablist \"设置\":\n    - tab \"常规\" [selected]:\n      - generic: 常规\n    - tab \"额度\":\n      - generic: 额度\n    - tab \"网络与共享\":\n      - generic: 网络与共享\n    - tab \"模型\":\n      - generic: 模型\n    - tab \"隐私\":\n      - generic: 隐私\n    - tab \"同步与备份\":\n      - generic: 同步与备份\n    - tab \"关于\":\n      - generic: 关于\n  - button \"网关 127.0.0.1:3425\":\n    - generic: 网关 127.0.0.1:3425\n  - separator \"侧边栏宽度\"\n- banner:\n  - heading \"设置\" [level=1]\n  - button \"隐藏侧边栏\" [active] [pressed]:\n  - generic: 设置\n  - button \"刷新模型列表（models.dev 与各供应商）\":\n- main:\n  - searchbox \"查找设置\"\n  - tabpanel \"常规\":\n    - generic \"外观\"\n    - button \"跟随系统\"\n    - button \"浅色\" [pressed]\n    - button \"深色\"\n    - generic \"色盲模式\"\n    - generic \"图表改用色盲友好配色，每个额度窗口的走势线使用各自的线型\":\n      - button \"关闭\" [pressed]\n      - button \"开启\"\n    - generic \"语言\"\n    - button \"语言\":\n      - generic: 简体中文\n    - generic \"文字大小\"\n    - generic \"放大 magpie 窗口里的一切；也可用 Ctrl+ / Ctrl− / Ctrl+0\"\n    - generic \"放大 magpie 窗口里的一切；也可用 Ctrl+ / Ctrl− / Ctrl+0\":\n      - button \"100%\"\n      - button \"110%\" [pressed]\n      - button \"125%\"\n      - button \"150%\"\n    - generic \"界面字体\"\n    - 'button \"界面字体: 字体\"':\n      - generic: 系统默认\n    - 'button \"界面字体: 样式\" [disabled]':\n      - generic: 系统默认\n    - generic: Aa 0123 · 中文\n    - generic \"代码字体\"\n    - 'button \"代码字体: 字体\"':\n      - generic: 系统默认\n    - 'button \"代码字体: 样式\" [disabled]':\n      - generic: 系统默认\n    - generic: Aa 0123 · 中文\n    - generic \"点击托盘图标\"\n    - button \"打开快捷面板\" [pressed]\n    - button \"打开主窗口\"\n    - generic \"模型名带供应商\"\n    - button \"关闭\"\n    - button \"自定义名称不带供应商\"\n    - button \"开启\" [pressed]\n    - generic \"Codex 子代理可用任意模型\"\n    - generic \"GPT 主代理可在 magpie 的其他模型上开子代理。仅对新会话生效；Codex 自身的 multi_agent_v2 优先\"\n    - button \"关闭\" [pressed]\n    - button \"开启\"\n    - generic \"长对话\"\n    - generic \"Codex 和 Claude Code 在 272K（非 Claude 的 [1m] 模型也是）或这里填的大小时压缩；完整窗口每轮更慢更贵\"\n    - button \"272K 时压缩\" [pressed]\n    - button \"完整窗口\"\n    - textbox \"压缩阈值\":\n      - /placeholder: 272k\n    - generic \"Codex 会话标题\"\n    - button \"Codex 会话标题\":\n      - generic: Codex 自带（ChatGPT）\n    - generic \"Codex 会话描述\"\n    - button \"Codex 会话描述\":\n      - generic: Codex 自带（ChatGPT）\n    - generic \"Codex 输入框预测\"\n    - button \"Codex 输入框预测\":\n      - generic: Codex 自带（ChatGPT）\n    - generic \"Codex 自动审批模型\"\n    - button \"Codex 自动审批模型\":\n      - generic: 由 Codex 决定\n    - generic \"开机自启\"\n    - button \"关闭\" [pressed]\n    - button \"开启\"\n    - generic \"轻量模式\"\n    - generic \"窗口关闭一分钟后释放约 100 MB；网关和后台任务照常运行，只重新加载页面\"\n    - button \"关闭\" [pressed]\n    - button \"开启\"\n    - generic \"防止休眠\"\n    - generic \"在 magpie 运行任务时，让电脑保持唤醒状态\"\n    - button \"关闭\" [pressed]\n    - button \"开启\"\n    - button \"屏幕也常亮\"\n- contentinfo:\n  - status\n  - generic: 127.0.0.1:3425"
+    },
+    {
+      "key": "settings-top",
+      "bodyClass": "window web",
+      "brokenImages": [],
+      "caption": {
+        "bottom": 60.1875,
+        "height": 35.1875,
+        "left": 78,
+        "right": 1286,
+        "top": 25,
+        "width": 1208,
+        "x": 78,
+        "y": 25
+      },
+      "documentWidth": {
+        "client": 1364,
+        "scroll": 1364
+      },
+      "heading": "设置",
+      "invalidNesting": 0,
+      "lang": "zh-CN",
+      "root": {
+        "bottom": 816,
+        "height": 792,
+        "left": 77,
+        "right": 1287,
+        "top": 24,
+        "width": 1210,
+        "x": 77,
+        "y": 24
+      },
+      "selectedOffset": null,
+      "selectedRect": null,
+      "source": "5f7f9bc0b7da8efaacbb6ae0b5e15587538a240c",
+      "status": "",
+      "theme": "light",
+      "thumb": {
+        "rect": {
+          "bottom": 98.6796875,
+          "height": 26.390625,
+          "left": 506.7578125,
+          "right": 506.7578125,
+          "top": 72.2890625,
+          "width": 0,
+          "x": 506.7578125,
+          "y": 72.2890625
+        },
+        "transform": "",
+        "width": ""
+      },
+      "version": "0.1.205",
+      "viewport": {
+        "dpr": 1,
+        "h": 941,
+        "w": 1364
+      },
+      "visibleViews": [
+        "view-settings"
+      ],
+      "zoom": "1.1",
+      "ax": "- banner \"Window title bar\":\n  - generic: Magpie\n  - button:\n  - button:\n  - button:\n- banner:\n  - heading \"设置\" [level=1]\n  - button \"显示侧边栏\" [active]:\n  - navigation \"Main navigation\":\n    - button \"Agent\"\n    - button \"供应商\"\n    - button \"路由\"\n    - button \"网关\"\n    - button \"用量\"\n    - button \"插件\"\n  - button \"刷新模型列表（models.dev 与各供应商）\":\n  - button \"设置 (Ctrl+,)\":\n- main:\n  - tablist \"设置\":\n    - tab \"常规\" [selected]\n    - tab \"额度\"\n    - tab \"网络与共享\"\n    - tab \"模型\"\n    - tab \"隐私\"\n    - tab \"同步与备份\"\n    - tab \"关于\"\n  - searchbox \"查找设置\"\n  - tabpanel \"常规\":\n    - generic \"外观\"\n    - button \"跟随系统\"\n    - button \"浅色\" [pressed]\n    - button \"深色\"\n    - generic \"色盲模式\"\n    - generic \"图表改用色盲友好配色，每个额度窗口的走势线使用各自的线型\":\n      - button \"关闭\" [pressed]\n      - button \"开启\"\n    - generic \"语言\"\n    - button \"语言\":\n      - generic: 简体中文\n    - generic \"文字大小\"\n    - generic \"放大 magpie 窗口里的一切；也可用 Ctrl+ / Ctrl− / Ctrl+0\"\n    - generic \"放大 magpie 窗口里的一切；也可用 Ctrl+ / Ctrl− / Ctrl+0\":\n      - button \"100%\"\n      - button \"110%\" [pressed]\n      - button \"125%\"\n      - button \"150%\"\n    - generic \"界面字体\"\n    - 'button \"界面字体: 字体\"':\n      - generic: 系统默认\n    - 'button \"界面字体: 样式\" [disabled]':\n      - generic: 系统默认\n    - generic: Aa 0123 · 中文\n    - generic \"代码字体\"\n    - 'button \"代码字体: 字体\"':\n      - generic: 系统默认\n    - 'button \"代码字体: 样式\" [disabled]':\n      - generic: 系统默认\n    - generic: Aa 0123 · 中文\n    - generic \"点击托盘图标\"\n    - button \"打开快捷面板\" [pressed]\n    - button \"打开主窗口\"\n    - generic \"模型名带供应商\"\n    - button \"关闭\"\n    - button \"自定义名称不带供应商\"\n    - button \"开启\" [pressed]\n    - generic \"Codex 子代理可用任意模型\"\n    - generic \"GPT 主代理可在 magpie 的其他模型上开子代理。仅对新会话生效；Codex 自身的 multi_agent_v2 优先\"\n    - button \"关闭\" [pressed]\n    - button \"开启\"\n    - generic \"长对话\"\n    - generic \"Codex 和 Claude Code 在 272K（非 Claude 的 [1m] 模型也是）或这里填的大小时压缩；完整窗口每轮更慢更贵\"\n    - button \"272K 时压缩\" [pressed]\n    - button \"完整窗口\"\n    - textbox \"压缩阈值\":\n      - /placeholder: 272k\n    - generic \"Codex 会话标题\"\n    - button \"Codex 会话标题\":\n      - generic: Codex 自带（ChatGPT）\n    - generic \"Codex 会话描述\"\n    - button \"Codex 会话描述\":\n      - generic: Codex 自带（ChatGPT）\n    - generic \"Codex 输入框预测\"\n    - button \"Codex 输入框预测\":\n      - generic: Codex 自带（ChatGPT）\n    - generic \"Codex 自动审批模型\"\n    - button \"Codex 自动审批模型\":\n      - generic: 由 Codex 决定\n    - generic \"开机自启\"\n    - button \"关闭\" [pressed]\n    - button \"开启\"\n    - generic \"轻量模式\"\n    - generic \"窗口关闭一分钟后释放约 100 MB；网关和后台任务照常运行，只重新加载页面\"\n    - button \"关闭\" [pressed]\n    - button \"开启\"\n    - generic \"防止休眠\"\n    - generic \"在 magpie 运行任务时，让电脑保持唤醒状态\"\n    - button \"关闭\" [pressed]\n    - button \"开启\"\n    - button \"屏幕也常亮\"\n- contentinfo:\n  - status\n  - generic: 127.0.0.1:3425"
+    },
+    {
+      "key": "network-native-width",
+      "bodyClass": "window web",
+      "brokenImages": [],
+      "caption": {
+        "bottom": 60.1875,
+        "height": 35.1875,
+        "left": 78,
+        "right": 1286,
+        "top": 25,
+        "width": 1208,
+        "x": 78,
+        "y": 25
+      },
+      "documentWidth": {
+        "client": 1364,
+        "scroll": 1364
+      },
+      "heading": "设置",
+      "invalidNesting": 0,
+      "lang": "zh-CN",
+      "root": {
+        "bottom": 816,
+        "height": 792,
+        "left": 77,
+        "right": 1287,
+        "top": 24,
+        "width": 1210,
+        "x": 77,
+        "y": 24
+      },
+      "selectedOffset": null,
+      "selectedRect": null,
+      "source": "5f7f9bc0b7da8efaacbb6ae0b5e15587538a240c",
+      "status": "",
+      "theme": "light",
+      "thumb": {
+        "rect": {
+          "bottom": 98.6796875,
+          "height": 26.390625,
+          "left": 506.7578125,
+          "right": 506.7578125,
+          "top": 72.2890625,
+          "width": 0,
+          "x": 506.7578125,
+          "y": 72.2890625
+        },
+        "transform": "",
+        "width": ""
+      },
+      "version": "0.1.205",
+      "viewport": {
+        "dpr": 1,
+        "h": 941,
+        "w": 1364
+      },
+      "visibleViews": [
+        "view-settings"
+      ],
+      "zoom": "1.1",
+      "ax": "- banner \"Window title bar\":\n  - generic: Magpie\n  - button:\n  - button:\n  - button:\n- banner:\n  - heading \"设置\" [level=1]\n  - button \"显示侧边栏\":\n  - navigation \"Main navigation\":\n    - button \"Agent\"\n    - button \"供应商\"\n    - button \"路由\"\n    - button \"网关\"\n    - button \"用量\"\n    - button \"插件\"\n  - button \"刷新模型列表（models.dev 与各供应商）\":\n  - button \"设置 (Ctrl+,)\":\n- main:\n  - tablist \"设置\":\n    - tab \"常规\"\n    - tab \"额度\"\n    - tab \"网络与共享\" [active] [selected]\n    - tab \"模型\"\n    - tab \"隐私\"\n    - tab \"同步与备份\"\n    - tab \"关于\"\n  - searchbox \"查找设置\"\n  - tabpanel \"网络与共享\":\n    - generic \"代理\"\n    - generic \"未发现系统代理，未单独设置代理的模型厂商请求和检查更新都直连\"\n    - button \"测试\"\n    - button \"自动\" [pressed]\n    - button \"关闭\"\n    - button \"自定义\"\n    - generic: GitHub\n    - generic \"GitHub 令牌\"\n    - generic \"资源库检查技能更新时使用。GitHub 每小时允许带令牌 5000 次请求，不带仅 60 次。也用它从它能读取的私有仓库安装技能；公开仓库无需勾选权限。\"\n    - textbox \"GitHub 令牌\":\n      - /placeholder: ghp_… / github_pat_…\n    - button \"创建一个 ↗\"\n    - button \"保存\"\n    - generic: 网关\n    - generic \"网关端口\"\n    - generic \"改了之后，已接入 magpie 的 Agent 会一起换过去。当前 http://127.0.0.1:3425\"\n    - textbox \"网关端口\": \"3425\"\n    - button \"应用\"\n    - generic \"不带供应商的模型 ID\"\n    - generic \"网关的模型列表还会以模型自己的 ID 列出每个模型，如 codex/gpt-5.6-sol 旁的 gpt-5.6-sol，供从其他代理迁来的应用使用。多个供应商都提供的模型，按“供应商”中的顺序发往它们\"\n    - button \"关闭\" [pressed]\n    - button \"开启\"\n    - generic: 局域网\n    - generic \"局域网共享\"\n    - generic \"同一网络中其他电脑上的 Agent，或经由隧道（如 Cloudflare Tunnel）连到这台电脑的 Agent，可凭网关页的网关密钥使用 magpie 的模型\"\n    - button \"关闭\" [pressed]\n    - button \"开启\"\n    - generic: 网页\n    - generic \"允许调用 magpie 的网页\"\n    - generic \"这些来源的网页脚本可以在浏览器中调用网关，每个请求需带上「网关」页的网关密钥。其他网站的网页会被拒绝，本机的网页不受影响\"\n    - textbox \"网页来源\":\n      - /placeholder: http://localhost:3000\n    - button \"添加\"\n- contentinfo:\n  - status\n  - generic: 127.0.0.1:3425"
+    },
+    {
+      "key": "1364-light-network",
+      "bodyClass": "window web",
+      "brokenImages": [],
+      "caption": {
+        "bottom": 60.1875,
+        "height": 35.1875,
+        "left": 78,
+        "right": 1286,
+        "top": 25,
+        "width": 1208,
+        "x": 78,
+        "y": 25
+      },
+      "documentWidth": {
+        "client": 1364,
+        "scroll": 1364
+      },
+      "heading": "设置",
+      "invalidNesting": 0,
+      "lang": "zh-CN",
+      "root": {
+        "bottom": 816,
+        "height": 792,
+        "left": 77,
+        "right": 1287,
+        "top": 24,
+        "width": 1210,
+        "x": 77,
+        "y": 24
+      },
+      "selectedOffset": null,
+      "selectedRect": null,
+      "source": "5f7f9bc0b7da8efaacbb6ae0b5e15587538a240c",
+      "status": "",
+      "theme": "light",
+      "thumb": {
+        "rect": {
+          "bottom": 98.6796875,
+          "height": 26.390625,
+          "left": 506.7578125,
+          "right": 506.7578125,
+          "top": 72.2890625,
+          "width": 0,
+          "x": 506.7578125,
+          "y": 72.2890625
+        },
+        "transform": "",
+        "width": ""
+      },
+      "version": "0.1.205",
+      "viewport": {
+        "dpr": 1,
+        "h": 941,
+        "w": 1364
+      },
+      "visibleViews": [
+        "view-settings"
+      ],
+      "zoom": "1.1",
+      "ax": "- banner \"Window title bar\":\n  - generic: Magpie\n  - button:\n  - button:\n  - button:\n- banner:\n  - heading \"设置\" [level=1]\n  - button \"显示侧边栏\":\n  - navigation \"Main navigation\":\n    - button \"Agent\"\n    - button \"供应商\"\n    - button \"路由\"\n    - button \"网关\"\n    - button \"用量\"\n    - button \"插件\"\n  - button \"刷新模型列表（models.dev 与各供应商）\":\n  - button \"设置 (Ctrl+,)\":\n- main:\n  - tablist \"设置\":\n    - tab \"常规\"\n    - tab \"额度\"\n    - tab \"网络与共享\" [active] [selected]\n    - tab \"模型\"\n    - tab \"隐私\"\n    - tab \"同步与备份\"\n    - tab \"关于\"\n  - searchbox \"查找设置\"\n  - tabpanel \"网络与共享\":\n    - generic \"代理\"\n    - generic \"未发现系统代理，未单独设置代理的模型厂商请求和检查更新都直连\"\n    - button \"测试\"\n    - button \"自动\" [pressed]\n    - button \"关闭\"\n    - button \"自定义\"\n    - generic: GitHub\n    - generic \"GitHub 令牌\"\n    - generic \"资源库检查技能更新时使用。GitHub 每小时允许带令牌 5000 次请求，不带仅 60 次。也用它从它能读取的私有仓库安装技能；公开仓库无需勾选权限。\"\n    - textbox \"GitHub 令牌\":\n      - /placeholder: ghp_… / github_pat_…\n    - button \"创建一个 ↗\"\n    - button \"保存\"\n    - generic: 网关\n    - generic \"网关端口\"\n    - generic \"改了之后，已接入 magpie 的 Agent 会一起换过去。当前 http://127.0.0.1:3425\"\n    - textbox \"网关端口\": \"3425\"\n    - button \"应用\"\n    - generic \"不带供应商的模型 ID\"\n    - generic \"网关的模型列表还会以模型自己的 ID 列出每个模型，如 codex/gpt-5.6-sol 旁的 gpt-5.6-sol，供从其他代理迁来的应用使用。多个供应商都提供的模型，按“供应商”中的顺序发往它们\"\n    - button \"关闭\" [pressed]\n    - button \"开启\"\n    - generic: 局域网\n    - generic \"局域网共享\"\n    - generic \"同一网络中其他电脑上的 Agent，或经由隧道（如 Cloudflare Tunnel）连到这台电脑的 Agent，可凭网关页的网关密钥使用 magpie 的模型\"\n    - button \"关闭\" [pressed]\n    - button \"开启\"\n    - generic: 网页\n    - generic \"允许调用 magpie 的网页\"\n    - generic \"这些来源的网页脚本可以在浏览器中调用网关，每个请求需带上「网关」页的网关密钥。其他网站的网页会被拒绝，本机的网页不受影响\"\n    - textbox \"网页来源\":\n      - /placeholder: http://localhost:3000\n    - button \"添加\"\n- contentinfo:\n  - status\n  - generic: 127.0.0.1:3425"
+    },
+    {
+      "key": "1364-light-context",
+      "bodyClass": "window web",
+      "brokenImages": [],
+      "caption": {
+        "bottom": 60.1875,
+        "height": 35.1875,
+        "left": 78,
+        "right": 1286,
+        "top": 25,
+        "width": 1208,
+        "x": 78,
+        "y": 25
+      },
+      "documentWidth": {
+        "client": 1364,
+        "scroll": 1364
+      },
+      "heading": "用量",
+      "invalidNesting": 0,
+      "lang": "zh-CN",
+      "navId": "usage",
+      "root": {
+        "bottom": 816,
+        "height": 792,
+        "left": 77,
+        "right": 1287,
+        "top": 24,
+        "width": 1210,
+        "x": 77,
+        "y": 24
+      },
+      "selected": "用量",
+      "selectedOffset": {
+        "left": 219,
+        "width": 49
+      },
+      "selectedRect": {
+        "bottom": 98.6796875,
+        "height": 26.390625,
+        "left": 747.3046875,
+        "right": 801.1796875,
+        "top": 72.2890625,
+        "width": 53.875,
+        "x": 747.3046875,
+        "y": 72.2890625
+      },
+      "source": "5f7f9bc0b7da8efaacbb6ae0b5e15587538a240c",
+      "status": "",
+      "theme": "light",
+      "thumb": {
+        "rect": {
+          "bottom": 98.6796875,
+          "height": 26.390625,
+          "left": 747.6578369140625,
+          "right": 801.5484619140625,
+          "top": 72.2890625,
+          "width": 53.890625,
+          "x": 747.6578369140625,
+          "y": 72.2890625
+        },
+        "transform": "translateX(219px)",
+        "width": "49px"
+      },
+      "version": "0.1.205",
+      "viewport": {
+        "dpr": 1,
+        "h": 941,
+        "w": 1364
+      },
+      "visibleViews": [
+        "view-usage"
+      ],
+      "zoom": "1.1",
+      "ax": "- banner \"Window title bar\":\n  - generic: Magpie\n  - button:\n  - button:\n  - button:\n- banner:\n  - heading \"用量\" [level=1]\n  - button \"显示侧边栏\":\n  - navigation \"Main navigation\":\n    - button \"Agent\"\n    - button \"供应商\"\n    - button \"路由\"\n    - button \"网关\"\n    - button \"用量\"\n    - button \"插件\"\n  - button \"刷新模型列表（models.dev 与各供应商）\":\n  - button \"设置 (Ctrl+,)\":\n- main:\n  - button \"概览\"\n  - button \"请求\"\n  - button \"会话\"\n  - button \"上下文\" [active] [pressed]\n  - button \"今天\"\n  - button \"7 天\" [pressed]\n  - button \"30 天\"\n  - button \"立即刷新\":\n  - button \"关闭\":\n    - generic: 关闭\n  - generic: ≈$0.000\n  - generic: 生效价格\n  - generic: 为你调优\n  - paragraph: 用你这段时间自己的调用（来自 agent 的会话文件）逐个设置重放：按你的用法，哪组设置花的 Token 最少。Token 按厂商计费的方式加权：一次缓存读取算十分之一。\n  - generic: 这段时间的调用太少，还算不出建议\n  - generic: 经过 magpie 的\n  - paragraph: 每个 agent 的提示词里装了什么，由 magpie 网关读取；评分和标签根据所选时间范围内的请求算出。\n  - generic: 还没有读到提示词\n  - generic: 你的 agent 经 magpie 发出的请求会显示在这里。\n- contentinfo:\n  - status\n  - generic: 127.0.0.1:3425"
+    },
+    {
+      "key": "1364-dark-network",
+      "bodyClass": "window web",
+      "brokenImages": [],
+      "caption": {
+        "bottom": 60.1875,
+        "height": 35.1875,
+        "left": 78,
+        "right": 1286,
+        "top": 25,
+        "width": 1208,
+        "x": 78,
+        "y": 25
+      },
+      "documentWidth": {
+        "client": 1364,
+        "scroll": 1364
+      },
+      "heading": "设置",
+      "invalidNesting": 0,
+      "lang": "zh-CN",
+      "root": {
+        "bottom": 816,
+        "height": 792,
+        "left": 77,
+        "right": 1287,
+        "top": 24,
+        "width": 1210,
+        "x": 77,
+        "y": 24
+      },
+      "selectedOffset": null,
+      "selectedRect": null,
+      "source": "5f7f9bc0b7da8efaacbb6ae0b5e15587538a240c",
+      "status": "",
+      "theme": "dark",
+      "thumb": {
+        "rect": {
+          "bottom": 98.6796875,
+          "height": 26.390625,
+          "left": 506.7578125,
+          "right": 506.7578125,
+          "top": 72.2890625,
+          "width": 0,
+          "x": 506.7578125,
+          "y": 72.2890625
+        },
+        "transform": "",
+        "width": ""
+      },
+      "version": "0.1.205",
+      "viewport": {
+        "dpr": 1,
+        "h": 941,
+        "w": 1364
+      },
+      "visibleViews": [
+        "view-settings"
+      ],
+      "zoom": "1.1",
+      "ax": "- banner \"Window title bar\":\n  - generic: Magpie\n  - button:\n  - button:\n  - button:\n- banner:\n  - heading \"设置\" [level=1]\n  - button \"显示侧边栏\":\n  - navigation \"Main navigation\":\n    - button \"Agent\"\n    - button \"供应商\"\n    - button \"路由\"\n    - button \"网关\"\n    - button \"用量\"\n    - button \"插件\"\n  - button \"刷新模型列表（models.dev 与各供应商）\":\n  - button \"设置 (Ctrl+,)\":\n- main:\n  - tablist \"设置\":\n    - tab \"常规\"\n    - tab \"额度\"\n    - tab \"网络与共享\" [active] [selected]\n    - tab \"模型\"\n    - tab \"隐私\"\n    - tab \"同步与备份\"\n    - tab \"关于\"\n  - searchbox \"查找设置\"\n  - tabpanel \"网络与共享\":\n    - generic \"代理\"\n    - generic \"未发现系统代理，未单独设置代理的模型厂商请求和检查更新都直连\"\n    - button \"测试\"\n    - button \"自动\" [pressed]\n    - button \"关闭\"\n    - button \"自定义\"\n    - generic: GitHub\n    - generic \"GitHub 令牌\"\n    - generic \"资源库检查技能更新时使用。GitHub 每小时允许带令牌 5000 次请求，不带仅 60 次。也用它从它能读取的私有仓库安装技能；公开仓库无需勾选权限。\"\n    - textbox \"GitHub 令牌\":\n      - /placeholder: ghp_… / github_pat_…\n    - button \"创建一个 ↗\"\n    - button \"保存\"\n    - generic: 网关\n    - generic \"网关端口\"\n    - generic \"改了之后，已接入 magpie 的 Agent 会一起换过去。当前 http://127.0.0.1:3425\"\n    - textbox \"网关端口\": \"3425\"\n    - button \"应用\"\n    - generic \"不带供应商的模型 ID\"\n    - generic \"网关的模型列表还会以模型自己的 ID 列出每个模型，如 codex/gpt-5.6-sol 旁的 gpt-5.6-sol，供从其他代理迁来的应用使用。多个供应商都提供的模型，按“供应商”中的顺序发往它们\"\n    - button \"关闭\" [pressed]\n    - button \"开启\"\n    - generic: 局域网\n    - generic \"局域网共享\"\n    - generic \"同一网络中其他电脑上的 Agent，或经由隧道（如 Cloudflare Tunnel）连到这台电脑的 Agent，可凭网关页的网关密钥使用 magpie 的模型\"\n    - button \"关闭\" [pressed]\n    - button \"开启\"\n    - generic: 网页\n    - generic \"允许调用 magpie 的网页\"\n    - generic \"这些来源的网页脚本可以在浏览器中调用网关，每个请求需带上「网关」页的网关密钥。其他网站的网页会被拒绝，本机的网页不受影响\"\n    - textbox \"网页来源\":\n      - /placeholder: http://localhost:3000\n    - button \"添加\"\n- contentinfo:\n  - status\n  - generic: 127.0.0.1:3425"
+    },
+    {
+      "key": "1364-dark-context",
+      "bodyClass": "window web",
+      "brokenImages": [],
+      "caption": {
+        "bottom": 60.1875,
+        "height": 35.1875,
+        "left": 78,
+        "right": 1286,
+        "top": 25,
+        "width": 1208,
+        "x": 78,
+        "y": 25
+      },
+      "documentWidth": {
+        "client": 1364,
+        "scroll": 1364
+      },
+      "heading": "用量",
+      "invalidNesting": 0,
+      "lang": "zh-CN",
+      "navId": "usage",
+      "root": {
+        "bottom": 816,
+        "height": 792,
+        "left": 77,
+        "right": 1287,
+        "top": 24,
+        "width": 1210,
+        "x": 77,
+        "y": 24
+      },
+      "selected": "用量",
+      "selectedOffset": {
+        "left": 219,
+        "width": 49
+      },
+      "selectedRect": {
+        "bottom": 98.6796875,
+        "height": 26.390625,
+        "left": 747.3046875,
+        "right": 801.1796875,
+        "top": 72.2890625,
+        "width": 53.875,
+        "x": 747.3046875,
+        "y": 72.2890625
+      },
+      "source": "5f7f9bc0b7da8efaacbb6ae0b5e15587538a240c",
+      "status": "",
+      "theme": "dark",
+      "thumb": {
+        "rect": {
+          "bottom": 98.6796875,
+          "height": 26.390625,
+          "left": 747.6578369140625,
+          "right": 801.5484619140625,
+          "top": 72.2890625,
+          "width": 53.890625,
+          "x": 747.6578369140625,
+          "y": 72.2890625
+        },
+        "transform": "translateX(219px)",
+        "width": "49px"
+      },
+      "version": "0.1.205",
+      "viewport": {
+        "dpr": 1,
+        "h": 941,
+        "w": 1364
+      },
+      "visibleViews": [
+        "view-usage"
+      ],
+      "zoom": "1.1",
+      "ax": "- banner \"Window title bar\":\n  - generic: Magpie\n  - button:\n  - button:\n  - button:\n- banner:\n  - heading \"用量\" [level=1]\n  - button \"显示侧边栏\":\n  - navigation \"Main navigation\":\n    - button \"Agent\"\n    - button \"供应商\"\n    - button \"路由\"\n    - button \"网关\"\n    - button \"用量\"\n    - button \"插件\"\n  - button \"刷新模型列表（models.dev 与各供应商）\":\n  - button \"设置 (Ctrl+,)\":\n- main:\n  - button \"概览\"\n  - button \"请求\"\n  - button \"会话\"\n  - button \"上下文\" [active] [pressed]\n  - button \"今天\"\n  - button \"7 天\" [pressed]\n  - button \"30 天\"\n  - button \"立即刷新\":\n  - button \"关闭\":\n    - generic: 关闭\n  - generic: ≈$0.000\n  - generic: 生效价格\n  - generic: 为你调优\n  - paragraph: 用你这段时间自己的调用（来自 agent 的会话文件）逐个设置重放：按你的用法，哪组设置花的 Token 最少。Token 按厂商计费的方式加权：一次缓存读取算十分之一。\n  - generic: 这段时间的调用太少，还算不出建议\n  - generic: 经过 magpie 的\n  - paragraph: 每个 agent 的提示词里装了什么，由 magpie 网关读取；评分和标签根据所选时间范围内的请求算出。\n  - generic: 还没有读到提示词\n  - generic: 你的 agent 经 magpie 发出的请求会显示在这里。\n- contentinfo:\n  - status\n  - generic: 127.0.0.1:3425"
+    },
+    {
+      "key": "900-light-network",
+      "bodyClass": "window web",
+      "brokenImages": [],
+      "caption": {
+        "bottom": 60.1875,
+        "height": 35.1875,
+        "left": 37.40625,
+        "right": 862.59375,
+        "top": 25,
+        "width": 825.1875,
+        "x": 37.40625,
+        "y": 25
+      },
+      "documentWidth": {
+        "client": 900,
+        "scroll": 900
+      },
+      "heading": "设置",
+      "invalidNesting": 0,
+      "lang": "zh-CN",
+      "root": {
+        "bottom": 741.1875,
+        "height": 717.1875,
+        "left": 36.40625,
+        "right": 863.59375,
+        "top": 24,
+        "width": 827.1875,
+        "x": 36.40625,
+        "y": 24
+      },
+      "selectedOffset": null,
+      "selectedRect": null,
+      "source": "5f7f9bc0b7da8efaacbb6ae0b5e15587538a240c",
+      "status": "",
+      "theme": "light",
+      "thumb": {
+        "rect": {
+          "bottom": 98.6796875,
+          "height": 26.390625,
+          "left": 274.7578125,
+          "right": 274.7578125,
+          "top": 72.2890625,
+          "width": 0,
+          "x": 274.7578125,
+          "y": 72.2890625
+        },
+        "transform": "",
+        "width": ""
+      },
+      "version": "0.1.205",
+      "viewport": {
+        "dpr": 1,
+        "h": 900,
+        "w": 900
+      },
+      "visibleViews": [
+        "view-settings"
+      ],
+      "zoom": "1.1",
+      "ax": "- banner \"Window title bar\":\n  - generic: Magpie\n  - button:\n  - button:\n  - button:\n- banner:\n  - heading \"设置\" [level=1]\n  - button \"显示侧边栏\":\n  - navigation \"Main navigation\":\n    - button \"Agent\"\n    - button \"供应商\"\n    - button \"路由\"\n    - button \"网关\"\n    - button \"用量\"\n    - button \"插件\"\n  - button \"刷新模型列表（models.dev 与各供应商）\":\n  - button \"设置 (Ctrl+,)\":\n- main:\n  - tablist \"设置\":\n    - tab \"常规\"\n    - tab \"额度\"\n    - tab \"网络与共享\" [active] [selected]\n    - tab \"模型\"\n    - tab \"隐私\"\n    - tab \"同步与备份\"\n    - tab \"关于\"\n  - searchbox \"查找设置\"\n  - tabpanel \"网络与共享\":\n    - generic \"代理\"\n    - generic \"未发现系统代理，未单独设置代理的模型厂商请求和检查更新都直连\"\n    - button \"测试\"\n    - button \"自动\" [pressed]\n    - button \"关闭\"\n    - button \"自定义\"\n    - generic: GitHub\n    - generic \"GitHub 令牌\"\n    - generic \"资源库检查技能更新时使用。GitHub 每小时允许带令牌 5000 次请求，不带仅 60 次。也用它从它能读取的私有仓库安装技能；公开仓库无需勾选权限。\"\n    - textbox \"GitHub 令牌\":\n      - /placeholder: ghp_… / github_pat_…\n    - button \"创建一个 ↗\"\n    - button \"保存\"\n    - generic: 网关\n    - generic \"网关端口\"\n    - generic \"改了之后，已接入 magpie 的 Agent 会一起换过去。当前 http://127.0.0.1:3425\"\n    - textbox \"网关端口\": \"3425\"\n    - button \"应用\"\n    - generic \"不带供应商的模型 ID\"\n    - generic \"网关的模型列表还会以模型自己的 ID 列出每个模型，如 codex/gpt-5.6-sol 旁的 gpt-5.6-sol，供从其他代理迁来的应用使用。多个供应商都提供的模型，按“供应商”中的顺序发往它们\"\n    - button \"关闭\" [pressed]\n    - button \"开启\"\n    - generic: 局域网\n    - generic \"局域网共享\"\n    - generic \"同一网络中其他电脑上的 Agent，或经由隧道（如 Cloudflare Tunnel）连到这台电脑的 Agent，可凭网关页的网关密钥使用 magpie 的模型\"\n    - button \"关闭\" [pressed]\n    - button \"开启\"\n    - generic: 网页\n    - generic \"允许调用 magpie 的网页\"\n    - generic \"这些来源的网页脚本可以在浏览器中调用网关，每个请求需带上「网关」页的网关密钥。其他网站的网页会被拒绝，本机的网页不受影响\"\n    - textbox \"网页来源\":\n      - /placeholder: http://localhost:3000\n    - button \"添加\"\n- contentinfo:\n  - status\n  - generic: 127.0.0.1:3425"
+    },
+    {
+      "key": "900-light-context",
+      "bodyClass": "window web",
+      "brokenImages": [],
+      "caption": {
+        "bottom": 60.1875,
+        "height": 35.1875,
+        "left": 37.40625,
+        "right": 862.59375,
+        "top": 25,
+        "width": 825.1875,
+        "x": 37.40625,
+        "y": 25
+      },
+      "documentWidth": {
+        "client": 900,
+        "scroll": 900
+      },
+      "heading": "用量",
+      "invalidNesting": 0,
+      "lang": "zh-CN",
+      "navId": "usage",
+      "root": {
+        "bottom": 741.1875,
+        "height": 717.1875,
+        "left": 36.40625,
+        "right": 863.59375,
+        "top": 24,
+        "width": 827.1875,
+        "x": 36.40625,
+        "y": 24
+      },
+      "selected": "用量",
+      "selectedOffset": {
+        "left": 219,
+        "width": 49
+      },
+      "selectedRect": {
+        "bottom": 98.6796875,
+        "height": 26.390625,
+        "left": 515.3046875,
+        "right": 569.1796875,
+        "top": 72.2890625,
+        "width": 53.875,
+        "x": 515.3046875,
+        "y": 72.2890625
+      },
+      "source": "5f7f9bc0b7da8efaacbb6ae0b5e15587538a240c",
+      "status": "",
+      "theme": "light",
+      "thumb": {
+        "rect": {
+          "bottom": 98.6796875,
+          "height": 26.390625,
+          "left": 515.6578369140625,
+          "right": 569.5484619140625,
+          "top": 72.2890625,
+          "width": 53.890625,
+          "x": 515.6578369140625,
+          "y": 72.2890625
+        },
+        "transform": "translateX(219px)",
+        "width": "49px"
+      },
+      "version": "0.1.205",
+      "viewport": {
+        "dpr": 1,
+        "h": 900,
+        "w": 900
+      },
+      "visibleViews": [
+        "view-usage"
+      ],
+      "zoom": "1.1",
+      "ax": "- banner \"Window title bar\":\n  - generic: Magpie\n  - button:\n  - button:\n  - button:\n- banner:\n  - heading \"用量\" [level=1]\n  - button \"显示侧边栏\":\n  - navigation \"Main navigation\":\n    - button \"Agent\"\n    - button \"供应商\"\n    - button \"路由\"\n    - button \"网关\"\n    - button \"用量\"\n    - button \"插件\"\n  - button \"刷新模型列表（models.dev 与各供应商）\":\n  - button \"设置 (Ctrl+,)\":\n- main:\n  - button \"概览\"\n  - button \"请求\"\n  - button \"会话\"\n  - button \"上下文\" [active] [pressed]\n  - button \"今天\"\n  - button \"7 天\" [pressed]\n  - button \"30 天\"\n  - button \"立即刷新\":\n  - button \"关闭\":\n    - generic: 关闭\n  - generic: ≈$0.000\n  - generic: 生效价格\n  - generic: 为你调优\n  - paragraph: 用你这段时间自己的调用（来自 agent 的会话文件）逐个设置重放：按你的用法，哪组设置花的 Token 最少。Token 按厂商计费的方式加权：一次缓存读取算十分之一。\n  - generic: 这段时间的调用太少，还算不出建议\n  - generic: 经过 magpie 的\n  - paragraph: 每个 agent 的提示词里装了什么，由 magpie 网关读取；评分和标签根据所选时间范围内的请求算出。\n  - generic: 还没有读到提示词\n  - generic: 你的 agent 经 magpie 发出的请求会显示在这里。\n- contentinfo:\n  - status\n  - generic: 127.0.0.1:3425"
+    },
+    {
+      "key": "390-light-network",
+      "bodyClass": "window web phone-web",
+      "brokenImages": [],
+      "caption": null,
+      "documentWidth": {
+        "client": 390,
+        "scroll": 390
+      },
+      "heading": "设置",
+      "invalidNesting": 0,
+      "lang": "zh-CN",
+      "root": {
+        "bottom": 844,
+        "height": 844,
+        "left": 0,
+        "right": 390,
+        "top": 0,
+        "width": 390,
+        "x": 0,
+        "y": 0
+      },
+      "selectedOffset": null,
+      "selectedRect": null,
+      "source": "5f7f9bc0b7da8efaacbb6ae0b5e15587538a240c",
+      "status": "",
+      "theme": "light",
+      "thumb": {
+        "rect": {
+          "bottom": 96,
+          "height": 40,
+          "left": 12,
+          "right": 12,
+          "top": 56,
+          "width": 0,
+          "x": 12,
+          "y": 56
+        },
+        "transform": "",
+        "width": ""
+      },
+      "version": "0.1.205",
+      "viewport": {
+        "dpr": 1,
+        "h": 844,
+        "w": 390
+      },
+      "visibleViews": [
+        "view-settings"
+      ],
+      "zoom": "1",
+      "ax": "- banner:\n  - generic: magpie\n  - heading \"设置\" [level=1]\n  - navigation \"Main navigation\":\n    - button \"Agent\"\n    - button \"供应商\"\n    - button \"路由\"\n    - button \"网关\"\n    - button \"用量\"\n    - button \"插件\"\n  - button \"刷新模型列表（models.dev 与各供应商）\":\n  - button \"设置 (Ctrl+,)\":\n- main:\n  - tablist \"设置\":\n    - tab \"常规\"\n    - tab \"额度\"\n    - tab \"网络与共享\" [active] [selected]\n    - tab \"模型\"\n    - tab \"隐私\"\n    - tab \"同步与备份\"\n    - tab \"关于\"\n  - searchbox \"查找设置\"\n  - tabpanel \"网络与共享\":\n    - generic \"代理\"\n    - generic \"未发现系统代理，未单独设置代理的模型厂商请求和检查更新都直连\"\n    - button \"测试\"\n    - button \"自动\" [pressed]\n    - button \"关闭\"\n    - button \"自定义\"\n    - generic: GitHub\n    - generic \"GitHub 令牌\"\n    - generic \"资源库检查技能更新时使用。GitHub 每小时允许带令牌 5000 次请求，不带仅 60 次。也用它从它能读取的私有仓库安装技能；公开仓库无需勾选权限。\"\n    - textbox \"GitHub 令牌\":\n      - /placeholder: ghp_… / github_pat_…\n    - button \"创建一个 ↗\"\n    - button \"保存\"\n    - generic: 网关\n    - generic \"网关端口\"\n    - generic \"改了之后，已接入 magpie 的 Agent 会一起换过去。当前 http://127.0.0.1:3425\"\n    - textbox \"网关端口\": \"3425\"\n    - button \"应用\"\n    - generic \"不带供应商的模型 ID\"\n    - generic \"网关的模型列表还会以模型自己的 ID 列出每个模型，如 codex/gpt-5.6-sol 旁的 gpt-5.6-sol，供从其他代理迁来的应用使用。多个供应商都提供的模型，按“供应商”中的顺序发往它们\"\n    - button \"关闭\" [pressed]\n    - button \"开启\"\n    - generic: 局域网\n    - generic \"局域网共享\"\n    - generic \"同一网络中其他电脑上的 Agent，或经由隧道（如 Cloudflare Tunnel）连到这台电脑的 Agent，可凭网关页的网关密钥使用 magpie 的模型\"\n    - button \"关闭\" [pressed]\n    - button \"开启\"\n    - generic: 网页\n    - generic \"允许调用 magpie 的网页\"\n    - generic \"这些来源的网页脚本可以在浏览器中调用网关，每个请求需带上「网关」页的网关密钥。其他网站的网页会被拒绝，本机的网页不受影响\"\n    - textbox \"网页来源\":\n      - /placeholder: http://localhost:3000\n    - button \"添加\"\n- contentinfo:\n  - status\n  - generic: 127.0.0.1:3425"
+    },
+    {
+      "key": "390-light-context",
+      "bodyClass": "window web phone-web",
+      "brokenImages": [],
+      "caption": null,
+      "documentWidth": {
+        "client": 390,
+        "scroll": 390
+      },
+      "heading": "用量",
+      "invalidNesting": 0,
+      "lang": "zh-CN",
+      "navId": "usage",
+      "root": {
+        "bottom": 844,
+        "height": 844,
+        "left": 0,
+        "right": 390,
+        "top": 0,
+        "width": 390,
+        "x": 0,
+        "y": 0
+      },
+      "selected": "用量",
+      "selectedOffset": {
+        "left": 249,
+        "width": 56
+      },
+      "selectedRect": {
+        "bottom": 96,
+        "height": 40,
+        "left": 261.265625,
+        "right": 317.265625,
+        "top": 56,
+        "width": 56,
+        "x": 261.265625,
+        "y": 56
+      },
+      "source": "5f7f9bc0b7da8efaacbb6ae0b5e15587538a240c",
+      "status": "",
+      "theme": "light",
+      "thumb": {
+        "rect": {
+          "bottom": 96,
+          "height": 40,
+          "left": 261,
+          "right": 317,
+          "top": 56,
+          "width": 56,
+          "x": 261,
+          "y": 56
+        },
+        "transform": "translateX(249px)",
+        "width": "56px"
+      },
+      "version": "0.1.205",
+      "viewport": {
+        "dpr": 1,
+        "h": 844,
+        "w": 390
+      },
+      "visibleViews": [
+        "view-usage"
+      ],
+      "zoom": "1",
+      "ax": "- banner:\n  - generic: magpie\n  - heading \"用量\" [level=1]\n  - navigation \"Main navigation\":\n    - button \"Agent\"\n    - button \"供应商\"\n    - button \"路由\"\n    - button \"网关\"\n    - button \"用量\"\n    - button \"插件\"\n  - button \"刷新模型列表（models.dev 与各供应商）\":\n  - button \"设置 (Ctrl+,)\":\n- main:\n  - button \"概览\"\n  - button \"请求\"\n  - button \"会话\"\n  - button \"上下文\" [active] [pressed]\n  - button \"今天\"\n  - button \"7 天\" [pressed]\n  - button \"30 天\"\n  - button \"立即刷新\":\n  - button \"关闭\":\n    - generic: 关闭\n  - generic: ≈$0.000\n  - generic: 为你调优\n  - paragraph: 用你这段时间自己的调用（来自 agent 的会话文件）逐个设置重放：按你的用法，哪组设置花的 Token 最少。Token 按厂商计费的方式加权：一次缓存读取算十分之一。\n  - generic: 这段时间的调用太少，还算不出建议\n  - generic: 经过 magpie 的\n  - paragraph: 每个 agent 的提示词里装了什么，由 magpie 网关读取；评分和标签根据所选时间范围内的请求算出。\n  - generic: 还没有读到提示词\n  - generic: 你的 agent 经 magpie 发出的请求会显示在这里。\n- contentinfo:\n  - status\n  - generic: 127.0.0.1:3425"
+    },
+    {
+      "key": "gateway-390",
+      "bodyClass": "window web phone-web",
+      "brokenImages": [],
+      "caption": null,
+      "documentWidth": {
+        "client": 390,
+        "scroll": 390
+      },
+      "heading": "网关",
+      "invalidNesting": 0,
+      "lang": "zh-CN",
+      "navId": "gateway",
+      "root": {
+        "bottom": 844,
+        "height": 844,
+        "left": 0,
+        "right": 390,
+        "top": 0,
+        "width": 390,
+        "x": 0,
+        "y": 0
+      },
+      "selected": "网关",
+      "selectedOffset": {
+        "left": 193,
+        "width": 56
+      },
+      "selectedRect": {
+        "bottom": 96,
+        "height": 40,
+        "left": 205.265625,
+        "right": 261.265625,
+        "top": 56,
+        "width": 56,
+        "x": 205.265625,
+        "y": 56
+      },
+      "source": "5f7f9bc0b7da8efaacbb6ae0b5e15587538a240c",
+      "status": "",
+      "theme": "light",
+      "thumb": {
+        "rect": {
+          "bottom": 96,
+          "height": 40,
+          "left": 205.0759735107422,
+          "right": 261.07598876953125,
+          "top": 56,
+          "width": 56.00001525878906,
+          "x": 205.0759735107422,
+          "y": 56
+        },
+        "transform": "translateX(193px)",
+        "width": "56px"
+      },
+      "version": "0.1.205",
+      "viewport": {
+        "dpr": 1,
+        "h": 844,
+        "w": 390
+      },
+      "visibleViews": [
+        "view-gateway"
+      ],
+      "zoom": "1",
+      "ax": "- banner:\n  - generic: magpie\n  - heading \"网关\" [level=1]\n  - navigation \"Main navigation\":\n    - button \"Agent\"\n    - button \"供应商\"\n    - button \"路由\"\n    - button \"网关\" [active]\n    - button \"用量\"\n    - button \"插件\"\n  - button \"刷新模型列表（models.dev 与各供应商）\":\n  - button \"设置 (Ctrl+,)\":\n- main:\n  - generic: 网关运行中\n  - generic: 0 个模型 · 尚无 Agent 经由此路由 · 五种 API，一个地址\n  - button \"重启网关\"\n  - button \"http://127.0.0.1:3425\":\n    - code: http://127.0.0.1:3425\n  - paragraph:\n    - text: 网关密钥给其他电脑用，也给连到这台电脑的隧道（如 Cloudflare Tunnel）用：打开「局域网共享」后在这里添加。这台电脑上的 Agent 不需要密钥。\n    - button \"网络与共享\"\n  - button \"接入\" [expanded]:\n    - generic: 接入\n  - generic: 仅限本机回环 · 密钥可以随意填\n  - generic: API\n  - group \"API\":\n    - generic \"API\":\n      - button \"OpenAI\" [pressed]\n      - button \"Responses\"\n      - button \"Anthropic\"\n      - button \"Gemini\"\n      - button \"System One\"\n    - generic: Chat Completions，多数工具使用的 API。任何可设置 OpenAI base URL 的工具都能用。\n  - generic: API 地址\n  - group \"API 地址\":\n    - code: http://127.0.0.1:3425/v1\n    - button \"复制 API 地址\":\n    - generic: 填入 OPENAI_BASE_URL。\n  - generic: API 密钥\n  - group \"API 密钥\":\n    - code: magpie\n    - button \"复制 密钥\":\n    - generic: OPENAI_API_KEY=magpie。网关信任本机回环请求，可填任意值。\n  - generic: 模型\n  - group \"模型\":\n    - code: provider/model\n    - button \"复制 模型 ID\":\n    - generic: 还没有模型。添加一个供应商，或登录 Codex / Copilot。\n  - generic: 示例\n  - group \"示例\":\n    - generic \"示例\":\n      - button \"PowerShell\" [pressed]\n      - button \"curl\"\n      - button \"Python\"\n      - button \"Node\"\n    - generic \"在哪里运行这段代码\":\n      - button \"Windows\" [pressed]\n      - button \"macOS · Linux\"\n    - code:\n      - generic: $env:OPENAI_BASE_URL=\"http://127.0.0.1:3425/v1\"\n      - generic: $env:OPENAI_API_KEY=\"magpie\"\n    - button \"复制 代码片段\":\n    - generic: 将这些写入 shell（或工具设置），工具即改连 magpie，而非直连供应商。\n  - button \"模型\" [expanded]:\n    - generic: 模型\n  - generic: 尚未暴露任何模型\n  - text: 添加供应商，或登录 Codex / Copilot；其模型会列在这里，供所有 Agent 使用。\n  - generic: 最近调用\n  - generic: 还没有请求。让 Agent 使用某个模型，或运行上面的示例；调用会实时显示在这里。\n- contentinfo:\n  - status\n  - generic: 127.0.0.1:3425"
+    }
+  ],
+  "context": [
+    {
+      "config": {
+        "id": "1364-light",
+        "width": 1364,
+        "height": 941,
+        "theme": "light"
+      },
+      "key": "settings-network",
+      "bodyClass": "window web",
+      "brokenImages": [],
+      "caption": {
+        "bottom": 60.1875,
+        "height": 35.1875,
+        "left": 78,
+        "right": 1286,
+        "top": 25,
+        "width": 1208,
+        "x": 78,
+        "y": 25
+      },
+      "documentWidth": {
+        "client": 1364,
+        "scroll": 1364
+      },
+      "heading": "设置",
+      "invalidNesting": 0,
+      "lang": "zh-CN",
+      "root": {
+        "bottom": 816,
+        "height": 792,
+        "left": 77,
+        "right": 1287,
+        "top": 24,
+        "width": 1210,
+        "x": 77,
+        "y": 24
+      },
+      "selectedOffset": null,
+      "selectedRect": null,
+      "source": "5f7f9bc0b7da8efaacbb6ae0b5e15587538a240c",
+      "status": "",
+      "theme": "light",
+      "thumb": {
+        "rect": {
+          "bottom": 98.6796875,
+          "height": 26.390625,
+          "left": 506.7578125,
+          "right": 506.7578125,
+          "top": 72.2890625,
+          "width": 0,
+          "x": 506.7578125,
+          "y": 72.2890625
+        },
+        "transform": "",
+        "width": ""
+      },
+      "version": "0.1.205",
+      "viewport": {
+        "dpr": 1,
+        "h": 941,
+        "w": 1364
+      },
+      "visibleViews": [
+        "view-settings"
+      ],
+      "zoom": "1.1"
+    },
+    {
+      "config": {
+        "id": "1364-light",
+        "width": 1364,
+        "height": 941,
+        "theme": "light"
+      },
+      "key": "context",
+      "bodyClass": "window web",
+      "brokenImages": [],
+      "caption": {
+        "bottom": 60.1875,
+        "height": 35.1875,
+        "left": 78,
+        "right": 1286,
+        "top": 25,
+        "width": 1208,
+        "x": 78,
+        "y": 25
+      },
+      "documentWidth": {
+        "client": 1364,
+        "scroll": 1364
+      },
+      "heading": "用量",
+      "invalidNesting": 0,
+      "lang": "zh-CN",
+      "navId": "usage",
+      "root": {
+        "bottom": 816,
+        "height": 792,
+        "left": 77,
+        "right": 1287,
+        "top": 24,
+        "width": 1210,
+        "x": 77,
+        "y": 24
+      },
+      "selected": "用量",
+      "selectedOffset": {
+        "left": 219,
+        "width": 49
+      },
+      "selectedRect": {
+        "bottom": 98.6796875,
+        "height": 26.390625,
+        "left": 747.3046875,
+        "right": 801.1796875,
+        "top": 72.2890625,
+        "width": 53.875,
+        "x": 747.3046875,
+        "y": 72.2890625
+      },
+      "source": "5f7f9bc0b7da8efaacbb6ae0b5e15587538a240c",
+      "status": "",
+      "theme": "light",
+      "thumb": {
+        "rect": {
+          "bottom": 98.6796875,
+          "height": 26.390625,
+          "left": 747.6578369140625,
+          "right": 801.5484619140625,
+          "top": 72.2890625,
+          "width": 53.890625,
+          "x": 747.6578369140625,
+          "y": 72.2890625
+        },
+        "transform": "translateX(219px)",
+        "width": "49px"
+      },
+      "version": "0.1.205",
+      "viewport": {
+        "dpr": 1,
+        "h": 941,
+        "w": 1364
+      },
+      "visibleViews": [
+        "view-usage"
+      ],
+      "zoom": "1.1"
+    },
+    {
+      "config": {
+        "id": "1364-dark",
+        "width": 1364,
+        "height": 941,
+        "theme": "dark"
+      },
+      "key": "settings-network",
+      "bodyClass": "window web",
+      "brokenImages": [],
+      "caption": {
+        "bottom": 60.1875,
+        "height": 35.1875,
+        "left": 78,
+        "right": 1286,
+        "top": 25,
+        "width": 1208,
+        "x": 78,
+        "y": 25
+      },
+      "documentWidth": {
+        "client": 1364,
+        "scroll": 1364
+      },
+      "heading": "设置",
+      "invalidNesting": 0,
+      "lang": "zh-CN",
+      "root": {
+        "bottom": 816,
+        "height": 792,
+        "left": 77,
+        "right": 1287,
+        "top": 24,
+        "width": 1210,
+        "x": 77,
+        "y": 24
+      },
+      "selectedOffset": null,
+      "selectedRect": null,
+      "source": "5f7f9bc0b7da8efaacbb6ae0b5e15587538a240c",
+      "status": "",
+      "theme": "dark",
+      "thumb": {
+        "rect": {
+          "bottom": 98.6796875,
+          "height": 26.390625,
+          "left": 506.7578125,
+          "right": 506.7578125,
+          "top": 72.2890625,
+          "width": 0,
+          "x": 506.7578125,
+          "y": 72.2890625
+        },
+        "transform": "",
+        "width": ""
+      },
+      "version": "0.1.205",
+      "viewport": {
+        "dpr": 1,
+        "h": 941,
+        "w": 1364
+      },
+      "visibleViews": [
+        "view-settings"
+      ],
+      "zoom": "1.1"
+    },
+    {
+      "config": {
+        "id": "1364-dark",
+        "width": 1364,
+        "height": 941,
+        "theme": "dark"
+      },
+      "key": "context",
+      "bodyClass": "window web",
+      "brokenImages": [],
+      "caption": {
+        "bottom": 60.1875,
+        "height": 35.1875,
+        "left": 78,
+        "right": 1286,
+        "top": 25,
+        "width": 1208,
+        "x": 78,
+        "y": 25
+      },
+      "documentWidth": {
+        "client": 1364,
+        "scroll": 1364
+      },
+      "heading": "用量",
+      "invalidNesting": 0,
+      "lang": "zh-CN",
+      "navId": "usage",
+      "root": {
+        "bottom": 816,
+        "height": 792,
+        "left": 77,
+        "right": 1287,
+        "top": 24,
+        "width": 1210,
+        "x": 77,
+        "y": 24
+      },
+      "selected": "用量",
+      "selectedOffset": {
+        "left": 219,
+        "width": 49
+      },
+      "selectedRect": {
+        "bottom": 98.6796875,
+        "height": 26.390625,
+        "left": 747.3046875,
+        "right": 801.1796875,
+        "top": 72.2890625,
+        "width": 53.875,
+        "x": 747.3046875,
+        "y": 72.2890625
+      },
+      "source": "5f7f9bc0b7da8efaacbb6ae0b5e15587538a240c",
+      "status": "",
+      "theme": "dark",
+      "thumb": {
+        "rect": {
+          "bottom": 98.6796875,
+          "height": 26.390625,
+          "left": 747.6578369140625,
+          "right": 801.5484619140625,
+          "top": 72.2890625,
+          "width": 53.890625,
+          "x": 747.6578369140625,
+          "y": 72.2890625
+        },
+        "transform": "translateX(219px)",
+        "width": "49px"
+      },
+      "version": "0.1.205",
+      "viewport": {
+        "dpr": 1,
+        "h": 941,
+        "w": 1364
+      },
+      "visibleViews": [
+        "view-usage"
+      ],
+      "zoom": "1.1"
+    },
+    {
+      "config": {
+        "id": "900-light",
+        "width": 900,
+        "height": 900,
+        "theme": "light"
+      },
+      "key": "settings-network",
+      "bodyClass": "window web",
+      "brokenImages": [],
+      "caption": {
+        "bottom": 60.1875,
+        "height": 35.1875,
+        "left": 37.40625,
+        "right": 862.59375,
+        "top": 25,
+        "width": 825.1875,
+        "x": 37.40625,
+        "y": 25
+      },
+      "documentWidth": {
+        "client": 900,
+        "scroll": 900
+      },
+      "heading": "设置",
+      "invalidNesting": 0,
+      "lang": "zh-CN",
+      "root": {
+        "bottom": 741.1875,
+        "height": 717.1875,
+        "left": 36.40625,
+        "right": 863.59375,
+        "top": 24,
+        "width": 827.1875,
+        "x": 36.40625,
+        "y": 24
+      },
+      "selectedOffset": null,
+      "selectedRect": null,
+      "source": "5f7f9bc0b7da8efaacbb6ae0b5e15587538a240c",
+      "status": "",
+      "theme": "light",
+      "thumb": {
+        "rect": {
+          "bottom": 98.6796875,
+          "height": 26.390625,
+          "left": 274.7578125,
+          "right": 274.7578125,
+          "top": 72.2890625,
+          "width": 0,
+          "x": 274.7578125,
+          "y": 72.2890625
+        },
+        "transform": "",
+        "width": ""
+      },
+      "version": "0.1.205",
+      "viewport": {
+        "dpr": 1,
+        "h": 900,
+        "w": 900
+      },
+      "visibleViews": [
+        "view-settings"
+      ],
+      "zoom": "1.1"
+    },
+    {
+      "config": {
+        "id": "900-light",
+        "width": 900,
+        "height": 900,
+        "theme": "light"
+      },
+      "key": "context",
+      "bodyClass": "window web",
+      "brokenImages": [],
+      "caption": {
+        "bottom": 60.1875,
+        "height": 35.1875,
+        "left": 37.40625,
+        "right": 862.59375,
+        "top": 25,
+        "width": 825.1875,
+        "x": 37.40625,
+        "y": 25
+      },
+      "documentWidth": {
+        "client": 900,
+        "scroll": 900
+      },
+      "heading": "用量",
+      "invalidNesting": 0,
+      "lang": "zh-CN",
+      "navId": "usage",
+      "root": {
+        "bottom": 741.1875,
+        "height": 717.1875,
+        "left": 36.40625,
+        "right": 863.59375,
+        "top": 24,
+        "width": 827.1875,
+        "x": 36.40625,
+        "y": 24
+      },
+      "selected": "用量",
+      "selectedOffset": {
+        "left": 219,
+        "width": 49
+      },
+      "selectedRect": {
+        "bottom": 98.6796875,
+        "height": 26.390625,
+        "left": 515.3046875,
+        "right": 569.1796875,
+        "top": 72.2890625,
+        "width": 53.875,
+        "x": 515.3046875,
+        "y": 72.2890625
+      },
+      "source": "5f7f9bc0b7da8efaacbb6ae0b5e15587538a240c",
+      "status": "",
+      "theme": "light",
+      "thumb": {
+        "rect": {
+          "bottom": 98.6796875,
+          "height": 26.390625,
+          "left": 515.6578369140625,
+          "right": 569.5484619140625,
+          "top": 72.2890625,
+          "width": 53.890625,
+          "x": 515.6578369140625,
+          "y": 72.2890625
+        },
+        "transform": "translateX(219px)",
+        "width": "49px"
+      },
+      "version": "0.1.205",
+      "viewport": {
+        "dpr": 1,
+        "h": 900,
+        "w": 900
+      },
+      "visibleViews": [
+        "view-usage"
+      ],
+      "zoom": "1.1"
+    },
+    {
+      "config": {
+        "id": "390-light",
+        "width": 390,
+        "height": 844,
+        "theme": "light"
+      },
+      "key": "settings-network",
+      "bodyClass": "window web phone-web",
+      "brokenImages": [],
+      "caption": null,
+      "documentWidth": {
+        "client": 390,
+        "scroll": 390
+      },
+      "heading": "设置",
+      "invalidNesting": 0,
+      "lang": "zh-CN",
+      "root": {
+        "bottom": 844,
+        "height": 844,
+        "left": 0,
+        "right": 390,
+        "top": 0,
+        "width": 390,
+        "x": 0,
+        "y": 0
+      },
+      "selectedOffset": null,
+      "selectedRect": null,
+      "source": "5f7f9bc0b7da8efaacbb6ae0b5e15587538a240c",
+      "status": "",
+      "theme": "light",
+      "thumb": {
+        "rect": {
+          "bottom": 96,
+          "height": 40,
+          "left": 12,
+          "right": 12,
+          "top": 56,
+          "width": 0,
+          "x": 12,
+          "y": 56
+        },
+        "transform": "",
+        "width": ""
+      },
+      "version": "0.1.205",
+      "viewport": {
+        "dpr": 1,
+        "h": 844,
+        "w": 390
+      },
+      "visibleViews": [
+        "view-settings"
+      ],
+      "zoom": "1"
+    },
+    {
+      "config": {
+        "id": "390-light",
+        "width": 390,
+        "height": 844,
+        "theme": "light"
+      },
+      "key": "context",
+      "bodyClass": "window web phone-web",
+      "brokenImages": [],
+      "caption": null,
+      "documentWidth": {
+        "client": 390,
+        "scroll": 390
+      },
+      "heading": "用量",
+      "invalidNesting": 0,
+      "lang": "zh-CN",
+      "navId": "usage",
+      "root": {
+        "bottom": 844,
+        "height": 844,
+        "left": 0,
+        "right": 390,
+        "top": 0,
+        "width": 390,
+        "x": 0,
+        "y": 0
+      },
+      "selected": "用量",
+      "selectedOffset": {
+        "left": 249,
+        "width": 56
+      },
+      "selectedRect": {
+        "bottom": 96,
+        "height": 40,
+        "left": 261.265625,
+        "right": 317.265625,
+        "top": 56,
+        "width": 56,
+        "x": 261.265625,
+        "y": 56
+      },
+      "source": "5f7f9bc0b7da8efaacbb6ae0b5e15587538a240c",
+      "status": "",
+      "theme": "light",
+      "thumb": {
+        "rect": {
+          "bottom": 96,
+          "height": 40,
+          "left": 261,
+          "right": 317,
+          "top": 56,
+          "width": 56,
+          "x": 261,
+          "y": 56
+        },
+        "transform": "translateX(249px)",
+        "width": "56px"
+      },
+      "version": "0.1.205",
+      "viewport": {
+        "dpr": 1,
+        "h": 844,
+        "w": 390
+      },
+      "visibleViews": [
+        "view-usage"
+      ],
+      "zoom": "1"
+    }
+  ],
+  "logs": [],
+  "pairs": [
+    {
+      "key": "agents",
+      "unchangedRoot": true,
+      "unchangedCaption": true
+    },
+    {
+      "key": "gateway",
+      "unchangedRoot": true,
+      "unchangedCaption": true
+    },
+    {
+      "key": "settings",
+      "unchangedRoot": true,
+      "unchangedCaption": true
+    }
+  ]
+}

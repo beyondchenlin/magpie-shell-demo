@@ -1,0 +1,2738 @@
+[
+  {
+    "config": "1364-light",
+    "key": "routing",
+    "reason": "Capture occurred during native view-in; source unchanged",
+    "proof": {
+      "elapsedMs": 247,
+      "samples": 26,
+      "first": [
+        {
+          "class": "view masked",
+          "id": "view-routing",
+          "opacity": "0.528237",
+          "transform": "matrix(1, 0, 0, 1, 0, 2.35882)"
+        }
+      ],
+      "final": [
+        {
+          "class": "view masked",
+          "id": "view-routing",
+          "opacity": "1",
+          "transform": "none"
+        }
+      ]
+    }
+  },
+  {
+    "config": "1364-light",
+    "key": "gateway",
+    "reason": "Capture occurred during native view-in; source unchanged",
+    "proof": {
+      "elapsedMs": 270,
+      "samples": 34,
+      "first": [
+        {
+          "class": "view",
+          "id": "view-gateway",
+          "opacity": "0",
+          "transform": "matrix(1, 0, 0, 1, 0, 5)"
+        }
+      ],
+      "final": [
+        {
+          "class": "view",
+          "id": "view-gateway",
+          "opacity": "1",
+          "transform": "none"
+        }
+      ]
+    }
+  },
+  {
+    "config": "1364-light",
+    "key": "library-mcp",
+    "reason": "Native market-search wrapper fix",
+    "proof": {
+      "elapsedMs": 53,
+      "samples": 4,
+      "first": [
+        {
+          "class": "view",
+          "id": "view-library",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999452",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00219065)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999452",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00219065)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999452",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00219065)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999452",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00219065)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999452",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00219065)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999452",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00219065)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999452",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00219065)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999452",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00219065)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999452",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00219065)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999452",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00219065)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999452",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00219065)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999452",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00219065)"
+        }
+      ],
+      "final": [
+        {
+          "class": "view",
+          "id": "view-library",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        }
+      ]
+    }
+  },
+  {
+    "config": "1364-light",
+    "key": "library-skills",
+    "reason": "Native market-search wrapper fix",
+    "proof": {
+      "elapsedMs": 30,
+      "samples": 2,
+      "first": [
+        {
+          "class": "view",
+          "id": "view-library",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999959",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.000163499)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999959",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.000163499)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999959",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.000163499)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999959",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.000163499)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999959",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.000163499)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999959",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.000163499)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999959",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.000163499)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999959",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.000163499)"
+        }
+      ],
+      "final": [
+        {
+          "class": "view",
+          "id": "view-library",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        }
+      ]
+    }
+  },
+  {
+    "config": "1364-dark",
+    "key": "routing",
+    "reason": "Capture occurred during native view-in; source unchanged",
+    "proof": {
+      "elapsedMs": 249,
+      "samples": 25,
+      "first": [
+        {
+          "class": "view masked",
+          "id": "view-routing",
+          "opacity": "0",
+          "transform": "matrix(1, 0, 0, 1, 0, 5)"
+        }
+      ],
+      "final": [
+        {
+          "class": "view masked",
+          "id": "view-routing",
+          "opacity": "1",
+          "transform": "none"
+        }
+      ]
+    }
+  },
+  {
+    "config": "1364-dark",
+    "key": "gateway",
+    "reason": "Capture occurred during native view-in; source unchanged",
+    "proof": {
+      "elapsedMs": 278,
+      "samples": 28,
+      "first": [
+        {
+          "class": "view",
+          "id": "view-gateway",
+          "opacity": "0",
+          "transform": "matrix(1, 0, 0, 1, 0, 5)"
+        }
+      ],
+      "final": [
+        {
+          "class": "view",
+          "id": "view-gateway",
+          "opacity": "1",
+          "transform": "none"
+        }
+      ]
+    }
+  },
+  {
+    "config": "1364-dark",
+    "key": "library-mcp",
+    "reason": "Native market-search wrapper fix",
+    "proof": {
+      "elapsedMs": 35,
+      "samples": 4,
+      "first": [
+        {
+          "class": "view",
+          "id": "view-library",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999452",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00219205)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999452",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00219205)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999452",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00219205)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999452",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00219205)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999452",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00219205)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999452",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00219205)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999452",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00219205)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999452",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00219205)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999452",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00219205)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999452",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00219205)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999452",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00219205)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999452",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00219205)"
+        }
+      ],
+      "final": [
+        {
+          "class": "view",
+          "id": "view-library",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        }
+      ]
+    }
+  },
+  {
+    "config": "1364-dark",
+    "key": "library-skills",
+    "reason": "Native market-search wrapper fix",
+    "proof": {
+      "elapsedMs": 25,
+      "samples": 3,
+      "first": [
+        {
+          "class": "view",
+          "id": "view-library",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999959",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.000162898)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999959",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.000162898)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999959",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.000162898)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999959",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.000162898)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999959",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.000162898)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999959",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.000162898)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999959",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.000162898)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999959",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.000162898)"
+        }
+      ],
+      "final": [
+        {
+          "class": "view",
+          "id": "view-library",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        }
+      ]
+    }
+  },
+  {
+    "config": "900-light",
+    "key": "routing",
+    "reason": "Capture occurred during native view-in; source unchanged",
+    "proof": {
+      "elapsedMs": 253,
+      "samples": 26,
+      "first": [
+        {
+          "class": "view masked",
+          "id": "view-routing",
+          "opacity": "0.281296",
+          "transform": "matrix(1, 0, 0, 1, 0, 3.59352)"
+        }
+      ],
+      "final": [
+        {
+          "class": "view masked",
+          "id": "view-routing",
+          "opacity": "1",
+          "transform": "none"
+        }
+      ]
+    }
+  },
+  {
+    "config": "900-light",
+    "key": "gateway",
+    "reason": "Capture occurred during native view-in; source unchanged",
+    "proof": {
+      "elapsedMs": 264,
+      "samples": 34,
+      "first": [
+        {
+          "class": "view",
+          "id": "view-gateway",
+          "opacity": "0",
+          "transform": "matrix(1, 0, 0, 1, 0, 5)"
+        }
+      ],
+      "final": [
+        {
+          "class": "view",
+          "id": "view-gateway",
+          "opacity": "1",
+          "transform": "none"
+        }
+      ]
+    }
+  },
+  {
+    "config": "900-light",
+    "key": "library-mcp",
+    "reason": "Native market-search wrapper fix",
+    "proof": {
+      "elapsedMs": 36,
+      "samples": 4,
+      "first": [
+        {
+          "class": "view",
+          "id": "view-library",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999454",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00218587)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999454",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00218587)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999454",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00218587)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999454",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00218587)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999454",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00218587)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999454",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00218587)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999454",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00218587)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999454",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00218587)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999454",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00218587)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999454",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00218587)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999454",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00218587)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999454",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00218587)"
+        }
+      ],
+      "final": [
+        {
+          "class": "view",
+          "id": "view-library",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        }
+      ]
+    }
+  },
+  {
+    "config": "900-light",
+    "key": "library-skills",
+    "reason": "Native market-search wrapper fix",
+    "proof": {
+      "elapsedMs": 36,
+      "samples": 2,
+      "first": [
+        {
+          "class": "view",
+          "id": "view-library",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999962",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.000152944)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999962",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.000152944)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999962",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.000152944)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999962",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.000152944)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999962",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.000152944)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999962",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.000152944)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999962",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.000152944)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999962",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.000152944)"
+        }
+      ],
+      "final": [
+        {
+          "class": "view",
+          "id": "view-library",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        }
+      ]
+    }
+  },
+  {
+    "config": "390-light",
+    "key": "routing",
+    "reason": "Capture occurred during native view-in; source unchanged",
+    "proof": {
+      "elapsedMs": 243,
+      "samples": 26,
+      "first": [
+        {
+          "class": "view masked",
+          "id": "view-routing",
+          "opacity": "0.281576",
+          "transform": "matrix(1, 0, 0, 1, 0, 3.59212)"
+        }
+      ],
+      "final": [
+        {
+          "class": "view masked",
+          "id": "view-routing",
+          "opacity": "1",
+          "transform": "none"
+        }
+      ]
+    }
+  },
+  {
+    "config": "390-light",
+    "key": "gateway",
+    "reason": "Capture occurred during native view-in; source unchanged",
+    "proof": {
+      "elapsedMs": 247,
+      "samples": 27,
+      "first": [
+        {
+          "class": "view",
+          "id": "view-gateway",
+          "opacity": "0.280572",
+          "transform": "matrix(1, 0, 0, 1, 0, 3.59714)"
+        }
+      ],
+      "final": [
+        {
+          "class": "view",
+          "id": "view-gateway",
+          "opacity": "1",
+          "transform": "none"
+        }
+      ]
+    }
+  },
+  {
+    "config": "390-light",
+    "key": "library-mcp",
+    "reason": "Native market-search wrapper fix",
+    "proof": {
+      "elapsedMs": 52,
+      "samples": 5,
+      "first": [
+        {
+          "class": "view",
+          "id": "view-library",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.998238",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00704827)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.998238",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00704827)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.998238",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00704827)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.998238",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00704827)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.998238",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00704827)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.998238",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00704827)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.998238",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00704827)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.998238",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00704827)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.998238",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00704827)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.998238",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00704827)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.998238",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00704827)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.998238",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00704827)"
+        }
+      ],
+      "final": [
+        {
+          "class": "view",
+          "id": "view-library",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        }
+      ]
+    }
+  },
+  {
+    "config": "390-light",
+    "key": "library-skills",
+    "reason": "Native market-search wrapper fix",
+    "proof": {
+      "elapsedMs": 34,
+      "samples": 4,
+      "first": [
+        {
+          "class": "view",
+          "id": "view-library",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999436",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00225718)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999436",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00225718)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999436",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00225718)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999436",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00225718)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999436",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00225718)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999436",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00225718)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999436",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00225718)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999436",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00225718)"
+        }
+      ],
+      "final": [
+        {
+          "class": "view",
+          "id": "view-library",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        }
+      ]
+    }
+  },
+  {
+    "config": "1364-light",
+    "key": "settings-models",
+    "source": "a8976e0db339d520a290cbdd548c290be760797b",
+    "reason": "Fixed-source default content/structure correction",
+    "proof": {
+      "elapsedMs": 28,
+      "samples": 1,
+      "first": [
+        {
+          "class": "view",
+          "id": "view-settings",
+          "opacity": "1",
+          "transform": "none"
+        }
+      ],
+      "final": [
+        {
+          "class": "view",
+          "id": "view-settings",
+          "opacity": "1",
+          "transform": "none"
+        }
+      ]
+    }
+  },
+  {
+    "config": "1364-light",
+    "key": "library-instructions",
+    "source": "a8976e0db339d520a290cbdd548c290be760797b",
+    "reason": "Fixed-source default content/structure correction",
+    "proof": {
+      "elapsedMs": 7,
+      "samples": 1,
+      "first": [
+        {
+          "class": "view",
+          "id": "view-library",
+          "opacity": "1",
+          "transform": "none"
+        }
+      ],
+      "final": [
+        {
+          "class": "view",
+          "id": "view-library",
+          "opacity": "1",
+          "transform": "none"
+        }
+      ]
+    }
+  },
+  {
+    "config": "1364-light",
+    "key": "library-mcp",
+    "source": "a8976e0db339d520a290cbdd548c290be760797b",
+    "reason": "Fixed-source default content/structure correction",
+    "proof": {
+      "elapsedMs": 28,
+      "samples": 3,
+      "first": [
+        {
+          "class": "view",
+          "id": "view-library",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999958",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.000167843)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999958",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.000167843)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999958",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.000167843)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999958",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.000167843)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999958",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.000167843)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999958",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.000167843)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999958",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.000167843)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999958",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.000167843)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999958",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.000167843)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999958",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.000167843)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999958",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.000167843)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999958",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.000167843)"
+        }
+      ],
+      "final": [
+        {
+          "class": "view",
+          "id": "view-library",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        }
+      ]
+    }
+  },
+  {
+    "config": "1364-light",
+    "key": "library-skills",
+    "source": "a8976e0db339d520a290cbdd548c290be760797b",
+    "reason": "Fixed-source default content/structure correction",
+    "proof": {
+      "elapsedMs": 34,
+      "samples": 4,
+      "first": [
+        {
+          "class": "view",
+          "id": "view-library",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.99945",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00220043)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.99945",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00220043)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.99945",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00220043)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.99945",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00220043)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.99945",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00220043)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.99945",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00220043)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.99945",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00220043)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.99945",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00220043)"
+        }
+      ],
+      "final": [
+        {
+          "class": "view",
+          "id": "view-library",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        }
+      ]
+    }
+  },
+  {
+    "config": "1364-dark",
+    "key": "settings-models",
+    "source": "a8976e0db339d520a290cbdd548c290be760797b",
+    "reason": "Fixed-source default content/structure correction",
+    "proof": {
+      "elapsedMs": 9,
+      "samples": 1,
+      "first": [
+        {
+          "class": "view",
+          "id": "view-settings",
+          "opacity": "1",
+          "transform": "none"
+        }
+      ],
+      "final": [
+        {
+          "class": "view",
+          "id": "view-settings",
+          "opacity": "1",
+          "transform": "none"
+        }
+      ]
+    }
+  },
+  {
+    "config": "1364-dark",
+    "key": "library-instructions",
+    "source": "a8976e0db339d520a290cbdd548c290be760797b",
+    "reason": "Fixed-source default content/structure correction",
+    "proof": {
+      "elapsedMs": 9,
+      "samples": 1,
+      "first": [
+        {
+          "class": "view",
+          "id": "view-library",
+          "opacity": "1",
+          "transform": "none"
+        }
+      ],
+      "final": [
+        {
+          "class": "view",
+          "id": "view-library",
+          "opacity": "1",
+          "transform": "none"
+        }
+      ]
+    }
+  },
+  {
+    "config": "1364-dark",
+    "key": "library-mcp",
+    "source": "a8976e0db339d520a290cbdd548c290be760797b",
+    "reason": "Fixed-source default content/structure correction",
+    "proof": {
+      "elapsedMs": 36,
+      "samples": 2,
+      "first": [
+        {
+          "class": "view",
+          "id": "view-library",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999962",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.000153478)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999962",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.000153478)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999962",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.000153478)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999962",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.000153478)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999962",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.000153478)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999962",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.000153478)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999962",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.000153478)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999962",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.000153478)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999962",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.000153478)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999962",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.000153478)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999962",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.000153478)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999962",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.000153478)"
+        }
+      ],
+      "final": [
+        {
+          "class": "view",
+          "id": "view-library",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        }
+      ]
+    }
+  },
+  {
+    "config": "1364-dark",
+    "key": "library-skills",
+    "source": "a8976e0db339d520a290cbdd548c290be760797b",
+    "reason": "Fixed-source default content/structure correction",
+    "proof": {
+      "elapsedMs": 30,
+      "samples": 4,
+      "first": [
+        {
+          "class": "view",
+          "id": "view-library",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999451",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00219684)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999451",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00219684)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999451",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00219684)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999451",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00219684)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999451",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00219684)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999451",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00219684)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999451",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00219684)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999451",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00219684)"
+        }
+      ],
+      "final": [
+        {
+          "class": "view",
+          "id": "view-library",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        }
+      ]
+    }
+  },
+  {
+    "config": "900-light",
+    "key": "settings-models",
+    "source": "a8976e0db339d520a290cbdd548c290be760797b",
+    "reason": "Fixed-source default content/structure correction",
+    "proof": {
+      "elapsedMs": 11,
+      "samples": 1,
+      "first": [
+        {
+          "class": "view",
+          "id": "view-settings",
+          "opacity": "1",
+          "transform": "none"
+        }
+      ],
+      "final": [
+        {
+          "class": "view",
+          "id": "view-settings",
+          "opacity": "1",
+          "transform": "none"
+        }
+      ]
+    }
+  },
+  {
+    "config": "900-light",
+    "key": "library-instructions",
+    "source": "a8976e0db339d520a290cbdd548c290be760797b",
+    "reason": "Fixed-source default content/structure correction",
+    "proof": {
+      "elapsedMs": 10,
+      "samples": 1,
+      "first": [
+        {
+          "class": "view",
+          "id": "view-library",
+          "opacity": "1",
+          "transform": "none"
+        }
+      ],
+      "final": [
+        {
+          "class": "view",
+          "id": "view-library",
+          "opacity": "1",
+          "transform": "none"
+        }
+      ]
+    }
+  },
+  {
+    "config": "900-light",
+    "key": "library-mcp",
+    "source": "a8976e0db339d520a290cbdd548c290be760797b",
+    "reason": "Fixed-source default content/structure correction",
+    "proof": {
+      "elapsedMs": 37,
+      "samples": 3,
+      "first": [
+        {
+          "class": "view",
+          "id": "view-library",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999959",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.000162047)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999959",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.000162047)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999959",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.000162047)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999959",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.000162047)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999959",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.000162047)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999959",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.000162047)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999959",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.000162047)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999959",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.000162047)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999959",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.000162047)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999959",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.000162047)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999959",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.000162047)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999959",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.000162047)"
+        }
+      ],
+      "final": [
+        {
+          "class": "view",
+          "id": "view-library",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        }
+      ]
+    }
+  },
+  {
+    "config": "900-light",
+    "key": "library-skills",
+    "source": "a8976e0db339d520a290cbdd548c290be760797b",
+    "reason": "Fixed-source default content/structure correction",
+    "proof": {
+      "elapsedMs": 28,
+      "samples": 4,
+      "first": [
+        {
+          "class": "view",
+          "id": "view-library",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999439",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00224585)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999439",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00224585)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999439",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00224585)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999439",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00224585)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999439",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00224585)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999439",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00224585)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999439",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00224585)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999439",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00224585)"
+        }
+      ],
+      "final": [
+        {
+          "class": "view",
+          "id": "view-library",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        }
+      ]
+    }
+  },
+  {
+    "config": "390-light",
+    "key": "settings-models",
+    "source": "a8976e0db339d520a290cbdd548c290be760797b",
+    "reason": "Fixed-source default content/structure correction",
+    "proof": {
+      "elapsedMs": 14,
+      "samples": 1,
+      "first": [
+        {
+          "class": "view",
+          "id": "view-settings",
+          "opacity": "1",
+          "transform": "none"
+        }
+      ],
+      "final": [
+        {
+          "class": "view",
+          "id": "view-settings",
+          "opacity": "1",
+          "transform": "none"
+        }
+      ]
+    }
+  },
+  {
+    "config": "390-light",
+    "key": "library-instructions",
+    "source": "a8976e0db339d520a290cbdd548c290be760797b",
+    "reason": "Fixed-source default content/structure correction",
+    "proof": {
+      "elapsedMs": 9,
+      "samples": 1,
+      "first": [
+        {
+          "class": "view",
+          "id": "view-library",
+          "opacity": "1",
+          "transform": "none"
+        }
+      ],
+      "final": [
+        {
+          "class": "view",
+          "id": "view-library",
+          "opacity": "1",
+          "transform": "none"
+        }
+      ]
+    }
+  },
+  {
+    "config": "390-light",
+    "key": "library-mcp",
+    "source": "a8976e0db339d520a290cbdd548c290be760797b",
+    "reason": "Fixed-source default content/structure correction",
+    "proof": {
+      "elapsedMs": 33,
+      "samples": 3,
+      "first": [
+        {
+          "class": "view",
+          "id": "view-library",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999959",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00016385)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999959",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00016385)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999959",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00016385)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999959",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00016385)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999959",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00016385)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999959",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00016385)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999959",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00016385)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999959",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00016385)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999959",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00016385)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999959",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00016385)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999959",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00016385)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999959",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.00016385)"
+        }
+      ],
+      "final": [
+        {
+          "class": "view",
+          "id": "view-library",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        }
+      ]
+    }
+  },
+  {
+    "config": "390-light",
+    "key": "library-skills",
+    "source": "a8976e0db339d520a290cbdd548c290be760797b",
+    "reason": "Fixed-source default content/structure correction",
+    "proof": {
+      "elapsedMs": 26,
+      "samples": 2,
+      "first": [
+        {
+          "class": "view",
+          "id": "view-library",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999959",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.000163148)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999959",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.000163148)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999959",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.000163148)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999959",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.000163148)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999959",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.000163148)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999959",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.000163148)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999959",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.000163148)"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "0.999959",
+          "transform": "matrix(1, 0, 0, 1, 0, 0.000163148)"
+        }
+      ],
+      "final": [
+        {
+          "class": "view",
+          "id": "view-library",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        },
+        {
+          "class": "mk-card click",
+          "id": "",
+          "opacity": "1",
+          "transform": "none"
+        }
+      ]
+    }
+  }
+]

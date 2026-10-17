@@ -1,0 +1,150 @@
+[
+  {
+    "mode": "on",
+    "before": {
+      "button": {
+        "disabled": false,
+        "text": "重启网关"
+      },
+      "source": "874268b83c40d3b1a621b152d54aeaed51732334",
+      "status": "运行中",
+      "sub": "0 个模型 · 尚无 Agent 经由此路由 · 五种 API，一个地址",
+      "toast": "",
+      "url": "http://127.0.0.1:3425"
+    },
+    "busy": {
+      "button": {
+        "disabled": false,
+        "text": "重启网关"
+      },
+      "source": "874268b83c40d3b1a621b152d54aeaed51732334",
+      "status": "运行中",
+      "sub": "0 个模型 · 尚无 Agent 经由此路由 · 五种 API，一个地址",
+      "toast": "演示壳 · 无真实网关进程",
+      "url": "http://127.0.0.1:3425"
+    },
+    "after": {
+      "button": {
+        "disabled": false,
+        "text": "重启网关"
+      },
+      "source": "874268b83c40d3b1a621b152d54aeaed51732334",
+      "status": "运行中",
+      "sub": "0 个模型 · 尚无 Agent 经由此路由 · 五种 API，一个地址",
+      "toast": "演示壳 · 无真实网关进程",
+      "url": "http://127.0.0.1:3425"
+    }
+  },
+  {
+    "mode": "off",
+    "before": {
+      "button": {
+        "disabled": false,
+        "text": "启动网关"
+      },
+      "source": "874268b83c40d3b1a621b152d54aeaed51732334",
+      "status": "未运行",
+      "sub": "用 magpie serve 启动，或让 magpie 开机自启",
+      "toast": "",
+      "url": "http://127.0.0.1:3425"
+    },
+    "busy": {
+      "button": {
+        "disabled": true,
+        "text": "正在启动网关…"
+      },
+      "source": "874268b83c40d3b1a621b152d54aeaed51732334",
+      "status": "未运行",
+      "sub": "用 magpie serve 启动，或让 magpie 开机自启",
+      "toast": "",
+      "url": "http://127.0.0.1:3425"
+    },
+    "after": {
+      "button": {
+        "disabled": false,
+        "text": "重启网关"
+      },
+      "source": "874268b83c40d3b1a621b152d54aeaed51732334",
+      "status": "运行中",
+      "sub": "0 个模型 · 尚无 Agent 经由此路由 · 五种 API，一个地址",
+      "toast": "演示：已启动网关（无真实进程）",
+      "url": "http://127.0.0.1:3425"
+    }
+  },
+  {
+    "mode": "older",
+    "before": {
+      "button": {
+        "disabled": false,
+        "text": "关闭 magpie 0.1.550 并接管网关"
+      },
+      "source": "874268b83c40d3b1a621b152d54aeaed51732334",
+      "status": "运行中 · 由更旧的 magpie 0.1.550 提供",
+      "sub": "Agent 的请求经 magpie 0.1.550 发出，不含当前版本的修复。在这里关闭它，当前版本会立即接管网关。",
+      "toast": "",
+      "url": "http://127.0.0.1:3425"
+    },
+    "busy": {
+      "button": {
+        "disabled": true,
+        "text": "正在关闭 magpie 0.1.550…"
+      },
+      "source": "874268b83c40d3b1a621b152d54aeaed51732334",
+      "status": "运行中 · 由更旧的 magpie 0.1.550 提供",
+      "sub": "Agent 的请求经 magpie 0.1.550 发出，不含当前版本的修复。在这里关闭它，当前版本会立即接管网关。",
+      "toast": "",
+      "url": "http://127.0.0.1:3425"
+    },
+    "after": {
+      "button": {
+        "disabled": false,
+        "text": "重启网关"
+      },
+      "source": "874268b83c40d3b1a621b152d54aeaed51732334",
+      "status": "运行中",
+      "sub": "0 个模型 · 尚无 Agent 经由此路由 · 五种 API，一个地址",
+      "toast": "演示：已接管网关（无真实进程）",
+      "url": "http://127.0.0.1:3425"
+    }
+  },
+  {
+    "mode": "other",
+    "before": {
+      "button": null,
+      "source": "874268b83c40d3b1a621b152d54aeaed51732334",
+      "status": "运行中 · 由另一个 magpie 提供",
+      "sub": "0 个模型 · 尚无 Agent 经由此路由 · 五种 API，一个地址",
+      "toast": "",
+      "url": "http://127.0.0.1:3425"
+    }
+  },
+  {
+    "mode": "off-port-held",
+    "after": {
+      "button": {
+        "disabled": false,
+        "text": "启动网关"
+      },
+      "error": "端口 3425 被 /usr/bin/python3.13（pid 1479377）占用：请退出它，或在设置里把网关换到其他端口。",
+      "source": "874268b83c40d3b1a621b152d54aeaed51732334",
+      "status": "未运行",
+      "sub": "用 magpie serve 启动，或让 magpie 开机自启",
+      "toast": "演示：端口被占用，未启动",
+      "url": "http://127.0.0.1:3425"
+    }
+  },
+  {
+    "mode": "after-saving-ordinary-size",
+    "after": {
+      "button": {
+        "disabled": false,
+        "text": "重启网关"
+      },
+      "source": "874268b83c40d3b1a621b152d54aeaed51732334",
+      "status": "运行中",
+      "sub": "0 个模型 · 尚无 Agent 经由此路由 · 五种 API，一个地址",
+      "toast": "文字大小 100%",
+      "url": "http://127.0.0.1:3425"
+    }
+  }
+]

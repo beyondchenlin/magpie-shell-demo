@@ -23,7 +23,10 @@ function create() {
     },
   });
   win.setMenuBarVisibility(false);
-  win.loadFile(path.join(__dirname, "..", "dist", "index.html"));
+  // Explicit screenshot fixture; no host discovery or credentials are read.
+  win.loadFile(path.join(__dirname, "..", "dist", "index.html"), {
+    query: { comparison: "2026-10-17" },
+  });
 }
 
 app.whenReady().then(create);

@@ -1,8 +1,21 @@
-import { Fragment, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { PluginLogo } from "../components/PluginLogo";
+import { RequestArchive } from "../components/RequestArchive";
+import { CopyButton } from "../components/CopyButton";
+import { MagpieIcon } from "../components/MagpieIcon";
+import { PopoverPortal } from "../components/PopoverPortal";
+import { useRowMenu } from "../lib/useRowMenu";
+import { useAnchoredPopover } from "../lib/useAnchoredPopover";
+import { ProtoMultiMenu } from "../components/ProtoMultiMenu";
+import { watchMenuScroll } from "../lib/menuScroll";
+import { Fragment, useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { ActionConfirm } from "../components/ActionConfirm";
+import { LedChart, LedRank } from "../components/LedChart";
 import { LedHeat } from "../components/LedHeat";
+import { LibSwitch } from "../components/LibSwitch";
+import { PrefRow } from "../components/PrefRow";
 import { Segs } from "../components/Segs";
 import { useSegThumb } from "../components/SegThumb";
-import { iconSrc } from "../data/mock";
+import { TextBtn } from "../components/TextBtn";
 import {
   DEMO_CTX_AGENTS,
   DEMO_LEDGER,
@@ -19,6 +32,69 @@ import {
   type LedRow,
 } from "../data/usage-demo";
 import { demoCopy, t } from "../i18n";
+
+/** Magpie app.js L2676 EYE_OFF — Usage Agents openRowMenu hide act. */
+const EYE_OFF =
+  "M6.6 3.7A6.9 6.9 0 0 1 8 3.5c3.75 0 6.25 4.5 6.25 4.5a11 11 0 0 1-1.5 2M4.4 4.4C2.7 5.55 1.75 8 1.75 8S4.25 12.5 8 12.5c1.2 0 2.25-.45 3.1-1.05M6.75 6.75a1.75 1.75 0 0 0 2.5 2.5M2 2l12 12";
+
+/** Magpie LED_COLS (app.js L18561–64): third flag = lc-opt collapsed by ledFit. */
+const LED_COLS: [string, string?, boolean?][] = [
+  ["Time"],
+  ["Agent"],
+  ["Requested"],
+  ["Provider · account"],
+  ["Sent", "", true],
+  ["Served"],
+  ["Effort", "", true],
+  ["In", "n"],
+  ["Out", "n"],
+  ["Cache write", "n", true],
+  ["Cache read", "n", true],
+  ["Cost", "n"],
+  ["Duration", "n"],
+  ["Speed", "n"],
+  ["Status"],
+];
+
+/** Magpie openRowMenu (app.js L3497–3518 / L17375–17379): .pop.row-menu + .rm-item. */
+function UsageAgentMenu({
+  anchor,
+  onHide,
+  onClose,
+}: {
+  anchor: HTMLElement;
+  onHide: () => void;
+  onClose: () => void;
+}) {
+  const boxRef = useRef<HTMLDivElement>(null);
+  useRowMenu(boxRef, anchor, onClose);
+
+  return (
+    <PopoverPortal><div data-anchored className="pop row-menu fixed" role="menu" ref={boxRef}>
+      <button
+        type="button"
+        className="rm-item"
+        role="menuitem"
+        onClick={(e) => {
+          e.stopPropagation();
+          onClose();
+          onHide();
+        }}>
+        <svg viewBox="0 0 16 16" width={13} height={13} aria-hidden>
+          <path
+            d={EYE_OFF}
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+        <span className="rm-name">{t("Hide from this list")}</span>
+      </button>
+    </div></PopoverPortal>
+  );
+}
 
 const USAGE_TABS = [
   ["usage", "Overview"],
@@ -42,6 +118,25 @@ const SESS_RANGES = [
   ["all", "All"],
 ] as const;
 
+/** Magpie SESS_RANGES days (app.js L19020): today=1 … all=0. */
+const SESS_RANGE_DAYS: Record<(typeof SESS_RANGES)[number][0], number> = {
+  today: 1,
+  "7d": 7,
+  "30d": 30,
+  "90d": 90,
+  all: 0,
+};
+
+/** Magpie sessDate(st.from) floor for list filter (app.js L19564 / L19401). */
+function sessRangeStartMs(range: string): number | null {
+  const days = SESS_RANGE_DAYS[range as keyof typeof SESS_RANGE_DAYS] ?? 0;
+  if (!days) return null;
+  const start = new Date();
+  start.setHours(0, 0, 0, 0);
+  if (days > 1) start.setDate(start.getDate() - (days - 1));
+  return start.getTime();
+}
+
 const USAGE_EVERY = [
   [0, "Off"],
   [5, "5 s"],
@@ -60,6 +155,8 @@ const LED_METRIC = [
   ["calls", "Calls"],
   ["tokens", "Tokens"],
   ["cost", "Cost"],
+  // Magpie LED_TREND app.js L17866–68 — window chart includes Speed (#860)
+  ["speed", "Speed"],
 ] as const;
 
 const LED_SPLIT = [
@@ -95,8 +192,7 @@ function RefreshSpin({ busy }: { busy: boolean }) {
       strokeLinecap="round"
       strokeLinejoin="round"
       aria-hidden
-      style={busy ? { animation: "spin .8s linear infinite" } : undefined}
-    >
+      style={busy ? { animation: "spin .8s linear infinite" } : undefined}>
       <path d="M13.5 8a5.5 5.5 0 1 1-1.6-3.9M13.5 2.5v3h-3" />
     </svg>
   );
@@ -111,7 +207,7 @@ function SessPick({
 }: {
   label: string;
   open: boolean;
-  onToggle: () => void;
+  onToggle: (anchor: HTMLElement) => void;
   children?: ReactNode;
   set?: boolean;
 }) {
@@ -122,8 +218,7 @@ function SessPick({
       aria-haspopup="menu"
       aria-expanded={open}
       aria-label={label}
-      onClick={onToggle}
-    >
+      onClick={e => onToggle(e.currentTarget)}>
       <span>{label}</span>
       <svg viewBox="0 0 12 12" width={11} height={11} aria-hidden>
         <path d="M3 4.5 6 7.5 9 4.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
@@ -133,80 +228,18 @@ function SessPick({
   );
 }
 
-function ProtoMenu({
-  open,
-  onClose,
-  items,
-  value,
-  onPick,
-  title,
-}: {
+function ProtoMenu({ open, anchor, onClose, items, value, onPick, title }: {
   open: boolean;
+  anchor: HTMLElement | null;
   onClose: () => void;
   items: { v: string; name: string; note?: string }[];
   value: string;
   onPick: (v: string) => void;
   title?: string;
 }) {
-  const ref = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    if (!open) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        e.preventDefault();
-        onClose();
-      }
-    };
-    const onDown = (e: MouseEvent) => {
-      if (!ref.current?.contains(e.target as Node)) onClose();
-    };
-    document.addEventListener("keydown", onKey, true);
-    document.addEventListener("mousedown", onDown, true);
-    return () => {
-      document.removeEventListener("keydown", onKey, true);
-      document.removeEventListener("mousedown", onDown, true);
-    };
-  }, [open, onClose]);
-  if (!open) return null;
-  return (
-    <div
-      className="pop proto-menu sess-menu"
-      ref={ref}
-      role="menu"
-      aria-label={title}
-      style={{ position: "absolute", top: "100%", right: 0, zIndex: 40, minWidth: 160 }}
-    >
-      {title ? <div className="pm-head">{t(title)}</div> : null}
-      {items.map((it) => {
-        const on = it.v === value;
-        return (
-          <button
-            type="button"
-            key={it.v}
-            className={`pm-item${on ? " on" : ""}`}
-            role="menuitemradio"
-            aria-checked={on}
-            onClick={() => {
-              onPick(it.v);
-              onClose();
-            }}
-          >
-            <span className="pm-tick" aria-hidden>
-              {on ? (
-                <svg viewBox="0 0 16 16" width={12} height={12} fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M3.2 8.2 6.4 11.4 12.8 4.2" />
-                </svg>
-              ) : null}
-            </span>
-            <span className="pm-words">
-              <span className="pm-name">{t(it.name)}</span>
-              {it.note ? <span className="pm-note">{t(it.note)}</span> : null}
-            </span>
-          </button>
-        );
-      })}
-    </div>
-  );
+  return <ProtoMultiMenu open={open} anchor={anchor} options={items} value={value}
+    onChange={next => onPick(String(next))} onClose={onClose} head={title}
+    menuClass="sess-menu" align="left" />;
 }
 
 function dayKeyOf(d: Date) {
@@ -229,10 +262,12 @@ function rangeName(from: string, to: string) {
 /** Magpie openRangeMenu: quick spans + month grid (first day then last). */
 function RangeCalendar({
   current,
+  anchor,
   onChoose,
   onClose,
 }: {
   current: { from: string; to: string } | null;
+  anchor: HTMLElement | null;
   onChoose: (from: string, to: string) => void;
   onClose: () => void;
 }) {
@@ -243,6 +278,14 @@ function RangeCalendar({
     return new Date(base.getFullYear(), base.getMonth(), 1, 12);
   });
   const ref = useRef<HTMLDivElement>(null);
+  useAnchoredPopover(ref, anchor, true);
+  useLayoutEffect(() => {
+    const box = ref.current;
+    const initial = box?.querySelector<HTMLButtonElement>(".rm-day.end")
+      || box?.querySelector<HTMLButtonElement>(".rm-day.today")
+      || box?.querySelector<HTMLButtonElement>(".rm-span");
+    initial?.focus({ preventScroll: true });
+  }, []);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -250,6 +293,7 @@ function RangeCalendar({
         e.preventDefault();
         e.stopPropagation();
         onClose();
+        anchor?.focus({ preventScroll: true });
         return;
       }
       const at = (document.activeElement as HTMLElement | null)?.dataset?.day;
@@ -272,16 +316,18 @@ function RangeCalendar({
       const t = e.target as Node;
       if (ref.current?.contains(t)) return;
       // Magpie outside ignores the range-opt anchor
-      if ((e.target as HTMLElement | null)?.closest?.(".range-opt")) return;
+      if (anchor?.contains(e.target as Node)) return;
       onClose();
     };
     document.addEventListener("keydown", onKey, true);
     document.addEventListener("mousedown", onDown, true);
+    const stopScroll = ref.current ? watchMenuScroll(ref.current, onClose) : () => {};
     return () => {
+      stopScroll();
       document.removeEventListener("keydown", onKey, true);
       document.removeEventListener("mousedown", onDown, true);
     };
-  }, [onClose, shown, today]);
+  }, [onClose, shown, today, anchor]);
 
   const now = new Date();
   now.setHours(12, 0, 0, 0);
@@ -341,8 +387,7 @@ function RangeCalendar({
           const [from, to] = start <= k ? [start, k] : [k, start];
           onChoose(from, to);
           onClose();
-        }}
-      >
+        }}>
         {dayNum}
       </button>,
     );
@@ -351,7 +396,7 @@ function RangeCalendar({
   const nextMonthStart = dayKeyOf(new Date(shown.getFullYear(), shown.getMonth() + 1, 1, 12));
 
   return (
-    <div className="pop proto-menu range-menu" ref={ref} role="dialog" aria-label={t("Pick days")} style={{ position: "absolute", top: "100%", right: 0, zIndex: 40 }}>
+    <PopoverPortal><div data-anchored className="pop proto-menu range-menu" ref={ref} role="dialog" aria-label={t("Pick days")}>
       <div className="pm-head">{start ? t("Now the last day") : t("Pick the first day, then the last")}</div>
       <div className="rm-quick">
         {quicks.map(([name, r]) => (
@@ -363,8 +408,7 @@ function RangeCalendar({
             onClick={() => {
               onChoose(r.from, r.to);
               onClose();
-            }}
-          >
+            }}>
             {t(name)}
           </button>
         ))}
@@ -374,8 +418,7 @@ function RangeCalendar({
           type="button"
           className="rm-step"
           aria-label={t("Previous month")}
-          onClick={() => setShown(new Date(shown.getFullYear(), shown.getMonth() - 1, 1, 12))}
-        >
+          onClick={() => setShown(new Date(shown.getFullYear(), shown.getMonth() - 1, 1, 12))}>
           <svg viewBox="0 0 12 12" width={12} height={12} aria-hidden>
             <path d="M10 4 6 8l4 4" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
           </svg>
@@ -386,8 +429,7 @@ function RangeCalendar({
           className="rm-step"
           aria-label={t("Next month")}
           disabled={nextMonthStart > today}
-          onClick={() => setShown(new Date(shown.getFullYear(), shown.getMonth() + 1, 1, 12))}
-        >
+          onClick={() => setShown(new Date(shown.getFullYear(), shown.getMonth() + 1, 1, 12))}>
           <svg viewBox="0 0 12 12" width={12} height={12} aria-hidden>
             <path d="m6 4 4 4-4 4" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
           </svg>
@@ -396,7 +438,7 @@ function RangeCalendar({
       <div className="rm-grid" role="grid">
         {cells}
       </div>
-    </div>
+    </div></PopoverPortal>
   );
 }
 
@@ -434,18 +476,27 @@ export function UsageView() {
     return 5;
   });
   const [everyOpen, setEveryOpen] = useState(false);
+  const [everyAnchor, setEveryAnchor] = useState<HTMLElement | null>(null);
   const [busy, setBusy] = useState(false);
   const [customOpen, setCustomOpen] = useState(false);
+  const [customAnchor, setCustomAnchor] = useState<HTMLElement | null>(null);
   const [customLabel, setCustomLabel] = useState("");
   const [ledStatus, setLedStatus] = useState("");
   const [ledMetric, setLedMetric] = useState("calls");
-  const [ledSplit, setLedSplit] = useState("none");
+  /** Magpie ledSplit default "model" (app.js L17490). */
+  const [ledSplit, setLedSplit] = useState("model");
+  /** Magpie ledDay — chart column pick filters the Requests list (app.js L18318–21). */
+  const [ledDay, setLedDay] = useState("");
+  /** Magpie drawLedRank picked — provider/agent/model filter from rank click (app.js L18327–39). */
+  const [ledRankPick, setLedRankPick] = useState("");
+  /** Magpie box.emphasize from rank hover (app.js L18174–75). */
+  const [ledEmph, setLedEmph] = useState<string | null>(null);
   const [ledQ, setLedQ] = useState("");
   const [sessAgent, setSessAgent] = useState("all");
   const [sessQ, setSessQ] = useState("");
   const [mask, setMask] = useState(false);
-  /** Magpie ledDash stays hidden with no ledger; demo can show a chart shell. */
-  const [demoChart, setDemoChart] = useState(false);
+
+
   const [ctxDays, setCtxDays] = useState(() => {
     try {
       const d = localStorage.getItem("magpie.ctxDays");
@@ -453,14 +504,104 @@ export function UsageView() {
     } catch { /* ignore */ }
     return "7";
   });
-  /** Magpie empty vs filled demo. Native usage/01–50 are empty — default off; toggle fills mock data. */
-  const [demoFilled, setDemoFilled] = useState(false);
+  /** Empty by default; populated mock data is an explicit review fixture, not an invented app control. */
+  const [demoFilled] = useState(() => new URLSearchParams(location.search).get("fixture") === "filled");
   const [ledOpen, setLedOpen] = useState<Set<string>>(() => new Set());
   const [ledPage, setLedPage] = useState(0);
   const [sessOpen, setSessOpen] = useState<string | null>(null);
   const [sessMore, setSessMore] = useState(false);
   const [heatMetricRemember] = useState(true); // heatmap mounts with Magpie localStorage metric
+  /** Magpie #ledWrap / #ledHScroll — sticky table h-scrollbar (app.js ledHScroll). */
+  const ledWrapRef = useRef<HTMLDivElement>(null);
+  const ledHScrollRef = useRef<HTMLDivElement>(null);
 
+
+  // Magpie ledFit (app.js L18629–48) + ledHScroll (L18513–37 / L18521–22).
+  // tight → hide .lc-opt columns; still over → .tighter (price-reference + shorter names).
+  // #ledTight hint after #ledSum. Sticky #ledHScroll stands in for height:0 native bar.
+  useEffect(() => {
+    const wrap = ledWrapRef.current;
+    const bar = ledHScrollRef.current;
+    if (!wrap || !bar || tab !== "usage") return;
+
+    const ledFit = () => {
+      const table = wrap.querySelector("table.led");
+      const hint = document.getElementById("ledTight") as HTMLElement | null;
+      if (!table) {
+        if (hint) hint.hidden = true;
+        return;
+      }
+      table.classList.remove("tight", "tighter");
+      const over = () => wrap.scrollWidth > wrap.clientWidth + 1;
+      const tight = over();
+      table.classList.toggle("tight", tight);
+      // still too wide (#860): price reference goes; names cut shorter
+      if (tight && over()) table.classList.add("tighter");
+      if (hint) {
+        const msg = t("Sent, Effort and the cache are in each row's details");
+        hint.textContent = msg;
+        hint.title = msg;
+        hint.hidden = !tight;
+      }
+    };
+
+    const sync = () => {
+      ledFit();
+      const over = !!wrap.querySelector("table") && wrap.scrollWidth > wrap.clientWidth + 1;
+      bar.hidden = !over;
+      wrap.style.setProperty("--ledw", `${wrap.clientWidth}px`);
+      if (!over) return;
+      const inner = bar.firstElementChild as HTMLElement | null;
+      if (inner) {
+        inner.style.width = `${wrap.scrollWidth - wrap.clientWidth + bar.clientWidth}px`;
+      }
+      if (bar.scrollLeft !== wrap.scrollLeft) bar.scrollLeft = wrap.scrollLeft;
+    };
+
+    const onWrapScroll = () => {
+      if (bar.scrollLeft !== wrap.scrollLeft) bar.scrollLeft = wrap.scrollLeft;
+    };
+    const onBarScroll = () => {
+      if (wrap.scrollLeft !== bar.scrollLeft) wrap.scrollLeft = bar.scrollLeft;
+    };
+    wrap.addEventListener("scroll", onWrapScroll, { passive: true });
+    bar.addEventListener("scroll", onBarScroll, { passive: true });
+
+    let fitW = 0;
+    let frame = 0;
+    const ro = new ResizeObserver(() => {
+      if (frame) return;
+      frame = requestAnimationFrame(() => {
+        frame = 0;
+        if (wrap.clientWidth !== fitW) {
+          fitW = wrap.clientWidth;
+          ledFit();
+        }
+        // Magpie ledGrow: table grew past wrap without width change → fit again
+        const table = wrap.querySelector("table.led");
+        if (
+          table &&
+          !table.classList.contains("tighter") &&
+          wrap.clientWidth &&
+          wrap.scrollWidth > wrap.clientWidth + 1
+        ) {
+          ledFit();
+        }
+        sync();
+      });
+    });
+    ro.observe(wrap);
+    const table = wrap.querySelector("table.led");
+    if (table) ro.observe(table);
+    sync();
+
+    return () => {
+      wrap.removeEventListener("scroll", onWrapScroll);
+      bar.removeEventListener("scroll", onBarScroll);
+      ro.disconnect();
+      if (frame) cancelAnimationFrame(frame);
+    };
+  }, [tab, demoFilled, ledPage, ledDay, ledRankPick, ledQ, ledStatus, period]);
 
   const everyLabel = USAGE_EVERY.find(([n]) => n === every)?.[1] || "5 s";
 
@@ -501,6 +642,18 @@ export function UsageView() {
     }
   }, [ctxDays]);
 
+  // Magpie L14414: changing period clears the chart day pick
+  useEffect(() => {
+    setLedDay("");
+    setLedPage(0);
+  }, [period]);
+
+  // Magpie: changing split redraws rank; clear pick + emphasize
+  useEffect(() => {
+    setLedRankPick("");
+    setLedEmph(null);
+  }, [ledSplit]);
+
   useEffect(() => {
     if (!every) return;
     const id = window.setInterval(() => {
@@ -520,6 +673,21 @@ export function UsageView() {
     let rows = DEMO_LEDGER;
     if (ledStatus === "failed") rows = rows.filter((r) => r.status === "err");
     else if (ledStatus === "retried") rows = rows.filter((r) => r.id === "r3" || r.status === "err"); // demo: r3 + errors as retried set
+    // Magpie /api/usage?day=… — demo filters ledger by local calendar day
+    if (ledDay) {
+      rows = rows.filter((r) => {
+        const d = new Date(r.t);
+        const iso =
+          `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+        return iso === ledDay;
+      });
+    }
+    // Magpie drawLedRank choose — filter Requests by split category (app.js L18327–39)
+    if (ledRankPick) {
+      if (ledSplit === "agent") rows = rows.filter((r) => r.agent === ledRankPick);
+      else if (ledSplit === "model") rows = rows.filter((r) => (r.served || r.req) === ledRankPick);
+      else if (ledSplit === "provider") rows = rows.filter((r) => r.providerName === ledRankPick);
+    }
     const q = ledQ.trim().toLowerCase();
     if (q) {
       rows = rows.filter((r) =>
@@ -527,7 +695,7 @@ export function UsageView() {
       );
     }
     return rows;
-  }, [demoFilled, ledStatus, ledQ]);
+  }, [demoFilled, ledStatus, ledQ, ledDay, ledRankPick, ledSplit]);
 
   const ledTotals = useMemo(() => {
     const rows = ledRows;
@@ -553,26 +721,38 @@ export function UsageView() {
   const ledPageRows = ledRows.slice(ledPage * pageSize, ledPage * pageSize + pageSize);
   const ledPages = Math.max(1, Math.ceil(ledRows.length / pageSize) || 1);
 
+  /** Magpie renderSessions list filters (app.js L19560–70) + empty-range history (L19607–18). */
+  const sessMatchNonRange = (s: (typeof DEMO_SESSIONS)[number]) => {
+    if (sessAgent !== "all" && s.agent !== sessAgent) return false;
+    const q = sessQ.trim().toLowerCase();
+    if (q && !`${s.title} ${s.cwd} ${s.models} ${s.agent}`.toLowerCase().includes(q)) return false;
+    return true;
+  };
+  const sessInRange = (s: (typeof DEMO_SESSIONS)[number]) => {
+    const from = sessRangeStartMs(sessRange);
+    return from == null || s.last >= from;
+  };
   const sessRows = useMemo(() => {
     if (!demoFilled) return [];
-    let rows = sessMore ? [...DEMO_SESSIONS, ...DEMO_SESSIONS_MORE] : [...DEMO_SESSIONS];
-    if (sessAgent !== "all") rows = rows.filter((s) => s.agent === sessAgent);
-    const q = sessQ.trim().toLowerCase();
-    if (q) {
-      rows = rows.filter((s) =>
-        `${s.title} ${s.cwd} ${s.models} ${s.agent}`.toLowerCase().includes(q),
-      );
-    }
-    return rows;
-  }, [demoFilled, sessAgent, sessQ, sessMore]);
-  const sessHidden = demoFilled && !sessMore ? DEMO_SESSIONS_MORE.length : 0;
+    const pool = sessMore ? [...DEMO_SESSIONS, ...DEMO_SESSIONS_MORE] : [...DEMO_SESSIONS];
+    return pool.filter((s) => sessMatchNonRange(s) && sessInRange(s));
+  }, [demoFilled, sessAgent, sessQ, sessMore, sessRange]);
+  const sessHidden = useMemo(() => {
+    if (!demoFilled || sessMore) return 0;
+    return DEMO_SESSIONS_MORE.filter((s) => sessMatchNonRange(s) && sessInRange(s)).length;
+  }, [demoFilled, sessMore, sessAgent, sessQ, sessRange]);
+  /** Magpie: from && all.some(byAgent/folder/model/q) → empty-range sess-show-history (app.js L19607–18). */
+  const sessHasHistory = useMemo(() => {
+    if (!demoFilled || sessRange === "all") return false;
+    return [...DEMO_SESSIONS, ...DEMO_SESSIONS_MORE].some((s) => sessMatchNonRange(s));
+  }, [demoFilled, sessRange, sessAgent, sessQ]);
 
   const ctxAgents = demoFilled ? DEMO_CTX_AGENTS : [];
   const overview = useMemo(
     () => (demoFilled ? buildDemoOverview(period) : null),
     [demoFilled, period],
   );
-  const [agentMenuFor, setAgentMenuFor] = useState<string | null>(null);
+  const [agentMenuFor, setAgentMenuFor] = useState<{ id: string; el: HTMLElement } | null>(null);
   const [hiddenUsageAgents, setHiddenUsageAgents] = useState<Set<string>>(() => new Set());
   const [usageHidOpen, setUsageHidOpen] = useState(false);
 
@@ -595,7 +775,7 @@ export function UsageView() {
           items={USAGE_TABS.map(([id, en]) => ({ id, label: t(en) }))}
         />
         {tab !== "sessions" && tab !== "context" ? (
-          <div className="segs period-wrap" id="period" ref={setPeriodBox} style={{ position: "relative" }}>
+          <div className="segs" id="period" ref={setPeriodBox}>
             {PERIODS.map(([id, en]) => (
               <button
                 key={id}
@@ -606,8 +786,7 @@ export function UsageView() {
                   setCustomLabel("");
                   setPeriod(id);
                   setCustomOpen(false);
-                }}
-              >
+                }}>
                 {t(en)}
               </button>
             ))}
@@ -618,8 +797,7 @@ export function UsageView() {
               aria-expanded={customOpen}
               aria-label={customLabel ? t("Days picked: {days}", { days: customLabel }) : t("Pick days")}
               title={customLabel ? t("Days picked: {days}", { days: customLabel }) : undefined}
-              onClick={() => setCustomOpen((o) => !o)}
-            >
+              onClick={e => { setCustomAnchor(e.currentTarget); setCustomOpen((o) => !o); }}>
               <svg viewBox="0 0 16 16" width={12} height={12} fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                 <path d="M3 4.5h10v8.5H3zM3 7h10M5.5 3v3M10.5 3v3" />
               </svg>
@@ -627,6 +805,7 @@ export function UsageView() {
             </button>
             {customOpen ? (
               <RangeCalendar
+                anchor={customAnchor}
                 current={
                   periodIsCustom
                     ? { from: period.split("..")[0], to: period.split("..")[1] }
@@ -662,7 +841,7 @@ export function UsageView() {
           </span>
         ) : null}
         <span className="grow" />
-        <span className="usage-refresh" id="usageRefresh" style={{ position: "relative" }}>
+        <span className="usage-refresh" id="usageRefresh">
           <button
             className={`icon${busy ? " busy" : ""}`}
             id="usageReload"
@@ -673,18 +852,18 @@ export function UsageView() {
                 ? t("Refresh now, the allowances too; a Claude account's is read by running Claude Code's own /usage")
                 : t("Refresh now")
             }
-            onClick={refresh}
-          >
+            onClick={refresh}>
             <RefreshSpin busy={busy} />
           </button>
           <SessPick
             label={t(everyLabel)}
             open={everyOpen}
             set={every > 0}
-            onToggle={() => setEveryOpen((o) => !o)}
+            onToggle={anchor => { setEveryAnchor(anchor); setEveryOpen((o) => !o); }}
           />
           <ProtoMenu
             open={everyOpen}
+            anchor={everyAnchor}
             onClose={() => setEveryOpen(false)}
             value={String(every)}
             title={t("Refresh every")}
@@ -704,36 +883,31 @@ export function UsageView() {
         <div className="row-head quota-head" id="quotaHead" hidden>
           <span className="label">{t("Allowances")}</span>
           <span className="grow" />
-          <button
-            type="button"
-            className="text rt-mask"
+          <TextBtn
+            className="rt-mask"
             id="usageMask"
             aria-pressed={mask}
             title={t("Mask the accounts on this page — email addresses and account names — for a screenshot to share")}
-            onClick={() => setMask((m) => !m)}
-          >
+            onClick={() => setMask((m) => !m)}>
             <span>{t("Hide accounts")}</span>
-          </button>
+          </TextBtn>
         </div>
         <section className="subscription-usage" id="subscriptionUsage" />
         <p className="usage-note" id="usageScope">
           {t("Gateway calls only; session-log calls are in Requests. Local rejections are excluded from totals.")}
         </p>
         {!demoFilled || !overview ? (
-          <div className="card empty-state us-empty" style={{ padding: "22px 16px", marginTop: 8 }}>
-            <b style={{ display: "block", fontWeight: 600, marginBottom: 6 }}>{noCallsIn(period)}</b>
-            <span style={{ color: "var(--muted)", fontSize: 12.5, lineHeight: 1.45 }}>
-              {t("Point an agent at a catalog model and use it; every call through the gateway is counted here.")}
-            </span>
-            <div style={{ marginTop: 12 }}>
-              <button type="button" className="text primary" onClick={() => setDemoFilled(true)}>
-                {demoCopy("显示演示有数据", "Show demo with data")}
-              </button>
+          /* Magpie Usage empty: #stats.stats.empty > .none (app.js renderUsage L17250–55;
+             app.css L1020–21). Drop invent card.empty-state.us-empty + shell-patch pad. */
+          <section className="stats empty" id="stats">
+            <div className="none">
+              {`${noCallsIn(period)} ${t("Point an agent at a catalog model and use it; every call through the gateway is counted here.")}`}
             </div>
-          </div>
+
+          </section>
         ) : (
           <>
-            <section className="stats" id="stats" style={{ animation: "fade-in .28s var(--ease)" }}>
+            <section className="stats" id="stats">
               <div className="kpi" title="">
                 <b>{fmtN(tokensOf(overview))}</b>
                 <span>{t("tokens")}</span>
@@ -772,7 +946,7 @@ export function UsageView() {
                 </small>
               </div>
             </section>
-            <section className="chart" id="chart" style={{ animation: "fade-in .32s var(--ease)" }}>
+            <section className="chart" id="chart">
               <div className="peak">
                 {fmtN(Math.max(1, ...overview.series.map((p) => tokensOf(p))))}
               </div>
@@ -792,8 +966,8 @@ export function UsageView() {
                     : t("{when} · nothing", { when });
                   return (
                     <div className="bar" key={`${p.label}-${i}`} title={tip}>
-                      <i className="out" style={{ height: `${((100 * p.output) / peak).toFixed(1)}%`, transition: "height .28s var(--ease)" }} />
-                      <i className="in" style={{ height: `${((100 * p.input) / peak).toFixed(1)}%`, transition: "height .28s var(--ease)" }} />
+                      <i className="out" style={{ height: `${((100 * p.output) / peak).toFixed(1)}%` }} />
+                      <i className="in" style={{ height: `${((100 * p.input) / peak).toFixed(1)}%` }} />
                     </div>
                   );
                 })}
@@ -822,10 +996,8 @@ export function UsageView() {
                       ? " · " + t("hit rate {p}", { p: Math.round((100 * g.cache_read) / prompt) + "%" })
                       : "";
                   return (
-                    <div className="row stat acts" key={g.id} data-id={g.id} style={{ position: "relative" }}>
-                      <span className="ic">
-                        <img src={iconSrc(g.icon)} alt="" />
-                      </span>
+                    <div className="row stat acts" key={g.id} data-id={g.id}>
+                      <MagpieIcon name={g.icon} />
                       <div className="who">
                         <div className="name">{g.name}</div>
                         <div className="sub">
@@ -838,39 +1010,24 @@ export function UsageView() {
                         </div>
                       </div>
                       <div className="share" title={t("{n}% of tokens", { n: String(Math.round((100 * tokensOf(g)) / total)) })}>
-                        <i style={{ width: `${Math.max(1.5, (100 * tokensOf(g)) / total).toFixed(1)}%`, transition: "width .28s var(--ease)" }} />
+                        <i style={{ width: `${Math.max(1.5, (100 * tokensOf(g)) / total).toFixed(1)}%` }} />
                       </div>
                       <button
                         type="button"
-                        className={`icon us-more${agentMenuFor === g.id ? " open" : ""}`}
+                        className={`icon us-more${agentMenuFor?.id === g.id ? " open" : ""}`}
                         aria-haspopup="menu"
                         aria-label={t("Actions for {name}", { name: g.name })}
                         onClick={(e) => {
                           e.stopPropagation();
-                          setAgentMenuFor((cur) => (cur === g.id ? null : g.id));
-                        }}
-                      >
+                          const el = e.currentTarget;
+                          setAgentMenuFor((cur) => (cur?.id === g.id ? null : { id: g.id, el }));
+                        }}>
                         <svg viewBox="0 0 16 16" width={14} height={14} aria-hidden>
                           <circle cx="3.5" cy="8" r="1.2" fill="currentColor" />
                           <circle cx="8" cy="8" r="1.2" fill="currentColor" />
                           <circle cx="12.5" cy="8" r="1.2" fill="currentColor" />
                         </svg>
                       </button>
-                      {agentMenuFor === g.id ? (
-                        <div className="proto-menu open" role="menu" style={{ position: "absolute", right: 8, top: 36, zIndex: 20, minWidth: 180, animation: "fade-in .15s var(--ease)" }}>
-                          <button
-                            type="button"
-                            className="proto-item"
-                            role="menuitem"
-                            onClick={() => {
-                              setHiddenUsageAgents((s) => new Set(s).add(g.id));
-                              setAgentMenuFor(null);
-                            }}
-                          >
-                            {t("Hide from this list")}
-                          </button>
-                        </div>
-                      ) : null}
                       <div className="num">
                         <b>{fmtN(tokensOf(g))}</b>
                         <small>
@@ -885,49 +1042,54 @@ export function UsageView() {
                 })}
             </div>
             {overview.agents.some((g) => hiddenUsageAgents.has(g.id)) ? (
-              <div id="usageAgentsHid">
-                <button
-                  type="button"
-                  className="us-hidline text"
+              <div className="us-hid" id="usageAgentsHid">
+                <TextBtn
+                  className="us-hidline"
                   aria-expanded={usageHidOpen}
                   title={t("Hidden from this list only: their calls still count in the totals and the chart. Click to see them.")}
                   onClick={() => setUsageHidOpen((o) => !o)}
-                  style={{ display: "inline-flex", alignItems: "center", gap: 4, margin: "6px 0", fontSize: 12 }}
                 >
                   <span>{t("{n} hidden", { n: String([...hiddenUsageAgents].filter((id) => overview.agents.some((g) => g.id === id)).length) })}</span>
-                  <svg viewBox="0 0 12 12" width={11} height={11} aria-hidden style={{ transform: usageHidOpen ? "rotate(180deg)" : undefined, transition: "transform .15s ease-out" }}>
+                  <svg viewBox="0 0 12 12" width={11} height={11} aria-hidden >
                     <path d="M3 4.5 6 7.5 9 4.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
                   </svg>
-                </button>
-                {usageHidOpen
-                  ? overview.agents
-                      .filter((g) => hiddenUsageAgents.has(g.id))
-                      .map((g) => (
-                        <div className="row stat hid acts" key={`hid-${g.id}`} data-id={g.id}>
-                          <span className="ic">
-                            <img src={iconSrc(g.icon)} alt="" />
-                          </span>
-                          <div className="who">
-                            <div className="name">{g.name}</div>
-                            <div className="sub">{t(g.calls === 1 ? "{n} call" : "{n} calls", { n: String(g.calls) })}</div>
+                </TextBtn>
+                <div className="list" hidden={!usageHidOpen}>
+                  {usageHidOpen
+                    ? overview.agents
+                        .filter((g) => hiddenUsageAgents.has(g.id))
+                        .map((g) => (
+                          <div className="row stat hid acts" key={`hid-${g.id}`} data-id={g.id}>
+                            <MagpieIcon name={g.icon} />
+                            <div className="who">
+                              <div className="name">{g.name}</div>
+                              <div className="sub">{t(g.calls === 1 ? "{n} call" : "{n} calls", { n: String(g.calls) })}</div>
+                            </div>
+                            <TextBtn
+                              className="us-unhide"
+                              onClick={() =>
+                                setHiddenUsageAgents((s) => {
+                                  const n = new Set(s);
+                                  n.delete(g.id);
+                                  return n;
+                                })
+                              }>
+                              {t("Unhide")}
+                            </TextBtn>
                           </div>
-                          <button
-                            type="button"
-                            className="text us-unhide"
-                            onClick={() =>
-                              setHiddenUsageAgents((s) => {
-                                const n = new Set(s);
-                                n.delete(g.id);
-                                return n;
-                              })
-                            }
-                          >
-                            {t("Unhide")}
-                          </button>
-                        </div>
-                      ))
-                  : null}
+                        ))
+                    : null}
+                </div>
               </div>
+            ) : null}
+            {agentMenuFor ? (
+              <UsageAgentMenu
+                anchor={agentMenuFor.el}
+                onClose={() => setAgentMenuFor(null)}
+                onHide={() => {
+                  setHiddenUsageAgents((s) => new Set(s).add(agentMenuFor.id));
+                }}
+              />
             ) : null}
             <div className="row-head">
               <span className="label">{t("Models")}</span>
@@ -937,7 +1099,7 @@ export function UsageView() {
                 const total = Math.max(1, tokensOf(overview));
                 return (
                   <div className="row stat" key={g.id} data-id={g.id}>
-                    <span className="ic" aria-hidden>◆</span>
+                    <MagpieIcon />
                     <div className="who">
                       <div className="name">{g.name}</div>
                       <div className="sub">
@@ -945,7 +1107,7 @@ export function UsageView() {
                       </div>
                     </div>
                     <div className="share" title={t("{n}% of tokens", { n: String(Math.round((100 * tokensOf(g)) / total)) })}>
-                      <i style={{ width: `${Math.max(1.5, (100 * tokensOf(g)) / total).toFixed(1)}%`, transition: "width .28s var(--ease)" }} />
+                      <i style={{ width: `${Math.max(1.5, (100 * tokensOf(g)) / total).toFixed(1)}%` }} />
                     </div>
                     <div className="num">
                       <b>{fmtN(tokensOf(g))}</b>
@@ -966,9 +1128,7 @@ export function UsageView() {
                     const total = Math.max(1, tokensOf(overview));
                     return (
                       <div className="row stat" key={g.id} data-id={g.id}>
-                        <span className="ic">
-                          <img src={iconSrc(g.icon)} alt="" />
-                        </span>
+                        <MagpieIcon name={g.icon} />
                         <div className="who">
                           <div className={`name${mask ? " faint" : ""}`}>{mask ? "••••@••••.com" : g.name}</div>
                           <div className="sub">
@@ -989,17 +1149,6 @@ export function UsageView() {
                 </div>
               </>
             ) : null}
-            <div style={{ marginTop: 10, display: "flex", gap: 8, flexWrap: "wrap" }}>
-              <button
-                type="button"
-                className="text"
-                aria-pressed={demoFilled}
-                onClick={() => setDemoFilled(false)}
-                title={demoCopy("关演示数据看真空态", "Turn off demo data for Magpie empty")}
-              >
-                {demoCopy("演示数据开 · 点此关", "Demo data on · click to clear")}
-              </button>
-            </div>
           </>
         )}
         <p className="usage-note" id="usageNote" />
@@ -1007,7 +1156,7 @@ export function UsageView() {
 
       {/* Requests / Ledger */}
       <div className="usage-pane" id="ledgerPane" hidden={tab !== "requests"}>
-        <div className="sess-tools" style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center", marginBottom: 8 }}>
+        <div className="sess-tools">
           <Segs
             value={ledStatus}
             onChange={(v) => {
@@ -1021,71 +1170,37 @@ export function UsageView() {
             }))}
           />
           <span className="grow" />
-          <button
-            type="button"
-            className="text"
-            aria-pressed={demoFilled}
-            title={demoCopy("切换演示 ledger 数据", "Toggle demo ledger data")}
-            onClick={() => {
-              setDemoFilled((d) => !d);
+
+          <input
+            className="sess-filter"
+            id="ledQ"
+            type="search"
+            spellCheck={false}
+            autoComplete="off"
+            placeholder={t("Search models, providers, sessions")}
+            value={ledQ}
+            onChange={(e) => {
+              setLedQ(e.target.value);
               setLedPage(0);
-              setDemoChart(false);
             }}
-          >
-            {demoFilled ? demoCopy("演示数据开", "Demo data on") : demoCopy("演示数据关", "Demo data off")}
-          </button>
-          <span className="led-q-wrap" style={{ position: "relative", display: "inline-flex", alignItems: "center" }}>
-            <input
-              className="sess-filter"
-              id="ledQ"
-              type="search"
-              spellCheck={false}
-              autoComplete="off"
-              placeholder={t("Search models, providers, sessions")}
-              value={ledQ}
-              onChange={(e) => {
-                setLedQ(e.target.value);
+            onKeyDown={(e) => {
+              if (e.key === "Escape" && ledQ) {
+                e.preventDefault();
+                e.stopPropagation();
+                setLedQ("");
                 setLedPage(0);
-              }}
-              onKeyDown={(e) => {
-                if (e.key === "Escape" && ledQ) {
-                  e.preventDefault();
-                  setLedQ("");
-                  setLedPage(0);
-                }
-              }}
-              style={ledQ ? { paddingRight: 28 } : undefined}
-            />
-            {ledQ ? (
-              <button
-                type="button"
-                className="icon led-q-clear"
-                aria-label={t("Clear")}
-                title={t("Clear")}
-                style={{ position: "absolute", right: 4, width: 22, height: 22, border: 0, background: "none", cursor: "pointer", color: "var(--muted)", display: "grid", placeItems: "center" }}
-                onClick={() => {
-                  setLedQ("");
-                  setLedPage(0);
-                }}
-              >
-                <svg viewBox="0 0 12 12" width={10} height={10} aria-hidden>
-                  <path d="M3 3l6 6M9 3l-6 6" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-                </svg>
-              </button>
-            ) : null}
-          </span>
-          <button
-            type="button"
-            className="text"
+              }
+            }}
+          />
+          <TextBtn
             id="ledExport"
             disabled={!ledRows.length}
             title={t("Save every request listed, all pages, as a CSV file in Downloads")}
             onClick={() => {
               /* demo: no export when empty — Magpie click does nothing */
-            }}
-          >
+            }}>
             <span>{t("Export CSV")}</span>
-          </button>
+          </TextBtn>
         </div>
         <p className="usage-note" id="ledScope">
           {t("Gateway and session-log calls; local rejections excluded from totals.")}
@@ -1111,8 +1226,7 @@ export function UsageView() {
                       <button
                         type="button"
                         className={`led-jump bad${ledStatus === "failed" ? " on" : ""}`}
-                        onClick={() => setLedStatus(ledStatus === "failed" ? "" : "failed")}
-                      >
+                        onClick={() => setLedStatus(ledStatus === "failed" ? "" : "failed")}>
                         {t("{n} failed", { n: String(ledTotals.errors) })}
                       </button>
                     ) : (
@@ -1142,54 +1256,45 @@ export function UsageView() {
                 </div>
               </div>
               <section className="led-trend">
-                <div className="led-bar" style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", marginBottom: 6 }}>
+                <div className="led-bar">
                   <Segs value={ledMetric} onChange={setLedMetric} items={LED_METRIC.map(([id, en]) => ({ id, label: t(en) }))} />
                   <span className="grow" />
-                  <span className="led-split" style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
-                    <span className="led-by" style={{ fontSize: 12, color: "var(--muted)" }}>
+                  <span className="led-split">
+                    <span className="led-by">
                       {t("Split by")}
                     </span>
                     <Segs value={ledSplit} onChange={setLedSplit} items={LED_SPLIT.map(([id, en]) => ({ id, label: t(en) }))} />
                   </span>
                 </div>
                 <div className="led-body">
-                  <div
-                    className="led-chart"
-                    id="ledChart"
-                    aria-hidden
-                    style={{
-                      height: 120,
-                      borderRadius: 12,
-                      border: "1px solid var(--line)",
-                      background: "var(--card)",
-                      display: "flex",
-                      alignItems: "flex-end",
-                      gap: 3,
-                      padding: "12px 10px 8px",
+                  <LedChart
+                    metric={ledMetric}
+                    split={ledSplit}
+                    day={ledDay}
+                    emphasizeKey={ledEmph}
+                    onChooseDay={(d) => {
+                      // Magpie L18318–21: toggle day, reset pager
+                      setLedDay((cur) => (cur === d ? "" : d));
+                      setLedPage(0);
                     }}
-                  >
-                    {[28, 44, 36, 62, 48, 22, 55, 40, 50, 34, 58, 42].map((h, i) => (
-                      <div
-                        key={i}
-                        title={`${ledMetric} · ${ledSplit}`}
-                        style={{
-                          flex: 1,
-                          height: `${h}%`,
-                          borderRadius: "4px 4px 2px 2px",
-                          background: "color-mix(in srgb, var(--accent) 55%, var(--pill))",
-                          opacity: 0.55 + (i % 3) * 0.1,
-                          transition: "height .28s var(--ease), opacity .12s",
-                        }}
-                      />
-                    ))}
-                  </div>
-                  <div className="led-rank" id="ledRank" />
+                  />
+                  <LedRank
+                    metric={ledMetric}
+                    split={ledSplit}
+                    picked={ledRankPick}
+                    onEmphasize={setLedEmph}
+                    onChoose={(id) => {
+                      // Magpie L18327–39: toggle category filter, reset pager
+                      setLedRankPick((cur) => (cur === id ? "" : id));
+                      setLedPage(0);
+                    }}
+                  />
                 </div>
               </section>
             </div>
             {heatMetricRemember ? <LedHeat show={demoFilled && ledRows.length > 0} /> : null}
-            <div className="led-head" style={{ display: "flex", alignItems: "baseline", gap: 8, marginTop: 10 }}>
-              <p className="led-sum" id="ledSum" style={{ margin: 0, fontSize: 12, color: "var(--muted)" }}>
+            <div className="led-head">
+              <p className="led-sum" id="ledSum">
                 {t(ledTotals.calls === 1 ? "{n} request" : "{n} requests", { n: String(ledTotals.calls) })}
                 {" · "}
                 {t("{n} in", { n: fmtN(ledTotals.input) })}
@@ -1197,26 +1302,17 @@ export function UsageView() {
                 {t("{n} out", { n: fmtN(ledTotals.output) })}
                 {ledTotals.errors ? ` · ${t("{n} failed", { n: String(ledTotals.errors) })}` : ""}
               </p>
-              <span className="grow" />
+              {/* Magpie #ledTight after #ledSum (app.js ledFit L18641–47) */}
+              <span className="led-tight" id="ledTight" hidden />
+              <RequestArchive on={reqArchive} onChange={setReqArchive} />
             </div>
-            <div className="led-wrap" id="ledWrap">
+            <div className="led-wrap" id="ledWrap" ref={ledWrapRef}>
               <table className="led">
                 <thead>
                   <tr>
-                    {[
-                      "Time",
-                      "Agent",
-                      "Requested",
-                      "Provider · account",
-                      "Served",
-                      "In",
-                      "Out",
-                      "Cost",
-                      "Duration",
-                      "Status",
-                    ].map((h) => (
-                      <th key={h} className={["In", "Out", "Cost", "Duration"].includes(h) ? "n" : undefined}>
-                        {t(h)}
+                    {LED_COLS.map(([name, cls, opt]) => (
+                      <th key={name} className={[cls || "", opt ? "lc-opt" : ""].filter(Boolean).join(" ") || undefined}>
+                        {t(name)}
                       </th>
                     ))}
                   </tr>
@@ -1237,27 +1333,17 @@ export function UsageView() {
                               e.preventDefault();
                               toggleLed(r.id);
                             }
-                          }}
-                        >
+                          }}>
                           <td className="when" title={new Date(r.t).toLocaleString()}>
                             {ledTime(r.t)}
                           </td>
                           <td>
                             <span className="who">
-                              <span className="ic">
-                                <img
-                                  src={iconSrc(
-                                    r.icon === "claude"
+                              <MagpieIcon name={r.icon === "claude"
                                       ? "claude-color"
                                       : r.icon === "codex"
                                         ? "codex-color"
-                                        : "openai",
-                                  )}
-                                  alt=""
-                                  width={14}
-                                  height={14}
-                                />
-                              </span>
+                                        : "openai"} />
                               <span>{r.agentName}</span>
                             </span>
                           </td>
@@ -1273,11 +1359,27 @@ export function UsageView() {
                               </div>
                             ) : null}
                           </td>
+                          <td className={`model lc-opt${r.model ? "" : " faint"}`} title={r.model || t("Not kept for requests before this version")}>
+                            {r.model || "—"}
+                          </td>
                           <td className="model">{r.served || "—"}</td>
+                          <td className={`lc-opt${r.effort ? "" : " faint"}`}>{r.effort || "—"}</td>
                           <td className="n">{fmtN(r.in)}</td>
                           <td className="n">{fmtN(r.out)}</td>
-                          <td className={`n cost${r.cost ? "" : " faint"}`}>{fmtCost(r.cost)}</td>
+                          <td className={`n lc-opt${r.cache_write ? "" : " faint"}`}>{fmtN(r.cache_write)}</td>
+                          <td className={`n lc-opt${r.cache_read ? "" : " faint"}`}>{fmtN(r.cache_read)}</td>
+                          <td className={`n cost${r.cost ? "" : " faint"}`}>
+                            {fmtCost(r.cost)}
+                            {r.cost && r.pricing_model ? (
+                              <div className="price-reference" title={t("API price reference") + ": " + r.pricing_model}>
+                                {t("Price reference: {model}", { model: r.pricing_model })}
+                              </div>
+                            ) : null}
+                          </td>
                           <td className="n">{(r.ms / 1000).toFixed(1)}s</td>
+                          <td className={`n${r.speed ? "" : " faint"}`}>
+                            {r.speed ? t("{n} tok/s", { n: String(r.speed) }) : "—"}
+                          </td>
                           <td>
                             <span className="st">
                               <i className="dot" />
@@ -1287,16 +1389,33 @@ export function UsageView() {
                         </tr>
                         {open ? (
                           <tr className="led-detail">
-                            <td colSpan={10}>
-                              <div className="led-detail-inner" style={{ padding: "8px 12px 12px", fontSize: 12, color: "var(--fg-2)", display: "grid", gap: 4 }}>
-                                <div>
-                                  <b>{t("Cache write")}</b>: {fmtN(r.cache_write)} · <b>{t("Cache read")}</b>: {fmtN(r.cache_read)}
-                                  {r.speed ? ` · ${t("Speed")}: ${r.speed} tok/s` : ""}
-                                  {r.effort ? ` · ${t("Effort")}: ${r.effort}` : ""}
-                                </div>
-                                <div style={{ color: "var(--muted)" }}>
-                                  {demoCopy("演示行展开（Magpie led-row details）", "Demo row expand (Magpie led-row details)")}
-                                </div>
+                            <td colSpan={LED_COLS.length}>
+                              <div className="led-box">
+                                <dl className="led-dl">
+                                  {/* Magpie ledDetail opt() — lc-opt shown only while .led.tight (app.js L17673–80) */}
+                                  {r.model ? (
+                                    <>
+                                      <dt className="lc-opt">{t("Sent")}</dt>
+                                      <dd className="lc-opt">{r.model}</dd>
+                                    </>
+                                  ) : null}
+                                  {r.effort ? (
+                                    <>
+                                      <dt className="lc-opt">{t("Effort")}</dt>
+                                      <dd className="lc-opt">{r.effort}</dd>
+                                    </>
+                                  ) : null}
+                                  <dt className="lc-opt">{t("Cache write")}</dt>
+                                  <dd className="lc-opt">{fmtN(r.cache_write)}</dd>
+                                  <dt className="lc-opt">{t("Cache read")}</dt>
+                                  <dd className="lc-opt">{fmtN(r.cache_read)}</dd>
+                                  {r.speed ? (
+                                    <>
+                                      <dt>{t("Speed")}</dt>
+                                      <dd>{t("{n} tok/s", { n: String(r.speed) })}</dd>
+                                    </>
+                                  ) : null}
+                                </dl>
                               </div>
                             </td>
                           </tr>
@@ -1307,37 +1426,28 @@ export function UsageView() {
                 </tbody>
               </table>
             </div>
+            {/* Magpie index.html L214 + app.js ledHScroll L18513–22 */}
+            <div className="led-hscroll" id="ledHScroll" ref={ledHScrollRef} hidden>
+              <div />
+            </div>
             <div className="led-pager" id="ledPager" hidden={ledRows.length <= pageSize}>
-              <button type="button" className="text" disabled={ledPage <= 0} onClick={() => setLedPage((p) => Math.max(0, p - 1))}>
+              <TextBtn disabled={ledPage <= 0} onClick={() => setLedPage((p) => Math.max(0, p - 1))}>
                 {t("Previous")}
-              </button>
+              </TextBtn>
               <span>
                 {ledPage + 1} / {ledPages}
               </span>
-              <button
-                type="button"
-                className="text"
+              <TextBtn
                 disabled={ledPage + 1 >= ledPages}
-                onClick={() => setLedPage((p) => p + 1)}
-              >
+                onClick={() => setLedPage((p) => p + 1)}>
                 {t("Next")}
-              </button>
+              </TextBtn>
             </div>
           </>
         ) : (
           <>
-            <div className="led-tools-extra" style={{ display: "flex", justifyContent: "flex-end", marginBottom: 6 }}>
-              <button
-                type="button"
-                className="text"
-                aria-pressed={demoChart}
-                onClick={() => setDemoChart((d) => !d)}
-                title={demoCopy("官方空态隐藏 ledDash；点此预览演示柱图壳", "Magpie hides ledDash when empty; preview demo chart shell")}
-              >
-                {demoChart ? demoCopy("隐藏演示图", "Hide demo chart") : demoCopy("显示演示图", "Show demo chart")}
-              </button>
-            </div>
-            <div className="led-dash" id="ledDash" hidden={!demoChart}>
+
+            <div className="led-dash" id="ledDash" hidden>
               <div className="led-strip" id="ledKpi">
                 {[
                   ["Calls", "0", ""],
@@ -1356,31 +1466,16 @@ export function UsageView() {
             </div>
             <div
               className="led-head"
-              style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 10, marginBottom: 8 }}
             >
-              <p className="led-sum" style={{ margin: 0, fontSize: 12, color: "var(--muted)" }}>
+              <p className="led-sum">
                 {t("{n} requests", { n: "0" })}
               </p>
               <span className="grow" />
-              <label
-                className="led-archive"
-                style={{ display: "inline-flex", alignItems: "center", gap: 8, fontSize: 12.5, color: "var(--muted)", cursor: "pointer" }}
-                title={t("The request archive goes to the S3 bucket sync keeps its backup in, and sync isn't set up with one")}
-              >
-                <span>{t("Request archive")}</span>
-                <input
-                  type="checkbox"
-                  role="switch"
-                  checked={reqArchive}
-                  aria-checked={reqArchive}
-                  onChange={(e) => setReqArchive(e.target.checked)}
-                  style={{ accentColor: "var(--accent)" }}
-                />
-              </label>
+              <RequestArchive on={reqArchive} onChange={setReqArchive} />
             </div>
-            <div className={`led-wrap${!demoChart ? " none" : ""}`} id="ledWrap">
-              <div className="led-none" style={{ padding: "22px 16px", textAlign: "center", color: "var(--muted)", lineHeight: 1.5 }}>
-                <b style={{ display: "block", fontWeight: 600, color: "var(--fg)", marginBottom: 4 }}>
+            <div className="led-wrap none" id="ledWrap">
+              <div className="led-none">
+                <b>
                   {ledQ.trim() || ledStatus
                     ? t("No requests match these filters.")
                     : noCallsIn(period)}
@@ -1411,20 +1506,11 @@ export function UsageView() {
           <button className="sess-pick" id="sessModel" type="button" hidden />
           <button className="sess-pick" id="sessFolder" type="button" hidden />
           <span className="grow" />
-          <button
-            type="button"
-            className="text"
-            aria-pressed={demoFilled}
-            onClick={() => setDemoFilled((d) => !d)}
-          >
-            {demoFilled ? demoCopy("演示数据开", "Demo data on") : demoCopy("演示数据关", "Demo data off")}
-          </button>
+
         </div>
         {!demoFilled ? (
-          <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 6 }}>
-            <button type="button" className="text" aria-pressed={false} onClick={() => setDemoFilled(true)}>
-              {demoCopy("演示数据关 · 点此填充", "Demo data off · fill")}
-            </button>
+          <div>
+
           </div>
         ) : null}
         {demoFilled && sessRows.length ? (
@@ -1454,9 +1540,9 @@ export function UsageView() {
             <div className="row-head" id="sessListHead">
               <span className="label">{t("Latest sessions")}</span>
               <span className="grow" />
-              <button className="text sess-all" id="sessAll" type="button" data-feature="sessions">
+              <TextBtn className="sess-all" id="sessAll" data-feature="sessions">
                 {t("All sessions")}
-              </button>
+              </TextBtn>
               <input
                 className="sess-filter"
                 id="sessQ"
@@ -1487,16 +1573,8 @@ export function UsageView() {
                           e.preventDefault();
                           setSessOpen(open ? null : s.id);
                         }
-                      }}
-                    >
-                      <span className="ic">
-                        <img
-                          src={iconSrc(
-                            s.icon === "claude" ? "claude-color" : s.icon === "codex" ? "codex-color" : "openai",
-                          )}
-                          alt=""
-                        />
-                      </span>
+                      }}>
+                      <MagpieIcon name={s.icon === "claude" ? "claude-color" : s.icon === "codex" ? "codex-color" : "openai"} />
                       <div className="who">
                         <div className="name">{s.title === "(no prompt)" ? t("(no prompt)") : s.title}</div>
                         <div className="sub">
@@ -1534,38 +1612,12 @@ export function UsageView() {
                         <div className="sess-line">
                           <span className="k">{t("Session ID")}</span>
                           <span className="v">{detail.id}</span>
-                          <button
-                            type="button"
-                            className="copy"
-                            title={t("Session id")}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              void navigator.clipboard?.writeText(detail.id);
-                            }}
-                          >
-                            <svg viewBox="0 0 16 16" width={12} height={12} aria-hidden>
-                              <rect x="5.5" y="5.5" width="7" height="7" rx="1.2" fill="none" stroke="currentColor" strokeWidth="1.5" />
-                              <path d="M3.5 10.5v-7A1.5 1.5 0 0 1 5 2h7" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-                            </svg>
-                          </button>
+                          <CopyButton text={detail.id} what={t("Session ID")} />
                         </div>
                         <div className="sess-line">
                           <span className="k">{t("Resume")}</span>
                           <code>{detail.resume}</code>
-                          <button
-                            type="button"
-                            className="copy"
-                            title={t("Resume command")}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              void navigator.clipboard?.writeText(detail.resume);
-                            }}
-                          >
-                            <svg viewBox="0 0 16 16" width={12} height={12} aria-hidden>
-                              <rect x="5.5" y="5.5" width="7" height="7" rx="1.2" fill="none" stroke="currentColor" strokeWidth="1.5" />
-                              <path d="M3.5 10.5v-7A1.5 1.5 0 0 1 5 2h7" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-                            </svg>
-                          </button>
+                          <CopyButton text={detail.resume} what={t("Resume command")} />
                         </div>
                         <div className="sess-models">
                           {detail.models.map((m) => (
@@ -1601,41 +1653,39 @@ export function UsageView() {
                   </div>
                 );
               })}
+              {/* Magpie app.js L19681–83 / sessions/client.js L656: text sess-page-more + Show {n} more (no invent Show less) */}
               {sessHidden > 0 ? (
-                <button
-                  type="button"
-                  className="text sess-show-more"
-                  style={{ margin: "8px 12px 4px", alignSelf: "flex-start" }}
-                  onClick={() => setSessMore(true)}
-                >
-                  {t("Show more · {n} left", { n: String(sessHidden) })}
-                </button>
-              ) : sessMore && DEMO_SESSIONS_MORE.length ? (
-                <button
-                  type="button"
-                  className="text sess-show-more"
-                  style={{ margin: "8px 12px 4px", alignSelf: "flex-start" }}
-                  onClick={() => {
-                    setSessMore(false);
-                    setSessOpen(null);
-                  }}
-                >
-                  {t("Show less")}
-                </button>
+                <TextBtn
+                  className="sess-page-more"
+                  onClick={() => setSessMore(true)}>
+                  {t("Show {n} more", { n: String(sessHidden) })}
+                </TextBtn>
               ) : null}
             </div>
           </>
         ) : (
           <>
+            {/* Magpie app.js L19602–18: stats.empty + .none; empty-range → sess-show-history */}
             <section className="stats empty" id="sessStats">
               <div className="none">
-                {sessAgent !== "all" || sessQ.trim()
-                  ? t("No session matches.")
-                  : t(
+                {!demoFilled
+                  ? t(
                       "No sessions yet. Claude Code's, Codex's, OpenCode's and Pi's sessions on this computer show up here, with what each cost and the command that resumes it.",
-                    )}
+                    )
+                  : sessHasHistory
+                    ? t("No sessions in this range")
+                    : sessAgent !== "all" || sessQ.trim()
+                      ? t("No session matches.")
+                      : t("Nothing in this range.")}
               </div>
-              <p className="usage-note" style={{ marginTop: 10, fontSize: 11.5 }}>
+              {demoFilled && sessHasHistory ? (
+                <TextBtn
+                  className="sess-show-history"
+                  onClick={() => setSessRange("all")}>
+                  {t("All sessions")}
+                </TextBtn>
+              ) : null}
+              <p className="usage-note">
                 {t("Totals count native sessions and gateway requests with a session ID")}
                 {" · 0 "}
                 {t("sessions")}
@@ -1653,14 +1703,7 @@ export function UsageView() {
         <div className="row-head">
           <span className="label">{t("Tuned for you")}</span>
           <span className="grow" />
-          <button
-            type="button"
-            className="text"
-            aria-pressed={demoFilled}
-            onClick={() => setDemoFilled((d) => !d)}
-          >
-            {demoFilled ? demoCopy("演示数据开", "Demo data on") : demoCopy("演示数据关", "Demo data off")}
-          </button>
+
         </div>
         <p className="usage-note ctx-tune-note">
           {t(
@@ -1668,7 +1711,7 @@ export function UsageView() {
           )}
         </p>
         {!demoFilled ? (
-          <div className="ctx-none" style={{ marginBottom: 14 }}>
+          <div className="ctx-none">
             <span>{t("Not enough calls in this range to tune on")}</span>
           </div>
         ) : null}
@@ -1694,14 +1737,7 @@ export function UsageView() {
                   <div className="ctx-agent-head">
                     <div className="ctx-who-box">
                       <div className="ctx-who">
-                        <span className="ic">
-                          <img
-                            src={iconSrc(
-                              a.icon === "claude" ? "claude-color" : a.icon === "codex" ? "codex-color" : "openai",
-                            )}
-                            alt=""
-                          />
-                        </span>
+                        <MagpieIcon name={a.icon === "claude" ? "claude-color" : a.icon === "codex" ? "codex-color" : "openai"} />
                         <b>{a.name}</b>
                       </div>
                       <div className="ctx-who-sub">
@@ -1796,18 +1832,18 @@ export function UsageView() {
                       ))}
                     </span>
                     <span className="grow" />
-                    <button type="button" className="text">
+                    <TextBtn>
                       {t("Latest request")}
-                    </button>
+                    </TextBtn>
                   </div>
                 </div>
               );
             })}
           </div>
         ) : (
-          <div className="ctx-none ctx-empty-dash" style={{ border: "1px dashed var(--line)", borderRadius: 12, padding: "28px 16px", textAlign: "center", display: "grid", gap: 6, justifyContent: "center" }}>
+          <div className="ctx-none">
             <b>{t("No prompts read yet")}</b>
-            <span style={{ color: "var(--muted)", fontSize: 12.5 }}>{t("Requests your agents send through magpie show here.")}</span>
+            <span>{t("Requests your agents send through magpie show here.")}</span>
           </div>
         )}
       </div>
@@ -1984,11 +2020,7 @@ export function PluginsView({
   const [debouncedQ, setDebouncedQ] = useState("");
   const [searchBusy, setSearchBusy] = useState(false);
   const [manualSpec, setManualSpec] = useState("");
-  const [folderHint, setFolderHint] = useState("");
-  const [folderPicker, setFolderPicker] = useState(false);
-  const [folderLoc, setFolderLoc] = useState<"recent" | "home" | "other">("recent");
   const [mirror, setMirror] = useState(false);
-  const [mirrorTip, setMirrorTip] = useState(false);
   const [mirrorSaving, setMirrorSaving] = useState(false);
   /** Magpie drawGh: kind segs + Filter by name (shots 76–80); only when GitHub list > 6 */
   const [ghKind, setGhKind] = useState<"" | "Provider" | "Middleware" | "Agent">("");
@@ -2026,8 +2058,7 @@ export function PluginsView({
       /** Magpie movable: built-in subscription names this plugin can/does serve */
       movable?: string[];
       moved?: string[];
-    }[]
-  >([
+    }[]>([
     /* plugins/104–138 left: Installed · 2, Think Tags options saved as example, Word Guard on, A→Z */
     {
       pkg: "@magpie-community/middleware-think-tags",
@@ -2064,12 +2095,9 @@ export function PluginsView({
   const [removeConfirm, setRemoveConfirm] = useState<{ pkg: string; name: string } | null>(null);
   /** Magpie confirmAction: restore focus to the row Remove that opened it (shots 94/97/100). */
   const removeFocusRef = useRef<HTMLButtonElement | null>(null);
-  const removeDialogRef = useRef<HTMLDialogElement | null>(null);
   /** Magpie plugins/134–137 Clear options confirm; Escape cancels, editor stays. */
   const [clearConfirm, setClearConfirm] = useState<{ pkg: string; name: string } | null>(null);
   const clearFocusRef = useRef<HTMLButtonElement | null>(null);
-  const clearDialogRef = useRef<HTMLDialogElement | null>(null);
-  const searchInputRef = useRef<HTMLInputElement | null>(null);
   /** Bun on disk (footer 1.4.3); after first install → Installing… (104–113), not Getting Bun…. */
   const [bunReady, setBunReady] = useState(() => {
     try {
@@ -2084,6 +2112,7 @@ export function PluginsView({
   /** Magpie detail: pm-rskel until README resolves */
   const [detailReadmeReady, setDetailReadmeReady] = useState(false);
   const [gwCallsOpen, setGwCallsOpen] = useState(false);
+  const [gwCallsAnchor, setGwCallsAnchor] = useState<HTMLElement | null>(null);
 
   useEffect(() => {
     try {
@@ -2115,60 +2144,6 @@ export function PluginsView({
     document.addEventListener("keydown", onKey, true);
     return () => document.removeEventListener("keydown", onKey, true);
   }, [pluginDetail]);
-
-  // Magpie confirmAction (app.js): showModal, Cancel focused, Tab cycles Cancel↔Remove, restore focus (91–103)
-  useEffect(() => {
-    if (!removeConfirm) return;
-    const dialog = removeDialogRef.current;
-    if (!dialog) return;
-    const cancelBtn = dialog.querySelector<HTMLButtonElement>("button.text:not(.primary)");
-    const acceptBtn = dialog.querySelector<HTMLButtonElement>("button.danger-fill");
-    const onKey = (event: KeyboardEvent) => {
-      event.stopPropagation();
-      if (event.key !== "Tab") return;
-      const boundary = event.shiftKey ? cancelBtn : acceptBtn;
-      if (document.activeElement !== boundary) return;
-      event.preventDefault();
-      (event.shiftKey ? acceptBtn : cancelBtn)?.focus();
-    };
-    dialog.addEventListener("keydown", onKey);
-    const raf = requestAnimationFrame(() => {
-      if (!dialog.open) dialog.showModal();
-      cancelBtn?.focus({ preventScroll: true });
-    });
-    return () => {
-      cancelAnimationFrame(raf);
-      dialog.removeEventListener("keydown", onKey);
-      if (dialog.open) dialog.close();
-    };
-  }, [removeConfirm]);
-
-  // Magpie Clear options confirm (shots 134–137): Cancel focused; Escape keeps editor
-  useEffect(() => {
-    if (!clearConfirm) return;
-    const dialog = clearDialogRef.current;
-    if (!dialog) return;
-    const cancelBtn = dialog.querySelector<HTMLButtonElement>("button.text:not(.danger-fill)");
-    const acceptBtn = dialog.querySelector<HTMLButtonElement>("button.danger-fill");
-    const onKey = (event: KeyboardEvent) => {
-      event.stopPropagation();
-      if (event.key !== "Tab") return;
-      const boundary = event.shiftKey ? cancelBtn : acceptBtn;
-      if (document.activeElement !== boundary) return;
-      event.preventDefault();
-      (event.shiftKey ? acceptBtn : cancelBtn)?.focus();
-    };
-    dialog.addEventListener("keydown", onKey);
-    const raf = requestAnimationFrame(() => {
-      if (!dialog.open) dialog.showModal();
-      cancelBtn?.focus({ preventScroll: true });
-    });
-    return () => {
-      cancelAnimationFrame(raf);
-      dialog.removeEventListener("keydown", onKey);
-      if (dialog.open) dialog.close();
-    };
-  }, [clearConfirm]);
 
   // Magpie askNPM: 350ms debounce, then brief plugins/search loading (hits.loading → skeleton)
   useEffect(() => {
@@ -2279,8 +2254,7 @@ export function PluginsView({
             strokeWidth="1.9"
             strokeLinecap="round"
             strokeLinejoin="round"
-            aria-hidden
-          >
+            aria-hidden>
             <path d="M3.2 8.2 6.4 11.4 12.8 4.2" />
           </svg>
           <span>{t("Installed")}</span>
@@ -2301,7 +2275,7 @@ export function PluginsView({
 
   return (
     <main className="view" id="view-plugins">
-      <div className="lib-head pm-head row-head" style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
+      <div className="lib-head pm-head row-head">
         <Segs
           value={tab}
           onChange={setTab}
@@ -2312,18 +2286,15 @@ export function PluginsView({
         />
         <span className="grow" />
         {tab !== "builtin" ? (
+          (
           <button
             type="button"
             className={`pm-mirror${mirror ? " on" : ""}`}
-            style={{ position: "relative" }}
+
             role="switch"
             aria-checked={mirror}
             disabled={mirrorSaving}
             title={t("Download the plugin list, plugins and Bun from mirrors in China first (npmmirror, jsDelivr), their official addresses after. Each is a copy of the very file, checked as the original is")}
-            onMouseEnter={() => setMirrorTip(true)}
-            onMouseLeave={() => setMirrorTip(false)}
-            onFocus={() => setMirrorTip(true)}
-            onBlur={() => setMirrorTip(false)}
             onClick={() => {
               if (mirrorSaving) return;
               setMirrorSaving(true);
@@ -2334,18 +2305,13 @@ export function PluginsView({
                 setSearchBusy(false);
                 setMirrorSaving(false);
               }, 420);
-            }}
-          >
+            }}>
             <span>{t("Mirrors in China")}</span>
             <span className={`lib-switch${mirror ? " on" : ""}`}>
               <i />
             </span>
-            {mirrorTip ? (
-              <span className="pm-mirror-tip" role="tooltip" style={{ position: "absolute", top: "100%", right: 0, marginTop: 6, zIndex: 30, maxWidth: 280, padding: "8px 10px", borderRadius: 8, background: "var(--fg)", color: "var(--card)", fontSize: 11.5, lineHeight: 1.4, boxShadow: "0 8px 24px color-mix(in srgb, var(--fg) 25%, transparent)", animation: "fade-in .12s var(--ease)", pointerEvents: "none" }}>
-                {t("Download the plugin list, plugins and Bun from mirrors in China first (npmmirror, jsDelivr), their official addresses after. Each is a copy of the very file, checked as the original is")}
-              </span>
-            ) : null}
           </button>
+        )
         ) : null}
         {tab !== "builtin" ? (
           <label className="pm-find">
@@ -2354,7 +2320,6 @@ export function PluginsView({
               <path d="m10.5 10.5 3 3" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
             </svg>
             <input
-              ref={searchInputRef}
               type="search"
               spellCheck={false}
               autoComplete="off"
@@ -2362,6 +2327,7 @@ export function PluginsView({
               aria-label={t("Search plugins")}
               value={query}
               onChange={(e) => {
+                /* Magpie plugins.js L642–54: oninput + Escape; native webkit cancel (no invent clear) */
                 setQuery(e.target.value);
                 if (tab !== "discover") setTab("discover");
               }}
@@ -2373,22 +2339,6 @@ export function PluginsView({
                 }
               }}
             />
-            {query ? (
-              <button
-                type="button"
-                className="pm-find-clear"
-                aria-label={t("Clear")}
-                title={t("Clear")}
-                onClick={() => {
-                  /* Magpie 116: clear × from Installed leftover query → Discover landing, search focused */
-                  setQuery("");
-                  setTab("discover");
-                  requestAnimationFrame(() => searchInputRef.current?.focus({ preventScroll: true }));
-                }}
-              >
-                ×
-              </button>
-            ) : null}
           </label>
         ) : null}
       </div>
@@ -2402,82 +2352,77 @@ export function PluginsView({
             <div className="list prefs" id="builtinList">
               {builtins.map((b) => (
                 <div key={b.id}>
-                  <div className="row pref feat-row" data-feature={b.feature} data-id={b.id}>
-                    <div className="who">
-                      <div className="name">{t(b.name)}</div>
-                      <div className="sub">{t(b.sub)}</div>
-                      {b.on && b.id === "gateway" ? (
-                        <div className="sub feat-use">{t("1 gateway key")}</div>
-                      ) : null}
-                      {b.locked ? (
-                        <div className="sub feat-why">{t("In use, so it stays on")}</div>
-                      ) : null}
-                    </div>
-                    <div className="val">
+                  {/* Magpie renderBuiltins app.js ~24446–24473: row.pref.feat-row + lib-switch use-credits (no .val) */}
+                  <PrefRow
+                    name={t(b.name)}
+                    sub={t(b.sub)}
+                    className="feat-row"
+                    dataFeature={b.feature}
+                    dataId={b.id}
+                    wrapVal={false}
+                    afterWho={
+                      /* Magpie renderBuiltins app.js L24450: when f.inUse>0 → sub.feat-why with f.use
+                         (builtins.test "1 gateway key"); L24458 title only for "In use, so it stays on". */
+                      b.locked ? (
+                        <div className="sub feat-why">{t("1 gateway key")}</div>
+                      ) : null
+                    }>
+                    <LibSwitch
+                      on={!!b.on}
+                      kind="use-credits"
+                      aria-label={t(b.name)}
+                      disabled={!!b.locked}
+                      title={b.locked ? t("In use, so it stays on") : undefined}
+                      onClick={() => {
+                        if (b.locked) return;
+                        setBuiltins((list) => {
+                          const next = list.map((x) => (x.id === b.id ? { ...x, on: !x.on } : x));
+                          const lib = next.find((x) => x.id === "library");
+                          const groups = next.find((x) => x.id === "routing-groups");
+                          try {
+                            localStorage.setItem("magpie.feature.library", lib?.on ? "1" : "0");
+                            localStorage.setItem("magpie.feature.groups", groups?.on ? "1" : "0");
+                            window.dispatchEvent(new Event("magpie-feature"));
+                          } catch { /* */ }
+                          return next;
+                        });
+                        // Magpie plugins.yml write → toast Saved (routing 119)
+                        onStatus?.(t("Saved"), "ok", 2200);
+                      }}
+                    />
+                  </PrefRow>
+                  {b.on && b.id === "gateway" ? (
+                    /* Magpie feat-set under builtin (app.js ~24487–24489 dataset.of) */
+                    <PrefRow
+                      name={t("Recent calls at a time")}
+                      sub={t("How many of the gateway's recent calls the page shows, and how many more each Show more adds")}
+                      className="feat-set"
+                      dataOf="gateway">
                       <button
                         type="button"
-                        className={`lib-switch use-credits${b.on ? " on" : ""}`}
-                        role="switch"
-                        aria-checked={b.on}
-                        aria-label={t(b.name)}
-                        disabled={!!b.locked}
-                        title={b.locked ? t("In use, so it stays on") : undefined}
-                        onClick={() => {
-                          if (b.locked) return;
-                          setBuiltins((list) => {
-                            const next = list.map((x) => (x.id === b.id ? { ...x, on: !x.on } : x));
-                            const lib = next.find((x) => x.id === "library");
-                            const groups = next.find((x) => x.id === "routing-groups");
-                            try {
-                              localStorage.setItem("magpie.feature.library", lib?.on ? "1" : "0");
-                              localStorage.setItem("magpie.feature.groups", groups?.on ? "1" : "0");
-                              window.dispatchEvent(new Event("magpie-feature"));
-                            } catch { /* */ }
-                            return next;
-                          });
-                          // Magpie plugins.yml write → toast Saved (routing 119)
-                          onStatus?.(t("Saved"), "ok", 2200);
-                        }}
-                      >
-                        <i />
+                        className={`sess-pick set${gwCallsOpen ? " open" : ""}`}
+                        aria-haspopup="menu"
+                        aria-expanded={gwCallsOpen}
+                        onClick={e => { setGwCallsAnchor(e.currentTarget); setGwCallsOpen((o) => !o); }}>
+                        <span>{b.callsPage ?? 20}</span>
+                        <svg viewBox="0 0 12 12" width={11} height={11} aria-hidden>
+                          <path d="M3 4.5 6 7.5 9 4.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                        </svg>
                       </button>
-                    </div>
-                  </div>
-                  {b.on && b.id === "gateway" ? (
-                    <div className="row pref feat-set" data-of="gateway" style={{ position: "relative" }}>
-                      <div className="who">
-                        <div className="name">{t("Recent calls at a time")}</div>
-                        <div className="sub">
-                          {t("How many of the gateway's recent calls the page shows, and how many more each Show more adds")}
-                        </div>
-                      </div>
-                      <div className="val">
-                        <button
-                          type="button"
-                          className={`sess-pick set${gwCallsOpen ? " open" : ""}`}
-                          aria-haspopup="menu"
-                          aria-expanded={gwCallsOpen}
-                          onClick={() => setGwCallsOpen((o) => !o)}
-                        >
-                          <span>{b.callsPage ?? 20}</span>
-                          <svg viewBox="0 0 12 12" width={11} height={11} aria-hidden>
-                            <path d="M3 4.5 6 7.5 9 4.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-                          </svg>
-                        </button>
-                        <ProtoMenu
-                          open={gwCallsOpen}
-                          onClose={() => setGwCallsOpen(false)}
-                          value={String(b.callsPage ?? 20)}
-                          title={t("Recent calls at a time")}
-                          items={[10, 20, 50, 100].map((n) => ({ v: String(n), name: String(n) }))}
-                          onPick={(v) =>
-                            setBuiltins((list) =>
-                              list.map((x) => (x.id === "gateway" ? { ...x, callsPage: Number(v) } : x)),
-                            )
-                          }
-                        />
-                      </div>
-                    </div>
+                      <ProtoMenu
+                        open={gwCallsOpen}
+                        anchor={gwCallsAnchor}
+                        onClose={() => setGwCallsOpen(false)}
+                        value={String(b.callsPage ?? 20)}
+                        title={t("Recent calls at a time")}
+                        items={[10, 20, 50, 100].map((n) => ({ v: String(n), name: String(n) }))}
+                        onPick={(v) =>
+                          setBuiltins((list) =>
+                            list.map((x) => (x.id === "gateway" ? { ...x, callsPage: Number(v) } : x)),
+                          )
+                        }
+                      />
+                    </PrefRow>
                   ) : null}
                 </div>
               ))}
@@ -2503,8 +2448,7 @@ export function PluginsView({
                     <button
                       type="button"
                       className="pm-link"
-                      onClick={() => window.open("https://usemagpie.ai/docs/plugins#middleware", "_blank", "noopener")}
-                    >
+                      onClick={() => window.open("https://usemagpie.ai/docs/plugins#middleware", "_blank", "noopener")}>
                       {t("Write a middleware")}
                       <svg viewBox="0 0 12 12" width={11} height={11} aria-hidden>
                         <path d="M3.5 2.5h6v6M9.5 2.5 3 9" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
@@ -2557,32 +2501,23 @@ export function PluginsView({
                     <span>{t(sec.note)}</span>
                   </div>
                   {isGh && cards.length > 6 && kindsPresent.length > 1 ? (
-                    <div className="pm-ghbar" style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap", margin: "8px 0 10px" }}>
-                      <div className="pm-ghkinds" role="group" aria-label={t("Kind of plugin")} style={{ display: "inline-flex", gap: 2, padding: 2, borderRadius: 8, background: "var(--seg-track)" }}>
-                        {([["", t("All")] as const, ...kindsPresent.map((k) => [k, t(k)] as const)]).map(([id, lab]) => (
-                          <button
-                            key={id || "all"}
-                            type="button"
-                            className={ghKind === id ? "on" : ""}
-                            style={{
-                              border: 0,
-                              background: ghKind === id ? "var(--seg-thumb)" : "transparent",
-                              boxShadow: ghKind === id ? "var(--seg-edge)" : undefined,
-                              borderRadius: 6,
-                              padding: "4px 10px",
-                              font: "inherit",
-                              fontSize: 12,
-                              color: ghKind === id ? "var(--fg)" : "var(--ctl-fg)",
-                              cursor: "pointer",
-                            }}
-                            onClick={() => setGhKind(id as typeof ghKind)}
-                          >
-                            {lab} · {nKind(id)}
-                          </button>
-                        ))}
-                      </div>
+                    <div className="pm-ghbar">
+                      {/* Magpie plugins.js L609: segs(...).classList.add("pm-ghkinds") */}
+                      <Segs
+                        className="pm-ghkinds"
+                        aria-label={t("Kind of plugin")}
+                        value={ghKind}
+                        onChange={(id) => setGhKind(id as typeof ghKind)}
+                        items={[
+                          { id: "" as typeof ghKind, label: `${t("All")} · ${nKind("")}` },
+                          ...kindsPresent.map((k) => ({
+                            id: k as typeof ghKind,
+                            label: `${t(k)} · ${nKind(k)}`,
+                          })),
+                        ]}
+                      />
                       <span className="grow" />
-                      <label className="pm-find pm-ghfind" style={{ flex: "0 1 220px", minWidth: 140 }}>
+                      <label className="pm-find pm-ghfind">
                         <svg viewBox="0 0 16 16" width={13} height={13} aria-hidden>
                           <circle cx="7" cy="7" r="4.5" fill="none" stroke="currentColor" strokeWidth="1.6" />
                           <path d="m10.5 10.5 3 3" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
@@ -2604,11 +2539,11 @@ export function PluginsView({
                     </div>
                   ) : null}
                   {isGh && shown.length === 0 ? (
-                    <div className="pm-ghnone" style={{ padding: "18px 14px", border: "1px dashed var(--line)", borderRadius: 10, textAlign: "center", color: "var(--muted)", fontSize: 13 }}>
+                    <div className="pm-ghnone">
                       <div>{t("No plugin on GitHub matches")}</div>
-                      <button type="button" className="text" style={{ marginTop: 8 }} onClick={() => { setGhKind(""); setGhFilter(""); }}>
+                      <TextBtn onClick={() => { setGhKind(""); setGhFilter(""); }}>
                         {t("Show all")}
-                      </button>
+                      </TextBtn>
                     </div>
                   ) : (
                   <div className="pm-grid">
@@ -2626,29 +2561,26 @@ export function PluginsView({
                               e.preventDefault();
                               setPluginDetail(c);
                             }
-                          }}
-                        >
-                          <div className="pm-logo" aria-hidden>
-                            ◆
-                          </div>
-                          <div className="pm-words" style={{ flex: 1, minWidth: 0 }}>
-                            <div className="pm-name" style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
-                              <b style={{ fontSize: 13 }}>{c.name}</b>
+                          }}>
+                          <PluginLogo kind={"kind" in c ? String(c.kind) : undefined} icon={"icon" in c ? String(c.icon) : undefined} />
+                          <div className="pm-words">
+                            <div className="pm-name">
+                              <b>{c.name}</b>
                               {"alsoBuiltin" in c && (c as { alsoBuiltin?: boolean }).alsoBuiltin ? (
                                 <span className="pm-chip">{t("Also built in")}</span>
                               ) : null}
                             </div>
                             {"community" in c && (c as { community?: boolean }).community ? (
-                              <div className="pm-by" style={{ fontSize: 11, color: "var(--green)", marginTop: 2 }}>
+                              <div className="pm-by">
                                 {t("magpie community")}
                               </div>
                             ) : "owner" in c && (c as { owner?: string }).owner ? (
-                              <div className="pm-by" style={{ fontSize: 11, color: "var(--muted)", marginTop: 2 }}>
+                              <div className="pm-by">
                                 {(c as { owner?: string }).owner}
                               </div>
                             ) : null}
-                            <p className="pm-sum" style={{ margin: "4px 0 0", fontSize: 12, color: "var(--muted)", lineHeight: 1.45 }}>{c.summary}</p>
-                            <div className="pm-meta" style={{ marginTop: 6, fontSize: 11, color: "var(--faint)", display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
+                            <p className="pm-sum">{c.summary}</p>
+                            <div className="pm-meta">
                               {"kind" in c && (c as { kind?: string }).kind ? <span className="pm-chip">{t((c as { kind: string }).kind)}</span> : null}
                               {"unofficial" in c && (c as { unofficial?: boolean }).unofficial ? (
                                 <span className="pm-chip warn"><span className="dot" />{t("Unofficial")}</span>
@@ -2667,8 +2599,7 @@ export function PluginsView({
                             onClick={(e) => {
                               e.stopPropagation();
                               install(c.pkg, c.name);
-                            }}
-                          >
+                            }}>
                             {installAct(c.pkg, has)}
                           </button>
                         </div>
@@ -2682,7 +2613,7 @@ export function PluginsView({
               : null}
             {/* Magpie: Suggested only when listings match; On npm always while searching (shots 20–25) */}
             {debouncedQ && npmHits.length ? (
-              <div className="pm-sec" style={{ animation: "fade-in .2s var(--ease)" }}>
+              <div className="pm-sec">
                 <div className="pm-sechead">
                   <h3>{t("Suggested")}</h3>
                   <span>{searchBusy ? t("Searching…") : mirror ? t("via China mirrors") : ""}</span>
@@ -2692,17 +2623,17 @@ export function PluginsView({
                     const has = installed.some((x) => x.pkg === c.pkg);
                     return (
                       <div className={`pm-card${busy === c.pkg ? " installing" : ""}${has ? " has" : ""}`} key={c.pkg} tabIndex={0} role="button">
-                        <div className="pm-logo" aria-hidden>◆</div>
-                        <div className="pm-words" style={{ flex: 1, minWidth: 0 }}>
-                          <b style={{ fontSize: 13 }}>{c.name}</b>
-                          {c.builtin ? <span className="pm-chip" style={{ marginLeft: 6, fontSize: 10.5 }}>{t("Also built in")}</span> : null}
+                        <PluginLogo kind={"kind" in c ? String(c.kind) : undefined} icon={"icon" in c ? String(c.icon) : undefined} />
+                        <div className="pm-words">
+                          <b>{c.name}</b>
+                          {c.builtin ? <span className="pm-chip">{t("Also built in")}</span> : null}
                           {"community" in c && (c as { community?: boolean }).community ? (
-                            <div className="pm-by" style={{ fontSize: 11, color: "var(--green)", marginTop: 2 }}>
+                            <div className="pm-by">
                               {t("magpie community")}
                             </div>
                           ) : null}
-                          <p style={{ margin: "4px 0 0", fontSize: 12, color: "var(--muted)", lineHeight: 1.45 }}>{c.summary}</p>
-                          <div style={{ marginTop: 6, fontSize: 11, color: "var(--faint)", display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
+                          <p>{c.summary}</p>
+                          <div>
                             {c.kind ? <span className="pm-chip">{t(c.kind)}</span> : null}
                             <span>{c.downloads}</span>
                             <span className="pm-ver">{c.ver}</span>
@@ -2717,8 +2648,7 @@ export function PluginsView({
                           onClick={(e) => {
                             e.stopPropagation();
                             install(c.pkg, c.name);
-                          }}
-                        >
+                          }}>
                           {installAct(c.pkg, has)}
                         </button>
                       </div>
@@ -2728,7 +2658,7 @@ export function PluginsView({
               </div>
             ) : null}
             {debouncedQ ? (
-              <div className="pm-sec" style={{ animation: "fade-in .2s var(--ease)", marginTop: 10 }}>
+              <div className="pm-sec">
                 <div className="pm-sechead">
                   <h3>{t("On npm")}</h3>
                   <span>{t("OpenCode plugins and pi packages anyone published — read what one does before you install it")}</span>
@@ -2756,11 +2686,11 @@ export function PluginsView({
                         const has = installed.some((x) => x.pkg === c.pkg);
                         return (
                           <div className={`pm-card${busy === c.pkg ? " installing" : ""}${has ? " has" : ""}`} key={c.pkg} tabIndex={0} role="button">
-                            <div className="pm-logo" aria-hidden>◆</div>
-                            <div className="pm-words" style={{ flex: 1, minWidth: 0 }}>
-                              <b style={{ fontSize: 13 }}>{c.name}</b>
-                              <p style={{ margin: "4px 0 0", fontSize: 12, color: "var(--muted)", lineHeight: 1.45 }}>{c.summary}</p>
-                              <div style={{ marginTop: 6, fontSize: 11, color: "var(--faint)" }}>
+                            <PluginLogo kind={"kind" in c ? String(c.kind) : undefined} icon={"icon" in c ? String(c.icon) : undefined} />
+                            <div className="pm-words">
+                              <b>{c.name}</b>
+                              <p>{c.summary}</p>
+                              <div>
                                 {c.pkg} · {c.downloads} · {c.ver}
                                 {mirror ? ` · ${t("via China mirrors")}` : ""}
                               </div>
@@ -2773,8 +2703,7 @@ export function PluginsView({
                               onClick={(e) => {
                                 e.stopPropagation();
                                 install(c.pkg, c.name);
-                              }}
-                            >
+                              }}>
                               {installAct(c.pkg, has)}
                             </button>
                           </div>
@@ -2786,7 +2715,7 @@ export function PluginsView({
               </div>
             ) : null}
             {query.trim().length >= 2 && !debouncedQ && searchBusy ? (
-              <div className="pm-sec" style={{ animation: "fade-in .16s var(--ease)" }} aria-busy="true" aria-label={t("Searching…")}>
+              <div className="pm-sec" aria-busy="true" aria-label={t("Searching…")}>
                 <div className="pm-grid">
                   {Array.from({ length: 6 }, (_, i) => (
                     <div className="pm-card ghost" key={i} aria-hidden>
@@ -2799,7 +2728,7 @@ export function PluginsView({
               </div>
             ) : null}
 
-            <div className="pm-sec" style={{ marginTop: 8 }}>
+            <div className="pm-sec">
               {/* Magpie manual(): CU 66–70 — Installing… purple pill NO spinner; field cleared on draw; bun 404 err */}
               <form
                 className="pm-manual"
@@ -2840,8 +2769,7 @@ export function PluginsView({
                     );
                     onStatus?.(t("{name} is installed", { name: spec }), "ok", 3500);
                   }, 700);
-                }}
-              >
+                }}>
                 <span className="pm-mlabel">{t("Have one in mind?")}</span>
                 <input
                   className="pm-minput"
@@ -2860,25 +2788,35 @@ export function PluginsView({
                   title={t("Choose a folder on this computer")}
                   aria-label={t("Choose a folder")}
                   disabled={busy === "__manual__"}
-                  onClick={() => {
-                    setFolderLoc("recent");
-                    setFolderPicker(true);
-                  }}
-                >
+                  onClick={async () => {
+                    /* Magpie plugins.js L853–868 browse → api("plugins/choose"); fill pm-minput */
+                    try {
+                      const w = window as Window & {
+                        showDirectoryPicker?: () => Promise<{ name: string }>;
+                      };
+                      if (typeof w.showDirectoryPicker === "function") {
+                        const handle = await w.showDirectoryPicker();
+                        setManualSpec(`/home/box/${handle.name}`);
+                        return;
+                      }
+                    } catch {
+                      return; /* cancel */
+                    }
+                    /* Magpie web has no picker (plugins.js L846–847); demo fills a path */
+                    setManualSpec("/home/box/plugins");
+                  }}>
                   <svg viewBox="0 0 16 16" width={14} height={14} aria-hidden>
                     <path d="M2 4.5h4l1.2 1.5H14v7H2z" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round" />
                   </svg>
                 </button>
-                <button
+                <TextBtn
                   type="submit"
-                  className="text primary"
+                  variant="primary"
                   disabled={busy === "__manual__"}
-                  aria-busy={busy === "__manual__" || undefined}
-                >
+                  aria-busy={busy === "__manual__" || undefined}>
                   {/* Magpie manual busy: text only — no spinner (Bun on disk; CU 68) */}
                   {busy === "__manual__" ? t("Installing…") : t("Install")}
-                </button>
-                {folderHint ? <span style={{ flexBasis: "100%", fontSize: 11.5, color: "var(--muted)", animation: "fade-in .15s var(--ease)" }}>{folderHint}</span> : null}
+                </TextBtn>
               </form>
             </div>
           </>
@@ -2887,9 +2825,7 @@ export function PluginsView({
         {tab === "installed" ? (
           !installed.length ? (
             <div className="pm-none">
-              <div className="pm-logo big" aria-hidden>
-                ◆
-              </div>
+              <PluginLogo big />
               <b>{t("No plugins yet")}</b>
               <p>{t("Install a subscription or a middleware from Discover; a subscription signs in from here.")}</p>
               <button type="button" className="pm-act get" onClick={() => setTab("discover")}>
@@ -2899,24 +2835,22 @@ export function PluginsView({
           ) : (
             <>
               {installed.length > 1 ? (
-                <div className="row-head pm-listhead" style={{ marginBottom: 6 }}>
+                <div className="row-head pm-listhead">
                   <span className="grow" />
-                  <div className="segs sortby" data-sort="plugins" role="group" aria-label={t("Names from A to Z")}>
-                    {([["az", "A→Z"], ["za", "Z→A"]] as const).map(([id, label]) => (
-                      <button
-                        key={id}
-                        type="button"
-                        className={`opt${pluginsSort === id ? " on" : ""}`}
-                        title={id === "az" ? t("Names from A to Z") : t("Names from Z to A")}
-                        onClick={() => {
-                          setPluginsSort(id);
-                          try { localStorage.setItem("magpie.sort.plugins", id); } catch { /* */ }
-                        }}
-                      >
-                        {label}
-                      </button>
-                    ))}
-                  </div>
+                  <Segs
+                    className="sortby"
+                    dataSort="plugins"
+                    value={pluginsSort}
+                    aria-label={t("Names from A to Z")}
+                    items={[
+                      { id: "az" as const, label: "A→Z", title: t("Names from A to Z") },
+                      { id: "za" as const, label: "Z→A", title: t("Names from Z to A") },
+                    ]}
+                    onChange={(id) => {
+                      setPluginsSort(id);
+                      try { localStorage.setItem("magpie.sort.plugins", id); } catch { /* */ }
+                    }}
+                  />
                 </div>
               ) : null}
               <div className="list pm-list">
@@ -2924,22 +2858,18 @@ export function PluginsView({
                   .sort((a, b) => (pluginsSort === "za" ? -1 : 1) * a.name.localeCompare(b.name))
                   .map((e) => (
                   <div
-                    className={`row pref pm-row${e.off ? " off" : ""}`}
+                    className={`row pm-row${e.off ? " off" : ""}`}
                     key={e.pkg}
-                    title={`${e.name}${e.ver || ""}${e.kind || ""}`}
-                  >
-                    <div className="pm-logo" aria-hidden style={{ width: 32, height: 32, flex: "none" }}>
-                      ◆
-                    </div>
+                    title={`${e.name}${e.ver || ""}${e.kind || ""}`}>
+                    <PluginLogo kind={"kind" in e ? String(e.kind) : undefined} icon={"icon" in e ? String(e.icon) : undefined} />
                     <div className="who">
-                      <div className="name" style={{ display: "inline-flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
+                      <div className="name pm-name">
                         <span>{e.name}</span>
                         {e.ver ? <span className="pm-ver">{e.ver.startsWith("v") ? e.ver : `v${e.ver}`}</span> : null}
                         {e.checkStatus === "current" && e.ver ? (
                           <span
                             className="pm-chip soft"
-                            title={t("v{v} is the newest on npm", { v: e.ver.replace(/^v/, "") }) + (lastCheckedAt ? "\n" + t("Last checked {time}", { time: lastCheckedAt }) : "")}
-                          >
+                            title={t("v{v} is the newest on npm", { v: e.ver.replace(/^v/, "") }) + (lastCheckedAt ? "\n" + t("Last checked {time}", { time: lastCheckedAt }) : "")}>
                             {t("Up to date")}
                           </span>
                         ) : null}
@@ -2952,8 +2882,7 @@ export function PluginsView({
                                 : e.kind === "Middleware"
                                   ? t("Runs in magpie's gateway on what every agent sends and gets back")
                                   : undefined
-                            }
-                          >
+                            }>
                             {e.kind === "Provider" ? (
                               <svg viewBox="0 0 16 16" width={11} height={11} fill="none" stroke="currentColor" strokeWidth="1.3" aria-hidden>
                                 <path d="M6 2v3 M10 2v3 M4.5 5h7v2.5a3.5 3.5 0 0 1-7 0z M8 11v3" />
@@ -2969,34 +2898,63 @@ export function PluginsView({
                           </span>
                         ) : null}
                       </div>
-                      <div className={`sub${asking?.pkg === e.pkg ? " ask" : ""}`}>
-                        {asking?.pkg === e.pkg
-                          ? null
-                          : e.off
+                      {asking?.pkg === e.pkg ? (
+                        <div className="sub ask">
+                          {asking.op === "move"
+                            ? t("{names} can run on it again, with the same accounts.", {
+                                names: (e.movable || e.moved || ["Kimi Code"]).join(t(", ")),
+                              })
+                            : asking.op === "remove"
+                              ? e.moved?.length
+                                ? t(
+                                    "{names} goes back to the built-in, with its accounts, before the plugin is removed.",
+                                    { names: e.moved.join(t(", ")) },
+                                  )
+                                : demoCopy(
+                                    "演示：移除只从本页列表删掉，不碰磁盘。",
+                                    "Demo: remove only clears this page list — nothing on disk.",
+                                  )
+                              : e.moved?.length
+                                ? t(
+                                    "{names} goes back to the built-in, with its accounts, before the plugin is switched off.",
+                                    { names: e.moved.join(t(", ")) },
+                                  )
+                                : demoCopy(
+                                    "关掉后订阅账户会回到内置；演示仅本地标记 Off。",
+                                    "Off sends subscription accounts back to built-ins; demo only marks Off locally.",
+                                  )}
+                        </div>
+                      ) : e.off || e.kind === "Provider" ? (
+                        <div className="sub">
+                          {e.off
                             ? t("Off")
-                            : e.kind === "Provider" && !e.signedIn
+                            : !e.signedIn
                               ? (
                                   <span className="pm-sub">
                                     <span className="dot" />
                                     <span>{t("{name}: not signed in", { name: e.name })}</span>
                                   </span>
                                 )
-                              : e.kind === "Provider" && e.signedIn
-                                ? (
-                                    <span className="pm-sub in">
-                                      <span className="dot" />
-                                      <span>{t("{name}: signed in", { name: e.name })}</span>
-                                    </span>
-                                  )
-                                : e.kind === "Middleware"
-                                  ? t("Gateway middleware: {hooks}", {
-                                      hooks: e.pkg.includes("word-guard")
-                                        ? "onRequest, onEvent, onResponse"
-                                        : "onEvent, onResponse",
-                                    })
-                                  : null}
-                      </div>
-                      {e.optsOpen ? (
+                              : (
+                                  <span className="pm-sub in">
+                                    <span className="dot" />
+                                    <span>{t("{name}: signed in", { name: e.name })}</span>
+                                  </span>
+                                )}
+                        </div>
+                      ) : null}
+                      {e.kind === "Middleware" && !e.off && asking?.pkg !== e.pkg ? (
+                        <div className="sub pm-mw">
+                          {t("Gateway middleware: {hooks}", {
+                            hooks: e.pkg.includes("word-guard")
+                              ? "onRequest, onEvent, onResponse"
+                              : "onEvent, onResponse",
+                          })}
+                          {" · "}
+                          {t("{n} calls, {us} µs each", { n: "0", us: "0" })}
+                        </div>
+                      ) : null}
+                      {e.optsOpen && asking?.pkg !== e.pkg ? (
                         <div className="pm-opts">
                           <textarea
                             aria-label={t("Options")}
@@ -3034,34 +2992,28 @@ export function PluginsView({
                           <div className="pm-opts-bar">
                             <span>{e.optsSaved ? t("Applied to the next request") : t("Not set: these are its package's example")}</span>
                             {e.optsSaved ? (
-                            <button
-                              type="button"
-                              className="text quiet"
+                            <TextBtn
+                              className="quiet"
                               title={t("Runs it with no options")}
                               onClick={(ev) => {
                                 clearFocusRef.current = ev.currentTarget;
                                 setClearConfirm({ pkg: e.pkg, name: e.name });
-                              }}
-                            >
+                              }}>
                               {t("Clear")}
-                            </button>
+                            </TextBtn>
                             ) : null}
-                            <button
-                              type="button"
-                              className="text"
+                            <TextBtn
                               onClick={() =>
                                 setInstalled((list) =>
                                   list.map((x) =>
                                     x.pkg === e.pkg ? { ...x, optsOpen: false, optsDraft: undefined, optsErr: "" } : x,
                                   ),
                                 )
-                              }
-                            >
+                              }>
                               {t("Cancel")}
-                            </button>
-                            <button
-                              type="button"
-                              className="text primary"
+                            </TextBtn>
+                            <TextBtn
+                              variant="primary"
                               onClick={() => {
                                 try {
                                   const raw =
@@ -3106,204 +3058,141 @@ export function PluginsView({
                                     ),
                                   );
                                 }
-                              }}
-                            >
+                              }}>
                               {t("Save")}
-                            </button>
-                          </div>
-                          <div className="sub pm-mw" style={{ marginTop: 2 }}>
-                            {t("Gateway middleware: {hooks}", {
-                              hooks: e.pkg.includes("word-guard")
-                                ? "onRequest, onEvent, onResponse"
-                                : "onEvent, onResponse",
-                            })}
-                            {" · "}
-                            {t("{n} calls, {us} µs each", { n: "0", us: "0" })}
+                            </TextBtn>
                           </div>
                         </div>
                       ) : null}
-                      {asking?.pkg === e.pkg ? (
-                        <div
-                          className="pm-ask"
-                          role="group"
-                          aria-label={
-                            asking.op === "remove"
-                              ? t("Remove this plugin?")
-                              : asking.op === "move"
-                                ? t("Move {name} here", { name: (e.movable || e.moved || ["…"])[0] })
-                                : t("Switch this plugin off?")
-                          }
-                        >
-                          <p className="pm-ask-say">
-                            {asking.op === "remove"
-                              ? t("Remove this plugin?")
-                              : asking.op === "move"
-                                ? t("Move {name} here", { name: (e.movable || ["Kimi Code"])[0] })
-                                : t("Switch this plugin off?")}
-                          </p>
-                          <p className="pm-ask-sub">
-                            {asking.op === "move"
-                              ? t("{names} can run on it again, with the same accounts.", {
-                                  names: (e.movable || ["Kimi Code"]).join(t(", ")),
-                                })
-                              : asking.op === "remove"
-                                ? e.moved?.length
-                                  ? t(
-                                      "{names} goes back to the built-in, with its accounts, before the plugin is removed.",
-                                      { names: e.moved.join(t(", ")) },
-                                    )
-                                  : demoCopy(
-                                      "演示：移除只从本页列表删掉，不碰磁盘。",
-                                      "Demo: remove only clears this page list — nothing on disk.",
-                                    )
-                                : e.moved?.length
-                                  ? t(
-                                      "{names} goes back to the built-in, with its accounts, before the plugin is switched off.",
-                                      { names: e.moved.join(t(", ")) },
-                                    )
-                                  : demoCopy(
-                                      "关掉后订阅账户会回到内置；演示仅本地标记 Off。",
-                                      "Off sends subscription accounts back to built-ins; demo only marks Off locally.",
-                                    )}
-                          </p>
-                          <div className="pm-ask-acts">
-                            <button
-                              type="button"
-                              className="text primary"
-                              onClick={() => {
-                                if (asking.op === "remove") setInstalled((list) => list.filter((x) => x.pkg !== e.pkg));
-                                else if (asking.op === "move")
-                                  setInstalled((list) =>
-                                    list.map((x) =>
-                                      x.pkg === e.pkg
-                                        ? { ...x, moved: x.movable || x.moved || ["Kimi Code"], off: false }
-                                        : x,
-                                    ),
-                                  );
-                                else setInstalled((list) => list.map((x) => (x.pkg === e.pkg ? { ...x, off: true, moved: [] } : x)));
-                                setAsking(null);
-                              }}
-                            >
-                              {asking.op === "move" ? t("Move") : asking.op === "remove" ? t("Remove") : t("Switch off")}
-                            </button>
-                            <button type="button" className="text" onClick={() => setAsking(null)}>
-                              {asking.op === "move" ? t("Not now") : t("Cancel")}
-                            </button>
-                          </div>
-                        </div>
-                      ) : null}
+
+
                     </div>
-                    <div className="val" style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
-                      {!e.off && e.kind === "Provider" && !e.signedIn && asking?.pkg !== e.pkg ? (
-                        <button
-                          type="button"
-                          className="text primary"
-                          onClick={() =>
-                            onStatus?.(
-                              demoCopy(
-                                "演示：未发起插件登录（无真 OAuth）",
-                                "Demo: plugin sign-in not started (no real OAuth)",
-                              ),
-                              "warn",
-                              2800,
-                            )
-                          }
-                        >
-                          {t("Sign in")}
-                        </button>
-                      ) : null}
-                      {e.movable?.length && !e.off && !(e.moved && e.moved.length) && asking?.pkg !== e.pkg ? (
-                        <button
-                          type="button"
-                          className="text primary"
-                          title={t(
-                            "Runs {name} on this plugin in place of the built-in, with the same accounts; nothing changes if one doesn't work through it",
-                            { name: e.movable[0] },
-                          )}
-                          onClick={() => setAsking({ pkg: e.pkg, op: "move" })}
-                        >
-                          {busy === e.pkg ? t("Moving…") : t("Move {name} here", { name: e.movable[0] })}
-                        </button>
-                      ) : null}
-                      {e.kind === "Middleware" && !e.off && !e.optsOpen ? (
-                        <button
-                          type="button"
-                          className="text"
-                          title={e.optsSaved ? t("The options it runs with") : t("It runs with no options; its package suggests some")}
-                          onClick={() =>
-                            setInstalled((list) =>
-                              list.map((x) => {
-                                if (x.pkg !== e.pkg) return x;
-                                const example = x.pkg.includes("think-tags")
-                                  ? '{\n  "mode": "strip"\n}'
-                                  : '{\n  "hooks": ["request", "response"],\n  "onEvent": ["error"]\n}';
-                                return {
-                                  ...x,
-                                  optsOpen: true,
-                                  optsDraft: x.optsSaved && x.opts ? x.opts : example,
-                                  optsErr: "",
-                                };
-                              }),
-                            )
-                          }
-                        >
-                          {t("Options")}
-                        </button>
-                      ) : null}
-                      <button
-                        type="button"
-                        className="text"
-                        onClick={() => {
-                          if (e.off) {
-                            setInstalled((list) =>
-                              list.map((x) => (x.pkg === e.pkg ? { ...x, off: false } : x)),
-                            );
-                            // Magpie again(): offer movable after switch-on
-                            if (e.movable?.length) setAsking({ pkg: e.pkg, op: "move" });
-                            else setAsking(null);
-                          } else if (e.moved?.length) {
-                            setAsking({ pkg: e.pkg, op: "off" });
-                          } else {
-                            // Magpie: no moved → off immediately (shot 40 not clicked)
-                            setInstalled((list) => list.map((x) => (x.pkg === e.pkg ? { ...x, off: true, moved: [] } : x)));
-                            setAsking(null);
-                          }
-                        }}
-                      >
-                        {e.off ? t("Switch on") : t("Switch off")}
-                      </button>
-                      <button
-                        type="button"
-                        className="text quiet"
-                        disabled={busy === "remove:" + e.pkg || busy === e.pkg}
-                        title={
-                          e.moved?.length
-                            ? t("{names} goes back to the built-in first, then the plugin is removed", {
-                                names: e.moved.join(t(", ")),
-                              })
-                            : t("Removes the plugin and what it installed; its sign-ins are kept until you sign out")
-                        }
-                        onClick={(ev) => {
-                          if (e.moved?.length) setAsking({ pkg: e.pkg, op: "remove" });
-                          else {
-                            removeFocusRef.current = ev.currentTarget;
-                            setRemoveConfirm({ pkg: e.pkg, name: e.name });
-                          }
-                        }}
-                      >
-                        {busy === "remove:" + e.pkg ? t("Removing…") : t("Remove")}
-                      </button>
+                    <div className="val">
+                      {asking?.pkg === e.pkg ? (
+                        <>
+                          <TextBtn onClick={() => setAsking(null)}>
+                            {asking.op === "move" ? t("Not now") : t("Cancel")}
+                          </TextBtn>
+                          <TextBtn
+                            variant="primary"
+                            onClick={() => {
+                              if (asking.op === "remove") setInstalled((list) => list.filter((x) => x.pkg !== e.pkg));
+                              else if (asking.op === "move")
+                                setInstalled((list) =>
+                                  list.map((x) =>
+                                    x.pkg === e.pkg
+                                      ? { ...x, moved: x.movable || x.moved || ["Kimi Code"], off: false }
+                                      : x,
+                                  ),
+                                );
+                              else setInstalled((list) => list.map((x) => (x.pkg === e.pkg ? { ...x, off: true, moved: [] } : x)));
+                              setAsking(null);
+                            }}>
+                            {asking.op === "move" ? t("Move") : asking.op === "remove" ? t("Remove") : t("Switch off")}
+                          </TextBtn>
+                        </>
+                      ) : (
+                        <>
+                          {!e.off && e.kind === "Provider" && !e.signedIn ? (
+                            <TextBtn
+                              variant="primary"
+                              onClick={() =>
+                                onStatus?.(
+                                  demoCopy(
+                                    "演示：未发起插件登录（无真 OAuth）",
+                                    "Demo: plugin sign-in not started (no real OAuth)",
+                                  ),
+                                  "warn",
+                                  2800,
+                                )
+                              }>
+                              {t("Sign in")}
+                            </TextBtn>
+                          ) : null}
+                          {e.movable?.length && !e.off && !(e.moved && e.moved.length) ? (
+                            <TextBtn
+                              variant="primary"
+                              title={t(
+                                "Runs {name} on this plugin in place of the built-in, with the same accounts; nothing changes if one doesn't work through it",
+                                { name: e.movable[0] },
+                              )}
+                              onClick={() => setAsking({ pkg: e.pkg, op: "move" })}>
+                              {busy === e.pkg ? t("Moving…") : t("Move {name} here", { name: e.movable[0] })}
+                            </TextBtn>
+                          ) : null}
+                          {e.kind === "Middleware" && !e.off && !e.optsOpen ? (
+                            <TextBtn
+                              title={e.optsSaved ? t("The options it runs with") : t("It runs with no options; its package suggests some")}
+                              onClick={() =>
+                                setInstalled((list) =>
+                                  list.map((x) => {
+                                    if (x.pkg !== e.pkg) return x;
+                                    const example = x.pkg.includes("think-tags")
+                                      ? '{\n  "mode": "strip"\n}'
+                                      : '{\n  "hooks": ["request", "response"],\n  "onEvent": ["error"]\n}';
+                                    return {
+                                      ...x,
+                                      optsOpen: true,
+                                      optsDraft: x.optsSaved && x.opts ? x.opts : example,
+                                      optsErr: "",
+                                    };
+                                  }),
+                                )
+                              }>
+                              {t("Options")}
+                            </TextBtn>
+                          ) : null}
+                          <TextBtn
+                            onClick={() => {
+                              if (e.off) {
+                                setInstalled((list) =>
+                                  list.map((x) => (x.pkg === e.pkg ? { ...x, off: false } : x)),
+                                );
+                                // Magpie again(): offer movable after switch-on
+                                if (e.movable?.length) setAsking({ pkg: e.pkg, op: "move" });
+                                else setAsking(null);
+                              } else if (e.moved?.length) {
+                                setAsking({ pkg: e.pkg, op: "off" });
+                              } else {
+                                // Magpie: no moved → off immediately (shot 40 not clicked)
+                                setInstalled((list) => list.map((x) => (x.pkg === e.pkg ? { ...x, off: true, moved: [] } : x)));
+                                setAsking(null);
+                              }
+                            }}>
+                            {e.off ? t("Switch on") : t("Switch off")}
+                          </TextBtn>
+                          <TextBtn
+                            className="quiet"
+                            disabled={busy === "remove:" + e.pkg || busy === e.pkg}
+                            title={
+                              e.moved?.length
+                                ? t("{names} goes back to the built-in first, then the plugin is removed", {
+                                    names: e.moved.join(t(", ")),
+                                  })
+                                : t("Removes the plugin and what it installed; its sign-ins are kept until you sign out")
+                            }
+                            onClick={(ev) => {
+                              if (e.moved?.length) setAsking({ pkg: e.pkg, op: "remove" });
+                              else {
+                                removeFocusRef.current = ev.currentTarget;
+                                setRemoveConfirm({ pkg: e.pkg, name: e.name });
+                              }
+                            }}>
+                            {busy === "remove:" + e.pkg ? t("Removing…") : t("Remove")}
+                          </TextBtn>
+                        </>
+                      )}
                     </div>
                   </div>
                 ))}
               </div>
-              <div className="pm-foot" style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 12 }}>
-                <span style={{ fontSize: 12, color: "var(--muted)" }}>{t("Plugins run on Bun {v}", { v: BUN_VER })}</span>
+              <div className="pm-foot">
+                <span>{t("Plugins run on Bun {v}", { v: BUN_VER })}</span>
                 <span className="grow" />
-                <button
-                  type="button"
-                  className={`text pm-check${checkingUpdates ? " busy" : ""}`}
-                  disabled={checkingUpdates || !!busy}
+                <TextBtn
+                  className="pm-check"
+                  busy={checkingUpdates}
+                  disabled={!!busy}
                   title={
                     t("Ask npm now for each plugin's newest version") +
                     (lastCheckedAt ? "\n" + t("Last checked {time}", { time: lastCheckedAt }) : "")
@@ -3319,324 +3208,94 @@ export function PluginsView({
                       setInstalled((list) => list.map((x) => ({ ...x, checkStatus: "current" as const })));
                       onStatus?.(t("Every plugin is up to date"), "ok", 2800);
                     }, 180);
-                  }}
-                >
+                  }}>
                   {checkingUpdates ? (
                     <>
-                      <span className="spin" aria-hidden style={{ display: "inline-block", width: 10, height: 10, marginRight: 6, verticalAlign: -1 }} />
+                      <span className="spin" aria-hidden />
                       {t("Checking…")}
                     </>
                   ) : (
                     t("Check for updates")
                   )}
-                </button>
+                </TextBtn>
               </div>
             </>
           )
         ) : null}
       </div>
 
-      {removeConfirm ? (
-        <dialog
-          ref={removeDialogRef}
-          className="action-confirm"
-          role="alertdialog"
-          aria-labelledby="pluginRemoveTitle"
-          aria-describedby="pluginRemoveMsg"
-          style={{ zIndex: 50 }}
-          onCancel={(e) => {
-            /* Escape — Magpie finish(false); focus returns to row Remove (shot 94) */
-            e.preventDefault();
-            const prev = removeFocusRef.current;
-            setRemoveConfirm(null);
-            requestAnimationFrame(() => {
-              if (prev?.isConnected) prev.focus({ preventScroll: true });
-              removeFocusRef.current = null;
-            });
-          }}
-          onClick={(e) => {
-            /* Magpie backdropClick: ::backdrop is the dialog itself outside its box (shot 100) */
-            const dialog = e.currentTarget;
-            const rect = dialog.getBoundingClientRect();
-            if (
-              e.target === dialog &&
-              (e.clientX < rect.left || e.clientX > rect.right || e.clientY < rect.top || e.clientY > rect.bottom)
-            ) {
-              const prev = removeFocusRef.current;
-              setRemoveConfirm(null);
-              requestAnimationFrame(() => {
-                if (prev?.isConnected) prev.focus({ preventScroll: true });
-                removeFocusRef.current = null;
-              });
-            }
-          }}
-        >
-          <h2 id="pluginRemoveTitle">{t("Remove {name}?", { name: removeConfirm.name })}</h2>
-          <p id="pluginRemoveMsg">
-            {t("Removes the plugin and what it installed; its sign-ins are kept until you sign out")}
-          </p>
-          <div className="bar">
-            <span className="grow" />
-            <button
-              type="button"
-              className="text"
-              onClick={() => {
-                /* Cancel — shot 97: stay installed, focus back on row Remove */
-                const prev = removeFocusRef.current;
-                setRemoveConfirm(null);
-                requestAnimationFrame(() => {
-                  if (prev?.isConnected) prev.focus({ preventScroll: true });
-                  removeFocusRef.current = null;
-                });
-              }}
-            >
-              {t("Cancel")}
-            </button>
-            <button
-              type="button"
-              className="text primary danger-fill"
-              disabled={!!busy}
-              onClick={() => {
-                const pkg = removeConfirm.pkg;
-                const name = removeConfirm.name;
-                setRemoveConfirm(null);
-                removeFocusRef.current = null;
-                // Magpie 91–103: Removing… under ~125ms / not frozen — empty + toast same step
-                setInstalled((list) => list.filter((x) => x.pkg !== pkg));
-                onStatus?.(t("{name} removed", { name }), "ok", 3200);
-              }}
-            >
-              {t("Remove")}
-            </button>
-          </div>
-        </dialog>
-      ) : null}
+      <ActionConfirm
+        open={!!removeConfirm}
+        titleId="pluginRemoveTitle"
+        messageId="pluginRemoveMsg"
 
-      {clearConfirm ? (
-        <dialog
-          ref={clearDialogRef}
-          className="action-confirm"
-          role="alertdialog"
-          aria-labelledby="pluginClearTitle"
-          aria-describedby="pluginClearMsg"
-          style={{ zIndex: 50 }}
-          onCancel={(e) => {
-            /* Magpie 137: Escape — confirm gone; Options not cleared; editor still open; focus on Clear */
-            e.preventDefault();
-            const prev = clearFocusRef.current;
-            setClearConfirm(null);
-            requestAnimationFrame(() => {
-              if (prev?.isConnected) prev.focus({ preventScroll: true });
-            });
-          }}
-          onClick={(e) => {
-            const dialog = e.currentTarget;
-            const rect = dialog.getBoundingClientRect();
-            if (
-              e.target === dialog &&
-              (e.clientX < rect.left || e.clientX > rect.right || e.clientY < rect.top || e.clientY > rect.bottom)
-            ) {
-              const prev = clearFocusRef.current;
-              setClearConfirm(null);
-              requestAnimationFrame(() => {
-                if (prev?.isConnected) prev.focus({ preventScroll: true });
-              });
-            }
-          }}
-        >
-          <h2 id="pluginClearTitle">{t("Clear")}</h2>
-          <p id="pluginClearMsg">
-            {t("Saved middleware options will be removed. The plugin will run with no options.")}
-          </p>
-          <div className="bar">
-            <span className="grow" />
-            <button
-              type="button"
-              className="text"
-              onClick={() => {
-                const prev = clearFocusRef.current;
-                setClearConfirm(null);
-                requestAnimationFrame(() => {
-                  if (prev?.isConnected) prev.focus({ preventScroll: true });
-                });
-              }}
-            >
-              {t("Cancel")}
-            </button>
-            <button
-              type="button"
-              className="text primary danger-fill"
-              onClick={() => {
-                const pkg = clearConfirm.pkg;
-                const example = pkg.includes("think-tags")
-                  ? '{\n  "mode": "strip"\n}'
-                  : '{\n  "hooks": ["request", "response"],\n  "onEvent": ["error"]\n}';
-                setClearConfirm(null);
-                setInstalled((list) =>
-                  list.map((x) =>
-                    x.pkg === pkg
-                      ? { ...x, opts: "", optsSaved: false, optsDraft: example, optsErr: "", optsOpen: true }
-                      : x,
-                  ),
-                );
-              }}
-            >
-              {t("Clear")}
-            </button>
-          </div>
-        </dialog>
-      ) : null}
+        title={removeConfirm ? t("Remove {name}?", { name: removeConfirm.name }) : ""}
+        message={t("Removes the plugin and what it installed; its sign-ins are kept until you sign out")}
+        cancelLabel={t("Cancel")}
+        acceptLabel={t("Remove")}
+        acceptDisabled={!!busy}
+        onCancel={() => {
+          /* Escape / Cancel / backdrop — Magpie finish(false); focus back on row Remove */
+          const prev = removeFocusRef.current;
+          setRemoveConfirm(null);
+          requestAnimationFrame(() => {
+            if (prev?.isConnected) prev.focus({ preventScroll: true });
+            removeFocusRef.current = null;
+          });
+        }}
+        onAccept={() => {
+          if (!removeConfirm) return;
+          const pkg = removeConfirm.pkg;
+          const name = removeConfirm.name;
+          setRemoveConfirm(null);
+          removeFocusRef.current = null;
+          // Magpie 91–103: Removing… under ~125ms / not frozen — empty + toast same step
+          setInstalled((list) => list.filter((x) => x.pkg !== pkg));
+          onStatus?.(t("{name} removed", { name }), "ok", 3200);
+        }}
+      />
 
-      {folderPicker ? (
-        <div
-          className="modal open"
-          role="dialog"
-          aria-modal="true"
-          aria-label={t("Choose a plugin folder")}
-          onClick={(e) => {
-            if (e.target === e.currentTarget) setFolderPicker(false);
-          }}
-        >
-          <div
-            className="dialog"
-            style={{
-              width: "min(640px, 92vw)",
-              maxHeight: "min(520px, 85vh)",
-              display: "flex",
-              flexDirection: "column",
-              animation: "pop-in .42s cubic-bezier(.16,1,.3,1)",
-            }}
-          >
-            <div className="ehead" style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <b id="folderTitle">{t("Choose a plugin folder")}</b>
-            </div>
-            <div className="ebody" style={{ display: "grid", gridTemplateColumns: "140px 1fr", gap: 0, minHeight: 280, padding: 0 }}>
-              <nav style={{ borderRight: "1px solid var(--line)", padding: "8px 6px", display: "flex", flexDirection: "column", gap: 2 }}>
-                {(
-                  [
-                    ["recent", t("Recent")],
-                    ["home", t("Home")],
-                    ["other", t("Other Locations")],
-                  ] as const
-                ).map(([id, label]) => (
-                  <button
-                    key={id}
-                    type="button"
-                    className={`text${folderLoc === id ? " on" : ""}`}
-                    style={{
-                      justifyContent: "flex-start",
-                      padding: "6px 8px",
-                      borderRadius: 6,
-                      background: folderLoc === id ? "var(--pill)" : "transparent",
-                      color: folderLoc === id ? "var(--fg)" : "var(--muted)",
-                    }}
-                    onClick={() => setFolderLoc(id)}
-                  >
-                    {label}
-                  </button>
-                ))}
-              </nav>
-              <div style={{ padding: "10px 12px", overflow: "auto" }}>
-                {folderLoc === "recent" ? (
-                  <p style={{ color: "var(--muted)", fontSize: 12.5, padding: "24px 8px", textAlign: "center" }}>
-                    {demoCopy("最近为空", "Recent is empty")}
-                  </p>
-                ) : null}
-                {folderLoc === "home" ? (
-                  <ul style={{ listStyle: "none", margin: 0, padding: 0, fontSize: 12.5 }}>
-                    {["agent-data", "chrome-profile", "cli-config", "reference", "sand-data", "plugins"].map((name) => (
-                      <li
-                        key={name}
-                        style={{
-                          display: "grid",
-                          gridTemplateColumns: "1fr 80px",
-                          gap: 8,
-                          padding: "6px 8px",
-                          borderRadius: 6,
-                          cursor: "pointer",
-                        }}
-                        className="pm-folder-row"
-                        onDoubleClick={() => {
-                          setManualSpec(`/home/box/${name}`);
-                          setFolderPicker(false);
-                          setFolderHint("");
-                        }}
-                      >
-                        <span>📁 {name}</span>
-                        <span style={{ color: "var(--muted)", textAlign: "right" }}>—</span>
-                      </li>
-                    ))}
-                  </ul>
-                ) : null}
-                {folderLoc === "other" ? (
-                  <div style={{ padding: 8 }}>
-                    <b style={{ fontSize: 12.5 }}>{t("On This Computer")}</b>
-                    <div
-                      style={{
-                        marginTop: 8,
-                        padding: "8px 10px",
-                        border: "1px solid var(--line)",
-                        borderRadius: 8,
-                        fontSize: 12.5,
-                        cursor: "pointer",
-                      }}
-                      onDoubleClick={() => {
-                        setManualSpec("/");
-                        setFolderPicker(false);
-                      }}
-                    >
-                      <div>Computer</div>
-                      <div style={{ color: "var(--muted)", fontSize: 11.5, marginTop: 2 }}>
-                        107.4 GB / 134.2 GB available · /
-                      </div>
-                    </div>
-                  </div>
-                ) : null}
-              </div>
-            </div>
-            <div className="bar" style={{ display: "flex", gap: 8, justifyContent: "flex-end", padding: "10px 12px" }}>
-              <button
-                type="button"
-                className="text"
-                onClick={() => {
-                  /* Magpie Cancel: field unchanged (shot 33) */
-                  setFolderPicker(false);
-                  setFolderHint("");
-                }}
-              >
-                {t("Cancel")}
-              </button>
-              <button
-                type="button"
-                className="text primary"
-                disabled={folderLoc === "recent"}
-                onClick={() => {
-                  const path =
-                    folderLoc === "home"
-                      ? "/home/box/plugins"
-                      : folderLoc === "other"
-                        ? "/"
-                        : "";
-                  if (!path) return;
-                  setManualSpec(path);
-                  setFolderPicker(false);
-                  setFolderHint("");
-                }}
-              >
-                {t("Open")}
-              </button>
-            </div>
-          </div>
-        </div>
-      ) : null}
+      <ActionConfirm
+        open={!!clearConfirm}
+        titleId="pluginClearTitle"
+        messageId="pluginClearMsg"
+
+        title={t("Clear")}
+        message={t("Saved middleware options will be removed. The plugin will run with no options.")}
+        cancelLabel={t("Cancel")}
+        acceptLabel={t("Clear")}
+        onCancel={() => {
+          /* Magpie 137: Escape — confirm gone; Options not cleared; editor still open; focus on Clear */
+          const prev = clearFocusRef.current;
+          setClearConfirm(null);
+          requestAnimationFrame(() => {
+            if (prev?.isConnected) prev.focus({ preventScroll: true });
+          });
+        }}
+        onAccept={() => {
+          if (!clearConfirm) return;
+          const pkg = clearConfirm.pkg;
+          const example = pkg.includes("think-tags")
+            ? '{\n  "mode": "strip"\n}'
+            : '{\n  "hooks": ["request", "response"],\n  "onEvent": ["error"]\n}';
+          setClearConfirm(null);
+          setInstalled((list) =>
+            list.map((x) =>
+              x.pkg === pkg
+                ? { ...x, opts: "", optsSaved: false, optsDraft: example, optsErr: "", optsOpen: true }
+                : x,
+            ),
+          );
+        }}
+      />
 
       {pluginDetail ? (
         <div className="modal open" role="dialog" aria-modal="true" aria-label={pluginDetail.name}>
           <div className="backdrop" onClick={() => setPluginDetail(null)} />
-          <div className="dialog editor pm-detail" style={{ maxWidth: 520, width: "min(520px, 94vw)", maxHeight: "86vh", overflow: "auto", padding: 0 }}>
-            <div className="ehead pm-dhead" style={{ display: "flex", gap: 12, alignItems: "center", minHeight: 76, padding: "14px 18px", borderBottom: "1px solid var(--line-2, var(--line))" }}>
-              <div className="pm-logo" aria-hidden>◆</div>
-              <div className="pm-who" style={{ flex: 1, minWidth: 0 }}>
+          <div className="dialog editor pm-detail">
+            <div className="ehead pm-dhead">
+              <PluginLogo big kind={"kind" in pluginDetail ? String(pluginDetail.kind) : undefined} icon={"icon" in pluginDetail ? String(pluginDetail.icon) : undefined} />
+              <div className="pm-who">
                 <div className="pm-name"><b>{pluginDetail.name}</b></div>
                 <div className="pm-by">
                   <span>
@@ -3668,14 +3327,13 @@ export function PluginsView({
                   onClick={(ev) => {
                     ev.stopPropagation();
                     install(pluginDetail.pkg, pluginDetail.name);
-                  }}
-                >
+                  }}>
                   {installAct(pluginDetail.pkg, installed.some((x) => x.pkg === pluginDetail.pkg))}
                 </button>
               </div>
             </div>
-            <div className="pm-dbody" style={{ display: "flex", flexDirection: "column", gap: 12, padding: "14px 18px 18px" }}>
-              <p className="pm-dsum" style={{ margin: 0, fontSize: 13, lineHeight: 1.5 }}>{pluginDetail.summary}</p>
+            <div className="pm-dbody">
+              <p className="pm-dsum">{pluginDetail.summary}</p>
               <div className="pm-facts">
                 <div className="pm-fact"><span className="k">{t("Version")}</span><span className="v">{"ver" in pluginDetail && (pluginDetail as { ver?: string }).ver ? (pluginDetail as { ver: string }).ver : "v0.1.0-demo"}</span></div>
                 <div className="pm-fact"><span className="k">{"stars" in pluginDetail && (pluginDetail as { stars?: number }).stars != null ? t("Stars") : t("Downloads")}</span><span className="v">{"stars" in pluginDetail && (pluginDetail as { stars?: number }).stars != null ? (pluginDetail as { stars: number }).stars : pluginDetail.downloads}</span></div>
@@ -3685,12 +3343,11 @@ export function PluginsView({
                   <div className="pm-fact"><span className="k">{t("Signs in to")}</span><span className="v">{pluginSignsInId(pluginDetail.pkg)}</span></div>
                 ) : null}
               </div>
-              <div className="pm-links" style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+              <div className="pm-links">
                 <button
                   type="button"
                   className="pm-link"
-                  onClick={() => window.open(`https://www.npmjs.com/package/${pluginDetail.pkg}`, "_blank", "noopener")}
-                >
+                  onClick={() => window.open(`https://www.npmjs.com/package/${pluginDetail.pkg}`, "_blank", "noopener")}>
                   <span>npm</span>
                   <svg viewBox="0 0 12 12" width={11} height={11} aria-hidden>
                     <path d="M9.5 3.5h3v3M12.5 3.5 7.5 8.5M11 9.5v3H3.5V5h3" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
@@ -3706,8 +3363,7 @@ export function PluginsView({
                         "_blank",
                         "noopener",
                       )
-                    }
-                  >
+                    }>
                     <span>GitHub</span>
                     <svg viewBox="0 0 12 12" width={11} height={11} aria-hidden>
                       <path d="M9.5 3.5h3v3M12.5 3.5 7.5 8.5M11 9.5v3H3.5V5h3" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
@@ -3717,8 +3373,7 @@ export function PluginsView({
                   <button
                     type="button"
                     className="pm-link"
-                    onClick={() => window.open(`https://www.npmjs.com/package/${pluginDetail.pkg}`, "_blank", "noopener")}
-                  >
+                    onClick={() => window.open(`https://www.npmjs.com/package/${pluginDetail.pkg}`, "_blank", "noopener")}>
                     <span>{t("Source")}</span>
                     <svg viewBox="0 0 12 12" width={11} height={11} aria-hidden>
                       <path d="M9.5 3.5h3v3M12.5 3.5 7.5 8.5M11 9.5v3H3.5V5h3" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
@@ -3727,8 +3382,8 @@ export function PluginsView({
                 )}
               </div>
               {"unofficial" in pluginDetail && (pluginDetail as { unofficial?: boolean }).unofficial && "owner" in pluginDetail ? (
-                <p className="pm-note warn" style={{ margin: 0, display: "flex", gap: 6, alignItems: "flex-start", padding: "8px 10px", borderRadius: 8, background: "color-mix(in srgb, var(--amber, #d97706) 12%, var(--pill))", fontSize: 12, lineHeight: 1.45 }}>
-                  <svg viewBox="0 0 16 16" width={12} height={12} aria-hidden style={{ flex: "none", marginTop: 2 }}>
+                <p className="pm-note warn">
+                  <svg viewBox="0 0 16 16" width={12} height={12} aria-hidden>
                     <path d="M8 2.3 13 4v3.8c0 3-2.1 5.1-5 5.9-2.9-.8-5-2.9-5-5.9V4z" fill="none" stroke="currentColor" strokeWidth="1.4" />
                   </svg>
                   <span>
@@ -3739,7 +3394,7 @@ export function PluginsView({
                   </span>
                 </p>
               ) : null}
-              <div className="pm-readme" style={{ borderTop: "1px solid var(--line-2, var(--line))", paddingTop: 12, minHeight: 60, fontSize: 12.5, lineHeight: 1.5, color: "var(--fg-2)" }}>
+              <div className="pm-readme">
                 {!detailReadmeReady ? (
                   <>
                     <div className="pm-rskel" aria-hidden />
@@ -3758,13 +3413,13 @@ export function PluginsView({
                 )}
               </div>
             </div>
-            <div className="bar" style={{ display: "flex", alignItems: "center", gap: 8, padding: "12px 18px 16px", borderTop: "1px solid var(--line-2, var(--line))" }}>
-              <span className="note" style={{ fontSize: 11.5, color: "var(--muted)", flex: 1 }}>
+            <div className="bar">
+              <span className="note">
                 {t("Plugins are other people's code: they sign in and make the requests, or see them as middleware.")}
               </span>
-              <button type="button" className="text" onClick={() => setPluginDetail(null)}>
+              <TextBtn onClick={() => setPluginDetail(null)}>
                 {t("Close")}
-              </button>
+              </TextBtn>
             </div>
           </div>
         </div>

@@ -1,7 +1,10 @@
+import { MagpieIcon } from "../components/MagpieIcon";
+import { PopoverPortal } from "../components/PopoverPortal";
+import { useRowMenu } from "../lib/useRowMenu";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { GroupEditor, type SavedGroupDraft } from "../components/GroupEditor";
-import { ModelPop } from "../components/ModelPop";
 import { Segs } from "../components/Segs";
+import { LibSwitch } from "../components/LibSwitch";
 import { ProtoMultiMenu } from "../components/ProtoMultiMenu";
 import { GATEWAY_ADDR } from "../data/mock";
 import { ZH, t } from "../i18n";
@@ -268,44 +271,7 @@ function GroupRowMenu({
   onCopyShare,
 }: GroupRowMenuProps) {
   const boxRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const box = boxRef.current;
-    if (!box) return;
-    const r = anchor.getBoundingClientRect();
-    const pad = 8;
-    const w = box.offsetWidth || 200;
-    const h = box.offsetHeight || 120;
-    let y = r.bottom + 5;
-    if (y + h > window.innerHeight - pad && r.top - 5 - h >= pad) {
-      y = r.top - 5 - h;
-      box.classList.add("up");
-    }
-    const left = Math.max(pad, Math.min(r.left - 4, window.innerWidth - w - pad));
-    box.style.left = `${left}px`;
-    box.style.top = `${Math.max(pad, y)}px`;
-    anchor.classList.add("open");
-    const outside = (e: MouseEvent) => {
-      if (!box.contains(e.target as Node) && !anchor.contains(e.target as Node)) onClose();
-    };
-    const keys = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        e.preventDefault();
-        e.stopPropagation();
-        onClose();
-        anchor.focus({ preventScroll: true });
-      } else if (e.key === "Tab") onClose();
-    };
-    document.addEventListener("mousedown", outside, true);
-    document.addEventListener("keydown", keys, true);
-    const first = box.querySelector<HTMLButtonElement>("button.rm-item:not(:disabled)");
-    first?.focus({ preventScroll: true });
-    return () => {
-      anchor.classList.remove("open");
-      document.removeEventListener("mousedown", outside, true);
-      document.removeEventListener("keydown", keys, true);
-    };
-  }, [anchor, onClose]);
+  useRowMenu(boxRef, anchor, onClose);
 
   const items: {
     name: string;
@@ -348,7 +314,7 @@ function GroupRowMenu({
   ];
 
   return (
-    <div className="pop row-menu" role="menu" ref={boxRef} style={{ position: "fixed", zIndex: 80 }}>
+    <PopoverPortal><div data-anchored className="pop row-menu fixed" role="menu" ref={boxRef}>
       {items.map((o) => (
         <button
           type="button"
@@ -361,8 +327,7 @@ function GroupRowMenu({
             e.stopPropagation();
             onClose();
             o.run();
-          }}
-        >
+          }}>
           <svg viewBox="0 0 16 16" width={13} height={13} aria-hidden>
             <path
               d={o.icon}
@@ -377,7 +342,7 @@ function GroupRowMenu({
           {o.key ? <span className="rm-key">{o.key}</span> : null}
         </button>
       ))}
-    </div>
+    </div></PopoverPortal>
   );
 }
 
@@ -431,10 +396,6 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
   const [removeAsk, setRemoveAsk] = useState<SavedGroupDraft[] | null>(null);
   const [rowMenu, setRowMenu] = useState<{ slug: string; el: HTMLElement } | null>(null);
 
-  const [groupModel, setGroupModel] = useState("claude-sonnet-4-5");
-  const [popOpen, setPopOpen] = useState(false);
-  const modelBtnRef = useRef<HTMLButtonElement>(null);
-  const [condOpen, setCondOpen] = useState(false);
   const [bySession, setBySession] = useState(() => {
     try {
       return localStorage.getItem("magpie.routingBySession") === "1";
@@ -515,6 +476,8 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
   }, [gImportOpen, importResult]);
 
 
+  // Magpie routing.js layout(): side wires when nodes are beside hub;
+  // when accounts sit under (max560), a lane down the left from hub bottom.
   useEffect(() => {
     const draw = () => {
       const stage = stageRef.current;
@@ -523,39 +486,74 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
       const idle = idleRef.current;
       if (!stage || !hub) return;
       const sr = stage.getBoundingClientRect();
-      const hr = hub.getBoundingClientRect();
-      const hx = hr.left + hr.width / 2 - sr.left;
-      const hy = hr.top + hr.height / 2 - sr.top;
+      if (!sr.width) return;
+      const box = (e: HTMLElement) => {
+        const x = e.getBoundingClientRect();
+        return {
+          l: x.left - sr.left,
+          r: x.right - sr.left,
+          t: x.top - sr.top,
+          b: x.bottom - sr.top,
+          cx: (x.left + x.right) / 2 - sr.left,
+          cy: (x.top + x.bottom) / 2 - sr.top,
+        };
+      };
+      const h = box(hub);
       const next: Wire[] = [];
+      let low = h.b;
       if (src) {
-        const r = src.getBoundingClientRect();
-        const x = r.right - sr.left;
-        const y = r.top + r.height / 2 - sr.top;
-        next.push({
-          d: `M ${x} ${y} C ${x + 36} ${y}, ${hx - 36} ${hy}, ${hx} ${hy}`,
-          live: demoLive,
-        });
+        const s = box(src);
+        low = s.b;
+        if (h.l > s.r) {
+          const mx = (s.r + h.l) / 2;
+          next.push({
+            d: `M${s.r} ${s.cy} C${mx} ${s.cy} ${mx} ${h.cy} ${h.l} ${h.cy}`,
+            live: demoLive,
+          });
+        } else {
+          next.push({
+            d: `M${s.cx} ${s.b} L${h.cx} ${h.t}`,
+            live: demoLive,
+          });
+        }
       }
       if (idle) {
-        const r = idle.getBoundingClientRect();
-        const x = r.left - sr.left;
-        const y = r.top + r.height / 2 - sr.top;
-        next.push({
-          d: `M ${hx} ${hy} C ${hx + 40} ${hy}, ${x - 40} ${y}, ${x} ${y}`,
-          live: false,
-        });
+        const a = box(idle);
+        if (a.l > h.r) {
+          const mx = (h.r + a.l) / 2;
+          next.push({
+            d: `M${h.r} ${h.cy} C${mx} ${h.cy} ${mx} ${a.cy} ${a.l} ${a.cy}`,
+            live: false,
+          });
+        } else {
+          // under hub (max560 / nest 117): Magpie fromHub vertical lane
+          const x = a.l - 12;
+          const y = Math.max(h.b, low - 8);
+          next.push({
+            d: `M${h.cx} ${h.b} L${h.cx} ${y} C${h.cx} ${y + 22} ${x} ${y + 2} ${x} ${y + 24} L${x} ${a.cy - 10} Q${x} ${a.cy} ${a.l} ${a.cy}`,
+            live: false,
+          });
+        }
+      }
+      const svg = stage.querySelector(".rt-wires") as SVGSVGElement | null;
+      const sky = stage.querySelector(".rt-sky") as SVGSVGElement | null;
+      for (const el of [svg, sky]) {
+        if (el) el.setAttribute("viewBox", `0 0 ${sr.width} ${sr.height}`);
       }
       setWires(next);
     };
-    draw();
-    const ro = new ResizeObserver(draw);
+    // after max560 class toggles, wait a frame so grid reflow is measured
+    const kick = () => requestAnimationFrame(draw);
+    kick();
+    const ro = new ResizeObserver(kick);
     if (stageRef.current) ro.observe(stageRef.current);
-    window.addEventListener("resize", draw);
+    if (mainRef.current) ro.observe(mainRef.current);
+    window.addEventListener("resize", kick);
     return () => {
       ro.disconnect();
-      window.removeEventListener("resize", draw);
+      window.removeEventListener("resize", kick);
     };
-  }, [demoLive]);
+  }, [demoLive, mainNarrow]);
 
   // Optional mock flier along first wire when demo live is on
   useEffect(() => {
@@ -641,13 +639,13 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
     .filter(Boolean)
     .join(" ");
 
-  // tray/20 + routing NOTES: another process holds the gateway — only the peer card
+  // tray/20 + Magpie routing.js offline(): another process holds the gateway — .none.rt-off
   if (peerServes) {
     return (
       <main className={viewClass} id="view-routing">
         <div className="row-head">
           <span className="label">{ZH.routing}</span>
-          <span className="rt-livedot on" aria-hidden="true" />
+          <span className="rt-livedot" aria-hidden="true" />
           <span className="note">{t("live, as the gateway decides")}</span>
           <span className="grow" />
           <button
@@ -658,8 +656,7 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
             title={masked
               ? t("Accounts are masked for a screenshot — click to show them")
               : t("Mask the accounts on this page — email addresses and account names — for a screenshot to share")}
-            onClick={toggleMask}
-          >
+            onClick={toggleMask}>
             <svg
               viewBox="0 0 24 24"
               fill="none"
@@ -667,17 +664,18 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
               strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
-              aria-hidden="true"
-            >
+              aria-hidden="true">
               <path d={masked ? EYE_OFF : EYE} />
             </svg>
             <span data-t>{masked ? t("Accounts hidden") : t("Hide accounts")}</span>
           </button>
         </div>
-        <section className="rt" id="rt">
-          <p className="pr-none rt-peer">
-            {t("Another magpie serves the gateway; its routing plays live in that magpie's window.")}
-          </p>
+        <section className={`rt${mainNarrow ? " max560" : ""}`} id="rt">
+          <div className="rt-main">
+            <div className="none rt-off">
+              {t("Another magpie serves the gateway; its routing plays live in that magpie's window.")}
+            </div>
+          </div>
         </section>
       </main>
     );
@@ -687,7 +685,7 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
     <main className={viewClass} id="view-routing">
       <div className="row-head">
         <span className="label">{ZH.routing}</span>
-        <span className="rt-livedot on" aria-hidden="true" />
+        <span className="rt-livedot" aria-hidden="true" />
         <span className="note">{t("live, as the gateway decides")}</span>
         <span className="grow" />
         {groupsOn ? (
@@ -701,16 +699,14 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
               setFoundOn(true);
               setGroupEditorOpen(true);
               setDemoGroups(true);
-            }}
-          >
+            }}>
             <svg
               viewBox="0 0 16 16"
               fill="none"
               stroke="currentColor"
               strokeWidth="1.8"
               strokeLinecap="round"
-              aria-hidden="true"
-            >
+              aria-hidden="true">
               <path d="M8 3.5v9M3.5 8h9" />
             </svg>
             <span data-t>{t("New group")}</span>
@@ -724,8 +720,7 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
           title={masked
             ? t("Accounts are masked for a screenshot — click to show them")
             : t("Mask the accounts on this page — email addresses and account names — for a screenshot to share")}
-          onClick={toggleMask}
-        >
+          onClick={toggleMask}>
           <svg
             viewBox="0 0 24 24"
             fill="none"
@@ -733,20 +728,19 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
             strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
-            aria-hidden="true"
-          >
+            aria-hidden="true">
             <path d={masked ? EYE_OFF : EYE} />
           </svg>
           <span data-t>{masked ? t("Accounts hidden") : t("Hide accounts")}</span>
         </button>
       </div>
 
-      <section className="rt" id="rt">
+      <section className={`rt${mainNarrow ? " max560" : ""}`} id="rt">
         <div className={`rt-main${mainNarrow ? " max560" : ""}`} ref={mainRef}>
           <div className="rt-top">
             <div className="rt-what">
               <b>{demoLive ? t("Demo request · affinity kept") : t("Waiting for a request")}</b>
-              {demoLive ? <span className="rt-livedot on" aria-hidden="true" style={{ marginLeft: 8 }} /> : null}
+              {demoLive ? <span className="rt-livedot" aria-hidden="true" /> : null}
             </div>
             <p className="rt-mode">
               {demoLive
@@ -756,17 +750,10 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                   "Send one from any agent routed through magpie and it plays here as it happens: who routing put first and why, each try, and what each answered.",
                 )}
             </p>
-            {demoLive ? (
-              <p className="rt-req-head note" style={{ margin: "4px 0 0", fontSize: 11.5, color: "var(--muted)" }}>
-                {t("A live request would fly here")}
-                {" · "}
-                claude-sonnet-4-5 → Anthropic
-              </p>
-            ) : null}
           </div>
 
           {replaying && demoLive ? (
-            <div className="rt-replay" id="rtReplay" style={{ animation: "fade-in .2s var(--ease)" }}>
+            <div className="rt-replay" id="rtReplay">
               <div className="rp-top">
                 <span className="rp-tag">{t("Replaying")}</span>
                 <b className="rp-clock">{replayClock}</b>
@@ -778,8 +765,7 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                 <button
                   type="button"
                   className="text"
-                  onClick={() => setReplaySpeed((s) => (s >= 8 ? 1 : s * 2))}
-                >
+                  onClick={() => setReplaySpeed((s) => (s >= 8 ? 1 : s * 2))}>
                   {t("{n}× speed", { n: replaySpeed })}
                 </button>
                 <button
@@ -788,8 +774,7 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                   onClick={() => {
                     setReplaying(false);
                     setReplayFrac(0);
-                  }}
-                >
+                  }}>
                   {t("Stop replay")}
                 </button>
               </div>
@@ -812,8 +797,7 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                 onClick={(e) => {
                   const b = e.currentTarget.getBoundingClientRect();
                   setReplayFrac(Math.max(0, Math.min(1, (e.clientX - b.left) / b.width)));
-                }}
-              >
+                }}>
                 {[0.12, 0.28, 0.45, 0.7, 0.88].map((m, i) => (
                   <i
                     key={i}
@@ -837,8 +821,7 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
               <div
                 className="rt-node rt-src"
                 ref={srcRef}
-                style={{ ["--agent" as string]: "#7c3aed" }}
-              >
+                style={{ ["--agent" as string]: "#7c3aed" }}>
                 <span className="rt-ic">
                   <span className="ic" aria-hidden>
                     <svg viewBox="0 0 20 20" width={22} height={22}>
@@ -866,15 +849,26 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
             <ol className="rt-accts">
               {demoLive ? (
                 <>
+                  {/* Magpie makeRow: i.dot + b + em + div.bar>i width (routing.js ~1315–1317, 1587) */}
                   <li className="on" ref={idleRef} style={{ ["--agent" as string]: "#d97706" }}>
-                    <span className="dot" />
-                    <span className="nm">Anthropic · work@…</span>
-                    <span className="bar" style={{ width: "72%" }} />
+                    <i className="dot" />
+                    <b>
+                      <span className="who">Anthropic · work@…</span>
+                    </b>
+                    <em>{t("answering…")}</em>
+                    <div className="bar">
+                      <i style={{ width: "72%" }} />
+                    </div>
                   </li>
                   <li style={{ ["--agent" as string]: "#10a37f" }}>
-                    <span className="dot" />
-                    <span className="nm">OpenAI · sk-…demo</span>
-                    <span className="bar" style={{ width: "28%" }} />
+                    <i className="dot" />
+                    <b>
+                      <span className="who">OpenAI · sk-…demo</span>
+                    </b>
+                    <em>{t("API key")}</em>
+                    <div className="bar">
+                      <i style={{ width: "28%" }} />
+                    </div>
                   </li>
                 </>
               ) : (
@@ -888,8 +882,7 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
               {flier && (
                 <g
                   className="rt-flier rt-flier-demo req"
-                  transform={`translate(${flier.x} ${flier.y}) rotate(${flier.rot})`}
-                >
+                  transform={`translate(${flier.x} ${flier.y}) rotate(${flier.rot})`}>
                   {/* Magpie FLIER (routing.js): wings beat rtflap .42s from shoulder */}
                   <g className="rt-lift">
                     <g transform="scale(1.2) translate(-6.5 3.2)">
@@ -927,8 +920,7 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
               <span
                 className="rt-errs"
                 aria-disabled={!demoLive}
-                title={ZH.noFailedRequest}
-              >
+                title={ZH.noFailedRequest}>
                 <b>0</b>
                 <span>{t("errors your agent saw")}</span>
               </span>
@@ -937,7 +929,7 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
 
           {/* Gateway trace story — Magpie .rt-log / .rt-steps */}
           {demoLive && (pickedReq || replaying) ? (
-            <div className="rt-log" id="rtLog" style={{ animation: "fade-in .2s var(--ease)" }}>
+            <div className="rt-log" id="rtLog">
               <div className="rt-log-head">
                 <span>
                   {t("How the request at {time} was routed", {
@@ -956,8 +948,7 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                       onClick={() => {
                         setReplayFrac(0);
                         setReplaying(true);
-                      }}
-                    >
+                      }}>
                       {t("Replay")}
                     </button>
                     <button
@@ -966,8 +957,7 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                       onClick={() => {
                         setPickedReq(null);
                         setHistDay("");
-                      }}
-                    >
+                      }}>
                       {t("Back to live")}
                     </button>
                   </>
@@ -984,7 +974,7 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
       </section>
 
       {/* Magpie gateway trace — Purpose/Metrics menus + Accounts column (v0.1.21) */}
-      <div className={`rt-cols${demoLive ? " min1150" : " solo"}`} id="rtHist" style={{ marginTop: 10 }}>
+      <div className={`rt-cols${!demoLive ? " solo" : ""}`} id="rtHist">
         <div className="rt-col" id="rtColA">
           <div className="row-head rt-req-head">
             <span className="label">{t("Requests")}</span>
@@ -1015,8 +1005,7 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                   e.stopPropagation();
                   setMetricsOpen(false);
                   setPurposeOpen((o) => !o);
-                }}
-              >
+                }}>
                 <span>
                   {purposes.length
                     ? t("Purpose: {name}", { name: purposes.map((p) => t(PURPOSE_NAMES[p] || p)).join(", ") })
@@ -1037,8 +1026,7 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                   setPurposes([]);
                   setPurposeOpen(false);
                   purposeBtnRef.current?.focus({ preventScroll: true });
-                }}
-              >
+                }}>
                 <svg viewBox="0 0 12 12" width={11} height={11} aria-hidden>
                   <path d={CROSS} fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
                 </svg>
@@ -1057,8 +1045,7 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                 e.stopPropagation();
                 setPurposeOpen(false);
                 setMetricsOpen((o) => !o);
-              }}
-            >
+              }}>
               <span>{t("Metrics")}</span>
               <svg viewBox="0 0 12 12" width={11} height={11} aria-hidden>
                 <path d={CHEV} fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
@@ -1069,13 +1056,12 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
               className="text"
               id="rtReplayAll"
               hidden={!demoLive}
-              style={{ display: demoLive ? undefined : "none" }}
+             
               onClick={() => {
                 if (!demoLive) return;
                 setReplayFrac(0);
                 setReplaying(true);
-              }}
-            >
+              }}>
               {t("Replay them all")}
             </button>
             {purposeOpen ? (
@@ -1122,8 +1108,8 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
             ) : null}
           </div>
 
-          <div className="rt-filters" hidden={!demoLive} style={{ display: demoLive ? "flex" : "none", marginBottom: 6, alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-            <div className="rt-days" style={{ flex: 1, minWidth: 0 }}>
+          <div className="rt-filters" hidden={!demoLive}>
+            <div className="rt-days">
               <button
                 type="button"
                 className={`rt-day${!histDay ? " on" : ""}`}
@@ -1131,8 +1117,7 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                 onClick={() => {
                   setHistDay("");
                   setReplaying(false);
-                }}
-              >
+                }}>
                 <span>{t("Live")}</span>
               </button>
               {DEMO_DAYS.slice(0, 4).map((d) => (
@@ -1145,8 +1130,7 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                     setHistDay(d.day);
                     setReplaying(false);
                     setPickedReq(null);
-                  }}
-                >
+                  }}>
                   <span>{d.label}</span>
                   <small>{d.requests}</small>
                 </button>
@@ -1161,8 +1145,7 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                 onClick={(e) => {
                   e.stopPropagation();
                   setEarlierOpen((o) => !o);
-                }}
-              >
+                }}>
                 <span>
                   {DEMO_DAYS.slice(4).find((d) => d.day === histDay)?.label || t("Earlier days")}
                 </span>
@@ -1198,7 +1181,7 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                 />
               ) : null}
             </div>
-            <div className="rt-group-by" style={{ display: "inline-flex", gap: 4 }}>
+            <div className="rt-group-by">
               <button
                 type="button"
                 className={`rt-day${!bySession ? " on" : ""}`}
@@ -1206,8 +1189,7 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                 onClick={() => {
                   setBySession(false);
                   try { localStorage.setItem("magpie.routingBySession", "0"); } catch { /* */ }
-                }}
-              >
+                }}>
                 {t("By request")}
               </button>
               <button
@@ -1217,14 +1199,24 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                 onClick={() => {
                   setBySession(true);
                   try { localStorage.setItem("magpie.routingBySession", "1"); } catch { /* */ }
-                }}
-              >
+                }}>
                 {t("By session")}
               </button>
             </div>
           </div>
 
-          <div className={`list rt-reqs${demoLive ? "" : " none"}`} id="rtReqs">
+          <div
+            className={`list rt-reqs${
+              !demoLive ||
+              (purposes.length > 0 &&
+                !["unmarked", "kind:compact", "kind:thread_title", "kind:web_search"].some((p) =>
+                  purposes.includes(p),
+                ))
+                ? " none"
+                : ""
+            }`}
+            id="rtReqs"
+          >
             {(() => {
               type Req = {
                 id: string;
@@ -1314,14 +1306,13 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                 <button
                   key={r.id}
                   type="button"
-                  className={`rt-req${r.ok === false ? " bad" : ""}${r.moved ? " moved" : ""}${r.wait ? " wait" : ""}${pickedReq === r.id ? " on" : ""}`}
+                  className={`rt-req${r.ok === false ? " bad" : ""}${r.moved ? " moved" : ""}${r.wait ? " wait" : ""}`}
                   aria-pressed={pickedReq === r.id}
-                  style={{ animation: "fade-in .2s var(--ease)" }}
+                 
                   onClick={() => {
                     setPickedReq(r.id);
                     setDemoTurn((n) => n + 1);
-                  }}
-                >
+                  }}>
                   <span className="at">{r.at}</span>
                   <span className="asked">
                     <i className="ag" aria-hidden />
@@ -1344,8 +1335,8 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
 
               if (!demoLive) {
                 return (
-                  <div className="empty-state" style={{ padding: "14px 8px", color: "var(--muted)", fontSize: 12.5 }}>
-                    <b style={{ display: "block", marginBottom: 4, color: "var(--fg-2)" }}>
+                  <div className="empty-state">
+                    <b>
                       {t("No requests since magpie started")}
                     </b>
                     {t("Each request an agent sends through magpie shows up here: who answered it, why, and each try.")}
@@ -1355,8 +1346,8 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
 
               if (!filtered.length) {
                 return (
-                  <div className="empty-state" style={{ padding: "14px 8px", color: "var(--muted)", fontSize: 12.5 }}>
-                    <b style={{ display: "block", marginBottom: 4, color: "var(--fg-2)" }}>
+                  <div className="empty-state">
+                    <b>
                       {purposes.length ? t("No requests match these filters.") : t("No requests since magpie started")}
                     </b>
                     {t("Each request an agent sends through magpie shows up here: who answered it, why, and each try.")}
@@ -1391,7 +1382,7 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                         return n;
                       });
                     }}
-                    style={{ animation: "fade-in .18s var(--ease)" }}
+                   
                   >
                     <span className="arrow" aria-hidden>
                       {open ? "▾" : "▸"}
@@ -1417,7 +1408,7 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
         </div>
 
         {/* Accounts and keys column — Magpie colB / renderActs */}
-        <div className="rt-col" id="rtColB" hidden={!demoLive} style={{ display: demoLive ? "flex" : "none", flexDirection: "column" }}>
+        <div className="rt-col" id="rtColB" hidden={!demoLive}>
           <div className="row-head">
             <span className="label">{t("Accounts and keys")}</span>
             <button
@@ -1431,8 +1422,7 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                 if (actBusy) return;
                 setActBusy(true);
                 window.setTimeout(() => setActBusy(false), 700);
-              }}
-            >
+              }}>
               <svg viewBox="0 0 16 16" width={12} height={12} fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                 <path d="M13.5 8a5.5 5.5 0 1 1-1.6-3.9M13.5 2.5v3h-3" />
               </svg>
@@ -1444,11 +1434,11 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
             {demoLive ? (
               <>
                 <div className="rt-prov">
-                  <span className="ic" aria-hidden>◆</span>
+                  <MagpieIcon name="anthropic" />
                   <b>Anthropic</b>
                   <span className="rt-go">{t("Smart")}</span>
                 </div>
-                <div className="rt-act" title="anthropic/ada" style={{ animation: "rtin .4s ease-out" }}>
+                <div className="rt-act" title="anthropic/ada">
                   <div className="nm">
                     <b>ada@example.com</b>
                     <span>Pro</span>
@@ -1493,8 +1483,7 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                       e.preventDefault();
                       (e.currentTarget as HTMLElement).click();
                     }
-                  }}
-                >
+                  }}>
                   <div className="nm">
                     <b>{t("{n} keys", { n: 2 })}</b>
                     <span>{t("API key")}</span>
@@ -1506,7 +1495,7 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                   </div>
                 </div>
                 {foldedKeys.has("openai/*") ? (
-                  <div className="rt-act" title="openai/sk-demo" style={{ animation: "fade-in .18s var(--ease)" }}>
+                  <div className="rt-act" title="openai/sk-demo">
                     <div className="nm">
                       <b>sk-…7a</b>
                       <span>{t("API key")}</span>
@@ -1529,8 +1518,8 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
 
       {/* Magpie renderPools — Several accounts or keys (when pools exist) */}
       {demoLive ? (
-        <div className="rt-pools" style={{ margin: "8px 0 4px" }}>
-          <div className="row-head" style={{ padding: "4px 4px 8px" }}>
+        <div className="rt-pools">
+          <div className="row-head">
             <span className="label">{t("Several accounts or keys")}</span>
             <span className="grow" />
             <span className="note">{t("each provider routes over its own")}</span>
@@ -1611,8 +1600,7 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                 className="text rt-gtplbtn"
                 ref={tplBtnRef}
                 aria-expanded={tplMenuOpen}
-                onClick={() => setTplMenuOpen((o) => !o)}
-              >
+                onClick={() => setTplMenuOpen((o) => !o)}>
                 <span>{t("Templates")}</span>
                 <svg viewBox="0 0 12 12" width={11} height={11} aria-hidden>
                   <path d="M3 4.5 6 7.5 9 4.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
@@ -1632,8 +1620,7 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                   setImportResult(null);
                   return next;
                 });
-              }}
-            >
+              }}>
               {t("Import")}
             </button>
             {savedGroups.length >= 2 ? (
@@ -1646,8 +1633,7 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                     if (s) setPickedSlugs(new Set());
                     return !s;
                   });
-                }}
-              >
+                }}>
                 {t("Select")}
               </button>
             ) : null}
@@ -1660,8 +1646,7 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                 setEditGroup(null);
                 setGroupEditorOpen(true);
                 setDemoGroups(true);
-              }}
-            >
+              }}>
               <svg viewBox="0 0 16 16" width={11} height={11} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden>
                 <path d="M8 3.5v9M3.5 8h9" />
               </svg>
@@ -1670,10 +1655,10 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
               </>
             ) : null}
           </div>
-          <div className="rt-gfound row pref" style={{ alignItems: "flex-start", gap: 12, padding: "10px 4px" }}>
-            <div className="txt" style={{ flex: 1, minWidth: 0 }}>
-              <b style={{ display: "block", fontSize: 13 }}>{t("Find groups on their own")}</b>
-              <small style={{ display: "block", color: "var(--muted)", lineHeight: 1.4, marginTop: 2 }}>
+          <div className="rt-gfound row pref">
+            <div className="txt">
+              <b>{t("Find groups on their own")}</b>
+              <small>
                 {foundOn
                   ? t(
                       "A model two or more of your providers serve becomes a group of them (auto-…). Switch it off to list and serve only the groups you made or changed.",
@@ -1683,11 +1668,8 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                     )}
               </small>
             </div>
-            <button
-              type="button"
-              className={`lib-switch${foundOn ? " on" : ""}`}
-              role="switch"
-              aria-checked={foundOn}
+            <LibSwitch
+              on={foundOn}
               aria-label={t("Find groups on their own")}
               onClick={() => {
                 const next = !foundOn;
@@ -1701,47 +1683,35 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                   "ok",
                 );
               }}
-            >
-              <i />
-            </button>
+            />
           </div>
-          <div className="rt-gnames row pref" style={{ alignItems: "flex-start", gap: 12, padding: "10px 4px" }}>
-            <div className="txt" style={{ flex: 1, minWidth: 0 }}>
-              <b style={{ display: "block", fontSize: 13 }}>{t("Names in agents’ lists")}</b>
-              <small style={{ display: "block", color: "var(--muted)", lineHeight: 1.4, marginTop: 2 }}>
+          <div className="rt-gnames row pref">
+            <div className="txt">
+              <b>{t("Names in agents’ lists")}</b>
+              <small>
                 {t(
                   "Whether “· routing group” follows a group’s name in the agents’ lists: one setting for every group, and for the provider after each model’s name, as on Settings.",
                 )}
               </small>
             </div>
-            <div className="segs" role="radiogroup" aria-label={t("Names in agents’ lists")}>
-              {(
-                [
-                  ["off", "Off"],
-                  ["skip", "Not on names I set"],
-                  ["on", "On"],
-                ] as const
-              ).map(([v, label]) => (
-                <button
-                  key={v}
-                  type="button"
-                  className={`opt${nameSuffix === v ? " on" : ""}`}
-                  role="radio"
-                  aria-checked={nameSuffix === v}
-                  onClick={() => {
-                    setNameSuffix(v);
-                    persistNameSuffix(v);
-                    // Magpie settings/plain-names: write at once, no toast (176–178)
-                  }}
-                >
-                  {t(label)}
-                </button>
-              ))}
-            </div>
+            <Segs
+              value={nameSuffix}
+              onChange={(v) => {
+                setNameSuffix(v);
+                persistNameSuffix(v);
+                // Magpie settings/plain-names: write at once, no toast (176–178)
+              }}
+              items={[
+                { id: "off" as const, label: t("Off") },
+                { id: "skip" as const, label: t("Not on names I set") },
+                { id: "on" as const, label: t("On") },
+              ]}
+              aria-label={t("Names in agents’ lists")}
+            />
           </div>
           {/* Magpie templateCards — only while user has no own group (shots 23–24) */}
           {!savedGroups.length ? (
-            <div className="rt-gtpl" style={{ animation: "fade-in .18s var(--ease)" }}>
+            <div className="rt-gtpl">
               <div className="rt-gtpl-head">
                 {t("Start from a template: made of your own models, added in a click")}
               </div>
@@ -1769,12 +1739,11 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                               setTemplateSeed({ name: t(tp.title), memberIds: seedMembers });
                               setGroupEditorOpen(true);
                               setDemoGroups(true);
-                            }}
-                          >
+                            }}>
                             {t("Add")}
                           </button>
                         ) : (
-                          <span className="text quiet" style={{ opacity: 0.55 }}>
+                          <span className="text quiet">
                             {t("Add a provider first")}
                           </span>
                         )}
@@ -1822,8 +1791,7 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                         setGImportOpen(false);
                         setImportPaste("");
                         setImportResult(null);
-                      }}
-                    >
+                      }}>
                       {t("Done")}
                     </button>
                   </div>
@@ -1987,8 +1955,7 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                           rulesLeft,
                         });
                         onStatus?.(t("Added {name}", { name }), "ok");
-                      }}
-                    >
+                      }}>
                       {t("Import")}
                     </button>
                     <button
@@ -1998,8 +1965,7 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                         setGImportOpen(false);
                         setImportPaste("");
                         setImportResult(null);
-                      }}
-                    >
+                      }}>
                       {t("Cancel")}
                     </button>
                   </div>
@@ -2071,32 +2037,36 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
             />
           ) : null}
 
-          {false ? (
-            <div className="none rt-gnone" style={{ padding: "16px 4px", color: "var(--muted)", fontSize: 13 }}>
-              {foundOn
-                ? t(
-                    "No group yet. A model two of your providers serve becomes one on its own; New group makes one of any models you like.",
-                  )
-                : t("No group yet. New group makes one of any models you like.")}
-            </div>
-          ) : null}
           {selecting && savedGroups.length >= 2 ? (
             <div className="rt-gsel">
-              <span style={{ fontSize: 12.5, fontWeight: 600 }}>
-                {t("{n} selected", { n: pickedSlugs.size })}
+              <input
+                type="checkbox"
+                aria-label={t("Select every group")}
+                checked={pickedSlugs.size > 0 && pickedSlugs.size === savedGroups.length}
+                ref={(el) => {
+                  if (el) el.indeterminate = pickedSlugs.size > 0 && pickedSlugs.size < savedGroups.length;
+                }}
+                onChange={(e) => {
+                  setPickedSlugs(
+                    e.target.checked ? new Set(savedGroups.map((g) => g.slug)) : new Set(),
+                  );
+                }}
+              />
+              <span className="note">
+                {pickedSlugs.size
+                  ? t("{n} selected", { n: pickedSlugs.size })
+                  : t("Pick the groups to remove")}
               </span>
               <span className="grow" />
               <button
                 type="button"
-                className="text"
-                style={{ color: pickedSlugs.size ? "var(--red)" : undefined }}
+                className="text danger rt-gremove"
                 disabled={!pickedSlugs.size}
                 onClick={() => {
                   const list = savedGroups.filter((g) => pickedSlugs.has(g.slug));
                   if (!list.length) return;
                   setRemoveAsk(list);
-                }}
-              >
+                }}>
                 {t("Remove")}
               </button>
               <button
@@ -2105,15 +2075,14 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                 onClick={() => {
                   setSelecting(false);
                   setPickedSlugs(new Set());
-                }}
-              >
+                }}>
                 {t("Done")}
               </button>
             </div>
           ) : null}
 
           {savedGroups.length ? (
-            <div className="rt-groups" style={{ marginTop: 8 }}>
+            <div className="list rt-groups">
               {(() => {
                 const words = groupFilter.trim().toLowerCase().split(/\s+/).filter(Boolean);
                 const filtered = words.length
@@ -2144,7 +2113,7 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                 <div
                   key={g.slug}
                   className={`rt-group${g.on ? "" : " disabled"}${selecting ? " rt-gpick" : ""}${selecting && picked ? " on" : ""}`}
-                  style={{ animation: "fade-in .18s var(--ease)" }}
+                 
                   onContextMenu={(e) => {
                     if (selecting) return;
                     e.preventDefault();
@@ -2159,8 +2128,7 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                       else next.add(g.slug);
                       return next;
                     });
-                  }}
-                >
+                  }}>
                   {selecting ? (
                     <input
                       type="checkbox"
@@ -2174,7 +2142,7 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                         });
                       }}
                       onClick={(e) => e.stopPropagation()}
-                      style={{ width: 16, height: 16, flex: "none" }}
+                     
                       aria-label={g.name}
                     />
                   ) : (
@@ -2205,8 +2173,7 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                         return next;
                       });
                       onStatus?.(t("Group order saved"), "ok");
-                    }}
-                  >
+                    }}>
                     <svg className="ic" viewBox="0 0 16 16" width={16} height={16} aria-hidden>
                       <rect x="3" y="3" width="10" height="10" rx="2" fill="none" stroke="currentColor" strokeWidth="1.4" />
                       <path d="M6 8h4M8 6v4" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
@@ -2242,8 +2209,7 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                                   }),
                                   "ok",
                                 );
-                              }}
-                            >
+                              }}>
                               <i className="dot" aria-hidden />
                               <span className="n">{short}</span>
                             </button>
@@ -2279,8 +2245,7 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                       setEditGroup(g);
                       setTemplateSeed(null);
                       setGroupEditorOpen(true);
-                    }}
-                  >
+                    }}>
                     {t("Edit")}
                   </button>
                   ) : null}
@@ -2303,8 +2268,7 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                     onClick={(e) => {
                       e.stopPropagation();
                       setSavedGroups((gs) => gs.map((x) => (x.slug === g.slug ? { ...x, on: !x.on } : x)));
-                    }}
-                  >
+                    }}>
                     <i />
                   </button>
                   ) : null}
@@ -2398,30 +2362,29 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
           {removeAsk ? (
             <div
               className="modal"
-              style={{ zIndex: 40, background: "rgba(20,22,30,.35)" }}
+             
               onClick={(e) => {
                 if (e.target === e.currentTarget) setRemoveAsk(null);
-              }}
-            >
+              }}>
               <div
                 className="dialog sm"
                 role="alertdialog"
                 aria-labelledby="rtRemoveGroupsTitle"
-                style={{ animation: "pop-in .28s var(--ease)", maxWidth: 360 }}
+               
               >
-                <div className="ehead" style={{ padding: "14px 16px 0" }}>
+                <div className="ehead">
                   <b id="rtRemoveGroupsTitle">
                     {t("Remove {name}?", {
                       name: removeAsk.map((g) => g.name).join(", "),
                     })}
                   </b>
                 </div>
-                <p style={{ margin: "10px 16px 0", fontSize: 13, color: "var(--fg-2)", lineHeight: 1.45 }}>
+                <p>
                   {removeAsk.length === 1
                     ? t("This routing group will no longer be available to agents.")
                     : t("These routing groups will no longer be available to agents.")}
                 </p>
-                <div className="bar" style={{ padding: "14px 16px" }}>
+                <div className="bar">
                   <span className="grow" />
                   <button type="button" className="text" onClick={() => setRemoveAsk(null)}>
                     {t("Cancel")}
@@ -2429,7 +2392,7 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                   <button
                     type="button"
                     className="text"
-                    style={{ background: "var(--red)", color: "#fff", borderColor: "var(--red)" }}
+                   
                     onClick={() => {
                       const n = removeAsk.length;
                       const slugs = new Set(removeAsk.map((g) => g.slug));
@@ -2443,8 +2406,7 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                           : t("{n} groups removed", { n }),
                         "ok",
                       );
-                    }}
-                  >
+                    }}>
                     {t("Remove")}
                   </button>
                 </div>
@@ -2453,74 +2415,13 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
           ) : null}
 
           {demoGroups && !savedGroups.length && !groupEditorOpen ? (
-            <div className="rt-groups" style={{ marginTop: 8 }}>
-              <div className="rt-group card">
-                <div className="rt-ghead">
-                  <b>{t("Default")}</b>
-                  <span className="grow" />
-                  <button
-                    type="button"
-                    className="sess-pick set"
-                    ref={modelBtnRef}
-                    aria-haspopup="listbox"
-                    aria-expanded={popOpen}
-                    onClick={() => setPopOpen((o) => !o)}
-                  >
-                    <span>{groupModel}</span>
-                    <svg viewBox="0 0 12 12" width={11} height={11} aria-hidden>
-                      <path d="M3 4.5 6 7.5 9 4.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-                    </svg>
-                  </button>
-                  <ModelPop
-                    open={popOpen}
-                    anchor={modelBtnRef.current}
-                    value={groupModel}
-                    modelPicker
-                    options={[
-                      { value: "claude-sonnet-4-5", label: "claude-sonnet-4-5", group: "Anthropic" },
-                      { value: "claude-haiku-4-5", label: "claude-haiku-4-5", group: "Anthropic" },
-                      { value: "gpt-5", label: "gpt-5", group: "OpenAI" },
-                      { value: "gemini-2.5-pro", label: "gemini-2.5-pro", group: "Google" },
-                    ]}
-                    onPick={(v) => {
-                      setGroupModel(v);
-                      setPopOpen(false);
-                    }}
-                    onClose={() => setPopOpen(false)}
-                  />
-                </div>
-                <button
-                  type="button"
-                  className={`fold text${condOpen ? " open" : ""}`}
-                  aria-expanded={condOpen}
-                  onClick={() => setCondOpen((o) => !o)}
-                >
-                  <svg viewBox="0 0 12 12" width={11} height={11} aria-hidden>
-                    <path d="M4.5 2.5 8 6l-3.5 3.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-                  </svg>
-                  {t("Conditions")}
-                </button>
-                {condOpen ? (
-                  <div className="rt-conds" style={{ marginTop: 8, display: "flex", flexDirection: "column", gap: 6 }}>
-                    <div className="row pref" style={{ padding: "6px 8px" }}>
-                      <div className="who">
-                        <div className="name">{t("When agent is")}</div>
-                        <div className="sub">Claude Code · Codex</div>
-                      </div>
-                      <button type="button" className="text">{t("Edit")}</button>
-                    </div>
-                    <div className="row pref" style={{ padding: "6px 8px" }}>
-                      <div className="who">
-                        <div className="name">{t("When model matches")}</div>
-                        <div className="sub">*sonnet* · gpt-*</div>
-                      </div>
-                      <button type="button" className="text">{t("Edit")}</button>
-                    </div>
-                    <button type="button" className="text" style={{ alignSelf: "flex-start" }}>
-                      + {t("Condition")}
-                    </button>
-                  </div>
-                ) : null}
+            <div className="list rt-groups">
+              <div className="none rt-gnone">
+                {foundOn
+                  ? t(
+                      "No group yet. A model two of your providers serve becomes one on its own; New group makes one of any models you like.",
+                    )
+                  : t("No group yet. New group makes one of any models you like.")}
               </div>
             </div>
           ) : null}

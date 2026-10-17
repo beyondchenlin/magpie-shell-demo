@@ -1,0 +1,211 @@
+[
+  {
+    "name": "复制 API 地址",
+    "expected": "http://127.0.0.1:3425/v1",
+    "actual": "http://127.0.0.1:3425/v1",
+    "matches": true,
+    "class": "copy done",
+    "toast": "已复制API 地址"
+  },
+  {
+    "name": "复制 密钥",
+    "expected": "magpie",
+    "actual": "magpie",
+    "matches": true,
+    "class": "copy done",
+    "toast": "已复制密钥"
+  },
+  {
+    "name": "复制 模型 ID",
+    "expected": "provider/jev-latest",
+    "actual": "provider/jev-latest",
+    "matches": true,
+    "class": "copy done",
+    "toast": "已复制模型 ID"
+  },
+  {
+    "name": "复制 代码片段",
+    "expected": "const r = await fetch(\"http://127.0.0.1:3425/v1/systemone\", {\n  method: \"POST\",\n  headers: { Authorization: \"Bearer magpie\", \"Content-Type\": \"application/json\" },\n  body: JSON.stringify({\n    model: \"provider/jev-latest\",\n    state: { message: \"My order never arrived, refund it\" },\n    questions: { team: {\n      type: \"choice\",\n      instructions: \"Which team should answer the message?\",\n      criteria: { billing: \"Payments and refunds\", shipping: \"Deliveries\", other: \"Anything else\" },\n    } },\n  }),\n});\nconst a = (await r.json()).answers.team;\nconsole.log(a.choice, a.confidence);",
+    "actual": "const r = await fetch(\"http://127.0.0.1:3425/v1/systemone\", {\n  method: \"POST\",\n  headers: { Authorization: \"Bearer magpie\", \"Content-Type\": \"application/json\" },\n  body: JSON.stringify({\n    model: \"provider/jev-latest\",\n    state: { message: \"My order never arrived, refund it\" },\n    questions: { team: {\n      type: \"choice\",\n      instructions: \"Which team should answer the message?\",\n      criteria: { billing: \"Payments and refunds\", shipping: \"Deliveries\", other: \"Anything else\" },\n    } },\n  }),\n});\nconst a = (await r.json()).answers.team;\nconsole.log(a.choice, a.confidence);",
+    "matches": true,
+    "class": "copy done",
+    "toast": "已复制代码片段"
+  },
+  {
+    "name": "repeat-and-reset",
+    "class": "copy",
+    "events": [
+      {
+        "at": 35947.10000000894,
+        "kind": "write",
+        "text": "http://127.0.0.1:3425/v1"
+      },
+      {
+        "at": 35948.80000001192,
+        "kind": "resolved"
+      },
+      {
+        "at": 35949,
+        "kind": "feedback",
+        "label": "复制 API 地址",
+        "done": true,
+        "oldClass": "copy"
+      },
+      {
+        "at": 35949,
+        "kind": "feedback",
+        "label": "复制 API 地址",
+        "done": true,
+        "oldClass": "copy"
+      },
+      {
+        "at": 35954,
+        "kind": "feedback",
+        "label": "复制 API 地址",
+        "done": true,
+        "oldClass": "copy done"
+      },
+      {
+        "at": 36329,
+        "kind": "write",
+        "text": "magpie"
+      },
+      {
+        "at": 36329.90000000596,
+        "kind": "resolved"
+      },
+      {
+        "at": 36330,
+        "kind": "feedback",
+        "label": "复制 密钥",
+        "done": true,
+        "oldClass": "copy"
+      },
+      {
+        "at": 36330,
+        "kind": "feedback",
+        "label": "复制 密钥",
+        "done": true,
+        "oldClass": "copy"
+      },
+      {
+        "at": 36336.30000001192,
+        "kind": "feedback",
+        "label": "复制 密钥",
+        "done": true,
+        "oldClass": "copy done"
+      },
+      {
+        "at": 36671.5,
+        "kind": "write",
+        "text": "provider/jev-latest"
+      },
+      {
+        "at": 36673.20000000298,
+        "kind": "resolved"
+      },
+      {
+        "at": 36673.5,
+        "kind": "feedback",
+        "label": "复制 模型 ID",
+        "done": true,
+        "oldClass": "copy"
+      },
+      {
+        "at": 36673.5,
+        "kind": "feedback",
+        "label": "复制 模型 ID",
+        "done": true,
+        "oldClass": "copy"
+      },
+      {
+        "at": 36688.10000000894,
+        "kind": "feedback",
+        "label": "复制 模型 ID",
+        "done": true,
+        "oldClass": "copy done"
+      },
+      {
+        "at": 36996.40000000596,
+        "kind": "write",
+        "text": "const r = await fetch(\"http://127.0.0.1:3425/v1/systemone\", {\n  method: \"POST\",\n  headers: { Authorization: \"Bearer magpie\", \"Content-Type\": \"application/json\" },\n  body: JSON.stringify({\n    model: \"provider/jev-latest\",\n    state: { message: \"My order never arrived, refund it\" },\n    questions: { team: {\n      type: \"choice\",\n      instructions: \"Which team should answer the message?\",\n      criteria: { billing: \"Payments and refunds\", shipping: \"Deliveries\", other: \"Anything else\" },\n    } },\n  }),\n});\nconst a = (await r.json()).answers.team;\nconsole.log(a.choice, a.confidence);"
+      },
+      {
+        "at": 36997.30000001192,
+        "kind": "resolved"
+      },
+      {
+        "at": 36997.5,
+        "kind": "feedback",
+        "label": "复制 代码片段",
+        "done": true,
+        "oldClass": "copy"
+      },
+      {
+        "at": 36997.5,
+        "kind": "feedback",
+        "label": "复制 代码片段",
+        "done": true,
+        "oldClass": "copy"
+      },
+      {
+        "at": 37003.60000000894,
+        "kind": "feedback",
+        "label": "复制 代码片段",
+        "done": true,
+        "oldClass": "copy done"
+      },
+      {
+        "at": 37154.40000000596,
+        "kind": "feedback",
+        "label": "复制 API 地址",
+        "done": false,
+        "oldClass": "copy done"
+      },
+      {
+        "at": 37463.20000000298,
+        "kind": "write",
+        "text": "const r = await fetch(\"http://127.0.0.1:3425/v1/systemone\", {\n  method: \"POST\",\n  headers: { Authorization: \"Bearer magpie\", \"Content-Type\": \"application/json\" },\n  body: JSON.stringify({\n    model: \"provider/jev-latest\",\n    state: { message: \"My order never arrived, refund it\" },\n    questions: { team: {\n      type: \"choice\",\n      instructions: \"Which team should answer the message?\",\n      criteria: { billing: \"Payments and refunds\", shipping: \"Deliveries\", other: \"Anything else\" },\n    } },\n  }),\n});\nconst a = (await r.json()).answers.team;\nconsole.log(a.choice, a.confidence);"
+      },
+      {
+        "at": 37464.40000000596,
+        "kind": "resolved"
+      },
+      {
+        "at": 37464.70000000298,
+        "kind": "feedback",
+        "label": "复制 代码片段",
+        "done": true,
+        "oldClass": "copy done"
+      },
+      {
+        "at": 37464.70000000298,
+        "kind": "feedback",
+        "label": "复制 代码片段",
+        "done": true,
+        "oldClass": "copy"
+      },
+      {
+        "at": 37534.5,
+        "kind": "feedback",
+        "label": "复制 密钥",
+        "done": false,
+        "oldClass": "copy done"
+      },
+      {
+        "at": 37875.40000000596,
+        "kind": "feedback",
+        "label": "复制 模型 ID",
+        "done": false,
+        "oldClass": "copy done"
+      },
+      {
+        "at": 38675.90000000596,
+        "kind": "feedback",
+        "label": "复制 代码片段",
+        "done": false,
+        "oldClass": "copy done"
+      }
+    ]
+  }
+]

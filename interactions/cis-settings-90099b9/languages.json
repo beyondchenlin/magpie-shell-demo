@@ -1,0 +1,224 @@
+[
+  {
+    "localeName": "English",
+    "fontButtons": [
+      {
+        "disabled": false,
+        "label": "Interface font: Font family"
+      },
+      {
+        "disabled": true,
+        "label": "Interface font: Font style"
+      },
+      {
+        "disabled": false,
+        "label": "Code font: Font family"
+      },
+      {
+        "disabled": true,
+        "label": "Code font: Font style"
+      }
+    ],
+    "general": "Appearance\nSystem\nLight\nDark\nColorblind mode\nOff\nOn\nLanguage\nEnglish\nText size\nEverything in magpie's windows, larger; Ctrl+ / Ctrl− / Ctrl+0 too\n100%\n110%\n125%\n150%\nInterface font\nSystem default\nSystem default\nAa 0123 · 中文\nCode font\nSystem default\nSystem default\nAa 0123 · 中文\nClick the tray icon to\nOpen the quick panel\nOpen the main window\nProvider in model names\nOff\nNot on names I set\nOn\nCodex subagents on any model\nA GPT lead spawns subagents on magpie’s other models. New threads only; Codex’s own multi_agent_v2 still wins\nOff\nOn\nLong conversations\nCodex and Claude Code compact at 272K or the size typed; a full window makes turns slower and costlier\nCompact at 272K\nFull window\nCodex thread titles\nCodex’s own (ChatGPT)\nCodex thread descriptions\nCodex’s own (ChatGPT)\nCodex composer predictions\nCodex’s own (ChatGPT)\nCodex auto-review model\nCodex’s own pick\nOpen at login\nOff\nOn\nLightweight mode\nA closed window frees about 100 MB after a minute; the gateway and tasks keep running, only the page reloads\nOff\nOn\nPrevent sleep\nKeeps this computer awake while magpie runs tasks\nOff\nOn\nScreen on too",
+    "heading": "Settings",
+    "lang": "en",
+    "nav": "WorkAgentsModelsProvidersRoutingGatewayInsightsUsageExtendPlugins",
+    "pick": "English",
+    "root": {
+      "bottom": 816,
+      "height": 792,
+      "left": 77,
+      "right": 1287,
+      "top": 24,
+      "width": 1210,
+      "x": 77,
+      "y": 24
+    },
+    "tabs": []
+  },
+  {
+    "localeName": "简体中文",
+    "fontButtons": [
+      {
+        "disabled": false,
+        "label": "界面字体: 字体"
+      },
+      {
+        "disabled": true,
+        "label": "界面字体: 样式"
+      },
+      {
+        "disabled": false,
+        "label": "代码字体: 字体"
+      },
+      {
+        "disabled": true,
+        "label": "代码字体: 样式"
+      }
+    ],
+    "general": "外观\n跟随系统\n浅色\n深色\n色盲模式\n关闭\n开启\n语言\n简体中文\n文字大小\n放大 magpie 窗口里的一切；也可用 Ctrl+ / Ctrl− / Ctrl+0\n100%\n110%\n125%\n150%\n界面字体\n系统默认\n系统默认\nAa 0123 · 中文\n代码字体\n系统默认\n系统默认\nAa 0123 · 中文\n点击托盘图标\n打开快捷面板\n打开主窗口\n模型名带供应商\n关闭\n自定义名称不带供应商\n开启\nCodex 子代理可用任意模型\nGPT 主代理可在 magpie 的其他模型上开子代理。仅对新会话生效；Codex 自身的 multi_agent_v2 优先\n关闭\n开启\n长对话\nCodex 和 Claude Code 在 272K（或这里填的大小）时压缩；用完整窗口则每轮更慢更贵\n272K 时压缩\n完整窗口\nCodex 会话标题\nCodex 自带（ChatGPT）\nCodex 会话描述\nCodex 自带（ChatGPT）\nCodex 输入框预测\nCodex 自带（ChatGPT）\nCodex 自动审批模型\n由 Codex 决定\n开机自启\n关闭\n开启\n轻量模式\n窗口关闭一分钟后释放约 100 MB；网关和后台任务照常运行，只重新加载页面\n关闭\n开启\n防止休眠\n在 magpie 运行任务时，让电脑保持唤醒状态\n关闭\n开启\n屏幕也常亮",
+    "heading": "设置",
+    "lang": "zh-CN",
+    "nav": "使用Agent模型供应商路由网关观测用量扩展插件",
+    "pick": "简体中文",
+    "root": {
+      "bottom": 816,
+      "height": 792,
+      "left": 77,
+      "right": 1287,
+      "top": 24,
+      "width": 1210,
+      "x": 77,
+      "y": 24
+    },
+    "tabs": []
+  },
+  {
+    "localeName": "繁體中文",
+    "fontButtons": [
+      {
+        "disabled": false,
+        "label": "介面字型: 字型"
+      },
+      {
+        "disabled": true,
+        "label": "介面字型: 樣式"
+      },
+      {
+        "disabled": false,
+        "label": "程式碼字型: 字型"
+      },
+      {
+        "disabled": true,
+        "label": "程式碼字型: 樣式"
+      }
+    ],
+    "general": "外觀\n跟隨系統\n淺色\n深色\n色盲模式\n關閉\n開啟\n語言\n繁體中文\n文字大小\n放大 magpie 窗口裡的一切；也可用 Ctrl+ / Ctrl− / Ctrl+0\n100%\n110%\n125%\n150%\n介面字型\n系統預設\n系統預設\nAa 0123 · 中文\n程式碼字型\n系統預設\n系統預設\nAa 0123 · 中文\n點選托盤圖示\n開啟快捷面板\n開啟主視窗\n模型名帶供應商\n關閉\n自定義名稱不帶供應商\n開啟\nCodex 子代理可用任意模型\nGPT 主代理可在 magpie 的其他模型上開子代理。僅對新會話生效；Codex 自身的 multi_agent_v2 優先\n關閉\n開啟\n長對話\nCodex and Claude Code compact at 272K or the size typed; a full window makes turns slower and costlier\n272K 時壓縮\n完整視窗\nCodex 會話標題\nCodex 自帶（ChatGPT）\nCodex 對話描述\nCodex 自帶（ChatGPT）\nCodex 輸入框預測\nCodex 自帶（ChatGPT）\nCodex 自動審批模型\n由 Codex 決定\n開機自啟\n關閉\n開啟\n輕量模式\n視窗關閉一分鐘後釋放約 100 MB；閘道與背景作業照常執行，只重新載入頁面\n關閉\n開啟\n防止休眠\n在 magpie 執行任務時，讓電腦保持喚醒狀態\n關閉\n開啟\n螢幕也常亮",
+    "heading": "設定",
+    "lang": "zh-TW",
+    "nav": "使用Agent模型供應商路由閘道觀測用量擴充外掛",
+    "pick": "繁體中文",
+    "root": {
+      "bottom": 816,
+      "height": 792,
+      "left": 77,
+      "right": 1287,
+      "top": 24,
+      "width": 1210,
+      "x": 77,
+      "y": 24
+    },
+    "tabs": []
+  },
+  {
+    "localeName": "日本語",
+    "fontButtons": [
+      {
+        "disabled": false,
+        "label": "インターフェースのフォント: フォントファミリー"
+      },
+      {
+        "disabled": true,
+        "label": "インターフェースのフォント: 書体"
+      },
+      {
+        "disabled": false,
+        "label": "コードのフォント: フォントファミリー"
+      },
+      {
+        "disabled": true,
+        "label": "コードのフォント: 書体"
+      }
+    ],
+    "general": "外観\nシステム\nライト\nダーク\n色覚サポート\nオフ\nオン\n言語\n日本語\n文字サイズ\nmagpie のウィンドウ内のすべてを拡大します。Ctrl+ / Ctrl− / Ctrl+0 でも変更できます\n100%\n110%\n125%\n150%\nインターフェースのフォント\nシステムの既定\nシステムの既定\nAa 0123 · 日本語\nコードのフォント\nシステムの既定\nシステムの既定\nAa 0123 · 日本語\nトレイアイコンのクリックで\nクイックパネルを開く\nメインウィンドウを開く\nモデル名にプロバイダ\nオフ\n自分で付けた名前には付けない\nオン\nCodex のサブエージェントで任意のモデル\nGPT のリードが magpie の他のモデルでサブエージェントを起動します。新しいスレッドのみ。Codex 自身の multi_agent_v2 が優先されます\nオフ\nオン\n長い会話\nCodex and Claude Code compact at 272K or the size typed; a full window makes turns slower and costlier\n272K で圧縮\nウィンドウ全体\nCodex のスレッドタイトル\nCodex 自身（ChatGPT）\nCodex のスレッド説明\nCodex 自身（ChatGPT）\nCodex の入力予測\nCodex 自身（ChatGPT）\nCodex 自動レビューのモデル\nCodex に任せる\nログイン時に起動\nオフ\nオン\n軽量モード\n閉じたウィンドウは 1 分後に約 100 MB を解放。ゲートウェイと処理は動き続け、ページだけ読み込み直します\nオフ\nオン\nスリープを防ぐ\nmagpie がタスクを実行している間、このコンピューターをスリープさせません\nオフ\nオン\n画面もオン",
+    "heading": "設定",
+    "lang": "ja",
+    "nav": "利用エージェントモデルプロバイダルーティングゲートウェイ観測使用量拡張プラグイン",
+    "pick": "日本語",
+    "root": {
+      "bottom": 816,
+      "height": 792,
+      "left": 77,
+      "right": 1287,
+      "top": 24,
+      "width": 1210,
+      "x": 77,
+      "y": 24
+    },
+    "tabs": []
+  },
+  {
+    "localeName": "Deutsch",
+    "fontButtons": [
+      {
+        "disabled": false,
+        "label": "Oberflächenschrift: Schriftfamilie"
+      },
+      {
+        "disabled": true,
+        "label": "Oberflächenschrift: Schriftschnitt"
+      },
+      {
+        "disabled": false,
+        "label": "Codeschrift: Schriftfamilie"
+      },
+      {
+        "disabled": true,
+        "label": "Codeschrift: Schriftschnitt"
+      }
+    ],
+    "general": "Darstellung\nSystem\nHell\nDunkel\nFarbenblind-Modus\nAus\nAn\nSprache\nDeutsch\nTextgröße\nAlles in den magpie-Fenstern größer; auch mit Ctrl+ / Ctrl− / Ctrl+0\n100%\n110%\n125%\n150%\nOberflächenschrift\nSystemstandard\nSystemstandard\nAa 0123 · 中文\nCodeschrift\nSystemstandard\nSystemstandard\nAa 0123 · 中文\nKlick auf das Tray-Symbol\nSchnell-Panel öffnen\nHauptfenster öffnen\nAnbieter in Modellnamen\nAus\nNicht bei eigenen Namen\nAn\nCodex-Subagenten auf jedem Modell\nEin leitendes GPT startet Subagenten auf anderen magpie-Modellen. Nur neue Threads; Codex’ eigenes multi_agent_v2 hat Vorrang\nAus\nAn\nLange Unterhaltungen\nCodex and Claude Code compact at 272K or the size typed; a full window makes turns slower and costlier\nBei 272K komprimieren\nVolles Fenster\nCodex-Thread-Titel\nEigene von Codex (ChatGPT)\nCodex-Thread-Beschreibungen\nEigene von Codex (ChatGPT)\nCodex-Eingabevorhersagen\nEigene von Codex (ChatGPT)\nModell für Codex’ Auto-Review\nWie Codex es wählt\nBei Anmeldung öffnen\nAus\nAn\nRessourcensparmodus\nEin geschlossenes Fenster gibt nach einer Minute etwa 100 MB frei; Gateway und Aufgaben laufen weiter\nAus\nAn\nRuhezustand verhindern\nHält diesen Computer wach, während magpie Aufgaben ausführt\nAus\nAn\nBildschirm auch an",
+    "heading": "Einstellungen",
+    "lang": "de",
+    "nav": "ArbeitAgentenModelleAnbieterWeiterleitungZugangspunktEinblickNutzungZusätzeErweiterungen",
+    "pick": "Deutsch",
+    "root": {
+      "bottom": 816,
+      "height": 792,
+      "left": 77,
+      "right": 1287,
+      "top": 24,
+      "width": 1210,
+      "x": 77,
+      "y": 24
+    },
+    "tabs": []
+  },
+  {
+    "localeName": "System",
+    "fontButtons": [
+      {
+        "disabled": false,
+        "label": "界面字体: 字体"
+      },
+      {
+        "disabled": true,
+        "label": "界面字体: 样式"
+      },
+      {
+        "disabled": false,
+        "label": "代码字体: 字体"
+      },
+      {
+        "disabled": true,
+        "label": "代码字体: 样式"
+      }
+    ],
+    "general": "外观\n跟随系统\n浅色\n深色\n色盲模式\n关闭\n开启\n语言\n跟随系统\n文字大小\n放大 magpie 窗口里的一切；也可用 Ctrl+ / Ctrl− / Ctrl+0\n100%\n110%\n125%\n150%\n界面字体\n系统默认\n系统默认\nAa 0123 · 中文\n代码字体\n系统默认\n系统默认\nAa 0123 · 中文\n点击托盘图标\n打开快捷面板\n打开主窗口\n模型名带供应商\n关闭\n自定义名称不带供应商\n开启\nCodex 子代理可用任意模型\nGPT 主代理可在 magpie 的其他模型上开子代理。仅对新会话生效；Codex 自身的 multi_agent_v2 优先\n关闭\n开启\n长对话\nCodex 和 Claude Code 在 272K（或这里填的大小）时压缩；用完整窗口则每轮更慢更贵\n272K 时压缩\n完整窗口\nCodex 会话标题\nCodex 自带（ChatGPT）\nCodex 会话描述\nCodex 自带（ChatGPT）\nCodex 输入框预测\nCodex 自带（ChatGPT）\nCodex 自动审批模型\n由 Codex 决定\n开机自启\n关闭\n开启\n轻量模式\n窗口关闭一分钟后释放约 100 MB；网关和后台任务照常运行，只重新加载页面\n关闭\n开启\n防止休眠\n在 magpie 运行任务时，让电脑保持唤醒状态\n关闭\n开启\n屏幕也常亮",
+    "heading": "设置",
+    "lang": "zh-CN",
+    "nav": "使用Agent模型供应商路由网关观测用量扩展插件",
+    "pick": "跟随系统",
+    "root": {
+      "bottom": 816,
+      "height": 792,
+      "left": 77,
+      "right": 1287,
+      "top": 24,
+      "width": 1210,
+      "x": 77,
+      "y": 24
+    },
+    "tabs": []
+  }
+]

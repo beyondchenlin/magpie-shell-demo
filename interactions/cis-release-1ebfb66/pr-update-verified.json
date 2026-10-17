@@ -1,0 +1,9 @@
+{
+  "url": "https://github.com/beyondchenlin/magpie-shell-demo/pull/1",
+  "title": "Magpie 复刻：冻结 CIS 修复与验收（v0.1.206）",
+  "headSha": "6a6d47bce7e96b262a1c47a46855713341a566ee",
+  "bodyMatches": true,
+  "titleMatches": true,
+  "tlsVerification": "default enabled",
+  "credentialHandling": "Existing gh credential used in memory; no plaintext persisted or logged."
+}

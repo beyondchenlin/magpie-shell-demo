@@ -1,0 +1,29 @@
+[
+  {
+    "round": 1,
+    "frames": 184,
+    "playbackMs": 55935,
+    "sourceCaptureWidth": 1000,
+    "sourceCaptureHeight": 690,
+    "bytes": 6479740,
+    "method": "Original captured JPEG pixels, lossless animated WebP, original screencast timestamp intervals rounded to milliseconds. Last frame repeats previous interval. Not a renderer FPS measurement."
+  },
+  {
+    "round": 2,
+    "frames": 195,
+    "playbackMs": 5040,
+    "sourceCaptureWidth": 1000,
+    "sourceCaptureHeight": 690,
+    "bytes": 6885884,
+    "method": "Original captured JPEG pixels, lossless animated WebP, original screencast timestamp intervals rounded to milliseconds. Last frame repeats previous interval. Not a renderer FPS measurement."
+  },
+  {
+    "round": 3,
+    "frames": 180,
+    "playbackMs": 5057,
+    "sourceCaptureWidth": 1000,
+    "sourceCaptureHeight": 690,
+    "bytes": 6294586,
+    "method": "Original captured JPEG pixels, lossless animated WebP, original screencast timestamp intervals rounded to milliseconds. Last frame repeats previous interval. Not a renderer FPS measurement."
+  }
+]

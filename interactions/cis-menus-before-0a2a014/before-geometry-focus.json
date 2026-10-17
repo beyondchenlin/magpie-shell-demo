@@ -1,0 +1,78 @@
+[
+  {
+    "case": "model-first-open",
+    "active": {
+      "class": "",
+      "tag": "INPUT"
+    },
+    "popup": {
+      "class": "pop model-picker",
+      "height": 341,
+      "rect": {
+        "bottom": 805.4678344726562,
+        "height": 374.2569580078125,
+        "left": 378.20709228515625,
+        "right": 916.6326293945312,
+        "top": 431.21087646484375,
+        "width": 538.425537109375,
+        "x": 378.20709228515625,
+        "y": 431.21087646484375
+      },
+      "scrollHeight": 339,
+      "style": "width: 490px; max-width: 1082px; max-height: 340.602px; left: 272.807px; top: 369.398px; bottom: auto; --ox: 110px;"
+    },
+    "root": {
+      "caption": 32,
+      "height": 718,
+      "rect": {
+        "bottom": 816,
+        "height": 792,
+        "left": 77,
+        "right": 1287,
+        "top": 24,
+        "width": 1210,
+        "x": 77,
+        "y": 24
+      },
+      "width": 1098
+    }
+  },
+  {
+    "case": "agent-model-first-open",
+    "active": {
+      "class": "",
+      "tag": "INPUT"
+    },
+    "popup": {
+      "class": "pop am-pop up",
+      "height": 324,
+      "rect": {
+        "bottom": 425.0825500488281,
+        "height": 355.7328796386719,
+        "left": 639.0738525390625,
+        "right": 1276.5950927734375,
+        "top": 69.34967041015625,
+        "width": 637.521240234375,
+        "x": 639.0738525390625,
+        "y": 69.34967041015625
+      },
+      "scrollHeight": 331,
+      "style": "width: 580px; max-width: 1082px; max-height: 323.642px; left: 510px; top: 40px; bottom: auto; --ox: 89.50426136363626px;"
+    },
+    "root": {
+      "caption": 32,
+      "height": 718,
+      "rect": {
+        "bottom": 816,
+        "height": 792,
+        "left": 77,
+        "right": 1287,
+        "top": 24,
+        "width": 1210,
+        "x": 77,
+        "y": 24
+      },
+      "width": 1098
+    }
+  }
+]

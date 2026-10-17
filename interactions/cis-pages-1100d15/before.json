@@ -1,0 +1,320 @@
+{
+  "source": "7880135320083e6192bfb4d5ab87b136cd59d4b5",
+  "p2": [
+    {
+      "case": "default",
+      "snapshot": "- banner \"Window title bar\":\n  - generic: Magpie\n  - button:\n  - button:\n  - button:\n- banner:\n  - heading \"路由\" [level=1]\n  - button \"显示侧边栏\":\n  - navigation \"Main navigation\":\n    - button \"Agent\"\n    - button \"供应商\"\n    - button \"路由\"\n    - button \"网关\"\n    - button \"用量\"\n    - button \"插件\"\n  - button \"刷新模型列表（models.dev 与各供应商）\":\n  - button \"设置 (Ctrl+,)\":\n- main:\n  - generic: 路由\n  - generic: 实时 · 网关正在做的决定\n  - button \"账号已打码\" [pressed]:\n    - generic: 账号已打码\n  - generic: 等待请求\n  - paragraph: 经 magpie 的 Agent 发出请求后，这里实时播放：路由把谁排第一及原因、每次尝试和各自的回应。\n  - generic: 你的 Agent\n  - generic: magpie\n  - generic: 127.0.0.1:3425\n  - list:\n    - listitem: 还没有请求\n  - paragraph: Agent 发给 magpie 的每个请求都会在此显示，均为真实路由。\n  - generic: \"0\"\n  - generic: 请求\n  - generic: \"0\"\n  - generic: 改道\n  - generic \"当前列表中没有失败的请求\":\n    - generic: \"0\"\n    - generic: Agent 收到的错误\n  - generic: 请求\n  - generic: magpie 启动以来还没有请求\n  - text: agent 经 magpie 发出的每个请求都列在这里：由谁应答、为何选它，以及每次尝试。\n- contentinfo:\n  - status\n  - generic: 127.0.0.1:3425"
+    },
+    {
+      "case": "condition-menu",
+      "text": "添加条件\n对话长度\n带图片\n推理强度\n压缩上下文时\nAgent\n项目文件夹\n不在文件夹\n时段"
+    },
+    {
+      "case": "nine-configured",
+      "rules": [
+        {
+          "conditions": 9,
+          "inputs": [
+            {
+              "placeholder": "用户想做什么，例如：写测试",
+              "value": "write tests"
+            },
+            {
+              "placeholder": "",
+              "value": "1234"
+            },
+            {
+              "placeholder": "~/work/acme, ~/oss",
+              "value": "~/cis"
+            },
+            {
+              "placeholder": "~/big-task",
+              "value": "~/skip"
+            },
+            {
+              "placeholder": "09:00",
+              "value": "09:30"
+            },
+            {
+              "placeholder": "18:00",
+              "value": "18:30"
+            }
+          ],
+          "text": "1意图是≥token带图片推理 ≥ high压缩上下文时Claude Code项目文件夹不在文件夹从到每天→sonnet"
+        }
+      ],
+      "snapshot": "\n  - generic: 名称\n  - textbox \"例如：Opus 多家备份\": CIS Routing\n  - generic: Agent 里选 group/cis-routing\n  - generic: Agent 列表里的名称\n  - generic: Agent 的模型列表里显示为「CIS Routing · routing group」 · 是否带「· routing group」在上方统一设置，对所有路由组生效\n  - generic: 模型\n  - switch \"opus\" [checked]\n  - button \"移动 opus\": \"1\"\n  - generic: opus\n  - button \"跟随分组推理\"\n  - button \"移除\"\n  - switch \"sonnet\" [checked]\n  - button \"移动 sonnet\": \"2\"\n  - generic: sonnet\n  - button \"跟随分组推理\"\n  - button \"移除\"\n  - button \"再添加一个模型\":\n    - generic: 再添加一个模型\n  - generic: 排第一的模型决定本组对外的能力；按顺序模式下从上往下尝试。\n  - generic: 模式\n  - code: cis/*\n  - generic: 目前没有匹配的模型\n  - button \"移除\"\n  - textbox \"例如 openrouter/*:free 或 re:…\"\n  - button \"添加模式\"\n  - generic: \"模式匹配的模型均入组（含供应商日后新增的），排在上方模型之后：* 匹配 provider/model 中任意字符，re: 开头表示正则表达式。\"\n  - generic: 模型列表\n  - generic \"模型列表\":\n    - button \"也列出成员模型\" [pressed]\n    - button \"只列出本组\"\n  - generic: Agent 的模型列表和网关的 /v1/models 会列出本组，也列出组里的每个模型。\n  - generic: 路由\n  - generic \"路由\":\n    - button \"智能\"\n    - button \"按顺序\" [pressed]\n    - button \"轮流\"\n    - button \"最少使用\"\n    - button \"重置前用完\"\n    - button \"按权重\"\n    - button \"手动\"\n  - generic: 按顺序：先用第一个模型，无法响应再换下一个；各成员按其供应商的路由在自己的账号或 Key 间分配。\n  - generic: 成员中的路由组，以及服务商路由不是“智能”的模型，都保留自己的路由：本组只在它与其他成员间选择（按它会先用的账号或 Key 比较），选中后按其自身顺序整体尝试。\n  - generic: 被限流时\n  - generic \"被限流时\":\n    - button \"保持原位\" [pressed]\n    - button \"排到最后\"\n  - generic: 仍有额度却被限流的账号按厂商要求休息，之后回到原位继续使用。\n  - generic: 迟迟不出字\n  - generic \"迟迟不出字\":\n    - button \"一直等\" [pressed]\n    - button \"30 秒\"\n    - button \"1 分钟\"\n    - button \"2 分钟\"\n    - button \"自定义\"\n  - generic: 每个成员都会一直等到它开始回答，不论多久。\n  - generic: 成员全都忙\n  - generic \"成员全都忙\":\n    - button \"关闭\"\n    - button \"1 分钟\" [pressed]\n    - button \"2 分钟\"\n    - button \"4 分钟\"\n  - generic: 每个成员都失败了、且错误是会过去的那种（过载、暂不可用、短暂限流），而回复还一点都没到智能体时，过一会儿依次再问一遍每个成员，间隔一次比一次长，也不短于厂商要求的等待，最多再等 1 分钟。流式请求的智能体在此期间会一直被保持等待。\n  - generic: 上下文\n  - generic \"上下文\":\n    - button \"最大模型的\" [pressed]\n    - button \"最小模型的\"\n    - button \"自定义\"\n  - generic: 告诉 agent 组里最大模型的上下文；某个成员放不下的对话会交给放得下的成员。\n  - generic: 会话保持\n  - generic \"会话保持\":\n    - button \"自动\" [pressed]\n    - button \"整个会话\"\n    - button \"一轮之内\"\n    - button \"关闭\"\n    - button \"严格\"\n  - generic: 厂商缓存仍有价值时，会话留在回答过它的账号或 Key 上：一轮之内始终保持，跨轮则在缓存新鲜时保持。\n  - generic: 规则\n  - generic: \"1\"\n  - generic: 意图是\n  - textbox \"用户想做什么，例如：写测试\": write tests\n  - button \"移除\":\n  - generic: ≥\n  - spinbutton: \"1234\"\n  - generic: token\n  - button \"移除\":\n  - button \"带图片\"\n  - button \"移除\":\n  - button \"推理 ≥ high\"\n  - button \"移除\":\n  - button \"压缩上下文时\"\n  - button \"移除\":\n  - button \"Claude Code\"\n  - button \"移除\":\n  - generic: 项目文件夹\n  - textbox \"~/work/acme, ~/oss\": ~/cis\n  - button \"移除\":\n  - generic \"不在文件夹\":\n    - generic \"不在文件夹\"\n    - textbox \"~/big-task\": ~/skip\n  - button \"移除\":\n  - generic \"本轮在此时段内（按本机时间）开始时生效，例如把某家高峰计价时段的请求转给另一家\":\n    - generic: 从\n    - textbox \"09:00\": 09:30\n    - generic: 到\n    - textbox \"18:00\": 18:30\n  - button \"每天\"\n  - button \"移除\":\n  - generic: →\n  - button \"sonnet\":\n    - generic: sonnet\n  - button \"规则 1 的操作\":\n  - button \"添加规则\":\n    - generic: 添加规则\n  - img \"发送消息时从上往下检查：第一条命中的规则将本轮先发给其指定的模型，其余成员作为故障转移。进行中的一轮不会换模型。\":\n  - generic: 推理强度\n  - generic \"推理强度\":\n    - button \"按 agent\" [pressed]\n    - button \"每轮判断\"\n  - img \"每个请求按 agent 自己要求的强度推理。\":\n  - generic: 意图判断模型\n  - button \"cis-classifier\":\n    - generic: cis-classifier\n  - img \"每轮开始时问此模型一次消息属于哪个意图，建议选小而快、不带推理的模型。出错或无法判断时，意图条件均不命中。其调用在用量中记为 magpie 自身的调用。\":\n  - generic: 推理档位\n  - generic \"推理档位\":\n    - button \"成员共有\" [pressed]\n    - button \"自定\"\n  - generic: 对 Agent 提供所有模型都有的档位。\n  - button \"取消\"\n  - button \"添加\"\n- contentinfo:\n  - status\n  - generic: 127.0.0.1:3425\n- listbox:\n  - textbox:\n    - /placeholder: 筛选，或输入任意模型 ID…\n    - text: cis-classifier\n  - navigation:\n    - button:\n    - button:\n  - list:\n    - option [selected]:\n      - generic: ✦\n      - generic: cis-classifier\n      - generic: 按输入使用"
+    },
+    {
+      "case": "nine-reopened",
+      "rules": [
+        {
+          "conditions": 9,
+          "inputs": [
+            {
+              "placeholder": "用户想做什么，例如：写测试",
+              "value": "write tests"
+            },
+            {
+              "placeholder": "",
+              "value": "1234"
+            },
+            {
+              "placeholder": "~/work/acme, ~/oss",
+              "value": "~/cis"
+            },
+            {
+              "placeholder": "~/big-task",
+              "value": "~/skip"
+            },
+            {
+              "placeholder": "09:00",
+              "value": "09:30"
+            },
+            {
+              "placeholder": "18:00",
+              "value": "18:30"
+            }
+          ],
+          "text": "1意图是≥token带图片推理 ≥ high压缩上下文时Claude Code项目文件夹不在文件夹从到每天→sonnet"
+        }
+      ],
+      "snapshot": "\n  - code: group/cis-routing\n  - generic: opus · sonnet\n  - code: cis/*\n  - text: · 目前没有匹配的模型\n  - generic: 按顺序\n  - generic: 1 条规则\n  - generic: 没有可用成员\n  - button \"编辑\"\n  - switch \"CIS Routing\" [checked]\n- contentinfo:\n  - status\n  - generic: 127.0.0.1:3425"
+    },
+    {
+      "case": "remove-intent-keeps-images",
+      "intent": 0,
+      "image": "rt-cond on"
+    },
+    {
+      "case": "remove-images-keeps-intent",
+      "intent": "keep intent",
+      "imageCount": 0
+    },
+    {
+      "case": "remove-condition",
+      "name": "意图是",
+      "remaining": 7
+    },
+    {
+      "case": "remove-condition",
+      "name": "≥\ntoken",
+      "remaining": 6
+    },
+    {
+      "case": "remove-condition",
+      "name": "推理 ≥ high",
+      "remaining": 5
+    },
+    {
+      "case": "remove-condition",
+      "name": "压缩上下文时",
+      "remaining": 4
+    },
+    {
+      "case": "remove-condition",
+      "name": "Claude Code",
+      "remaining": 3
+    },
+    {
+      "case": "remove-condition",
+      "name": "项目文件夹",
+      "remaining": 2
+    },
+    {
+      "case": "remove-condition",
+      "name": "不在文件夹",
+      "remaining": 1
+    },
+    {
+      "case": "remove-condition",
+      "name": "从\n到\n每天",
+      "remaining": 0
+    },
+    {
+      "case": "pause-four-only",
+      "menu": "添加条件\nAgent\n项目文件夹\n不在文件夹\n时段"
+    },
+    {
+      "case": "rules-moved",
+      "rows": [
+        "1带图片→sonnet",
+        "2从到每天→暂停sonnet这段时间移出分组：不会被调用，也不做备用"
+      ]
+    },
+    {
+      "case": "rule-delete",
+      "count": 2
+    },
+    {
+      "case": "final-reopened",
+      "editor": "Edit group\n名称\nAgent 里选 group/cis-routing\nAgent 列表里的名称\nAgent 的模型列表里显示为「CIS Routing · routing group」 · 是否带「· routing group」在上方统一设置，对所有路由组生效\n模型\n1\nopus\n跟随分组推理\n移除\n2\nsonnet\n跟随分组推理\n移除\n再添加一个模型\n排第一的模型决定本组对外的能力；按顺序模式下从上往下尝试。\n模式\ncis/*\n目前没有匹配的模型\n移除\n添加模式\n模式匹配的模型均入组（含供应商日后新增的），排在上方模型之后：* 匹配 provider/model 中任意字符，re: 开头表示正则表达式。\n模型列表\n也列出成员模型\n只列出本组\nAgent 的模型列表和网关的 /v1/models 会列出本组，也列出组里的每个模型。\n路由\n智能\n按顺序\n轮流\n最少使用\n重置前用完\n按权重\n手动\n按顺序：先用第一个模型，无法响应再换下一个；各成员按其供应商的路由在自己的账号或 Key 间分配。\n成员中的路由组，以及服务商路由不是“智能”的模型，都保留自己的路由：本组只在它与其他成员间选择（按它会先用的账号或 Key 比较），选中后按其自身顺序整体尝试。\n被限流时\n保持原位\n排到最后\n仍有额度却被限流的账号按厂商要求休息，之后回到原位继续使用。\n迟迟不出字\n一直等\n30 秒\n1 分钟\n2 分钟\n自定义\n每个成员都会一直等到它开始回答，不论多久。\n成员全都忙\n关闭\n1 分钟\n2 分钟\n4 分钟\n每个成员都失败了、且错误是会过去的那种（过载、暂不可用、短暂限流），而回复还一点都没到智能体时，过一会儿依次再问一遍每个成员，间隔一次比一次长，也不短于厂商要求的等待，最多再等 1 分钟。流式请求的智能体在此期间会一直被保持等待。\n上下文\n最大模型的\n最小模型的\n自定义\n告诉 agent 组里最大模型的上下文；某个成员放不下的对话会交给放得下的成员。\n会话保持\n自动\n整个会话\n一轮之内\n关闭\n严格\n厂商缓存仍有价值时，会话留在回答过它的账号或 Key 上：一轮之内始终保持，跨轮则在缓存新鲜时保持。\n规则\n1\n带图片\n→\nsonnet\n2\n从\n到\n每天\n→\n暂停\nsonnet\n这段时间移出分组：不会被调用，也不做备用\n添加规则\n推理强度\n按 agent\n每轮判断\n推理档位\n成员共有\n自定\n对 Agent 提供所有模型都有的档位。\n移除\n取消\n保存",
+      "rules": [
+        {
+          "inputs": [],
+          "text": "1带图片→sonnet"
+        },
+        {
+          "inputs": [
+            {
+              "placeholder": "09:00",
+              "value": "10:00"
+            },
+            {
+              "placeholder": "18:00",
+              "value": "11:00"
+            }
+          ],
+          "text": "2从到每天→暂停sonnet这段时间移出分组：不会被调用，也不做备用"
+        }
+      ]
+    },
+    {
+      "case": "group-menu-arrow-before-fix",
+      "before": {
+        "active": "复制",
+        "tag": "BUTTON"
+      },
+      "after": {
+        "active": "复制",
+        "tag": "BUTTON"
+      }
+    },
+    {
+      "case": "group-duplicate",
+      "rows": []
+    },
+    {
+      "case": "group-sort",
+      "handles": [
+        "",
+        ""
+      ],
+      "snapshot": "- banner \"Window title bar\":\n  - generic: Magpie\n  - button:\n  - button:\n  - button:\n- banner:\n  - heading \"路由\" [level=1]\n  - button \"显示侧边栏\":\n  - navigation \"Main navigation\":\n    - button \"Agent\"\n    - button \"资源库\"\n    - button \"供应商\"\n    - button \"路由\"\n    - button \"网关\"\n    - button \"用量\"\n    - button \"插件\"\n  - button \"刷新模型列表（models.dev 与各供应商）\":\n  - button \"设置 (Ctrl+,)\":\n- main:\n  - generic: 路由\n  - generic: 实时 · 网关正在做的决定\n  - button \"新建组\":\n    - generic: 新建组\n  - button \"账号已打码\" [pressed]:\n    - generic: 账号已打码\n  - generic: 等待请求\n  - paragraph: 经 magpie 的 Agent 发出请求后，这里实时播放：路由把谁排第一及原因、每次尝试和各自的回应。\n  - generic: 你的 Agent\n  - generic: magpie\n  - generic: 127.0.0.1:3425\n  - list:\n    - listitem: 还没有请求\n  - paragraph: Agent 发给 magpie 的每个请求都会在此显示，均为真实路由。\n  - generic: \"0\"\n  - generic: 请求\n  - generic: \"0\"\n  - generic: 改道\n  - generic \"当前列表中没有失败的请求\":\n    - generic: \"0\"\n    - generic: Agent 收到的错误\n  - generic: 请求\n  - generic: magpie 启动以来还没有请求\n  - text: agent 经 magpie 发出的每个请求都列在这里：由谁应答、为何选它，以及每次尝试。\n  - generic: 路由组\n  - generic: Agent 当作一个模型来选\n  - searchbox \"筛选路由组和模型\"\n  - button \"模板\":\n    - generic: 模板\n  - button \"导入\"\n  - button \"选择\"\n  - button \"新建组\":\n    - generic: 新建组\n  - generic: 自动创建路由组\n  - generic: 两个及以上供应商都提供的模型会自动成组（auto-…）。关闭后只列出和提供你新建或改过的组。\n  - switch \"自动创建路由组\" [checked]\n  - generic: Agent 列表里的名称\n  - generic: Agent 的模型列表里，路由组名后面是否带「· routing group」。这是所有路由组共用的一个设置，也决定模型名后面是否带供应商，和「设置」里的是同一个。\n  - generic \"Agent 列表里的名称\":\n    - button \"关闭\"\n    - button \"自定义名称不带供应商\"\n    - button \"开启\" [pressed]\n  - button \"调整 CIS Routing 副本 2\":\n  - generic: CIS Routing 副本 2\n  - code: group/cis-routing-2\n  - generic: opus · sonnet\n  - code: cis/*\n  - text: · 目前没有匹配的模型\n  - generic: 按顺序\n  - generic: 2 条规则\n  - generic: 没有可用成员\n  - button \"编辑\"\n  - switch \"CIS Routing 副本 2\" [checked]\n  - button \"调整 CIS Routing\":\n  - generic: CIS Routing\n  - code: group/cis-routing\n  - generic: opus · sonnet\n  - code: cis/*\n  - text: · 目前没有匹配的模型\n  - generic: 按顺序\n  - generic: 2 条规则\n  - generic: 没有可用成员\n  - button \"编辑\"\n  - switch \"CIS Routing\" [checked]\n- contentinfo:\n  - status \"路由组顺序已保存\"\n  - generic: 127.0.0.1:3425"
+    }
+  ],
+  "p3": [
+    {
+      "case": "empty-概览",
+      "text": "概览\n请求\n会话\n上下文\n今天\n7 天\n30 天\n全部\n自定义\n关闭\n≈$0.000\n生效价格\n\n仅统计网关调用；会话日志调用请查看「请求」。本地拒绝的请求不计入汇总。\n\n今天没有调用。 让某个 Agent 使用目录中的模型；每次经过网关的调用都会计入这里。"
+    },
+    {
+      "case": "empty-请求",
+      "text": "概览\n请求\n会话\n上下文\n今天\n7 天\n30 天\n全部\n自定义\n关闭\n≈$0.000\n生效价格\n全部\n失败\n重试后成功\n导出 CSV\n\n统计网关调用与会话日志调用；本地拒绝的请求不计入汇总。\n\n0 个请求\n\n请求存档\n今天没有调用。"
+    },
+    {
+      "case": "empty-会话",
+      "text": "概览\n请求\n会话\n上下文\n今天\n7 天\n30 天\n90 天\n全部\n关闭\n≈$0.000\n生效价格\n还没有会话。本机 Claude Code、Codex、OpenCode 和 Pi 的会话会显示在这里，附费用和继续会话的命令。\n\n合计含本机会话和带有会话 ID 的网关请求 · 0 会话数 · ~/.claude · ~/.codex · ~/.cursor"
+    },
+    {
+      "case": "empty-上下文",
+      "text": "概览\n请求\n会话\n上下文\n今天\n7 天\n30 天\n关闭\n≈$0.000\n生效价格\n为你调优\n\n用你这段时间自己的调用（来自 agent 的会话文件）逐个设置重放：按你的用法，哪组设置花的 Token 最少。Token 按厂商计费的方式加权：一次缓存读取算十分之一。\n\n这段时间的调用太少，还算不出建议\n经过 MAGPIE 的\n\n每个 agent 的提示词里装了什么，由 magpie 网关读取；评分和标签根据所选时间范围内的请求算出。\n\n还没有读到提示词\n你的 agent 经 magpie 发出的请求会显示在这里。"
+    },
+    {
+      "case": "filled-overview",
+      "text": "概览\n请求\n会话\n上下文\n今天\n7 天\n30 天\n全部\n自定义\n关闭\n≈$0.1456\n生效价格\n\n仅统计网关调用；会话日志调用请查看「请求」。本地拒绝的请求不计入汇总。\n\n48.3K\nTOKEN\n输入 42.7K · 输出 5.6K\n12.3K\n缓存读取\n命中率 22%\n1.2K\n推理\n计入输出\n5\n次调用\n1 次失败 · 1 次重试后成功\n21.3K\n00\n04\n08\n12\n16\n20\n23\nAGENT\nOpenCode\n1 次调用\n21.3K\n输入 18.9K · 输出 2.4K · 缓存 4.1K · 命中率 18%\n≈$0.0620\nClaude Code\n2 次调用 · 1 次失败\n17.4K\n输入 15.6K · 输出 1.8K · 缓存 8.2K · 命中率 34%\n≈$0.0482\nCodex\n2 次调用\n9.6K\n输入 8.2K · 输出 1.4K\n≈$0.0354\n模型\ngemini-2.5-pro\nGoogle · 1 次调用\n21.3K\n输入 18.9K · 输出 2.4K\n≈$0.0620\nclaude-sonnet-4-5\nAnthropic · 1 次调用\n14.2K\n输入 12.4K · 输出 1.8K\n≈$0.0482\ngpt-5\nOpenAI · 1 次调用\n7K\n输入 6.1K · 输出 940\n≈$0.0310\nclaude-haiku-4-5\nAnthropic · 1 次调用\n3.2K\n输入 3.2K · 输出 0\no4-mini\nOpenAI · 1 次调用\n2.5K\n输入 2.1K · 输出 410\n≈$0.0044\n账号\ndemo@example.com\nAnthropic · 3 次调用\n29.5K\n输入 26.5K · 输出 3.1K\n≈$0.0844"
+    },
+    {
+      "case": "refresh-period",
+      "value": "10 秒"
+    },
+    {
+      "case": "archive-on",
+      "checked": "true"
+    },
+    {
+      "case": "detail-before",
+      "text": "速度\n86 token/秒\n数据来源\n演示行展开（Magpie led-box / led-dl）"
+    },
+    {
+      "case": "date-range",
+      "label": "10月8日 – 10月16日",
+      "note": "Date clicks succeeded; previous observation queried the old empty label and timed out."
+    },
+    {
+      "case": "filled-sessions",
+      "text": "概览\n请求\n会话\n上下文\n今天\n7 天\n30 天\n90 天\n全部\n关闭\n≈$0.1456\n生效价格\n全部 Agent\nClaude Code\nCodex\nOpenCode\n12\n会话\n4 agents\n6.4h\nACTIVE TIME\nmedian 28 min\n1.84M\nTOKEN\n1.12M in · 720K out\n≈$4.82\n费用\n生效价格\n186\n消息\navg 15 / session\n3\nCOMPACTIONS\n2 sessions\n最近的会话\n全部会话\nRefactor gateway auth\nmagpie-shell-demo · claude-sonnet-4-5 · 1d ago\n718K\n输入 420K · 输出 88K · 缓存 210K\n≈$1.24\nUsage ledger columns\ninternal/gui · gpt-5 → claude-sonnet-4-5 · 2d ago\n231K\n输入 190K · 输出 41K\n≈$0.8600\n（无提示词）\n~ · gemini-2.5-pro · 1d ago\n83.4K\n输入 62K · 输出 9.4K · 缓存 12K\n≈$0.1900\nPlugin install flow\nplugins · claude-haiku-4-5 · 3d ago\n67.2K\n输入 48K · 输出 11.2K · 缓存 8K\n≈$0.1100\n显示其余 4 个"
+    },
+    {
+      "case": "filled-context",
+      "text": "概览\n请求\n会话\n上下文\n今天\n7 天\n30 天\n关闭\n≈$0.1456\n生效价格\n为你调优\n\n用你这段时间自己的调用（来自 agent 的会话文件）逐个设置重放：按你的用法，哪组设置花的 Token 最少。Token 按厂商计费的方式加权：一次缓存读取算十分之一。\n\n经过 MAGPIE 的\n\n每个 agent 的提示词里装了什么，由 magpie 网关读取；评分和标签根据所选时间范围内的请求算出。\n\nClaude Code\n48 个请求 · 5 个会话\n82\n良好\nHeadroom\n18/20\n缓存\n16/20\nMix\n14/20\nGrowth\n12/20\n工具\n11/20\n文件\n11/20\n缓存友好\n工具调用多\n典型提示词\n48K\n最大\n112K\n起步\n14K\n每次增长\n+6.2K\n缓存命中\n64%\n窗口大小\n200K\n提示词构成\n跟随系统 12%\n工具 18%\n记忆 8%\n文件 22%\n工具结果 16%\n会话内容 24%\nclaude-sonnet-4-5\nclaude-haiku-4-5\n最新请求\nCodex\n31 个请求 · 4 个会话\n68\n一般\nHeadroom\n14/20\n缓存\n9/20\nMix\n15/20\nGrowth\n10/20\n工具\n10/20\n文件\n10/20\n渐满\nLong chats\n典型提示词\n72K\n最大\n168K\n起步\n9K\n每次增长\n+11K\n缓存命中\n28%\n窗口大小\n200K\n提示词构成\n跟随系统 8%\n工具 14%\n文件 20%\n工具结果 18%\n会话内容 40%\ngpt-5\no4-mini\n最新请求"
+    }
+  ],
+  "p5": [
+    {
+      "case": "instructions-default",
+      "text": "指令\nMCP 服务器\n技能\nHooks\nRTK\n资源库文件夹\n备份\n\n只需写一次：下方开启的 Agent 会在每次对话前从各自的指令文件中读取。\n\n共享指令\nMarkdown · Ctrl+S\nDefault\n空\n使用中\n新建一套\nAGENTS\n\nThey read Default · magpie writes its part between two marker lines — the rest of each file stays yours.\n\n你的 Agent 都没有 magpie 已知的用户级指令文件。\n\nCursor keeps no user-wide instructions file."
+    },
+    {
+      "case": "instruction-discard-cancel",
+      "value": "CIS instruction draft"
+    },
+    {
+      "case": "instruction-discard",
+      "value": ""
+    },
+    {
+      "case": "mcp-default",
+      "text": "指令\nMCP 服务器\n技能\nHooks\nRTK\n发现\n资源库文件夹\n备份\n\n资源库里还没有服务器\n\n粘贴 README 里的服务器 JSON，或手动填写。\n\n＋ 添加服务器\n发现\nM\nMagpie Image\nMagpie\nmagpie\n\nGenerate and edit images with the image model set in Magpie (Settings → Images), and make short videos with a video model set up in Magpie (Grok Imagine, Seedance), saved in the project.\n\nmagpie-image\n添加…\nC\nContext7\nUpstash\nRemote\n\nUp-to-date documentation and code examples for any library, straight into the…\n\ncontext7\n添加\nP\nPlaywright\nMicrosoft\nnpx\n\nDrive a real browser: open pages, click, type and read them through the accessibility tree.\n\nplaywright\n添加\nC\nChrome DevTools\nGoogle\nnpx\n\nControl and inspect a live Chrome: console, network, performance traces…\n\nchrome-devtools\n添加\nG\nGitHub\nGitHub\nRemote\n\nRepositories, issues, pull requests, Actions and code search on GitHub.\n\ngithub\n添加…\nD\nDeepWiki\nCognition\nRemote\n\nAsk questions about any public GitHub repository and read its generated wiki.\n\ndeepwiki\n添加\nE\nExa\nExa\nRemote\n\nWeb search and contents for agents via Exa.\n\nexa\n添加\nF\nFetch\nModel Context Protocol\nnpx\n\nFetch URL contents as markdown for the model.\n\nfetch\n添加\nS\nSentry\nSentry\nRemote\n\nIssues and performance from your Sentry projects.\n\nsentry\n添加\nS\nStripe\nStripe\nRemote\n\nPayments, customers and products through Stripe.\n\nstripe\n添加\nN\nNeon\nNeon\nRemote\n\nServerless Postgres: branches, SQL and connection strings.\n\nneon\n添加\nB\nBrave Search\nBrave\nRemote\n\nWeb search with the Brave Search API.\n\nbrave\n添加"
+    },
+    {
+      "case": "mcp-confirm-escape-before",
+      "before": 1,
+      "after": 1,
+      "state": {
+        "active": {
+          "class": "text",
+          "tag": "BUTTON",
+          "text": "取消"
+        },
+        "dialog": {
+          "class": "action-confirm framed-confirm",
+          "open": true,
+          "rect": {
+            "bottom": 499.0703125,
+            "height": 158.140625,
+            "left": 451,
+            "right": 913,
+            "top": 340.9296875,
+            "width": 462,
+            "x": 451,
+            "y": 340.9296875
+          },
+          "style": "--confirm-x: 620px; --confirm-y: 381.8181818181818px; --confirm-width: 1067.9999999999998px; --confirm-height: 687.9999999999999px; --confirm-inset-top: 21.818181818181817px; --confirm-inset-left: 70px; --confirm-inset-right: 70px; --confirm-inset-bottom: 113.63636363636363px; --confirm-radius: 12px;"
+        },
+        "root": {
+          "bottom": 816,
+          "height": 792,
+          "left": 77,
+          "right": 1287,
+          "top": 24,
+          "width": 1210,
+          "x": 77,
+          "y": 24
+        },
+        "source": "7880135320083e6192bfb4d5ab87b136cd59d4b5"
+      }
+    },
+    {
+      "case": "skills-default",
+      "text": "指令\nMCP 服务器\n技能\nHooks\nRTK\n发现\n资源库文件夹\n备份\n\n技能是一个带 SKILL.md 的文件夹，Agent 在需要时加载。资源库只保存一份，再链接到你选的 Agent 中。\n\n查找技能\n资料库里还没有技能 — 在上方查找。\n发现\nskills.sh 热门\nM\nmagpie-quota\nmagpie-community/plugins\n\nCheck how much is left of the user's AI subscriptions, coding plans and API key…\n\n添加\nV\nfind-skills\nvercel-labs/skills\n\nHelps users discover and install agent skills when they ask questions like 'how do I do X…\n\n3.9M\n添加\nM\ngrill-me\nmattpocock/skills\n\nA relentless interview to sharpen a plan or design.\n\n1.4M\n添加…\nM\ngrill-with-docs\nmattpocock/skills\n\nGrill a design with the docs open beside you.\n\n1.2M\n添加…\nV\nagent-browser\nvercel-labs/agent-browser\n\nBrowser automation CLI for AI agents. Use when the user needs to interact with…\n\n1.1M\n添加\nM\nimprove-codebase-architecture\nmattpocock/skills\n\nScan a codebase for deepening opportunities, present them as a visual HTML report, then…\n\n1.1M\n添加…\nM\ntdd\nmattpocock/skills\n\nTest-driven development. Use when the user wants to build features or fix bugs test-first,…\n\n1.1M\n添加…\nH\nhyperframes-cli\nheygen-com/hyperframes\n\nUse the HyperFrames CLI development loop: init, add, catalog, capture, lint, check,…\n\n1M\n添加"
+    },
+    {
+      "case": "hooks-default",
+      "text": "指令\nMCP 服务器\n技能\nHooks\nRTK\n资源库文件夹\n备份\n\nHook 是 Agent 在一轮对话的某个时刻运行的命令——结束时发个通知，改完文件后跑一下格式化。只需添加一次，magpie 会按每个 Agent 自己读取的格式，写进你选中的 Agent。\n\n资源库里还没有 Hook\n\n添加一个，再选要运行它的 Agent。\n\n＋ 添加 Hook"
+    },
+    {
+      "case": "hook-event-menu",
+      "text": "何时运行\n一轮结束时\n所有 Agent，各用自己的事件名\n工具运行之后\n所有 Agent，各用自己的事件名\n工具运行之前\n所有 Agent，各用自己的事件名\n发送提示词时\n所有 Agent，各用自己的事件名\n会话开始时\n所有 Agent，各用自己的事件名\nCursor · beforeShellExecution\nCursor 自己的事件\nCursor · afterShellExecution\nCursor 自己的事件\nCursor · beforeMCPExecution\nCursor 自己的事件\nCursor · afterMCPExecution\nCursor 自己的事件\nCursor · beforeReadFile\nCursor 自己的事件\nCursor · afterFileEdit\nCursor 自己的事件\nCursor · beforeSubmitPrompt\nCursor 自己的事件\nCursor · stop\nCursor 自己的事件\nCursor · afterAgentResponse\nCursor 自己的事件\nCursor · afterAgentThought\nCursor 自己的事件\nCursor · sessionEnd\nCursor 自己的事件\nCursor · preToolUse\nCursor 自己的事件\nCursor · postToolUse\nCursor 自己的事件\nCursor · postToolUseFailure\nCursor 自己的事件\nCursor · subagentStart\nCursor 自己的事件\nCursor · subagentStop\nCursor 自己的事件\nCursor · preCompact\nCursor 自己的事件"
+    },
+    {
+      "case": "hook-menu-escape",
+      "menus": 0,
+      "editor": 1
+    },
+    {
+      "case": "hook-cancel",
+      "editors": 0
+    }
+  ]
+}

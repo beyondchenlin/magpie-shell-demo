@@ -1,5 +1,7 @@
 # Magpie 外壳外观制作逻辑（PackGate / 二开备忘）
 
+历史机制说明：本页包含旧版本行号、参数和产品扩展建议，不作为当前并列规范。2026-10-16独立校核后的唯一规则候选入口为 [CIS-CONTROLS](CIS-CONTROLS.md)；需要按用途与最终级联选择具体规则，监督冻结后执行。原文保留供溯源。
+
 > 对照：官方 Magpie `internal/gui/assets/`（app.js / app.css / index.html / i18n.js / plugins/gateway）。  
 > 目的：说明**目的 → 机制 → 如何扩展**，不是 PRD。  
 > Demo：`magpie-shell-demo`。品牌可换；**壳的结构与动效应对齐**，不要凭感觉抄。
@@ -53,7 +55,7 @@ footer.foot                 ← #status toast 胶囊
 - `.font-row` + `.font-controls` grid (family | style, preview full width).
 - Family menu: System default + catalogue + Refresh; `Search fonts…` (`sc-q`); style disabled when System default.
 - Apply: `--ui-font/weight/style/stretch` and `--code-*`; `html[data-fonts]`.
-- Appearance theme: `html.theming` **.35s** then clear at **450ms**.
+- Appearance theme: `html.theming` **.35s** then clear at **450ms** (Magpie app.css ~3233–3236; app.js ~20585–20587). Demo: `src/applyTheme.ts` + App theme effect (v0.1.119).
 
 ## 3b. Settings nest (v0.1.40)
 
@@ -70,7 +72,7 @@ footer.foot                 ← #status toast 胶囊
 |----------------|-------------|------|
 | `view-in` | **.24s** `--ease`；from `opacity 0` + `translateY(5px)` | 每次进入 `.view` |
 | `fade-in`（reduced / side-nav 页） | opacity only | `prefers-reduced-motion` 时 `.view` 改名 |
-| `.segs` thumb（JS `slide` / demo `useSegThumb`） | **280ms** `cubic-bezier(.2,.8,.2,1)` | API / Shell / OS 等分段钮 |
+| `.segs` / `#nav.seg` thumb（JS `slide` / demo `useSegThumb`） | **280ms** `cubic-bezier(.2,.8,.2,1)`；`.still` + mid-glide `thumbNow` + ResizeObserver `thumbFit`（Magpie app.js ~8168–8267 / 8185）；**不** calm()-跳过 WAAPI | Appearance / 顶栏 `#nav` / in-page `.segs` |
 | `.opt` color/transform | **.18s / .14s** `--ease` | 分段选项 hover/选中 |
 | `.fold svg` | **transform .15s ease-out**；展开 `rotate(90deg)` | Connect / Models 折叠 |
 | `.copy` hover | background/color **.12s** | 复制钮 |
@@ -80,7 +82,7 @@ footer.foot                 ← #status toast 胶囊
 | `#sync.spin` / `spin` | **.9s** linear infinite | 顶栏刷新 |
 | `.status.ok` 胶囊 | 出现约 **3.5s** 后清；opacity transition **.2–.3s** | footer toast |
 | `.nav-hl`（侧栏） | transform/height **.3s** `cubic-bezier(.25,.9,.3,1)` | 侧栏行高亮 |
-| view-transition（侧栏进出） | **.5s** `cubic-bezier(.32,.72,0,1)` | 顶栏↔侧栏 morph（可选） |
+| view-transition（侧栏进出） | **.32s** `cubic-bezier(.42,0,.58,1)` | 顶栏↔侧栏 morph（可选） |
 | `skeleton-shift` | **1.4s** ease-in-out infinite | Gateway loading 骨架 |
 | `.lib-switch` / `i` | background **.18s**；thumb translateX **.18s** `--ease` | Agents 连接 / Providers / 额度开关 |
 | `.pref-pick` chevron | transform **.15s** `--ease`；open 旋转 180° | Settings 语言等菜单钮 |
@@ -235,11 +237,17 @@ footer.foot                 ← #status toast 胶囊
 
 - Install `pm-act` / `.get` accent soft→fill; Options = `.pm-opts` textarea + err + bar (Clear/Cancel/Save JSON object) + middleware hooks note.
 
-### Motion tokens re-scan (still required)
+### Motion tokens re-scan
 
-Same as §4; added: `.pm-opts textarea` focus .12s; `.range-menu .rm-day` background .12s; `.search-vendor.open` chevron .15s; led-chart bar height .28s.
+**v0.1.121 closed** for Settings Appearance `.segs` + top `#nav.seg` path (user-checked often):
+- Magpie `slide()` **280ms** / `cubic-bezier(.2,.8,.2,1)` (app.js **8185**, **8240–8267**)
+- Demo `useSegThumb` matches: `.still` put, mid-glide `thumbNow`, ResizeObserver fit (wrap y/h)
+- `html.theming` **.35s** / clear **450ms** kept (v0.1.119–120); `prefers-reduced-motion` via Magpie app.css **~3305–3308** global `.01ms` (covers theming). Magpie `slide()` does **not** calm()-skip WAAPI — tip matches.
+- Settings warm-tabs / set-tabs stay `.on` only (no SegThumb; v0.1.118)
 
-*文档版本：v0.1.14*
+Still open elsewhere (not this tip): `.pm-opts textarea` focus .12s; `.range-menu .rm-day`; `.search-vendor.open` chevron; led-chart bar height .28s — when those surfaces are touched.
+
+*文档版本：v0.1.121*
 
 
 ---
@@ -478,3 +486,8 @@ Full nested capture consumed. Hook When-it-runs includes shared events + Cursor 
 | 空态 Overview | `noCallsIn(period)` + 引导句；隐藏 chart/Agents/… | 默认 `demoFilled=false` |
 | Context `#ctxRange` | Today / 7d / 30d（`magpie.ctxDays`） | 已去掉误加的 90d |
 | Allowances | 无配额时 `quotaHead` hidden | **不发明**配额卡（无原生镜头） |
+
+
+## v0.1.194 同源基线
+
+当前控件契约以 docs/CIS-CONTROLS.md 为准。六个基础样式文件统一为 Magpie 63be477；预览框尺寸与导航解耦，见 docs/TIP-CYCLE.md。菜单使用同一窗口坐标、字号换算和边界约束；原生协议菜单立即关闭，模型浮层按 .leaving 220ms 退出。字体使用 .proto.pick 两列 grid；单色图标用 mask、彩色/PNG 保留图片。运行 npm run cis-guard 检查基础样式未漂移；该检查不代替浏览器和原生交互验收。

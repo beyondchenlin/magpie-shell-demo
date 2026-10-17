@@ -1,0 +1,121 @@
+{
+  "source": "5f7f9bc0b7da8efaacbb6ae0b5e15587538a240c",
+  "version": "0.1.205",
+  "checks": [
+    {
+      "case": "date-head-1364",
+      "value": {
+        "animation": "none",
+        "fontSize": "11px",
+        "padding": "6px 8px 5px",
+        "rect": {
+          "bottom": 187.93844604492188,
+          "height": 28.99383544921875,
+          "left": 523.4150390625,
+          "right": 785.2183837890625,
+          "top": 158.94461059570312,
+          "width": 261.8033447265625,
+          "x": 523.4150390625,
+          "y": 158.94461059570312
+        }
+      }
+    },
+    {
+      "case": "context-native-margin",
+      "value": {
+        "margin": "0px",
+        "padding": "0px 4px 12px"
+      }
+    },
+    {
+      "case": "github-token-native-width",
+      "value": {
+        "height": "26.9886px",
+        "maxWidth": "100%",
+        "minWidth": "0px",
+        "width": "240px"
+      }
+    },
+    {
+      "case": "mirror-native-input",
+      "value": {
+        "height": "26.9886px",
+        "maxWidth": "100%",
+        "minWidth": "0px",
+        "width": "240px"
+      }
+    },
+    {
+      "case": "redaction-no-extra-animation",
+      "value": [
+        {
+          "animation": "none",
+          "opacity": "1"
+        },
+        {
+          "animation": "none",
+          "opacity": "1"
+        },
+        {
+          "animation": "none",
+          "opacity": "1"
+        },
+        {
+          "animation": "none",
+          "opacity": "1"
+        },
+        {
+          "animation": "none",
+          "opacity": "1"
+        },
+        {
+          "animation": "none",
+          "opacity": "1"
+        },
+        {
+          "animation": "none",
+          "opacity": "1"
+        },
+        {
+          "animation": "none",
+          "opacity": "1"
+        },
+        {
+          "animation": "none",
+          "opacity": "1"
+        },
+        {
+          "animation": "none",
+          "opacity": "1"
+        }
+      ]
+    },
+    {
+      "case": "date-head-390",
+      "value": {
+        "fontSize": "11px",
+        "padding": "6px 8px 5px",
+        "rect": {
+          "bottom": 501.86767578125,
+          "height": 282.9022216796875,
+          "left": 130.0283203125,
+          "right": 381.9412841796875,
+          "top": 218.9654541015625,
+          "width": 251.9129638671875,
+          "x": 130.0283203125,
+          "y": 218.9654541015625
+        },
+        "root": {
+          "bottom": 844,
+          "height": 844,
+          "left": 0,
+          "right": 390,
+          "top": 0,
+          "width": 390,
+          "x": 0,
+          "y": 0
+        }
+      }
+    }
+  ]
+}

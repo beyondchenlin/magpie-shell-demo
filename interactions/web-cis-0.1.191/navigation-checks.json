@@ -1,0 +1,74 @@
+[
+  {
+    "viewport": 900,
+    "overflow": false,
+    "thumb": "transform: translateX(2px); width: 57px;",
+    "view": "agents",
+    "width": 57,
+    "x": 2
+  },
+  {
+    "viewport": 900,
+    "overflow": false,
+    "thumb": "transform: translateX(59px); width: 61px;",
+    "view": "providers",
+    "width": 61,
+    "x": 59
+  },
+  {
+    "viewport": 900,
+    "overflow": false,
+    "thumb": "transform: translateX(170px); width: 49px;",
+    "view": "gateway",
+    "width": 49,
+    "x": 170
+  },
+  {
+    "viewport": 1048,
+    "overflow": false,
+    "thumb": "transform: translateX(2px); width: 57px;",
+    "view": "agents",
+    "width": 57,
+    "x": 2
+  },
+  {
+    "viewport": 1048,
+    "overflow": false,
+    "thumb": "transform: translateX(59px); width: 61px;",
+    "view": "providers",
+    "width": 61,
+    "x": 59
+  },
+  {
+    "viewport": 1048,
+    "overflow": false,
+    "thumb": "transform: translateX(170px); width: 49px;",
+    "view": "gateway",
+    "width": 49,
+    "x": 170
+  },
+  {
+    "viewport": 1364,
+    "overflow": false,
+    "thumb": "transform: translateX(2px); width: 57px;",
+    "view": "agents",
+    "width": 57,
+    "x": 2
+  },
+  {
+    "viewport": 1364,
+    "overflow": false,
+    "thumb": "transform: translateX(59px); width: 61px;",
+    "view": "providers",
+    "width": 61,
+    "x": 59
+  },
+  {
+    "viewport": 1364,
+    "overflow": false,
+    "thumb": "transform: translateX(170px); width: 49px;",
+    "view": "gateway",
+    "width": 49,
+    "x": 170
+  }
+]

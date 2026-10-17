@@ -1,0 +1,197 @@
+{
+  "source": "396c11cb266f9e832c1cb9dfd0e1d75fc1c469a2",
+  "checks": [
+    {
+      "case": "agent-all-initial",
+      "direction": {
+        "bottom": "354.354px",
+        "class": "pop am-pop railed up",
+        "rect": {
+          "bottom": 425.5520858764648,
+          "height": 356.875,
+          "left": 639.53125,
+          "right": 1277.53125,
+          "top": 68.67708587646484,
+          "width": 638,
+          "x": 639.53125,
+          "y": 68.67708587646484
+        },
+        "top": "auto",
+        "up": true
+      }
+    },
+    {
+      "case": "agent-segment-排序",
+      "direction": {
+        "bottom": "354.354px",
+        "class": "pop am-pop railed ordering up",
+        "rect": {
+          "bottom": 425.5520858764648,
+          "height": 356.875,
+          "left": 639.53125,
+          "right": 1277.53125,
+          "top": 68.67708587646484,
+          "width": 638,
+          "x": 639.53125,
+          "y": 68.67708587646484
+        },
+        "top": "auto",
+        "up": true
+      }
+    },
+    {
+      "case": "agent-segment-已显示",
+      "direction": {
+        "bottom": "354.354px",
+        "class": "pop am-pop railed up",
+        "rect": {
+          "bottom": 425.5520858764648,
+          "height": 356.875,
+          "left": 639.53125,
+          "right": 1277.53125,
+          "top": 68.67708587646484,
+          "width": 638,
+          "x": 639.53125,
+          "y": 68.67708587646484
+        },
+        "top": "auto",
+        "up": true
+      }
+    },
+    {
+      "case": "agent-segment-全部",
+      "direction": {
+        "bottom": "354.354px",
+        "class": "pop am-pop railed up",
+        "rect": {
+          "bottom": 425.5520858764648,
+          "height": 356.875,
+          "left": 639.53125,
+          "right": 1277.53125,
+          "top": 68.67708587646484,
+          "width": 638,
+          "x": 639.53125,
+          "y": 68.67708587646484
+        },
+        "top": "auto",
+        "up": true
+      }
+    },
+    {
+      "case": "agent-escape-after-redraw",
+      "live": 0,
+      "active": {
+        "class": "ag-quiet",
+        "text": "挑选"
+      }
+    },
+    {
+      "case": "next-model-entry-after-escape",
+      "live": 1
+    },
+    {
+      "case": "font-home-in-search",
+      "active": {
+        "class": "sc-q",
+        "selectionStart": 0,
+        "tag": "INPUT"
+      }
+    },
+    {
+      "case": "font-end-on-items",
+      "active": "刷新字体列表"
+    },
+    {
+      "case": "font-home-on-items",
+      "active": "DejaVu Sans",
+      "first": "DejaVu Sans"
+    },
+    {
+      "case": "final-agent-geometry",
+      "geometry": {
+        "active": {
+          "class": "",
+          "pop": "pop am-pop railed up",
+          "tag": "INPUT"
+        },
+        "anchor": {
+          "bottom": 460.7395839691162,
+          "height": 26.39583396911621,
+          "left": 803.4166870117188,
+          "right": 862.8021049499512,
+          "top": 434.34375,
+          "width": 59.38541793823242,
+          "x": 803.4166870117188,
+          "y": 434.34375
+        },
+        "popup": {
+          "class": "pop am-pop railed up",
+          "height": 324,
+          "rect": {
+            "bottom": 425.5520858764648,
+            "height": 356.875,
+            "left": 639.53125,
+            "right": 1277.53125,
+            "top": 68.67708587646484,
+            "width": 638,
+            "x": 639.53125,
+            "y": 68.67708587646484
+          },
+          "scrollHeight": 332,
+          "style": "width: 580px; max-width: 1082.79px; max-height: 324.434px; left: 510.788px; --ox: 175.9782391643953px; top: auto; bottom: 354.354px;",
+          "transform": "none",
+          "width": 580
+        },
+        "root": {
+          "caption": 32,
+          "clientHeight": 719,
+          "clientLeft": 1,
+          "clientTop": 1,
+          "clientWidth": 1099,
+          "offsetWidth": 1100,
+          "rect": {
+            "bottom": 816,
+            "height": 792,
+            "left": 77,
+            "right": 1287,
+            "top": 24,
+            "width": 1210,
+            "x": 77,
+            "y": 24
+          }
+        },
+        "source": "396c11cb266f9e832c1cb9dfd0e1d75fc1c469a2",
+        "viewport": [
+          1364,
+          941
+        ],
+        "computedRoot": {
+          "bottom": "0.606061px",
+          "boxSizing": "border-box",
+          "height": "720px",
+          "left": "0.606061px",
+          "right": "0.606061px",
+          "top": "0.606061px",
+          "width": "1100px"
+        }
+      }
+    },
+    {
+      "case": "agent-blank-outside-close",
+      "live": 0
+    },
+    {
+      "case": "model-blank-outside-close",
+      "live": 0
+    },
+    {
+      "case": "protocol-blank-outside-close",
+      "live": 0
+    },
+    {
+      "case": "font-blank-outside-close",
+      "live": 0
+    }
+  ],
+  "logs": []
+}

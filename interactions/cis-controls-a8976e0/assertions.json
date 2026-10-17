@@ -1,0 +1,51 @@
+{
+  "candidate": "a8976e0db339d520a290cbdd548c290be760797b",
+  "s4Records": 13,
+  "s4Defaults": 6,
+  "s4ExistingDisabled": [
+    {
+      "case": "allowances-default",
+      "disabled": []
+    },
+    {
+      "case": "network-default",
+      "disabled": []
+    },
+    {
+      "case": "models-default",
+      "disabled": []
+    },
+    {
+      "case": "privacy-default",
+      "disabled": []
+    },
+    {
+      "case": "sync-default",
+      "disabled": []
+    },
+    {
+      "case": "about-default",
+      "disabled": []
+    }
+  ],
+  "b4Records": 76,
+  "b4UniqueStates": 19,
+  "b4PerConfiguration": {
+    "1364-light": 19,
+    "1364-dark": 19,
+    "900-light": 19,
+    "390-light": 19
+  },
+  "b4NoBrokenImages": true,
+  "b4NoInvalidNesting": true,
+  "b4NoUncontainedOverflow": true,
+  "b4DocumentFits": true,
+  "rawClassified": 34,
+  "rawUnknown": 0,
+  "reuseBranches": 19,
+  "reuseBranchesEqual": true,
+  "restoredKeys": 39,
+  "exactRestore": true,
+  "lintErrors": 0,
+  "lintWarnings": 55
+}

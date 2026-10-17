@@ -1,7 +1,7 @@
 import { Bird } from "./Bird";
 
 /**
- * Fake Windows OS title bar for web/Electron preview.
+ * Fake Windows OS title bar for the web preview only.
  * Magpie on Windows keeps the system title bar (internal/gui/titlebar_other.go)
  * and tints it to the page --bg (titletint_windows.go TintTitleBar).
  * In-page .brand is hidden (app.css L184); icon+name live here instead.
