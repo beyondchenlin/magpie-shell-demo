@@ -21,6 +21,10 @@ use tokio::sync::oneshot;
 
 const QUEUE: usize = 32;
 const BUDGET: Duration = Duration::from_millis(800);
+#[cfg(not(test))]
+const IDLE_RETENTION: Duration = Duration::from_secs(60);
+#[cfg(test)]
+const IDLE_RETENTION: Duration = Duration::from_millis(50);
 pub const FAILURE: &str = "USAGE_STORAGE_UNAVAILABLE";
 fn unavailable() -> AppError {
     AppError::new(ErrorCode::UsageStorageUnavailable)
@@ -118,7 +122,15 @@ impl Ledger {
             .name("tagma-usage-writer".into())
             .spawn(move || {
                 let mut store = store;
-                while let Ok(message) = receiver.recv() {
+                loop {
+                    let message = match receiver.recv_timeout(IDLE_RETENTION) {
+                        Ok(message) => message,
+                        Err(mpsc::RecvTimeoutError::Disconnected) => break,
+                        Err(mpsc::RecvTimeoutError::Timeout) => {
+                            idle_retention(&mut store, &flags, tagma_core::health::now_ms());
+                            continue;
+                        }
+                    };
                     let operation = match message.operation {
                         Operation::Manage(Management::Preview { range, reply }) => {
                             management_result(
@@ -401,6 +413,20 @@ impl Ledger {
         });
     }
 }
+fn idle_retention(store: &mut UsageStore, flags: &Shared, now: AppResult<u64>) {
+    // No automatic recovery or pending-result replay from a timer. Existing
+    // degradation stays fenced until the explicit private recovery command.
+    if flags.blocked.load(Ordering::SeqCst) {
+        return;
+    }
+    let result = now.and_then(|now| store.maintain(now));
+    flags
+        .pending
+        .store(store.pending_results() as u32, Ordering::SeqCst);
+    if result.is_err() || !store.state().is_ok_and(|state| !state.degraded) {
+        flags.blocked.store(true, Ordering::SeqCst);
+    }
+}
 fn management_unconfirmed(clear: bool) -> AppError {
     AppError::new(if clear {
         ErrorCode::UsageClearUnconfirmed
@@ -568,6 +594,128 @@ pub fn tokens(value: &serde_json::Value) -> Tokens {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[tokio::test]
+    async fn idle_writer_expires_owned_details_without_any_new_dispatch() {
+        let temp = tempfile::Builder::new()
+            .prefix("tagma-idle-retention-")
+            .tempdir()
+            .unwrap();
+        let now = tagma_core::health::now_ms().unwrap();
+        let start = now - 30 * 86_400_000 + 2000;
+        let mut store = UsageStore::open(temp.path(), now).unwrap();
+        let request = RequestStart {
+            id: uuid::Uuid::new_v4().to_string(),
+            provider_id: uuid::Uuid::new_v4().to_string(),
+            model: "owned idle fixture".into(),
+            config_revision: 1,
+            team_revision: None,
+            started_ms: start,
+        };
+        store.begin_request(&request).unwrap();
+        store
+            .finish(Completion {
+                request_id: request.id,
+                ordinal: None,
+                finished_ms: start + 1,
+                outcome: Outcome::Succeeded,
+                error_code: None,
+                tokens: Tokens::default(),
+            })
+            .unwrap();
+        drop(store);
+        let ledger = Ledger::open(temp.path()).unwrap();
+        let count = || {
+            let db = rusqlite::Connection::open_with_flags(
+                temp.path().join("usage.sqlite3"),
+                rusqlite::OpenFlags::SQLITE_OPEN_READ_ONLY,
+            )
+            .unwrap();
+            db.query_row("SELECT count(*) FROM usage_requests", [], |row| {
+                row.get::<_, i64>(0)
+            })
+            .unwrap()
+        };
+        assert_eq!(count(), 1);
+        tokio::time::timeout(Duration::from_secs(5), async {
+            while count() != 0 {
+                tokio::time::sleep(Duration::from_millis(30)).await;
+            }
+        })
+        .await
+        .unwrap();
+        assert!(!ledger.shared.blocked.load(Ordering::SeqCst));
+        let db = rusqlite::Connection::open_with_flags(
+            temp.path().join("usage.sqlite3"),
+            rusqlite::OpenFlags::SQLITE_OPEN_READ_ONLY,
+        )
+        .unwrap();
+        assert_eq!(
+            db.query_row("SELECT sum(count) FROM usage_daily", [], |row| row
+                .get::<_, i64>(0))
+                .unwrap(),
+            1
+        );
+        drop(db);
+        drop(ledger);
+        println!(
+            "Real idle writer timer path:owned detail crosses30days then disappears with no dispatch/management/new request;daily1 retained,healthy;test timer50ms,production60s;worker joins on drop"
+        );
+    }
+    #[test]
+    fn idle_retention_never_replays_pending_results_or_clears_a_failure_fence() {
+        let temp = tempfile::Builder::new()
+            .prefix("tagma-idle-retention-")
+            .tempdir()
+            .unwrap();
+        let now = tagma_core::health::now_ms().unwrap();
+        let mut store = UsageStore::open(temp.path(), now).unwrap();
+        let request = RequestStart {
+            id: uuid::Uuid::new_v4().to_string(),
+            provider_id: uuid::Uuid::new_v4().to_string(),
+            model: "owned idle pending".into(),
+            config_revision: 1,
+            team_revision: None,
+            started_ms: now,
+        };
+        store.begin_request(&request).unwrap();
+        let db = rusqlite::Connection::open(temp.path().join("usage.sqlite3")).unwrap();
+        db.execute_batch("CREATE TRIGGER owned_idle_fail BEFORE UPDATE ON usage_requests BEGIN SELECT RAISE(ABORT,'owned result fault');END;").unwrap();
+        assert!(
+            store
+                .finish(Completion {
+                    request_id: request.id,
+                    ordinal: None,
+                    finished_ms: now + 1,
+                    outcome: Outcome::Succeeded,
+                    error_code: None,
+                    tokens: Tokens::default()
+                })
+                .is_err()
+        );
+        db.execute_batch("DROP TRIGGER owned_idle_fail").unwrap();
+        let flags = Shared {
+            blocked: AtomicBool::new(true),
+            pending: AtomicU32::new(1),
+            hook: Mutex::new(None),
+        };
+        idle_retention(&mut store, &flags, Ok(now + 60000));
+        assert_eq!(store.pending_results(), 1);
+        assert!(store.state().unwrap().degraded);
+        assert!(flags.blocked.load(Ordering::SeqCst));
+        store.retry_pending().unwrap();
+        flags.blocked.store(false, Ordering::SeqCst);
+        idle_retention(
+            &mut store,
+            &flags,
+            Err(AppError::new(ErrorCode::InternalError)),
+        );
+        assert!(flags.blocked.load(Ordering::SeqCst));
+        idle_retention(&mut store, &flags, Ok(now + 60000));
+        assert!(flags.blocked.load(Ordering::SeqCst));
+        println!(
+            "Idle tick:existing pending1 never retried despite removed storage fault;clock failure fences healthy store and later tick cannot silently recover"
+        );
+    }
     #[tokio::test]
     async fn full_or_abandoned_management_never_mutates_or_blocks_accounting() {
         // Isolated bounded channel proves full-management behavior, without a

@@ -27,6 +27,76 @@ fn count(db: &Connection, sql: &str) -> i64 {
 }
 
 #[test]
+fn unchanged_retention_preserves_usage_revision_and_reviewed_clear_plan() {
+    let temp = tempfile::Builder::new()
+        .prefix("tagma-usage-capacity-")
+        .tempdir()
+        .unwrap();
+    let mut store = UsageStore::open(temp.path(), 40 * DAY).unwrap();
+    let before = count(&store.db, "SELECT change_revision FROM usage_meta");
+    let plan = store
+        .prepare_clear(
+            read::UsageRange {
+                start_ms: 38.0 * DAY as f64,
+                end_ms: 39.0 * DAY as f64,
+            },
+            40 * DAY,
+        )
+        .unwrap();
+    store.prune(40 * DAY, true).unwrap();
+    assert_eq!(
+        count(&store.db, "SELECT change_revision FROM usage_meta"),
+        before,
+        "no-op retention must not invalidate a reviewed clear plan"
+    );
+    store.clear(&plan, 40 * DAY).unwrap();
+}
+
+#[test]
+fn maintenance_expires_finished_details_but_preserves_running_and_retained_summaries() {
+    let temp = tempfile::Builder::new()
+        .prefix("tagma-usage-capacity-")
+        .tempdir()
+        .unwrap();
+    let mut store = UsageStore::open(temp.path(), DAY).unwrap();
+    let provider = uuid::Uuid::new_v4().to_string();
+    let completed = request(DAY, &provider);
+    store.begin_request(&completed).unwrap();
+    finish(&mut store, &completed);
+    let active = request(DAY + 1000, &provider);
+    store.begin_request(&active).unwrap();
+    store.maintain(40 * DAY).unwrap();
+    assert_eq!(
+        count(
+            &store.db,
+            "SELECT count(*) FROM usage_requests WHERE outcome='succeeded'"
+        ),
+        0
+    );
+    assert_eq!(
+        count(
+            &store.db,
+            "SELECT count(*) FROM usage_requests WHERE outcome='running'"
+        ),
+        1
+    );
+    assert_eq!(count(&store.db, "SELECT sum(count) FROM usage_daily"), 1);
+    assert_eq!(count(&store.db, "SELECT generation FROM usage_meta"), 0);
+    assert_eq!(store.state().unwrap().detail_start_ms, DAY + 1000);
+    let revision = count(&store.db, "SELECT change_revision FROM usage_meta");
+    store.maintain(40 * DAY + 60000).unwrap();
+    assert_eq!(
+        count(&store.db, "SELECT change_revision FROM usage_meta"),
+        revision,
+        "no data/floor change means no new revision even on a later tick"
+    );
+    assert!(!temp.path().join("config.sqlite3").exists());
+    println!(
+        "Idle core retention:finished detail expires without new dispatch,recent daily1 and old running1 retained,clear epoch0 unchanged;unchanged view on later tick keeps exact revision"
+    );
+}
+
+#[test]
 fn pinned_reader_bounds_real_wal_and_requires_actual_checkpoint_before_recovery() {
     let temp = tempfile::Builder::new()
         .prefix("tagma-usage-capacity-")

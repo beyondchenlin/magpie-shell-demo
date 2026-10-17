@@ -18,6 +18,8 @@
 
 ## 当前批次
 
+- **空闲业务保留处理局部完成**：候选仍dev.16/config9/usage2，现有唯一用量writer生产空闲60秒执行原保留检查，非系统清理/自动化；先复现无数据/边界变化prune仍递增修订1→2，再修复为仅实际变化bump。空闲不重放pending/自动解除fence；core86通过/8忽略不计、writer8、实际HTTP usage4+clear1、workspace Clippy通过，两轮自查见[P1-S24](P1-S24-IDLE-USAGE-RETENTION.md)。完整容量/延迟矩阵及A16/A28/P1仍未通过，用户dev.9/电脑禁令/拖动未通过保持；继续独立缺口。
+
 - **用量容量/长读者恢复局部验证补齐**：候选仍dev.16/config9/usage2，仅测试新增，生产逻辑不变。core2和实际headless HTTP1通过：真实16MiB WAL围栏拒绝新派发/上游增量0，长读者未关时恢复拒绝，关后TRUNCATE0并恢复；128条有界明细清理保留日汇总/在途，删除失败整事务回滚。core/gateway全target Clippy通过，两轮自查/空间收尾见[P1-S23](P1-S23-USAGE-CAPACITY-EVIDENCE.md)。空闲过期处理与完整容量矩阵仍未完成，A16/A28/P1不整体通过；用户dev.9不动，电脑控制禁令及拖动未通过不变，继续独立源码缺口。
 
 - **CIS软预算编辑/展示源码接线完成，未作桌面验收**：候选仍dev.16/config9/usage2，精确字符串软目标CRUD、固定编辑/删除修订、手动周期报告、未知token不绘条/实际余额账单未知，预算缓存共用目录/代次/pending围栏，清除及配置变化丢弃旧读。21项无窗口源模型/静态HTML检查（原15+预算6）、TS/Vite、6文件116规则零lint及CIS/chrome guard通过；两轮自查见[P1-S22](P1-S22-BUDGET-UI-SOURCE.md)。未调用原生预算命令或更新用户dev.9，拖动仍未通过，禁止电脑控制继续有效。A16/A28/P1及容量完整矩阵仍未整体完成，继续独立源码工作。
@@ -52,7 +54,7 @@
 
 ## 历史切片记录
 
-以下保留各批当时的实现范围与版本；其中“未开放/待接线/下一步”等描述不是本批最新状态。最新范围以上方 dev.16/config schema9/usage schema2、P1-S22及后续补充为准。
+以下保留各批当时的实现范围与版本；其中“未开放/待接线/下一步”等描述不是本批最新状态。最新范围以上方 dev.16/config schema9/usage schema2、P1-S24及后续补充为准。
 
 - SUP-006按先失败后修复完成观测时刻校验：延迟到TTL后落盘不刷新成功时间；同毫秒失败优先、目录/推理分槽。原始before/after/core/final/regression结果保留。纯选择器与未确认退出围栏已验证，first_cloud发布/解析仍未开放；新增两项无窗口异常退出测试通过，禁止电脑控制持续有效。详见[SUP-006](SUP-006-OBSERVATION-TIME.md)及[P1-S07](P1-S07-HEALTH-UNCERTAINTY.md)。
 

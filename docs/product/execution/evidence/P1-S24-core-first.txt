@@ -1,0 +1,35 @@
+   Compiling tagma-core v0.2.0-dev.16 (D:\demo1\tagmaai\crates\tagma-core)
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+    Finished `test` profile [unoptimized] target(s) in 4.75s
+     Running unittests src\lib.rs (target\debug\deps\tagma_core-2f484c8d7ea56ae6.exe)
+
+running 4 tests
+Idle core retention:finished detail expires without new dispatch,recent daily1 and old running1 retained,clear epoch0 unchanged;unchanged view on later tick keeps exact revision
+test usage::capacity_tests::maintenance_expires_finished_details_but_preserves_running_and_retained_summaries ... ok
+test usage::capacity_tests::unchanged_retention_preserves_usage_revision_and_reviewed_clear_plan ... ok
+Capacity small-page fixture:140finished ->12 after128-row pass,then0;running1 always retained,daily140 exact,detail floor advances128/1000;delete fault rolls back data/revision/floor and degrades,explicit recovery succeeds
+test usage::capacity_tests::capacity_pruning_is_bounded_keeps_daily_and_running_and_rolls_back_failed_deletes ... ok
+Real long-reader WAL:completed=564,WAL=16789032bytes >16MiB with bounded final-write overshoot;subsequent starts write0;checkpoint busy refuses recovery;reader closes then TRUNCATE0,all summaries preserved,new registration succeeds
+test usage::capacity_tests::pinned_reader_bounds_real_wal_and_requires_actual_checkpoint_before_recovery ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 64 filtered out; finished in 0.83s
+

@@ -1,0 +1,89 @@
+{
+  "recordedAtUtc": "2026-10-17T21:25:26.819Z",
+  "sourceBase": "25cd96e57db1d05c1cc99fed2fa9ebbbbc683e21",
+  "candidateVersion": "0.2.0-dev.16",
+  "configSchema": 9,
+  "usageSchema": 2,
+  "source": [
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-core\\src\\usage.rs",
+      "bytes": 48482,
+      "sha256": "057a624f5cea3688e7219b8f2a012ee205bee4ed96944e5773aa4dadc508cd33"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-core\\src\\usage\\capacity_tests.rs",
+      "bytes": 9711,
+      "sha256": "9d74f9feb4b30dd4739e6daaec8a44b53afc2464f4c3d2ea6487f85d12aa85d9"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-gateway\\src\\usage.rs",
+      "bytes": 42790,
+      "sha256": "a29bcb833ee15ce073863e240579828d8fd71031b35b94991a85e208aa2bb223"
+    }
+  ],
+  "documents": [
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\EXECUTION-STATUS.md",
+      "bytes": 29735,
+      "sha256": "f394cf76d7703647ebb6cee8d06710cc253d6a2ac7478e8f545dfaeb3c5021d3"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\P1-S24-IDLE-USAGE-RETENTION.md",
+      "bytes": 3698,
+      "sha256": "1861f62f0681f1f20420f07f65a9da4ee3bf4813956a1895cfb55669d1457849"
+    }
+  ],
+  "prd": {
+    "path": "D:\\demo1\\tagmaai\\docs\\product\\TAGMA-PRD-v0.3.md",
+    "bytes": 50957,
+    "sha256": "6e6503391f70e3f2e53347890de6e7c9f7fd93cc393c68f7bba494ac4d67a6d6"
+  },
+  "evidence": [
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S24-clippy.txt",
+      "bytes": 1564,
+      "sha256": "3aced843d83eb59d195f4c55cf1a9eb2595461246ec66f20120b639a2728d321"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S24-core-final.txt",
+      "bytes": 12958,
+      "sha256": "b5f43297a4923588edead20de0c96352b804346d72970db282b798b5bab0195e"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S24-core-first.txt",
+      "bytes": 2030,
+      "sha256": "7ed8389d6cbe04641759a89119f1eabf73e77475100f55714763c34ddd58bc26"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S24-http.txt",
+      "bytes": 3538,
+      "sha256": "da4e60eb5d7a792d29673ccfafab24c296e23c0a9fc4e7aad5ff717642249710"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S24-noop-before.txt",
+      "bytes": 1602,
+      "sha256": "da8604058ffae34cf49cdcc479ac5f6bd701874b80eaf94cbfe27bc85d27a406"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S24-space-plan.json",
+      "bytes": 486,
+      "sha256": "f8e176e529e9eb325e4386fcaa735704b508f292b7c3be31b4bdf9034e3c4552"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S24-writer-final.txt",
+      "bytes": 3030,
+      "sha256": "546277de036a63911c230c680dd6b2460c550714a7c20a1006fbd0205b4e446c"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S24-writer-first.txt",
+      "bytes": 60,
+      "sha256": "543190505b7270a19278d0a2a0935efc841bd154d063e099ceb64f2fade2b71a"
+    }
+  ],
+  "freeAfterGiB": {
+    "C": 42.45,
+    "D": 10.02
+  },
+  "cleanup": "Owned idle fixture prefix remaining0;RAII connections/worker shutdown and owned sidecar stop;no new environment/worktree or prior artifact deletion;physical net release not claimed",
+  "installed": "dev.9 untouched;drag not accepted;computer control prohibited"
+}

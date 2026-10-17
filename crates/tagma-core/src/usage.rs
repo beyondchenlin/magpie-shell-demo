@@ -446,6 +446,11 @@ impl UsageStore {
     pub fn pending_results(&self) -> usize {
         self.pending.len()
     }
+    /// Business retention on the existing sole writer. Never retries failed
+    /// completions or clears degradation; recovery remains an explicit command.
+    pub fn maintain(&mut self, now_ms: u64) -> AppResult<()> {
+        self.admit(now_ms)
+    }
     fn admit(&mut self, now_ms: u64) -> AppResult<()> {
         if self.degraded {
             return Err(storage("usage degraded"));
@@ -751,13 +756,14 @@ impl UsageStore {
             .transaction_with_behavior(TransactionBehavior::Immediate)
             .map_err(storage)?;
         let cutoff = now.saturating_sub(30 * DAY);
-        tx.execute(
-            "DELETE FROM usage_requests WHERE finished_ms IS NOT NULL AND started_ms<?1",
-            [time(cutoff)?],
-        )
-        .map_err(storage)?;
+        let mut changes = tx
+            .execute(
+                "DELETE FROM usage_requests WHERE finished_ms IS NOT NULL AND started_ms<?1",
+                [time(cutoff)?],
+            )
+            .map_err(storage)?;
         // Twelve calendar months of UTC daily summaries, rather than 365 days.
-        tx.execute("DELETE FROM usage_daily WHERE day<CAST(strftime('%s',?1/1000,'unixepoch','-12 months') AS INTEGER)/86400",[time(now)?]).map_err(storage)?;
+        changes += tx.execute("DELETE FROM usage_daily WHERE day<CAST(strftime('%s',?1/1000,'unixepoch','-12 months') AS INTEGER)/86400",[time(now)?]).map_err(storage)?;
         if capacity {
             let pages: u64 = tx
                 .pragma_query_value(None, "page_count", |r| unsigned(r, 0))
@@ -771,11 +777,25 @@ impl UsageStore {
             if max.saturating_sub(pages) + free < 16 {
                 // Finished records already have durable daily summaries. Bound
                 // each cleanup pass; if insufficient, a later insert fails shut.
-                tx.execute("DELETE FROM usage_requests WHERE id IN(SELECT id FROM usage_requests WHERE finished_ms IS NOT NULL ORDER BY started_ms LIMIT 128)",[]).map_err(storage)?;
+                changes += tx.execute("DELETE FROM usage_requests WHERE id IN(SELECT id FROM usage_requests WHERE finished_ms IS NOT NULL ORDER BY started_ms LIMIT 128)",[]).map_err(storage)?;
             }
         }
-        tx.execute("UPDATE usage_meta SET detail_start_ms=MAX(detail_start_ms,COALESCE((SELECT MIN(started_ms) FROM usage_requests),?1)) WHERE singleton=1",[time(cutoff)?]).map_err(storage)?;
-        bump(&tx)?;
+        let floor: u64 = tx
+            .query_row(
+                "SELECT COALESCE(MIN(started_ms),?1) FROM usage_requests",
+                [time(cutoff)?],
+                |row| unsigned(row, 0),
+            )
+            .map_err(storage)?;
+        changes += tx
+            .execute(
+                "UPDATE usage_meta SET detail_start_ms=?1 WHERE singleton=1 AND detail_start_ms<?1",
+                [time(floor)?],
+            )
+            .map_err(storage)?;
+        if changes > 0 {
+            bump(&tx)?;
+        }
         tx.commit().map_err(storage)
     }
 }

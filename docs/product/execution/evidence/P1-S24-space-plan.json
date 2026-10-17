@@ -1,0 +1,13 @@
+{
+  "recordedAtUtc": "2026-10-17T21:22:01.877Z",
+  "target": "D:/demo1/tagmaai/target",
+  "temporaryRoot": "C:\\Users\\ai\\AppData\\Local\\Temp",
+  "estimatedAdditionalPeakGiB": 0.03,
+  "freeBeforeGiB": {
+    "C": 42.44,
+    "D": 10.02
+  },
+  "scope": "Usage business retention on existing idle writer;no desktop/system scheduled cleanup",
+  "reuse": "Existing Cargo target/registry;no env/worktree",
+  "cleanup": "Small owned TempDir fixtures RAII;all prior/user artifacts retained"
+}
