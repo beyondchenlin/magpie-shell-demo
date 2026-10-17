@@ -1,0 +1,26 @@
+   Compiling tagma-core v0.2.0-dev.15 (D:\demo1\tagmaai\crates\tagma-core)
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+   Compiling tagma-runtime v0.2.0-dev.15 (D:\demo1\tagmaai\crates\tagma-runtime)
+    Finished `test` profile [unoptimized] target(s) in 4.69s
+     Running unittests src\lib.rs (target\debug\deps\tagma_runtime-9c311ddda118a4e3.exe)
+
+running 1 test
+Usage reader:500ms wait timeout retains sole worker permit;retry refused until real worker exits;no missing-store initialization
+test usage::tests::timeout_does_not_release_a_live_worker_or_queue_more_queries ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.53s
+

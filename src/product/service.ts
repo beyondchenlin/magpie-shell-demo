@@ -1,5 +1,6 @@
 import { invoke, isTauri, Channel } from "@tauri-apps/api/core";
 import type { StartChat, ChatEvent } from "./contract";
+import type { UsageRequestsQuery, UsageRequestsView, UsageDetailsQuery, UsageDetailsView, UsageSummaryQuery, UsageSummaryView } from "./contract";
 import type { SaveTeam, SetTeamEnabled, SaveFirstCloudOrder, ProbeProvider, RevokeAccess, RotateGatewayToken } from "./contract";
 import type { ApplicationView, ConfigView, DiagnosticBundle, RecoverInitialization, RecoveryOutcome, ReorderProviders, RevisionCommand, RuntimeStatus, SaveProvider, SaveAppProfile, SaveGateway, RevisionInput } from "./contract";
 
@@ -19,6 +20,10 @@ async function command<T>(name: string, args: Record<string, unknown>): Promise<
 }
 
 export const service = {
+  usageRequests:(input:UsageRequestsQuery)=>command<UsageRequestsView>("usage_requests",{input}),
+  usageDetails:(input:UsageDetailsQuery)=>command<UsageDetailsView>("usage_details",{input}),
+  usageSummary:(input:UsageSummaryQuery)=>command<UsageSummaryView>("usage_summary",{input}),
+  recoverUsage:()=>command<RuntimeStatus>("recover_usage",{protocolVersion}),
   revokeAccess:(input:RevokeAccess)=>command<ConfigView>("revoke_access",{input}),
   rotateGatewayToken:(input:RotateGatewayToken)=>command<ConfigView>("rotate_gateway_token",{input}),
   probeProvider:(input:ProbeProvider)=>command<ConfigView>("probe_provider",{input}),

@@ -18,6 +18,8 @@
 
 ## 当前批次
 
+- **用量只读查询及本机源码桥接局部完成**：候选dev.16/config schema8/usage schema1，请求/详情/UTC日汇总、精确字符串总计与未知区分、单worker超时/实际SQL interrupt、固定本机main权限。core66/runtime4/gateway相关3通过（core7显式忽略不计）；末次读6/reader1及Clippy复验、DTO/TS/Vite/JSON lint/CIS通过。真实sidecar→reader ID/配置/token一致，在途读取不取消上游。两轮自查及边界见[P1-S15](P1-S15-USAGE-READ.md)。尚无新用量面板/清除/预算或桌面验收，不计A16/A28/P1整体完成。用户安装仍dev.9、拖动未通过、禁止电脑控制不变；继续独立源码工作。
+
 - **A27供应商连接代次的组合矩阵局部验证完成**：实际sidecar的应用RestartRequired（old effective5/desired6）同时遇私有请求未送达/已处理但回复丢失，分别false/true取消四组合均为撤销final0调用；管理调用Err且未知状态不冒称确认，false保留已在途正文。自查另先复现安全确认错误快照被误接受，再按明确操作种类/请求修订/结果与运行快照分离修复。相关gateway17/runtime3通过（2显式忽略不计），workspace Clippy通过；已修正既有测试的端口预留竞争。见[P1-S14](P1-S14-REVOCATION-FAULTS.md)。A27真实凭据/桌面及完整错误矩阵、A16/A28仍未整体通过；继续用量查询等独立后台缺口，用户dev.9与电脑控制禁令不变。
 
 - **SUP-008管理恢复确认边界已局部修复**：先以真实私有IPC复现带USAGE_STORAGE_UNAVAILABLE的健康字段快照被manager误接受，再以明确operation确认/错误与runtime快照分离修复；12负例拒绝、2正例接受。真实writer的pending1恢复暂停至调用超时，晚完成false/0仍保留原操作Err；hook有界。相关gateway19/runtime2通过（2显式忽略不计），workspace及最终runtime Clippy通过，见[SUP-008](SUP-008-RECOVERY-ACK.md)。候选dev.15/schema不变，A28/A16/P1未整体通过；继续A27 apply失败+IPC丢失矩阵，用户安装与电脑控制禁令不变。
@@ -34,7 +36,7 @@
 
 ## 历史切片记录
 
-以下保留各批当时的实现范围与版本；其中“未开放/待接线/下一步”等描述不是本批最新状态。最新范围以上方 dev.15、P1-S14及SUP-008为准。
+以下保留各批当时的实现范围与版本；其中“未开放/待接线/下一步”等描述不是本批最新状态。最新范围以上方 dev.16、P1-S15及后续补充为准。
 
 - SUP-006按先失败后修复完成观测时刻校验：延迟到TTL后落盘不刷新成功时间；同毫秒失败优先、目录/推理分槽。原始before/after/core/final/regression结果保留。纯选择器与未确认退出围栏已验证，first_cloud发布/解析仍未开放；新增两项无窗口异常退出测试通过，禁止电脑控制持续有效。详见[SUP-006](SUP-006-OBSERVATION-TIME.md)及[P1-S07](P1-S07-HEALTH-UNCERTAINTY.md)。
 

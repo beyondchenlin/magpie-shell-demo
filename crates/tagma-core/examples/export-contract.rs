@@ -1,5 +1,6 @@
 use tagma_core::diagnostics::{Component, DiagnosticBundle, Event, Record};
 use tagma_core::teams::*;
+use tagma_core::usage::read::*;
 use tagma_core::*;
 use ts_rs::TS;
 
@@ -50,6 +51,24 @@ fn main() {
         security::RotateGatewayToken::decl(&cfg),
         security::SecurityView::decl(&cfg),
         security::RevocationReceipt::decl(&cfg),
+        UsageRange::decl(&cfg),
+        UsageRecordState::decl(&cfg),
+        UsageFilter::decl(&cfg),
+        UsageCursor::decl(&cfg),
+        UsageRequestsQuery::decl(&cfg),
+        UsageDetailsQuery::decl(&cfg),
+        UsageMetricKind::decl(&cfg),
+        UsageSummaryCursor::decl(&cfg),
+        UsageSummaryQuery::decl(&cfg),
+        UsageAvailability::decl(&cfg),
+        UsageReadInfo::decl(&cfg),
+        UsageRequestView::decl(&cfg),
+        UsageAttemptView::decl(&cfg),
+        UsageRequestsView::decl(&cfg),
+        UsageDetailsView::decl(&cfg),
+        UsageSummaryRow::decl(&cfg),
+        UsageSummaryTotals::decl(&cfg),
+        UsageSummaryView::decl(&cfg),
         SaveTeam::decl(&cfg),
         SetTeamEnabled::decl(&cfg),
         ConfigView::decl(&cfg),

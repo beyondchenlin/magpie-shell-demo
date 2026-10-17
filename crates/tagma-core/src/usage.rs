@@ -1,6 +1,9 @@
 //! Separate, single-writer request ledger. No messages, headers or credentials.
-//! The gateway must await begin_request/begin_attempt before dispatch. This module
-//! provides persistence; wiring it into dispatch is a separate integration step.
+//! The gateway actor awaits begin_request/begin_attempt before dispatch.
+//! Read-only projections share this ledger through the read module.
+pub mod read;
+#[cfg(test)]
+mod read_tests;
 use crate::*;
 use fs2::FileExt;
 use rusqlite::{Connection, OpenFlags, OptionalExtension, TransactionBehavior, params};

@@ -1,0 +1,1 @@
+{"scope":"Static native registration/permission check, no UI invocation","windows":["main"],"commands":["usage_requests","usage_details","usage_summary","recover_usage"],"passed":true}

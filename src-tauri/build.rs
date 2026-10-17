@@ -26,6 +26,10 @@ fn main() {
             "apply_gateway",
             "quit_application",
             "diagnostics_view",
+            "usage_requests",
+            "usage_details",
+            "usage_summary",
+            "recover_usage",
             "recover_initialization",
         ]),
     ))

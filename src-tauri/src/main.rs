@@ -17,6 +17,7 @@ struct Application {
     tray: bool,
     directory: Option<std::path::PathBuf>,
     chat: chat::ChatBridge,
+    usage_reader: tagma_runtime::usage::UsageReader,
 }
 
 fn local(window: &WebviewWindow) -> AppResult<()> {
@@ -381,6 +382,54 @@ async fn diagnostics_view(
             .flatten(),
     })
 }
+#[tauri::command]
+async fn usage_requests(
+    window: WebviewWindow,
+    app: State<'_, Application>,
+    input: usage::read::UsageRequestsQuery,
+) -> AppResult<usage::read::UsageRequestsView> {
+    local(&window)?;
+    let directory = app
+        .directory
+        .as_ref()
+        .ok_or_else(|| AppError::new(ErrorCode::UsageQueryUnavailable))?;
+    app.usage_reader.requests(directory, input).await
+}
+#[tauri::command]
+async fn usage_details(
+    window: WebviewWindow,
+    app: State<'_, Application>,
+    input: usage::read::UsageDetailsQuery,
+) -> AppResult<usage::read::UsageDetailsView> {
+    local(&window)?;
+    let directory = app
+        .directory
+        .as_ref()
+        .ok_or_else(|| AppError::new(ErrorCode::UsageQueryUnavailable))?;
+    app.usage_reader.details(directory, input).await
+}
+#[tauri::command]
+async fn usage_summary(
+    window: WebviewWindow,
+    app: State<'_, Application>,
+    input: usage::read::UsageSummaryQuery,
+) -> AppResult<usage::read::UsageSummaryView> {
+    local(&window)?;
+    let directory = app
+        .directory
+        .as_ref()
+        .ok_or_else(|| AppError::new(ErrorCode::UsageQueryUnavailable))?;
+    app.usage_reader.summary(directory, input).await
+}
+#[tauri::command]
+async fn recover_usage(
+    window: WebviewWindow,
+    app: State<'_, Application>,
+    protocol_version: u32,
+) -> AppResult<RuntimeStatus> {
+    check_protocol(protocol_version)?;
+    gateway(&window, &app)?.recover_usage().await
+}
 
 #[tauri::command]
 async fn recover_initialization(
@@ -534,6 +583,7 @@ fn main() {
                 tray,
                 directory: local_directory,
                 chat: chat::ChatBridge::new()?,
+                usage_reader: Default::default(),
             });
             Ok(())
         })
@@ -563,6 +613,10 @@ fn main() {
             apply_gateway,
             quit_application,
             diagnostics_view,
+            usage_requests,
+            usage_details,
+            usage_summary,
+            recover_usage,
             recover_initialization
         ])
         .on_window_event(|window, event| {

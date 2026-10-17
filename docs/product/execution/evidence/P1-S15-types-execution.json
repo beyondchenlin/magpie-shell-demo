@@ -1,0 +1,7 @@
+{
+  "command": "node node_modules/typescript/bin/tsc -b",
+  "exitCode": 0,
+  "stdoutBytes": 0,
+  "recordedFrom": "Completed guarded PowerShell execution: tsc exited successfully before final JSON lint and native capability validation; no stdout was emitted.",
+  "typeScriptVersion": "6.0.3"
+}

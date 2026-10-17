@@ -1,0 +1,20 @@
+{
+  "recordedAtUtc": "2026-10-17T19:15:07.1242736Z",
+  "target": "D:\\demo1\\tagmaai\\target",
+  "temporaryRoot": "C:\\Users\\ai\\AppData\\Local\\Temp",
+  "estimatedAdditionalPeakGiB": 0.5,
+  "freeBeforeGiB": {
+    "D": 11.27,
+    "C": 42.56
+  },
+  "scope": "Bounded readonly usage requests/details/UTC summaries plus shared runtime/native source bridge; no desktop or real API",
+  "reuse": "Existing Cargo target,registry,node_modules; no new environment,worktree or installer",
+  "cleanup": "Owned TempDir and bounded reader worker teardown; preserve user data,prior evidence and rejected cleanup",
+  "revisedAtUtc": "2026-10-17T19:35:37.6951177Z",
+  "freeAtRevisionGiB": {
+    "C": 42.47,
+    "D": 10.69
+  },
+  "remainingEstimatedPeakGiB": 0.15,
+  "revisionNote": "Compilation complete; only targeted regression/type/lint/source binding checks remain. Disk deltas include concurrent tasks; no installer or larger build."
+}

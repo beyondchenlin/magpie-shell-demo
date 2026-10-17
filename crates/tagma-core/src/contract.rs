@@ -30,6 +30,8 @@ pub enum ErrorCode {
     AccessRevoked,
     SecurityStateUnconfirmed,
     UsageStorageUnavailable,
+    UsageQueryUnavailable,
+    UsageQueryCancelled,
     RestartRequired,
     TeamSlugConflict,
     TeamPublished,
@@ -50,6 +52,7 @@ impl AppError {
             ErrorCode::ConfigConflict
                 | ErrorCode::CredentialStoreUnavailable
                 | ErrorCode::StorageUnavailable
+                | ErrorCode::UsageQueryUnavailable
                 | ErrorCode::MaintenanceInProgress
         );
         Self { code, retryable }
