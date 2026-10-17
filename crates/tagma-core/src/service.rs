@@ -24,6 +24,8 @@ pub struct ConfigSnapshot {
     pub profiles: Vec<AppProfile>,
     #[serde(default)]
     pub gateway: GatewaySettings,
+    #[serde(default)]
+    pub teams: Vec<crate::teams::TeamRecord>,
 }
 
 #[derive(Clone, Serialize, Deserialize)]
@@ -230,7 +232,7 @@ impl ConfigService {
         Ok(service)
     }
 
-    fn operation_lock(&self) -> AppResult<File> {
+    pub(crate) fn operation_lock(&self) -> AppResult<File> {
         let file = lock_file(&self.directory.join("operation.lock"))?;
         file.try_lock_exclusive()
             .map_err(|_| AppError::new(ErrorCode::ConfigConflict))?;
@@ -260,6 +262,14 @@ impl ConfigService {
             schema_version: SCHEMA_VERSION,
             desired_revision: revision,
             profiles: snapshot.profile_views()?,
+            teams: snapshot
+                .teams
+                .iter()
+                .map(|team| crate::teams::TeamView {
+                    team: team.clone(),
+                    publish_issues: team.draft.publish_issues(&snapshot),
+                })
+                .collect(),
             gateway: GatewayView {
                 port: snapshot.gateway.port,
                 auth_enabled: snapshot.gateway.auth_enabled,
@@ -383,6 +393,13 @@ impl ConfigService {
             .profiles
             .iter()
             .any(|p| p.provider_ids.contains(&input.id))
+            || snapshot.teams.iter().any(|team| {
+                team.draft.references_provider(&input.id)
+                    || team
+                        .versions
+                        .iter()
+                        .any(|v| v.recipe.references_provider(&input.id))
+            })
         {
             return Err(AppError::new(ErrorCode::ProviderReferenced));
         }
@@ -553,7 +570,7 @@ impl ConfigService {
         self.credentials.get(&reference)
     }
 
-    fn commit(
+    pub(crate) fn commit(
         &self,
         expected: u32,
         snapshot: &ConfigSnapshot,

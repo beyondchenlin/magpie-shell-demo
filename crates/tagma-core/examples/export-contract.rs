@@ -1,4 +1,5 @@
 use tagma_core::diagnostics::{Component, DiagnosticBundle, Event, Record};
+use tagma_core::teams::*;
 use tagma_core::*;
 use ts_rs::TS;
 
@@ -17,6 +18,23 @@ fn main() {
         GatewayView::decl(&cfg),
         SaveGateway::decl(&cfg),
         RevisionInput::decl(&cfg),
+        CloudTarget::decl(&cfg),
+        TeamBrain::decl(&cfg),
+        TeamStepTarget::decl(&cfg),
+        TeamRouting::decl(&cfg),
+        TeamStepInput::decl(&cfg),
+        TeamStepOutput::decl(&cfg),
+        TeamFailurePolicy::decl(&cfg),
+        TeamSideEffect::decl(&cfg),
+        TeamStep::decl(&cfg),
+        TeamRecipe::decl(&cfg),
+        TeamPermission::decl(&cfg),
+        PublishedTeam::decl(&cfg),
+        TeamRecord::decl(&cfg),
+        TeamPublishIssue::decl(&cfg),
+        TeamView::decl(&cfg),
+        SaveTeam::decl(&cfg),
+        SetTeamEnabled::decl(&cfg),
         ConfigView::decl(&cfg),
         RuntimeState::decl(&cfg),
         RuntimeStatus::decl(&cfg),
@@ -36,7 +54,10 @@ fn main() {
         "// Generated from tagma-core. Run npm run contract:generate; do not edit.\n{}\n",
         declarations
             .iter()
-            .map(|d| format!("export {d}"))
+            .map(|d| format!(
+                "export {}",
+                d.lines().map(str::trim_end).collect::<Vec<_>>().join("\n")
+            ))
             .collect::<Vec<_>>()
             .join("\n")
     );

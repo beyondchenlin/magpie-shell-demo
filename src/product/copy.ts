@@ -51,6 +51,9 @@ const zh: typeof en = {
 
 export function copy(language: ProductLanguage) { return language === "zh" ? zh : en; }
 const errors: Record<ErrorCode, [string, string]> = {
+  TEAM_SLUG_CONFLICT: ["此小队标识已被使用，请选择其他标识。", "This team slug is already in use. Choose another slug."],
+  TEAM_PUBLISHED: ["已发布版本不能改名或删除。可以修改草稿、发布新修订，或停用旧版本。", "Published recipes cannot be renamed or deleted. Edit the draft, publish a new revision, or disable an old version."],
+  TEAM_RECIPE_UNAVAILABLE: ["小队依赖、步骤或执行预算尚未就绪，草稿已保留。", "Team dependencies, steps or execution budget are not ready. The draft is retained."],
   INVALID_INPUT: [zh.invalid, en.invalid],
   CONFIG_CONFLICT: ["配置已由其他入口修改，编辑内容已保留。刷新后重新确认。", "Configuration changed elsewhere. Your edits are retained; refresh and review before saving."],
   STORAGE_UNAVAILABLE: ["本机配置存储不可用，未确认保存成功。请检查磁盘空间与权限。", "Local configuration storage is unavailable. Check disk space and permissions; save is not confirmed."],

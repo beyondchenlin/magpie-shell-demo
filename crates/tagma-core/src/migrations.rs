@@ -110,8 +110,8 @@ fn write_journal(directory: &Path, journal: &Journal, replace: bool) -> AppResul
 }
 
 pub(crate) fn prepare(directory: &Path) -> AppResult<()> {
-    // At most two known transitions; a pending committed step is resumed first.
-    for _ in 0..3 {
+    // At most three known transitions; a pending committed step is resumed first.
+    for _ in 0..4 {
         prepare_inner(directory, || Ok(()))?;
         let db = Connection::open_with_flags(
             directory.join("config.sqlite3"),
@@ -201,7 +201,10 @@ fn prepare_inner(directory: &Path, after_backup: impl FnOnce() -> AppResult<()>)
     };
     if (journal.owner != OWNER
         && !(journal.owner == LEGACY_OWNER && journal.from_schema == 1 && journal.to_schema == 2))
-        || !matches!((journal.from_schema, journal.to_schema), (1, 2) | (2, 3))
+        || !matches!(
+            (journal.from_schema, journal.to_schema),
+            (1, 2) | (2, 3) | (3, 4)
+        )
         || (version != journal.from_schema && version != journal.to_schema)
         || uuid::Uuid::parse_str(&journal.operation_id).is_err()
         || journal
@@ -306,8 +309,8 @@ fn prepare_inner(directory: &Path, after_backup: impl FnOnce() -> AppResult<()>)
             )
             .map_err(|_| error())?;
         }
-        // V3 also versions the serialized gateway settings contract, preventing old
-        // readers from silently dropping unknown authentication fields on their next save.
+        // V3 protects authentication fields; V4 protects team drafts and immutable
+        // publications from being silently dropped by older writers.
         // Historical snapshot bytes stay immutable; current readers supply defaults.
         tx.pragma_update(None, "user_version", journal.to_schema)
             .map_err(|_| error())?;
@@ -462,7 +465,7 @@ mod tests {
             .unwrap();
         db.execute("UPDATE config_head SET revision=1", []).unwrap();
         prepare(temp.path()).unwrap();
-        assert_eq!(schema(&db).unwrap(), 3);
+        assert_eq!(schema(&db).unwrap(), SCHEMA_VERSION);
         let after: String = db
             .query_row("SELECT snapshot FROM revisions WHERE revision=1", [], |r| {
                 r.get(0)
@@ -499,5 +502,69 @@ mod tests {
         prepare(temp.path()).unwrap();
         assert_eq!(schema(&db).unwrap(), SCHEMA_VERSION);
         assert!(!pending(temp.path()));
+    }
+
+    #[test]
+    fn schema_three_team_upgrade_preserves_bytes_and_retains_schema_three_backup() {
+        let temp = tempfile::tempdir().unwrap();
+        let db = legacy(temp.path());
+        prepare_inner(temp.path(), || Ok(())).unwrap();
+        prepare_inner(temp.path(), || Ok(())).unwrap();
+        assert_eq!(schema(&db).unwrap(), 3);
+        let identity: String = db
+            .query_row("SELECT config_uuid FROM config_metadata", [], |r| r.get(0))
+            .unwrap();
+        let original: String = db
+            .query_row("SELECT snapshot FROM revisions WHERE revision=0", [], |r| {
+                r.get(0)
+            })
+            .unwrap();
+        assert_eq!(
+            ConfigService::read_runtime_snapshot(temp.path())
+                .err()
+                .unwrap()
+                .code,
+            ErrorCode::IncompatibleVersion
+        );
+        prepare(temp.path()).unwrap();
+        assert_eq!(schema(&db).unwrap(), 4);
+        assert_eq!(
+            db.query_row::<String, _, _>(
+                "SELECT snapshot FROM revisions WHERE revision=0",
+                [],
+                |r| r.get(0)
+            )
+            .unwrap(),
+            original
+        );
+        assert_eq!(
+            db.query_row::<String, _, _>("SELECT config_uuid FROM config_metadata", [], |r| r
+                .get(0))
+                .unwrap(),
+            identity
+        );
+        assert!(
+            ConfigService::read_runtime_snapshot(temp.path())
+                .unwrap()
+                .1
+                .teams
+                .is_empty()
+        );
+        let backup = fs::read_dir(temp.path().join("backups"))
+            .unwrap()
+            .filter_map(Result::ok)
+            .find(|entry| entry.file_name().to_string_lossy().starts_with("schema-3-"))
+            .unwrap();
+        let old = Connection::open(backup.path()).unwrap();
+        assert_eq!(schema(&old).unwrap(), 3);
+        assert_eq!(
+            old.query_row::<String, _, _>(
+                "SELECT snapshot FROM revisions WHERE revision=0",
+                [],
+                |r| r.get(0)
+            )
+            .unwrap(),
+            original
+        );
     }
 }

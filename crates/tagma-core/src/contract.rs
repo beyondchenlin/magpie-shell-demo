@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 use ts_rs::TS;
 
 pub const PROTOCOL_VERSION: u32 = 1;
-pub const SCHEMA_VERSION: u32 = 3;
+pub const SCHEMA_VERSION: u32 = 4;
 pub const PRODUCT_VERSION: &str = env!("CARGO_PKG_VERSION");
 
 #[derive(Debug, Clone, Serialize, Deserialize, TS, PartialEq, Eq)]
@@ -25,6 +25,9 @@ pub enum ErrorCode {
     InitializationRecoveryRequired,
     ProviderReferenced,
     RestartRequired,
+    TeamSlugConflict,
+    TeamPublished,
+    TeamRecipeUnavailable,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, TS, PartialEq, Eq)]
@@ -151,6 +154,7 @@ pub struct ConfigView {
     pub providers: Vec<Provider>,
     pub profiles: Vec<AppProfile>,
     pub gateway: GatewayView,
+    pub teams: Vec<crate::teams::TeamView>,
     pub pending_credential_cleanup: u32,
 }
 

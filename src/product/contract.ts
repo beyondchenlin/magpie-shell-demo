@@ -1,5 +1,5 @@
 // Generated from tagma-core. Run npm run contract:generate; do not edit.
-export type ErrorCode = "INVALID_INPUT" | "CONFIG_CONFLICT" | "STORAGE_UNAVAILABLE" | "CREDENTIAL_STORE_UNAVAILABLE" | "INCOMPATIBLE_VERSION" | "MAINTENANCE_IN_PROGRESS" | "DESKTOP_REQUIRED" | "INTERNAL_ERROR" | "PORT_IN_USE" | "ALREADY_RUNNING" | "GATEWAY_UNAVAILABLE" | "CONFIG_APPLY_FAILED" | "OWNERSHIP_REQUIRED" | "STARTUP_TIMEOUT" | "INITIALIZATION_RECOVERY_REQUIRED" | "PROVIDER_REFERENCED" | "RESTART_REQUIRED";
+export type ErrorCode = "INVALID_INPUT" | "CONFIG_CONFLICT" | "STORAGE_UNAVAILABLE" | "CREDENTIAL_STORE_UNAVAILABLE" | "INCOMPATIBLE_VERSION" | "MAINTENANCE_IN_PROGRESS" | "DESKTOP_REQUIRED" | "INTERNAL_ERROR" | "PORT_IN_USE" | "ALREADY_RUNNING" | "GATEWAY_UNAVAILABLE" | "CONFIG_APPLY_FAILED" | "OWNERSHIP_REQUIRED" | "STARTUP_TIMEOUT" | "INITIALIZATION_RECOVERY_REQUIRED" | "PROVIDER_REFERENCED" | "RESTART_REQUIRED" | "TEAM_SLUG_CONFLICT" | "TEAM_PUBLISHED" | "TEAM_RECIPE_UNAVAILABLE";
 export type AppError = { code: ErrorCode, retryable: boolean, };
 export type ProviderProtocol = "openai_chat_completions";
 export type Provider = { id: string, name: string, protocol: ProviderProtocol, base_url: string, enabled: boolean, models: Array<string>, has_credential: boolean, };
@@ -11,7 +11,32 @@ export type SaveAppProfile = { protocol_version: number, expected_revision: numb
 export type GatewayView = { port: number, auth_enabled: boolean, has_access_token: boolean, };
 export type SaveGateway = { protocol_version: number, expected_revision: number, port: number, auth_enabled: boolean, };
 export type RevisionInput = { protocol_version: number, expected_revision: number, };
-export type ConfigView = { protocol_version: number, schema_version: number, desired_revision: number, providers: Array<Provider>, profiles: Array<AppProfile>, gateway: GatewayView, pending_credential_cleanup: number, };
+export type CloudTarget = { provider_id: string, model_id: string, };
+export type TeamBrain = { "kind": "explicit", target: CloudTarget, } | { "kind": "first_cloud", } | { "kind": "local_brain_pack", pack_id: string, version: string, };
+export type TeamStepTarget = { "kind": "cloud_model", target: CloudTarget, } | { "kind": "pack", pack_id: string, version: string, };
+export type TeamRouting = "manual" | "sequential" | "intent";
+export type TeamStepInput = "original_messages" | "previous_text";
+export type TeamStepOutput = "intermediate_text" | "final_answer";
+export type TeamFailurePolicy = "abort";
+export type TeamSideEffect = "outbound_model_request" | "pack_operation";
+export type TeamStep = { target: TeamStepTarget, input: TeamStepInput, output: TeamStepOutput, timeout_ms: number, failure: TeamFailurePolicy, side_effect: TeamSideEffect, };
+export type TeamRecipe = { display_name: string,
+/**
+ * The final answering model. Sequential intermediate models are explicit step targets.
+ */
+brain: TeamBrain, routing: TeamRouting, steps: Array<TeamStep>, total_timeout_ms: number, };
+export type TeamPermission = "outbound_model_request";
+export type PublishedTeam = { team_id: string, public_id: string, revision: number, recipe: TeamRecipe, permissions: Array<TeamPermission>, };
+export type TeamRecord = { id: string, slug: string, draft: TeamRecipe, versions: Array<PublishedTeam>,
+/**
+ * Availability is separate from immutable recipe revisions.
+ */
+enabled_revisions: Array<number>, };
+export type TeamPublishIssue = "missing_steps" | "unsupported_routing" | "unsupported_brain" | "missing_brain" | "missing_dependency" | "pack_not_available" | "invalid_step_flow" | "invalid_side_effect" | "budget_exceeded";
+export type TeamView = { team: TeamRecord, publish_issues: Array<TeamPublishIssue>, };
+export type SaveTeam = { protocol_version: number, expected_revision: number, id: string | null, slug: string, recipe: TeamRecipe, };
+export type SetTeamEnabled = { protocol_version: number, expected_revision: number, id: string, team_revision: number, enabled: boolean, };
+export type ConfigView = { protocol_version: number, schema_version: number, desired_revision: number, providers: Array<Provider>, profiles: Array<AppProfile>, gateway: GatewayView, teams: Array<TeamView>, pending_credential_cleanup: number, };
 export type RuntimeState = "stopped" | "starting" | "running" | "degraded" | "stopping" | "failed";
 export type RuntimeStatus = { state: RuntimeState, instance_id: string | null, effective_revision: number | null, address: string | null, owned: boolean, error: AppError | null, };
 export type ApplicationView = { product_version: string, config: ConfigView, runtime: RuntimeStatus, };
