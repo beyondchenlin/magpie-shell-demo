@@ -1,0 +1,36 @@
+/* Product layout bridge. CIS app.css owns tokens and control recipes; no gold CSS is changed. */
+body.tagma #root { display:flex; flex-direction:column; width:100%; height:100%; min-height:0; overflow:hidden; }
+.tagma-header { min-height:46px; display:flex; align-items:center; gap:14px; padding:8px 14px; border-bottom:1px solid var(--line); flex-wrap:wrap; }
+.tagma-header nav { flex:1; display:flex; justify-content:center; }
+.tagma-main { flex:1; min-height:0; overflow:auto; padding:18px 16px; }
+.tagma-main section { max-width:900px; margin:auto; }
+.tagma-main h1 { font-size:16px; font-weight:600; margin-bottom:16px; }
+.tagma-main h2 { font-size:14px; font-weight:500; }
+.tagma-heading { display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; gap:12px; }
+.tagma-heading h1 { margin:0; }
+.tagma-empty { text-align:center; padding:38px 20px; display:flex; flex-direction:column; align-items:center; gap:12px; color:var(--muted); }
+.tagma-empty p { max-width:420px; }
+.tagma-empty h2 { color:var(--fg); }
+.tagma-provider .who { min-width:100px; flex:1; }
+.tagma-provider .sub { overflow-wrap:anywhere; white-space:normal; }
+.tagma-provider { flex-wrap:wrap; }
+.tagma-actions { display:flex; gap:6px; align-items:center; flex-wrap:wrap; justify-content:flex-end; }
+.tagma-editor { margin-top:12px; padding:14px; border:1px solid var(--line); border-radius:10px; background:var(--card); }
+.tagma-editor fieldset { border:0; display:grid; grid-template-columns:minmax(80px,auto) minmax(0,1fr); align-items:start; gap:12px 14px; margin-bottom:14px; }
+.tagma-editor label { padding-top:4px; }
+.tagma-editor .words { width:100%; max-width:100%; }
+.tagma-editor textarea.words { height:auto; padding:7px 9px; resize:vertical; min-height:72px; font-family:var(--code); }
+.tagma-editor .sub { margin-top:5px; white-space:normal; }
+.tagma-editor .tagma-actions { margin-top:12px; }
+.tagma-footer { border-top:1px solid var(--line); padding:8px 14px; display:flex; gap:12px; align-items:center; flex-wrap:wrap; color:var(--muted); font-size:11px; }
+.tagma-footer > span:nth-child(2) { flex:1; }
+.tagma-banner { padding:8px 14px; background:var(--amber-soft); color:var(--amber); }
+.tagma-error { padding:10px 12px; border-radius:7px; background:var(--red-soft); color:var(--red); margin-bottom:12px; overflow-wrap:anywhere; }
+.tagma-notice { color:var(--green); margin-bottom:12px; }
+.tagma-footnote { color:var(--muted); font-size:11px; margin:14px 0; }
+.tagma-confirm { margin:auto; padding:22px; width:min(420px,calc(100% - 32px)); max-height:calc(100% - 32px); overflow:auto; border:1px solid var(--line); border-radius:14px; background:var(--card); color:var(--fg); box-shadow:var(--shadow); }
+.tagma-confirm::backdrop { background:rgba(0,0,0,.32); backdrop-filter:blur(4px); }
+.tagma-confirm p { margin:12px 0 20px; line-height:1.6; overflow-wrap:anywhere; }
+body.tagma .row.pref .sub { white-space:normal; }
+body.tagma :focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+@media(max-width:520px) { .tagma-header { gap:6px; } .tagma-header > strong { display:none; } .tagma-editor fieldset { grid-template-columns:1fr; gap:6px; } .tagma-editor fieldset > span:empty { display:none; } .tagma-footer { gap:6px; } }

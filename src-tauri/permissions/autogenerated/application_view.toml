@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-application-view"
+description = "Enables the application_view command without any pre-configured scope."
+commands.allow = ["application_view"]
+
+[[permission]]
+identifier = "deny-application-view"
+description = "Denies the application_view command without any pre-configured scope."
+commands.deny = ["application_view"]

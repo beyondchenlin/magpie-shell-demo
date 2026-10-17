@@ -1,0 +1,35 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "Tagma",
+  "version": "0.2.0-dev.1",
+  "identifier": "com.tagmaai.desktop",
+  "build": {
+    "beforeDevCommand": "npm run dev:tagma",
+    "beforeBuildCommand": "npm run build:tagma",
+    "devUrl": "http://localhost:1420/tagma.html",
+    "frontendDist": "../dist-tagma"
+  },
+  "app": {
+    "windows": [{
+      "label": "main",
+      "title": "Tagma",
+      "url": "tagma.html",
+      "width": 760,
+      "height": 680,
+      "minWidth": 560,
+      "minHeight": 420,
+      "center": true
+    }],
+    "security": {
+      "csp": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src ipc: http://ipc.localhost; object-src 'none'; frame-src 'none'; base-uri 'self'; form-action 'none'",
+      "devCsp": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src ipc: http://ipc.localhost http://localhost:1420 ws://localhost:1420; object-src 'none'; frame-src 'none'; base-uri 'self'; form-action 'none'"
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": ["nsis"],
+    "shortDescription": "Tagma local model gateway",
+    "category": "DeveloperTool",
+    "windows": { "webviewInstallMode": { "type": "downloadBootstrapper", "silent": true } }
+  }
+}

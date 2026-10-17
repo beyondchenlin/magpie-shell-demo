@@ -28,3 +28,9 @@ dist/
 acceptance-shots/
 .cache/
 .vercel
+
+# Tagma product outputs (legacy evidence/builds remain separate)
+/target/
+/dist-tagma/
+/src-tauri/gen/
+/src-tauri/binaries/

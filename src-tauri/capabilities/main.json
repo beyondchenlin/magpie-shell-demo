@@ -1,0 +1,7 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "main",
+  "description": "Only the bundled main window may call the enumerated application service commands.",
+  "windows": ["main"],
+  "permissions": ["allow-application-view", "allow-save-provider", "allow-delete-provider", "allow-reorder-providers"]
+}

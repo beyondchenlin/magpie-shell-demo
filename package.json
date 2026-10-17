@@ -14,13 +14,21 @@
     "dist:dir": "tsc -b && vite build && electron-builder --linux dir",
     "dist:win": "tsc -b && vite build && electron-builder --win --publish never",
     "chrome-guard": "node scripts/chrome-guard.mjs",
-    "cis-guard": "node scripts/cis-guard.mjs"
+    "cis-guard": "node scripts/cis-guard.mjs",
+    "dev:tagma": "vite --config vite.tagma.config.ts",
+    "build:tagma": "tsc -b && vite build --config vite.tagma.config.ts",
+    "tauri": "tauri",
+    "contract:generate": "cargo run -p tagma-core --example export-contract",
+    "contract:check": "cargo run -p tagma-core --example export-contract -- --check",
+    "test:core": "cargo test -p tagma-core"
   },
   "dependencies": {
+    "@tauri-apps/api": "2.12.4",
     "react": "^19.2.8",
     "react-dom": "^19.2.8"
   },
   "devDependencies": {
+    "@tauri-apps/cli": "2.12.3",
     "@types/node": "^24.13.3",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.7",

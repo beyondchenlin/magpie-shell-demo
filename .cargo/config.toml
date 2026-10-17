@@ -1,0 +1,8 @@
+[http]
+timeout = 30
+
+[net]
+retry = 1
+
+[build]
+jobs = 4

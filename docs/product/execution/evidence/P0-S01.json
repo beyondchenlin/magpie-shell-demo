@@ -1,0 +1,79 @@
+{
+  "batch": "P0-S01",
+  "date": "2026-10-17",
+  "base_sha": "03643407ed214f7e4d2a3804423028ee496b9a4a",
+  "dirty": true,
+  "version": "0.2.0-dev.1",
+  "platform": "Windows 10 19045 x64",
+  "binary_sha256": "df563ea77f5338a838614186d6c8eea89d1fbc455f046c95fdeb8ee86a676a4f",
+  "source_manifest": [
+    {
+      "path": "Cargo.toml",
+      "sha256": "01ae9e0eb46115b8ccd0f3de0af657b9cef4f65b4f008cb8af175f86d3e042c9"
+    },
+    {
+      "path": "Cargo.lock",
+      "sha256": "43d97228e73c7d00571de528ce5f2037150344a17c5cb05e5d7974f9e47d67e4"
+    },
+    {
+      "path": "package-lock.json",
+      "sha256": "09d730a9bfc844a9e52662162460d70bc2a9c238df9154bfa7bc2b8e9ad1a74d"
+    },
+    {
+      "path": "src-tauri/src/main.rs",
+      "sha256": "c49cd4f93946ac6291a0abce3a0f225e318b9f087ec9565f4e67dc90a6c1bf8f"
+    },
+    {
+      "path": "src-tauri/tauri.conf.json",
+      "sha256": "8741a18db04b603964f62297721ca8db4d93f0d8bece917007ff8cb4b9cae022"
+    },
+    {
+      "path": "crates/tagma-core/src/service.rs",
+      "sha256": "19fc270a3904ceaf14fd4a0e26b67aee639095d38fd636b0fb292d6243345e18"
+    },
+    {
+      "path": "src/product/ProductApp.tsx",
+      "sha256": "d125e7feb61bd40941468c9086533de3d88e939ea8ef6341e456084d141dca16"
+    },
+    {
+      "path": "src/product/contract.ts",
+      "sha256": "fbffcde490c79ae0f36db849e665f1799cab0dd1b74637317eb10cf2c3dc67d2"
+    },
+    {
+      "path": "scripts/tagma-native-smoke.mjs",
+      "sha256": "8c95c69faa3785c0502a1d7fa54c24f91fee9036985334182f16ee852a4151ac"
+    }
+  ],
+  "core_tests": {
+    "ignored": 1,
+    "system_credential_explicit_passed": 1,
+    "passed": 6
+  },
+  "native": {
+    "platform": "win32",
+    "architecture": "x64",
+    "productVersion": "0.2.0-dev.1",
+    "nativeHost": true,
+    "mockBridge": false,
+    "tests": [
+      "native-empty-config",
+      "provider-form-commit",
+      "redacted-dto",
+      "protocol-rejection",
+      "concurrent-editor-conflict",
+      "editor-retained-on-error",
+      "snapshot-refresh"
+    ],
+    "result": "passed",
+    "limitations": [
+      "graphics capture unavailable; no pixel equivalence claim",
+      "development host; installer and release signatures unverified"
+    ]
+  },
+  "build": "passed",
+  "contract": "passed",
+  "product_lint": "passed",
+  "chrome_guard": "passed",
+  "cis_guard": "passed",
+  "release_blocked": true
+}
