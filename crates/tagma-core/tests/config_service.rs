@@ -211,6 +211,128 @@ fn stale_invalid_and_global_profile_edits_never_create_revisions() {
 }
 
 #[test]
+fn gateway_settings_and_token_are_transactional_redacted_and_not_recreated_on_reopen() {
+    let temp = tempfile::tempdir().unwrap();
+    let credentials = Arc::new(TestCredentials::default());
+    let service = ConfigService::open(temp.path(), credentials.clone()).unwrap();
+    assert!(service.view().unwrap().gateway.auth_enabled);
+    assert!(!service.view().unwrap().gateway.has_access_token);
+    assert_eq!(
+        service
+            .save_gateway(SaveGateway {
+                protocol_version: 1,
+                expected_revision: 0,
+                port: 0,
+                auth_enabled: false
+            })
+            .unwrap_err()
+            .code,
+        ErrorCode::InvalidInput
+    );
+    service
+        .initialize_gateway_token(RevisionInput {
+            protocol_version: 1,
+            expected_revision: 0,
+        })
+        .unwrap();
+    let secret = service.reveal_gateway_token(1).unwrap();
+    assert_eq!(secret.len(), 64);
+    assert!(secret.bytes().all(|b| b.is_ascii_hexdigit()));
+    assert_eq!(
+        service
+            .initialize_gateway_token(RevisionInput {
+                protocol_version: 1,
+                expected_revision: 1
+            })
+            .unwrap()
+            .desired_revision,
+        1
+    );
+    assert_eq!(credentials.values.lock().unwrap().len(), 1);
+    let json = serde_json::to_string(&service.view().unwrap()).unwrap();
+    assert!(!json.contains(secret.as_str()));
+    assert!(!json.contains("credential_ref"));
+    let db = rusqlite::Connection::open(temp.path().join("config.sqlite3")).unwrap();
+    let snapshot: String = db
+        .query_row("SELECT snapshot FROM revisions WHERE revision=1", [], |r| {
+            r.get(0)
+        })
+        .unwrap();
+    assert!(!snapshot.contains(secret.as_str()));
+    drop(db);
+    service
+        .save_gateway(SaveGateway {
+            protocol_version: 1,
+            expected_revision: 1,
+            port: 19168,
+            auth_enabled: false,
+        })
+        .unwrap();
+    assert_eq!(
+        service
+            .save_gateway(SaveGateway {
+                protocol_version: 1,
+                expected_revision: 1,
+                port: 19169,
+                auth_enabled: true
+            })
+            .unwrap_err()
+            .code,
+        ErrorCode::ConfigConflict
+    );
+    drop(service);
+    let reopened = ConfigService::open(temp.path(), credentials).unwrap();
+    assert_eq!(reopened.view().unwrap().gateway.port, 19168);
+    assert!(!reopened.view().unwrap().gateway.auth_enabled);
+    assert_eq!(*reopened.reveal_gateway_token(1).unwrap(), *secret);
+}
+
+#[test]
+fn unavailable_token_store_does_not_commit_gateway_or_leave_plaintext() {
+    let temp = tempfile::tempdir().unwrap();
+    let credentials = Arc::new(TestCredentials::default());
+    let service = ConfigService::open(temp.path(), credentials.clone()).unwrap();
+    credentials.fail_set.store(true, Ordering::SeqCst);
+    assert_eq!(
+        service
+            .initialize_gateway_token(RevisionInput {
+                protocol_version: 1,
+                expected_revision: 0
+            })
+            .unwrap_err()
+            .code,
+        ErrorCode::CredentialStoreUnavailable
+    );
+    assert_eq!(service.view().unwrap().desired_revision, 0);
+    assert!(!service.view().unwrap().gateway.has_access_token);
+    assert!(credentials.values.lock().unwrap().is_empty());
+    credentials.fail_set.store(false, Ordering::SeqCst);
+    service
+        .initialize_gateway_token(RevisionInput {
+            protocol_version: 1,
+            expected_revision: 0,
+        })
+        .unwrap();
+    // A saved/historical token remains referenced even if an interrupted operation retries cleanup.
+    let reference = service
+        .read_snapshot()
+        .unwrap()
+        .1
+        .gateway
+        .credential_ref
+        .unwrap();
+    let db = rusqlite::Connection::open(temp.path().join("config.sqlite3")).unwrap();
+    db.execute(
+        "INSERT INTO credential_journal VALUES(?1,?2)",
+        rusqlite::params![uuid::Uuid::new_v4().to_string(), reference],
+    )
+    .unwrap();
+    drop(db);
+    service.recover_credentials().unwrap();
+    assert!(credentials.get(&reference).is_ok());
+}
+
+#[test]
 fn crud_reopen_and_reorder_share_one_transactional_service() {
     let temp = tempfile::tempdir().unwrap();
     let credentials = Arc::new(TestCredentials::default());

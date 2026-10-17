@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-initialize-gateway-token"
+description = "Enables the initialize_gateway_token command without any pre-configured scope."
+commands.allow = ["initialize_gateway_token"]
+
+[[permission]]
+identifier = "deny-initialize-gateway-token"
+description = "Denies the initialize_gateway_token command without any pre-configured scope."
+commands.deny = ["initialize_gateway_token"]

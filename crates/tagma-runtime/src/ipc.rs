@@ -232,6 +232,10 @@ pub async fn call(manifest: &Manifest, command: Command) -> AppResult<RuntimeSta
 }
 
 pub fn read_manifest(directory: &Path) -> AppResult<Manifest> {
+    parse_manifest(directory, &manifest_bytes(directory)?)
+}
+
+pub(crate) fn manifest_bytes(directory: &Path) -> AppResult<Vec<u8>> {
     let file = std::fs::File::open(directory.join("runtime.json"))
         .map_err(|_| AppError::new(ErrorCode::GatewayUnavailable))?;
     let mut bytes = Vec::with_capacity(4097);
@@ -240,6 +244,10 @@ pub fn read_manifest(directory: &Path) -> AppResult<Manifest> {
     if bytes.len() > 4096 {
         return Err(AppError::new(ErrorCode::InvalidInput));
     }
+    Ok(bytes)
+}
+
+pub(crate) fn parse_manifest(directory: &Path, bytes: &[u8]) -> AppResult<Manifest> {
     // Check the version envelope before decoding fields added by newer programs.
     // An active older program must report incompatibility, not a misleading parse/start error.
     #[derive(Deserialize)]
@@ -249,7 +257,7 @@ pub fn read_manifest(directory: &Path) -> AppResult<Manifest> {
         schema_version: u32,
     }
     let version: VersionEnvelope =
-        serde_json::from_slice(&bytes).map_err(|_| AppError::new(ErrorCode::InvalidInput))?;
+        serde_json::from_slice(bytes).map_err(|_| AppError::new(ErrorCode::InvalidInput))?;
     if version.protocol_version != PROTOCOL_VERSION
         || version.product_version != PRODUCT_VERSION
         || version.schema_version != SCHEMA_VERSION
@@ -257,7 +265,7 @@ pub fn read_manifest(directory: &Path) -> AppResult<Manifest> {
         return Err(AppError::new(ErrorCode::IncompatibleVersion));
     }
     let manifest: Manifest =
-        serde_json::from_slice(&bytes).map_err(|_| AppError::new(ErrorCode::InvalidInput))?;
+        serde_json::from_slice(bytes).map_err(|_| AppError::new(ErrorCode::InvalidInput))?;
     if manifest.config_id != config_id(directory)? {
         return Err(AppError::new(ErrorCode::IncompatibleVersion));
     }

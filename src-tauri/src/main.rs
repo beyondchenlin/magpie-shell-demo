@@ -6,7 +6,7 @@ use std::sync::{
     atomic::{AtomicBool, Ordering},
 };
 use tagma_core::{credentials::SystemCredentials, *};
-use tagma_runtime::{GatewayManager, ipc::DEFAULT_PORT};
+use tagma_runtime::GatewayManager;
 use tauri::{Manager, State, WebviewWindow};
 
 struct Application {
@@ -107,6 +107,33 @@ async fn delete_profile(
     config(&window, &app)?.delete_profile(input)
 }
 
+#[tauri::command]
+async fn save_gateway(
+    window: WebviewWindow,
+    app: State<'_, Application>,
+    input: SaveGateway,
+) -> AppResult<ConfigView> {
+    config(&window, &app)?.save_gateway(input)
+}
+#[tauri::command]
+async fn initialize_gateway_token(
+    window: WebviewWindow,
+    app: State<'_, Application>,
+    input: RevisionInput,
+) -> AppResult<ConfigView> {
+    config(&window, &app)?.initialize_gateway_token(input)
+}
+#[tauri::command]
+async fn reveal_gateway_token(
+    window: WebviewWindow,
+    app: State<'_, Application>,
+    protocol_version: u32,
+) -> AppResult<String> {
+    Ok(config(&window, &app)?
+        .reveal_gateway_token(protocol_version)?
+        .to_string())
+}
+
 fn gateway<'a>(window: &WebviewWindow, app: &'a Application) -> AppResult<&'a Arc<GatewayManager>> {
     config(window, app)?;
     app.runtime
@@ -121,7 +148,8 @@ async fn start_gateway(
     protocol_version: u32,
 ) -> AppResult<RuntimeStatus> {
     check_protocol(protocol_version)?;
-    gateway(&window, &app)?.start(gateway_port()).await
+    let port = config(&window, &app)?.view()?.gateway.port;
+    gateway(&window, &app)?.start(gateway_port(port)).await
 }
 #[tauri::command]
 async fn stop_gateway(
@@ -222,7 +250,7 @@ async fn recover_initialization(
     tagma_core::recovery::archive_initialization_record(directory, input)
 }
 
-fn gateway_port() -> u16 {
+fn gateway_port(configured: u16) -> u16 {
     if cfg!(debug_assertions)
         && let Some(port) = std::env::var("TAGMA_TEST_GATEWAY_PORT")
             .ok()
@@ -230,7 +258,7 @@ fn gateway_port() -> u16 {
     {
         return port;
     }
-    DEFAULT_PORT
+    configured
 }
 
 fn tray(app: &tauri::App) -> bool {
@@ -299,7 +327,23 @@ fn main() {
             }
             let config = directory
                 .map_err(|_| AppError::new(ErrorCode::StorageUnavailable))
-                .and_then(|directory| ConfigService::open(&directory, Arc::new(SystemCredentials)));
+                .and_then(|directory| ConfigService::open(&directory, Arc::new(SystemCredentials)))
+                .and_then(|config| {
+                    // Synthetic debug fixtures explicitly initialize/clean credentials in their tests.
+                    if !(cfg!(debug_assertions)
+                        && std::env::var_os("TAGMA_TEST_CONFIG_DIR").is_some()
+                        && std::env::var("TAGMA_TEST_INITIALIZE_TOKEN").as_deref() != Ok("1"))
+                    {
+                        let view = config.view()?;
+                        if view.gateway.auth_enabled && !view.gateway.has_access_token {
+                            config.initialize_gateway_token(RevisionInput {
+                                protocol_version: PROTOCOL_VERSION,
+                                expected_revision: view.desired_revision,
+                            })?;
+                        }
+                    }
+                    Ok(config)
+                });
             // Configuration failures remain visible in the native window; never fake an empty success.
             let tray = tray(app);
             if let (Some(directory), Err(error)) = (&local_directory, &config) {
@@ -314,8 +358,14 @@ fn main() {
             if config.is_ok()
                 && let Some(runtime) = runtime.clone()
             {
+                let configured = config
+                    .as_ref()
+                    .ok()
+                    .and_then(|service| service.view().ok())
+                    .map(|view| view.gateway.port)
+                    .unwrap_or(9168);
                 tauri::async_runtime::spawn(async move {
-                    let _ = runtime.start(gateway_port()).await;
+                    let _ = runtime.start(gateway_port(configured)).await;
                     let mut interval = tokio::time::interval(std::time::Duration::from_secs(1));
                     loop {
                         interval.tick().await;
@@ -335,6 +385,9 @@ fn main() {
         .invoke_handler(tauri::generate_handler![
             save_profile,
             delete_profile,
+            save_gateway,
+            initialize_gateway_token,
+            reveal_gateway_token,
             application_view,
             save_provider,
             delete_provider,

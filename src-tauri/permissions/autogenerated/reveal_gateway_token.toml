@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-reveal-gateway-token"
+description = "Enables the reveal_gateway_token command without any pre-configured scope."
+commands.allow = ["reveal_gateway_token"]
+
+[[permission]]
+identifier = "deny-reveal-gateway-token"
+description = "Denies the reveal_gateway_token command without any pre-configured scope."
+commands.deny = ["reveal_gateway_token"]

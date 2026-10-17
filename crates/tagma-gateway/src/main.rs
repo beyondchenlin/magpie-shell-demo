@@ -1,6 +1,11 @@
 #![cfg_attr(windows, windows_subsystem = "windows")]
 
 use axum::{Json, Router, http::StatusCode};
+use axum::{
+    extract::{Request as HttpRequest, State},
+    middleware::{self, Next},
+    response::{IntoResponse, Response as HttpResponse},
+};
 use fs2::FileExt;
 use std::{
     io::{BufRead, Read},
@@ -8,6 +13,7 @@ use std::{
     sync::Arc,
     time::Duration,
 };
+use subtle::ConstantTimeEq;
 use tagma_core::{
     credentials::{CredentialStore, SystemCredentials},
     *,
@@ -16,11 +22,18 @@ use tagma_runtime::ipc::{self, Bootstrap, Command, Manifest, Request, Response};
 use tokio::{net::TcpListener, sync::RwLock};
 use tokio_util::sync::CancellationToken;
 
+type LoadedSnapshot = (
+    u32,
+    tagma_core::service::ConfigSnapshot,
+    Option<zeroize::Zeroizing<String>>,
+);
+
 struct Runtime {
     directory: PathBuf,
     manifest: Manifest,
     status: RwLock<RuntimeStatus>,
-    snapshot: RwLock<(u32, tagma_core::service::ConfigSnapshot)>,
+    snapshot: RwLock<LoadedSnapshot>,
+    configured_port: u16,
     token: zeroize::Zeroizing<String>,
     shutdown: CancellationToken,
     apply_guard: tokio::sync::Mutex<()>,
@@ -102,6 +115,9 @@ fn main() {
             10 => Some(ErrorCode::AlreadyRunning),
             11 => Some(ErrorCode::PortInUse),
             13 => Some(ErrorCode::IncompatibleVersion),
+            14 => Some(ErrorCode::CredentialStoreUnavailable),
+            15 => Some(ErrorCode::StorageUnavailable),
+            16 => Some(ErrorCode::MaintenanceInProgress),
             _ => Some(ErrorCode::ConfigApplyFailed),
         },
         None,
@@ -138,7 +154,7 @@ async fn run(
         Err(_) => return 12,
     };
     if FileExt::try_lock_shared(&maintenance).is_err() {
-        return 12;
+        return 16;
     }
     let startup_directory = directory.clone();
     let initial = tokio::time::timeout(
@@ -146,12 +162,15 @@ async fn run(
         tokio::task::spawn_blocking(move || load_snapshot(&startup_directory)),
     )
     .await;
-    let (revision, snapshot) = match initial
+    let (revision, snapshot, access_token) = match initial
         .unwrap_or_else(|_| Ok(Err(AppError::new(ErrorCode::StartupTimeout))))
         .unwrap_or_else(|_| Err(AppError::new(ErrorCode::ConfigApplyFailed)))
     {
         Ok(v) => v,
         Err(e) if e.code == ErrorCode::IncompatibleVersion => return 13,
+        Err(e) if e.code == ErrorCode::CredentialStoreUnavailable => return 14,
+        Err(e) if e.code == ErrorCode::StorageUnavailable => return 15,
+        Err(e) if e.code == ErrorCode::MaintenanceInProgress => return 16,
         Err(_) => return 12,
     };
     let tcp = match TcpListener::bind((std::net::Ipv4Addr::LOCALHOST, port)).await {
@@ -195,7 +214,8 @@ async fn run(
         directory: directory.clone(),
         manifest: manifest.clone(),
         status: RwLock::new(status),
-        snapshot: RwLock::new((revision, snapshot)),
+        configured_port: snapshot.gateway.port,
+        snapshot: RwLock::new((revision, snapshot, access_token)),
         token,
         shutdown: shutdown.clone(),
         apply_guard: tokio::sync::Mutex::new(()),
@@ -243,7 +263,7 @@ async fn run(
                                 Command::Status => {},
                                 Command::Apply => apply(&state).await,
                                 Command::Stop { owner_token } => {
-                                    if owner_token == *state.token { state.status.write().await.state = RuntimeState::Stopping; stop = true; }
+                                    if owner_token == *state.token { let mut status=state.status.write().await;status.state = RuntimeState::Stopping;status.error=None; stop = true; }
                                     else { let mut status = state.status.read().await.clone(); status.error = Some(AppError::new(ErrorCode::OwnershipRequired));
                                         let response = Response { protocol_version: PROTOCOL_VERSION, product_version: PRODUCT_VERSION.into(), instance_id: state.manifest.instance_id.clone(), config_id: state.manifest.config_id.clone(), challenge: request.challenge, status }; let _ = ipc::write_frame(&mut stream,&response).await; return; }
                                 },
@@ -265,7 +285,8 @@ async fn run(
         }
     });
     // P0 data plane deliberately has no inference endpoints or management routes.
-    let router = Router::new().fallback(|| async { (StatusCode::SERVICE_UNAVAILABLE, Json(serde_json::json!({"error":{"code":"UNSUPPORTED_CAPABILITY","message":"Model inference is not connected in this P0 slice"}}))) });
+    let router = Router::new().fallback(|| async { (StatusCode::SERVICE_UNAVAILABLE, Json(serde_json::json!({"error":{"code":"UNSUPPORTED_CAPABILITY","message":"Model inference is not connected in this P0 slice"}}))) })
+        .layer(middleware::from_fn_with_state(state.clone(),authorize));
     use std::future::IntoFuture;
     let serving = axum::serve(tcp, router)
         .with_graceful_shutdown(shutdown.clone().cancelled_owned())
@@ -282,9 +303,7 @@ async fn run(
     0
 }
 
-fn load_snapshot(
-    directory: &std::path::Path,
-) -> AppResult<(u32, tagma_core::service::ConfigSnapshot)> {
+fn load_snapshot(directory: &std::path::Path) -> AppResult<LoadedSnapshot> {
     let result = ConfigService::read_runtime_snapshot(directory)?;
     for record in &result.1.providers {
         if record.provider.enabled
@@ -293,7 +312,58 @@ fn load_snapshot(
             let _secret = SystemCredentials.get(reference)?;
         }
     }
-    Ok(result)
+    let access_token = if result.1.gateway.auth_enabled {
+        result
+            .1
+            .gateway
+            .credential_ref
+            .as_ref()
+            .map(|reference| SystemCredentials.get(reference))
+            .transpose()?
+    } else {
+        None
+    };
+    if access_token
+        .as_ref()
+        .is_some_and(|token| token.len() != 64 || !token.bytes().all(|b| b.is_ascii_hexdigit()))
+    {
+        return Err(AppError::new(ErrorCode::CredentialStoreUnavailable));
+    }
+    Ok((result.0, result.1, access_token))
+}
+
+async fn authorize(
+    State(state): State<Arc<Runtime>>,
+    request: HttpRequest,
+    next: Next,
+) -> HttpResponse {
+    let allowed = {
+        let loaded = state.snapshot.read().await;
+        if !loaded.1.gateway.auth_enabled {
+            true
+        } else {
+            let header = request.headers().get_all(axum::http::header::AUTHORIZATION);
+            let mut values = header.iter();
+            let candidate = values
+                .next()
+                .and_then(|v| v.to_str().ok())
+                .and_then(|v| v.split_once(' '))
+                .filter(|(scheme, _)| scheme.eq_ignore_ascii_case("Bearer"))
+                .map(|(_, token)| token);
+            values.next().is_none()
+                && loaded
+                    .2
+                    .as_ref()
+                    .zip(candidate)
+                    .is_some_and(|(expected, actual)| {
+                        bool::from(expected.as_bytes().ct_eq(actual.as_bytes()))
+                    })
+        }
+    };
+    if !allowed {
+        return (StatusCode::UNAUTHORIZED,[(axum::http::header::WWW_AUTHENTICATE,"Bearer")],Json(serde_json::json!({"error":{"code":"UNAUTHORIZED","message":"A valid local access token is required"}}))).into_response();
+    }
+    next.run(request).await
 }
 
 async fn apply(state: &Runtime) {
@@ -310,8 +380,8 @@ async fn apply(state: &Runtime) {
 async fn bounded_load(
     slots: &Arc<tokio::sync::Semaphore>,
     budget: Duration,
-    load: impl FnOnce() -> AppResult<(u32, tagma_core::service::ConfigSnapshot)> + Send + 'static,
-) -> AppResult<(u32, tagma_core::service::ConfigSnapshot)> {
+    load: impl FnOnce() -> AppResult<LoadedSnapshot> + Send + 'static,
+) -> AppResult<LoadedSnapshot> {
     // A timed-out OS credential call may still run. Its permit stays in the worker,
     // so later polls cannot create an unbounded queue of blocked threads.
     let permit = slots
@@ -330,7 +400,7 @@ async fn bounded_load(
 
 async fn apply_with(
     state: &Runtime,
-    load: impl std::future::Future<Output = AppResult<(u32, tagma_core::service::ConfigSnapshot)>>,
+    load: impl std::future::Future<Output = AppResult<LoadedSnapshot>>,
 ) {
     // Serialize the entire read/credential-validation/commit, including failed loads.
     let _apply = state.apply_guard.lock().await;
@@ -339,13 +409,19 @@ async fn apply_with(
     {
         return;
     }
-    let loaded = load.await;
+    let loaded = load.await.and_then(|loaded| {
+        if loaded.1.gateway.port != state.configured_port {
+            Err(AppError::new(ErrorCode::RestartRequired))
+        } else {
+            Ok(loaded)
+        }
+    });
     let mut status = state.status.write().await;
     if state.shutdown.is_cancelled() || matches!(status.state, RuntimeState::Stopping) {
         return;
     }
     match loaded {
-        Ok((revision, snapshot)) => {
+        Ok((revision, snapshot, access_token)) => {
             if status
                 .effective_revision
                 .is_some_and(|current| revision < current)
@@ -361,7 +437,7 @@ async fn apply_with(
                     Some(revision),
                 );
             }
-            *state.snapshot.write().await = (revision, snapshot);
+            *state.snapshot.write().await = (revision, snapshot, access_token);
             status.effective_revision = Some(revision);
             status.state = RuntimeState::Running;
             status.error = None;
@@ -407,7 +483,8 @@ mod apply_tests {
                 owned: false,
                 error: None,
             }),
-            snapshot: RwLock::new((0, Default::default())),
+            snapshot: RwLock::new((0, Default::default(), None)),
+            configured_port: 9168,
             token: zeroize::Zeroizing::new(String::new()),
             shutdown: CancellationToken::new(),
             apply_guard: tokio::sync::Mutex::new(()),
@@ -415,9 +492,7 @@ mod apply_tests {
             _fixture: Some(fixture),
         })
     }
-    async fn delayed_old(
-        old: AppResult<(u32, tagma_core::service::ConfigSnapshot)>,
-    ) -> Arc<Runtime> {
+    async fn delayed_old(old: AppResult<LoadedSnapshot>) -> Arc<Runtime> {
         let state = state();
         let (started_tx, started_rx) = tokio::sync::oneshot::channel();
         let (release_tx, release_rx) = tokio::sync::oneshot::channel();
@@ -438,7 +513,7 @@ mod apply_tests {
             let state = state.clone();
             tokio::spawn(async move {
                 let _ = new_started_tx.send(());
-                apply_with(&state, async { Ok((2, Default::default())) }).await;
+                apply_with(&state, async { Ok((2, Default::default(), None)) }).await;
             })
         };
         new_started_rx.await.unwrap();
@@ -449,7 +524,7 @@ mod apply_tests {
     }
     #[tokio::test]
     async fn delayed_old_success_never_regresses_effective_revision() {
-        let state = delayed_old(Ok((1, Default::default()))).await;
+        let state = delayed_old(Ok((1, Default::default(), None))).await;
         assert_eq!(state.status.read().await.effective_revision, Some(2));
         assert_eq!(state.snapshot.read().await.0, 2);
     }
@@ -473,7 +548,7 @@ mod apply_tests {
                 apply_with(&state, async {
                     let _ = ready_tx.send(());
                     release_rx.await.unwrap();
-                    Ok((1, Default::default()))
+                    Ok((1, Default::default(), None))
                 })
                 .await;
             })
@@ -500,7 +575,7 @@ mod apply_tests {
                 bounded_load(&slots, Duration::from_millis(20), move || {
                     let _ = started_tx.send(());
                     release_rx.recv().unwrap();
-                    Ok((1, Default::default()))
+                    Ok((1, Default::default(), None))
                 })
                 .await
             })
@@ -515,7 +590,7 @@ mod apply_tests {
         assert_eq!(
             bounded_load(&slots, Duration::from_millis(20), move || {
                 observed.store(true, std::sync::atomic::Ordering::SeqCst);
-                Ok((2, Default::default()))
+                Ok((2, Default::default(), None))
             })
             .await
             .err()

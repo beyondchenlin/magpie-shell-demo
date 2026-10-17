@@ -15,7 +15,14 @@ use std::{
 };
 
 const JOURNAL: &str = "config-migration.json";
-const OWNER: &str = "com.tagmaai.desktop/migration-1-2/v1";
+const OWNER: &str = "com.tagmaai.desktop/migration/v1";
+const LEGACY_OWNER: &str = "com.tagmaai.desktop/migration-1-2/v1";
+fn first_schema() -> u32 {
+    1
+}
+fn second_schema() -> u32 {
+    2
+}
 #[derive(Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 struct Journal {
@@ -23,6 +30,10 @@ struct Journal {
     operation_id: String,
     source_revision: u32,
     backup_sha256: Option<String>,
+    #[serde(default = "first_schema")]
+    from_schema: u32,
+    #[serde(default = "second_schema")]
+    to_schema: u32,
 }
 fn error() -> AppError {
     AppError::new(ErrorCode::StorageUnavailable)
@@ -99,7 +110,19 @@ fn write_journal(directory: &Path, journal: &Journal, replace: bool) -> AppResul
 }
 
 pub(crate) fn prepare(directory: &Path) -> AppResult<()> {
-    prepare_inner(directory, || Ok(()))
+    // At most two known transitions; a pending committed step is resumed first.
+    for _ in 0..3 {
+        prepare_inner(directory, || Ok(()))?;
+        let db = Connection::open_with_flags(
+            directory.join("config.sqlite3"),
+            OpenFlags::SQLITE_OPEN_READ_ONLY,
+        )
+        .map_err(|_| error())?;
+        if schema(&db)? == SCHEMA_VERSION && !pending(directory) {
+            return Ok(());
+        }
+    }
+    Err(incompatible())
 }
 fn prepare_inner(directory: &Path, after_backup: impl FnOnce() -> AppResult<()>) -> AppResult<()> {
     let mut db = Connection::open_with_flags(
@@ -110,10 +133,10 @@ fn prepare_inner(directory: &Path, after_backup: impl FnOnce() -> AppResult<()>)
     db.busy_timeout(Duration::from_secs(2))
         .map_err(|_| error())?;
     let version = schema(&db)?;
-    if version != 1 && version != 2 {
+    if !(1..=SCHEMA_VERSION).contains(&version) {
         return Err(incompatible());
     }
-    if version == 2 && !pending(directory) {
+    if version == SCHEMA_VERSION && !pending(directory) {
         return Ok(());
     }
     let application: u32 = db
@@ -140,6 +163,16 @@ fn prepare_inner(directory: &Path, after_backup: impl FnOnce() -> AppResult<()>)
     if application != 0x5441474d || names != expected {
         return Err(incompatible());
     }
+    if version >= 2 {
+        let id: String = db
+            .query_row(
+                "SELECT config_uuid FROM config_metadata WHERE singleton=1",
+                [],
+                |r| r.get(0),
+            )
+            .map_err(|_| incompatible())?;
+        uuid::Uuid::parse_str(&id).map_err(|_| incompatible())?;
+    }
     drop(statement);
     let mut journal: Journal = if pending(directory) {
         let path = directory.join(JOURNAL);
@@ -160,11 +193,16 @@ fn prepare_inner(directory: &Path, after_backup: impl FnOnce() -> AppResult<()>)
             operation_id: uuid::Uuid::new_v4().to_string(),
             source_revision: revision(&db)?,
             backup_sha256: None,
+            from_schema: version,
+            to_schema: version + 1,
         };
         write_journal(directory, &journal, false)?;
         journal
     };
-    if journal.owner != OWNER
+    if (journal.owner != OWNER
+        && !(journal.owner == LEGACY_OWNER && journal.from_schema == 1 && journal.to_schema == 2))
+        || !matches!((journal.from_schema, journal.to_schema), (1, 2) | (2, 3))
+        || (version != journal.from_schema && version != journal.to_schema)
         || uuid::Uuid::parse_str(&journal.operation_id).is_err()
         || journal
             .backup_sha256
@@ -179,9 +217,12 @@ fn prepare_inner(directory: &Path, after_backup: impl FnOnce() -> AppResult<()>)
     let backups = directory.join("backups");
     fs::create_dir_all(&backups).map_err(|_| error())?;
     ordinary(&backups, true)?;
-    let backup_path = backups.join(format!("schema-1-{}.sqlite3", journal.operation_id));
+    let backup_path = backups.join(format!(
+        "schema-{}-{}.sqlite3",
+        journal.from_schema, journal.operation_id
+    ));
     if journal.backup_sha256.is_none() {
-        if version != 1 || revision(&db)? != journal.source_revision {
+        if version != journal.from_schema || revision(&db)? != journal.source_revision {
             return Err(AppError::new(ErrorCode::ConfigConflict));
         }
         let size = fs::metadata(directory.join("config.sqlite3"))
@@ -224,7 +265,9 @@ fn prepare_inner(directory: &Path, after_backup: impl FnOnce() -> AppResult<()>)
                     _ => return Err(error()),
                 }
             }
-        } else if previous != 1 || revision(&destination)? != journal.source_revision {
+        } else if previous != journal.from_schema
+            || revision(&destination)? != journal.source_revision
+        {
             return Err(incompatible());
         }
         drop(destination);
@@ -234,7 +277,7 @@ fn prepare_inner(directory: &Path, after_backup: impl FnOnce() -> AppResult<()>)
             .query_row("PRAGMA quick_check", [], |r| r.get(0))
             .map_err(|_| error())?;
         if integrity != "ok"
-            || schema(&verify)? != 1
+            || schema(&verify)? != journal.from_schema
             || revision(&verify)? != journal.source_revision
         {
             return Err(incompatible());
@@ -248,21 +291,25 @@ fn prepare_inner(directory: &Path, after_backup: impl FnOnce() -> AppResult<()>)
         return Err(incompatible());
     }
     after_backup()?;
-    if version == 1 {
+    if version == journal.from_schema {
         if revision(&db)? != journal.source_revision {
             return Err(AppError::new(ErrorCode::ConfigConflict));
         }
         let tx = db
             .transaction_with_behavior(TransactionBehavior::Immediate)
             .map_err(|_| error())?;
-        tx.execute_batch("CREATE TABLE config_metadata(singleton INTEGER PRIMARY KEY CHECK(singleton=1),config_uuid TEXT NOT NULL);").map_err(|_|error())?;
-        tx.execute(
-            "INSERT INTO config_metadata VALUES(1,?1)",
-            [uuid::Uuid::new_v4().to_string()],
-        )
-        .map_err(|_| error())?;
-        // Historical snapshot bytes stay immutable. V2 readers supply the documented defaults.
-        tx.pragma_update(None, "user_version", 2)
+        if journal.from_schema == 1 {
+            tx.execute_batch("CREATE TABLE config_metadata(singleton INTEGER PRIMARY KEY CHECK(singleton=1),config_uuid TEXT NOT NULL);").map_err(|_|error())?;
+            tx.execute(
+                "INSERT INTO config_metadata VALUES(1,?1)",
+                [uuid::Uuid::new_v4().to_string()],
+            )
+            .map_err(|_| error())?;
+        }
+        // V3 also versions the serialized gateway settings contract, preventing old
+        // readers from silently dropping unknown authentication fields on their next save.
+        // Historical snapshot bytes stay immutable; current readers supply defaults.
+        tx.pragma_update(None, "user_version", journal.to_schema)
             .map_err(|_| error())?;
         tx.commit().map_err(|_| error())?;
     }
@@ -285,12 +332,12 @@ mod tests {
         let db = legacy(temp.path());
         db.execute_batch("INSERT INTO revisions VALUES(1,'{\"providers\":[]}');UPDATE config_head SET revision=1;").unwrap();
         prepare(temp.path()).unwrap();
-        assert_eq!(schema(&db).unwrap(), 2);
+        assert_eq!(schema(&db).unwrap(), SCHEMA_VERSION);
         assert_eq!(revision(&db).unwrap(), 1);
         let backup = fs::read_dir(temp.path().join("backups"))
             .unwrap()
             .filter_map(Result::ok)
-            .find(|e| e.path().extension().is_some_and(|s| s == "sqlite3"))
+            .find(|e| e.file_name().to_string_lossy().starts_with("schema-1-"))
             .unwrap();
         let saved = Connection::open(backup.path()).unwrap();
         assert_eq!(schema(&saved).unwrap(), 1);
@@ -310,7 +357,7 @@ mod tests {
         assert_eq!(schema(&db).unwrap(), 1);
         assert!(pending(temp.path()));
         prepare(temp.path()).unwrap();
-        assert_eq!(schema(&db).unwrap(), 2);
+        assert_eq!(schema(&db).unwrap(), SCHEMA_VERSION);
         assert!(!pending(temp.path()));
     }
 
@@ -357,7 +404,7 @@ mod tests {
             std::sync::Arc::new(crate::credentials::SystemCredentials),
         )
         .unwrap();
-        assert_eq!(writer.view().unwrap().schema_version, 2);
+        assert_eq!(writer.view().unwrap().schema_version, SCHEMA_VERSION);
         assert_eq!(
             ConfigService::read_runtime_snapshot(temp.path()).unwrap().0,
             0
@@ -394,7 +441,63 @@ mod tests {
         )
         .unwrap();
         assert_eq!(service.view().unwrap().desired_revision, 0);
-        assert_eq!(service.view().unwrap().schema_version, 2);
+        assert_eq!(service.view().unwrap().schema_version, SCHEMA_VERSION);
+        assert!(!pending(temp.path()));
+    }
+
+    #[test]
+    fn schema_two_profiles_and_config_identity_survive_gateway_contract_upgrade() {
+        let temp = tempfile::tempdir().unwrap();
+        let db = legacy(temp.path());
+        prepare_inner(temp.path(), || Ok(())).unwrap();
+        assert_eq!(schema(&db).unwrap(), 2);
+        let id: String = db
+            .query_row("SELECT config_uuid FROM config_metadata", [], |r| r.get(0))
+            .unwrap();
+        let snapshot = format!(
+            "{{\"providers\":[],\"profiles\":[{{\"id\":\"{}\",\"name\":\"Editor\",\"target_app\":\"Cursor\",\"provider_ids\":[],\"use_global_order\":true,\"is_global\":false}}]}}",
+            uuid::Uuid::new_v4()
+        );
+        db.execute("INSERT INTO revisions VALUES(1,?1)", [&snapshot])
+            .unwrap();
+        db.execute("UPDATE config_head SET revision=1", []).unwrap();
+        prepare(temp.path()).unwrap();
+        assert_eq!(schema(&db).unwrap(), 3);
+        let after: String = db
+            .query_row("SELECT snapshot FROM revisions WHERE revision=1", [], |r| {
+                r.get(0)
+            })
+            .unwrap();
+        assert_eq!(after, snapshot);
+        let identity: String = db
+            .query_row("SELECT config_uuid FROM config_metadata", [], |r| r.get(0))
+            .unwrap();
+        assert_eq!(identity, id);
+        drop(db);
+        let service = ConfigService::open(
+            temp.path(),
+            std::sync::Arc::new(crate::credentials::SystemCredentials),
+        )
+        .unwrap();
+        let view = service.view().unwrap();
+        assert_eq!(view.profiles[1].name, "Editor");
+        assert!(view.gateway.auth_enabled);
+        assert!(!view.gateway.has_access_token);
+        assert!(
+            fs::read_dir(temp.path().join("backups"))
+                .unwrap()
+                .filter_map(Result::ok)
+                .any(|e| e.file_name().to_string_lossy().starts_with("schema-2-"))
+        );
+    }
+
+    #[test]
+    fn legacy_pending_one_to_two_journal_resumes_before_following_transition() {
+        let temp = tempfile::tempdir().unwrap();
+        let db = legacy(temp.path());
+        fs::write(temp.path().join(JOURNAL),serde_json::to_vec(&serde_json::json!({"owner":LEGACY_OWNER,"operation_id":uuid::Uuid::new_v4().to_string(),"source_revision":0,"backup_sha256":null})).unwrap()).unwrap();
+        prepare(temp.path()).unwrap();
+        assert_eq!(schema(&db).unwrap(), SCHEMA_VERSION);
         assert!(!pending(temp.path()));
     }
 }

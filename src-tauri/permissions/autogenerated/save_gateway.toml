@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-save-gateway"
+description = "Enables the save_gateway command without any pre-configured scope."
+commands.allow = ["save_gateway"]
+
+[[permission]]
+identifier = "deny-save-gateway"
+description = "Denies the save_gateway command without any pre-configured scope."
+commands.deny = ["save_gateway"]

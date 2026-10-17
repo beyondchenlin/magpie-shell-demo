@@ -177,6 +177,7 @@ impl GatewayManager {
             }
         }
         let token = zeroize::Zeroizing::new(uuid::Uuid::new_v4().to_string());
+        let preceding_manifest = ipc::manifest_bytes(&self.directory).ok();
         let expected_instance = uuid::Uuid::new_v4().to_string();
         let mut command = Command::new(&self.binary);
         command
@@ -210,9 +211,12 @@ impl GatewayManager {
             .map_err(|_| AppError::new(ErrorCode::GatewayUnavailable))?;
         let limit = tokio::time::Instant::now() + Duration::from_secs(10);
         loop {
-            let manifest = ipc::read_manifest(&self.directory);
+            let published = ipc::manifest_bytes(&self.directory);
+            let changed = published.as_ref().ok() != preceding_manifest.as_ref();
+            let manifest = published.and_then(|bytes| ipc::parse_manifest(&self.directory, &bytes));
             if let Err(error) = &manifest
                 && error.code == ErrorCode::IncompatibleVersion
+                && changed
             {
                 return Err(error.clone());
             }
@@ -244,6 +248,9 @@ impl GatewayManager {
                     Some(11) => ErrorCode::PortInUse,
                     Some(12) => ErrorCode::ConfigApplyFailed,
                     Some(13) => ErrorCode::IncompatibleVersion,
+                    Some(14) => ErrorCode::CredentialStoreUnavailable,
+                    Some(15) => ErrorCode::StorageUnavailable,
+                    Some(16) => ErrorCode::MaintenanceInProgress,
                     Some(10) => ErrorCode::AlreadyRunning,
                     _ => ErrorCode::GatewayUnavailable,
                 }));

@@ -2,7 +2,7 @@ param(
   [string]$Executable = 'target/debug/tagma-desktop.exe',
   [Parameter(Mandatory=$true)][string]$ResultPath,
   [string]$EvidenceDirectory,
-  [ValidateSet('full','appearance','recovery','profiles')][string]$Mode = 'full'
+  [ValidateSet('full','appearance','recovery','profiles','gateway')][string]$Mode = 'full'
 )
 $ErrorActionPreference='Stop'
 $taskExecutable=(Resolve-Path -LiteralPath $Executable).Path
@@ -12,6 +12,9 @@ if($EvidenceDirectory -and (Test-Path -LiteralPath $EvidenceDirectory)) { throw 
 $taskTempRoot=[IO.Path]::GetFullPath($env:TEMP)
 $taskFixture=Join-Path $taskTempRoot ('tagma-native-owned-'+[guid]::NewGuid().ToString())
 New-Item -ItemType Directory -Path $taskFixture | Out-Null
+$taskOperation=[IO.Path]::GetFileName($taskFixture).Substring('tagma-native-owned-'.Length)
+@{owner='tagma-native-test/v1';operation_id=$taskOperation} | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $taskFixture 'tagma-native-fixture-owner.json') -Encoding utf8NoBOM
+$taskCredentialCleanup=$true
 $taskNames=@('TAGMA_TEST_CONFIG_DIR','TAGMA_NATIVE_EXE','TAGMA_NATIVE_EVIDENCE_DIR','TAGMA_NATIVE_SMOKE_MODE')
 $taskOldEnvironment=@{}
 foreach($taskName in $taskNames) { $taskOldEnvironment[$taskName]=[Environment]::GetEnvironmentVariable($taskName,'Process') }
@@ -55,9 +58,16 @@ try {
     }
   }
   $taskLogicalBytes=($taskItems | Where-Object { -not $_.PSIsContainer } | Measure-Object Length -Sum).Sum
+  if($Mode -eq 'gateway') {
+    $taskCredentialCleanup=$false
+    if(-not $taskReferences.Count -and -not $taskLinks.Count -and -not $taskLocked) {
+      & (Join-Path $PSScriptRoot '../target/debug/examples/cleanup_native_fixture.exe') $taskAbsolute
+      $taskCredentialCleanup=$LASTEXITCODE -eq 0
+    }
+  }
   $taskSafety=[ordered]@{path=$taskAbsolute;purpose='owned synthetic native test and isolated WebView profile';logicalBytes=$taskLogicalBytes;reparsePoints=$taskLinks.Count;processReferences=$taskReferences.Count;locked=$taskLocked;resultPreserved=$taskResultPath}
   $taskSafety | ConvertTo-Json -Compress | Write-Output
-  if(-not $taskReferences.Count -and -not $taskLinks.Count -and -not $taskLocked) {
+  if(-not $taskReferences.Count -and -not $taskLinks.Count -and -not $taskLocked -and $taskCredentialCleanup) {
     $taskBefore=(Get-Item -LiteralPath $taskAbsolute).LastWriteTimeUtc
     if($taskBefore -eq $taskRoot.LastWriteTimeUtc) {
       Remove-Item -LiteralPath $taskAbsolute -Recurse -Force

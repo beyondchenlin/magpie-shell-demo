@@ -22,6 +22,24 @@ pub struct ConfigSnapshot {
     pub providers: Vec<ProviderRecord>,
     #[serde(default)]
     pub profiles: Vec<AppProfile>,
+    #[serde(default)]
+    pub gateway: GatewaySettings,
+}
+
+#[derive(Clone, Serialize, Deserialize)]
+pub struct GatewaySettings {
+    pub port: u16,
+    pub auth_enabled: bool,
+    pub credential_ref: Option<String>,
+}
+impl Default for GatewaySettings {
+    fn default() -> Self {
+        Self {
+            port: 9168,
+            auth_enabled: true,
+            credential_ref: None,
+        }
+    }
 }
 
 impl ConfigSnapshot {
@@ -91,6 +109,24 @@ fn lock_file(path: &Path) -> AppResult<File> {
         .map_err(storage)
 }
 
+fn verify_identity(db: &Connection) -> AppResult<()> {
+    let owner: u32 = db
+        .pragma_query_value(None, "application_id", |r| r.get(0))
+        .map_err(storage)?;
+    if owner != 0x5441474d {
+        return Err(AppError::new(ErrorCode::IncompatibleVersion));
+    }
+    let id: String = db
+        .query_row(
+            "SELECT config_uuid FROM config_metadata WHERE singleton=1",
+            [],
+            |r| r.get(0),
+        )
+        .map_err(|_| AppError::new(ErrorCode::IncompatibleVersion))?;
+    Uuid::parse_str(&id).map_err(|_| AppError::new(ErrorCode::IncompatibleVersion))?;
+    Ok(())
+}
+
 impl ConfigService {
     /// Runtime readers never initialize/migrate the business store or recover credentials.
     pub fn read_runtime_snapshot(directory: &Path) -> AppResult<(u32, ConfigSnapshot)> {
@@ -111,6 +147,7 @@ impl ConfigService {
         if schema != SCHEMA_VERSION {
             return Err(AppError::new(ErrorCode::IncompatibleVersion));
         }
+        verify_identity(&db)?;
         Self::read_db(&db)
     }
 
@@ -152,7 +189,7 @@ impl ConfigService {
         let schema: u32 = db
             .pragma_query_value(None, "user_version", |row| row.get(0))
             .map_err(storage)?;
-        if schema == 1 || crate::migrations::pending(directory) {
+        if (1..SCHEMA_VERSION).contains(&schema) || crate::migrations::pending(directory) {
             drop(db);
             FileExt::unlock(&maintenance).map_err(storage)?;
             maintenance
@@ -176,6 +213,7 @@ impl ConfigService {
         if schema != SCHEMA_VERSION {
             return Err(AppError::new(ErrorCode::IncompatibleVersion));
         }
+        verify_identity(&db)?;
         db.pragma_update(None, "journal_mode", "WAL")
             .map_err(storage)?;
         db.pragma_update(None, "foreign_keys", true)
@@ -222,6 +260,11 @@ impl ConfigService {
             schema_version: SCHEMA_VERSION,
             desired_revision: revision,
             profiles: snapshot.profile_views()?,
+            gateway: GatewayView {
+                port: snapshot.gateway.port,
+                auth_enabled: snapshot.gateway.auth_enabled,
+                has_access_token: snapshot.gateway.credential_ref.is_some(),
+            },
             providers: snapshot.providers.into_iter().map(|r| r.provider).collect(),
             pending_credential_cleanup: pending,
         })
@@ -444,6 +487,71 @@ impl ConfigService {
         self.view()
     }
 
+    pub fn save_gateway(&self, input: SaveGateway) -> AppResult<ConfigView> {
+        check_protocol(input.protocol_version)?;
+        if input.port == 0 {
+            return Err(invalid());
+        }
+        let _operation = self.operation_lock()?;
+        let (revision, mut snapshot) = self.read_snapshot()?;
+        if revision != input.expected_revision {
+            return Err(AppError::new(ErrorCode::ConfigConflict));
+        }
+        snapshot.gateway.port = input.port;
+        snapshot.gateway.auth_enabled = input.auth_enabled;
+        self.commit(revision, &snapshot, None)?;
+        self.view()
+    }
+
+    /// Idempotent initialization only. Rotation/revocation needs the persistent P1 revocation ledger.
+    pub fn initialize_gateway_token(&self, input: RevisionInput) -> AppResult<ConfigView> {
+        check_protocol(input.protocol_version)?;
+        let _operation = self.operation_lock()?;
+        let (revision, mut snapshot) = self.read_snapshot()?;
+        if revision != input.expected_revision {
+            return Err(AppError::new(ErrorCode::ConfigConflict));
+        }
+        if snapshot.gateway.credential_ref.is_some() {
+            return self.view();
+        }
+        let mut random = Zeroizing::new([0u8; 32]);
+        getrandom::fill(&mut *random).map_err(storage)?;
+        let secret = Zeroizing::new(
+            random
+                .iter()
+                .map(|b| format!("{b:02x}"))
+                .collect::<String>(),
+        );
+        let reference = format!("gateway/{}", Uuid::new_v4());
+        let operation = Uuid::new_v4().to_string();
+        self.db
+            .lock()
+            .map_err(storage)?
+            .execute(
+                "INSERT INTO credential_journal VALUES(?1,?2)",
+                params![operation, reference],
+            )
+            .map_err(storage)?;
+        if let Err(error) = self.credentials.set(&reference, &secret) {
+            let _ = self.recover_locked();
+            return Err(error);
+        }
+        snapshot.gateway.credential_ref = Some(reference);
+        if let Err(error) = self.commit(revision, &snapshot, Some(&operation)) {
+            let _ = self.recover_locked();
+            return Err(error);
+        }
+        self.view()
+    }
+
+    /// Only the privileged desktop's explicit reveal/copy action calls this method.
+    pub fn reveal_gateway_token(&self, protocol_version: u32) -> AppResult<Zeroizing<String>> {
+        check_protocol(protocol_version)?;
+        let (_, snapshot) = self.read_snapshot()?;
+        let reference = snapshot.gateway.credential_ref.ok_or_else(invalid)?;
+        self.credentials.get(&reference)
+    }
+
     fn commit(
         &self,
         expected: u32,
@@ -505,9 +613,10 @@ impl ConfigService {
         drop(db);
         for (operation, reference) in pending {
             let referenced = all.iter().any(|s| {
-                s.providers
-                    .iter()
-                    .any(|p| p.credential_ref.as_deref() == Some(&reference))
+                s.gateway.credential_ref.as_deref() == Some(&reference)
+                    || s.providers
+                        .iter()
+                        .any(|p| p.credential_ref.as_deref() == Some(&reference))
             });
             // Cleanup failure leaves a retryable journal, without making saved config disappear.
             if referenced || self.credentials.delete(&reference).is_ok() {

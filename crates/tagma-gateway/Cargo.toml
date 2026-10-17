@@ -16,6 +16,7 @@ fs2 = "0.4"
 uuid = { version = "1.28", features = ["v4"] }
 zeroize = "1.9"
 interprocess = { version = "2.4.0", features = ["tokio"] }
+subtle = "2.6.1"
 
 [dev-dependencies]
 tempfile = "3.27"

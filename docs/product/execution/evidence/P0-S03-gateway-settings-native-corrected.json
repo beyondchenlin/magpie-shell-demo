@@ -1,0 +1,24 @@
+{
+  "platform": "win32",
+  "architecture": "x64",
+  "productVersion": "0.2.0-dev.4",
+  "schemaVersion": 2,
+  "executable": "D:\\demo1\\tagmaai\\target\\debug\\tagma-desktop.exe",
+  "embeddedAssets": true,
+  "nativeHost": true,
+  "mockBridge": false,
+  "windowsHide": false,
+  "tests": [
+    "default-token-in-system-store",
+    "explicit-reveal-and-hide",
+    "missing-and-wrong-token-401",
+    "valid-token-unsupported-503",
+    "port-and-auth-form-save",
+    "old-effective-address-until-restart",
+    "degraded-owned-stop",
+    "saved-port-on-native-relaunch-without-override",
+    "explicit-compatibility-mode-loopback",
+    "no-token-in-dto-diagnostics-sqlite-wal-log"
+  ],
+  "result": "passed"
+}

@@ -21,6 +21,7 @@ const en = {
   diagnosticHint: "Preview redacted diagnostics before copying. No credentials, request bodies or databases are included.", copyDiagnostics:"Copy diagnostics", copied:"Copied", logsUnavailable:"The last diagnostic write was not confirmed. Check local storage and permissions.",
   recover:"Preserve damaged record and recover",recoverHint:"Archive only the damaged initialization record shown below. Other files are retained. Restart afterward to create a fresh configuration. An existing database will never be replaced.",recoverConfirm:"Archive record",recovered:"Record preserved. Quit and reopen Tagma to retry initialization.",
   profiles:"App profiles",globalProfile:"Global default order",profileHint:"Profiles reference providers and share their stored credentials. Independent ordering does not change the global order.",addProfile:"Add App profile",editProfile:"Edit App profile",targetApp:"Target App",inheritOrder:"Follow global order",providerSelection:"Referenced providers",profileEmpty:"No providers selected",profileDelete:"Delete App profile",referencedBy:"Referenced by these App profiles",referenceHint:"Edit or delete these profiles before removing the provider.",
+  gatewaySettings:"Gateway settings",port:"Saved port",auth:"Require local access token",authOn:"Token required",authOff:"Compatibility mode: no authentication",authHint:"Disabling authentication explicitly allows local programs to call the data API. Binding stays on loopback.",portHint:"A port change takes effect after stopping and starting the owned gateway. The running address stays unchanged until then.",token:"Local access token",initializeToken:"Create access token",showToken:"Show token",hideToken:"Hide token",copyToken:"Copy token",tokenMissing:"Not created; authenticated requests are denied",tokenHint:"Shown only on explicit request; hidden after 30 seconds. Rotation and revocation are not available in this slice.",editGateway:"Edit gateway settings",copyFailed:"Clipboard copy was not confirmed.",
 };
 
 const zh: typeof en = {
@@ -43,6 +44,7 @@ const zh: typeof en = {
   diagnosticHint: "先预览脱敏诊断，再复制。内容不含凭据、请求正文或数据库。", copyDiagnostics:"复制诊断", copied:"已复制", logsUnavailable:"最近一次诊断写入未确认，请检查本机存储和权限。",
   recover:"保留损坏记录并恢复",recoverHint:"仅归档下列损坏的初始化记录，其他文件保留。退出并重新打开后将创建新配置；不会替换已有数据库。",recoverConfirm:"归档记录",recovered:"记录已保留。请退出并重新打开 Tagma，重试初始化。",
   profiles:"App 配置档案",globalProfile:"全局默认顺序",profileHint:"档案引用供应商并共用已存凭据。独立排序不会修改全局顺序。",addProfile:"添加 App 档案",editProfile:"编辑 App 档案",targetApp:"目标 App",inheritOrder:"跟随全局顺序",providerSelection:"引用的供应商",profileEmpty:"未选择供应商",profileDelete:"删除 App 档案",referencedBy:"被以下 App 档案引用",referenceHint:"请先编辑或删除这些档案，再移除此供应商。",
+  gatewaySettings:"网关配置",port:"已保存端口",auth:"要求本机访问令牌",authOn:"需要访问令牌",authOff:"兼容模式：不鉴权",authHint:"关闭鉴权表示明确允许本机程序调用数据 API，仍只绑定 loopback。",portHint:"端口修改在停止并启动有所有权的网关后生效。在此之前，运行中地址保持不变。",token:"本机访问令牌",initializeToken:"创建访问令牌",showToken:"显示令牌",hideToken:"隐藏令牌",copyToken:"复制令牌",tokenMissing:"尚未创建；鉴权请求会被拒绝",tokenHint:"仅在明确操作后显示，30秒后隐藏。此切片尚未提供轮换和撤销。",editGateway:"修改网关配置",copyFailed:"剪贴板复制未确认成功。",
 };
 
 export function copy(language: ProductLanguage) { return language === "zh" ? zh : en; }
@@ -63,6 +65,7 @@ const errors: Record<ErrorCode, [string, string]> = {
   STARTUP_TIMEOUT: ["网关启动超过10秒，已回收本次启动的子进程。请检查诊断后重试。", "Gateway startup exceeded 10 seconds. The owned child was reclaimed. Check diagnostics before retrying."],
   INITIALIZATION_RECOVERY_REQUIRED:["初始化记录损坏，原记录与数据已保护。请到设置查看诊断及可用恢复操作。","The initialization record is damaged and has been preserved. Open Settings for diagnostics and available recovery actions."],
   PROVIDER_REFERENCED:[zh.referenceHint,en.referenceHint],
+  RESTART_REQUIRED:[zh.portHint,en.portHint],
 };
 export function errorCopy(error: unknown, language: ProductLanguage): string {
   if (error && typeof error === "object" && "code" in error) {

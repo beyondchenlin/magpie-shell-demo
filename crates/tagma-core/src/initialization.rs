@@ -114,7 +114,7 @@ fn ensure_inner(
     };
     let operation = uuid::Uuid::parse_str(&intent.operation_id).map_err(|_| incompatible())?;
     if intent.owner != OWNER
-        || ![1, SCHEMA_VERSION].contains(&intent.schema_version)
+        || !(1..=SCHEMA_VERSION).contains(&intent.schema_version)
         || intent.staging_file != format!(".config-initializing-{operation}.sqlite3")
     {
         return Err(incompatible());
@@ -170,7 +170,7 @@ fn ensure_inner(
             INSERT INTO revisions VALUES(0, '{\"providers\":[]}');
             INSERT INTO config_head VALUES(1,0);
             PRAGMA application_id=1413564237;").map_err(|_|error())?;
-        if intent.schema_version == 2 {
+        if intent.schema_version >= 2 {
             tx.execute_batch("CREATE TABLE config_metadata(singleton INTEGER PRIMARY KEY CHECK(singleton=1),config_uuid TEXT NOT NULL);").map_err(|_|error())?;
             tx.execute(
                 "INSERT INTO config_metadata VALUES(1,?1)",
@@ -183,7 +183,7 @@ fn ensure_inner(
         tx.commit().map_err(|_| error())?;
     } else if schema != intent.schema_version
         || owner != APPLICATION_ID
-        || objects != if intent.schema_version == 2 { 4 } else { 3 }
+        || objects != if intent.schema_version >= 2 { 4 } else { 3 }
     {
         return Err(incompatible());
     }

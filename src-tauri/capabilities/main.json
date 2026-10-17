@@ -3,5 +3,5 @@
   "identifier": "main",
   "description": "Only the bundled main window may call the enumerated application service commands.",
   "windows": ["main"],
-  "permissions": ["allow-application-view", "allow-save-provider", "allow-delete-provider", "allow-reorder-providers", "allow-save-profile", "allow-delete-profile", "allow-start-gateway", "allow-stop-gateway", "allow-apply-gateway", "allow-quit-application", "allow-diagnostics-view", "allow-recover-initialization"]
+  "permissions": ["allow-application-view", "allow-save-provider", "allow-delete-provider", "allow-reorder-providers", "allow-save-profile", "allow-delete-profile", "allow-save-gateway", "allow-initialize-gateway-token", "allow-reveal-gateway-token", "allow-start-gateway", "allow-stop-gateway", "allow-apply-gateway", "allow-quit-application", "allow-diagnostics-view", "allow-recover-initialization"]
 }

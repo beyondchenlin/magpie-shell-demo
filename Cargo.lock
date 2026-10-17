@@ -3797,9 +3797,10 @@ dependencies = [
 
 [[package]]
 name = "tagma-core"
-version = "0.2.0-dev.4"
+version = "0.2.0-dev.5"
 dependencies = [
  "fs2",
+ "getrandom 0.4.3",
  "keyring",
  "libc",
  "rusqlite",
@@ -3816,7 +3817,7 @@ dependencies = [
 
 [[package]]
 name = "tagma-desktop"
-version = "0.2.0-dev.4"
+version = "0.2.0-dev.5"
 dependencies = [
  "tagma-core",
  "tagma-runtime",
@@ -3827,13 +3828,14 @@ dependencies = [
 
 [[package]]
 name = "tagma-gateway"
-version = "0.2.0-dev.4"
+version = "0.2.0-dev.5"
 dependencies = [
  "axum",
  "fs2",
  "interprocess",
  "rusqlite",
  "serde_json",
+ "subtle",
  "tagma-core",
  "tagma-runtime",
  "tempfile",
@@ -3845,7 +3847,7 @@ dependencies = [
 
 [[package]]
 name = "tagma-runtime"
-version = "0.2.0-dev.4"
+version = "0.2.0-dev.5"
 dependencies = [
  "fs2",
  "interprocess",

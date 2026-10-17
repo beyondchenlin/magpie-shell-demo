@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 use ts_rs::TS;
 
 pub const PROTOCOL_VERSION: u32 = 1;
-pub const SCHEMA_VERSION: u32 = 2;
+pub const SCHEMA_VERSION: u32 = 3;
 pub const PRODUCT_VERSION: &str = env!("CARGO_PKG_VERSION");
 
 #[derive(Debug, Clone, Serialize, Deserialize, TS, PartialEq, Eq)]
@@ -24,6 +24,7 @@ pub enum ErrorCode {
     StartupTimeout,
     InitializationRecoveryRequired,
     ProviderReferenced,
+    RestartRequired,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, TS, PartialEq, Eq)]
@@ -120,12 +121,36 @@ pub struct SaveAppProfile {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, TS)]
+pub struct GatewayView {
+    pub port: u16,
+    pub auth_enabled: bool,
+    pub has_access_token: bool,
+}
+
+#[derive(Debug, Clone, Deserialize, TS)]
+#[serde(deny_unknown_fields)]
+pub struct SaveGateway {
+    pub protocol_version: u32,
+    pub expected_revision: u32,
+    pub port: u16,
+    pub auth_enabled: bool,
+}
+
+#[derive(Debug, Clone, Deserialize, TS)]
+#[serde(deny_unknown_fields)]
+pub struct RevisionInput {
+    pub protocol_version: u32,
+    pub expected_revision: u32,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, TS)]
 pub struct ConfigView {
     pub protocol_version: u32,
     pub schema_version: u32,
     pub desired_revision: u32,
     pub providers: Vec<Provider>,
     pub profiles: Vec<AppProfile>,
+    pub gateway: GatewayView,
     pub pending_credential_cleanup: u32,
 }
 

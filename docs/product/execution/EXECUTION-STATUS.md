@@ -5,7 +5,7 @@
 ## 当前批次
 
 - 日期：2026-10-17（Asia/Shanghai）；P0-S03先闭环SUP-004初始化记录原子发布及原生受控恢复，再进行AppProfile/网关设置/迁移。P0整体未通过。
-- 源码起点03643407ed214f7e4d2a3804423028ee496b9a4a；S01提交7f5c5fb，S02提交6b24b95，恢复提交7cfb5a5；当前codex/tagma-p0 S03 dirty+保留继承dirty。已交付dev.3，原生dev.4恢复切片已验证；最新配置核心IPC1/schema2迁移通过局部测试，原生/安装包待随下一切片复验。
+- 源码起点03643407ed214f7e4d2a3804423028ee496b9a4a；S01提交7f5c5fb，S02提交6b24b95，恢复7cfb5a5，迁移6e618ef，档案c6c485a；当前codex/tagma-p0 S03 dirty+保留继承dirty。最终当前候选dev.5、IPC1/schema3，原生嵌入构建通过；安装包仍为历史dev.3证据，未冒充dev.5验收。
 - 启动盘点时仅有Electron/React mock；现已新增Tauri宿主、Rust核心/独立网关。继续复用npm/node_modules、Cargo registry、MSVC、Rust1.98.1、WebView2 155.0.4283.60，未重复安装环境。
 - 已实现：Tauri原生三页、受限异步IPC、共享Rust配置服务、SQLite乐观事务、系统凭据/journal恢复、单源生成DTO。详细边界与两遍自查见 [S01交接](P0-S01-HANDOFF.md)。
 - 已验证：S01历史6项故障集成/OS凭据1项/原生7项；S02新增安装后16项、最新进程8项、并发apply4项、初始化/诊断5项、OS凭据真实进程恢复。构建/DTO/lint和保留CIS guard通过；无完整A用例通过声明。
@@ -13,7 +13,8 @@
 - 最近S03变化：SUP-004三个真实子进程故障（intent刚创建/半写/已sync未发布）修复前3失败、原子暂存发布后3通过；未知/损坏正式记录保护与显式hash确认归档2项通过；真实原生确认/归档/退出重启/网关恢复8项通过，finally清理通过。首轮原生驱动误读了第二次预览生成的UUID，已改验用户实际看到的计划并复验通过，失败证据保留。
 - 迁移切片：schema1→2一致WAL备份、排他锁、journal恢复及真实dev.3网关拒绝/退出后升级通过；核心lib14项通过，配置integration6项通过，Clippy通过。详见[P0-S03迁移记录](P0-S03-MIGRATION.md)。没有自动降级/回滚UI，不将局部测试当成完整A23。
 - AppProfile切片：全局默认/自定义引用、跟随或独立序、过期编辑、供应商引用删除保护已接入Rust及原生UI。配置integration8通过，纠正后的原生8项通过，effective8确认；首轮驱动误点关闭dialog的同名取消，保留但不作为UI通过证据。详见[App档案记录](P0-S03-APP-PROFILES.md)。
-- 下一步：P0-S03持久网关设置/令牌；再完成主路径/性能及平台出口验证。AppProfile配置管理与版本迁移局部切片已验证，P1真实路由尚未实施。
+- 网关设置切片：持久端口/显式兼容鉴权、默认系统令牌与显示/隐藏、401数据鉴权已接入；schema3保护新增合同。最终核心16/配置10/网关单元4/进程9、指定系统令牌HTTP1、真实旧schema1/2二进制、原生网关10/主路径16通过；源/构建hash见evidence/P0-S03-gateway-settings-dev5.json。详见[网关设置记录](P0-S03-GATEWAY-SETTINGS.md)。轮换/持久撤销及真实推理未实施，不宣称A11通过。
+- 下一步：P0启动性能/键盘焦点/关闭到托盘及适用安装门槛。AppProfile、迁移与持久网关配置局部切片已验证，P1真实路由尚未实施。
 - 外部依赖：macOS/Linux 目标环境、发行签名、已授权真实上游及预算、ReachFlow 发行与服务授权。当前可独立实施的 P0 工作不依赖它们。
 - release_blocked：是；Windows内部debug NSIS安装/升级/卸载已验证；正式签名、干净无开发环境机器、macOS/Linux及完整P0门槛仍未通过。
 

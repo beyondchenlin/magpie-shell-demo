@@ -10,6 +10,7 @@ const fixture = process.env.TAGMA_TEST_CONFIG_DIR;
 const appearanceOnly=process.env.TAGMA_NATIVE_SMOKE_MODE==='appearance';
 const recoveryMode=process.env.TAGMA_NATIVE_SMOKE_MODE==='recovery';
 const profilesMode=process.env.TAGMA_NATIVE_SMOKE_MODE==='profiles';
+const gatewayMode=process.env.TAGMA_NATIVE_SMOKE_MODE==='gateway';
 assert(fixture, 'Caller must supply an isolated TAGMA_TEST_CONFIG_DIR');
 const executable=resolve(process.env.TAGMA_NATIVE_EXE || 'target/debug/tagma-desktop.exe');
 await access(executable);
@@ -22,7 +23,7 @@ await new Promise(resolve=>gatewayReservation.listen(0,'127.0.0.1',resolve));
 const gatewayPort=gatewayReservation.address().port;
 await new Promise(resolve=>gatewayReservation.close(resolve));
 let child = spawn(executable, [], {
-  env: { ...process.env, TAGMA_TEST_GATEWAY_PORT:String(gatewayPort), WEBVIEW2_USER_DATA_FOLDER:resolve(fixture,'webview'), WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS: `--remote-debugging-port=${port} --remote-debugging-address=127.0.0.1` },
+  env: { ...process.env, TAGMA_TEST_GATEWAY_PORT:String(gatewayPort), ...(gatewayMode?{TAGMA_TEST_INITIALIZE_TOKEN:'1'}:{}), WEBVIEW2_USER_DATA_FOLDER:resolve(fixture,'webview'), WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS: `--remote-debugging-port=${port} --remote-debugging-address=127.0.0.1` },
   // Do not hide a console to make this test pass. Both executables must be GUI-subsystem binaries.
   stdio: 'ignore', windowsHide: false,
 });
@@ -81,7 +82,38 @@ async function connectPage() {
 }
 try {
   let page=await connectPage();
-  if(profilesMode) {
+  if(gatewayMode) {
+    await until(async()=>(await text()).includes('已保存版本: 1'),'Default native token initialization not committed');
+    await click('设置');await click('网关');
+    let view=await until(async()=>{const v=await evaluate(`window.__TAURI_INTERNALS__.invoke('application_view',{protocolVersion:1})`);return v.runtime.effective_revision===1?v:null;},'Default token gateway not ready');
+    assert.equal(view.config.gateway.auth_enabled,true);assert.equal(view.config.gateway.has_access_token,true);assert.equal(await evaluate(`!!document.querySelector('.tagma-secret')`),false);
+    assert.equal((await fetch(`http://127.0.0.1:${gatewayPort}/v1/models`)).status,401);
+    await click('显示令牌');const token=await evaluate(`document.querySelector('.tagma-secret').textContent`);assert.equal(token.length,64);
+    await click('隐藏令牌');assert.equal(await evaluate(`!!document.querySelector('.tagma-secret')`),false);
+    assert.equal((await fetch(`http://127.0.0.1:${gatewayPort}/v1/models`,{headers:{Authorization:`Bearer ${token}`}})).status,503);
+    assert.equal((await fetch(`http://127.0.0.1:${gatewayPort}/v1/models`,{headers:{Authorization:'Bearer incorrect'}})).status,401);
+    const reservation=createServer();await new Promise(resolve=>reservation.listen(0,'127.0.0.1',resolve));const savedPort=reservation.address().port;await new Promise(resolve=>reservation.close(resolve));
+    await click('修改网关配置');
+    await evaluate(`(()=>{const input=document.querySelector('form input.words');Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value').set.call(input,${JSON.stringify(String(savedPort))});input.dispatchEvent(new Event('input',{bubbles:true}));document.querySelector('form input[type=checkbox]').click();})()`);await pause(100);
+    assert((await text()).includes('关闭鉴权表示明确允许'));await click('保存');
+    view=await until(async()=>{const v=await evaluate(`window.__TAURI_INTERNALS__.invoke('application_view',{protocolVersion:1})`);return v.config.desired_revision===2&&v.runtime.error?.code==='RESTART_REQUIRED'?v:null;},'Saved port did not require explicit restart');
+    assert.equal(view.runtime.effective_revision,1);assert(view.runtime.address.includes(String(gatewayPort)));assert.equal(view.config.gateway.port,savedPort);
+    assert.equal((await fetch(`http://127.0.0.1:${gatewayPort}/v1/models`)).status,401);
+    await until(async()=>await evaluate(`[...document.querySelectorAll('button')].some(b=>b.textContent.trim()==='停止网关'&&!b.disabled)`),'Native UI did not confirm owned gateway');
+    await capture('09-native-gateway-settings');await click('停止网关');await until(async()=>(await text()).includes('已停止'),'Degraded owned gateway did not stop');
+    await evaluate(`window.__TAURI_INTERNALS__.invoke('quit_application',{protocolVersion:1})`).catch(()=>{});await until(async()=>child.exitCode!==null,'Gateway host did not quit');socket?.close();
+    const cdpReservation=createServer();await new Promise(resolve=>cdpReservation.listen(0,'127.0.0.1',resolve));port=cdpReservation.address().port;await new Promise(resolve=>cdpReservation.close(resolve));
+    const relaunchEnvironment={...process.env,WEBVIEW2_USER_DATA_FOLDER:resolve(fixture,'gateway-relaunch-webview'),WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS:`--remote-debugging-port=${port} --remote-debugging-address=127.0.0.1`};delete relaunchEnvironment.TAGMA_TEST_GATEWAY_PORT;
+    child=spawn(executable,[],{env:relaunchEnvironment,stdio:'ignore',windowsHide:false});child.on('error',error=>{spawnError=error;});page=await connectPage();
+    view=await until(async()=>{const v=await evaluate(`window.__TAURI_INTERNALS__.invoke('application_view',{protocolVersion:1})`);return v.runtime.effective_revision===2?v:null;},'Saved port was not loaded by native relaunch');
+    assert(view.runtime.address.includes(String(savedPort)));assert.equal(view.config.gateway.auth_enabled,false);assert.equal(view.config.gateway.has_access_token,true);
+    assert.equal((await fetch(`http://127.0.0.1:${savedPort}/v1/models`)).status,503);
+    const diagnostics=await evaluate(`window.__TAURI_INTERNALS__.invoke('diagnostics_view',{protocolVersion:1})`);assert(!JSON.stringify(view).includes(token));assert(!JSON.stringify(diagnostics).includes(token));
+    await evaluate(`window.__TAURI_INTERNALS__.invoke('quit_application',{protocolVersion:1})`).catch(()=>{});await until(async()=>child.exitCode!==null,'Relaunched gateway host did not quit');
+    for(const name of ['config.sqlite3','config.sqlite3-wal','logs/tagma.0.jsonl']) {const bytes=await readFile(resolve(fixture,name)).catch(()=>Buffer.alloc(0));assert(!bytes.includes(Buffer.from(token)));}
+    await writeFile(resolve(fixture,'native-result.json'),JSON.stringify({platform:process.platform,architecture:process.arch,productVersion:view.product_version,schemaVersion:view.config.schema_version,executable,embeddedAssets:!page.url.startsWith('http://localhost:'),nativeHost:true,mockBridge:false,windowsHide:false,tests:['default-token-in-system-store','explicit-reveal-and-hide','missing-and-wrong-token-401','valid-token-unsupported-503','port-and-auth-form-save','old-effective-address-until-restart','degraded-owned-stop','saved-port-on-native-relaunch-without-override','explicit-compatibility-mode-loopback','no-token-in-dto-diagnostics-sqlite-wal-log'],result:'passed'},null,2));
+    console.log('Native gateway settings: 10 checks passed (system token, HTTP authentication, explicit port restart and real relaunch).');
+  } else if(profilesMode) {
     await until(async()=>(await text()).includes('已保存版本: 0'),'Native profile fixture not initialized');
     const invoke=(command,input)=>evaluate(`window.__TAURI_INTERNALS__.invoke(${JSON.stringify(command)},{input:${JSON.stringify(input)}})`);
     for(let revision=0;revision<2;revision++) await invoke('save_provider',{protocol_version:1,expected_revision:revision,id:null,name:`Profile provider ${revision+1}`,protocol:'openai_chat_completions',base_url:'https://example.invalid/v1',enabled:true,models:[],credential:null});
