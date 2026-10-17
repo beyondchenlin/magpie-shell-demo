@@ -1,0 +1,47 @@
+   Compiling tagma-core v0.2.0-dev.13 (D:\demo1\tagmaai\crates\tagma-core)
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+   Compiling tagma-runtime v0.2.0-dev.13 (D:\demo1\tagmaai\crates\tagma-runtime)
+   Compiling tagma-gateway v0.2.0-dev.13 (D:\demo1\tagmaai\crates\tagma-gateway)
+warning: unused import: `service::ProviderRecord`
+  --> crates\tagma-gateway\tests\catalog.rs:20:60
+   |
+20 |     catalog::*, credentials::SystemCredentials, health::*, service::ProviderRecord, *,
+   |                                                            ^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: `tagma-gateway` (test "catalog") generated 1 warning (run `cargo fix --test "catalog" -p tagma-gateway` to apply 1 suggestion)
+    Finished `test` profile [unoptimized] target(s) in 5.57s
+     Running tests\catalog.rs (target\debug\deps\catalog-f78dd59f63583ee9.exe)
+
+running 1 test
+A08 controlled catalog case=ok outcome=Available status=Some(200) durable_backoff=true
+A08 controlled catalog case=401 outcome=Authentication status=Some(401) durable_backoff=true
+A08 controlled catalog case=403 outcome=Authentication status=Some(403) durable_backoff=true
+A08 controlled catalog case=429 outcome=RateLimited status=Some(429) durable_backoff=true
+A08 controlled catalog case=404 outcome=Unsupported status=Some(404) durable_backoff=true
+A08 controlled catalog case=405 outcome=Unsupported status=Some(405) durable_backoff=true
+A08 controlled catalog case=501 outcome=Unsupported status=Some(501) durable_backoff=true
+A08 controlled catalog case=500 outcome=Protocol status=Some(500) durable_backoff=true
+A08 controlled catalog case=invalid outcome=Protocol status=Some(200) durable_backoff=true
+A08 controlled catalog case=huge outcome=Protocol status=Some(200) durable_backoff=true
+A08 controlled catalog case=idle outcome=Timeout status=Some(200) durable_backoff=true
+A08 facts: GET-only discovery, original IDs/source/time, no inference promotion, auth negative fence, no catalog revival, explicit inference recovery, cancelled/stale-generation rejection verified
+test controlled_catalog_classification_cancellation_backoff_and_health_separation ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.97s
+

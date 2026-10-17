@@ -1,0 +1,18 @@
+{
+  "recordedAtUtc": "2026-10-17T14:44:13.0256730+00:00",
+  "target": "D:\\demo1\\tagmaai\\target",
+  "temporaryRoot": "C:\\Users\\ai\\AppData\\Local\\Temp",
+  "reused": [
+    "Existing Cargo registry and target",
+    "Existing node_modules"
+  ],
+  "additionalPeakGiB": 1.2,
+  "freeBeforeGiB": {
+    "D": 13.47,
+    "C": 46.91
+  },
+  "expectedDReserveGiB": 12.27,
+  "scope": "Only affected catalog/core migration/gateway compatibility checks; no installer or native UI",
+  "cleanup": "TempDir and owned sidecar shutdown on success or failure; no deletion of user data or existing evidence",
+  "note": "Conservative remaining peak estimate; disk deltas may include concurrent tasks"
+}

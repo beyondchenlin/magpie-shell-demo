@@ -289,6 +289,20 @@ impl GatewayManager {
         Ok(status)
     }
 
+    pub async fn probe_provider(&self, input: tagma_core::catalog::ProbeProvider) -> AppResult<()> {
+        let manifest = ipc::read_manifest(&self.directory)?;
+        let status = ipc::call(&manifest, Control::Probe { input }).await?;
+        if let Some(error) = status.error {
+            return Err(error);
+        }
+        Ok(())
+    }
+    pub async fn cancel_probe(&self, request_id: String) -> AppResult<()> {
+        uuid::Uuid::parse_str(&request_id).map_err(|_| AppError::new(ErrorCode::InvalidInput))?;
+        let manifest = ipc::read_manifest(&self.directory)?;
+        ipc::call(&manifest, Control::CancelProbe { request_id }).await?;
+        Ok(())
+    }
     pub async fn stop(&self) -> AppResult<RuntimeStatus> {
         let _operation = self.operation.lock().await;
         self.restart.lock().await.wanted = false;

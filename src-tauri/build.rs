@@ -9,6 +9,8 @@ fn main() {
             "reorder_providers",
             "save_profile",
             "save_first_cloud_order",
+            "probe_provider",
+            "cancel_probe",
             "save_team",
             "publish_team",
             "set_team_enabled",

@@ -14,6 +14,8 @@
     "allow-reorder-providers",
     "allow-save-profile",
     "allow-save-first-cloud-order",
+    "allow-probe-provider",
+    "allow-cancel-probe",
     "allow-save-team",
     "allow-publish-team",
     "allow-set-team-enabled",

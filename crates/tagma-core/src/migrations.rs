@@ -159,12 +159,21 @@ fn prepare_inner(directory: &Path, after_backup: impl FnOnce() -> AppResult<()>)
             "credential_journal",
             "revisions",
         ]
+    } else if version < 7 {
+        vec![
+            "config_head",
+            "config_metadata",
+            "credential_journal",
+            "model_health",
+            "revisions",
+        ]
     } else {
         vec![
             "config_head",
             "config_metadata",
             "credential_journal",
             "model_health",
+            "provider_catalog",
             "revisions",
         ]
     };
@@ -211,7 +220,7 @@ fn prepare_inner(directory: &Path, after_backup: impl FnOnce() -> AppResult<()>)
         && !(journal.owner == LEGACY_OWNER && journal.from_schema == 1 && journal.to_schema == 2))
         || !matches!(
             (journal.from_schema, journal.to_schema),
-            (1, 2) | (2, 3) | (3, 4) | (4, 5) | (5, 6)
+            (1, 2) | (2, 3) | (3, 4) | (4, 5) | (5, 6) | (6, 7)
         )
         || (version != journal.from_schema && version != journal.to_schema)
         || uuid::Uuid::parse_str(&journal.operation_id).is_err()
@@ -321,6 +330,10 @@ fn prepare_inner(directory: &Path, after_backup: impl FnOnce() -> AppResult<()>)
             tx.execute_batch(crate::health::CREATE_HEALTH_TABLE)
                 .map_err(|_| error())?;
         }
+        if journal.to_schema == 7 {
+            tx.execute_batch(crate::catalog::CREATE_CATALOG_TABLE)
+                .map_err(|_| error())?;
+        }
         // V3 protects authentication fields; V4 protects team drafts and immutable
         // publications from being silently dropped by older writers. V6 protects
         // the automatic-brain order source and dynamic step targets.
@@ -361,7 +374,7 @@ mod tests {
         )
         .unwrap();
         prepare(temp.path()).unwrap();
-        assert_eq!(schema(&db).unwrap(), 6);
+        assert_eq!(schema(&db).unwrap(), SCHEMA_VERSION);
         assert_eq!(revision(&db).unwrap(), 0);
         assert_eq!(
             db.query_row::<String, _, _>(
@@ -391,7 +404,36 @@ mod tests {
             observed
         );
         println!(
-            "A14 schema5->6: backup includes health, original snapshot bytes and config revision preserved"
+            "A14 schema5->{SCHEMA_VERSION}: backup includes health, original snapshot bytes and config revision preserved"
+        );
+    }
+
+    #[test]
+    fn schema_six_catalog_upgrade_retains_a_recoverable_backup_and_revision() {
+        let temp = tempfile::tempdir().unwrap();
+        let db = legacy(temp.path());
+        while schema(&db).unwrap() < 6 {
+            prepare_inner(temp.path(), || Ok(())).unwrap();
+        }
+        prepare(temp.path()).unwrap();
+        assert_eq!(schema(&db).unwrap(), 7);
+        assert_eq!(revision(&db).unwrap(), 0);
+        let count: u32 = db
+            .query_row("SELECT count(*) FROM provider_catalog", [], |row| {
+                row.get(0)
+            })
+            .unwrap();
+        assert_eq!(count, 0);
+        let saved = fs::read_dir(temp.path().join("backups"))
+            .unwrap()
+            .filter_map(Result::ok)
+            .find(|entry| entry.file_name().to_string_lossy().starts_with("schema-6-"))
+            .unwrap();
+        let saved = Connection::open(saved.path()).unwrap();
+        assert_eq!(schema(&saved).unwrap(), 6);
+        assert_eq!(revision(&saved).unwrap(), 0);
+        println!(
+            "A08 schema6->7: catalog table created, source6 backup and config revision preserved"
         );
     }
 

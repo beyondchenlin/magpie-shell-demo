@@ -1,0 +1,153 @@
+   Compiling tagma-core v0.2.0-dev.13 (D:\demo1\tagmaai\crates\tagma-core)
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+    Finished `test` profile [unoptimized] target(s) in 5.14s
+     Running unittests src\lib.rs (target\debug\deps\tagma_core-22adf3f56ca4d9f4.exe)
+
+running 31 tests
+test initialization::tests::intent_crash_worker ... ignored, Child only: intent publication interruption
+test health::tests::catalog_is_not_inference_and_five_minute_boundary_is_strict ... ok
+test migrations::tests::migration_crash_worker ... ignored, Child only: real migration interruption
+test health::tests::credential_generation_changes_fingerprint_without_exposing_the_reference_in_views ... ok
+test health::tests::same_millisecond_failures_win_in_either_arrival_order ... ok
+test health::tests::first_cloud_uses_both_global_orders_and_rejects_stale_failed_or_replaced_generations ... ok
+test chat::tests::arbitrary_byte_splits_utf8_crlf_and_multiple_events ... ok
+test chat::tests::multiline_and_bounded_event ... ok
+
+thread 'initialization::tests::owned_staging_with_unexpected_tables_is_preserved' (20548) panicked at crates\tagma-core\src\initialization.rs:328:36:
+test interruption
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test initialization::tests::atomic_publication_never_replaces_a_newly_appeared_target ... ok
+test service::initialization_tests::initialization_crash_worker ... ignored, Child only: real initialization crash fixture
+
+running 1 test
+
+running 1 test
+
+running 1 test
+
+running 1 test
+test initialization::tests::owned_staging_with_unexpected_tables_is_preserved ... ok
+test recovery::tests::changed_record_existing_database_and_valid_future_record_are_protected ... ok
+test initialization::tests::crash_after_intent_file_creation_recovers ... ok
+
+running 1 test
+test health::tests::runtime_health_never_initializes_or_migrates_an_unknown_store ... ok
+test recovery::tests::corrupt_committed_record_is_preserved_until_exact_explicit_archive ... ok
+test initialization::tests::crash_after_intent_sync_before_publication_recovers ... ok
+test health::tests::runtime_health_is_persistent_generation_bound_and_does_not_change_revisions ... ok
+test service::initialization_tests::unknown_schema_zero_database_is_never_initialized_or_overwritten ... ok
+test initialization::tests::crash_after_partial_intent_write_recovers ... ok
+test service::initialization_tests::interrupted_owned_initialization_recovers_after_real_process_exit ... ok
+test health::tests::unconfirmed_shutdown_preserves_success_history_but_requires_new_confirmation ... ok
+test health::tests::model_reorder_and_enable_toggle_preserve_observations_but_removed_models_do_not ... ok
+test diagnostics::tests::logs_rotate_within_five_files_and_never_export_unknown_fields ... ok
+test migrations::tests::runtime_reader_never_migrates_and_writer_requires_all_live_readers_to_exit ... ok
+test migrations::tests::backup_includes_committed_wal_and_historical_snapshot_bytes_are_unchanged ... ok
+test migrations::tests::legacy_pending_one_to_two_journal_resumes_before_following_transition ... ok
+test migrations::tests::failure_after_backup_keeps_original_schema_and_retry_uses_the_owned_backup ... ok
+test migrations::tests::real_process_exit_after_backup_recovers_without_losing_original_revision ... ok
+A14 schema5->6: backup includes health, original snapshot bytes and config revision preserved
+test migrations::tests::schema_three_team_upgrade_preserves_bytes_and_retains_schema_three_backup ... ok
+test migrations::tests::schema_five_upgrade_backs_up_health_and_preserves_original_snapshot_bytes ... ok
+test migrations::tests::schema_two_profiles_and_config_identity_survive_gateway_contract_upgrade ... ok
+
+test result: ok. 28 passed; 0 failed; 3 ignored; 0 measured; 0 filtered out; finished in 0.24s
+
+     Running tests\catalog.rs (target\debug\deps\catalog-43b160749839f787.exe)
+
+running 1 test
+A08 storage: original observation time/ID/source, strict TTL, no config/inference writes, no result replay, interrupted Pending cancellation and generation invalidation verified
+test catalog_time_and_generation_do_not_refresh_inference_or_rewrite_configuration ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.06s
+
+     Running tests\config_service.rs (target\debug\deps\config_service-b4a49008661dc0cc.exe)
+
+running 13 tests
+test credential_crash_worker ... ignored, Child fixture only: invoked by process_crash_after_system_credential_set_recovers
+test process_crash_after_system_credential_set_recovers ... ignored, Explicit real-process + OS credential-store integration; synthetic secret with exact journal-owned cleanup
+test system_credential_store_round_trip ... ignored, Explicit local OS credential-store integration; synthetic secret only, exact owned reference cleaned by Drop
+test stale_invalid_and_global_profile_edits_never_create_revisions ... ok
+test invalid_urls_duplicate_models_protocol_and_secret_are_rejected_without_writes ... ok
+test future_schema_is_not_modified_and_maintenance_lock_blocks_entrypoints ... ok
+test crud_reopen_and_reorder_share_one_transactional_service ... ok
+test stale_editor_cannot_overwrite_other_entrypoint_or_create_a_secret ... ok
+test app_profiles_reference_credentials_and_keep_global_and_override_orders_independent ... ok
+test unavailable_token_store_does_not_commit_gateway_or_leave_plaintext ... ok
+test recovery_only_deletes_journal_owned_unreferenced_secrets_and_retries_cleanup ... ok
+test credential_lock_and_sqlite_failure_do_not_report_success_or_leave_plaintext ... ok
+test gateway_settings_and_token_are_transactional_redacted_and_not_recreated_on_reopen ... ok
+
+test result: ok. 10 passed; 0 failed; 3 ignored; 0 measured; 0 filtered out; finished in 0.06s
+
+     Running tests\first_cloud.rs (target\debug\deps\first_cloud-432c22cfacaf27a2.exe)
+
+running 1 test
+A14 order-source: global provider/model order; explicit/default App custom/inherited/empty/missing order; strict TTL; persistent selection; reference protection; conflict; legacy default all verified
+test default_app_is_explicit_persistent_bounded_and_never_a_failure_fallback ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+     Running tests\teams.rs (target\debug\deps\teams-9c9bd81607d6ba45.exe)
+
+running 7 tests
+test malformed_or_recursive_targets_and_unbounded_drafts_are_rejected ... ok
+test drafts_keep_missing_dependencies_but_cannot_publish_or_escalate_permissions ... ok
+test sequential_flow_budgets_side_effects_and_fixed_answering_brain_are_checked ... ok
+test published_provider_reference_stays_protected_after_draft_and_status_change ... ok
+test published_ids_pin_recipes_while_drafts_and_availability_change ... ok
+test slug_namespace_conflicts_and_stale_edits_do_not_rewrite_configuration ... ok
+test brain_targets_preserve_legacy_json_and_require_a_real_recent_success_to_publish ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.07s
+
+   Doc-tests tagma_core
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

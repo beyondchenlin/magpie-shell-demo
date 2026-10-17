@@ -48,7 +48,15 @@ pub struct Request {
 pub enum Command {
     Status,
     Apply,
-    Stop { owner_token: String },
+    Probe {
+        input: tagma_core::catalog::ProbeProvider,
+    },
+    CancelProbe {
+        request_id: String,
+    },
+    Stop {
+        owner_token: String,
+    },
 }
 
 #[derive(Serialize, Deserialize)]

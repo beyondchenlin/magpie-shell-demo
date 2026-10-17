@@ -1,0 +1,58 @@
+    Checking tagma-core v0.2.0-dev.13 (D:\demo1\tagmaai\crates\tagma-core)
+   Compiling tagma-desktop v0.2.0-dev.13 (D:\demo1\tagmaai\src-tauri)
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+    Checking tagma-runtime v0.2.0-dev.13 (D:\demo1\tagmaai\crates\tagma-runtime)
+    Checking tagma-gateway v0.2.0-dev.13 (D:\demo1\tagmaai\crates\tagma-gateway)
+error: this `if` statement can be collapsed
+   --> crates\tagma-gateway\src\health.rs:327:9
+    |
+327 | /         if !self.confirmed {
+328 | |             if let Ok(mut queue) = self.tracker.queue.lock() {
+329 | |                 queue.overflowed = true;
+330 | |             }
+331 | |         }
+    | |_________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.98.0/index.html#collapsible_if
+    = note: `-D clippy::collapsible-if` implied by `-D warnings`
+    = help: to override `-D warnings` add `#[allow(clippy::collapsible_if)]`
+help: collapse nested if block
+    |
+327 ~         if !self.confirmed
+328 ~             && let Ok(mut queue) = self.tracker.queue.lock() {
+329 |                 queue.overflowed = true;
+330 ~             }
+    |
+
+error: could not compile `tagma-gateway` (bin "tagma-gateway") due to 1 previous error
+warning: build failed, waiting for other jobs to finish...
+error: could not compile `tagma-gateway` (bin "tagma-gateway" test) due to 1 previous error

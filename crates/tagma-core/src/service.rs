@@ -322,6 +322,7 @@ impl ConfigService {
                 has_access_token: snapshot.gateway.credential_ref.is_some(),
             },
             first_cloud_order: snapshot.first_cloud_order.clone(),
+            provider_catalog: crate::catalog::views(&db, &snapshot, observed_now)?,
             providers: snapshot.providers.into_iter().map(|r| r.provider).collect(),
             pending_credential_cleanup: pending,
         })
@@ -663,6 +664,11 @@ impl ConfigService {
             }) {
                 tx.execute(
                     "DELETE FROM model_health WHERE provider_id=?1",
+                    [&provider.provider.id],
+                )
+                .map_err(storage)?;
+                tx.execute(
+                    "DELETE FROM provider_catalog WHERE provider_id=?1",
                     [&provider.provider.id],
                 )
                 .map_err(storage)?;

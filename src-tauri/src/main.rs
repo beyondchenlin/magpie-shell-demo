@@ -143,6 +143,27 @@ async fn save_first_cloud_order(
 }
 
 #[tauri::command]
+async fn probe_provider(
+    window: WebviewWindow,
+    app: State<'_, Application>,
+    input: catalog::ProbeProvider,
+) -> AppResult<ConfigView> {
+    let config = config(&window, &app)?;
+    gateway(&window, &app)?.probe_provider(input).await?;
+    config.view()
+}
+#[tauri::command]
+async fn cancel_probe(
+    window: WebviewWindow,
+    app: State<'_, Application>,
+    protocol_version: u32,
+    request_id: String,
+) -> AppResult<()> {
+    check_protocol(protocol_version)?;
+    gateway(&window, &app)?.cancel_probe(request_id).await
+}
+
+#[tauri::command]
 async fn delete_profile(
     window: WebviewWindow,
     app: State<'_, Application>,
@@ -487,6 +508,8 @@ fn main() {
             cancel_chat,
             save_profile,
             save_first_cloud_order,
+            probe_provider,
+            cancel_probe,
             save_team,
             publish_team,
             set_team_enabled,

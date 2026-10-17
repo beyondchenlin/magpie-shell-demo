@@ -51,6 +51,8 @@ const zh: typeof en = {
 
 export function copy(language: ProductLanguage) { return language === "zh" ? zh : en; }
 const errors: Record<ErrorCode, [string, string]> = {
+  PROBE_BACKOFF:["检测仍在冷却或退避中，请按显示的时间重试。","Detection is cooling down or backing off. Retry after the displayed time."],
+  PROBE_BUSY:["已有检测任务正在运行，请等待或取消后重试。","Detection jobs are already running. Wait or cancel before retrying."],
   NO_AVAILABLE_BRAIN:["没有近期确认可用的云模型。请检查健康状态，并按你的预算手动试调用。","No recently confirmed cloud model is available. Check health and make a manual test call within your budget."],
   TEAM_SLUG_CONFLICT: ["此小队标识已被使用，请选择其他标识。", "This team slug is already in use. Choose another slug."],
   TEAM_PUBLISHED: ["已发布版本不能改名或删除。可以修改草稿、发布新修订，或停用旧版本。", "Published recipes cannot be renamed or deleted. Edit the draft, publish a new revision, or disable an old version."],

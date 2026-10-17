@@ -3932,7 +3932,7 @@ dependencies = [
 
 [[package]]
 name = "tagma-core"
-version = "0.2.0-dev.12"
+version = "0.2.0-dev.13"
 dependencies = [
  "fs2",
  "getrandom 0.4.3",
@@ -3952,7 +3952,7 @@ dependencies = [
 
 [[package]]
 name = "tagma-desktop"
-version = "0.2.0-dev.12"
+version = "0.2.0-dev.13"
 dependencies = [
  "reqwest",
  "serde_json",
@@ -3968,7 +3968,7 @@ dependencies = [
 
 [[package]]
 name = "tagma-gateway"
-version = "0.2.0-dev.12"
+version = "0.2.0-dev.13"
 dependencies = [
  "async-stream",
  "axum",
@@ -3990,16 +3990,20 @@ dependencies = [
 
 [[package]]
 name = "tagma-runtime"
-version = "0.2.0-dev.12"
+version = "0.2.0-dev.13"
 dependencies = [
  "fs2",
+ "futures-util",
  "interprocess",
+ "native-tls",
+ "reqwest",
  "serde",
  "serde_json",
  "sha2",
  "tagma-core",
  "tempfile",
  "tokio",
+ "tokio-util",
  "uuid",
  "widestring",
  "windows-sys 0.61.2",

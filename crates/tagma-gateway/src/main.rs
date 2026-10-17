@@ -1,5 +1,6 @@
 #![cfg_attr(windows, windows_subsystem = "windows")]
 
+mod catalog;
 mod health;
 mod http_api;
 use axum::{
@@ -31,6 +32,9 @@ type LoadedSnapshot = (
 );
 
 struct Runtime {
+    catalog_client: reqwest::Client,
+    catalog_jobs: Arc<catalog::Jobs>,
+    catalog_slots: Arc<tokio::sync::Semaphore>,
     directory: PathBuf,
     manifest: Manifest,
     status: RwLock<RuntimeStatus>,
@@ -235,6 +239,12 @@ async fn run(
     let health = health::Tracker::new(directory.clone(), shutdown.clone());
     health.reconcile(&snapshot);
     let state = Arc::new(Runtime {
+        catalog_jobs: Arc::new(catalog::Jobs::default()),
+        catalog_slots: Arc::new(tokio::sync::Semaphore::new(2)),
+        catalog_client: match tagma_runtime::catalog::client() {
+            Ok(client) => client,
+            Err(_) => return 12,
+        },
         directory: directory.clone(),
         manifest: manifest.clone(),
         status: RwLock::new(status),
@@ -291,6 +301,13 @@ async fn run(
                             let mut stop = false;
                             match request.command {
                                 Command::Status => {},
+                                Command::Probe { input } => {
+                                    if let Err(error)=catalog::start(&state,input).await {
+                                        let mut status=state.status.read().await.clone();status.error=Some(error);
+                                        let response=Response {protocol_version:PROTOCOL_VERSION,product_version:PRODUCT_VERSION.into(),instance_id:state.manifest.instance_id.clone(),config_id:state.manifest.config_id.clone(),challenge:request.challenge,status};let _=ipc::write_frame(&mut stream,&response).await;return;
+                                    }
+                                },
+                                Command::CancelProbe {request_id} => {let _=state.catalog_jobs.cancel(&request_id);},
                                 Command::Apply => apply(&state).await,
                                 Command::Stop { owner_token } => {
                                     if owner_token == *state.token { let mut status=state.status.write().await;status.state = RuntimeState::Stopping;status.error=None; stop = true; }
@@ -526,6 +543,9 @@ mod apply_tests {
     fn state() -> Arc<Runtime> {
         let fixture = tempfile::tempdir().unwrap();
         Arc::new(Runtime {
+            catalog_jobs: Arc::new(catalog::Jobs::default()),
+            catalog_slots: Arc::new(tokio::sync::Semaphore::new(2)),
+            catalog_client: tagma_runtime::catalog::client().unwrap(),
             directory: fixture.path().to_owned(),
             manifest: Manifest {
                 protocol_version: 1,

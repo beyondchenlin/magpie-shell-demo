@@ -4,7 +4,7 @@ use std::{
     path::PathBuf,
     sync::{
         Arc, Mutex,
-        atomic::{AtomicU64, Ordering},
+        atomic::{AtomicU64, AtomicUsize, Ordering},
     },
 };
 use tagma_core::{ConfigService, health::HealthObservation, service::ConfigSnapshot};
@@ -81,6 +81,7 @@ impl Queue {
     }
 }
 pub struct Tracker {
+    external_pending: AtomicUsize,
     directory: PathBuf,
     queue: Mutex<Queue>,
     epoch: AtomicU64,
@@ -100,6 +101,7 @@ impl Tracker {
         clock: Arc<dyn Fn() -> tagma_core::AppResult<u64> + Send + Sync>,
     ) -> Arc<Self> {
         Arc::new(Self {
+            external_pending: AtomicUsize::new(0),
             directory,
             queue: Mutex::new(Queue {
                 pending: HashMap::new(),
@@ -222,10 +224,19 @@ impl Tracker {
                 && queue.pending.is_empty()
                 && queue.unconfirmed.is_empty()
                 && !queue.overflowed
+                && self.external_pending.load(Ordering::SeqCst) == 0
         })
     }
     pub fn epoch(&self) -> u64 {
         self.epoch.load(Ordering::SeqCst)
+    }
+    pub fn external(self: &Arc<Self>) -> External {
+        self.external_pending.fetch_add(1, Ordering::SeqCst);
+        self.epoch.fetch_add(1, Ordering::SeqCst);
+        External {
+            tracker: self.clone(),
+            confirmed: false,
+        }
     }
     pub async fn read_confirmed(
         &self,
@@ -260,7 +271,9 @@ impl Tracker {
     pub async fn settle(&self, budget: std::time::Duration) -> bool {
         tokio::time::timeout(budget, async {
             loop {
-                if self.queue.lock().is_ok_and(|queue| !queue.running) {
+                if self.queue.lock().is_ok_and(|queue| {
+                    !queue.running && self.external_pending.load(Ordering::SeqCst) == 0
+                }) {
                     break;
                 }
                 tokio::time::sleep(std::time::Duration::from_millis(10)).await;
@@ -297,6 +310,27 @@ impl Tracker {
             queue.overflowed = false;
             self.epoch.fetch_add(1, Ordering::SeqCst);
         }
+    }
+}
+
+pub struct External {
+    tracker: Arc<Tracker>,
+    confirmed: bool,
+}
+impl External {
+    pub fn confirm(&mut self) {
+        self.confirmed = true;
+    }
+}
+impl Drop for External {
+    fn drop(&mut self) {
+        if !self.confirmed
+            && let Ok(mut queue) = self.tracker.queue.lock()
+        {
+            queue.overflowed = true;
+        }
+        self.tracker.epoch.fetch_add(1, Ordering::SeqCst);
+        self.tracker.external_pending.fetch_sub(1, Ordering::SeqCst);
     }
 }
 
@@ -514,6 +548,38 @@ mod tests {
         assert!(tracker.read_confirmed(snapshot).await.is_none());
         println!(
             "A14 health consumer: bounded single read slot, admission timeout, recovery and shutdown rejection verified"
+        );
+    }
+
+    #[tokio::test]
+    async fn catalog_writes_share_the_health_epoch_and_unknown_results_remain_unconfirmed() {
+        let temp = tempfile::tempdir().unwrap();
+        let config = ConfigService::open(temp.path(), Arc::new(SystemCredentials)).unwrap();
+        let tracker = Tracker::new(temp.path().to_owned(), CancellationToken::new());
+        let original = tracker.epoch();
+        let mut guard = tracker.external();
+        assert!(!tracker.confirmed());
+        assert!(tracker.epoch() > original);
+        assert!(
+            tracker
+                .read_confirmed(config.read_snapshot().unwrap().1)
+                .await
+                .is_none()
+        );
+        guard.confirm();
+        drop(guard);
+        assert!(tracker.confirmed());
+        assert!(tracker.epoch() > original + 1);
+        drop(tracker.external());
+        assert!(!tracker.confirmed());
+        assert!(
+            tracker
+                .read_confirmed(config.read_snapshot().unwrap().1)
+                .await
+                .is_none()
+        );
+        println!(
+            "A08 metadata: pending catalog writes block health reads; confirmed completion advances epoch; abandoned/unknown completion never acknowledges old ready rows"
         );
     }
 

@@ -75,6 +75,8 @@ impl HealthObservation {
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 #[serde(deny_unknown_fields)]
 pub struct ModelHealthRecord {
+    #[serde(skip)]
+    pub provider_check_blocked_ms: Option<u64>,
     pub provider_id: String,
     pub model_id: String,
     pub fingerprint: String,
@@ -138,7 +140,15 @@ pub fn select_first_cloud(
             }
             if by_model
                 .get(&(provider.provider.id.as_str(), model.as_str()))
-                .is_some_and(|record| record.fingerprint == fingerprint && record.is_ready(now))
+                .is_some_and(|record| {
+                    record.fingerprint == fingerprint
+                        && record.is_ready(now)
+                        && record.provider_check_blocked_ms.is_none_or(|blocked| {
+                            record
+                                .inference_succeeded_ms
+                                .is_some_and(|success| success > blocked)
+                        })
+                })
             {
                 return Some(crate::teams::CloudTarget {
                     provider_id: provider.provider.id.clone(),
@@ -259,6 +269,19 @@ pub(crate) fn records(
             )
         })
         .collect();
+    let checks: std::collections::HashMap<_, _> = crate::catalog::records(db, snapshot)?
+        .into_iter()
+        .map(|r| {
+            (
+                r.provider_id,
+                if r.outcome == crate::catalog::CatalogOutcome::Pending {
+                    Some(r.blocked_ms.unwrap_or(0).max(r.attempted_ms))
+                } else {
+                    r.blocked_ms
+                },
+            )
+        })
+        .collect();
     let mut result = Vec::new();
     for row in rows {
         let (id, model, fingerprint, json) = row.map_err(storage)?;
@@ -271,11 +294,12 @@ pub(crate) fn records(
         if json.len() > 4096 {
             return Err(AppError::new(ErrorCode::StorageUnavailable));
         }
-        let record: ModelHealthRecord = serde_json::from_str(&json).map_err(storage)?;
+        let mut record: ModelHealthRecord = serde_json::from_str(&json).map_err(storage)?;
         if record.provider_id != id || record.model_id != model || record.fingerprint != fingerprint
         {
             return Err(AppError::new(ErrorCode::StorageUnavailable));
         }
+        record.provider_check_blocked_ms = checks.get(&id).copied().flatten();
         result.push(record);
     }
     Ok(result)
@@ -343,6 +367,7 @@ impl ConfigService {
             )
             .map_err(storage)?;
         }
+        crate::catalog::invalidate_pending(&tx, &snapshot, observed_now)?;
         tx.commit().map_err(storage)
     }
     /// Runtime observations do not open/migrate configuration or access the credential store.
@@ -390,7 +415,10 @@ impl ConfigService {
         )
     }
 }
-fn health_connection(directory: &Path, write: bool) -> AppResult<(std::fs::File, Connection)> {
+pub(crate) fn health_connection(
+    directory: &Path,
+    write: bool,
+) -> AppResult<(std::fs::File, Connection)> {
     // The directory/database must already exist. Never create a second store on runtime paths.
     if !directory.join("config.sqlite3").is_file() {
         return Err(AppError::new(ErrorCode::StorageUnavailable));

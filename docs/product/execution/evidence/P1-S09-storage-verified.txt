@@ -1,0 +1,25 @@
+   Compiling tagma-core v0.2.0-dev.13 (D:\demo1\tagmaai\crates\tagma-core)
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+    Finished `test` profile [unoptimized] target(s) in 2.98s
+     Running tests\catalog.rs (target\debug\deps\catalog-43b160749839f787.exe)
+
+running 1 test
+A08 storage: original observation time/ID/source, strict TTL, no config/inference writes, no result replay, interrupted Pending cancellation and generation invalidation verified
+test catalog_time_and_generation_do_not_refresh_inference_or_rewrite_configuration ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.07s
+

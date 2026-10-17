@@ -182,6 +182,10 @@ fn ensure_inner(
             tx.execute_batch(crate::health::CREATE_HEALTH_TABLE)
                 .map_err(|_| error())?;
         }
+        if intent.schema_version >= 7 {
+            tx.execute_batch(crate::catalog::CREATE_CATALOG_TABLE)
+                .map_err(|_| error())?;
+        }
         tx.pragma_update(None, "user_version", intent.schema_version)
             .map_err(|_| error())?;
         tx.commit().map_err(|_| error())?;

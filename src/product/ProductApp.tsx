@@ -5,6 +5,7 @@ import { PrefRow } from "../components/PrefRow";
 import { LibSwitch } from "../components/LibSwitch";
 import type { ApplicationView, ConfigView, Provider, RuntimeStatus, SaveProvider, TeamRecipe } from "./contract";
 import { ProviderForm } from "./ProviderForm";
+import { ProviderCatalog } from "./ProviderCatalog";
 import { LanguagePick } from "./LanguagePick";
 import { DiagnosticsPanel } from "./DiagnosticsPanel";
 import { AppProfiles } from "./AppProfiles";
@@ -129,6 +130,7 @@ export default function ProductApp() {
             <TextBtn variant="danger" disabled={busy || editing} onClick={() => setDeleting(provider)}>{c.remove}</TextBtn>
           </div>
         </div>)}</div>
+        {view && <ProviderCatalog view={view} busy={busy||editing} language={preferences.language} onMutate={mutate} onEdit={provider=>{setEditor(provider);setNotice(false);}} onChat={()=>setPage("chat")} />}
         {editor && view && <ProviderForm key={editor === "new" ? "new" : editor.id} provider={editor === "new" ? undefined : editor} revision={view.config.desired_revision} busy={busy} language={preferences.language} onSave={save} onCancel={() => setEditor(null)} />}
         {view && <AppProfiles config={view.config} busy={busy || !!editor} language={preferences.language} onMutate={mutate} onEditingChange={setProfileEditing} />}
         <p className="tagma-footnote">{c.protocolName} · {c.noInference}</p>
