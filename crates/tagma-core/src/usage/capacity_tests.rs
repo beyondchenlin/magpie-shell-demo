@@ -97,6 +97,160 @@ fn maintenance_expires_finished_details_but_preserves_running_and_retained_summa
 }
 
 #[test]
+fn real_sqlite_full_results_roll_back_and_recover_bounded_without_double_counting() {
+    let temp = tempfile::Builder::new()
+        .prefix("tagma-usage-capacity-")
+        .tempdir()
+        .unwrap();
+    let mut store = UsageStore::open(temp.path(), DAY).unwrap();
+    let provider = uuid::Uuid::new_v4().to_string();
+    let mut requests = Vec::new();
+    for index in 0..8 {
+        let next = request(DAY + index * 4, &provider);
+        store.begin_request(&next).unwrap();
+        store
+            .begin_attempt(&AttemptStart {
+                request_id: next.id.clone(),
+                ordinal: 1,
+                provider_id: provider.clone(),
+                model: "capacity-fixture".into(),
+                started_ms: next.started_ms + 1,
+            })
+            .unwrap();
+        requests.push(next);
+    }
+    store.db.execute_batch("CREATE TABLE owned_result_padding(bytes BLOB);CREATE TRIGGER owned_result_full BEFORE UPDATE ON usage_attempts BEGIN INSERT INTO owned_result_padding VALUES(zeroblob(262144));END;").unwrap();
+    let original: i64 = store
+        .db
+        .pragma_query_value(None, "max_page_count", |row| row.get(0))
+        .unwrap();
+    let pages: i64 = store
+        .db
+        .pragma_query_value(None, "page_count", |row| row.get(0))
+        .unwrap();
+    store
+        .db
+        .pragma_update(None, "max_page_count", pages + 2)
+        .unwrap();
+    let full = store
+        .db
+        .execute(
+            "INSERT INTO owned_result_padding VALUES(zeroblob(262144))",
+            [],
+        )
+        .unwrap_err();
+    assert_eq!(
+        full.sqlite_error_code(),
+        Some(rusqlite::ErrorCode::DiskFull)
+    );
+    for next in &requests {
+        assert_eq!(
+            store
+                .finish(Completion {
+                    request_id: next.id.clone(),
+                    ordinal: Some(1),
+                    finished_ms: next.started_ms + 2,
+                    outcome: Outcome::Succeeded,
+                    error_code: None,
+                    tokens: Tokens {
+                        input: Some(2),
+                        output: Some(1)
+                    }
+                })
+                .unwrap_err()
+                .code,
+            ErrorCode::StorageUnavailable
+        );
+        assert_eq!(
+            store
+                .finish(Completion {
+                    request_id: next.id.clone(),
+                    ordinal: None,
+                    finished_ms: next.started_ms + 3,
+                    outcome: Outcome::Succeeded,
+                    error_code: None,
+                    tokens: Tokens::default()
+                })
+                .unwrap_err()
+                .code,
+            ErrorCode::StorageUnavailable
+        );
+    }
+    assert_eq!(store.pending_results(), 16);
+    assert!(store.state().unwrap().degraded);
+    assert_eq!(
+        count(
+            &store.db,
+            "SELECT count(*) FROM usage_requests WHERE outcome='running' AND input_tokens IS NULL"
+        ),
+        8
+    );
+    assert_eq!(
+        count(
+            &store.db,
+            "SELECT count(*) FROM usage_attempts WHERE outcome='running' AND input_tokens IS NULL"
+        ),
+        8
+    );
+    assert_eq!(count(&store.db, "SELECT count(*) FROM usage_daily"), 0);
+    assert_eq!(
+        count(&store.db, "SELECT count(*) FROM owned_result_padding"),
+        0
+    );
+    assert!(
+        store
+            .begin_request(&request(DAY + 1000, &provider))
+            .is_err()
+    );
+    assert!(store.maintain(DAY + 1000).is_err());
+    assert_eq!(
+        store.pending_results(),
+        16,
+        "maintenance cannot retry failed settlements"
+    );
+    assert!(store.retry_pending().is_err());
+    assert_eq!(
+        store.pending_results(),
+        16,
+        "fault-active retry must keep the first failed settlement"
+    );
+    store
+        .db
+        .pragma_update(None, "max_page_count", original)
+        .unwrap();
+    store
+        .db
+        .execute_batch("DROP TRIGGER owned_result_full;DROP TABLE owned_result_padding;")
+        .unwrap();
+    store.retry_pending().unwrap();
+    store.retry_pending().unwrap();
+    assert_eq!(store.pending_results(), 0);
+    assert!(!store.state().unwrap().degraded);
+    for kind in ["request", "attempt"] {
+        let total:(i64,i64,i64)=store.db.query_row("SELECT sum(count),sum(input_known),sum(output_known) FROM usage_daily WHERE kind=?1",[kind],|row|Ok((row.get(0)?,row.get(1)?,row.get(2)?))).unwrap();
+        assert_eq!(total, (8, 16, 8));
+    }
+    assert_eq!(
+        count(
+            &store.db,
+            "SELECT count(*) FROM usage_requests WHERE outcome='succeeded' AND input_tokens=2 AND output_tokens=1"
+        ),
+        8
+    );
+    let size: u64 = fs::read_dir(temp.path())
+        .unwrap()
+        .filter_map(Result::ok)
+        .filter_map(|entry| entry.metadata().ok())
+        .filter(|meta| meta.is_file())
+        .map(|meta| meta.len())
+        .sum();
+    assert!(size < 1024 * 1024);
+    println!(
+        "Actual SQLITE_FULL finish:8logical+8attempt remain running/unknown,0daily/0partial padding,16bounded pending;new starts/idle maintenance/fault-active retry refused;after restoring page capacity explicit recovery twice ->8/8 counts input16/output8 each,0pending,healthy;owned logical files {size}bytes<1MiB,not actual disk exhaustion"
+    );
+}
+
+#[test]
 fn pinned_reader_bounds_real_wal_and_requires_actual_checkpoint_before_recovery() {
     let temp = tempfile::Builder::new()
         .prefix("tagma-usage-capacity-")

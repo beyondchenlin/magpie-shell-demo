@@ -18,6 +18,8 @@
 
 ## 当前批次
 
+- **真实SQLITE_FULL结束结算局部验证补齐**：候选仍dev.16/config9/usage2，新增核心1项、生产逻辑不变。低page上限真实DiskFull导致8请求+8尝试保留running/未知、汇总0/部分写0、16pending；新登记/空闲维护/故障中恢复拒绝，容量恢复后两次显式恢复仍各8次且token16/8，不重复累计。core全target Clippy通过，fixture逻辑73728字节并回收/前缀0；两轮自查见[P1-S25](P1-S25-USAGE-FULL-SETTLEMENT.md)。A16/A28/P1及完整矩阵未整体通过，用户dev.9/电脑禁令/拖动未通过不变。
+
 - **空闲业务保留处理局部完成**：候选仍dev.16/config9/usage2，现有唯一用量writer生产空闲60秒执行原保留检查，非系统清理/自动化；先复现无数据/边界变化prune仍递增修订1→2，再修复为仅实际变化bump。空闲不重放pending/自动解除fence；core86通过/8忽略不计、writer8、实际HTTP usage4+clear1、workspace Clippy通过，两轮自查见[P1-S24](P1-S24-IDLE-USAGE-RETENTION.md)。完整容量/延迟矩阵及A16/A28/P1仍未通过，用户dev.9/电脑禁令/拖动未通过保持；继续独立缺口。
 
 - **用量容量/长读者恢复局部验证补齐**：候选仍dev.16/config9/usage2，仅测试新增，生产逻辑不变。core2和实际headless HTTP1通过：真实16MiB WAL围栏拒绝新派发/上游增量0，长读者未关时恢复拒绝，关后TRUNCATE0并恢复；128条有界明细清理保留日汇总/在途，删除失败整事务回滚。core/gateway全target Clippy通过，两轮自查/空间收尾见[P1-S23](P1-S23-USAGE-CAPACITY-EVIDENCE.md)。空闲过期处理与完整容量矩阵仍未完成，A16/A28/P1不整体通过；用户dev.9不动，电脑控制禁令及拖动未通过不变，继续独立源码缺口。

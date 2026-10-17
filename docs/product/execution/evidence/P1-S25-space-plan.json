@@ -1,0 +1,13 @@
+{
+  "recordedAtUtc": "2026-10-17T21:26:07.212Z",
+  "target": "D:/demo1/tagmaai/target",
+  "temporaryRoot": "C:\\Users\\ai\\AppData\\Local\\Temp",
+  "estimatedAdditionalPeakGiB": 0.01,
+  "freeBeforeGiB": {
+    "C": 42.45,
+    "D": 10.02
+  },
+  "scope": "Real SQLITE_FULL result rollback and bounded recovery with low page limit below1MiB;cached checks",
+  "reuse": "Existing Cargo target/registry;no env/worktree",
+  "cleanup": "Owned capacity TempDir RAII after all handles close;no real disk exhaustion or prior cleanup"
+}

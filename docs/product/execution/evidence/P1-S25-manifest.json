@@ -1,0 +1,59 @@
+{
+  "recordedAtUtc": "2026-10-17T21:26:56.938Z",
+  "sourceBase": "4ae6d61cd6d1537002f97f84b5b828f62231c840",
+  "candidateVersion": "0.2.0-dev.16",
+  "configSchema": 9,
+  "usageSchema": 2,
+  "source": [
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-core\\src\\usage\\capacity_tests.rs",
+      "bytes": 15080,
+      "sha256": "ed2325059b95926f72f5619a88ced5378d94bc0c45f65fe194e7116399a8599c"
+    }
+  ],
+  "documents": [
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\EXECUTION-STATUS.md",
+      "bytes": 30317,
+      "sha256": "e2aea6086245b9b5f3fed755ca31cc64c43f382907895759a9c3410c21281b6d"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\P1-S25-USAGE-FULL-SETTLEMENT.md",
+      "bytes": 2142,
+      "sha256": "460d4222f40233c5d91f868807adf511db794e8f4d1d987e1a74d3ca47389e80"
+    }
+  ],
+  "prd": {
+    "path": "D:\\demo1\\tagmaai\\docs\\product\\TAGMA-PRD-v0.3.md",
+    "bytes": 50957,
+    "sha256": "6e6503391f70e3f2e53347890de6e7c9f7fd93cc393c68f7bba494ac4d67a6d6"
+  },
+  "evidence": [
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S25-clippy.txt",
+      "bytes": 1329,
+      "sha256": "d549ab45fdb7d5d70014a3d7da795701947f9ad209bfcca40e0c97d7258d0a98"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S25-full-first.txt",
+      "bytes": 1387,
+      "sha256": "7e12b3c8f1cbc889bdf50cb6def48568ace899233379a848f99aa48295f68f7c"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S25-space-after.json",
+      "bytes": 87,
+      "sha256": "7f53145af198a9edccf0c33c50ce0175d3de56bef299fb67bd6f70ee3780825f"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S25-space-plan.json",
+      "bytes": 524,
+      "sha256": "5b98b52685691de7c0cb639590c768a83b73451aab708ea2869a19022b60f35b"
+    }
+  ],
+  "freeAfterGiB": {
+    "C": 42.45,
+    "D": 10.02
+  },
+  "cleanup": "Owned capacity prefix0;all fixture handles RAII;no new workspace/environment or prior artifact deletion",
+  "installed": "dev.9 untouched;drag not accepted;computer control prohibited"
+}
