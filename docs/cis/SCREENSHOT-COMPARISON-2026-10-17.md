@@ -24,4 +24,16 @@
 - 使用现有 node_modules、Electron/NSIS 缓存和唯一工作区。目标 `.cache/cis-exe-v207-20261017` 与 `release/v0.1.207`；预估峰值新增不超过 1 GiB（源码/构建约 30 MiB，stage 约 5 MiB，unpacked 约 400 MiB，安装包约 110 MiB，校验及打包缓冲）。构建前 C 可用 28.66 GiB、D 48.19 GiB，留足 10 GiB。
 - 保留 v206 安装包便于回退比较。此前 stage / win-unpacked 清理遭自动审批拒绝，本轮不重试删除；复用现有官方缓存，不新建 worktree。
 
-详细验证结果与安装包哈希在本轮构建目录及交付目录记录。
+## 最终结果
+
+- UI 源 `75e29d1f481d3da37e547fe5547a4d949889ad96`，v0.1.207。首次截图复核发现：file:// 的 SVG CSS mask 不能仅靠“文件可读取”判定绘制成功；现以原 SVG 字节生成内嵌 mask，颜色仍继承 currentColor。补回原 connectRow 的 `with-models` 类，使状态回到第二行、版本正常显示。
+- TypeScript / Vite 构建、chrome-guard、cis-guard 通过；lint 55 条既有警告、0 错误。React 技能检查覆盖静态数据、事件目标捕获、hook 顺序、按钮标签和组件复用。
+- 对最终 app.asar 运行独立隐藏 Electron 测试：无模拟标题栏；五行、三个快捷入口；Codex 模型菜单/接入与断开演示；660/560 宽度按钮不溢出；目录 58 个图标无失败；182 个 SVG/PNG 文件可解码；Web UA 保留模拟栏和原空态。另以直接加载 Providers 的静态截图确认黑色 mask 和彩色图标实际绘制。
+- 188 个打包资产与最终构建逐一哈希匹配；无测试注入脚本；Electron main 与提交一致。NSIS 7zip 完整性检查 exit 0 / Everything is Ok，保留其容器尾部数据警告。未执行安装向导，也未替换用户已安装应用。
+- 交付 `release/v0.1.207/Magpie-Shell-Demo-Setup-0.1.207.exe`，112,894,923 bytes；SHA256 `1bdcc8c9d7df7e356bc852d9a5cbd63d1a4c9127dc4839559da97fdf954cf944`。未签名。
+- 为直接运行隐藏 Electron 校验，复用已校验官方 ZIP 解包一次到本任务 `runtime`（384,802,626 bytes）；无下载、无新依赖环境。总任务峰值预算修正为 1.5 GiB，实际保留构建和交付约 0.9 GiB。runtime 保留供后续本机回归复用，负责人本聊天，复查日期 2026-10-24；不创建自动清理。
+- 测试窗口和进程已关闭。两个独占 profile 的删除命令被自动审批系统拒绝（仅返回 blocked by policy），未执行、未重试。保留 `smoke-profile` 1,683,087 bytes 与 `capture-profile` 1,682,760 bytes；逻辑合计 3,365,847 bytes，净释放 0。
+- 无新增工作树；原 v206 安装包、当前 v207 安装包/解包文件、两次小型源码快照与 `.cache/cis-exe-v207-20261017` 保留供安装对照和问题复现。未删除旧验收证据。结束读取 C/D 可用约 51.1/49.6 GiB；与开工差值包含其他任务并发写入/释放，不归因为本任务清理。
+- 七图中其余未实现项仍按上表待办；D4 没有替用户确认。Vercel/PR 未在本轮推送或重新部署，本地旧 4176 预览仍为 v206，不把它称作 v207。
+
+验证脚本、结果、截图与清理拒绝记录保留在 `.cache/cis-exe-v207-20261017`，交付目录另有校验值、构建身份和安装说明。
