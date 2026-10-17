@@ -1,0 +1,103 @@
+{
+  "recordedAtUtc": "2026-10-17T17:20:51.639Z",
+  "sourceBase": "318724e05930c76d67982eeaecb036218bd34c3f",
+  "sources": [
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-core\\src\\lib.rs",
+      "bytes": 280,
+      "sha256": "e650233633613af1ef85adeefb6afd039e8a0e597a2288e2f1e9894f5b5f3559"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-core\\src\\usage.rs",
+      "bytes": 45103,
+      "sha256": "07897bfa7475e05c2ea2a8dd5776a4d0ec83b09cbe762913a0992f2c5ea67158"
+    }
+  ],
+  "evidence": [
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S11-check-fixed.txt",
+      "bytes": 2882,
+      "sha256": "dc0972951a87855129ff660242f452556ac91a54ccbb8dbf9ffe3f267336581c"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S11-check-initial.txt",
+      "bytes": 15924,
+      "sha256": "014c8977736a8f8ccff967ebae83f6936691039671f5bc95603980748fe92fd8"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S11-clippy-final.txt",
+      "bytes": 1031,
+      "sha256": "d80716b65abbf9278d9508538e232534dd9b4db49c9836ccfaa735fa13092578"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S11-clippy-initial.txt",
+      "bytes": 1833,
+      "sha256": "f566fbcdb12a92ff86a1bbe2307e9328f5718af8d2a8d1df7726e204dd3bc3a5"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S11-clippy-reviewed.txt",
+      "bytes": 1031,
+      "sha256": "e7553ce59bc082ad82715e467869fccea9dbe3996d559564488e63bf38ee5c59"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S11-core-lib-final.txt",
+      "bytes": 6522,
+      "sha256": "c7520ce4e475ad18b4b3cd7ec1ef3e227d19aa4963ee55f0cfb46b98839d28cf"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S11-space-plan.json",
+      "bytes": 582,
+      "sha256": "f0c87ff4cc28137b1ac5b37a630575da7a217dd824bdf7ceb7ac71d70ecf69ee"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S11-usage-final.txt",
+      "bytes": 2309,
+      "sha256": "1cf8b7f72c29c04062ff953084dc81a1ba4de12704ff2daa3f1dbbe31654c9b0"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S11-usage-initial.txt",
+      "bytes": 2098,
+      "sha256": "edb5a5675951965f6301cdc28dfeb35b49183d2b1eb99e68e5f06c4e9ba3f9de"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S11-usage-reviewed.txt",
+      "bytes": 2098,
+      "sha256": "d1769651367f75aa6c6d1fc827cdabfe0f83a3db266565255089e444039a752c"
+    }
+  ],
+  "commands": [
+    "cargo test -p tagma-core --lib --locked --offline -- --nocapture",
+    "cargo clippy -p tagma-core --all-targets --locked --offline -- -D warnings"
+  ],
+  "results": {
+    "coreLibPassed": 37,
+    "coreLibIgnored": 4,
+    "newUsagePassed": 6,
+    "newUsageIgnored": 1,
+    "clippy": "passed"
+  },
+  "gatewayDispatchIntegrated": false,
+  "uiImplemented": false,
+  "desktopControl": false,
+  "userInstallation": "dev.9 unchanged",
+  "userDatabaseTouched": false,
+  "realCredentialAccess": false,
+  "realProviderCalls": 0,
+  "newWorktrees": 0,
+  "newEnvironments": 0,
+  "retainedNewFixtures": [],
+  "selfReviewRounds": 2,
+  "A16FullyAccepted": false,
+  "A28FullyAccepted": false,
+  "P1FullyAccepted": false,
+  "diskStartGiB": {
+    "C": 46.24,
+    "D": 12.83
+  },
+  "diskEndGiB": {
+    "C": 42.64,
+    "D": 12.75
+  },
+  "diskNote": "Concurrent disk deltas; no net physical release claimed. Existing target/cache retained. Owned tagma-usage- TempDir prefixes absent after tests.",
+  "prdSha256": "6e6503391f70e3f2e53347890de6e7c9f7fd93cc393c68f7bba494ac4d67a6d6"
+}

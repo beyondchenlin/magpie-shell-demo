@@ -10,6 +10,7 @@ pub mod recovery;
 pub mod security;
 pub mod service;
 pub mod teams;
+pub mod usage;
 
 pub use contract::*;
 pub use service::ConfigService;

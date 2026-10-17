@@ -1,0 +1,40 @@
+   Compiling tagma-core v0.2.0-dev.14 (D:\demo1\tagmaai\crates\tagma-core)
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+    Finished `test` profile [unoptimized] target(s) in 3.15s
+     Running unittests src\lib.rs (target\debug\deps\tagma_core-7ef2bdddc972a4f9.exe)
+
+running 6 tests
+test usage::tests::usage_crash_worker ... ignored, child-process crash worker, invoked only by the owned recovery test
+
+running 1 test
+Usage real SQLITE_FULL: no committed start record, admission degraded; test data below1MiB, no actual disk exhaustion
+test usage::tests::actual_sqlite_full_at_start_refuses_registration_and_degrades ... ok
+Usage ledger: logical=1, attempts=2, input=NULL/unknown1, output=10, duplicate completion counts unchanged; separate DB
+test usage::tests::logical_requests_and_attempts_keep_unknown_tokens_and_aggregate_once ... ok
+
+running 1 test
+Usage retention:30day details prune only after durable daily aggregate;12calendar months summary retention;unknown database bytes preserved
+test usage::tests::retention_keeps_summaries_and_preserves_unknown_unowned_databases ... ok
+
+running 1 test
+Usage failed finishes: 8 requests/8 attempts ->16 bounded pending results, new begins refused, explicit recovery exactly once
+test usage::tests::failed_results_are_bounded_retryable_and_never_allow_new_registration ... ok
+Usage exit90: pre-DDL and committed-DDL intent recovery;registered request+attempt become interrupted with NULL tokens after real child process death
+test usage::tests::real_process_exit_recovers_owned_initialization_and_unfinished_attempts ... ok
+
+test result: ok. 5 passed; 0 failed; 1 ignored; 0 measured; 34 filtered out; finished in 0.07s
+

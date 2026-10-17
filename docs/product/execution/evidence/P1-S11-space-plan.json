@@ -1,0 +1,13 @@
+{
+  "recordedAtUtc": "2026-10-17T17:05:48.0072362Z",
+  "target": "D:\\demo1\\tagmaai\\target",
+  "temporaryRoot": "C:\\Users\\ai\\AppData\\Local\\Temp",
+  "estimatedAdditionalPeakGiB": 1.2,
+  "freeBeforeGiB": {
+    "C": 46.24,
+    "D": 12.83
+  },
+  "reuse": "Existing Cargo target/registry and node_modules; no new environment, worktree or installer",
+  "scope": "OBS-01/06 separate usage store foundation and bounded synthetic headless checks",
+  "cleanup": "Owned TempDir teardown; retain source/evidence and user data; stop large operations if reserve below10GiB"
+}

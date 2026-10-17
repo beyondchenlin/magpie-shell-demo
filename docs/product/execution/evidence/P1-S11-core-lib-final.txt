@@ -1,0 +1,98 @@
+   Compiling tagma-core v0.2.0-dev.14 (D:\demo1\tagmaai\crates\tagma-core)
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+    Finished `test` profile [unoptimized] target(s) in 3.23s
+     Running unittests src\lib.rs (target\debug\deps\tagma_core-7ef2bdddc972a4f9.exe)
+
+running 41 tests
+test initialization::tests::intent_crash_worker ... ignored, Child only: intent publication interruption
+test health::tests::catalog_is_not_inference_and_five_minute_boundary_is_strict ... ok
+test migrations::tests::migration_crash_worker ... ignored, Child only: real migration interruption
+test health::tests::first_cloud_uses_both_global_orders_and_rejects_stale_failed_or_replaced_generations ... ok
+
+thread 'initialization::tests::owned_staging_with_unexpected_tables_is_preserved' (47568) panicked at crates\tagma-core\src\initialization.rs:401:36:
+test interruption
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test chat::tests::arbitrary_byte_splits_utf8_crlf_and_multiple_events ... ok
+test chat::tests::multiline_and_bounded_event ... ok
+test health::tests::same_millisecond_failures_win_in_either_arrival_order ... ok
+
+running 1 test
+
+running 1 test
+test health::tests::credential_generation_changes_fingerprint_without_exposing_the_reference_in_views ... ok
+test initialization::tests::atomic_publication_never_replaces_a_newly_appeared_target ... ok
+
+running 1 test
+
+running 1 test
+test initialization::tests::owned_staging_with_unexpected_tables_is_preserved ... ok
+test health::tests::runtime_health_never_initializes_or_migrates_an_unknown_store ... ok
+
+running 1 test
+test initialization::tests::crash_after_intent_file_creation_recovers ... ok
+test service::initialization_tests::initialization_crash_worker ... ignored, Child only: real initialization crash fixture
+test initialization::tests::crash_after_partial_intent_write_recovers ... ok
+test recovery::tests::changed_record_existing_database_and_valid_future_record_are_protected ... ok
+test health::tests::runtime_health_is_persistent_generation_bound_and_does_not_change_revisions ... ok
+
+running 1 test
+
+running 1 test
+test service::initialization_tests::unknown_schema_zero_database_is_never_initialized_or_overwritten ... ok
+Usage real SQLITE_FULL: no committed start record, admission degraded; test data below1MiB, no actual disk exhaustion
+test usage::tests::actual_sqlite_full_at_start_refuses_registration_and_degrades ... ok
+test recovery::tests::corrupt_committed_record_is_preserved_until_exact_explicit_archive ... ok
+test initialization::tests::crash_after_intent_sync_before_publication_recovers ... ok
+test health::tests::unconfirmed_shutdown_preserves_success_history_but_requires_new_confirmation ... ok
+test usage::tests::usage_crash_worker ... ignored, child-process crash worker, invoked only by the owned recovery test
+
+running 1 test
+Initialization recovery: committed owned schema7 and schema8 staging publish after interruption; unknown staging protection remains enabled
+test initialization::tests::committed_owned_staging_for_catalog_and_security_schemas_can_finish_publication ... ok
+test service::initialization_tests::interrupted_owned_initialization_recovers_after_real_process_exit ... ok
+Usage bounds:one writer,8active maximum,sequential ordinals and timestamps;arbitrary error text rejected before queue/write
+test usage::tests::admission_identity_timing_and_metadata_privacy_are_checked ... ok
+Usage ledger: logical=1, attempts=2, input=NULL/unknown1, output=10, duplicate completion counts unchanged; separate DB
+test health::tests::model_reorder_and_enable_toggle_preserve_observations_but_removed_models_do_not ... ok
+
+running 1 test
+test usage::tests::logical_requests_and_attempts_keep_unknown_tokens_and_aggregate_once ... ok
+Usage failed finishes: 8 requests/8 attempts ->16 bounded pending results, new begins refused, explicit recovery exactly once
+test usage::tests::failed_results_are_bounded_retryable_and_never_allow_new_registration ... ok
+Usage retention:30day details prune only after durable daily aggregate;12calendar months summary retention;unknown database bytes preserved
+test usage::tests::retention_keeps_summaries_and_preserves_unknown_unowned_databases ... ok
+
+running 1 test
+Usage exit90: pre-DDL and committed-DDL intent recovery;registered request+attempt become interrupted with NULL tokens after real child process death
+test usage::tests::real_process_exit_recovers_owned_initialization_and_unfinished_attempts ... ok
+test diagnostics::tests::logs_rotate_within_five_files_and_never_export_unknown_fields ... ok
+test migrations::tests::legacy_pending_one_to_two_journal_resumes_before_following_transition ... ok
+A11 schema7->8: recoverable source7 backup, unchanged business snapshot/revision, empty security head and indexed revocation ledger verified
+A08 schema6->7: catalog table created, source6 backup and config revision preserved
+test migrations::tests::schema_three_team_upgrade_preserves_bytes_and_retains_schema_three_backup ... ok
+test migrations::tests::runtime_reader_never_migrates_and_writer_requires_all_live_readers_to_exit ... ok
+A14 schema5->8: backup includes health, original snapshot bytes and config revision preserved
+test migrations::tests::backup_includes_committed_wal_and_historical_snapshot_bytes_are_unchanged ... ok
+test migrations::tests::real_process_exit_after_backup_recovers_without_losing_original_revision ... ok
+test migrations::tests::schema_seven_security_upgrade_keeps_snapshot_bytes_and_starts_with_empty_ledger ... ok
+test migrations::tests::schema_six_catalog_upgrade_retains_a_recoverable_backup_and_revision ... ok
+test migrations::tests::failure_after_backup_keeps_original_schema_and_retry_uses_the_owned_backup ... ok
+test migrations::tests::schema_five_upgrade_backs_up_health_and_preserves_original_snapshot_bytes ... ok
+test migrations::tests::schema_two_profiles_and_config_identity_survive_gateway_contract_upgrade ... ok
+
+test result: ok. 37 passed; 0 failed; 4 ignored; 0 measured; 0 filtered out; finished in 0.29s
+
