@@ -9,6 +9,7 @@ import assert from 'node:assert/strict';
 const fixture = process.env.TAGMA_TEST_CONFIG_DIR;
 const appearanceOnly=process.env.TAGMA_NATIVE_SMOKE_MODE==='appearance';
 const recoveryMode=process.env.TAGMA_NATIVE_SMOKE_MODE==='recovery';
+const profilesMode=process.env.TAGMA_NATIVE_SMOKE_MODE==='profiles';
 assert(fixture, 'Caller must supply an isolated TAGMA_TEST_CONFIG_DIR');
 const executable=resolve(process.env.TAGMA_NATIVE_EXE || 'target/debug/tagma-desktop.exe');
 await access(executable);
@@ -59,7 +60,7 @@ async function capture(name) {
   await writeFile(resolve(destination,`${name}.png`),Buffer.from(screenshot.data,'base64'));
 }
 async function click(label) {
-  const result = await evaluate(`(() => { const b=[...document.querySelectorAll('button')].find(b=>b.textContent.trim()===${JSON.stringify(label)}); if(!b || b.disabled) return false; b.click(); return true; })()`);
+  const result = await evaluate(`(() => { const scope=document.querySelector('dialog[open]') ?? document; const b=[...scope.querySelectorAll('button')].find(b=>b.getClientRects().length && b.textContent.trim()===${JSON.stringify(label)}); if(!b || b.disabled) return false; b.click(); return true; })()`);
   assert(result, `Enabled UI action missing: ${label}`);
   await pause(100);
 }
@@ -80,7 +81,43 @@ async function connectPage() {
 }
 try {
   let page=await connectPage();
-  if(recoveryMode) {
+  if(profilesMode) {
+    await until(async()=>(await text()).includes('已保存版本: 0'),'Native profile fixture not initialized');
+    const invoke=(command,input)=>evaluate(`window.__TAURI_INTERNALS__.invoke(${JSON.stringify(command)},{input:${JSON.stringify(input)}})`);
+    for(let revision=0;revision<2;revision++) await invoke('save_provider',{protocol_version:1,expected_revision:revision,id:null,name:`Profile provider ${revision+1}`,protocol:'openai_chat_completions',base_url:'https://example.invalid/v1',enabled:true,models:[],credential:null});
+    await click('供应商');await click('刷新');await click('添加 App 档案');
+    await evaluate(`(()=>{const fields=document.querySelector('form').querySelectorAll('input.words');const setter=Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value').set;['Native App profile','Cursor'].forEach((value,index)=>{setter.call(fields[index],value);fields[index].dispatchEvent(new Event('input',{bubbles:true}));});})()`);
+    await evaluate(`document.querySelector('form input[type=checkbox]').click()`);await pause(100);
+    await evaluate(`document.querySelector('form button[aria-label="上移: Profile provider 2"]').click()`);await pause(100);await click('保存');
+    await until(async()=>(await text()).includes('已保存版本: 3'),'Native App profile not saved');
+    let view=await evaluate(`window.__TAURI_INTERNALS__.invoke('application_view',{protocolVersion:1})`);
+    const ids=view.config.providers.map(p=>p.id);const profile=view.config.profiles[1];
+    assert.deepEqual(view.config.profiles[0].provider_ids,ids);assert.deepEqual(profile.provider_ids,[...ids].reverse());
+    assert.equal(profile.target_app,'Cursor');assert.equal(view.config.providers.every(p=>!p.has_credential),true);
+    await evaluate(`[...document.querySelectorAll('.tagma-provider')].find(row=>row.querySelector('.name')?.textContent==='Profile provider 1').querySelector('button:last-child').click()`);await pause(100);
+    assert((await text()).includes('被以下 App 档案引用'));assert(await evaluate(`document.querySelector('dialog[open] button:last-child').disabled`));await click('取消');
+    assert(await evaluate(`!document.querySelector('dialog[open]')`),'Provider reference dialog did not close');
+    assert.equal(await evaluate(`window.__TAURI_INTERNALS__.invoke('delete_provider',{input:${JSON.stringify({protocol_version:1,expected_revision:3,id:ids[0]})}}).then(()=>null,e=>e.code)`),'PROVIDER_REFERENCED');
+    await evaluate(`document.querySelector('button[aria-label="编辑 App 档案: Native App profile"]').click()`);await pause(100);
+    await invoke('reorder_providers',{protocol_version:1,expected_revision:3,ids:[...ids].reverse()});await click('保存');
+    await until(async()=>(await text()).includes('配置已由其他入口修改'),'Stale App editor was not protected');
+    assert(await evaluate(`document.querySelector('form input.words').value==='Native App profile'`));await click('取消');await click('刷新');
+    await invoke('reorder_providers',{protocol_version:1,expected_revision:4,ids});await click('刷新');
+    view=await evaluate(`window.__TAURI_INTERNALS__.invoke('application_view',{protocolVersion:1})`);assert.deepEqual(view.config.profiles[1].provider_ids,[...ids].reverse());
+    await evaluate(`document.querySelector('button[aria-label="编辑 App 档案: Native App profile"]').click()`);await pause(100);
+    await evaluate(`document.querySelector('form input[type=checkbox]').click()`);await pause(100);await click('保存');
+    await until(async()=>(await text()).includes('已保存版本: 6'),'Inherited App ordering not saved');
+    view=await evaluate(`window.__TAURI_INTERNALS__.invoke('application_view',{protocolVersion:1})`);assert.deepEqual(view.config.profiles[1].provider_ids,ids);
+    assert(await evaluate(`!document.querySelector('dialog[open]') && !document.querySelector('form')`),'Profile editor did not close');
+    await capture('08-native-app-profiles');
+    await evaluate(`document.querySelector('button[aria-label="删除 App 档案: Native App profile"]').click()`);await pause(100);
+    await evaluate(`document.querySelector('dialog[open] button:last-child').click()`);await until(async()=>(await text()).includes('已保存版本: 7'),'Profile deletion not saved');
+    await invoke('delete_provider',{protocol_version:1,expected_revision:7,id:ids[0]});
+    await until(async()=>{const current=await evaluate(`window.__TAURI_INTERNALS__.invoke('application_view',{protocolVersion:1})`);return current.runtime.effective_revision===8;},'Profile changes did not reach effective revision');
+    await evaluate(`window.__TAURI_INTERNALS__.invoke('quit_application',{protocolVersion:1})`).catch(()=>{});await until(async()=>child.exitCode!==null,'Profile host did not quit');
+    await writeFile(resolve(fixture,'native-result.json'),JSON.stringify({platform:process.platform,architecture:process.arch,productVersion:view.product_version,schemaVersion:view.config.schema_version,executable,embeddedAssets:!page.url.startsWith('http://localhost:'),nativeHost:true,mockBridge:false,windowsHide:false,tests:['profile-form-save','global-override-independence','shared-credential-references','provider-reference-list-and-block','backend-reference-protection','stale-profile-retains-edits','inherit-global-order','profile-delete-unblocks-provider-and-effective-apply'],result:'passed'},null,2));
+    console.log('Native App profiles: 8 checks passed (real form, IPC, SQLite and gateway).');
+  } else if(recoveryMode) {
     await until(async()=>(await text()).includes('初始化记录损坏'),'Damaged committed intent was not reported');
     await click('设置'); await click('诊断');
     await until(async()=>await evaluate(`!!document.querySelector('.tagma-diagnostics pre')`),'Recovery diagnostics missing');

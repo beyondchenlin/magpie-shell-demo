@@ -20,6 +20,7 @@ const en = {
   cancelHint: "Cancel discards this unsaved form.", diagnostics: "Diagnostics", version: "Version", schema: "Schema", noInference: "Model inference not connected",
   diagnosticHint: "Preview redacted diagnostics before copying. No credentials, request bodies or databases are included.", copyDiagnostics:"Copy diagnostics", copied:"Copied", logsUnavailable:"The last diagnostic write was not confirmed. Check local storage and permissions.",
   recover:"Preserve damaged record and recover",recoverHint:"Archive only the damaged initialization record shown below. Other files are retained. Restart afterward to create a fresh configuration. An existing database will never be replaced.",recoverConfirm:"Archive record",recovered:"Record preserved. Quit and reopen Tagma to retry initialization.",
+  profiles:"App profiles",globalProfile:"Global default order",profileHint:"Profiles reference providers and share their stored credentials. Independent ordering does not change the global order.",addProfile:"Add App profile",editProfile:"Edit App profile",targetApp:"Target App",inheritOrder:"Follow global order",providerSelection:"Referenced providers",profileEmpty:"No providers selected",profileDelete:"Delete App profile",referencedBy:"Referenced by these App profiles",referenceHint:"Edit or delete these profiles before removing the provider.",
 };
 
 const zh: typeof en = {
@@ -41,6 +42,7 @@ const zh: typeof en = {
   cancelHint: "取消将丢弃此表单中尚未保存的修改。", diagnostics: "诊断", version: "版本", schema: "配置结构", noInference: "模型推理尚未接入",
   diagnosticHint: "先预览脱敏诊断，再复制。内容不含凭据、请求正文或数据库。", copyDiagnostics:"复制诊断", copied:"已复制", logsUnavailable:"最近一次诊断写入未确认，请检查本机存储和权限。",
   recover:"保留损坏记录并恢复",recoverHint:"仅归档下列损坏的初始化记录，其他文件保留。退出并重新打开后将创建新配置；不会替换已有数据库。",recoverConfirm:"归档记录",recovered:"记录已保留。请退出并重新打开 Tagma，重试初始化。",
+  profiles:"App 配置档案",globalProfile:"全局默认顺序",profileHint:"档案引用供应商并共用已存凭据。独立排序不会修改全局顺序。",addProfile:"添加 App 档案",editProfile:"编辑 App 档案",targetApp:"目标 App",inheritOrder:"跟随全局顺序",providerSelection:"引用的供应商",profileEmpty:"未选择供应商",profileDelete:"删除 App 档案",referencedBy:"被以下 App 档案引用",referenceHint:"请先编辑或删除这些档案，再移除此供应商。",
 };
 
 export function copy(language: ProductLanguage) { return language === "zh" ? zh : en; }
@@ -60,6 +62,7 @@ const errors: Record<ErrorCode, [string, string]> = {
   OWNERSHIP_REQUIRED: ["此实例由外部入口拥有，本窗口不能停止它。", "This window does not own the gateway and cannot stop it."],
   STARTUP_TIMEOUT: ["网关启动超过10秒，已回收本次启动的子进程。请检查诊断后重试。", "Gateway startup exceeded 10 seconds. The owned child was reclaimed. Check diagnostics before retrying."],
   INITIALIZATION_RECOVERY_REQUIRED:["初始化记录损坏，原记录与数据已保护。请到设置查看诊断及可用恢复操作。","The initialization record is damaged and has been preserved. Open Settings for diagnostics and available recovery actions."],
+  PROVIDER_REFERENCED:[zh.referenceHint,en.referenceHint],
 };
 export function errorCopy(error: unknown, language: ProductLanguage): string {
   if (error && typeof error === "object" && "code" in error) {

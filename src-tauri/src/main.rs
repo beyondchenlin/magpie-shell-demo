@@ -89,6 +89,24 @@ async fn reorder_providers(
     config(&window, &app)?.reorder_providers(input)
 }
 
+#[tauri::command]
+async fn save_profile(
+    window: WebviewWindow,
+    app: State<'_, Application>,
+    input: SaveAppProfile,
+) -> AppResult<ConfigView> {
+    config(&window, &app)?.save_profile(input)
+}
+
+#[tauri::command]
+async fn delete_profile(
+    window: WebviewWindow,
+    app: State<'_, Application>,
+    input: RevisionCommand,
+) -> AppResult<ConfigView> {
+    config(&window, &app)?.delete_profile(input)
+}
+
 fn gateway<'a>(window: &WebviewWindow, app: &'a Application) -> AppResult<&'a Arc<GatewayManager>> {
     config(window, app)?;
     app.runtime
@@ -205,13 +223,12 @@ async fn recover_initialization(
 }
 
 fn gateway_port() -> u16 {
-    if cfg!(debug_assertions) {
-        if let Some(port) = std::env::var("TAGMA_TEST_GATEWAY_PORT")
+    if cfg!(debug_assertions)
+        && let Some(port) = std::env::var("TAGMA_TEST_GATEWAY_PORT")
             .ok()
             .and_then(|p| p.parse().ok())
-        {
-            return port;
-        }
+    {
+        return port;
     }
     DEFAULT_PORT
 }
@@ -294,17 +311,17 @@ fn main() {
                     None,
                 );
             }
-            if config.is_ok() {
-                if let Some(runtime) = runtime.clone() {
-                    tauri::async_runtime::spawn(async move {
-                        let _ = runtime.start(gateway_port()).await;
-                        let mut interval = tokio::time::interval(std::time::Duration::from_secs(1));
-                        loop {
-                            interval.tick().await;
-                            runtime.supervise().await;
-                        }
-                    });
-                }
+            if config.is_ok()
+                && let Some(runtime) = runtime.clone()
+            {
+                tauri::async_runtime::spawn(async move {
+                    let _ = runtime.start(gateway_port()).await;
+                    let mut interval = tokio::time::interval(std::time::Duration::from_secs(1));
+                    loop {
+                        interval.tick().await;
+                        runtime.supervise().await;
+                    }
+                });
             }
             app.manage(Application {
                 config,
@@ -316,6 +333,8 @@ fn main() {
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
+            save_profile,
+            delete_profile,
             application_view,
             save_provider,
             delete_provider,
@@ -328,11 +347,11 @@ fn main() {
             recover_initialization
         ])
         .on_window_event(|window, event| {
-            if let tauri::WindowEvent::CloseRequested { api, .. } = event {
-                if window.app_handle().state::<Application>().tray {
-                    api.prevent_close();
-                    let _ = window.hide();
-                }
+            if let tauri::WindowEvent::CloseRequested { api, .. } = event
+                && window.app_handle().state::<Application>().tray
+            {
+                api.prevent_close();
+                let _ = window.hide();
             }
         })
         .build(tauri::generate_context!())

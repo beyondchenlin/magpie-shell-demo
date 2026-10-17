@@ -5,6 +5,8 @@ fn main() {
             "save_provider",
             "delete_provider",
             "reorder_providers",
+            "save_profile",
+            "delete_profile",
             "start_gateway",
             "stop_gateway",
             "apply_gateway",

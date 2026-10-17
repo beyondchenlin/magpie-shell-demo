@@ -54,7 +54,10 @@ async fn real_old_binary_is_not_stopped_or_migrated_by_new_entrypoint() {
     pipe.write_all(&bootstrap).await.unwrap();
     wait_until(async || {
         if let Some(exit) = child.try_wait().unwrap() {
-            panic!("old fixture exited {exit}; typed log: {}", std::fs::read_to_string(temp.path().join("logs/tagma.0.jsonl")).unwrap_or_default());
+            panic!(
+                "old fixture exited {exit}; typed log: {}",
+                std::fs::read_to_string(temp.path().join("logs/tagma.0.jsonl")).unwrap_or_default()
+            );
         }
         std::fs::read(temp.path().join("runtime.json"))
             .ok()

@@ -20,6 +20,52 @@ pub struct ProviderRecord {
 #[derive(Clone, Default, Serialize, Deserialize)]
 pub struct ConfigSnapshot {
     pub providers: Vec<ProviderRecord>,
+    #[serde(default)]
+    pub profiles: Vec<AppProfile>,
+}
+
+impl ConfigSnapshot {
+    /// Pure projection: inherited ordering never rewrites the global provider list.
+    pub fn profile_provider_order(&self, profile_id: &str) -> AppResult<Vec<String>> {
+        if profile_id == GLOBAL_PROFILE_ID {
+            return Ok(self
+                .providers
+                .iter()
+                .map(|p| p.provider.id.clone())
+                .collect());
+        }
+        let profile = self
+            .profiles
+            .iter()
+            .find(|p| p.id == profile_id)
+            .ok_or_else(invalid)?;
+        if profile.use_global_order {
+            Ok(self
+                .providers
+                .iter()
+                .filter(|p| profile.provider_ids.contains(&p.provider.id))
+                .map(|p| p.provider.id.clone())
+                .collect())
+        } else {
+            Ok(profile.provider_ids.clone())
+        }
+    }
+    fn profile_views(&self) -> AppResult<Vec<AppProfile>> {
+        let mut profiles = vec![AppProfile {
+            id: GLOBAL_PROFILE_ID.into(),
+            name: "Global default".into(),
+            target_app: "default".into(),
+            provider_ids: self.profile_provider_order(GLOBAL_PROFILE_ID)?,
+            use_global_order: true,
+            is_global: true,
+        }];
+        for profile in &self.profiles {
+            let mut view = profile.clone();
+            view.provider_ids = self.profile_provider_order(&profile.id)?;
+            profiles.push(view);
+        }
+        Ok(profiles)
+    }
 }
 
 pub struct ConfigService {
@@ -175,6 +221,7 @@ impl ConfigService {
             protocol_version: PROTOCOL_VERSION,
             schema_version: SCHEMA_VERSION,
             desired_revision: revision,
+            profiles: snapshot.profile_views()?,
             providers: snapshot.providers.into_iter().map(|r| r.provider).collect(),
             pending_credential_cleanup: pending,
         })
@@ -286,6 +333,16 @@ impl ConfigService {
         check_protocol(input.protocol_version)?;
         let _operation = self.operation_lock()?;
         let (revision, mut snapshot) = self.read_snapshot()?;
+        if revision != input.expected_revision {
+            return Err(AppError::new(ErrorCode::ConfigConflict));
+        }
+        if snapshot
+            .profiles
+            .iter()
+            .any(|p| p.provider_ids.contains(&input.id))
+        {
+            return Err(AppError::new(ErrorCode::ProviderReferenced));
+        }
         let previous = snapshot.providers.len();
         snapshot.providers.retain(|p| p.provider.id != input.id);
         if snapshot.providers.len() == previous {
@@ -316,6 +373,74 @@ impl ConfigService {
             .providers
             .sort_by_key(|p| input.ids.iter().position(|id| id == &p.provider.id));
         self.commit(input.expected_revision, &snapshot, None)?;
+        self.view()
+    }
+
+    pub fn save_profile(&self, input: SaveAppProfile) -> AppResult<ConfigView> {
+        check_protocol(input.protocol_version)?;
+        if input.name.trim().is_empty()
+            || input.name.chars().count() > 120
+            || input.name.chars().any(char::is_control)
+            || input.target_app.trim().is_empty()
+            || input.target_app.chars().count() > 80
+            || input.target_app.chars().any(char::is_control)
+            || input.provider_ids.len() > 128
+            || input.provider_ids.iter().collect::<HashSet<_>>().len() != input.provider_ids.len()
+        {
+            return Err(invalid());
+        }
+        let _operation = self.operation_lock()?;
+        let (revision, mut snapshot) = self.read_snapshot()?;
+        if revision != input.expected_revision {
+            return Err(AppError::new(ErrorCode::ConfigConflict));
+        }
+        if input
+            .provider_ids
+            .iter()
+            .any(|id| !snapshot.providers.iter().any(|p| &p.provider.id == id))
+        {
+            return Err(invalid());
+        }
+        let editing = input.id.is_some();
+        let id = input.id.unwrap_or_else(|| Uuid::new_v4().to_string());
+        Uuid::parse_str(&id).map_err(|_| invalid())?;
+        let position = snapshot.profiles.iter().position(|p| p.id == id);
+        if id == GLOBAL_PROFILE_ID
+            || (editing && position.is_none())
+            || (!editing && snapshot.profiles.len() >= 64)
+        {
+            return Err(invalid());
+        }
+        let profile = AppProfile {
+            id,
+            name: input.name.trim().into(),
+            target_app: input.target_app.trim().into(),
+            provider_ids: input.provider_ids,
+            use_global_order: input.use_global_order,
+            is_global: false,
+        };
+        if let Some(i) = position {
+            snapshot.profiles[i] = profile;
+        } else {
+            snapshot.profiles.push(profile);
+        }
+        self.commit(revision, &snapshot, None)?;
+        self.view()
+    }
+
+    pub fn delete_profile(&self, input: RevisionCommand) -> AppResult<ConfigView> {
+        check_protocol(input.protocol_version)?;
+        let _operation = self.operation_lock()?;
+        let (revision, mut snapshot) = self.read_snapshot()?;
+        if revision != input.expected_revision {
+            return Err(AppError::new(ErrorCode::ConfigConflict));
+        }
+        let previous = snapshot.profiles.len();
+        snapshot.profiles.retain(|p| p.id != input.id);
+        if previous == snapshot.profiles.len() {
+            return Err(invalid());
+        }
+        self.commit(revision, &snapshot, None)?;
         self.view()
     }
 

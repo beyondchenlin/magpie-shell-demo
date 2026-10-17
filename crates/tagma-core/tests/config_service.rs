@@ -60,6 +60,157 @@ fn provider(revision: u32) -> SaveProvider {
 }
 
 #[test]
+fn app_profiles_reference_credentials_and_keep_global_and_override_orders_independent() {
+    let temp = tempfile::tempdir().unwrap();
+    let credentials = Arc::new(TestCredentials::default());
+    let service = ConfigService::open(temp.path(), credentials.clone()).unwrap();
+    let first = service.save_provider(provider(0)).unwrap().providers[0]
+        .id
+        .clone();
+    let second = service.save_provider(provider(1)).unwrap().providers[1]
+        .id
+        .clone();
+    let input = SaveAppProfile {
+        protocol_version: 1,
+        expected_revision: 2,
+        id: None,
+        name: "Editor".into(),
+        target_app: "Cursor".into(),
+        provider_ids: vec![second.clone(), first.clone()],
+        use_global_order: false,
+    };
+    let custom = service.save_profile(input).unwrap();
+    let id = custom.profiles[1].id.clone();
+    assert_eq!(
+        custom.profiles[0].provider_ids,
+        vec![first.clone(), second.clone()]
+    );
+    assert_eq!(
+        custom.profiles[1].provider_ids,
+        vec![second.clone(), first.clone()]
+    );
+    assert_eq!(
+        credentials.values.lock().unwrap().len(),
+        2,
+        "profiles must not duplicate system secrets"
+    );
+    assert_eq!(
+        service
+            .delete_provider(RevisionCommand {
+                protocol_version: 1,
+                expected_revision: 3,
+                id: first.clone()
+            })
+            .unwrap_err()
+            .code,
+        ErrorCode::ProviderReferenced
+    );
+    service
+        .reorder_providers(ReorderProviders {
+            protocol_version: 1,
+            expected_revision: 3,
+            ids: vec![second.clone(), first.clone()],
+        })
+        .unwrap();
+    service
+        .save_profile(SaveAppProfile {
+            protocol_version: 1,
+            expected_revision: 4,
+            id: Some(id.clone()),
+            name: "Editor".into(),
+            target_app: "Cursor".into(),
+            provider_ids: vec![first.clone(), second.clone()],
+            use_global_order: true,
+        })
+        .unwrap();
+    let inherited = service.view().unwrap();
+    assert_eq!(
+        inherited.profiles[1].provider_ids,
+        vec![second.clone(), first.clone()]
+    );
+    service
+        .reorder_providers(ReorderProviders {
+            protocol_version: 1,
+            expected_revision: 5,
+            ids: vec![first.clone(), second.clone()],
+        })
+        .unwrap();
+    assert_eq!(
+        service.view().unwrap().profiles[1].provider_ids,
+        vec![first.clone(), second]
+    );
+    drop(service);
+    let reopened = ConfigService::open(temp.path(), credentials).unwrap();
+    assert_eq!(
+        reopened
+            .read_snapshot()
+            .unwrap()
+            .1
+            .profile_provider_order(&id)
+            .unwrap(),
+        reopened.view().unwrap().profiles[1].provider_ids
+    );
+    reopened
+        .delete_profile(RevisionCommand {
+            protocol_version: 1,
+            expected_revision: 6,
+            id,
+        })
+        .unwrap();
+    reopened
+        .delete_provider(RevisionCommand {
+            protocol_version: 1,
+            expected_revision: 7,
+            id: first,
+        })
+        .unwrap();
+}
+
+#[test]
+fn stale_invalid_and_global_profile_edits_never_create_revisions() {
+    let temp = tempfile::tempdir().unwrap();
+    let service = ConfigService::open(temp.path(), Arc::new(TestCredentials::default())).unwrap();
+    let input = SaveAppProfile {
+        protocol_version: 1,
+        expected_revision: 0,
+        id: None,
+        name: "App".into(),
+        target_app: "Editor".into(),
+        provider_ids: vec![],
+        use_global_order: true,
+    };
+    let mut invalid = input.clone();
+    invalid.provider_ids.push(uuid::Uuid::new_v4().to_string());
+    assert_eq!(
+        service.save_profile(invalid).unwrap_err().code,
+        ErrorCode::InvalidInput
+    );
+    let mut invalid = input.clone();
+    invalid.id = Some(GLOBAL_PROFILE_ID.into());
+    assert_eq!(
+        service.save_profile(invalid).unwrap_err().code,
+        ErrorCode::InvalidInput
+    );
+    service.save_profile(input.clone()).unwrap();
+    assert_eq!(
+        service.save_profile(input).unwrap_err().code,
+        ErrorCode::ConfigConflict
+    );
+    assert_eq!(service.view().unwrap().desired_revision, 1);
+    assert_eq!(
+        service
+            .delete_profile(RevisionCommand {
+                protocol_version: 1,
+                expected_revision: 1,
+                id: GLOBAL_PROFILE_ID.into()
+            })
+            .unwrap_err()
+            .code,
+        ErrorCode::InvalidInput
+    );
+}
+
+#[test]
 fn crud_reopen_and_reorder_share_one_transactional_service() {
     let temp = tempfile::tempdir().unwrap();
     let credentials = Arc::new(TestCredentials::default());

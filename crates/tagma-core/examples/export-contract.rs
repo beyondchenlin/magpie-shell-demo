@@ -12,6 +12,8 @@ fn main() {
         SaveProvider::decl(&cfg),
         RevisionCommand::decl(&cfg),
         ReorderProviders::decl(&cfg),
+        AppProfile::decl(&cfg),
+        SaveAppProfile::decl(&cfg),
         ConfigView::decl(&cfg),
         RuntimeState::decl(&cfg),
         RuntimeStatus::decl(&cfg),

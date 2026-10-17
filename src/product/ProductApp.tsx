@@ -7,6 +7,7 @@ import type { ApplicationView, ConfigView, Provider, RuntimeStatus, SaveProvider
 import { ProviderForm } from "./ProviderForm";
 import { LanguagePick } from "./LanguagePick";
 import { DiagnosticsPanel } from "./DiagnosticsPanel";
+import { AppProfiles } from "./AppProfiles";
 import { copy, errorCopy } from "./copy";
 import { applyPreferences, readPreferences, savePreferences, type Preferences, type ProductTheme } from "./preferences";
 import { desktop, protocolVersion, service } from "./service";
@@ -21,10 +22,13 @@ export default function ProductApp() {
   const [error, setError] = useState<unknown>(null);
   const [notice, setNotice] = useState(false);
   const [editor, setEditor] = useState<Provider | "new" | null>(null);
+  const [profileEditing, setProfileEditing] = useState(false);
   const [deleting, setDeleting] = useState<Provider | null>(null);
   const mounted = useRef(true);
   const deleteDialog = useRef<HTMLDialogElement>(null);
   const c = copy(preferences.language);
+  const editing = !!editor || profileEditing;
+  const providerReferences = deleting ? view?.config.profiles.filter(profile => !profile.is_global && profile.provider_ids.includes(deleting.id)) ?? [] : [];
   const refresh = useCallback(async () => {
     if (!desktop) return;
     setBusy(true); setError(null);
@@ -97,8 +101,8 @@ export default function ProductApp() {
   return <>
     <header className="tagma-header"><strong>Tagma</strong><nav aria-label="Tagma"><Segs value={page === "gateway" || page === "settings" ? "" : page} items={[
       { id: "chat", label: c.chat }, { id: "providers", label: c.providers }, { id: "market", label: c.market },
-    ]} onChange={id => { if (!busy && !editor) setPage(id as Page); }} /></nav>
-      <TextBtn disabled={busy || !!editor} onClick={() => setPage("settings")}>{c.settings}</TextBtn>
+    ]} onChange={id => { if (!busy && !editing) setPage(id as Page); }} /></nav>
+      <TextBtn disabled={busy || editing} onClick={() => setPage("settings")}>{c.settings}</TextBtn>
     </header>
     {!desktop && <aside className="tagma-banner" role="status">{c.preview}</aside>}
     {!["zh", "en"].includes(preferences.language) && <aside className="tagma-banner">{c.coverage}</aside>}
@@ -106,23 +110,24 @@ export default function ProductApp() {
       {error != null && <div className="tagma-error" role="alert">{typeof error === "object" && "code" in error && error.code === "PREFERENCES_UNSAVED" ? c.preferencesError : errorCopy(error, preferences.language)} <TextBtn disabled={busy} onClick={() => void refresh()}>{c.refresh}</TextBtn></div>}
       {notice && <p role="status" className="tagma-notice">{c.saved}</p>}
       {page === "chat" && <section><h1>{c.chat}</h1><div className="tagma-empty"><h2>{c.notConnected}</h2><p>{c.chatHint}</p><TextBtn variant="action" onClick={() => setPage("providers")}>{c.goProviders}</TextBtn></div></section>}
-      {page === "providers" && <section><div className="tagma-heading"><h1>{c.providers}</h1><TextBtn variant="action" disabled={!view || busy || !!editor} onClick={() => { setEditor("new"); setNotice(false); }}>{c.add}</TextBtn></div>
+      {page === "providers" && <section><div className="tagma-heading"><h1>{c.providers}</h1><TextBtn variant="action" disabled={!view || busy || editing} onClick={() => { setEditor("new"); setNotice(false); }}>{c.add}</TextBtn></div>
         {!desktop && <p>{c.previewHint}</p>}
         {desktop && !view && !error && <p role="status">{c.loading}</p>}
         {view && !view.config.providers.length && !editor && <div className="tagma-empty"><h2>{c.empty}</h2><p>{c.emptyHint}</p></div>}
         {!!view?.config.pending_credential_cleanup && <p className="tagma-error">{c.cleanup}</p>}
         <div className="list">{view?.config.providers.map((provider, index) => <div className="row provider tagma-provider" key={provider.id}>
           <div className="who"><div className="name">{provider.name}</div><div className="sub">{provider.base_url}</div><div className="sub">{provider.has_credential ? c.credentialPresent : c.noCredential} · {provider.models.length} models</div></div>
-          <div className="tagma-actions"><LibSwitch on={provider.enabled} disabled={busy || !!editor} aria-label={`${c.enabled}: ${provider.name}`} onClick={() => void save({ name: provider.name, protocol: provider.protocol, base_url: provider.base_url, models: provider.models, enabled: !provider.enabled, id: provider.id, protocol_version: protocolVersion, expected_revision: view.config.desired_revision, credential: null })} />
-            <TextBtn disabled={busy || !!editor || index === 0} aria-label={`${c.up}: ${provider.name}`} onClick={() => void move(provider, -1)}>↑</TextBtn>
-            <TextBtn disabled={busy || !!editor || index === view.config.providers.length - 1} aria-label={`${c.down}: ${provider.name}`} onClick={() => void move(provider, 1)}>↓</TextBtn>
-            <TextBtn disabled={busy || !!editor} onClick={() => { setEditor(provider); setNotice(false); }}>{c.edit}</TextBtn>
-            <TextBtn variant="danger" disabled={busy || !!editor} onClick={() => setDeleting(provider)}>{c.remove}</TextBtn>
+          <div className="tagma-actions"><LibSwitch on={provider.enabled} disabled={busy || editing} aria-label={`${c.enabled}: ${provider.name}`} onClick={() => void save({ name: provider.name, protocol: provider.protocol, base_url: provider.base_url, models: provider.models, enabled: !provider.enabled, id: provider.id, protocol_version: protocolVersion, expected_revision: view.config.desired_revision, credential: null })} />
+            <TextBtn disabled={busy || editing || index === 0} aria-label={`${c.up}: ${provider.name}`} onClick={() => void move(provider, -1)}>↑</TextBtn>
+            <TextBtn disabled={busy || editing || index === view.config.providers.length - 1} aria-label={`${c.down}: ${provider.name}`} onClick={() => void move(provider, 1)}>↓</TextBtn>
+            <TextBtn disabled={busy || editing} onClick={() => { setEditor(provider); setNotice(false); }}>{c.edit}</TextBtn>
+            <TextBtn variant="danger" disabled={busy || editing} onClick={() => setDeleting(provider)}>{c.remove}</TextBtn>
           </div>
         </div>)}</div>
         {editor && view && <ProviderForm key={editor === "new" ? "new" : editor.id} provider={editor === "new" ? undefined : editor} revision={view.config.desired_revision} busy={busy} language={preferences.language} onSave={save} onCancel={() => setEditor(null)} />}
+        {view && <AppProfiles config={view.config} busy={busy || !!editor} language={preferences.language} onMutate={mutate} onEditingChange={setProfileEditing} />}
         <p className="tagma-footnote">{c.protocolName} · {c.noInference}</p>
-        <TextBtn disabled={busy || !!editor} onClick={() => setPage("gateway")}>{c.gateway}</TextBtn>
+        <TextBtn disabled={busy || editing} onClick={() => setPage("gateway")}>{c.gateway}</TextBtn>
       </section>}
       {page === "market" && <section><h1>{c.market}</h1><div className="list prefs"><PrefRow name={c.reachflow} sub={c.reachflowHint}><span>{c.notInstalled}</span></PrefRow><PrefRow name={c.teams} sub={c.teamsHint}><span>{c.notAvailable}</span></PrefRow></div></section>}
       {page === "gateway" && <section><h1>{c.gateway}</h1><div className="list prefs"><PrefRow name={c.gateway} sub={c.runtimeHint}><span>{view ? c[view.runtime.state] : c.unknown}</span></PrefRow><PrefRow name={c.desired}><span>{view?.config.desired_revision ?? c.unknown}</span></PrefRow><PrefRow name={c.effective}><span>{view?.runtime.effective_revision ?? c.unknown}</span></PrefRow>
@@ -142,7 +147,9 @@ export default function ProductApp() {
     </main>
     <footer className="tagma-footer"><span>{desktop ? c.native : c.preview}</span><span>{c.desired}: {view?.config.desired_revision ?? c.unknown} · {c.effective}: {view?.runtime.effective_revision ?? c.unknown}</span><TextBtn disabled={busy || !desktop} onClick={() => void refresh()}>{c.refresh}</TextBtn></footer>
     <dialog ref={deleteDialog} className="tagma-confirm" onCancel={e => { if (busy) e.preventDefault(); else setDeleting(null); }} aria-labelledby="delete-title" aria-describedby="delete-description">
-      <h2 id="delete-title">{c.deleteTitle}</h2><p id="delete-description">{deleting?.name} — {c.deleteHint}</p><div className="tagma-actions"><TextBtn autoFocus disabled={busy} onClick={() => setDeleting(null)}>{c.cancel}</TextBtn><TextBtn variant="danger" busy={busy} onClick={async () => { if (deleting && view && await mutate(() => service.remove({ protocol_version: protocolVersion, expected_revision: view.config.desired_revision, id: deleting.id }))) setDeleting(null); }}>{c.confirm}</TextBtn></div>
+      <h2 id="delete-title">{c.deleteTitle}</h2><p id="delete-description">{deleting?.name} — {c.deleteHint}</p>
+      {providerReferences.length > 0 && <div role="status"><h3>{c.referencedBy}</h3><ul>{providerReferences.map(profile => <li key={profile.id}>{profile.name} · {profile.target_app}</li>)}</ul><p>{c.referenceHint}</p></div>}
+      <div className="tagma-actions"><TextBtn autoFocus disabled={busy} onClick={() => setDeleting(null)}>{c.cancel}</TextBtn><TextBtn variant="danger" disabled={providerReferences.length > 0} busy={busy} onClick={async () => { if (deleting && view && await mutate(() => service.remove({ protocol_version: protocolVersion, expected_revision: view.config.desired_revision, id: deleting.id }))) setDeleting(null); }}>{c.confirm}</TextBtn></div>
     </dialog>
   </>;
 }

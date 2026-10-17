@@ -15,6 +15,11 @@ body.tagma #root { display:flex; flex-direction:column; width:100%; height:100%;
 .tagma-provider .sub { overflow-wrap:anywhere; white-space:normal; }
 .tagma-provider { flex-wrap:wrap; }
 .tagma-actions { display:flex; gap:6px; align-items:center; flex-wrap:wrap; justify-content:flex-end; }
+.tagma-profiles { margin-top:24px; padding-top:18px; border-top:1px solid var(--line); }
+.tagma-profile-selection { display:flex; flex-direction:column; align-items:flex-start; gap:8px; }
+.tagma-profile-order { padding-left:22px; }
+.tagma-profile-order li { padding:6px 0; overflow-wrap:anywhere; }
+.tagma-profile-order li > span { display:inline-block; max-width:100%; }
 .tagma-editor { margin-top:12px; padding:14px; border:1px solid var(--line); border-radius:10px; background:var(--card); }
 .tagma-editor fieldset { border:0; display:grid; grid-template-columns:minmax(80px,auto) minmax(0,1fr); align-items:start; gap:12px 14px; margin-bottom:14px; }
 .tagma-editor label { padding-top:4px; }

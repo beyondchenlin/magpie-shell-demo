@@ -23,6 +23,7 @@ pub enum ErrorCode {
     OwnershipRequired,
     StartupTimeout,
     InitializationRecoveryRequired,
+    ProviderReferenced,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, TS, PartialEq, Eq)]
@@ -94,12 +95,37 @@ pub struct ReorderProviders {
     pub ids: Vec<String>,
 }
 
+pub const GLOBAL_PROFILE_ID: &str = "00000000-0000-4000-8000-000000000000";
+
+#[derive(Debug, Clone, Serialize, Deserialize, TS)]
+pub struct AppProfile {
+    pub id: String,
+    pub name: String,
+    pub target_app: String,
+    pub provider_ids: Vec<String>,
+    pub use_global_order: bool,
+    pub is_global: bool,
+}
+
+#[derive(Debug, Clone, Deserialize, TS)]
+#[serde(deny_unknown_fields)]
+pub struct SaveAppProfile {
+    pub protocol_version: u32,
+    pub expected_revision: u32,
+    pub id: Option<String>,
+    pub name: String,
+    pub target_app: String,
+    pub provider_ids: Vec<String>,
+    pub use_global_order: bool,
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize, TS)]
 pub struct ConfigView {
     pub protocol_version: u32,
     pub schema_version: u32,
     pub desired_revision: u32,
     pub providers: Vec<Provider>,
+    pub profiles: Vec<AppProfile>,
     pub pending_credential_cleanup: u32,
 }
 
