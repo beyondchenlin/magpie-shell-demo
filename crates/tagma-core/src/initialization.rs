@@ -1,0 +1,253 @@
+//! An unpublished database is staged under a journal-owned unique name. The final
+//! database is published only after initialization commits and closes SQLite.
+use crate::*;
+use rusqlite::Connection;
+use serde::{Deserialize, Serialize};
+use std::{
+    fs::{self, File, OpenOptions},
+    io::{Read, Write},
+    path::Path,
+};
+
+const APPLICATION_ID: u32 = 0x5441474d; // TAGM
+const INTENT: &str = "config-initialization.json";
+const OWNER: &str = "com.tagmaai.desktop/config-initialization/v1";
+
+#[derive(Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+struct Intent {
+    owner: String,
+    operation_id: String,
+    schema_version: u32,
+    staging_file: String,
+}
+
+fn error() -> AppError {
+    AppError::new(ErrorCode::StorageUnavailable)
+}
+fn incompatible() -> AppError {
+    AppError::new(ErrorCode::IncompatibleVersion)
+}
+pub(crate) fn pending(directory: &Path) -> bool {
+    directory.join(INTENT).exists()
+}
+
+fn regular(path: &Path) -> AppResult<()> {
+    let metadata = fs::symlink_metadata(path).map_err(|_| error())?;
+    if !metadata.is_file() || metadata.file_type().is_symlink() {
+        return Err(incompatible());
+    }
+    #[cfg(windows)]
+    {
+        use std::os::windows::fs::MetadataExt;
+        if metadata.file_attributes() & 0x400 != 0 {
+            return Err(incompatible());
+        }
+    }
+    Ok(())
+}
+
+pub(crate) fn ensure(directory: &Path, after_create: impl FnOnce()) -> AppResult<()> {
+    let target = directory.join("config.sqlite3");
+    let intent_path = directory.join(INTENT);
+    let intent: Intent = if intent_path.exists() {
+        regular(&intent_path)?;
+        let mut bytes = Vec::with_capacity(4097);
+        File::open(&intent_path)
+            .map_err(|_| error())?
+            .take(4097)
+            .read_to_end(&mut bytes)
+            .map_err(|_| error())?;
+        if bytes.len() > 4096 {
+            return Err(incompatible());
+        }
+        serde_json::from_slice(&bytes).map_err(|_| incompatible())?
+    } else {
+        if target.exists() {
+            return Err(incompatible());
+        }
+        let operation_id = uuid::Uuid::new_v4().to_string();
+        let intent = Intent {
+            owner: OWNER.into(),
+            staging_file: format!(".config-initializing-{operation_id}.sqlite3"),
+            operation_id,
+            schema_version: SCHEMA_VERSION,
+        };
+        let mut file = OpenOptions::new()
+            .create_new(true)
+            .write(true)
+            .open(&intent_path)
+            .map_err(|_| error())?;
+        file.write_all(&serde_json::to_vec(&intent).map_err(|_| error())?)
+            .map_err(|_| error())?;
+        file.sync_all().map_err(|_| error())?;
+        intent
+    };
+    let operation = uuid::Uuid::parse_str(&intent.operation_id).map_err(|_| incompatible())?;
+    if intent.owner != OWNER
+        || intent.schema_version != SCHEMA_VERSION
+        || intent.staging_file != format!(".config-initializing-{operation}.sqlite3")
+    {
+        return Err(incompatible());
+    }
+    let staging = directory.join(&intent.staging_file);
+    if target.exists() {
+        // A crash after publication leaves only the marker. Never replace an existing database.
+        regular(&target)?;
+        if staging.exists() {
+            return Err(incompatible());
+        }
+        let db = Connection::open_with_flags(&target, rusqlite::OpenFlags::SQLITE_OPEN_READ_ONLY)
+            .map_err(|_| error())?;
+        let schema: u32 = db
+            .pragma_query_value(None, "user_version", |r| r.get(0))
+            .map_err(|_| error())?;
+        let owner: u32 = db
+            .pragma_query_value(None, "application_id", |r| r.get(0))
+            .map_err(|_| error())?;
+        if schema != SCHEMA_VERSION || owner != APPLICATION_ID {
+            return Err(incompatible());
+        }
+        drop(db);
+        fs::remove_file(intent_path).map_err(|_| error())?;
+        return Ok(());
+    }
+    if staging.exists() {
+        regular(&staging)?;
+    }
+    let db = Connection::open(&staging).map_err(|_| error())?;
+    after_create();
+    let schema: u32 = db
+        .pragma_query_value(None, "user_version", |r| r.get(0))
+        .map_err(|_| error())?;
+    let owner: u32 = db
+        .pragma_query_value(None, "application_id", |r| r.get(0))
+        .map_err(|_| error())?;
+    let objects: u32 = db
+        .query_row(
+            "SELECT count(*) FROM sqlite_schema WHERE name NOT LIKE 'sqlite_%'",
+            [],
+            |r| r.get(0),
+        )
+        .map_err(|_| error())?;
+    if schema == 0 && owner == 0 && objects == 0 {
+        db.execute_batch("BEGIN IMMEDIATE;
+            CREATE TABLE revisions(revision INTEGER PRIMARY KEY, snapshot TEXT NOT NULL);
+            CREATE TABLE config_head(singleton INTEGER PRIMARY KEY CHECK(singleton=1), revision INTEGER NOT NULL REFERENCES revisions(revision));
+            CREATE TABLE credential_journal(operation_id TEXT PRIMARY KEY, credential_ref TEXT NOT NULL UNIQUE);
+            INSERT INTO revisions VALUES(0, '{\"providers\":[]}');
+            INSERT INTO config_head VALUES(1,0);
+            PRAGMA application_id=1413564237;
+            PRAGMA user_version=1;
+            COMMIT;").map_err(|_|error())?;
+    } else if schema != SCHEMA_VERSION || owner != APPLICATION_ID || objects != 3 {
+        return Err(incompatible());
+    }
+    // This staging file cannot have received business writes before publication.
+    let initial: u32 = db
+        .query_row(
+            "SELECT revision FROM config_head WHERE singleton=1",
+            [],
+            |r| r.get(0),
+        )
+        .map_err(|_| error())?;
+    if initial != 0 {
+        return Err(incompatible());
+    }
+    drop(db);
+    // Windows FlushFileBuffers requires a handle opened for writing.
+    OpenOptions::new()
+        .read(true)
+        .write(true)
+        .open(&staging)
+        .map_err(|_| error())?
+        .sync_all()
+        .map_err(|_| error())?;
+    publish_new(&staging, &target).map_err(|_| error())?;
+    fs::remove_file(intent_path).map_err(|_| error())?;
+    Ok(())
+}
+
+/// Same-volume atomic publication with NO replacement and no shared writable hard links.
+#[cfg(windows)]
+fn publish_new(source: &Path, target: &Path) -> std::io::Result<()> {
+    use std::os::windows::ffi::OsStrExt;
+    use windows_sys::Win32::Storage::FileSystem::{MOVEFILE_WRITE_THROUGH, MoveFileExW};
+    let source: Vec<u16> = source.as_os_str().encode_wide().chain(Some(0)).collect();
+    let target: Vec<u16> = target.as_os_str().encode_wide().chain(Some(0)).collect();
+    // No MOVEFILE_REPLACE_EXISTING flag: a newly appeared unknown target is preserved.
+    if unsafe { MoveFileExW(source.as_ptr(), target.as_ptr(), MOVEFILE_WRITE_THROUGH) } == 0 {
+        Err(std::io::Error::last_os_error())
+    } else {
+        Ok(())
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn atomic_publication_never_replaces_a_newly_appeared_target() {
+        let temp = tempfile::tempdir().unwrap();
+        let staging = temp.path().join("owned-stage");
+        let target = temp.path().join("database");
+        fs::write(&staging, b"app-owned").unwrap();
+        fs::write(&target, b"unknown-data").unwrap();
+        assert!(publish_new(&staging, &target).is_err());
+        assert_eq!(fs::read(&target).unwrap(), b"unknown-data");
+        assert_eq!(fs::read(&staging).unwrap(), b"app-owned");
+    }
+    #[test]
+    fn owned_staging_with_unexpected_tables_is_preserved() {
+        let temp = tempfile::tempdir().unwrap();
+        let interrupted = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+            ensure(temp.path(), || panic!("test interruption"))
+        }));
+        assert!(interrupted.is_err());
+        let intent: Intent =
+            serde_json::from_slice(&fs::read(temp.path().join(INTENT)).unwrap()).unwrap();
+        let staging = temp.path().join(intent.staging_file);
+        let db = Connection::open(&staging).unwrap();
+        db.execute_batch(
+            "CREATE TABLE important(value TEXT);INSERT INTO important VALUES('retain');",
+        )
+        .unwrap();
+        drop(db);
+        let before = fs::read(&staging).unwrap();
+        assert_eq!(
+            ensure(temp.path(), || {}).unwrap_err().code,
+            ErrorCode::IncompatibleVersion
+        );
+        assert_eq!(fs::read(&staging).unwrap(), before);
+        assert!(!temp.path().join("config.sqlite3").exists());
+    }
+}
+
+#[cfg(unix)]
+fn publish_new(source: &Path, target: &Path) -> std::io::Result<()> {
+    use std::{ffi::CString, os::unix::ffi::OsStrExt};
+    let source = CString::new(source.as_os_str().as_bytes())?;
+    let target = CString::new(target.as_os_str().as_bytes())?;
+    #[cfg(target_os = "linux")]
+    let result = unsafe {
+        libc::renameat2(
+            libc::AT_FDCWD,
+            source.as_ptr(),
+            libc::AT_FDCWD,
+            target.as_ptr(),
+            libc::RENAME_NOREPLACE,
+        )
+    };
+    #[cfg(target_os = "macos")]
+    let result = unsafe { libc::renamex_np(source.as_ptr(), target.as_ptr(), libc::RENAME_EXCL) };
+    #[cfg(not(any(target_os = "linux", target_os = "macos")))]
+    return Err(std::io::Error::new(
+        std::io::ErrorKind::Unsupported,
+        "platform publication not implemented",
+    ));
+    if result != 0 {
+        Err(std::io::Error::last_os_error())
+    } else {
+        Ok(())
+    }
+}

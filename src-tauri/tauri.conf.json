@@ -1,11 +1,11 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
   "productName": "Tagma",
-  "version": "0.2.0-dev.1",
+  "version": "0.2.0-dev.3",
   "identifier": "com.tagmaai.desktop",
   "build": {
-    "beforeDevCommand": "npm run dev:tagma",
-    "beforeBuildCommand": "npm run build:tagma",
+    "beforeDevCommand": "node scripts/tagma-sidecar.mjs --debug && npm run dev:tagma",
+    "beforeBuildCommand": "npm run build:tagma && node scripts/tagma-sidecar.mjs",
     "devUrl": "http://localhost:1420/tagma.html",
     "frontendDist": "../dist-tagma"
   },
@@ -28,6 +28,7 @@
   "bundle": {
     "active": true,
     "targets": ["nsis"],
+    "externalBin": ["binaries/tagma-gateway"],
     "shortDescription": "Tagma local model gateway",
     "category": "DeveloperTool",
     "windows": { "webviewInstallMode": { "type": "downloadBootstrapper", "silent": true } }

@@ -1,0 +1,27 @@
+{
+  "platform": "win32",
+  "architecture": "x64",
+  "productVersion": "0.2.0-dev.3",
+  "executable": "D:\\demo1\\tagmaai\\target\\debug\\tagma-desktop.exe",
+  "embeddedAssets": true,
+  "installed": true,
+  "nativeHost": true,
+  "mockBridge": false,
+  "windowsHide": false,
+  "consoleAttached": false,
+  "sidecarConsoleAttached": false,
+  "tests": [
+    "native-language-menu-bounds",
+    "native-language-change",
+    "native-dark-125-150",
+    "native-graceful-quit",
+    "desktop-no-console",
+    "sidecar-no-console",
+    "bounded-diagnostic-preview"
+  ],
+  "result": "passed",
+  "limitations": [
+    "OS graphics capture unavailable; WebView screenshots do not prove pixel equivalence",
+    "debug internal test build; release signatures and macOS/Linux unverified"
+  ]
+}

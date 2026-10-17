@@ -1,3 +1,4 @@
+use tagma_core::diagnostics::{Component, DiagnosticBundle, Event, Record};
 use tagma_core::*;
 use ts_rs::TS;
 
@@ -15,6 +16,10 @@ fn main() {
         RuntimeState::decl(&cfg),
         RuntimeStatus::decl(&cfg),
         ApplicationView::decl(&cfg),
+        Component::decl(&cfg),
+        Event::decl(&cfg),
+        Record::decl(&cfg),
+        DiagnosticBundle::decl(&cfg),
     ];
     let content = format!(
         "// Generated from tagma-core. Run npm run contract:generate; do not edit.\n{}\n",

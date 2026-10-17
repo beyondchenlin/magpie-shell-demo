@@ -3,10 +3,12 @@ import { TextBtn } from "../components/TextBtn";
 import { Segs } from "../components/Segs";
 import { PrefRow } from "../components/PrefRow";
 import { LibSwitch } from "../components/LibSwitch";
-import type { ApplicationView, ConfigView, Provider, SaveProvider } from "./contract";
+import type { ApplicationView, ConfigView, Provider, RuntimeStatus, SaveProvider } from "./contract";
 import { ProviderForm } from "./ProviderForm";
+import { LanguagePick } from "./LanguagePick";
+import { DiagnosticsPanel } from "./DiagnosticsPanel";
 import { copy, errorCopy } from "./copy";
-import { applyPreferences, readPreferences, savePreferences, type Preferences, type ProductLanguage, type ProductTheme } from "./preferences";
+import { applyPreferences, readPreferences, savePreferences, type Preferences, type ProductTheme } from "./preferences";
 import { desktop, protocolVersion, service } from "./service";
 
 type Page = "chat" | "providers" | "market" | "gateway" | "settings";
@@ -39,6 +41,16 @@ export default function ProductApp() {
   }, []);
   useEffect(() => { applyPreferences(preferences); }, [preferences]);
   useEffect(() => {
+    if (!desktop || busy) return;
+    let live=true;
+    const timer=setInterval(() => {
+      void service.view().then(current => {
+        if (live) setView(previous => previous && previous.config.desired_revision > current.config.desired_revision ? previous : current);
+      }, err => { if (live) setError(err); });
+    },2000);
+    return () => { live=false; clearInterval(timer); };
+  },[busy]);
+  useEffect(() => {
     if (!deleting) return;
     const previous = document.activeElement as HTMLElement | null;
     const dialog = deleteDialog.current;
@@ -61,6 +73,13 @@ export default function ProductApp() {
     const success = await mutate(() => service.save(input));
     if (success && mounted.current) setEditor(null);
     return success;
+  }
+  async function runtimeAction(operation: () => Promise<RuntimeStatus>) {
+    if(busy) return;
+    setBusy(true); setError(null); setNotice(false);
+    try { const runtime=await operation(); if(mounted.current) setView(previous => previous ? {...previous,runtime} : previous); }
+    catch(err) { if(mounted.current) setError(err); }
+    finally { if(mounted.current) setBusy(false); }
   }
   function changePreferences(next: Preferences) {
     setPreferences(next);
@@ -106,15 +125,20 @@ export default function ProductApp() {
         <TextBtn disabled={busy || !!editor} onClick={() => setPage("gateway")}>{c.gateway}</TextBtn>
       </section>}
       {page === "market" && <section><h1>{c.market}</h1><div className="list prefs"><PrefRow name={c.reachflow} sub={c.reachflowHint}><span>{c.notInstalled}</span></PrefRow><PrefRow name={c.teams} sub={c.teamsHint}><span>{c.notAvailable}</span></PrefRow></div></section>}
-      {page === "gateway" && <section><h1>{c.gateway}</h1><div className="list prefs"><PrefRow name={c.gateway} sub={c.runtimeHint}><span>{c.stopped}</span></PrefRow><PrefRow name={c.desired}><span>{view?.config.desired_revision ?? c.unknown}</span></PrefRow><PrefRow name={c.effective}><span>{view?.runtime.effective_revision ?? c.unknown}</span></PrefRow></div><TextBtn onClick={() => setPage("providers")}>{c.back}</TextBtn></section>}
+      {page === "gateway" && <section><h1>{c.gateway}</h1><div className="list prefs"><PrefRow name={c.gateway} sub={c.runtimeHint}><span>{view ? c[view.runtime.state] : c.unknown}</span></PrefRow><PrefRow name={c.desired}><span>{view?.config.desired_revision ?? c.unknown}</span></PrefRow><PrefRow name={c.effective}><span>{view?.runtime.effective_revision ?? c.unknown}</span></PrefRow>
+        {view?.runtime.address && <PrefRow name="URL"><span>{view.runtime.address}</span></PrefRow>}
+        {view?.runtime.instance_id && <PrefRow name={view.runtime.owned ? c.owned : c.external}><span className="tagma-instance">{view.runtime.instance_id}</span></PrefRow>}
+      </div>{view?.runtime.error && <p role="alert" className="tagma-error">{errorCopy(view.runtime.error,preferences.language)}</p>}
+        <div className="tagma-actions"><TextBtn disabled={!desktop || busy} onClick={() => void runtimeAction(service.startGateway)}>{c.start}</TextBtn><TextBtn disabled={!view?.runtime.owned || busy} onClick={() => void runtimeAction(service.stopGateway)}>{c.stop}</TextBtn><TextBtn disabled={!view?.runtime.instance_id || busy} onClick={() => void runtimeAction(service.applyGateway)}>{c.apply}</TextBtn></div>
+        <TextBtn onClick={() => setPage("providers")}>{c.back}</TextBtn></section>}
       {page === "settings" && <section><h1>{c.settings}</h1><div className="list prefs">
-        <PrefRow name={c.language}><select aria-label={c.language} value={preferences.language} onChange={e => changePreferences({ ...preferences, language: e.target.value as ProductLanguage })}><option value="zh">简体中文</option><option value="en">English</option><option value="zh-TW">繁體中文（English fallback）</option><option value="ja">日本語（English fallback）</option><option value="de">Deutsch (English fallback)</option></select></PrefRow>
+        <PrefRow name={c.language} wrapVal={false}><LanguagePick label={c.language} value={preferences.language} onChange={language=>changePreferences({...preferences,language})} /></PrefRow>
         <PrefRow name={c.theme}><Segs value={preferences.theme} items={[{ id: "system", label: c.system }, { id: "light", label: c.light }, { id: "dark", label: c.dark }]} onChange={id => changePreferences({ ...preferences, theme: id as ProductTheme })} /></PrefRow>
         <PrefRow name={c.size}><Segs value={preferences.textSize} items={[100, 125, 150].map(n => ({ id: n, label: `${n}%` }))} onChange={id => changePreferences({ ...preferences, textSize: id as Preferences["textSize"] })} /></PrefRow>
         <PrefRow name={c.gateway}><TextBtn onClick={() => setPage("gateway")}>{c.gateway}</TextBtn></PrefRow>
-        <PrefRow name={c.version}><span>{view?.product_version ?? "0.2.0-dev.1"}</span></PrefRow>
+        <PrefRow name={c.version}><span>{view?.product_version ?? "0.2.0-dev.3"}</span></PrefRow>
         <PrefRow name={c.schema}><span>{view?.config.schema_version ?? c.unknown}</span></PrefRow>
-      </div></section>}
+      </div><DiagnosticsPanel language={preferences.language} /><TextBtn disabled={!desktop || busy} onClick={() => void service.quit().catch(setError)}>{c.quit}</TextBtn></section>}
     </main>
     <footer className="tagma-footer"><span>{desktop ? c.native : c.preview}</span><span>{c.desired}: {view?.config.desired_revision ?? c.unknown} · {c.effective}: {view?.runtime.effective_revision ?? c.unknown}</span><TextBtn disabled={busy || !desktop} onClick={() => void refresh()}>{c.refresh}</TextBtn></footer>
     <dialog ref={deleteDialog} className="tagma-confirm" onCancel={e => { if (busy) e.preventDefault(); else setDeleting(null); }} aria-labelledby="delete-title" aria-describedby="delete-description">

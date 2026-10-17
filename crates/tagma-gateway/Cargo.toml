@@ -1,0 +1,21 @@
+[package]
+name = "tagma-gateway"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+
+[dependencies]
+tagma-core = { path = "../tagma-core" }
+tagma-runtime = { path = "../tagma-runtime" }
+serde_json = "1.0"
+tokio = { version = "1.53", features = ["rt-multi-thread", "macros", "net", "time", "sync"] }
+tokio-util = { version = "0.7", features = ["rt"] }
+axum = "0.8"
+fs2 = "0.4"
+uuid = { version = "1.28", features = ["v4"] }
+zeroize = "1.9"
+interprocess = { version = "2.4.0", features = ["tokio"] }
+
+[dev-dependencies]
+tempfile = "3.27"

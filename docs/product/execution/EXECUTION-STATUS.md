@@ -4,13 +4,13 @@
 
 ## 当前批次
 
-- 日期：2026-10-17（Asia/Shanghai）；阶段 P0 / S01 已交付，进入 S02 独立 sidecar。
-- 源码起点：03643407ed214f7e4d2a3804423028ee496b9a4a + 继承 dirty；分支 codex/tagma-p0。产品版本独立标记 0.2.0-dev，不把 v208 演示结果作为本次验收。
+- 日期：2026-10-17（Asia/Shanghai）；P0-S02独立sidecar/内部安装切片交接，进入P0-S03配置覆盖与迁移。P0整体未通过。
+- 源码起点03643407ed214f7e4d2a3804423028ee496b9a4a；S01提交7f5c5fb，当前S02在codex/tagma-p0待提交+继承dirty。产品0.2.0-dev.3；程序/IPC/schema分别3候选/1/1，不沿用v208验收。
 - 已确认：仓库当前只有 Electron + React mock，未存在 Rust/Tauri 工程；复用 npm/node_modules、Cargo registry、MSVC、Rust 1.98.1（C:/Program Files/Rust stable MSVC 1.98/bin）、WebView2 155.0.4283.60。
 - 已实现：Tauri原生三页、受限异步IPC、共享Rust配置服务、SQLite乐观事务、系统凭据/journal恢复、单源生成DTO。详细边界与两遍自查见 [S01交接](P0-S01-HANDOFF.md)。
 - 已验证：Rust故障集成6项、Windows系统凭据合成测试1项、原生WebView→IPC→SQLite 7项；产品构建/类型/DTO/lint、原壳与六CSS guard通过。无完整A用例通过声明。
-- 最近有意义变化：原生供应商保存、并发冲突保留编辑已贯通，无mock bridge。
-- 下一步：P0-S02 私有IPC、实例握手/所有权/固定端口/退出，再补AppProfile等P0缺项。
+- 最近有意义变化：dev.3安装后16项通过；宿主/网关PE=GUI(2)，不隐藏窗口的驱动确认两者无附着控制台，Windows应用启动器仅Tagma主窗；日志20MiB×5及脱敏预览。SUP-001/002先复现后修复测试通过；最新进程回归8项。NSIS安装/升级/卸载与配置保留通过，仍debug未签名。详见[P0-S02交接](P0-S02-HANDOFF.md)及evidence/P0-S02.json。
+- 下一步：P0-S03 AppProfile引用与覆盖、持久网关设置/令牌、排他迁移与一致性备份；再完成主路径/性能及平台出口验证。
 - 外部依赖：macOS/Linux 目标环境、发行签名、已授权真实上游及预算、ReachFlow 发行与服务授权。当前可独立实施的 P0 工作不依赖它们。
 - release_blocked：是；尚无新产品安装/签名/目标平台验收。
 
@@ -38,8 +38,8 @@
 | A01 | UI-01/02 ARCH-01 REL-01/04 | 原生开发宿主三页通过；安装包未验证 |
 | A02 | PROV-01/03 DATA-01/02 | CRUD/排序/重启及原生提交通过；AppProfile/运行确认未完成 |
 | A03 | PROV-05 DATA-03 NFR-07 | 系统凭据、SQL失败/journal恢复测试通过；真实进程中途崩溃注入待补 |
-| A04 | GW-01 ARCH-02 RUN-01/02/06 | P0 未验证 |
-| A05 | RUN-03/04/05 | P0 未验证 |
+| A04 | GW-01 ARCH-02 RUN-01/02/06 | Windows真实二进制端口/并发/握手/所有权通过；完整历史版本与跨用户/Unix待验 |
+| A05 | RUN-03/04/05 | 父EOF/独立实例/有限重启/原生完整退出通过；原生关闭到托盘helper受阻未通过；Mac/Linux待验 |
 | A06 | UI-01/02/03/04 NFR-01/06 | P0 未验证 |
 | A07 | DATA-01/05 | 双入口与原生过期编辑冲突通过；演示无导入路径；阶段复查待完成 |
 | A08 | PROV-02/04/06 NFR-08 | P1 未开始 |
@@ -57,9 +57,9 @@
 | A20 | PACK-05/07 | P2 未开始 |
 | A21 | ENTRY-01/02 | P3 未开始 |
 | A22 | CHAT-01/02 | P0 未接入态待实现；真实对话待独立切片；Pi 后续 |
-| A23 | DATA-04 REL-01/02/03/04 | Windows 本地待验；macOS/Linux/签名未验证 |
+| A23 | DATA-04 REL-01/02/03/04 | Windows debug NSIS安装/升级/卸载保留配置通过；迁移/正式签名/macOS/Linux待验 |
 | A24 | NFR-02/03/04 | 设备登记后测量，未验证 |
-| A25 | REL-05 NFR-05 | 盘点完成；日志/测试清理待实现 |
+| A25 | REL-05 NFR-05 | 有界日志/诊断/新finally清理通过；旧六合成目录批量清理被自动审批拒绝，已留账 |
 | A26 | G6 GW-08 OBS-01 ARCH-01 | P4 后续 |
 | A27 | DATA-06 GW-08 RUN-06 | P1 未开始 |
 | A28 | OBS-06 NFR-04 | P1 未开始 |
@@ -72,7 +72,7 @@
 
 本次 Rust/Tauri 首次构建预计新增峰值 6–10 GiB：`D:/demo1/tagmaai/target`（调试/编译缓存 ≤8 GiB），`D:/demo1/tagmaai/node_modules`（现有目录原地增加 Tauri 依赖 ≤0.3 GiB），`C:/Users/ai/.cargo/registry`（复用，新增 ≤1 GiB），系统 Temp（链接器/打包峰值 ≤1 GiB）。D/C 各保留至少 10 GiB。构建关闭 incremental、debug 信息等级 0 以限制缓存。若实际接近估算上限重新盘点再扩展。
 
-不新增worktree/clone/运行环境，不下载模型。旧.cache/release/dist/interactions与恢复资料保留；产品使用独立dist-tagma。S01后C/Temp 56.51 GiB、D 47.11 GiB（并发写入下净变化，不等于本任务精确物理占用）。测试临时目录核验未占用后回收，必要结果保留evidence/P0-S01.json。编译缓存保留供S02复用。未删除历史证据。
+不新增worktree/clone/运行环境/模型。旧.cache/release/dist/interactions保留；产品dist-tagma与target复用。S01两个fixture已回收；S02新finally驱动fixture已回收，专用安装已卸载。六个早期合成fixture约29.2MiB被自动审批以blocked by policy拒绝递归清理，原样保留，路径/用途/负责人/2026-10-24复查日见evidence/P0-S02-cleanup.json。末次C约50.3/D37.5GiB，target逻辑约2.2GiB；盘净变化受其他并发写入影响，不冒称精确物理占用或净释放。默认开发配置、WebView资料、生成未提交移动图标保留。
 
 ## 故障与审查
 

@@ -1,9 +1,9 @@
 [workspace]
-members = ["crates/tagma-core", "src-tauri"]
+members = ["crates/tagma-core", "crates/tagma-runtime", "crates/tagma-gateway", "src-tauri"]
 resolver = "2"
 
 [workspace.package]
-version = "0.2.0-dev.1"
+version = "0.2.0-dev.3"
 edition = "2024"
 rust-version = "1.98"
 license = "MIT"

@@ -1,5 +1,5 @@
 import { invoke, isTauri } from "@tauri-apps/api/core";
-import type { ApplicationView, ConfigView, ReorderProviders, RevisionCommand, SaveProvider } from "./contract";
+import type { ApplicationView, ConfigView, DiagnosticBundle, ReorderProviders, RevisionCommand, RuntimeStatus, SaveProvider } from "./contract";
 
 export const desktop = isTauri();
 export const protocolVersion = 1;
@@ -21,4 +21,9 @@ export const service = {
   save: (input: SaveProvider) => command<ConfigView>("save_provider", { input }),
   remove: (input: RevisionCommand) => command<ConfigView>("delete_provider", { input }),
   reorder: (input: ReorderProviders) => command<ConfigView>("reorder_providers", { input }),
+  startGateway: () => command<RuntimeStatus>("start_gateway", { protocolVersion }),
+  stopGateway: () => command<RuntimeStatus>("stop_gateway", { protocolVersion }),
+  applyGateway: () => command<RuntimeStatus>("apply_gateway", { protocolVersion }),
+  quit: () => command<void>("quit_application", { protocolVersion }),
+  diagnostics: () => command<DiagnosticBundle>("diagnostics_view", { protocolVersion }),
 };

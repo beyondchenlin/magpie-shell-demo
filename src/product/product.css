@@ -28,6 +28,10 @@ body.tagma #root { display:flex; flex-direction:column; width:100%; height:100%;
 .tagma-error { padding:10px 12px; border-radius:7px; background:var(--red-soft); color:var(--red); margin-bottom:12px; overflow-wrap:anywhere; }
 .tagma-notice { color:var(--green); margin-bottom:12px; }
 .tagma-footnote { color:var(--muted); font-size:11px; margin:14px 0; }
+.tagma-instance { overflow-wrap:anywhere; font-family:var(--code); font-size:11px; }
+.tagma-language { min-width:220px; max-width:calc(100vw - 16px); }
+.tagma-diagnostics { margin-top:12px; }
+.tagma-diagnostics pre { max-height:220px; overflow:auto; user-select:text; background:var(--card); padding:12px; border:1px solid var(--line); border-radius:7px; font-family:var(--code); font-size:11px; margin:8px 0; }
 .tagma-confirm { margin:auto; padding:22px; width:min(420px,calc(100% - 32px)); max-height:calc(100% - 32px); overflow:auto; border:1px solid var(--line); border-radius:14px; background:var(--card); color:var(--fg); box-shadow:var(--shadow); }
 .tagma-confirm::backdrop { background:rgba(0,0,0,.32); backdrop-filter:blur(4px); }
 .tagma-confirm p { margin:12px 0 20px; line-height:1.6; overflow-wrap:anywhere; }

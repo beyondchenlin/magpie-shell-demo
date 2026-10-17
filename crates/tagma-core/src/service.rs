@@ -46,12 +46,40 @@ fn lock_file(path: &Path) -> AppResult<File> {
 }
 
 impl ConfigService {
+    /// Runtime readers never initialize/migrate the business store or recover credentials.
+    pub fn read_runtime_snapshot(directory: &Path) -> AppResult<(u32, ConfigSnapshot)> {
+        let maintenance = lock_file(&directory.join("maintenance.lock"))?;
+        FileExt::try_lock_shared(&maintenance)
+            .map_err(|_| AppError::new(ErrorCode::MaintenanceInProgress))?;
+        let db = Connection::open_with_flags(
+            directory.join("config.sqlite3"),
+            rusqlite::OpenFlags::SQLITE_OPEN_READ_ONLY,
+        )
+        .map_err(storage)?;
+        let schema: u32 = db
+            .pragma_query_value(None, "user_version", |r| r.get(0))
+            .map_err(storage)?;
+        if schema != SCHEMA_VERSION {
+            return Err(AppError::new(ErrorCode::IncompatibleVersion));
+        }
+        Self::read_db(&db)
+    }
+
     pub fn open(directory: &Path, credentials: Arc<dyn CredentialStore>) -> AppResult<Self> {
+        Self::open_inner(directory, credentials, || {})
+    }
+
+    fn open_inner(
+        directory: &Path,
+        credentials: Arc<dyn CredentialStore>,
+        after_create: impl FnOnce(),
+    ) -> AppResult<Self> {
         std::fs::create_dir_all(directory).map_err(storage)?;
         let maintenance = lock_file(&directory.join("maintenance.lock"))?;
         // Only schema creation holds the exclusive lock. All live entrypoints retain a shared lock.
-        let exists = directory.join("config.sqlite3").exists();
-        if !exists {
+        let initialize =
+            !directory.join("config.sqlite3").exists() || crate::initialization::pending(directory);
+        if initialize {
             maintenance
                 .try_lock_exclusive()
                 .map_err(|_| AppError::new(ErrorCode::MaintenanceInProgress))?;
@@ -59,27 +87,24 @@ impl ConfigService {
             FileExt::try_lock_shared(&maintenance)
                 .map_err(|_| AppError::new(ErrorCode::MaintenanceInProgress))?;
         }
-        let db = Connection::open(directory.join("config.sqlite3")).map_err(storage)?;
+        if initialize {
+            crate::initialization::ensure(directory, after_create)?;
+            FileExt::unlock(&maintenance).map_err(storage)?;
+            FileExt::try_lock_shared(&maintenance)
+                .map_err(|_| AppError::new(ErrorCode::MaintenanceInProgress))?;
+        }
+        let db = Connection::open_with_flags(
+            directory.join("config.sqlite3"),
+            rusqlite::OpenFlags::SQLITE_OPEN_READ_WRITE,
+        )
+        .map_err(storage)?;
         db.busy_timeout(std::time::Duration::from_secs(2))
             .map_err(storage)?;
         let schema: u32 = db
             .pragma_query_value(None, "user_version", |row| row.get(0))
             .map_err(storage)?;
-        if schema > SCHEMA_VERSION || (exists && schema != SCHEMA_VERSION) {
+        if schema != SCHEMA_VERSION {
             return Err(AppError::new(ErrorCode::IncompatibleVersion));
-        }
-        if schema == 0 {
-            db.execute_batch("BEGIN IMMEDIATE;
-                CREATE TABLE revisions(revision INTEGER PRIMARY KEY, snapshot TEXT NOT NULL);
-                CREATE TABLE config_head(singleton INTEGER PRIMARY KEY CHECK(singleton=1), revision INTEGER NOT NULL REFERENCES revisions(revision));
-                CREATE TABLE credential_journal(operation_id TEXT PRIMARY KEY, credential_ref TEXT NOT NULL UNIQUE);
-                INSERT INTO revisions VALUES(0, '{\"providers\":[]}');
-                INSERT INTO config_head VALUES(1,0);
-                PRAGMA user_version=1;
-                COMMIT;").map_err(storage)?;
-            FileExt::unlock(&maintenance).map_err(storage)?;
-            FileExt::try_lock_shared(&maintenance)
-                .map_err(|_| AppError::new(ErrorCode::MaintenanceInProgress))?;
         }
         db.pragma_update(None, "journal_mode", "WAL")
             .map_err(storage)?;
@@ -348,5 +373,63 @@ impl ConfigService {
             }
         }
         Ok(())
+    }
+}
+
+#[cfg(test)]
+mod initialization_tests {
+    use super::*;
+    use crate::credentials::SystemCredentials;
+    #[test]
+    #[ignore = "Child only: real initialization crash fixture"]
+    fn initialization_crash_worker() {
+        let directory = std::env::var_os("TAGMA_INIT_CRASH_DIR").expect("owned fixture directory");
+        let _ =
+            ConfigService::open_inner(Path::new(&directory), Arc::new(SystemCredentials), || {
+                std::process::exit(87)
+            });
+        panic!("did not interrupt initialization");
+    }
+    #[test]
+    fn interrupted_owned_initialization_recovers_after_real_process_exit() {
+        let temp = tempfile::tempdir().unwrap();
+        let result = std::process::Command::new(std::env::current_exe().unwrap())
+            .args([
+                "--ignored",
+                "--exact",
+                "service::initialization_tests::initialization_crash_worker",
+            ])
+            .env("TAGMA_INIT_CRASH_DIR", temp.path())
+            .status()
+            .unwrap();
+        assert_eq!(result.code(), Some(87));
+        let service = ConfigService::open(temp.path(), Arc::new(SystemCredentials))
+            .expect("app-owned interrupted initialization should recover");
+        assert_eq!(service.view().unwrap().desired_revision, 0);
+    }
+    #[test]
+    fn unknown_schema_zero_database_is_never_initialized_or_overwritten() {
+        for populated in [false, true] {
+            let temp = tempfile::tempdir().unwrap();
+            let path = temp.path().join("config.sqlite3");
+            let db = Connection::open(&path).unwrap();
+            if populated {
+                db.execute_batch(
+                    "CREATE TABLE important(value TEXT);INSERT INTO important VALUES('retain-me');",
+                )
+                .unwrap();
+            }
+            drop(db);
+            let before = std::fs::read(&path).unwrap();
+            assert_eq!(
+                ConfigService::open(temp.path(), Arc::new(SystemCredentials))
+                    .err()
+                    .unwrap()
+                    .code,
+                ErrorCode::IncompatibleVersion
+            );
+            assert_eq!(std::fs::read(&path).unwrap(), before);
+            assert!(!crate::initialization::pending(temp.path()));
+        }
     }
 }

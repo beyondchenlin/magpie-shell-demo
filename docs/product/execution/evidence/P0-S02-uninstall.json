@@ -1,0 +1,10 @@
+{
+  "version": "0.2.0-dev.3",
+  "mode": "debug unsigned internal",
+  "exitCode": 0,
+  "programRemoved": true,
+  "sidecarRemoved": true,
+  "uninstallRegistrationRemoved": true,
+  "existingConfigurationPreserved": true,
+  "defaultUserDataDeleted": false
+}

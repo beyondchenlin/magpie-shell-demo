@@ -1,0 +1,227 @@
+{
+  "batch": "P0-S02",
+  "date": "2026-10-17",
+  "base_sha": "7f5c5fb",
+  "dirty": true,
+  "version": "0.2.0-dev.3",
+  "platform": "Windows 10 19045 x64",
+  "reference_device": "i7-12700KF / 32 GiB / WebView2 155.0.4283.60",
+  "binary_sha256": "5fe893ed2dd94833bb5de84ed68580c5a00a3ea94d95e95d884115abd12649a7",
+  "sidecar_sha256": "e12a33269493b008219f003848841ae0afaf22a08a30c988b8eb9c58cd845197",
+  "installer_sha256": "e99320bcd56053bf00099df2f6f751850b2be93d3bc74d7e1f36c6c14ddfd5ee",
+  "installer_bytes": 4630772,
+  "source_manifest": [
+    {
+      "sha256": "9bf2d92508743408c19bd18aedaae9d7dc85a8e81e8cbccadb831c2013839963",
+      "path": "Cargo.lock"
+    },
+    {
+      "sha256": "667a8be9fae00cb1383d1ff9c1e5df339cdf1278e9000384b802eed05d81c33f",
+      "path": "Cargo.toml"
+    },
+    {
+      "sha256": "d4d803e6fcf7929f3dc427998a6555fcb7df499ed453b807215f61b8f8b842b8",
+      "path": "crates/tagma-core/Cargo.toml"
+    },
+    {
+      "sha256": "c69782335021f3a3178ac641cb965577ca620fec4b77dccadfc2406c6ab50a56",
+      "path": "crates/tagma-core/src/contract.rs"
+    },
+    {
+      "sha256": "d5f3b31ce8cc35fd5653d8f966a96815e58d893767b8a7f837e6c83af417cd29",
+      "path": "crates/tagma-core/src/credentials.rs"
+    },
+    {
+      "sha256": "e5794902610f541226cee3b241409017d393cc306fc6b23b69a542756e595673",
+      "path": "crates/tagma-core/src/diagnostics.rs"
+    },
+    {
+      "sha256": "d91115d27e6ee7d119d530d6039cda49d145f5ca37097c9f23bf4a3433f7087f",
+      "path": "crates/tagma-core/src/initialization.rs"
+    },
+    {
+      "sha256": "94a2382dd6b20edc54cdf7bf4108949ff7db5614e79e1baa22240cd613e180ca",
+      "path": "crates/tagma-core/src/lib.rs"
+    },
+    {
+      "sha256": "24cfea5b56d563acd0b70b9669868c11b81420e4c4392cddb90adbb5511dccf9",
+      "path": "crates/tagma-core/src/service.rs"
+    },
+    {
+      "sha256": "09afc34144b7434aeb4f1392ace8eca7f4fcde56c9773e1286713c3776dd276d",
+      "path": "crates/tagma-core/tests/config_service.rs"
+    },
+    {
+      "sha256": "539e2b915a321420821a35e3b5acba38c4924fe52a34701143d3dea48fd74eb2",
+      "path": "crates/tagma-gateway/Cargo.toml"
+    },
+    {
+      "sha256": "294639ce6ed8f84e6640ec36c3b4f9b595f1f172cb203a3e04a0b51b462d1f6c",
+      "path": "crates/tagma-gateway/src/main.rs"
+    },
+    {
+      "sha256": "b000069841e4c8e07eb53f2c6b711fbb43d15744f00e6463becd86135ec56401",
+      "path": "crates/tagma-gateway/tests/process_lifecycle.rs"
+    },
+    {
+      "sha256": "68e71536be8833062f9c4369180fb2f89c7ea4aaedaf10b392d4600614678d03",
+      "path": "crates/tagma-runtime/Cargo.toml"
+    },
+    {
+      "sha256": "08388045ebd6219049c64a2d71a347c62af79d736d0e832796253e69951b5ff5",
+      "path": "crates/tagma-runtime/src/ipc.rs"
+    },
+    {
+      "sha256": "616f153fe0e003087a9a0704918ec89ae4c97d1167d271320b31c48aa831ec09",
+      "path": "crates/tagma-runtime/src/lib.rs"
+    },
+    {
+      "sha256": "977f579c74430994f497a789ea04e31855ba4674c15db9db03c66421d0c9c519",
+      "path": "crates/tagma-runtime/src/manager.rs"
+    },
+    {
+      "sha256": "8771eee0abe1929d9b5fb32a2c2a187b0406fd074895dc37d92a75f75ac16206",
+      "path": "scripts/tagma-native-smoke.mjs"
+    },
+    {
+      "sha256": "8c2af68363755306199d680cd36d0d5a5c0a3b02562946f9bc3d992671942968",
+      "path": "scripts/tagma-pe-report.mjs"
+    },
+    {
+      "sha256": "d17ae8344596d5ad4ab357a946128d23e012edbf82154ea6da24614ef4dfb8a4",
+      "path": "scripts/tagma-sidecar.mjs"
+    },
+    {
+      "sha256": "bdff8e71284b851fbedabb93b04d2863ae6dfc8b9c02bbf5846ad01e3f0cc539",
+      "path": "scripts/test-tagma-native.ps1"
+    },
+    {
+      "sha256": "263034733f286d9fee9865145f2278b2319119b65438060c2965c84a797b9268",
+      "path": "src-tauri/build.rs"
+    },
+    {
+      "sha256": "c7e47e0ab3d4b1d103f70b81024485f82d2aeb4ff7cda2e78cfab5f5fdad5b81",
+      "path": "src-tauri/capabilities/main.json"
+    },
+    {
+      "sha256": "747f11c45b4069ebf9240a6a47f8d3522f4fe6713210af82ae20396bd553ae84",
+      "path": "src-tauri/Cargo.toml"
+    },
+    {
+      "sha256": "7207ab3fa00a9fb33003fdd75dc160866e36f03d9ac7025ef6cb71b05821054c",
+      "path": "src-tauri/src/main.rs"
+    },
+    {
+      "sha256": "138458b65508a80f16aef93846478ee123b36c7a422afcc04a9b6b456b6af811",
+      "path": "src-tauri/tauri.conf.json"
+    },
+    {
+      "sha256": "5c6cd9a48d4ad52eb6bfc02dd378fb3a9e615812955022df0fc8bc5c37065ecc",
+      "path": "src/product/contract.ts"
+    },
+    {
+      "sha256": "8d028601c9ef0eec69f50c3115c887ead6a7148f968f9ea13e0b030bf5b5db1d",
+      "path": "src/product/copy.ts"
+    },
+    {
+      "sha256": "14095381b466883e52a6845ce9dd0c330b6cfc29ed78cab953156bf5e65632c2",
+      "path": "src/product/DiagnosticsPanel.tsx"
+    },
+    {
+      "sha256": "8c84023c6c7dea525b7d1db96d460ec844ab771de926c9e91fd952550f9f251e",
+      "path": "src/product/LanguagePick.tsx"
+    },
+    {
+      "sha256": "b693076daed24761835dba3c9879635f3733770e9c2b817dd467a6a1498b2e22",
+      "path": "src/product/main.tsx"
+    },
+    {
+      "sha256": "53bef5db49188c7a1643a8aebe9629b8e24007a780aff6987bcc2cacfa5613b9",
+      "path": "src/product/preferences.ts"
+    },
+    {
+      "sha256": "27c4dee68a503771da3cb3fea16098bea585ef78fd9f0013dca6f1e324409916",
+      "path": "src/product/product.css"
+    },
+    {
+      "sha256": "1f2111bc1ff68426359506683b7365ab21e94862526359c97aabebf450cf6976",
+      "path": "src/product/ProductApp.tsx"
+    },
+    {
+      "sha256": "51daa8c6ed6e2274fb0f181b4be781f251d13ab370152a1aaf3cd0f2c70a58b7",
+      "path": "src/product/ProviderForm.tsx"
+    },
+    {
+      "sha256": "4dd75d2ba5a588f1d538499dd1bb1c5a67bfcf61d4d4321092cc41668eda2edc",
+      "path": "src/product/service.ts"
+    }
+  ],
+  "native_installed": {
+    "platform": "win32",
+    "architecture": "x64",
+    "productVersion": "0.2.0-dev.3",
+    "executable": "D:\\demo1\\tagmaai\\.cache\\tagma-install-s02\\tagma-desktop.exe",
+    "embeddedAssets": true,
+    "installed": true,
+    "nativeHost": true,
+    "mockBridge": false,
+    "windowsHide": false,
+    "consoleAttached": false,
+    "sidecarConsoleAttached": false,
+    "tests": [
+      "native-empty-config",
+      "provider-form-commit",
+      "redacted-dto",
+      "protocol-rejection",
+      "concurrent-editor-conflict",
+      "editor-retained-on-error",
+      "snapshot-refresh",
+      "gateway-effective-revision",
+      "gateway-ownership",
+      "gateway-stop",
+      "gateway-start",
+      "native-language-and-scale",
+      "native-graceful-quit",
+      "desktop-no-console",
+      "sidecar-no-console",
+      "bounded-diagnostic-preview"
+    ],
+    "result": "passed",
+    "limitations": [
+      "OS graphics capture unavailable; WebView screenshots do not prove pixel equivalence",
+      "debug internal test build; release signatures and macOS/Linux unverified"
+    ]
+  },
+  "process_tests": {
+    "real_binary": true,
+    "scope": "ownership/port/concurrent/parent EOF/standalone/frame/restart cap; GUI console=false on starts and restarts",
+    "passed": 7
+  },
+  "apply_tests": {
+    "before_fix_failed": 3,
+    "extra": "bounded blocking credential worker",
+    "after_fix_passed": 4
+  },
+  "initialization_tests": {
+    "real_process_before_fix": "IncompatibleVersion",
+    "unknown_database_preserved": true,
+    "ownership": "persisted initialization intent + unique staging + no-replace publish",
+    "after_fix_passed": 4
+  },
+  "diagnostic_rotation_test": "passed, small 512 byte cap exercise, default 20 MiB x 5",
+  "credential_crash_process_test": "passed, synthetic OS credential exact-reference cleanup",
+  "normal_launch": "P0-S02-normal-launch.json",
+  "console_before": "P0-S02-console-before.json",
+  "console_after": "P0-S02-console-after.json",
+  "uninstall": "P0-S02-uninstall.json",
+  "self_review": "two passes by same executor, supervisor static feedback reproduced and fixed",
+  "release_blocked": true,
+  "remaining": [
+    "P0 AppProfile",
+    "persistent editable gateway settings/authentication policy implementation",
+    "migration/upgrade coordinator",
+    "performance/complete keyboard/native close-to-tray evidence",
+    "macOS/Linux and signatures",
+    "P1 real upstream budget/resource authorization"
+  ]
+}

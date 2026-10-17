@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-diagnostics-view"
+description = "Enables the diagnostics_view command without any pre-configured scope."
+commands.allow = ["diagnostics_view"]
+
+[[permission]]
+identifier = "deny-diagnostics-view"
+description = "Denies the diagnostics_view command without any pre-configured scope."
+commands.deny = ["diagnostics_view"]

@@ -1,0 +1,62 @@
+[
+  {
+    "path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-native-f75673b6-495c-43fe-99b4-6177d151fb48",
+    "logicalBytes": 74472.0,
+    "purpose": "synthetic native test DB/WebView profile",
+    "owner": "Tagma executor chat",
+    "review_date": "2026-10-24",
+    "removed": false,
+    "reason": "automatic approval review rejected batch recursive cleanup: blocked by policy",
+    "evidence": "P0-S02.json / P0-S02-harness-cleanup.json"
+  },
+  {
+    "path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-native-593eb8e3-c49b-4ed3-8ea8-7e453241557b",
+    "logicalBytes": 74500.0,
+    "purpose": "synthetic native test DB/WebView profile",
+    "owner": "Tagma executor chat",
+    "review_date": "2026-10-24",
+    "removed": false,
+    "reason": "automatic approval review rejected batch recursive cleanup: blocked by policy",
+    "evidence": "P0-S02.json / P0-S02-harness-cleanup.json"
+  },
+  {
+    "path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-native-c062ebb3-8a7b-4e8c-8382-d969a79f7fc2",
+    "logicalBytes": 74500.0,
+    "purpose": "synthetic native test DB/WebView profile",
+    "owner": "Tagma executor chat",
+    "review_date": "2026-10-24",
+    "removed": false,
+    "reason": "automatic approval review rejected batch recursive cleanup: blocked by policy",
+    "evidence": "P0-S02.json / P0-S02-harness-cleanup.json"
+  },
+  {
+    "path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-native-installed-d000efc0-385b-4137-85b5-e71a83409dc4",
+    "logicalBytes": 9495765.0,
+    "purpose": "synthetic native test DB/WebView profile",
+    "owner": "Tagma executor chat",
+    "review_date": "2026-10-24",
+    "removed": false,
+    "reason": "automatic approval review rejected batch recursive cleanup: blocked by policy",
+    "evidence": "P0-S02.json / P0-S02-harness-cleanup.json"
+  },
+  {
+    "path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-native-ui-9c8d1f5f-e2bd-46c8-87df-f422d15f2eae",
+    "logicalBytes": 10340196.0,
+    "purpose": "synthetic native test DB/WebView profile",
+    "owner": "Tagma executor chat",
+    "review_date": "2026-10-24",
+    "removed": false,
+    "reason": "automatic approval review rejected batch recursive cleanup: blocked by policy",
+    "evidence": "P0-S02.json / P0-S02-harness-cleanup.json"
+  },
+  {
+    "path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-native-noconsole-9b095aaf-34de-4560-8322-f71032c33372",
+    "logicalBytes": 10582889.0,
+    "purpose": "synthetic native test DB/WebView profile",
+    "owner": "Tagma executor chat",
+    "review_date": "2026-10-24",
+    "removed": false,
+    "reason": "automatic approval review rejected batch recursive cleanup: blocked by policy",
+    "evidence": "P0-S02.json / P0-S02-harness-cleanup.json"
+  }
+]

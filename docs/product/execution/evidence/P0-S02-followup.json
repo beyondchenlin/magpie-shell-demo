@@ -1,0 +1,161 @@
+{
+  "version": "0.2.0-dev.3",
+  "base_sha": "7f5c5fb",
+  "dirty": true,
+  "scope": "version envelope followup and machine-applicable Rust style cleanup",
+  "process_tests": 8,
+  "clippy": "core/runtime/gateway all targets -D warnings passed",
+  "native_evidence": "P0-S02-postreview-native.json",
+  "native_checks": 7,
+  "native_scope": "embedded-assets host/startup/private IPC/diagnostics/language/quit; unchanged provider CRUD uses earlier 16-check installed regression basis",
+  "binary_sha256": "e7da901a8f1a9f04539dc940a8304121e7cf1f545522343b8a812e884d9477c8",
+  "sidecar_sha256": "9bb354063d5949c39fd4a09aac57cd25888bd0782ba771ab1ae2a83d59baf51a",
+  "build_command": "cargo build -p tagma-desktop -p tagma-gateway --features tagma-desktop/custom-protocol --locked; node scripts/tagma-sidecar.mjs --debug",
+  "normalization": "Cargo runtime manifest trailing empty line removed after build; dependency inputs unchanged",
+  "source_manifest": [
+    {
+      "sha256": "9bf2d92508743408c19bd18aedaae9d7dc85a8e81e8cbccadb831c2013839963",
+      "path": "Cargo.lock"
+    },
+    {
+      "sha256": "667a8be9fae00cb1383d1ff9c1e5df339cdf1278e9000384b802eed05d81c33f",
+      "path": "Cargo.toml"
+    },
+    {
+      "sha256": "d4d803e6fcf7929f3dc427998a6555fcb7df499ed453b807215f61b8f8b842b8",
+      "path": "crates/tagma-core/Cargo.toml"
+    },
+    {
+      "sha256": "c69782335021f3a3178ac641cb965577ca620fec4b77dccadfc2406c6ab50a56",
+      "path": "crates/tagma-core/src/contract.rs"
+    },
+    {
+      "sha256": "d5f3b31ce8cc35fd5653d8f966a96815e58d893767b8a7f837e6c83af417cd29",
+      "path": "crates/tagma-core/src/credentials.rs"
+    },
+    {
+      "sha256": "e684c4d296083ba1d23ec48e27d913d1704289cdcd2fc08a37f4e223e53a9478",
+      "path": "crates/tagma-core/src/diagnostics.rs"
+    },
+    {
+      "sha256": "d91115d27e6ee7d119d530d6039cda49d145f5ca37097c9f23bf4a3433f7087f",
+      "path": "crates/tagma-core/src/initialization.rs"
+    },
+    {
+      "sha256": "94a2382dd6b20edc54cdf7bf4108949ff7db5614e79e1baa22240cd613e180ca",
+      "path": "crates/tagma-core/src/lib.rs"
+    },
+    {
+      "sha256": "24cfea5b56d563acd0b70b9669868c11b81420e4c4392cddb90adbb5511dccf9",
+      "path": "crates/tagma-core/src/service.rs"
+    },
+    {
+      "sha256": "09afc34144b7434aeb4f1392ace8eca7f4fcde56c9773e1286713c3776dd276d",
+      "path": "crates/tagma-core/tests/config_service.rs"
+    },
+    {
+      "sha256": "539e2b915a321420821a35e3b5acba38c4924fe52a34701143d3dea48fd74eb2",
+      "path": "crates/tagma-gateway/Cargo.toml"
+    },
+    {
+      "sha256": "b4f01baa3b9b74e8a43ee1642240f5bb2b876767578cdf6a8480a900a7220051",
+      "path": "crates/tagma-gateway/src/main.rs"
+    },
+    {
+      "sha256": "f3e724aa403eafaf288e7514a97793c9d2c1b4d2bf01641645d6ffdc4b8dba09",
+      "path": "crates/tagma-gateway/tests/process_lifecycle.rs"
+    },
+    {
+      "sha256": "d3e15692694db80c5723b0069cc66bc2fc46d5b46bd4a88186d2ac5cc61d4e19",
+      "path": "crates/tagma-runtime/Cargo.toml"
+    },
+    {
+      "sha256": "c02ae4b9cc1f404b3ec20a41f94ec18758e8c0ec07ec9a21c3d6a3ccbf29cb45",
+      "path": "crates/tagma-runtime/src/ipc.rs"
+    },
+    {
+      "sha256": "616f153fe0e003087a9a0704918ec89ae4c97d1167d271320b31c48aa831ec09",
+      "path": "crates/tagma-runtime/src/lib.rs"
+    },
+    {
+      "sha256": "b395106ac34231d2c034282acc7ccfcbbf72a49c1455fba9fb34183b0401e7df",
+      "path": "crates/tagma-runtime/src/manager.rs"
+    },
+    {
+      "sha256": "8771eee0abe1929d9b5fb32a2c2a187b0406fd074895dc37d92a75f75ac16206",
+      "path": "scripts/tagma-native-smoke.mjs"
+    },
+    {
+      "sha256": "8c2af68363755306199d680cd36d0d5a5c0a3b02562946f9bc3d992671942968",
+      "path": "scripts/tagma-pe-report.mjs"
+    },
+    {
+      "sha256": "d17ae8344596d5ad4ab357a946128d23e012edbf82154ea6da24614ef4dfb8a4",
+      "path": "scripts/tagma-sidecar.mjs"
+    },
+    {
+      "sha256": "bdff8e71284b851fbedabb93b04d2863ae6dfc8b9c02bbf5846ad01e3f0cc539",
+      "path": "scripts/test-tagma-native.ps1"
+    },
+    {
+      "sha256": "263034733f286d9fee9865145f2278b2319119b65438060c2965c84a797b9268",
+      "path": "src-tauri/build.rs"
+    },
+    {
+      "sha256": "c7e47e0ab3d4b1d103f70b81024485f82d2aeb4ff7cda2e78cfab5f5fdad5b81",
+      "path": "src-tauri/capabilities/main.json"
+    },
+    {
+      "sha256": "747f11c45b4069ebf9240a6a47f8d3522f4fe6713210af82ae20396bd553ae84",
+      "path": "src-tauri/Cargo.toml"
+    },
+    {
+      "sha256": "7207ab3fa00a9fb33003fdd75dc160866e36f03d9ac7025ef6cb71b05821054c",
+      "path": "src-tauri/src/main.rs"
+    },
+    {
+      "sha256": "138458b65508a80f16aef93846478ee123b36c7a422afcc04a9b6b456b6af811",
+      "path": "src-tauri/tauri.conf.json"
+    },
+    {
+      "sha256": "5c6cd9a48d4ad52eb6bfc02dd378fb3a9e615812955022df0fc8bc5c37065ecc",
+      "path": "src/product/contract.ts"
+    },
+    {
+      "sha256": "8d028601c9ef0eec69f50c3115c887ead6a7148f968f9ea13e0b030bf5b5db1d",
+      "path": "src/product/copy.ts"
+    },
+    {
+      "sha256": "14095381b466883e52a6845ce9dd0c330b6cfc29ed78cab953156bf5e65632c2",
+      "path": "src/product/DiagnosticsPanel.tsx"
+    },
+    {
+      "sha256": "8c84023c6c7dea525b7d1db96d460ec844ab771de926c9e91fd952550f9f251e",
+      "path": "src/product/LanguagePick.tsx"
+    },
+    {
+      "sha256": "b693076daed24761835dba3c9879635f3733770e9c2b817dd467a6a1498b2e22",
+      "path": "src/product/main.tsx"
+    },
+    {
+      "sha256": "53bef5db49188c7a1643a8aebe9629b8e24007a780aff6987bcc2cacfa5613b9",
+      "path": "src/product/preferences.ts"
+    },
+    {
+      "sha256": "27c4dee68a503771da3cb3fea16098bea585ef78fd9f0013dca6f1e324409916",
+      "path": "src/product/product.css"
+    },
+    {
+      "sha256": "1f2111bc1ff68426359506683b7365ab21e94862526359c97aabebf450cf6976",
+      "path": "src/product/ProductApp.tsx"
+    },
+    {
+      "sha256": "51daa8c6ed6e2274fb0f181b4be781f251d13ab370152a1aaf3cd0f2c70a58b7",
+      "path": "src/product/ProviderForm.tsx"
+    },
+    {
+      "sha256": "4dd75d2ba5a588f1d538499dd1bb1c5a67bfcf61d4d4321092cc41668eda2edc",
+      "path": "src/product/service.ts"
+    }
+  ]
+}

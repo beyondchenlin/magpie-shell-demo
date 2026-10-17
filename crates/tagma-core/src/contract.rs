@@ -16,6 +16,12 @@ pub enum ErrorCode {
     MaintenanceInProgress,
     DesktopRequired,
     InternalError,
+    PortInUse,
+    AlreadyRunning,
+    GatewayUnavailable,
+    ConfigApplyFailed,
+    OwnershipRequired,
+    StartupTimeout,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, TS, PartialEq, Eq)]

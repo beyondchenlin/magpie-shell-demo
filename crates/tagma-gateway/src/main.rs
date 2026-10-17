@@ -1,0 +1,536 @@
+#![cfg_attr(windows, windows_subsystem = "windows")]
+
+use axum::{Json, Router, http::StatusCode};
+use fs2::FileExt;
+use std::{
+    io::{BufRead, Read},
+    path::PathBuf,
+    sync::Arc,
+    time::Duration,
+};
+use tagma_core::{
+    credentials::{CredentialStore, SystemCredentials},
+    *,
+};
+use tagma_runtime::ipc::{self, Bootstrap, Command, Manifest, Request, Response};
+use tokio::{net::TcpListener, sync::RwLock};
+use tokio_util::sync::CancellationToken;
+
+struct Runtime {
+    directory: PathBuf,
+    manifest: Manifest,
+    status: RwLock<RuntimeStatus>,
+    snapshot: RwLock<(u32, tagma_core::service::ConfigSnapshot)>,
+    token: zeroize::Zeroizing<String>,
+    shutdown: CancellationToken,
+    apply_guard: tokio::sync::Mutex<()>,
+    load_slots: Arc<tokio::sync::Semaphore>,
+    #[cfg(test)]
+    _fixture: Option<tempfile::TempDir>,
+}
+
+fn main() {
+    let args: Vec<_> = std::env::args_os().skip(1).collect();
+    let managed = args.iter().any(|a| a == "--managed");
+    let directory = args
+        .windows(2)
+        .find(|p| p[0] == "--config-dir")
+        .map(|p| PathBuf::from(&p[1]));
+    let port = args
+        .windows(2)
+        .find(|p| p[0] == "--port")
+        .and_then(|p| p[1].to_str())
+        .and_then(|p| p.parse::<u16>().ok());
+    let (Some(directory), Some(port)) = (directory, port) else {
+        std::process::exit(12);
+    };
+    if port == 0 {
+        std::process::exit(12);
+    }
+    let mut input = std::io::BufReader::new(std::io::stdin());
+    let mut line = zeroize::Zeroizing::new(String::new());
+    if (&mut input).take(4096).read_line(&mut line).is_err() {
+        std::process::exit(12);
+    }
+    let bootstrap: Bootstrap = match serde_json::from_str(&line) {
+        Ok(v) => v,
+        Err(_) => std::process::exit(12),
+    };
+    if uuid::Uuid::parse_str(&bootstrap.owner_token).is_err()
+        || uuid::Uuid::parse_str(&bootstrap.instance_id).is_err()
+    {
+        std::process::exit(12);
+    }
+    let shutdown = CancellationToken::new();
+    if managed {
+        let signal = shutdown.clone();
+        std::thread::spawn(move || {
+            let mut byte = [0u8; 1];
+            loop {
+                match input.read(&mut byte) {
+                    Ok(0) | Err(_) => {
+                        signal.cancel();
+                        break;
+                    }
+                    _ => {}
+                }
+            }
+        });
+    }
+    let runtime = tokio::runtime::Builder::new_multi_thread()
+        .worker_threads(2)
+        .enable_all()
+        .build()
+        .expect("gateway runtime");
+    let code = runtime.block_on(run(
+        directory.clone(),
+        port,
+        bootstrap.instance_id,
+        zeroize::Zeroizing::new(bootstrap.owner_token),
+        shutdown,
+    ));
+    let _ = tagma_core::diagnostics::record(
+        &directory,
+        tagma_core::diagnostics::Component::Gateway,
+        if code == 0 {
+            tagma_core::diagnostics::Event::Stopped
+        } else {
+            tagma_core::diagnostics::Event::StartFailed
+        },
+        match code {
+            0 => None,
+            10 => Some(ErrorCode::AlreadyRunning),
+            11 => Some(ErrorCode::PortInUse),
+            13 => Some(ErrorCode::IncompatibleVersion),
+            _ => Some(ErrorCode::ConfigApplyFailed),
+        },
+        None,
+    );
+    std::process::exit(code);
+}
+
+async fn run(
+    directory: PathBuf,
+    port: u16,
+    instance_id: String,
+    token: zeroize::Zeroizing<String>,
+    shutdown: CancellationToken,
+) -> i32 {
+    let lock = match std::fs::OpenOptions::new()
+        .create(true)
+        .truncate(false)
+        .read(true)
+        .write(true)
+        .open(directory.join("gateway.lock"))
+    {
+        Ok(v) => v,
+        Err(_) => return 12,
+    };
+    if lock.try_lock_exclusive().is_err() {
+        return 10;
+    }
+    let maintenance = match std::fs::OpenOptions::new()
+        .read(true)
+        .write(true)
+        .open(directory.join("maintenance.lock"))
+    {
+        Ok(file) => file,
+        Err(_) => return 12,
+    };
+    if FileExt::try_lock_shared(&maintenance).is_err() {
+        return 12;
+    }
+    let startup_directory = directory.clone();
+    let initial = tokio::time::timeout(
+        Duration::from_secs(8),
+        tokio::task::spawn_blocking(move || load_snapshot(&startup_directory)),
+    )
+    .await;
+    let (revision, snapshot) = match initial
+        .unwrap_or_else(|_| Ok(Err(AppError::new(ErrorCode::StartupTimeout))))
+        .unwrap_or_else(|_| Err(AppError::new(ErrorCode::ConfigApplyFailed)))
+    {
+        Ok(v) => v,
+        Err(e) if e.code == ErrorCode::IncompatibleVersion => return 13,
+        Err(_) => return 12,
+    };
+    let tcp = match TcpListener::bind((std::net::Ipv4Addr::LOCALHOST, port)).await {
+        Ok(v) => v,
+        Err(e) if e.kind() == std::io::ErrorKind::AddrInUse => return 11,
+        Err(_) => return 12,
+    };
+    #[cfg(windows)]
+    let endpoint = format!("tagma-{}", uuid::Uuid::new_v4());
+    #[cfg(unix)]
+    let endpoint = directory
+        .join(format!("runtime-{}.sock", instance_id))
+        .to_string_lossy()
+        .into_owned();
+    let manifest = Manifest {
+        protocol_version: PROTOCOL_VERSION,
+        schema_version: SCHEMA_VERSION,
+        product_version: PRODUCT_VERSION.into(),
+        config_id: match ipc::config_id(&directory) {
+            Ok(v) => v,
+            Err(_) => return 12,
+        },
+        instance_id: instance_id.clone(),
+        endpoint,
+        port,
+        console_attached: tagma_core::diagnostics::console_attached(),
+    };
+    let listener = match ipc::listener(&manifest.endpoint) {
+        Ok(v) => v,
+        Err(_) => return 12,
+    };
+    let status = RuntimeStatus {
+        state: RuntimeState::Running,
+        instance_id: Some(instance_id),
+        effective_revision: Some(revision),
+        address: Some(format!("http://127.0.0.1:{port}/v1")),
+        owned: false,
+        error: None,
+    };
+    let state = Arc::new(Runtime {
+        directory: directory.clone(),
+        manifest: manifest.clone(),
+        status: RwLock::new(status),
+        snapshot: RwLock::new((revision, snapshot)),
+        token,
+        shutdown: shutdown.clone(),
+        apply_guard: tokio::sync::Mutex::new(()),
+        load_slots: Arc::new(tokio::sync::Semaphore::new(1)),
+        #[cfg(test)]
+        _fixture: None,
+    });
+    let staged = directory.join(format!("runtime-{}.json", manifest.instance_id));
+    let bytes = match serde_json::to_vec(&manifest) {
+        Ok(v) => v,
+        Err(_) => return 12,
+    };
+    if std::fs::write(&staged, bytes).is_err() {
+        return 12;
+    }
+    // The single-instance lock is held throughout replacement; stale manifests carry no authority.
+    if std::fs::rename(&staged, directory.join("runtime.json")).is_err() {
+        return 12;
+    }
+    let _ = tagma_core::diagnostics::record(
+        &directory,
+        tagma_core::diagnostics::Component::Gateway,
+        tagma_core::diagnostics::Event::Ready,
+        None,
+        Some(revision),
+    );
+    let control = state.clone();
+    let management = tokio::spawn(async move {
+        use interprocess::local_socket::tokio::prelude::*;
+        let limit = Arc::new(tokio::sync::Semaphore::new(8));
+        loop {
+            tokio::select! {
+                _ = control.shutdown.cancelled() => break,
+                connection = listener.accept() => {
+                    let Ok(mut stream) = connection else { break; };
+                    let Ok(permit) = limit.clone().try_acquire_owned() else { continue; };
+                    let state = control.clone();
+                    tokio::spawn(async move {
+                        let _permit = permit;
+                        let _ = tokio::time::timeout(Duration::from_secs(2), async {
+                            let Ok(request) = ipc::read_frame::<Request>(&mut stream).await else { return; };
+                            if request.protocol_version != PROTOCOL_VERSION || request.product_version != PRODUCT_VERSION || request.instance_id != state.manifest.instance_id || request.config_id != state.manifest.config_id || request.challenge.len() > 64 { return; }
+                            let mut stop = false;
+                            match request.command {
+                                Command::Status => {},
+                                Command::Apply => apply(&state).await,
+                                Command::Stop { owner_token } => {
+                                    if owner_token == *state.token { state.status.write().await.state = RuntimeState::Stopping; stop = true; }
+                                    else { let mut status = state.status.read().await.clone(); status.error = Some(AppError::new(ErrorCode::OwnershipRequired));
+                                        let response = Response { protocol_version: PROTOCOL_VERSION, product_version: PRODUCT_VERSION.into(), instance_id: state.manifest.instance_id.clone(), config_id: state.manifest.config_id.clone(), challenge: request.challenge, status }; let _ = ipc::write_frame(&mut stream,&response).await; return; }
+                                },
+                            }
+                            let response = Response { protocol_version: PROTOCOL_VERSION, product_version: PRODUCT_VERSION.into(), instance_id: state.manifest.instance_id.clone(), config_id: state.manifest.config_id.clone(), challenge: request.challenge, status: state.status.read().await.clone() };
+                            let _ = ipc::write_frame(&mut stream,&response).await;
+                            if stop { state.shutdown.cancel(); }
+                        }).await;
+                    });
+                }
+            }
+        }
+    });
+    let reconcile = state.clone();
+    let synchronizer = tokio::spawn(async move {
+        let mut interval = tokio::time::interval(Duration::from_secs(2));
+        loop {
+            tokio::select! { _ = reconcile.shutdown.cancelled() => break, _ = interval.tick() => apply(&reconcile).await }
+        }
+    });
+    // P0 data plane deliberately has no inference endpoints or management routes.
+    let router = Router::new().fallback(|| async { (StatusCode::SERVICE_UNAVAILABLE, Json(serde_json::json!({"error":{"code":"UNSUPPORTED_CAPABILITY","message":"Model inference is not connected in this P0 slice"}}))) });
+    use std::future::IntoFuture;
+    let serving = axum::serve(tcp, router)
+        .with_graceful_shutdown(shutdown.clone().cancelled_owned())
+        .into_future();
+    tokio::pin!(serving);
+    tokio::select! {
+        _ = &mut serving => {},
+        _ = shutdown.cancelled() => { let _ = tokio::time::timeout(Duration::from_secs(10), &mut serving).await; },
+    }
+    shutdown.cancel();
+    let _ = tokio::join!(management, synchronizer);
+    // Only remove the manifest while still owning the configuration's gateway lock.
+    let _ = std::fs::remove_file(directory.join("runtime.json"));
+    0
+}
+
+fn load_snapshot(
+    directory: &std::path::Path,
+) -> AppResult<(u32, tagma_core::service::ConfigSnapshot)> {
+    let result = ConfigService::read_runtime_snapshot(directory)?;
+    for record in &result.1.providers {
+        if record.provider.enabled
+            && let Some(reference) = &record.credential_ref
+        {
+            let _secret = SystemCredentials.get(reference)?;
+        }
+    }
+    Ok(result)
+}
+
+async fn apply(state: &Runtime) {
+    let directory = state.directory.clone();
+    apply_with(state, async move {
+        bounded_load(&state.load_slots, Duration::from_millis(1500), move || {
+            load_snapshot(&directory)
+        })
+        .await
+    })
+    .await;
+}
+
+async fn bounded_load(
+    slots: &Arc<tokio::sync::Semaphore>,
+    budget: Duration,
+    load: impl FnOnce() -> AppResult<(u32, tagma_core::service::ConfigSnapshot)> + Send + 'static,
+) -> AppResult<(u32, tagma_core::service::ConfigSnapshot)> {
+    // A timed-out OS credential call may still run. Its permit stays in the worker,
+    // so later polls cannot create an unbounded queue of blocked threads.
+    let permit = slots
+        .clone()
+        .try_acquire_owned()
+        .map_err(|_| AppError::new(ErrorCode::ConfigApplyFailed))?;
+    let task = tokio::task::spawn_blocking(move || {
+        let _permit = permit;
+        load()
+    });
+    tokio::time::timeout(budget, task)
+        .await
+        .map_err(|_| AppError::new(ErrorCode::ConfigApplyFailed))?
+        .map_err(|_| AppError::new(ErrorCode::ConfigApplyFailed))?
+}
+
+async fn apply_with(
+    state: &Runtime,
+    load: impl std::future::Future<Output = AppResult<(u32, tagma_core::service::ConfigSnapshot)>>,
+) {
+    // Serialize the entire read/credential-validation/commit, including failed loads.
+    let _apply = state.apply_guard.lock().await;
+    if state.shutdown.is_cancelled()
+        || matches!(state.status.read().await.state, RuntimeState::Stopping)
+    {
+        return;
+    }
+    let loaded = load.await;
+    let mut status = state.status.write().await;
+    if state.shutdown.is_cancelled() || matches!(status.state, RuntimeState::Stopping) {
+        return;
+    }
+    match loaded {
+        Ok((revision, snapshot)) => {
+            if status
+                .effective_revision
+                .is_some_and(|current| revision < current)
+            {
+                return;
+            }
+            if status.effective_revision != Some(revision) || status.error.is_some() {
+                let _ = tagma_core::diagnostics::record(
+                    &state.directory,
+                    tagma_core::diagnostics::Component::Gateway,
+                    tagma_core::diagnostics::Event::ApplySucceeded,
+                    None,
+                    Some(revision),
+                );
+            }
+            *state.snapshot.write().await = (revision, snapshot);
+            status.effective_revision = Some(revision);
+            status.state = RuntimeState::Running;
+            status.error = None;
+        }
+        Err(error) => {
+            if status.error.as_ref() != Some(&error) {
+                let _ = tagma_core::diagnostics::record(
+                    &state.directory,
+                    tagma_core::diagnostics::Component::Gateway,
+                    tagma_core::diagnostics::Event::ApplyFailed,
+                    Some(error.code.clone()),
+                    None,
+                );
+            }
+            status.state = RuntimeState::Degraded;
+            status.error = Some(error);
+        }
+    }
+}
+
+#[cfg(test)]
+mod apply_tests {
+    use super::*;
+    fn state() -> Arc<Runtime> {
+        let fixture = tempfile::tempdir().unwrap();
+        Arc::new(Runtime {
+            directory: fixture.path().to_owned(),
+            manifest: Manifest {
+                protocol_version: 1,
+                product_version: PRODUCT_VERSION.into(),
+                schema_version: SCHEMA_VERSION,
+                config_id: "test".into(),
+                instance_id: "test".into(),
+                endpoint: "test".into(),
+                port: 1,
+                console_attached: false,
+            },
+            status: RwLock::new(RuntimeStatus {
+                state: RuntimeState::Running,
+                instance_id: Some("test".into()),
+                effective_revision: Some(0),
+                address: None,
+                owned: false,
+                error: None,
+            }),
+            snapshot: RwLock::new((0, Default::default())),
+            token: zeroize::Zeroizing::new(String::new()),
+            shutdown: CancellationToken::new(),
+            apply_guard: tokio::sync::Mutex::new(()),
+            load_slots: Arc::new(tokio::sync::Semaphore::new(1)),
+            _fixture: Some(fixture),
+        })
+    }
+    async fn delayed_old(
+        old: AppResult<(u32, tagma_core::service::ConfigSnapshot)>,
+    ) -> Arc<Runtime> {
+        let state = state();
+        let (started_tx, started_rx) = tokio::sync::oneshot::channel();
+        let (release_tx, release_rx) = tokio::sync::oneshot::channel();
+        let older = {
+            let state = state.clone();
+            tokio::spawn(async move {
+                apply_with(&state, async move {
+                    let _ = started_tx.send(());
+                    release_rx.await.unwrap();
+                    old
+                })
+                .await;
+            })
+        };
+        started_rx.await.unwrap();
+        let (new_started_tx, new_started_rx) = tokio::sync::oneshot::channel();
+        let newer = {
+            let state = state.clone();
+            tokio::spawn(async move {
+                let _ = new_started_tx.send(());
+                apply_with(&state, async { Ok((2, Default::default())) }).await;
+            })
+        };
+        new_started_rx.await.unwrap();
+        release_tx.send(()).unwrap();
+        older.await.unwrap();
+        newer.await.unwrap();
+        state
+    }
+    #[tokio::test]
+    async fn delayed_old_success_never_regresses_effective_revision() {
+        let state = delayed_old(Ok((1, Default::default()))).await;
+        assert_eq!(state.status.read().await.effective_revision, Some(2));
+        assert_eq!(state.snapshot.read().await.0, 2);
+    }
+    #[tokio::test]
+    async fn delayed_old_failure_never_overwrites_new_success() {
+        let state = delayed_old(Err(AppError::new(ErrorCode::CredentialStoreUnavailable))).await;
+        assert!(matches!(
+            state.status.read().await.state,
+            RuntimeState::Running
+        ));
+        assert!(state.status.read().await.error.is_none());
+    }
+    #[tokio::test]
+    async fn pending_apply_cannot_resurrect_stopping_runtime() {
+        let state = state();
+        let (ready_tx, ready_rx) = tokio::sync::oneshot::channel();
+        let (release_tx, release_rx) = tokio::sync::oneshot::channel();
+        let task = {
+            let state = state.clone();
+            tokio::spawn(async move {
+                apply_with(&state, async {
+                    let _ = ready_tx.send(());
+                    release_rx.await.unwrap();
+                    Ok((1, Default::default()))
+                })
+                .await;
+            })
+        };
+        ready_rx.await.unwrap();
+        state.status.write().await.state = RuntimeState::Stopping;
+        state.shutdown.cancel();
+        release_tx.send(()).unwrap();
+        task.await.unwrap();
+        assert!(matches!(
+            state.status.read().await.state,
+            RuntimeState::Stopping
+        ));
+        assert_eq!(state.status.read().await.effective_revision, Some(0));
+    }
+    #[tokio::test]
+    async fn timed_out_credential_load_keeps_one_worker_limit() {
+        let slots = Arc::new(tokio::sync::Semaphore::new(1));
+        let (release_tx, release_rx) = std::sync::mpsc::channel();
+        let (started_tx, started_rx) = tokio::sync::oneshot::channel();
+        let first = {
+            let slots = slots.clone();
+            tokio::spawn(async move {
+                bounded_load(&slots, Duration::from_millis(20), move || {
+                    let _ = started_tx.send(());
+                    release_rx.recv().unwrap();
+                    Ok((1, Default::default()))
+                })
+                .await
+            })
+        };
+        started_rx.await.unwrap();
+        assert_eq!(
+            first.await.unwrap().err().unwrap().code,
+            ErrorCode::ConfigApplyFailed
+        );
+        let second_called = Arc::new(std::sync::atomic::AtomicBool::new(false));
+        let observed = second_called.clone();
+        assert_eq!(
+            bounded_load(&slots, Duration::from_millis(20), move || {
+                observed.store(true, std::sync::atomic::Ordering::SeqCst);
+                Ok((2, Default::default()))
+            })
+            .await
+            .err()
+            .unwrap()
+            .code,
+            ErrorCode::ConfigApplyFailed
+        );
+        assert!(!second_called.load(std::sync::atomic::Ordering::SeqCst));
+        release_tx.send(()).unwrap();
+        tokio::time::timeout(Duration::from_secs(1), async {
+            while slots.available_permits() == 0 {
+                tokio::task::yield_now().await;
+            }
+        })
+        .await
+        .unwrap();
+    }
+}

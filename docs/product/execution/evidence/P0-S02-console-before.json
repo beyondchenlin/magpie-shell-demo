@@ -1,0 +1,12 @@
+[
+  {
+    "path": "D:\\demo1\\tagmaai\\.cache\\tagma-install-s02\\tagma-desktop.exe",
+    "subsystem": 3,
+    "kind": "Windows Console"
+  },
+  {
+    "path": "D:\\demo1\\tagmaai\\.cache\\tagma-install-s02\\tagma-gateway.exe",
+    "subsystem": 3,
+    "kind": "Windows Console"
+  }
+]

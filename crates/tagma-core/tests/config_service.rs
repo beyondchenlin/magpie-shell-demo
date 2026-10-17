@@ -260,3 +260,59 @@ fn system_credential_store_round_trip() {
     SystemCredentials.delete(&owned.0).unwrap();
     assert!(SystemCredentials.get(&owned.0).is_err());
 }
+
+#[test]
+#[ignore = "Child fixture only: invoked by process_crash_after_system_credential_set_recovers"]
+fn credential_crash_worker() {
+    struct CrashStore;
+    impl CredentialStore for CrashStore {
+        fn set(&self, reference: &str, secret: &str) -> AppResult<()> {
+            SystemCredentials.set(reference, secret)?;
+            // No destructors: real process termination between external-store write and SQL commit.
+            std::process::exit(86);
+        }
+        fn get(&self, reference: &str) -> AppResult<Zeroizing<String>> {
+            SystemCredentials.get(reference)
+        }
+        fn delete(&self, reference: &str) -> AppResult<()> {
+            SystemCredentials.delete(reference)
+        }
+    }
+    let directory = std::env::var_os("TAGMA_CREDENTIAL_CRASH_DIR")
+        .expect("isolated child fixture directory required");
+    let service =
+        ConfigService::open(std::path::Path::new(&directory), Arc::new(CrashStore)).unwrap();
+    let _ = service.save_provider(provider(0));
+    panic!("crash fixture did not exit after system credential write");
+}
+
+#[test]
+#[ignore = "Explicit real-process + OS credential-store integration; synthetic secret with exact journal-owned cleanup"]
+fn process_crash_after_system_credential_set_recovers() {
+    let temp = tempfile::tempdir().unwrap();
+    let status = std::process::Command::new(std::env::current_exe().unwrap())
+        .args(["--ignored", "--exact", "credential_crash_worker"])
+        .env("TAGMA_CREDENTIAL_CRASH_DIR", temp.path())
+        .status()
+        .unwrap();
+    assert_eq!(status.code(), Some(86));
+    let db = rusqlite::Connection::open(temp.path().join("config.sqlite3")).unwrap();
+    let reference: String = db
+        .query_row("SELECT credential_ref FROM credential_journal", [], |r| {
+            r.get(0)
+        })
+        .unwrap();
+    struct Cleanup(String);
+    impl Drop for Cleanup {
+        fn drop(&mut self) {
+            let _ = SystemCredentials.delete(&self.0);
+        }
+    }
+    let cleanup = Cleanup(reference);
+    assert!(SystemCredentials.get(&cleanup.0).is_ok());
+    drop(db);
+    let recovered = ConfigService::open(temp.path(), Arc::new(SystemCredentials)).unwrap();
+    assert_eq!(recovered.view().unwrap().desired_revision, 0);
+    assert_eq!(recovered.view().unwrap().pending_credential_cleanup, 0);
+    assert!(SystemCredentials.get(&cleanup.0).is_err());
+}

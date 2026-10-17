@@ -5,6 +5,11 @@ fn main() {
             "save_provider",
             "delete_provider",
             "reorder_providers",
+            "start_gateway",
+            "stop_gateway",
+            "apply_gateway",
+            "quit_application",
+            "diagnostics_view",
         ]),
     ))
     .expect("Tauri build configuration failed");

@@ -1,0 +1,14 @@
+{
+  "launcher": "Windows installed-app launcher",
+  "appId": "com.tagmaai.desktop",
+  "beforeTagmaOrConsoleWindows": [],
+  "afterTagmaOrConsoleWindows": [
+    {
+      "app": "process:D:\\demo1\\tagmaai\\.cache\\tagma-install-s02\\tagma-desktop.exe",
+      "id": 922390,
+      "title": "Tagma"
+    }
+  ],
+  "documentText": "Tagma\n对话\n供应商\n队员市场\n设置\n对话\n对话尚未接入\n请先配置供应商。真实对话将在协议切片完成后经本机网关调用。\n配置供应商\n原生桌面\n已保存版本: 0 · 运行中版本: 0\n刷新",
+  "graphicsCapture": "timed out; no OS frame screenshot claim"
+}

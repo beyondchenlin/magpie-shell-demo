@@ -9,5 +9,10 @@ license.workspace = true
 tauri-build = { version = "2", features = [] }
 
 [dependencies]
-tauri = { version = "2", features = [] }
+tauri = { version = "2", features = ["tray-icon"] }
 tagma-core = { path = "../crates/tagma-core" }
+tagma-runtime = { path = "../crates/tagma-runtime" }
+tokio = { version = "1.53", features = ["time"] }
+
+[features]
+custom-protocol = ["tauri/custom-protocol"]
