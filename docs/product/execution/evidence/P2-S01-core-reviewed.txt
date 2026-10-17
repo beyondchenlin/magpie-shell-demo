@@ -1,0 +1,40 @@
+   Compiling tagma-core v0.2.0-dev.16 (D:\demo1\tagmaai\crates\tagma-core)
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+    Finished `test` profile [unoptimized] target(s) in 4.85s
+     Running tests\packs.rs (target\debug\deps\packs-0a1900a7e40a1fb7.exe)
+
+running 8 tests
+test portable_paths_reject_traversal_devices_aliases_and_external_roots ... ok
+Pack admission:actual Ed25519 strict/domain-separated signature over exact UTF8 bytes ->immutable proof,identity/semver/platform/permissions/models retained;no download/install/execute
+test signed_manifest_binds_exact_bytes_identity_contract_and_platform ... ok
+test checksum_is_incremental_exact_and_poisoned_after_an_oversized_download ... ok
+Pack archive METADATA only:portable traversal/absolute/device/alias paths,all link types,file-prefix collisions,count/expanded size bounds refused;no real extraction or filesystem-race claim
+test archive_index_rejects_all_links_aliases_prefix_collisions_and_expansion_limits ... ok
+Pack space arithmetic only:download onTemp+unpack/stage onTarget+retained old versions;atomic switch no second copy,existing bytes not double-charged;shared volumes combine needs,allocation overhead estimated from host units,logical bytes distinct;each relevant disk retains10GiB;shortfall/overflow explicit;no disk fill/download
+test space_plan_accounts_for_temp_stage_existing_versions_and_same_volume_without_double_charge ... ok
+test key_registry_and_signed_validity_windows_fail_closed ... ok
+Pack trust negatives:empty/unknown root,wrong/truncated/zero signature,missing domain,changed raw bytes,issuer mismatch,community/self-key all refused;no bypass flag
+test signature_root_publisher_and_domain_cannot_be_supplied_or_rebound_by_pack ... ok
+test bounded_schema_rejects_unknown_duplicate_malformed_and_unsafe_metadata ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.55s
+

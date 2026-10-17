@@ -1,0 +1,86 @@
+{
+  "recordedAtUtc": "2026-10-17T23:32:55.571Z",
+  "addedLockedPackages": 11,
+  "existingVersionUpdates": 0,
+  "downloadLogEntries": [
+    {
+      "name": "spki",
+      "version": "0.7.3",
+      "path": "C:\\Users\\ai\\.cargo\\registry\\cache\\index.crates.io-1949cf8c6b5b557f\\spki-0.7.3.crate",
+      "bytes": 16409,
+      "sha256": "d91ed6c858b01f942cd56b37a94b3e0a1798290327d1236e4d9cf4eaca44d29d"
+    },
+    {
+      "name": "rand_core",
+      "version": "0.6.4",
+      "path": "C:\\Users\\ai\\.cargo\\registry\\cache\\index.crates.io-1949cf8c6b5b557f\\rand_core-0.6.4.crate",
+      "bytes": 22666,
+      "sha256": "ec0be4795e2f6a28069bec0b5ff3e2ac9bafc99e6a9a7dc3547996c5c816922c"
+    },
+    {
+      "name": "ed25519",
+      "version": "2.2.3",
+      "path": "C:\\Users\\ai\\.cargo\\registry\\cache\\index.crates.io-1949cf8c6b5b557f\\ed25519-2.2.3.crate",
+      "bytes": 17802,
+      "sha256": "115531babc129696a58c64a4fef0a8bf9e9698629fb97e9e40767d235cfbcd53"
+    },
+    {
+      "name": "const-oid",
+      "version": "0.9.6",
+      "path": "C:\\Users\\ai\\.cargo\\registry\\cache\\index.crates.io-1949cf8c6b5b557f\\const-oid-0.9.6.crate",
+      "bytes": 45382,
+      "sha256": "c2459377285ad874054d797f3ccebf984978aa39129f6eafde5cdc8315b612f8"
+    },
+    {
+      "name": "signature",
+      "version": "2.2.0",
+      "path": "C:\\Users\\ai\\.cargo\\registry\\cache\\index.crates.io-1949cf8c6b5b557f\\signature-2.2.0.crate",
+      "bytes": 15531,
+      "sha256": "77549399552de45a898a580c1b41d445bf730df867cc44e6c0233bbc4b8329de"
+    },
+    {
+      "name": "ed25519-dalek",
+      "version": "2.2.0",
+      "path": "C:\\Users\\ai\\.cargo\\registry\\cache\\index.crates.io-1949cf8c6b5b557f\\ed25519-dalek-2.2.0.crate",
+      "bytes": 98034,
+      "sha256": "70e796c081cee67dc755e1a36a0a172b897fab85fc3f6bc48307991f64e4eca9"
+    },
+    {
+      "name": "base64ct",
+      "version": "1.8.3",
+      "path": "C:\\Users\\ai\\.cargo\\registry\\cache\\index.crates.io-1949cf8c6b5b557f\\base64ct-1.8.3.crate",
+      "bytes": 32227,
+      "sha256": "2af50177e190e07a26ab74f8b1efbfe2ef87da2116221318cb1c2e82baf7de06"
+    },
+    {
+      "name": "der",
+      "version": "0.7.10",
+      "path": "C:\\Users\\ai\\.cargo\\registry\\cache\\index.crates.io-1949cf8c6b5b557f\\der-0.7.10.crate",
+      "bytes": 90111,
+      "sha256": "e7c1832837b905bbfb5101e07cc24c8deddf52f93225eee6ead5f4d63d53ddcb"
+    },
+    {
+      "name": "curve25519-dalek-derive",
+      "version": "0.1.1",
+      "path": "C:\\Users\\ai\\.cargo\\registry\\cache\\index.crates.io-1949cf8c6b5b557f\\curve25519-dalek-derive-0.1.1.crate",
+      "bytes": 11723,
+      "sha256": "f46882e17999c6cc590af592290432be3bce0428cb0d5f8b6715e4dc7b383eb3"
+    },
+    {
+      "name": "pkcs8",
+      "version": "0.10.2",
+      "path": "C:\\Users\\ai\\.cargo\\registry\\cache\\index.crates.io-1949cf8c6b5b557f\\pkcs8-0.10.2.crate",
+      "bytes": 26360,
+      "sha256": "f950b2377845cebe5cf8b5165cb3cc1a5e0fa5cfa3e1f7f55707d8fd82e0a7b7"
+    },
+    {
+      "name": "curve25519-dalek",
+      "version": "4.1.3",
+      "path": "C:\\Users\\ai\\.cargo\\registry\\cache\\index.crates.io-1949cf8c6b5b557f\\curve25519-dalek-4.1.3.crate",
+      "bytes": 306017,
+      "sha256": "97fb8b7c4503de7d6ae7b42ab72a5a59857b4c937ec27a3d4539dba95b5ab2be"
+    }
+  ],
+  "logicalCompressedBytes": 682262,
+  "note": "Current compressed cache files for logged downloads;not measured physical/net growth.Official existing Cargo cache reused,no environment clone.2.2.0 exact/std+zeroize,semver reused lock."
+}

@@ -7,6 +7,7 @@ pub mod diagnostics;
 pub mod health;
 mod initialization;
 mod migrations;
+pub mod packs;
 pub mod recovery;
 pub mod security;
 pub mod service;

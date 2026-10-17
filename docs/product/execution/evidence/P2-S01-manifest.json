@@ -1,0 +1,133 @@
+{
+  "recordedAtUtc": "2026-10-17T23:32:55.571Z",
+  "sourceBase": "e2f0be78cff3b66c23e05af8dbcd14d566abbb99",
+  "candidateVersion": "0.2.0-dev.16",
+  "configSchema": 10,
+  "usageSchema": 2,
+  "source": [
+    {
+      "path": "D:\\demo1\\tagmaai\\Cargo.lock",
+      "bytes": 141485,
+      "sha256": "07c87fee8d41213913f4818af7f2391893043fc2f7cbc5332c626c0138226df9"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-core\\Cargo.toml",
+      "bytes": 1107,
+      "sha256": "38804e23f9ee460c553eddc951ad42743e6372aa484cc913c93e93abf1675edb"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-core\\src\\lib.rs",
+      "bytes": 330,
+      "sha256": "022ac4a2c6a60e3e2f92371c18f3ed29a6ff0560af27054c72bab8aa279ade30"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-core\\src\\packs.rs",
+      "bytes": 1981,
+      "sha256": "40cae10323e069905314a0ab08316516b4e898fa91f51b8c15b4d825d866df9b"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-core\\src\\packs\\manifest.rs",
+      "bytes": 8345,
+      "sha256": "7684573fdbb158d255433311121f5d47fc661033a7909c3096c041f3bb9b2e2f"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-core\\src\\packs\\paths.rs",
+      "bytes": 3747,
+      "sha256": "abcea37edeee127c65a62c995bd524080ad99e9018ef86a4f76a4940d18a11c0"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-core\\src\\packs\\space.rs",
+      "bytes": 4257,
+      "sha256": "c68e7be8ec85819441dcbc27e2776b827ff512668c1c027310f850b95ab2eb19"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-core\\src\\packs\\trust.rs",
+      "bytes": 6104,
+      "sha256": "1c58169e38bb1b706bbb55787275879681544c418567dc7d05e1ca89c6523bd7"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-core\\tests\\packs.rs",
+      "bytes": 18445,
+      "sha256": "dd3ed737124cb4178678e4dacdff94dfb3d47bc4cf82edc30d8749cb5fc22084"
+    }
+  ],
+  "documents": [
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\EXECUTION-STATUS.md",
+      "bytes": 37462,
+      "sha256": "a8afcc8028cd4457a0e45046e4c61cfd4b4b2e47b56989e8a2aa33be7060dfdc"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\P2-S01-PACK-ADMISSION.md",
+      "bytes": 5334,
+      "sha256": "29f8b03b3d309264a4e0b4e5c4c5a3e80f35c0dc1159862ad692162c57d71e82"
+    }
+  ],
+  "prd": {
+    "path": "D:\\demo1\\tagmaai\\docs\\product\\TAGMA-PRD-v0.3.md",
+    "bytes": 50957,
+    "sha256": "6e6503391f70e3f2e53347890de6e7c9f7fd93cc393c68f7bba494ac4d67a6d6"
+  },
+  "evidence": [
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P2-S01-clippy-final.txt",
+      "bytes": 1329,
+      "sha256": "1a83a3948a945b7de2b15ef780c7ecc43fb9b91a2b691759ea1a252f74f25df5"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P2-S01-clippy.txt",
+      "bytes": 1329,
+      "sha256": "0428af228052c0f9f9bc9c055842a6e1909385cbc3f9d434c5b6129a9a113efd"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P2-S01-core-all.txt",
+      "bytes": 22729,
+      "sha256": "e438eb1655ae52011e672aeec3fefd0e841ff01df9e3bd3870431083a4b7068b"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P2-S01-core-final.txt",
+      "bytes": 2479,
+      "sha256": "0be9e4dbb937aa3c47f2bb1a1471d0b48034b59f7dec2b1853da79ce24d73d90"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P2-S01-core-first.txt",
+      "bytes": 2571,
+      "sha256": "d0df5d1ce53c3019bbd4f9cc82bf6bb3bd8908adab49625c23926577ae77c272"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P2-S01-core-reviewed.txt",
+      "bytes": 2479,
+      "sha256": "c3cbf5074e91cb88101422cc1bde9c55be1540280d68979dc18c4b2e0413feda"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P2-S01-dependencies.json",
+      "bytes": 3519,
+      "sha256": "3d5b05087c2bdc8f13208db2d6a5f31a198c39b507463b280939f44b08d95257"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P2-S01-dependency-check.txt",
+      "bytes": 1808,
+      "sha256": "3d2b9611e887e33b9b5bc83fef29c0354c20395079f1797a0a04e409439b82f0"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P2-S01-space-after.json",
+      "bytes": 653,
+      "sha256": "525caa2354ce0912fddf1b8a32baa63b82b64211862e592a79f163906b29b6ce"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P2-S01-space-plan.json",
+      "bytes": 767,
+      "sha256": "f88ee461d378de322e04a857a156b1156956e701640cc82f2ec43e3f3ba9e9d6"
+    }
+  ],
+  "results": {
+    "newPackTests": 8,
+    "unchangedCoreTests": 91,
+    "totalDistinct": 99,
+    "explicitIgnored": 8,
+    "final": "new8 +core all-target Clippy pass after allocation/empty-executable review;prior complete core99pass/8ignore"
+  },
+  "scope": "Core-only exact-byte Ed25519/domain/root/identity/time/schema/platform;incremental checksum;portable path/archive metadata checks;host-observation space arithmetic with allocation estimates",
+  "unverified": "Actual archive decoder/extraction/filesystem race/download/install/recovery/task/real ReachFlow/official release root/native;A17-20/P0/P1 not complete",
+  "installed": "dev.9 untouched;desktop prohibited;drag unaccepted;no real key/service/new env/worktree/cleanup"
+}

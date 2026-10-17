@@ -1,0 +1,54 @@
+    Updating crates.io index
+     Locking 11 packages to latest compatible versions
+      Adding base64ct v1.8.3
+      Adding const-oid v0.9.6
+      Adding curve25519-dalek v4.1.3
+      Adding curve25519-dalek-derive v0.1.1
+      Adding der v0.7.10
+      Adding ed25519 v2.2.3
+      Adding ed25519-dalek v2.2.0 (available: v3.0.0)
+      Adding fiat-crypto v0.2.9
+      Adding pkcs8 v0.10.2
+      Adding signature v2.2.0
+      Adding spki v0.7.3
+ Downloading crates ...
+  Downloaded spki v0.7.3
+  Downloaded rand_core v0.6.4
+  Downloaded ed25519 v2.2.3
+  Downloaded const-oid v0.9.6
+  Downloaded signature v2.2.0
+  Downloaded ed25519-dalek v2.2.0
+  Downloaded base64ct v1.8.3
+  Downloaded der v0.7.10
+  Downloaded curve25519-dalek-derive v0.1.1
+  Downloaded pkcs8 v0.10.2
+  Downloaded curve25519-dalek v4.1.3
+   Compiling rustc_version v0.4.1
+   Compiling curve25519-dalek-derive v0.1.1
+    Checking signature v2.2.0
+    Checking subtle v2.6.1
+    Checking ed25519 v2.2.3
+   Compiling curve25519-dalek v4.1.3
+    Checking ed25519-dalek v2.2.0
+    Checking tagma-core v0.2.0-dev.16 (D:\demo1\tagmaai\crates\tagma-core)
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+    Finished `dev` profile [unoptimized] target(s) in 10.13s

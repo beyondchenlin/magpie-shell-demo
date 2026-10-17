@@ -1,0 +1,13 @@
+{
+  "RecordedAtUtc": "2026-10-17T23:20:24.7828419Z",
+  "Target": "D:/demo1/tagmaai/target",
+  "DependencyCache": "C:/Users/ai/.cargo/registry",
+  "TemporaryRoot": "C:\\Users\\ai\\AppData\\Local\\Temp",
+  "EstimatedAdditionalPeakGiB": 0.15,
+  "CFreeBeforeGiB": 42.23,
+  "DFreeBeforeGiB": 9.63,
+  "Scope": "Small Ed25519 verifier dependency plus pure manifest/path/space contract;targeted core cached build/test only",
+  "Reuse": "Same workspace/Cargo cache/lock;semver already locked;no new environment/worktree/full bundle",
+  "Constraint": "D<10GiB;>1GiB growth remains paused;review if unexpectedly broad download/build",
+  "Cleanup": "No install/run pack/real signing key or service;memory tests/owned tiny TempDir only;preserve old/user artifacts"
+}

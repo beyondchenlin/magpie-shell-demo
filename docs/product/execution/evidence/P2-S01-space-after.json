@@ -1,0 +1,19 @@
+{
+  "RecordedAtUtc": "2026-10-17T23:32:55.4924622Z",
+  "Disks": [
+    {
+      "Name": "C",
+      "FreeGiB": 42.22
+    },
+    {
+      "Name": "D",
+      "FreeGiB": 9.52
+    }
+  ],
+  "NewWorktrees": 0,
+  "NewEnvironments": 0,
+  "NewPackFixtures": "Memory only;no package/extraction/service artifacts",
+  "Cleanup": "No manual deletion;existing tests use original RAII;old evidence/cache/denied files/user data retained",
+  "Kept": "Existing target/node_modules/dist/Cargo cache;installed dev.9 and user preview data/webview",
+  "Caveat": "Drive delta includes cache/concurrent writes;not task peak or net release;>1GiB growth paused"
+}

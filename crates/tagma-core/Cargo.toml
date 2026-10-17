@@ -17,6 +17,8 @@ zeroize = "1.8"
 sha2 = "0.10"
 getrandom = "0.4.3"
 keyring = "3.6.3"
+ed25519-dalek = { version = "=2.2.0", default-features = false, features = ["std", "zeroize"] }
+semver = "1.0"
 
 [target.'cfg(windows)'.dependencies]
 keyring = { version = "3.6.3", features = ["windows-native"] }
