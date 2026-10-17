@@ -599,7 +599,28 @@ export function AgentsView({
   const [relPreview, setRelPreview] = useState<string | null>(null);
   const [relPhase, setRelPhase] = useState<"edit" | "preview" | "done">("edit");
   const [expandOpen, setExpandOpen] = useState<string | null>(null);
-  const [connectBusy, setConnectBusy] = useState<string | null>(null);
+  const [connectBusy, setConnectBusy] = useState<Set<string>>(() => new Set());
+  const connectTimers = useRef(new Map<string, number>());
+  useEffect(() => {
+    const timers = connectTimers.current;
+    return () => {
+      for (const timer of timers.values()) window.clearTimeout(timer);
+      timers.clear();
+    };
+  }, []);
+  const connectAgent = (id: string, closeOtherAgents = false) => {
+    if (connectTimers.current.has(id)) return;
+    setConnectBusy(previous => new Set(previous).add(id));
+    const timer = window.setTimeout(() => {
+      connectTimers.current.delete(id);
+      setWired(previous => ({ ...previous, [id]: true }));
+      setExpandOpen(id);
+      setConnectBusy(previous => { const next = new Set(previous); next.delete(id); return next; });
+      if (closeOtherAgents) setShowAllAgents(false);
+      onStatus(demoCopy("演示：已接入 · 新开的会话生效", "Demo: connected · new sessions take it"), "ok");
+    }, 380);
+    connectTimers.current.set(id, timer);
+  };
   const [diffOpen, setDiffOpen] = useState<string | null>(null);
   const [relFrom, setRelFrom] = useState("~/.claude/projects/old");
   const [relTo, setRelTo] = useState("~/.claude/projects/new");
@@ -1082,7 +1103,7 @@ export function AgentsView({
                   <LibSwitch
                     kind="ag-conn"
                     on={!!wired[a.id]}
-                    disabled={connectBusy === a.id}
+                    disabled={connectBusy.has(a.id)}
                     aria-label={t("Connect {agent} to magpie", { agent: a.name })}
                     title={
                       wired[a.id]
@@ -1105,13 +1126,7 @@ export function AgentsView({
                         onStatus(demoCopy("演示：已断开并还原", "Demo: disconnected and restored"), "ok");
                         return;
                       }
-                      setConnectBusy(a.id);
-                      window.setTimeout(() => {
-                        setWired((w) => ({ ...w, [a.id]: true }));
-                        setExpandOpen(a.id);
-                        setConnectBusy(null);
-                        onStatus(t("Connected · new sessions take it"), "ok");
-                      }, 380);
+                      connectAgent(a.id);
                     }}
                   />
                 </>
@@ -1426,21 +1441,14 @@ export function AgentsView({
                           <LibSwitch
                             kind="ag-conn"
                             on={false}
-                            disabled={connectBusy === a.id}
+                            disabled={connectBusy.has(a.id)}
                             aria-label={t("Connect {agent} to magpie", { agent: a.name })}
                             title={t("Switch on and {agent}'s model list gets magpie's models", {
                               agent: a.name,
                             })}
                             onClick={(e) => {
                               e.stopPropagation();
-                              setConnectBusy(a.id);
-                              window.setTimeout(() => {
-                                setWired((w) => ({ ...w, [a.id]: true }));
-                                setExpandOpen(a.id);
-                                setConnectBusy(null);
-                                setShowAllAgents(false);
-                                onStatus(t("Connected · new sessions take it"), "ok");
-                              }, 380);
+                              connectAgent(a.id, true);
                             }}
                           />
                         </div>

@@ -11,6 +11,8 @@ const output=path.resolve(process.argv[3]);
 fs.mkdirSync(output,{recursive:true});
 app.setPath('userData',path.join(output,'profile'));
 app.disableHardwareAcceleration();
+// Keep the test process alive between isolated windows and their async teardown.
+app.on('window-all-closed',()=>{});
 const results=[];
 const delay=ms=>new Promise(r=>setTimeout(r,ms));
 const runJS=(win,code)=>win.webContents.executeJavaScript(code);
