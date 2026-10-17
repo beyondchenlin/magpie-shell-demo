@@ -1,0 +1,100 @@
+   Compiling tagma-core v0.2.0-dev.12 (D:\demo1\tagmaai\crates\tagma-core)
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+   Compiling tagma-runtime v0.2.0-dev.12 (D:\demo1\tagmaai\crates\tagma-runtime)
+   Compiling tagma-gateway v0.2.0-dev.12 (D:\demo1\tagmaai\crates\tagma-gateway)
+    Finished `test` profile [unoptimized] target(s) in 6.23s
+     Running unittests src\main.rs (target\debug\deps\tagma_gateway-d892f2374081ae11.exe)
+
+running 9 tests
+test health::tests::coalescing_preserves_scope_time_and_failure_precedence ... ok
+test http_api::tests::refuses_unimplemented_fields_before_dispatch ... ok
+test apply_tests::pending_apply_cannot_resurrect_stopping_runtime ... ok
+test apply_tests::delayed_old_success_never_regresses_effective_revision ... ok
+test apply_tests::delayed_old_failure_never_overwrites_new_success ... ok
+test apply_tests::timed_out_credential_load_keeps_one_worker_limit ... ok
+SUP-006 observed_t0=1000 drain_t=301001 persisted_success=Some(1000) ready=false selected=false
+test health::tests::delayed_health_write_does_not_refresh_an_expired_observation ... ok
+A14 health consumer: bounded single read slot, admission timeout, recovery and shutdown rejection verified
+test health::tests::confirmed_reads_are_bounded_and_shutdown_is_not_an_acknowledgement ... ok
+test health::tests::coalesced_observations_are_confirmed_only_after_persistent_write ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.44s
+
+     Running tests\first_cloud.rs (target\debug\deps\first_cloud-aa39953892766640.exe)
+
+running 1 test
+A14 HTTP pin: in-flight two-step target=b/b1 across config reorder + b1 authentication failure; concurrent new call=a/a2; old published manual recipe unchanged
+A14 HTTP selection: actual inference required; global provider+model reorder; default App custom/empty scope; stale rows -> NO_AVAILABLE_BRAIN; pending/failed write -> omitted/rejected; no implicit probes; metadata recovery verified
+test automatic_brain_real_http_order_fallback_uncertainty_and_inflight_pinning ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.65s
+
+     Running tests\inference.rs (target\debug\deps\inference-1a69b3ee0704209f.exe)
+
+running 1 test
+test real_gateway_text_contract_streaming_snapshot_pin_and_client_cancel ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.98s
+
+     Running tests\process_lifecycle.rs (target\debug\deps\process_lifecycle-13260059f0afea3d.exe)
+
+running 14 tests
+test real_old_binary_is_not_stopped_or_migrated_by_new_entrypoint ... ignored, Requires explicitly supplied retained dev.3 executable; no binary download or key access
+test system_token_authenticates_only_data_plane_and_never_appears_in_configuration_files ... ignored, Explicit synthetic OS credential + actual HTTP integration, exact created reference cleaned
+test port_conflict_never_changes_port_or_kills_existing_listener ... ok
+test active_older_version_envelope_is_reported_without_spawn_or_stop ... ok
+test concurrent_start_has_one_instance_and_one_owner ... ok
+test oversized_private_frame_is_dropped_without_crashing_gateway ... ok
+test parent_eof_exits_managed_process_but_standalone_survives ... ok
+test unclean_health_invalidation_failure_prevents_readiness_and_preserves_marker ... ok
+test unclean_health_restart_preserves_success_facts_but_requires_new_confirmation ... ok
+test stale_old_version_manifest_does_not_block_start_without_an_active_lock ... ok
+test auth_missing_token_denies_by_default_and_port_changes_require_explicit_restart ... ok
+test saved_port_change_cannot_be_acknowledged_on_old_port_during_crash_restart ... ok
+test managed_ready_apply_reconcile_wrong_owner_and_graceful_stop ... ok
+test managed_crashes_restart_at_most_three_times_then_remain_failed ... ok
+
+test result: ok. 12 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 8.14s
+
+     Running tests\teams.rs (target\debug\deps\teams-cbc4103ab3d99c6b.exe)
+
+running 1 test
+SUP-005 case=length final_calls=0 status=502 Bad Gateway
+SUP-005 case=content_filter final_calls=0 status=502 Bad Gateway
+SUP-005 case=missing_finish final_calls=0 status=502 Bad Gateway
+SUP-005 case=null_finish final_calls=0 status=502 Bad Gateway
+SUP-005 case=non_string_finish final_calls=0 status=502 Bad Gateway
+SUP-005 case=unknown_finish final_calls=0 status=502 Bad Gateway
+SUP-005 case=legacy_function final_calls=0 status=502 Bad Gateway
+SUP-005 case=legacy_reason final_calls=0 status=502 Bad Gateway
+SUP-005 case=tool_reason final_calls=0 status=502 Bad Gateway
+SUP-005 case=refusal final_calls=0 status=502 Bad Gateway
+SUP-005 case=invalid_role final_calls=0 status=502 Bad Gateway
+SUP-005 case=invalid_index final_calls=0 status=502 Bad Gateway
+SUP-005 case=error final_calls=0 status=429 Too Many Requests
+SUP-005 case=tool final_calls=0 status=502 Bad Gateway
+SUP-005 case=empty final_calls=0 status=502 Bad Gateway
+SUP-005 case=huge final_calls=0 status=502 Bad Gateway
+SUP-005 case=timeout final_calls=0 status=504 Gateway Timeout
+SUP-005 final model=tagma/test-team@2 reason=length nonstream_and_stream=preserved
+SUP-005 final model=final-model reason=length nonstream_and_stream=preserved
+SUP-005 final model=tagma/test-team@2 reason=content_filter nonstream_and_stream=preserved
+SUP-005 final model=final-model reason=content_filter nonstream_and_stream=preserved
+test team_execution_pins_recipe_and_targets_and_stops_after_failure_timeout_or_cancel ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.22s
+

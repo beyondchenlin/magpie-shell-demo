@@ -86,6 +86,7 @@ pub struct Tracker {
     epoch: AtomicU64,
     shutdown: CancellationToken,
     clock: Arc<dyn Fn() -> tagma_core::AppResult<u64> + Send + Sync>,
+    read_slots: Arc<tokio::sync::Semaphore>,
     #[cfg(test)]
     before_drain: Mutex<Option<Arc<dyn Fn() + Send + Sync>>>,
 }
@@ -110,6 +111,7 @@ impl Tracker {
             epoch: AtomicU64::new(0),
             shutdown,
             clock,
+            read_slots: Arc::new(tokio::sync::Semaphore::new(1)),
             #[cfg(test)]
             before_drain: Mutex::new(None),
         })
@@ -224,6 +226,36 @@ impl Tracker {
     }
     pub fn epoch(&self) -> u64 {
         self.epoch.load(Ordering::SeqCst)
+    }
+    pub async fn read_confirmed(
+        &self,
+        snapshot: ConfigSnapshot,
+    ) -> Option<(u64, Vec<tagma_core::health::ModelHealthRecord>)> {
+        if self.shutdown.is_cancelled() || !self.confirmed() {
+            return None;
+        }
+        let epoch = self.epoch();
+        let permit = tokio::time::timeout(
+            std::time::Duration::from_millis(250),
+            self.read_slots.clone().acquire_owned(),
+        )
+        .await
+        .ok()?
+        .ok()?;
+        let directory = self.directory.clone();
+        let task = tokio::task::spawn_blocking(move || {
+            let _permit = permit;
+            ConfigService::read_runtime_health(&directory, &snapshot)
+        });
+        let records = tokio::time::timeout(std::time::Duration::from_millis(500), task)
+            .await
+            .ok()?
+            .ok()?
+            .ok()?;
+        if epoch != self.epoch() || !self.confirmed() {
+            return None;
+        }
+        Some((epoch, records))
     }
     pub async fn settle(&self, budget: std::time::Duration) -> bool {
         tokio::time::timeout(budget, async {
@@ -359,6 +391,13 @@ mod tests {
             !tracker.confirmed(),
             "A failed metadata write cannot be acknowledged as persisted"
         );
+        assert!(
+            tracker
+                .read_confirmed(config.read_snapshot().unwrap().1)
+                .await
+                .is_none(),
+            "Persisted old rows cannot bypass an unconfirmed write"
+        );
         assert_eq!(
             config.view().unwrap().model_health[0].inference,
             InferenceHealth::Failed
@@ -457,6 +496,27 @@ mod tests {
         assert_eq!(records[0].inference_succeeded_ms, Some(1000));
         assert_eq!(records[0].view(late).inference, InferenceHealth::Stale);
     }
+    #[tokio::test]
+    async fn confirmed_reads_are_bounded_and_shutdown_is_not_an_acknowledgement() {
+        let temp = tempfile::tempdir().unwrap();
+        let config = ConfigService::open(temp.path(), Arc::new(SystemCredentials)).unwrap();
+        let shutdown = CancellationToken::new();
+        let tracker = Tracker::new(temp.path().to_owned(), shutdown.clone());
+        let snapshot = config.read_snapshot().unwrap().1;
+        assert!(tracker.read_confirmed(snapshot.clone()).await.is_some());
+        // A timed-out caller cannot create unbounded blocking readers.
+        let held = tracker.read_slots.clone().acquire_owned().await.unwrap();
+        assert!(tracker.read_confirmed(snapshot.clone()).await.is_none());
+        assert_eq!(tracker.read_slots.available_permits(), 0);
+        drop(held);
+        assert!(tracker.read_confirmed(snapshot.clone()).await.is_some());
+        shutdown.cancel();
+        assert!(tracker.read_confirmed(snapshot).await.is_none());
+        println!(
+            "A14 health consumer: bounded single read slot, admission timeout, recovery and shutdown rejection verified"
+        );
+    }
+
     #[test]
     fn coalescing_preserves_scope_time_and_failure_precedence() {
         let mut pending = Pending::default();

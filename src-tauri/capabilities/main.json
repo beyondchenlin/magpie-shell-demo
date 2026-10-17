@@ -13,6 +13,7 @@
     "allow-delete-provider",
     "allow-reorder-providers",
     "allow-save-profile",
+    "allow-save-first-cloud-order",
     "allow-save-team",
     "allow-publish-team",
     "allow-set-team-enabled",

@@ -110,8 +110,8 @@ fn write_journal(directory: &Path, journal: &Journal, replace: bool) -> AppResul
 }
 
 pub(crate) fn prepare(directory: &Path) -> AppResult<()> {
-    // At most four known transitions; a pending committed step is resumed first.
-    for _ in 0..5 {
+    // Bound the known transition chain, including one resumed committed step.
+    for _ in 0..SCHEMA_VERSION {
         prepare_inner(directory, || Ok(()))?;
         let db = Connection::open_with_flags(
             directory.join("config.sqlite3"),
@@ -211,7 +211,7 @@ fn prepare_inner(directory: &Path, after_backup: impl FnOnce() -> AppResult<()>)
         && !(journal.owner == LEGACY_OWNER && journal.from_schema == 1 && journal.to_schema == 2))
         || !matches!(
             (journal.from_schema, journal.to_schema),
-            (1, 2) | (2, 3) | (3, 4) | (4, 5)
+            (1, 2) | (2, 3) | (3, 4) | (4, 5) | (5, 6)
         )
         || (version != journal.from_schema && version != journal.to_schema)
         || uuid::Uuid::parse_str(&journal.operation_id).is_err()
@@ -322,7 +322,8 @@ fn prepare_inner(directory: &Path, after_backup: impl FnOnce() -> AppResult<()>)
                 .map_err(|_| error())?;
         }
         // V3 protects authentication fields; V4 protects team drafts and immutable
-        // publications from being silently dropped by older writers.
+        // publications from being silently dropped by older writers. V6 protects
+        // the automatic-brain order source and dynamic step targets.
         // Historical snapshot bytes stay immutable; current readers supply defaults.
         tx.pragma_update(None, "user_version", journal.to_schema)
             .map_err(|_| error())?;
@@ -341,6 +342,59 @@ mod tests {
         db.execute_batch("PRAGMA journal_mode=WAL;PRAGMA application_id=1413564237;CREATE TABLE revisions(revision INTEGER PRIMARY KEY,snapshot TEXT NOT NULL);CREATE TABLE config_head(singleton INTEGER PRIMARY KEY,revision INTEGER NOT NULL);CREATE TABLE credential_journal(operation_id TEXT PRIMARY KEY,credential_ref TEXT NOT NULL UNIQUE);INSERT INTO revisions VALUES(0,'{\"providers\":[]}');INSERT INTO config_head VALUES(1,0);PRAGMA user_version=1;").unwrap();
         db
     }
+    #[test]
+    fn schema_five_upgrade_backs_up_health_and_preserves_original_snapshot_bytes() {
+        let temp = tempfile::tempdir().unwrap();
+        let db = legacy(temp.path());
+        while schema(&db).unwrap() < 5 {
+            prepare_inner(temp.path(), || Ok(())).unwrap();
+        }
+        let original: String = db
+            .query_row("SELECT snapshot FROM revisions WHERE revision=0", [], |r| {
+                r.get(0)
+            })
+            .unwrap();
+        let observed = r#"{"provider_id":"synthetic","model_id":"model","fingerprint":"synthetic","catalog_seen_ms":null,"inference_succeeded_ms":1000,"inference_failed_ms":null,"failure":null}"#;
+        db.execute(
+            "INSERT INTO model_health VALUES('synthetic','model','synthetic',?1)",
+            [observed],
+        )
+        .unwrap();
+        prepare(temp.path()).unwrap();
+        assert_eq!(schema(&db).unwrap(), 6);
+        assert_eq!(revision(&db).unwrap(), 0);
+        assert_eq!(
+            db.query_row::<String, _, _>(
+                "SELECT snapshot FROM revisions WHERE revision=0",
+                [],
+                |r| r.get(0)
+            )
+            .unwrap(),
+            original
+        );
+        assert_eq!(
+            db.query_row::<String, _, _>("SELECT observation FROM model_health", [], |r| r.get(0))
+                .unwrap(),
+            observed
+        );
+        let backup = fs::read_dir(temp.path().join("backups"))
+            .unwrap()
+            .filter_map(Result::ok)
+            .find(|entry| entry.file_name().to_string_lossy().starts_with("schema-5-"))
+            .unwrap();
+        let saved = Connection::open(backup.path()).unwrap();
+        assert_eq!(schema(&saved).unwrap(), 5);
+        assert_eq!(
+            saved
+                .query_row::<String, _, _>("SELECT observation FROM model_health", [], |r| r.get(0))
+                .unwrap(),
+            observed
+        );
+        println!(
+            "A14 schema5->6: backup includes health, original snapshot bytes and config revision preserved"
+        );
+    }
+
     #[test]
     fn backup_includes_committed_wal_and_historical_snapshot_bytes_are_unchanged() {
         let temp = tempfile::tempdir().unwrap();

@@ -2,6 +2,8 @@ import { useEffect, useId, useRef, useState, type FormEvent } from "react";
 import { TextBtn } from "../components/TextBtn";
 import { Tick } from "../components/Tick";
 import { WordsField } from "../components/WordsField";
+import { PrefRow } from "../components/PrefRow";
+import { ModelPick } from "./ModelPick";
 import type { AppProfile, ConfigView, SaveAppProfile } from "./contract";
 import type { ProductLanguage } from "./preferences";
 import { copy } from "./copy";
@@ -13,6 +15,7 @@ export function AppProfiles({ config, busy, language, onMutate, onEditingChange 
   onEditingChange: (editing: boolean) => void;
 }) {
   const c = copy(language);
+  const zh = language === "zh";
   const [editor, setEditor] = useState<AppProfile | "new" | null>(null);
   const [deleting, setDeleting] = useState<AppProfile | null>(null);
   const dialog = useRef<HTMLDialogElement>(null);
@@ -29,9 +32,16 @@ export function AppProfiles({ config, busy, language, onMutate, onEditingChange 
     edit(null); return true;
   }
   const providerName = (id: string) => config.providers.find(p => p.id === id)?.name ?? id;
+  const order = config.first_cloud_order;
+  const appOptions = new Map(config.profiles.filter(profile=>!profile.is_global).map(profile=>[profile.id,profile.target_app]));
+  const appLabels = new Map(config.profiles.filter(profile=>!profile.is_global).map(profile=>[profile.id,profile.name]));
+  appOptions.set("global",zh?"全局顺序":"Global order");appLabels.set("global",zh?"使用全局供应商与模型序":"Use global provider and model order");
+  const orderBusy = busy || !!editor || !!deleting;
+  const saveOrder = (next:ConfigView["first_cloud_order"]) => void onMutate(()=>service.saveFirstCloudOrder({protocol_version:protocolVersion,expected_revision:config.desired_revision,order:next}));
   return <div className="tagma-profiles" aria-label={c.profiles}>
     <div className="tagma-heading"><h2>{c.profiles}</h2><TextBtn disabled={busy || !!editor || !!deleting} onClick={() => edit("new")}>{c.addProfile}</TextBtn></div>
     <p className="sub wraps">{c.profileHint}</p>
+    <div className="list prefs"><PrefRow name={zh?"自动选脑顺序来源":"Automatic brain order"} subClassName="wraps" sub={zh?"默认使用全局供应商及模型顺序。明确不使用全局序时，在此选择一个默认 App；没有近期可用模型时直接拒绝调用。":"Use global provider and model order, or explicitly replace it with a chosen default App. Reject calls when no recent healthy model qualifies."}><ModelPick value={order.kind==="global"?"global":order.profile_id} models={appOptions} labels={appLabels} disabled={orderBusy} label={zh?"选择自动选脑顺序来源":"Choose automatic brain order"} onChange={value=>saveOrder(value==="global"?{kind:"global"}:{kind:"default_app",profile_id:value})}/></PrefRow></div>
     <div className="list">{config.profiles.map(profile => <div className="row provider tagma-provider" key={profile.id}>
       <div className="who"><div className="name">{profile.is_global ? c.globalProfile : profile.name}</div>
         <div className="sub">{profile.is_global ? c.inheritOrder : `${profile.target_app} · ${profile.use_global_order ? c.inheritOrder : c.providerSelection}`}</div>

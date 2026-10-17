@@ -18,6 +18,12 @@
 
 ## 当前批次
 
+- TEAM-03/A14 局部接线完成：源码候选 **dev.12/schema6** 支持 first_cloud、历史显式目标 JSON、明确的默认 App 顺序来源、确认健康读取/epoch 复核以及调用开始固定 brain。真实无窗口 HTTP 验证全局/模型序、默认 App 空范围、过期/未确认拒绝、配置/健康变化只影响新调用；核心46项、网关24项通过，8项显式忽略不计入通过，DTO/前端构建/lint/CIS guard/Clippy通过。A14仍未整体通过，原生UI/非计费复检/能力与真实上游矩阵待验；用户安装仍dev.9，禁止电脑控制持续有效。详见[P1-S08](P1-S08-FIRST-CLOUD.md)与原始证据/源码指纹。
+
+## 历史切片记录
+
+以下保留各批当时的实现范围与版本；其中“未开放/待接线/下一步”等描述不是本批最新状态。最新范围以上方 dev.12/schema6 和 P1-S08 为准。
+
 - SUP-006按先失败后修复完成观测时刻校验：延迟到TTL后落盘不刷新成功时间；同毫秒失败优先、目录/推理分槽。原始before/after/core/final/regression结果保留。纯选择器与未确认退出围栏已验证，first_cloud发布/解析仍未开放；新增两项无窗口异常退出测试通过，禁止电脑控制持续有效。详见[SUP-006](SUP-006-OBSERVATION-TIME.md)及[P1-S07](P1-S07-HEALTH-UNCERTAINTY.md)。
 
 - P1-S06实际网关调用已接健康观测：单worker有界合并写入、世代固定、真实完成才刷新成功、错误及写入未确认分开，取消不刷新。网关6单元/直接HTTP1/小队HTTP1及Clippy通过；first_cloud仍未开放、UI未验、用户安装不变、禁止电脑控制有效。详见[P1-S06](P1-S06-OBSERVED-HEALTH.md)。
@@ -88,7 +94,7 @@
 | A11 | GW-08 NFR-07 | P1 未开始 |
 | A12 | DATA-02 GW-04 | P1 未开始 |
 | A13 | TEAM-01/02 GW-03 | P1 未开始 |
-| A14 | TEAM-03/04 | P1 未开始 |
+| A14 | TEAM-03/04 | first_cloud文本manual/sequential、全局/默认App序、确认健康与在途固定本机HTTP通过；explicit失效/缺Local Brain发布保护已有检查，能力/非计费复检/真实上游及UI待验，整体未通过，见P1-S08 |
 | A15 | TEAM-02/05/06/07 | P1 未开始 |
 | A16 | OBS-01/02/03/04/05/06 NFR-05 | P1 未开始 |
 | A17 | PACK-01/02/03 | P2 未开始 |

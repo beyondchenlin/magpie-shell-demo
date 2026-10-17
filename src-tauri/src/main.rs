@@ -134,6 +134,15 @@ async fn delete_team(
 }
 
 #[tauri::command]
+async fn save_first_cloud_order(
+    window: WebviewWindow,
+    app: State<'_, Application>,
+    input: SaveFirstCloudOrder,
+) -> AppResult<ConfigView> {
+    config(&window, &app)?.save_first_cloud_order(input)
+}
+
+#[tauri::command]
 async fn delete_profile(
     window: WebviewWindow,
     app: State<'_, Application>,
@@ -477,6 +486,7 @@ fn main() {
             send_chat,
             cancel_chat,
             save_profile,
+            save_first_cloud_order,
             save_team,
             publish_team,
             set_team_enabled,

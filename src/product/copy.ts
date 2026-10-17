@@ -51,6 +51,7 @@ const zh: typeof en = {
 
 export function copy(language: ProductLanguage) { return language === "zh" ? zh : en; }
 const errors: Record<ErrorCode, [string, string]> = {
+  NO_AVAILABLE_BRAIN:["没有近期确认可用的云模型。请检查健康状态，并按你的预算手动试调用。","No recently confirmed cloud model is available. Check health and make a manual test call within your budget."],
   TEAM_SLUG_CONFLICT: ["此小队标识已被使用，请选择其他标识。", "This team slug is already in use. Choose another slug."],
   TEAM_PUBLISHED: ["已发布版本不能改名或删除。可以修改草稿、发布新修订，或停用旧版本。", "Published recipes cannot be renamed or deleted. Edit the draft, publish a new revision, or disable an old version."],
   TEAM_RECIPE_UNAVAILABLE: ["小队依赖、步骤或执行预算尚未就绪，草稿已保留。", "Team dependencies, steps or execution budget are not ready. The draft is retained."],
@@ -69,6 +70,7 @@ const errors: Record<ErrorCode, [string, string]> = {
   OWNERSHIP_REQUIRED: ["此实例由外部入口拥有，本窗口不能停止它。", "This window does not own the gateway and cannot stop it."],
   STARTUP_TIMEOUT: ["网关启动超过10秒，已回收本次启动的子进程。请检查诊断后重试。", "Gateway startup exceeded 10 seconds. The owned child was reclaimed. Check diagnostics before retrying."],
   INITIALIZATION_RECOVERY_REQUIRED:["初始化记录损坏，原记录与数据已保护。请到设置查看诊断及可用恢复操作。","The initialization record is damaged and has been preserved. Open Settings for diagnostics and available recovery actions."],
+  PROFILE_REFERENCED:["此 App 档案正用于自动选脑。请先修改顺序来源，再删除档案。","This App profile supplies automatic brain ordering. Change the order source before deleting it."],
   PROVIDER_REFERENCED:[zh.referenceHint,en.referenceHint],
   RESTART_REQUIRED:[zh.portHint,en.portHint],
 };

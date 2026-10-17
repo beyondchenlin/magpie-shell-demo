@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 use ts_rs::TS;
 
 pub const PROTOCOL_VERSION: u32 = 1;
-pub const SCHEMA_VERSION: u32 = 5;
+pub const SCHEMA_VERSION: u32 = 6;
 pub const PRODUCT_VERSION: &str = env!("CARGO_PKG_VERSION");
 
 #[derive(Debug, Clone, Serialize, Deserialize, TS, PartialEq, Eq)]
@@ -24,10 +24,12 @@ pub enum ErrorCode {
     StartupTimeout,
     InitializationRecoveryRequired,
     ProviderReferenced,
+    ProfileReferenced,
     RestartRequired,
     TeamSlugConflict,
     TeamPublished,
     TeamRecipeUnavailable,
+    NoAvailableBrain,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, TS, PartialEq, Eq)]
@@ -123,6 +125,30 @@ pub struct SaveAppProfile {
     pub use_global_order: bool,
 }
 
+/// Global is present by default for historical configurations. DefaultApp explicitly
+/// clears the global sequence for automatic brains; it is never an inference-failure fallback.
+#[derive(Debug, Clone, Serialize, Deserialize, TS, PartialEq, Eq)]
+#[serde(tag = "kind", rename_all = "snake_case", deny_unknown_fields)]
+#[ts(tag = "kind", rename_all = "snake_case")]
+pub enum FirstCloudOrder {
+    Global {},
+    DefaultApp { profile_id: String },
+}
+
+impl Default for FirstCloudOrder {
+    fn default() -> Self {
+        Self::Global {}
+    }
+}
+
+#[derive(Debug, Clone, Deserialize, TS)]
+#[serde(deny_unknown_fields)]
+pub struct SaveFirstCloudOrder {
+    pub protocol_version: u32,
+    pub expected_revision: u32,
+    pub order: FirstCloudOrder,
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize, TS)]
 pub struct GatewayView {
     pub port: u16,
@@ -153,6 +179,7 @@ pub struct ConfigView {
     pub desired_revision: u32,
     pub providers: Vec<Provider>,
     pub profiles: Vec<AppProfile>,
+    pub first_cloud_order: FirstCloudOrder,
     pub gateway: GatewayView,
     pub teams: Vec<crate::teams::TeamView>,
     pub model_health: Vec<crate::health::ModelHealthView>,

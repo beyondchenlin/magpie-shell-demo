@@ -8,6 +8,7 @@ fn main() {
             "delete_provider",
             "reorder_providers",
             "save_profile",
+            "save_first_cloud_order",
             "save_team",
             "publish_team",
             "set_team_enabled",

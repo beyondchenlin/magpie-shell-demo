@@ -13,7 +13,7 @@ use std::{collections::HashSet, convert::Infallible, sync::Arc, time::Duration};
 use tagma_core::chat::{MAX_RESPONSE_BYTES, SseDecoder};
 use tagma_core::{
     Provider,
-    teams::{TeamStepInput, TeamStepTarget, valid_team_slug},
+    teams::{CloudTarget, TeamBrain, TeamStepInput, TeamStepTarget, valid_team_slug},
 };
 
 struct PinnedStep {
@@ -64,11 +64,16 @@ struct PinnedPlan {
     timeout: Duration,
     public_model: Option<String>,
     team_revision: Option<u32>,
+    automatic_brain: bool,
 }
 
 struct PlanError(StatusCode, &'static str);
 
-fn pin_plan(loaded: &super::LoadedSnapshot, model: &str) -> Result<PinnedPlan, PlanError> {
+fn pin_plan(
+    loaded: &super::LoadedSnapshot,
+    model: &str,
+    first_cloud: Option<&CloudTarget>,
+) -> Result<PinnedPlan, PlanError> {
     let pin =
         |record: &tagma_core::service::ProviderRecord, model: String, input, timeout| PinnedStep {
             provider: record.provider.clone(),
@@ -96,6 +101,7 @@ fn pin_plan(loaded: &super::LoadedSnapshot, model: &str) -> Result<PinnedPlan, P
             timeout: Duration::from_secs(120),
             public_model: None,
             team_revision: None,
+            automatic_brain: false,
         });
     }
     let (team, version) = loaded
@@ -112,9 +118,20 @@ fn pin_plan(loaded: &super::LoadedSnapshot, model: &str) -> Result<PinnedPlan, P
     if !team.enabled_revisions.contains(&version.revision) {
         return Err(PlanError(StatusCode::GONE, "TEAM_DISABLED"));
     }
+    let automatic_brain = matches!(version.recipe.brain, TeamBrain::FirstCloud {});
+    let brain = version.recipe.resolve_brain(first_cloud);
+    if automatic_brain && brain.is_none() {
+        return Err(PlanError(
+            StatusCode::SERVICE_UNAVAILABLE,
+            "NO_AVAILABLE_BRAIN",
+        ));
+    }
     if !valid_team_slug(&team.slug)
         || version.recipe.validate_draft().is_err()
-        || !version.recipe.publish_issues(&loaded.1).is_empty()
+        || !version
+            .recipe
+            .publish_issues_with_candidate(&loaded.1, first_cloud)
+            .is_empty()
     {
         return Err(PlanError(
             StatusCode::SERVICE_UNAVAILABLE,
@@ -129,6 +146,10 @@ fn pin_plan(loaded: &super::LoadedSnapshot, model: &str) -> Result<PinnedPlan, P
                 "TEAM_DEPENDENCY_UNAVAILABLE",
             ));
         };
+        let target = target.resolve(brain.as_ref()).ok_or(PlanError(
+            StatusCode::SERVICE_UNAVAILABLE,
+            "TEAM_DEPENDENCY_UNAVAILABLE",
+        ))?;
         let provider = loaded
             .1
             .providers
@@ -155,6 +176,7 @@ fn pin_plan(loaded: &super::LoadedSnapshot, model: &str) -> Result<PinnedPlan, P
         timeout: Duration::from_millis(version.recipe.total_timeout_ms.into()),
         public_model: Some(version.public_id.clone()),
         team_revision: Some(version.revision),
+        automatic_brain,
     })
 }
 
@@ -203,7 +225,32 @@ pub fn router(state: Arc<Runtime>) -> Router {
 }
 
 async fn models(State(state): State<Arc<Runtime>>) -> Response {
+    let health_snapshot = {
+        let loaded = state.snapshot.read().await;
+        if loaded.1.teams.iter().any(|team| {
+            team.versions.iter().any(|version| {
+                team.enabled_revisions.contains(&version.revision)
+                    && matches!(version.recipe.brain, TeamBrain::FirstCloud {})
+            })
+        }) {
+            Some(loaded.1.clone())
+        } else {
+            None
+        }
+    };
+    let health = if let Some(snapshot) = health_snapshot {
+        state.health.read_confirmed(snapshot).await
+    } else {
+        None
+    };
     let loaded = state.snapshot.read().await;
+    let first_cloud = health.as_ref().and_then(|(_, records)| {
+        tagma_core::health::select_first_cloud(
+            &loaded.1,
+            records,
+            tagma_core::health::now_ms().unwrap_or(0),
+        )
+    });
     let mut seen = HashSet::new();
     let mut data: Vec<_> = loaded
         .1
@@ -216,8 +263,12 @@ async fn models(State(state): State<Arc<Runtime>>) -> Response {
         .collect();
     for team in &loaded.1.teams {
         for version in &team.versions {
-            if pin_plan(&loaded, &version.public_id).is_ok()
-                && seen.insert(version.public_id.clone())
+            if pin_plan(&loaded, &version.public_id, first_cloud.as_ref()).is_ok_and(|plan| {
+                !plan.automatic_brain
+                    || health.as_ref().is_some_and(|(epoch, _)| {
+                        *epoch == state.health.epoch() && state.health.confirmed()
+                    })
+            }) && seen.insert(version.public_id.clone())
             {
                 data.push(
                     json!({"id":version.public_id,"object":"model","created":0,"owned_by":"tagma"}),
@@ -422,6 +473,7 @@ async fn completion(
     headers: HeaderMap,
     body: Result<Json<Value>, JsonRejection>,
 ) -> Response {
+    let request_started = tokio::time::Instant::now();
     let Json(input) = match body {
         Ok(input) => input,
         Err(rejection) => {
@@ -439,6 +491,27 @@ async fn completion(
         Ok(value) => value,
         Err(code) => return error(StatusCode::BAD_REQUEST, code),
     };
+    let health_snapshot = if model.starts_with("tagma/") {
+        let loaded = state.snapshot.read().await;
+        if loaded.1.teams.iter().any(|team| {
+            team.versions.iter().any(|version| {
+                version.public_id == model
+                    && team.enabled_revisions.contains(&version.revision)
+                    && matches!(version.recipe.brain, TeamBrain::FirstCloud {})
+            })
+        }) {
+            Some(loaded.1.clone())
+        } else {
+            None
+        }
+    } else {
+        None
+    };
+    let health = if let Some(snapshot) = health_snapshot {
+        state.health.read_confirmed(snapshot).await
+    } else {
+        None
+    };
     // Pin target, credentials and revision together. A later config apply affects only new calls.
     let plan = {
         let loaded = state.snapshot.read().await;
@@ -447,13 +520,29 @@ async fn completion(
         {
             return error(StatusCode::CONFLICT, "CONFIG_NOT_APPLIED");
         }
-        match pin_plan(&loaded, model) {
-            Ok(plan) => plan,
+        let first_cloud = health.as_ref().and_then(|(_, records)| {
+            tagma_core::health::select_first_cloud(
+                &loaded.1,
+                records,
+                tagma_core::health::now_ms().unwrap_or(0),
+            )
+        });
+        match pin_plan(&loaded, model, first_cloud.as_ref()) {
+            Ok(plan) => {
+                if plan.automatic_brain
+                    && !health.as_ref().is_some_and(|(epoch, _)| {
+                        *epoch == state.health.epoch() && state.health.confirmed()
+                    })
+                {
+                    return error(StatusCode::SERVICE_UNAVAILABLE, "NO_AVAILABLE_BRAIN");
+                }
+                plan
+            }
             Err(PlanError(status, code)) => return error(status, code),
         }
     };
     let request_id = uuid::Uuid::new_v4().to_string();
-    let total_deadline = tokio::time::Instant::now() + plan.timeout;
+    let total_deadline = request_started + plan.timeout;
     let count = plan.steps.len();
     let mut previous = None;
     for (index, step) in plan.steps.into_iter().enumerate() {

@@ -1,0 +1,45 @@
+
+> magpie-shell-demo@0.1.208 build:tagma
+> tsc -b && vite build --config vite.tagma.config.ts
+
+vite v8.3.4 building client environment for production...
+transforming...
+✓ 59 modules transformed.
+rendering chunks...
+computing gzip size...
+dist-tagma/tagma.html                   0.38 kB │ gzip:   0.26 kB
+dist-tagma/assets/tagma-B8VTOiJs.css  397.26 kB │ gzip:  73.64 kB
+dist-tagma/assets/tagma-Dm48_KF7.js   323.85 kB │ gzip: 101.16 kB
+
+✓ built in 950ms
+
+> magpie-shell-demo@0.1.208 chrome-guard
+> node scripts/chrome-guard.mjs
+
+chrome-guard OK: SIDE_AT = 1024
+chrome-guard OK: no WEB_SIDE_AT
+chrome-guard OK: wantSide uses SIDE_AT
+chrome-guard OK: sidebar aside present
+chrome-guard OK: side-nav .on graphite in app.css
+chrome-guard OK: web #root 752 frame
+chrome-guard OK: web #root zoom-aware width
+chrome-guard OK: preview sizing independent of navigation; wide frame gated at 1024
+chrome-guard OK: WinCaption.tsx present
+chrome-guard OK: html.win forced
+chrome-guard OK: data-sim-platform=win
+chrome-guard OK: App renders WinCaption
+chrome-guard OK: Win brand-hide in shell-patch
+chrome-guard OK: win-caption styles
+chrome-guard OK: :root.win fonts in app.css
+chrome-guard: all checks passed
+
+> magpie-shell-demo@0.1.208 cis-guard
+> node scripts/cis-guard.mjs
+
+cis-guard OK: src/styles/app.css
+cis-guard OK: src/styles/routing.css
+cis-guard OK: src/styles/library.css
+cis-guard OK: src/styles/plugins.css
+cis-guard OK: src/styles/sessions.css
+cis-guard OK: src/styles/context.css
+cis-guard: six native stylesheets match the pinned source; browser checks are still required

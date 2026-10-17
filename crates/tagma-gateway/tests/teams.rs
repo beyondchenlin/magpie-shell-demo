@@ -45,7 +45,7 @@ fn recipe(provider: &str) -> TeamRecipe {
     };
     let step = |model: &str, input, output| TeamStep {
         target: TeamStepTarget::CloudModel {
-            target: target(model),
+            target: target(model).into(),
         },
         input,
         output,

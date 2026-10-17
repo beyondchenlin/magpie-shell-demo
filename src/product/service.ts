@@ -1,6 +1,6 @@
 import { invoke, isTauri, Channel } from "@tauri-apps/api/core";
 import type { StartChat, ChatEvent } from "./contract";
-import type { SaveTeam, SetTeamEnabled } from "./contract";
+import type { SaveTeam, SetTeamEnabled, SaveFirstCloudOrder } from "./contract";
 import type { ApplicationView, ConfigView, DiagnosticBundle, RecoverInitialization, RecoveryOutcome, ReorderProviders, RevisionCommand, RuntimeStatus, SaveProvider, SaveAppProfile, SaveGateway, RevisionInput } from "./contract";
 
 export const desktop = isTauri();
@@ -33,6 +33,7 @@ export const service = {
   save: (input: SaveProvider) => command<ConfigView>("save_provider", { input }),
   remove: (input: RevisionCommand) => command<ConfigView>("delete_provider", { input }),
   reorder: (input: ReorderProviders) => command<ConfigView>("reorder_providers", { input }),
+  saveFirstCloudOrder: (input: SaveFirstCloudOrder) => command<ConfigView>("save_first_cloud_order", { input }),
   saveProfile: (input: SaveAppProfile) => command<ConfigView>("save_profile", { input }),
   deleteProfile: (input: RevisionCommand) => command<ConfigView>("delete_profile", { input }),
   saveGateway: (input: SaveGateway) => command<ConfigView>("save_gateway", { input }),

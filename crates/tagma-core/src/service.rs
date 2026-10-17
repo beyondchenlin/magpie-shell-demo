@@ -23,6 +23,8 @@ pub struct ConfigSnapshot {
     #[serde(default)]
     pub profiles: Vec<AppProfile>,
     #[serde(default)]
+    pub first_cloud_order: FirstCloudOrder,
+    #[serde(default)]
     pub gateway: GatewaySettings,
     #[serde(default)]
     pub teams: Vec<crate::teams::TeamRecord>,
@@ -45,6 +47,16 @@ impl Default for GatewaySettings {
 }
 
 impl ConfigSnapshot {
+    /// No silent fallback if an explicit global sequence has no healthy candidate.
+    pub fn first_cloud_provider_order(&self) -> AppResult<Vec<String>> {
+        match &self.first_cloud_order {
+            FirstCloudOrder::Global {} => self.profile_provider_order(GLOBAL_PROFILE_ID),
+            FirstCloudOrder::DefaultApp { profile_id } if profile_id != GLOBAL_PROFILE_ID => {
+                self.profile_provider_order(profile_id)
+            }
+            _ => Err(invalid()),
+        }
+    }
     /// Pure projection: inherited ordering never rewrites the global provider list.
     pub fn profile_provider_order(&self, profile_id: &str) -> AppResult<Vec<String>> {
         if profile_id == GLOBAL_PROFILE_ID {
@@ -243,6 +255,13 @@ impl ConfigService {
         let db = self.db.lock().map_err(storage)?;
         Self::read_db(&db)
     }
+    pub(crate) fn read_health_records(
+        &self,
+        snapshot: &ConfigSnapshot,
+    ) -> AppResult<Vec<crate::health::ModelHealthRecord>> {
+        let db = self.db.lock().map_err(storage)?;
+        crate::health::records(&db, snapshot)
+    }
 
     pub(crate) fn read_db(db: &Connection) -> AppResult<(u32, ConfigSnapshot)> {
         let (revision, json): (u32, String) = db.query_row(
@@ -257,12 +276,15 @@ impl ConfigService {
         let pending = db
             .query_row("SELECT count(*) FROM credential_journal", [], |r| r.get(0))
             .map_err(storage)?;
+        let health_records = crate::health::records(&db, &snapshot)?;
         let observed_now = crate::health::now_ms().unwrap_or(0);
+        let first_cloud =
+            crate::health::select_first_cloud(&snapshot, &health_records, observed_now);
         Ok(ConfigView {
             protocol_version: PROTOCOL_VERSION,
             schema_version: SCHEMA_VERSION,
             desired_revision: revision,
-            model_health: crate::health::records(&db, &snapshot)?
+            model_health: health_records
                 .iter()
                 .map(|record| record.view(observed_now))
                 .collect(),
@@ -272,12 +294,16 @@ impl ConfigService {
                 .iter()
                 .map(|team| crate::teams::TeamView {
                     team: team.clone(),
-                    publish_issues: team.draft.publish_issues(&snapshot),
+                    publish_issues: team
+                        .draft
+                        .publish_issues_with_candidate(&snapshot, first_cloud.as_ref()),
                     published: team
                         .versions
                         .iter()
                         .map(|version| {
-                            let issues = version.recipe.publish_issues(&snapshot);
+                            let issues = version
+                                .recipe
+                                .publish_issues_with_candidate(&snapshot, first_cloud.as_ref());
                             crate::teams::PublishedTeamView {
                                 revision: version.revision,
                                 public_id: version.public_id.clone(),
@@ -295,6 +321,7 @@ impl ConfigService {
                 auth_enabled: snapshot.gateway.auth_enabled,
                 has_access_token: snapshot.gateway.credential_ref.is_some(),
             },
+            first_cloud_order: snapshot.first_cloud_order.clone(),
             providers: snapshot.providers.into_iter().map(|r| r.provider).collect(),
             pending_credential_cleanup: pending,
         })
@@ -508,12 +535,29 @@ impl ConfigService {
         self.view()
     }
 
+    pub fn save_first_cloud_order(&self, input: SaveFirstCloudOrder) -> AppResult<ConfigView> {
+        check_protocol(input.protocol_version)?;
+        let _operation = self.operation_lock()?;
+        let (revision, mut snapshot) = self.read_snapshot()?;
+        if revision != input.expected_revision {
+            return Err(AppError::new(ErrorCode::ConfigConflict));
+        }
+        snapshot.first_cloud_order = input.order;
+        snapshot.first_cloud_provider_order()?;
+        self.commit(revision, &snapshot, None)?;
+        self.view()
+    }
+
     pub fn delete_profile(&self, input: RevisionCommand) -> AppResult<ConfigView> {
         check_protocol(input.protocol_version)?;
         let _operation = self.operation_lock()?;
         let (revision, mut snapshot) = self.read_snapshot()?;
         if revision != input.expected_revision {
             return Err(AppError::new(ErrorCode::ConfigConflict));
+        }
+        if matches!(&snapshot.first_cloud_order, FirstCloudOrder::DefaultApp { profile_id } if profile_id == &input.id)
+        {
+            return Err(AppError::new(ErrorCode::ProfileReferenced));
         }
         let previous = snapshot.profiles.len();
         snapshot.profiles.retain(|p| p.id != input.id);

@@ -6,15 +6,19 @@ import { TextBtn } from "../components/TextBtn";
 import { LibSwitch } from "../components/LibSwitch";
 import { ModelPick } from "./ModelPick";
 import { protocolVersion, service } from "./service";
-import type { ConfigView, TeamPublishIssue, TeamRecipe, TeamRecord, TeamStep, CloudTarget, SaveTeam } from "./contract";
+import type { ConfigView, TeamPublishIssue, TeamRecipe, TeamRecord, TeamStep, CloudTarget, CloudSelection, SaveTeam } from "./contract";
 import type { ProductLanguage } from "./preferences";
 
-const issueLabels:Record<TeamPublishIssue,[string,string]>={missing_steps:["添加至少一个步骤","Add a step"],unsupported_routing:["当前策略尚不可发布","Routing is not ready"],unsupported_brain:["请选择明确的最终回答模型","Choose an explicit answering model"],missing_brain:["最终回答模型不可用","Answering model is unavailable"],missing_dependency:["步骤引用的模型不可用","A step model is unavailable"],pack_not_available:["队员依赖尚未安装","Required pack is not installed"],invalid_step_flow:["请检查输入来源和最终回答步骤","Check step inputs and final answer"],invalid_side_effect:["步骤副作用声明不匹配","Step side effects do not match"],budget_exceeded:["步骤预算合计超过整队预算","Step budgets exceed the team budget"]};
+const issueLabels:Record<TeamPublishIssue,[string,string]>={no_available_brain:["没有近期确认可用的云模型，请先手动试调用","No recently confirmed cloud model; make a manual test call first"],missing_steps:["添加至少一个步骤","Add a step"],unsupported_routing:["当前策略尚不可发布","Routing is not ready"],unsupported_brain:["请选择明确的最终回答模型","Choose an explicit answering model"],missing_brain:["最终回答模型不可用","Answering model is unavailable"],missing_dependency:["步骤引用的模型不可用","A step model is unavailable"],pack_not_available:["队员依赖尚未安装","Required pack is not installed"],invalid_step_flow:["请检查输入来源和最终回答步骤","Check step inputs and final answer"],invalid_side_effect:["步骤副作用声明不匹配","Step side effects do not match"],budget_exceeded:["步骤预算合计超过整队预算","Step budgets exceed the team budget"]};
 function issuesText(issues:TeamPublishIssue[],zh:boolean){return issues.map(issue=>issueLabels[issue][zh?0:1]).join(zh?"；":"; ");}
-function targetKey(target:CloudTarget){return JSON.stringify([target.provider_id,target.model_id]);}
+const brainKey="brain";
+function explicit(target:CloudSelection):target is CloudTarget{return "provider_id" in target;}
+function targetKey(target:CloudSelection){return explicit(target)?JSON.stringify([target.provider_id,target.model_id]):brainKey;}
 function normalized(recipe:TeamRecipe):TeamRecipe{
   const last=recipe.steps.at(-1)?.target;
-  return {...recipe,brain:last?.kind==="cloud_model"?{kind:"explicit",target:last.target}:recipe.brain,steps:recipe.steps.map((step,index)=>({...step,input:index===0?"original_messages":step.input,output:index+1===recipe.steps.length?"final_answer":"intermediate_text"}))};
+  const automatic=recipe.brain.kind==="first_cloud";
+  const brain=!automatic&&last?.kind==="cloud_model"&&explicit(last.target)?{kind:"explicit" as const,target:last.target}:recipe.brain;
+  return {...recipe,brain,steps:recipe.steps.map((step,index)=>({...step,...(automatic&&index+1===recipe.steps.length?{target:{kind:"cloud_model" as const,target:{kind:"brain" as const}}}:{}),input:index===0?"original_messages":step.input,output:index+1===recipe.steps.length?"final_answer":"intermediate_text"}))};
 }
 
 function TeamEditor({config,team,busy,zh,onSave,onCancel}:{config:ConfigView;team?:TeamRecord;busy:boolean;zh:boolean;onSave:(input:SaveTeam)=>Promise<boolean>;onCancel:()=>void}){
@@ -24,31 +28,35 @@ function TeamEditor({config,team,busy,zh,onSave,onCancel}:{config:ConfigView;tea
   const formId=useId();
   const options=new Map<string,string>();const labels=new Map<string,string>();const targets=new Map<string,CloudTarget>();
   for(const provider of config.providers)if(provider.enabled)for(const model of provider.models){const target={provider_id:provider.id,model_id:model};const key=targetKey(target);options.set(key,provider.name);labels.set(key,model);targets.set(key,target);}
-  for(const step of recipe.steps)if(step.target.kind==="cloud_model"){
+  for(const step of recipe.steps)if(step.target.kind==="cloud_model"&&explicit(step.target.target)){
     const target=step.target.target;const key=targetKey(target);if(!targets.has(key)){options.set(key,zh?"已保存的目标 · 当前不可用":"Saved target · currently unavailable");labels.set(key,target.model_id);targets.set(key,target);}
   }
   const available=[...targets.values()].find(target=>config.providers.some(provider=>provider.id===target.provider_id&&provider.enabled&&provider.models.includes(target.model_id)));
+  const automatic=recipe.brain.kind==="first_cloud";
+  if(automatic||recipe.brain.kind==="explicit"){options.set(brainKey,zh?"小队的脑":"Team brain");labels.set(brainKey,automatic?(zh?"自动选择近期可用云模型":"Automatic recently confirmed cloud model"):(zh?"跟随最终回答模型":"Follow the answering model"));}
+  function setBrainMode(mode:string){setRecipe(previous=>{if(mode==="first_cloud")return normalized({...previous,brain:{kind:"first_cloud"}});if(!available)return previous;return normalized({...previous,brain:{kind:"explicit",target:available},steps:previous.steps.map(step=>step.target.kind==="cloud_model"&&!explicit(step.target.target)?{...step,target:{kind:"cloud_model",target:available}}:step)});});}
   function updateStep(index:number,change:Partial<TeamStep>){setRecipe(previous=>normalized({...previous,steps:previous.steps.map((step,i)=>i===index?{...step,...change}:step)}));}
-  function addStep(){if(!available)return;const step:TeamStep={target:{kind:"cloud_model",target:available},input:recipe.steps.length?"previous_text":"original_messages",output:"final_answer",timeout_ms:10_000,failure:"abort",side_effect:"outbound_model_request"};setRecipe(previous=>normalized({...previous,steps:[...previous.steps,step]}));}
+  function addStep(){if(!available&&!automatic)return;const step:TeamStep={target:{kind:"cloud_model",target:automatic?{kind:"brain"}:available!},input:recipe.steps.length?"previous_text":"original_messages",output:"final_answer",timeout_ms:10_000,failure:"abort",side_effect:"outbound_model_request"};setRecipe(previous=>normalized({...previous,steps:[...previous.steps,step]}));}
   function move(index:number,direction:-1|1){setRecipe(previous=>{const steps=[...previous.steps];[steps[index],steps[index+direction]]=[steps[index+direction],steps[index]];return normalized({...previous,steps});});}
   return <form className="tagma-editor" aria-label={zh?"小队草稿":"Team draft"} aria-busy={busy} onSubmit={event=>{event.preventDefault();void onSave({protocol_version:protocolVersion,expected_revision:revision,id:team?.id??null,slug,recipe:normalized({...recipe,display_name:name.trim()})}).then(saved=>{if(saved)onCancel();});}}>
     <div className="list prefs">
       <PrefRow name={zh?"显示名":"Display name"}><WordsField id={`${formId}-name`} aria-label={zh?"显示名":"Display name"} value={name} disabled={busy} required maxLength={120} onChange={event=>setName(event.target.value)}/></PrefRow>
       <PrefRow name={zh?"公开标识":"Public slug"} subClassName="wraps" sub={zh?"tagma/ 前缀由系统添加；已发布后不能改名。":"The tagma/ prefix is added automatically. Publishing fixes this slug."}><WordsField id={`${formId}-slug`} aria-label={zh?"公开标识":"Public slug"} value={slug} disabled={busy||!!team?.versions.length} required minLength={2} maxLength={64} pattern="[a-z0-9]([a-z0-9]|-)*[a-z0-9]" onChange={event=>setSlug(event.target.value)}/></PrefRow>
       <PrefRow name={zh?"执行策略":"Routing"}><Segs value={recipe.routing} disabled={busy} items={[{id:"manual",label:zh?"固定模型":"Fixed model"},{id:"sequential",label:zh?"顺序步骤":"Sequential"}]} onChange={value=>setRecipe(previous=>normalized({...previous,routing:value as "manual"|"sequential",steps:value==="manual"?previous.steps.slice(-1):previous.steps}))}/></PrefRow>
+      <PrefRow name={zh?"选脑方式":"Brain selection"} subClassName="wraps" sub={zh?"自动选择按设置中的有效顺序；需要五分钟内确认的推理成功，调用开始后目标保持不变。":"Automatic selection follows the configured order and requires inference success within five minutes. Each call pins its target."}><Segs value={automatic?"first_cloud":"explicit"} disabled={busy} items={[{id:"first_cloud",label:zh?"自动选择":"Automatic"},{id:"explicit",label:zh?"固定模型":"Explicit"}]} onChange={setBrainMode}/></PrefRow>
       <PrefRow name={zh?"整队时限（秒）":"Team deadline (seconds)"} subClassName="wraps" sub={zh?"到时中止；失败不自动重试或继续下一步。":"Stop at the deadline; failures are never replayed or continued."}><WordsField id={`${formId}-budget`} aria-label={zh?"整队时限（秒）":"Team deadline (seconds)"} type="number" min={1} max={120} required value={recipe.total_timeout_ms/1000||""} disabled={busy} onChange={event=>setRecipe(previous=>({...previous,total_timeout_ms:Number(event.target.value)*1000}))}/></PrefRow>
     </div>
     {recipe.steps.map((step,index)=><section key={`${formId}-step-${index}`} aria-label={`${zh?"步骤":"Step"} ${index+1}`}>
       <div className="tagma-section-label">{zh?"步骤":"Step"} {index+1}<span>{step.output==="final_answer"?(zh?"最终回答 · 脑":"Final answer · brain"):(zh?"中间文字":"Intermediate text")}</span><div className="tagma-actions"><TextBtn disabled={busy||index===0} aria-label={`${zh?"上移步骤":"Move step up"} ${index+1}`} onClick={()=>move(index,-1)}>↑</TextBtn><TextBtn disabled={busy||index+1===recipe.steps.length} aria-label={`${zh?"下移步骤":"Move step down"} ${index+1}`} onClick={()=>move(index,1)}>↓</TextBtn><TextBtn disabled={busy} onClick={()=>setRecipe(previous=>normalized({...previous,steps:previous.steps.filter((_,i)=>i!==index)}))}>{zh?"移除":"Remove"}</TextBtn></div></div>
       <div className="list prefs">
-        <PrefRow name={zh?"模型与供应商":"Model and provider"} subClassName="wraps" sub={zh?"内容将发送给此供应商；失败时中止。":"Content is sent to this provider; stop on failure."}><ModelPick value={step.target.kind==="cloud_model"?targetKey(step.target.target):""} models={options} labels={labels} disabled={busy||!options.size} label={zh?"选择云模型":"Choose cloud model"} onChange={value=>{const target=targets.get(value);if(target)updateStep(index,{target:{kind:"cloud_model",target},side_effect:"outbound_model_request"});}}/></PrefRow>
+        <PrefRow name={zh?"模型与供应商":"Model and provider"} subClassName="wraps" sub={zh?"内容将发送给此供应商；失败时中止。":"Content is sent to this provider; stop on failure."}><ModelPick value={step.target.kind==="cloud_model"?targetKey(step.target.target):""} models={options} labels={labels} disabled={busy||!options.size||(automatic&&index+1===recipe.steps.length)} label={zh?"选择云模型":"Choose cloud model"} onChange={value=>{const target:CloudSelection|undefined=value===brainKey?{kind:"brain"}:targets.get(value);if(target)updateStep(index,{target:{kind:"cloud_model",target},side_effect:"outbound_model_request"});}}/></PrefRow>
         <PrefRow name={zh?"输入来源":"Input source"}><Segs value={step.input} disabled={busy||index===0} items={[{id:"original_messages",label:zh?"原始消息":"Original messages"},{id:"previous_text",label:zh?"上步文字":"Previous text"}]} onChange={value=>updateStep(index,{input:value as TeamStep["input"]})}/></PrefRow>
         <PrefRow name={zh?"步骤时限（秒）":"Step deadline (seconds)"}><WordsField id={`${formId}-timeout-${index}`} aria-label={`${zh?"步骤时限（秒）":"Step deadline (seconds)"} ${index+1}`} type="number" min={1} max={120} required value={step.timeout_ms/1000||""} disabled={busy} onChange={event=>updateStep(index,{timeout_ms:Number(event.target.value)*1000})}/></PrefRow>
       </div>
     </section>)}
-    <p className="tagma-footnote">{zh?"中间步骤只产生文字，只有最后一步对外回答。自动选脑、已安装队员和工具调用暂未开放。":"Intermediate steps produce text; only the last step answers. Automatic brain selection, installed packs and tools are not available yet."}</p>
+    <p className="tagma-footnote">{zh?"中间步骤只产生文字，只有最后一步对外回答。自动选脑不发起付费探测；已安装队员和工具调用暂未开放。":"Intermediate steps produce text; only the last step answers. Automatic selection never starts paid probes. Installed packs and tools are not available yet."}</p>
     {!available&&<p className="tagma-footnote">{zh?"先配置一个已启用的供应商模型；当前仍可保存空草稿。":"Configure an enabled provider model first. An incomplete draft can still be saved."}</p>}
-    <div className="tagma-actions"><TextBtn disabled={busy||!available||recipe.steps.length>=8||(recipe.routing==="manual"&&recipe.steps.length>0)} onClick={addStep}>{zh?"添加步骤":"Add step"}</TextBtn><TextBtn disabled={busy} onClick={onCancel}>{zh?"取消":"Cancel"}</TextBtn><TextBtn variant="action" type="submit" busy={busy}>{zh?"保存草稿":"Save draft"}</TextBtn></div>
+    <div className="tagma-actions"><TextBtn disabled={busy||(!available&&!automatic)||recipe.steps.length>=8||(recipe.routing==="manual"&&recipe.steps.length>0)} onClick={addStep}>{zh?"添加步骤":"Add step"}</TextBtn><TextBtn disabled={busy} onClick={onCancel}>{zh?"取消":"Cancel"}</TextBtn><TextBtn variant="action" type="submit" busy={busy}>{zh?"保存草稿":"Save draft"}</TextBtn></div>
   </form>;
 }
 

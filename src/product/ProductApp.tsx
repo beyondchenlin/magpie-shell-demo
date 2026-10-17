@@ -18,7 +18,7 @@ import { desktop, protocolVersion, service } from "./service";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 
 type Page = ProductPage;
-function teamUsesProvider(recipe:TeamRecipe,id:string){return (recipe.brain.kind==="explicit"&&recipe.brain.target.provider_id===id)||recipe.steps.some(step=>step.target.kind==="cloud_model"&&step.target.target.provider_id===id);}
+function teamUsesProvider(recipe:TeamRecipe,id:string){return (recipe.brain.kind==="explicit"&&recipe.brain.target.provider_id===id)||recipe.steps.some(step=>step.target.kind==="cloud_model"&&"provider_id" in step.target.target&&step.target.target.provider_id===id);}
 
 export default function ProductApp() {
   const [page, setPage] = useState<Page>("chat");

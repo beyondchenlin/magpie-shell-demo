@@ -12,6 +12,48 @@ pub struct CloudTarget {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, TS, PartialEq, Eq)]
+#[serde(rename_all = "snake_case")]
+pub enum BrainTargetKind {
+    Brain,
+}
+#[derive(Debug, Clone, Serialize, Deserialize, TS, PartialEq, Eq)]
+#[serde(deny_unknown_fields)]
+pub struct BrainTarget {
+    pub kind: BrainTargetKind,
+}
+#[derive(Debug, Clone, Serialize, Deserialize, TS, PartialEq, Eq)]
+#[serde(untagged)]
+pub enum CloudSelection {
+    Explicit(CloudTarget),
+    Brain(BrainTarget),
+}
+impl From<CloudTarget> for CloudSelection {
+    fn from(target: CloudTarget) -> Self {
+        Self::Explicit(target)
+    }
+}
+impl CloudSelection {
+    pub fn brain() -> Self {
+        Self::Brain(BrainTarget {
+            kind: BrainTargetKind::Brain,
+        })
+    }
+    pub fn explicit(&self) -> Option<&CloudTarget> {
+        if let Self::Explicit(target) = self {
+            Some(target)
+        } else {
+            None
+        }
+    }
+    pub fn resolve(&self, brain: Option<&CloudTarget>) -> Option<CloudTarget> {
+        match self {
+            Self::Explicit(target) => Some(target.clone()),
+            Self::Brain(_) => brain.cloned(),
+        }
+    }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, TS, PartialEq, Eq)]
 #[serde(tag = "kind", rename_all = "snake_case", deny_unknown_fields)]
 // ts-rs does not understand enum deny_unknown_fields; keep the TS tag explicit.
 #[ts(tag = "kind", rename_all = "snake_case")]
@@ -25,7 +67,7 @@ pub enum TeamBrain {
 #[serde(tag = "kind", rename_all = "snake_case", deny_unknown_fields)]
 #[ts(tag = "kind", rename_all = "snake_case")]
 pub enum TeamStepTarget {
-    CloudModel { target: CloudTarget },
+    CloudModel { target: CloudSelection },
     Pack { pack_id: String, version: String },
 }
 
@@ -114,6 +156,7 @@ pub enum TeamPublishIssue {
     UnsupportedRouting,
     UnsupportedBrain,
     MissingBrain,
+    NoAvailableBrain,
     MissingDependency,
     PackNotAvailable,
     InvalidStepFlow,
@@ -204,7 +247,7 @@ impl TeamRecipe {
         }
         for step in &self.steps {
             let target_valid = match &step.target {
-                TeamStepTarget::CloudModel { target } => valid_cloud(target),
+                TeamStepTarget::CloudModel { target } => target.explicit().is_none_or(valid_cloud),
                 TeamStepTarget::Pack { pack_id, version } => valid_pack(pack_id, version),
             };
             if !target_valid || !(1000..=120_000).contains(&step.timeout_ms) {
@@ -215,9 +258,32 @@ impl TeamRecipe {
     }
     pub fn references_provider(&self, id: &str) -> bool {
         matches!(&self.brain,TeamBrain::Explicit{target} if target.provider_id==id)
-            || self.steps.iter().any(|step|matches!(&step.target,TeamStepTarget::CloudModel{target} if target.provider_id==id))
+            || self.steps.iter().any(|step|matches!(&step.target,TeamStepTarget::CloudModel{target} if target.explicit().is_some_and(|target|target.provider_id==id)))
+    }
+    pub fn resolve_brain(&self, first_cloud: Option<&CloudTarget>) -> Option<CloudTarget> {
+        match &self.brain {
+            TeamBrain::Explicit { target } => Some(target.clone()),
+            TeamBrain::FirstCloud {} => first_cloud.cloned(),
+            TeamBrain::LocalBrainPack { .. } => None,
+        }
     }
     pub fn publish_issues(&self, snapshot: &ConfigSnapshot) -> Vec<TeamPublishIssue> {
+        self.publish_issues_with_health(snapshot, &[], 0)
+    }
+    pub fn publish_issues_with_health(
+        &self,
+        snapshot: &ConfigSnapshot,
+        health: &[crate::health::ModelHealthRecord],
+        now: u64,
+    ) -> Vec<TeamPublishIssue> {
+        let candidate = crate::health::select_first_cloud(snapshot, health, now);
+        self.publish_issues_with_candidate(snapshot, candidate.as_ref())
+    }
+    pub fn publish_issues_with_candidate(
+        &self,
+        snapshot: &ConfigSnapshot,
+        first_cloud: Option<&CloudTarget>,
+    ) -> Vec<TeamPublishIssue> {
         use TeamPublishIssue::*;
         let available = |target: &CloudTarget| {
             snapshot.providers.iter().any(|p| {
@@ -227,6 +293,7 @@ impl TeamRecipe {
             })
         };
         let mut issues = Vec::new();
+        let brain = self.resolve_brain(first_cloud);
         if self.steps.is_empty() {
             issues.push(MissingSteps);
         }
@@ -240,12 +307,28 @@ impl TeamRecipe {
                 if !available(target) {
                     issues.push(MissingBrain);
                 }
-                if !self.steps.last().is_some_and(|s|matches!(&s.target,TeamStepTarget::CloudModel{target:answer} if answer==target)){issues.push(InvalidStepFlow);}
             }
-            // Health expiry and installed packs have not been implemented. Never claim ready.
-            TeamBrain::FirstCloud {} | TeamBrain::LocalBrainPack { .. } => {
-                issues.push(UnsupportedBrain)
+            TeamBrain::FirstCloud {} => {
+                if brain.is_none() {
+                    issues.push(NoAvailableBrain);
+                }
+                if !self.steps.last().is_some_and(|s| {
+                    matches!(
+                        &s.target,
+                        TeamStepTarget::CloudModel {
+                            target: CloudSelection::Brain(_)
+                        }
+                    )
+                }) {
+                    issues.push(InvalidStepFlow);
+                }
             }
+            TeamBrain::LocalBrainPack { .. } => issues.push(UnsupportedBrain),
+        }
+        if let Some(brain) = &brain
+            && !self.steps.last().is_some_and(|s|matches!(&s.target,TeamStepTarget::CloudModel{target} if target.resolve(Some(brain)).as_ref()==Some(brain)))
+        {
+            issues.push(InvalidStepFlow);
         }
         if self
             .steps
@@ -259,7 +342,10 @@ impl TeamRecipe {
         for (index, step) in self.steps.iter().enumerate() {
             match &step.target {
                 TeamStepTarget::CloudModel { target } => {
-                    if !available(target) {
+                    if !target
+                        .resolve(brain.as_ref())
+                        .is_some_and(|target| available(&target))
+                    {
                         issues.push(MissingDependency);
                     }
                     if step.side_effect != TeamSideEffect::OutboundModelRequest {
@@ -347,7 +433,14 @@ impl ConfigService {
             return Err(AppError::new(ErrorCode::TeamSlugConflict));
         }
         team.draft.validate_draft()?;
-        if !team.draft.publish_issues(&snapshot).is_empty() {
+        let health = self.read_health_records(&snapshot)?;
+        let issues =
+            team.draft
+                .publish_issues_with_health(&snapshot, &health, crate::health::now_ms()?);
+        if issues.contains(&TeamPublishIssue::NoAvailableBrain) {
+            return Err(AppError::new(ErrorCode::NoAvailableBrain));
+        }
+        if !issues.is_empty() {
             return Err(AppError::new(ErrorCode::TeamRecipeUnavailable));
         }
         if team.versions.len() >= 16 {

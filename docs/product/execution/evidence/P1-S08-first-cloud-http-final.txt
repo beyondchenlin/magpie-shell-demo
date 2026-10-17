@@ -1,0 +1,26 @@
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+   Compiling tagma-gateway v0.2.0-dev.12 (D:\demo1\tagmaai\crates\tagma-gateway)
+    Finished `test` profile [unoptimized] target(s) in 1.59s
+     Running tests\first_cloud.rs (target\debug\deps\first_cloud-aa39953892766640.exe)
+
+running 1 test
+A14 HTTP pin: in-flight two-step target=b/b1 across config reorder + b1 authentication failure; concurrent new call=a/a2; old published manual recipe unchanged
+A14 HTTP selection: actual inference required; global provider+model reorder; default App custom/empty scope; stale rows -> NO_AVAILABLE_BRAIN; pending/failed write -> omitted/rejected; no implicit probes; metadata recovery verified
+test automatic_brain_real_http_order_fallback_uncertainty_and_inflight_pinning ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.77s
+

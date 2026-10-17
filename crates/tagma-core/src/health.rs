@@ -121,7 +121,13 @@ pub fn select_first_cloud(
             )
         })
         .collect();
-    for provider in &snapshot.providers {
+    let providers: std::collections::HashMap<_, _> = snapshot
+        .providers
+        .iter()
+        .map(|record| (record.provider.id.as_str(), record))
+        .collect();
+    for id in snapshot.first_cloud_provider_order().ok()? {
+        let provider = providers.get(id.as_str())?;
         if !provider.provider.enabled {
             continue;
         }

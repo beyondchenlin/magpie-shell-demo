@@ -1,0 +1,15 @@
+{
+  "target": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-first-cloud-lJcLLP",
+  "purpose": "Only this batch failed headless HTTP test fixture",
+  "logicalBytes": 305793.0,
+  "checks": [
+    "Exact resolved target and Temp boundary",
+    "No reparse points",
+    "No other process command-line references",
+    "No writes in last 10 seconds",
+    "Every file opens with exclusive sharing"
+  ],
+  "removed": true,
+  "userDataTouched": false,
+  "oldRejectedTargetsRetained": true
+}

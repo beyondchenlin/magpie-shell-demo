@@ -1,5 +1,5 @@
 // Generated from tagma-core. Run npm run contract:generate; do not edit.
-export type ErrorCode = "INVALID_INPUT" | "CONFIG_CONFLICT" | "STORAGE_UNAVAILABLE" | "CREDENTIAL_STORE_UNAVAILABLE" | "INCOMPATIBLE_VERSION" | "MAINTENANCE_IN_PROGRESS" | "DESKTOP_REQUIRED" | "INTERNAL_ERROR" | "PORT_IN_USE" | "ALREADY_RUNNING" | "GATEWAY_UNAVAILABLE" | "CONFIG_APPLY_FAILED" | "OWNERSHIP_REQUIRED" | "STARTUP_TIMEOUT" | "INITIALIZATION_RECOVERY_REQUIRED" | "PROVIDER_REFERENCED" | "RESTART_REQUIRED" | "TEAM_SLUG_CONFLICT" | "TEAM_PUBLISHED" | "TEAM_RECIPE_UNAVAILABLE";
+export type ErrorCode = "INVALID_INPUT" | "CONFIG_CONFLICT" | "STORAGE_UNAVAILABLE" | "CREDENTIAL_STORE_UNAVAILABLE" | "INCOMPATIBLE_VERSION" | "MAINTENANCE_IN_PROGRESS" | "DESKTOP_REQUIRED" | "INTERNAL_ERROR" | "PORT_IN_USE" | "ALREADY_RUNNING" | "GATEWAY_UNAVAILABLE" | "CONFIG_APPLY_FAILED" | "OWNERSHIP_REQUIRED" | "STARTUP_TIMEOUT" | "INITIALIZATION_RECOVERY_REQUIRED" | "PROVIDER_REFERENCED" | "PROFILE_REFERENCED" | "RESTART_REQUIRED" | "TEAM_SLUG_CONFLICT" | "TEAM_PUBLISHED" | "TEAM_RECIPE_UNAVAILABLE" | "NO_AVAILABLE_BRAIN";
 export type AppError = { code: ErrorCode, retryable: boolean, };
 export type ProviderProtocol = "openai_chat_completions";
 export type Provider = { id: string, name: string, protocol: ProviderProtocol, base_url: string, enabled: boolean, models: Array<string>, has_credential: boolean, };
@@ -8,12 +8,17 @@ export type RevisionCommand = { protocol_version: number, expected_revision: num
 export type ReorderProviders = { protocol_version: number, expected_revision: number, ids: Array<string>, };
 export type AppProfile = { id: string, name: string, target_app: string, provider_ids: Array<string>, use_global_order: boolean, is_global: boolean, };
 export type SaveAppProfile = { protocol_version: number, expected_revision: number, id: string | null, name: string, target_app: string, provider_ids: Array<string>, use_global_order: boolean, };
+export type FirstCloudOrder = { "kind": "global", } | { "kind": "default_app", profile_id: string, };
+export type SaveFirstCloudOrder = { protocol_version: number, expected_revision: number, order: FirstCloudOrder, };
 export type GatewayView = { port: number, auth_enabled: boolean, has_access_token: boolean, };
 export type SaveGateway = { protocol_version: number, expected_revision: number, port: number, auth_enabled: boolean, };
 export type RevisionInput = { protocol_version: number, expected_revision: number, };
 export type CloudTarget = { provider_id: string, model_id: string, };
+export type BrainTargetKind = "brain";
+export type BrainTarget = { kind: BrainTargetKind, };
+export type CloudSelection = CloudTarget | BrainTarget;
 export type TeamBrain = { "kind": "explicit", target: CloudTarget, } | { "kind": "first_cloud", } | { "kind": "local_brain_pack", pack_id: string, version: string, };
-export type TeamStepTarget = { "kind": "cloud_model", target: CloudTarget, } | { "kind": "pack", pack_id: string, version: string, };
+export type TeamStepTarget = { "kind": "cloud_model", target: CloudSelection, } | { "kind": "pack", pack_id: string, version: string, };
 export type TeamRouting = "manual" | "sequential" | "intent";
 export type TeamStepInput = "original_messages" | "previous_text";
 export type TeamStepOutput = "intermediate_text" | "final_answer";
@@ -32,7 +37,7 @@ export type TeamRecord = { id: string, slug: string, draft: TeamRecipe, versions
  * Availability is separate from immutable recipe revisions.
  */
 enabled_revisions: Array<number>, };
-export type TeamPublishIssue = "missing_steps" | "unsupported_routing" | "unsupported_brain" | "missing_brain" | "missing_dependency" | "pack_not_available" | "invalid_step_flow" | "invalid_side_effect" | "budget_exceeded";
+export type TeamPublishIssue = "missing_steps" | "unsupported_routing" | "unsupported_brain" | "missing_brain" | "no_available_brain" | "missing_dependency" | "pack_not_available" | "invalid_step_flow" | "invalid_side_effect" | "budget_exceeded";
 export type TeamView = { team: TeamRecord, publish_issues: Array<TeamPublishIssue>, published: Array<PublishedTeamView>, };
 export type PublishedTeamView = { revision: number, public_id: string, display_name: string, enabled: boolean, configured_ready: boolean, issues: Array<TeamPublishIssue>, };
 export type HealthFailure = "authentication" | "connection" | "timeout" | "rate_limited" | "protocol" | "upstream" | "observation_unconfirmed";
@@ -40,7 +45,7 @@ export type InferenceHealth = "unknown" | "ready" | "stale" | "failed";
 export type ModelHealthView = { provider_id: string, model_id: string, catalog_age_seconds: number | null, inference_age_seconds: number | null, inference: InferenceHealth, failure: HealthFailure | null, };
 export type SaveTeam = { protocol_version: number, expected_revision: number, id: string | null, slug: string, recipe: TeamRecipe, };
 export type SetTeamEnabled = { protocol_version: number, expected_revision: number, id: string, team_revision: number, enabled: boolean, };
-export type ConfigView = { protocol_version: number, schema_version: number, desired_revision: number, providers: Array<Provider>, profiles: Array<AppProfile>, gateway: GatewayView, teams: Array<TeamView>, model_health: Array<ModelHealthView>, pending_credential_cleanup: number, };
+export type ConfigView = { protocol_version: number, schema_version: number, desired_revision: number, providers: Array<Provider>, profiles: Array<AppProfile>, first_cloud_order: FirstCloudOrder, gateway: GatewayView, teams: Array<TeamView>, model_health: Array<ModelHealthView>, pending_credential_cleanup: number, };
 export type RuntimeState = "stopped" | "starting" | "running" | "degraded" | "stopping" | "failed";
 export type RuntimeStatus = { state: RuntimeState, instance_id: string | null, effective_revision: number | null, address: string | null, owned: boolean, error: AppError | null, };
 export type ApplicationView = { product_version: string, config: ConfigView, runtime: RuntimeStatus, };

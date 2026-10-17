@@ -27,7 +27,9 @@ fn manual(id: &str) -> TeamRecipe {
         routing: TeamRouting::Manual,
         total_timeout_ms: 30_000,
         steps: vec![TeamStep {
-            target: TeamStepTarget::CloudModel { target },
+            target: TeamStepTarget::CloudModel {
+                target: target.into(),
+            },
             input: TeamStepInput::OriginalMessages,
             output: TeamStepOutput::FinalAnswer,
             timeout_ms: 30_000,
@@ -150,17 +152,20 @@ fn drafts_keep_missing_dependencies_but_cannot_publish_or_escalate_permissions()
     );
     let mut first_cloud = manual(&absent);
     first_cloud.brain = TeamBrain::FirstCloud {};
+    first_cloud.steps[0].target = TeamStepTarget::CloudModel {
+        target: CloudSelection::brain(),
+    };
     let saved = service
         .save_team(save(2, Some(id.clone()), first_cloud))
         .unwrap();
     assert!(
         saved.teams[0]
             .publish_issues
-            .contains(&TeamPublishIssue::UnsupportedBrain)
+            .contains(&TeamPublishIssue::NoAvailableBrain)
     );
     assert_eq!(
         service.publish_team(command(3, &id)).unwrap_err().code,
-        ErrorCode::TeamRecipeUnavailable
+        ErrorCode::NoAvailableBrain
     );
     let json = serde_json::json!({"protocol_version":1,"expected_revision":3,"id":id,"slug":"my-team","recipe":manual(&absent),"permissions":["shell"]});
     assert!(serde_json::from_value::<SaveTeam>(json).is_err());
@@ -237,7 +242,8 @@ fn sequential_flow_budgets_side_effects_and_fixed_answering_brain_are_checked() 
         target: CloudTarget {
             provider_id: p.clone(),
             model_id: "review".into(),
-        },
+        }
+        .into(),
     };
     review.output = TeamStepOutput::IntermediateText;
     sequential.steps[0].input = TeamStepInput::PreviousText;
@@ -317,7 +323,8 @@ fn malformed_or_recursive_targets_and_unbounded_drafts_are_rejected() {
         target: CloudTarget {
             provider_id: p.clone(),
             model_id: "tagma/another-team".into(),
-        },
+        }
+        .into(),
     };
     assert!(recipe.validate_draft().is_err());
     let mut recipe = manual(&p);
@@ -382,4 +389,85 @@ fn published_provider_reference_stays_protected_after_draft_and_status_change() 
         ErrorCode::ProviderReferenced
     );
     assert_eq!(service.view().unwrap().desired_revision, 6);
+}
+
+#[test]
+fn brain_targets_preserve_legacy_json_and_require_a_real_recent_success_to_publish() {
+    let temp = tempfile::tempdir().unwrap();
+    let config = ConfigService::open(temp.path(), Arc::new(SystemCredentials)).unwrap();
+    let p = config.save_provider(provider(0)).unwrap().providers[0].clone();
+    let target = CloudTarget {
+        provider_id: p.id.clone(),
+        model_id: "answer".into(),
+    };
+    let legacy = serde_json::to_value(&target).unwrap();
+    let selection: CloudSelection = serde_json::from_value(legacy.clone()).unwrap();
+    assert_eq!(selection.explicit(), Some(&target));
+    assert_eq!(serde_json::to_value(selection).unwrap(), legacy);
+    assert_eq!(
+        serde_json::to_value(CloudSelection::brain()).unwrap(),
+        serde_json::json!({"kind":"brain"})
+    );
+    assert!(
+        serde_json::from_value::<CloudSelection>(
+            serde_json::json!({"kind":"brain","permissions":["shell"]})
+        )
+        .is_err()
+    );
+    let mut recipe = manual(&p.id);
+    recipe.brain = TeamBrain::FirstCloud {};
+    recipe.steps[0].target = TeamStepTarget::CloudModel {
+        target: CloudSelection::brain(),
+    };
+    let id = config.save_team(save(1, None, recipe)).unwrap().teams[0]
+        .team
+        .id
+        .clone();
+    assert_eq!(
+        config.publish_team(command(2, &id)).unwrap_err().code,
+        ErrorCode::NoAvailableBrain
+    );
+    let snapshot = config.read_snapshot().unwrap().1;
+    let fingerprint = tagma_core::health::provider_fingerprint(&snapshot.providers[0]);
+    ConfigService::record_runtime_health(
+        temp.path(),
+        &p.id,
+        "answer",
+        &fingerprint,
+        tagma_core::health::HealthObservation::CatalogSeen,
+    )
+    .unwrap();
+    assert_eq!(
+        config.publish_team(command(2, &id)).unwrap_err().code,
+        ErrorCode::NoAvailableBrain
+    );
+    ConfigService::record_runtime_health(
+        temp.path(),
+        &p.id,
+        "answer",
+        &fingerprint,
+        tagma_core::health::HealthObservation::InferenceSucceeded,
+    )
+    .unwrap();
+    let published = config.publish_team(command(2, &id)).unwrap();
+    assert!(published.teams[0].published[0].configured_ready);
+    assert_eq!(
+        published.teams[0].team.versions[0].public_id,
+        "tagma/my-team"
+    );
+    ConfigService::record_runtime_health(
+        temp.path(),
+        &p.id,
+        "answer",
+        &fingerprint,
+        tagma_core::health::HealthObservation::InferenceFailed(
+            tagma_core::health::HealthFailure::Authentication,
+        ),
+    )
+    .unwrap();
+    assert!(!config.view().unwrap().teams[0].published[0].configured_ready);
+    assert_eq!(
+        config.publish_team(command(3, &id)).unwrap_err().code,
+        ErrorCode::NoAvailableBrain
+    );
 }
