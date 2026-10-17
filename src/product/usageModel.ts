@@ -1,4 +1,5 @@
-import type { UsageDetailsView, UsageFilter, UsageMetricKind, UsageRange, UsageRequestsQuery, UsageRequestsView, UsageSummaryQuery, UsageSummaryView } from "./contract";
+import type { UsageDetailsView, UsageFilter, UsageMetricKind, UsageRange, UsageReadInfo, UsageRequestsQuery, UsageRequestsView, UsageSummaryQuery, UsageSummaryView } from "./contract";
+import type {UsageBarrier} from "./usageClearModel";
 
 const day = 86_400_000;
 export type UsageDraft = { from: string; through: string; provider: string; model: string; state: string; error: string; config: string; team: string; kind: UsageMetricKind };
@@ -60,8 +61,15 @@ export class UsageLoader {
   private state: UsageReadState = { busy: false, data: null, detail: null, error: null };
   private api: UsageAPI;
   private publish: (state: UsageReadState) => void;
-  constructor(api: UsageAPI, publish: (state: UsageReadState) => void) { this.api = api; this.publish = publish; }
+  private barrier:()=>UsageBarrier|null;
+  constructor(api: UsageAPI, publish: (state: UsageReadState) => void,barrier:()=>UsageBarrier|null=()=>null) { this.api = api; this.publish = publish; this.barrier=barrier; }
   dispose() { this.disposed = true; this.generation++; }
+  invalidate() {this.generation++;if(!this.disposed)this.update({busy:false,data:null,detail:null,error:null});}
+  private allow(info?:UsageReadInfo) {
+    const barrier=this.barrier();if(!barrier)return;
+    if(barrier.blocked)throw barrier.error??{code:"USAGE_CLEAR_UNCONFIRMED"};
+    if(info&&(info.context_id!==barrier.context || (info.generation===null?BigInt(barrier.floor)>0n:!/^(0|[1-9][0-9]{0,18})$/.test(info.generation)||BigInt(info.generation)>9223372036854775807n||BigInt(info.generation)<BigInt(barrier.floor))))throw {code:"USAGE_CLEAR_CHANGED"};
+  }
   private update(state: UsageReadState) { this.state = state; this.publish(state); }
   async load(selection: UsageSelection, next = false) {
     if (this.disposed || this.state.busy) return;
@@ -72,12 +80,15 @@ export class UsageLoader {
     const generation = ++this.generation;
     this.update({ busy: true, data: null, detail: null, error: null });
     try {
+      this.allow();
       const requests = await this.api.usageRequests({ protocol_version: 1, range: selection.range, filter: selection.filter, cursor, limit: 32 });
       if (this.disposed || generation !== this.generation) return;
+      this.allow(requests.info);
       // Error-code filtering has no daily-summary equivalent. Never silently
       // drop that filter and present a broader total beside filtered requests.
       const summary = selection.filter.error_code ? null : previous?.summary ?? await this.api.usageSummary({ protocol_version: 1, range: selection.range, filter: selection.filter, kind: selection.kind, cursor: null, limit: 1 });
-      if (summary && summary.info.generation !== requests.info.generation) throw { code: "USAGE_CLEAR_CHANGED" };
+      if(summary)this.allow(summary.info);
+      if (summary && (summary.info.generation !== requests.info.generation || summary.info.context_id!==requests.info.context_id)) throw { code: "USAGE_CLEAR_CHANGED" };
       if (!this.disposed && generation === this.generation) this.update({ busy: false, data: { selection, requests, summary }, detail: null, error: null });
     } catch (error) {
       if (!this.disposed && generation === this.generation) this.update({ busy: false, data: null, detail: null, error });
@@ -88,8 +99,10 @@ export class UsageLoader {
     const generation = ++this.generation;
     this.update({ ...this.state, busy: true, detail: null, error: null });
     try {
+      this.allow();
       const detail = await this.api.usageDetails({ protocol_version: 1, request_id: requestId });
-      if (!this.disposed && generation === this.generation) this.update({ ...this.state, data: this.state.data?.requests.info.generation === detail.info.generation ? this.state.data : null, busy: false, detail, error: null });
+      this.allow(detail.info);
+      if (!this.disposed && generation === this.generation) this.update({ ...this.state, data: this.state.data?.requests.info.generation === detail.info.generation && this.state.data.requests.info.context_id===detail.info.context_id ? this.state.data : null, busy: false, detail, error: null });
     } catch (error) {
       if (!this.disposed && generation === this.generation) this.update({ ...this.state, busy: false, detail: null, error });
     }

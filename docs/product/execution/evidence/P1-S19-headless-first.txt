@@ -1,0 +1,23 @@
+✔ UTC inclusive dates, leap dates, max span and strict filters (1.2793ms)
+✔ decimal precision, known zero, unknown and out-of-Date-range timestamps (0.1587ms)
+✔ sequential single-reader calls; duplicate clicks ignored; cursor pins applied selection (0.7986ms)
+✔ query failure clears prior result, and errors never silently broaden summary (0.3514ms)
+✔ disposed query and detail cannot repopulate cache or launch next stage (0.1661ms)
+✔ clear generations cannot mix cached totals/requests; fresh detail invalidates older list (0.1571ms)
+✔ source rendering uses CIS rows; precise unknown/zero, absent store and detail identity (12.7549ms)
+✔ clear intent is saved before native call; own-clear invalidation drops late query and raises durable floor (1.2084ms)
+✔ failed intent persistence sends no clear; malformed state is preserved and refuses mutation (0.8722ms)
+✔ saved pending clear survives unmount and retries the exact plan after receipt persistence fails (0.4602ms)
+✔ late disposed clear reply cannot erase a newer pending operation or lower its floor (0.4247ms)
+✔ explicit leave/recovery sends no new clear and keeps the unknown outcome visible (0.2917ms)
+✔ invalid clear receipts cannot confirm or release pending state (0.3479ms)
+✔ context namespaces and exact large-generation floors reject foreign/old reads without fake zero (0.2123ms)
+✔ clear source rendering exposes exact range/counts and explicit uncertainty, with CIS controls (2.7599ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 15
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 27.0706

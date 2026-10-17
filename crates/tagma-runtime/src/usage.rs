@@ -22,6 +22,11 @@ impl Drop for CancelOnDrop {
     }
 }
 impl UsageReader {
+    pub async fn metadata(&self, directory: &Path) -> AppResult<UsageReadInfo> {
+        let directory = directory.to_owned();
+        self.run(move |cancel| tagma_core::usage::read::metadata(&directory, &cancel))
+            .await
+    }
     async fn run<T: Send + 'static>(
         &self,
         work: impl FnOnce(Arc<UsageReadCancellation>) -> AppResult<T> + Send + 'static,

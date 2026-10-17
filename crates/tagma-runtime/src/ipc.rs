@@ -238,7 +238,7 @@ pub(crate) async fn call_response(manifest: &Manifest, command: Command) -> AppR
         _ => None,
     };
     if let Some(plan) = &clearing {
-        validate_clear_plan(plan, &plan.range)?;
+        validate_clear_plan(plan, &plan.range, &manifest.config_id)?;
     }
     let recovery = matches!(&command, Command::RecoverUsage);
     let safety = match &command {
@@ -321,7 +321,7 @@ pub(crate) async fn call_response(manifest: &Manifest, command: Command) -> AppR
                     error: None,
                 }) => {
                     validate_usage_management(&response.status, &manifest.instance_id)?;
-                    validate_clear_plan(plan, range)?;
+                    validate_clear_plan(plan, range, &manifest.config_id)?;
                 }
                 _ => return Err(AppError::new(ErrorCode::UsageQueryUnavailable)),
             }
@@ -369,6 +369,7 @@ fn valid_decimal(value: &str) -> bool {
 fn validate_clear_plan(
     plan: &tagma_core::usage::clear::UsageClearPlan,
     range: &tagma_core::usage::read::UsageRange,
+    context: &str,
 ) -> AppResult<()> {
     let day = 86_400_000.0;
     if !range.start_ms.is_finite()
@@ -382,6 +383,7 @@ fn validate_clear_plan(
         || range.end_ms <= range.start_ms
         || range.end_ms - range.start_ms > 366.0 * day
         || plan.range != *range
+        || plan.context_id != context
         || !uuid::Uuid::parse_str(&plan.operation_id)
             .is_ok_and(|id| id.to_string() == plan.operation_id)
         || [

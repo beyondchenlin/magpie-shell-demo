@@ -1,0 +1,37 @@
+   Compiling tagma-core v0.2.0-dev.16 (D:\demo1\tagmaai\crates\tagma-core)
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+   Compiling tagma-runtime v0.2.0-dev.16 (D:\demo1\tagmaai\crates\tagma-runtime)
+   Compiling tagma-gateway v0.2.0-dev.16 (D:\demo1\tagmaai\crates\tagma-gateway)
+    Finished `test` profile [unoptimized] target(s) in 7.46s
+     Running unittests src\main.rs (target\debug\deps\tagma_gateway-96c849ca787440a6.exe)
+
+running 6 tests
+Usage management:full bounded channel ->busy without fence;actual writer skips expired and preclosed clear before mutation,epoch remains0,healthy accounting retained
+test usage::tests::full_or_abandoned_management_never_mutates_or_blocks_accounting ... ok
+Usage management:running request ->busy,changed preview ->changed;neither blocks healthy accounting;new preview clear succeeds
+test usage::tests::management_busy_and_changed_do_not_fence_healthy_inference ... ok
+Usage accounting ACK:remaining150ms request budget ends wait while committed writer ACK is held;explicit recovery required
+test usage::tests::accounting_ack_wait_respects_the_remaining_request_budget ... ok
+Usage clear ACK:actual delete+epoch+receipt commit precedes800ms caller timeout;timeout remains unconfirmed,accounting healthy;same plan retry retrieves generation1 without replay
+test usage::tests::clear_wait_timeout_keeps_durable_receipt_without_replaying_deletion ... ok
+Usage lost committed-start ACK unit: unfinished records=0; late ACK lifecycle guard recovery
+test usage::tests::lost_attempt_start_acknowledgement_closes_both_started_records ... ok
+SUP-008 bounded writer race:recover operation timed out/Err;writer later completed actual pending1->0 and degraded=false;original operation Err preserved for reply
+test usage::tests::recovery_timeout_retains_operation_failure_after_late_writer_completion ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 12 filtered out; finished in 0.93s
+

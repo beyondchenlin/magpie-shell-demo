@@ -88,6 +88,7 @@ export function errorCopy(error: unknown, language: ProductLanguage): string {
   if (error && typeof error === "object" && "code" in error) {
     const code = String(error.code);
     if (code === "CONFIRMATION_TIMEOUT") return copy(language).timeout;
+    if (code === "USAGE_CLEAR_STATE_UNAVAILABLE") return language === "zh" ? "本地核实记录不可读或不可保存。请检查存储后重新进入用量页；已发送请求的结果仍可能未确认。" : "Local verification state cannot be read or saved. Check storage, then reopen Usage; an already sent operation may remain unconfirmed.";
     if (code === "NATIVE_THEME_UNCONFIRMED") return language === "zh" ? "页面外观已设置，原生窗口外观尚未确认。请重试或检查诊断。" : "Page appearance changed; native window appearance is not confirmed. Retry or check diagnostics.";
     if (code in errors) return errors[code as ErrorCode][language === "zh" ? 0 : 1];
   }

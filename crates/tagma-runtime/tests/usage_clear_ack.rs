@@ -11,6 +11,7 @@ use tagma_core::{
 use tagma_runtime::{GatewayManager, ipc};
 fn plan() -> UsageClearPlan {
     UsageClearPlan {
+        context_id: String::new(),
         operation_id: "00000000-0000-4000-8000-000000000001".into(),
         range: UsageRange {
             start_ms: 0.0,
@@ -38,7 +39,7 @@ fn status() -> RuntimeStatus {
 }
 async fn accepted(
     clear: bool,
-    operation: Value,
+    mut operation: Value,
     mut status: RuntimeStatus,
     drop_reply: bool,
 ) -> bool {
@@ -69,6 +70,13 @@ async fn accepted(
         port: 9168,
         console_attached: false,
     };
+    let mut expected = plan();
+    expected.context_id = manifest.config_id.clone();
+    for pointer in ["/plan/context_id", "/receipt/plan/context_id"] {
+        if operation.pointer(pointer).and_then(Value::as_str) == Some("") {
+            *operation.pointer_mut(pointer).unwrap() = json!(manifest.config_id);
+        }
+    }
     let listener = ipc::listener(&manifest.endpoint).unwrap();
     std::fs::write(
         temp.path().join("runtime.json"),
@@ -95,7 +103,7 @@ async fn accepted(
     });
     let manager = GatewayManager::new(temp.path(), Path::new("unused-private-clear-fixture"));
     let result = if clear {
-        manager.clear_usage(plan()).await.is_ok()
+        manager.clear_usage(expected).await.is_ok()
     } else {
         manager.prepare_usage_clear(plan().range).await.is_ok()
     };
@@ -120,6 +128,7 @@ async fn clear_receipt_requires_matching_operation_scope_generation_and_instance
             "operation_id",
             json!("00000000-0000-4000-8000-000000000099"),
         ),
+        ("context_id", json!("foreign-context")),
         ("requests", json!("9")),
         ("expected_revision", json!("8")),
     ] {

@@ -30,6 +30,9 @@ fn main() {
             "usage_details",
             "usage_summary",
             "recover_usage",
+            "usage_context",
+            "prepare_usage_clear",
+            "clear_usage",
             "recover_initialization",
         ]),
     ))

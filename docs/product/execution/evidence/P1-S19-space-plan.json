@@ -1,0 +1,20 @@
+{
+  "recordedAtUtc": "2026-10-17T20:22:32.338Z",
+  "target": "D:/demo1/tagmaai/target",
+  "temporaryRoot": "C:\\Users\\ai\\AppData\\Local\\Temp",
+  "estimatedAdditionalPeakGiB": 0.1,
+  "freeBeforeGiB": {
+    "C": 42.46,
+    "D": 10.14
+  },
+  "scope": "Context-bound native clear source,explicit confirmation UI and durable per-context pending/floor; targeted cached checks, no UI or installation",
+  "reuse": "Existing target/node_modules; no new environment/worktree/installer",
+  "cleanup": "Owned TempDir fixtures close first; no copied baselines or manual prior cleanup",
+  "revisedAtUtc": "2026-10-17T20:39:07.188Z",
+  "freeAtRevisionGiB": {
+    "C": 42.46,
+    "D": 10.08
+  },
+  "remainingEstimatedPeakGiB": 0.04,
+  "revisionNote": "Cached core/context/private checks done; bounded final source/native static checks and existing gateway fixtures only. No installer or broad new environment."
+}

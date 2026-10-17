@@ -5,6 +5,7 @@ use ts_rs::TS;
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, TS)]
 #[serde(deny_unknown_fields)]
 pub struct UsageClearPlan {
+    pub context_id: String,
     pub operation_id: String,
     pub range: read::UsageRange,
     pub expected_revision: String,
@@ -23,6 +24,82 @@ pub struct UsageClearReceipt {
 }
 fn changed() -> AppError {
     AppError::new(ErrorCode::UsageClearChanged)
+}
+// Read only the exact pre-context schema2 receipt format. Incoming plans still
+// require context_id; this does not make an unbound request valid or rewrite
+// historical JSON. Duplicate/unknown fields fail both strict decoders.
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct LegacyPlan {
+    operation_id: String,
+    range: read::UsageRange,
+    expected_revision: String,
+    generation: String,
+    requests: String,
+    attempts: String,
+    summary_buckets: String,
+}
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct LegacyReceipt {
+    plan: LegacyPlan,
+    generation: String,
+    committed_ms: f64,
+}
+fn decode_receipt(json: &str, identity: &str) -> AppResult<UsageClearReceipt> {
+    let receipt: UsageClearReceipt = match serde_json::from_str(json) {
+        Ok(receipt) => receipt,
+        Err(_) => {
+            let legacy: LegacyReceipt = serde_json::from_str(json).map_err(storage)?;
+            UsageClearReceipt {
+                plan: UsageClearPlan {
+                    context_id: identity.into(),
+                    operation_id: legacy.plan.operation_id,
+                    range: legacy.plan.range,
+                    expected_revision: legacy.plan.expected_revision,
+                    generation: legacy.plan.generation,
+                    requests: legacy.plan.requests,
+                    attempts: legacy.plan.attempts,
+                    summary_buckets: legacy.plan.summary_buckets,
+                },
+                generation: legacy.generation,
+                committed_ms: legacy.committed_ms,
+            }
+        }
+    };
+    if receipt.plan.context_id.len() != 64
+        || !receipt
+            .plan
+            .context_id
+            .bytes()
+            .all(|b| b.is_ascii_hexdigit())
+        || !identifier(&receipt.plan.operation_id)
+        || receipt.plan.range.validate(true).is_err()
+        || !receipt.committed_ms.is_finite()
+        || receipt.committed_ms.fract() != 0.0
+        || receipt.committed_ms < receipt.plan.range.end_ms
+        || receipt.committed_ms > 9_007_199_254_740_991.0
+    {
+        return Err(storage("invalid clear receipt"));
+    }
+    for value in [
+        &receipt.plan.expected_revision,
+        &receipt.plan.generation,
+        &receipt.plan.requests,
+        &receipt.plan.attempts,
+        &receipt.plan.summary_buckets,
+        &receipt.generation,
+    ] {
+        number(value).map_err(|_| storage("invalid clear receipt number"))?;
+    }
+    if number(&receipt.generation)?
+        != number(&receipt.plan.generation)?
+            .checked_add(1)
+            .ok_or_else(|| storage("clear receipt generation overflow"))?
+    {
+        return Err(storage("clear receipt generation mismatch"));
+    }
+    Ok(receipt)
 }
 fn number(value: &str) -> AppResult<u64> {
     let n = value.parse::<u64>().map_err(|_| invalid())?;
@@ -49,6 +126,7 @@ fn snapshot(
     db: &Connection,
     range: read::UsageRange,
     operation_id: String,
+    context_id: String,
 ) -> AppResult<UsageClearPlan> {
     let (start, end) = range.validate(true)?;
     let (revision, generation) = db
@@ -64,6 +142,7 @@ fn snapshot(
             .map_err(storage)
     };
     Ok(UsageClearPlan {
+        context_id,
         operation_id,
         range,
         expected_revision: revision.to_string(),
@@ -97,10 +176,19 @@ impl UsageStore {
         }
         let tx = self.db.transaction().map_err(storage)?;
         idle(&tx)?;
-        snapshot(&tx, range, uuid::Uuid::new_v4().to_string())
+        snapshot(
+            &tx,
+            range,
+            uuid::Uuid::new_v4().to_string(),
+            context_id(&self.directory)?,
+        )
     }
     pub fn clear(&mut self, plan: &UsageClearPlan, now_ms: u64) -> AppResult<UsageClearReceipt> {
         let (start, end) = bounds(&plan.range, now_ms)?;
+        let identity = context_id(&self.directory)?;
+        if identity != plan.context_id {
+            return Err(changed());
+        }
         time(now_ms)?;
         if now_ms > 9_007_199_254_740_991 || !identifier(&plan.operation_id) {
             return Err(invalid());
@@ -130,7 +218,7 @@ impl UsageStore {
                 if json.len() > 4096 {
                     return Err(storage("clear receipt bound"));
                 }
-                let receipt: UsageClearReceipt = serde_json::from_str(&json).map_err(storage)?;
+                let receipt = decode_receipt(&json, &identity)?;
                 if receipt.plan.operation_id == plan.operation_id {
                     let current: u64 = tx
                         .query_row(
@@ -155,7 +243,7 @@ impl UsageStore {
                 return Err(AppError::new(ErrorCode::UsageClearBusy));
             }
             idle(&tx)?;
-            if snapshot(&tx, plan.range.clone(), plan.operation_id.clone())? != *plan {
+            if snapshot(&tx, plan.range.clone(), plan.operation_id.clone(), identity)? != *plan {
                 return Err(changed());
             }
             let foreign_keys: bool = tx
@@ -209,6 +297,118 @@ impl UsageStore {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn exact_legacy_receipt_is_readable_but_unbound_plans_remain_invalid() {
+        let temp = directory();
+        let mut store = UsageStore::open(temp.path(), DAY * 4).unwrap();
+        let plan = store.prepare_clear(range(), DAY * 4).unwrap();
+        let receipt = store.clear(&plan, DAY * 4).unwrap();
+        let mut legacy = serde_json::to_value(&receipt).unwrap();
+        legacy["plan"].as_object_mut().unwrap().remove("context_id");
+        let json = serde_json::to_string(&legacy).unwrap();
+        store
+            .db
+            .execute("UPDATE usage_meta SET last_clear_json=?1", [&json])
+            .unwrap();
+        assert_eq!(store.clear(&plan, DAY * 4).unwrap(), receipt);
+        assert_eq!(
+            store
+                .db
+                .query_row::<String, _, _>("SELECT last_clear_json FROM usage_meta", [], |row| row
+                    .get(0))
+                .unwrap(),
+            json,
+            "legacy read does not rewrite metadata"
+        );
+        let mut unbound = plan;
+        unbound.context_id.clear();
+        assert_eq!(
+            store.clear(&unbound, DAY * 4).unwrap_err().code,
+            ErrorCode::UsageClearChanged
+        );
+        legacy["plan"]["unexpected"] = serde_json::json!(true);
+        assert!(
+            decode_receipt(
+                &serde_json::to_string(&legacy).unwrap(),
+                &receipt.plan.context_id
+            )
+            .is_err()
+        );
+        let mut invalid = receipt.clone();
+        invalid.committed_ms = -1.0;
+        assert!(
+            decode_receipt(
+                &serde_json::to_string(&invalid).unwrap(),
+                &receipt.plan.context_id
+            )
+            .is_err()
+        );
+        println!(
+            "Usage legacy schema2 receipt:exact old shape resolves within its current owned context without rewriting;incoming unbound plan,unknown legacy fields and invalid receipt time rejected"
+        );
+    }
+    #[test]
+    fn identical_counts_in_another_directory_never_authorize_its_clear() {
+        let first = directory();
+        let second = directory();
+        let mut a = UsageStore::open(first.path(), DAY * 4).unwrap();
+        let mut b = UsageStore::open(second.path(), DAY * 4).unwrap();
+        for at in [DAY + 100, DAY + 200] {
+            seed(&mut a, at);
+            seed(&mut b, at);
+        }
+        let plan = a.prepare_clear(range(), DAY * 4).unwrap();
+        let other = b.prepare_clear(range(), DAY * 4).unwrap();
+        assert_eq!(plan.expected_revision, other.expected_revision);
+        assert_eq!(plan.requests, other.requests);
+        assert_ne!(plan.context_id, other.context_id);
+        assert_eq!(
+            b.clear(&plan, DAY * 4).unwrap_err().code,
+            ErrorCode::UsageClearChanged
+        );
+        assert_eq!(generation(&b.db), 0);
+        let info = read::metadata(second.path(), &Default::default()).unwrap();
+        assert_eq!(info.context_id, other.context_id);
+        assert_eq!(info.generation.as_deref(), Some("0"));
+        let mut query = read::UsageRequestsQuery {
+            protocol_version: 1,
+            range: range(),
+            filter: Default::default(),
+            cursor: None,
+            limit: 1,
+        };
+        query.cursor = read::requests(first.path(), query.clone(), &Default::default())
+            .unwrap()
+            .next_cursor;
+        assert!(query.cursor.is_some());
+        assert_eq!(
+            read::requests(second.path(), query, &Default::default())
+                .unwrap_err()
+                .code,
+            ErrorCode::UsageClearChanged
+        );
+        let mut query = read::UsageSummaryQuery {
+            protocol_version: 1,
+            range: range(),
+            filter: Default::default(),
+            kind: read::UsageMetricKind::Attempt,
+            cursor: None,
+            limit: 1,
+        };
+        query.cursor = read::summary(first.path(), query.clone(), &Default::default())
+            .unwrap()
+            .next_cursor;
+        assert!(query.cursor.is_some());
+        assert_eq!(
+            read::summary(second.path(), query, &Default::default())
+                .unwrap_err()
+                .code,
+            ErrorCode::UsageClearChanged
+        );
+        println!(
+            "Usage context:identical range/revision/counts in separate owned directories do not authorize cross-directory clear or either cursor;metadata identity matches its plan and generation0 remains"
+        );
+    }
     fn directory() -> tempfile::TempDir {
         tempfile::Builder::new()
             .prefix("tagma-usage-clear-")

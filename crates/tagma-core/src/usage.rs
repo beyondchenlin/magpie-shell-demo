@@ -51,6 +51,14 @@ fn bump(db: &Connection) -> AppResult<()> {
 fn storage(_: impl std::fmt::Display) -> AppError {
     AppError::new(ErrorCode::StorageUnavailable)
 }
+fn context_id(directory: &Path) -> AppResult<String> {
+    use sha2::{Digest, Sha256};
+    let directory = directory.canonicalize().map_err(storage)?;
+    Ok(format!(
+        "{:x}",
+        Sha256::digest(directory.to_string_lossy().as_bytes())
+    ))
+}
 fn invalid() -> AppError {
     AppError::new(ErrorCode::InvalidInput)
 }

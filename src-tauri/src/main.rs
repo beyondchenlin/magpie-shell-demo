@@ -430,6 +430,40 @@ async fn recover_usage(
     check_protocol(protocol_version)?;
     gateway(&window, &app)?.recover_usage().await
 }
+#[tauri::command]
+async fn usage_context(
+    window: WebviewWindow,
+    app: State<'_, Application>,
+    protocol_version: u32,
+) -> AppResult<usage::read::UsageReadInfo> {
+    check_protocol(protocol_version)?;
+    local(&window)?;
+    let directory = app
+        .directory
+        .as_ref()
+        .ok_or_else(|| AppError::new(ErrorCode::UsageQueryUnavailable))?;
+    app.usage_reader.metadata(directory).await
+}
+#[tauri::command]
+async fn prepare_usage_clear(
+    window: WebviewWindow,
+    app: State<'_, Application>,
+    protocol_version: u32,
+    range: usage::read::UsageRange,
+) -> AppResult<usage::clear::UsageClearPlan> {
+    check_protocol(protocol_version)?;
+    gateway(&window, &app)?.prepare_usage_clear(range).await
+}
+#[tauri::command]
+async fn clear_usage(
+    window: WebviewWindow,
+    app: State<'_, Application>,
+    protocol_version: u32,
+    plan: usage::clear::UsageClearPlan,
+) -> AppResult<usage::clear::UsageClearReceipt> {
+    check_protocol(protocol_version)?;
+    gateway(&window, &app)?.clear_usage(plan).await
+}
 
 #[tauri::command]
 async fn recover_initialization(
@@ -617,6 +651,9 @@ fn main() {
             usage_details,
             usage_summary,
             recover_usage,
+            usage_context,
+            prepare_usage_clear,
+            clear_usage,
             recover_initialization
         ])
         .on_window_event(|window, event| {

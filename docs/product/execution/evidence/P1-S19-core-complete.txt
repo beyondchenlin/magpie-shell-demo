@@ -1,0 +1,52 @@
+   Compiling tagma-core v0.2.0-dev.16 (D:\demo1\tagmaai\crates\tagma-core)
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+error[E0277]: `contract::AppError` doesn't implement `std::fmt::Display`
+  --> crates\tagma-core\src\usage\clear.rs:93:9
+   |
+93 |         number(value).map_err(storage)?;
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ unsatisfied trait bound
+   |
+help: the trait `std::fmt::Display` is not implemented for `contract::AppError`
+  --> crates\tagma-core\src\contract.rs:46:1
+   |
+46 | pub struct AppError {
+   | ^^^^^^^^^^^^^^^^^^^
+note: required by a bound in `usage::storage`
+  --> crates\tagma-core\src\usage.rs:51:20
+   |
+51 | fn storage(_: impl std::fmt::Display) -> AppError {
+   |                    ^^^^^^^^^^^^^^^^^ required by this bound in `storage`
+
+error[E0277]: `contract::AppError` doesn't implement `std::fmt::Display`
+  --> crates\tagma-core\src\usage\clear.rs:93:31
+   |
+93 |         number(value).map_err(storage)?;
+   |                               ^^^^^^^ unsatisfied trait bound
+   |
+help: the trait `std::fmt::Display` is not implemented for `contract::AppError`
+  --> crates\tagma-core\src\contract.rs:46:1
+   |
+46 | pub struct AppError {
+   | ^^^^^^^^^^^^^^^^^^^
+note: required by a bound in `usage::storage`
+  --> crates\tagma-core\src\usage.rs:51:20
+   |
+51 | fn storage(_: impl std::fmt::Display) -> AppError {
+   |                    ^^^^^^^^^^^^^^^^^ required by this bound in `storage`
+
+For more information about this error, try `rustc --explain E0277`.
+error: could not compile `tagma-core` (lib test) due to 2 previous errors

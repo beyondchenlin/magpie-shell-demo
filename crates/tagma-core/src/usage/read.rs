@@ -122,6 +122,7 @@ impl UsageFilter {
 #[derive(Debug, Clone, Serialize, Deserialize, TS)]
 #[serde(deny_unknown_fields)]
 pub struct UsageCursor {
+    pub context_id: String,
     pub generation: String,
     pub started_ms: f64,
     pub request_id: String,
@@ -158,6 +159,7 @@ impl UsageMetricKind {
 #[derive(Debug, Clone, Serialize, Deserialize, TS)]
 #[serde(deny_unknown_fields)]
 pub struct UsageSummaryCursor {
+    pub context_id: String,
     pub generation: String,
     pub day_ms: f64,
     pub provider_id: String,
@@ -184,6 +186,7 @@ pub enum UsageAvailability {
 }
 #[derive(Debug, Clone, Serialize, Deserialize, TS)]
 pub struct UsageReadInfo {
+    pub context_id: String,
     pub generation: Option<String>,
     pub availability: UsageAvailability,
     pub observed_ms: f64,
@@ -339,7 +342,7 @@ fn present(path: &Path) -> AppResult<bool> {
         Err(error) => Err(unavailable(error)),
     }
 }
-fn info(db: Option<&Connection>) -> AppResult<UsageReadInfo> {
+fn read_info(db: Option<&Connection>, directory: &Path) -> AppResult<UsageReadInfo> {
     let detail = if let Some(db) = db {
         Some(
             db.query_row(
@@ -372,6 +375,7 @@ fn info(db: Option<&Connection>) -> AppResult<UsageReadInfo> {
         None
     };
     Ok(UsageReadInfo {
+        context_id: context_id(directory).map_err(unavailable)?,
         generation: db
             .map(|db| {
                 db.query_row(
@@ -505,6 +509,15 @@ pub fn requests(
 ) -> AppResult<UsageRequestsView> {
     checked(cancel, || requests_inner(directory, input, cancel))
 }
+pub fn metadata(directory: &Path, cancel: &UsageReadCancellation) -> AppResult<UsageReadInfo> {
+    checked(cancel, || {
+        let Some(mut db) = open(directory, cancel)? else {
+            return bounded(read_info(None, directory)?, cancel);
+        };
+        let tx = db.transaction().map_err(unavailable)?;
+        bounded(read_info(Some(&tx), directory)?, cancel)
+    })
+}
 pub fn details(
     directory: &Path,
     input: UsageDetailsQuery,
@@ -546,7 +559,7 @@ fn requests_inner(
         }
         return bounded(
             UsageRequestsView {
-                info: info(None)?,
+                info: read_info(None, directory)?,
                 records: Vec::new(),
                 next_cursor: None,
             },
@@ -554,12 +567,11 @@ fn requests_inner(
         );
     };
     let tx = db.transaction().map_err(unavailable)?;
-    let read_info = info(Some(&tx))?;
-    if input
-        .cursor
-        .as_ref()
-        .is_some_and(|cursor| Some(cursor.generation.as_str()) != read_info.generation.as_deref())
-    {
+    let read_info = read_info(Some(&tx), directory)?;
+    if input.cursor.as_ref().is_some_and(|cursor| {
+        cursor.context_id != read_info.context_id
+            || Some(cursor.generation.as_str()) != read_info.generation.as_deref()
+    }) {
         return Err(AppError::new(ErrorCode::UsageClearChanged));
     }
     let mut query=tx.prepare("SELECT id,provider_id,model,config_revision,team_revision,started_ms,finished_ms,outcome,error_code,input_tokens,output_tokens FROM usage_requests WHERE started_ms>=:start AND started_ms<:end AND (:provider IS NULL OR provider_id=:provider) AND (:model IS NULL OR model=:model) AND (:revision IS NULL OR config_revision=:revision) AND (:team IS NULL OR team_revision=:team) AND (:state IS NULL OR outcome=:state) AND (:error IS NULL OR error_code=:error) AND (:cursor IS NULL OR started_ms<:cursor OR (started_ms=:cursor AND id<:id)) ORDER BY started_ms DESC,id DESC LIMIT :limit").map_err(unavailable)?;
@@ -573,6 +585,7 @@ fn requests_inner(
     records.truncate(input.limit as usize);
     let next_cursor = if more {
         records.last().map(|r| UsageCursor {
+            context_id: read_info.context_id.clone(),
             generation: read_info.generation.clone().unwrap_or_default(),
             started_ms: r.started_ms,
             request_id: r.request_id.clone(),
@@ -601,7 +614,7 @@ fn details_inner(
     let Some(mut db) = open(directory, cancel)? else {
         return bounded(
             UsageDetailsView {
-                info: info(None)?,
+                info: read_info(None, directory)?,
                 record: None,
                 attempts: Vec::new(),
             },
@@ -609,7 +622,7 @@ fn details_inner(
         );
     };
     let tx = db.transaction().map_err(unavailable)?;
-    let read_info = info(Some(&tx))?;
+    let read_info = read_info(Some(&tx), directory)?;
     let record=tx.query_row("SELECT id,provider_id,model,config_revision,team_revision,started_ms,finished_ms,outcome,error_code,input_tokens,output_tokens FROM usage_requests WHERE id=?1",[&input.request_id],request_row).optional().map_err(unavailable)?;
     let mut attempts = Vec::new();
     if record.is_some() {
@@ -703,7 +716,7 @@ fn summary_inner(
         }
         return bounded(
             UsageSummaryView {
-                info: info(None)?,
+                info: read_info(None, directory)?,
                 kind: input.kind,
                 records: Vec::new(),
                 totals: None,
@@ -713,12 +726,11 @@ fn summary_inner(
         );
     };
     let tx = db.transaction().map_err(unavailable)?;
-    let read_info = info(Some(&tx))?;
-    if input
-        .cursor
-        .as_ref()
-        .is_some_and(|cursor| Some(cursor.generation.as_str()) != read_info.generation.as_deref())
-    {
+    let read_info = read_info(Some(&tx), directory)?;
+    if input.cursor.as_ref().is_some_and(|cursor| {
+        cursor.context_id != read_info.context_id
+            || Some(cursor.generation.as_str()) != read_info.generation.as_deref()
+    }) {
         return Err(AppError::new(ErrorCode::UsageClearChanged));
     }
     let mut query=tx.prepare("SELECT day,provider_id,model,config_revision,team_revision,outcome,count,input_known,input_unknown,output_known,output_unknown,elapsed_ms FROM usage_daily WHERE day>=:start AND day<:end AND kind=:kind AND (:provider IS NULL OR provider_id=:provider) AND (:model IS NULL OR model=:model) AND (:revision IS NULL OR config_revision=:revision) AND (:team IS NULL OR team_revision=:team) AND (:state IS NULL OR outcome=:state) AND (:cursor IS NULL OR (day,provider_id,model,config_revision,team_revision,outcome)<(:cursor,:cp,:cm,:cr,:ct,:cs)) ORDER BY day DESC,provider_id DESC,model DESC,config_revision DESC,team_revision DESC,outcome DESC LIMIT :limit").map_err(unavailable)?;
@@ -732,6 +744,7 @@ fn summary_inner(
     records.truncate(input.limit as usize);
     let next_cursor = if more {
         records.last().map(|r| UsageSummaryCursor {
+            context_id: read_info.context_id.clone(),
             generation: read_info.generation.clone().unwrap_or_default(),
             day_ms: r.day_ms,
             provider_id: r.provider_id.clone(),

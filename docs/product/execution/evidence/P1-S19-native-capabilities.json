@@ -1,0 +1,13 @@
+{
+  "scope": "Static source registration only; no native invocation or UI",
+  "windows": [
+    "main"
+  ],
+  "commands": [
+    "usage_context",
+    "prepare_usage_clear",
+    "clear_usage"
+  ],
+  "guards": "protocol check+local main guard;fixed Application.directory;manager/private control for mutation;no data-plane path",
+  "passed": true
+}

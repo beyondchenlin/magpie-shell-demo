@@ -8,6 +8,8 @@ import { errorCopy } from "./copy";
 import type { ProductLanguage } from "./preferences";
 import { desktop, service } from "./service";
 import { UsageLoader, usageDefault, usageNumber, usageSelection, usageUtc, type UsageData, type UsageDraft, type UsageReadState } from "./usageModel";
+import {UsageClearSession,type ClearState} from "./usageClearModel";
+import {UsageClearControls} from "./UsageClearControls";
 
 function stateText(state: UsageRecordState, zh: boolean) {
   return ({ running: ["未终结", "Unfinished"], succeeded: ["成功", "Succeeded"], failed: ["失败", "Failed"], cancelled: ["取消", "Cancelled"], interrupted: ["中断 · 结果未知", "Interrupted · result unknown"] })[state][zh ? 0 : 1];
@@ -83,17 +85,29 @@ export function UsageResults({ data, providers, zh, busy, inspect, next }: { dat
 export function UsagePanel({ providers, language }: { providers: Provider[]; language: ProductLanguage }) {
   const zh = language === "zh";
   const [draft, setDraft] = useState(usageDefault);
-  const [state, setState] = useState<UsageReadState>({ busy: false, data: null, detail: null, error: null });
+  const [state, setState] = useState<UsageReadState>({ busy: desktop, data: null, detail: null, error: null });
+  const [contextAttempt,setContextAttempt]=useState(0);
+  const contextPromise=useRef<ReturnType<typeof service.usageContext>|null>(null);
+  const [ready,setReady]=useState(false);
+  const [clearState,setClearState]=useState<ClearState|null>(null);
+  const [clearSession,setClearSession]=useState<UsageClearSession|null>(null);
   const [invalid, setInvalid] = useState(false);
   const [requestId, setRequestId] = useState("");
   const loader = useRef<UsageLoader | null>(null);
   const id = useId();
   useEffect(() => {
-    const current = new UsageLoader(service, setState);
-    loader.current = current;
-    return () => { current.dispose(); if (loader.current === current) loader.current = null; };
-  }, []);
-  const disabled = !desktop || state.busy;
+    if(!desktop)return;
+    let live=true;let current:UsageLoader|null=null;let session:UsageClearSession|null=null;
+    // StrictMode's effect replay shares only this read-only bootstrap promise.
+    contextPromise.current??=service.usageContext();
+    void contextPromise.current.then(info=>{
+      if(!live)return;
+      const next=new UsageClearSession(service,info,localStorage,setClearState,()=>current?.invalidate());session=next;
+      current=new UsageLoader(service,setState,()=>next.barrier());loader.current=current;setClearSession(next);setReady(true);setState({busy:false,data:null,detail:null,error:null});
+    }).catch(error=>{if(live)setState({busy:false,data:null,detail:null,error});});
+    return()=>{live=false;current?.dispose();session?.dispose();if(loader.current===current)loader.current=null;};
+  }, [contextAttempt]);
+  const disabled = !desktop || !ready || state.busy || !!clearState?.busy || !!clearState?.pending || !!clearState?.storageBlocked;
   function change(key: keyof UsageDraft, value: string) { setDraft(previous => ({ ...previous, [key]: value })); setInvalid(false); }
   function refresh() {
     try { const selection = usageSelection(draft); setInvalid(false); void loader.current?.load(selection); }
@@ -116,15 +130,17 @@ export function UsagePanel({ providers, language }: { providers: Provider[]; lan
         <PrefRow name={zh ? "小队版本" : "Team revision"}><WordsField inputMode="numeric" pattern="[0-9]+" aria-label={zh ? "小队版本" : "Team revision"} value={draft.team} onChange={event => change("team", event.target.value)} /></PrefRow>
         <PrefRow name={zh ? "汇总口径" : "Summary metric"}><Segs value={draft.kind} items={[{ id: "request", label: zh ? "逻辑请求" : "Requests" }, { id: "attempt", label: zh ? "上游尝试" : "Attempts" }]} onChange={value => change("kind", value as UsageMetricKind)} /></PrefRow>
       </div></fieldset>
-      <TextBtn type="submit" variant="action" disabled={!desktop} busy={state.busy}>{zh ? "读取 / 刷新" : "Read / refresh"}</TextBtn>
+      <TextBtn type="submit" variant="action" disabled={disabled} busy={state.busy}>{zh ? "读取 / 刷新" : "Read / refresh"}</TextBtn>
     </form>
     {invalid && <p role="alert" className="tagma-error">{zh ? "请检查日期与筛选值；最多查询 366 天，版本须为整数，小队版本须大于 0。" : "Check dates and filters. Choose up to 366 days; revisions must be integers and team revisions positive."}</p>}
     {state.busy && <p role="status">{zh ? "正在读取本机记录…" : "Reading local records…"}</p>}
     {state.error != null && <p role="alert" className="tagma-error">{errorCopy(state.error, language)}</p>}
+    {desktop&&!ready&&!state.busy&&<TextBtn onClick={()=>{contextPromise.current=null;setReady(false);setClearState(null);setClearSession(null);setState({busy:true,data:null,detail:null,error:null});setContextAttempt(attempt=>attempt+1);}}>{zh?"重新读取本机状态":"Read local state again"}</TextBtn>}
     {!state.busy && !state.data && !state.error && <p>{zh ? "选择范围后点击读取。" : "Choose a range, then read."}</p>}
     {state.data && <UsageResults data={state.data} providers={providers} zh={zh} busy={state.busy} inspect={id => void loader.current?.inspect(id)} next={() => { if (state.data) void loader.current?.load(state.data.selection, true); }} />}
     <form className="tagma-usage-lookup" onSubmit={event => { event.preventDefault(); void loader.current?.inspect(requestId); }}><label htmlFor={`${id}-request`}>request_id</label><WordsField id={`${id}-request`} value={requestId} maxLength={36} required pattern="[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}" disabled={disabled} onChange={event => setRequestId(event.target.value)} /><TextBtn type="submit" disabled={disabled || !requestId}>{zh ? "查详情" : "Inspect"}</TextBtn></form>
     {state.detail && <UsageDetail detail={state.detail} providers={providers} zh={zh} />}
     <p className="tagma-footnote">{zh ? "默认保留 30 天明细、12 个月日汇总，容量限制也可能缩短保留范围。汇总与明细各有读取时刻，翻页不是冻结快照。" : "Default retention is 30 days of details and 12 months of daily summaries; capacity may shorten it. Each read has its own timestamp; pagination is not a frozen snapshot."}</p>
+    {ready&&clearSession&&clearState&&<UsageClearControls session={clearSession} state={clearState} busy={state.busy} language={language}/>}
   </section>;
 }

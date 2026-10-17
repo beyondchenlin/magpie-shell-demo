@@ -54,14 +54,14 @@ export type RevocationReceipt = { revision: number, cancel_inflight: boolean, };
 export type UsageRange = { start_ms: number, end_ms: number, };
 export type UsageRecordState = "running" | "succeeded" | "failed" | "cancelled" | "interrupted";
 export type UsageFilter = { provider_id: string | null, model: string | null, config_revision: number | null, team_revision: number | null, state: UsageRecordState | null, error_code: string | null, };
-export type UsageCursor = { generation: string, started_ms: number, request_id: string, };
+export type UsageCursor = { context_id: string, generation: string, started_ms: number, request_id: string, };
 export type UsageRequestsQuery = { protocol_version: number, range: UsageRange, filter: UsageFilter, cursor: UsageCursor | null, limit: number, };
 export type UsageDetailsQuery = { protocol_version: number, request_id: string, };
 export type UsageMetricKind = "request" | "attempt";
-export type UsageSummaryCursor = { generation: string, day_ms: number, provider_id: string, model: string, config_revision: number, team_revision: number, state: UsageRecordState, };
+export type UsageSummaryCursor = { context_id: string, generation: string, day_ms: number, provider_id: string, model: string, config_revision: number, team_revision: number, state: UsageRecordState, };
 export type UsageSummaryQuery = { protocol_version: number, range: UsageRange, filter: UsageFilter, kind: UsageMetricKind, cursor: UsageSummaryCursor | null, limit: number, };
 export type UsageAvailability = "not_created" | "available";
-export type UsageReadInfo = { generation: string | null, availability: UsageAvailability, observed_ms: number, detail_start_ms: number | null,
+export type UsageReadInfo = { context_id: string, generation: string | null, availability: UsageAvailability, observed_ms: number, detail_start_ms: number | null,
 /**
  * Earliest currently retained UTC daily bucket, not an activity guarantee.
  */
@@ -73,7 +73,7 @@ export type UsageDetailsView = { info: UsageReadInfo, record: UsageRequestView |
 export type UsageSummaryRow = { day_ms: number, provider_id: string, model: string, config_revision: number, team_revision: number | null, state: UsageRecordState, count: string, input_known: string, input_unknown: string, output_known: string, output_unknown: string, elapsed_ms: string, };
 export type UsageSummaryTotals = { total: string, completed: string, unfinished: string, succeeded: string, failed: string, cancelled: string, interrupted: string, input_known: string, input_unknown: string, output_known: string, output_unknown: string, input_total: string | null, output_total: string | null, elapsed_ms: string, };
 export type UsageSummaryView = { info: UsageReadInfo, kind: UsageMetricKind, records: Array<UsageSummaryRow>, totals: UsageSummaryTotals | null, next_cursor: UsageSummaryCursor | null, };
-export type UsageClearPlan = { operation_id: string, range: UsageRange, expected_revision: string, generation: string, requests: string,
+export type UsageClearPlan = { context_id: string, operation_id: string, range: UsageRange, expected_revision: string, generation: string, requests: string,
 /**
  * All attempts cascading from selected logical requests, even across days.
  */

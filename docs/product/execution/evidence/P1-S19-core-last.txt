@@ -1,0 +1,89 @@
+   Compiling tagma-core v0.2.0-dev.16 (D:\demo1\tagmaai\crates\tagma-core)
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+    Finished `test` profile [unoptimized] target(s) in 4.30s
+     Running unittests src\lib.rs (target\debug\deps\tagma_core-2f484c8d7ea56ae6.exe)
+
+running 22 tests
+test usage::clear::tests::clear_crash_worker ... ignored, owned child process only
+Usage read:not-created is explicit unknown availability;pending/unknown stores refused and preserved;invalid or unsupported filters rejected;cancelled query does not open a store
+Usage reader cancellation:actual SQLite VM exits SQLITE_INTERRUPT;one owned memory connection/thread closes,constant-memory recursive stream
+test usage::read::interrupt_tests::cancellation_interrupts_actual_sqlite_work_and_closes_its_connection ... ok
+test usage::tests::usage_crash_worker ... ignored, child-process crash worker, invoked only by the owned recovery test
+test usage::read_tests::absent_unknown_and_invalid_queries_never_initialize_or_invent_empty_success ... ok
+
+running 1 test
+Usage real SQLITE_FULL: no committed start record, admission degraded; test data below1MiB, no actual disk exhaustion
+Usage legacy schema2 receipt:exact old shape resolves within its current owned context without rewriting;incoming unbound plan,unknown legacy fields and invalid receipt time rejected
+test usage::tests::actual_sqlite_full_at_start_refuses_registration_and_degrades ... ok
+Usage ledger: logical=1, attempts=2, input=NULL/unknown1, output=10, duplicate completion counts unchanged; separate DB
+test usage::clear::tests::exact_legacy_receipt_is_readable_but_unbound_plans_remain_invalid ... ok
+test usage::tests::logical_requests_and_attempts_keep_unknown_tokens_and_aggregate_once ... ok
+Usage bounds:one writer,8active maximum,sequential ordinals and timestamps;arbitrary error text rejected before queue/write
+test usage::tests::admission_identity_timing_and_metadata_privacy_are_checked ... ok
+
+running 1 test
+
+running 1 test
+
+running 1 test
+Usage clear:mutation invalidates preview;running/pending/degraded refuse;daily-delete failure rolls back earlier detail/cascade deletion and epoch;explicit recovery then clear succeeds;invalid/future scopes refused
+test usage::clear::tests::stale_busy_pending_and_storage_faults_never_partially_clear ... ok
+Usage read integrity:contradictory success/error or unknown-count>count yields unavailable,preserves source,never fake empty/zero
+Usage clear:preview counts next-day cascading attempts,keeps outside-day summaries;contradictory receipt rejected;revision exhaustion rolls back deletion/receipt/epoch without wrap
+test usage::read_tests::contradictory_rows_are_unavailable_and_are_not_repaired_by_reading ... ok
+test usage::clear::tests::cross_day_cascade_is_counted_and_revision_exhaustion_rolls_back ... ok
+Usage failed finishes: 8 requests/8 attempts ->16 bounded pending results, new begins refused, explicit recovery exactly once
+test usage::tests::failed_results_are_bounded_retryable_and_never_allow_new_registration ... ok
+Usage retention:30day details prune only after durable daily aggregate;12calendar months summary retention;unknown database bytes preserved
+test usage::tests::retention_keeps_summaries_and_preserves_unknown_unowned_databases ... ok
+Usage clear:reviewed1request/1attempt/2buckets removed atomically;outside range retained;WAL snapshot old0/new read1;both stale cursors refused;lost-ACK replay after restart leaves new activity intact
+test usage::clear::tests::clear_is_reviewed_atomic_idempotent_and_invalidates_old_cursors ... ok
+
+running 1 test
+Usage read exact decimal tokens:3*i64::MAX preserved as 27670116110564327421,known zero remains explicit;summary keyset and literal SQL-bound model filter verified
+test usage::read_tests::decimal_totals_do_not_round_large_tokens_and_literal_filters_are_bounded ... ok
+
+running 1 test
+Usage context:identical range/revision/counts in separate owned directories do not authorize cross-directory clear or either cursor;metadata identity matches its plan and generation0 remains
+test usage::clear::tests::identical_counts_in_another_directory_never_authorize_its_clear ... ok
+Usage read:7 logical/11attempt records including unfinished1;unknown totals stay null;same-time pages no duplicates;detail original targets/revisions and error filter verified;main DB unchanged
+test usage::read_tests::readonly_pages_details_and_totals_separate_requests_attempts_and_unknown_tokens ... ok
+
+running 1 test
+Usage exit90: pre-DDL and committed-DDL intent recovery;registered request+attempt become interrupted with NULL tokens after real child process death
+test usage::tests::real_process_exit_recovers_owned_initialization_and_unfinished_attempts ... ok
+Usage migration:source changed after intent or backup checksum changed -> refuse before DDL,preserve schema1/current bytes and recovery files;no automatic backup restoration
+test usage::clear::tests::changed_backup_or_source_refuses_migration_and_preserves_schema_one ... ok
+Usage upgrade:known owner/schema1 records preserved to schema2;readonly does not migrate;unknown extra object database unchanged
+test usage::clear::tests::known_v1_upgrade_is_atomic_and_preserves_records_unknown_is_untouched ... ok
+
+running 1 test
+Usage read bounds:32 escaped maximum-model fields and16 attempt details fit48KiB response;next page cursor retained
+test usage::read_tests::escaped_page_fields_and_sixteen_attempt_details_stay_within_response_bounds ... ok
+
+running 1 test
+
+running 1 test
+
+running 1 test
+
+running 1 test
+Usage actual exit90:backup intent/copy/hash resume safely;uncommitted schema upgrade/delete roll back;committed upgrade survives;committed clear epoch+receipt survive/replay;seven isolated TempDir children exit and teardown
+test usage::clear::tests::real_exit90_rolls_back_upgrade_or_clear_and_keeps_committed_receipt ... ok
+
+test result: ok. 20 passed; 0 failed; 2 ignored; 0 measured; 34 filtered out; finished in 0.39s
+
