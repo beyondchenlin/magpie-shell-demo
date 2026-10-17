@@ -6,6 +6,13 @@ export type BudgetPeriod = "utc_day" | "utc_month";
 export type BudgetSpec = { name: string, scope: BudgetScope, period: BudgetPeriod, request_limit: string | null, token_limit: string | null, };
 export type BudgetRule = { id: string, spec: BudgetSpec, };
 export type SaveBudget = { protocol_version: number, expected_revision: number, id: string | null, spec: BudgetSpec, };
+export type BudgetObservation = { rule_id: string, range: UsageRange, kind: UsageMetricKind, recorded_count: string | null, known_input_tokens: string | null, known_output_tokens: string | null, unknown_input_records: string | null, unknown_output_records: string | null, token_total: string | null, request_progress_bps: number | null, token_progress_bps: number | null, request_reached: boolean | null, token_reached: boolean | null, };
+export type BudgetObservations = { config_revision: number, info: UsageReadInfo,
+/**
+ * Every total is over retained local registrations. There is no remaining
+ * allowance, price, provider balance or bill encoded in this projection.
+ */
+records: Array<BudgetObservation>, };
 export type ProviderProtocol = "openai_chat_completions";
 export type Provider = { id: string, name: string, protocol: ProviderProtocol, base_url: string, enabled: boolean, models: Array<string>, has_credential: boolean, };
 export type SaveProvider = { protocol_version: number, expected_revision: number, id: string | null, name: string, protocol: ProviderProtocol, base_url: string, enabled: boolean, models: Array<string>, credential: string | null, };

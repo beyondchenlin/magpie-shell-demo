@@ -109,6 +109,79 @@ async fn wait_state(path: &Path, id: &str, outcome: &str) {
 }
 
 #[tokio::test]
+async fn soft_budget_observes_real_http_without_blocking_dispatch_or_making_extra_calls() {
+    use tagma_core::budgets::*;
+    let calls = Arc::new(AtomicUsize::new(0));
+    let upstream = Router::new().fallback(post({
+        let calls = calls.clone();
+        move || {
+            let calls = calls.clone();
+            async move {
+                calls.fetch_add(1, Ordering::SeqCst);
+                Json(json!({"model":"usage-model","choices":[{"index":0,"message":{"role":"assistant","content":"owned budget response"},"finish_reason":"stop"}],"usage":{"prompt_tokens":2,"completion_tokens":1}}))
+            }
+        }
+    }));
+    let listener = tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();
+    let up = listener.local_addr().unwrap().port();
+    let _server = Server(tokio::spawn(async move {
+        axum::serve(listener, upstream).await.unwrap();
+    }));
+    let (temp, config, port, provider) = setup(up);
+    let view = config
+        .save_budget(SaveBudget {
+            protocol_version: 1,
+            expected_revision: 2,
+            id: None,
+            spec: BudgetSpec {
+                name: "owned soft target".into(),
+                scope: BudgetScope::Provider {
+                    provider_id: provider,
+                },
+                period: BudgetPeriod::UtcMonth,
+                request_limit: Some("1".into()),
+                token_limit: Some("1".into()),
+            },
+        })
+        .unwrap();
+    assert_eq!(view.desired_revision, 3);
+    let (revision, snapshot) = config.read_snapshot().unwrap();
+    assert_eq!(revision, 3);
+    let manager = GatewayManager::new(temp.path(), Path::new(env!("CARGO_BIN_EXE_tagma-gateway")));
+    manager.start(port).await.unwrap();
+    let result = std::panic::AssertUnwindSafe(async {
+        let client = reqwest::Client::builder().no_proxy().build().unwrap();
+        for _ in 0..2 {
+            let response = client.post(format!("http://127.0.0.1:{port}/v1/chat/completions"))
+                .json(&input("usage-model", "owned soft test", false)).send().await.unwrap();
+            assert_eq!(response.status(), 200, "a soft target never rejects later dispatch");
+            assert_eq!(response.headers()["x-tagma-config-revision"], "3");
+            response.bytes().await.unwrap();
+        }
+        let reader = tagma_runtime::usage::UsageReader::default();
+        let report = reader.budget_observations(temp.path(), snapshot.budgets.clone(), 3).await.unwrap();
+        assert_eq!(report.config_revision, 3);
+        assert_eq!(report.info.context_id, ipc::config_id(temp.path()).unwrap());
+        assert_eq!(report.info.generation.as_deref(), Some("0"));
+        assert_eq!(report.records.len(), 1);
+        let record = &report.records[0];
+        assert_eq!(record.rule_id, snapshot.budgets[0].id);
+        assert_eq!(record.recorded_count.as_deref(), Some("2"));
+        assert_eq!(record.token_total.as_deref(), Some("6"));
+        assert_eq!(record.request_reached, Some(true));
+        assert_eq!(record.token_reached, Some(true));
+        assert_eq!(record.request_progress_bps, Some(10000));
+        assert_eq!(calls.load(Ordering::SeqCst), 2, "report never dispatches inference");
+        println!("Soft budget actual HTTP:config3 target1/1,2 successful calls retained2/token6,threshold flags true without blocking;single readonly report context/gen0;extra upstream calls0");
+    }).catch_unwind().await;
+    let stopped = manager.stop().await;
+    if let Err(error) = result {
+        std::panic::resume_unwind(error);
+    }
+    stopped.unwrap();
+}
+
+#[tokio::test]
 async fn actual_http_usage_starts_precede_dispatch_and_failed_results_fence_new_calls() {
     let calls = Arc::new(AtomicUsize::new(0));
     let cancelled = Arc::new(AtomicBool::new(false));

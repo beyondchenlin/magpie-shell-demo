@@ -18,6 +18,8 @@
 
 ## 当前批次
 
+- **周期观察报告/本机源码桥接局部完成，尚无预算UI**：候选仍dev.16/config9/usage2，固定配置规则+单用量读事务，UTC日/月、逻辑请求/实际尝试分开、未知token不生成进度；core82通过/8忽略不计、reader1、实际headless HTTP软阈值1、main限定三命令静态权限与workspace Clippy/DTO/TS/Vite/lint通过。两轮自查及限制见[P1-S21](P1-S21-BUDGET-OBSERVATIONS.md)，不计A16/A28/P1完成。安装仍dev.9，禁止电脑控制与拖动未通过不变；继续CIS预算源码接线。
+
 - **软预算规则核心局部完成**：候选dev.16/config schema9/usage2，32条有界规则，精确正整数限额、UTC周期/供应商/模型/小队口径、共享配置CRUD；已知8→9一致备份保留原snapshot，初始化7/8/9真实退出恢复通过。core78（8忽略不计）、runtime6、实际gateway相关5与workspace Clippy/DTO/TS/Vite通过，见[P1-S20](P1-S20-SOFT-BUDGET-RULES.md)。尚未接预算报告/native/UI，不做硬限制或假余额，A16/A28/P1未整体通过。用户dev.9/资料不动、禁止电脑控制/拖动未通过不变，继续周期报告源码。
 
 - **清除确认与本机缓存围栏源码完成，未作桌面验收**：候选仍dev.16/schema8/usage2，plan/游标/metadata绑定目录身份，main限定三命令，CIS范围/数量确认、同plan核实、显式结束核实、记账恢复；有界本地pending/floor先保存再发，晚回执不覆盖新操作或回填旧数据。core相关20通过（2忽略不计）、runtime2、gateway相关9、源模型/静态渲染15及native编译/静态权限、workspace Clippy/DTO/TS/Vite/JSON lint/CIS通过；两轮自查/旧回执兼容见[P1-S19](P1-S19-USAGE-CLEAR-UI-SOURCE.md)。未实际调用native窗口/Storage或更新用户dev.9，拖动仍未通过；软预算/容量完整矩阵及A16/A28/P1未整体完成，继续独立源码工作。

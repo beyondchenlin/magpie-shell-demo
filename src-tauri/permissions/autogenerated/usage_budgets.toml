@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-usage-budgets"
+description = "Enables the usage_budgets command without any pre-configured scope."
+commands.allow = ["usage_budgets"]
+
+[[permission]]
+identifier = "deny-usage-budgets"
+description = "Denies the usage_budgets command without any pre-configured scope."
+commands.deny = ["usage_budgets"]

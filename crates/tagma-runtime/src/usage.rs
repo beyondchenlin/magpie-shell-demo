@@ -22,6 +22,24 @@ impl Drop for CancelOnDrop {
     }
 }
 impl UsageReader {
+    pub async fn budget_observations(
+        &self,
+        directory: &Path,
+        rules: Vec<tagma_core::budgets::BudgetRule>,
+        revision: u32,
+    ) -> AppResult<tagma_core::usage::read::budgets::BudgetObservations> {
+        let directory = directory.to_owned();
+        self.run(move |cancel| {
+            tagma_core::usage::read::budgets::observe(
+                &directory,
+                &rules,
+                revision,
+                tagma_core::health::now_ms()?,
+                &cancel,
+            )
+        })
+        .await
+    }
     pub async fn metadata(&self, directory: &Path) -> AppResult<UsageReadInfo> {
         let directory = directory.to_owned();
         self.run(move |cancel| tagma_core::usage::read::metadata(&directory, &cancel))

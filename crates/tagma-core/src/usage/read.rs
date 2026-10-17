@@ -1,4 +1,5 @@
 //! Bounded read-only views; never initializes, migrates, writes or calls providers.
+pub mod budgets;
 use super::*;
 use rusqlite::{Row, named_params};
 use std::sync::{

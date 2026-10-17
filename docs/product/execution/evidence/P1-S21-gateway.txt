@@ -1,0 +1,48 @@
+   Compiling tagma-core v0.2.0-dev.16 (D:\demo1\tagmaai\crates\tagma-core)
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+   Compiling tagma-runtime v0.2.0-dev.16 (D:\demo1\tagmaai\crates\tagma-runtime)
+   Compiling tagma-gateway v0.2.0-dev.16 (D:\demo1\tagmaai\crates\tagma-gateway)
+error[E0609]: no field `budgets` on type `(u32, ConfigSnapshot)`
+   --> crates\tagma-gateway\tests\usage.rs:161:71
+    |
+161 |         let report = reader.budget_observations(temp.path(), snapshot.budgets.clone(), 3).await.unwrap();
+    |                                                                       ^^^^^^^ unknown field
+    |
+help: one of the expressions' fields has a field of the same name
+    |
+161 |         let report = reader.budget_observations(temp.path(), snapshot.1.budgets.clone(), 3).await.unwrap();
+    |                                                                       ++
+
+error[E0609]: no field `budgets` on type `(u32, ConfigSnapshot)`
+   --> crates\tagma-gateway\tests\usage.rs:167:45
+    |
+167 |         assert_eq!(record.rule_id, snapshot.budgets[0].id);
+    |                                             ^^^^^^^ unknown field
+    |
+help: one of the expressions' fields has a field of the same name
+    |
+167 |         assert_eq!(record.rule_id, snapshot.1.budgets[0].id);
+    |                                             ++
+
+For more information about this error, try `rustc --explain E0609`.
+error: could not compile `tagma-gateway` (test "usage") due to 2 previous errors
+warning: build failed, waiting for other jobs to finish...

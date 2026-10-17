@@ -1,0 +1,13 @@
+{
+  "recordedAtUtc": "2026-10-17T21:05:03.373Z",
+  "target": "D:/demo1/tagmaai/target",
+  "temporaryRoot": "C:\\Users\\ai\\AppData\\Local\\Temp",
+  "estimatedAdditionalPeakGiB": 0.03,
+  "freeBeforeGiB": {
+    "C": 42.45,
+    "D": 10.05
+  },
+  "scope": "Single read-snapshot soft-budget observation and main-only native source bridge;targeted cached checks,no UI/install",
+  "reuse": "Existing Cargo target,node_modules,registry;no new environment/worktree",
+  "cleanup": "Small owned TempDir/MemoryStore;no duplicate SQLite baselines or manual prior cleanup"
+}

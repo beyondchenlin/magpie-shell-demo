@@ -1,0 +1,1 @@
+Budget source boundary:3 exact command permissions,main only,no remote capability;fixed directory/pinned expected revision path manually reviewed;not a native invocation or window test.

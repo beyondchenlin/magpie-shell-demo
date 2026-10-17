@@ -1,0 +1,36 @@
+   Compiling tagma-core v0.2.0-dev.16 (D:\demo1\tagmaai\crates\tagma-core)
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+    Finished `test` profile [unoptimized] target(s) in 4.56s
+     Running unittests src\lib.rs (target\debug\deps\tagma_core-2f484c8d7ea56ae6.exe)
+
+running 4 tests
+Budget observations:no store ->unknown counts/tokens/ratios,zero files;UTC leap February29 and December/year boundary verified,one pinned observation time
+test usage::read::budgets::tests::utc_periods_and_missing_storage_are_unknown_and_never_initialize ... ok
+Budget read safety:unknown owned-shape source refused/preserved,already-cancelled query exits without source work;no fabricated empty success
+test usage::read::budgets::tests::unknown_or_cancelled_queries_are_never_repaired_or_empty_success ... ok
+Budget report:32rows=14015bytes under48KiB,6*i64MAX token total exact55340232221128654842;clamped ratio only,counts not truncated;literal bound model filter matches0;no balance/bill/remaining field
+test usage::read::budgets::tests::exact_large_tokens_bounded_report_and_literal_filters_do_not_invent_balance ... ok
+Budget scopes:UTC day2attempts/token8 vs month3/unknown;team1logical/token8,model/provider actual steps3/5tokens;inflight adds known registration with unknown tokens,no false0ratio;main DB unchanged by observation
+test usage::read::budgets::tests::scopes_separate_team_requests_and_actual_attempts_and_unknowns_hide_token_ratio ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 60 filtered out; finished in 0.04s
+

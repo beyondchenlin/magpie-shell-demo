@@ -2,6 +2,7 @@ use tagma_core::budgets::*;
 use tagma_core::diagnostics::{Component, DiagnosticBundle, Event, Record};
 use tagma_core::teams::*;
 use tagma_core::usage::clear::*;
+use tagma_core::usage::read::budgets::{BudgetObservation, BudgetObservations};
 use tagma_core::usage::read::*;
 use tagma_core::*;
 use ts_rs::TS;
@@ -16,6 +17,8 @@ fn main() {
         BudgetSpec::decl(&cfg),
         BudgetRule::decl(&cfg),
         SaveBudget::decl(&cfg),
+        BudgetObservation::decl(&cfg),
+        BudgetObservations::decl(&cfg),
         ProviderProtocol::decl(&cfg),
         Provider::decl(&cfg),
         SaveProvider::decl(&cfg),

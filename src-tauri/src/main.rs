@@ -445,6 +445,41 @@ async fn usage_context(
     app.usage_reader.metadata(directory).await
 }
 #[tauri::command]
+fn save_budget(
+    window: WebviewWindow,
+    app: State<'_, Application>,
+    input: budgets::SaveBudget,
+) -> AppResult<ConfigView> {
+    config(&window, &app)?.save_budget(input)
+}
+#[tauri::command]
+fn delete_budget(
+    window: WebviewWindow,
+    app: State<'_, Application>,
+    input: RevisionCommand,
+) -> AppResult<ConfigView> {
+    config(&window, &app)?.delete_budget(input)
+}
+#[tauri::command]
+async fn usage_budgets(
+    window: WebviewWindow,
+    app: State<'_, Application>,
+    input: RevisionInput,
+) -> AppResult<usage::read::budgets::BudgetObservations> {
+    check_protocol(input.protocol_version)?;
+    let (revision, snapshot) = config(&window, &app)?.read_snapshot()?;
+    if revision != input.expected_revision {
+        return Err(AppError::new(ErrorCode::ConfigConflict));
+    }
+    let directory = app
+        .directory
+        .as_ref()
+        .ok_or_else(|| AppError::new(ErrorCode::UsageQueryUnavailable))?;
+    app.usage_reader
+        .budget_observations(directory, snapshot.budgets, revision)
+        .await
+}
+#[tauri::command]
 async fn prepare_usage_clear(
     window: WebviewWindow,
     app: State<'_, Application>,
@@ -652,6 +687,9 @@ fn main() {
             usage_summary,
             recover_usage,
             usage_context,
+            save_budget,
+            delete_budget,
+            usage_budgets,
             prepare_usage_clear,
             clear_usage,
             recover_initialization
