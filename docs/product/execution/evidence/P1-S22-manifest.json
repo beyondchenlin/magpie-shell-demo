@@ -1,0 +1,120 @@
+{
+  "recordedAtUtc": "2026-10-17T21:17:41.973Z",
+  "sourceBase": "70642357922a2d750de7a32c6b02f8403dde1bdc",
+  "candidateVersion": "0.2.0-dev.16",
+  "configSchema": 9,
+  "usageSchema": 2,
+  "source": [
+    {
+      "path": "D:\\demo1\\tagmaai\\src\\product\\BudgetPanel.tsx",
+      "bytes": 13171,
+      "sha256": "5f03af3b4875d75117348f02917c8e327ef6b2d5f64f249a84a2dc17c41bef22"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\src\\product\\budgetModel.ts",
+      "bytes": 4172,
+      "sha256": "7d14e8d9631d3ccb2bc38c787974be5865cd3e526eaa6d8a87ba6b5b2c8a6e69"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\src\\product\\UsagePanel.tsx",
+      "bytes": 18652,
+      "sha256": "ed2faaed961d63cccbfc065eeb87feb7d7873d760767aae8270e0a9dd1c9efa6"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\src\\product\\ProductApp.tsx",
+      "bytes": 16378,
+      "sha256": "61c772727f3bf5f2a2efaad99042b689e13cdb27c0168fb79c8463d30e6628b7"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\src\\product\\usageModel.ts",
+      "bytes": 7708,
+      "sha256": "b8f6c3cb1dd47a1f6e395ce088faf48fddc54d7e9e162606a12ec39e2b952dcc"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\src\\product\\product.css",
+      "bytes": 6425,
+      "sha256": "162500d3a9a607b8cebd3498126daab79aa04a6beaaacd1a7ee5dd535a3add33"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\scripts\\test-tagma-usage-source.mjs",
+      "bytes": 31063,
+      "sha256": "7f55936c20e56ceb676e49d975bd7e0b9e30067a5e59c46ad5e3c843b66fa3f0"
+    }
+  ],
+  "documents": [
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\EXECUTION-STATUS.md",
+      "bytes": 28511,
+      "sha256": "130bb3bf255829438d8f31f421f7783b08d84322b34486f9baabddbef4afe2b5"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\P1-S22-BUDGET-UI-SOURCE.md",
+      "bytes": 3797,
+      "sha256": "2b8e3dd4b90b536d6bc88f863b1e7ba67164105a22f0bb7163db4cd47a707e53"
+    }
+  ],
+  "prd": {
+    "path": "D:\\demo1\\tagmaai\\docs\\product\\TAGMA-PRD-v0.3.md",
+    "bytes": 50957,
+    "sha256": "6e6503391f70e3f2e53347890de6e7c9f7fd93cc393c68f7bba494ac4d67a6d6"
+  },
+  "evidence": [
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S22-chrome.txt",
+      "bytes": 684,
+      "sha256": "82bd8000994abb3b84abc224896de3f42266c14e663a6548d9c9499276d5dcab"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S22-cis.txt",
+      "bytes": 319,
+      "sha256": "dc7d2807ea1910f39c47cf866c2ddae915169166f9f8ec4e1ef171bb371758b7"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S22-frontend-final.txt",
+      "bytes": 478,
+      "sha256": "f72d2904ddaf4ac0122034c90c001b41ddc0ec8ad1978126a42258c029e6099a"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S22-frontend-first.txt",
+      "bytes": 677,
+      "sha256": "b248a5bf3076e4ef9b072067789af0555850f13fb112aa2737ef4f1207440c20"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S22-frontend-reviewed.txt",
+      "bytes": 478,
+      "sha256": "c4dc3013753ebadce03efbb9f318dc9d26a262d8cbcf297837192e8d6a564ad1"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S22-lint-final.txt",
+      "bytes": 202,
+      "sha256": "5c1f4211940f3896ac2c84fe0c9dd1ea3f37af2e053293acc1ad4cc53fe5513e"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S22-lint-first.txt",
+      "bytes": 202,
+      "sha256": "d79dca96818ee5bbd50a4a0d79f62a95b35e146e01b6fc8fe089d31d5914ea42"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S22-source-final.txt",
+      "bytes": 2293,
+      "sha256": "39eff2559d42505bd9a259268f6eb028817c5db8248421ec7bb5fff51c775a32"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S22-source-first.txt",
+      "bytes": 2293,
+      "sha256": "a9b99841496d4ffea12347c023dea5f09911d8c3d1484022b4d5144289f17f19"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S22-space-plan.json",
+      "bytes": 488,
+      "sha256": "7e2a4ee088b0948e980733543cdd1204b023e4e46d365fabb7e9682b3bb65056"
+    }
+  ],
+  "verification": "21 headless source/SSR tests;TS/Vite;6files116rules0diagnostics;CIS/chrome source guards;no native/Storage/window/mouse test",
+  "freeAfterGiB": {
+    "D": 10.04,
+    "C": 42.44
+  },
+  "cleanup": "In-memory fixtures,no new workspace/environment/temp directory;existing caches/dist-tagma retained,no manual cleanup,no physical net release claimed",
+  "installed": "dev.9 untouched;drag not accepted;computer control prohibited"
+}

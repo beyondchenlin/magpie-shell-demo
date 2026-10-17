@@ -36,11 +36,12 @@ export default function ProductApp() {
   const [gatewayEditing, setGatewayEditing] = useState(false);
   const [securityEditing,setSecurityEditing]=useState(false);
   const [teamEditing, setTeamEditing] = useState(false);
+  const [budgetEditing,setBudgetEditing]=useState(false);
   const [deleting, setDeleting] = useState<Provider | null>(null);
   const mounted = useRef(true);
   const deleteDialog = useRef<HTMLDialogElement>(null);
   const c = copy(preferences.language);
-  const editing = !!editor || profileEditing || gatewayEditing || teamEditing || securityEditing;
+  const editing = !!editor || profileEditing || gatewayEditing || teamEditing || securityEditing || budgetEditing;
   const providerReferences = deleting ? view?.config.profiles.filter(profile => !profile.is_global && profile.provider_ids.includes(deleting.id)) ?? [] : [];
   const teamReferences = deleting ? view?.config.teams.filter(({team})=>teamUsesProvider(team.draft,deleting.id)||team.versions.some(version=>teamUsesProvider(version.recipe,deleting.id)))??[]:[];
   const refresh = useCallback(async () => {
@@ -142,7 +143,7 @@ export default function ProductApp() {
         <TextBtn disabled={busy || editing} onClick={() => setPage("gateway")}>{c.gateway}</TextBtn>
       </section>}
       {page === "market" && <section><h1>{c.market}</h1><div className="list prefs"><PrefRow name={c.reachflow} sub={c.reachflowHint}><span>{c.notInstalled}</span></PrefRow></div>{view&&<TeamsPanel config={view.config} busy={busy} language={preferences.language} onMutate={mutate} onEditingChange={setTeamEditing}/>}</section>}
-      {page === "usage" && <UsagePanel providers={view?.config.providers ?? []} language={preferences.language} />}
+      {page === "usage" && <UsagePanel providers={view?.config.providers ?? []} config={view?.config} busy={busy} budgetEditing={budgetEditing} onBudgetEditing={setBudgetEditing} onMutate={mutate} language={preferences.language} />}
       {page === "gateway" && <section><h1>{c.gateway}</h1><div className="list prefs"><PrefRow name={c.gateway} sub={c.runtimeHint}><span>{view ? c[view.runtime.state] : c.unknown}</span></PrefRow><PrefRow name={c.desired}><span>{view?.config.desired_revision ?? c.unknown}</span></PrefRow><PrefRow name={c.effective}><span>{view?.runtime.effective_revision ?? c.unknown}</span></PrefRow>
         {view?.runtime.address && <PrefRow name="URL"><span>{view.runtime.address}</span></PrefRow>}
         {view?.runtime.instance_id && <PrefRow name={view.runtime.owned ? c.owned : c.external}><span className="tagma-instance">{view.runtime.instance_id}</span></PrefRow>}

@@ -1,0 +1,13 @@
+{
+  "recordedAtUtc": "2026-10-17T21:13:23.899Z",
+  "target": "D:/demo1/tagmaai",
+  "temporaryRoot": "C:\\Users\\ai\\AppData\\Local\\Temp",
+  "estimatedAdditionalPeakGiB": 0.01,
+  "freeBeforeGiB": {
+    "C": 42.45,
+    "D": 10.04
+  },
+  "scope": "CIS budget editor/report source;cached TS/Vite and headless source checks only",
+  "reuse": "Existing node_modules/Cargo target;no new worktree/environment",
+  "cleanup": "In-memory fixtures;no user/prior artifacts or installation touched"
+}

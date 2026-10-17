@@ -1,0 +1,9 @@
+
+> magpie-shell-demo@0.1.208 build:tagma
+> tsc -b && vite build --config vite.tagma.config.ts
+
+src/product/budgetModel.ts(26,15): error TS1294: This syntax is not allowed when 'erasableSyntaxOnly' is enabled.
+src/product/budgetModel.ts(26,93): error TS1294: This syntax is not allowed when 'erasableSyntaxOnly' is enabled.
+src/product/budgetModel.ts(26,117): error TS1294: This syntax is not allowed when 'erasableSyntaxOnly' is enabled.
+src/product/budgetModel.ts(26,144): error TS1294: This syntax is not allowed when 'erasableSyntaxOnly' is enabled.
+src/product/budgetModel.ts(26,182): error TS1294: This syntax is not allowed when 'erasableSyntaxOnly' is enabled.

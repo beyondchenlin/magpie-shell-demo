@@ -1,0 +1,29 @@
+✔ UTC inclusive dates, leap dates, max span and strict filters (1.0829ms)
+✔ decimal precision, known zero, unknown and out-of-Date-range timestamps (0.1576ms)
+✔ sequential single-reader calls; duplicate clicks ignored; cursor pins applied selection (0.786ms)
+✔ query failure clears prior result, and errors never silently broaden summary (0.3262ms)
+✔ disposed query and detail cannot repopulate cache or launch next stage (0.1815ms)
+✔ clear generations cannot mix cached totals/requests; fresh detail invalidates older list (0.3562ms)
+✔ source rendering uses CIS rows; precise unknown/zero, absent store and detail identity (12.8298ms)
+✔ clear intent is saved before native call; own-clear invalidation drops late query and raises durable floor (0.9449ms)
+✔ failed intent persistence sends no clear; malformed state is preserved and refuses mutation (0.3851ms)
+✔ saved pending clear survives unmount and retries the exact plan after receipt persistence fails (0.4384ms)
+✔ late disposed clear reply cannot erase a newer pending operation or lower its floor (0.4093ms)
+✔ explicit leave/recovery sends no new clear and keeps the unknown outcome visible (0.2726ms)
+✔ invalid clear receipts cannot confirm or release pending state (0.3651ms)
+✔ context namespaces and exact large-generation floors reject foreign/old reads without fake zero (0.279ms)
+✔ clear source rendering exposes exact range/counts and explicit uncertainty, with CIS controls (7.4729ms)
+✔ budget drafts preserve exact integer targets and historical scopes without numeric coercion (0.6039ms)
+✔ budget read pins config and scope with one call; failure clears old data and duplicate clicks cannot queue (0.3101ms)
+✔ pending clear and large generation floor block budget reports before or after actual read (0.2175ms)
+✔ clear session invalidation disposes old budget report; late reply cannot repopulate after clear (0.2314ms)
+✔ budget source report uses CIS facts and exact counts; unknown tokens have no fake progress (3.0773ms)
+✔ budget source editor has named text integer controls, explicit cancellation and no automatic balance (2.4095ms)
+ℹ tests 21
+ℹ suites 0
+ℹ pass 21
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 473.5097

@@ -52,6 +52,12 @@ export function usageUtc(value: number): string {
   return Number.isNaN(date.getTime()) ? `${value} ms UTC` : date.toISOString().replace("T", " ").replace(".000Z", " UTC");
 }
 
+export function assertUsageRead(info: UsageReadInfo | undefined, barrier: UsageBarrier | null) {
+  if (!barrier) return;
+  if (barrier.blocked) throw barrier.error ?? { code: "USAGE_CLEAR_UNCONFIRMED" };
+  if (info && (info.context_id !== barrier.context || (info.generation === null ? BigInt(barrier.floor) > 0n : !/^(0|[1-9][0-9]{0,18})$/.test(info.generation) || BigInt(info.generation) > 9223372036854775807n || BigInt(info.generation) < BigInt(barrier.floor)))) throw { code: "USAGE_CLEAR_CHANGED" };
+}
+
 // One source of async ownership. Each screen mount creates a fresh loader.
 // Requests and summary are sequential because the native reader has one slot.
 // Results from a superseded query or disposed screen cannot repopulate its cache.
@@ -66,9 +72,7 @@ export class UsageLoader {
   dispose() { this.disposed = true; this.generation++; }
   invalidate() {this.generation++;if(!this.disposed)this.update({busy:false,data:null,detail:null,error:null});}
   private allow(info?:UsageReadInfo) {
-    const barrier=this.barrier();if(!barrier)return;
-    if(barrier.blocked)throw barrier.error??{code:"USAGE_CLEAR_UNCONFIRMED"};
-    if(info&&(info.context_id!==barrier.context || (info.generation===null?BigInt(barrier.floor)>0n:!/^(0|[1-9][0-9]{0,18})$/.test(info.generation)||BigInt(info.generation)>9223372036854775807n||BigInt(info.generation)<BigInt(barrier.floor))))throw {code:"USAGE_CLEAR_CHANGED"};
+    assertUsageRead(info,this.barrier());
   }
   private update(state: UsageReadState) { this.state = state; this.publish(state); }
   async load(selection: UsageSelection, next = false) {

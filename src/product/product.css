@@ -42,6 +42,8 @@ body.tagma #root { display:flex; flex-direction:column; width:100%; height:100%;
 .tagma-notice { color:var(--green); margin:4px 0 10px; font-size:11.5px; }
 .tagma-footnote { color:var(--muted); font-size:11.5px; margin:10px 2px; }
 .tagma-instance { overflow-wrap:anywhere; font-family:var(--code); font-size:11px; }
+.tagma-budget-value { display:flex; flex-direction:column; align-items:flex-end; gap:5px; }
+.tagma-budget-value progress { width:140px; max-width:100%; height:6px; accent-color:var(--accent); }
 .tagma-language, .tagma-model-menu { min-width:220px; max-width:calc(100vw - 16px); }
 .tagma-secret { display:block; margin:12px 0; padding:12px; overflow-wrap:anywhere; user-select:all; font-family:var(--code); border:1px solid var(--line); border-radius:7px; }
 .tagma-diagnostics { margin-top:12px; }

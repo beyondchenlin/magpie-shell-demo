@@ -3,13 +3,14 @@ import { PrefRow } from "../components/PrefRow";
 import { Segs } from "../components/Segs";
 import { TextBtn } from "../components/TextBtn";
 import { WordsField } from "../components/WordsField";
-import type { Provider, UsageDetailsView, UsageMetricKind, UsageReadInfo, UsageRecordState, UsageRequestView } from "./contract";
+import type { ConfigView, Provider, UsageDetailsView, UsageMetricKind, UsageReadInfo, UsageRecordState, UsageRequestView } from "./contract";
 import { errorCopy } from "./copy";
 import type { ProductLanguage } from "./preferences";
 import { desktop, service } from "./service";
 import { UsageLoader, usageDefault, usageNumber, usageSelection, usageUtc, type UsageData, type UsageDraft, type UsageReadState } from "./usageModel";
 import {UsageClearSession,type ClearState} from "./usageClearModel";
 import {UsageClearControls} from "./UsageClearControls";
+import {BudgetPanel} from "./BudgetPanel";
 
 function stateText(state: UsageRecordState, zh: boolean) {
   return ({ running: ["未终结", "Unfinished"], succeeded: ["成功", "Succeeded"], failed: ["失败", "Failed"], cancelled: ["取消", "Cancelled"], interrupted: ["中断 · 结果未知", "Interrupted · result unknown"] })[state][zh ? 0 : 1];
@@ -82,7 +83,7 @@ export function UsageResults({ data, providers, zh, busy, inspect, next }: { dat
   </>;
 }
 
-export function UsagePanel({ providers, language }: { providers: Provider[]; language: ProductLanguage }) {
+export function UsagePanel({ providers, language, config, busy=false, budgetEditing=false, onMutate, onBudgetEditing }: { providers: Provider[]; language: ProductLanguage;config?:ConfigView;busy?:boolean;budgetEditing?:boolean;onMutate?:(operation:()=>Promise<ConfigView>)=>Promise<boolean>;onBudgetEditing?:(editing:boolean)=>void }) {
   const zh = language === "zh";
   const [draft, setDraft] = useState(usageDefault);
   const [state, setState] = useState<UsageReadState>({ busy: desktop, data: null, detail: null, error: null });
@@ -93,6 +94,8 @@ export function UsagePanel({ providers, language }: { providers: Provider[]; lan
   const [clearSession,setClearSession]=useState<UsageClearSession|null>(null);
   const [invalid, setInvalid] = useState(false);
   const [requestId, setRequestId] = useState("");
+  const [budgetBusy,setBudgetBusy]=useState(false);
+  const [readEpoch,setReadEpoch]=useState(0);
   const loader = useRef<UsageLoader | null>(null);
   const id = useId();
   useEffect(() => {
@@ -102,12 +105,12 @@ export function UsagePanel({ providers, language }: { providers: Provider[]; lan
     contextPromise.current??=service.usageContext();
     void contextPromise.current.then(info=>{
       if(!live)return;
-      const next=new UsageClearSession(service,info,localStorage,setClearState,()=>current?.invalidate());session=next;
+      const next=new UsageClearSession(service,info,localStorage,setClearState,()=>{current?.invalidate();setReadEpoch(epoch=>epoch+1);});session=next;
       current=new UsageLoader(service,setState,()=>next.barrier());loader.current=current;setClearSession(next);setReady(true);setState({busy:false,data:null,detail:null,error:null});
     }).catch(error=>{if(live)setState({busy:false,data:null,detail:null,error});});
     return()=>{live=false;current?.dispose();session?.dispose();if(loader.current===current)loader.current=null;};
   }, [contextAttempt]);
-  const disabled = !desktop || !ready || state.busy || !!clearState?.busy || !!clearState?.pending || !!clearState?.storageBlocked;
+  const disabled = !desktop || !ready || busy || state.busy || budgetBusy || budgetEditing || !!clearState?.busy || !!clearState?.pending || !!clearState?.storageBlocked;
   function change(key: keyof UsageDraft, value: string) { setDraft(previous => ({ ...previous, [key]: value })); setInvalid(false); }
   function refresh() {
     try { const selection = usageSelection(draft); setInvalid(false); void loader.current?.load(selection); }
@@ -141,6 +144,9 @@ export function UsagePanel({ providers, language }: { providers: Provider[]; lan
     <form className="tagma-usage-lookup" onSubmit={event => { event.preventDefault(); void loader.current?.inspect(requestId); }}><label htmlFor={`${id}-request`}>request_id</label><WordsField id={`${id}-request`} value={requestId} maxLength={36} required pattern="[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}" disabled={disabled} onChange={event => setRequestId(event.target.value)} /><TextBtn type="submit" disabled={disabled || !requestId}>{zh ? "查详情" : "Inspect"}</TextBtn></form>
     {state.detail && <UsageDetail detail={state.detail} providers={providers} zh={zh} />}
     <p className="tagma-footnote">{zh ? "默认保留 30 天明细、12 个月日汇总，容量限制也可能缩短保留范围。汇总与明细各有读取时刻，翻页不是冻结快照。" : "Default retention is 30 days of details and 12 months of daily summaries; capacity may shorten it. Each read has its own timestamp; pagination is not a frozen snapshot."}</p>
-    {ready&&clearSession&&clearState&&<UsageClearControls session={clearSession} state={clearState} busy={state.busy} language={language}/>}
+    {ready&&clearSession&&clearState&&<>
+      {config&&onMutate&&onBudgetEditing&&<BudgetPanel config={config} session={clearSession} readEpoch={readEpoch} onBusy={setBudgetBusy} onMutate={onMutate} onEditingChange={onBudgetEditing} busy={busy||state.busy||budgetBusy||clearState.busy||!!clearState.pending||clearState.storageBlocked} language={language}/>}
+      <UsageClearControls session={clearSession} state={clearState} busy={busy||state.busy||budgetBusy||budgetEditing} language={language}/>
+    </>}
   </section>;
 }

@@ -35,6 +35,8 @@ const { UsageLoader, usageDefault, usageSelection, usageNumber, usageUtc } = loa
 const { UsageClearSession } = load("src/product/usageClearModel.ts");
 const { UsageClearScope, UsageClearControls } = load("src/product/UsageClearControls.tsx");
 const { UsageResults, UsageDetail, UsagePanel } = load("src/product/UsagePanel.tsx");
+const { BudgetLoader, budgetDraft, budgetSpec } = load("src/product/budgetModel.ts");
+const { BudgetFacts, BudgetReport, BudgetEditor, BudgetPanel } = load("src/product/BudgetPanel.tsx");
 const selection = usageSelection(usageDefault(Date.parse("2026-10-18T12:00:00Z")));
 const info = { context_id: "a".repeat(64), generation: "0", availability: "available", observed_ms: 1792324800000, detail_start_ms: 1792000000000, summary_start_ms: 1791936000000, timezone: "UTC" };
 const requestId = "00000000-0000-4000-8000-000000000001";
@@ -195,4 +197,72 @@ test("clear source rendering exposes exact range/counts and explicit uncertainty
   const state = { busy: false, preview: null, pending: clearPlan, unresolved: null, receipt: null, error: null, storageBlocked: false, recovered: false };
   const html = render(UsageClearControls, { session: {}, state, busy: false, language: "zh" }); assert.match(html, /本次清除尚未确认/); assert.match(html, /核实同一次清除/); assert.match(html, /结束核实，查看当前状态/); assert.match(html, /不会撤销已提交的清除/); assert.match(html, /迁移备份和 WAL/); assert.match(html, /查询筛选不缩小此范围/);
   const invalid = render(UsageClearControls, { session: {}, state: { ...state, error: { code: "INVALID_INPUT" } }, busy: false, language: "zh" }); assert.match(invalid, /清除范围或核实数据无效/); assert.doesNotMatch(invalid, /HTTPS/);
+});
+
+const budgetRule = { id: requestId, spec: { name: "Owned soft target", scope: { kind: "provider", provider_id: record.provider_id }, period: "utc_month", request_limit: "9007199254740993", token_limit: "9223372036854775807" } };
+const budgetRecord = { rule_id: requestId, range: selection.range, kind: "attempt", recorded_count: "9007199254740993", known_input_tokens: "27670116110564327421", known_output_tokens: "0", unknown_input_records: "1", unknown_output_records: "0", token_total: null, request_progress_bps: 10000, token_progress_bps: null, request_reached: true, token_reached: null };
+const budgetReport = { config_revision: 9, info, records: [budgetRecord] };
+
+test("budget drafts preserve exact integer targets and historical scopes without numeric coercion", () => {
+  const draft = budgetDraft(budgetRule);
+  assert.deepEqual(budgetSpec(draft), budgetRule.spec);
+  assert.equal(typeof budgetSpec(draft).request_limit, "string");
+  for (const requests of ["0", "01", "-1", "1.1", "1e6", "9223372036854775808", " "]) assert.throws(() => budgetSpec({ ...draft, requests }));
+  for (const change of [{ requests: "", tokens: "" }, { name: " " }, { name: "中".repeat(41) }, { name: "a\u0085" }]) assert.throws(() => budgetSpec({ ...draft, ...change }));
+  for (const change of [{ provider: "removed-name" }, { scope: "model", model: "tagma/team" }, { scope: "model", model: "中".repeat(86) }, { scope: "team", model: "tagma/team@1" }, { scope: "team", model: "tagma/team@02" }, { scope: "team", model: "tagma/reachflow" }, { scope: "team", model: "tagma/team@4294967296" }]) assert.throws(() => budgetSpec({ ...draft, ...change }));
+  for (const scope of [{ kind: "all_attempts" }, { kind: "model", provider_id: record.provider_id, model_id: "historical-removed" }, { kind: "team", public_id: "tagma/team@2" }]) {
+    const rule = { ...budgetRule, spec: { ...budgetRule.spec, scope } };
+    assert.deepEqual(budgetSpec(budgetDraft(rule)), rule.spec);
+  }
+});
+
+test("budget read pins config and scope with one call; failure clears old data and duplicate clicks cannot queue", async () => {
+  const wait = deferred(); const states = []; let calls = 0; let answer = budgetReport;
+  const loader = new BudgetLoader({ budgetObservations: revision => { assert.equal(revision, 9); calls++; return calls === 1 ? wait.promise : Promise.resolve(answer); } }, 9, [budgetRule], () => null, state => states.push(state));
+  const reading = loader.load(); await loader.load(); assert.equal(calls, 1); wait.resolve(budgetReport); await reading; assert.equal(states.at(-1).data, budgetReport);
+  for (const bad of [{ ...budgetReport, config_revision: 8 }, { ...budgetReport, records: [] }, { ...budgetReport, records: [{ ...budgetRecord, kind: "request" }] }, { ...budgetReport, records: [{ ...budgetRecord, rule_id: record.provider_id }] }]) {
+    answer = bad; await loader.load(); assert.equal(states.at(-1).data, null); assert.equal(states.at(-1).error.code, "CONFIG_CONFLICT");
+  }
+  loader.dispose(); const after = calls; await loader.load(); assert.equal(calls, after);
+});
+
+test("pending clear and large generation floor block budget reports before or after actual read", async () => {
+  const waiting = deferred(); const states = []; let calls = 0;
+  let barrier = { context: info.context_id, floor: "0", blocked: true };
+  let answer = waiting.promise;
+  const loader = new BudgetLoader({ budgetObservations: () => { calls++; return answer; } }, 9, [budgetRule], () => barrier, state => states.push(state));
+  await loader.load(); assert.equal(calls, 0); assert.equal(states.at(-1).error.code, "USAGE_CLEAR_UNCONFIRMED");
+  barrier = { ...barrier, blocked: false }; const reading = loader.load(); barrier = { ...barrier, blocked: true }; waiting.resolve(budgetReport); await reading; assert.equal(states.at(-1).data, null); assert.equal(states.at(-1).error.code, "USAGE_CLEAR_UNCONFIRMED");
+  barrier = { ...barrier, blocked: false, floor: "9007199254740993" };
+  for (const changedInfo of [{ ...info, generation: "9007199254740992" }, { ...info, generation: null }, { ...info, generation: "9007199254740993", context_id: "b".repeat(64) }]) {
+    answer = Promise.resolve({ ...budgetReport, info: changedInfo }); await loader.load(); assert.equal(states.at(-1).data, null); assert.equal(states.at(-1).error.code, "USAGE_CLEAR_CHANGED");
+  }
+  answer = Promise.resolve({ ...budgetReport, info: { ...info, generation: barrier.floor } }); await loader.load(); assert.ok(states.at(-1).data); loader.dispose();
+});
+
+test("clear session invalidation disposes old budget report; late reply cannot repopulate after clear", async () => {
+  const store = new MemoryStore(); const waiting = deferred(); const states = []; let loader;
+  const session = new UsageClearSession({ usageContext: async () => info, prepareUsageClear: async () => clearPlan, clearUsage: async plan => receiptFor(plan), recoverUsage: async () => ({}) }, info, store, () => {}, () => loader?.dispose());
+  loader = new BudgetLoader({ budgetObservations: () => waiting.promise }, 9, [budgetRule], () => session.barrier(), state => states.push(state));
+  const reading = loader.load(); await session.prepare(clearPlan.range); await session.confirm(); const count = states.length; waiting.resolve(budgetReport); await reading;
+  assert.equal(session.barrier().floor, "1"); assert.equal(states.length, count); assert.equal(states.at(-1).data, null);
+  const fresh = new BudgetLoader({ budgetObservations: async () => budgetReport }, 9, [budgetRule], () => session.barrier(), state => states.push(state)); await fresh.load(); assert.equal(states.at(-1).data, null); assert.equal(states.at(-1).error.code, "USAGE_CLEAR_CHANGED"); fresh.dispose(); session.dispose();
+});
+
+test("budget source report uses CIS facts and exact counts; unknown tokens have no fake progress", () => {
+  const html = render(BudgetFacts, { rule: budgetRule, record: budgetRecord, zh: true });
+  assert.match(html, /class="row pref"/); assert.match(html, /9,007,199,254,740,993/); assert.match(html, /27,670,116,110,564,327,421/);
+  assert.match(html, /未知 \/ 9,223,372,036,854,775,807/); assert.equal((html.match(/<progress /g) ?? []).length, 1); assert.match(html, /max="10000" value="10000"/); assert.match(html, /已达到自设软目标/);
+  const absent = render(BudgetReport, { data: { ...budgetReport, info: { ...info, availability: "not_created", generation: null }, records: [{ ...budgetRecord, recorded_count: null, known_input_tokens: null, known_output_tokens: null, unknown_input_records: null, unknown_output_records: null, request_progress_bps: null, request_reached: null }] }, rules: [budgetRule], zh: false });
+  assert.match(absent, /usage is unknown/); assert.doesNotMatch(absent, /<progress|value="0"/);
+  const cleared = render(BudgetReport, { data: { ...budgetReport, info: { ...info, generation: "1" } }, rules: [budgetRule], zh: true }); assert.match(cleared, /历史曾清除/);
+  const escaped = render(BudgetReport, { data: budgetReport, rules: [{ ...budgetRule, spec: { ...budgetRule.spec, name: "<script>private</script>" } }], zh: false }); assert.doesNotMatch(escaped, /<script>/);
+});
+
+test("budget source editor has named text integer controls, explicit cancellation and no automatic balance", () => {
+  const config = { desired_revision: 9, providers: [], budgets: [budgetRule] };
+  const html = render(BudgetEditor, { rule: budgetRule, config, busy: false, language: "zh", onSave: async () => { throw Error("No native writes in static rendering"); }, onCancel() {} });
+  assert.match(html, /class="words"/); assert.match(html, /9223372036854775807/); assert.match(html, /value="9007199254740993"/); assert.doesNotMatch(html, /type="number"/); assert.match(html, /取消/);
+  const panel = render(BudgetPanel, { config, busy: false, language: "zh", session: {}, readEpoch: 0, onBusy() {}, onMutate: async () => false, onEditingChange() {} });
+  assert.match(panel, /平台真实余额 \/ 账单：未知/); assert.match(panel, /规则可重叠，请勿相加/); assert.match(panel, /保留已有用量记录/); assert.match(panel, /Read period usage|读取周期用量/);
 });
