@@ -28,6 +28,8 @@ pub struct ConfigSnapshot {
     pub gateway: GatewaySettings,
     #[serde(default)]
     pub teams: Vec<crate::teams::TeamRecord>,
+    #[serde(default)]
+    pub budgets: Vec<crate::budgets::BudgetRule>,
 }
 
 #[derive(Clone, Serialize, Deserialize)]
@@ -277,7 +279,10 @@ impl ConfigService {
         let (revision, json): (u32, String) = db.query_row(
             "SELECT r.revision,r.snapshot FROM revisions r JOIN config_head h ON h.revision=r.revision WHERE h.singleton=1", [],
             |row| Ok((row.get(0)?, row.get(1)?))).map_err(storage)?;
-        Ok((revision, serde_json::from_str(&json).map_err(storage)?))
+        let snapshot: ConfigSnapshot = serde_json::from_str(&json).map_err(storage)?;
+        crate::budgets::validate_rules(&snapshot.budgets)
+            .map_err(|_| storage("invalid budget snapshot"))?;
+        Ok((revision, snapshot))
     }
 
     pub fn view(&self) -> AppResult<ConfigView> {
@@ -292,6 +297,7 @@ impl ConfigService {
         let first_cloud =
             crate::health::select_first_cloud(&snapshot, &health_records, observed_now);
         Ok(ConfigView {
+            budgets: snapshot.budgets.clone(),
             security: security.clone(),
             protocol_version: PROTOCOL_VERSION,
             schema_version: SCHEMA_VERSION,
@@ -717,6 +723,7 @@ impl ConfigService {
         operation: Option<&str>,
         revoked: Option<(&str, bool)>,
     ) -> AppResult<()> {
+        crate::budgets::validate_rules(&snapshot.budgets)?;
         let mut db = self.db.lock().map_err(storage)?;
         let tx = db
             .transaction_with_behavior(TransactionBehavior::Immediate)

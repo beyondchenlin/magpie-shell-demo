@@ -232,7 +232,7 @@ fn prepare_inner(directory: &Path, after_backup: impl FnOnce() -> AppResult<()>)
         && !(journal.owner == LEGACY_OWNER && journal.from_schema == 1 && journal.to_schema == 2))
         || !matches!(
             (journal.from_schema, journal.to_schema),
-            (1, 2) | (2, 3) | (3, 4) | (4, 5) | (5, 6) | (6, 7) | (7, 8)
+            (1, 2) | (2, 3) | (3, 4) | (4, 5) | (5, 6) | (6, 7) | (7, 8) | (8, 9)
         )
         || (version != journal.from_schema && version != journal.to_schema)
         || uuid::Uuid::parse_str(&journal.operation_id).is_err()
@@ -352,7 +352,8 @@ fn prepare_inner(directory: &Path, after_backup: impl FnOnce() -> AppResult<()>)
         }
         // V3 protects authentication fields; V4 protects team drafts and immutable
         // publications from being silently dropped by older writers. V6 protects
-        // the automatic-brain order source and dynamic step targets.
+        // the automatic-brain order source and dynamic step targets. V9 protects
+        // soft-budget snapshot fields from being dropped by older writers.
         // Historical snapshot bytes stay immutable; current readers supply defaults.
         tx.pragma_update(None, "user_version", journal.to_schema)
             .map_err(|_| error())?;
@@ -366,6 +367,85 @@ fn prepare_inner(directory: &Path, after_backup: impl FnOnce() -> AppResult<()>)
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn schema_eight_upgrade_preserves_historical_json_and_adds_soft_rules_only_in_new_revisions() {
+        let temp = tempfile::Builder::new()
+            .prefix("tagma-budget-migration-")
+            .tempdir()
+            .unwrap();
+        let db = legacy(temp.path());
+        while schema(&db).unwrap() < 8 {
+            prepare_inner(temp.path(), || Ok(())).unwrap();
+        }
+        let before: String = db
+            .query_row(
+                "SELECT snapshot FROM revisions WHERE revision=0",
+                [],
+                |row| row.get(0),
+            )
+            .unwrap();
+        prepare(temp.path()).unwrap();
+        assert_eq!(schema(&db).unwrap(), 9);
+        assert_eq!(revision(&db).unwrap(), 0);
+        assert_eq!(
+            db.query_row::<String, _, _>(
+                "SELECT snapshot FROM revisions WHERE revision=0",
+                [],
+                |row| row.get(0)
+            )
+            .unwrap(),
+            before
+        );
+        let source = fs::read_dir(temp.path().join("backups"))
+            .unwrap()
+            .map(|entry| entry.unwrap().path())
+            .find(|path| {
+                path.file_name()
+                    .unwrap()
+                    .to_string_lossy()
+                    .starts_with("schema-8-")
+            })
+            .unwrap();
+        let backup = Connection::open_with_flags(source, OpenFlags::SQLITE_OPEN_READ_ONLY).unwrap();
+        assert_eq!(schema(&backup).unwrap(), 8);
+        assert_eq!(
+            backup
+                .query_row::<String, _, _>(
+                    "SELECT snapshot FROM revisions WHERE revision=0",
+                    [],
+                    |row| row.get(0)
+                )
+                .unwrap(),
+            before
+        );
+        drop(backup);
+        drop(db);
+        let config = ConfigService::open(
+            temp.path(),
+            std::sync::Arc::new(crate::credentials::SystemCredentials),
+        )
+        .unwrap();
+        assert!(config.view().unwrap().budgets.is_empty());
+        let view = config
+            .save_budget(crate::budgets::SaveBudget {
+                protocol_version: 1,
+                expected_revision: 0,
+                id: None,
+                spec: crate::budgets::BudgetSpec {
+                    name: "owned soft target".into(),
+                    scope: crate::budgets::BudgetScope::AllAttempts,
+                    period: crate::budgets::BudgetPeriod::UtcMonth,
+                    request_limit: Some("10".into()),
+                    token_limit: None,
+                },
+            })
+            .unwrap();
+        assert_eq!(view.desired_revision, 1);
+        assert_eq!(view.budgets.len(), 1);
+        println!(
+            "Soft budget schema8->9:consistent source8 backup and original revision0 bytes preserved;default empty;only new revision1 contains a soft rule"
+        );
+    }
     fn legacy(directory: &Path) -> Connection {
         let db = Connection::open(directory.join("config.sqlite3")).unwrap();
         db.execute_batch("PRAGMA journal_mode=WAL;PRAGMA application_id=1413564237;CREATE TABLE revisions(revision INTEGER PRIMARY KEY,snapshot TEXT NOT NULL);CREATE TABLE config_head(singleton INTEGER PRIMARY KEY,revision INTEGER NOT NULL);CREATE TABLE credential_journal(operation_id TEXT PRIMARY KEY,credential_ref TEXT NOT NULL UNIQUE);INSERT INTO revisions VALUES(0,'{\"providers\":[]}');INSERT INTO config_head VALUES(1,0);PRAGMA user_version=1;").unwrap();
@@ -467,7 +547,7 @@ mod tests {
                 |row| row.get(0),
             )
             .unwrap();
-        prepare(temp.path()).unwrap();
+        prepare_inner(temp.path(), || Ok(())).unwrap();
         assert_eq!(schema(&db).unwrap(), 8);
         assert_eq!(revision(&db).unwrap(), 0);
         assert_eq!(

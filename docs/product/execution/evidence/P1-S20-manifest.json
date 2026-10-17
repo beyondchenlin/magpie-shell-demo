@@ -1,0 +1,156 @@
+{
+  "recordedAtUtc": "2026-10-17T21:03:26.885Z",
+  "sourceBase": "2fed9946788aeafef062f3bb0401e337b478fa0d",
+  "candidateVersion": "0.2.0-dev.16",
+  "configSchema": 9,
+  "usageSchema": 2,
+  "source": [
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-core\\src\\budgets.rs",
+      "bytes": 14825,
+      "sha256": "c83b8f71cc854f4cf51def1824994857cc35dc7ab603585648ba06714ad9b94c"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-core\\src\\contract.rs",
+      "bytes": 7208,
+      "sha256": "58e4fbd2e561d28a8c2cba3e66dc019211077ebe9c7edcd04c240954defea4f2"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-core\\src\\lib.rs",
+      "bytes": 297,
+      "sha256": "d70168450d506ccf870f4ccec0fa5becdbf8aa00143e699d1dd89a59a802a5cd"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-core\\src\\service.rs",
+      "bytes": 34879,
+      "sha256": "65ceb4ce400722264addbe73668f5b2752705e6ec9181347d046fa1fbd6aa0ab"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-core\\src\\migrations.rs",
+      "bytes": 30403,
+      "sha256": "35055a009f58c9293269fd39401b8528daee30dd21517a7796a20ff2b5fade3a"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-core\\src\\initialization.rs",
+      "bytes": 16939,
+      "sha256": "795f3307e4f7d855973f0a640ddf35fd50b173b492c9c1c12239a4aafb294f8e"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-core\\examples\\export-contract.rs",
+      "bytes": 4221,
+      "sha256": "ee63913a5c3dab2d38e61aa4cfcb538358218da25023871fc74b9e75cdd7ce43"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\src\\product\\contract.ts",
+      "bytes": 13174,
+      "sha256": "5a26c98afa630b9946a0536215585495f3eb2c50c270e54b3cb18906bd60979f"
+    }
+  ],
+  "documents": [
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\EXECUTION-STATUS.md",
+      "bytes": 27275,
+      "sha256": "7f4bbaa74c54b397a43841710b39d0b129f61e765f43ebe807d6a6a1b7625c5c"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\P1-S20-SOFT-BUDGET-RULES.md",
+      "bytes": 4440,
+      "sha256": "2967f198fe3810c06790b16c217dffd3444325e74274ecaff19f0237a1539c38"
+    }
+  ],
+  "prd": {
+    "path": "D:\\demo1\\tagmaai\\docs\\product\\TAGMA-PRD-v0.3.md",
+    "bytes": 50957,
+    "sha256": "6e6503391f70e3f2e53347890de6e7c9f7fd93cc393c68f7bba494ac4d67a6d6"
+  },
+  "evidence": [
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S20-clippy.txt",
+      "bytes": 1564,
+      "sha256": "b0a5394d18c641aff4e478ddb0d301d28d87fa254f787ceb5262da7cc6aeadf2"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S20-core-first.txt",
+      "bytes": 17256,
+      "sha256": "84da9bcb2b029f58cc0718ff291dbf7fb79e4ce388e4515622c5013a882dc5bd"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S20-dto-check.txt",
+      "bytes": 723,
+      "sha256": "12c0c39aeecf72c6cb54c1331190794bc7649d167b4aa32e8b4d2c1553f95037"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S20-dto.txt",
+      "bytes": 715,
+      "sha256": "c586b28c1cea5e80bdbc20eb7483574ae2e4c2c8c37305a778559c7338fdd0ce"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S20-frontend.txt",
+      "bytes": 478,
+      "sha256": "0de327ad84cad55c34651fcd2cefb659089e63c7a9405c66767cd7d784edb497"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S20-gateway.txt",
+      "bytes": 4940,
+      "sha256": "a5eb5d29b71ff94a18c470c2d1a0265e7839b942d675af88c502b879b6b018f3"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S20-rules-first.txt",
+      "bytes": 1613,
+      "sha256": "7c1ec83bf0a8cdb3c665f404f51619148c6e65c09926d9d6b768b055b1c46339"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S20-runtime.txt",
+      "bytes": 3930,
+      "sha256": "faac9637fa18dbb3777521c29e3e2f6192156a7c33ea11a8facad253a2ff182d"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S20-space-plan.json",
+      "bytes": 918,
+      "sha256": "1e9eb248d0c2d4ce1982708ccac9af53ce9bb0163472b51fa189aecaa6af8648"
+    }
+  ],
+  "checks": {
+    "core": {
+      "passed": 78,
+      "ignored": 8
+    },
+    "newCases": "3rules+1schema8->9 included in core",
+    "runtimePassed": 6,
+    "gatewayRelatedPassed": 5,
+    "other": "workspace Clippy alltargets,DTO,TS/Vite passed"
+  },
+  "scope": {
+    "softRulesOnly": true,
+    "budgetReports": false,
+    "nativeBudgetCommands": false,
+    "budgetUI": false,
+    "dispatchLimits": false,
+    "credentialAccessInRuleTests": 0,
+    "computerControl": false,
+    "realUpstream": 0,
+    "installationUnchanged": "dev.9",
+    "physicalWindowDrag": false,
+    "A16": "partial",
+    "A28": "partial",
+    "P1": false
+  },
+  "resources": {
+    "freeAfterGiB": [
+      {
+        "name": "C",
+        "freeGiB": 42.453
+      },
+      {
+        "name": "D",
+        "freeGiB": 10.053
+      }
+    ],
+    "noNewWorktree": true,
+    "noNewEnvironment": true,
+    "noInstaller": true,
+    "newBudgetFixtureResidue": 0,
+    "retained": "Existing target/cache/evidence,user preview/data/webview,preexisting fixtures and rejected cleanup files",
+    "note": "Space differences include concurrent writes;no physical net-release claim"
+  }
+}

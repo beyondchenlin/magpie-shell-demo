@@ -1,0 +1,77 @@
+   Compiling tagma-core v0.2.0-dev.16 (D:\demo1\tagmaai\crates\tagma-core)
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+   Compiling tagma-runtime v0.2.0-dev.16 (D:\demo1\tagmaai\crates\tagma-runtime)
+    Finished `test` profile [unoptimized] target(s) in 6.01s
+     Running unittests src\lib.rs (target\debug\deps\tagma_runtime-a79bcabafaab92b7.exe)
+
+running 2 tests
+test catalog::tests::catalog_ids_are_preserved_but_bad_shapes_duplicates_controls_and_limits_are_rejected ... ok
+Usage reader:500ms wait timeout retains sole worker permit;retry refused until real worker exits;no missing-store initialization
+test usage::tests::timeout_does_not_release_a_live_worker_or_queue_more_queries ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.52s
+
+     Running tests\recovery_ack.rs (target\debug\deps\recovery_ack-fc5252db7f9fdc43.exe)
+
+running 1 test
+SUP-008 case=contradictory_usage_error manager_accepted=false
+SUP-008 case=missing_pending manager_accepted=false
+SUP-008 case=nonzero_pending manager_accepted=false
+SUP-008 case=wrong_status_instance manager_accepted=false
+SUP-008 case=failed_runtime manager_accepted=false
+SUP-008 case=operation_failed_but_clean_snapshot manager_accepted=false
+SUP-008 case=missing_operation_ack manager_accepted=false
+SUP-008 case=missing_degraded manager_accepted=false
+SUP-008 case=ambiguous_storage_error manager_accepted=false
+SUP-008 case=operation_failed_with_config_code manager_accepted=false
+SUP-008 case=negative_confirmation_without_error manager_accepted=false
+SUP-008 case=missing_confirmation_flag manager_accepted=false
+SUP-008 valid ack:current instance,no operation error,false degraded,pending0 accepted;unrelated configuration error preserved separately
+test recovery_rejects_contradictory_incomplete_and_wrong_instance_acknowledgements ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.11s
+
+     Running tests\security_ack.rs (target\debug\deps\security_ack-14e0eec90448702e.exe)
+
+running 1 test
+A27 contradictory security error with confirmed revision:manager_accepted=false
+A27 security operation ack:explicit error/missing ack/wrong requested revision/stale snapshot rejected;newer confirmed revision with unrelated apply failure preserved
+test explicit_security_operation_failure_cannot_be_replaced_by_a_newer_snapshot ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.09s
+
+     Running tests\usage_clear_ack.rs (target\debug\deps\usage_clear_ack-b0aeac93d9718b07.exe)
+
+running 2 tests
+Usage preview IPC:6 missing/changed/incomplete/error replies rejected;exact requested range and canonical numeric plan accepted
+test preview_requires_requested_range_complete_plan_and_no_operation_error ... ok
+Usage clear IPC:14 malformed/failed operation replies plus wrong instance/stopped/lost reply rejected;3 explicit receipt positives accepted;later runtime error does not replace actual operation result
+test clear_receipt_requires_matching_operation_scope_generation_and_instance ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.14s
+
+   Doc-tests tagma_runtime
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

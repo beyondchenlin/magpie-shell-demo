@@ -1,3 +1,4 @@
+use tagma_core::budgets::*;
 use tagma_core::diagnostics::{Component, DiagnosticBundle, Event, Record};
 use tagma_core::teams::*;
 use tagma_core::usage::clear::*;
@@ -10,6 +11,11 @@ fn main() {
     let declarations = [
         ErrorCode::decl(&cfg),
         AppError::decl(&cfg),
+        BudgetScope::decl(&cfg),
+        BudgetPeriod::decl(&cfg),
+        BudgetSpec::decl(&cfg),
+        BudgetRule::decl(&cfg),
+        SaveBudget::decl(&cfg),
         ProviderProtocol::decl(&cfg),
         Provider::decl(&cfg),
         SaveProvider::decl(&cfg),

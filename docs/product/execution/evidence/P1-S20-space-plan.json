@@ -1,0 +1,20 @@
+{
+  "recordedAtUtc": "2026-10-17T20:56:30.256Z",
+  "target": "D:/demo1/tagmaai/target",
+  "temporaryRoot": "C:\\Users\\ai\\AppData\\Local\\Temp",
+  "estimatedAdditionalPeakGiB": 0.05,
+  "freeBeforeGiB": {
+    "C": 42.45,
+    "D": 10.09
+  },
+  "scope": "Core bounded soft-budget rules/CRUD and schema9 protection;cached core checks only before broadening",
+  "reuse": "Existing Cargo target/registry/node_modules;keep internal package version16 during source-only slices to reuse cache;no installer/environment/worktree",
+  "cleanup": "Small owned TempDir and credential stub only;preserve preview/user data and prior rejected cleanup",
+  "revisedAtUtc": "2026-10-17T21:00:50.819Z",
+  "freeAtRevisionGiB": {
+    "C": 42.45,
+    "D": 10.06
+  },
+  "remainingEstimatedPeakGiB": 0.03,
+  "revisionNote": "Full core78/8ignore passed;finish schema9 downstream regression/Clippy and TS using cached target only,no installer"
+}

@@ -1,0 +1,34 @@
+   Compiling tagma-core v0.2.0-dev.16 (D:\demo1\tagmaai\crates\tagma-core)
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+    Finished `test` profile [unoptimized] target(s) in 4.11s
+     Running unittests src\lib.rs (target\debug\deps\tagma_core-2f484c8d7ea56ae6.exe)
+
+running 3 tests
+Soft budgets:shared config CRUD/reopen/conflict and historical targets;exact i64MAX limits;no key access0,no usage DB created,no dispatch limiter
+Soft budget failed commit:prior revision0/empty rules preserved,explicit retry creates exactly1 rule,credentials untouched
+test budgets::tests::soft_rules_crud_share_revisions_and_never_touch_secrets_or_usage ... ok
+test budgets::tests::commit_failure_preserves_prior_budget_and_revision ... ok
+Soft budget bounds:32rules;strict UUID/team immutable public IDs and UTF8/decimal limits;provider/model use attempts,team logical requests,no doublecount
+test budgets::tests::bounds_scopes_and_decimal_limits_are_strict ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 57 filtered out; finished in 0.05s
+
