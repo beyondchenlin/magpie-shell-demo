@@ -118,6 +118,12 @@ async fn real_gateway_text_contract_streaming_snapshot_pin_and_client_cancel() {
         .await
         .unwrap();
     assert_eq!(models["data"].as_array().unwrap().len(), 1);
+    assert!(config.view().unwrap().model_health.is_empty());
+    assert_eq!(
+        calls.load(Ordering::SeqCst),
+        0,
+        "Reading the local directory must not generate upstream probes"
+    );
     let result = client
         .post(&endpoint)
         .json(&input("normal", false))
@@ -128,6 +134,22 @@ async fn real_gateway_text_contract_streaming_snapshot_pin_and_client_cancel() {
     let result: Value = result.json().await.unwrap();
     assert_eq!(result["choices"][0]["message"]["content"], "你好");
     assert_eq!(result["usage"]["total_tokens"], 3);
+    tokio::time::timeout(Duration::from_secs(2), async {
+        loop {
+            if config
+                .view()
+                .unwrap()
+                .model_health
+                .iter()
+                .any(|record| record.inference == tagma_core::health::InferenceHealth::Ready)
+            {
+                break;
+            }
+            tokio::time::sleep(Duration::from_millis(10)).await;
+        }
+    })
+    .await
+    .expect("Real complete response must persist model health");
     let stream = client
         .post(&endpoint)
         .json(&input("normal", true))
@@ -163,6 +185,19 @@ async fn real_gateway_text_contract_streaming_snapshot_pin_and_client_cancel() {
     let rejected = rejected.text().await.unwrap();
     assert!(rejected.contains("UPSTREAM_RATE_LIMITED"));
     assert!(!rejected.contains("private-error"));
+    tokio::time::timeout(Duration::from_secs(2), async {
+        loop {
+            if config.view().unwrap().model_health.iter().any(|record| {
+                record.inference == tagma_core::health::InferenceHealth::Failed
+                    && record.failure == Some(tagma_core::health::HealthFailure::RateLimited)
+            }) {
+                break;
+            }
+            tokio::time::sleep(Duration::from_millis(10)).await;
+        }
+    })
+    .await
+    .expect("Real upstream failure must invalidate fresh model health");
     let broken = client
         .post(&endpoint)
         .json(&input("broken", true))
@@ -175,6 +210,15 @@ async fn real_gateway_text_contract_streaming_snapshot_pin_and_client_cancel() {
     assert!(broken.contains("你好"));
     assert!(broken.contains("UPSTREAM_STREAM_INTERRUPTED"));
     assert!(!broken.contains("[DONE]"));
+    let health_baseline_snapshot = config.read_snapshot().unwrap().1;
+    let first_id = health_baseline_snapshot.providers[0].provider.id.clone();
+    let before_cancel_success =
+        ConfigService::read_runtime_health(temp.path(), &health_baseline_snapshot)
+            .unwrap()
+            .iter()
+            .find(|record| record.provider_id == first_id)
+            .unwrap()
+            .inference_succeeded_ms;
     let mut in_flight = client
         .post(&endpoint)
         .json(&input("cancel", true))
@@ -215,6 +259,17 @@ async fn real_gateway_text_contract_streaming_snapshot_pin_and_client_cancel() {
     })
     .await
     .expect("upstream must close after client disconnect");
+    let after_cancel_success =
+        ConfigService::read_runtime_health(temp.path(), &health_baseline_snapshot)
+            .unwrap()
+            .iter()
+            .find(|record| record.provider_id == first_id)
+            .unwrap()
+            .inference_succeeded_ms;
+    assert_eq!(
+        before_cancel_success, after_cancel_success,
+        "A cancelled partial stream must not refresh successful-inference health"
+    );
     assert_eq!(
         client
             .get(format!("{base}/models"))

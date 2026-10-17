@@ -274,14 +274,8 @@ fn record_at(
     time: u64,
 ) -> AppResult<bool> {
     let (_lease, mut db) = health_connection(directory, true)?;
-    let operation = OpenOptions::new()
-        .read(true)
-        .write(true)
-        .open(directory.join("operation.lock"))
-        .map_err(storage)?;
-    operation
-        .try_lock_exclusive()
-        .map_err(|_| AppError::new(ErrorCode::ConfigConflict))?;
+    // This transaction serializes the generation check with config commits. Do not
+    // take the business operation lock: metadata must not cause spurious stale-edit errors.
     let tx = db
         .transaction_with_behavior(TransactionBehavior::Immediate)
         .map_err(storage)?;

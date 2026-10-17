@@ -22,6 +22,41 @@ struct PinnedStep {
     credential: Option<Arc<zeroize::Zeroizing<String>>>,
     input: TeamStepInput,
     timeout: Duration,
+    fingerprint: String,
+}
+#[derive(Clone)]
+struct HealthContext {
+    tracker: Arc<super::health::Tracker>,
+    provider_id: String,
+    model_id: String,
+    fingerprint: String,
+}
+impl HealthContext {
+    fn observe(&self, observation: tagma_core::health::HealthObservation) {
+        self.tracker.observe(
+            &self.provider_id,
+            &self.model_id,
+            &self.fingerprint,
+            observation,
+        );
+    }
+}
+fn health_failure(code: &str) -> Option<tagma_core::health::HealthFailure> {
+    use tagma_core::health::HealthFailure::*;
+    match code {
+        "UPSTREAM_AUTH_FAILED" => Some(Authentication),
+        "UPSTREAM_CONNECT_TIMEOUT"
+        | "UPSTREAM_RESPONSE_TIMEOUT"
+        | "UPSTREAM_IDLE_TIMEOUT"
+        | "REQUEST_BUDGET_EXCEEDED" => Some(Timeout),
+        "UPSTREAM_RATE_LIMITED" => Some(RateLimited),
+        "UPSTREAM_PROTOCOL_ERROR" | "RESPONSE_LIMIT_EXCEEDED" => Some(Protocol),
+        "UPSTREAM_CONNECTION_FAILED"
+        | "UPSTREAM_TRANSPORT_ERROR"
+        | "UPSTREAM_STREAM_INTERRUPTED" => Some(Connection),
+        code if code.starts_with("UPSTREAM_") => Some(Upstream),
+        _ => None,
+    }
 }
 struct PinnedPlan {
     revision: u32,
@@ -34,13 +69,15 @@ struct PinnedPlan {
 struct PlanError(StatusCode, &'static str);
 
 fn pin_plan(loaded: &super::LoadedSnapshot, model: &str) -> Result<PinnedPlan, PlanError> {
-    let pin = |provider: &Provider, model: String, input, timeout| PinnedStep {
-        provider: provider.clone(),
-        credential: loaded.3.get(&provider.id).cloned(),
-        model,
-        input,
-        timeout,
-    };
+    let pin =
+        |record: &tagma_core::service::ProviderRecord, model: String, input, timeout| PinnedStep {
+            provider: record.provider.clone(),
+            credential: loaded.3.get(&record.provider.id).cloned(),
+            fingerprint: tagma_core::health::provider_fingerprint(record),
+            model,
+            input,
+            timeout,
+        };
     if !model.starts_with("tagma/") {
         let record = loaded
             .1
@@ -51,7 +88,7 @@ fn pin_plan(loaded: &super::LoadedSnapshot, model: &str) -> Result<PinnedPlan, P
         return Ok(PinnedPlan {
             revision: loaded.0,
             steps: vec![pin(
-                &record.provider,
+                record,
                 model.into(),
                 TeamStepInput::OriginalMessages,
                 Duration::from_secs(120),
@@ -106,7 +143,7 @@ fn pin_plan(loaded: &super::LoadedSnapshot, model: &str) -> Result<PinnedPlan, P
                 "TEAM_DEPENDENCY_UNAVAILABLE",
             ))?;
         steps.push(pin(
-            &provider.provider,
+            provider,
             target.model_id.clone(),
             step.input.clone(),
             Duration::from_millis(step.timeout_ms.into()),
@@ -145,11 +182,15 @@ pub fn trusted_local_request(request: &Request, port: u16) -> bool {
 }
 
 pub fn error(status: StatusCode, code: &str) -> Response {
-    (
+    let mut response = (
         status,
         Json(json!({"error":{"code":code,"message":code,"type":"tagma_gateway_error"}})),
     )
-        .into_response()
+        .into_response();
+    if let Some(failure) = health_failure(code) {
+        response.extensions_mut().insert(failure);
+    }
+    response
 }
 
 pub fn router(state: Arc<Runtime>) -> Router {
@@ -188,6 +229,18 @@ async fn models(State(state): State<Arc<Runtime>>) -> Response {
     response
         .headers_mut()
         .insert("x-tagma-config-revision", HeaderValue::from(loaded.0));
+    response.headers_mut().insert(
+        "x-tagma-health-revision",
+        HeaderValue::from(state.health.epoch()),
+    );
+    response.headers_mut().insert(
+        "x-tagma-health-writes-confirmed",
+        HeaderValue::from_static(if state.health.confirmed() {
+            "true"
+        } else {
+            "false"
+        }),
+    );
     response
 }
 
@@ -291,7 +344,12 @@ fn validate(input: &Value) -> Result<(&str, bool), &'static str> {
     Ok((model, stream))
 }
 
-fn stream_error(code: &str) -> Bytes {
+fn stream_error(health: &HealthContext, code: &str) -> Bytes {
+    if let Some(failure) = health_failure(code) {
+        health.observe(tagma_core::health::HealthObservation::InferenceFailed(
+            failure,
+        ));
+    }
     Bytes::from(format!(
         "data: {}\n\n",
         json!({"error":{"code":code,"message":code}})
@@ -487,6 +545,45 @@ async fn forward(
     total_deadline: tokio::time::Instant,
     public_model: Option<String>,
 ) -> Response {
+    let health = HealthContext {
+        tracker: state.health.clone(),
+        provider_id: step.provider.id.clone(),
+        model_id: step.model.clone(),
+        fingerprint: step.fingerprint.clone(),
+    };
+    let response = forward_response(
+        state,
+        step,
+        input,
+        streaming,
+        total_deadline,
+        public_model,
+        health,
+    )
+    .await;
+    if let Some(failure) = response
+        .extensions()
+        .get::<tagma_core::health::HealthFailure>()
+    {
+        state.health.observe(
+            &step.provider.id,
+            &step.model,
+            &step.fingerprint,
+            tagma_core::health::HealthObservation::InferenceFailed(failure.clone()),
+        );
+    }
+    response
+}
+
+async fn forward_response(
+    state: &Arc<Runtime>,
+    step: &PinnedStep,
+    input: &Value,
+    streaming: bool,
+    total_deadline: tokio::time::Instant,
+    public_model: Option<String>,
+    health: HealthContext,
+) -> Response {
     let mut request = state
         .client
         .post(format!(
@@ -533,27 +630,37 @@ async fn forward(
             let mut decoder = SseDecoder::default();
             let mut total = 0usize;
             let mut finished = false;
+            let mut saw_text=false;
+            let mut saw_refusal=false;
+            let mut valid_role=true;
             'reading: loop {
                 let next = tokio::select! {
-                    _ = shutdown.cancelled() => { yield Ok::<_,Infallible>(stream_error("GATEWAY_STOPPING")); break; },
-                    _ = tokio::time::sleep_until(total_deadline) => { yield Ok(stream_error("REQUEST_BUDGET_EXCEEDED")); break; },
+                    _ = shutdown.cancelled() => { yield Ok::<_,Infallible>(stream_error(&health,"GATEWAY_STOPPING")); break; },
+                    _ = tokio::time::sleep_until(total_deadline) => { yield Ok(stream_error(&health,"REQUEST_BUDGET_EXCEEDED")); break; },
                     next = tokio::time::timeout(Duration::from_secs(30),upstream.next()) => next,
                 };
-                let chunk = match next { Ok(Some(Ok(chunk))) => chunk, Ok(None) => { yield Ok(stream_error("UPSTREAM_STREAM_INTERRUPTED")); break; }, Ok(Some(Err(_))) => { yield Ok(stream_error("UPSTREAM_STREAM_INTERRUPTED")); break; }, Err(_) => { yield Ok(stream_error("UPSTREAM_IDLE_TIMEOUT")); break; } };
+                let chunk = match next { Ok(Some(Ok(chunk))) => chunk, Ok(None) => { yield Ok(stream_error(&health,"UPSTREAM_STREAM_INTERRUPTED")); break; }, Ok(Some(Err(_))) => { yield Ok(stream_error(&health,"UPSTREAM_STREAM_INTERRUPTED")); break; }, Err(_) => { yield Ok(stream_error(&health,"UPSTREAM_IDLE_TIMEOUT")); break; } };
                 total += chunk.len();
-                if total > MAX_RESPONSE_BYTES { yield Ok(stream_error("RESPONSE_LIMIT_EXCEEDED")); break; }
-                let events = match decoder.push(&chunk) { Ok(events) => events, Err(code) => { yield Ok(stream_error(code)); break; } };
+                if total > MAX_RESPONSE_BYTES { yield Ok(stream_error(&health,"RESPONSE_LIMIT_EXCEEDED")); break; }
+                let events = match decoder.push(&chunk) { Ok(events) => events, Err(code) => { yield Ok(stream_error(&health,code)); break; } };
                 for data in events {
                     if data == "[DONE]" {
-                        if finished { yield Ok(Bytes::from_static(b"data: [DONE]\n\n")); }
-                        else { yield Ok(stream_error("UPSTREAM_STREAM_INTERRUPTED")); }
+                        if finished {
+                            if saw_text&&!saw_refusal&&valid_role{health.observe(tagma_core::health::HealthObservation::InferenceSucceeded);}
+                            else if !valid_role{health.observe(tagma_core::health::HealthObservation::InferenceFailed(tagma_core::health::HealthFailure::Protocol));}
+                            yield Ok(Bytes::from_static(b"data: [DONE]\n\n"));
+                        }
+                        else { yield Ok(stream_error(&health,"UPSTREAM_STREAM_INTERRUPTED")); }
                         break 'reading;
                     }
-                    let mut value: Value = match serde_json::from_str(&data) { Ok(value) => value, Err(_) => { yield Ok(stream_error("UPSTREAM_PROTOCOL_ERROR")); break 'reading; } };
-                    if value.get("error").is_some() { yield Ok(stream_error("UPSTREAM_ERROR")); break 'reading; }
-                    let Some(choices) = value["choices"].as_array() else { yield Ok(stream_error("UPSTREAM_PROTOCOL_ERROR")); break 'reading; };
-                    if !valid_chunk(&value) { yield Ok(stream_error("UPSTREAM_PROTOCOL_ERROR")); break 'reading; }
+                    let mut value: Value = match serde_json::from_str(&data) { Ok(value) => value, Err(_) => { yield Ok(stream_error(&health,"UPSTREAM_PROTOCOL_ERROR")); break 'reading; } };
+                    if value.get("error").is_some() { yield Ok(stream_error(&health,"UPSTREAM_ERROR")); break 'reading; }
+                    let Some(choices) = value["choices"].as_array() else { yield Ok(stream_error(&health,"UPSTREAM_PROTOCOL_ERROR")); break 'reading; };
+                    if !valid_chunk(&value) { yield Ok(stream_error(&health,"UPSTREAM_PROTOCOL_ERROR")); break 'reading; }
                     finished |= choices.iter().any(|choice| choice["finish_reason"].is_string());
+                    saw_text|=choices.iter().any(|choice|choice["delta"]["content"].as_str().is_some_and(|text|!text.trim().is_empty()));
+                    saw_refusal|=choices.iter().any(|choice|choice["delta"].get("refusal").is_some_and(|value|!value.is_null()));
+                    valid_role&=choices.iter().all(|choice|choice["delta"].get("role").is_none_or(|value|value.is_null()||value=="assistant"));
                     if let Some(model)=&public_model { value["model"]=json!(model);yield Ok(Bytes::from(format!("data: {value}\n\n"))); }
                     else { yield Ok(Bytes::from(format!("data: {data}\n\n"))); }
                 }
@@ -600,6 +707,31 @@ async fn forward(
                 && choices[0]["message"].get("tool_calls").is_none()
         }) {
             return error(StatusCode::BAD_GATEWAY, "UPSTREAM_PROTOCOL_ERROR");
+        }
+        let message = &value["choices"][0]["message"];
+        if message["role"] != "assistant"
+            || message.get("function_call").is_some()
+            || !matches!(
+                value["choices"][0]["finish_reason"].as_str(),
+                Some("stop" | "length" | "content_filter")
+            )
+        {
+            health.observe(tagma_core::health::HealthObservation::InferenceFailed(
+                tagma_core::health::HealthFailure::Protocol,
+            ));
+        }
+        if message["role"] == "assistant"
+            && message["content"]
+                .as_str()
+                .is_some_and(|text| !text.trim().is_empty())
+            && message.get("function_call").is_none()
+            && message.get("refusal").is_none_or(|value| value.is_null())
+            && matches!(
+                value["choices"][0]["finish_reason"].as_str(),
+                Some("stop" | "length" | "content_filter")
+            )
+        {
+            health.observe(tagma_core::health::HealthObservation::InferenceSucceeded);
         }
         if let Some(model) = public_model {
             value["model"] = json!(model);

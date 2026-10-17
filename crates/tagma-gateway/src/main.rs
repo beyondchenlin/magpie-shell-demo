@@ -1,5 +1,6 @@
 #![cfg_attr(windows, windows_subsystem = "windows")]
 
+mod health;
 mod http_api;
 use axum::{
     extract::{Request as HttpRequest, State},
@@ -41,6 +42,7 @@ struct Runtime {
     load_slots: Arc<tokio::sync::Semaphore>,
     client: reqwest::Client,
     request_slots: Arc<tokio::sync::Semaphore>,
+    health: Arc<health::Tracker>,
     #[cfg(test)]
     _fixture: Option<tempfile::TempDir>,
 }
@@ -224,6 +226,8 @@ async fn run(
         owned: false,
         error: None,
     };
+    let health = health::Tracker::new(directory.clone(), shutdown.clone());
+    health.reconcile(&snapshot);
     let state = Arc::new(Runtime {
         directory: directory.clone(),
         manifest: manifest.clone(),
@@ -239,6 +243,7 @@ async fn run(
             Err(_) => return 12,
         },
         request_slots: Arc::new(tokio::sync::Semaphore::new(8)),
+        health,
         #[cfg(test)]
         _fixture: None,
     });
@@ -468,6 +473,9 @@ async fn apply_with(
             {
                 return;
             }
+            if status.effective_revision != Some(revision) {
+                state.health.reconcile(&snapshot);
+            }
             if status.effective_revision != Some(revision) || status.error.is_some() {
                 let _ = tagma_core::diagnostics::record(
                     &state.directory,
@@ -531,6 +539,7 @@ mod apply_tests {
             load_slots: Arc::new(tokio::sync::Semaphore::new(1)),
             client: http_api::client().unwrap(),
             request_slots: Arc::new(tokio::sync::Semaphore::new(8)),
+            health: health::Tracker::new(fixture.path().to_owned(), CancellationToken::new()),
             _fixture: Some(fixture),
         })
     }
