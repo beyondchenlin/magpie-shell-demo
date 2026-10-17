@@ -1,0 +1,17 @@
+[
+  {
+    "path": "D:\\demo1\\tagmaai-preview\\data\\config.sqlite3",
+    "bytes": 28672,
+    "sha256": "08cbd4dc82e6c142d1b910d7c9bf3c4ca93ccbbaab37de0d86c441b36f3f84ae"
+  },
+  {
+    "path": "D:\\demo1\\tagmaai-preview\\data\\config.sqlite3-shm",
+    "bytes": 32768,
+    "sha256": "b57f0881725dde5fb84817e1c116a42932d5da15e9210473afb3006a2b1db5ea"
+  },
+  {
+    "path": "D:\\demo1\\tagmaai-preview\\data\\config.sqlite3-wal",
+    "bytes": 32992,
+    "sha256": "9b1569f0d0fc47636754cd3b13e3f88f7faa4f15401dcd56ee71daf6fd47c5e3"
+  }
+]

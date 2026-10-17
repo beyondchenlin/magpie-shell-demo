@@ -4,11 +4,15 @@
 
 ## 用户保留预览（禁止按测试清理）
 
+2026-10-17 17:44：用户要求重装、随后要求修复拖动；当前已安装且打开 **dev.9/schema3**，目录 C:/Users/ai/AppData/Local/Tagma，桌面和稳定入口指向最新版、沿用原预览data/webview。CIS沿用dev.8；原生拖动权限/区域及双击最大化还原补齐，八项原生交互验证通过，真实物理鼠标位移未确认。Computer Use重新枚举绑定、文字状态可读；截图FrameArrived超时并做有界恢复。旧预览EXE批量删除被自动审批 blocked by policy 拒绝，原文件保留，未绕过。详见[P0-S06](P0-S06-WINDOW-DRAG.md)。下文dev.6/7状态为历史。
+
 2026-10-17 16:22：dev.7（650b2c9）已复制并核对hash，稳定入口更新且加运行保护；原dev.6仍运行，当前表单/进程未关闭，dev.7尚未实际打开。旧版本退出后再开稳定入口即可使用新对话。清单与evidence/P1-S01-retained-preview-dev7-prepared.json明确区分“准备完成”和“当前运行”；未复制/改写data/webview。
 
 2026-10-17 15:58已实际打开dev.6可见接入工作台，已保存1/运行中1。入口[D:\demo1\tagmaai-preview\打开Tagma预览.lnk](D:/demo1/tagmaai-preview/打开Tagma预览.lnk)，桌面“Tagma 最新预览”；独立持久data/webview，不是fixture。运行EXE从c655972已验构建复制后hash核对，网关无附着控制台。更新前确认旧预览已退出，本执行器未关闭；旧dev.5及配置保留。不要关闭/卸载/覆盖这个预览来解构建锁或执行测试清理。完整保护约定见[USER-PREVIEW](USER-PREVIEW.md)，evidence/P0-S04-retained-preview-dev6.json记录实际窗口及版本，旧证据留存。
 
 ## 当前批次
+
+- dev.9窗口拖动热修已安装并实际打开；未修改公共CIS CSS或业务schema，未新增worktree/环境。八项交互验证只证明原生命令/按钮排除/实际最大化还原，不冒充真实物理拖动验收。配置、密钥引用、WebView资料和用户安装继续保留。
 
 - 用户最新优先级：先恢复前期一比一复刻的CIS外观，再继续小队。dev.8/schema3已恢复同源顶栏/侧栏/行卡片/引导/菜单及完整共享样式，默认110%、原生窗口theme同步；两轮看图与独立原复刻同原生视口比较后，最终CIS14项通过，聊天14/主路径16/网关10回归通过。详见[P0-S05外观纠偏](P0-S05-CIS-CORRECTION.md)。旧dev.6/7仅功能通过不当作外观批准，六guard不代替整页验收。
 

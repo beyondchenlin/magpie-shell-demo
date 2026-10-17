@@ -1,0 +1,38 @@
+{
+  "productVersion": "0.2.0-dev.9",
+  "executable": "D:\\demo1\\tagmaai\\target\\debug\\tagma-desktop.exe",
+  "result": "passed",
+  "dragResults": [
+    {
+      "command": "start_dragging",
+      "state": "resolved"
+    },
+    {
+      "command": "start_dragging",
+      "state": "resolved"
+    },
+    {
+      "command": "start_dragging",
+      "state": "resolved"
+    },
+    {
+      "command": "internal_toggle_maximize",
+      "state": "resolved"
+    },
+    {
+      "command": "internal_toggle_maximize",
+      "state": "resolved"
+    }
+  ],
+  "tests": [
+    "top-native-drag-command-allowed",
+    "button-and-svg-descendants-do-not-drag",
+    "navigation-remains-interactive",
+    "sidebar-top-native-drag-command-allowed",
+    "breadcrumb-native-drag-command-allowed",
+    "native-double-click-maximize",
+    "native-double-click-restore",
+    "native-graceful-quit"
+  ],
+  "limitation": "Synthetic WebView mouse events dispatch real native IPC; this does not prove physical pointer window movement. OS capture/input helper remains unavailable."
+}

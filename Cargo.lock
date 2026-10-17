@@ -3932,7 +3932,7 @@ dependencies = [
 
 [[package]]
 name = "tagma-core"
-version = "0.2.0-dev.8"
+version = "0.2.0-dev.9"
 dependencies = [
  "fs2",
  "getrandom 0.4.3",
@@ -3952,7 +3952,7 @@ dependencies = [
 
 [[package]]
 name = "tagma-desktop"
-version = "0.2.0-dev.8"
+version = "0.2.0-dev.9"
 dependencies = [
  "reqwest",
  "serde_json",
@@ -3968,7 +3968,7 @@ dependencies = [
 
 [[package]]
 name = "tagma-gateway"
-version = "0.2.0-dev.8"
+version = "0.2.0-dev.9"
 dependencies = [
  "async-stream",
  "axum",
@@ -3990,7 +3990,7 @@ dependencies = [
 
 [[package]]
 name = "tagma-runtime"
-version = "0.2.0-dev.8"
+version = "0.2.0-dev.9"
 dependencies = [
  "fs2",
  "interprocess",

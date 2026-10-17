@@ -16,6 +16,7 @@ const gatewayMode=process.env.TAGMA_NATIVE_SMOKE_MODE==='gateway';
 const workspaceMode=process.env.TAGMA_NATIVE_SMOKE_MODE==='workspace';
 const chatMode=process.env.TAGMA_NATIVE_SMOKE_MODE==='chat';
 const cisMode=process.env.TAGMA_NATIVE_SMOKE_MODE==='cis';
+const windowMode=process.env.TAGMA_NATIVE_SMOKE_MODE==='window';
 let chatUpstream;
 const chatTimers=new Set();
 assert(fixture, 'Caller must supply an isolated TAGMA_TEST_CONFIG_DIR');
@@ -89,7 +90,35 @@ async function connectPage() {
 }
 try {
   let page=await connectPage();
-  if(cisMode) {
+  if(windowMode) {
+    await until(async()=>(await text()).includes('开始接入'),'Native home not rendered');
+    assert.equal(await evaluate(`document.querySelector('.top').getAttribute('data-tauri-drag-region')`),'deep');
+    await evaluate(`(()=>{window.__dragResults=[];const original=window.fetch;window.fetch=function(input,...args){const address=decodeURIComponent(typeof input==='string'?input:input.url);const command=['start_dragging','internal_toggle_maximize'].find(name=>address.includes('plugin:window|'+name));const result=original.call(this,input,...args);if(command){const entry={command,state:'pending'};window.__dragResults.push(entry);result.then(response=>{entry.state=response.headers.get('Tauri-Response')==='ok'?'resolved':'rejected'},()=>entry.state='rejected')}return result};window.__testMouseDown=(selector,detail=1)=>document.querySelector(selector).dispatchEvent(new MouseEvent('mousedown',{button:0,buttons:1,detail,bubbles:true,composed:true}));})()`);
+    await evaluate(`window.__testMouseDown('.top')`);
+    await pause(300);console.log('Native drag dispatch:',await evaluate(`JSON.stringify(window.__dragResults)`));
+    await until(async()=>await evaluate(`window.__dragResults.length===1&&window.__dragResults[0].state==='resolved'`),'Native start_dragging was rejected or unavailable');
+    await evaluate(`window.__testMouseDown('#nav button span');window.__testMouseDown('#prefs svg');window.__testMouseDown('#sideToggle svg')`);
+    assert.equal(await evaluate(`window.__dragResults.length`),1,'Interactive descendants must not drag the window');
+    await evaluate(`document.querySelector('#nav button[data-view="providers"]').click()`);await pause(100);
+    assert(await evaluate(`!!document.querySelector('#nav button[data-view="providers"].on')`));
+    await evaluate(`document.querySelector('#sideToggle').click()`);await pause(400);
+    assert.equal(await evaluate(`document.querySelector('.side-top').getAttribute('data-tauri-drag-region')`),'deep');
+    await evaluate(`window.__testMouseDown('.side-top .brand')`);
+    await until(async()=>await evaluate(`window.__dragResults.length===2&&window.__dragResults[1].state==='resolved'`),'Sidebar top drag failed');
+    await evaluate(`window.__testMouseDown('.crumb b')`);
+    await until(async()=>await evaluate(`window.__dragResults.length===3&&window.__dragResults[2].state==='resolved'`),'Breadcrumb drag failed');
+    const width=await evaluate(`window.innerWidth`);
+    await evaluate(`window.__testMouseDown('.top',2)`);
+    await until(async()=>await evaluate(`window.innerWidth>${width}`),'Double-click did not maximize the native window');
+    await evaluate(`window.__testMouseDown('.top',2)`);
+    await until(async()=>await evaluate(`window.innerWidth===${width}`),'Double-click did not restore the native window');
+    const dragResults=await evaluate(`window.__dragResults`);
+    assert(dragResults.every(entry=>entry.state==='resolved'));
+    await evaluate(`window.__TAURI_INTERNALS__.invoke('quit_application',{protocolVersion:1})`).catch(()=>{});
+    await until(async()=>child.exitCode!==null,'Window fixture did not exit');
+    await writeFile(resolve(fixture,'native-result.json'),JSON.stringify({productVersion:'0.2.0-dev.9',executable,result:'passed',dragResults,tests:['top-native-drag-command-allowed','button-and-svg-descendants-do-not-drag','navigation-remains-interactive','sidebar-top-native-drag-command-allowed','breadcrumb-native-drag-command-allowed','native-double-click-maximize','native-double-click-restore','native-graceful-quit'],limitation:'Synthetic WebView mouse events dispatch real native IPC; this does not prove physical pointer window movement. OS capture/input helper remains unavailable.'},null,2));
+    console.log('Native window interaction: 8 checks passed. Physical pointer movement remains unverified.');
+  } else if(cisMode) {
     await until(async()=>(await text()).includes('开始接入'),'CIS guide not rendered');
     await until(async()=>(await text()).includes('网关正在使用已保存的配置'),'CIS baseline is not in stable running state');
     const baseline=await evaluate(`(()=>{const style=selector=>{const element=document.querySelector(selector);const s=getComputedStyle(element);return{height:s.height,minHeight:s.minHeight,padding:s.padding,gap:s.gap,fontSize:s.fontSize,fontFamily:s.fontFamily,borderRadius:s.borderRadius,background:s.backgroundColor}};return{zoom:getComputedStyle(document.documentElement).zoom,body:style('body'),top:style('.top'),guide:style('.guide'),guideTitle:style('.guide-h'),guideTick:style('.guide-tick'),row:style('.row.pref'),navClass:document.querySelector('#nav').className,originalTopRecipe:!!document.querySelector('.top > #nav.seg > button[data-view].on'),pageSegmentInHeader:!!document.querySelector('.top .segs'),customHero:!!document.querySelector('.tagma-workspace-intro')}})()`);

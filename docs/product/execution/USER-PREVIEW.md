@@ -1,5 +1,7 @@
 # 用户保留预览：不要当测试产物清理
 
+2026-10-17 17:44：**已安装并实际打开 dev.9**，安装位置 C:/Users/ai/AppData/Local/Tagma。dev.8 CIS 外观恢复后，dev.9补齐顶栏/侧栏顶部/面包屑的原生拖动与双击最大化/还原。桌面“Tagma”“Tagma 最新预览”和下方稳定入口均启动安装版，保留原 data/webview。注册、EXE hash、runtime、窗口及八项原生交互验证见[P0-S06记录](P0-S06-WINDOW-DRAG.md)与 evidence/P0-S06-user-install-dev9.json。真实物理鼠标位移尚未确认；电脑控制已重新枚举/绑定，文字读取可用，截图仍超时。旧预览程序文件批量删除被自动审批以 blocked by policy 拒绝，文件保留，未绕过。以下旧版本记录为历史，不表示当前仍运行 dev.6/7。
+
 2026-10-17 16:22：dev.7基础文本对话已验证并复制到versions\\0.2.0-dev.7，source650b2c9，两EXE共25,794,048逻辑字节，逐个SHA256与构建一致。稳定入口现指向dev.7，但检测到原dev.6仍运行时只提示先保存并从设置退出，绝不关闭/覆盖现有进程和输入。已用cscript纯文字模式确认该保护返回2，没有新开/停止宿主。当前不是“dev.7已打开”的声明：最后进程观察仍是dev.6的57532/45736。
 
 入口仍为[打开最新预览](D:/demo1/tagmaai-preview/打开Tagma预览.lnk)和桌面“Tagma 最新预览”。旧dev.6/5、各自启动器和清单保留，data/webview未操作；新版本复用同一schema3，无新环境/worktree。当前输入和电脑控制会话保留；准备结果见evidence/P1-S01-retained-preview-dev7-prepared.json。后续进入小队工作，不因等待预览自然退出而停止其他已授权开发。

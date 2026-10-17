@@ -1,0 +1,53 @@
+{
+  "recordedAtUtc": "2026-10-17T09:44:30.8595209Z",
+  "version": "0.2.0-dev.9",
+  "schemaVersion": 3,
+  "installDirectory": "C:\\Users\\ai\\AppData\\Local\\Tagma",
+  "installer": "D:\\demo1\\tagmaai\\target\\debug\\bundle\\nsis\\Tagma_0.2.0-dev.9_x64-setup.exe",
+  "installerSha256": "134e4ff88808eb7eac8c3bf137b01258da9c5a180409e1899a5a5c1274757fe9",
+  "installerExit": 0,
+  "files": [
+    {
+      "name": "tagma-desktop.exe",
+      "path": "C:\\Users\\ai\\AppData\\Local\\Tagma\\tagma-desktop.exe",
+      "bytes": 17980928,
+      "sha256": "6aeffe1e8f883250513b2cdab3c303d11e1ac3c819a1442b65aa07dbb001c381"
+    },
+    {
+      "name": "tagma-gateway.exe",
+      "path": "C:\\Users\\ai\\AppData\\Local\\Tagma\\tagma-gateway.exe",
+      "bytes": 7845888,
+      "sha256": "ad29aa6062adf944861336ab4b2f0f1079bc25ebf50b9b5ee744cf3c3cea6211"
+    }
+  ],
+  "launcher": "D:\\demo1\\tagmaai-preview\\Launch-TagmaPreview.vbs",
+  "shortcuts": [
+    "C:\\Users\\ai\\Desktop\\Tagma.lnk",
+    "C:\\Users\\ai\\Desktop\\Tagma 最新预览.lnk",
+    "D:\\demo1\\tagmaai-preview\\打开Tagma预览.lnk"
+  ],
+  "preservedDirectories": [
+    "D:\\demo1\\tagmaai-preview\\data",
+    "D:\\demo1\\tagmaai-preview\\webview"
+  ],
+  "oldBinaryDeletion": "Batch old-preview binary deletion was rejected by automatic approval: blocked by policy. Old version binaries retained; no retry or bypass.",
+  "windowTests": "P0-S06-window-dev9-final.json",
+  "physicalPointerMovementVerified": false,
+  "temporaryFixturesRemoved": 3,
+  "newWorktrees": 0,
+  "newEnvironment": 0,
+  "releaseSigned": false,
+  "observedHostPid": 32172,
+  "observedGatewayPid": 35628,
+  "actualInstalledWindowOpened": true,
+  "windowId": 12914176,
+  "computerControl": "Fresh enumeration/binding and accessibility read succeeded. Screenshot FrameArrived timeout; no stale coordinate input. User input detected during activation, refreshed read-only without stealing focus.",
+  "diskBeforeGiB": {
+    "C": 48.85,
+    "D": 22.58
+  },
+  "diskAfterGiB": {
+    "C": 48.35,
+    "D": 22.49
+  }
+}

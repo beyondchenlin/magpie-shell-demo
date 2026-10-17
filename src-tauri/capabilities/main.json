@@ -24,6 +24,8 @@
     "allow-diagnostics-view",
     "allow-recover-initialization",
     "core:window:allow-set-theme",
-    "core:window:allow-theme"
+    "core:window:allow-theme",
+    "core:window:allow-start-dragging",
+    "core:window:allow-internal-toggle-maximize"
   ]
 }

@@ -2,7 +2,7 @@ param(
   [string]$Executable = 'target/debug/tagma-desktop.exe',
   [Parameter(Mandatory=$true)][string]$ResultPath,
   [string]$EvidenceDirectory,
-  [ValidateSet('full','appearance','recovery','profiles','gateway','performance','workspace','chat','cis')][string]$Mode = 'full'
+  [ValidateSet('full','appearance','recovery','profiles','gateway','performance','workspace','chat','cis','window')][string]$Mode = 'full'
 )
 $ErrorActionPreference='Stop'
 $taskExecutable=(Resolve-Path -LiteralPath $Executable).Path

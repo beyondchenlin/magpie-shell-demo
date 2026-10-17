@@ -1,0 +1,35 @@
+{
+  "version": "0.2.0-dev.8",
+  "installDirectory": "C:\\Users\\ai\\AppData\\Local\\Tagma",
+  "installerExit": 0,
+  "files": [
+    {
+      "name": "tagma-desktop.exe",
+      "path": "C:\\Users\\ai\\AppData\\Local\\Tagma\\tagma-desktop.exe",
+      "bytes": 17986048,
+      "sha256": "b2a52b1f6639dc6f06ff4122e152ed3be7397785a97e36a2819d9404f494949f"
+    },
+    {
+      "name": "tagma-gateway.exe",
+      "path": "C:\\Users\\ai\\AppData\\Local\\Tagma\\tagma-gateway.exe",
+      "bytes": 7846400,
+      "sha256": "4d568db74a0baf47ee298d7028790483235e4a5d575ae9d21728ab1ba969a04e"
+    }
+  ],
+  "preservedDataHash": true,
+  "unexpectedRestoredPreviousLocation": "D:\\demo1\\tagmaai\\.cache\\tagma-install-s02",
+  "correctedBy": "Standard uninstaller then explicit /D current-user install; delete-data option not selected",
+  "sourceCommit": "a9d370f99645070d15d443ef97d66d50d3b33962",
+  "launcher": "D:\\demo1\\tagmaai-preview\\Launch-TagmaPreview.vbs",
+  "shortcuts": [
+    "D:\\demo1\\tagmaai-preview\\打开Tagma预览.lnk",
+    "C:\\Users\\ai\\Desktop\\Tagma 最新预览.lnk",
+    "C:\\Users\\ai\\Desktop\\Tagma.lnk"
+  ],
+  "preservedDirectories": [
+    "D:\\demo1\\tagmaai-preview\\data",
+    "D:\\demo1\\tagmaai-preview\\webview"
+  ],
+  "oldBinaryDeletion": "Automatic approval rejected batch removal: blocked by policy. No deletion retried; old version files retained.",
+  "installerSha256": "ffd433efdce3a07dc5ad005e21082e1381c8a9ec47d83bc22f4a6e067fa2a51b"
+}
