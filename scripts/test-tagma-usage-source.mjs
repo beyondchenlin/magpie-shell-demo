@@ -34,10 +34,10 @@ function load(filename) {
 const { UsageLoader, usageDefault, usageSelection, usageNumber, usageUtc } = load("src/product/usageModel.ts");
 const { UsageResults, UsageDetail, UsagePanel } = load("src/product/UsagePanel.tsx");
 const selection = usageSelection(usageDefault(Date.parse("2026-10-18T12:00:00Z")));
-const info = { availability: "available", observed_ms: 1792324800000, detail_start_ms: 1792000000000, summary_start_ms: 1791936000000, timezone: "UTC" };
+const info = { generation: "0", availability: "available", observed_ms: 1792324800000, detail_start_ms: 1792000000000, summary_start_ms: 1791936000000, timezone: "UTC" };
 const requestId = "00000000-0000-4000-8000-000000000001";
 const record = { request_id: requestId, provider_id: "00000000-0000-4000-8000-000000000002", model: "tagma/private-team@2", config_revision: 8, team_revision: 2, started_ms: 1792324800000, finished_ms: null, state: "running", error_code: null, input_tokens: null, output_tokens: "0" };
-const requests = { info, records: [record], next_cursor: { started_ms: record.started_ms, request_id: requestId } };
+const requests = { info, records: [record], next_cursor: { generation: "0", started_ms: record.started_ms, request_id: requestId } };
 const totals = { total: "1", completed: "0", unfinished: "1", succeeded: "0", failed: "0", cancelled: "0", interrupted: "0", input_known: "27670116110564327421", input_unknown: "1", output_known: "0", output_unknown: "0", input_total: null, output_total: "0", elapsed_ms: "0" };
 const summary = { info, kind: "request", records: [], totals, next_cursor: null };
 const detail = { info, record, attempts: [{ ordinal: 1, provider_id: record.provider_id, model: "actual-step-model", started_ms: record.started_ms, finished_ms: null, state: "running", error_code: null, input_tokens: null, output_tokens: "0" }] };
@@ -100,6 +100,15 @@ test("disposed query and detail cannot repopulate cache or launch next stage", a
   const inspect = next.inspect(requestId); next.dispose(); const after = published.length;
   late.reject({ code: "USAGE_QUERY_UNAVAILABLE" }); await inspect;
   assert.equal(published.length, after);
+});
+test("clear generations cannot mix cached totals/requests; fresh detail invalidates older list", async () => {
+  const published = []; let nextSummary = summary;
+  const loader = new UsageLoader({ usageRequests: async () => requests, usageSummary: async () => nextSummary, usageDetails: async () => ({ ...detail, info: { ...info, generation: "1" } }) }, state => published.push(state));
+  await loader.load(selection); assert.ok(published.at(-1).data);
+  await loader.inspect(requestId); assert.equal(published.at(-1).data, null); assert.equal(published.at(-1).detail.info.generation, "1");
+  nextSummary = { ...summary, info: { ...info, generation: "1" } }; await loader.load(selection);
+  assert.equal(published.at(-1).data, null); assert.equal(published.at(-1).error.code, "USAGE_CLEAR_CHANGED");
+  loader.dispose();
 });
 test("source rendering uses CIS rows; precise unknown/zero, absent store and detail identity", () => {
   const props = { data: { selection, requests, summary }, providers: [], zh: true, busy: false, inspect() {}, next() {} };

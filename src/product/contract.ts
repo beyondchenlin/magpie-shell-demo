@@ -1,5 +1,5 @@
 // Generated from tagma-core. Run npm run contract:generate; do not edit.
-export type ErrorCode = "INVALID_INPUT" | "CONFIG_CONFLICT" | "STORAGE_UNAVAILABLE" | "CREDENTIAL_STORE_UNAVAILABLE" | "INCOMPATIBLE_VERSION" | "MAINTENANCE_IN_PROGRESS" | "DESKTOP_REQUIRED" | "INTERNAL_ERROR" | "PORT_IN_USE" | "ALREADY_RUNNING" | "GATEWAY_UNAVAILABLE" | "CONFIG_APPLY_FAILED" | "OWNERSHIP_REQUIRED" | "STARTUP_TIMEOUT" | "INITIALIZATION_RECOVERY_REQUIRED" | "PROVIDER_REFERENCED" | "PROFILE_REFERENCED" | "PROBE_BACKOFF" | "PROBE_BUSY" | "ACCESS_REVOKED" | "SECURITY_STATE_UNCONFIRMED" | "USAGE_STORAGE_UNAVAILABLE" | "USAGE_QUERY_UNAVAILABLE" | "USAGE_QUERY_CANCELLED" | "RESTART_REQUIRED" | "TEAM_SLUG_CONFLICT" | "TEAM_PUBLISHED" | "TEAM_RECIPE_UNAVAILABLE" | "NO_AVAILABLE_BRAIN";
+export type ErrorCode = "INVALID_INPUT" | "CONFIG_CONFLICT" | "STORAGE_UNAVAILABLE" | "CREDENTIAL_STORE_UNAVAILABLE" | "INCOMPATIBLE_VERSION" | "MAINTENANCE_IN_PROGRESS" | "DESKTOP_REQUIRED" | "INTERNAL_ERROR" | "PORT_IN_USE" | "ALREADY_RUNNING" | "GATEWAY_UNAVAILABLE" | "CONFIG_APPLY_FAILED" | "OWNERSHIP_REQUIRED" | "STARTUP_TIMEOUT" | "INITIALIZATION_RECOVERY_REQUIRED" | "PROVIDER_REFERENCED" | "PROFILE_REFERENCED" | "PROBE_BACKOFF" | "PROBE_BUSY" | "ACCESS_REVOKED" | "SECURITY_STATE_UNCONFIRMED" | "USAGE_STORAGE_UNAVAILABLE" | "USAGE_QUERY_UNAVAILABLE" | "USAGE_QUERY_CANCELLED" | "USAGE_CLEAR_BUSY" | "USAGE_CLEAR_CHANGED" | "RESTART_REQUIRED" | "TEAM_SLUG_CONFLICT" | "TEAM_PUBLISHED" | "TEAM_RECIPE_UNAVAILABLE" | "NO_AVAILABLE_BRAIN";
 export type AppError = { code: ErrorCode, retryable: boolean, };
 export type ProviderProtocol = "openai_chat_completions";
 export type Provider = { id: string, name: string, protocol: ProviderProtocol, base_url: string, enabled: boolean, models: Array<string>, has_credential: boolean, };
@@ -54,14 +54,14 @@ export type RevocationReceipt = { revision: number, cancel_inflight: boolean, };
 export type UsageRange = { start_ms: number, end_ms: number, };
 export type UsageRecordState = "running" | "succeeded" | "failed" | "cancelled" | "interrupted";
 export type UsageFilter = { provider_id: string | null, model: string | null, config_revision: number | null, team_revision: number | null, state: UsageRecordState | null, error_code: string | null, };
-export type UsageCursor = { started_ms: number, request_id: string, };
+export type UsageCursor = { generation: string, started_ms: number, request_id: string, };
 export type UsageRequestsQuery = { protocol_version: number, range: UsageRange, filter: UsageFilter, cursor: UsageCursor | null, limit: number, };
 export type UsageDetailsQuery = { protocol_version: number, request_id: string, };
 export type UsageMetricKind = "request" | "attempt";
-export type UsageSummaryCursor = { day_ms: number, provider_id: string, model: string, config_revision: number, team_revision: number, state: UsageRecordState, };
+export type UsageSummaryCursor = { generation: string, day_ms: number, provider_id: string, model: string, config_revision: number, team_revision: number, state: UsageRecordState, };
 export type UsageSummaryQuery = { protocol_version: number, range: UsageRange, filter: UsageFilter, kind: UsageMetricKind, cursor: UsageSummaryCursor | null, limit: number, };
 export type UsageAvailability = "not_created" | "available";
-export type UsageReadInfo = { availability: UsageAvailability, observed_ms: number, detail_start_ms: number | null,
+export type UsageReadInfo = { generation: string | null, availability: UsageAvailability, observed_ms: number, detail_start_ms: number | null,
 /**
  * Earliest currently retained UTC daily bucket, not an activity guarantee.
  */
@@ -73,6 +73,12 @@ export type UsageDetailsView = { info: UsageReadInfo, record: UsageRequestView |
 export type UsageSummaryRow = { day_ms: number, provider_id: string, model: string, config_revision: number, team_revision: number | null, state: UsageRecordState, count: string, input_known: string, input_unknown: string, output_known: string, output_unknown: string, elapsed_ms: string, };
 export type UsageSummaryTotals = { total: string, completed: string, unfinished: string, succeeded: string, failed: string, cancelled: string, interrupted: string, input_known: string, input_unknown: string, output_known: string, output_unknown: string, input_total: string | null, output_total: string | null, elapsed_ms: string, };
 export type UsageSummaryView = { info: UsageReadInfo, kind: UsageMetricKind, records: Array<UsageSummaryRow>, totals: UsageSummaryTotals | null, next_cursor: UsageSummaryCursor | null, };
+export type UsageClearPlan = { operation_id: string, range: UsageRange, expected_revision: string, generation: string, requests: string,
+/**
+ * All attempts cascading from selected logical requests, even across days.
+ */
+attempts: string, summary_buckets: string, };
+export type UsageClearReceipt = { plan: UsageClearPlan, generation: string, committed_ms: number, };
 export type SaveTeam = { protocol_version: number, expected_revision: number, id: string | null, slug: string, recipe: TeamRecipe, };
 export type SetTeamEnabled = { protocol_version: number, expected_revision: number, id: string, team_revision: number, enabled: boolean, };
 export type ConfigView = { security: SecurityView, protocol_version: number, schema_version: number, desired_revision: number, providers: Array<Provider>, profiles: Array<AppProfile>, first_cloud_order: FirstCloudOrder, gateway: GatewayView, teams: Array<TeamView>, model_health: Array<ModelHealthView>, provider_catalog: Array<CatalogView>, pending_credential_cleanup: number, };

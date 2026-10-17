@@ -1,6 +1,8 @@
 //! Separate, single-writer request ledger. No messages, headers or credentials.
 //! The gateway actor awaits begin_request/begin_attempt before dispatch.
 //! Read-only projections share this ledger through the read module.
+pub mod clear;
+mod migration;
 pub mod read;
 #[cfg(test)]
 mod read_tests;
@@ -34,6 +36,17 @@ CREATE TABLE usage_attempts(request_id TEXT NOT NULL REFERENCES usage_requests(i
 CREATE INDEX usage_request_time ON usage_requests(started_ms);
 CREATE TABLE usage_daily(day INTEGER NOT NULL,kind TEXT NOT NULL,provider_id TEXT NOT NULL,model TEXT NOT NULL,config_revision INTEGER NOT NULL,team_revision INTEGER NOT NULL,outcome TEXT NOT NULL,count INTEGER NOT NULL CHECK(typeof(count)='integer'),input_known INTEGER NOT NULL CHECK(typeof(input_known)='integer'),input_unknown INTEGER NOT NULL CHECK(typeof(input_unknown)='integer'),output_known INTEGER NOT NULL CHECK(typeof(output_known)='integer'),output_unknown INTEGER NOT NULL CHECK(typeof(output_unknown)='integer'),elapsed_ms INTEGER NOT NULL CHECK(typeof(elapsed_ms)='integer'),PRIMARY KEY(day,kind,provider_id,model,config_revision,team_revision,outcome));
 ";
+const UPGRADE_V2: &str = "
+ALTER TABLE usage_meta ADD COLUMN change_revision INTEGER NOT NULL DEFAULT 0 CHECK(typeof(change_revision)='integer' AND change_revision>=0);
+ALTER TABLE usage_meta ADD COLUMN generation INTEGER NOT NULL DEFAULT 0 CHECK(typeof(generation)='integer' AND generation>=0);
+ALTER TABLE usage_meta ADD COLUMN last_clear_json TEXT;
+";
+fn bump(db: &Connection) -> AppResult<()> {
+    if db.execute("UPDATE usage_meta SET change_revision=change_revision+1 WHERE singleton=1 AND change_revision<9223372036854775807", []).map_err(storage)? != 1 {
+        return Err(storage("usage revision exhausted"));
+    }
+    Ok(())
+}
 
 fn storage(_: impl std::fmt::Display) -> AppError {
     AppError::new(ErrorCode::StorageUnavailable)
@@ -215,13 +228,16 @@ struct StoredAttempt {
     tokens: Tokens,
 }
 fn validate_schema(db: &Connection) -> AppResult<()> {
+    validate_schema_version(db, 2)
+}
+fn validate_schema_version(db: &Connection, expected: u32) -> AppResult<()> {
     let owner: u32 = db
         .pragma_query_value(None, "application_id", |r| r.get(0))
         .map_err(storage)?;
     let version: u32 = db
         .pragma_query_value(None, "user_version", |r| r.get(0))
         .map_err(storage)?;
-    if owner != OWNER || version != 1 {
+    if owner != OWNER || version != expected || !matches!(expected, 1 | 2) {
         return Err(storage("unknown usage identity"));
     }
     let mut objects = db
@@ -254,6 +270,16 @@ fn validate_schema(db: &Connection) -> AppResult<()> {
     ] {
         db.prepare(sql).map_err(storage)?;
     }
+    if expected == 2 {
+        db.prepare("SELECT change_revision,generation,last_clear_json FROM usage_meta LIMIT 0")
+            .map_err(storage)?;
+        db.query_row(
+            "SELECT change_revision,generation FROM usage_meta WHERE singleton=1",
+            [],
+            |row| Ok((unsigned(row, 0)?, unsigned(row, 1)?)),
+        )
+        .map_err(storage)?;
+    }
     Ok(())
 }
 impl UsageStore {
@@ -274,6 +300,9 @@ impl UsageStore {
             .map_err(storage)?;
         lock.try_lock_exclusive().map_err(storage)?;
         let target = directory.join("usage.sqlite3");
+        if !target.exists() && migration::pending(directory)? {
+            return Err(storage("migration without usage database"));
+        }
         let intent = directory.join("usage-initialization.json");
         const MARKER: &[u8] =
             b"{\"owner\":\"com.tagmaai.desktop/usage/v1\",\"target\":\"usage.sqlite3\"}";
@@ -318,7 +347,10 @@ impl UsageStore {
             readonly
                 .busy_timeout(Duration::from_millis(100))
                 .map_err(storage)?;
-            validate_schema(&readonly)?;
+            let version: u32 = readonly
+                .pragma_query_value(None, "user_version", |row| row.get(0))
+                .map_err(storage)?;
+            validate_schema_version(&readonly, version)?;
         }
         let mut flags = OpenFlags::SQLITE_OPEN_READ_WRITE | OpenFlags::SQLITE_OPEN_NO_MUTEX;
         if fresh {
@@ -347,14 +379,17 @@ impl UsageStore {
                 .transaction_with_behavior(TransactionBehavior::Immediate)
                 .map_err(storage)?;
             tx.execute_batch(SCHEMA).map_err(storage)?;
+            tx.execute_batch(UPGRADE_V2).map_err(storage)?;
             tx.pragma_update(None, "application_id", OWNER)
                 .map_err(storage)?;
-            tx.pragma_update(None, "user_version", 1).map_err(storage)?;
+            tx.pragma_update(None, "user_version", 2).map_err(storage)?;
             tx.commit().map_err(storage)?;
             #[cfg(test)]
             crash_hook("initialized");
-        } else if owner != OWNER || version != 1 || objects != 5 {
+        } else if owner != OWNER || !matches!(version, 1 | 2) || objects != 5 {
             return Err(storage("unknown usage database"));
+        } else if version == 1 || migration::pending(directory)? {
+            migration::prepare(directory, &mut db)?;
         }
         validate_schema(&db)?;
         if fresh {
@@ -450,6 +485,7 @@ impl UsageStore {
                 return Err(AppError::new(ErrorCode::ProbeBusy));
             }
             tx.execute("INSERT INTO usage_requests(id,provider_id,model,config_revision,team_revision,started_ms,outcome) VALUES(?1,?2,?3,?4,?5,?6,'running')",params![start.id,start.provider_id,start.model,start.config_revision,start.team_revision,at]).map_err(storage)?;
+            bump(&tx)?;
             tx.commit().map_err(storage)
         })();
         if result
@@ -494,6 +530,7 @@ impl UsageStore {
                 return Err(invalid());
             }
             tx.execute("INSERT INTO usage_attempts(request_id,ordinal,provider_id,model,started_ms,outcome) VALUES(?1,?2,?3,?4,?5,'running')",params![start.request_id,start.ordinal,start.provider_id,start.model,at]).map_err(storage)?;
+            bump(&tx)?;
             tx.commit().map_err(storage)
         })();
         if result
@@ -645,6 +682,7 @@ impl UsageStore {
         )
         .map_err(storage)?;
         tx.execute("INSERT INTO usage_daily VALUES(?1,?2,?3,?4,?5,?6,?7,1,?8,?9,?10,?11,?12) ON CONFLICT(day,kind,provider_id,model,config_revision,team_revision,outcome) DO UPDATE SET count=count+1,input_known=input_known+excluded.input_known,input_unknown=input_unknown+excluded.input_unknown,output_known=output_known+excluded.output_known,output_unknown=output_unknown+excluded.output_unknown,elapsed_ms=elapsed_ms+excluded.elapsed_ms",params![time(started/DAY)?,kind,provider,target,revision,team_revision.unwrap_or(0),end.outcome.as_str(),time(tokens.input.unwrap_or(0))?,u32::from(tokens.input.is_none()),time(tokens.output.unwrap_or(0))?,u32::from(tokens.output.is_none()),time(end.finished_ms-started)?]).map_err(storage)?;
+        bump(&tx)?;
         tx.commit().map_err(storage)
     }
     fn recover(&mut self, now: u64) -> AppResult<()> {
@@ -727,6 +765,7 @@ impl UsageStore {
             }
         }
         tx.execute("UPDATE usage_meta SET detail_start_ms=MAX(detail_start_ms,COALESCE((SELECT MIN(started_ms) FROM usage_requests),?1)) WHERE singleton=1",[time(cutoff)?]).map_err(storage)?;
+        bump(&tx)?;
         tx.commit().map_err(storage)
     }
 }

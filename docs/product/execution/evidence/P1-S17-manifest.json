@@ -1,0 +1,206 @@
+{
+  "recordedAtUtc": "2026-10-17T20:07:31.108Z",
+  "sourceBase": "fc9c9e6a8f51dcc1c044d049cfb4fb433cf66a46",
+  "candidateVersion": "0.2.0-dev.16",
+  "configSchema": 8,
+  "usageSchema": 2,
+  "source": [
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-core\\examples\\export-contract.rs",
+      "bytes": 4030,
+      "sha256": "c7980a60be0d06431e7c92c80417a3d87bc6b6544e134c699d08bc91d3049545"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-core\\src\\contract.rs",
+      "bytes": 7080,
+      "sha256": "a8891adf840e82b9416f522ba86cf696033ee4dbe084fa23247af892c3dda774"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-core\\src\\usage.rs",
+      "bytes": 47555,
+      "sha256": "3d8c9980b538024cbb7582b87f4fd911db4160294efc0c6ac277a4b4fe3206e7"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-core\\src\\usage\\read.rs",
+      "bytes": 33119,
+      "sha256": "5b36a8837067d1142532312cf49c6f0a255dd66019749078895524de755f10fc"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-core\\src\\usage\\clear.rs",
+      "bytes": 29869,
+      "sha256": "ff92a4d3dae6564d311a72cd47a511d769b8665e9909346099e55f3c7b9edf8b"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-core\\src\\usage\\migration.rs",
+      "bytes": 7999,
+      "sha256": "c31aa5669c095526eb21c7424906f21b06acf1bb75594a3e60cf17dd87c578ce"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\src\\product\\contract.ts",
+      "bytes": 12458,
+      "sha256": "a153cc89d6cb1231cb1f9dcdd21c793b28f293d74151d5184cfbcefbf08ee1b6"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\src\\product\\copy.ts",
+      "bytes": 19041,
+      "sha256": "7b8651e30eedb7fa7fc8012b4c74a4a5a7b25b58a14f91981325fed0ced779a8"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\src\\product\\usageModel.ts",
+      "bytes": 6559,
+      "sha256": "7dfd3e6da27d4de66b286807f82ff52f8633c1c79854c72a2779cfcca06c810c"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\scripts\\test-tagma-usage-source.mjs",
+      "bytes": 11278,
+      "sha256": "335eb10fbbf4770d2d130070c5297305d234e499b68afcb00a50dbb9aef1f8bf"
+    }
+  ],
+  "documents": [
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\EXECUTION-STATUS.md",
+      "bytes": 25196,
+      "sha256": "a91132d92200c79b3bbb91030cd3fe1c952d11c9e5f41182c996757d8615f15a"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\P1-S17-USAGE-CLEAR-CORE.md",
+      "bytes": 6924,
+      "sha256": "95b1b4e13bec747b69ecccfcb361249a8e0e755d3894fb3ce4e0cdb0a6ec95b8"
+    }
+  ],
+  "prd": {
+    "path": "D:\\demo1\\tagmaai\\docs\\product\\TAGMA-PRD-v0.3.md",
+    "bytes": 50957,
+    "sha256": "6e6503391f70e3f2e53347890de6e7c9f7fd93cc393c68f7bba494ac4d67a6d6"
+  },
+  "evidence": [
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S17-cis.txt",
+      "bytes": 319,
+      "sha256": "dc7d2807ea1910f39c47cf866c2ddae915169166f9f8ec4e1ef171bb371758b7"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S17-clear-backup.txt",
+      "bytes": 2452,
+      "sha256": "a6a8595f4db64411ff7827e022ab4352f7be4a597d19ab44fa691e65cdd31484"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S17-clear-final.txt",
+      "bytes": 2363,
+      "sha256": "7cb069d9ddbfff435b9a836f56791f900f70952441ae98328938dc3d8cdc96b9"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S17-clear-first.txt",
+      "bytes": 2083,
+      "sha256": "17771655db249eeadb0ee62e461973b83862cfafbe0c2deea146aaf0c1293ea6"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S17-clippy-verified.txt",
+      "bytes": 1266,
+      "sha256": "8522ef0b9024778e49622391216a2ffcfaa01d072c188ffb04958b0dc3a82c58"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S17-clippy.txt",
+      "bytes": 1266,
+      "sha256": "1ca61b6570c9cb35927ee17a8350070f082438598739df9d423904098fd4eacd"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S17-core-final.txt",
+      "bytes": 14606,
+      "sha256": "adb64fa1ddde2586d1eb4ba7945bde31d5d98403648b06ed087e7e8cba4e3795"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S17-core-first.txt",
+      "bytes": 3885,
+      "sha256": "5823475a3ac75ff89fb4b01ae52194df6db6df361045cdaed71980f955233b53"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S17-core-verified.txt",
+      "bytes": 15288,
+      "sha256": "17af7607b5f95c96f0c2f607415d60a1fd26af84356e3d54804d471c497c0a9c"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S17-dto-check.txt",
+      "bytes": 650,
+      "sha256": "5c6e34bed7285ef0ceaa703dd577c4a3f71efcb62b975a4cd757282a11f19b7c"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S17-dto.txt",
+      "bytes": 566,
+      "sha256": "2e9a709e00944613e4cf15c665d3bb76a7d4cfda1d24ebf1f4b9e422cc88e594"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S17-frontend.txt",
+      "bytes": 478,
+      "sha256": "9dd319d9654f9fa03fd7276c02b9f15a521ea4d8d15cf84bf7955742e5ba7ef7"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S17-gateway-verified.txt",
+      "bytes": 3506,
+      "sha256": "6f2d65aac42273e2f0c62a9dd8906754872381fe881e7ef3a890d7e829c45fba"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S17-gateway.txt",
+      "bytes": 3506,
+      "sha256": "bee54052c2a6e15330e7ea20ae6271b8bdec39ec9f2f8c159becc59f62147a2e"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S17-headless.txt",
+      "bytes": 778,
+      "sha256": "18a514aa11ba4f01a9322b5adbbd2f96ef1cd15f98ceaa3e9d10707990a6cf51"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S17-lint.txt",
+      "bytes": 202,
+      "sha256": "0259bc410b8b4ae7f4faec598ac9d063ce5d414819a02b8915f7c19d0582a9a2"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S17-space-plan.json",
+      "bytes": 884,
+      "sha256": "e3f9cf433e5059efd375af16194dbcc6f32a157097eceb1085ad65dd91adbbd8"
+    }
+  ],
+  "checks": {
+    "core": {
+      "passed": 72,
+      "ignored": 8
+    },
+    "newClearCases": "6 passed included in core;1 owned child helper ignored",
+    "crash": "7 real exit90 phases plus2 damaged source/backup rejection fixtures",
+    "gateway": "usage2+revocation_faults1 actual headless sidecar passed",
+    "sourceUI": 7,
+    "clippy": "workspace alltarget passed",
+    "frontend": "TS/Vite,DTO check,lint3files116rules0diagnostics,CIS passed; unaffected frontend checks precede backup-only helper refinement"
+  },
+  "scope": {
+    "clear": "core foundation only; no private management/native/UI clear path yet",
+    "queryCursors": "generation mismatch refused; frontend mixed-generation snapshots rejected",
+    "ownClearCacheFloor": "pending",
+    "computerControl": false,
+    "realUpstream": 0,
+    "installationUnchanged": "dev.9",
+    "physicalWindowDrag": false,
+    "A16": "partial",
+    "A28": "partial",
+    "P1": false
+  },
+  "resources": {
+    "freeAfterGiB": [
+      {
+        "name": "C",
+        "freeGiB": 42.462
+      },
+      {
+        "name": "D",
+        "freeGiB": 10.251
+      }
+    ],
+    "noNewWorktree": true,
+    "noNewEnvironment": true,
+    "noInstaller": true,
+    "testClearFixtureResidue": 0,
+    "backup": "Small owned fixture backups removed by TempDir. Actual future migration retains one schema1 backup+hash separately from DB/WAL targets; never auto-restores it.",
+    "retained": "Original workspace/cache/evidence,user preview,data/webview,preexisting fixtures and rejected cleanup targets",
+    "note": "Disk changes include concurrent writes. No net released-space claim."
+  }
+}

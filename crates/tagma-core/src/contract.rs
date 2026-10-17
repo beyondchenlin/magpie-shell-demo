@@ -32,6 +32,8 @@ pub enum ErrorCode {
     UsageStorageUnavailable,
     UsageQueryUnavailable,
     UsageQueryCancelled,
+    UsageClearBusy,
+    UsageClearChanged,
     RestartRequired,
     TeamSlugConflict,
     TeamPublished,
@@ -53,6 +55,8 @@ impl AppError {
                 | ErrorCode::CredentialStoreUnavailable
                 | ErrorCode::StorageUnavailable
                 | ErrorCode::UsageQueryUnavailable
+                | ErrorCode::UsageClearBusy
+                | ErrorCode::UsageClearChanged
                 | ErrorCode::MaintenanceInProgress
         );
         Self { code, retryable }

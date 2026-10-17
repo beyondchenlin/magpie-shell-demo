@@ -77,6 +77,7 @@ export class UsageLoader {
       // Error-code filtering has no daily-summary equivalent. Never silently
       // drop that filter and present a broader total beside filtered requests.
       const summary = selection.filter.error_code ? null : previous?.summary ?? await this.api.usageSummary({ protocol_version: 1, range: selection.range, filter: selection.filter, kind: selection.kind, cursor: null, limit: 1 });
+      if (summary && summary.info.generation !== requests.info.generation) throw { code: "USAGE_CLEAR_CHANGED" };
       if (!this.disposed && generation === this.generation) this.update({ busy: false, data: { selection, requests, summary }, detail: null, error: null });
     } catch (error) {
       if (!this.disposed && generation === this.generation) this.update({ busy: false, data: null, detail: null, error });
@@ -88,7 +89,7 @@ export class UsageLoader {
     this.update({ ...this.state, busy: true, detail: null, error: null });
     try {
       const detail = await this.api.usageDetails({ protocol_version: 1, request_id: requestId });
-      if (!this.disposed && generation === this.generation) this.update({ ...this.state, busy: false, detail, error: null });
+      if (!this.disposed && generation === this.generation) this.update({ ...this.state, data: this.state.data?.requests.info.generation === detail.info.generation ? this.state.data : null, busy: false, detail, error: null });
     } catch (error) {
       if (!this.disposed && generation === this.generation) this.update({ ...this.state, busy: false, detail: null, error });
     }

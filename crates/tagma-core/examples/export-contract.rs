@@ -1,5 +1,6 @@
 use tagma_core::diagnostics::{Component, DiagnosticBundle, Event, Record};
 use tagma_core::teams::*;
+use tagma_core::usage::clear::*;
 use tagma_core::usage::read::*;
 use tagma_core::*;
 use ts_rs::TS;
@@ -69,6 +70,8 @@ fn main() {
         UsageSummaryRow::decl(&cfg),
         UsageSummaryTotals::decl(&cfg),
         UsageSummaryView::decl(&cfg),
+        UsageClearPlan::decl(&cfg),
+        UsageClearReceipt::decl(&cfg),
         SaveTeam::decl(&cfg),
         SetTeamEnabled::decl(&cfg),
         ConfigView::decl(&cfg),

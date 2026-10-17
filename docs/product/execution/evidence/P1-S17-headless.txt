@@ -1,0 +1,15 @@
+✔ UTC inclusive dates, leap dates, max span and strict filters (1.1372ms)
+✔ decimal precision, known zero, unknown and out-of-Date-range timestamps (0.2186ms)
+✔ sequential single-reader calls; duplicate clicks ignored; cursor pins applied selection (0.8685ms)
+✔ query failure clears prior result, and errors never silently broaden summary (0.3159ms)
+✔ disposed query and detail cannot repopulate cache or launch next stage (0.1899ms)
+✔ clear generations cannot mix cached totals/requests; fresh detail invalidates older list (0.1716ms)
+✔ source rendering uses CIS rows; precise unknown/zero, absent store and detail identity (12.5093ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 22.2158

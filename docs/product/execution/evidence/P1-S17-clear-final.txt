@@ -1,0 +1,42 @@
+   Compiling tagma-core v0.2.0-dev.16 (D:\demo1\tagmaai\crates\tagma-core)
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+    Finished `test` profile [unoptimized] target(s) in 4.04s
+     Running unittests src\lib.rs (target\debug\deps\tagma_core-2f484c8d7ea56ae6.exe)
+
+running 6 tests
+test usage::clear::tests::clear_crash_worker ... ignored, owned child process only
+
+running 1 test
+Usage clear:mutation invalidates preview;running/pending/degraded refuse;daily-delete failure rolls back earlier detail/cascade deletion and epoch;explicit recovery then clear succeeds;invalid/future scopes refused
+test usage::clear::tests::stale_busy_pending_and_storage_faults_never_partially_clear ... ok
+Usage clear:preview counts next-day cascading attempts,keeps outside-day summaries;contradictory receipt rejected;revision exhaustion rolls back deletion/receipt/epoch without wrap
+test usage::clear::tests::cross_day_cascade_is_counted_and_revision_exhaustion_rolls_back ... ok
+Usage clear:reviewed1request/1attempt/2buckets removed atomically;outside range retained;WAL snapshot old0/new read1;both stale cursors refused;lost-ACK replay after restart leaves new activity intact
+test usage::clear::tests::clear_is_reviewed_atomic_idempotent_and_invalidates_old_cursors ... ok
+Usage upgrade:known owner/schema1 records preserved to schema2;readonly does not migrate;unknown extra object database unchanged
+test usage::clear::tests::known_v1_upgrade_is_atomic_and_preserves_records_unknown_is_untouched ... ok
+
+running 1 test
+
+running 1 test
+
+running 1 test
+Usage actual exit90:uncommitted schema upgrade/delete roll back;committed upgrade survives;committed clear epoch+receipt survive/replay;all four isolated TempDir children exit and teardown
+test usage::clear::tests::real_exit90_rolls_back_upgrade_or_clear_and_keeps_committed_receipt ... ok
+
+test result: ok. 5 passed; 0 failed; 1 ignored; 0 measured; 47 filtered out; finished in 0.15s
+

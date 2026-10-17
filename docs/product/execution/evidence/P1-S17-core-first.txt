@@ -1,0 +1,54 @@
+   Compiling tagma-core v0.2.0-dev.16 (D:\demo1\tagmaai\crates\tagma-core)
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+    Finished `test` profile [unoptimized] target(s) in 4.28s
+     Running unittests src\lib.rs (target\debug\deps\tagma_core-2f484c8d7ea56ae6.exe)
+
+running 13 tests
+test usage::tests::usage_crash_worker ... ignored, child-process crash worker, invoked only by the owned recovery test
+Usage reader cancellation:actual SQLite VM exits SQLITE_INTERRUPT;one owned memory connection/thread closes,constant-memory recursive stream
+test usage::read::interrupt_tests::cancellation_interrupts_actual_sqlite_work_and_closes_its_connection ... ok
+Usage read:not-created is explicit unknown availability;pending/unknown stores refused and preserved;invalid or unsupported filters rejected;cancelled query does not open a store
+test usage::read_tests::absent_unknown_and_invalid_queries_never_initialize_or_invent_empty_success ... ok
+
+running 1 test
+Usage real SQLITE_FULL: no committed start record, admission degraded; test data below1MiB, no actual disk exhaustion
+Usage ledger: logical=1, attempts=2, input=NULL/unknown1, output=10, duplicate completion counts unchanged; separate DB
+test usage::tests::actual_sqlite_full_at_start_refuses_registration_and_degrades ... ok
+Usage bounds:one writer,8active maximum,sequential ordinals and timestamps;arbitrary error text rejected before queue/write
+test usage::tests::logical_requests_and_attempts_keep_unknown_tokens_and_aggregate_once ... ok
+test usage::tests::admission_identity_timing_and_metadata_privacy_are_checked ... ok
+
+running 1 test
+Usage failed finishes: 8 requests/8 attempts ->16 bounded pending results, new begins refused, explicit recovery exactly once
+test usage::tests::failed_results_are_bounded_retryable_and_never_allow_new_registration ... ok
+Usage retention:30day details prune only after durable daily aggregate;12calendar months summary retention;unknown database bytes preserved
+test usage::tests::retention_keeps_summaries_and_preserves_unknown_unowned_databases ... ok
+Usage read integrity:contradictory success/error or unknown-count>count yields unavailable,preserves source,never fake empty/zero
+test usage::read_tests::contradictory_rows_are_unavailable_and_are_not_repaired_by_reading ... ok
+Usage read exact decimal tokens:3*i64::MAX preserved as 27670116110564327421,known zero remains explicit;summary keyset and literal SQL-bound model filter verified
+
+running 1 test
+test usage::read_tests::decimal_totals_do_not_round_large_tokens_and_literal_filters_are_bounded ... ok
+Usage read:7 logical/11attempt records including unfinished1;unknown totals stay null;same-time pages no duplicates;detail original targets/revisions and error filter verified;main DB unchanged
+test usage::read_tests::readonly_pages_details_and_totals_separate_requests_attempts_and_unknown_tokens ... ok
+Usage exit90: pre-DDL and committed-DDL intent recovery;registered request+attempt become interrupted with NULL tokens after real child process death
+test usage::tests::real_process_exit_recovers_owned_initialization_and_unfinished_attempts ... ok
+Usage read bounds:32 escaped maximum-model fields and16 attempt details fit48KiB response;next page cursor retained
+test usage::read_tests::escaped_page_fields_and_sixteen_attempt_details_stay_within_response_bounds ... ok
+
+test result: ok. 12 passed; 0 failed; 1 ignored; 0 measured; 34 filtered out; finished in 0.14s
+

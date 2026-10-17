@@ -1,0 +1,20 @@
+{
+  "recordedAtUtc": "2026-10-17T19:53:52.619Z",
+  "target": "D:/demo1/tagmaai/target",
+  "temporaryRoot": "C:\\Users\\ai\\AppData\\Local\\Temp",
+  "estimatedAdditionalPeakGiB": 0.2,
+  "freeBeforeGiB": {
+    "C": 42.46,
+    "D": 10.44
+  },
+  "scope": "Core usage schema2 atomic upgrade, clear preview/commit receipt and query generations; targeted core checks first",
+  "reuse": "Existing target and official registry; no environment/worktree/installer",
+  "cleanup": "Small owned TempDir fixtures close via RAII; preserve user data and all rejected/previous cleanup",
+  "revisedAtUtc": "2026-10-17T19:58:53.690Z",
+  "freeAtRevisionGiB": {
+    "C": 42.47,
+    "D": 10.32
+  },
+  "remainingEstimatedPeakGiB": 0.15,
+  "revisionNote": "Core complete suite passed; finish targeted clear/counter checks, existing actual sidecar usage regression and DTO/frontend/Clippy without installer"
+}
