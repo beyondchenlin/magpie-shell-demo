@@ -1,3 +1,6 @@
+// These explicit synthetic port overrides are absent from release binaries.
+// Release/package acceptance uses persisted ports and has its own platform gate.
+#![cfg(debug_assertions)]
 use std::{path::Path, sync::Arc, time::Duration};
 use tagma_core::{credentials::SystemCredentials, *};
 use tagma_runtime::{
@@ -17,7 +20,9 @@ fn free_port() -> u16 {
         .port()
 }
 fn manager(path: &Path) -> GatewayManager {
-    GatewayManager::new(path, Path::new(env!("CARGO_BIN_EXE_tagma-gateway")))
+    let mut manager = GatewayManager::new(path, Path::new(env!("CARGO_BIN_EXE_tagma-gateway")));
+    manager.allow_fixture_port_override();
+    manager
 }
 fn initialize(path: &Path) -> ConfigService {
     ConfigService::open(path, Arc::new(SystemCredentials)).unwrap()
@@ -222,6 +227,70 @@ async fn auth_missing_token_denies_by_default_and_port_changes_require_explicit_
     manager.stop().await.unwrap();
 }
 
+#[cfg(windows)]
+#[tokio::test]
+async fn saved_port_change_cannot_be_acknowledged_on_old_port_during_crash_restart() {
+    let temp = tempfile::tempdir().unwrap();
+    let config = initialize(temp.path());
+    let first_port = free_port();
+    let new_port = free_port();
+    config
+        .save_gateway(SaveGateway {
+            protocol_version: 1,
+            expected_revision: 0,
+            port: first_port,
+            auth_enabled: true,
+        })
+        .unwrap();
+    let manager = GatewayManager::new(temp.path(), Path::new(env!("CARGO_BIN_EXE_tagma-gateway")));
+    let wrong_port = free_port();
+    assert_eq!(
+        manager.start(wrong_port).await.unwrap_err().code,
+        ErrorCode::RestartRequired
+    );
+    assert!(std::net::TcpListener::bind((std::net::Ipv4Addr::LOCALHOST, wrong_port)).is_ok());
+    let first = manager.start(first_port).await.unwrap();
+    assert_eq!(first.effective_revision, Some(1));
+    config
+        .save_gateway(SaveGateway {
+            protocol_version: 1,
+            expected_revision: 1,
+            port: new_port,
+            auth_enabled: true,
+        })
+        .unwrap();
+    assert_eq!(
+        manager.apply().await.unwrap().error.unwrap().code,
+        ErrorCode::RestartRequired
+    );
+    let owned_pid = manager.owned_process_id().await.unwrap();
+    let terminated = Process::new("taskkill.exe")
+        .args(["/PID", &owned_pid.to_string(), "/F"])
+        .creation_flags(0x08000000)
+        .stdout(std::process::Stdio::null())
+        .stderr(std::process::Stdio::null())
+        .status()
+        .await
+        .unwrap();
+    assert!(terminated.success());
+    wait_until(async || {
+        manager.supervise().await;
+        manager
+            .status()
+            .await
+            .error
+            .is_some_and(|error| error.code == ErrorCode::RestartRequired)
+    })
+    .await;
+    assert_eq!(manager.status().await.effective_revision, None);
+    assert!(manager.owned_process_id().await.is_none());
+    assert!(std::net::TcpListener::bind((std::net::Ipv4Addr::LOCALHOST, new_port)).is_ok());
+    let manual = manager.start(new_port).await.unwrap();
+    assert_eq!(manual.effective_revision, Some(2));
+    assert!(manual.address.unwrap().contains(&new_port.to_string()));
+    manager.stop().await.unwrap();
+}
+
 #[tokio::test]
 #[ignore = "Explicit synthetic OS credential + actual HTTP integration, exact created reference cleaned"]
 async fn system_token_authenticates_only_data_plane_and_never_appears_in_configuration_files() {
@@ -384,6 +453,7 @@ async fn raw_start(path: &Path, managed: bool) -> (Child, ipc::Manifest, String)
         .stdout(std::process::Stdio::null())
         .stderr(std::process::Stdio::null())
         .kill_on_drop(true);
+    process.arg("--test-port-override");
     if managed {
         process.arg("--managed");
     }
@@ -557,6 +627,7 @@ async fn managed_crashes_restart_at_most_three_times_then_remain_failed() {
             .expect("only owned child may be terminated by this fixture");
         let result = Process::new("taskkill.exe")
             .args(["/PID", &pid.to_string(), "/F"])
+            .creation_flags(0x08000000)
             .stdout(std::process::Stdio::null())
             .stderr(std::process::Stdio::null())
             .status()

@@ -2,7 +2,7 @@ param(
   [string]$Executable = 'target/debug/tagma-desktop.exe',
   [Parameter(Mandatory=$true)][string]$ResultPath,
   [string]$EvidenceDirectory,
-  [ValidateSet('full','appearance','recovery','profiles','gateway')][string]$Mode = 'full'
+  [ValidateSet('full','appearance','recovery','profiles','gateway','performance','workspace')][string]$Mode = 'full'
 )
 $ErrorActionPreference='Stop'
 $taskExecutable=(Resolve-Path -LiteralPath $Executable).Path
@@ -30,7 +30,8 @@ try {
   $env:TAGMA_NATIVE_SMOKE_MODE=$Mode
   if($EvidenceDirectory) { $env:TAGMA_NATIVE_EVIDENCE_DIR=[IO.Path]::GetFullPath($EvidenceDirectory) }
   else { Remove-Item Env:TAGMA_NATIVE_EVIDENCE_DIR -ErrorAction SilentlyContinue }
-  node (Join-Path $PSScriptRoot 'tagma-native-smoke.mjs')
+  if($Mode -eq 'performance') { node (Join-Path $PSScriptRoot 'tagma-startup-benchmark.mjs') }
+  else { node (Join-Path $PSScriptRoot 'tagma-native-smoke.mjs') }
   $taskExit=$LASTEXITCODE
 } finally {
   foreach($taskName in $taskNames) { [Environment]::SetEnvironmentVariable($taskName,$taskOldEnvironment[$taskName],'Process') }
@@ -58,7 +59,7 @@ try {
     }
   }
   $taskLogicalBytes=($taskItems | Where-Object { -not $_.PSIsContainer } | Measure-Object Length -Sum).Sum
-  if($Mode -eq 'gateway') {
+  if($Mode -in @('gateway','performance')) {
     $taskCredentialCleanup=$false
     if(-not $taskReferences.Count -and -not $taskLinks.Count -and -not $taskLocked) {
       & (Join-Path $PSScriptRoot '../target/debug/examples/cleanup_native_fixture.exe') $taskAbsolute

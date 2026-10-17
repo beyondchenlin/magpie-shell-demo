@@ -45,6 +45,8 @@ struct Runtime {
 fn main() {
     let args: Vec<_> = std::env::args_os().skip(1).collect();
     let managed = args.iter().any(|a| a == "--managed");
+    let test_port_override =
+        cfg!(debug_assertions) && args.iter().any(|a| a == "--test-port-override");
     let directory = args
         .windows(2)
         .find(|p| p[0] == "--config-dir")
@@ -98,6 +100,7 @@ fn main() {
     let code = runtime.block_on(run(
         directory.clone(),
         port,
+        test_port_override,
         bootstrap.instance_id,
         zeroize::Zeroizing::new(bootstrap.owner_token),
         shutdown,
@@ -118,6 +121,7 @@ fn main() {
             14 => Some(ErrorCode::CredentialStoreUnavailable),
             15 => Some(ErrorCode::StorageUnavailable),
             16 => Some(ErrorCode::MaintenanceInProgress),
+            17 => Some(ErrorCode::RestartRequired),
             _ => Some(ErrorCode::ConfigApplyFailed),
         },
         None,
@@ -128,6 +132,7 @@ fn main() {
 async fn run(
     directory: PathBuf,
     port: u16,
+    test_port_override: bool,
     instance_id: String,
     token: zeroize::Zeroizing<String>,
     shutdown: CancellationToken,
@@ -173,6 +178,12 @@ async fn run(
         Err(e) if e.code == ErrorCode::MaintenanceInProgress => return 16,
         Err(_) => return 12,
     };
+    // A concurrent save or a crash restart may have changed the desired port.
+    // Do not acknowledge that revision on a different listener. Release builds
+    // cannot opt out; only explicit synthetic debug fixtures may override it.
+    if port != snapshot.gateway.port && !test_port_override {
+        return 17;
+    }
     let tcp = match TcpListener::bind((std::net::Ipv4Addr::LOCALHOST, port)).await {
         Ok(v) => v,
         Err(e) if e.kind() == std::io::ErrorKind::AddrInUse => return 11,

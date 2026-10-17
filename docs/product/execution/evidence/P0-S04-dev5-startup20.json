@@ -1,0 +1,184 @@
+{
+  "sourceCommit": "36001a5ead6ce02b68b176f763ea361140802abe",
+  "recordedAtUtc": "2026-10-17T07:31:57.012Z",
+  "executable": "D:\\demo1\\tagmaai\\target\\debug\\tagma-desktop.exe",
+  "executableSha256": "31d11b5979c97b9a6aa3f270f24c28b62872c9d1ecd8602cdebf4122d9330cee",
+  "productVersion": "0.2.0-dev.5",
+  "platform": "win32",
+  "architecture": "x64",
+  "osRelease": "10.0.19045",
+  "cpu": "12th Gen Intel(R) Core(TM) i7-12700KF",
+  "ramGiB": 32,
+  "logicalProcessors": 20,
+  "browserVersion": {
+    "protocolVersion": "1.3",
+    "product": "Edg/155.0.4283.60",
+    "revision": "@fb6491367cfaa77db85a9a723f518fa20d12b4ee",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+    "jsVersion": "15.5.9.5"
+  },
+  "buildMode": "debug, embedded assets, inspector enabled",
+  "method": "20 distinct host processes, same receipt-owned config and WebView profile; OS/disk caches retained; keyboard focus confirms interaction; gateway observation independent",
+  "percentileMethod": "nearest rank",
+  "interactive": {
+    "p50Ms": 897.53,
+    "p95Ms": 1033.31,
+    "maxMs": 1543.48
+  },
+  "gateway": {
+    "p50Ms": 828.84,
+    "p95Ms": 987.12,
+    "maxMs": 1509.01
+  },
+  "interactiveBudgetMs": 3000,
+  "withinLocalDebugBudget": true,
+  "samples": [
+    {
+      "run": 1,
+      "pid": 25188,
+      "interactiveObservedMs": 1543.48,
+      "gatewayReadyObservedMs": 1509.01,
+      "productVersion": "0.2.0-dev.5"
+    },
+    {
+      "run": 2,
+      "pid": 15696,
+      "interactiveObservedMs": 1015.91,
+      "gatewayReadyObservedMs": 869.26,
+      "productVersion": "0.2.0-dev.5"
+    },
+    {
+      "run": 3,
+      "pid": 31424,
+      "interactiveObservedMs": 902.15,
+      "gatewayReadyObservedMs": 784.32,
+      "productVersion": "0.2.0-dev.5"
+    },
+    {
+      "run": 4,
+      "pid": 11216,
+      "interactiveObservedMs": 1028.05,
+      "gatewayReadyObservedMs": 987.12,
+      "productVersion": "0.2.0-dev.5"
+    },
+    {
+      "run": 5,
+      "pid": 37932,
+      "interactiveObservedMs": 970.93,
+      "gatewayReadyObservedMs": 828.84,
+      "productVersion": "0.2.0-dev.5"
+    },
+    {
+      "run": 6,
+      "pid": 16112,
+      "interactiveObservedMs": 897.53,
+      "gatewayReadyObservedMs": 859.83,
+      "productVersion": "0.2.0-dev.5"
+    },
+    {
+      "run": 7,
+      "pid": 59168,
+      "interactiveObservedMs": 1033.31,
+      "gatewayReadyObservedMs": 909.5,
+      "productVersion": "0.2.0-dev.5"
+    },
+    {
+      "run": 8,
+      "pid": 47660,
+      "interactiveObservedMs": 850.89,
+      "gatewayReadyObservedMs": 743.32,
+      "productVersion": "0.2.0-dev.5"
+    },
+    {
+      "run": 9,
+      "pid": 39384,
+      "interactiveObservedMs": 909.78,
+      "gatewayReadyObservedMs": 809.94,
+      "productVersion": "0.2.0-dev.5"
+    },
+    {
+      "run": 10,
+      "pid": 51828,
+      "interactiveObservedMs": 888.07,
+      "gatewayReadyObservedMs": 875.03,
+      "productVersion": "0.2.0-dev.5"
+    },
+    {
+      "run": 11,
+      "pid": 10856,
+      "interactiveObservedMs": 961.08,
+      "gatewayReadyObservedMs": 922.81,
+      "productVersion": "0.2.0-dev.5"
+    },
+    {
+      "run": 12,
+      "pid": 58308,
+      "interactiveObservedMs": 743.91,
+      "gatewayReadyObservedMs": 671.03,
+      "productVersion": "0.2.0-dev.5"
+    },
+    {
+      "run": 13,
+      "pid": 39464,
+      "interactiveObservedMs": 721.34,
+      "gatewayReadyObservedMs": 603.04,
+      "productVersion": "0.2.0-dev.5"
+    },
+    {
+      "run": 14,
+      "pid": 37376,
+      "interactiveObservedMs": 894.19,
+      "gatewayReadyObservedMs": 857.94,
+      "productVersion": "0.2.0-dev.5"
+    },
+    {
+      "run": 15,
+      "pid": 10748,
+      "interactiveObservedMs": 613.89,
+      "gatewayReadyObservedMs": 511.8,
+      "productVersion": "0.2.0-dev.5"
+    },
+    {
+      "run": 16,
+      "pid": 51184,
+      "interactiveObservedMs": 678.32,
+      "gatewayReadyObservedMs": 580.57,
+      "productVersion": "0.2.0-dev.5"
+    },
+    {
+      "run": 17,
+      "pid": 49440,
+      "interactiveObservedMs": 764.87,
+      "gatewayReadyObservedMs": 725.48,
+      "productVersion": "0.2.0-dev.5"
+    },
+    {
+      "run": 18,
+      "pid": 42916,
+      "interactiveObservedMs": 907.06,
+      "gatewayReadyObservedMs": 868.83,
+      "productVersion": "0.2.0-dev.5"
+    },
+    {
+      "run": 19,
+      "pid": 35332,
+      "interactiveObservedMs": 937.63,
+      "gatewayReadyObservedMs": 900.24,
+      "productVersion": "0.2.0-dev.5"
+    },
+    {
+      "run": 20,
+      "pid": 2660,
+      "interactiveObservedMs": 797.75,
+      "gatewayReadyObservedMs": 760.62,
+      "productVersion": "0.2.0-dev.5"
+    }
+  ],
+  "result": "measured",
+  "limitations": [
+    "Windows debug only; not a signed release or macOS result",
+    "Inspector discovery and input acknowledgement included; timings are conservative observations",
+    "Concurrent external workstation activity is not stopped",
+    "No filesystem cache flush; this is process cold start, not fresh installation per sample"
+  ]
+}

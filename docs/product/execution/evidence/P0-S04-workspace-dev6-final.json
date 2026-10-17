@@ -1,0 +1,19 @@
+{
+  "platform": "win32",
+  "productVersion": "0.2.0-dev.6",
+  "schemaVersion": 3,
+  "executable": "D:\\demo1\\tagmaai\\target\\debug\\tagma-desktop.exe",
+  "nativeHost": true,
+  "mockBridge": false,
+  "tests": [
+    "workspace-real-empty-state",
+    "direct-provider-form-entry",
+    "real-provider-model-save",
+    "configured-model-source-label",
+    "effective-revision-on-home",
+    "gateway-navigation",
+    "dark-150-percent-no-horizontal-overflow",
+    "native-graceful-quit"
+  ],
+  "result": "passed"
+}

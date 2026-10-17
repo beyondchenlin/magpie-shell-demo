@@ -11,6 +11,7 @@ const appearanceOnly=process.env.TAGMA_NATIVE_SMOKE_MODE==='appearance';
 const recoveryMode=process.env.TAGMA_NATIVE_SMOKE_MODE==='recovery';
 const profilesMode=process.env.TAGMA_NATIVE_SMOKE_MODE==='profiles';
 const gatewayMode=process.env.TAGMA_NATIVE_SMOKE_MODE==='gateway';
+const workspaceMode=process.env.TAGMA_NATIVE_SMOKE_MODE==='workspace';
 assert(fixture, 'Caller must supply an isolated TAGMA_TEST_CONFIG_DIR');
 const executable=resolve(process.env.TAGMA_NATIVE_EXE || 'target/debug/tagma-desktop.exe');
 await access(executable);
@@ -82,7 +83,26 @@ async function connectPage() {
 }
 try {
   let page=await connectPage();
-  if(gatewayMode) {
+  if(workspaceMode) {
+    await until(async()=>(await text()).includes('接入你的模型，开始组织工作流'),'Workspace home not rendered');
+    assert((await text()).includes('还没有配置模型'));assert((await text()).includes('真实对话仍待接入'));
+    await capture('10-workspace-empty');await click('添加供应商');
+    assert(await evaluate(`document.querySelector('form')?.getAttribute('aria-label')==='添加供应商'`));
+    await evaluate(`(()=>{const fields=document.querySelectorAll('input.words');const setter=Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value').set;['UI workflow provider','https://example.invalid/v1'].forEach((value,index)=>{setter.call(fields[index],value);fields[index].dispatchEvent(new Event('input',{bubbles:true}));});const models=document.querySelector('textarea');Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype,'value').set.call(models,'ui-workflow-model');models.dispatchEvent(new Event('input',{bubbles:true}));})()`);await click('保存');
+    await until(async()=>(await text()).includes('已保存版本: 1'),'Workspace provider save not committed');await click('对话');
+    await until(async()=>(await text()).includes('ui-workflow-model'),'Saved model missing from workspace');
+    assert((await text()).includes('UI workflow provider'));assert((await text()).includes('手动配置'));assert((await text()).includes('尚未检测上游可用性'));
+    await until(async()=>(await text()).includes('网关正在使用已保存的配置'),'Workspace effective status not confirmed');
+    assert(!(await text()).includes('已保存，待应用到网关'),'Applied configuration still claims to be pending');
+    await capture('11-workspace-configured');await click('查看网关');assert((await text()).includes('网关配置'));
+    await click('设置');await click('深色');await click('150%');await click('对话');
+    assert(await evaluate(`document.documentElement.scrollWidth<=innerWidth+1`),'Workspace overflows at 150 percent');
+    await capture('12-workspace-dark-150');
+    const view=await evaluate(`window.__TAURI_INTERNALS__.invoke('application_view',{protocolVersion:1})`);assert.equal(view.config.providers.length,1);assert.equal(view.runtime.effective_revision,1);
+    await evaluate(`window.__TAURI_INTERNALS__.invoke('quit_application',{protocolVersion:1})`).catch(()=>{});await until(async()=>child.exitCode!==null,'Workspace native host did not quit');
+    await writeFile(resolve(fixture,'native-result.json'),JSON.stringify({platform:process.platform,productVersion:view.product_version,schemaVersion:view.config.schema_version,executable,nativeHost:true,mockBridge:false,tests:['workspace-real-empty-state','direct-provider-form-entry','real-provider-model-save','configured-model-source-label','effective-revision-on-home','gateway-navigation','dark-150-percent-no-horizontal-overflow','native-graceful-quit'],result:'passed'},null,2));
+    console.log('Native workspace: 8 checks passed (visible onboarding, real save, model directory and runtime status).');
+  } else if(gatewayMode) {
     await until(async()=>(await text()).includes('已保存版本: 1'),'Default native token initialization not committed');
     await click('设置');await click('网关');
     let view=await until(async()=>{const v=await evaluate(`window.__TAURI_INTERNALS__.invoke('application_view',{protocolVersion:1})`);return v.runtime.effective_revision===1?v:null;},'Default token gateway not ready');

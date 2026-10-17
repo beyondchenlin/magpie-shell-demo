@@ -35,6 +35,8 @@ pub struct GatewayManager {
     restart: Mutex<RestartPolicy>,
     starting: AtomicBool,
     logging_available: AtomicBool,
+    #[cfg(debug_assertions)]
+    fixture_port_override: bool,
 }
 
 impl GatewayManager {
@@ -48,7 +50,14 @@ impl GatewayManager {
             restart: Mutex::new(RestartPolicy::default()),
             starting: AtomicBool::new(false),
             logging_available: AtomicBool::new(true),
+            #[cfg(debug_assertions)]
+            fixture_port_override: false,
         }
+    }
+    /// Synthetic process tests opt in explicitly. This method is absent from release builds.
+    #[cfg(debug_assertions)]
+    pub fn allow_fixture_port_override(&mut self) {
+        self.fixture_port_override = true;
     }
     pub async fn status(&self) -> RuntimeStatus {
         let mut owned = self.owned.lock().await;
@@ -188,6 +197,10 @@ impl GatewayManager {
             .stdout(Stdio::null())
             .stderr(Stdio::null())
             .kill_on_drop(true);
+        #[cfg(debug_assertions)]
+        if self.fixture_port_override {
+            command.arg("--test-port-override");
+        }
         #[cfg(windows)]
         command.creation_flags(0x08000000); // CREATE_NO_WINDOW: sidecar has no console UI.
         let mut child = command
@@ -251,6 +264,7 @@ impl GatewayManager {
                     Some(14) => ErrorCode::CredentialStoreUnavailable,
                     Some(15) => ErrorCode::StorageUnavailable,
                     Some(16) => ErrorCode::MaintenanceInProgress,
+                    Some(17) => ErrorCode::RestartRequired,
                     Some(10) => ErrorCode::AlreadyRunning,
                     _ => ErrorCode::GatewayUnavailable,
                 }));

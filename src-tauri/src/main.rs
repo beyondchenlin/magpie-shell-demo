@@ -310,10 +310,18 @@ fn main() {
                 } else {
                     "tagma-gateway"
                 };
-                Some(Arc::new(GatewayManager::new(
-                    directory,
-                    &executable.parent()?.join(name),
-                )))
+                let manager = GatewayManager::new(directory, &executable.parent()?.join(name));
+                #[cfg(debug_assertions)]
+                let manager = {
+                    let mut manager = manager;
+                    if std::env::var_os("TAGMA_TEST_CONFIG_DIR").is_some()
+                        && std::env::var_os("TAGMA_TEST_GATEWAY_PORT").is_some()
+                    {
+                        manager.allow_fixture_port_override();
+                    }
+                    manager
+                };
+                Some(Arc::new(manager))
             });
             let local_directory = directory.as_ref().ok().cloned();
             if let Some(directory) = &local_directory {

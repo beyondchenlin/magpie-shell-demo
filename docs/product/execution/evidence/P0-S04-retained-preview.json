@@ -1,0 +1,90 @@
+{
+  "recordedAtUtc": "2026-10-17T07:37:48.0396002Z",
+  "request": "Retain latest visible preview for user review after uninstall acceptance removed prior install",
+  "manifest": {
+    "purpose": "User-requested retained visible preview",
+    "owner": "User preview; Tagma executor maintains controlled updates",
+    "productVersion": "0.2.0-dev.5",
+    "schemaVersion": 3,
+    "sourceCommit": "36001a5ead6ce02b68b176f763ea361140802abe",
+    "buildMode": "debug embedded-assets; unsigned internal preview",
+    "createdUtc": "2026-10-17T07:35:18.0952471Z",
+    "files": [
+      {
+        "sha256": "31d11b5979c97b9a6aa3f270f24c28b62872c9d1ecd8602cdebf4122d9330cee",
+        "destination": "D:\\demo1\\tagmaai-preview\\versions\\0.2.0-dev.5\\tagma-desktop.exe",
+        "source": "D:\\demo1\\tagmaai\\target\\debug\\tagma-desktop.exe",
+        "name": "tagma-desktop.exe",
+        "bytes": 15904768
+      },
+      {
+        "sha256": "5ad7f2eff517366d129508c8014b64301ab74e8bd21f8ef4dcdb3c5c46d64bac",
+        "destination": "D:\\demo1\\tagmaai-preview\\versions\\0.2.0-dev.5\\tagma-gateway.exe",
+        "source": "D:\\demo1\\tagmaai\\target\\debug\\tagma-gateway.exe",
+        "name": "tagma-gateway.exe",
+        "bytes": 5265408
+      }
+    ],
+    "launcher": "D:\\demo1\\tagmaai-preview\\Launch-TagmaPreview.vbs",
+    "shortcuts": [
+      "D:\\demo1\\tagmaai-preview\\打开Tagma预览.lnk",
+      "C:\\Users\\ai\\Desktop\\Tagma dev.5 预览.lnk"
+    ],
+    "configDirectory": "D:\\demo1\\tagmaai-preview\\data",
+    "webviewDirectory": "D:\\demo1\\tagmaai-preview\\webview",
+    "retention": "Do not delete, uninstall, close or overwrite while the user is reviewing. Data is persistent user preview data, not a test fixture. Updates must preserve configuration and coordinate the running process."
+  },
+  "window": {
+    "id": 991310,
+    "observedText": "原生桌面；已保存版本: 1 · 运行中版本: 1；对话/供应商/队员市场/设置",
+    "title": "Tagma",
+    "app": "process:D:\\demo1\\tagmaai-preview\\versions\\0.2.0-dev.5\\tagma-desktop.exe",
+    "accessibilityObserved": true
+  },
+  "processes": {
+    "desktop": 51008,
+    "gateway": 54672,
+    "gatewayParent": 51008
+  },
+  "runtime": {
+    "schemaVersion": null,
+    "productVersion": null,
+    "port": null,
+    "consoleAttached": null
+  },
+  "peSubsystem": 2,
+  "copiedLogicalBytes": 21170176.0,
+  "notATestFixture": true,
+  "mustRemainOpenForUser": true,
+  "oldPackagesReadOnlyCheck": [
+    {
+      "path": "target/debug/bundle/nsis/Tagma_0.2.0-dev.2_x64-setup.exe",
+      "sha256": "1409b9843f25dd8ce722e421df124f449aedaa1a7b5e85d6d882e7c11b3775da",
+      "bytes": 4598907,
+      "validMZ": true
+    },
+    {
+      "matchesS02Evidence": true,
+      "path": "target/debug/bundle/nsis/Tagma_0.2.0-dev.3_x64-setup.exe",
+      "sha256": "e99320bcd56053bf00099df2f6f751850b2be93d3bc74d7e1f36c6c14ddfd5ee",
+      "bytes": 4630772,
+      "validMZ": true
+    }
+  ],
+  "oldPackageNote": "The original 1-byte report was retracted as mixed-format output misinterpretation. Fresh FileInfo, bytes and hashes confirm historical package sizes; old packages were not rebuilt or modified.",
+  "runtimeObservedAtInitialOpen": {
+    "consoleAttached": false,
+    "port": 9168,
+    "schemaVersion": 3,
+    "source": "actual manifest read before accessibility observation",
+    "productVersion": "0.2.0-dev.5"
+  },
+  "lastReadOnlyObservation": {
+    "previewProcessesPresent": false,
+    "note": "Preview was opened and verified. Later process exit was observed; do not force reopen over a possible user exit. Persistent data and shortcuts remain protected.",
+    "observedAtUtc": "2026-10-17T07:41:05.9198359Z",
+    "agentIssuedStopOrClose": false,
+    "gracefulStopLogUnixSeconds": 1792222650,
+    "runtimeManifestPresent": false
+  }
+}

@@ -3797,7 +3797,7 @@ dependencies = [
 
 [[package]]
 name = "tagma-core"
-version = "0.2.0-dev.5"
+version = "0.2.0-dev.6"
 dependencies = [
  "fs2",
  "getrandom 0.4.3",
@@ -3817,7 +3817,7 @@ dependencies = [
 
 [[package]]
 name = "tagma-desktop"
-version = "0.2.0-dev.5"
+version = "0.2.0-dev.6"
 dependencies = [
  "tagma-core",
  "tagma-runtime",
@@ -3828,7 +3828,7 @@ dependencies = [
 
 [[package]]
 name = "tagma-gateway"
-version = "0.2.0-dev.5"
+version = "0.2.0-dev.6"
 dependencies = [
  "axum",
  "fs2",
@@ -3847,7 +3847,7 @@ dependencies = [
 
 [[package]]
 name = "tagma-runtime"
-version = "0.2.0-dev.5"
+version = "0.2.0-dev.6"
 dependencies = [
  "fs2",
  "interprocess",
