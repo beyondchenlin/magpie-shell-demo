@@ -1,0 +1,32 @@
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+   Compiling tagma-gateway v0.2.0-dev.10 (D:\demo1\tagmaai\crates\tagma-gateway)
+    Finished `test` profile [unoptimized] target(s) in 2.09s
+     Running tests\teams.rs (target\debug\deps\teams-de0fdf4a03194a05.exe)
+
+running 1 test
+SUP-005 case=length final_calls=0 status=502 Bad Gateway
+SUP-005 case=content_filter final_calls=0 status=502 Bad Gateway
+SUP-005 case=missing_finish final_calls=0 status=502 Bad Gateway
+SUP-005 case=unknown_finish final_calls=0 status=502 Bad Gateway
+SUP-005 case=legacy_function final_calls=0 status=502 Bad Gateway
+SUP-005 case=legacy_reason final_calls=0 status=502 Bad Gateway
+SUP-005 case=tool_reason final_calls=0 status=502 Bad Gateway
+SUP-005 case=refusal final_calls=0 status=502 Bad Gateway
+SUP-005 case=error final_calls=0 status=429 Too Many Requests
+SUP-005 case=tool final_calls=0 status=502 Bad Gateway
+SUP-005 case=empty final_calls=0 status=502 Bad Gateway
+SUP-005 case=huge final_calls=0 status=502 Bad Gateway
+SUP-005 case=timeout final_calls=0 status=504 Gateway Timeout
+test team_execution_pins_recipe_and_targets_and_stops_after_failure_timeout_or_cancel ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.43s
+

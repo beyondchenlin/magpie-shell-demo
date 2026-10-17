@@ -1,0 +1,34 @@
+   Compiling tagma-core v0.2.0-dev.10 (D:\demo1\tagmaai\crates\tagma-core)
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+   Compiling tagma-runtime v0.2.0-dev.10 (D:\demo1\tagmaai\crates\tagma-runtime)
+   Compiling tagma-gateway v0.2.0-dev.10 (D:\demo1\tagmaai\crates\tagma-gateway)
+    Finished `test` profile [unoptimized] target(s) in 4.79s
+     Running tests\teams.rs (target\debug\deps\teams-de0fdf4a03194a05.exe)
+
+running 1 test
+SUP-005 case=length final_calls=1 status=200 OK
+
+thread 'team_execution_pins_recipe_and_targets_and_stops_after_failure_timeout_or_cancel' (40660) panicked at crates\tagma-gateway\tests\teams.rs:270:9:
+assertion `left == right` failed: Intermediate length must not start the final step
+  left: 1
+ right: 0
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test team_execution_pins_recipe_and_targets_and_stops_after_failure_timeout_or_cancel ... FAILED
+
+failures:
+
+failures:
+    team_execution_pins_recipe_and_targets_and_stops_after_failure_timeout_or_cancel
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.38s
+
+error: test failed, to rerun pass `-p tagma-gateway --test teams`
