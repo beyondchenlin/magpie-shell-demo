@@ -1,0 +1,10 @@
+{
+  "RecordedAtUtc": "2026-10-17T22:05:19.4869458Z",
+  "CFreeGiB": 42.45,
+  "DFreeGiB": 9.78,
+  "OwnedTimeoutHttpPrefixRemaining": 0,
+  "NewWorktree": 0,
+  "NewEnvironment": 0,
+  "PriorArtifactsRemoved": 0,
+  "Scope": "Only cached bounded validation;expected>1GiB paused,no GUI/install/full rebuild"
+}

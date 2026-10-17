@@ -1,0 +1,95 @@
+{
+  "recordedAtUtc": "2026-10-17T22:06:02.110Z",
+  "sourceBase": "820beb4331543a6f335953d4b66b601d03d65692",
+  "candidateVersion": "0.2.0-dev.16",
+  "configSchema": 10,
+  "usageSchema": 2,
+  "source": [
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-gateway\\src\\main.rs",
+      "bytes": 37007,
+      "sha256": "e3f2941811e094a486b66705d40e5a7211979f1ac3e6ad3da7ffcf2cda228b33"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-gateway\\src\\http_api.rs",
+      "bytes": 49671,
+      "sha256": "c45f75ebf49137fe2fc0d36271f542ff95fafc2faced6fbaf85f31bca91528da"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-gateway\\src\\security.rs",
+      "bytes": 29263,
+      "sha256": "f5dd4d1c24493aa5fca44bcbd6021879e1d09bc2d0ec730b744c65b6e390965f"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-gateway\\tests\\timeouts.rs",
+      "bytes": 11978,
+      "sha256": "e4c04b1aedc41b6e8085d0e6f10ab44ab0f4124f7f8a99d75f5a454fc4fb0d96"
+    }
+  ],
+  "documents": [
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\EXECUTION-STATUS.md",
+      "bytes": 33217,
+      "sha256": "b1db1468a7c863d58a47d673d6841aa606e69b0aeec66f61862a088e073981bc"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\P1-S28-PINNED-PROVIDER-TIMEOUTS.md",
+      "bytes": 4587,
+      "sha256": "4c7a3bc9fd4b64b98f1765bcd0329aba217336908efe33156f7f6a738518a44b"
+    }
+  ],
+  "prd": {
+    "path": "D:\\demo1\\tagmaai\\docs\\product\\TAGMA-PRD-v0.3.md",
+    "bytes": 50957,
+    "sha256": "6e6503391f70e3f2e53347890de6e7c9f7fd93cc393c68f7bba494ac4d67a6d6"
+  },
+  "evidence": [
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S28-check-final.txt",
+      "bytes": 739,
+      "sha256": "5e8a42b0d2b024dd3c6fa57f138409e3abbb8d48f1d8cdcd175132b0b2b01470"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S28-check-first.txt",
+      "bytes": 23237,
+      "sha256": "754d273f486ea52e268f9592ff3f7719e2fe3ee7b8f08cef6f6c66ddccc9454d"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S28-check-reviewed.txt",
+      "bytes": 5593,
+      "sha256": "47877448030979eab2dc97ce6687e7e8b71c845e5877da8026cf0ea055d310b9"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S28-clippy.txt",
+      "bytes": 897,
+      "sha256": "78cfc32e4f94ebab65196fb207b32af05efa0d1f11c3a1911e79874f97271d23"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S28-http-first.txt",
+      "bytes": 2269,
+      "sha256": "b64154a55878d90432320625ada0d91e19c56397b6efc4101ac3bbc973edafa8"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S28-regression.txt",
+      "bytes": 16454,
+      "sha256": "7cf7378ad689a00dd7b9df8f8ba97ff227c94eab0577e9026912b75a4807b647"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S28-space-after.json",
+      "bytes": 312,
+      "sha256": "1d2ec72b6fd234a38f8d69558d7cb7399a6de0ae3385ced5ebd7f86210e6986e"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S28-space-plan.json",
+      "bytes": 647,
+      "sha256": "2f60d81eb073792b54680e28934d1439defc2b1d5ae363dca783baed21881a08"
+    }
+  ],
+  "freeAfterGiB": {
+    "C": 42.45,
+    "D": 9.78
+  },
+  "spaceConstraint": "Below10GiB;>1GiB paused;D delta0.09 exceeds initial0.06 estimate and includes concurrent writes,not task peak/net release;no further compilation in closeout",
+  "cleanup": "Owned timeout-http prefix0;servers aborted/owned sidecars stopped/handles RAII;no new worktree/env or prior artifact deletion",
+  "installed": "dev.9 untouched;native timeout editor not wired;drag not accepted;computer control prohibited"
+}

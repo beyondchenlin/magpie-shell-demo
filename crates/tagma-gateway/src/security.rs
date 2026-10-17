@@ -381,11 +381,13 @@ mod tests {
                 "first"
             };
             let (revision, snapshot) = config.read_snapshot().unwrap();
+            let clients = crate::provider_clients(&snapshot).unwrap();
             *state.snapshot.write().await = (
                 revision,
                 snapshot,
                 token.clone().map(zeroize::Zeroizing::new),
                 Default::default(),
+                clients,
             );
             let hook = Arc::new(DispatchHook {
                 inside,
@@ -571,11 +573,13 @@ mod tests {
             .providers[0]
             .clone();
         let (revision, snapshot) = config.read_snapshot().unwrap();
+        let clients = crate::provider_clients(&snapshot).unwrap();
         *state.snapshot.write().await = (
             revision,
             snapshot,
             Some(zeroize::Zeroizing::new(old.to_string())),
             Default::default(),
+            clients,
         );
         state.status.write().await.security_revision = Some(0);
         let router = http_api::router(state.clone())
@@ -598,7 +602,9 @@ mod tests {
             assert_eq!(client.get(format!("{base}/models")).bearer_auth(old.as_str()).send().await.unwrap().status(),401,"Durable revoke overrides old effective snapshot before acknowledgement");
             config.rotate_gateway_token(RotateGatewayToken{protocol_version:1,expected_revision:3,cancel_inflight:false}).unwrap();let new=config.reveal_gateway_token(1).unwrap();
             assert_eq!(client.get(format!("{base}/models")).bearer_auth(new.as_str()).send().await.unwrap().status(),401,"Saved new token is not silently applied");
-            let (revision,snapshot)=config.read_snapshot().unwrap();crate::apply_with(&state,async{Ok((revision,snapshot,Some(memory.get(config.read_snapshot().unwrap().1.gateway.credential_ref.as_ref().unwrap()).unwrap()),Default::default()))}).await;
+            let (revision,snapshot)=config.read_snapshot().unwrap();
+            let clients=crate::provider_clients(&snapshot).unwrap();
+            crate::apply_with(&state,async{Ok((revision,snapshot,Some(memory.get(config.read_snapshot().unwrap().1.gateway.credential_ref.as_ref().unwrap()).unwrap()),Default::default(),clients))}).await;
             confirm_security(&state,receipt.revision).await.unwrap();assert_eq!(state.status.read().await.security_revision,Some(receipt.revision));
             assert_eq!(client.get(format!("{base}/models")).bearer_auth(new.as_str()).send().await.unwrap().status(),200);
             assert_eq!(client.get(format!("{base}/models")).bearer_auth(old.as_str()).send().await.unwrap().status(),401);

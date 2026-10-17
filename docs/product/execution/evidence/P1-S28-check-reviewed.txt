@@ -1,0 +1,82 @@
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+    Checking tagma-gateway v0.2.0-dev.16 (D:\demo1\tagmaai\crates\tagma-gateway)
+error[E0271]: expected `{async block@crates\tagma-gateway\src\security.rs:605:94: 605:99}` to be a future that resolves to `Result<(u32, ConfigSnapshot, Option<Zeroizing<...>>, ..., ...), ...>`, but it resolves to `Result<(u32, ConfigSnapshot, Option<Zeroizing<String>>, _), _>`
+   --> crates\tagma-gateway\src\security.rs:605:94
+    |
+605 | ...();crate::apply_with(&state,async{Ok((revision,snapshot,Some(memory.get(config.read_snapshot().unwrap().1.gateway.credential_ref.as_ref().unwrap()).unwrap()),Default::default()))}).a...
+    |       -----------------        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected a tuple with 5 elements, found one with 4 elements
+    |       |
+    |       required by a bound introduced by this call
+    |
+    = note: expected enum `Result<(u32, ConfigSnapshot, Option<Zeroizing<...>>, ..., ...), ...>`
+               found enum `Result<(u32, ConfigSnapshot, Option<Zeroizing<std::string::String>>, _), _>`
+note: required by a bound in `apply_with`
+   --> crates\tagma-gateway\src\main.rs:610:36
+    |
+608 | async fn apply_with(
+    |          ---------- required by a bound in this function
+609 |     state: &Runtime,
+610 |     load: impl std::future::Future<Output = AppResult<LoadedSnapshot>>,
+    |                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `apply_with`
+    = note: the full name for the type has been written to 'D:\demo1\tagmaai\target\debug\deps\tagma_gateway-10ab4bb8a7c71401.long-type-12973063414932012344.txt'
+    = note: consider using `--verbose` to print the full type name to the console
+
+error[E0271]: expected `{async block@crates\tagma-gateway\src\security.rs:605:94: 605:99}` to be a future that resolves to `Result<(u32, ConfigSnapshot, Option<Zeroizing<...>>, ..., ...), ...>`, but it resolves to `Result<(u32, ConfigSnapshot, Option<Zeroizing<String>>, _), _>`
+   --> crates\tagma-gateway\src\security.rs:605:69
+    |
+605 | ...();crate::apply_with(&state,async{Ok((revision,snapshot,Some(memory.get(config.read_snapshot().unwrap().1.gateway.credential_ref.as_ref().unwrap()).unwrap()),Default::default()))}).aw...
+    |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected a tuple with 5 elements, found one with 4 elements
+    |
+    = note: expected enum `Result<(u32, ConfigSnapshot, Option<Zeroizing<...>>, ..., ...), ...>`
+               found enum `Result<(u32, ConfigSnapshot, Option<Zeroizing<std::string::String>>, _), _>`
+note: required by a bound in `apply_with`
+   --> crates\tagma-gateway\src\main.rs:610:36
+    |
+608 | async fn apply_with(
+    |          ---------- required by a bound in this function
+609 |     state: &Runtime,
+610 |     load: impl std::future::Future<Output = AppResult<LoadedSnapshot>>,
+    |                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `apply_with`
+    = note: the full name for the type has been written to 'D:\demo1\tagmaai\target\debug\deps\tagma_gateway-10ab4bb8a7c71401.long-type-12973063414932012344.txt'
+    = note: consider using `--verbose` to print the full type name to the console
+
+error[E0271]: expected `{async block@crates\tagma-gateway\src\security.rs:605:94: 605:99}` to be a future that resolves to `Result<(u32, ConfigSnapshot, Option<Zeroizing<...>>, ..., ...), ...>`, but it resolves to `Result<(u32, ConfigSnapshot, Option<Zeroizing<String>>, _), _>`
+   --> crates\tagma-gateway\src\security.rs:605:247
+    |
+605 | ...wrap()),Default::default()))}).await;
+    |                                   ^^^^^ expected a tuple with 5 elements, found one with 4 elements
+    |
+    = note: expected enum `Result<(u32, ConfigSnapshot, Option<Zeroizing<...>>, ..., ...), ...>`
+               found enum `Result<(u32, ConfigSnapshot, Option<Zeroizing<std::string::String>>, _), _>`
+note: required by a bound in `apply_with`
+   --> crates\tagma-gateway\src\main.rs:610:36
+    |
+608 | async fn apply_with(
+    |          ---------- required by a bound in this function
+609 |     state: &Runtime,
+610 |     load: impl std::future::Future<Output = AppResult<LoadedSnapshot>>,
+    |                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `apply_with`
+    = note: the full name for the type has been written to 'D:\demo1\tagmaai\target\debug\deps\tagma_gateway-10ab4bb8a7c71401.long-type-12973063414932012344.txt'
+    = note: consider using `--verbose` to print the full type name to the console
+
+For more information about this error, try `rustc --explain E0271`.
+error: could not compile `tagma-gateway` (bin "tagma-gateway" test) due to 3 previous errors

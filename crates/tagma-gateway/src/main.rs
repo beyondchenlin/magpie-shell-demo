@@ -32,6 +32,7 @@ type LoadedSnapshot = (
     tagma_core::service::ConfigSnapshot,
     Option<zeroize::Zeroizing<String>>,
     std::collections::HashMap<String, Arc<zeroize::Zeroizing<String>>>,
+    std::collections::HashMap<String, reqwest::Client>,
 );
 
 struct Runtime {
@@ -49,7 +50,6 @@ struct Runtime {
     shutdown: CancellationToken,
     apply_guard: tokio::sync::Mutex<()>,
     load_slots: Arc<tokio::sync::Semaphore>,
-    client: reqwest::Client,
     request_slots: Arc<tokio::sync::Semaphore>,
     health: Arc<health::Tracker>,
     #[cfg(test)]
@@ -182,7 +182,7 @@ async fn run(
         tokio::task::spawn_blocking(move || load_snapshot(&startup_directory)),
     )
     .await;
-    let (revision, snapshot, access_token, provider_tokens) = match initial
+    let (revision, snapshot, access_token, provider_tokens, provider_clients) = match initial
         .unwrap_or_else(|_| Ok(Err(AppError::new(ErrorCode::StartupTimeout))))
         .unwrap_or_else(|_| Err(AppError::new(ErrorCode::ConfigApplyFailed)))
     {
@@ -274,15 +274,17 @@ async fn run(
         manifest: manifest.clone(),
         status: RwLock::new(status),
         configured_port: snapshot.gateway.port,
-        snapshot: RwLock::new((revision, snapshot, access_token, provider_tokens)),
+        snapshot: RwLock::new((
+            revision,
+            snapshot,
+            access_token,
+            provider_tokens,
+            provider_clients,
+        )),
         token,
         shutdown: shutdown.clone(),
         apply_guard: tokio::sync::Mutex::new(()),
         load_slots: Arc::new(tokio::sync::Semaphore::new(1)),
-        client: match http_api::client() {
-            Ok(client) => client,
-            Err(_) => return 12,
-        },
         request_slots: Arc::new(tokio::sync::Semaphore::new(8)),
         health,
         #[cfg(test)]
@@ -430,7 +432,40 @@ fn load_snapshot(directory: &std::path::Path) -> AppResult<LoadedSnapshot> {
     {
         return Err(AppError::new(ErrorCode::CredentialStoreUnavailable));
     }
-    Ok((result.0, result.1, access_token, provider_tokens))
+    let provider_clients = provider_clients(&result.1)?;
+    Ok((
+        result.0,
+        result.1,
+        access_token,
+        provider_tokens,
+        provider_clients,
+    ))
+}
+fn provider_clients(
+    snapshot: &tagma_core::service::ConfigSnapshot,
+) -> AppResult<std::collections::HashMap<String, reqwest::Client>> {
+    if snapshot.providers.len() > 128 {
+        return Err(AppError::new(ErrorCode::ConfigApplyFailed));
+    }
+    let mut provider_clients = std::collections::HashMap::new();
+    for record in &snapshot.providers {
+        record
+            .provider
+            .timeouts
+            .validate()
+            .map_err(|_| AppError::new(ErrorCode::ConfigApplyFailed))?;
+        let client = http_api::client(Duration::from_millis(
+            record.provider.timeouts.connect_ms.into(),
+        ))
+        .map_err(|_| AppError::new(ErrorCode::ConfigApplyFailed))?;
+        if provider_clients
+            .insert(record.provider.id.clone(), client)
+            .is_some()
+        {
+            return Err(AppError::new(ErrorCode::ConfigApplyFailed));
+        }
+    }
+    Ok(provider_clients)
 }
 
 async fn authorize(
@@ -593,7 +628,7 @@ async fn apply_with(
         return;
     }
     match loaded {
-        Ok((revision, snapshot, access_token, provider_tokens)) => {
+        Ok((revision, snapshot, access_token, provider_tokens, provider_clients)) => {
             if status
                 .effective_revision
                 .is_some_and(|current| revision < current)
@@ -612,7 +647,13 @@ async fn apply_with(
                     Some(revision),
                 );
             }
-            *state.snapshot.write().await = (revision, snapshot, access_token, provider_tokens);
+            *state.snapshot.write().await = (
+                revision,
+                snapshot,
+                access_token,
+                provider_tokens,
+                provider_clients,
+            );
             status.effective_revision = Some(revision);
             status.state = RuntimeState::Running;
             status.error = None;
@@ -636,6 +677,36 @@ async fn apply_with(
 #[cfg(test)]
 mod apply_tests {
     use super::*;
+    #[tokio::test]
+    async fn provider_client_cache_is_bounded_and_refuses_invalid_or_ambiguous_settings() {
+        let record = tagma_core::service::ProviderRecord {
+            provider: Provider {
+                id: uuid::Uuid::new_v4().to_string(),
+                name: "owned client fixture".into(),
+                protocol: ProviderProtocol::OpenaiChatCompletions,
+                base_url: "http://127.0.0.1:1/v1".into(),
+                enabled: true,
+                models: vec!["model".into()],
+                has_credential: false,
+                timeouts: Default::default(),
+            },
+            credential_ref: None,
+        };
+        let mut snapshot = tagma_core::service::ConfigSnapshot {
+            providers: vec![record.clone()],
+            ..Default::default()
+        };
+        assert_eq!(provider_clients(&snapshot).unwrap().len(), 1);
+        snapshot.providers[0].provider.timeouts.connect_ms = 0;
+        assert!(provider_clients(&snapshot).is_err());
+        snapshot.providers = vec![record.clone(), record.clone()];
+        assert!(provider_clients(&snapshot).is_err());
+        snapshot.providers = vec![record; 129];
+        assert!(provider_clients(&snapshot).is_err());
+        println!(
+            "Pinned provider client cache:one validated record ->one reusable client;invalid timer/duplicate provider/129records refused before snapshot publication,no requests issued"
+        );
+    }
     pub(super) fn state() -> Arc<Runtime> {
         let fixture = tempfile::Builder::new()
             .prefix("tagma-gateway-unit-")
@@ -669,13 +740,18 @@ mod apply_tests {
                 owned: false,
                 error: None,
             }),
-            snapshot: RwLock::new((0, Default::default(), None, Default::default())),
+            snapshot: RwLock::new((
+                0,
+                Default::default(),
+                None,
+                Default::default(),
+                Default::default(),
+            )),
             configured_port: 9168,
             token: zeroize::Zeroizing::new(String::new()),
             shutdown: CancellationToken::new(),
             apply_guard: tokio::sync::Mutex::new(()),
             load_slots: Arc::new(tokio::sync::Semaphore::new(1)),
-            client: http_api::client().unwrap(),
             request_slots: Arc::new(tokio::sync::Semaphore::new(8)),
             health: health::Tracker::new(fixture.path().to_owned(), CancellationToken::new()),
             _fixture: Some(fixture),
@@ -703,7 +779,13 @@ mod apply_tests {
             tokio::spawn(async move {
                 let _ = new_started_tx.send(());
                 apply_with(&state, async {
-                    Ok((2, Default::default(), None, Default::default()))
+                    Ok((
+                        2,
+                        Default::default(),
+                        None,
+                        Default::default(),
+                        Default::default(),
+                    ))
                 })
                 .await;
             })
@@ -716,7 +798,14 @@ mod apply_tests {
     }
     #[tokio::test]
     async fn delayed_old_success_never_regresses_effective_revision() {
-        let state = delayed_old(Ok((1, Default::default(), None, Default::default()))).await;
+        let state = delayed_old(Ok((
+            1,
+            Default::default(),
+            None,
+            Default::default(),
+            Default::default(),
+        )))
+        .await;
         assert_eq!(state.status.read().await.effective_revision, Some(2));
         assert_eq!(state.snapshot.read().await.0, 2);
     }
@@ -740,7 +829,13 @@ mod apply_tests {
                 apply_with(&state, async {
                     let _ = ready_tx.send(());
                     release_rx.await.unwrap();
-                    Ok((1, Default::default(), None, Default::default()))
+                    Ok((
+                        1,
+                        Default::default(),
+                        None,
+                        Default::default(),
+                        Default::default(),
+                    ))
                 })
                 .await;
             })
@@ -767,7 +862,13 @@ mod apply_tests {
                 bounded_load(&slots, Duration::from_millis(20), move || {
                     let _ = started_tx.send(());
                     release_rx.recv().unwrap();
-                    Ok((1, Default::default(), None, Default::default()))
+                    Ok((
+                        1,
+                        Default::default(),
+                        None,
+                        Default::default(),
+                        Default::default(),
+                    ))
                 })
                 .await
             })
@@ -782,7 +883,13 @@ mod apply_tests {
         assert_eq!(
             bounded_load(&slots, Duration::from_millis(20), move || {
                 observed.store(true, std::sync::atomic::Ordering::SeqCst);
-                Ok((2, Default::default(), None, Default::default()))
+                Ok((
+                    2,
+                    Default::default(),
+                    None,
+                    Default::default(),
+                    Default::default(),
+                ))
             })
             .await
             .err()

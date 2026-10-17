@@ -17,6 +17,7 @@ use tagma_core::{
 };
 
 struct PinnedStep {
+    client: reqwest::Client,
     provider: Provider,
     model: String,
     credential: Option<Arc<zeroize::Zeroizing<String>>>,
@@ -100,15 +101,26 @@ fn pin_plan(
     first_cloud: Option<&CloudTarget>,
     revoked: &std::collections::HashMap<String, bool>,
 ) -> Result<PinnedPlan, PlanError> {
-    let pin =
-        |record: &tagma_core::service::ProviderRecord, model: String, input, timeout| PinnedStep {
+    let pin = |record: &tagma_core::service::ProviderRecord,
+               model: String,
+               input,
+               timeout: Duration|
+     -> Result<PinnedStep, PlanError> {
+        Ok(PinnedStep {
+            client: loaded.4.get(&record.provider.id).cloned().ok_or(PlanError(
+                StatusCode::SERVICE_UNAVAILABLE,
+                "CONFIG_NOT_APPLIED",
+            ))?,
             provider: record.provider.clone(),
             credential: loaded.3.get(&record.provider.id).cloned(),
             fingerprint: tagma_core::health::provider_fingerprint(record),
             model,
             input,
-            timeout,
-        };
+            timeout: timeout.min(Duration::from_millis(
+                record.provider.timeouts.total_ms.into(),
+            )),
+        })
+    };
     if !model.starts_with("tagma/") {
         let record =
             loaded
@@ -138,8 +150,8 @@ fn pin_plan(
                 model.into(),
                 TeamStepInput::OriginalMessages,
                 Duration::from_secs(120),
-            )],
-            timeout: Duration::from_secs(120),
+            )?],
+            timeout: Duration::from_millis(record.provider.timeouts.total_ms.into()),
             public_model: None,
             team_revision: None,
             automatic_brain: false,
@@ -214,7 +226,7 @@ fn pin_plan(
             target.model_id.clone(),
             step.input.clone(),
             Duration::from_millis(step.timeout_ms.into()),
-        ));
+        )?);
     }
     Ok(PinnedPlan {
         revision: loaded.0,
@@ -226,12 +238,12 @@ fn pin_plan(
     })
 }
 
-pub fn client() -> Result<reqwest::Client, reqwest::Error> {
+pub fn client(connect_timeout: Duration) -> Result<reqwest::Client, reqwest::Error> {
     reqwest::Client::builder()
         .no_proxy()
         .redirect(reqwest::redirect::Policy::none())
         .retry(reqwest::retry::never())
-        .connect_timeout(Duration::from_secs(10))
+        .connect_timeout(connect_timeout)
         .pool_max_idle_per_host(2)
         .build()
 }
@@ -1036,7 +1048,7 @@ async fn forward_response(
     }
     #[cfg(test)]
     run.before_dispatch(&step.model, false).await;
-    let mut request = state
+    let mut request = step
         .client
         .post(format!(
             "{}/chat/completions",
@@ -1116,7 +1128,7 @@ async fn forward_response(
         _ = run.cancel.cancelled()=>return error(StatusCode::FORBIDDEN,"ACCESS_REVOKED"),
         _ = state.shutdown.cancelled() => return error(StatusCode::SERVICE_UNAVAILABLE,"GATEWAY_STOPPING"),
         _ = tokio::time::sleep_until(total_deadline) => return error(StatusCode::GATEWAY_TIMEOUT,"REQUEST_BUDGET_EXCEEDED"),
-        response = tokio::time::timeout(Duration::from_secs(30),sending) => match response {
+        response = tokio::time::timeout(Duration::from_millis(step.provider.timeouts.first_response_ms.into()),sending) => match response {
             Ok(Ok(response)) => response,
             Ok(Err(error_value)) => return error(StatusCode::BAD_GATEWAY,if error_value.is_timeout(){"UPSTREAM_CONNECT_TIMEOUT"}else if error_value.is_connect(){"UPSTREAM_CONNECTION_FAILED"}else{"UPSTREAM_TRANSPORT_ERROR"}),
             Err(_) => return error(StatusCode::GATEWAY_TIMEOUT,"UPSTREAM_RESPONSE_TIMEOUT"),
@@ -1144,6 +1156,7 @@ async fn forward_response(
     }
     let mut upstream = upstream.bytes_stream();
     let available_functions = super::function_tools::names(input);
+    let idle_timeout = Duration::from_millis(step.provider.timeouts.idle_ms.into());
     let parallel_tools = input["parallel_tool_calls"] != false;
     if streaming {
         let shutdown = state.shutdown.clone();
@@ -1163,7 +1176,7 @@ async fn forward_response(
                     _ = cancelled.cancelled()=>{yield Ok::<_,Infallible>(stream_error(&health,"ACCESS_REVOKED"));break;},
                     _ = shutdown.cancelled() => { yield Ok::<_,Infallible>(stream_error(&health,"GATEWAY_STOPPING")); break; },
                     _ = tokio::time::sleep_until(total_deadline) => { yield Ok(stream_error(&health,"REQUEST_BUDGET_EXCEEDED")); break; },
-                    next = tokio::time::timeout(Duration::from_secs(30),upstream.next()) => next,
+                    next = tokio::time::timeout(idle_timeout,upstream.next()) => next,
                 };
                 let chunk = match next { Ok(Some(Ok(chunk))) => chunk, Ok(None) => { yield Ok(stream_error(&health,"UPSTREAM_STREAM_INTERRUPTED")); break; }, Ok(Some(Err(_))) => { yield Ok(stream_error(&health,"UPSTREAM_STREAM_INTERRUPTED")); break; }, Err(_) => { yield Ok(stream_error(&health,"UPSTREAM_IDLE_TIMEOUT")); break; } };
                 total += chunk.len();
@@ -1211,7 +1224,7 @@ async fn forward_response(
                 _ = run.cancel.cancelled()=>return error(StatusCode::FORBIDDEN,"ACCESS_REVOKED"),
                 _ = state.shutdown.cancelled() => return error(StatusCode::SERVICE_UNAVAILABLE,"GATEWAY_STOPPING"),
                 _ = tokio::time::sleep_until(total_deadline) => return error(StatusCode::GATEWAY_TIMEOUT,"REQUEST_BUDGET_EXCEEDED"),
-                next = tokio::time::timeout(Duration::from_secs(30),upstream.next()) => next,
+                next = tokio::time::timeout(idle_timeout,upstream.next()) => next,
             };
             match next {
                 Ok(Some(Ok(chunk))) if bytes.len() + chunk.len() <= MAX_RESPONSE_BYTES => {

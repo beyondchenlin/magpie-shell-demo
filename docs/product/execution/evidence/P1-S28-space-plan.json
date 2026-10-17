@@ -1,0 +1,14 @@
+{
+  "recordedAtUtc": "2026-10-17T21:54:11.875Z",
+  "target": "D:/demo1/tagmaai/target",
+  "temporaryRoot": "C:\\Users\\ai\\AppData\\Local\\Temp",
+  "estimatedAdditionalPeakGiB": 0.06,
+  "freeBeforeGiB": {
+    "C": 42.44,
+    "D": 9.87
+  },
+  "scope": "Pinned provider clients and connect/header/idle/total execution;small loopback fixtures,cached check/test,no GUI/package",
+  "reuse": "Existing Cargo target/registry;no clean/dependency/env/worktree",
+  "constraint": "Below10GiB pauses expected>1GiB operations;bounded cache delta only",
+  "cleanup": "Owned sidecars/servers/connections stop before TempDir RAII;prior/user artifacts retained"
+}
