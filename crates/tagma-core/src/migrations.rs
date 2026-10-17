@@ -110,8 +110,8 @@ fn write_journal(directory: &Path, journal: &Journal, replace: bool) -> AppResul
 }
 
 pub(crate) fn prepare(directory: &Path) -> AppResult<()> {
-    // At most three known transitions; a pending committed step is resumed first.
-    for _ in 0..4 {
+    // At most four known transitions; a pending committed step is resumed first.
+    for _ in 0..5 {
         prepare_inner(directory, || Ok(()))?;
         let db = Connection::open_with_flags(
             directory.join("config.sqlite3"),
@@ -152,11 +152,19 @@ fn prepare_inner(directory: &Path, after_backup: impl FnOnce() -> AppResult<()>)
         .map_err(|_| error())?;
     let expected = if version == 1 {
         vec!["config_head", "credential_journal", "revisions"]
+    } else if version < 5 {
+        vec![
+            "config_head",
+            "config_metadata",
+            "credential_journal",
+            "revisions",
+        ]
     } else {
         vec![
             "config_head",
             "config_metadata",
             "credential_journal",
+            "model_health",
             "revisions",
         ]
     };
@@ -203,7 +211,7 @@ fn prepare_inner(directory: &Path, after_backup: impl FnOnce() -> AppResult<()>)
         && !(journal.owner == LEGACY_OWNER && journal.from_schema == 1 && journal.to_schema == 2))
         || !matches!(
             (journal.from_schema, journal.to_schema),
-            (1, 2) | (2, 3) | (3, 4)
+            (1, 2) | (2, 3) | (3, 4) | (4, 5)
         )
         || (version != journal.from_schema && version != journal.to_schema)
         || uuid::Uuid::parse_str(&journal.operation_id).is_err()
@@ -308,6 +316,10 @@ fn prepare_inner(directory: &Path, after_backup: impl FnOnce() -> AppResult<()>)
                 [uuid::Uuid::new_v4().to_string()],
             )
             .map_err(|_| error())?;
+        }
+        if journal.to_schema == 5 {
+            tx.execute_batch(crate::health::CREATE_HEALTH_TABLE)
+                .map_err(|_| error())?;
         }
         // V3 protects authentication fields; V4 protects team drafts and immutable
         // publications from being silently dropped by older writers.
@@ -527,7 +539,7 @@ mod tests {
             ErrorCode::IncompatibleVersion
         );
         prepare(temp.path()).unwrap();
-        assert_eq!(schema(&db).unwrap(), 4);
+        assert_eq!(schema(&db).unwrap(), SCHEMA_VERSION);
         assert_eq!(
             db.query_row::<String, _, _>(
                 "SELECT snapshot FROM revisions WHERE revision=0",

@@ -2,6 +2,7 @@ pub mod chat;
 pub mod contract;
 pub mod credentials;
 pub mod diagnostics;
+pub mod health;
 mod initialization;
 mod migrations;
 pub mod recovery;

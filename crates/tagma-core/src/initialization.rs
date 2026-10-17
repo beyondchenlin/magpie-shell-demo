@@ -178,12 +178,23 @@ fn ensure_inner(
             )
             .map_err(|_| error())?;
         }
+        if intent.schema_version >= 5 {
+            tx.execute_batch(crate::health::CREATE_HEALTH_TABLE)
+                .map_err(|_| error())?;
+        }
         tx.pragma_update(None, "user_version", intent.schema_version)
             .map_err(|_| error())?;
         tx.commit().map_err(|_| error())?;
     } else if schema != intent.schema_version
         || owner != APPLICATION_ID
-        || objects != if intent.schema_version >= 2 { 4 } else { 3 }
+        || objects
+            != if intent.schema_version >= 5 {
+                5
+            } else if intent.schema_version >= 2 {
+                4
+            } else {
+                3
+            }
     {
         return Err(incompatible());
     }

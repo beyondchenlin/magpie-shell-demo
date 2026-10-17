@@ -244,7 +244,7 @@ impl ConfigService {
         Self::read_db(&db)
     }
 
-    fn read_db(db: &Connection) -> AppResult<(u32, ConfigSnapshot)> {
+    pub(crate) fn read_db(db: &Connection) -> AppResult<(u32, ConfigSnapshot)> {
         let (revision, json): (u32, String) = db.query_row(
             "SELECT r.revision,r.snapshot FROM revisions r JOIN config_head h ON h.revision=r.revision WHERE h.singleton=1", [],
             |row| Ok((row.get(0)?, row.get(1)?))).map_err(storage)?;
@@ -257,10 +257,15 @@ impl ConfigService {
         let pending = db
             .query_row("SELECT count(*) FROM credential_journal", [], |r| r.get(0))
             .map_err(storage)?;
+        let observed_now = crate::health::now_ms().unwrap_or(0);
         Ok(ConfigView {
             protocol_version: PROTOCOL_VERSION,
             schema_version: SCHEMA_VERSION,
             desired_revision: revision,
+            model_health: crate::health::records(&db, &snapshot)?
+                .iter()
+                .map(|record| record.view(observed_now))
+                .collect(),
             profiles: snapshot.profile_views()?,
             teams: snapshot
                 .teams
@@ -595,12 +600,40 @@ impl ConfigService {
         let tx = db
             .transaction_with_behavior(TransactionBehavior::Immediate)
             .map_err(storage)?;
-        let (current, _) = Self::read_db(&tx)?;
+        let (current, previous) = Self::read_db(&tx)?;
         if current != expected {
             return Err(AppError::new(ErrorCode::ConfigConflict));
         }
         let next = current.checked_add(1).ok_or_else(invalid)?;
         let json = serde_json::to_string(snapshot).map_err(storage)?;
+        // Invalidate changed connections and removed models, without losing factual
+        // observations merely because the user reordered models or toggled availability.
+        for provider in &previous.providers {
+            let next = snapshot
+                .providers
+                .iter()
+                .find(|next| next.provider.id == provider.provider.id);
+            if next.is_none_or(|next| {
+                crate::health::provider_fingerprint(next)
+                    != crate::health::provider_fingerprint(provider)
+            }) {
+                tx.execute(
+                    "DELETE FROM model_health WHERE provider_id=?1",
+                    [&provider.provider.id],
+                )
+                .map_err(storage)?;
+            } else if let Some(next) = next {
+                for model in &provider.provider.models {
+                    if !next.provider.models.contains(model) {
+                        tx.execute(
+                            "DELETE FROM model_health WHERE provider_id=?1 AND model_id=?2",
+                            params![provider.provider.id, model],
+                        )
+                        .map_err(storage)?;
+                    }
+                }
+            }
+        }
         tx.execute("INSERT INTO revisions VALUES(?1,?2)", params![next, json])
             .map_err(storage)?;
         tx.execute(
