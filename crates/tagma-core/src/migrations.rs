@@ -232,7 +232,7 @@ fn prepare_inner(directory: &Path, after_backup: impl FnOnce() -> AppResult<()>)
         && !(journal.owner == LEGACY_OWNER && journal.from_schema == 1 && journal.to_schema == 2))
         || !matches!(
             (journal.from_schema, journal.to_schema),
-            (1, 2) | (2, 3) | (3, 4) | (4, 5) | (5, 6) | (6, 7) | (7, 8) | (8, 9)
+            (1, 2) | (2, 3) | (3, 4) | (4, 5) | (5, 6) | (6, 7) | (7, 8) | (8, 9) | (9, 10)
         )
         || (version != journal.from_schema && version != journal.to_schema)
         || uuid::Uuid::parse_str(&journal.operation_id).is_err()
@@ -353,7 +353,8 @@ fn prepare_inner(directory: &Path, after_backup: impl FnOnce() -> AppResult<()>)
         // V3 protects authentication fields; V4 protects team drafts and immutable
         // publications from being silently dropped by older writers. V6 protects
         // the automatic-brain order source and dynamic step targets. V9 protects
-        // soft-budget snapshot fields from being dropped by older writers.
+        // soft-budget snapshot fields from being dropped by older writers. V10
+        // protects provider timeout settings from older snapshot writers.
         // Historical snapshot bytes stay immutable; current readers supply defaults.
         tx.pragma_update(None, "user_version", journal.to_schema)
             .map_err(|_| error())?;
@@ -384,7 +385,7 @@ mod tests {
                 |row| row.get(0),
             )
             .unwrap();
-        prepare(temp.path()).unwrap();
+        prepare_inner(temp.path(), || Ok(())).unwrap();
         assert_eq!(schema(&db).unwrap(), 9);
         assert_eq!(revision(&db).unwrap(), 0);
         assert_eq!(

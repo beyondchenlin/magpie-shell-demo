@@ -1,0 +1,175 @@
+   Compiling tagma-core v0.2.0-dev.16 (D:\demo1\tagmaai\crates\tagma-core)
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+    Finished `test` profile [unoptimized] target(s) in 5.53s
+     Running unittests src\lib.rs (target\debug\deps\tagma_core-2f484c8d7ea56ae6.exe)
+
+running 73 tests
+test initialization::tests::intent_crash_worker ... ignored, Child only: intent publication interruption
+test health::tests::catalog_is_not_inference_and_five_minute_boundary_is_strict ... ok
+test health::tests::same_millisecond_failures_win_in_either_arrival_order ... ok
+
+running 1 test
+
+running 1 test
+
+running 1 test
+test chat::tests::arbitrary_byte_splits_utf8_crlf_and_multiple_events ... ok
+test health::tests::credential_generation_changes_fingerprint_without_exposing_the_reference_in_views ... ok
+test health::tests::first_cloud_uses_both_global_orders_and_rejects_stale_failed_or_replaced_generations ... ok
+test chat::tests::multiline_and_bounded_event ... ok
+test migrations::tests::migration_crash_worker ... ignored, Child only: real migration interruption
+
+running 1 test
+test initialization::tests::owned_staging_with_unexpected_tables_is_preserved ... ok
+test budgets::tests::commit_failure_preserves_prior_budget_and_revision ... ok
+test initialization::tests::atomic_publication_never_replaces_a_newly_appeared_target ... ok
+test budgets::tests::soft_rules_crud_share_revisions_and_never_touch_secrets_or_usage ... ok
+
+running 1 test
+test initialization::tests::crash_after_intent_sync_before_publication_recovers ... ok
+test initialization::tests::crash_after_partial_intent_write_recovers ... ok
+test health::tests::runtime_health_never_initializes_or_migrates_an_unknown_store ... ok
+test initialization::tests::crash_after_intent_file_creation_recovers ... ok
+test service::initialization_tests::initialization_crash_worker ... ignored, Child only: real initialization crash fixture
+
+running 1 test
+test health::tests::unconfirmed_shutdown_preserves_success_history_but_requires_new_confirmation ... ok
+
+running 1 test
+test recovery::tests::changed_record_existing_database_and_valid_future_record_are_protected ... ok
+
+running 1 test
+test budgets::tests::bounds_scopes_and_decimal_limits_are_strict ... ok
+test health::tests::model_reorder_and_enable_toggle_preserve_observations_but_removed_models_do_not ... ok
+test health::tests::runtime_health_is_persistent_generation_bound_and_does_not_change_revisions ... ok
+test timeouts::tests::timeouts_validate_exact_ranges_relationships_and_strict_wire_types ... ok
+test recovery::tests::corrupt_committed_record_is_preserved_until_exact_explicit_archive ... ok
+
+running 1 test
+test service::initialization_tests::unknown_schema_zero_database_is_never_initialized_or_overwritten ... ok
+test service::initialization_tests::interrupted_owned_initialization_recovers_after_real_process_exit ... ok
+test initialization::tests::committed_owned_staging_for_catalog_and_security_schemas_can_finish_publication ... ok
+test usage::capacity_tests::maintenance_expires_finished_details_but_preserves_running_and_retained_summaries ... ok
+test usage::capacity_tests::unchanged_retention_preserves_usage_revision_and_reviewed_clear_plan ... ok
+test usage::clear::tests::clear_crash_worker ... ignored, owned child process only
+test timeouts::tests::shared_timeout_save_preserves_provider_edits_identity_conflicts_and_commit_failures ... ok
+test timeouts::tests::corrupt_stored_timeouts_are_preserved_and_refused_without_default_fallback ... FAILED
+test usage::clear::tests::exact_legacy_receipt_is_readable_but_unbound_plans_remain_invalid ... ok
+test timeouts::tests::schema_nine_backup_preserves_legacy_json_and_defaults_until_explicit_new_revision ... ok
+
+running 1 test
+test usage::capacity_tests::real_sqlite_full_results_roll_back_and_recover_bounded_without_double_counting ... ok
+test usage::clear::tests::clear_is_reviewed_atomic_idempotent_and_invalidates_old_cursors ... ok
+
+running 1 test
+test usage::clear::tests::cross_day_cascade_is_counted_and_revision_exhaustion_rolls_back ... ok
+test diagnostics::tests::logs_rotate_within_five_files_and_never_export_unknown_fields ... ok
+test migrations::tests::schema_seven_security_upgrade_keeps_snapshot_bytes_and_starts_with_empty_ledger ... ok
+
+running 1 test
+test usage::clear::tests::stale_busy_pending_and_storage_faults_never_partially_clear ... ok
+test usage::read::budgets::tests::utc_periods_and_missing_storage_are_unknown_and_never_initialize ... ok
+test usage::read::budgets::tests::unknown_or_cancelled_queries_are_never_repaired_or_empty_success ... ok
+test usage::read::interrupt_tests::cancellation_interrupts_actual_sqlite_work_and_closes_its_connection ... ok
+test usage::clear::tests::identical_counts_in_another_directory_never_authorize_its_clear ... ok
+test usage::read_tests::absent_unknown_and_invalid_queries_never_initialize_or_invent_empty_success ... ok
+test usage::clear::tests::changed_backup_or_source_refuses_migration_and_preserves_schema_one ... ok
+test usage::read::budgets::tests::exact_large_tokens_bounded_report_and_literal_filters_do_not_invent_balance ... ok
+test migrations::tests::failure_after_backup_keeps_original_schema_and_retry_uses_the_owned_backup ... ok
+test migrations::tests::schema_six_catalog_upgrade_retains_a_recoverable_backup_and_revision ... ok
+test usage::read::budgets::tests::scopes_separate_team_requests_and_actual_attempts_and_unknowns_hide_token_ratio ... ok
+
+running 1 test
+test usage::read_tests::contradictory_rows_are_unavailable_and_are_not_repaired_by_reading ... ok
+test usage::tests::actual_sqlite_full_at_start_refuses_registration_and_degrades ... ok
+test migrations::tests::backup_includes_committed_wal_and_historical_snapshot_bytes_are_unchanged ... ok
+test usage::tests::usage_crash_worker ... ignored, child-process crash worker, invoked only by the owned recovery test
+test usage::clear::tests::known_v1_upgrade_is_atomic_and_preserves_records_unknown_is_untouched ... ok
+
+running 1 test
+test usage::tests::admission_identity_timing_and_metadata_privacy_are_checked ... ok
+test usage::read_tests::decimal_totals_do_not_round_large_tokens_and_literal_filters_are_bounded ... ok
+test migrations::tests::schema_two_profiles_and_config_identity_survive_gateway_contract_upgrade ... ok
+test migrations::tests::schema_three_team_upgrade_preserves_bytes_and_retains_schema_three_backup ... ok
+test usage::tests::logical_requests_and_attempts_keep_unknown_tokens_and_aggregate_once ... ok
+test migrations::tests::legacy_pending_one_to_two_journal_resumes_before_following_transition ... ok
+
+running 1 test
+test migrations::tests::schema_eight_upgrade_preserves_historical_json_and_adds_soft_rules_only_in_new_revisions ... ok
+test usage::tests::failed_results_are_bounded_retryable_and_never_allow_new_registration ... ok
+test migrations::tests::schema_five_upgrade_backs_up_health_and_preserves_original_snapshot_bytes ... ok
+test migrations::tests::runtime_reader_never_migrates_and_writer_requires_all_live_readers_to_exit ... ok
+test migrations::tests::real_process_exit_after_backup_recovers_without_losing_original_revision ... ok
+
+running 1 test
+
+running 1 test
+test usage::tests::retention_keeps_summaries_and_preserves_unknown_unowned_databases ... ok
+test usage::read_tests::readonly_pages_details_and_totals_separate_requests_attempts_and_unknown_tokens ... ok
+test usage::capacity_tests::capacity_pruning_is_bounded_keeps_daily_and_running_and_rolls_back_failed_deletes ... ok
+test usage::tests::real_process_exit_recovers_owned_initialization_and_unfinished_attempts ... ok
+test usage::read_tests::escaped_page_fields_and_sixteen_attempt_details_stay_within_response_bounds ... ok
+
+running 1 test
+
+running 1 test
+
+running 1 test
+
+running 1 test
+test usage::clear::tests::real_exit90_rolls_back_upgrade_or_clear_and_keeps_committed_receipt ... ok
+test usage::capacity_tests::pinned_reader_bounds_real_wal_and_requires_actual_checkpoint_before_recovery ... ok
+
+failures:
+
+---- timeouts::tests::corrupt_stored_timeouts_are_preserved_and_refused_without_default_fallback stdout ----
+
+thread 'timeouts::tests::corrupt_stored_timeouts_are_preserved_and_refused_without_default_fallback' (44952) panicked at crates\tagma-core\src\timeouts.rs:205:9:
+assertion failed: ConfigService::open(temp.path(), secrets.clone()).is_err()
+
+
+failures:
+    timeouts::tests::corrupt_stored_timeouts_are_preserved_and_refused_without_default_fallback
+
+test result: FAILED. 67 passed; 1 failed; 5 ignored; 0 measured; 0 filtered out; finished in 1.24s
+
+error: test failed, to rerun pass `-p tagma-core --lib`

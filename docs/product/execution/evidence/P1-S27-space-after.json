@@ -1,0 +1,7 @@
+{
+  "RecordedAtUtc": "2026-10-17T21:50:54.7411907Z",
+  "CFreeGiB": 42.44,
+  "DFreeGiB": 9.87,
+  "OwnedTimeoutFixturePrefixRemaining": 0,
+  "Scope": "Bounded cached checks only;expected>1GiB operations remain paused;no prior/user cleanup"
+}

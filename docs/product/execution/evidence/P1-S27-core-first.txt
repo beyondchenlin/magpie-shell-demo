@@ -1,0 +1,33 @@
+   Compiling tagma-core v0.2.0-dev.16 (D:\demo1\tagmaai\crates\tagma-core)
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+    Finished `test` profile [unoptimized] target(s) in 4.73s
+     Running unittests src\lib.rs (target\debug\deps\tagma_core-2f484c8d7ea56ae6.exe)
+
+running 3 tests
+test timeouts::tests::timeouts_validate_exact_ranges_relationships_and_strict_wire_types ... ok
+Timeout core:default10/30/30/120s,custom0.5/1/2/3s persisted;stale editor/unknown provider refused;ordinary provider save retains settings;failed SQL preserves revision3;reopen same;connection fingerprint unchanged,secrets0,usage not created
+test timeouts::tests::shared_timeout_save_preserves_provider_edits_identity_conflicts_and_commit_failures ... ok
+Timeout schema9->10:known consistent schema9 backup preserves original provider JSON byte-for-byte,implicit defaults do not rewrite revision1,new settings only revision2,secrets0
+test timeouts::tests::schema_nine_backup_preserves_legacy_json_and_defaults_until_explicit_new_revision ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 69 filtered out; finished in 0.05s
+

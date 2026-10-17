@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 use ts_rs::TS;
 
 pub const PROTOCOL_VERSION: u32 = 1;
-pub const SCHEMA_VERSION: u32 = 9;
+pub const SCHEMA_VERSION: u32 = 10;
 pub const PRODUCT_VERSION: &str = env!("CARGO_PKG_VERSION");
 
 #[derive(Debug, Clone, Serialize, Deserialize, TS, PartialEq, Eq)]
@@ -82,6 +82,8 @@ pub struct Provider {
     pub enabled: bool,
     pub models: Vec<String>,
     pub has_credential: bool,
+    #[serde(default)]
+    pub timeouts: crate::timeouts::ProviderTimeouts,
 }
 
 /// A secret is accepted only on explicit save; it is never returned or Debug-formatted.

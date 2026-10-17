@@ -282,6 +282,7 @@ impl ConfigService {
         let snapshot: ConfigSnapshot = serde_json::from_str(&json).map_err(storage)?;
         crate::budgets::validate_rules(&snapshot.budgets)
             .map_err(|_| storage("invalid budget snapshot"))?;
+        crate::timeouts::validate(&snapshot).map_err(|_| storage("invalid provider timeouts"))?;
         Ok((revision, snapshot))
     }
 
@@ -409,6 +410,9 @@ impl ConfigService {
                 enabled: input.enabled,
                 models: input.models,
                 has_credential: reference.is_some(),
+                timeouts: position
+                    .map(|index| snapshot.providers[index].provider.timeouts.clone())
+                    .unwrap_or_default(),
             },
             credential_ref: reference,
         };
@@ -724,6 +728,7 @@ impl ConfigService {
         revoked: Option<(&str, bool)>,
     ) -> AppResult<()> {
         crate::budgets::validate_rules(&snapshot.budgets)?;
+        crate::timeouts::validate(snapshot)?;
         let mut db = self.db.lock().map_err(storage)?;
         let tx = db
             .transaction_with_behavior(TransactionBehavior::Immediate)

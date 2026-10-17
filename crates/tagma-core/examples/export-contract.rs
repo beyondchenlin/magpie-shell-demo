@@ -1,6 +1,7 @@
 use tagma_core::budgets::*;
 use tagma_core::diagnostics::{Component, DiagnosticBundle, Event, Record};
 use tagma_core::teams::*;
+use tagma_core::timeouts::*;
 use tagma_core::usage::clear::*;
 use tagma_core::usage::read::budgets::{BudgetObservation, BudgetObservations};
 use tagma_core::usage::read::*;
@@ -20,6 +21,8 @@ fn main() {
         BudgetObservation::decl(&cfg),
         BudgetObservations::decl(&cfg),
         ProviderProtocol::decl(&cfg),
+        ProviderTimeouts::decl(&cfg),
+        SaveProviderTimeouts::decl(&cfg),
         Provider::decl(&cfg),
         SaveProvider::decl(&cfg),
         RevisionCommand::decl(&cfg),

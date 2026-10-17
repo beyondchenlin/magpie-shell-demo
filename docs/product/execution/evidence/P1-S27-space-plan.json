@@ -1,0 +1,14 @@
+{
+  "recordedAtUtc": "2026-10-17T21:46:34.542Z",
+  "target": "D:/demo1/tagmaai/target",
+  "temporaryRoot": "C:\\Users\\ai\\AppData\\Local\\Temp",
+  "estimatedAdditionalPeakGiB": 0.08,
+  "freeBeforeGiB": {
+    "C": 42.44,
+    "D": 9.93
+  },
+  "scope": "Provider timeout config core/schema10 with existing cached small tests and DTO,not native install/runtime rebuild",
+  "reuse": "Existing Cargo target/registry/node_modules;no clean/full rebuild/new env/worktree",
+  "constraint": "Below10GiB pauses expected>1GiB operations;only bounded cached compilation here",
+  "cleanup": "Small owned TempDir fixtures RAII;prior artifacts/user data untouched"
+}

@@ -1,0 +1,140 @@
+{
+  "recordedAtUtc": "2026-10-17T21:52:37.739Z",
+  "sourceBase": "4351888fd1b2fe5176ff49f3d19a941621ecd890",
+  "candidateVersion": "0.2.0-dev.16",
+  "configSchema": 10,
+  "usageSchema": 2,
+  "source": [
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-core\\src\\timeouts.rs",
+      "bytes": 15360,
+      "sha256": "3f58e8ae4bbcab3751d5f1b9feb95ffdcf13566c4bb3af494c508f417e7d87b7"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-core\\src\\contract.rs",
+      "bytes": 7284,
+      "sha256": "354d414263d57ead346b9aca57a2ea676522edca71fad07feb082db4559bbdcc"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-core\\src\\lib.rs",
+      "bytes": 315,
+      "sha256": "c36c07ddd85356d9f45bad1345283fb43c517db9f633e7392d4aeffcad586a93"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-core\\src\\service.rs",
+      "bytes": 35185,
+      "sha256": "953ac04da03b91577ee7dd0119f928b6699b2688dfb6bb214962735c72ad556a"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-core\\src\\health.rs",
+      "bytes": 33646,
+      "sha256": "c6b6ecb3bb758bd85a07ffe5c9a910763bba112657dffbd65d76c0639d91dfcb"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-core\\src\\initialization.rs",
+      "bytes": 16942,
+      "sha256": "8f7be124ef02e92c68f5f6c605e40bed96e480cbd055c3cf29d06e519d52afba"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-core\\src\\migrations.rs",
+      "bytes": 30509,
+      "sha256": "636f4440798ddc0b57bf3c5376146e5158a51f4d36e851d358792880007240ea"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-core\\examples\\export-contract.rs",
+      "bytes": 4488,
+      "sha256": "ed5dc9f2dae277c9950c44486a46bb95963cb2bea101500795d68da5690420a6"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\src\\product\\contract.ts",
+      "bytes": 14168,
+      "sha256": "cc110c1711a34e185b0ca21cc16e0916f832c31f6fa5eacea97554a64ab793ab"
+    }
+  ],
+  "documents": [
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\EXECUTION-STATUS.md",
+      "bytes": 32481,
+      "sha256": "8078fd29c0569b77c8974aad0ae90ce6e7ee8aee96c823e7b36e9da58b5f5c66"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\P1-S27-PROVIDER-TIMEOUT-CORE.md",
+      "bytes": 4022,
+      "sha256": "0e933f91e72fb5dd06b47b6442492db032e065e7114c6ad3ae4e5e5f61623c1b"
+    }
+  ],
+  "prd": {
+    "path": "D:\\demo1\\tagmaai\\docs\\product\\TAGMA-PRD-v0.3.md",
+    "bytes": 50957,
+    "sha256": "6e6503391f70e3f2e53347890de6e7c9f7fd93cc393c68f7bba494ac4d67a6d6"
+  },
+  "evidence": [
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S27-check-first.txt",
+      "bytes": 1329,
+      "sha256": "37e569dfa44add2fe88f497dce24dc4a28520d3bbc7e3eb00d71c94dff952c5e"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S27-clippy.txt",
+      "bytes": 1329,
+      "sha256": "2e753d4c5b18aaac2a23c3d3bfdded52e43a850dd67e7ad226e31182def9f2a1"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S27-core-final.txt",
+      "bytes": 9855,
+      "sha256": "4363bae517c674cc5ce0193989269a0c2d75f83d1c948f473caf1954c31e2e74"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S27-core-first.txt",
+      "bytes": 1686,
+      "sha256": "7c395979af485d30c43868804e21f369ba052516da9ce231d71eb0f7690909a2"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S27-core-reviewed.txt",
+      "bytes": 13519,
+      "sha256": "a559df679492356761f55e65e4525e6b433788fb175df902af525b0c1b01c79d"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S27-dto-check.txt",
+      "bytes": 723,
+      "sha256": "6eae262758b8b49c0fa50bf5be4bd6b1f0d7a004811cb4262dcd8a3f97a9df06"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S27-dto.txt",
+      "bytes": 715,
+      "sha256": "a6f116c7fa62b8d2fc6472b8f375694e3e516314c841ba3b0a5ab993ea7dc3c9"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S27-frontend.txt",
+      "bytes": 478,
+      "sha256": "21574892f7c828eb318ed75d603e90eaa8ce98b6af33ee7e27979019ca2de4dd"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S27-http-default.txt",
+      "bytes": 1914,
+      "sha256": "6efe3376577b5d375d2a8729b1e732f8275cd4d2c98521f9758e469268772fb8"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S27-space-after.json",
+      "bytes": 247,
+      "sha256": "0fb472917fbe3cdbdcfb59848d1e7616559932a569c1bfa552417fe7a32ad740"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S27-space-plan.json",
+      "bytes": 651,
+      "sha256": "0782a9efccc7c170729076b7a7b2887e95b112a589b6b70ee358f950dba89bec"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S27-workspace-check.txt",
+      "bytes": 1564,
+      "sha256": "f597d003fe5216d914d7b58b3ab92a6b3e1870ebfaad0a0c93e46aa1debc90b9"
+    }
+  ],
+  "freeAfterGiB": {
+    "C": 42.44,
+    "D": 9.87
+  },
+  "spaceConstraint": "Only bounded cached checks;expected>1GiB paused,no full rebuild/install/new environment",
+  "cleanup": "Owned timeout TempDir prefix0,all handles RAII;no new worktree/env or manual prior cleanup",
+  "installed": "dev.9 untouched;custom timeout execution not wired;drag not accepted;computer control prohibited"
+}

@@ -257,7 +257,7 @@ mod tests {
     use super::*;
     #[test]
     fn committed_owned_staging_for_catalog_and_security_schemas_can_finish_publication() {
-        for version in [7, 8, SCHEMA_VERSION] {
+        for version in [7, 8, 9, SCHEMA_VERSION] {
             let temp = tempfile::tempdir().unwrap();
             let operation_id = uuid::Uuid::new_v4().to_string();
             let staging_file = format!(".config-initializing-{operation_id}.sqlite3");

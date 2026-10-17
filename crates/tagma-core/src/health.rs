@@ -730,6 +730,7 @@ mod tests {
                 enabled: true,
                 models: vec!["model".into()],
                 has_credential: true,
+                timeouts: Default::default(),
             },
             credential_ref: Some("synthetic-reference-1".into()),
         };
@@ -759,6 +760,7 @@ mod tests {
                 enabled: true,
                 models: vec!["first".into(), "second".into()],
                 has_credential: false,
+                timeouts: Default::default(),
             },
             credential_ref: None,
         };

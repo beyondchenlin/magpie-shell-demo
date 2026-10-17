@@ -14,7 +14,9 @@ export type BudgetObservations = { config_revision: number, info: UsageReadInfo,
  */
 records: Array<BudgetObservation>, };
 export type ProviderProtocol = "openai_chat_completions";
-export type Provider = { id: string, name: string, protocol: ProviderProtocol, base_url: string, enabled: boolean, models: Array<string>, has_credential: boolean, };
+export type ProviderTimeouts = { connect_ms: number, first_response_ms: number, idle_ms: number, total_ms: number, };
+export type SaveProviderTimeouts = { protocol_version: number, expected_revision: number, id: string, timeouts: ProviderTimeouts, };
+export type Provider = { id: string, name: string, protocol: ProviderProtocol, base_url: string, enabled: boolean, models: Array<string>, has_credential: boolean, timeouts: ProviderTimeouts, };
 export type SaveProvider = { protocol_version: number, expected_revision: number, id: string | null, name: string, protocol: ProviderProtocol, base_url: string, enabled: boolean, models: Array<string>, credential: string | null, };
 export type RevisionCommand = { protocol_version: number, expected_revision: number, id: string, };
 export type ReorderProviders = { protocol_version: number, expected_revision: number, ids: Array<string>, };
