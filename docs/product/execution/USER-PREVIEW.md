@@ -1,5 +1,9 @@
 # 用户保留预览：不要当测试产物清理
 
+2026-10-17 16:22：dev.7基础文本对话已验证并复制到versions\\0.2.0-dev.7，source650b2c9，两EXE共25,794,048逻辑字节，逐个SHA256与构建一致。稳定入口现指向dev.7，但检测到原dev.6仍运行时只提示先保存并从设置退出，绝不关闭/覆盖现有进程和输入。已用cscript纯文字模式确认该保护返回2，没有新开/停止宿主。当前不是“dev.7已打开”的声明：最后进程观察仍是dev.6的57532/45736。
+
+入口仍为[打开最新预览](D:/demo1/tagmaai-preview/打开Tagma预览.lnk)和桌面“Tagma 最新预览”。旧dev.6/5、各自启动器和清单保留，data/webview未操作；新版本复用同一schema3，无新环境/worktree。当前输入和电脑控制会话保留；准备结果见evidence/P1-S01-retained-preview-dev7-prepared.json。后续进入小队工作，不因等待预览自然退出而停止其他已授权开发。
+
 2026-10-17 15:58（Asia/Shanghai）按用户“界面没有变化、不要问我”的反馈，已将稳定入口更新到 **0.2.0-dev.6** 并实际打开。当前原生窗口经Sky无截图的accessibility核对，显示“接入你的模型，开始组织工作流”、三步接入、真实模型清单及网关运行中，已保存1/运行中1。网关runtime确认dev.6/schema3、9168、console_attached=false；本次观察宿主57532/网关45736、窗口42017198，仅是观察记录，不作为未来终止授权。
 
 - 最新入口：[打开Tagma预览](D:/demo1/tagmaai-preview/打开Tagma预览.lnk)，桌面另有[Tagma 最新预览](<C:/Users/ai/Desktop/Tagma 最新预览.lnk>)。

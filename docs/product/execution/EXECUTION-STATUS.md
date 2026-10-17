@@ -4,6 +4,8 @@
 
 ## 用户保留预览（禁止按测试清理）
 
+2026-10-17 16:22：dev.7（650b2c9）已复制并核对hash，稳定入口更新且加运行保护；原dev.6仍运行，当前表单/进程未关闭，dev.7尚未实际打开。旧版本退出后再开稳定入口即可使用新对话。清单与evidence/P1-S01-retained-preview-dev7-prepared.json明确区分“准备完成”和“当前运行”；未复制/改写data/webview。
+
 2026-10-17 15:58已实际打开dev.6可见接入工作台，已保存1/运行中1。入口[D:\demo1\tagmaai-preview\打开Tagma预览.lnk](D:/demo1/tagmaai-preview/打开Tagma预览.lnk)，桌面“Tagma 最新预览”；独立持久data/webview，不是fixture。运行EXE从c655972已验构建复制后hash核对，网关无附着控制台。更新前确认旧预览已退出，本执行器未关闭；旧dev.5及配置保留。不要关闭/卸载/覆盖这个预览来解构建锁或执行测试清理。完整保护约定见[USER-PREVIEW](USER-PREVIEW.md)，evidence/P0-S04-retained-preview-dev6.json记录实际窗口及版本，旧证据留存。
 
 ## 当前批次

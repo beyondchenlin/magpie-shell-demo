@@ -1,0 +1,84 @@
+{
+  "recordedAtUtc": "2026-10-17T08:22:29.4016198Z",
+  "manifest": {
+    "purpose": "User-requested retained visible preview",
+    "owner": "User preview; Tagma executor maintains controlled updates",
+    "productVersion": "0.2.0-dev.7",
+    "schemaVersion": 3,
+    "sourceCommit": "650b2c90a9da70827c9accad13653189ad6ac096",
+    "buildMode": "debug embedded-assets; unsigned internal preview",
+    "createdUtc": "2026-10-17T07:35:18.0952471Z",
+    "updatedUtc": "2026-10-17T08:22:29.235588Z",
+    "files": [
+      {
+        "destination": "D:\\demo1\\tagmaai-preview\\versions\\0.2.0-dev.7\\tagma-desktop.exe",
+        "name": "tagma-desktop.exe",
+        "sha256": "99f08ea36f88b45f839b9a2b7e0a573dfb0a1e9b532d69f73baa0644b0b7af48",
+        "source": "D:\\demo1\\tagmaai\\target\\debug\\tagma-desktop.exe",
+        "bytes": 17947136
+      },
+      {
+        "destination": "D:\\demo1\\tagmaai-preview\\versions\\0.2.0-dev.7\\tagma-gateway.exe",
+        "name": "tagma-gateway.exe",
+        "sha256": "67e5e2a0878ba0623d4101d611f7781bb471fbab730276e0e5cf534cdc064006",
+        "source": "D:\\demo1\\tagmaai\\target\\debug\\tagma-gateway.exe",
+        "bytes": 7846912
+      }
+    ],
+    "launcher": "D:\\demo1\\tagmaai-preview\\Launch-TagmaPreview.vbs",
+    "shortcuts": [
+      "D:\\demo1\\tagmaai-preview\\打开Tagma预览.lnk",
+      "C:\\Users\\ai\\Desktop\\Tagma 最新预览.lnk"
+    ],
+    "priorVersion": "versions\\0.2.0-dev.6",
+    "priorLauncher": "D:\\demo1\\tagmaai-preview\\Launch-TagmaPreview-dev6.vbs",
+    "configDirectory": "D:\\demo1\\tagmaai-preview\\data",
+    "webviewDirectory": "D:\\demo1\\tagmaai-preview\\webview",
+    "retention": "Do not delete, uninstall, close or overwrite while the user is reviewing. Data is persistent user preview data, not a test fixture. Updates must preserve configuration and coordinate the running process.",
+    "activationPendingOldPreviewExit": true,
+    "currentlyObservedProcesses": [
+      {
+        "ProcessId": 57532,
+        "Name": "tagma-desktop.exe",
+        "ExecutablePath": "D:\\demo1\\tagmaai-preview\\versions\\0.2.0-dev.6\\tagma-desktop.exe"
+      },
+      {
+        "ProcessId": 45736,
+        "Name": "tagma-gateway.exe",
+        "ExecutablePath": "D:\\demo1\\tagmaai-preview\\versions\\0.2.0-dev.6\\tagma-gateway.exe"
+      }
+    ],
+    "activationNote": "Latest version is copied and launcher is guarded. Existing dev6 processes and in-memory form are preserved. No launch or stop issued during preparation."
+  },
+  "userPreviewState": "Existing dev6 retained; dev7 prepared for next launch, not claimed opened",
+  "agentIssuedStopOrClose": false,
+  "dataTouched": false,
+  "newWorktree": false,
+  "copiedLogicalBytes": 25794048.0,
+  "diskBefore": [
+    {
+      "Name": "C",
+      "freeGiB": 48.91
+    },
+    {
+      "Name": "D",
+      "freeGiB": 23.32
+    }
+  ],
+  "diskAfter": [
+    {
+      "Name": "C",
+      "freeGiB": 48.9
+    },
+    {
+      "Name": "D",
+      "freeGiB": 23.3
+    }
+  ],
+  "launcherGuardTest": {
+    "launchedNewDesktop": false,
+    "exitCode": 2,
+    "stoppedAnyProcess": false,
+    "mode": "cscript text only; active old preview protected"
+  }
+}
