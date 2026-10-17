@@ -1,0 +1,36 @@
+   Compiling tagma-core v0.2.0-dev.14 (D:\demo1\tagmaai\crates\tagma-core)
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+   Compiling tagma-runtime v0.2.0-dev.14 (D:\demo1\tagmaai\crates\tagma-runtime)
+   Compiling tagma-gateway v0.2.0-dev.14 (D:\demo1\tagmaai\crates\tagma-gateway)
+warning: unused import: `Runtime`
+   --> crates\tagma-gateway\src\security.rs:186:17
+    |
+186 |     use crate::{Runtime, authorize, confirm_security, http_api};
+    |                 ^^^^^^^
+    |
+    = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: `tagma-gateway` (bin "tagma-gateway" test) generated 1 warning (run `cargo fix --bin "tagma-gateway" -p tagma-gateway --tests` to apply 1 suggestion)
+    Finished `test` profile [unoptimized] target(s) in 5.45s
+     Running unittests src\main.rs (target\debug\deps\tagma_gateway-2f8907081d2bb4f4.exe)
+
+running 1 test
+A11 real HTTP/in-memory credentials: missing/wrong/revoked 401; no data-plane management; new token saved-before-apply denied then accepted; provider revoke blocks new dispatch; optional cancellation closes real upstream and retains partial/error without DONE; corrupt security store 503/unconfirmed
+test security::tests::real_http_token_revocation_rotation_inflight_cancel_and_storage_failure ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 10 filtered out; finished in 0.11s
+

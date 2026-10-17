@@ -1,0 +1,29 @@
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+   Compiling tagma-core v0.2.0-dev.14 (D:\demo1\tagmaai\crates\tagma-core)
+    Finished `test` profile [unoptimized] target(s) in 0.65s
+     Running tests\security.rs (target\debug\deps\security-77162ab196469aa1.exe)
+
+running 4 tests
+A11 transaction: credential failure/SQLite abort never revoke old token or report rotation success; exact new reference compensated; stale revoke rejected
+test missing_or_contradictory_security_ledger_is_never_an_empty_allow_policy ... ok
+test failed_rotation_preserves_old_access_and_compensates_only_its_new_credential ... ok
+test provider_generation_revocation_cannot_be_cleared_by_reorder_or_restoring_an_old_connection ... ok
+A11 core: persistent/idempotent revocation, monotonic cancellation, atomic rotation, old snapshot safety overlay, no plaintext and no credential reads during revoke verified
+test token_revocation_survives_reopen_rotation_and_old_snapshot_restore_without_plaintext ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.09s
+

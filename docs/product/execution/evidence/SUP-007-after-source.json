@@ -1,0 +1,38 @@
+{
+  "recordedAtUtc": "2026-10-17T17:03:15.560Z",
+  "scope": "SUP-007 final source: shared dispatch/confirmation mutex and first send poll",
+  "sources": [
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-gateway\\src\\security.rs",
+      "bytes": 28989,
+      "sha256": "3550563bff6d69870491f1e8503d46828d384980221eacc1ac55ababdbf05646"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-gateway\\src\\http_api.rs",
+      "bytes": 39915,
+      "sha256": "54f43eda1fa8441a25b40d9096618ec7736a5031756d9f92daceb0781530521a"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-gateway\\src\\catalog.rs",
+      "bytes": 5920,
+      "sha256": "858510a6928740c656a5887287573ebfc21a2531cf17309f2911a45c832c44ec"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-gateway\\src\\main.rs",
+      "bytes": 30074,
+      "sha256": "5b08decc1c30c0192dffe3902a24b4dd14a2e245544b0f6abf95ba081b79442e"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-core\\src\\security.rs",
+      "bytes": 7161,
+      "sha256": "4c77fd01b669302e67c676eb1e3e1a39869811099f5f185cbb51b146076470e1"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-gateway\\tests\\security.rs",
+      "bytes": 8799,
+      "sha256": "1f7176342276a87fd28e631057cd89cad6ab3fb7ad0d07ea96f3d24ae2ba517e"
+    }
+  ],
+  "desktopControl": false,
+  "realProviderCalls": 0
+}

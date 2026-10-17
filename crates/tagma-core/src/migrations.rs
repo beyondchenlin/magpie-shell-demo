@@ -167,6 +167,15 @@ fn prepare_inner(directory: &Path, after_backup: impl FnOnce() -> AppResult<()>)
             "model_health",
             "revisions",
         ]
+    } else if version < 8 {
+        vec![
+            "config_head",
+            "config_metadata",
+            "credential_journal",
+            "model_health",
+            "provider_catalog",
+            "revisions",
+        ]
     } else {
         vec![
             "config_head",
@@ -175,6 +184,9 @@ fn prepare_inner(directory: &Path, after_backup: impl FnOnce() -> AppResult<()>)
             "model_health",
             "provider_catalog",
             "revisions",
+            "security_head",
+            "security_revocations",
+            "security_revocations_revision",
         ]
     };
     if application != 0x5441474d || names != expected {
@@ -220,7 +232,7 @@ fn prepare_inner(directory: &Path, after_backup: impl FnOnce() -> AppResult<()>)
         && !(journal.owner == LEGACY_OWNER && journal.from_schema == 1 && journal.to_schema == 2))
         || !matches!(
             (journal.from_schema, journal.to_schema),
-            (1, 2) | (2, 3) | (3, 4) | (4, 5) | (5, 6) | (6, 7)
+            (1, 2) | (2, 3) | (3, 4) | (4, 5) | (5, 6) | (6, 7) | (7, 8)
         )
         || (version != journal.from_schema && version != journal.to_schema)
         || uuid::Uuid::parse_str(&journal.operation_id).is_err()
@@ -334,6 +346,10 @@ fn prepare_inner(directory: &Path, after_backup: impl FnOnce() -> AppResult<()>)
             tx.execute_batch(crate::catalog::CREATE_CATALOG_TABLE)
                 .map_err(|_| error())?;
         }
+        if journal.to_schema == 8 {
+            tx.execute_batch(crate::security::CREATE_SECURITY_TABLES)
+                .map_err(|_| error())?;
+        }
         // V3 protects authentication fields; V4 protects team drafts and immutable
         // publications from being silently dropped by older writers. V6 protects
         // the automatic-brain order source and dynamic step targets.
@@ -416,7 +432,7 @@ mod tests {
             prepare_inner(temp.path(), || Ok(())).unwrap();
         }
         prepare(temp.path()).unwrap();
-        assert_eq!(schema(&db).unwrap(), 7);
+        assert_eq!(schema(&db).unwrap(), SCHEMA_VERSION);
         assert_eq!(revision(&db).unwrap(), 0);
         let count: u32 = db
             .query_row("SELECT count(*) FROM provider_catalog", [], |row| {
@@ -434,6 +450,48 @@ mod tests {
         assert_eq!(revision(&saved).unwrap(), 0);
         println!(
             "A08 schema6->7: catalog table created, source6 backup and config revision preserved"
+        );
+    }
+
+    #[test]
+    fn schema_seven_security_upgrade_keeps_snapshot_bytes_and_starts_with_empty_ledger() {
+        let temp = tempfile::tempdir().unwrap();
+        let db = legacy(temp.path());
+        while schema(&db).unwrap() < 7 {
+            prepare_inner(temp.path(), || Ok(())).unwrap();
+        }
+        let before: String = db
+            .query_row(
+                "SELECT snapshot FROM revisions WHERE revision=0",
+                [],
+                |row| row.get(0),
+            )
+            .unwrap();
+        prepare(temp.path()).unwrap();
+        assert_eq!(schema(&db).unwrap(), 8);
+        assert_eq!(revision(&db).unwrap(), 0);
+        assert_eq!(
+            db.query_row::<u32, _, _>("SELECT revision FROM security_head", [], |row| row.get(0))
+                .unwrap(),
+            0
+        );
+        assert_eq!(
+            db.query_row::<String, _, _>(
+                "SELECT snapshot FROM revisions WHERE revision=0",
+                [],
+                |row| row.get(0)
+            )
+            .unwrap(),
+            before
+        );
+        assert!(
+            fs::read_dir(temp.path().join("backups"))
+                .unwrap()
+                .filter_map(Result::ok)
+                .any(|entry| entry.file_name().to_string_lossy().starts_with("schema-7-"))
+        );
+        println!(
+            "A11 schema7->8: recoverable source7 backup, unchanged business snapshot/revision, empty security head and indexed revocation ledger verified"
         );
     }
 

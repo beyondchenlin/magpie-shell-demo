@@ -31,6 +31,10 @@ struct HealthContext {
     model_id: String,
     fingerprint: String,
 }
+struct ForwardContext {
+    health: HealthContext,
+    run: Arc<super::security::Run>,
+}
 impl HealthContext {
     fn observe(&self, observation: tagma_core::health::HealthObservation) {
         self.tracker.observe(
@@ -73,6 +77,7 @@ fn pin_plan(
     loaded: &super::LoadedSnapshot,
     model: &str,
     first_cloud: Option<&CloudTarget>,
+    revoked: &std::collections::HashMap<String, bool>,
 ) -> Result<PinnedPlan, PlanError> {
     let pin =
         |record: &tagma_core::service::ProviderRecord, model: String, input, timeout| PinnedStep {
@@ -84,12 +89,27 @@ fn pin_plan(
             timeout,
         };
     if !model.starts_with("tagma/") {
-        let record = loaded
-            .1
-            .providers
-            .iter()
-            .find(|r| r.provider.enabled && r.provider.models.iter().any(|id| id == model))
-            .ok_or(PlanError(StatusCode::NOT_FOUND, "MODEL_NOT_FOUND"))?;
+        let record =
+            loaded
+                .1
+                .providers
+                .iter()
+                .find(|r| {
+                    r.provider.enabled
+                        && r.provider.models.iter().any(|id| id == model)
+                        && !revoked.contains_key(&tagma_core::security::provider_target(
+                            &tagma_core::health::provider_fingerprint(r),
+                        ))
+                })
+                .ok_or_else(|| {
+                    if loaded.1.providers.iter().any(|r| {
+                        r.provider.enabled && r.provider.models.iter().any(|id| id == model)
+                    }) {
+                        PlanError(StatusCode::FORBIDDEN, "ACCESS_REVOKED")
+                    } else {
+                        PlanError(StatusCode::NOT_FOUND, "MODEL_NOT_FOUND")
+                    }
+                })?;
         return Ok(PinnedPlan {
             revision: loaded.0,
             steps: vec![pin(
@@ -163,6 +183,11 @@ fn pin_plan(
                 StatusCode::SERVICE_UNAVAILABLE,
                 "TEAM_DEPENDENCY_UNAVAILABLE",
             ))?;
+        if revoked.contains_key(&tagma_core::security::provider_target(
+            &tagma_core::health::provider_fingerprint(provider),
+        )) {
+            return Err(PlanError(StatusCode::FORBIDDEN, "ACCESS_REVOKED"));
+        }
         steps.push(pin(
             provider,
             target.model_id.clone(),
@@ -244,6 +269,30 @@ async fn models(State(state): State<Arc<Runtime>>) -> Response {
         None
     };
     let loaded = state.snapshot.read().await;
+    let policy = match state
+        .security
+        .read(
+            loaded
+                .1
+                .providers
+                .iter()
+                .map(|p| {
+                    tagma_core::security::provider_target(
+                        &tagma_core::health::provider_fingerprint(p),
+                    )
+                })
+                .collect(),
+        )
+        .await
+    {
+        Ok(policy) => policy,
+        Err(_) => {
+            return error(
+                StatusCode::SERVICE_UNAVAILABLE,
+                "SECURITY_STATE_UNCONFIRMED",
+            );
+        }
+    };
     let first_cloud = health.as_ref().and_then(|(_, records)| {
         tagma_core::health::select_first_cloud(
             &loaded.1,
@@ -252,22 +301,47 @@ async fn models(State(state): State<Arc<Runtime>>) -> Response {
         )
     });
     let mut seen = HashSet::new();
-    let mut data: Vec<_> = loaded
-        .1
-        .providers
-        .iter()
-        .filter(|record| record.provider.enabled)
-        .flat_map(|record| &record.provider.models)
-        .filter(|id| !id.starts_with("tagma/") && seen.insert((*id).clone()))
-        .map(|id| json!({"id":id,"object":"model","created":0,"owned_by":"configured-provider"}))
-        .collect();
+    let mut data = Vec::new();
+    for record in loaded.1.providers.iter().filter(|record| {
+        record.provider.enabled
+            && !policy
+                .revoked
+                .contains_key(&tagma_core::security::provider_target(
+                    &tagma_core::health::provider_fingerprint(record),
+                ))
+    }) {
+        for id in &record.provider.models {
+            if !id.starts_with("tagma/")
+                && seen.insert(id.clone())
+                && !policy
+                    .revoked
+                    .contains_key(&tagma_core::security::provider_target(
+                        &tagma_core::health::provider_fingerprint(record),
+                    ))
+            {
+                data.push(
+                    json!({"id":id,"object":"model","created":0,"owned_by":"configured-provider"}),
+                );
+            }
+        }
+    }
     for team in &loaded.1.teams {
         for version in &team.versions {
-            if pin_plan(&loaded, &version.public_id, first_cloud.as_ref()).is_ok_and(|plan| {
-                !plan.automatic_brain
+            if pin_plan(
+                &loaded,
+                &version.public_id,
+                first_cloud.as_ref(),
+                &policy.revoked,
+            )
+            .is_ok_and(|plan| {
+                plan.steps.iter().all(|step| {
+                    !policy
+                        .revoked
+                        .contains_key(&tagma_core::security::provider_target(&step.fingerprint))
+                }) && (!plan.automatic_brain
                     || health.as_ref().is_some_and(|(epoch, _)| {
                         *epoch == state.health.epoch() && state.health.confirmed()
-                    })
+                    }))
             }) && seen.insert(version.public_id.clone())
             {
                 data.push(
@@ -471,9 +545,16 @@ fn intermediate_text(value: &Value) -> Result<&str, &'static str> {
 async fn completion(
     State(state): State<Arc<Runtime>>,
     headers: HeaderMap,
+    grant: Option<axum::extract::Extension<super::security::Grant>>,
     body: Result<Json<Value>, JsonRejection>,
 ) -> Response {
     let request_started = tokio::time::Instant::now();
+    let Some(axum::extract::Extension(grant)) = grant else {
+        return error(
+            StatusCode::SERVICE_UNAVAILABLE,
+            "SECURITY_STATE_UNCONFIRMED",
+        );
+    };
     let Json(input) = match body {
         Ok(input) => input,
         Err(rejection) => {
@@ -527,7 +608,31 @@ async fn completion(
                 tagma_core::health::now_ms().unwrap_or(0),
             )
         });
-        match pin_plan(&loaded, model, first_cloud.as_ref()) {
+        let policy = match state
+            .security
+            .read(
+                loaded
+                    .1
+                    .providers
+                    .iter()
+                    .map(|record| {
+                        tagma_core::security::provider_target(
+                            &tagma_core::health::provider_fingerprint(record),
+                        )
+                    })
+                    .collect(),
+            )
+            .await
+        {
+            Ok(policy) => policy,
+            Err(_) => {
+                return error(
+                    StatusCode::SERVICE_UNAVAILABLE,
+                    "SECURITY_STATE_UNCONFIRMED",
+                );
+            }
+        };
+        match pin_plan(&loaded, model, first_cloud.as_ref(), &policy.revoked) {
             Ok(plan) => {
                 if plan.automatic_brain
                     && !health.as_ref().is_some_and(|(epoch, _)| {
@@ -542,10 +647,57 @@ async fn completion(
         }
     };
     let request_id = uuid::Uuid::new_v4().to_string();
+    let run = match state.security.register(
+        grant.target,
+        plan.steps
+            .iter()
+            .map(|step| tagma_core::security::provider_target(&step.fingerprint))
+            .collect(),
+        None,
+    ) {
+        Ok(run) => run,
+        Err(_) => {
+            return error(
+                StatusCode::SERVICE_UNAVAILABLE,
+                "SECURITY_STATE_UNCONFIRMED",
+            );
+        }
+    };
+    if let Err(failure) = run.check_all().await {
+        return error(
+            if failure.code == tagma_core::ErrorCode::AccessRevoked {
+                StatusCode::FORBIDDEN
+            } else {
+                StatusCode::SERVICE_UNAVAILABLE
+            },
+            if failure.code == tagma_core::ErrorCode::AccessRevoked {
+                "ACCESS_REVOKED"
+            } else {
+                "SECURITY_STATE_UNCONFIRMED"
+            },
+        );
+    }
     let total_deadline = request_started + plan.timeout;
     let count = plan.steps.len();
     let mut previous = None;
     for (index, step) in plan.steps.into_iter().enumerate() {
+        if let Err(failure) = run
+            .check(&tagma_core::security::provider_target(&step.fingerprint))
+            .await
+        {
+            return error(
+                if failure.code == tagma_core::ErrorCode::AccessRevoked {
+                    StatusCode::FORBIDDEN
+                } else {
+                    StatusCode::SERVICE_UNAVAILABLE
+                },
+                if failure.code == tagma_core::ErrorCode::AccessRevoked {
+                    "ACCESS_REVOKED"
+                } else {
+                    "SECURITY_STATE_UNCONFIRMED"
+                },
+            );
+        }
         if state.shutdown.is_cancelled() {
             return error(StatusCode::SERVICE_UNAVAILABLE, "GATEWAY_STOPPING");
         }
@@ -574,6 +726,7 @@ async fn completion(
         let deadline = total_deadline.min(tokio::time::Instant::now() + step.timeout);
         let mut response = forward(
             &state,
+            &run,
             &step,
             &payload,
             final_step && streaming,
@@ -601,7 +754,9 @@ async fn completion(
                 .insert("x-tagma-team-step", HeaderValue::from(index as u32 + 1));
         }
         if final_step || !response.status().is_success() {
-            return response;
+            let (parts, body) = response.into_parts();
+            let stream = async_stream::stream! {let _run=run;let mut body=body.into_data_stream();while let Some(chunk)=body.next().await {yield chunk;}};
+            return Response::from_parts(parts, Body::from_stream(stream));
         }
         let bytes = match axum::body::to_bytes(response.into_body(), MAX_RESPONSE_BYTES).await {
             Ok(bytes) => bytes,
@@ -628,6 +783,7 @@ async fn completion(
 
 async fn forward(
     state: &Arc<Runtime>,
+    run: &Arc<super::security::Run>,
     step: &PinnedStep,
     input: &Value,
     streaming: bool,
@@ -647,7 +803,10 @@ async fn forward(
         streaming,
         total_deadline,
         public_model,
-        health,
+        ForwardContext {
+            health,
+            run: run.clone(),
+        },
     )
     .await;
     if let Some(failure) = response
@@ -671,8 +830,17 @@ async fn forward_response(
     streaming: bool,
     total_deadline: tokio::time::Instant,
     public_model: Option<String>,
-    health: HealthContext,
+    context: ForwardContext,
 ) -> Response {
+    let ForwardContext { health, run } = context;
+    if run.cancel.is_cancelled() {
+        return error(StatusCode::FORBIDDEN, "ACCESS_REVOKED");
+    }
+    if tokio::time::Instant::now() >= total_deadline {
+        return error(StatusCode::GATEWAY_TIMEOUT, "REQUEST_BUDGET_EXCEEDED");
+    }
+    #[cfg(test)]
+    run.before_dispatch(&step.model, false).await;
     let mut request = state
         .client
         .post(format!(
@@ -683,10 +851,57 @@ async fn forward_response(
     if let Some(secret) = &step.credential {
         request = request.bearer_auth(secret.as_str());
     }
+    let dispatch = match tokio::time::timeout_at(
+        total_deadline,
+        run.admit_dispatch(&tagma_core::security::provider_target(&step.fingerprint)),
+    )
+    .await
+    {
+        Ok(Ok(guard)) => guard,
+        Ok(Err(failure)) => {
+            return error(
+                if failure.code == tagma_core::ErrorCode::AccessRevoked {
+                    StatusCode::FORBIDDEN
+                } else {
+                    StatusCode::SERVICE_UNAVAILABLE
+                },
+                if failure.code == tagma_core::ErrorCode::AccessRevoked {
+                    "ACCESS_REVOKED"
+                } else {
+                    "SECURITY_STATE_UNCONFIRMED"
+                },
+            );
+        }
+        Err(_) => return error(StatusCode::GATEWAY_TIMEOUT, "REQUEST_BUDGET_EXCEEDED"),
+    };
+    #[cfg(test)]
+    run.before_dispatch(&step.model, true).await;
+    if run.cancel.is_cancelled() {
+        return error(StatusCode::FORBIDDEN, "ACCESS_REVOKED");
+    }
+    if state.shutdown.is_cancelled() {
+        return error(StatusCode::SERVICE_UNAVAILABLE, "GATEWAY_STOPPING");
+    }
+    if tokio::time::Instant::now() >= total_deadline {
+        return error(StatusCode::GATEWAY_TIMEOUT, "REQUEST_BUDGET_EXCEEDED");
+    }
+    // Initiate the HTTP send under the same barrier. Holding the guard only
+    // through another check would leave the original check-to-send race intact.
+    let mut sending = Box::pin(request.send());
+    let initial = futures_util::poll!(sending.as_mut());
+    drop(dispatch);
+    let sending = async move {
+        match initial {
+            std::task::Poll::Ready(result) => result,
+            std::task::Poll::Pending => sending.await,
+        }
+    };
     let upstream = tokio::select! {
+        biased;
+        _ = run.cancel.cancelled()=>return error(StatusCode::FORBIDDEN,"ACCESS_REVOKED"),
         _ = state.shutdown.cancelled() => return error(StatusCode::SERVICE_UNAVAILABLE,"GATEWAY_STOPPING"),
         _ = tokio::time::sleep_until(total_deadline) => return error(StatusCode::GATEWAY_TIMEOUT,"REQUEST_BUDGET_EXCEEDED"),
-        response = tokio::time::timeout(Duration::from_secs(30),request.send()) => match response {
+        response = tokio::time::timeout(Duration::from_secs(30),sending) => match response {
             Ok(Ok(response)) => response,
             Ok(Err(error_value)) => return error(StatusCode::BAD_GATEWAY,if error_value.is_timeout(){"UPSTREAM_CONNECT_TIMEOUT"}else if error_value.is_connect(){"UPSTREAM_CONNECTION_FAILED"}else{"UPSTREAM_TRANSPORT_ERROR"}),
             Err(_) => return error(StatusCode::GATEWAY_TIMEOUT,"UPSTREAM_RESPONSE_TIMEOUT"),
@@ -715,6 +930,7 @@ async fn forward_response(
     let mut upstream = upstream.bytes_stream();
     if streaming {
         let shutdown = state.shutdown.clone();
+        let cancelled = run.cancel.clone();
         let output = async_stream::stream! {
             let mut decoder = SseDecoder::default();
             let mut total = 0usize;
@@ -724,6 +940,8 @@ async fn forward_response(
             let mut valid_role=true;
             'reading: loop {
                 let next = tokio::select! {
+                    biased;
+                    _ = cancelled.cancelled()=>{yield Ok::<_,Infallible>(stream_error(&health,"ACCESS_REVOKED"));break;},
                     _ = shutdown.cancelled() => { yield Ok::<_,Infallible>(stream_error(&health,"GATEWAY_STOPPING")); break; },
                     _ = tokio::time::sleep_until(total_deadline) => { yield Ok(stream_error(&health,"REQUEST_BUDGET_EXCEEDED")); break; },
                     next = tokio::time::timeout(Duration::from_secs(30),upstream.next()) => next,
@@ -768,6 +986,8 @@ async fn forward_response(
         let mut bytes = Vec::new();
         loop {
             let next = tokio::select! {
+                biased;
+                _ = run.cancel.cancelled()=>return error(StatusCode::FORBIDDEN,"ACCESS_REVOKED"),
                 _ = state.shutdown.cancelled() => return error(StatusCode::SERVICE_UNAVAILABLE,"GATEWAY_STOPPING"),
                 _ = tokio::time::sleep_until(total_deadline) => return error(StatusCode::GATEWAY_TIMEOUT,"REQUEST_BUDGET_EXCEEDED"),
                 next = tokio::time::timeout(Duration::from_secs(30),upstream.next()) => next,

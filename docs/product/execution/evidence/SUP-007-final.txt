@@ -1,0 +1,28 @@
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+   Compiling tagma-gateway v0.2.0-dev.14 (D:\demo1\tagmaai\crates\tagma-gateway)
+    Finished `test` profile [unoptimized] target(s) in 2.52s
+     Running unittests src\main.rs (target\debug\deps\tagma_gateway-2f8907081d2bb4f4.exe)
+
+running 2 tests
+SUP-007 phase=first-step cancel_inflight=false confirmed_revision=1 upstream_target_calls=0 status=403
+SUP-007 phase=next-step cancel_inflight=false confirmed_revision=1 upstream_target_calls=0 status=403
+test security::tests::sup007_confirmed_revoke_cannot_overtake_an_unstarted_dispatch ... ok
+A11 real HTTP/in-memory credentials: missing/wrong/revoked 401; no data-plane management; new token saved-before-apply denied then accepted; provider revoke blocks new dispatch; optional cancellation closes real upstream and retains partial/error without DONE; corrupt security store 503/unconfirmed
+test security::tests::real_http_token_revocation_rotation_inflight_cancel_and_storage_failure ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 10 filtered out; finished in 0.13s
+

@@ -52,6 +52,7 @@ enum IntentPoint {
     Created,
     PartialWritten,
     Synced,
+    DatabaseReady,
 }
 
 pub(crate) fn ensure(directory: &Path, after_create: impl FnOnce()) -> AppResult<()> {
@@ -186,13 +187,21 @@ fn ensure_inner(
             tx.execute_batch(crate::catalog::CREATE_CATALOG_TABLE)
                 .map_err(|_| error())?;
         }
+        if intent.schema_version >= 8 {
+            tx.execute_batch(crate::security::CREATE_SECURITY_TABLES)
+                .map_err(|_| error())?;
+        }
         tx.pragma_update(None, "user_version", intent.schema_version)
             .map_err(|_| error())?;
         tx.commit().map_err(|_| error())?;
     } else if schema != intent.schema_version
         || owner != APPLICATION_ID
         || objects
-            != if intent.schema_version >= 5 {
+            != if intent.schema_version >= 8 {
+                9
+            } else if intent.schema_version >= 7 {
+                6
+            } else if intent.schema_version >= 5 {
                 5
             } else if intent.schema_version >= 2 {
                 4
@@ -222,6 +231,7 @@ fn ensure_inner(
         .map_err(|_| error())?
         .sync_all()
         .map_err(|_| error())?;
+    intent_hook(IntentPoint::DatabaseReady);
     publish_new(&staging, &target).map_err(|_| error())?;
     fs::remove_file(intent_path).map_err(|_| error())?;
     Ok(())
@@ -246,12 +256,75 @@ pub(crate) fn publish_new(source: &Path, target: &Path) -> std::io::Result<()> {
 mod tests {
     use super::*;
     #[test]
+    fn committed_owned_staging_for_catalog_and_security_schemas_can_finish_publication() {
+        for version in [7, SCHEMA_VERSION] {
+            let temp = tempfile::tempdir().unwrap();
+            let operation_id = uuid::Uuid::new_v4().to_string();
+            let staging_file = format!(".config-initializing-{operation_id}.sqlite3");
+            let intent = Intent {
+                owner: OWNER.into(),
+                operation_id,
+                schema_version: version,
+                staging_file: staging_file.clone(),
+            };
+            fs::write(
+                temp.path().join(INTENT),
+                serde_json::to_vec(&intent).unwrap(),
+            )
+            .unwrap();
+            let stopped = std::process::Command::new(std::env::current_exe().unwrap())
+                .args([
+                    "--ignored",
+                    "--exact",
+                    "initialization::tests::intent_crash_worker",
+                ])
+                .env("TAGMA_INTENT_CRASH_DIR", temp.path())
+                .env("TAGMA_INTENT_CRASH_POINT", "database-ready")
+                .status()
+                .unwrap();
+            assert_eq!(stopped.code(), Some(90));
+            assert!(!temp.path().join("config.sqlite3").exists());
+            let staged = Connection::open_with_flags(
+                temp.path().join(&staging_file),
+                rusqlite::OpenFlags::SQLITE_OPEN_READ_ONLY,
+            )
+            .unwrap();
+            let count: u32 = staged
+                .query_row(
+                    "SELECT count(*) FROM sqlite_schema WHERE name NOT LIKE 'sqlite_%'",
+                    [],
+                    |row| row.get(0),
+                )
+                .unwrap();
+            assert_eq!(count, if version == 7 { 6 } else { 9 });
+            drop(staged);
+            let before = fs::read(temp.path().join(&staging_file)).unwrap();
+            ensure(temp.path(), || {}).unwrap();
+            assert_eq!(
+                fs::read(temp.path().join("config.sqlite3")).unwrap(),
+                before
+            );
+            let db = Connection::open(temp.path().join("config.sqlite3")).unwrap();
+            assert_eq!(
+                db.pragma_query_value::<u32, _>(None, "user_version", |row| row.get(0))
+                    .unwrap(),
+                version
+            );
+            assert!(!pending(temp.path()));
+            assert!(!temp.path().join(staging_file).exists());
+        }
+        println!(
+            "Initialization recovery: committed owned schema7 and schema8 staging publish after interruption; unknown staging protection remains enabled"
+        );
+    }
+    #[test]
     #[ignore = "Child only: intent publication interruption"]
     fn intent_crash_worker() {
         let directory = std::env::var_os("TAGMA_INTENT_CRASH_DIR").expect("owned directory");
         let point = match std::env::var("TAGMA_INTENT_CRASH_POINT").unwrap().as_str() {
             "created" => IntentPoint::Created,
             "partial" => IntentPoint::PartialWritten,
+            "database-ready" => IntentPoint::DatabaseReady,
             "synced" => IntentPoint::Synced,
             _ => panic!("point"),
         };

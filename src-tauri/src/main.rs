@@ -53,6 +53,7 @@ async fn application_view(
             runtime.status().await
         } else {
             RuntimeStatus {
+                security_revision: None,
                 state: RuntimeState::Stopped,
                 instance_id: None,
                 effective_revision: None,
@@ -199,6 +200,34 @@ async fn reveal_gateway_token(
         .to_string())
 }
 
+#[tauri::command]
+async fn revoke_access(
+    window: WebviewWindow,
+    app: State<'_, Application>,
+    input: security::RevokeAccess,
+) -> AppResult<ConfigView> {
+    let config = config(&window, &app)?;
+    let receipt = config.revoke_access(input)?;
+    if let Some(runtime) = &app.runtime {
+        let _ = runtime.confirm_security(receipt.revision).await;
+    }
+    config.view()
+}
+#[tauri::command]
+async fn rotate_gateway_token(
+    window: WebviewWindow,
+    app: State<'_, Application>,
+    input: security::RotateGatewayToken,
+) -> AppResult<ConfigView> {
+    let config = config(&window, &app)?;
+    let saved = config.rotate_gateway_token(input)?;
+    if let Some(runtime) = &app.runtime {
+        let _ = runtime.apply().await;
+        let _ = runtime.confirm_security(saved.security.revision).await;
+    }
+    config.view()
+}
+
 fn gateway<'a>(window: &WebviewWindow, app: &'a Application) -> AppResult<&'a Arc<GatewayManager>> {
     config(window, app)?;
     app.runtime
@@ -310,6 +339,7 @@ async fn diagnostics_view(
         manager.status().await
     } else {
         RuntimeStatus {
+            security_revision: None,
             state: RuntimeState::Failed,
             instance_id: None,
             effective_revision: None,
@@ -518,6 +548,8 @@ fn main() {
             save_gateway,
             initialize_gateway_token,
             reveal_gateway_token,
+            revoke_access,
+            rotate_gateway_token,
             application_view,
             save_provider,
             delete_provider,

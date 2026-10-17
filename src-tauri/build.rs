@@ -19,6 +19,8 @@ fn main() {
             "save_gateway",
             "initialize_gateway_token",
             "reveal_gateway_token",
+            "revoke_access",
+            "rotate_gateway_token",
             "start_gateway",
             "stop_gateway",
             "apply_gateway",

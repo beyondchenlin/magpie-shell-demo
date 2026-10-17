@@ -1,0 +1,29 @@
+   Compiling tagma-core v0.2.0-dev.14 (D:\demo1\tagmaai\crates\tagma-core)
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+    Finished `test` profile [unoptimized] target(s) in 3.19s
+     Running unittests src\lib.rs (target\debug\deps\tagma_core-7ef2bdddc972a4f9.exe)
+
+running 1 test
+
+running 1 test
+
+running 1 test
+Initialization recovery: committed owned schema7 and schema8 staging publish after interruption; unknown staging protection remains enabled
+test initialization::tests::committed_owned_staging_for_catalog_and_security_schemas_can_finish_publication ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 32 filtered out; finished in 0.04s
+

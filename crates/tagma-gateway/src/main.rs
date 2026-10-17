@@ -3,6 +3,7 @@
 mod catalog;
 mod health;
 mod http_api;
+mod security;
 use axum::{
     extract::{Request as HttpRequest, State},
     middleware::{self, Next},
@@ -32,6 +33,7 @@ type LoadedSnapshot = (
 );
 
 struct Runtime {
+    security: Arc<security::Gate>,
     catalog_client: reqwest::Client,
     catalog_jobs: Arc<catalog::Jobs>,
     catalog_slots: Arc<tokio::sync::Semaphore>,
@@ -223,7 +225,13 @@ async fn run(
         Ok(v) => v,
         Err(_) => return 12,
     };
+    let security = security::Gate::new(directory.clone(), shutdown.clone());
+    let security_revision = match security.confirm(0).await {
+        Ok(revision) => revision,
+        Err(_) => return 15,
+    };
     let status = RuntimeStatus {
+        security_revision: Some(security_revision),
         state: RuntimeState::Running,
         instance_id: Some(instance_id),
         effective_revision: Some(revision),
@@ -239,6 +247,7 @@ async fn run(
     let health = health::Tracker::new(directory.clone(), shutdown.clone());
     health.reconcile(&snapshot);
     let state = Arc::new(Runtime {
+        security,
         catalog_jobs: Arc::new(catalog::Jobs::default()),
         catalog_slots: Arc::new(tokio::sync::Semaphore::new(2)),
         catalog_client: match tagma_runtime::catalog::client() {
@@ -301,6 +310,11 @@ async fn run(
                             let mut stop = false;
                             match request.command {
                                 Command::Status => {},
+                                Command::ConfirmSecurity {revision} => {
+                                    match confirm_security(&state,revision).await {Ok(_)=>{},Err(error)=>{
+                                        let mut status=state.status.read().await.clone();status.error=Some(error);let response=Response {protocol_version:PROTOCOL_VERSION,product_version:PRODUCT_VERSION.into(),instance_id:state.manifest.instance_id.clone(),config_id:state.manifest.config_id.clone(),challenge:request.challenge,status};let _=ipc::write_frame(&mut stream,&response).await;return;
+                                    }}
+                                },
                                 Command::Probe { input } => {
                                     if let Err(error)=catalog::start(&state,input).await {
                                         let mut status=state.status.read().await.clone();status.error=Some(error);
@@ -328,7 +342,7 @@ async fn run(
     let synchronizer = tokio::spawn(async move {
         let mut interval = tokio::time::interval(Duration::from_secs(2));
         loop {
-            tokio::select! { _ = reconcile.shutdown.cancelled() => break, _ = interval.tick() => apply(&reconcile).await }
+            tokio::select! { _ = reconcile.shutdown.cancelled() => break, _ = interval.tick() => {apply(&reconcile).await;let _=confirm_security(&reconcile,0).await;} }
         }
     });
     let router = http_api::router(state.clone())
@@ -392,16 +406,16 @@ fn load_snapshot(directory: &std::path::Path) -> AppResult<LoadedSnapshot> {
 
 async fn authorize(
     State(state): State<Arc<Runtime>>,
-    request: HttpRequest,
+    mut request: HttpRequest,
     next: Next,
 ) -> HttpResponse {
     if !http_api::trusted_local_request(&request, state.manifest.port) {
         return http_api::error(axum::http::StatusCode::FORBIDDEN, "UNTRUSTED_ORIGIN");
     }
-    let allowed = {
+    let (allowed, target) = {
         let loaded = state.snapshot.read().await;
         if !loaded.1.gateway.auth_enabled {
-            true
+            (true, None)
         } else {
             let header = request.headers().get_all(axum::http::header::AUTHORIZATION);
             let mut values = header.iter();
@@ -411,14 +425,23 @@ async fn authorize(
                 .and_then(|v| v.split_once(' '))
                 .filter(|(scheme, _)| scheme.eq_ignore_ascii_case("Bearer"))
                 .map(|(_, token)| token);
-            values.next().is_none()
+            let allowed = values.next().is_none()
                 && loaded
                     .2
                     .as_ref()
                     .zip(candidate)
                     .is_some_and(|(expected, actual)| {
                         bool::from(expected.as_bytes().ct_eq(actual.as_bytes()))
-                    })
+                    });
+            (
+                allowed,
+                loaded
+                    .1
+                    .gateway
+                    .credential_ref
+                    .as_deref()
+                    .map(tagma_core::security::gateway_target),
+            )
         }
     };
     if !allowed {
@@ -432,6 +455,22 @@ async fn authorize(
             return http_api::error(axum::http::StatusCode::TOO_MANY_REQUESTS, "GATEWAY_BUSY");
         }
     };
+    let policy = match state.security.read(target.iter().cloned().collect()).await {
+        Ok(policy) => policy,
+        Err(_) => {
+            return http_api::error(
+                axum::http::StatusCode::SERVICE_UNAVAILABLE,
+                "SECURITY_STATE_UNCONFIRMED",
+            );
+        }
+    };
+    if target
+        .as_ref()
+        .is_some_and(|target| policy.revoked.contains_key(target))
+    {
+        return http_api::error(axum::http::StatusCode::UNAUTHORIZED, "ACCESS_REVOKED");
+    }
+    request.extensions_mut().insert(security::Grant { target });
     let (parts, body) = next.run(request).await.into_parts();
     let stream = async_stream::stream! {
         use futures_util::StreamExt;
@@ -442,6 +481,19 @@ async fn authorize(
     HttpResponse::from_parts(parts, axum::body::Body::from_stream(stream))
 }
 
+async fn confirm_security(state: &Runtime, expected: u32) -> AppResult<u32> {
+    match state.security.confirm(expected).await {
+        Ok(revision) => {
+            let mut status = state.status.write().await;
+            status.security_revision = Some(status.security_revision.unwrap_or(0).max(revision));
+            Ok(revision)
+        }
+        Err(error) => {
+            state.status.write().await.security_revision = None;
+            Err(error)
+        }
+    }
+}
 async fn apply(state: &Runtime) {
     let directory = state.directory.clone();
     apply_with(state, async move {
@@ -540,9 +592,13 @@ async fn apply_with(
 #[cfg(test)]
 mod apply_tests {
     use super::*;
-    fn state() -> Arc<Runtime> {
-        let fixture = tempfile::tempdir().unwrap();
+    pub(super) fn state() -> Arc<Runtime> {
+        let fixture = tempfile::Builder::new()
+            .prefix("tagma-gateway-unit-")
+            .tempdir()
+            .unwrap();
         Arc::new(Runtime {
+            security: security::Gate::new(fixture.path().to_owned(), CancellationToken::new()),
             catalog_jobs: Arc::new(catalog::Jobs::default()),
             catalog_slots: Arc::new(tokio::sync::Semaphore::new(2)),
             catalog_client: tagma_runtime::catalog::client().unwrap(),
@@ -558,6 +614,7 @@ mod apply_tests {
                 console_attached: false,
             },
             status: RwLock::new(RuntimeStatus {
+                security_revision: None,
                 state: RuntimeState::Running,
                 instance_id: Some("test".into()),
                 effective_revision: Some(0),

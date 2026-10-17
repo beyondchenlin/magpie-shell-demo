@@ -157,6 +157,7 @@ pub enum TeamPublishIssue {
     UnsupportedBrain,
     MissingBrain,
     NoAvailableBrain,
+    RevokedDependency,
     MissingDependency,
     PackNotAvailable,
     InvalidStepFlow,
@@ -434,6 +435,14 @@ impl ConfigService {
         }
         team.draft.validate_draft()?;
         let health = self.read_health_records(&snapshot)?;
+        if self
+            .snapshot_security(&snapshot)?
+            .revoked_provider_ids
+            .iter()
+            .any(|id| team.draft.references_provider(id))
+        {
+            return Err(AppError::new(ErrorCode::AccessRevoked));
+        }
         let issues =
             team.draft
                 .publish_issues_with_health(&snapshot, &health, crate::health::now_ms()?);

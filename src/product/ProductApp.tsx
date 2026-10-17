@@ -5,6 +5,7 @@ import { PrefRow } from "../components/PrefRow";
 import { LibSwitch } from "../components/LibSwitch";
 import type { ApplicationView, ConfigView, Provider, RuntimeStatus, SaveProvider, TeamRecipe } from "./contract";
 import { ProviderForm } from "./ProviderForm";
+import { SecurityControls } from "./SecurityControls";
 import { ProviderCatalog } from "./ProviderCatalog";
 import { LanguagePick } from "./LanguagePick";
 import { DiagnosticsPanel } from "./DiagnosticsPanel";
@@ -19,6 +20,7 @@ import { desktop, protocolVersion, service } from "./service";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 
 type Page = ProductPage;
+function unconfirmSecurity(previous:ApplicationView|null):ApplicationView|null{return previous?{...previous,runtime:{...previous.runtime,security_revision:null}}:previous;}
 function teamUsesProvider(recipe:TeamRecipe,id:string){return (recipe.brain.kind==="explicit"&&recipe.brain.target.provider_id===id)||recipe.steps.some(step=>step.target.kind==="cloud_model"&&"provider_id" in step.target.target&&step.target.target.provider_id===id);}
 
 export default function ProductApp() {
@@ -31,25 +33,26 @@ export default function ProductApp() {
   const [editor, setEditor] = useState<Provider | "new" | null>(null);
   const [profileEditing, setProfileEditing] = useState(false);
   const [gatewayEditing, setGatewayEditing] = useState(false);
+  const [securityEditing,setSecurityEditing]=useState(false);
   const [teamEditing, setTeamEditing] = useState(false);
   const [deleting, setDeleting] = useState<Provider | null>(null);
   const mounted = useRef(true);
   const deleteDialog = useRef<HTMLDialogElement>(null);
   const c = copy(preferences.language);
-  const editing = !!editor || profileEditing || gatewayEditing || teamEditing;
+  const editing = !!editor || profileEditing || gatewayEditing || teamEditing || securityEditing;
   const providerReferences = deleting ? view?.config.profiles.filter(profile => !profile.is_global && profile.provider_ids.includes(deleting.id)) ?? [] : [];
   const teamReferences = deleting ? view?.config.teams.filter(({team})=>teamUsesProvider(team.draft,deleting.id)||team.versions.some(version=>teamUsesProvider(version.recipe,deleting.id)))??[]:[];
   const refresh = useCallback(async () => {
     if (!desktop) return;
     setBusy(true); setError(null);
     try { const current = await service.view(); if (mounted.current) setView(current); }
-    catch (err) { if (mounted.current) setError(err); }
+    catch (err) { if (mounted.current) {setError(err);setView(unconfirmSecurity);} }
     finally { if (mounted.current) setBusy(false); }
   }, []);
   useEffect(() => {
     mounted.current = true;
     let live = true;
-    if (desktop) void service.view().then(current => { if (live) setView(current); }, err => { if (live) setError(err); })
+    if (desktop) void service.view().then(current => { if (live) setView(current); }, err => { if (live) {setError(err);setView(unconfirmSecurity);} })
       .finally(() => { if (live) setBusy(false); });
     return () => { live = false; mounted.current = false; };
   }, []);
@@ -60,7 +63,7 @@ export default function ProductApp() {
     const timer=setInterval(() => {
       void service.view().then(current => {
         if (live) setView(previous => previous && previous.config.desired_revision > current.config.desired_revision ? previous : current);
-      }, err => { if (live) setError(err); });
+      }, err => { if (live) {setError(err);setView(unconfirmSecurity);} });
     },2000);
     return () => { live=false; clearInterval(timer); };
   },[busy]);
@@ -74,12 +77,12 @@ export default function ProductApp() {
 
   async function mutate(operation: () => Promise<ConfigView>): Promise<boolean> {
     if (busy) return false;
-    setBusy(true); setError(null); setNotice(false);
+    setBusy(true); setError(null); setNotice(false); setView(unconfirmSecurity);
     try {
       const config = await operation();
       if (mounted.current) { setView(old => old ? { ...old, config } : old); setNotice(true); }
       return true;
-    } catch (err) { if (mounted.current) setError(err); return false; }
+    } catch (err) { if (mounted.current) {setError(err);setView(unconfirmSecurity);} return false; }
     finally { if (mounted.current) setBusy(false); }
   }
 
@@ -90,9 +93,9 @@ export default function ProductApp() {
   }
   async function runtimeAction(operation: () => Promise<RuntimeStatus>) {
     if(busy) return;
-    setBusy(true); setError(null); setNotice(false);
+    setBusy(true); setError(null); setNotice(false); setView(unconfirmSecurity);
     try { const runtime=await operation(); if(mounted.current) setView(previous => previous ? {...previous,runtime} : previous); }
-    catch(err) { if(mounted.current) setError(err); }
+    catch(err) { if(mounted.current) {setError(err);setView(unconfirmSecurity);} }
     finally { if(mounted.current) setBusy(false); }
   }
   function changePreferences(next: Preferences) {
@@ -131,6 +134,7 @@ export default function ProductApp() {
           </div>
         </div>)}</div>
         {view && <ProviderCatalog view={view} busy={busy||editing} language={preferences.language} onMutate={mutate} onEdit={provider=>{setEditor(provider);setNotice(false);}} onChat={()=>setPage("chat")} />}
+        {view&&<SecurityControls view={view} mode="providers" busy={busy||!!editor||profileEditing||gatewayEditing||teamEditing} language={preferences.language} onMutate={mutate} onEditingChange={setSecurityEditing}/>}
         {editor && view && <ProviderForm key={editor === "new" ? "new" : editor.id} provider={editor === "new" ? undefined : editor} revision={view.config.desired_revision} busy={busy} language={preferences.language} onSave={save} onCancel={() => setEditor(null)} />}
         {view && <AppProfiles config={view.config} busy={busy || !!editor} language={preferences.language} onMutate={mutate} onEditingChange={setProfileEditing} />}
         <p className="tagma-footnote">{c.protocolName} · {c.noInference}</p>
@@ -141,8 +145,9 @@ export default function ProductApp() {
         {view?.runtime.address && <PrefRow name="URL"><span>{view.runtime.address}</span></PrefRow>}
         {view?.runtime.instance_id && <PrefRow name={view.runtime.owned ? c.owned : c.external}><span className="tagma-instance">{view.runtime.instance_id}</span></PrefRow>}
       </div>{view?.runtime.error && <p role="alert" className="tagma-error">{errorCopy(view.runtime.error,preferences.language)}</p>}
-        <div className="tagma-actions"><TextBtn disabled={!desktop || busy || gatewayEditing} onClick={() => void runtimeAction(service.startGateway)}>{c.start}</TextBtn><TextBtn disabled={!view?.runtime.owned || busy || gatewayEditing} onClick={() => void runtimeAction(service.stopGateway)}>{c.stop}</TextBtn><TextBtn disabled={!view?.runtime.instance_id || busy || gatewayEditing} onClick={() => void runtimeAction(service.applyGateway)}>{c.apply}</TextBtn></div>
-        {view && <GatewaySettings config={view.config} busy={busy} language={preferences.language} onMutate={mutate} onEditingChange={setGatewayEditing} onError={setError} />}
+        <div className="tagma-actions"><TextBtn disabled={!desktop || busy || gatewayEditing || securityEditing} onClick={() => void runtimeAction(service.startGateway)}>{c.start}</TextBtn><TextBtn disabled={!view?.runtime.owned || busy || gatewayEditing} onClick={() => void runtimeAction(service.stopGateway)}>{c.stop}</TextBtn><TextBtn disabled={!view?.runtime.instance_id || busy || gatewayEditing} onClick={() => void runtimeAction(service.applyGateway)}>{c.apply}</TextBtn></div>
+        {view&&<SecurityControls view={view} mode="gateway" busy={busy||!!editor||profileEditing||gatewayEditing||teamEditing} language={preferences.language} onMutate={mutate} onEditingChange={setSecurityEditing}/>}
+        {view && <GatewaySettings config={view.config} busy={busy||securityEditing} language={preferences.language} onMutate={mutate} onEditingChange={setGatewayEditing} onError={setError} />}
         <TextBtn disabled={busy || gatewayEditing} onClick={() => setPage("providers")}>{c.back}</TextBtn></section>}
       {page === "settings" && <section><h1>{c.settings}</h1><div className="list prefs">
         <PrefRow name={c.theme}><Segs value={preferences.theme} items={[{ id: "system", label: c.system }, { id: "light", label: c.light }, { id: "dark", label: c.dark }]} onChange={id => changePreferences({ ...preferences, theme: id as ProductTheme })} /></PrefRow>

@@ -1,0 +1,22 @@
+{
+  "base": "da9a86fa05f0cf58b4832eb0a16c0f5c0c83393a",
+  "phase": "SUP-007 before shared dispatch barrier",
+  "sources": [
+    {
+      "path": "crates/tagma-gateway/src/security.rs",
+      "sha256": "23e43fc48c7c2dff275e38319880e4523fe79cfe06f766ebada0fe4b97017743"
+    },
+    {
+      "path": "crates/tagma-gateway/src/http_api.rs",
+      "sha256": "b9f413931883f88c7e3b933f61f8a2ffec11499f7154e2078a49e7f3e37a1d95"
+    },
+    {
+      "path": "crates/tagma-gateway/src/main.rs",
+      "sha256": "5b08decc1c30c0192dffe3902a24b4dd14a2e245544b0f6abf95ba081b79442e"
+    },
+    {
+      "path": "crates/tagma-core/src/security.rs",
+      "sha256": "e465b532f768afaad917f4a5700f754c13e36928812f591cc94aeafb728656f7"
+    }
+  ]
+}

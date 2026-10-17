@@ -142,6 +142,16 @@ fn verify_identity(db: &Connection) -> AppResult<()> {
 }
 
 impl ConfigService {
+    pub(crate) fn directory(&self) -> &Path {
+        &self.directory
+    }
+    pub(crate) fn snapshot_security(
+        &self,
+        snapshot: &ConfigSnapshot,
+    ) -> AppResult<crate::security::SecurityView> {
+        let db = self.db.lock().map_err(storage)?;
+        crate::security::view(&db, snapshot)
+    }
     /// Runtime readers never initialize/migrate the business store or recover credentials.
     pub fn read_runtime_snapshot(directory: &Path) -> AppResult<(u32, ConfigSnapshot)> {
         let maintenance = lock_file(&directory.join("maintenance.lock"))?;
@@ -278,9 +288,11 @@ impl ConfigService {
             .map_err(storage)?;
         let health_records = crate::health::records(&db, &snapshot)?;
         let observed_now = crate::health::now_ms().unwrap_or(0);
+        let security = crate::security::view(&db, &snapshot)?;
         let first_cloud =
             crate::health::select_first_cloud(&snapshot, &health_records, observed_now);
         Ok(ConfigView {
+            security: security.clone(),
             protocol_version: PROTOCOL_VERSION,
             schema_version: SCHEMA_VERSION,
             desired_revision: revision,
@@ -294,16 +306,33 @@ impl ConfigService {
                 .iter()
                 .map(|team| crate::teams::TeamView {
                     team: team.clone(),
-                    publish_issues: team
-                        .draft
-                        .publish_issues_with_candidate(&snapshot, first_cloud.as_ref()),
+                    publish_issues: {
+                        let mut issues = team
+                            .draft
+                            .publish_issues_with_candidate(&snapshot, first_cloud.as_ref());
+                        if security
+                            .revoked_provider_ids
+                            .iter()
+                            .any(|id| team.draft.references_provider(id))
+                        {
+                            issues.push(crate::teams::TeamPublishIssue::RevokedDependency);
+                        }
+                        issues
+                    },
                     published: team
                         .versions
                         .iter()
                         .map(|version| {
-                            let issues = version
+                            let mut issues = version
                                 .recipe
                                 .publish_issues_with_candidate(&snapshot, first_cloud.as_ref());
+                            if security
+                                .revoked_provider_ids
+                                .iter()
+                                .any(|id| version.recipe.references_provider(id))
+                            {
+                                issues.push(crate::teams::TeamPublishIssue::RevokedDependency);
+                            }
                             crate::teams::PublishedTeamView {
                                 revision: version.revision,
                                 public_id: version.public_id.clone(),
@@ -587,15 +616,41 @@ impl ConfigService {
 
     /// Idempotent initialization only. Rotation/revocation needs the persistent P1 revocation ledger.
     pub fn initialize_gateway_token(&self, input: RevisionInput) -> AppResult<ConfigView> {
+        self.issue_gateway_token(input, false, false)
+    }
+    pub fn rotate_gateway_token(
+        &self,
+        input: crate::security::RotateGatewayToken,
+    ) -> AppResult<ConfigView> {
+        self.issue_gateway_token(
+            RevisionInput {
+                protocol_version: input.protocol_version,
+                expected_revision: input.expected_revision,
+            },
+            true,
+            input.cancel_inflight,
+        )
+    }
+    fn issue_gateway_token(
+        &self,
+        input: RevisionInput,
+        rotate: bool,
+        cancel: bool,
+    ) -> AppResult<ConfigView> {
         check_protocol(input.protocol_version)?;
         let _operation = self.operation_lock()?;
         let (revision, mut snapshot) = self.read_snapshot()?;
         if revision != input.expected_revision {
             return Err(AppError::new(ErrorCode::ConfigConflict));
         }
-        if snapshot.gateway.credential_ref.is_some() {
+        if snapshot.gateway.credential_ref.is_some() && !rotate {
             return self.view();
         }
+        let revoked = snapshot
+            .gateway
+            .credential_ref
+            .as_deref()
+            .map(crate::security::gateway_target);
         let mut random = Zeroizing::new([0u8; 32]);
         getrandom::fill(&mut *random).map_err(storage)?;
         let secret = Zeroizing::new(
@@ -619,7 +674,12 @@ impl ConfigService {
             return Err(error);
         }
         snapshot.gateway.credential_ref = Some(reference);
-        if let Err(error) = self.commit(revision, &snapshot, Some(&operation)) {
+        if let Err(error) = self.commit_security(
+            revision,
+            &snapshot,
+            Some(&operation),
+            revoked.as_deref().map(|target| (target, cancel)),
+        ) {
             let _ = self.recover_locked();
             return Err(error);
         }
@@ -632,6 +692,13 @@ impl ConfigService {
         check_protocol(protocol_version)?;
         let (_, snapshot) = self.read_snapshot()?;
         let reference = snapshot.gateway.credential_ref.ok_or_else(invalid)?;
+        let target = crate::security::gateway_target(&reference);
+        if Self::read_runtime_security(&self.directory, std::slice::from_ref(&target))?
+            .revoked
+            .contains_key(&target)
+        {
+            return Err(AppError::new(ErrorCode::AccessRevoked));
+        }
         self.credentials.get(&reference)
     }
 
@@ -641,6 +708,15 @@ impl ConfigService {
         snapshot: &ConfigSnapshot,
         operation: Option<&str>,
     ) -> AppResult<()> {
+        self.commit_security(expected, snapshot, operation, None)
+    }
+    fn commit_security(
+        &self,
+        expected: u32,
+        snapshot: &ConfigSnapshot,
+        operation: Option<&str>,
+        revoked: Option<(&str, bool)>,
+    ) -> AppResult<()> {
         let mut db = self.db.lock().map_err(storage)?;
         let tx = db
             .transaction_with_behavior(TransactionBehavior::Immediate)
@@ -648,6 +724,9 @@ impl ConfigService {
         let (current, previous) = Self::read_db(&tx)?;
         if current != expected {
             return Err(AppError::new(ErrorCode::ConfigConflict));
+        }
+        if let Some((target, cancel)) = revoked {
+            crate::security::revoke(&tx, target, cancel)?;
         }
         let next = current.checked_add(1).ok_or_else(invalid)?;
         let json = serde_json::to_string(snapshot).map_err(storage)?;

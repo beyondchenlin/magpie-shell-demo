@@ -34,6 +34,7 @@ impl Jobs {
     }
 }
 pub async fn start(state: &Arc<Runtime>, input: ProbeProvider) -> AppResult<()> {
+    let deadline = tokio::time::Instant::now() + Duration::from_secs(6);
     check_protocol(input.protocol_version)?;
     if state.shutdown.is_cancelled() || uuid::Uuid::parse_str(&input.request_id).is_err() {
         return Err(AppError::new(ErrorCode::InvalidInput));
@@ -59,6 +60,14 @@ pub async fn start(state: &Arc<Runtime>, input: ProbeProvider) -> AppResult<()> 
         .try_acquire_owned()
         .map_err(|_| AppError::new(ErrorCode::ProbeBusy))?;
     let token = state.shutdown.child_token();
+    let security = state.security.register(
+        None,
+        vec![tagma_core::security::provider_target(
+            &tagma_core::health::provider_fingerprint(&record),
+        )],
+        Some(token.clone()),
+    )?;
+    security.check_all().await?;
     {
         let mut jobs = state
             .catalog_jobs
@@ -95,13 +104,45 @@ pub async fn start(state: &Arc<Runtime>, input: ProbeProvider) -> AppResult<()> 
     let state = state.clone();
     tokio::spawn(async move {
         let _active = active;
-        let result = tagma_runtime::catalog::detect(
-            &state.catalog_client,
-            &record.provider,
-            credential,
-            &token,
-        )
-        .await;
+        let result = tokio::time::timeout_at(deadline, async {
+            let Ok(dispatch) = security
+                .admit_dispatch(&tagma_core::security::provider_target(
+                    &tagma_core::health::provider_fingerprint(&record),
+                ))
+                .await
+            else {
+                return tagma_runtime::catalog::Detection {
+                    outcome: tagma_core::catalog::CatalogOutcome::Cancelled,
+                    status: None,
+                    models: vec![],
+                };
+            };
+            if tokio::time::Instant::now() >= deadline {
+                return tagma_runtime::catalog::Detection {
+                    outcome: tagma_core::catalog::CatalogOutcome::Timeout,
+                    status: None,
+                    models: vec![],
+                };
+            }
+            let mut detection = Box::pin(tagma_runtime::catalog::detect(
+                &state.catalog_client,
+                &record.provider,
+                credential,
+                &token,
+            ));
+            let initial = futures_util::poll!(detection.as_mut());
+            drop(dispatch);
+            match initial {
+                std::task::Poll::Ready(result) => result,
+                std::task::Poll::Pending => detection.await,
+            }
+        })
+        .await
+        .unwrap_or(tagma_runtime::catalog::Detection {
+            outcome: tagma_core::catalog::CatalogOutcome::Timeout,
+            status: None,
+            models: vec![],
+        });
         let Ok(observed_at_ms) = tagma_core::health::now_ms() else {
             return;
         };

@@ -76,6 +76,8 @@ impl HealthObservation {
 #[serde(deny_unknown_fields)]
 pub struct ModelHealthRecord {
     #[serde(skip)]
+    pub provider_revoked: bool,
+    #[serde(skip)]
     pub provider_check_blocked_ms: Option<u64>,
     pub provider_id: String,
     pub model_id: String,
@@ -141,7 +143,8 @@ pub fn select_first_cloud(
             if by_model
                 .get(&(provider.provider.id.as_str(), model.as_str()))
                 .is_some_and(|record| {
-                    record.fingerprint == fingerprint
+                    !record.provider_revoked
+                        && record.fingerprint == fingerprint
                         && record.is_ready(now)
                         && record.provider_check_blocked_ms.is_none_or(|blocked| {
                             record
@@ -269,6 +272,10 @@ pub(crate) fn records(
             )
         })
         .collect();
+    let revoked: std::collections::HashSet<_> = crate::security::view(db, snapshot)?
+        .revoked_provider_ids
+        .into_iter()
+        .collect();
     let checks: std::collections::HashMap<_, _> = crate::catalog::records(db, snapshot)?
         .into_iter()
         .map(|r| {
@@ -300,6 +307,7 @@ pub(crate) fn records(
             return Err(AppError::new(ErrorCode::StorageUnavailable));
         }
         record.provider_check_blocked_ms = checks.get(&id).copied().flatten();
+        record.provider_revoked = revoked.contains(&id);
         result.push(record);
     }
     Ok(result)

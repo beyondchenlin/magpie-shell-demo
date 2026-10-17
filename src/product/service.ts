@@ -1,6 +1,6 @@
 import { invoke, isTauri, Channel } from "@tauri-apps/api/core";
 import type { StartChat, ChatEvent } from "./contract";
-import type { SaveTeam, SetTeamEnabled, SaveFirstCloudOrder, ProbeProvider } from "./contract";
+import type { SaveTeam, SetTeamEnabled, SaveFirstCloudOrder, ProbeProvider, RevokeAccess, RotateGatewayToken } from "./contract";
 import type { ApplicationView, ConfigView, DiagnosticBundle, RecoverInitialization, RecoveryOutcome, ReorderProviders, RevisionCommand, RuntimeStatus, SaveProvider, SaveAppProfile, SaveGateway, RevisionInput } from "./contract";
 
 export const desktop = isTauri();
@@ -19,6 +19,8 @@ async function command<T>(name: string, args: Record<string, unknown>): Promise<
 }
 
 export const service = {
+  revokeAccess:(input:RevokeAccess)=>command<ConfigView>("revoke_access",{input}),
+  rotateGatewayToken:(input:RotateGatewayToken)=>command<ConfigView>("rotate_gateway_token",{input}),
   probeProvider:(input:ProbeProvider)=>command<ConfigView>("probe_provider",{input}),
   cancelProbe:(requestId:string)=>command<void>("cancel_probe",{protocolVersion,requestId}),
   saveTeam: (input: SaveTeam) => command<ConfigView>("save_team", { input }),

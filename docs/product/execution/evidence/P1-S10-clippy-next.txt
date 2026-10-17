@@ -1,0 +1,47 @@
+    Checking tagma-core v0.2.0-dev.14 (D:\demo1\tagmaai\crates\tagma-core)
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+    Checking tagma-runtime v0.2.0-dev.14 (D:\demo1\tagmaai\crates\tagma-runtime)
+    Checking tagma-gateway v0.2.0-dev.14 (D:\demo1\tagmaai\crates\tagma-gateway)
+    Checking tagma-desktop v0.2.0-dev.14 (D:\demo1\tagmaai\src-tauri)
+error: use of `unwrap_or_else` to construct default value
+  --> crates\tagma-gateway\src\security.rs:98:29
+   |
+98 |         let cancel = cancel.unwrap_or_else(CancellationToken::new);
+   |                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ help: try: `unwrap_or_default()`
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.98.0/index.html#unwrap_or_default
+   = note: `-D clippy::unwrap-or-default` implied by `-D warnings`
+   = help: to override `-D warnings` add `#[allow(clippy::unwrap_or_default)]`
+
+error: could not compile `tagma-gateway` (bin "tagma-gateway") due to 1 previous error
+warning: build failed, waiting for other jobs to finish...
+error: could not compile `tagma-gateway` (bin "tagma-gateway" test) due to 1 previous error

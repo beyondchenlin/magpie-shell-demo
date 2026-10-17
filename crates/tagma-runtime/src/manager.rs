@@ -123,6 +123,7 @@ impl GatewayManager {
     }
     fn unavailable(state: RuntimeState, error: Option<AppError>) -> RuntimeStatus {
         RuntimeStatus {
+            security_revision: None,
             state,
             instance_id: None,
             effective_revision: None,
@@ -296,6 +297,22 @@ impl GatewayManager {
             return Err(error);
         }
         Ok(())
+    }
+    pub async fn confirm_security(&self, revision: u32) -> AppResult<RuntimeStatus> {
+        let manifest = ipc::read_manifest(&self.directory)?;
+        let status = ipc::call(&manifest, Control::ConfirmSecurity { revision }).await?;
+        if status
+            .security_revision
+            .is_none_or(|current| current < revision)
+            || status.instance_id.as_deref() != Some(manifest.instance_id.as_str())
+            || !matches!(status.state, RuntimeState::Running | RuntimeState::Degraded)
+        {
+            return Err(status
+                .error
+                .clone()
+                .unwrap_or_else(|| AppError::new(ErrorCode::SecurityStateUnconfirmed)));
+        }
+        Ok(status)
     }
     pub async fn cancel_probe(&self, request_id: String) -> AppResult<()> {
         uuid::Uuid::parse_str(&request_id).map_err(|_| AppError::new(ErrorCode::InvalidInput))?;

@@ -52,7 +52,7 @@ export function ChatView(props: { view: ApplicationView | null; busy: boolean; l
   const mounted = useRef(true);
   const conversation = useRef<HTMLDivElement>(null);
   const modelSources = new Map<string, string>();
-  for (const provider of view?.config.providers ?? []) if (provider.enabled) for (const model of provider.models) if (!model.startsWith("tagma/") && !modelSources.has(model)) modelSources.set(model, provider.name);
+  for (const provider of view?.config.providers ?? []) if (provider.enabled&&!view?.config.security.revoked_provider_ids.includes(provider.id)) for (const model of provider.models) if (!model.startsWith("tagma/") && !modelSources.has(model)) modelSources.set(model, provider.name);
   for (const team of view?.config.teams ?? []) for (const version of team.published) if (version.enabled&&version.configured_ready) modelSources.set(version.public_id,version.display_name);
   const model = modelSources.has(selected) ? selected : modelSources.keys().next().value ?? "";
   const applied = view?.runtime.state === "running" && view.runtime.effective_revision === view.config.desired_revision;

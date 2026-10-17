@@ -24,6 +24,8 @@
     "allow-save-gateway",
     "allow-initialize-gateway-token",
     "allow-reveal-gateway-token",
+    "allow-revoke-access",
+    "allow-rotate-gateway-token",
     "allow-start-gateway",
     "allow-stop-gateway",
     "allow-apply-gateway",

@@ -9,7 +9,7 @@ import { protocolVersion, service } from "./service";
 import type { ConfigView, TeamPublishIssue, TeamRecipe, TeamRecord, TeamStep, CloudTarget, CloudSelection, SaveTeam } from "./contract";
 import type { ProductLanguage } from "./preferences";
 
-const issueLabels:Record<TeamPublishIssue,[string,string]>={no_available_brain:["没有近期确认可用的云模型，请先手动试调用","No recently confirmed cloud model; make a manual test call first"],missing_steps:["添加至少一个步骤","Add a step"],unsupported_routing:["当前策略尚不可发布","Routing is not ready"],unsupported_brain:["请选择明确的最终回答模型","Choose an explicit answering model"],missing_brain:["最终回答模型不可用","Answering model is unavailable"],missing_dependency:["步骤引用的模型不可用","A step model is unavailable"],pack_not_available:["队员依赖尚未安装","Required pack is not installed"],invalid_step_flow:["请检查输入来源和最终回答步骤","Check step inputs and final answer"],invalid_side_effect:["步骤副作用声明不匹配","Step side effects do not match"],budget_exceeded:["步骤预算合计超过整队预算","Step budgets exceed the team budget"]};
+const issueLabels:Record<TeamPublishIssue,[string,string]>={revoked_dependency:["步骤引用的连接已撤销","A step connection was revoked"],no_available_brain:["没有近期确认可用的云模型，请先手动试调用","No recently confirmed cloud model; make a manual test call first"],missing_steps:["添加至少一个步骤","Add a step"],unsupported_routing:["当前策略尚不可发布","Routing is not ready"],unsupported_brain:["请选择明确的最终回答模型","Choose an explicit answering model"],missing_brain:["最终回答模型不可用","Answering model is unavailable"],missing_dependency:["步骤引用的模型不可用","A step model is unavailable"],pack_not_available:["队员依赖尚未安装","Required pack is not installed"],invalid_step_flow:["请检查输入来源和最终回答步骤","Check step inputs and final answer"],invalid_side_effect:["步骤副作用声明不匹配","Step side effects do not match"],budget_exceeded:["步骤预算合计超过整队预算","Step budgets exceed the team budget"]};
 function issuesText(issues:TeamPublishIssue[],zh:boolean){return issues.map(issue=>issueLabels[issue][zh?0:1]).join(zh?"；":"; ");}
 const brainKey="brain";
 function explicit(target:CloudSelection):target is CloudTarget{return "provider_id" in target;}
@@ -27,7 +27,7 @@ function TeamEditor({config,team,busy,zh,onSave,onCancel}:{config:ConfigView;tea
   const [recipe,setRecipe]=useState<TeamRecipe>(team?.draft??{display_name:"",brain:{kind:"first_cloud"},routing:"manual",steps:[],total_timeout_ms:30_000});
   const formId=useId();
   const options=new Map<string,string>();const labels=new Map<string,string>();const targets=new Map<string,CloudTarget>();
-  for(const provider of config.providers)if(provider.enabled)for(const model of provider.models){const target={provider_id:provider.id,model_id:model};const key=targetKey(target);options.set(key,provider.name);labels.set(key,model);targets.set(key,target);}
+  for(const provider of config.providers)if(provider.enabled&&!config.security.revoked_provider_ids.includes(provider.id))for(const model of provider.models){const target={provider_id:provider.id,model_id:model};const key=targetKey(target);options.set(key,provider.name);labels.set(key,model);targets.set(key,target);}
   for(const step of recipe.steps)if(step.target.kind==="cloud_model"&&explicit(step.target.target)){
     const target=step.target.target;const key=targetKey(target);if(!targets.has(key)){options.set(key,zh?"已保存的目标 · 当前不可用":"Saved target · currently unavailable");labels.set(key,target.model_id);targets.set(key,target);}
   }

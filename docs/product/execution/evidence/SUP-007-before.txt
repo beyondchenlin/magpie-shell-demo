@@ -1,0 +1,37 @@
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+   Compiling tagma-runtime v0.2.0-dev.14 (D:\demo1\tagmaai\crates\tagma-runtime)
+   Compiling tagma-gateway v0.2.0-dev.14 (D:\demo1\tagmaai\crates\tagma-gateway)
+    Finished `test` profile [unoptimized] target(s) in 3.39s
+     Running unittests src\main.rs (target\debug\deps\tagma_gateway-2f8907081d2bb4f4.exe)
+
+running 1 test
+SUP-007 phase=first-step cancel_inflight=false confirmed_revision=1 upstream_target_calls=1 status=200
+SUP-007 phase=next-step cancel_inflight=false confirmed_revision=1 upstream_target_calls=1 status=200
+
+thread 'security::tests::sup007_confirmed_revoke_cannot_overtake_an_unstarted_dispatch' (44612) panicked at crates\tagma-gateway\src\security.rs:426:9:
+A confirmed revoke must reject every still-unstarted dispatch: [(200, 1), (200, 1)]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test security::tests::sup007_confirmed_revoke_cannot_overtake_an_unstarted_dispatch ... FAILED
+
+failures:
+
+failures:
+    security::tests::sup007_confirmed_revoke_cannot_overtake_an_unstarted_dispatch
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 11 filtered out; finished in 0.08s
+
+error: test failed, to rerun pass `-p tagma-gateway --bin tagma-gateway`

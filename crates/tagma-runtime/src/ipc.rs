@@ -48,6 +48,9 @@ pub struct Request {
 pub enum Command {
     Status,
     Apply,
+    ConfirmSecurity {
+        revision: u32,
+    },
     Probe {
         input: tagma_core::catalog::ProbeProvider,
     },

@@ -1,0 +1,14 @@
+{
+  "recordedAtUtc": "2026-10-17T15:21:09.5528518+00:00",
+  "target": "D:\\demo1\\tagmaai\\target",
+  "temporaryRoot": "C:\\Users\\ai\\AppData\\Local\\Temp",
+  "estimatedAdditionalPeakGiB": 1.5,
+  "freeBeforeGiB": {
+    "D": 13.18,
+    "C": 46.84
+  },
+  "expectedDReserveGiB": 11.68,
+  "reuse": "Existing Cargo target/registry, node_modules; no environment or worktree",
+  "scope": "Persistent revocation core/runtime and targeted headless checks; no native installer/UI",
+  "cleanup": "Owned TempDir/sidecar teardown; stop large checks if reserve drops below required threshold; retain user data and evidence"
+}

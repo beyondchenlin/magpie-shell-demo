@@ -16,20 +16,23 @@ export function GatewaySettings({ config, busy, language, onMutate, onEditingCha
 }) {
   const c = copy(language);
   const [editing, setEditing] = useState(false);
-  const [secret, setSecret] = useState<string | null>(null);
+  const [storedSecret, setSecret] = useState<{value:string;stamp:string} | null>(null);
+  const stamp=`${config.desired_revision}:${config.security.revision}`;
+  const secret=storedSecret?.stamp===stamp?storedSecret.value:null;
   const [working, setWorking] = useState(false);
-  const [copied, setCopied] = useState(false);
+  const [copiedStamp,setCopied] = useState<string|null>(null);
+  const copied=copiedStamp===stamp;
   useEffect(() => {
-    if (!secret) return;
+    if (!storedSecret) return;
     const timer = setTimeout(() => setSecret(null), 30_000); return () => clearTimeout(timer);
-  }, [secret]);
-  function edit(value: boolean) { setSecret(null); setCopied(false); setEditing(value); onEditingChange(value); }
+  }, [storedSecret]);
+  function edit(value: boolean) { setSecret(null); setCopied(null); setEditing(value); onEditingChange(value); }
   async function tokenAction(show: boolean) {
-    setWorking(true); setCopied(false);
+    setWorking(true); setCopied(null);
     try {
       const value = await service.revealToken();
-      if (show) setSecret(value);
-      else if (await copyText(value)) setCopied(true);
+      if (show) setSecret({value,stamp});
+      else if (await copyText(value)) setCopied(stamp);
       else onError({ code: "CLIPBOARD_UNCONFIRMED" });
     } catch (error) { onError(error); }
     finally { setWorking(false); }
@@ -44,8 +47,8 @@ export function GatewaySettings({ config, busy, language, onMutate, onEditingCha
     {editing && <GatewayForm config={config} busy={busy} language={language} onSave={save} onCancel={() => edit(false)} />}
     {!editing && <div className="tagma-actions">
       {!config.gateway.has_access_token ? <TextBtn busy={busy} disabled={working} onClick={() => void onMutate(() => service.initializeToken({ protocol_version: protocolVersion, expected_revision: config.desired_revision }))}>{c.initializeToken}</TextBtn> : <>
-        <TextBtn disabled={busy || working} onClick={() => secret ? setSecret(null) : void tokenAction(true)}>{secret ? c.hideToken : c.showToken}</TextBtn>
-        <TextBtn disabled={busy || working} onClick={() => void tokenAction(false)}>{copied ? c.copied : c.copyToken}</TextBtn>
+        <TextBtn disabled={busy || working || config.security.gateway_token_revoked} onClick={() => secret ? setSecret(null) : void tokenAction(true)}>{secret ? c.hideToken : c.showToken}</TextBtn>
+        <TextBtn disabled={busy || working || config.security.gateway_token_revoked} onClick={() => void tokenAction(false)}>{copied ? c.copied : c.copyToken}</TextBtn>
       </>}
     </div>}
     {secret && <output className="tagma-secret" aria-label={c.token}>{secret}</output>}
