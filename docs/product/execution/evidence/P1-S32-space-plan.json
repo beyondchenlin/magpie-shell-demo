@@ -1,0 +1,12 @@
+{
+  "RecordedAtUtc": "2026-10-17T23:10:27.7389980Z",
+  "Target": "D:/demo1/tagmaai/target",
+  "TemporaryRoot": "C:\\Users\\ai\\AppData\\Local\\Temp",
+  "EstimatedAdditionalPeakGiB": 0.05,
+  "CFreeBeforeGiB": 42.23,
+  "DFreeBeforeGiB": 9.68,
+  "Scope": "One bounded raw TCP request-body integration target and cached related gateway tests;no install/real service",
+  "Reuse": "Existing Rust1.98.1/Cargo lock/offline dependencies/target;no new environment/worktree",
+  "Constraint": "D below10GiB;pause >1GiB growth;no full rebuild/package/denied cleanup",
+  "Cleanup": "Owned raw sockets/drip tasks/server/managed headless child/TempDir RAII;preserve user and old evidence"
+}

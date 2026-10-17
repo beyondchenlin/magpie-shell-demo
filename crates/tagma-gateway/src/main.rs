@@ -520,6 +520,9 @@ async fn authorize(
             return http_api::error(axum::http::StatusCode::TOO_MANY_REQUESTS, "GATEWAY_BUSY");
         }
     };
+    request.extensions_mut().insert(http_api::BodyDeadline(
+        tokio::time::Instant::now() + http_api::REQUEST_BODY_TIMEOUT,
+    ));
     let policy = match state.security.read(target.iter().cloned().collect()).await {
         Ok(policy) => policy,
         Err(_) => {

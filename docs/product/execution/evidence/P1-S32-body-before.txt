@@ -1,0 +1,42 @@
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+   Compiling tagma-gateway v0.2.0-dev.16 (D:\demo1\tagmaai\crates\tagma-gateway)
+    Finished `test` profile [unoptimized] target(s) in 1.60s
+     Running tests\request_body.rs (target\debug\deps\request_body-fe2d366326dd085c.exe)
+
+running 1 test
+Eight incomplete raw TCP bodies(4 content-length/4 chunked,one drips each200ms):after11s models_status=429,upstream_calls=0
+
+thread 'incomplete_and_drip_bodies_expire_without_dispatch_and_release_slots' (47136) panicked at crates\tagma-gateway\tests\request_body.rs:223:9:
+assertion `left == right` failed: absolute request-body deadline must expire even if bytes keep arriving
+  left: 429
+ right: 200
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test incomplete_and_drip_bodies_expire_without_dispatch_and_release_slots ... FAILED
+
+failures:
+
+failures:
+    incomplete_and_drip_bodies_expire_without_dispatch_and_release_slots
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 2 filtered out; finished in 11.14s
+
+error: test failed, to rerun pass `-p tagma-gateway --test request_body`

@@ -1,0 +1,39 @@
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+    Finished `test` profile [unoptimized] target(s) in 0.26s
+     Running tests\request_body.rs (target\debug\deps\request_body-fe2d366326dd085c.exe)
+
+running 1 test
+
+Eight partial bodies:peer disconnect frees1slot;replacement saturates;private owned stop completed in10015ms,upstream0
+thread 'partial_disconnect_releases_slot_and_private_stop_interrupts_body_reads' (31904) panicked at crates\tagma-gateway\tests\request_body.rs:247:9:
+body waits must observe shutdown instead of waiting for forced10s kill
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test partial_disconnect_releases_slot_and_private_stop_interrupts_body_reads ... FAILED
+
+failures:
+
+failures:
+    partial_disconnect_releases_slot_and_private_stop_interrupts_body_reads
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 2 filtered out; finished in 10.17s
+
+error: test failed, to rerun pass `-p tagma-gateway --test request_body`

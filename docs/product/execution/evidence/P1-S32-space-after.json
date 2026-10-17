@@ -1,0 +1,19 @@
+{
+  "RecordedAtUtc": "2026-10-17T23:17:48.7546199Z",
+  "Disks": [
+    {
+      "Name": "C",
+      "FreeGiB": 42.23
+    },
+    {
+      "Name": "D",
+      "FreeGiB": 9.63
+    }
+  ],
+  "OwnedFixtureLeftovers": [],
+  "NewWorktrees": 0,
+  "NewEnvironments": 0,
+  "ManualDeletion": "None;user preview/old evidence/caches/denied files untouched",
+  "Kept": "Existing target/node_modules/dist;installed dev.9 and preview data/webview",
+  "Caveat": "Drive delta includes cache and concurrent writes,not measured peak/net release;>1GiB growth paused"
+}

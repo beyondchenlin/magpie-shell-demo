@@ -2,7 +2,7 @@ use super::Runtime;
 use axum::{
     Json, Router,
     body::{Body, Bytes},
-    extract::{DefaultBodyLimit, Request, State, rejection::JsonRejection},
+    extract::{DefaultBodyLimit, FromRequest, Request, State},
     http::{HeaderMap, HeaderValue, StatusCode},
     response::{IntoResponse, Response},
     routing::{get, post},
@@ -57,6 +57,9 @@ struct Execution {
 struct FailureCode(String);
 #[derive(Clone)]
 struct UsageStream;
+pub(crate) const REQUEST_BODY_TIMEOUT: Duration = Duration::from_secs(10);
+#[derive(Clone, Copy)]
+pub(crate) struct BodyDeadline(pub tokio::time::Instant);
 #[derive(Clone)]
 pub(crate) struct StreamControl {
     deadline: tokio::time::Instant,
@@ -588,19 +591,33 @@ async fn completion(
     State(state): State<Arc<Runtime>>,
     headers: HeaderMap,
     grant: Option<axum::extract::Extension<super::security::Grant>>,
-    body: Result<Json<Value>, JsonRejection>,
+    request: Request,
 ) -> Response {
-    let request_started = tokio::time::Instant::now();
     let Some(axum::extract::Extension(grant)) = grant else {
         return error(
             StatusCode::SERVICE_UNAVAILABLE,
             "SECURITY_STATE_UNCONFIRMED",
         );
     };
+    let Some(BodyDeadline(deadline)) = request.extensions().get::<BodyDeadline>().copied() else {
+        return unread_body_error(
+            StatusCode::SERVICE_UNAVAILABLE,
+            "SECURITY_STATE_UNCONFIRMED",
+        );
+    };
+    // Bound only request extraction, from the instant its slot was admitted.
+    // Drip bytes do not reset this deadline; provider/response budgets start
+    // afterwards and retain their own configuration and streaming lifetime.
+    let body = tokio::select! {
+        biased;
+        _ = state.shutdown.cancelled() => return unread_body_error(StatusCode::SERVICE_UNAVAILABLE, "GATEWAY_STOPPING"),
+        _ = tokio::time::sleep_until(deadline) => return unread_body_error(StatusCode::REQUEST_TIMEOUT, "REQUEST_BODY_TIMEOUT"),
+        body = Json::<Value>::from_request(request, &state) => body,
+    };
     let Json(input) = match body {
         Ok(input) => input,
         Err(rejection) => {
-            return error(
+            return unread_body_error(
                 rejection.status(),
                 if rejection.status() == StatusCode::PAYLOAD_TOO_LARGE {
                     "REQUEST_TOO_LARGE"
@@ -610,6 +627,7 @@ async fn completion(
             );
         }
     };
+    let request_started = tokio::time::Instant::now();
     let (model, streaming) = match validate(&input) {
         Ok(value) => value,
         Err(code) => return error(StatusCode::BAD_REQUEST, code),
@@ -776,6 +794,15 @@ async fn completion(
         }
     }
     request_metadata(response, &request_id, config_revision, team_revision)
+}
+fn unread_body_error(status: StatusCode, code: &str) -> Response {
+    let mut response = error(status, code);
+    // Do not let HTTP/1.1 drain or reuse an incomplete/oversized request body.
+    response.headers_mut().insert(
+        axum::http::header::CONNECTION,
+        HeaderValue::from_static("close"),
+    );
+    response
 }
 fn request_metadata(
     mut response: Response,

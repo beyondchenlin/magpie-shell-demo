@@ -1,0 +1,110 @@
+{
+  "recordedAtUtc": "2026-10-17T23:17:48.803Z",
+  "sourceBase": "98ee3adc11e6b9664a41938a3341ba5b9ea6b54d",
+  "candidateVersion": "0.2.0-dev.16",
+  "configSchema": 10,
+  "usageSchema": 2,
+  "source": [
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-gateway\\src\\main.rs",
+      "bytes": 37164,
+      "sha256": "f34a744a93998ea6ebb09e24b692b2d302f44adf304464c7a2d4752c1a1d4340"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-gateway\\src\\http_api.rs",
+      "bytes": 49930,
+      "sha256": "fe22ac0bdc421919b4446c5af97e3f5e9c81084971589146a739ed37b50ffb5c"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-gateway\\tests\\request_body.rs",
+      "bytes": 13216,
+      "sha256": "d62106b87317a45ff36b0e4abb679e6d5a5799f89aa363b364db540da006e8b1"
+    }
+  ],
+  "documents": [
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\EXECUTION-STATUS.md",
+      "bytes": 36264,
+      "sha256": "3418f78044f61d74a1f47794deeb977fb64f7d64c3c49e3b9bee40745836d964"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\P1-S32-REQUEST-BODY-DEADLINE.md",
+      "bytes": 4431,
+      "sha256": "dd4570f020f333e55d7f93ce76123f43384a53d13e0c270a01f63b2992e1cdb5"
+    }
+  ],
+  "prd": {
+    "path": "D:\\demo1\\tagmaai\\docs\\product\\TAGMA-PRD-v0.3.md",
+    "bytes": 50957,
+    "sha256": "6e6503391f70e3f2e53347890de6e7c9f7fd93cc393c68f7bba494ac4d67a6d6"
+  },
+  "evidence": [
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S32-body-after.txt",
+      "bytes": 2184,
+      "sha256": "8ae7bfbd952fcdb5fc41d001038ef0fe3c151abe19ba186c25b7fa1aa9cbe197"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S32-body-before.txt",
+      "bytes": 1699,
+      "sha256": "c80ac6b3615817e1777caac6c2dfe54c80dc0d86842679dc6bfd89ba8c1f041c"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S32-body-final.txt",
+      "bytes": 1810,
+      "sha256": "8eb2fb4b5b1d7ec9c695b77832ed72695f22a03515809cbfa075bbbb4b4e7cb6"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S32-body-reviewed.txt",
+      "bytes": 1777,
+      "sha256": "17c020cac9e3638e219c1affaa5f743d50a0abff6051449ed4f45377bcf0986a"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S32-clippy.txt",
+      "bytes": 739,
+      "sha256": "ec6d4cc9e6e887d804ab6e6c91ed44d7931b4a6c9570caea780829a885b29299"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S32-curl.txt",
+      "bytes": 1390,
+      "sha256": "c0718b8d94b6739bfb8840943016b43222b7a44efde7b7b2f9c6426a60f1d558"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S32-regression.txt",
+      "bytes": 15314,
+      "sha256": "b5ffac8ea904eb086956daf7df19e6c5064f6d5014dea7258735a36af4585aab"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S32-space-after.json",
+      "bytes": 561,
+      "sha256": "555c4764702c85ee4443b42292f4276c1e222f1fe4b69cedce6ac4345d35067a"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S32-space-plan.json",
+      "bytes": 687,
+      "sha256": "7bd2482872c5c001541520834f472ce0f97060de331ce3cbb6f0bcb64675a0ab"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S32-space-review.json",
+      "bytes": 460,
+      "sha256": "30901ff30cf2760beadaad7054894cbadb8de3224488196868e3ff3ea59c833c"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S32-stop-before.txt",
+      "bytes": 1561,
+      "sha256": "96a406e8313c87d5aaa1e12af0c2ca6ecf0d5faf84d954ea51b92caf2eee6cf5"
+    }
+  ],
+  "distinctPassed": 45,
+  "results": {
+    "newActualBody": 3,
+    "existingGatewayUnits": 26,
+    "relatedHttp": 13,
+    "slowClients": 2,
+    "explicitWindowsCurl": 1,
+    "clippy": "gateway all targets -D warnings passed"
+  },
+  "scope": "Absolute10s from admitted slot;JSON extraction only;128KiB;timeout408/shutdown503/Connection close;no usage/upstream before valid extraction;normal11s SSE completes",
+  "unverified": "Complete connection/header/H2/platform/native/real-provider matrices;drag unresolved;A10/P1 not complete",
+  "preserved": "No desktop operation/install/real keys/new worktree/env/manual deletion;dev.9 and user data/webview retained"
+}
