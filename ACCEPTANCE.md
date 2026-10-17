@@ -1,3 +1,7 @@
+## v0.1.207 · ELECTRON_SCREENSHOT_FIXES · 2026-10-17
+
+WHY：用户安装后七图反馈。CAUSE：双标题栏、file 图标根路径、Agent 默认空态不匹配。WHAT kept：六原 CSS、窗口断点、Web 布局和模拟后端。WHAT changed：移除 Electron 模拟栏、修复本地图标、安装版五 Agent 显式对照样例。其余差异见 [七图对照](docs/cis/SCREENSHOT-COMPARISON-2026-10-17.md)，尚未宣称全完成。验证进行中。
+
 > 唯一设计入口为冻结的 [CIS-CONTROLS](docs/CIS-CONTROLS.md)；当前核验步骤见 [29项验收清单](docs/REPLICA-ACCEPTANCE.md)。清单不另立设计值或统一像素容差。以下版本记录不代表整体验收通过。
 
 ## v0.1.206 · FRAMED_NAV_SNAPSHOT_CLIP · 2026-10-17 Asia/Shanghai

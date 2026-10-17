@@ -148,7 +148,7 @@ export default function App() {
     if (electron) document.body.classList.remove("web");
     else document.body.classList.add("web");
     // Phone Magpie web has no OS caption; desktop preview simulates Win.
-    if (onPhone) delete document.body.dataset.simPlatform;
+    if (onPhone || electron) delete document.body.dataset.simPlatform;
     else document.body.dataset.simPlatform = "win";
     // Theme: Magpie applyPrefs — applyDocumentTheme (separate effect; sync theming)
   }, [sideOn, phone]);
@@ -596,7 +596,7 @@ export default function App() {
 
   return (
     <>
-      {!phone ? <WinCaption /> : null}
+      {!phone && !isElectron() ? <WinCaption /> : null}
       <aside className="sidebar" id="side" hidden={!sideOn}>
         <div className="side-top">{sideOn ? brand : null}</div>
         <div className="side-scroll">{sideOn ? sideNav : null}</div>

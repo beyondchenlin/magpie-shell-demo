@@ -239,9 +239,12 @@ export const SUB_TILES: { id: string; name: string; icon: string }[] = [
   { id: "antigravity", name: "Antigravity", icon: "antigravity-color" },
 ];
 
+const PNG_ICONS = new Set(["crush", "zcode", "alma", "hanako", "cindy", "lody", "typesafe", "atomcode", "snow", "mlx-serve", "mothx"]);
+
 export function iconSrc(name: string): string {
   if (name.startsWith("file:")) return `/api/icons/${encodeURIComponent(name.slice(5))}`;
-  if (name.endsWith(".png") || name.endsWith(".svg")) return `/icons/${name}`;
-  const png = new Set(["crush", "zcode", "alma", "hanako", "cindy", "lody", "typesafe", "atomcode", "snow", "mlx-serve", "mothx"]);
-  return `/icons/${name}.${png.has(name) ? "png" : "svg"}`;
+  // Resolve against the document, not the filesystem root in packaged Electron.
+  const base = `${import.meta.env.BASE_URL}icons/`;
+  if (name.endsWith(".png") || name.endsWith(".svg")) return `${base}${name}`;
+  return `${base}${name}.${PNG_ICONS.has(name) ? "png" : "svg"}`;
 }

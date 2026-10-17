@@ -10,6 +10,7 @@ import { TextBtn } from "../components/TextBtn";
 import { ModelPop, type PopOption } from "../components/ModelPop";
 import installsData from "../data/installs.json";
 import { VIA_LABEL } from "../data/mock";
+import { COMPARISON_AGENTS, isAgentComparison } from "../data/agentComparison";
 import { ZH, demoCopy, t } from "../i18n";
 
 type InstallCmd = { via: string; command: string; node?: string };
@@ -32,7 +33,10 @@ const DEMO_CONNECTABLES = [
   { id: "opencode", name: "OpenCode", icon: "openai", connectable: true },
   { id: "pi", name: "Pi", icon: "openai", connectable: true },
 ] as const;
-type AgentDef = typeof CURSOR_AGENT | (typeof DEMO_CONNECTABLES)[number];
+type AgentDef = {
+  id: string; name: string; icon: string; connectable: boolean;
+  version?: string; missing?: boolean;
+};
 function readDemoAgents(): boolean {
   try {
     const q = new URLSearchParams(location.search);
@@ -547,9 +551,10 @@ export function AgentsView({
   onStatus,
 }: Props) {
   const [demoAgents] = useState(() => readDemoAgents());
+  const [comparison] = useState(isAgentComparison);
   const ALL_AGENTS = useMemo<readonly AgentDef[]>(
-    () => (demoAgents ? [CURSOR_AGENT, ...DEMO_CONNECTABLES] : [CURSOR_AGENT]),
-    [demoAgents],
+    () => comparison ? COMPARISON_AGENTS : (demoAgents ? [CURSOR_AGENT, ...DEMO_CONNECTABLES] : [CURSOR_AGENT]),
+    [demoAgents, comparison],
   );
   const [guideHidden, setGuideHidden] = useState(() => {
     try {
@@ -607,7 +612,8 @@ export function AgentsView({
     "claude:sonnet": "claude-sonnet-4-5",
     "claude:haiku": "claude-haiku-4",
     "claude:model": "claude-sonnet-4-5",
-    "codex:model": "gpt-5",
+    "codex:model": comparison ? "gpt-6.1-sol" : "gpt-5",
+    "deepseek:model": "default",
     "opencode:model": "claude-sonnet-4-5",
     "pi:model": "gpt-5-mini",
   }));
@@ -676,7 +682,7 @@ export function AgentsView({
   })();
   // Magpie agentUsed / onMagpie: Cursor stays up; connectable rows stay up once wired.
   const isUsed = (a: AgentDef) =>
-    a.id === "cursor" || !a.connectable || !!wired[a.id];
+    comparison || a.id === "cursor" || !a.connectable || !!wired[a.id];
   const visibleAll = orderedAll.filter((a) => !hiddenIds.has(a.id));
   const used = visibleAll.filter(isUsed);
   const unset = visibleAll.filter((a) => !isUsed(a));
@@ -757,13 +763,20 @@ export function AgentsView({
                   </span>
                   <div className="guide-body">
                     <b className="guide-title">{ZH.connectAgent}</b>
-                    <span className="guide-say">{ZH.connectAgentSay}</span>
-                    {/* Native: no connectable agents detected → no chips (Cursor can't connect) */}
-                    <div className="guide-acts" />
+                    <span className="guide-say">{comparison
+                      ? demoCopy("对照样例中的 Agent，点一下即可演示接入：", "Agents in the comparison sample; click to preview connecting:")
+                      : ZH.connectAgentSay}</span>
+                    <div className="guide-agents">
+                      {comparison ? ALL_AGENTS.filter(a => a.connectable).map(a => (
+                        <button key={a.id} type="button" className="guide-agent" onClick={() => {
+                          document.querySelector<HTMLButtonElement>(`#agents [data-id="${a.id}"] .ag-conn`)?.click();
+                        }}><MagpieIcon name={a.icon} /><span>{a.name}</span></button>
+                      )) : null}
+                    </div>
                   </div>
                 </li>
                 {/* Magpie app.js L1591–1622: optional routing step (counter still 2 of source+agent) */}
-                <li
+                {!comparison ? <li
                   className="guide-step optional"
                   data-step="routing"
                   data-feature="groups"
@@ -795,7 +808,7 @@ export function AgentsView({
                       </div>
                     ) : null}
                   </div>
-                </li>
+                </li> : null}
               </ol>
             </section>
           </div>
@@ -971,7 +984,9 @@ export function AgentsView({
               </button>
               <div className="who">
                 <div className="name">{a.name}</div>
-                {a.id === "cursor" ? (
+                {a.version ? <span className="ag-cli"><span className="ag-ver">{a.version}</span></span> : null}
+                {a.missing ? <span className="ag-cli ag-missing">{t("CLI not found")}</span> : null}
+                {a.missing ? null : a.id === "cursor" ? (
                   <div className="ag-st">
                     <span className="ag-dot" />
                     <span className="ag-st-t">{t("Only Cursor's own models")}</span>
@@ -995,15 +1010,28 @@ export function AgentsView({
                   <div className="ag-st">
                     <span className="ag-dot" aria-hidden />
                     <span className="ag-st-t">
-                      {t("Not connected · {agent} uses its own settings", { agent: a.name })}
+                      {comparison && a.id === "codex"
+                        ? t("Not connected · now signed in with ChatGPT · OpenAI's models stay available once connected")
+                        : t("Not connected · {agent} uses its own settings", { agent: a.name })}
                     </span>
                   </div>
                 )}
               </div>
-              {a.id === "cursor" || !a.connectable ? (
+              {a.missing ? null : a.id === "cursor" || !a.connectable ? (
                 <span className="ag-cant">{t("Can't connect")}</span>
               ) : (
                 <>
+                  {comparison && (a.id === "codex" || a.id === "deepseek") ? (
+                    <FieldPill kind="main" className="ag-start" leading={<MagpieIcon name={a.id === "codex" ? "openai" : a.icon} />}
+                      v={fieldVals[`${a.id}:model`] === "default" ? t("Default") : fieldVals[`${a.id}:model`]}
+                      aria-label={t("Model")} aria-haspopup="listbox" open={fieldPop?.agentId === a.id}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        const el = e.currentTarget;
+                        setAmPop(null);
+                        setFieldPop(cur => cur?.agentId === a.id ? null : { agentId: a.id, key: `${a.id}:model`, el });
+                      }} />
+                  ) : null}
                   {/* Magpie connectRow: expandLink + connectSwitch (app.js L1067–1094 / L1308–1344 / L1406–1423) — not invent .val.acts */}
                   {wired[a.id] ? (
                     <button
@@ -1716,7 +1744,10 @@ export function AgentsView({
           anchor={fieldPop.el}
           value={fieldVals[fieldPop.key] || ""}
           modelPicker
-          options={DEMO_POP_OPTS.filter(option => amModels[fieldPop.agentId]?.find(model => model.id === option.value)?.on !== false || fieldVals[fieldPop.key] === option.value)}
+          options={(comparison && fieldPop.agentId === "codex"
+            ? [{ value: "gpt-6.1-sol", label: "gpt-6.1-sol", group: "Codex" }]
+            : comparison && fieldPop.agentId === "deepseek" ? [{ value: "default", label: t("Default") }]
+            : DEMO_POP_OPTS).filter(option => amModels[fieldPop.agentId]?.find(model => model.id === option.value)?.on !== false || fieldVals[fieldPop.key] === option.value)}
           onPick={(v) => {
             setFieldVals((f) => ({ ...f, [fieldPop.key]: v }));
             setFieldPop(null);

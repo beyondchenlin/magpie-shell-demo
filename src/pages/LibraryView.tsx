@@ -7,6 +7,7 @@ import { LibSwitch } from "../components/LibSwitch";
 import { TextBtn } from "../components/TextBtn";
 import { useSegThumb } from "../components/SegThumb";
 import { t } from "../i18n";
+import { iconSrc } from "../data/mock";
 import { PopoverPortal } from "../components/PopoverPortal";
 import { useProtocolMenu } from "../lib/useProtocolMenu";
 
@@ -2548,7 +2549,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                   <span
                     className="lib-glyph lib-rtk-logo"
                     aria-hidden
-                    style={{ ["--i" as string]: "url(/icons/rtk.png)" }}>
+                    style={{ ["--i" as string]: `url("${iconSrc("rtk.png")}")` }}>
                     <span className="mask" />
                   </span>
                   <b>RTK</b>
@@ -2609,7 +2610,7 @@ export function LibraryView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                 const disabled = rtkPhase === "installing" || rtkPhase === "checking" || !on;
                 return (
                   <div key={a.id} className="row">
-                    <img src="/icons/cursor.svg" alt="" width={18} height={18} />
+                    <img src={iconSrc("cursor.svg")} alt="" width={18} height={18} />
                     <b>{a.name}</b>
                     <span className="grow" />
                     <LibSwitch

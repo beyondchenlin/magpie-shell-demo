@@ -1,3 +1,7 @@
+## v0.1.207 · ELECTRON_SCREENSHOT_FIXES · 2026-10-17
+
+WHY：用户安装后七图反馈。CAUSE：双标题栏、file 图标根路径、Agent 默认空态不匹配。WHAT kept：六原 CSS、窗口断点、Web 布局和模拟后端。WHAT changed：移除 Electron 模拟栏、修复本地图标、安装版五 Agent 显式对照样例。其余差异见 [七图对照](docs/cis/SCREENSHOT-COMPARISON-2026-10-17.md)，尚未宣称全完成。验证进行中。
+
 ## v0.1.195–206 · FROZEN_CIS_FINITE_VERIFICATION · 2026-10-16/17 Asia/Shanghai
 
 WHY：在028dab5冻结29项范围内复现、修复、验证，不扩展真实服务或产品规划。WHAT kept：SIDE_AT1024、稳定窗口、320ms原曲线、六固定源CSS、mock和非生产边界。以下是UI来源链，不把提交数当验收数量。
