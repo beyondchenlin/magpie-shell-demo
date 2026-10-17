@@ -10,7 +10,7 @@ import { TextBtn } from "../components/TextBtn";
 import { ModelPop, type PopOption } from "../components/ModelPop";
 import installsData from "../data/installs.json";
 import { VIA_LABEL } from "../data/mock";
-import { COMPARISON_AGENTS, isAgentComparison } from "../data/agentComparison";
+import { COMPARISON_AGENTS, COMPARISON_MODELS, isAgentComparison } from "../data/agentComparison";
 import { ZH, demoCopy, t } from "../i18n";
 
 type InstallCmd = { via: string; command: string; node?: string };
@@ -78,17 +78,17 @@ const DEEP_AM_MODELS: AmModel[] = [
   { id: "mock/own-model", name: "Mock own model", group: "ChatGPT", icon: "openai", own: true, on: true },
 ];
 
-function readAmModels(): Record<string, AmModel[]> {
+function readAmModels(key: string): Record<string, AmModel[]> {
   try {
-    const data = JSON.parse(localStorage.getItem("magpie.demoAmModels") || "{}");
+    const data = JSON.parse(localStorage.getItem(key) || "{}");
     if (!data || typeof data !== "object" || Array.isArray(data)) return {};
     return Object.fromEntries(Object.entries(data).filter(([, rows]) => Array.isArray(rows) && rows.every(m => m && [m.id, m.name, m.group].every(s => typeof s === "string") && typeof m.on === "boolean"))) as Record<string, AmModel[]>;
   } catch { return {}; }
 }
 
-function readAmPreferences(): Record<string, AmPreferences> {
+function readAmPreferences(key: string): Record<string, AmPreferences> {
   try {
-    const data = JSON.parse(localStorage.getItem("magpie.demoAmPrefs") || "{}");
+    const data = JSON.parse(localStorage.getItem(key) || "{}");
     if (!data || typeof data !== "object" || Array.isArray(data)) return {};
     return Object.fromEntries(Object.entries(data).filter(([, value]) => value && typeof value === "object" && "only" in value && "ordered" in value && typeof value.only === "boolean" && typeof value.ordered === "boolean")) as Record<string, AmPreferences>;
   } catch { return {}; }
@@ -585,7 +585,11 @@ export function AgentsView({
   const [wired, setWired] = useState<Record<string, boolean>>(() => {
     try {
       const raw = localStorage.getItem("magpie.demoAgentWired");
-      if (raw) return JSON.parse(raw) as Record<string, boolean>;
+      const saved: unknown = raw ? JSON.parse(raw) : null;
+      if (saved && typeof saved === "object" && !Array.isArray(saved)) {
+        return Object.fromEntries(Object.entries(saved).filter(([id, value]) =>
+          ALL_AGENTS.some(agent => agent.id === id && agent.connectable) && typeof value === "boolean"));
+      }
     } catch {
       /* ignore */
     }
@@ -614,23 +618,34 @@ export function AgentsView({
     "claude:model": "claude-sonnet-4-5",
     "codex:model": comparison ? "gpt-6.1-sol" : "gpt-5",
     "deepseek:model": "default",
+    "workbuddy:model": "default",
     "opencode:model": "claude-sonnet-4-5",
     "pi:model": "gpt-5-mini",
   }));
   /** Magpie am-pop (Pick on Model list) */
   const [amPop, setAmPop] = useState<{ agentId: string; el: HTMLElement } | null>(null);
   const [amCatalog] = useState(() => new URLSearchParams(location.search).get("amFixture") === "deep" ? DEEP_AM_MODELS : DEMO_AM_MODELS);
-  const [amModels, setAmModels] = useState<Record<string, AmModel[]>>(readAmModels);
-  const [amPreferences, setAmPreferences] = useState<Record<string, AmPreferences>>(readAmPreferences);
+  const modelStorageKey = comparison ? "magpie.comparison.v1.models" : "magpie.demoAmModels";
+  const prefsStorageKey = comparison ? "magpie.comparison.v1.modelPrefs" : "magpie.demoAmPrefs";
+  const [amModels, setAmModels] = useState<Record<string, AmModel[]>>(() => readAmModels(modelStorageKey));
+  const [amPreferences, setAmPreferences] = useState<Record<string, AmPreferences>>(() => readAmPreferences(prefsStorageKey));
+  const catalogFor = (id: string) => comparison ? (COMPARISON_MODELS[id] || []) : amCatalog;
+  const modelsFor = (id: string) => {
+    const catalog = catalogFor(id);
+    const saved = amModels[id];
+    if (!saved) return catalog;
+    // A screenshot fixture cannot acquire another agent's legacy mock models.
+    return comparison ? catalog.map(model => ({ ...model, on: saved.find(row => row.id === model.id)?.on ?? model.on })) : saved;
+  };
   useEffect(() => {
-    if (Object.keys(amModels).length) try { localStorage.setItem("magpie.demoAmModels", JSON.stringify(amModels)); } catch { /* local mock only */ }
-  }, [amModels]);
+    if (Object.keys(amModels).length) try { localStorage.setItem(modelStorageKey, JSON.stringify(amModels)); } catch { /* local mock only */ }
+  }, [amModels, modelStorageKey]);
   useEffect(() => {
-    if (Object.keys(amPreferences).length) try { localStorage.setItem("magpie.demoAmPrefs", JSON.stringify(amPreferences)); } catch { /* local mock only */ }
-  }, [amPreferences]);
+    if (Object.keys(amPreferences).length) try { localStorage.setItem(prefsStorageKey, JSON.stringify(amPreferences)); } catch { /* local mock only */ }
+  }, [amPreferences, prefsStorageKey]);
   /** Magpie staleSeen — dismiss "Got it" per agent */
   const [staleSeen, setStaleSeen] = useState<Record<string, number>>({});
-  const [staleDemo] = useState(() => new URLSearchParams(location.search).get("stale") !== "0");
+  const [staleDemo] = useState(() => !comparison && new URLSearchParams(location.search).get("stale") !== "0");
 
   useEffect(() => {
     try {
@@ -1220,7 +1235,7 @@ export function AgentsView({
                       <div className="ag-v">
                         <div className="ag-vl ag-chips">
                           {(() => {
-                            const list = amModels[a.id] || amCatalog;
+                            const list = modelsFor(a.id);
                             const by = new Map<string, number>();
                             for (const m of list.filter((x) => x.on)) by.set(m.group, (by.get(m.group) || 0) + 1);
                             const hidden = list.filter((x) => !x.on).length;
@@ -1250,7 +1265,7 @@ export function AgentsView({
                                 cur?.agentId === a.id ? null : { agentId: a.id, el },
                               );
                               if (!amModels[a.id]) {
-                                setAmModels((m) => ({ ...m, [a.id]: amCatalog.map((x) => ({ ...x })) }));
+                                setAmModels((m) => ({ ...m, [a.id]: catalogFor(a.id).map((x) => ({ ...x })) }));
                               }
                             }}>
                             <span>{t("Pick")}</span>
@@ -1278,7 +1293,7 @@ export function AgentsView({
                                   className="ag-pick"
                                   open={open}
                                   k={t("Model")}
-                                  v={val}
+                                  v={val === "default" ? t("Default") : val}
                                   aria-haspopup="listbox"
                                   onClick={(e) => {
                                     const el = e.currentTarget;
@@ -1744,10 +1759,9 @@ export function AgentsView({
           anchor={fieldPop.el}
           value={fieldVals[fieldPop.key] || ""}
           modelPicker
-          options={(comparison && fieldPop.agentId === "codex"
-            ? [{ value: "gpt-6.1-sol", label: "gpt-6.1-sol", group: "Codex" }]
-            : comparison && fieldPop.agentId === "deepseek" ? [{ value: "default", label: t("Default") }]
-            : DEMO_POP_OPTS).filter(option => amModels[fieldPop.agentId]?.find(model => model.id === option.value)?.on !== false || fieldVals[fieldPop.key] === option.value)}
+          options={(comparison ? catalogFor(fieldPop.agentId).map(model => ({ value: model.id,
+            label: model.id === "default" ? t("Default") : model.name, group: model.group }))
+            : DEMO_POP_OPTS).filter(option => modelsFor(fieldPop.agentId).find(model => model.id === option.value)?.on !== false || fieldVals[fieldPop.key] === option.value)}
           onPick={(v) => {
             setFieldVals((f) => ({ ...f, [fieldPop.key]: v }));
             setFieldPop(null);
@@ -1765,10 +1779,10 @@ export function AgentsView({
           agentName={ALL_AGENTS.find((x) => x.id === amPop.agentId)?.name || amPop.agentId}
           agentId={amPop.agentId}
           currentModels={Object.entries(fieldVals).filter(([key]) => key.startsWith(amPop.agentId + ":")).map(([, value]) => value)}
-          defaultOrder={amCatalog.map(m => m.id)}
+          defaultOrder={catalogFor(amPop.agentId).map(m => m.id)}
           preferences={amPreferences[amPop.agentId] || { only: false, ordered: false }}
           onPreferences={next => setAmPreferences(previous => ({ ...previous, [amPop.agentId]: next }))}
-          models={amModels[amPop.agentId] || amCatalog}
+          models={modelsFor(amPop.agentId).map(model => model.id === "default" ? { ...model, name: t("Default") } : model)}
           onChange={(next) => setAmModels((m) => ({ ...m, [amPop.agentId]: next }))}
           onClose={() => setAmPop(null)}
         />
