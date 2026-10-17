@@ -327,6 +327,38 @@ fn valid_chunk(value: &Value) -> bool {
         })
 }
 
+/// Only a completed assistant text answer can become a subsequent step's input.
+/// Final responses retain their ordinary length/content_filter presentation semantics.
+fn intermediate_text(value: &Value) -> Result<&str, &'static str> {
+    let choices = value["choices"]
+        .as_array()
+        .filter(|choices| choices.len() == 1)
+        .ok_or("UPSTREAM_PROTOCOL_ERROR")?;
+    if choices[0]["index"] != 0 {
+        return Err("UPSTREAM_PROTOCOL_ERROR");
+    }
+    match choices[0]["finish_reason"].as_str() {
+        Some("stop") => {}
+        Some("length") => return Err("TEAM_INTERMEDIATE_TRUNCATED"),
+        Some("content_filter") => return Err("TEAM_INTERMEDIATE_FILTERED"),
+        _ => return Err("TEAM_INTERMEDIATE_INCOMPLETE"),
+    }
+    let message = &choices[0]["message"];
+    if message.get("tool_calls").is_some() || message.get("function_call").is_some() {
+        return Err("TEAM_INTERMEDIATE_UNHANDLED_CALL");
+    }
+    if message.get("refusal").is_some_and(|value| !value.is_null()) {
+        return Err("TEAM_INTERMEDIATE_REFUSED");
+    }
+    if message["role"] != "assistant" {
+        return Err("UPSTREAM_PROTOCOL_ERROR");
+    }
+    message["content"]
+        .as_str()
+        .filter(|text| !text.trim().is_empty())
+        .ok_or("TEAM_INTERMEDIATE_EMPTY")
+}
+
 async fn completion(
     State(state): State<Arc<Runtime>>,
     headers: HeaderMap,
@@ -428,15 +460,13 @@ async fn completion(
             Ok(bytes) => bytes,
             Err(_) => return error(StatusCode::BAD_GATEWAY, "TEAM_INTERMEDIATE_LIMIT"),
         };
-        let text = serde_json::from_slice::<Value>(&bytes)
-            .ok()
-            .and_then(|value| {
-                value["choices"][0]["message"]["content"]
-                    .as_str()
-                    .map(str::to_owned)
-            });
-        let Some(text) = text.filter(|text| !text.trim().is_empty()) else {
-            return error(StatusCode::BAD_GATEWAY, "TEAM_INTERMEDIATE_EMPTY");
+        let value = match serde_json::from_slice::<Value>(&bytes) {
+            Ok(value) => value,
+            Err(_) => return error(StatusCode::BAD_GATEWAY, "UPSTREAM_PROTOCOL_ERROR"),
+        };
+        let text = match intermediate_text(&value) {
+            Ok(text) => text.to_owned(),
+            Err(code) => return error(StatusCode::BAD_GATEWAY, code),
         };
         if text.len() > 96 * 1024 {
             return error(StatusCode::BAD_GATEWAY, "TEAM_INTERMEDIATE_LIMIT");

@@ -91,6 +91,18 @@ async fn team_execution_pins_recipe_and_targets_and_stops_after_failure_timeout_
                 assert!(!streaming);assert!(input.get("stream_options").is_none());
                 if prompt=="error"{return(StatusCode::TOO_MANY_REQUESTS,"private-upstream-body").into_response();}
                 if prompt=="tool"{return Json(json!({"choices":[{"message":{"content":"unhandled","tool_calls":[]}}]})).into_response();}
+                if ["length","content_filter","missing_finish","null_finish","non_string_finish","unknown_finish","legacy_function","legacy_reason","tool_reason","refusal","invalid_role","invalid_index"].contains(&prompt.as_str()){
+                    let reason=match prompt.as_str(){"unknown_finish"=>"unknown","legacy_reason"=>"function_call","tool_reason"=>"tool_calls","legacy_function"|"refusal"=>"stop",other=>other};
+                    let mut result=json!({"model":model,"choices":[{"index":0,"message":{"role":"assistant","content":"partial-review-output"},"finish_reason":reason}]});
+                    if prompt=="missing_finish"{result["choices"][0].as_object_mut().unwrap().remove("finish_reason");}
+                    if prompt=="null_finish"{result["choices"][0]["finish_reason"]=Value::Null;}
+                    if prompt=="non_string_finish"{result["choices"][0]["finish_reason"]=json!(123);}
+                    if prompt=="invalid_role"{result["choices"][0]["finish_reason"]=json!("stop");result["choices"][0]["message"]["role"]=json!("user");}
+                    if prompt=="invalid_index"{result["choices"][0]["finish_reason"]=json!("stop");result["choices"][0]["index"]=json!(1);}
+                    if prompt=="legacy_function"{result["choices"][0]["message"]["function_call"]=json!({"name":"unhandled","arguments":"{}"});}
+                    if prompt=="refusal"{result["choices"][0]["message"]["refusal"]=json!("refused");}
+                    return Json(result).into_response();
+                }
                 if prompt=="cancel"||prompt=="timeout"{
                     let guard=Dropped(cancelled);return ([("content-type","application/json")],Body::from_stream(async_stream::stream!{let _guard=guard;yield Ok::<_,Infallible>(Bytes::from_static(b"{\"choices\":["));loop{tokio::time::sleep(Duration::from_millis(30)).await;yield Ok(Bytes::from_static(b" "));}})).into_response();
                 }
@@ -99,11 +111,12 @@ async fn team_execution_pins_recipe_and_targets_and_stops_after_failure_timeout_
                 return Json(json!({"model":model,"choices":[{"index":0,"message":{"role":"assistant","content":content},"finish_reason":"stop"}]})).into_response();
             }
             let content=if secondary{"changed-answer"}else{"final-only"};
+            let finish=match prompt.as_str(){"final-length"=>"length","final-filter"=>"content_filter",_=>"stop"};
             if streaming{
-                let frames=format!("data: {}\n\ndata: {}\n\ndata: [DONE]\n\n",json!({"model":model,"choices":[{"index":0,"delta":{"content":content},"finish_reason":null}]}),json!({"model":model,"choices":[{"index":0,"delta":{},"finish_reason":"stop"}]}));
+                let frames=format!("data: {}\n\ndata: {}\n\ndata: [DONE]\n\n",json!({"model":model,"choices":[{"index":0,"delta":{"content":content},"finish_reason":null}]}),json!({"model":model,"choices":[{"index":0,"delta":{},"finish_reason":finish}]}));
                 return ([("content-type","text/event-stream")],frames).into_response();
             }
-            Json(json!({"model":model,"choices":[{"index":0,"message":{"role":"assistant","content":content},"finish_reason":"stop"}]})).into_response()
+            Json(json!({"model":model,"choices":[{"index":0,"message":{"role":"assistant","content":content},"finish_reason":finish}]})).into_response()
         }
     }}));
     let listener = tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();
@@ -228,6 +241,18 @@ async fn team_execution_pins_recipe_and_targets_and_stops_after_failure_timeout_
         ]
     );
     for (prompt, code) in [
+        ("length", "TEAM_INTERMEDIATE_TRUNCATED"),
+        ("content_filter", "TEAM_INTERMEDIATE_FILTERED"),
+        ("missing_finish", "TEAM_INTERMEDIATE_INCOMPLETE"),
+        ("null_finish", "TEAM_INTERMEDIATE_INCOMPLETE"),
+        ("non_string_finish", "TEAM_INTERMEDIATE_INCOMPLETE"),
+        ("unknown_finish", "TEAM_INTERMEDIATE_INCOMPLETE"),
+        ("legacy_function", "TEAM_INTERMEDIATE_UNHANDLED_CALL"),
+        ("legacy_reason", "TEAM_INTERMEDIATE_INCOMPLETE"),
+        ("tool_reason", "TEAM_INTERMEDIATE_INCOMPLETE"),
+        ("refusal", "TEAM_INTERMEDIATE_REFUSED"),
+        ("invalid_role", "UPSTREAM_PROTOCOL_ERROR"),
+        ("invalid_index", "UPSTREAM_PROTOCOL_ERROR"),
         ("error", "UPSTREAM_RATE_LIMITED"),
         ("tool", "UPSTREAM_PROTOCOL_ERROR"),
         ("empty", "TEAM_INTERMEDIATE_EMPTY"),
@@ -241,6 +266,20 @@ async fn team_execution_pins_recipe_and_targets_and_stops_after_failure_timeout_
             .send()
             .await
             .unwrap();
+        let final_calls = calls
+            .lock()
+            .unwrap()
+            .iter()
+            .filter(|call| call.0 == "final-model")
+            .count();
+        println!(
+            "SUP-005 case={prompt} final_calls={final_calls} status={}",
+            response.status()
+        );
+        assert_eq!(
+            final_calls, 0,
+            "Intermediate {prompt} must not start the final step"
+        );
         assert!(!response.status().is_success());
         let text = response.text().await.unwrap();
         assert!(text.contains(code), "{prompt}: {text}");
@@ -344,6 +383,40 @@ async fn team_execution_pins_recipe_and_targets_and_stops_after_failure_timeout_
         1,
         "Explicit revision 2 uses its manual recipe"
     );
+    for (prompt, reason) in [
+        ("final-length", "length"),
+        ("final-filter", "content_filter"),
+    ] {
+        for model in ["tagma/test-team@2", "final-model"] {
+            let response: Value = client
+                .post(&endpoint)
+                .json(&input(prompt, false, model))
+                .send()
+                .await
+                .unwrap()
+                .error_for_status()
+                .unwrap()
+                .json()
+                .await
+                .unwrap();
+            assert_eq!(response["choices"][0]["finish_reason"], reason);
+            let response = client
+                .post(&endpoint)
+                .json(&input(prompt, true, model))
+                .send()
+                .await
+                .unwrap()
+                .error_for_status()
+                .unwrap()
+                .text()
+                .await
+                .unwrap();
+            assert!(response.contains(&format!("\"finish_reason\":\"{reason}\"")));
+            assert!(response.ends_with("data: [DONE]\n\n"));
+            assert!(!response.contains("TEAM_INTERMEDIATE"));
+            println!("SUP-005 final model={model} reason={reason} nonstream_and_stream=preserved");
+        }
+    }
     calls.lock().unwrap().clear();
     client
         .post(&endpoint)
