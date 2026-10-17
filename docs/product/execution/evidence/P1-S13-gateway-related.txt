@@ -1,0 +1,64 @@
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+   Compiling tagma-gateway v0.2.0-dev.15 (D:\demo1\tagmaai\crates\tagma-gateway)
+    Finished `test` profile [unoptimized] target(s) in 2.97s
+     Running tests\process_lifecycle.rs (target\debug\deps\process_lifecycle-a0957dcad10e9ee5.exe)
+
+running 14 tests
+test real_old_binary_is_not_stopped_or_migrated_by_new_entrypoint ... ignored, Requires explicitly supplied retained dev.3 executable; no binary download or key access
+test system_token_authenticates_only_data_plane_and_never_appears_in_configuration_files ... ignored, Explicit synthetic OS credential + actual HTTP integration, exact created reference cleaned
+test port_conflict_never_changes_port_or_kills_existing_listener ... ok
+test oversized_private_frame_is_dropped_without_crashing_gateway ... ok
+test concurrent_start_has_one_instance_and_one_owner ... ok
+test active_older_version_envelope_is_reported_without_spawn_or_stop ... ok
+test parent_eof_exits_managed_process_but_standalone_survives ... ok
+test unclean_health_invalidation_failure_prevents_readiness_and_preserves_marker ... ok
+test stale_old_version_manifest_does_not_block_start_without_an_active_lock ... ok
+test auth_missing_token_denies_by_default_and_port_changes_require_explicit_restart ... ok
+test unclean_health_restart_preserves_success_facts_but_requires_new_confirmation ... ok
+test saved_port_change_cannot_be_acknowledged_on_old_port_during_crash_restart ... ok
+test managed_ready_apply_reconcile_wrong_owner_and_graceful_stop ... ok
+test managed_crashes_restart_at_most_three_times_then_remain_failed ... ok
+
+test result: ok. 12 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 8.30s
+
+     Running tests\security.rs (target\debug\deps\security-768a4f282a0fbceb.exe)
+
+running 1 test
+DATA-06 routing: raw duplicate model uses the first permitted configured provider on a new call; immutable explicit team UUID never substitutes a replacement
+DATA-06 actual sidecar: saved revocation -> instance-bound acknowledgement; old in-flight step finishes, revoked next step dispatch count=0; directory filtered; restart and private catalog probe remain denied
+test persistent_revocation_overrides_pinned_team_steps_and_restarts_without_credential_access ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.21s
+
+     Running tests\usage.rs (target\debug\deps\usage-92925ce630d90bd4.exe)
+
+running 2 tests
+Usage HTTP success: requests=1 attempts=1 cfg=2 tokens=2/1 persisted before response success
+Usage HTTP begin failure: upstream delta=0,503,degraded=true;private explicit recovery acknowledged
+Usage HTTP first-attempt registration failure:upstream delta0,degraded and explicit recovery
+Usage actual sidecar kill/restart:upstream entered only after request+attempt starts persisted;both recovered interrupted,NULL tokens,no fabricated zero
+test actual_sidecar_death_keeps_started_usage_and_restart_marks_unknown_interrupted ... ok
+Usage successful SSE:final reported tokens3/2 persisted before DONE
+Usage HTTP result failure:2 pending,unknown tokens NULL,subsequent upstream delta0;fault-active recovery refused;after recovery pending0,unknown stays NULL
+Usage SSE result failure:partial text retained,error frame,successful DONE withheld,2 bounded pending;recovery retains unknown tokens
+Usage SSE client drop:actual upstream closed;request+attempt cancelled with unknown tokens
+Usage sequential:logical1/attempts2/tokens4/2;second-attempt begin failure sends first once and second zero
+Usage actual revoke(true):partial stream ends ACCESS_REVOKED,request+attempt cancelled,NULL usage;no success DONE
+test actual_http_usage_starts_precede_dispatch_and_failed_results_fence_new_calls ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.38s
+

@@ -39,10 +39,37 @@ struct Shared {
     hook: Mutex<Option<Arc<TestHook>>>,
 }
 #[cfg(test)]
+enum HookPhase {
+    AttemptCommitted,
+    FinishCommitted,
+    BeforeRecover,
+}
+#[cfg(test)]
+#[derive(Default)]
+struct TestLatch {
+    released: Mutex<bool>,
+    ready: std::sync::Condvar,
+}
+#[cfg(test)]
+impl TestLatch {
+    fn wait(&self) {
+        let guard = self.released.lock().unwrap_or_else(|p| p.into_inner());
+        drop(
+            self.ready
+                .wait_timeout_while(guard, Duration::from_secs(3), |released| !*released),
+        );
+    }
+    fn open(&self) {
+        *self.released.lock().unwrap_or_else(|p| p.into_inner()) = true;
+        self.ready.notify_all();
+    }
+}
+#[cfg(test)]
 struct TestHook {
-    finish: bool,
+    phase: HookPhase,
+    completed: tokio::sync::Notify,
     entered: tokio::sync::Notify,
-    release: std::sync::Barrier,
+    release: TestLatch,
 }
 pub struct Ledger {
     sender: Mutex<Option<SyncSender<Message>>>,
@@ -104,6 +131,17 @@ impl Ledger {
                     };
                     let recovering = matches!(&message.operation, Operation::Recover);
                     #[cfg(test)]
+                    {
+                        let hook = flags.hook.lock().unwrap().clone();
+                        if let Some(hook) = hook
+                            && recovering
+                            && matches!(hook.phase, HookPhase::BeforeRecover)
+                        {
+                            hook.entered.notify_one();
+                            hook.release.wait();
+                        }
+                    }
+                    #[cfg(test)]
                     let is_finish = matches!(&message.operation, Operation::Finish(_));
                     let mut result = match message.operation {
                         Operation::Request(start) if !flags.blocked.load(Ordering::SeqCst) => {
@@ -139,8 +177,8 @@ impl Ledger {
                     {
                         let hook = flags.hook.lock().unwrap().clone();
                         if let Some(hook) = hook
-                            && ((hook.finish && is_finish)
-                                || (!hook.finish
+                            && ((matches!(hook.phase, HookPhase::FinishCommitted) && is_finish)
+                                || (matches!(hook.phase, HookPhase::AttemptCommitted)
                                     && began
                                     && fallback
                                         .as_ref()
@@ -180,6 +218,16 @@ impl Ledger {
                             }
                         }
                         Err(_) => flags.blocked.store(true, Ordering::SeqCst),
+                    }
+                    #[cfg(test)]
+                    {
+                        let hook = flags.hook.lock().unwrap().clone();
+                        if let Some(hook) = hook
+                            && recovering
+                            && matches!(hook.phase, HookPhase::BeforeRecover)
+                        {
+                            hook.completed.notify_one();
+                        }
                     }
                 }
             })
@@ -410,20 +458,23 @@ mod tests {
             .await
             .unwrap();
         let hook = Arc::new(TestHook {
-            finish: false,
+            phase: HookPhase::AttemptCommitted,
+            completed: Default::default(),
             entered: tokio::sync::Notify::new(),
-            release: std::sync::Barrier::new(2),
+            release: Default::default(),
         });
         *ledger.shared.hook.lock().unwrap() = Some(hook.clone());
         let task = {
             let request = request.clone();
             tokio::spawn(async move { request.attempt(1, &provider, "ack-fixture").await })
         };
-        hook.entered.notified().await;
+        tokio::time::timeout(Duration::from_secs(2), hook.entered.notified())
+            .await
+            .unwrap();
         assert!(task.await.unwrap().is_err());
         drop(request);
         tokio::time::sleep(Duration::from_millis(20)).await;
-        hook.release.wait();
+        hook.release.open();
         ledger.recover().await.unwrap();
         let db = rusqlite::Connection::open_with_flags(
             temp.path().join("usage.sqlite3"),
@@ -461,21 +512,82 @@ mod tests {
             .await
             .unwrap();
         let hook = Arc::new(TestHook {
-            finish: true,
+            phase: HookPhase::FinishCommitted,
+            completed: Default::default(),
             entered: Default::default(),
-            release: std::sync::Barrier::new(2),
+            release: Default::default(),
         });
         *ledger.shared.hook.lock().unwrap() = Some(hook.clone());
         let task = tokio::spawn(async move { request.finish(None).await });
-        hook.entered.notified().await;
+        tokio::time::timeout(Duration::from_secs(2), hook.entered.notified())
+            .await
+            .unwrap();
         let result = tokio::time::timeout(Duration::from_millis(400), task).await;
         let degraded = ledger.degraded();
-        hook.release.wait();
+        hook.release.open();
         ledger.recover().await.unwrap();
         assert!(matches!(result, Ok(Ok(Err(_)))));
         assert!(degraded);
         println!(
             "Usage accounting ACK:remaining150ms request budget ends wait while committed writer ACK is held;explicit recovery required"
+        );
+    }
+    #[tokio::test]
+    async fn recovery_timeout_retains_operation_failure_after_late_writer_completion() {
+        let temp = tempfile::Builder::new()
+            .prefix("tagma-recovery-late-")
+            .tempdir()
+            .unwrap();
+        let ledger = Ledger::open(temp.path()).unwrap();
+        let request = ledger
+            .begin(
+                RequestStart {
+                    id: uuid::Uuid::new_v4().to_string(),
+                    provider_id: uuid::Uuid::new_v4().to_string(),
+                    model: "recovery-late-fixture".into(),
+                    config_revision: 1,
+                    team_revision: None,
+                    started_ms: tagma_core::health::now_ms().unwrap(),
+                },
+                tokio::time::Instant::now() + Duration::from_secs(10),
+            )
+            .await
+            .unwrap();
+        let db = rusqlite::Connection::open(temp.path().join("usage.sqlite3")).unwrap();
+        db.execute_batch("CREATE TRIGGER owned_fail_recovery_result BEFORE UPDATE ON usage_requests BEGIN SELECT RAISE(ABORT,'owned recovery fixture'); END;").unwrap();
+        assert!(request.finish(None).await.is_err());
+        assert_eq!(ledger.pending(), 1);
+        db.execute_batch("DROP TRIGGER owned_fail_recovery_result")
+            .unwrap();
+        drop(db);
+        let hook = Arc::new(TestHook {
+            phase: HookPhase::BeforeRecover,
+            entered: Default::default(),
+            release: Default::default(),
+            completed: Default::default(),
+        });
+        *ledger.shared.hook.lock().unwrap() = Some(hook.clone());
+        let task = {
+            let ledger = ledger.clone();
+            tokio::spawn(async move { ledger.recover().await })
+        };
+        tokio::time::timeout(Duration::from_secs(2), hook.entered.notified())
+            .await
+            .unwrap();
+        let result = task.await.unwrap();
+        assert!(result.is_err());
+        hook.release.open();
+        tokio::time::timeout(Duration::from_secs(1), hook.completed.notified())
+            .await
+            .unwrap();
+        assert!(!ledger.degraded());
+        assert_eq!(ledger.pending(), 0);
+        assert!(
+            result.is_err(),
+            "a later clean snapshot cannot turn the timed-out operation into a successful acknowledgement"
+        );
+        println!(
+            "SUP-008 bounded writer race:recover operation timed out/Err;writer later completed actual pending1->0 and degraded=false;original operation Err preserved for reply"
         );
     }
 }

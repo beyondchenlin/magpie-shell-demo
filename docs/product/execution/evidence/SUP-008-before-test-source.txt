@@ -1,0 +1,123 @@
+//! Private management confirmation only, no application windows or credentials.
+use serde_json::{Value, json};
+use std::{path::Path, sync::Arc};
+use tagma_core::*;
+use tagma_runtime::{GatewayManager, ipc};
+async fn recovery(
+    mut status: RuntimeStatus,
+    operation: Value,
+    mismatched_status_instance: bool,
+) -> AppResult<RuntimeStatus> {
+    use interprocess::local_socket::tokio::prelude::*;
+    let temp = tempfile::Builder::new()
+        .prefix("tagma-recovery-ack-")
+        .tempdir()
+        .unwrap();
+    let instance = uuid::Uuid::new_v4().to_string();
+    #[cfg(windows)]
+    let endpoint = format!("tagma-{}", uuid::Uuid::new_v4());
+    #[cfg(unix)]
+    let endpoint = temp
+        .path()
+        .join("recovery.sock")
+        .to_string_lossy()
+        .into_owned();
+    let manifest = ipc::Manifest {
+        protocol_version: PROTOCOL_VERSION,
+        product_version: PRODUCT_VERSION.into(),
+        schema_version: SCHEMA_VERSION,
+        config_id: ipc::config_id(temp.path()).unwrap(),
+        instance_id: instance.clone(),
+        endpoint,
+        port: 9168,
+        console_attached: false,
+    };
+    status.instance_id = Some(if mismatched_status_instance {
+        uuid::Uuid::new_v4().to_string()
+    } else {
+        instance
+    });
+    let listener = ipc::listener(&manifest.endpoint).unwrap();
+    std::fs::write(
+        temp.path().join("runtime.json"),
+        serde_json::to_vec(&manifest).unwrap(),
+    )
+    .unwrap();
+    let server = tokio::spawn(async move {
+        let mut stream = listener.accept().await.unwrap();
+        let request: ipc::Request = ipc::read_frame(&mut stream).await.unwrap();
+        assert!(matches!(request.command, ipc::Command::RecoverUsage));
+        let response = json!({"protocol_version":PROTOCOL_VERSION,"product_version":PRODUCT_VERSION,"config_id":request.config_id,"instance_id":request.instance_id,"challenge":request.challenge,"status":status,"operation":operation});
+        ipc::write_frame(&mut stream, &response).await.unwrap();
+    });
+    // The binary is never opened or spawned by this management-only method.
+    let manager = Arc::new(GatewayManager::new(
+        temp.path(),
+        Path::new("unused-owned-fixture-binary"),
+    ));
+    let result = manager.recover_usage().await;
+    server.await.unwrap();
+    result
+}
+fn clean() -> RuntimeStatus {
+    RuntimeStatus {
+        usage_degraded: Some(false),
+        usage_pending_results: Some(0),
+        security_revision: Some(0),
+        state: RuntimeState::Running,
+        instance_id: None,
+        effective_revision: Some(1),
+        address: Some("http://127.0.0.1:9168/v1".into()),
+        owned: false,
+        error: None,
+    }
+}
+#[tokio::test]
+async fn recovery_rejects_contradictory_incomplete_and_wrong_instance_acknowledgements() {
+    let success = json!({"kind":"recover_usage","error":null});
+    let mut explicit_error = clean();
+    explicit_error.error = Some(AppError::new(ErrorCode::UsageStorageUnavailable));
+    let mut missing_pending = clean();
+    missing_pending.usage_pending_results = None;
+    let mut pending = clean();
+    pending.usage_pending_results = Some(1);
+    let mut failed = clean();
+    failed.state = RuntimeState::Failed;
+    let cases = [
+        (
+            "contradictory_usage_error",
+            explicit_error,
+            success.clone(),
+            false,
+        ),
+        ("missing_pending", missing_pending, success.clone(), false),
+        ("nonzero_pending", pending, success.clone(), false),
+        ("wrong_status_instance", clean(), success.clone(), true),
+        ("failed_runtime", failed, success.clone(), false),
+        (
+            "operation_failed_but_clean_snapshot",
+            clean(),
+            json!({"kind":"recover_usage","error":{"code":"USAGE_STORAGE_UNAVAILABLE","retryable":false}}),
+            false,
+        ),
+        ("missing_operation_ack", clean(), Value::Null, false),
+    ];
+    for (name, status, operation, mismatch) in cases {
+        let result = recovery(status, operation, mismatch).await;
+        println!("SUP-008 case={name} manager_accepted={}", result.is_ok());
+        assert!(result.is_err(), "Recovery must fail closed for {name}");
+    }
+    assert!(recovery(clean(), success.clone(), false).await.is_ok());
+    let mut unrelated = clean();
+    unrelated.state = RuntimeState::Degraded;
+    unrelated.error = Some(AppError::new(ErrorCode::ConfigApplyFailed));
+    let result = recovery(unrelated, success, false).await.unwrap();
+    assert_eq!(
+        result.error.unwrap().code,
+        ErrorCode::ConfigApplyFailed,
+        "explicit successful recovery does not erase an unrelated runtime error"
+    );
+    println!(
+        "SUP-008 valid ack:current instance,no operation error,false degraded,pending0 accepted;unrelated configuration error preserved separately"
+    );
+}

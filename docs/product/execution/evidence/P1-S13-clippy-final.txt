@@ -1,0 +1,26 @@
+    Checking hyper v1.12.0
+    Checking url v2.5.8
+    Checking tower v0.5.3
+    Checking serde v1.0.229
+    Checking tagma-core v0.2.0-dev.15 (D:\demo1\tagmaai\crates\tagma-core)
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+    Checking tower-http v0.6.11
+    Checking hyper-util v0.1.21
+    Checking hyper-tls v0.6.0
+    Checking reqwest v0.13.5
+    Checking tagma-runtime v0.2.0-dev.15 (D:\demo1\tagmaai\crates\tagma-runtime)
+    Finished `dev` profile [unoptimized] target(s) in 3.24s

@@ -18,6 +18,8 @@
 
 ## 当前批次
 
+- **SUP-008管理恢复确认边界已局部修复**：先以真实私有IPC复现带USAGE_STORAGE_UNAVAILABLE的健康字段快照被manager误接受，再以明确operation确认/错误与runtime快照分离修复；12负例拒绝、2正例接受。真实writer的pending1恢复暂停至调用超时，晚完成false/0仍保留原操作Err；hook有界。相关gateway19/runtime2通过（2显式忽略不计），workspace及最终runtime Clippy通过，见[SUP-008](SUP-008-RECOVERY-ACK.md)。候选dev.15/schema不变，A28/A16/P1未整体通过；继续A27 apply失败+IPC丢失矩阵，用户安装与电脑控制禁令不变。
+
 - 源码候选 **dev.15/config schema8/usage schema1** 已将用量登记接入实际网关首步/后续步及SSE/非流/取消/崩溃生命周期：开始失败HTTP上游0调用，结束失败有界保留并拒绝新登记，私有显式恢复，未知token保持NULL，成功DONE前结算。核心60/网关33/runtime1通过（9项显式忽略不计），workspace Clippy、DTO、TS/Vite/oxlint JSON/CIS通过；两轮自查含确认超时遗留1→0修复及剩余预算检查。见[P1-S12](P1-S12-USAGE-GATEWAY.md)。A16/A28查询/清除/预算及完整容量矩阵未完，A27 apply失败+IPC丢失矩阵待办，P1未通过。继续独立非UI工作，用户dev.9/数据不动，拖拽保持未通过。
 
 - 已继续 OBS-01/06 独立用量库基础：开始持久登记、逻辑请求/尝试分离、未知token、有限失败结果队列及真实exit90恢复；新增6项、完整core lib37项通过（4 helper忽略），core Clippy通过。尚未接实际网关派发/流/IPC/UI，不能据此通过A16/A28。详见[P1-S11](P1-S11-USAGE-FOUNDATION.md)；下一步接实际派发屏障及结果生命周期。用户dev.9安装与拖动未通过状态保持。

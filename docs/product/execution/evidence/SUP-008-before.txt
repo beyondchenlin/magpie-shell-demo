@@ -1,0 +1,35 @@
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+   Compiling tagma-runtime v0.2.0-dev.15 (D:\demo1\tagmaai\crates\tagma-runtime)
+    Finished `test` profile [unoptimized] target(s) in 1.48s
+     Running tests\recovery_ack.rs (target\debug\deps\recovery_ack-3ec931ed541d3b4a.exe)
+
+running 1 test
+
+SUP-008 case=contradictory_usage_error manager_accepted=true
+thread 'recovery_rejects_contradictory_incomplete_and_wrong_instance_acknowledgements' (44864) panicked at crates\tagma-runtime\tests\recovery_ack.rs:108:9:
+Recovery must fail closed for contradictory_usage_error
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test recovery_rejects_contradictory_incomplete_and_wrong_instance_acknowledgements ... FAILED
+
+failures:
+
+failures:
+    recovery_rejects_contradictory_incomplete_and_wrong_instance_acknowledgements
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+error: test failed, to rerun pass `-p tagma-runtime --test recovery_ack`

@@ -1,0 +1,13 @@
+{
+  "recordedAtUtc": "2026-10-17T18:42:48.1772677Z",
+  "target": "D:\\demo1\\tagmaai\\target",
+  "temporaryRoot": "C:\\Users\\ai\\AppData\\Local\\Temp",
+  "estimatedAdditionalPeakGiB": 0.3,
+  "freeBeforeGiB": {
+    "D": 11.76,
+    "C": 42.51
+  },
+  "scope": "SUP-008 narrow private recovery acknowledgement tests and fix; no desktop, installation or paid API",
+  "reuse": "Existing Cargo target and registry; no new environment/worktree",
+  "cleanup": "Owned TempDir/IPC listener teardown; preserve prior rejected and preexisting fixtures"
+}

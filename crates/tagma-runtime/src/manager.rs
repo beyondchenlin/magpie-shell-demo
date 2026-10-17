@@ -320,12 +320,7 @@ impl GatewayManager {
     pub async fn recover_usage(&self) -> AppResult<RuntimeStatus> {
         let manifest = ipc::read_manifest(&self.directory)?;
         let status = ipc::call(&manifest, Control::RecoverUsage).await?;
-        if status.instance_id.as_deref() != Some(&manifest.instance_id)
-            || status.usage_degraded != Some(false)
-            || !matches!(status.state, RuntimeState::Running | RuntimeState::Degraded)
-        {
-            return Err(AppError::new(ErrorCode::UsageStorageUnavailable));
-        }
+        ipc::validate_recovered_usage(&status, &manifest.instance_id)?;
         Ok(status)
     }
     pub async fn cancel_probe(&self, request_id: String) -> AppResult<()> {

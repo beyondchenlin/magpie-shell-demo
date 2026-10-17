@@ -64,7 +64,17 @@ pub enum Command {
 }
 
 #[derive(Serialize, Deserialize)]
+#[serde(tag = "kind", rename_all = "snake_case", deny_unknown_fields)]
+pub enum OperationResult {
+    RecoverUsage {
+        confirmed: bool,
+        error: Option<AppError>,
+    },
+}
+#[derive(Serialize, Deserialize)]
 pub struct Response {
+    #[serde(default)]
+    pub operation: Option<OperationResult>,
     pub protocol_version: u32,
     pub product_version: String,
     pub config_id: String,
@@ -197,6 +207,7 @@ fn current_user_sid() -> io::Result<String> {
 }
 
 pub async fn call(manifest: &Manifest, command: Command) -> AppResult<RuntimeStatus> {
+    let recovery = matches!(&command, Command::RecoverUsage);
     check_protocol(manifest.protocol_version)?;
     if manifest.product_version != PRODUCT_VERSION || manifest.schema_version != SCHEMA_VERSION {
         return Err(AppError::new(ErrorCode::IncompatibleVersion));
@@ -236,11 +247,46 @@ pub async fn call(manifest: &Manifest, command: Command) -> AppResult<RuntimeSta
         {
             return Err(AppError::new(ErrorCode::IncompatibleVersion));
         }
+        if recovery {
+            match &response.operation {
+                Some(OperationResult::RecoverUsage {
+                    error: Some(error), ..
+                }) => return Err(error.clone()),
+                Some(OperationResult::RecoverUsage {
+                    confirmed: true,
+                    error: None,
+                }) => validate_recovered_usage(&response.status, &manifest.instance_id)?,
+                _ => return Err(AppError::new(ErrorCode::UsageStorageUnavailable)),
+            }
+        }
         Ok(response.status)
     };
     tokio::time::timeout(std::time::Duration::from_secs(2), operation)
         .await
         .map_err(|_| AppError::new(ErrorCode::GatewayUnavailable))?
+}
+pub(crate) fn validate_recovered_usage(status: &RuntimeStatus, instance: &str) -> AppResult<()> {
+    if status.instance_id.as_deref() != Some(instance)
+        || status.usage_degraded != Some(false)
+        || status.usage_pending_results != Some(0)
+        || !matches!(status.state, RuntimeState::Running | RuntimeState::Degraded)
+    {
+        return Err(AppError::new(ErrorCode::UsageStorageUnavailable));
+    }
+    // Configuration failures may coexist with successful usage recovery. Keep
+    // those visible, but refuse a contradictory or ambiguous storage failure.
+    if let Some(error) = &status.error
+        && !matches!(
+            error.code,
+            ErrorCode::ConfigApplyFailed
+                | ErrorCode::RestartRequired
+                | ErrorCode::CredentialStoreUnavailable
+                | ErrorCode::MaintenanceInProgress
+        )
+    {
+        return Err(error.clone());
+    }
+    Ok(())
 }
 
 pub fn read_manifest(directory: &Path) -> AppResult<Manifest> {

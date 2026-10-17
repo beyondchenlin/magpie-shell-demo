@@ -1,0 +1,166 @@
+{
+  "recordedAtUtc": "2026-10-17T18:48:50.468Z",
+  "sourceBase": "7bd2c92bf19897667c1e2d1b64ded8a7c08809ba",
+  "candidateVersion": "0.2.0-dev.15",
+  "configSchema": 8,
+  "usageSchema": 1,
+  "sources": [
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-runtime\\src\\ipc.rs",
+      "bytes": 12048,
+      "sha256": "e41d975d0058e9c052be4d4b513f5d7a5f1581921096c9f1e5e88ad5de1ad7d7"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-runtime\\src\\manager.rs",
+      "bytes": 17294,
+      "sha256": "890ba90856de7736288b2d513271bac6f3d50606f71f4fa104c9c2922b4c1b6f"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-runtime\\tests\\recovery_ack.rs",
+      "bytes": 5883,
+      "sha256": "1fe41d54fa99360f6b595be210aec253d96fca13bbb67c59a515a3a4c7f9ef68"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-gateway\\src\\main.rs",
+      "bytes": 31992,
+      "sha256": "220ef9fe2b1539348f1caddc5996becf17faa591f8552e394751c9caa5943467"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-gateway\\src\\usage.rs",
+      "bytes": 22056,
+      "sha256": "ebc1471f1b4daa6c70507549de862487428950df1dc40ed59c47ee4bf06bc0a0"
+    }
+  ],
+  "evidence": [
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S13-clippy-final.txt",
+      "bytes": 902,
+      "sha256": "cd7efe2fde0d0a43952879e01d7e45f3478934658928448d5752c5b94d7624d6"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S13-clippy.txt",
+      "bytes": 1190,
+      "sha256": "53659a454f60f2519b32fdfc3d00d9e4b0a4d3f11abfa62b660f490373089107"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S13-gateway-related.txt",
+      "bytes": 4286,
+      "sha256": "dc7e32d7d115fa2ce8c9d17315e81f057f7a38b7d532a8de0175ae437c98b485"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S13-runtime-final.txt",
+      "bytes": 2043,
+      "sha256": "8e172c1145393b0097a1230874152fea283b248d9eb7d16fc097b634f62ed70e"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S13-space-plan.json",
+      "bytes": 555,
+      "sha256": "06aa0fc77241f2394d7866606ff1a6519ba62fd12e0ae6827e58d50cdb333a55"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P1-S13-sup007-regression.txt",
+      "bytes": 1425,
+      "sha256": "184c12d03034d60b722bdd033482c3f873d153debfb7c22e6ce5d00e6b3fa094"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\SUP-008-ack-final.txt",
+      "bytes": 1576,
+      "sha256": "9548502a40433b649e0ac9d7d4ad83c521876cd57ab236aaba4317c07fcc94fc"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\SUP-008-after.txt",
+      "bytes": 1440,
+      "sha256": "813f8c607ecbbca00840fc4329dca2d500c760c9e052a07116c8ca6c0a88b13a"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\SUP-008-before-source.json",
+      "bytes": 806,
+      "sha256": "84ef20227c9bd36854b9db7c4c80591e774212354842f5e903b1744c953deceb"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\SUP-008-before-test-source.txt",
+      "bytes": 4852,
+      "sha256": "0f84020b9ee631b268f8739c541da31686e2d0f1ed3b0dd28fb4571e31a2f5ea"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\SUP-008-before.txt",
+      "bytes": 1438,
+      "sha256": "9879eca1fc16abbe26b8c69e657db753b4676d4bd0a0246b0215d5cf02554c80"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\SUP-008-matrix-final.txt",
+      "bytes": 1762,
+      "sha256": "9efab107f7bb4d330f97882b752c60baee6d8fe45a5055e9389c5584c1080bad"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\SUP-008-writer-final.txt",
+      "bytes": 1458,
+      "sha256": "43db0f058ebb686fd0b71f497fe1487569fdd370cfcc86467fbe90dc54e79683"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\SUP-008-writer-race.txt",
+      "bytes": 1540,
+      "sha256": "a927781a4e4f58a41237d25da0f9b5387d89a14df5b62f08e929631d90b181e3"
+    }
+  ],
+  "scope": "SUP-008 recovery acknowledgement only; source/controlled private IPC and bounded writer race plus affected real-sidecar regressions",
+  "before": {
+    "contradictoryUsageSnapshotManagerAccepted": true,
+    "verifiedBaselineSourceBindings": true
+  },
+  "after": {
+    "contradictoryUsageSnapshotManagerAccepted": false,
+    "rejectedCases": 12,
+    "acceptedCases": 2,
+    "operationFailurePreservedAfterLaterCleanSnapshot": true,
+    "explicitPendingZeroRequired": true,
+    "unrelatedConfigErrorPreserved": true
+  },
+  "commands": [
+    "cargo test -p tagma-runtime --locked --offline -- --nocapture",
+    "cargo test -p tagma-runtime --test recovery_ack --locked --offline -- --nocapture",
+    "cargo test -p tagma-gateway --bin tagma-gateway usage::tests --locked --offline -- --nocapture",
+    "cargo test -p tagma-gateway --test usage --test security --test process_lifecycle --locked --offline -- --nocapture",
+    "cargo test -p tagma-gateway --bin tagma-gateway sup007_confirmed_revoke --locked --offline -- --nocapture",
+    "cargo clippy --workspace --all-targets --locked --offline -- -D warnings",
+    "cargo clippy -p tagma-runtime --all-targets --locked --offline -- -D warnings"
+  ],
+  "results": {
+    "runtimeTestsPassed": 2,
+    "gatewayRelatedTestsPassed": 19,
+    "gatewayRelatedIgnored": 2,
+    "clippy": "passed",
+    "fullGatewaySuiteRerun": false
+  },
+  "selfReviewRounds": 2,
+  "desktopControl": false,
+  "uiVerified": false,
+  "userInstallation": "dev.9 unchanged",
+  "realCredentialAccess": false,
+  "realProviderCalls": 0,
+  "userDataMigrated": false,
+  "newWorktrees": 0,
+  "newEnvironments": 0,
+  "retainedNewFixtures": [],
+  "priorRetainedFixtures": "Unchanged, P1-S12-retention.json",
+  "A16FullyAccepted": false,
+  "A28FullyAccepted": false,
+  "A27ApplyFailureAndIpcLossMatrixAccepted": false,
+  "P1FullyAccepted": false,
+  "diskStartGiB": {
+    "D": 11.76,
+    "C": 42.51
+  },
+  "diskEnd": [
+    {
+      "drive": "C",
+      "freeGiB": 42.61
+    },
+    {
+      "drive": "D",
+      "freeGiB": 11.65
+    }
+  ],
+  "diskNote": "Existing target/cache reused. Concurrent changes included; no net physical release claimed.",
+  "prdSha256": "6e6503391f70e3f2e53347890de6e7c9f7fd93cc393c68f7bba494ac4d67a6d6"
+}

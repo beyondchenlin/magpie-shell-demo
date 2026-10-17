@@ -326,17 +326,19 @@ async fn run(
                             match request.command {
                                 Command::Status => {},
                                 Command::RecoverUsage => {
-                                    if let Err(error)=state.usage.recover().await {let mut status=status_snapshot(&state).await;status.error=Some(error);let response=Response{protocol_version:PROTOCOL_VERSION,product_version:PRODUCT_VERSION.into(),instance_id:state.manifest.instance_id.clone(),config_id:state.manifest.config_id.clone(),challenge:request.challenge,status};let _=ipc::write_frame(&mut stream,&response).await;return;}
+                                    let result=state.usage.recover().await;let confirmed=result.is_ok();let error=result.err();let mut status=status_snapshot(&state).await;
+                                    if let Some(error)=&error{status.error=Some(error.clone());}
+                                    let response=Response{operation:Some(ipc::OperationResult::RecoverUsage{confirmed,error}),protocol_version:PROTOCOL_VERSION,product_version:PRODUCT_VERSION.into(),instance_id:state.manifest.instance_id.clone(),config_id:state.manifest.config_id.clone(),challenge:request.challenge,status};let _=ipc::write_frame(&mut stream,&response).await;return;
                                 },
                                 Command::ConfirmSecurity {revision} => {
                                     match confirm_security(&state,revision).await {Ok(_)=>{},Err(error)=>{
-                                        let mut status=status_snapshot(&state).await;status.error=Some(error);let response=Response {protocol_version:PROTOCOL_VERSION,product_version:PRODUCT_VERSION.into(),instance_id:state.manifest.instance_id.clone(),config_id:state.manifest.config_id.clone(),challenge:request.challenge,status};let _=ipc::write_frame(&mut stream,&response).await;return;
+                                        let mut status=status_snapshot(&state).await;status.error=Some(error);let response=Response {operation:None,protocol_version:PROTOCOL_VERSION,product_version:PRODUCT_VERSION.into(),instance_id:state.manifest.instance_id.clone(),config_id:state.manifest.config_id.clone(),challenge:request.challenge,status};let _=ipc::write_frame(&mut stream,&response).await;return;
                                     }}
                                 },
                                 Command::Probe { input } => {
                                     if let Err(error)=catalog::start(&state,input).await {
                                         let mut status=status_snapshot(&state).await;status.error=Some(error);
-                                        let response=Response {protocol_version:PROTOCOL_VERSION,product_version:PRODUCT_VERSION.into(),instance_id:state.manifest.instance_id.clone(),config_id:state.manifest.config_id.clone(),challenge:request.challenge,status};let _=ipc::write_frame(&mut stream,&response).await;return;
+                                        let response=Response {operation:None,protocol_version:PROTOCOL_VERSION,product_version:PRODUCT_VERSION.into(),instance_id:state.manifest.instance_id.clone(),config_id:state.manifest.config_id.clone(),challenge:request.challenge,status};let _=ipc::write_frame(&mut stream,&response).await;return;
                                     }
                                 },
                                 Command::CancelProbe {request_id} => {let _=state.catalog_jobs.cancel(&request_id);},
@@ -344,10 +346,10 @@ async fn run(
                                 Command::Stop { owner_token } => {
                                     if owner_token == *state.token { let mut status=state.status.write().await;status.state = RuntimeState::Stopping;status.error=None; stop = true; }
                                     else { let mut status = status_snapshot(&state).await; status.error = Some(AppError::new(ErrorCode::OwnershipRequired));
-                                        let response = Response { protocol_version: PROTOCOL_VERSION, product_version: PRODUCT_VERSION.into(), instance_id: state.manifest.instance_id.clone(), config_id: state.manifest.config_id.clone(), challenge: request.challenge, status }; let _ = ipc::write_frame(&mut stream,&response).await; return; }
+                                        let response = Response { operation:None, protocol_version: PROTOCOL_VERSION, product_version: PRODUCT_VERSION.into(), instance_id: state.manifest.instance_id.clone(), config_id: state.manifest.config_id.clone(), challenge: request.challenge, status }; let _ = ipc::write_frame(&mut stream,&response).await; return; }
                                 },
                             }
-                            let response = Response { protocol_version: PROTOCOL_VERSION, product_version: PRODUCT_VERSION.into(), instance_id: state.manifest.instance_id.clone(), config_id: state.manifest.config_id.clone(), challenge: request.challenge, status: status_snapshot(&state).await };
+                            let response = Response { operation:None, protocol_version: PROTOCOL_VERSION, product_version: PRODUCT_VERSION.into(), instance_id: state.manifest.instance_id.clone(), config_id: state.manifest.config_id.clone(), challenge: request.challenge, status: status_snapshot(&state).await };
                             let _ = ipc::write_frame(&mut stream,&response).await;
                             if stop { state.shutdown.cancel(); }
                         }).await;

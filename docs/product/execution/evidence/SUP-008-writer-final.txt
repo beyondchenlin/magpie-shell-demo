@@ -1,0 +1,29 @@
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+   Compiling tagma-gateway v0.2.0-dev.15 (D:\demo1\tagmaai\crates\tagma-gateway)
+    Finished `test` profile [unoptimized] target(s) in 2.91s
+     Running unittests src\main.rs (target\debug\deps\tagma_gateway-73f8e811999c3931.exe)
+
+running 3 tests
+Usage accounting ACK:remaining150ms request budget ends wait while committed writer ACK is held;explicit recovery required
+test usage::tests::accounting_ack_wait_respects_the_remaining_request_budget ... ok
+SUP-008 bounded writer race:recover operation timed out/Err;writer later completed actual pending1->0 and degraded=false;original operation Err preserved for reply
+test usage::tests::recovery_timeout_retains_operation_failure_after_late_writer_completion ... ok
+Usage lost committed-start ACK unit: unfinished records=0; late ACK lifecycle guard recovery
+test usage::tests::lost_attempt_start_acknowledgement_closes_both_started_records ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 12 filtered out; finished in 0.87s
+
