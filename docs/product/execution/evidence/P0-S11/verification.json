@@ -1,0 +1,47 @@
+{
+  "productCommit": "cd2bc9fb9580d62c35f63fcf3c423a1544e10383",
+  "commands": [
+    {
+      "passed": 30,
+      "command": "node --test scripts/test-tagma-usage-source.mjs",
+      "level": "source/SSR/mock bridge",
+      "failed": 0,
+      "exitCode": 0
+    },
+    {
+      "command": "node node_modules/typescript/bin/tsc -b",
+      "exitCode": 0
+    },
+    {
+      "command": "node node_modules/oxlint/bin/oxlint --deny-warnings src/product/ProductApp.tsx",
+      "exitCode": 0
+    },
+    {
+      "command": "node scripts/cis-guard.mjs",
+      "exitCode": 0
+    },
+    {
+      "command": "node scripts/chrome-guard.mjs",
+      "exitCode": 0
+    },
+    {
+      "command": "node .cache/p0-s11-native-control/layout-check.mjs",
+      "firstRun": "failed English side150 narrow input",
+      "finalExitCode": 0,
+      "level": "independent synthetic browser, not native",
+      "afterCases": 8
+    },
+    {
+      "command": "npm run tauri -- build --debug --bundles nsis",
+      "level": "build, not clean installation",
+      "exitCode": 0
+    }
+  ],
+  "rawLogsRetained": [
+    ".cache/p0-s11-native-control/source-tests.log",
+    ".cache/p0-s11-native-control/dev19-build.log"
+  ],
+  "nativeEvidence": "Separate native-actions.jsonl plus dev19/actions.jsonl and screenshots",
+  "rerunOfHistoricalHotfixMatrix": false,
+  "manualCiTriggered": false
+}
