@@ -609,18 +609,17 @@ Section Uninstall
 
   !insertmacro TagmaCheckInstallProcesses "$INSTDIR"
 
-  ; Delete the app directory and its content from disk
-  ; Copy main executable
-  Delete "$INSTDIR\${MAINBINARYNAME}.exe"
+  ; Keep the registration and recovery uninstaller until all payloads are gone.
+  !insertmacro TagmaDeleteProgramFile "$INSTDIR\${MAINBINARYNAME}.exe"
 
   ; Delete resources
   {{#each resources}}
-    Delete "$INSTDIR\\{{this.[1]}}"
+    !insertmacro TagmaDeleteProgramFile "$INSTDIR\\{{this.[1]}}"
   {{/each}}
 
   ; Delete external binaries
   {{#each binaries}}
-    Delete "$INSTDIR\\{{this}}"
+    !insertmacro TagmaDeleteProgramFile "$INSTDIR\\{{this}}"
   {{/each}}
 
   ; Delete app associations
@@ -640,7 +639,7 @@ Section Uninstall
 
 
   ; Delete uninstaller
-  Delete "$INSTDIR\uninstall.exe"
+  !insertmacro TagmaDeleteProgramFile "$INSTDIR\uninstall.exe"
 
   {{#each resources_ancestors}}
   RMDir /REBOOTOK "$INSTDIR\\{{this}}"

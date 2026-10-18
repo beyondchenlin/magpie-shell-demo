@@ -49,6 +49,23 @@ Var TagmaGuardMessage
   ${EndIf}
 !macroend
 
+; Delete is allowed to fail without stopping NSIS. Do not remove the recovery
+; entry or report success when a payload (or the uninstaller) remains locked.
+; Missing files are allowed so an interrupted uninstall can be retried.
+!macro TagmaDeleteProgramFile path
+  ClearErrors
+  Delete "${path}"
+  ${If} ${Errors}
+    DetailPrint "Tagma removal is incomplete. A program file could not be deleted."
+    DetailPrint "Close Tagma and programs holding its files, then retry uninstall."
+    DetailPrint "To restore Tagma, run the complete installer for this version."
+    DetailPrint "The uninstall entry and user configuration were kept."
+    DetailPrint "File: ${path}"
+    SetErrorLevel 1603
+    Abort
+  ${EndIf}
+!macroend
+
 ; NSIS permits Ignore on an extraction error. It sets the error flag but would
 ; otherwise continue and record a newer DisplayVersion without installing it.
 ; Keep the existing registration until every payload and the uninstaller exist.

@@ -19,6 +19,11 @@ Tagma changes:
 - Abort on payload/directory/uninstaller write failures (1603), including when
   Ignore was selected in NSIS's file error dialog. Do not update DisplayVersion
   after an incomplete payload write. A complete reinstall is the recovery path.
+- Abort on program-file removal failures (1603), retaining the uninstall entry
+  and uninstaller for recovery. Already missing payload files permit retry after
+  an interrupted removal. Release the file lock and retry uninstall, or restore
+  the complete installation with the same installer. No success is reported for
+  partially removed payloads; user-data removal is never reached on this failure.
 
 The user quits the desktop through its existing request-draining flow. A separate
 gateway must be stopped by its owner. This guard does **not** establish an atomic
