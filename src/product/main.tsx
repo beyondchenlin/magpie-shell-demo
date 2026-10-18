@@ -9,9 +9,10 @@ import "../styles/plugins.css";
 import "../styles/context.css";
 import "./product.css";
 import ProductApp from "./ProductApp";
+import { RespectReducedMotion } from "../components/SegThumb";
 import { applyPreferences, readPreferences } from "./preferences";
 
 applyPreferences(readPreferences());
 document.body.classList.add("window", "tagma");
 if (navigator.userAgent.includes("Windows")) document.documentElement.classList.add("win");
-createRoot(document.getElementById("root")!).render(<StrictMode><ProductApp /></StrictMode>);
+createRoot(document.getElementById("root")!).render(<StrictMode><RespectReducedMotion.Provider value={true}><ProductApp /></RespectReducedMotion.Provider></StrictMode>);

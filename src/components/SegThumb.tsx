@@ -1,4 +1,4 @@
-import { useCallback, useLayoutEffect, useRef } from "react";
+import { createContext, useCallback, useContext, useLayoutEffect, useRef } from "react";
 
 /**
  * Magpie slide() thumb under the .on option — app.js ~8168–8267.
@@ -8,6 +8,9 @@ import { useCallback, useLayoutEffect, useRef } from "react";
  */
 const THUMB_MS = 280;
 const THUMB_EASE = "cubic-bezier(.2, .8, .2, 1)";
+
+/** The formal product opts in; the pinned CIS reference keeps its original behavior. */
+export const RespectReducedMotion = createContext(false);
 
 type ThumbPos = { x: number; w: number; y?: number; h?: number };
 
@@ -67,6 +70,7 @@ function thumbGlide(th: HTMLElement) {
 }
 
 export function useSegThumb(dep: string | null) {
+  const respectReducedMotion = useContext(RespectReducedMotion);
   const boxRef = useRef<HTMLElement | null>(null);
   const lastTo = useRef<ThumbPos | null>(null);
 
@@ -93,6 +97,13 @@ export function useSegThumb(dep: string | null) {
     th.style.opacity = "";
     const to = thumbTo(box, on);
     if (!to) return;
+    // CSS cannot stop a WAAPI glide. Snap an existing glide as well as skipping
+    // new ones, including when the system preference changes mid-animation.
+    if (respectReducedMotion && matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      thumbPut(th, to);
+      lastTo.current = to;
+      return;
+    }
     const last = lastTo.current;
     // Magpie: already there, or on its way there — skip
     if (
@@ -117,7 +128,15 @@ export function useSegThumb(dep: string | null) {
       t.height = `${to.h}px`;
     }
     th.animate([f, t], { duration: THUMB_MS, easing: THUMB_EASE, id: "thumb" });
-  }, []);
+  }, [respectReducedMotion]);
+
+  useLayoutEffect(() => {
+    if (!respectReducedMotion) return;
+    const query = matchMedia("(prefers-reduced-motion: reduce)");
+    const change = () => place(false);
+    query.addEventListener("change", change);
+    return () => query.removeEventListener("change", change);
+  }, [respectReducedMotion, place]);
 
   useLayoutEffect(() => {
     place(true);
