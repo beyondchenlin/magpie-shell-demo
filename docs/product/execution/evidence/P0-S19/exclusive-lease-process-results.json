@@ -1,0 +1,124 @@
+{
+  "after": {
+    "files": [
+      {
+        "sha256": "F16A8A198131C556890FF4773E8B7275DA0080855D832BCF2AD4B12CAF00ECF4",
+        "name": "tagma-desktop.exe"
+      },
+      {
+        "sha256": "252F42B1565D91FADEF0548F3678796E84CBFACE47E25C00A7FA3E1D419BDA9D",
+        "name": "tagma-gateway.exe"
+      },
+      {
+        "sha256": "2D9C0534D0AD55E869366B1D1084E26BB93A71DDBD3D389A298FD9CA0704A0F4",
+        "name": "uninstall.exe"
+      }
+    ],
+    "data": [
+      {
+        "name": "config.sqlite3",
+        "bytes": 61440,
+        "sha256": "F82945FF1AE987A08496C370349280EAD5DD2468B9C3E6062BBB5F95C1C76D93"
+      },
+      {
+        "name": "config.sqlite3-shm",
+        "bytes": 32768,
+        "sha256": "09D23E46B08EAC3CEA8255313E2140A27678CA8098C8D863C4A43BD34AF4D3F7"
+      },
+      {
+        "name": "config.sqlite3-wal",
+        "bytes": 177192,
+        "sha256": "634B9FFACDAEC6F7C4636C70FC5A9B36903EBA0190E83B9CA197269619B9F45B"
+      },
+      {
+        "name": "gateway.lock",
+        "bytes": 0,
+        "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+      },
+      {
+        "name": "maintenance.lock",
+        "bytes": 0,
+        "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+      },
+      {
+        "name": "operation.lock",
+        "bytes": 0,
+        "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+      },
+      {
+        "name": "usage.lock",
+        "bytes": 0,
+        "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+      },
+      {
+        "name": "usage.sqlite3",
+        "bytes": 36864,
+        "sha256": "364E31057DB91E488B96560ADAA4E31B79D9B3F66E7C04C7323F5C276BC4F66D"
+      }
+    ],
+    "registry": "0.2.0-dev.33"
+  },
+  "utc": "2026-10-18T21:30:44.3640111Z",
+  "secondInstallerExit": 1618,
+  "before": {
+    "files": [
+      {
+        "sha256": "F16A8A198131C556890FF4773E8B7275DA0080855D832BCF2AD4B12CAF00ECF4",
+        "name": "tagma-desktop.exe"
+      },
+      {
+        "sha256": "252F42B1565D91FADEF0548F3678796E84CBFACE47E25C00A7FA3E1D419BDA9D",
+        "name": "tagma-gateway.exe"
+      },
+      {
+        "sha256": "2D9C0534D0AD55E869366B1D1084E26BB93A71DDBD3D389A298FD9CA0704A0F4",
+        "name": "uninstall.exe"
+      }
+    ],
+    "data": [
+      {
+        "name": "config.sqlite3",
+        "bytes": 61440,
+        "sha256": "F82945FF1AE987A08496C370349280EAD5DD2468B9C3E6062BBB5F95C1C76D93"
+      },
+      {
+        "name": "config.sqlite3-shm",
+        "bytes": 32768,
+        "sha256": "09D23E46B08EAC3CEA8255313E2140A27678CA8098C8D863C4A43BD34AF4D3F7"
+      },
+      {
+        "name": "config.sqlite3-wal",
+        "bytes": 177192,
+        "sha256": "634B9FFACDAEC6F7C4636C70FC5A9B36903EBA0190E83B9CA197269619B9F45B"
+      },
+      {
+        "name": "gateway.lock",
+        "bytes": 0,
+        "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+      },
+      {
+        "name": "maintenance.lock",
+        "bytes": 0,
+        "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+      },
+      {
+        "name": "operation.lock",
+        "bytes": 0,
+        "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+      },
+      {
+        "name": "usage.lock",
+        "bytes": 0,
+        "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+      },
+      {
+        "name": "usage.sqlite3",
+        "bytes": 36864,
+        "sha256": "364E31057DB91E488B96560ADAA4E31B79D9B3F66E7C04C7323F5C276BC4F66D"
+      }
+    ],
+    "registry": "0.2.0-dev.33"
+  },
+  "gatewayExit": 16,
+  "uninstallExit": 1618
+}

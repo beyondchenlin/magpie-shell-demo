@@ -1,0 +1,11 @@
+{
+  "reason": "Synthetic installer interruption before payload writes; verify kernel releases the update lease without deleting its identity",
+  "lockRetained": true,
+  "killedOnly": {
+    "path": "D:\\demo1\\tagmaai\\.cache\\p0-s19-update-lease\\paused-dev33-setup.exe",
+    "sha256": "A5AB5340599F97824C1113CE7EF27C33674EB91E76601F2D0FE1EA597F59B44E",
+    "started": "2026-10-18T21:30:18.2993580Z",
+    "pid": 31168
+  },
+  "utc": "2026-10-18T21:31:20.3848733Z"
+}

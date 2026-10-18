@@ -1,0 +1,25 @@
+{
+  "utc": "2026-10-18T21:41:28.8611796Z",
+  "items": [
+    {
+      "handling": "No settings action was taken; observed again and captured actual12/12 while installer still paused",
+      "event": "Early baseline snapshot only showed WebView pane"
+    },
+    {
+      "handling": "Native refusal retained; fixed release timing in dev34 and verified12/12 while completion wizard remained open",
+      "event": "dev33 complete page still held lease"
+    },
+    {
+      "handling": "Only navigated to settings; not counted as quit. Added request-name vs indexed-name guard, reobserved and invoked actual visible quit.",
+      "event": "A hard-coded index selected diagnostics when intending quit because the observed tree shifted"
+    },
+    {
+      "handling": "Reobserved and used observed WM_COMMAND Button notification; no blind coordinate input",
+      "event": "Native BM_CLICK on completion Next left the page unchanged"
+    },
+    {
+      "handling": "Expired snapshot refused before input. Fresh observation then confirmed requested-name mismatch refused before input",
+      "event": "First intentional guard probe used expired observation"
+    }
+  ]
+}

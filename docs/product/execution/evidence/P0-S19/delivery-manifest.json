@@ -1,0 +1,35 @@
+{
+  "version": "0.2.0-dev.34",
+  "sourceHeadAtBuild": "19be3235b72852321ccde4fb991708e42841a7e1",
+  "productChangesCommit": "f145fb591fb2bf6f0cc98f5e49a9a408d9904314",
+  "profile": "Windows x64 debug unsigned internal",
+  "sourceInputs": 315,
+  "sourceVerification": "315 frozen before build; checked after build, native acceptance and product commit",
+  "installer": {
+    "path": "D:/demo1/tagmaai-deliveries/0.2.0-dev.34/Tagma_0.2.0-dev.34_x64-setup.exe",
+    "bytes": 6629856,
+    "sha256": "6559868ce08370b71f606576d8a849274b9ac741f5149c9150220239ef94f198"
+  },
+  "binaries": [
+    {
+      "path": "C:/Users/ai/AppData/Local/Temp/tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88/install-p0s16/tagma-desktop.exe",
+      "bytes": 20276736,
+      "sha256": "76c94597ead23be6cc969048ea9e2aeb90726038f744bc04105337f9b1ec8efd"
+    },
+    {
+      "path": "C:/Users/ai/AppData/Local/Temp/tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88/install-p0s16/tagma-gateway.exe",
+      "bytes": 10115584,
+      "sha256": "7dc0c416e266d65dca4be48d1ed6c13f0d015b8dc6384ad2b363f0ff217dfb23"
+    }
+  ],
+  "sourceRecovery": "Checkout productChangesCommit; restore the six INHERITED-INPUTS from retained dev18 source-overlay.json.gz; verify SOURCE-INPUTS.",
+  "nativeAcceptance": "S19: real installer paused after process check; dev32 native starts12/12. New exclusive lease rejects second installer/uninstaller1618 and gateway16; native dev33 shows maintenance with data hashes unchanged. Killing only paused test installer releases lease, native12/12 recovers without deleting lock. dev34 completion page releases lease before wizard exit, native12/12 succeeds. Actual invalid lock-file path rejects1603; no payload or registration writes. Native UIA and Win32 notifications/PrintWindow, not new physical-keyboard acceptance.",
+  "installation": "Isolated S16 identity only; normal identity package never run.",
+  "remaining": "P0 not fully released. Installation lease is separate from config maintenance; legacy/unpacked binaries without a marker retain prior guards. Replacement is not atomic. Release preflight/registration failure paths and full matrix still need review. Actual credential-facility/OS animation changes, clean Windows/signing/macOS remain unavailable.",
+  "retention": {
+    "owner": "Current Tagma P0 task",
+    "purpose": "Validated installation lease candidate and minimal evidence",
+    "reviewDate": "2026-10-25",
+    "scheduledCleanup": false
+  }
+}

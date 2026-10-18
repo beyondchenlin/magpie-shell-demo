@@ -1,0 +1,27 @@
+[
+  {
+    "Id": 4888,
+    "Path": "C:\\Users\\ai\\AppData\\Local\\Tagma\\tagma-desktop.exe",
+    "started": "2026-10-18T20:30:31.9440158Z"
+  },
+  {
+    "Id": 8820,
+    "Path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\install-p0s16\\tagma-desktop.exe",
+    "started": "2026-10-18T21:35:15.8408188Z"
+  },
+  {
+    "Id": 22064,
+    "Path": "C:\\Users\\ai\\AppData\\Local\\Tagma\\tagma-desktop.exe",
+    "started": "2026-10-18T10:20:20.7275193Z"
+  },
+  {
+    "Id": 12036,
+    "Path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\install-p0s16\\tagma-gateway.exe",
+    "started": "2026-10-18T21:35:16.4589851Z"
+  },
+  {
+    "Id": 28752,
+    "Path": "C:\\Users\\ai\\AppData\\Local\\Tagma\\tagma-gateway.exe",
+    "started": "2026-10-18T10:20:21.7088097Z"
+  }
+]

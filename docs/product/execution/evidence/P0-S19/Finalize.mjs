@@ -1,0 +1,34 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import {createHash} from 'node:crypto';
+import {execFileSync} from 'node:child_process';
+const root='D:/demo1/tagmaai';
+const task=root+'/.cache/p0-s19-update-lease';
+const delivery='D:/demo1/tagmaai-deliveries/0.2.0-dev.34';
+const evidence=root+'/docs/product/execution/evidence/P0-S19';
+const hash=p=>createHash('sha256').update(fs.readFileSync(p)).digest('hex');
+const info=p=>({path:p,bytes:fs.statSync(p).size,sha256:hash(p)});
+const source=JSON.parse(fs.readFileSync(task+'/source-frozen34.json','utf8').replace(/^\uFEFF/,''));
+for(const f of source.files) if(hash(root+'/'+f.path)!==f.sha256) throw Error('Source drift '+f.path);
+const inherited=JSON.parse(fs.readFileSync('D:/demo1/tagmaai-deliveries/0.2.0-dev.30/INHERITED-INPUTS.json','utf8'));
+for(const f of inherited) if(hash(root+'/'+f.path)!==f.sha256) throw Error('Inherited drift '+f.path);
+if(fs.existsSync(delivery)||fs.existsSync(evidence)) throw Error('Archive already exists');
+fs.mkdirSync(delivery);fs.mkdirSync(evidence);
+const pkg='Tagma_0.2.0-dev.34_x64-setup.exe';
+fs.copyFileSync(root+'/target/debug/bundle/nsis/'+pkg,delivery+'/'+pkg);
+fs.copyFileSync(task+'/source-frozen34.json',delivery+'/SOURCE-INPUTS.json');
+fs.writeFileSync(delivery+'/INHERITED-INPUTS.json',JSON.stringify(inherited,null,2)+'\n');
+const install='C:/Users/ai/AppData/Local/Temp/tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88/install-p0s16';
+const manifest={version:'0.2.0-dev.34',sourceHeadAtBuild:'19be3235b72852321ccde4fb991708e42841a7e1',productChangesCommit:execFileSync('git',['rev-parse','HEAD'],{cwd:root,encoding:'utf8'}).trim(),profile:'Windows x64 debug unsigned internal',sourceInputs:source.files.length,sourceVerification:'315 frozen before build; checked after build, native acceptance and product commit',installer:info(delivery+'/'+pkg),binaries:['tagma-desktop.exe','tagma-gateway.exe'].map(n=>info(install+'/'+n)),sourceRecovery:'Checkout productChangesCommit; restore the six INHERITED-INPUTS from retained dev18 source-overlay.json.gz; verify SOURCE-INPUTS.',nativeAcceptance:'S19: real installer paused after process check; dev32 native starts12/12. New exclusive lease rejects second installer/uninstaller1618 and gateway16; native dev33 shows maintenance with data hashes unchanged. Killing only paused test installer releases lease, native12/12 recovers without deleting lock. dev34 completion page releases lease before wizard exit, native12/12 succeeds. Actual invalid lock-file path rejects1603; no payload or registration writes. Native UIA and Win32 notifications/PrintWindow, not new physical-keyboard acceptance.',installation:'Isolated S16 identity only; normal identity package never run.',remaining:'P0 not fully released. Installation lease is separate from config maintenance; legacy/unpacked binaries without a marker retain prior guards. Replacement is not atomic. Release preflight/registration failure paths and full matrix still need review. Actual credential-facility/OS animation changes, clean Windows/signing/macOS remain unavailable.',retention:{owner:'Current Tagma P0 task',purpose:'Validated installation lease candidate and minimal evidence',reviewDate:'2026-10-25',scheduledCleanup:false}};
+fs.writeFileSync(delivery+'/BUILD-MANIFEST.json',JSON.stringify(manifest,null,2)+'\n');
+fs.writeFileSync(task+'/delivery-manifest.json',JSON.stringify(manifest,null,2)+'\n');
+const files=[];
+for(const name of fs.readdirSync(task).sort()) {
+ if(!/\.(json|jsonl|png|ps1|nsi|nsh|log|mjs|txt)$/.test(name)||/^(latest-|request\.json$|installer-observation\.json$)/.test(name))continue;
+ const p=path.join(task,name);if(!fs.statSync(p).isFile())continue;
+ fs.copyFileSync(p,path.join(evidence,name));files.push({...info(p),path:name});
+}
+const bytes=files.reduce((n,f)=>n+f.bytes,0);if(bytes>10*1024*1024)throw Error('Evidence budget exceeded');
+fs.writeFileSync(evidence+'/.gitattributes','* -text\n');
+fs.writeFileSync(evidence+'/EVIDENCE-MANIFEST.json',JSON.stringify({batch:'P0-S19',utc:new Date().toISOString(),bytes,files},null,2)+'\n');
+console.log(JSON.stringify({delivery,installer:manifest.installer,evidence,files:files.length,bytes}));

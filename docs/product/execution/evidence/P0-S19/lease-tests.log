@@ -1,0 +1,55 @@
+   Compiling hyper v1.12.0
+   Compiling tower v0.5.3
+   Compiling tagma-core v0.2.0-dev.32 (D:\demo1\tagmaai\crates\tagma-core)
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+   Compiling tower-http v0.6.11
+   Compiling hyper-util v0.1.21
+   Compiling hyper-tls v0.6.0
+   Compiling reqwest v0.13.5
+   Compiling tagma-runtime v0.2.0-dev.32 (D:\demo1\tagmaai\crates\tagma-runtime)
+    Finished `test` profile [unoptimized] target(s) in 7.03s
+     Running unittests src\lib.rs (target\debug\deps\tagma_runtime-189e9ce73d4462e9.exe)
+
+running 2 tests
+test installation::tests::install_lease_excludes_updates_until_every_entry_exits_and_then_recovers ... ok
+test installation::tests::unpacked_binary_does_not_create_files_but_invalid_existing_lease_fails_closed ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 2 filtered out; finished in 0.00s
+
+     Running tests\recovery_ack.rs (target\debug\deps\recovery_ack-dffbe1fb666e52ba.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests\security_ack.rs (target\debug\deps\security_ack-3bbbac2052040e6f.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests\usage_clear_ack.rs (target\debug\deps\usage_clear_ack-0ff3e734f4492c53.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 2 filtered out; finished in 0.00s
+

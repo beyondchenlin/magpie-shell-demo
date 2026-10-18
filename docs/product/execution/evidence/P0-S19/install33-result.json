@@ -1,0 +1,19 @@
+{
+  "registry": "0.2.0-dev.33",
+  "files": [
+    {
+      "sha256": "F16A8A198131C556890FF4773E8B7275DA0080855D832BCF2AD4B12CAF00ECF4",
+      "name": "tagma-desktop.exe"
+    },
+    {
+      "sha256": "252F42B1565D91FADEF0548F3678796E84CBFACE47E25C00A7FA3E1D419BDA9D",
+      "name": "tagma-gateway.exe"
+    },
+    {
+      "sha256": "2D9C0534D0AD55E869366B1D1084E26BB93A71DDBD3D389A298FD9CA0704A0F4",
+      "name": "uninstall.exe"
+    }
+  ],
+  "lockExists": true,
+  "exitCode": 0
+}

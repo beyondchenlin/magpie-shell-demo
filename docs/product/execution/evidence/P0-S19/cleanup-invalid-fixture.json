@@ -1,0 +1,8 @@
+{
+  "utc": "2026-10-18T21:40:42.4432193Z",
+  "absolutePath": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\p0s19-invalid-install-lock",
+  "safety": "Exact owner, no reparse points, expected items only, empty lock directory, no process references, exclusive owner-file open; only this task wrote these items",
+  "deleted": true,
+  "purpose": "Current S19 invalid lock-path fixture",
+  "logicalBytes": 28
+}

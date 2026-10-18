@@ -1,0 +1,17 @@
+{
+  "reuse": "existing target/node_modules/NSIS, original data/webview/install-p0s16",
+  "budget": "Additional peak D<=2 GiB C<=0.2 GiB; evidence <=10 MiB; no new environment/worktree",
+  "head": "19be3235b72852321ccde4fb991708e42841a7e1",
+  "cleanup": "Close test file handles and drivers in finally; retain minimal versioned repro sources/logs/installer and marker files. No historical deletion.",
+  "space": [
+    {
+      "Name": "C",
+      "Free": 36343631872
+    },
+    {
+      "Name": "D",
+      "Free": 25406058496
+    }
+  ],
+  "utc": "2026-10-18T21:25:20.0780411Z"
+}

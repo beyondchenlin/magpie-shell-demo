@@ -1,0 +1,8 @@
+{
+  "noPayload": true,
+  "exitCode": 1603,
+  "path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\p0s19-invalid-install-lock",
+  "cause": "actual directory at reserved lock-file path; CreateFile fails, not an injected API result",
+  "registrationUnchanged": true,
+  "utc": "2026-10-18T21:36:20.9972895Z"
+}
