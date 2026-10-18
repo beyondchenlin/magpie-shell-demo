@@ -1,6 +1,7 @@
 //! Verified bytes -> fresh disposable version directory. No activation or run.
 use super::*;
 use cap_std::fs::{Dir, OpenOptions};
+use sha2::{Digest, Sha256};
 use std::{
     io::{Read, Seek, SeekFrom, Write},
     path::Path,
@@ -63,8 +64,24 @@ pub struct ExtractedPack {
     proof: VerifiedManifest,
     target: PackTarget,
     index: ValidatedArchiveIndex,
+    file_hashes: std::collections::BTreeMap<String, String>,
 }
 impl ExtractedPack {
+    pub(super) fn file_hashes(&self) -> &std::collections::BTreeMap<String, String> {
+        &self.file_hashes
+    }
+    pub(super) fn relocate(self, destination: &Path) -> PackResult<()> {
+        let Self {
+            _directory, root, ..
+        } = self;
+        drop(_directory);
+        // No copy fallback, no replacement, and no disarming cleanup before
+        // the same-volume move succeeds. The new outer TempDir owns success.
+        crate::initialization::publish_new(root.path(), destination)
+            .map_err(|_| PackError::WriteFailed)?;
+        drop(root);
+        Ok(())
+    }
     pub fn root_path(&self) -> &Path {
         self.root.path()
     }
@@ -323,6 +340,7 @@ impl StagedPackArchive {
         let directory = Dir::open_ambient_dir(root.path(), cap_std::ambient_authority())
             .map_err(|_| PackError::WriteFailed)?;
         let mut total = 0u64;
+        let mut file_hashes = std::collections::BTreeMap::new();
         let mut buffer = [0; BUFFER];
         for (i, entry) in index.entries().iter().enumerate() {
             control.check()?;
@@ -349,6 +367,7 @@ impl StagedPackArchive {
                 .map_err(|_| PackError::WriteFailed)?;
             let mut source = archive.by_index(i).map_err(|_| zip_failure(control))?;
             let mut written = 0u64;
+            let mut hash = Sha256::new();
             loop {
                 control.check()?;
                 let n = source.read(&mut buffer).map_err(|_| zip_failure(control))?;
@@ -365,6 +384,7 @@ impl StagedPackArchive {
                 output
                     .write_all(&buffer[..n])
                     .map_err(|_| PackError::WriteFailed)?;
+                hash.update(&buffer[..n]);
             }
             if written != entry.unpacked_bytes {
                 return Err(PackError::InvalidArchive);
@@ -377,6 +397,7 @@ impl StagedPackArchive {
                     .map_err(|_| PackError::WriteFailed)?;
             }
             output.sync_all().map_err(|_| PackError::WriteFailed)?;
+            file_hashes.insert(entry.path.clone(), format!("{:x}", hash.finalize()));
         }
         if total != index.total_bytes() {
             return Err(PackError::InvalidArchive);
@@ -389,6 +410,7 @@ impl StagedPackArchive {
             proof: self.proof,
             target: self.target,
             index,
+            file_hashes,
         })
     }
 }

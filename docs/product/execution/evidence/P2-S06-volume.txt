@@ -1,0 +1,30 @@
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+    Finished `test` profile [unoptimized] target(s) in 0.28s
+     Running unittests src\lib.rs (target\debug\deps\tagma_core-0348fd4cdb7f1e31.exe)
+
+running 1 test
+Owned ZIP fixture:C:\Users\ai\AppData\Local\Temp\tagma-pack-verify-iC4nDE;new private child files only,<=4MiB expanded,handles close then RAII cleanup;sentinel active/output never targeted
+Actual C to D prepared directory move refused,no copy fallback/no extra retained archive/stage;sentinels untouched;installer must stage on its target volume
+test packs::archive_tests::prepared_cross_volume_has_no_copy_fallback ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 90 filtered out; finished in 0.04s
+

@@ -1,7 +1,8 @@
 use super::*;
 
 pub const PACK_FREE_MARGIN_BYTES: u64 = 10 * 1024 * 1024 * 1024;
-const METADATA_RESERVE_BYTES: u64 = 1024 * 1024;
+// Bounded preparation receipt (8MiB) plus directory/journal headroom.
+const METADATA_RESERVE_BYTES: u64 = 16 * 1024 * 1024;
 #[derive(Debug, Clone, Copy)]
 pub struct PackVolumeSpace {
     pub target_available_bytes: u64,

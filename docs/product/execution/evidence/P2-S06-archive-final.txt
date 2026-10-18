@@ -1,0 +1,44 @@
+   Compiling tagma-core v0.2.0-dev.16 (D:\demo1\tagmaai\crates\tagma-core)
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: unused import: `cap_std::fs::MetadataExt`
+   --> crates\tagma-core\src\packs\prepared.rs:360:9
+    |
+360 |     use cap_std::fs::MetadataExt;
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+error[E0599]: no method named `number_of_links` found for reference `&cap_std::fs::Metadata` in the current scope
+   --> crates\tagma-core\src\packs\prepared.rs:362:17
+    |
+362 |     if metadata.number_of_links() != Some(1) {
+    |                 ^^^^^^^^^^^^^^^ method not found in `&cap_std::fs::Metadata`
+    |
+    = help: items from traits can only be used if the trait is in scope
+help: trait `_WindowsByHandle` which provides `number_of_links` is implemented but not in scope; perhaps you want to import it
+    |
+  4 + use cap_primitives::fs::metadata::_WindowsByHandle;
+    |
+
+For more information about this error, try `rustc --explain E0599`.
+warning: `tagma-core` (lib test) generated 1 warning
+error: could not compile `tagma-core` (lib test) due to 1 previous error; 1 warning emitted

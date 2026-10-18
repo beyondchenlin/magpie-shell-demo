@@ -1,0 +1,7 @@
+{
+  "RecordedAtUtc": "2026-10-18T01:07:16.2052252Z",
+  "CFreeGiB": 46.3,
+  "DFreeGiB": 30.57,
+  "ActualTaskCleanup": "New RAII fixtures only;no old/rejected file deletion",
+  "NoNetReleaseClaim": "Concurrent external free capacity movement;not measured task net-release"
+}

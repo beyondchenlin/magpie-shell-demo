@@ -122,6 +122,388 @@ fn proof(bytes: &[u8], maximum: u64, count: u32) -> VerifiedManifest {
     .verify("test-key", &raw, &key.sign(&message).to_bytes(), 10000)
     .unwrap()
 }
+fn preparation_trust() -> PackTrustStore {
+    PackTrustStore::new(vec![PackTrustRoot {
+        key_id: "test-key".into(),
+        publisher: "test-publisher".into(),
+        public_key: SigningKey::from_bytes(&[19; 32]).verifying_key().to_bytes(),
+        valid_from_ms: 1000,
+        valid_until_ms: 100000,
+    }])
+    .unwrap()
+}
+#[test]
+fn prepared_actual_directory_publication_reopen_and_current_trust() {
+    let f = Fixture::new();
+    let bytes = zip(
+        Some(("assets/readme.txt", "真实准备文件".as_bytes())),
+        CompressionMethod::Deflated,
+        None,
+    );
+    let config = uuid::Uuid::new_v4();
+    let c = control();
+    let extracted = f
+        .archive(&bytes, 4096, 16, &c)
+        .extract(&f.stage, &c)
+        .unwrap();
+    let old = extracted.root_path().to_owned();
+    let prepared = extracted.publish_prepared(&f.stage, config, &c).unwrap();
+    let root = prepared.root_path().to_owned();
+    assert!(!old.exists());
+    assert_eq!(
+        fs::read(root.join("payload/assets/readme.txt")).unwrap(),
+        "真实准备文件".as_bytes()
+    );
+    let digest = prepared.manifest().sha256().to_owned();
+    drop(prepared);
+    assert!(root.exists()); // persistent, not deleted when the value closes
+    let reopened = PreparedPack::reopen(&root, config, &preparation_trust(), 10000, &c).unwrap();
+    assert_eq!(reopened.manifest().sha256(), digest);
+    assert_eq!(reopened.target(), TARGET);
+    assert_eq!(
+        root.file_name().unwrap(),
+        format!("prepared-{}", reopened.operation_id()).as_str()
+    );
+    assert_eq!(
+        error(PreparedPack::reopen(
+            &root,
+            uuid::Uuid::new_v4(),
+            &preparation_trust(),
+            10000,
+            &c
+        )),
+        PackError::InvalidPreparedPack
+    );
+    assert_eq!(
+        error(PreparedPack::reopen(
+            &root,
+            config,
+            &PackTrustStore::default(),
+            10000,
+            &c
+        )),
+        PackError::UntrustedPublisher
+    );
+    assert_eq!(
+        error(PreparedPack::reopen(
+            &root,
+            config,
+            &preparation_trust(),
+            95000,
+            &c
+        )),
+        PackError::ExpiredManifest
+    );
+    println!(
+        "Prepared actual same-volume outer-directory publication:raw signed receipt+complete payload persist across close/reopen;current roots/time/config required;no installed/active pointer or process execution"
+    );
+}
+#[test]
+fn prepared_mutated_payload_or_receipt_is_rejected_and_preserved() {
+    let f = Fixture::new();
+    let bytes = zip(None, CompressionMethod::Stored, None);
+    let config = uuid::Uuid::new_v4();
+    let c = control();
+    // Same length corruption after extraction must fail before publication.
+    let extracted = f
+        .archive(&bytes, 4096, 16, &c)
+        .extract(&f.stage, &c)
+        .unwrap();
+    fs::write(
+        extracted.root_path().join("bin/runner.exe"),
+        b"OWNED FAKE BINARY",
+    )
+    .unwrap();
+    assert_eq!(
+        error(extracted.publish_prepared(&f.stage, config, &c)),
+        PackError::InvalidPreparedPack
+    );
+    f.clean();
+    let prepared = f
+        .archive(&bytes, 4096, 16, &c)
+        .extract(&f.stage, &c)
+        .unwrap()
+        .publish_prepared(&f.stage, config, &c)
+        .unwrap();
+    let root = prepared.root_path();
+    let payload = root.join("payload/bin/runner.exe");
+    fs::write(&payload, b"OWNED FAKE BINARY").unwrap();
+    assert_eq!(
+        error(PreparedPack::reopen(
+            root,
+            config,
+            &preparation_trust(),
+            10000,
+            &c
+        )),
+        PackError::InvalidPreparedPack
+    );
+    assert_eq!(fs::read(&payload).unwrap(), b"OWNED FAKE BINARY");
+    fs::write(&payload, b"owned fake binary").unwrap();
+    fs::write(root.join("payload/unexpected.txt"), b"preserve this").unwrap();
+    assert_eq!(
+        error(PreparedPack::reopen(
+            root,
+            config,
+            &preparation_trust(),
+            10000,
+            &c
+        )),
+        PackError::InvalidPreparedPack
+    );
+    assert_eq!(
+        fs::read(root.join("payload/unexpected.txt")).unwrap(),
+        b"preserve this"
+    );
+    // No deletion as recovery. This test-owned file is removed to exercise the
+    // next independent corruption of the same tiny owned fixture.
+    fs::remove_file(root.join("payload/unexpected.txt")).unwrap();
+    let receipt = root.join("prepared.json");
+    let mut value: serde_json::Value =
+        serde_json::from_slice(&fs::read(&receipt).unwrap()).unwrap();
+    value["installed"] = true.into();
+    let corrupt = serde_json::to_vec(&value).unwrap();
+    fs::write(&receipt, &corrupt).unwrap();
+    assert_eq!(
+        error(PreparedPack::reopen(
+            root,
+            config,
+            &preparation_trust(),
+            10000,
+            &c
+        )),
+        PackError::InvalidPreparedPack
+    );
+    assert_eq!(fs::read(receipt).unwrap(), corrupt);
+    println!(
+        "Actual same-size payload corruption before/after publication,extra files,and unknown installed field rejected;read-only recovery preserves each corrupt artifact"
+    );
+}
+#[test]
+fn prepared_collision_cancel_and_commit_boundary_preserve_old_files() {
+    use super::prepared::PreparationPoint;
+    let f = Fixture::new();
+    let bytes = zip(None, CompressionMethod::Stored, None);
+    let config = uuid::Uuid::new_v4();
+    let operation = uuid::Uuid::new_v4();
+    let target = f.stage.join(format!("prepared-{operation}"));
+    fs::write(&target, b"unknown retained destination").unwrap();
+    let c = control();
+    let extracted = f
+        .archive(&bytes, 4096, 16, &c)
+        .extract(&f.stage, &c)
+        .unwrap();
+    assert_eq!(
+        error(extracted.publish_inner(&f.stage, config, &c, operation, |_| {})),
+        PackError::WriteFailed
+    );
+    assert_eq!(fs::read(&target).unwrap(), b"unknown retained destination");
+    assert_eq!(fs::read_dir(&f.stage).unwrap().count(), 1);
+    let extracted = f
+        .archive(&bytes, 4096, 16, &c)
+        .extract(&f.stage, &c)
+        .unwrap();
+    assert_eq!(
+        error(
+            extracted.publish_inner(&f.stage, config, &c, uuid::Uuid::new_v4(), |p| {
+                if matches!(p, PreparationPoint::Ready) {
+                    c.cancel();
+                }
+            })
+        ),
+        PackError::Cancelled
+    );
+    assert_eq!(fs::read_dir(&f.stage).unwrap().count(), 1);
+    let c = control();
+    let extracted = f
+        .archive(&bytes, 4096, 16, &c)
+        .extract(&f.stage, &c)
+        .unwrap();
+    let prepared = extracted
+        .publish_inner(&f.stage, config, &c, uuid::Uuid::new_v4(), |p| {
+            if matches!(p, PreparationPoint::Published) {
+                c.cancel();
+            }
+        })
+        .unwrap();
+    assert!(prepared.root_path().join("prepared.json").exists());
+    assert_eq!(fs::read(&target).unwrap(), b"unknown retained destination");
+    assert_eq!(
+        fs::read(f.root.path().join("retained-active.bin")).unwrap(),
+        b"retained old version"
+    );
+    assert_eq!(
+        fs::read(f.root.path().join("retained-output.txt")).unwrap(),
+        b"retained user output"
+    );
+    println!(
+        "No-replace collision preserves unknown target;cancel after real receipt sync cleans only private stage;post-publication cancel reports committed success,no replay/active switch"
+    );
+}
+#[test]
+fn prepared_real_process_exit_before_and_after_publication() {
+    let parent = tempfile::Builder::new()
+        .prefix("tagma-prepared-crash-")
+        .tempdir()
+        .unwrap();
+    let config = uuid::Uuid::new_v4();
+    for (point, code) in [("ready", 91), ("published", 92)] {
+        let child_root = parent.path().join(point);
+        fs::create_dir(&child_root).unwrap();
+        let status = std::process::Command::new(std::env::current_exe().unwrap())
+            .args([
+                "--exact",
+                "packs::archive_tests::preparation_crash_child",
+                "--ignored",
+                "--nocapture",
+            ])
+            .env("TAGMA_PREPARATION_CRASH_ROOT", &child_root)
+            .env("TAGMA_PREPARATION_CRASH_POINT", point)
+            .env("TAGMA_PREPARATION_CRASH_CONFIG", config.to_string())
+            .status()
+            .unwrap();
+        assert_eq!(status.code(), Some(code));
+        let stage = child_root.join("stage");
+        let paths: Vec<_> = fs::read_dir(&stage)
+            .unwrap()
+            .map(|e| e.unwrap().path())
+            .collect();
+        assert_eq!(paths.len(), 1);
+        let path = &paths[0];
+        assert!(path.join("prepared.json").exists());
+        assert_eq!(
+            fs::read(path.join("payload/bin/runner.exe")).unwrap(),
+            b"owned fake binary"
+        );
+        let result = PreparedPack::reopen(path, config, &preparation_trust(), 10000, &control());
+        if point == "ready" {
+            assert!(
+                path.file_name()
+                    .unwrap()
+                    .to_str()
+                    .unwrap()
+                    .starts_with("tagma-pack-preparing-")
+            );
+            assert_eq!(error(result), PackError::InvalidPreparedPack);
+            assert!(path.join("prepared.json").exists()); // unknown/incomplete preserved
+        } else {
+            assert!(result.is_ok());
+        }
+        assert_eq!(
+            fs::read_dir(child_root.join("download")).unwrap().count(),
+            0
+        );
+    }
+    println!(
+        "Real child exit91 after receipt sync/before rename leaves only uncallable private preparation,preserved on reopen;exit92 after atomic publication reopens complete prepared files;no unwind simulated as crash,no UI"
+    );
+}
+#[test]
+fn prepared_hardlinks_and_oversized_receipt_refused_without_recovery_cleanup() {
+    let f = Fixture::new();
+    let bytes = zip(None, CompressionMethod::Stored, None);
+    let config = uuid::Uuid::new_v4();
+    let c = control();
+    let prepared = f
+        .archive(&bytes, 4096, 16, &c)
+        .extract(&f.stage, &c)
+        .unwrap()
+        .publish_prepared(&f.stage, config, &c)
+        .unwrap();
+    let outside = f.root.path().join("owned-outside-hardlink");
+    fs::hard_link(
+        prepared.root_path().join("payload/bin/runner.exe"),
+        &outside,
+    )
+    .unwrap();
+    assert_eq!(
+        error(PreparedPack::reopen(
+            prepared.root_path(),
+            config,
+            &preparation_trust(),
+            10000,
+            &c
+        )),
+        PackError::UnsafePath
+    );
+    assert_eq!(fs::read(&outside).unwrap(), b"owned fake binary");
+    fs::remove_file(&outside).unwrap(); // only this test's new link
+    let receipt = prepared.root_path().join("prepared.json");
+    let file = fs::OpenOptions::new().write(true).open(&receipt).unwrap();
+    file.set_len(8 * 1024 * 1024 + 1).unwrap();
+    drop(file);
+    assert_eq!(
+        error(PreparedPack::reopen(
+            prepared.root_path(),
+            config,
+            &preparation_trust(),
+            10000,
+            &c
+        )),
+        PackError::InvalidPreparedPack
+    );
+    assert_eq!(fs::metadata(&receipt).unwrap().len(), 8 * 1024 * 1024 + 1);
+    println!(
+        "Actual extra hardlink refused by opened-file link count;8MiB+1 receipt rejected by metadata before read,corrupt files preserved;only new fixture later RAII cleaned"
+    );
+}
+#[test]
+#[cfg(windows)]
+#[ignore = "explicit actual C/D volume case,not a portable environment assumption"]
+fn prepared_cross_volume_has_no_copy_fallback() {
+    let f = Fixture::new();
+    let target = tempfile::Builder::new()
+        .prefix("tagma-prepared-volume-")
+        .tempdir_in(std::env::current_dir().unwrap())
+        .unwrap();
+    let observation = observe_pack_space(target.path(), &f.stage).unwrap();
+    assert!(!observation.space().unwrap().same_volume);
+    let bytes = zip(None, CompressionMethod::Stored, None);
+    let c = control();
+    let extracted = f
+        .archive(&bytes, 4096, 16, &c)
+        .extract(&f.stage, &c)
+        .unwrap();
+    assert_eq!(
+        error(extracted.publish_prepared(target.path(), uuid::Uuid::new_v4(), &c)),
+        PackError::WriteFailed
+    );
+    assert_eq!(fs::read_dir(target.path()).unwrap().count(), 0);
+    f.clean();
+    println!(
+        "Actual C to D prepared directory move refused,no copy fallback/no extra retained archive/stage;sentinels untouched;installer must stage on its target volume"
+    );
+}
+#[test]
+#[ignore = "subprocess-only crash helper with explicitly supplied owned fixture"]
+fn preparation_crash_child() {
+    use super::prepared::PreparationPoint;
+    let root = PathBuf::from(
+        std::env::var_os("TAGMA_PREPARATION_CRASH_ROOT").expect("owned fixture required"),
+    );
+    let config =
+        uuid::Uuid::parse_str(&std::env::var("TAGMA_PREPARATION_CRASH_CONFIG").unwrap()).unwrap();
+    let point = std::env::var("TAGMA_PREPARATION_CRASH_POINT").unwrap();
+    let download = root.join("download");
+    let stage = root.join("stage");
+    fs::create_dir(&download).unwrap();
+    fs::create_dir(&stage).unwrap();
+    let c = control();
+    let bytes = zip(None, CompressionMethod::Stored, None);
+    let mut stager = PackArchiveStager::new(proof(&bytes, 4096, 16), TARGET, &download).unwrap();
+    stager.push(&bytes, &c).unwrap();
+    let extracted = stager.finish(&c).unwrap().extract(&stage, &c).unwrap();
+    extracted
+        .publish_inner(&stage, config, &c, uuid::Uuid::new_v4(), |p| {
+            match (point.as_str(), p) {
+                ("ready", PreparationPoint::Ready) => std::process::exit(91),
+                ("published", PreparationPoint::Published) => std::process::exit(92),
+                _ => (),
+            }
+        })
+        .unwrap();
+    panic!("crash boundary not reached");
+}
 fn zip(extra: Option<(&str, &[u8])>, method: CompressionMethod, link: Option<&str>) -> Vec<u8> {
     let mut writer = ZipWriter::new(Cursor::new(Vec::new()));
     let options = SimpleFileOptions::default().compression_method(method);

@@ -597,7 +597,7 @@ fn space_plan_accounts_for_temp_stage_existing_versions_and_same_volume_without_
         )
         .unwrap();
     assert!(separate.fits());
-    assert_eq!(separate.additional_target_bytes, 101 * mib + 64 * 8192);
+    assert_eq!(separate.additional_target_bytes, 116 * mib + 64 * 8192);
     assert_eq!(separate.additional_temp_bytes, 3 * 4096);
     assert_eq!(
         separate.logical_peak_bytes,
@@ -635,7 +635,7 @@ fn space_plan_accounts_for_temp_stage_existing_versions_and_same_volume_without_
     assert!(!shared.fits());
     assert_eq!(
         shared.target_shortfall_bytes,
-        101 * mib + 64 * 8192 + 3 * 4096
+        116 * mib + 64 * 8192 + 3 * 4096
     );
     assert_eq!(shared.target_shortfall_bytes, shared.temp_shortfall_bytes);
     let fits = proof

@@ -1,0 +1,69 @@
+   Compiling tagma-core v0.2.0-dev.16 (D:\demo1\tagmaai\crates\tagma-core)
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+    Finished `test` profile [unoptimized] target(s) in 6.49s
+     Running unittests src\lib.rs (target\debug\deps\tagma_core-0348fd4cdb7f1e31.exe)
+
+running 14 tests
+test packs::archive_tests::preparation_crash_child ... ignored, subprocess-only crash helper with explicitly supplied owned fixture
+test packs::archive_tests::prepared_cross_volume_has_no_copy_fallback ... ignored, explicit actual C/D volume case,not a portable environment assumption
+Owned ZIP fixture:C:\Users\ai\AppData\Local\Temp\tagma-pack-verify-Q6yBZF;new private child files only,<=4MiB expanded,handles close then RAII cleanup;sentinel active/output never targeted
+Owned ZIP fixture:C:\Users\ai\AppData\Local\Temp\tagma-pack-verify-2v9wDE;new private child files only,<=4MiB expanded,handles close then RAII cleanup;sentinel active/output never targeted
+Owned ZIP fixture:C:\Users\ai\AppData\Local\Temp\tagma-pack-verify-LE8Um8;new private child files only,<=4MiB expanded,handles close then RAII cleanup;sentinel active/output never targeted
+Owned ZIP fixture:C:\Users\ai\AppData\Local\Temp\tagma-pack-verify-Vir4rK;new private child files only,<=4MiB expanded,handles close then RAII cleanup;sentinel active/output never targeted
+Owned ZIP fixture:C:\Users\ai\AppData\Local\Temp\tagma-pack-verify-xMcIFs;new private child files only,<=4MiB expanded,handles close then RAII cleanup;sentinel active/output never targeted
+Owned ZIP fixture:C:\Users\ai\AppData\Local\Temp\tagma-pack-verify-0aaTgS;new private child files only,<=4MiB expanded,handles close then RAII cleanup;sentinel active/output never targeted
+Owned ZIP fixture:C:\Users\ai\AppData\Local\Temp\tagma-pack-verify-0QS0xK;new private child files only,<=4MiB expanded,handles close then RAII cleanup;sentinel active/output never targeted
+Owned ZIP fixture:C:\Users\ai\AppData\Local\Temp\tagma-pack-verify-EZMJBJ;new private child files only,<=4MiB expanded,handles close then RAII cleanup;sentinel active/output never targeted
+Owned ZIP fixture:C:\Users\ai\AppData\Local\Temp\tagma-pack-verify-V4ozYc;new private child files only,<=4MiB expanded,handles close then RAII cleanup;sentinel active/output never targeted
+Owned ZIP fixture:C:\Users\ai\AppData\Local\Temp\tagma-pack-verify-cELVMf;new private child files only,<=4MiB expanded,handles close then RAII cleanup;sentinel active/output never targeted
+
+running 1 test
+Owned ZIP fixture:C:\Users\ai\AppData\Local\Temp\tagma-pack-verify-7AbNMG;new private child files only,<=4MiB expanded,handles close then RAII cleanup;sentinel active/output never targeted
+Actual extra hardlink refused by opened-file link count;8MiB+1 receipt rejected by metadata before read,corrupt files preserved;only new fixture later RAII cleaned
+
+running 1 test
+Actual ZIP Stored+Deflate:exact signed bytes hashed before parsing,real files/UTF8 in fresh private capability root;drop closes handles and removes only new files,active/output sentinels unchanged;no activation/execution
+test packs::archive_tests::prepared_hardlinks_and_oversized_receipt_refused_without_recovery_cleanup ... ok
+test packs::archive_tests::actual_stored_and_deflated_zip_extract_to_fresh_capability_root_and_cleanup ... ok
+Actual ZIP expansion/count rejected before stage;lying central size cannot permit extra actual output;new stage cleaned on failure
+test packs::archive_tests::actual_entry_count_declared_expansion_and_understated_size_are_bounded ... ok
+Actual ZIP2 files require7 filesystem entries with implicit parents;limit2 rejects before stage,exact7 succeeds/cleans;resource allocation allowance now covers the same entry budget
+test packs::archive_tests::actual_implicit_directories_count_against_the_signed_entry_budget ... ok
+Actual staged bytes:truncated/changed SHA refused before ZIP;publisher-signed bad CRC refused during real read,partial stage removed;no installed/callable state exists
+test packs::archive_tests::hash_length_and_crc_failures_never_leave_a_callable_version ... ok
+Prepared actual same-volume outer-directory publication:raw signed receipt+complete payload persist across close/reopen;current roots/time/config required;no installed/active pointer or process execution
+test packs::archive_tests::prepared_actual_directory_publication_reopen_and_current_trust ... ok
+No-replace collision preserves unknown target;cancel after real receipt sync cleans only private stage;post-publication cancel reports committed success,no replay/active switch
+test packs::archive_tests::prepared_collision_cancel_and_commit_boundary_preserve_old_files ... ok
+Actual same-size payload corruption before/after publication,extra files,and unknown installed field rejected;read-only recovery preserves each corrupt artifact
+test packs::archive_tests::prepared_mutated_payload_or_receipt_is_rejected_and_preserved ... ok
+Real child exit91 after receipt sync/before rename leaves only uncallable private preparation,preserved on reopen;exit92 after atomic publication reopens complete prepared files;no unwind simulated as crash,no UI
+test packs::archive_tests::prepared_real_process_exit_before_and_after_publication ... ok
+ZIP32 profile:EOCD count/4MiB central cap before library allocation;metadata-only reads hide earlier fake footer in payload,normal data still extracts exactly;bad central cannot fall back to fake huge-count archive;secondary metadata footers refused
+test packs::archive_tests::metadata_preallocation_profile_and_earlier_fake_footers_fail_closed ... ok
+Actual cancellation:partial byte download poisoned/cleaned;expired total deadline rejects;observer saw a real nonempty staged file then cancelled extraction,all handles/stage/archive removed,old active/user output retained;no running pack
+test packs::archive_tests::cancellation_and_deadline_cleanup_download_and_actual_partial_extraction ... ok
+Actual ZIP names:relative traversal/absolute/Windows drive/backslash/ADS/device,case alias,and internal/external symlink entries rejected;0activation/outside writes
+test packs::archive_tests::actual_zip_traversal_aliases_and_symlinks_are_rejected_before_writes ... ok
+
+test result: ok. 12 passed; 0 failed; 2 ignored; 0 measured; 77 filtered out; finished in 0.28s
+

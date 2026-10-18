@@ -6,12 +6,14 @@ mod archive_tests;
 mod manifest;
 mod observed_space;
 mod paths;
+mod prepared;
 mod space;
 mod trust;
 pub use archive::*;
 pub use manifest::*;
 pub use observed_space::*;
 pub use paths::*;
+pub use prepared::*;
 pub use space::*;
 pub use trust::*;
 
@@ -41,6 +43,7 @@ pub enum PackError {
     InvalidArchive,
     UnsupportedArchive,
     TimedOut,
+    InvalidPreparedPack,
 }
 impl std::fmt::Display for PackError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -63,6 +66,7 @@ impl std::fmt::Display for PackError {
             Self::InvalidArchive => "PACK_INVALID_ARCHIVE",
             Self::UnsupportedArchive => "PACK_UNSUPPORTED_ARCHIVE",
             Self::TimedOut => "PACK_STAGE_TIMEOUT",
+            Self::InvalidPreparedPack => "PACK_INVALID_PREPARED",
         })
     }
 }

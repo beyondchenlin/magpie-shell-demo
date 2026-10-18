@@ -1,0 +1,12 @@
+{
+  "RecordedAtUtc": "2026-10-18T01:01:18.7474371Z",
+  "Target": "D:/demo1/tagmaai/target",
+  "TempRoot": "C:\\Users\\ai\\AppData\\Local\\Temp",
+  "CFreeBeforeGiB": 46.01,
+  "DFreeBeforeGiB": 26.18,
+  "EstimatedAdditionalPeakGiB": 0.15,
+  "Scope": "Prepared-only atomic directory publication and reopen;small fake ZIP fixtures,no execution/network/UI/new dependencies/schema",
+  "Reuse": "Existing Cargo profile/dependencies/current working tree",
+  "Cleanup": "Only new RAII fixtures;prior denied files not retried;unknown/corrupt prepared records preserved",
+  "Caveat": "Space recovered externally,not task cleanup;no full bundles"
+}

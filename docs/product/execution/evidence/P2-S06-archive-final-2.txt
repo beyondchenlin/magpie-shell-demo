@@ -1,0 +1,45 @@
+   Compiling tagma-core v0.2.0-dev.16 (D:\demo1\tagmaai\crates\tagma-core)
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+error[E0308]: mismatched types
+   --> crates\tagma-core\src\packs\prepared.rs:129:26
+    |
+129 |         single_link_file(&input)?;
+    |         ---------------- ^^^^^^ expected `std::fs::File`, found `cap_std::fs::File`
+    |         |
+    |         arguments to this function are incorrect
+    |
+    = note: `cap_std::fs::File` and `std::fs::File` have similar names, but are actually distinct types
+note: `cap_std::fs::File` is defined in crate `cap_std`
+   --> C:\Users\ai\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\cap-std-4.0.3\src\fs\file.rs:33:1
+    |
+ 33 | pub struct File {
+    | ^^^^^^^^^^^^^^^
+note: `std::fs::File` is defined in crate `std`
+   --> /rustc/48a229ceaefd4985c50990b14116b6d856af0985/library\std\src\fs.rs:134:0
+note: function defined here
+   --> crates\tagma-core\src\packs\prepared.rs:355:4
+    |
+355 | fn single_link_file(file: &std::fs::File) -> PackResult<()> {
+    |    ^^^^^^^^^^^^^^^^ --------------------
+
+For more information about this error, try `rustc --explain E0308`.
+error: could not compile `tagma-core` (lib test) due to 1 previous error

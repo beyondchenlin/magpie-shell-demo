@@ -1,0 +1,43 @@
+   Compiling tagma-core v0.2.0-dev.16 (D:\demo1\tagmaai\crates\tagma-core)
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+    Finished `test` profile [unoptimized] target(s) in 7.37s
+     Running unittests src\lib.rs (target\debug\deps\tagma_core-0348fd4cdb7f1e31.exe)
+
+running 4 tests
+Owned ZIP fixture:C:\Users\ai\AppData\Local\Temp\tagma-pack-verify-9KFcax;new private child files only,<=4MiB expanded,handles close then RAII cleanup;sentinel active/output never targeted
+Owned ZIP fixture:C:\Users\ai\AppData\Local\Temp\tagma-pack-verify-EizsUE;new private child files only,<=4MiB expanded,handles close then RAII cleanup;sentinel active/output never targeted
+Owned ZIP fixture:C:\Users\ai\AppData\Local\Temp\tagma-pack-verify-eaEcOv;new private child files only,<=4MiB expanded,handles close then RAII cleanup;sentinel active/output never targeted
+
+running 1 test
+
+running 1 test
+Prepared actual same-volume outer-directory publication:raw signed receipt+complete payload persist across close/reopen;current roots/time/config required;no installed/active pointer or process execution
+test packs::archive_tests::prepared_actual_directory_publication_reopen_and_current_trust ... ok
+No-replace collision preserves unknown target;cancel after real receipt sync cleans only private stage;post-publication cancel reports committed success,no replay/active switch
+test packs::archive_tests::prepared_collision_cancel_and_commit_boundary_preserve_old_files ... ok
+Real child exit91 after receipt sync/before rename leaves only uncallable private preparation,preserved on reopen;exit92 after atomic publication reopens complete prepared files;no unwind simulated as crash,no UI
+test packs::archive_tests::prepared_real_process_exit_before_and_after_publication ... ok
+Actual same-size payload corruption before/after publication,extra files,and unknown installed field rejected;read-only recovery preserves each corrupt artifact
+test packs::archive_tests::prepared_mutated_payload_or_receipt_is_rejected_and_preserved ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 85 filtered out; finished in 0.11s
+
