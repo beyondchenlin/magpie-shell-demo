@@ -19,7 +19,7 @@ struct Active {
     cancel: CancellationToken,
 }
 pub struct Gate {
-    dispatch: Arc<tokio::sync::Mutex<()>>,
+    dispatch: Arc<tokio::sync::RwLock<()>>,
     #[cfg(test)]
     dispatch_hook: Mutex<Option<Arc<DispatchHook>>>,
     directory: PathBuf,
@@ -48,12 +48,12 @@ fn unknown() -> AppError {
 impl Gate {
     pub fn new(directory: PathBuf, shutdown: CancellationToken) -> Arc<Self> {
         Arc::new(Self {
-            dispatch: Arc::new(tokio::sync::Mutex::new(())),
+            dispatch: Arc::new(tokio::sync::RwLock::new(())),
             #[cfg(test)]
             dispatch_hook: Mutex::new(None),
             directory,
             shutdown,
-            slots: Arc::new(tokio::sync::Semaphore::new(2)),
+            slots: Arc::new(tokio::sync::Semaphore::new(8)),
             active: Mutex::new(HashMap::new()),
             epoch: AtomicU64::new(0),
             confirmed: AtomicU32::new(0),
@@ -118,7 +118,7 @@ impl Gate {
     }
     pub async fn confirm(&self, expected: u32) -> AppResult<u32> {
         // No confirmation may overtake a request's admission and first send poll.
-        let _dispatch = self.dispatch.lock().await;
+        let _dispatch = self.dispatch.write().await;
         // Registration always precedes the first policy read. Any request that can
         // have observed policy before this persisted revocation is already included.
         let targets: Vec<_> = self
@@ -162,8 +162,12 @@ impl Run {
     pub async fn admit_dispatch(
         &self,
         provider_target: &str,
-    ) -> AppResult<tokio::sync::OwnedMutexGuard<()>> {
-        let guard = self.gate.dispatch.clone().lock_owned().await;
+    ) -> AppResult<tokio::sync::OwnedRwLockReadGuard<()>> {
+        // Independent dispatches may check durable policy concurrently. A
+        // confirmation takes the exclusive side and still cannot overtake any
+        // admitted request's first send poll. Tokio's fair lock also keeps new
+        // dispatches behind an already queued confirmation.
+        let guard = self.gate.dispatch.clone().read_owned().await;
         // Unlike speculative recipe checks, this read and the first send poll
         // share one critical section with confirmation.
         self.check(provider_target).await?;
@@ -261,6 +265,70 @@ mod tests {
         fn drop(&mut self) {
             self.0.store(true, Ordering::SeqCst);
         }
+    }
+    #[tokio::test]
+    async fn confirmation_fences_all_parallel_admissions_and_queued_dispatches() {
+        let temp = tempfile::tempdir().unwrap();
+        let config = ConfigService::open(temp.path(), Arc::new(Memory::default())).unwrap();
+        let provider = config
+            .save_provider(SaveProvider {
+                protocol_version: 1,
+                expected_revision: 0,
+                id: None,
+                name: "parallel admission fixture".into(),
+                protocol: ProviderProtocol::OpenaiChatCompletions,
+                base_url: "http://127.0.0.1:1/v1".into(),
+                enabled: true,
+                models: vec!["fixture".into()],
+                credential: None,
+            })
+            .unwrap()
+            .providers[0]
+            .clone();
+        let target = provider_target(&tagma_core::health::provider_fingerprint(
+            &config.read_snapshot().unwrap().1.providers[0],
+        ));
+        let gate = Gate::new(temp.path().to_owned(), CancellationToken::new());
+        let first = gate.register(None, vec![target.clone()], None).unwrap();
+        let second = gate.register(None, vec![target.clone()], None).unwrap();
+        let later = gate.register(None, vec![target.clone()], None).unwrap();
+        let guard1 = first.admit_dispatch(&target).await.unwrap();
+        let guard2 =
+            tokio::time::timeout(Duration::from_millis(250), second.admit_dispatch(&target))
+                .await
+                .expect("independent admission must not wait for the first send")
+                .unwrap();
+        let receipt = config
+            .revoke_access(RevokeAccess {
+                protocol_version: 1,
+                expected_revision: 1,
+                kind: RevokeKind::ProviderConnection,
+                provider_id: Some(provider.id),
+                cancel_inflight: true,
+            })
+            .unwrap();
+        let mut confirming = Box::pin(gate.confirm(receipt.revision));
+        assert!(futures_util::poll!(confirming.as_mut()).is_pending());
+        let mut queued = Box::pin(later.admit_dispatch(&target));
+        assert!(
+            futures_util::poll!(queued.as_mut()).is_pending(),
+            "queued confirmation must fence newer admissions"
+        );
+        drop(guard1);
+        assert!(
+            futures_util::poll!(confirming.as_mut()).is_pending(),
+            "the second admitted send is still outstanding"
+        );
+        drop(guard2);
+        assert_eq!(confirming.await.unwrap(), receipt.revision);
+        assert!(first.cancel.is_cancelled() && second.cancel.is_cancelled());
+        assert_eq!(queued.await.unwrap_err().code, ErrorCode::AccessRevoked);
+        drop(later);
+        drop(second);
+        drop(first);
+        drop(gate);
+        drop(config);
+        temp.close().unwrap();
     }
     #[tokio::test]
     async fn sup007_confirmed_revoke_cannot_overtake_an_unstarted_dispatch() {
@@ -440,7 +508,7 @@ mod tests {
                 .unwrap();
             let acknowledgement = if inside {
                 assert!(
-                    state.security.dispatch.try_lock().is_err(),
+                    state.security.dispatch.try_write().is_err(),
                     "Admitted send owns the confirmation barrier"
                 );
                 let started = Arc::new(tokio::sync::Notify::new());

@@ -7,7 +7,7 @@ use std::sync::{
 };
 use tagma_core::{credentials::SystemCredentials, *};
 use tagma_runtime::GatewayManager;
-use tauri::{Manager, State, WebviewWindow};
+use tauri::{Emitter, Manager, State, WebviewWindow};
 mod chat;
 mod startup;
 
@@ -15,6 +15,8 @@ struct Application {
     config: AppResult<ConfigService>,
     runtime: Option<Arc<GatewayManager>>,
     quitting: AtomicBool,
+    exit_confirmed: AtomicBool,
+    exit_ready: AtomicBool,
     tray: bool,
     directory: Option<std::path::PathBuf>,
     chat: chat::ChatBridge,
@@ -327,6 +329,19 @@ async fn apply_gateway(
 async fn quit_application(window: WebviewWindow, protocol_version: u32) -> AppResult<()> {
     check_protocol(protocol_version)?;
     local(&window)?;
+    window.app_handle().exit(0);
+    Ok(())
+}
+
+#[tauri::command]
+async fn confirm_quit(
+    window: WebviewWindow,
+    app: State<'_, Application>,
+    protocol_version: u32,
+) -> AppResult<()> {
+    check_protocol(protocol_version)?;
+    local(&window)?;
+    app.exit_confirmed.store(true, Ordering::SeqCst);
     window.app_handle().exit(0);
     Ok(())
 }
@@ -661,6 +676,8 @@ fn main() {
                 config,
                 runtime,
                 quitting: AtomicBool::new(false),
+                exit_confirmed: AtomicBool::new(false),
+                exit_ready: AtomicBool::new(false),
                 tray,
                 directory: local_directory,
                 chat: chat::ChatBridge::new()?,
@@ -694,6 +711,7 @@ fn main() {
             stop_gateway,
             apply_gateway,
             quit_application,
+            confirm_quit,
             diagnostics_view,
             usage_requests,
             usage_details,
@@ -720,14 +738,35 @@ fn main() {
         .run(|app, event| {
             if let tauri::RunEvent::ExitRequested { api, .. } = event {
                 let state = app.state::<Application>();
+                if state.exit_ready.load(Ordering::SeqCst) {
+                    return;
+                }
+                api.prevent_exit();
+                // A second tray/OS quit cannot bypass a drain already in progress.
+                if state.quitting.load(Ordering::SeqCst) {
+                    return;
+                }
+                if !state.exit_confirmed.swap(false, Ordering::SeqCst) {
+                    if let Some(window) = app.get_webview_window("main") {
+                        let _ = window.show();
+                        let _ = window.set_focus();
+                        let _ = window.emit("tagma-quit-requested", ());
+                    }
+                    return;
+                }
                 if !state.quitting.swap(true, Ordering::SeqCst) {
-                    api.prevent_exit();
                     let runtime = state.runtime.clone();
                     let handle = app.clone();
                     tauri::async_runtime::spawn(async move {
-                        if let Some(runtime) = runtime {
-                            let _ = runtime.stop().await;
+                        if let Some(runtime) = runtime
+                            && let Err(error) = runtime.stop().await
+                            && error.code != ErrorCode::OwnershipRequired
+                        {
+                            handle.state::<Application>().quitting.store(false, Ordering::SeqCst);
+                            let _ = handle.emit("tagma-quit-failed", error);
+                            return;
                         }
+                        handle.state::<Application>().exit_ready.store(true, Ordering::SeqCst);
                         handle.exit(0);
                     });
                 }

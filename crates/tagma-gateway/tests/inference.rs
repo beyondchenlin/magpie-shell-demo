@@ -323,7 +323,8 @@ async fn real_gateway_text_contract_streaming_snapshot_pin_and_client_cancel() {
         StatusCode::NOT_IMPLEMENTED
     );
     let mut occupied = Vec::new();
-    for _ in 0..8 {
+    assert!(tagma_core::DEFAULT_HTTP_CONCURRENCY >= 10, "PRD concurrency workload must fit");
+    for _ in 0..tagma_core::DEFAULT_HTTP_CONCURRENCY {
         let mut response = client
             .post(&endpoint)
             .json(&input("cancel", true))

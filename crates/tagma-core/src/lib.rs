@@ -17,3 +17,7 @@ pub mod usage;
 
 pub use contract::*;
 pub use service::ConfigService;
+
+/// Bounded HTTP admission, including bodies retained by slow downstream readers.
+/// The default must accommodate the PRD's ten concurrent request workload.
+pub const DEFAULT_HTTP_CONCURRENCY: usize = 16;

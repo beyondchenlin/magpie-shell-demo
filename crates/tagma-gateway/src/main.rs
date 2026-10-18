@@ -49,6 +49,7 @@ struct Runtime {
     configured_port: u16,
     token: zeroize::Zeroizing<String>,
     shutdown: CancellationToken,
+    stop_accepting: CancellationToken,
     apply_guard: tokio::sync::Mutex<()>,
     load_slots: Arc<tokio::sync::Semaphore>,
     request_slots: Arc<tokio::sync::Semaphore>,
@@ -284,9 +285,10 @@ async fn run(
         )),
         token,
         shutdown: shutdown.clone(),
+        stop_accepting: CancellationToken::new(),
         apply_guard: tokio::sync::Mutex::new(()),
         load_slots: Arc::new(tokio::sync::Semaphore::new(1)),
-        request_slots: Arc::new(tokio::sync::Semaphore::new(8)),
+        request_slots: Arc::new(tokio::sync::Semaphore::new(DEFAULT_HTTP_CONCURRENCY)),
         health,
         #[cfg(test)]
         _fixture: None,
@@ -363,7 +365,7 @@ async fn run(
                             }
                             let response = Response { operation:None, protocol_version: PROTOCOL_VERSION, product_version: PRODUCT_VERSION.into(), instance_id: state.manifest.instance_id.clone(), config_id: state.manifest.config_id.clone(), challenge: request.challenge, status: status_snapshot(&state).await };
                             let _ = ipc::write_frame(&mut stream,&response).await;
-                            if stop { state.shutdown.cancel(); }
+                            if stop { state.stop_accepting.cancel(); }
                         }).await;
                     });
                 }
@@ -380,15 +382,30 @@ async fn run(
     let router = http_api::router(state.clone())
         .layer(middleware::from_fn_with_state(state.clone(), authorize));
     use std::future::IntoFuture;
+    let stop_accepting = state.stop_accepting.clone();
+    let listener_shutdown = shutdown.clone();
+    let listener_stop = stop_accepting.clone();
     let serving = axum::serve(tcp, router)
-        .with_graceful_shutdown(shutdown.clone().cancelled_owned())
+        .with_graceful_shutdown(async move {
+            tokio::select! {
+                _ = listener_shutdown.cancelled() => {},
+                _ = listener_stop.cancelled() => {},
+            }
+        })
         .into_future();
     tokio::pin!(serving);
-    tokio::select! {
-        _ = &mut serving => {},
-        _ = shutdown.cancelled() => { let _ = tokio::time::timeout(Duration::from_secs(10), &mut serving).await; },
-    }
+    // Admission stops immediately; the execution cancellation token stays live
+    // during the grace period. Parent death still cancels owned work immediately.
+    let drained = tokio::select! {
+        _ = &mut serving => true,
+        _ = stop_accepting.cancelled() => tokio::time::timeout(Duration::from_secs(10), &mut serving).await.is_ok(),
+        _ = shutdown.cancelled() => tokio::time::timeout(Duration::from_secs(1), &mut serving).await.is_ok(),
+    };
     shutdown.cancel();
+    if !drained {
+        // Allow cancellation frames and bounded usage settlement before reaping.
+        let _ = tokio::time::timeout(Duration::from_secs(1), &mut serving).await;
+    }
     let _ = tokio::join!(management, synchronizer);
     // Preserve the existing manifest as an uncertainty marker if metadata cannot be
     // fenced. A future owner already treats an inactive manifest as stale, and must
@@ -474,6 +491,11 @@ async fn authorize(
     mut request: HttpRequest,
     next: Next,
 ) -> HttpResponse {
+    if state.stop_accepting.is_cancelled() || state.shutdown.is_cancelled()
+        || matches!(state.status.read().await.state, RuntimeState::Stopping)
+    {
+        return http_api::error(axum::http::StatusCode::SERVICE_UNAVAILABLE, "GATEWAY_STOPPING");
+    }
     if !http_api::trusted_local_request(&request, state.manifest.port) {
         return http_api::error(axum::http::StatusCode::FORBIDDEN, "UNTRUSTED_ORIGIN");
     }
@@ -754,9 +776,10 @@ mod apply_tests {
             configured_port: 9168,
             token: zeroize::Zeroizing::new(String::new()),
             shutdown: CancellationToken::new(),
+            stop_accepting: CancellationToken::new(),
             apply_guard: tokio::sync::Mutex::new(()),
             load_slots: Arc::new(tokio::sync::Semaphore::new(1)),
-            request_slots: Arc::new(tokio::sync::Semaphore::new(8)),
+            request_slots: Arc::new(tokio::sync::Semaphore::new(DEFAULT_HTTP_CONCURRENCY)),
             health: health::Tracker::new(fixture.path().to_owned(), CancellationToken::new()),
             _fixture: Some(fixture),
         })

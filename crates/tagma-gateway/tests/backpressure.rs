@@ -149,6 +149,11 @@ impl Fixture {
         .await
         .unwrap();
         let headers = String::from_utf8(headers).unwrap();
+        if !headers.starts_with("HTTP/1.1 200") {
+            let mut failure = Vec::new();
+            let _ = tokio::time::timeout(Duration::from_secs(2), (&mut client).take(8192).read_to_end(&mut failure)).await;
+            panic!("{headers}{}", String::from_utf8_lossy(&failure));
+        }
         assert!(headers.starts_with("HTTP/1.1 200"), "{headers}");
         let id = headers
             .lines()
@@ -219,11 +224,11 @@ async fn stalled_downstream_cannot_suspend_upstream_budget_and_settlement() {
 }
 
 #[tokio::test]
-async fn stalled_readers_retain_eight_slots_but_cannot_suspend_confirmed_revocation() {
+async fn stalled_readers_retain_all_slots_but_cannot_suspend_confirmed_revocation() {
     let f = Fixture::start(8000).await;
     let result = std::panic::AssertUnwindSafe(async {
         let mut clients=Vec::new(); let mut ids=Vec::new();
-        for _ in 0..8 { let (client,id)=f.client().await; clients.push(client); ids.push(id); }
+        for _ in 0..tagma_core::DEFAULT_HTTP_CONCURRENCY { let (client,id)=f.client().await; clients.push(client); ids.push(id); }
         tokio::time::sleep(Duration::from_millis(200)).await;
         let http=reqwest::Client::builder().no_proxy().timeout(Duration::from_secs(3)).build().unwrap();
         let endpoint=format!("http://127.0.0.1:{}/v1/models",f.port);
@@ -234,7 +239,7 @@ async fn stalled_readers_retain_eight_slots_but_cannot_suspend_confirmed_revocat
             provider_id:Some(f.provider.clone()), cancel_inflight:true,
         }).unwrap();
         assert_eq!(f.manager.confirm_security(receipt.revision).await.unwrap().security_revision,Some(receipt.revision));
-        f.wait_closed(8).await;
+        f.wait_closed(tagma_core::DEFAULT_HTTP_CONCURRENCY).await;
         for id in &ids {
             let detail = tokio::time::timeout(Duration::from_secs(2), async {
                 loop {
@@ -254,7 +259,7 @@ async fn stalled_readers_retain_eight_slots_but_cannot_suspend_confirmed_revocat
         tokio::time::timeout(Duration::from_secs(2),async {
             loop { if http.get(&endpoint).send().await.unwrap().status()==200 { break; } tokio::time::sleep(Duration::from_millis(10)).await; }
         }).await.unwrap();
-        println!("Eight real stalled TCP readers:9th429;private revoke(true) acknowledged,8 upstreams closed and8 logical/attempt rows ACCESS_REVOKED;slots still429 until downstream sockets dropped,then200");
+        println!("{} real stalled TCP readers:extra request429;private revoke(true) acknowledged,all upstreams closed and logical/attempt rows ACCESS_REVOKED;slots still429 until downstream sockets dropped,then200",tagma_core::DEFAULT_HTTP_CONCURRENCY);
     }).catch_unwind().await;
     f.stop(result).await;
 }

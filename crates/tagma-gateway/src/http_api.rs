@@ -610,6 +610,9 @@ async fn completion(
     // afterwards and retain their own configuration and streaming lifetime.
     let body = tokio::select! {
         biased;
+        // An incomplete request has not been dispatched upstream. Do not let a
+        // drip-fed body consume the grace period reserved for active inference.
+        _ = state.stop_accepting.cancelled() => return unread_body_error(StatusCode::SERVICE_UNAVAILABLE, "GATEWAY_STOPPING"),
         _ = state.shutdown.cancelled() => return unread_body_error(StatusCode::SERVICE_UNAVAILABLE, "GATEWAY_STOPPING"),
         _ = tokio::time::sleep_until(deadline) => return unread_body_error(StatusCode::REQUEST_TIMEOUT, "REQUEST_BODY_TIMEOUT"),
         body = Json::<Value>::from_request(request, &state) => body,

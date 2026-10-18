@@ -22,7 +22,7 @@ use std::{
 const OWNER: u32 = 0x54414755; // TAGU, not the configuration database.
 const MAX_BYTES: u64 = 256 * 1024 * 1024;
 const MAX_WAL_BYTES: u64 = 16 * 1024 * 1024;
-const MAX_PENDING: usize = 32;
+const MAX_PENDING: usize = DEFAULT_HTTP_CONCURRENCY * 2;
 const DAY: u64 = 86_400_000;
 #[cfg(test)]
 fn crash_hook(point: &str) {
@@ -496,7 +496,7 @@ impl UsageStore {
                     |r| r.get(0),
                 )
                 .map_err(storage)?;
-            if active >= 8 {
+            if active as usize >= DEFAULT_HTTP_CONCURRENCY {
                 return Err(AppError::new(ErrorCode::ProbeBusy));
             }
             tx.execute("INSERT INTO usage_requests(id,provider_id,model,config_revision,team_revision,started_ms,outcome) VALUES(?1,?2,?3,?4,?5,?6,'running')",params![start.id,start.provider_id,start.model,start.config_revision,start.team_revision,at]).map_err(storage)?;
@@ -701,18 +701,18 @@ impl UsageStore {
         tx.commit().map_err(storage)
     }
     fn recover(&mut self, now: u64) -> AppResult<()> {
-        // At most eight active requests with one running attempt each. Recovery
+        // Admission bounds active requests and one running attempt per request. Recovery
         // records unknown results rather than fabricating successful zero usage.
-        let mut query=self.db.prepare("SELECT request_id,ordinal,started_ms FROM usage_attempts WHERE outcome='running' LIMIT 9").map_err(storage)?;
+        let mut query=self.db.prepare("SELECT request_id,ordinal,started_ms FROM usage_attempts WHERE outcome='running' LIMIT ?1").map_err(storage)?;
         let attempts = query
-            .query_map([], |r| {
+            .query_map([(DEFAULT_HTTP_CONCURRENCY + 1) as i64], |r| {
                 Ok((r.get::<_, String>(0)?, r.get::<_, u32>(1)?, unsigned(r, 2)?))
             })
             .map_err(storage)?
             .collect::<Result<Vec<_>, _>>()
             .map_err(storage)?;
         drop(query);
-        if attempts.len() > 8 {
+        if attempts.len() > DEFAULT_HTTP_CONCURRENCY {
             return Err(storage("active attempts bound"));
         }
         for (id, n, started) in attempts {
@@ -727,15 +727,15 @@ impl UsageStore {
         }
         let mut query = self
             .db
-            .prepare("SELECT id,started_ms FROM usage_requests WHERE outcome='running' LIMIT 9")
+            .prepare("SELECT id,started_ms FROM usage_requests WHERE outcome='running' LIMIT ?1")
             .map_err(storage)?;
         let requests = query
-            .query_map([], |r| Ok((r.get::<_, String>(0)?, unsigned(r, 1)?)))
+            .query_map([(DEFAULT_HTTP_CONCURRENCY + 1) as i64], |r| Ok((r.get::<_, String>(0)?, unsigned(r, 1)?)))
             .map_err(storage)?
             .collect::<Result<Vec<_>, _>>()
             .map_err(storage)?;
         drop(query);
-        if requests.len() > 8 {
+        if requests.len() > DEFAULT_HTTP_CONCURRENCY {
             return Err(storage("active requests bound"));
         }
         for (id, started) in requests {
@@ -934,7 +934,7 @@ mod tests {
             .unwrap();
         let mut store = UsageStore::open(temp.path(), DAY).unwrap();
         let mut requests = Vec::new();
-        for _ in 0..8 {
+        for _ in 0..DEFAULT_HTTP_CONCURRENCY {
             let req = request(DAY);
             store.begin_request(&req).unwrap();
             store.begin_attempt(&attempt(&req, 1)).unwrap();
@@ -949,7 +949,7 @@ mod tests {
             assert!(store.finish(end(req, Some(1), Tokens::default())).is_err());
             assert!(store.finish(end(req, None, Tokens::default())).is_err());
         }
-        assert_eq!(store.state().unwrap().pending_results, 16);
+        assert_eq!(store.state().unwrap().pending_results, MAX_PENDING);
         assert!(store.state().unwrap().degraded);
         for req in &requests {
             assert_eq!(
@@ -960,7 +960,7 @@ mod tests {
                 ErrorCode::InvalidInput
             );
         }
-        assert_eq!(store.state().unwrap().pending_results, 16);
+        assert_eq!(store.state().unwrap().pending_results, MAX_PENDING);
         assert!(store.begin_request(&request(DAY)).is_err());
         assert!(store.retry_pending().is_err());
         store
@@ -971,16 +971,38 @@ mod tests {
         assert!(!store.state().unwrap().degraded);
         assert_eq!(store.state().unwrap().pending_results, 0);
         let counts:(i64,i64)=store.db.query_row("SELECT (SELECT sum(count) FROM usage_daily WHERE kind='request'),(SELECT sum(count) FROM usage_daily WHERE kind='attempt')",[],|r|Ok((r.get(0)?,r.get(1)?))).unwrap();
-        assert_eq!(counts, (8, 8));
+        assert_eq!(counts, (DEFAULT_HTTP_CONCURRENCY as i64, DEFAULT_HTTP_CONCURRENCY as i64));
         store.retry_pending().unwrap();
         let count: i64 = store
             .db
             .query_row("SELECT sum(count) FROM usage_daily", [], |r| r.get(0))
             .unwrap();
-        assert_eq!(count, 16);
+        assert_eq!(count, MAX_PENDING as i64);
         println!(
-            "Usage failed finishes: 8 requests/8 attempts ->16 bounded pending results, new begins refused, explicit recovery exactly once"
+            "Usage failed finishes: {} requests/attempts ->{} bounded pending results, new begins refused, explicit recovery exactly once", DEFAULT_HTTP_CONCURRENCY, MAX_PENDING
         );
+    }
+    #[test]
+    fn full_admission_capacity_recovers_unfinished_results_without_inventing_usage() {
+        let temp = tempfile::tempdir().unwrap();
+        let mut store = UsageStore::open(temp.path(), DAY).unwrap();
+        for _ in 0..DEFAULT_HTTP_CONCURRENCY {
+            let req = request(DAY);
+            store.begin_request(&req).unwrap();
+            store.begin_attempt(&attempt(&req, 1)).unwrap();
+        }
+        drop(store);
+        let recovered = UsageStore::open(temp.path(), DAY + 1000).unwrap();
+        for table in ["usage_requests", "usage_attempts"] {
+            let count: i64 = recovered.db.query_row(&format!("SELECT count(*) FROM {table} WHERE outcome='interrupted' AND error_code='PROCESS_INTERRUPTED' AND input_tokens IS NULL AND output_tokens IS NULL"), [], |row| row.get(0)).unwrap();
+            assert_eq!(count, DEFAULT_HTTP_CONCURRENCY as i64);
+        }
+        let running: i64 = recovered.db.query_row("SELECT count(*) FROM usage_requests WHERE outcome='running'", [], |row| row.get(0)).unwrap();
+        assert_eq!(running, 0);
+        drop(recovered);
+        let repeated = UsageStore::open(temp.path(), DAY + 2000).unwrap();
+        let total: i64 = repeated.db.query_row("SELECT sum(count) FROM usage_daily", [], |row| row.get(0)).unwrap();
+        assert_eq!(total, (DEFAULT_HTTP_CONCURRENCY * 2) as i64);
     }
     #[test]
     fn retention_keeps_summaries_and_preserves_unknown_unowned_databases() {

@@ -17,6 +17,7 @@ import { ChatView } from "./ChatView";
 import { TeamsPanel } from "./TeamsPanel";
 import { ProductChrome, type ProductPage } from "./ProductChrome";
 import { ConfigurationFailure } from "./ConfigurationFailure";
+import { QuitDialog } from "./QuitDialog";
 import { copy, errorCopy } from "./copy";
 import { applyPreferences, readPreferences, savePreferences, type Preferences, type ProductTheme } from "./preferences";
 import { desktop, protocolVersion, service } from "./service";
@@ -144,6 +145,7 @@ export default function ProductApp() {
   }
 
   return <>
+    <QuitDialog language={preferences.language} />
     <ProductChrome page={page} onPage={setPage} onRefresh={()=>void refresh()} refreshLabel={!view&&configurationError!=null?c.refreshStatus:undefined} disabled={busy||editing} view={view} language={preferences.language}/>
     {!desktop && <aside className="tagma-banner" role="status">{c.preview}</aside>}
     {!["zh", "en"].includes(preferences.language) && <aside className="tagma-banner">{c.coverage}</aside>}

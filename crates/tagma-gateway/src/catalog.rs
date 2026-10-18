@@ -36,7 +36,10 @@ impl Jobs {
 pub async fn start(state: &Arc<Runtime>, input: ProbeProvider) -> AppResult<()> {
     let deadline = tokio::time::Instant::now() + Duration::from_secs(6);
     check_protocol(input.protocol_version)?;
-    if state.shutdown.is_cancelled() || uuid::Uuid::parse_str(&input.request_id).is_err() {
+    if state.stop_accepting.is_cancelled() || state.shutdown.is_cancelled() {
+        return Err(AppError::new(ErrorCode::GatewayUnavailable));
+    }
+    if uuid::Uuid::parse_str(&input.request_id).is_err() {
         return Err(AppError::new(ErrorCode::InvalidInput));
     }
     let (record, credential) = {

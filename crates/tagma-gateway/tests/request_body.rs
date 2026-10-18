@@ -221,7 +221,7 @@ async fn incomplete_and_drip_bodies_expire_without_dispatch_and_release_slots() 
     let f = Fixture::start().await;
     let result=std::panic::AssertUnwindSafe(async{
         let mut clients=Vec::new();
-        for index in 0..8{clients.push(f.partial(index>=4).await);}
+        for index in 0..tagma_core::DEFAULT_HTTP_CONCURRENCY{clients.push(f.partial(index>=tagma_core::DEFAULT_HTTP_CONCURRENCY/2).await);}
         let mut drip_client=clients.pop().unwrap();
         let (drip,drip_count)=drip_client.drip();
         // Read while the peer still drips. Writing after the server closes can
@@ -234,7 +234,7 @@ async fn incomplete_and_drip_bodies_expire_without_dispatch_and_release_slots() 
         f.wait_status(429).await;f.no_dispatch();
         tokio::time::sleep(Duration::from_millis(11000)).await;
         let status=f.status().await;
-        println!("Eight incomplete raw TCP bodies(4 content-length/4 chunked,one drips each200ms):after11s models_status={status},upstream_calls={}",f.calls.load(Ordering::SeqCst));
+        println!("{} incomplete raw TCP bodies(half content-length/half chunked,one drips each200ms):after11s models_status={status},upstream_calls={}",tagma_core::DEFAULT_HTTP_CONCURRENCY,f.calls.load(Ordering::SeqCst));
         assert_eq!(status,200,"absolute request-body deadline must expire even if bytes keep arriving");
         for client in &mut clients{
             let response=client.response().await;
@@ -252,7 +252,7 @@ async fn incomplete_and_drip_bodies_expire_without_dispatch_and_release_slots() 
         assert_eq!(response.matches("HTTP/1.1 ").count(),1);
         drop(read_task);
         drop(drip);f.no_dispatch();
-        println!("All8 bodies:408 REQUEST_BODY_TIMEOUT/Connection close/EOF,0upstream and0usage registrations;drips={} do not extend deadline,slots released before idle readers consume errors",drip_count.load(Ordering::SeqCst));
+        println!("All{} bodies:408 REQUEST_BODY_TIMEOUT/Connection close/EOF,0upstream and0usage registrations;drips={} do not extend deadline,slots released before idle readers consume errors",tagma_core::DEFAULT_HTTP_CONCURRENCY,drip_count.load(Ordering::SeqCst));
     }).catch_unwind().await;
     f.finish(result).await;
 }
@@ -260,12 +260,12 @@ async fn incomplete_and_drip_bodies_expire_without_dispatch_and_release_slots() 
 async fn partial_disconnect_releases_slot_and_private_stop_interrupts_body_reads() {
     let f = Fixture::start().await;
     let result=std::panic::AssertUnwindSafe(async{
-        let mut clients=Vec::new();for _ in 0..8{clients.push(f.partial(false).await);}
+        let mut clients=Vec::new();for _ in 0..tagma_core::DEFAULT_HTTP_CONCURRENCY{clients.push(f.partial(false).await);}
         f.wait_status(429).await;
         drop(clients.pop());f.wait_status(200).await;
         clients.push(f.partial(true).await);f.wait_status(429).await;f.no_dispatch();
         let started=tokio::time::Instant::now();f.manager.stop().await.unwrap();let elapsed=started.elapsed();
-        println!("Eight partial bodies:peer disconnect frees1slot;replacement saturates;private owned stop completed in{}ms,upstream0",elapsed.as_millis());
+        println!("{} partial bodies:peer disconnect frees1slot;replacement saturates;private owned stop completed in{}ms,upstream0",tagma_core::DEFAULT_HTTP_CONCURRENCY,elapsed.as_millis());
         assert!(elapsed<Duration::from_secs(3),"body waits must observe shutdown instead of waiting for forced10s kill");
         for client in &mut clients{
             let response=client.response().await;

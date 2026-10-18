@@ -26,6 +26,7 @@ fn main() {
             "stop_gateway",
             "apply_gateway",
             "quit_application",
+            "confirm_quit",
             "diagnostics_view",
             "usage_requests",
             "usage_details",

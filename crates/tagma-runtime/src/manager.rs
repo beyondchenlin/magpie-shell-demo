@@ -381,7 +381,8 @@ impl GatewayManager {
         if let Some(error) = status.error {
             return Err(error);
         }
-        match tokio::time::timeout(Duration::from_secs(10), instance.child.wait()).await {
+        // Ten seconds for admitted requests, then bounded cancellation/settlement.
+        match tokio::time::timeout(Duration::from_secs(12), instance.child.wait()).await {
             Ok(Ok(_)) => {}
             Ok(Err(_)) => return Err(AppError::new(ErrorCode::GatewayUnavailable)),
             Err(_) => {

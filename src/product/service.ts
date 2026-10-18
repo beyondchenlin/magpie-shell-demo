@@ -62,6 +62,7 @@ export const service = {
   stopGateway: () => command<RuntimeStatus>("stop_gateway", { protocolVersion }),
   applyGateway: () => command<RuntimeStatus>("apply_gateway", { protocolVersion }),
   quit: () => command<void>("quit_application", { protocolVersion }),
+  confirmQuit: () => command<void>("confirm_quit", { protocolVersion }),
   diagnostics: () => command<DiagnosticBundle>("diagnostics_view", { protocolVersion }),
   recoverInitialization: (input:RecoverInitialization)=>command<RecoveryOutcome>("recover_initialization",{input}),
 };

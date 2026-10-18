@@ -16,7 +16,7 @@ impl Drop for AbortOnDrop {
 }
 
 pub fn drive(body: Body, attempt: Attempt, control: StreamControl) -> Body {
-    // The existing eight request permits remain owned by the downstream body,
+    // The bounded HTTP request permits remain owned by the downstream body,
     // including after its upstream has stopped. Never queue complete responses.
     let (sender, mut receiver) = mpsc::channel(1);
     let (terminal, completed) = oneshot::channel();
