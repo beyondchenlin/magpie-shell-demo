@@ -1,0 +1,308 @@
+﻿{
+    "utc":  "2026-10-18T20:43:15.8287995Z",
+    "pid":  31340,
+    "window":  11602742,
+    "title":  "Tagma P0 S16 Acceptance Uninstall ",
+    "elements":  [
+                     {
+                         "index":  0,
+                         "name":  "Uninstall",
+                         "type":  "ControlType.Pane",
+                         "patterns":  [
+
+                                      ],
+                         "class":  "Button",
+                         "id":  "42,15534916",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  0,
+                         "rect":  [
+                                      1995,
+                                      1218,
+                                      75,
+                                      23
+                                  ]
+                     },
+                     {
+                         "index":  1,
+                         "name":  "Cancel",
+                         "type":  "ControlType.Pane",
+                         "patterns":  [
+
+                                      ],
+                         "class":  "Button",
+                         "id":  "42,12585490",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  0,
+                         "rect":  [
+                                      2081,
+                                      1218,
+                                      75,
+                                      23
+                                  ]
+                     },
+                     {
+                         "index":  2,
+                         "name":  "",
+                         "type":  "ControlType.Pane",
+                         "patterns":  [
+
+                                      ],
+                         "class":  "Static",
+                         "id":  "42,6293438",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  null,
+                         "rect":  [
+                                      1679,
+                                      1205,
+                                      480,
+                                      2
+                                  ]
+                     },
+                     {
+                         "index":  3,
+                         "name":  "",
+                         "type":  "ControlType.Pane",
+                         "patterns":  [
+
+                                      ],
+                         "class":  "Static",
+                         "id":  "42,8588106",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  null,
+                         "rect":  [
+                                      1671,
+                                      948,
+                                      508,
+                                      2
+                                  ]
+                     },
+                     {
+                         "index":  4,
+                         "name":  "Nullsoft Install System v3.13 ",
+                         "type":  "ControlType.Pane",
+                         "patterns":  [
+
+                                      ],
+                         "class":  "Static",
+                         "id":  "42,9374488",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  null,
+                         "rect":  [
+                                      1679,
+                                      1197,
+                                      483,
+                                      13
+                                  ]
+                     },
+                     {
+                         "index":  5,
+                         "name":  "Nullsoft Install System v3.13",
+                         "type":  "ControlType.Pane",
+                         "patterns":  [
+
+                                      ],
+                         "class":  "Static",
+                         "id":  "42,5901892",
+                         "enabled":  false,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  null,
+                         "rect":  [
+                                      1679,
+                                      1197,
+                                      483,
+                                      13
+                                  ]
+                     },
+                     {
+                         "index":  6,
+                         "name":  "",
+                         "type":  "ControlType.Pane",
+                         "patterns":  [
+
+                                      ],
+                         "class":  "Static",
+                         "id":  "42,14552908",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  null,
+                         "rect":  [
+                                      1671,
+                                      891,
+                                      498,
+                                      57
+                                  ]
+                     },
+                     {
+                         "index":  7,
+                         "name":  "Uninstall Tagma P0 S16 Acceptance",
+                         "type":  "ControlType.Pane",
+                         "patterns":  [
+
+                                      ],
+                         "class":  "Static",
+                         "id":  "42,12848630",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  null,
+                         "rect":  [
+                                      1686,
+                                      899,
+                                      420,
+                                      16
+                                  ]
+                     },
+                     {
+                         "index":  8,
+                         "name":  "Remove Tagma P0 S16 Acceptance from your computer.",
+                         "type":  "ControlType.Pane",
+                         "patterns":  [
+
+                                      ],
+                         "class":  "Static",
+                         "id":  "42,11144296",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  null,
+                         "rect":  [
+                                      1694,
+                                      917,
+                                      413,
+                                      26
+                                  ]
+                     },
+                     {
+                         "index":  9,
+                         "name":  "",
+                         "type":  "ControlType.Pane",
+                         "patterns":  [
+
+                                      ],
+                         "class":  "Static",
+                         "id":  "42,10027572",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  null,
+                         "rect":  [
+                                      2121,
+                                      904,
+                                      32,
+                                      32
+                                  ]
+                     },
+                     {
+                         "index":  10,
+                         "name":  "",
+                         "type":  "ControlType.Pane",
+                         "patterns":  [
+
+                                      ],
+                         "class":  "#32770",
+                         "id":  "42,8128292",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  null,
+                         "rect":  [
+                                      1694,
+                                      964,
+                                      450,
+                                      228
+                                  ]
+                     },
+                     {
+                         "index":  11,
+                         "name":  "Uninstalling from:",
+                         "type":  "ControlType.Pane",
+                         "patterns":  [
+
+                                      ],
+                         "class":  "Static",
+                         "id":  "42,9309834",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  null,
+                         "rect":  [
+                                      1694,
+                                      1032,
+                                      90,
+                                      13
+                                  ]
+                     },
+                     {
+                         "index":  12,
+                         "name":  "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\install-p0s16",
+                         "type":  "ControlType.Pane",
+                         "patterns":  [
+
+                                      ],
+                         "class":  "Edit",
+                         "id":  "42,10751768",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  null,
+                         "rect":  [
+                                      1792,
+                                      1029,
+                                      351,
+                                      20
+                                  ]
+                     },
+                     {
+                         "index":  13,
+                         "name":  "Tagma P0 S16 Acceptance will be uninstalled from the following folder. Click Uninstall to start the uninstallation.",
+                         "type":  "ControlType.Pane",
+                         "patterns":  [
+
+                                      ],
+                         "class":  "Static",
+                         "id":  "42,17893832",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  null,
+                         "rect":  [
+                                      1694,
+                                      964,
+                                      450,
+                                      49
+                                  ]
+                     },
+                     {
+                         "index":  14,
+                         "name":  "Delete the application data",
+                         "type":  "ControlType.Pane",
+                         "patterns":  [
+
+                                      ],
+                         "class":  "Button",
+                         "id":  "42,18352936",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  0,
+                         "rect":  [
+                                      1694,
+                                      1064,
+                                      400,
+                                      25
+                                  ]
+                     }
+                 ]
+}

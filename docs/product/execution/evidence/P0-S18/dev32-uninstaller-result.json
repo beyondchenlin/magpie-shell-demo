@@ -1,0 +1,50 @@
+{
+  "before": {
+    "utc": "2026-10-18T20:44:49.8896312Z",
+    "registeredVersion": "0.2.0-dev.32",
+    "files": [
+      {
+        "name": "tagma-desktop.exe",
+        "sha256": "5D3643985CDC598A1ADE666BC10E8FF2D149650FCF1BAE06CADCB58F52115EFA",
+        "exists": true
+      },
+      {
+        "name": "tagma-gateway.exe",
+        "sha256": "9D2F13434153FE8934B6CA4E001C4C7B4B26C2CB014D0F1ED95C8C9FC75697B9",
+        "exists": true
+      },
+      {
+        "name": "uninstall.exe",
+        "sha256": "49AE04F9E72CC3FCFD271BC3E3D2926A3093AE80FCEC592104A59F85CDAFD9A5",
+        "exists": true
+      }
+    ],
+    "configSha256": "F82945FF1AE987A08496C370349280EAD5DD2468B9C3E6062BBB5F95C1C76D93"
+  },
+  "lockedFile": "uninstall.exe",
+  "scenario": "dev32-uninstaller",
+  "after": {
+    "utc": "2026-10-18T20:46:07.0259982Z",
+    "registeredVersion": "0.2.0-dev.32",
+    "files": [
+      {
+        "name": "tagma-desktop.exe",
+        "sha256": null,
+        "exists": false
+      },
+      {
+        "name": "tagma-gateway.exe",
+        "sha256": null,
+        "exists": false
+      },
+      {
+        "name": "uninstall.exe",
+        "sha256": "49AE04F9E72CC3FCFD271BC3E3D2926A3093AE80FCEC592104A59F85CDAFD9A5",
+        "exists": true
+      }
+    ],
+    "configSha256": "F82945FF1AE987A08496C370349280EAD5DD2468B9C3E6062BBB5F95C1C76D93"
+  },
+  "exitCode": 1603,
+  "layer": "Real Windows uninstaller, test-only pause after production process check, real FileShare.Read delete denial"
+}

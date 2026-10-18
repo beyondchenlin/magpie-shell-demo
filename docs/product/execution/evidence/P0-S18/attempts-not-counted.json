@@ -1,0 +1,7 @@
+{
+  "event": "previously observed dev32 host 52860 no longer present; cause not established; no action counted",
+  "earlierRefusal": "Initial dev30 window was hidden; exact owned window restored with show",
+  "observedUtc": "2026-10-18T21:18:25.8652437Z",
+  "knownControlRefusal": "Expected one owned candidate process with the exact role title",
+  "boundary": "No crash/recovery acceptance claimed from this interruption"
+}

@@ -1,0 +1,35 @@
+{
+  "version": "0.2.0-dev.32",
+  "sourceHeadAtBuild": "f46d95a57c44a3dae67b6a48fd5b6dae54520308",
+  "productChangesCommit": "f338439a34273087cba50b6013fe4ac09038720a",
+  "profile": "Windows x64 debug unsigned internal",
+  "sourceInputs": 314,
+  "sourceVerification": "314 frozen before build; checked after build, native acceptance and product commit",
+  "installer": {
+    "path": "D:/demo1/tagmaai-deliveries/0.2.0-dev.32/Tagma_0.2.0-dev.32_x64-setup.exe",
+    "bytes": 6616074,
+    "sha256": "2dc23629ddabef325c1191cf2f5883d94eac7313f270cf18562d04b2b4643941"
+  },
+  "binaries": [
+    {
+      "path": "C:/Users/ai/AppData/Local/Temp/tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88/install-p0s16/tagma-desktop.exe",
+      "bytes": 20271616,
+      "sha256": "5d3643985cdc598a1ade666bc10e8ff2d149650fcf1bae06cadcb58f52115efa"
+    },
+    {
+      "path": "C:/Users/ai/AppData/Local/Temp/tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88/install-p0s16/tagma-gateway.exe",
+      "bytes": 10108928,
+      "sha256": "9d2f13434153fe8934b6ca4e001c4c7b4b26c2cb014d0f1ed95c8c9fc75697b9"
+    }
+  ],
+  "sourceRecovery": "Checkout productChangesCommit; restore the six INHERITED-INPUTS from retained dev18 source-overlay.json.gz; verify SOURCE-INPUTS.",
+  "nativeAcceptance": "S18 real uninstall late file-lock failure (test-only pause) retained registry and uninstaller, exit1603. dev31 retry after partially removed payload succeeded; dev32 readable recovery instructions and locked-uninstaller failure, then complete-package repair to original12/12. UIA/observed native Button notifications/PrintWindow; no new keyboard pass.",
+  "installation": "Isolated S16 identity only; normal identity package never run.",
+  "remaining": "P0 not fully released. Update concurrency/maintenance barriers still need work. Actual credential-facility and OS animation changes, clean Windows/signing/macOS conditions remain unavailable.",
+  "retention": {
+    "owner": "Current Tagma P0 task",
+    "purpose": "Validated uninstall failure recovery candidate and minimal evidence",
+    "reviewDate": "2026-10-25",
+    "scheduledCleanup": false
+  }
+}

@@ -1,0 +1,93 @@
+{
+  "utc": "2026-10-18T20:36:42.7455496Z",
+  "head": "f46d95a57c44a3dae67b6a48fd5b6dae54520308",
+  "branch": "codex/tagma-p0",
+  "worktrees": [
+    "worktree D:/demo1/tagmaai",
+    "HEAD f46d95a57c44a3dae67b6a48fd5b6dae54520308",
+    "branch refs/heads/codex/tagma-p0",
+    ""
+  ],
+  "dirty": [
+    " M docs/REPLICA-ACCEPTANCE.md",
+    " M docs/cis/EXECUTION-STATUS.md",
+    " M docs/cis/PR-DESCRIPTION.md",
+    " M docs/cis/RETENTION-2026-10-17.md",
+    " M docs/product/execution/NEXT-STEP-PROMPT-2026-10-18.md",
+    " M docs/product/execution/PROGRESS-AUDIT-2026-10-18.md",
+    " M interactions/cis-release-1ebfb66/NOTES.md",
+    " M src/data/de.json",
+    " M src/data/ja.json",
+    " M src/data/zh-TW.json",
+    " M src/data/zh.json",
+    " M src/pages/RoutingView.tsx",
+    " M src/pages/SimpleViews.tsx",
+    " M src/styles/context.css",
+    "?? docs/product/README.md",
+    "?? docs/product/TAGMA-PRD-v0.3-REVIEW.md",
+    "?? docs/product/TAGMA-PRD-v0.3.md",
+    "?? docs/product/execution/EXECUTION-BASELINE.md",
+    "?? docs/product/execution/EXECUTOR-PROMPT.md",
+    "?? docs/product/execution/LOCAL-WORK-RULES.md",
+    "?? docs/product/execution/SUPERVISION-LOG.md",
+    "?? docs/product/execution/SUPERVISION-STATE.json",
+    "?? docs/product/execution/SUPERVISOR-PROMPT.md",
+    "?? docs/product/execution/evidence/PROGRESS-AUDIT-2026-10-18-1452.json",
+    "?? docs/product/reference/",
+    "?? interactions/web-cis-0.1.195/",
+    "?? src-tauri/icons/android/",
+    "?? src-tauri/icons/ios/"
+  ],
+  "drives": [
+    {
+      "Name": "C",
+      "Free": 36408070144,
+      "Used": 266409140224
+    },
+    {
+      "Name": "D",
+      "Free": 26028457984,
+      "Used": 403469316096
+    }
+  ],
+  "processes": [
+    {
+      "Id": 4888,
+      "Path": "C:\\Users\\ai\\AppData\\Local\\Tagma\\tagma-desktop.exe",
+      "Started": "2026-10-18T20:30:31.9440158Z"
+    },
+    {
+      "Id": 22064,
+      "Path": "C:\\Users\\ai\\AppData\\Local\\Tagma\\tagma-desktop.exe",
+      "Started": "2026-10-18T10:20:20.7275193Z"
+    },
+    {
+      "Id": 32900,
+      "Path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\install-p0s16\\tagma-desktop.exe",
+      "Started": "2026-10-18T15:39:34.5963561Z"
+    },
+    {
+      "Id": 18464,
+      "Path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\install-p0s16\\tagma-gateway.exe",
+      "Started": "2026-10-18T15:39:35.2069552Z"
+    },
+    {
+      "Id": 28752,
+      "Path": "C:\\Users\\ai\\AppData\\Local\\Tagma\\tagma-gateway.exe",
+      "Started": "2026-10-18T10:20:21.7088097Z"
+    }
+  ],
+  "automations": [
+    {
+      "status": "status = \"PAUSED\"",
+      "id": "tagma-prd"
+    },
+    {
+      "status": "status = \"PAUSED\"",
+      "id": "magpie-cis"
+    }
+  ],
+  "runBinding": "PAUSED",
+  "scope": "Uninstall failure/retry only; reuse existing runtime, no completed UI/keyboard/performance retests",
+  "spaceBudget": "Before package build: additional peak <=2 GiB D, <=0.2 GiB C; existing target/node_modules/NSIS reused; evidence <=10 MiB; keep recovery packages and exact failure evidence"
+}

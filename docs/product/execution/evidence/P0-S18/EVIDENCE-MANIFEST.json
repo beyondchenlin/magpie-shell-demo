@@ -1,0 +1,342 @@
+{
+  "batch": "P0-S18",
+  "utc": "2026-10-18T21:19:56.633Z",
+  "bytes": 1259954,
+  "files": [
+    {
+      "path": "01-show-dev30.json",
+      "bytes": 111274,
+      "sha256": "970df8697568ca1c4c49a416f3c3d5f4eb5a5cc1d186d85ccba850c4eb0fdd6a"
+    },
+    {
+      "path": "02-before-exit.json",
+      "bytes": 111276,
+      "sha256": "4f419ce694cee810d3f199ecf0e6dbcbd7f2403955acaa7fa2594d3541f9a016"
+    },
+    {
+      "path": "03-quit-18.json",
+      "bytes": 56215,
+      "sha256": "2b375d92823f682c7797e6320cb5907cb680774bed9aa13be701da79fdf453f8"
+    },
+    {
+      "path": "03-quit-48.json",
+      "bytes": 14864,
+      "sha256": "941c710b3a386d2c85b7d2c173e8ab81138d999d776d3de28939fad0c022f817"
+    },
+    {
+      "path": "04-baseline-uninstall.json",
+      "bytes": 12393,
+      "sha256": "578f1091be5a09dfd9267d7e5ee0a19432916e0fd239da02f6f1c120766a74b7"
+    },
+    {
+      "path": "05-baseline-delete.json",
+      "bytes": 12147,
+      "sha256": "29c4823e641cf8889539eaa628873244ec4cf891582a30e20535f745e0cd620b"
+    },
+    {
+      "path": "06-baseline-false-success.png",
+      "bytes": 11527,
+      "sha256": "8c1541fc2338f65f07d127a6ab820edbb194544d8e47515c3e8bca3b44600473"
+    },
+    {
+      "path": "08-fixed-confirm.json",
+      "bytes": 12391,
+      "sha256": "5a5007a853f2342c381119838f8ad70f800a04c93faba19785e33c2cef9bc3f6"
+    },
+    {
+      "path": "09-fixed-delete.json",
+      "bytes": 12138,
+      "sha256": "b8a78ded3978da31df92a8d1ea09bcd98fcd50850114fa77b897dfdb792f4919"
+    },
+    {
+      "path": "10-fixed-details.json",
+      "bytes": 12138,
+      "sha256": "d4b6c9b28302424732b7e6dd9a1eee1380db576eb518a41aa1a95b5e0b6e4921"
+    },
+    {
+      "path": "10-fixed-failure.png",
+      "bytes": 14762,
+      "sha256": "86ed55cc0b8fe6f1acedcdf329fbcc6f6429cfd70ca2d014e9573e0cf394ef80"
+    },
+    {
+      "path": "12-retry-confirm.json",
+      "bytes": 12392,
+      "sha256": "493bd0a31aef63a883ec35f046cc7eab84355caa5a71be680ab0346fe41c9f08"
+    },
+    {
+      "path": "13-retry-success.json",
+      "bytes": 12148,
+      "sha256": "8bd448076aee40541888e5f4b967cbb0e56a5d2d96320ba6682a26a62abdd0f8"
+    },
+    {
+      "path": "13-retry-success.png",
+      "bytes": 11527,
+      "sha256": "8c1541fc2338f65f07d127a6ab820edbb194544d8e47515c3e8bca3b44600473"
+    },
+    {
+      "path": "15-self-lock-confirm.json",
+      "bytes": 12394,
+      "sha256": "28e5e75232d3001030edc22fe61ba2f4cb03ce63c434c3ed78b6a9ac2d78ac8e"
+    },
+    {
+      "path": "16-self-lock-abort.json",
+      "bytes": 12141,
+      "sha256": "8475f903ff8f508484bae32d6a5825977ba14749c2e4ea0ea3aaac37850debb2"
+    },
+    {
+      "path": "17-self-lock-details.json",
+      "bytes": 12141,
+      "sha256": "f4073f66917fc63c103431c1450da8ae996cd8368ee2d305b1dd8f56a43ad357"
+    },
+    {
+      "path": "17-self-lock-details.png",
+      "bytes": 21207,
+      "sha256": "433838d4b7e7e39206dcac4ba448b0006e86308f801fcf42e54d4435b1275452"
+    },
+    {
+      "path": "20-restored-dev32.json",
+      "bytes": 50252,
+      "sha256": "9eec20075d42d3eeba3090b27c6ae3bf373d78343faec55641143c695f385868"
+    },
+    {
+      "path": "22-restored-reopen.json",
+      "bytes": 50255,
+      "sha256": "858c68622b6e85fb3011a7dd04e6c1f7c7cbd291ad42157b39448f34b140a802"
+    },
+    {
+      "path": "23-restored-providers.json",
+      "bytes": 111172,
+      "sha256": "89ca08c29bd04e198a5a7be4934266f1fb6cd96160d0fe36acb0c45ff1c80dcb"
+    },
+    {
+      "path": "23-restored-providers.png",
+      "bytes": 41775,
+      "sha256": "3d01ad7c80ca66474ae34369ad04916c6531d6957817ac8fa0f0ff6107c5a3a8"
+    },
+    {
+      "path": "Control.ps1",
+      "bytes": 27850,
+      "sha256": "77aa1e0abab8d634b74332878e5f96f2bf440d80e5330cf3f6fd5dba1a93fd21"
+    },
+    {
+      "path": "FileAssociation.nsh",
+      "bytes": 5517,
+      "sha256": "e933990b06dceac358fc1a4e71cb55c7dc9783ad4df8fc2c6248118a7ad4d348"
+    },
+    {
+      "path": "Finalize.mjs",
+      "bytes": 3859,
+      "sha256": "50d0a95111350cfcd85f94136164513a544050b0499b7b1fdc7df07ee3964f2c"
+    },
+    {
+      "path": "InstallerControl.ps1",
+      "bytes": 8077,
+      "sha256": "c09780c5e745b45005afa28b6f92873d6d67532f65b1fcdece0ba675dc50bf24"
+    },
+    {
+      "path": "Launch.ps1",
+      "bytes": 435,
+      "sha256": "124e45fe415dca140e78dcff8f2345f933050421928680a25ba5aec41adf3e62"
+    },
+    {
+      "path": "RetryUninstall.ps1",
+      "bytes": 1539,
+      "sha256": "91561eacead5289a1833256c951d630ac441de969e6b5a116547bf3cad64768e"
+    },
+    {
+      "path": "Run.ps1",
+      "bytes": 2063,
+      "sha256": "779ec5903e9410e0d541978d81c1007037f0d7bd9a035546229a76623e47134d"
+    },
+    {
+      "path": "RunUninstallFault.ps1",
+      "bytes": 3439,
+      "sha256": "b35b016518d368b0631259c3d1a508a1aa7939d51fd2568ab1d32ee319505a11"
+    },
+    {
+      "path": "actions.jsonl",
+      "bytes": 157449,
+      "sha256": "2b589d053a2c457522fb3c58aea5b48846ec5760f9010f7187b8771427f41eb4"
+    },
+    {
+      "path": "attempts-not-counted.json",
+      "bytes": 432,
+      "sha256": "69c75c9226838941a6fb6cfdded2f5cdb1d3b9cee0eac8c97a3f17c6fd22aebc"
+    },
+    {
+      "path": "build-space-before.json",
+      "bytes": 113,
+      "sha256": "2873c29f80bfaadeb30344c96090c9e457e761236ccdc5d478c294e81bee2bfe"
+    },
+    {
+      "path": "build31.log",
+      "bytes": 3003,
+      "sha256": "33cb7e977094638c238b17a67c5f263e13876f00699a5a7582f60eb83aa352cf"
+    },
+    {
+      "path": "build32.log",
+      "bytes": 3004,
+      "sha256": "2211873950558d2a9b760f32ab7da0c17872ebaa6ff957609d7edb1c9184a241"
+    },
+    {
+      "path": "delivery-manifest.json",
+      "bytes": 2122,
+      "sha256": "29581e2c41dbce790b1f452ee203ceb2af4f2fba10b08bcbd102dedff1245b16"
+    },
+    {
+      "path": "detached-launch-error.log",
+      "bytes": 439,
+      "sha256": "71d43e1faa3cae8bad12f2f642380cd3447fe58f4f05e5cfd9bfb234b528e2c4"
+    },
+    {
+      "path": "detached-launch.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "detached-launch2-error.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "detached-launch2.log",
+      "bytes": 85,
+      "sha256": "506b6e46a8df945fef131c98400c256a2953f8313802dd2c48ec8f0f9e626539"
+    },
+    {
+      "path": "dev30-gateway-result.json",
+      "bytes": 1519,
+      "sha256": "257eded17bad680a925e76485e9bc04d0a94b0beaf7a923647aee3adb8ebdbaf"
+    },
+    {
+      "path": "dev31-gateway-result.json",
+      "bytes": 1593,
+      "sha256": "0b9f3d33698dcfcc5780299f87e49d1af141a133f97c27aa61740821281eaf5c"
+    },
+    {
+      "path": "dev31-retry-result.json",
+      "bytes": 863,
+      "sha256": "eff2632a2b4dca2b7956bbce0c932b1a34c9d948437561f95820dc7ae472670b"
+    },
+    {
+      "path": "dev32-uninstaller-result.json",
+      "bytes": 1532,
+      "sha256": "7255dcb4b8a4d2cec6a4c13825b7c02ea5c4541afee17b369a3c02ed8f2a3348"
+    },
+    {
+      "path": "fault30-build.log",
+      "bytes": 501,
+      "sha256": "2b63e889b649bb953714ff8fb5ef6d2882a3c7a3b3eef515ec2cbad9ba695e08"
+    },
+    {
+      "path": "final-processes.json",
+      "bytes": 874,
+      "sha256": "8744c89f41862140eed5fc41d166d4fa2c9e461e4fe5576ffe84f473e78b2e15"
+    },
+    {
+      "path": "installer-actions.jsonl",
+      "bytes": 31336,
+      "sha256": "95487c60b6519096a962389bf3edb72f37436db49d70eb40b4751defdffa46eb"
+    },
+    {
+      "path": "installer-identity.json",
+      "bytes": 255,
+      "sha256": "3e3bb641a78d63789890d3664184b2d48dd74a3e7ec3635899800e7a9814ecea"
+    },
+    {
+      "path": "isolated-dev31-build.log",
+      "bytes": 501,
+      "sha256": "2b63e889b649bb953714ff8fb5ef6d2882a3c7a3b3eef515ec2cbad9ba695e08"
+    },
+    {
+      "path": "isolated-dev31.nsi",
+      "bytes": 24329,
+      "sha256": "d43e0d338a92e0f5ab228b0c0a4406d260e08a06c6441cc9bd2af6640c6fd93e"
+    },
+    {
+      "path": "isolated-dev32-build.log",
+      "bytes": 501,
+      "sha256": "2b63e889b649bb953714ff8fb5ef6d2882a3c7a3b3eef515ec2cbad9ba695e08"
+    },
+    {
+      "path": "isolated-dev32.nsi",
+      "bytes": 24329,
+      "sha256": "b3b6ac5d576a91d2d62d30b01574254165238a59e070c36fe9b7b23c6a685bec"
+    },
+    {
+      "path": "owner.txt",
+      "bytes": 32,
+      "sha256": "ab915cad5e1f54246f6bcef69b5a34a03dfe978fb921f331dc00bec26eade967"
+    },
+    {
+      "path": "preflight.json",
+      "bytes": 3218,
+      "sha256": "c2f9f808b66d7f086e10011168901343bfa8f6efa498a972495bc98617d7f3d9"
+    },
+    {
+      "path": "process-guard-dev30.nsh",
+      "bytes": 2362,
+      "sha256": "ad0bafe343bb853c11aa9c0bc3dffc4fc27b92a2c9d700dc345d6c5112883fa3"
+    },
+    {
+      "path": "repair32-result.json",
+      "bytes": 645,
+      "sha256": "81ca4fa050d016aa90ab5543213aaf707d0189e635b13fc6c4cb4d65605b9c5b"
+    },
+    {
+      "path": "source-frozen31.json",
+      "bytes": 55094,
+      "sha256": "ce35f47c4075f07193ff0568dd0da11e2f6c3cea4c162c93df04526e9fad8f92"
+    },
+    {
+      "path": "source-frozen32.json",
+      "bytes": 55094,
+      "sha256": "49921c5021bdc35674421ac84a93745f4af1d21f3c4624a0b3096a377f64fa28"
+    },
+    {
+      "path": "space-after.json",
+      "bytes": 113,
+      "sha256": "d9dd714d4224042023458391700ce0e1a10eb8d25542dce5fdaf65e2de32a699"
+    },
+    {
+      "path": "uninstall-fault-dev30.nsi",
+      "bytes": 24707,
+      "sha256": "fcc8b6ec9283e522c76108777da1d6f9964c5f967145b3b05cafeb75d1e895d1"
+    },
+    {
+      "path": "uninstall-fault-dev31-build.log",
+      "bytes": 501,
+      "sha256": "2b63e889b649bb953714ff8fb5ef6d2882a3c7a3b3eef515ec2cbad9ba695e08"
+    },
+    {
+      "path": "uninstall-fault-dev31.nsi",
+      "bytes": 24777,
+      "sha256": "966b6a13963a4b7833e976e80e8f3b6db9c81ba32a9e901961a64055899d8de5"
+    },
+    {
+      "path": "uninstall-lock-dev31-build.log",
+      "bytes": 501,
+      "sha256": "2b63e889b649bb953714ff8fb5ef6d2882a3c7a3b3eef515ec2cbad9ba695e08"
+    },
+    {
+      "path": "uninstall-lock-dev31.nsi",
+      "bytes": 24784,
+      "sha256": "11c832f8c70005cf741cd1546f601cc689dc50a04a8675a4a5d7e6a2c1122b66"
+    },
+    {
+      "path": "uninstall-lock-dev32-build.log",
+      "bytes": 501,
+      "sha256": "2b63e889b649bb953714ff8fb5ef6d2882a3c7a3b3eef515ec2cbad9ba695e08"
+    },
+    {
+      "path": "uninstall-lock-dev32.nsi",
+      "bytes": 24784,
+      "sha256": "0147ce59fe2c5425e0b39e1d17fc31d6b9199cd32e52951bfb41b33d2e34807f"
+    },
+    {
+      "path": "utils.nsh",
+      "bytes": 6753,
+      "sha256": "72cae7532ea22bd39b5433dfd8ac47975844defa916fc113880479dedfee54f6"
+    }
+  ]
+}

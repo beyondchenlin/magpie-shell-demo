@@ -1,0 +1,39 @@
+{
+  "remaining": [
+    {
+      "Name": "p0-s17-after-host.txt",
+      "Length": 39
+    },
+    {
+      "Name": "p0-s17-before-copy-fixed30.txt",
+      "Length": 28
+    },
+    {
+      "Name": "p0-s17-before-copy.txt",
+      "Length": 28
+    },
+    {
+      "Name": "p0-s17-before-gateway-fixed30.txt",
+      "Length": 34
+    },
+    {
+      "Name": "p0-s18-uninstall-continue-dev30-gateway.txt",
+      "Length": 9
+    },
+    {
+      "Name": "p0-s18-uninstall-continue-dev31-gateway.txt",
+      "Length": 9
+    },
+    {
+      "Name": "p0-s18-uninstall-ready-dev30-gateway.txt",
+      "Length": 19
+    },
+    {
+      "Name": "p0-s18-uninstall-ready-dev31-gateway.txt",
+      "Length": 19
+    }
+  ],
+  "configSha256": "F82945FF1AE987A08496C370349280EAD5DD2468B9C3E6062BBB5F95C1C76D93",
+  "registryExists": false,
+  "exitCode": 0
+}

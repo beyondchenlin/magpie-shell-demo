@@ -1,0 +1,22 @@
+{
+  "configSha256": "F82945FF1AE987A08496C370349280EAD5DD2468B9C3E6062BBB5F95C1C76D93",
+  "exitCode": 0,
+  "registeredVersion": "0.2.0-dev.32",
+  "files": [
+    {
+      "sha256": "5D3643985CDC598A1ADE666BC10E8FF2D149650FCF1BAE06CADCB58F52115EFA",
+      "name": "tagma-desktop.exe",
+      "bytes": 20271616
+    },
+    {
+      "sha256": "9D2F13434153FE8934B6CA4E001C4C7B4B26C2CB014D0F1ED95C8C9FC75697B9",
+      "name": "tagma-gateway.exe",
+      "bytes": 10108928
+    },
+    {
+      "sha256": "25400AEBC036BAF5565AE1A26E2D40255017C2A624439E5E790C214A164D2755",
+      "name": "uninstall.exe",
+      "bytes": 65043
+    }
+  ]
+}
