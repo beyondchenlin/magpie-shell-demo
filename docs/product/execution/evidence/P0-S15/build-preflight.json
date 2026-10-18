@@ -1,0 +1,28 @@
+{
+  "utc": "2026-10-18T13:07:32.7900197Z",
+  "space": [
+    {
+      "Name": "C",
+      "Free": 37058936832
+    },
+    {
+      "Name": "D",
+      "Free": 28877819904
+    }
+  ],
+  "plannedPeakGiB": {
+    "target": 2,
+    "delivery": 0.08,
+    "temp": 1
+  },
+  "reuse": [
+    "current workspace",
+    "node_modules",
+    "target",
+    "Cargo cache",
+    "same isolated WebView"
+  ],
+  "evidenceLimitMiB": 8,
+  "cleanup": "No historic evidence or denied cleanup retried; preserve new fixture for recovery audit",
+  "scope": "Incremental debug candidate; no release build, new dependencies or worktree"
+}

@@ -1,0 +1,344 @@
+{
+  "createdUtc": "2026-10-18T13:26:07.0974602Z",
+  "version": "0.2.0-dev.28",
+  "productCommit": "84ae60af3f09627f4c07cb7934ec69f2ac501a35",
+  "files": [
+    {
+      "file": "01-baseline.json",
+      "bytes": 34299,
+      "sha256": "117bfda59334790305aaf127d30a68a872e75adbf177ebb768c6333da36c03e2"
+    },
+    {
+      "file": "02-settings.json",
+      "bytes": 48273,
+      "sha256": "f1c2b3fec70cc0ebdca0dd24852d0e838f5961d99b5e2b6aba0cfb947bec7ae5"
+    },
+    {
+      "file": "03-quit-for-fault.json",
+      "bytes": 14864,
+      "sha256": "a3438ebc582ac8fd14a9c7c9fd02b6df1212737bd307b8021afaf98a78a73ef7"
+    },
+    {
+      "file": "06-missing-first-observe.json",
+      "bytes": 45380,
+      "sha256": "356670db287977943be5663a1118c88fecf690dcd6c4ad9b4c9dcbfb2c9dbc18"
+    },
+    {
+      "file": "07-missing-gateway.json",
+      "bytes": 64529,
+      "sha256": "31ce65fbe313302db0a6860bdc5aad92824ff7b341cab0c103abc571a66ee3c7"
+    },
+    {
+      "file": "07-missing-gateway.png",
+      "bytes": 29261,
+      "sha256": "f4d7e6dfec503c54bb1980e2d7823840eef11af42a2e7a1ad659f4223db771a7"
+    },
+    {
+      "file": "08-missing-provider.json",
+      "bytes": 78889,
+      "sha256": "40a63fefea998581121538f214bd607c1a31512ce0e90dd1dd640bf6e146c5e9"
+    },
+    {
+      "file": "09-after-pattern-refusal.json",
+      "bytes": 78889,
+      "sha256": "96814e17f61b33cd62b9506bc25ddb9d945bdbed647914271f86836f51d1732f"
+    },
+    {
+      "file": "10-disabled-fault-provider.json",
+      "bytes": 80822,
+      "sha256": "0dfd0521262c7a9ae500a1c9478843a31e1f6950befe55551664d2ef7105e41f"
+    },
+    {
+      "file": "11-disabled-gateway.json",
+      "bytes": 66452,
+      "sha256": "a75207a9e423a143568fc302e0dd56783df7b0b8672b22fdfbf24bcab7b606bf"
+    },
+    {
+      "file": "12-start-visible.json",
+      "bytes": 66465,
+      "sha256": "b0c2a4c87da5bf17d4225ec945642d68b24c01937893e23365c2f07bfb9696d7"
+    },
+    {
+      "file": "13-recovered-without-secret-reset.json",
+      "bytes": 66558,
+      "sha256": "649ea2a9cea649349cc667b08761c35b8832f5aeba603ebaef59d8cac49f22c5"
+    },
+    {
+      "file": "14-fresh-gateway.json",
+      "bytes": 66558,
+      "sha256": "d479baeb3913ab41b273367ae5e842f72300ff81e9d968275f67f936349b89a2"
+    },
+    {
+      "file": "15-provider-before-reenable.json",
+      "bytes": 77822,
+      "sha256": "ae2aa0154f1bf6eed3b695070e5aa3f9b81ab87c0d54e309e74758e27fff4f71"
+    },
+    {
+      "file": "16-missing-apply-saved.json",
+      "bytes": 80815,
+      "sha256": "ee7f756b49f1db3934975a0d0a1b817734117187c15a8cf071bfcc87e5899a5d"
+    },
+    {
+      "file": "17-credential-apply-failed.json",
+      "bytes": 70506,
+      "sha256": "416830c4c877945cb5cdb5d4640d99b5552244766c3c808cf11ac74a504b02ae"
+    },
+    {
+      "file": "18-apply-failure-visible.json",
+      "bytes": 70519,
+      "sha256": "3b623bfcf08de8354b158adfccefdd57dbe21664a229c207553a9ef5b4b228af"
+    },
+    {
+      "file": "18-apply-failure-visible.png",
+      "bytes": 30411,
+      "sha256": "3e634c8018f30d4253d0e8ed9e744670ca7be54d464f2fed8b87e01eeb87f3bc"
+    },
+    {
+      "file": "19-settings-for-upgrade.json",
+      "bytes": 50304,
+      "sha256": "592836388bb55da1f5923dbaf08f566db450a760ed3a9b1e620606f0e076bf42"
+    },
+    {
+      "file": "20-dev27-exit-dialog.json",
+      "bytes": 14856,
+      "sha256": "b94b8b277fd3e3f68142300fccd8954b1040e6c31b77869e16d3c9ecad8ac5cc"
+    },
+    {
+      "file": "23-dev28-started.json",
+      "bytes": 45384,
+      "sha256": "9ebfed52c7f0002e5c6ffa17bddba7761adc17e71e538b17c84246f28071ba95"
+    },
+    {
+      "file": "24-dev28-missing-error.json",
+      "bytes": 64564,
+      "sha256": "d82b6b7d43d01a0218916b4b6d41643e027a5f2a7bc17d08761e62efa7364c4f"
+    },
+    {
+      "file": "24-dev28-missing-error.png",
+      "bytes": 30344,
+      "sha256": "eef9c3de996fca18efb9330e6fc86e03b11211eb31469d6c56d7168b23102c5f"
+    },
+    {
+      "file": "25-dev28-provider-status.json",
+      "bytes": 78917,
+      "sha256": "e4e4faac11f788774477d82faed7eef3d6be130c9df99368af066d9576b7b777"
+    },
+    {
+      "file": "25-dev28-provider-status.png",
+      "bytes": 36587,
+      "sha256": "14ece10e9abe0295b8e989e9385435e7b83d1707f3484e3183f51fae9411cfbc"
+    },
+    {
+      "file": "26-settings.json",
+      "bytes": 48272,
+      "sha256": "746e5fa370b09bb91e7d4e06d84d1c485f556adfd7876c6c8c616b12af855b51"
+    },
+    {
+      "file": "27-fresh-settings.json",
+      "bytes": 48272,
+      "sha256": "7360c8d3d4b3531f88fc5bfca8997e1a5962a1b6d2e822fbf7ca81fbd2404ba8"
+    },
+    {
+      "file": "28-text150.json",
+      "bytes": 48353,
+      "sha256": "7ff9614827b24076f6a2d19f0a6bae3d34c26e3de697c0185d418be9408b3b6a"
+    },
+    {
+      "file": "29-zh150-provider.json",
+      "bytes": 78919,
+      "sha256": "a7fa5725435bf7f59026543e68c5ce31bac4c276a79e6c519e51a8f031986ab3"
+    },
+    {
+      "file": "29-zh150-provider.png",
+      "bytes": 36852,
+      "sha256": "e15bfd838067769aaddaa5f69d6881e7b53d40a0518456b9e57ffee23817862f"
+    },
+    {
+      "file": "30-language-settings.json",
+      "bytes": 48353,
+      "sha256": "9d40949140ab647754beaf2795ca0841c0f2315bb97cf1cf87851a52d11bcc96"
+    },
+    {
+      "file": "31-language-options.json",
+      "bytes": 55254,
+      "sha256": "f2c81320689a88889e8995bbf718df833705e285350319893a7e0c111deac88b"
+    },
+    {
+      "file": "32-english150.json",
+      "bytes": 48370,
+      "sha256": "24352083b89edce17a37c34f70da9a1d0a05e2e977bc2fec1397fef1b63040d0"
+    },
+    {
+      "file": "33-english150-provider.json",
+      "bytes": 79057,
+      "sha256": "6ee0df387233e27f12adf8dc607e9dc50e977bcb0358f41c3a4253526ea7f30e"
+    },
+    {
+      "file": "33-english150-provider.png",
+      "bytes": 40498,
+      "sha256": "120d5c5b049dbe303dd5c05661a50411afe00faf19a7d678bbb9d2949d57ac4a"
+    },
+    {
+      "file": "34-english150-error-offscreen.json",
+      "bytes": 64779,
+      "sha256": "1c96372d2600401bab271475f7e53b5b5931cecb4e762c1dfbf1e0dcf9f99787"
+    },
+    {
+      "file": "35-english150-error-visible.json",
+      "bytes": 64797,
+      "sha256": "319f739f97cbed6f3f45e3889fef150b3acb692d31511f0338a22402d1371f88"
+    },
+    {
+      "file": "35-english150-error-visible.png",
+      "bytes": 45028,
+      "sha256": "3a5bc0a446224bfacc18a92727f4ce93ff77a7d724465567b228e8032a17bbe9"
+    },
+    {
+      "file": "36-restore-preferences.json",
+      "bytes": 48388,
+      "sha256": "bb2445d290d2b82f95fb3eb2ee249910ddfe2c20ed17a63d4ff185db943cec99"
+    },
+    {
+      "file": "37-restored100.json",
+      "bytes": 48306,
+      "sha256": "5117e5b29518a936a227e65bff86b2c71bbad7796d6ba23c0c0cbbe0d0b32fd1"
+    },
+    {
+      "file": "38-restore-language-menu.json",
+      "bytes": 55212,
+      "sha256": "d388c7d0a263e3c5c152ab4f660b550cc8c6a6657089ba9dc8d265832343222b"
+    },
+    {
+      "file": "39-restored-zh.json",
+      "bytes": 48293,
+      "sha256": "ad80a78bfe09dd87a3bf773b4bc1f42904a8962774735dde9d6d812b3fe93b3a"
+    },
+    {
+      "file": "40-fault-exit-dialog.json",
+      "bytes": 14859,
+      "sha256": "e5c0f2510f3059d0e5bcfbf6c8b8fdce6d84d3f5dc2c3d3bf9f100c41a21ca50"
+    },
+    {
+      "file": "43-original-data-restored.json",
+      "bytes": 42353,
+      "sha256": "ffe1542cac5a28daf33b1ec23bb2de91e12a039a2329b55eb9d85b103d0a4a2e"
+    },
+    {
+      "file": "44-final-providers.json",
+      "bytes": 103259,
+      "sha256": "f56f7e9289f7188e8b880c8530a8d098fe2ac9332871cb76adc0de23e8bc4b66"
+    },
+    {
+      "file": "actions.jsonl",
+      "bytes": 688761,
+      "sha256": "939634a7c87088de206b59c5594706bff15c0d5a8d7381377443774b8cc9d513"
+    },
+    {
+      "file": "attempts-not-counted.json",
+      "bytes": 920,
+      "sha256": "837329bc44978a478b0ad4aeee3b8b72d4a7ee5f4c8968044e47a605ad4c3a78"
+    },
+    {
+      "file": "build-preflight.json",
+      "bytes": 628,
+      "sha256": "eae54747340bc44084fc8d0637f4a3373880ee6c453ba65cb047087311793f48"
+    },
+    {
+      "file": "build.log",
+      "bytes": 3003,
+      "sha256": "90a388dc1e66ea31903b325c5d97371e1b08e375ea0b56f4f7757dfce1541cf8"
+    },
+    {
+      "file": "candidate.json",
+      "bytes": 881,
+      "sha256": "fa392e228b488c5b33a7d10b6065e62a808234e90274ead7322108ca42469fa6"
+    },
+    {
+      "file": "Control-dev27.ps1",
+      "bytes": 27843,
+      "sha256": "7ea3d2ae300223b1f8af0b25ab9b5f611526cc4570344bf7960325c664606635"
+    },
+    {
+      "file": "Control.ps1",
+      "bytes": 27843,
+      "sha256": "efd8d60e348172a0d7801e8ccfa7c9e0de606a3527d118221fedf3b2e274b3c2"
+    },
+    {
+      "file": "credential-fault-created.json",
+      "bytes": 681,
+      "sha256": "ce0cd258580ba00fadeb338604f7d1b8c6906b64aecdd29e846afe7cc1d94d1a"
+    },
+    {
+      "file": "delivery-manifest.json",
+      "bytes": 2477,
+      "sha256": "49a472246c1929b286c2f735b0bc81eced2450fd57cddd3a649a2e56e4184ec8"
+    },
+    {
+      "file": "environment-after.json",
+      "bytes": 1162,
+      "sha256": "9b1ed7a0700dc20a90d88d15bc7f3879cb27462be15165e12994546667dd6fa5"
+    },
+    {
+      "file": "environment.json",
+      "bytes": 1162,
+      "sha256": "a9249aa363fe289e053f8543124319ad48795305c124c6b3b00815a54a7a2955"
+    },
+    {
+      "file": "EnvironmentProbe.ps1",
+      "bytes": 3084,
+      "sha256": "d019324d72f2185a8e6305223c691df733ddc429ffe78f3c59c14a26bf0707dc"
+    },
+    {
+      "file": "fault-runtime.jsonl",
+      "bytes": 1597,
+      "sha256": "2661a35538dfb71009b07e03167691b3b29b02e0f40249f243d5a89265b2ad06"
+    },
+    {
+      "file": "fault-verification.json",
+      "bytes": 3628,
+      "sha256": "a945b9500961dc11e8bae679423ed8c4588f7ab482b5ddcb5db678d5ce15e4f1"
+    },
+    {
+      "file": "final-check.json",
+      "bytes": 826,
+      "sha256": "b3f5e04519e921482e1483d6566339bc3a3932cbeec46ce4ef46088888c66b8a"
+    },
+    {
+      "file": "final-processes.json",
+      "bytes": 823,
+      "sha256": "ba499318675fe4d6dd1c603dfdda341a98d2c1de61cc48f1a929efa6c344d287"
+    },
+    {
+      "file": "lint.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "owner.txt",
+      "bytes": 23,
+      "sha256": "8da38e4f807a956e79f28c655839131369315cfab5f946ba2e5f74f9e48df2e3"
+    },
+    {
+      "file": "PrepareCredentialFault.mjs",
+      "bytes": 3076,
+      "sha256": "d7e288ef97f14244c4f5a3a64fb9f2dcb0fcee7a01dbd443eb4a08909f479e6f"
+    },
+    {
+      "file": "Run.ps1",
+      "bytes": 2054,
+      "sha256": "6e31da59f30b20dcf78bc685eed46197c2e93e1533e74bd5a2868a569b32cf69"
+    },
+    {
+      "file": "source-frozen.json",
+      "bytes": 54481,
+      "sha256": "4a8a00e22c6a5197f44945006d0f0eab7372825c31f484846bf3bd3cd05e8a39"
+    },
+    {
+      "file": "VerifyFault.mjs",
+      "bytes": 2778,
+      "sha256": "9bb7f2c7d5a864f0d5c21cd4b5740692b18eb76a3619f7e24b37bb18a1309c00"
+    }
+  ],
+  "totalBytes": 3287473.0,
+  "scope": "Native UIA/PrintWindow plus real missing OS credential API; not locked-facility, OS-setting-change, physical keyboard, or release acceptance"
+}

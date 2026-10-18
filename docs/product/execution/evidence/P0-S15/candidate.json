@@ -1,0 +1,22 @@
+{
+  "utc": "2026-10-18T13:11:05.9372518Z",
+  "verifiedSourceInputs": 310,
+  "version": "0.2.0-dev.28",
+  "hashes": [
+    {
+      "path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\candidate-dev28\\tagma-desktop.exe",
+      "bytes": 20270080,
+      "sha256": "C606B179F3D60915507049AC3D077869C2FBC205B05AE322A839B59008D0A629"
+    },
+    {
+      "path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\candidate-dev28\\tagma-gateway.exe",
+      "bytes": 10109952,
+      "sha256": "115C39E4320CAF2FD2B5D38FE9FC1DD5CA655AA40B921630DF705CA93B2AFA02"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai-deliveries\\0.2.0-dev.28\\Tagma_0.2.0-dev.28_x64-setup.exe",
+      "bytes": 6629122,
+      "sha256": "2C180CA6CA9D6475393ADB74CA76FDB513A5FB1EA5482E4618AB7B91B44DB842"
+    }
+  ]
+}

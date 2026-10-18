@@ -1,0 +1,26 @@
+{
+  "utc": "2026-10-18T13:26:06.4825674Z",
+  "attempts": [
+    {
+      "action": "prepare by raw config file copy",
+      "countedAsPass": false,
+      "result": "Stopped before creating fixture because source WAL existed; replaced preparation with read-only SQLite online backup"
+    },
+    {
+      "action": "Invoke provider toggle",
+      "countedAsPass": false,
+      "result": "Unsupported Pattern; no action; fresh UIA showed TogglePattern, then Toggle used"
+    },
+    {
+      "action": "Invoke Providers after build",
+      "countedAsPass": false,
+      "result": "Observation expired; no action; reobserved then invoked"
+    },
+    {
+      "action": "Invoke 150% segment",
+      "countedAsPass": false,
+      "result": "Unsupported Pattern; no action; fresh UIA showed TogglePattern, then Toggle used"
+    }
+  ],
+  "channel": "No sky reconnection; no protected foreign window input"
+}

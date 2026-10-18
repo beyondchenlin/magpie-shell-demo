@@ -1,0 +1,44 @@
+{
+  "utc": "2026-10-18T13:02:07.2434955Z",
+  "animationPreferenceReadOnly": true,
+  "clientAreaAnimationEnabled": true,
+  "preferenceChanged": false,
+  "credential": {
+    "reference": "provider/f637ade1-80d4-44e6-849f-d0a420276e3f",
+    "win32Error": 1168,
+    "expected": "ERROR_NOT_FOUND",
+    "secretRead": false,
+    "secretWritten": false,
+    "facilityLocked": false
+  },
+  "hyperV": {
+    "vms": [],
+    "queryError": "你没有完成此任务所需的权限。请与计算机“DESKTOP-MK0M4SP”授权策略的管理员联系。",
+    "changed": false
+  },
+  "windowsSandboxPresent": false,
+  "signingCertificates": [],
+  "installerSignature": "NotSigned",
+  "space": [
+    {
+      "Name": "C",
+      "Free": 37060251648
+    },
+    {
+      "Name": "D",
+      "Free": 28960972800
+    }
+  ],
+  "schedules": [
+    {
+      "name": "tagma-prd",
+      "status": "status = \"PAUSED\""
+    },
+    {
+      "name": "magpie-cis",
+      "status": "status = \"PAUSED\""
+    }
+  ],
+  "runBinding": "PAUSED",
+  "scope": "Read-only local environment inventory. No settings, services, credentials or automations modified."
+}

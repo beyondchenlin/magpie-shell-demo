@@ -1,0 +1,34 @@
+{
+  "utc": "2026-10-18T13:26:06.4856454Z",
+  "productCommit": "84ae60af3f09627f4c07cb7934ec69f2ac501a35",
+  "verifiedInputs": 310,
+  "signature": "NotSigned",
+  "retainedMain": [
+    52488,
+    16416
+  ],
+  "normalInstalledPids": [
+    22064,
+    28752
+  ],
+  "originalDataRevision": 12,
+  "sourceFixtureUnchanged": true,
+  "schedules": "tagma-prd,magpie-cis,RUN-BINDING PAUSED",
+  "worktrees": [
+    "worktree D:/demo1/tagmaai",
+    "HEAD 84ae60af3f09627f4c07cb7934ec69f2ac501a35",
+    "branch refs/heads/codex/tagma-p0",
+    ""
+  ],
+  "space": [
+    {
+      "Name": "C",
+      "Free": 37031628800
+    },
+    {
+      "Name": "D",
+      "Free": 28918341632
+    }
+  ],
+  "cleanup": "No deletions; retained minimum reproduction and bounded evidence. Historical rejected cleanup not retried."
+}

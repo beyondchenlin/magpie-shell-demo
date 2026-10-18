@@ -1,0 +1,26 @@
+[
+  {
+    "pid": 22064,
+    "path": "C:\\Users\\ai\\AppData\\Local\\Tagma\\tagma-desktop.exe",
+    "started": "2026-10-18T10:20:20.7275193Z",
+    "parent": 41544
+  },
+  {
+    "pid": 28752,
+    "path": "C:\\Users\\ai\\AppData\\Local\\Tagma\\tagma-gateway.exe",
+    "started": "2026-10-18T10:20:21.7088097Z",
+    "parent": 22064
+  },
+  {
+    "pid": 52488,
+    "path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\candidate-dev28\\tagma-desktop.exe",
+    "started": "2026-10-18T13:20:17.0077533Z",
+    "parent": 31696
+  },
+  {
+    "pid": 16416,
+    "path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\candidate-dev28\\tagma-gateway.exe",
+    "started": "2026-10-18T13:20:17.3189586Z",
+    "parent": 52488
+  }
+]

@@ -1,0 +1,15 @@
+{"unix_seconds":1792328564,"component":"desktop","event":"starting","code":null,"revision":null}
+{"unix_seconds":1792328564,"component":"desktop","event":"starting","code":null,"revision":null}
+{"unix_seconds":1792328564,"component":"gateway","event":"start_failed","code":"CREDENTIAL_STORE_UNAVAILABLE","revision":null}
+{"unix_seconds":1792328564,"component":"desktop","event":"start_failed","code":"CREDENTIAL_STORE_UNAVAILABLE","revision":null}
+{"unix_seconds":1792328772,"component":"desktop","event":"starting","code":null,"revision":null}
+{"unix_seconds":1792328772,"component":"gateway","event":"ready","code":null,"revision":3}
+{"unix_seconds":1792328772,"component":"desktop","event":"ready","code":null,"revision":3}
+{"unix_seconds":1792329028,"component":"gateway","event":"apply_failed","code":"CREDENTIAL_STORE_UNAVAILABLE","revision":null}
+{"unix_seconds":1792329092,"component":"desktop","event":"stop_requested","code":null,"revision":null}
+{"unix_seconds":1792329092,"component":"gateway","event":"stopped","code":null,"revision":null}
+{"unix_seconds":1792329092,"component":"desktop","event":"stopped","code":null,"revision":null}
+{"unix_seconds":1792329108,"component":"desktop","event":"starting","code":null,"revision":null}
+{"unix_seconds":1792329108,"component":"desktop","event":"starting","code":null,"revision":null}
+{"unix_seconds":1792329109,"component":"gateway","event":"start_failed","code":"CREDENTIAL_STORE_UNAVAILABLE","revision":null}
+{"unix_seconds":1792329109,"component":"desktop","event":"start_failed","code":"CREDENTIAL_STORE_UNAVAILABLE","revision":null}

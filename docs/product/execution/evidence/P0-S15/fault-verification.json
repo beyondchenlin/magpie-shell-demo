@@ -1,0 +1,176 @@
+{
+  "utc": "2026-10-18T13:23:00.485Z",
+  "revisions": [
+    {
+      "revision": 2,
+      "enabled": true,
+      "credentialReferenceUnchanged": true
+    },
+    {
+      "revision": 3,
+      "enabled": false,
+      "credentialReferenceUnchanged": true
+    },
+    {
+      "revision": 4,
+      "enabled": true,
+      "credentialReferenceUnchanged": true
+    }
+  ],
+  "sourceFixtureUnchanged": true,
+  "noCredentialJournal": true,
+  "events": [
+    {
+      "unix_seconds": 1792328564,
+      "component": "desktop",
+      "event": "starting",
+      "code": null,
+      "revision": null
+    },
+    {
+      "unix_seconds": 1792328564,
+      "component": "desktop",
+      "event": "starting",
+      "code": null,
+      "revision": null
+    },
+    {
+      "unix_seconds": 1792328564,
+      "component": "gateway",
+      "event": "start_failed",
+      "code": "CREDENTIAL_STORE_UNAVAILABLE",
+      "revision": null
+    },
+    {
+      "unix_seconds": 1792328564,
+      "component": "desktop",
+      "event": "start_failed",
+      "code": "CREDENTIAL_STORE_UNAVAILABLE",
+      "revision": null
+    },
+    {
+      "unix_seconds": 1792328772,
+      "component": "desktop",
+      "event": "starting",
+      "code": null,
+      "revision": null
+    },
+    {
+      "unix_seconds": 1792328772,
+      "component": "gateway",
+      "event": "ready",
+      "code": null,
+      "revision": 3
+    },
+    {
+      "unix_seconds": 1792328772,
+      "component": "desktop",
+      "event": "ready",
+      "code": null,
+      "revision": 3
+    },
+    {
+      "unix_seconds": 1792329028,
+      "component": "gateway",
+      "event": "apply_failed",
+      "code": "CREDENTIAL_STORE_UNAVAILABLE",
+      "revision": null
+    },
+    {
+      "unix_seconds": 1792329092,
+      "component": "desktop",
+      "event": "stop_requested",
+      "code": null,
+      "revision": null
+    },
+    {
+      "unix_seconds": 1792329092,
+      "component": "gateway",
+      "event": "stopped",
+      "code": null,
+      "revision": null
+    },
+    {
+      "unix_seconds": 1792329092,
+      "component": "desktop",
+      "event": "stopped",
+      "code": null,
+      "revision": null
+    },
+    {
+      "unix_seconds": 1792329108,
+      "component": "desktop",
+      "event": "starting",
+      "code": null,
+      "revision": null
+    },
+    {
+      "unix_seconds": 1792329108,
+      "component": "desktop",
+      "event": "starting",
+      "code": null,
+      "revision": null
+    },
+    {
+      "unix_seconds": 1792329109,
+      "component": "gateway",
+      "event": "start_failed",
+      "code": "CREDENTIAL_STORE_UNAVAILABLE",
+      "revision": null
+    },
+    {
+      "unix_seconds": 1792329109,
+      "component": "desktop",
+      "event": "start_failed",
+      "code": "CREDENTIAL_STORE_UNAVAILABLE",
+      "revision": null
+    }
+  ],
+  "files": [
+    {
+      "name": "config.sqlite3",
+      "bytes": 61440
+    },
+    {
+      "name": "config.sqlite3-shm",
+      "bytes": 32768
+    },
+    {
+      "name": "config.sqlite3-wal",
+      "bytes": 16512
+    },
+    {
+      "name": "gateway.lock",
+      "bytes": 0
+    },
+    {
+      "name": "maintenance.lock",
+      "bytes": 0
+    },
+    {
+      "name": "operation.lock",
+      "bytes": 0
+    },
+    {
+      "name": "owner.txt",
+      "bytes": 34
+    },
+    {
+      "name": "usage.lock",
+      "bytes": 0
+    },
+    {
+      "name": "usage.sqlite3",
+      "bytes": 36864
+    },
+    {
+      "name": "tagma.0.jsonl",
+      "bytes": 1597
+    },
+    {
+      "name": "writer.lock",
+      "bytes": 0
+    }
+  ],
+  "scope": "Synthetic missing reference plus real native UI and real Windows Credential Manager; no locked-facility claim"
+}
