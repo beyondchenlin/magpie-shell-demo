@@ -1,0 +1,14 @@
+[
+  {
+    "name": "名称",
+    "value": "P0 Native Beta的"
+  },
+  {
+    "name": "Base URL（包含 /v1）",
+    "value": "http://127.0.0.1:9/v1"
+  },
+  {
+    "name": "模型 ID（每行一个）",
+    "value": "p0-beta-model"
+  }
+]

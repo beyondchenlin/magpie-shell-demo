@@ -1,0 +1,21 @@
+{
+  "date": "2026-10-18",
+  "nativeChannel": "PrintWindow + UI Automation + SendInput; tray popup labels/rectangles read through Win32 menu API",
+  "scope": "owned isolated Tagma and its exact shell tray icon",
+  "limitations": [
+    "Tray ID1 initial lookup failed; source proved builder consumes1 and Windows tray uses2. ID2 initially S_FALSE in overflow, not treated as clickable. No reconnect.",
+    "Two offscreen UIA Cancel invocations did not establish closed editor; one physical Escape kept Name focus. Assertions stopped; preserved trace and non-sensitive unexpected draft. Visible guarded physical Cancel succeeded.",
+    "One later tray pointer hit did not match Explorer; action was stopped, ownership exit used observed native Settings Quit.",
+    "Observed draft P0 Native Beta的 was not written by this script; origin unconfirmed; snapshot preserved before fixture cancellation.",
+    "UIA source/SSR/browser tests do not establish native success; no DOM/CDP attachment to Tagma."
+  ],
+  "motionSignal": {
+    "osClientAnimations": true,
+    "dev21Flag": "--force-prefers-reduced-motion",
+    "source": "observed Win32_Process command-line boolean in tool output; full command line not archived",
+    "dev22Evidence": "12-dev22-media-flag-process.json",
+    "dev21WebViewPid": 31024,
+    "osPreferenceNotChanged": true
+  },
+  "remaining": "See P0-S13-LIFECYCLE-MOTION.md; no full P0 release approval"
+}

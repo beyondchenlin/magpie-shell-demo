@@ -1,0 +1,10 @@
+{
+  "utc": "2026-10-18T09:32:08.8760440Z",
+  "host": 27972,
+  "hostStarted": "2026-10-18T09:24:35.6563800Z",
+  "gateway": 48512,
+  "gatewayStarted": "2026-10-18T09:31:14.1568930Z",
+  "gatewayPath": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\candidate-dev21\\tagma-gateway.exe",
+  "gatewaySurvived": false,
+  "listener": []
+}

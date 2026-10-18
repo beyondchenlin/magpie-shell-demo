@@ -1,0 +1,7 @@
+{
+  "utc": "2026-10-18T09:38:18.845Z",
+  "pid": 42856,
+  "gracefulStop": true,
+  "exitCode": 0,
+  "kind": "fixture owner cleanup, not native UI acceptance"
+}

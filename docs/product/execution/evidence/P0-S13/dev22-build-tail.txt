@@ -1,0 +1,13 @@
+warning: failed to parse serde attribute
+  |
+  | deny_unknown_fields
+  |
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+   Compiling tagma-runtime v0.2.0-dev.22 (D:\demo1\tagmaai\crates\tagma-runtime)
+    Finished `dev` profile [unoptimized] target(s) in 20.10s
+       Built application at: D:\demo1\tagmaai\target\debug\tagma-desktop.exe
+        Info Patching D:\demo1\tagmaai\target\debug\tagma-desktop.exe with bundle type information: nsis
+        Info Target: x64
+     Running makensis to produce D:\demo1\tagmaai\target\debug\bundle\nsis\Tagma_0.2.0-dev.22_x64-setup.exe
+    Finished 1 bundle at:
+        D:\demo1\tagmaai\target\debug\bundle\nsis\Tagma_0.2.0-dev.22_x64-setup.exe (6.32 MiB)

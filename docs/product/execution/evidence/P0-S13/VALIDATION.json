@@ -1,0 +1,25 @@
+{
+  "kind": "separate non-native validation",
+  "dev22": {
+    "typescript": "passed",
+    "oxlintChangedTsx": "passed",
+    "chromeGuard": "passed",
+    "reactReview": "context scope, media change interrupt, effect deps and listener cleanup reviewed",
+    "browser": "5 passed; see motion-browser-result.json",
+    "cisGuard": "passed"
+  },
+  "dev23": {
+    "copyLint": "passed",
+    "build": "Tauri debug NSIS includes TypeScript/Vite; passed"
+  },
+  "frozenInputs": {
+    "afterBuild": "all matched",
+    "dev22": 306,
+    "dev23": 306
+  },
+  "notRerun": [
+    "historical30source tests",
+    "full Rust matrix",
+    "passed drag/keyboard/CRUD matrix"
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "utc": "2026-10-18T09:57:21.1252219Z",
+  "before": [
+    {
+      "freeBytes": 38445404160,
+      "name": "C"
+    },
+    {
+      "freeBytes": 31580033024,
+      "name": "D"
+    }
+  ],
+  "after": [
+    {
+      "freeBytes": 38457778176,
+      "name": "C"
+    },
+    {
+      "freeBytes": 31577444352,
+      "name": "D"
+    }
+  ],
+  "results": [
+    {
+      "path": "D:\\demo1\\tagmaai\\.cache\\p0-s13-lifecycle\\motion-browser-profile",
+      "purpose": "p0-s13-synthetic-motion-only",
+      "files": 68,
+      "logicalBytes": 3574492.0,
+      "deduplicatedAllocatedFileBytes": 3600560.0,
+      "safety": "exact owned path; no reparse points, process references, writes in last60s or file locks; hardlinks deduplicated and none external",
+      "removed": true
+    },
+    {
+      "path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\webview-second-p0s13",
+      "purpose": "p0-s13-second-native-editor",
+      "files": 198,
+      "logicalBytes": 12268227.0,
+      "deduplicatedAllocatedFileBytes": 12331144.0,
+      "safety": "exact owned path; no reparse points, process references, writes in last60s or file locks; hardlinks deduplicated and none external",
+      "removed": true
+    }
+  ],
+  "note": "File allocation deduplicates volume/file ID; directory metadata excluded. Whole disk delta is not attributed to this task."
+}

@@ -1,0 +1,212 @@
+[
+  {
+    "candidate": "06-dev21-motion",
+    "frame": 0,
+    "atMs": 1.4708,
+    "whiteLeft": 237.0,
+    "whiteRight": 286.0
+  },
+  {
+    "candidate": "06-dev21-motion",
+    "frame": 1,
+    "atMs": 0.0476,
+    "whiteLeft": 237.0,
+    "whiteRight": 286.0
+  },
+  {
+    "candidate": "06-dev21-motion",
+    "frame": 2,
+    "atMs": 51.9591,
+    "whiteLeft": null,
+    "whiteRight": null
+  },
+  {
+    "candidate": "06-dev21-motion",
+    "frame": 3,
+    "atMs": 99.0792,
+    "whiteLeft": 278.0,
+    "whiteRight": 339.0
+  },
+  {
+    "candidate": "06-dev21-motion",
+    "frame": 4,
+    "atMs": 145.3416,
+    "whiteLeft": 284.0,
+    "whiteRight": 347.0
+  },
+  {
+    "candidate": "06-dev21-motion",
+    "frame": 5,
+    "atMs": 191.7965,
+    "whiteLeft": 289.0,
+    "whiteRight": 354.0
+  },
+  {
+    "candidate": "06-dev21-motion",
+    "frame": 6,
+    "atMs": 239.3058,
+    "whiteLeft": 290.0,
+    "whiteRight": 355.0
+  },
+  {
+    "candidate": "06-dev21-motion",
+    "frame": 7,
+    "atMs": 285.786,
+    "whiteLeft": 291.0,
+    "whiteRight": 356.0
+  },
+  {
+    "candidate": "06-dev21-motion",
+    "frame": 8,
+    "atMs": 332.6813,
+    "whiteLeft": 291.0,
+    "whiteRight": 356.0
+  },
+  {
+    "candidate": "06-dev21-motion",
+    "frame": 9,
+    "atMs": 379.8034,
+    "whiteLeft": 291.0,
+    "whiteRight": 356.0
+  },
+  {
+    "candidate": "06-dev21-motion",
+    "frame": 10,
+    "atMs": 411.3415,
+    "whiteLeft": 291.0,
+    "whiteRight": 356.0
+  },
+  {
+    "candidate": "06-dev21-motion",
+    "frame": 11,
+    "atMs": 457.461,
+    "whiteLeft": 291.0,
+    "whiteRight": 356.0
+  },
+  {
+    "candidate": "06-dev21-motion",
+    "frame": 12,
+    "atMs": 504.22900000000004,
+    "whiteLeft": 291.0,
+    "whiteRight": 356.0
+  },
+  {
+    "candidate": "06-dev21-motion",
+    "frame": 13,
+    "atMs": 551.1267,
+    "whiteLeft": 291.0,
+    "whiteRight": 356.0
+  },
+  {
+    "candidate": "06-dev21-motion",
+    "frame": 14,
+    "atMs": 597.5565,
+    "whiteLeft": 291.0,
+    "whiteRight": 356.0
+  },
+  {
+    "candidate": "12-dev22-motion",
+    "frame": 0,
+    "atMs": 1.3451,
+    "whiteLeft": 237.0,
+    "whiteRight": 286.0
+  },
+  {
+    "candidate": "12-dev22-motion",
+    "frame": 1,
+    "atMs": 0.0207,
+    "whiteLeft": 237.0,
+    "whiteRight": 286.0
+  },
+  {
+    "candidate": "12-dev22-motion",
+    "frame": 2,
+    "atMs": 45.7787,
+    "whiteLeft": 291.0,
+    "whiteRight": 356.0
+  },
+  {
+    "candidate": "12-dev22-motion",
+    "frame": 3,
+    "atMs": 77.2386,
+    "whiteLeft": 291.0,
+    "whiteRight": 356.0
+  },
+  {
+    "candidate": "12-dev22-motion",
+    "frame": 4,
+    "atMs": 109.05470000000001,
+    "whiteLeft": 291.0,
+    "whiteRight": 356.0
+  },
+  {
+    "candidate": "12-dev22-motion",
+    "frame": 5,
+    "atMs": 139.35750000000002,
+    "whiteLeft": 291.0,
+    "whiteRight": 356.0
+  },
+  {
+    "candidate": "12-dev22-motion",
+    "frame": 6,
+    "atMs": 185.785,
+    "whiteLeft": 291.0,
+    "whiteRight": 356.0
+  },
+  {
+    "candidate": "12-dev22-motion",
+    "frame": 7,
+    "atMs": 232.3514,
+    "whiteLeft": 291.0,
+    "whiteRight": 356.0
+  },
+  {
+    "candidate": "12-dev22-motion",
+    "frame": 8,
+    "atMs": 279.18780000000004,
+    "whiteLeft": 291.0,
+    "whiteRight": 356.0
+  },
+  {
+    "candidate": "12-dev22-motion",
+    "frame": 9,
+    "atMs": 309.64340000000004,
+    "whiteLeft": 291.0,
+    "whiteRight": 356.0
+  },
+  {
+    "candidate": "12-dev22-motion",
+    "frame": 10,
+    "atMs": 340.95480000000003,
+    "whiteLeft": 291.0,
+    "whiteRight": 356.0
+  },
+  {
+    "candidate": "12-dev22-motion",
+    "frame": 11,
+    "atMs": 387.14730000000003,
+    "whiteLeft": 291.0,
+    "whiteRight": 356.0
+  },
+  {
+    "candidate": "12-dev22-motion",
+    "frame": 12,
+    "atMs": 432.59360000000004,
+    "whiteLeft": 291.0,
+    "whiteRight": 356.0
+  },
+  {
+    "candidate": "12-dev22-motion",
+    "frame": 13,
+    "atMs": 493.90200000000004,
+    "whiteLeft": 291.0,
+    "whiteRight": 356.0
+  },
+  {
+    "candidate": "12-dev22-motion",
+    "frame": 14,
+    "atMs": 540.3177000000001,
+    "whiteLeft": 291.0,
+    "whiteRight": 356.0
+  }
+]

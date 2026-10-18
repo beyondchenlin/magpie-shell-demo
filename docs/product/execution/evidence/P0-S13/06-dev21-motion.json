@@ -1,0 +1,113 @@
+﻿{
+    "utc":  "2026-10-18T09:25:36.2477831Z",
+    "pid":  27972,
+    "name":  "供应商",
+    "kind":  "native-PrintWindow-after-SendInput",
+    "trace":  [
+                  {
+                      "before":  true,
+                      "atMs":  1.4708,
+                      "file":  "06-dev21-motion-00.png",
+                      "endMs":  31.8856,
+                      "frame":  0
+                  },
+                  {
+                      "before":  false,
+                      "atMs":  0.0476,
+                      "file":  "06-dev21-motion-01.png",
+                      "endMs":  22.5268,
+                      "frame":  1
+                  },
+                  {
+                      "before":  false,
+                      "atMs":  51.9591,
+                      "file":  "06-dev21-motion-02.png",
+                      "endMs":  71.964,
+                      "frame":  2
+                  },
+                  {
+                      "before":  false,
+                      "atMs":  99.0792,
+                      "file":  "06-dev21-motion-03.png",
+                      "endMs":  122.2626,
+                      "frame":  3
+                  },
+                  {
+                      "before":  false,
+                      "atMs":  145.3416,
+                      "file":  "06-dev21-motion-04.png",
+                      "endMs":  155.0214,
+                      "frame":  4
+                  },
+                  {
+                      "before":  false,
+                      "atMs":  191.7965,
+                      "file":  "06-dev21-motion-05.png",
+                      "endMs":  204.0445,
+                      "frame":  5
+                  },
+                  {
+                      "before":  false,
+                      "atMs":  239.3058,
+                      "file":  "06-dev21-motion-06.png",
+                      "endMs":  257.6042,
+                      "frame":  6
+                  },
+                  {
+                      "before":  false,
+                      "atMs":  285.786,
+                      "file":  "06-dev21-motion-07.png",
+                      "endMs":  304.7631,
+                      "frame":  7
+                  },
+                  {
+                      "before":  false,
+                      "atMs":  332.6813,
+                      "file":  "06-dev21-motion-08.png",
+                      "endMs":  355.4667,
+                      "frame":  8
+                  },
+                  {
+                      "before":  false,
+                      "atMs":  379.8034,
+                      "file":  "06-dev21-motion-09.png",
+                      "endMs":  387.5405,
+                      "frame":  9
+                  },
+                  {
+                      "before":  false,
+                      "atMs":  411.3415,
+                      "file":  "06-dev21-motion-10.png",
+                      "endMs":  421.2935,
+                      "frame":  10
+                  },
+                  {
+                      "before":  false,
+                      "atMs":  457.461,
+                      "file":  "06-dev21-motion-11.png",
+                      "endMs":  471.5333,
+                      "frame":  11
+                  },
+                  {
+                      "before":  false,
+                      "atMs":  504.22900000000004,
+                      "file":  "06-dev21-motion-12.png",
+                      "endMs":  521.6553,
+                      "frame":  12
+                  },
+                  {
+                      "before":  false,
+                      "atMs":  551.1267,
+                      "file":  "06-dev21-motion-13.png",
+                      "endMs":  572.7066,
+                      "frame":  13
+                  },
+                  {
+                      "before":  false,
+                      "atMs":  597.5565,
+                      "file":  "06-dev21-motion-14.png",
+                      "endMs":  621.2786,
+                      "frame":  14
+                  }
+              ]
+}

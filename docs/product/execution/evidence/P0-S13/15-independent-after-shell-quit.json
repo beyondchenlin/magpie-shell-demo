@@ -1,0 +1,13 @@
+{
+  "utc": "2026-10-18T09:38:17.7708175Z",
+  "exitEntry": "native Settings Quit Tagma",
+  "hostExited": true,
+  "gatewaySurvived": true,
+  "gateway": 42856,
+  "listener": [
+    {
+      "LocalPort": 49697,
+      "OwningProcess": 42856
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "utc": "2026-10-18T09:35:55.691Z",
+  "pid": 42856,
+  "parent": 32068,
+  "instance": "8b80b60e-48ac-412e-9ea7-b352c3da3a53",
+  "port": 49697,
+  "consoleAttached": false,
+  "state": "running",
+  "effective": 10
+}

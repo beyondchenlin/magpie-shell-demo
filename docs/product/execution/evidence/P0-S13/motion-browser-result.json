@@ -1,0 +1,37 @@
+{
+  "kind": "synthetic-browser-not-native",
+  "results": [
+    {
+      "case": "normal motion preserved",
+      "animations": 1,
+      "x": 28.626375198364258,
+      "targetX": 44.109375,
+      "width": 107.921875,
+      "targetWidth": 145.546875
+    },
+    {
+      "case": "mid-glide preference change snaps to selected target",
+      "animations": 0,
+      "x": 44,
+      "targetX": 44.109375,
+      "width": 146,
+      "targetWidth": 145.546875
+    },
+    {
+      "case": "reduced motion subsequent selection has no WAAPI",
+      "animations": 0,
+      "x": 2,
+      "targetX": 2,
+      "width": 42,
+      "targetWidth": 42.109375
+    },
+    {
+      "case": "pinned CIS reference behavior preserved",
+      "animations": 1
+    },
+    {
+      "case": "media subscription removed on unmount",
+      "listeners": 0
+    }
+  ]
+}

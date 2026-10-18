@@ -1,0 +1,113 @@
+﻿{
+    "utc":  "2026-10-18T09:33:41.4109436Z",
+    "pid":  46640,
+    "name":  "供应商",
+    "kind":  "native-PrintWindow-after-SendInput",
+    "trace":  [
+                  {
+                      "before":  true,
+                      "atMs":  1.3451,
+                      "file":  "12-dev22-motion-00.png",
+                      "endMs":  32.9968,
+                      "frame":  0
+                  },
+                  {
+                      "before":  false,
+                      "atMs":  0.0207,
+                      "file":  "12-dev22-motion-01.png",
+                      "endMs":  19.6125,
+                      "frame":  1
+                  },
+                  {
+                      "before":  false,
+                      "atMs":  45.7787,
+                      "file":  "12-dev22-motion-02.png",
+                      "endMs":  53.4421,
+                      "frame":  2
+                  },
+                  {
+                      "before":  false,
+                      "atMs":  77.2386,
+                      "file":  "12-dev22-motion-03.png",
+                      "endMs":  86.5548,
+                      "frame":  3
+                  },
+                  {
+                      "before":  false,
+                      "atMs":  109.05470000000001,
+                      "file":  "12-dev22-motion-04.png",
+                      "endMs":  119.0824,
+                      "frame":  4
+                  },
+                  {
+                      "before":  false,
+                      "atMs":  139.35750000000002,
+                      "file":  "12-dev22-motion-05.png",
+                      "endMs":  153.09050000000002,
+                      "frame":  5
+                  },
+                  {
+                      "before":  false,
+                      "atMs":  185.785,
+                      "file":  "12-dev22-motion-06.png",
+                      "endMs":  205.1199,
+                      "frame":  6
+                  },
+                  {
+                      "before":  false,
+                      "atMs":  232.3514,
+                      "file":  "12-dev22-motion-07.png",
+                      "endMs":  255.33810000000003,
+                      "frame":  7
+                  },
+                  {
+                      "before":  false,
+                      "atMs":  279.18780000000004,
+                      "file":  "12-dev22-motion-08.png",
+                      "endMs":  287.7697,
+                      "frame":  8
+                  },
+                  {
+                      "before":  false,
+                      "atMs":  309.64340000000004,
+                      "file":  "12-dev22-motion-09.png",
+                      "endMs":  320.44010000000003,
+                      "frame":  9
+                  },
+                  {
+                      "before":  false,
+                      "atMs":  340.95480000000003,
+                      "file":  "12-dev22-motion-10.png",
+                      "endMs":  354.55870000000004,
+                      "frame":  10
+                  },
+                  {
+                      "before":  false,
+                      "atMs":  387.14730000000003,
+                      "file":  "12-dev22-motion-11.png",
+                      "endMs":  406.29510000000005,
+                      "frame":  11
+                  },
+                  {
+                      "before":  false,
+                      "atMs":  432.59360000000004,
+                      "file":  "12-dev22-motion-12.png",
+                      "endMs":  454.7354,
+                      "frame":  12
+                  },
+                  {
+                      "before":  false,
+                      "atMs":  493.90200000000004,
+                      "file":  "12-dev22-motion-13.png",
+                      "endMs":  503.92870000000005,
+                      "frame":  13
+                  },
+                  {
+                      "before":  false,
+                      "atMs":  540.31770000000006,
+                      "file":  "12-dev22-motion-14.png",
+                      "endMs":  556.6485,
+                      "frame":  14
+                  }
+              ]
+}

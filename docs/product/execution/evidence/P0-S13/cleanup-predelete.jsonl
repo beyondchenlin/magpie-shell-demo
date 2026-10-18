@@ -1,0 +1,18 @@
+{
+  "path": "D:\\demo1\\tagmaai\\.cache\\p0-s13-lifecycle\\motion-browser-profile",
+  "purpose": "p0-s13-synthetic-motion-only",
+  "files": 68,
+  "logicalBytes": 3574492.0,
+  "deduplicatedAllocatedFileBytes": 3600560.0,
+  "safety": "exact owned path; no reparse points, process references, writes in last60s or file locks; hardlinks deduplicated and none external",
+  "removed": false
+}
+{
+  "path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\webview-second-p0s13",
+  "purpose": "p0-s13-second-native-editor",
+  "files": 198,
+  "logicalBytes": 12268227.0,
+  "deduplicatedAllocatedFileBytes": 12331144.0,
+  "safety": "exact owned path; no reparse points, process references, writes in last60s or file locks; hardlinks deduplicated and none external",
+  "removed": false
+}

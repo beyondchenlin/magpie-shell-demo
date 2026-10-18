@@ -1,0 +1,12 @@
+{
+  "utc": "2026-10-18T09:34:46.5178439Z",
+  "holderPid": 46804,
+  "holderAlive": true,
+  "listener": [
+    {
+      "LocalPort": 49697,
+      "OwningProcess": 46804
+    }
+  ],
+  "fixtureGatewayCount": 0
+}

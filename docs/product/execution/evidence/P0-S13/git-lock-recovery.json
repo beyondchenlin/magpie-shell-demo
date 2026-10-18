@@ -1,0 +1,8 @@
+{
+  "utc": "2026-10-18T09:44:47.2712104Z",
+  "source": "D:\\demo1\\tagmaai\\.git\\index.lock",
+  "destination": "D:\\demo1\\tagmaai\\.cache\\p0-s13-lifecycle\\stale-index.lock",
+  "bytes": 0,
+  "lastWriteUtc": "2026-10-18T09:29:25.6520365Z",
+  "reason": "zero byte lock >10min, no git processes, exclusive file-open succeeded; preserve without deleting"
+}

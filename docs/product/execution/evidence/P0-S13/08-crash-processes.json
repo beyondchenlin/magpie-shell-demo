@@ -1,0 +1,38 @@
+[
+  {
+    "round": 1,
+    "host": 27972,
+    "killedPid": 30708,
+    "childStarted": "2026-10-18T09:24:36.0776750Z",
+    "utc": "2026-10-18T09:30:11.7955118Z",
+    "restartedPid": 47628,
+    "observedRestartMs": 1646.1705
+  },
+  {
+    "round": 2,
+    "host": 27972,
+    "killedPid": 47628,
+    "childStarted": "2026-10-18T09:30:13.1590860Z",
+    "utc": "2026-10-18T09:30:14.9590832Z",
+    "restartedPid": 36452,
+    "observedRestartMs": 2618.1449
+  },
+  {
+    "round": 3,
+    "host": 27972,
+    "killedPid": 36452,
+    "childStarted": "2026-10-18T09:30:17.1651450Z",
+    "utc": "2026-10-18T09:30:19.0878095Z",
+    "restartedPid": 1008,
+    "observedRestartMs": 4247.8799
+  },
+  {
+    "round": 4,
+    "host": 27972,
+    "killedPid": 1008,
+    "childStarted": "2026-10-18T09:30:23.1614020Z",
+    "utc": "2026-10-18T09:30:25.0269549Z",
+    "remainingGateway": 0,
+    "observedMs": 7178.5154
+  }
+]

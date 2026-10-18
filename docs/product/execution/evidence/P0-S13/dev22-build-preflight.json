@@ -1,0 +1,35 @@
+{
+  "utc": "2026-10-18T09:28:22.3388150Z",
+  "disks": [
+    {
+      "freeBytes": 38811455488,
+      "name": "C"
+    },
+    {
+      "freeBytes": 31664594944,
+      "name": "D"
+    }
+  ],
+  "targets": [
+    {
+      "path": "D:/demo1/tagmaai/target",
+      "additionalPeakGiB": 2,
+      "reuse": "existing Cargo target"
+    },
+    {
+      "path": "D:/demo1/tagmaai/dist-tagma and src-tauri/binaries",
+      "additionalPeakGiB": 0.1
+    },
+    {
+      "path": "D:/demo1/tagmaai-deliveries/0.2.0-dev.22",
+      "additionalPeakGiB": 0.03
+    },
+    {
+      "path": "C:/Users/ai/AppData/Local/Temp",
+      "additionalPeakGiB": 1
+    }
+  ],
+  "reuse": "one workspace, existing dependencies and same native data/webview",
+  "cleanup": "Keep versioned candidates and minimum evidence. New synthetic browser profile will be checked and reclaimed; no historical deletion.",
+  "evidenceBudgetMiB": 20
+}
