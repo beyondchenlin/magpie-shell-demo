@@ -1,0 +1,14 @@
+[
+  {
+    "ProcessId": 47436,
+    "ParentProcessId": 15044,
+    "Name": "tagma-desktop.exe",
+    "ExecutablePath": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\candidate-dev21\\tagma-desktop.exe"
+  },
+  {
+    "ProcessId": 8744,
+    "ParentProcessId": 47436,
+    "Name": "tagma-gateway.exe",
+    "ExecutablePath": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\candidate-dev21\\tagma-gateway.exe"
+  }
+]

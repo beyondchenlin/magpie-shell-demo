@@ -1,0 +1,35 @@
+{
+  "utc": "2026-10-18T08:36:47.0111928Z",
+  "reuse": "existing workspace, node_modules, Cargo target, dev19 isolated data/webview",
+  "disks": [
+    {
+      "freeBytes": 39337369600,
+      "name": "C"
+    },
+    {
+      "freeBytes": 32955777024,
+      "name": "D"
+    }
+  ],
+  "cleanup": "Retain versioned evidence and candidate executables; no new browser profile or worktree. Do not retry previously blocked deletion.",
+  "targets": [
+    {
+      "additionalPeakGiB": 2,
+      "path": "D:/demo1/tagmaai/target",
+      "reuse": "existing Cargo target"
+    },
+    {
+      "path": "D:/demo1/tagmaai/dist-tagma and src-tauri/binaries",
+      "additionalPeakGiB": 0.1
+    },
+    {
+      "path": "D:/demo1/tagmaai-deliveries/0.2.0-dev.20",
+      "additionalPeakGiB": 0.03
+    },
+    {
+      "path": "C:/Users/ai/AppData/Local/Temp",
+      "additionalPeakGiB": 1
+    }
+  ],
+  "evidenceBudgetMiB": 20
+}

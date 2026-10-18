@@ -1,0 +1,493 @@
+﻿[
+    {
+        "key":  "initial",
+        "focus":  {
+                      "index":  "-1",
+                      "runtimeId":  "42,7212050,4,5,1,436",
+                      "name":  "名称",
+                      "type":  "ControlType.Edit",
+                      "automationId":  "_r_1_-name",
+                      "enabled":  true,
+                      "offscreen":  false,
+                      "focused":  true,
+                      "password":  false,
+                      "value":  "",
+                      "rect":  [
+                                   1767,
+                                   1084,
+                                   439,
+                                   31
+                               ],
+                      "patterns":  [
+                                       "ValuePatternIdentifiers.Pattern",
+                                       "ExpandCollapsePatternIdentifiers.Pattern",
+                                       "TextPatternIdentifiers.Pattern",
+                                       "ScrollItemPatternIdentifiers.Pattern"
+                                   ]
+                  }
+    },
+    {
+        "key":  "Tab",
+        "focus":  {
+                      "index":  "-1",
+                      "runtimeId":  "42,7212050,4,5,1,440",
+                      "name":  "Base URL（包含 /v1）",
+                      "type":  "ControlType.Edit",
+                      "automationId":  "_r_1_-url",
+                      "enabled":  true,
+                      "offscreen":  false,
+                      "focused":  true,
+                      "password":  false,
+                      "value":  "https://api.openai.com/v1",
+                      "rect":  [
+                                   1767,
+                                   1161,
+                                   439,
+                                   30
+                               ],
+                      "patterns":  [
+                                       "ValuePatternIdentifiers.Pattern",
+                                       "TextPatternIdentifiers.Pattern",
+                                       "ScrollItemPatternIdentifiers.Pattern"
+                                   ]
+                  }
+    },
+    {
+        "key":  "Tab",
+        "focus":  {
+                      "index":  "-1",
+                      "runtimeId":  "42,7212050,4,5,1,442",
+                      "name":  "模型 ID（每行一个）",
+                      "type":  "ControlType.Edit",
+                      "automationId":  "_r_1_-models",
+                      "enabled":  true,
+                      "offscreen":  false,
+                      "focused":  true,
+                      "password":  false,
+                      "value":  "",
+                      "rect":  [
+                                   1767,
+                                   1203,
+                                   439,
+                                   81
+                               ],
+                      "patterns":  [
+                                       "ValuePatternIdentifiers.Pattern",
+                                       "TextPatternIdentifiers.Pattern",
+                                       "ScrollItemPatternIdentifiers.Pattern"
+                                   ]
+                  }
+    },
+    {
+        "key":  "Tab",
+        "focus":  {
+                      "index":  "-1",
+                      "runtimeId":  "42,7212050,4,5,1,432",
+                      "name":  "API Key",
+                      "type":  "ControlType.Edit",
+                      "automationId":  "_r_1_-key",
+                      "enabled":  true,
+                      "offscreen":  false,
+                      "focused":  true,
+                      "password":  true,
+                      "value":  null,
+                      "rect":  [
+                                   1767,
+                                   1296,
+                                   439,
+                                   31
+                               ],
+                      "patterns":  [
+                                       "ValuePatternIdentifiers.Pattern",
+                                       "TextPatternIdentifiers.Pattern",
+                                       "ScrollItemPatternIdentifiers.Pattern"
+                                   ]
+                  }
+    },
+    {
+        "key":  "Tab",
+        "focus":  {
+                      "index":  "-1",
+                      "runtimeId":  "42,7212050,4,5,1,434",
+                      "name":  "启用",
+                      "type":  "ControlType.CheckBox",
+                      "automationId":  "",
+                      "enabled":  true,
+                      "offscreen":  false,
+                      "focused":  true,
+                      "password":  false,
+                      "value":  "",
+                      "rect":  [
+                                   1767,
+                                   1360,
+                                   17,
+                                   16
+                               ],
+                      "patterns":  [
+                                       "ValuePatternIdentifiers.Pattern",
+                                       "TogglePatternIdentifiers.Pattern",
+                                       "ScrollItemPatternIdentifiers.Pattern"
+                                   ]
+                  }
+    },
+    {
+        "key":  "Tab",
+        "focus":  {
+                      "index":  "-1",
+                      "runtimeId":  "42,7212050,4,5,1,447",
+                      "name":  "取消",
+                      "type":  "ControlType.Button",
+                      "automationId":  "",
+                      "enabled":  true,
+                      "offscreen":  false,
+                      "focused":  true,
+                      "password":  false,
+                      "value":  null,
+                      "rect":  [
+                                   2114,
+                                   1087,
+                                   43,
+                                   26
+                               ],
+                      "patterns":  [
+                                       "InvokePatternIdentifiers.Pattern",
+                                       "ScrollItemPatternIdentifiers.Pattern"
+                                   ]
+                  }
+    },
+    {
+        "key":  "Tab",
+        "focus":  {
+                      "index":  "-1",
+                      "runtimeId":  "42,7212050,4,5,1,448",
+                      "name":  "保存",
+                      "type":  "ControlType.Button",
+                      "automationId":  "",
+                      "enabled":  true,
+                      "offscreen":  false,
+                      "focused":  true,
+                      "password":  false,
+                      "value":  null,
+                      "rect":  [
+                                   2163,
+                                   1087,
+                                   43,
+                                   26
+                               ],
+                      "patterns":  [
+                                       "InvokePatternIdentifiers.Pattern",
+                                       "ScrollItemPatternIdentifiers.Pattern"
+                                   ]
+                  }
+    },
+    {
+        "key":  "Shift+Tab",
+        "focus":  {
+                      "index":  "-1",
+                      "runtimeId":  "42,7212050,4,5,1,447",
+                      "name":  "取消",
+                      "type":  "ControlType.Button",
+                      "automationId":  "",
+                      "enabled":  true,
+                      "offscreen":  false,
+                      "focused":  true,
+                      "password":  false,
+                      "value":  null,
+                      "rect":  [
+                                   2114,
+                                   1087,
+                                   43,
+                                   26
+                               ],
+                      "patterns":  [
+                                       "InvokePatternIdentifiers.Pattern",
+                                       "ScrollItemPatternIdentifiers.Pattern"
+                                   ]
+                  }
+    },
+    {
+        "key":  "Shift+Tab",
+        "focus":  {
+                      "index":  "-1",
+                      "runtimeId":  "42,7212050,4,5,1,434",
+                      "name":  "启用",
+                      "type":  "ControlType.CheckBox",
+                      "automationId":  "",
+                      "enabled":  true,
+                      "offscreen":  false,
+                      "focused":  true,
+                      "password":  false,
+                      "value":  "",
+                      "rect":  [
+                                   1767,
+                                   1021,
+                                   17,
+                                   16
+                               ],
+                      "patterns":  [
+                                       "ValuePatternIdentifiers.Pattern",
+                                       "TogglePatternIdentifiers.Pattern",
+                                       "ScrollItemPatternIdentifiers.Pattern"
+                                   ]
+                  }
+    },
+    {
+        "key":  "Shift+Tab",
+        "focus":  {
+                      "index":  "-1",
+                      "runtimeId":  "42,7212050,4,5,1,432",
+                      "name":  "API Key",
+                      "type":  "ControlType.Edit",
+                      "automationId":  "_r_1_-key",
+                      "enabled":  true,
+                      "offscreen":  false,
+                      "focused":  true,
+                      "password":  true,
+                      "value":  null,
+                      "rect":  [
+                                   1767,
+                                   950,
+                                   439,
+                                   31
+                               ],
+                      "patterns":  [
+                                       "ValuePatternIdentifiers.Pattern",
+                                       "TextPatternIdentifiers.Pattern",
+                                       "ScrollItemPatternIdentifiers.Pattern"
+                                   ]
+                  }
+    },
+    {
+        "key":  "Shift+Tab",
+        "focus":  {
+                      "index":  "-1",
+                      "runtimeId":  "42,7212050,4,5,1,442",
+                      "name":  "模型 ID（每行一个）",
+                      "type":  "ControlType.Edit",
+                      "automationId":  "_r_1_-models",
+                      "enabled":  true,
+                      "offscreen":  false,
+                      "focused":  true,
+                      "password":  false,
+                      "value":  "",
+                      "rect":  [
+                                   1767,
+                                   857,
+                                   439,
+                                   81
+                               ],
+                      "patterns":  [
+                                       "ValuePatternIdentifiers.Pattern",
+                                       "TextPatternIdentifiers.Pattern",
+                                       "ScrollItemPatternIdentifiers.Pattern"
+                                   ]
+                  }
+    },
+    {
+        "key":  "Shift+Tab",
+        "focus":  {
+                      "index":  "-1",
+                      "runtimeId":  "42,7212050,4,5,1,440",
+                      "name":  "Base URL（包含 /v1）",
+                      "type":  "ControlType.Edit",
+                      "automationId":  "_r_1_-url",
+                      "enabled":  true,
+                      "offscreen":  false,
+                      "focused":  true,
+                      "password":  false,
+                      "value":  "https://api.openai.com/v1",
+                      "rect":  [
+                                   1767,
+                                   826,
+                                   439,
+                                   30
+                               ],
+                      "patterns":  [
+                                       "ValuePatternIdentifiers.Pattern",
+                                       "TextPatternIdentifiers.Pattern",
+                                       "ScrollItemPatternIdentifiers.Pattern"
+                                   ]
+                  }
+    },
+    {
+        "key":  "Shift+Tab",
+        "focus":  {
+                      "index":  "-1",
+                      "runtimeId":  "42,7212050,4,5,1,436",
+                      "name":  "名称",
+                      "type":  "ControlType.Edit",
+                      "automationId":  "_r_1_-name",
+                      "enabled":  true,
+                      "offscreen":  false,
+                      "focused":  true,
+                      "password":  false,
+                      "value":  "",
+                      "rect":  [
+                                   1767,
+                                   1084,
+                                   439,
+                                   31
+                               ],
+                      "patterns":  [
+                                       "ValuePatternIdentifiers.Pattern",
+                                       "ExpandCollapsePatternIdentifiers.Pattern",
+                                       "TextPatternIdentifiers.Pattern",
+                                       "ScrollItemPatternIdentifiers.Pattern"
+                                   ]
+                  }
+    },
+    {
+        "key":  "Tab",
+        "focus":  {
+                      "index":  "-1",
+                      "runtimeId":  "42,7212050,4,5,1,440",
+                      "name":  "Base URL（包含 /v1）",
+                      "type":  "ControlType.Edit",
+                      "automationId":  "_r_1_-url",
+                      "enabled":  true,
+                      "offscreen":  false,
+                      "focused":  true,
+                      "password":  false,
+                      "value":  "https://api.openai.com/v1",
+                      "rect":  [
+                                   1767,
+                                   1161,
+                                   439,
+                                   30
+                               ],
+                      "patterns":  [
+                                       "ValuePatternIdentifiers.Pattern",
+                                       "TextPatternIdentifiers.Pattern",
+                                       "ScrollItemPatternIdentifiers.Pattern"
+                                   ]
+                  }
+    },
+    {
+        "key":  "Tab",
+        "focus":  {
+                      "index":  "-1",
+                      "runtimeId":  "42,7212050,4,5,1,442",
+                      "name":  "模型 ID（每行一个）",
+                      "type":  "ControlType.Edit",
+                      "automationId":  "_r_1_-models",
+                      "enabled":  true,
+                      "offscreen":  false,
+                      "focused":  true,
+                      "password":  false,
+                      "value":  "",
+                      "rect":  [
+                                   1767,
+                                   1203,
+                                   439,
+                                   81
+                               ],
+                      "patterns":  [
+                                       "ValuePatternIdentifiers.Pattern",
+                                       "TextPatternIdentifiers.Pattern",
+                                       "ScrollItemPatternIdentifiers.Pattern"
+                                   ]
+                  }
+    },
+    {
+        "key":  "Tab",
+        "focus":  {
+                      "index":  "-1",
+                      "runtimeId":  "42,7212050,4,5,1,432",
+                      "name":  "API Key",
+                      "type":  "ControlType.Edit",
+                      "automationId":  "_r_1_-key",
+                      "enabled":  true,
+                      "offscreen":  false,
+                      "focused":  true,
+                      "password":  true,
+                      "value":  null,
+                      "rect":  [
+                                   1767,
+                                   1296,
+                                   439,
+                                   31
+                               ],
+                      "patterns":  [
+                                       "ValuePatternIdentifiers.Pattern",
+                                       "TextPatternIdentifiers.Pattern",
+                                       "ScrollItemPatternIdentifiers.Pattern"
+                                   ]
+                  }
+    },
+    {
+        "key":  "Tab",
+        "focus":  {
+                      "index":  "-1",
+                      "runtimeId":  "42,7212050,4,5,1,434",
+                      "name":  "启用",
+                      "type":  "ControlType.CheckBox",
+                      "automationId":  "",
+                      "enabled":  true,
+                      "offscreen":  false,
+                      "focused":  true,
+                      "password":  false,
+                      "value":  "",
+                      "rect":  [
+                                   1767,
+                                   1360,
+                                   17,
+                                   16
+                               ],
+                      "patterns":  [
+                                       "ValuePatternIdentifiers.Pattern",
+                                       "TogglePatternIdentifiers.Pattern",
+                                       "ScrollItemPatternIdentifiers.Pattern"
+                                   ]
+                  }
+    },
+    {
+        "key":  "Tab",
+        "focus":  {
+                      "index":  "-1",
+                      "runtimeId":  "42,7212050,4,5,1,447",
+                      "name":  "取消",
+                      "type":  "ControlType.Button",
+                      "automationId":  "",
+                      "enabled":  true,
+                      "offscreen":  false,
+                      "focused":  true,
+                      "password":  false,
+                      "value":  null,
+                      "rect":  [
+                                   2114,
+                                   1087,
+                                   43,
+                                   26
+                               ],
+                      "patterns":  [
+                                       "InvokePatternIdentifiers.Pattern",
+                                       "ScrollItemPatternIdentifiers.Pattern"
+                                   ]
+                  }
+    },
+    {
+        "key":  "Return",
+        "focus":  {
+                      "index":  "-1",
+                      "runtimeId":  "42,7212050,4,5,1,174",
+                      "name":  "添加供应商",
+                      "type":  "ControlType.Button",
+                      "automationId":  "",
+                      "enabled":  true,
+                      "offscreen":  false,
+                      "focused":  true,
+                      "password":  false,
+                      "value":  null,
+                      "rect":  [
+                                   2131,
+                                   833,
+                                   91,
+                                   31
+                               ],
+                      "patterns":  [
+                                       "InvokePatternIdentifiers.Pattern",
+                                       "ScrollItemPatternIdentifiers.Pattern"
+                                   ]
+                  }
+    }
+]

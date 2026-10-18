@@ -1,0 +1,84 @@
+﻿[
+    {
+        "key":  "initial",
+        "focus":  {
+                      "index":  "-1",
+                      "runtimeId":  "42,2427238,4,5,1,472",
+                      "name":  "",
+                      "type":  "ControlType.Text",
+                      "automationId":  "",
+                      "enabled":  true,
+                      "offscreen":  false,
+                      "focused":  true,
+                      "password":  false,
+                      "value":  null,
+                      "rect":  [
+                                   1607,
+                                   836,
+                                   615,
+                                   66
+                               ],
+                      "patterns":  [
+                                       "ScrollItemPatternIdentifiers.Pattern"
+                                   ]
+                  },
+        "native":  {
+                       "Size":  72,
+                       "Flags":  0,
+                       "Active":  526552,
+                       "Focus":  592446,
+                       "Capture":  0,
+                       "MenuOwner":  0,
+                       "MoveSize":  0,
+                       "Caret":  0,
+                       "CaretRect":  {
+                                         "Left":  0,
+                                         "Top":  0,
+                                         "Right":  0,
+                                         "Bottom":  0
+                                     }
+                   }
+    },
+    {
+        "key":  "Tab",
+        "focus":  {
+                      "index":  "-1",
+                      "runtimeId":  "42,2427238,4,5,1,437",
+                      "name":  "名称",
+                      "type":  "ControlType.Edit",
+                      "automationId":  "_r_1_-name",
+                      "enabled":  true,
+                      "offscreen":  false,
+                      "focused":  true,
+                      "password":  false,
+                      "value":  "P0 Native Beta",
+                      "rect":  [
+                                   1767,
+                                   1085,
+                                   439,
+                                   31
+                               ],
+                      "patterns":  [
+                                       "ValuePatternIdentifiers.Pattern",
+                                       "TextPatternIdentifiers.Pattern",
+                                       "ScrollItemPatternIdentifiers.Pattern"
+                                   ]
+                  },
+        "native":  {
+                       "Size":  72,
+                       "Flags":  0,
+                       "Active":  526552,
+                       "Focus":  592446,
+                       "Capture":  0,
+                       "MenuOwner":  0,
+                       "MoveSize":  0,
+                       "Caret":  0,
+                       "CaretRect":  {
+                                         "Left":  0,
+                                         "Top":  0,
+                                         "Right":  0,
+                                         "Bottom":  0
+                                     }
+                   }
+    }
+]

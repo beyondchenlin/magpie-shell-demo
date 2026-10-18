@@ -1,0 +1,502 @@
+﻿[
+    {
+        "key":  "initial",
+        "focus":  {
+                      "index":  "-1",
+                      "runtimeId":  "42,7212050,4,5,1,696",
+                      "name":  "连接与 TLS 握手 (毫秒)",
+                      "type":  "ControlType.Edit",
+                      "automationId":  "_r_3_-connect_ms",
+                      "enabled":  true,
+                      "offscreen":  false,
+                      "focused":  true,
+                      "password":  false,
+                      "value":  "10000 ",
+                      "rect":  [
+                                   1771,
+                                   1085,
+                                   435,
+                                   31
+                               ],
+                      "patterns":  [
+                                       "ValuePatternIdentifiers.Pattern",
+                                       "TextPatternIdentifiers.Pattern",
+                                       "ScrollItemPatternIdentifiers.Pattern"
+                                   ]
+                  },
+        "native":  {
+                       "Size":  72,
+                       "Flags":  0,
+                       "Active":  199416,
+                       "Focus":  1051082,
+                       "Capture":  0,
+                       "MenuOwner":  0,
+                       "MoveSize":  0,
+                       "Caret":  0,
+                       "CaretRect":  {
+                                         "Left":  0,
+                                         "Top":  0,
+                                         "Right":  0,
+                                         "Bottom":  0
+                                     }
+                   }
+    },
+    {
+        "key":  "Tab",
+        "focus":  {
+                      "index":  "-1",
+                      "runtimeId":  "42,7212050,4,5,1,698",
+                      "name":  "首个 HTTP 响应头 (毫秒)",
+                      "type":  "ControlType.Edit",
+                      "automationId":  "_r_3_-first_response_ms",
+                      "enabled":  true,
+                      "offscreen":  false,
+                      "focused":  true,
+                      "password":  false,
+                      "value":  "30000",
+                      "rect":  [
+                                   1771,
+                                   1128,
+                                   435,
+                                   31
+                               ],
+                      "patterns":  [
+                                       "ValuePatternIdentifiers.Pattern",
+                                       "TextPatternIdentifiers.Pattern",
+                                       "ScrollItemPatternIdentifiers.Pattern"
+                                   ]
+                  },
+        "native":  {
+                       "Size":  72,
+                       "Flags":  0,
+                       "Active":  199416,
+                       "Focus":  1051082,
+                       "Capture":  0,
+                       "MenuOwner":  0,
+                       "MoveSize":  0,
+                       "Caret":  0,
+                       "CaretRect":  {
+                                         "Left":  0,
+                                         "Top":  0,
+                                         "Right":  0,
+                                         "Bottom":  0
+                                     }
+                   }
+    },
+    {
+        "key":  "Tab",
+        "focus":  {
+                      "index":  "-1",
+                      "runtimeId":  "42,7212050,4,5,1,700",
+                      "name":  "响应体空闲（含首段） (毫秒)",
+                      "type":  "ControlType.Edit",
+                      "automationId":  "_r_3_-idle_ms",
+                      "enabled":  true,
+                      "offscreen":  false,
+                      "focused":  true,
+                      "password":  false,
+                      "value":  "30000",
+                      "rect":  [
+                                   1771,
+                                   1171,
+                                   435,
+                                   30
+                               ],
+                      "patterns":  [
+                                       "ValuePatternIdentifiers.Pattern",
+                                       "TextPatternIdentifiers.Pattern",
+                                       "ScrollItemPatternIdentifiers.Pattern"
+                                   ]
+                  },
+        "native":  {
+                       "Size":  72,
+                       "Flags":  0,
+                       "Active":  199416,
+                       "Focus":  1051082,
+                       "Capture":  0,
+                       "MenuOwner":  0,
+                       "MoveSize":  0,
+                       "Caret":  0,
+                       "CaretRect":  {
+                                         "Left":  0,
+                                         "Top":  0,
+                                         "Right":  0,
+                                         "Bottom":  0
+                                     }
+                   }
+    },
+    {
+        "key":  "Tab",
+        "focus":  {
+                      "index":  "-1",
+                      "runtimeId":  "42,7212050,4,5,1,702",
+                      "name":  "总预算 (毫秒)",
+                      "type":  "ControlType.Edit",
+                      "automationId":  "_r_3_-total_ms",
+                      "enabled":  true,
+                      "offscreen":  false,
+                      "focused":  true,
+                      "password":  false,
+                      "value":  "120000",
+                      "rect":  [
+                                   1771,
+                                   1214,
+                                   435,
+                                   30
+                               ],
+                      "patterns":  [
+                                       "ValuePatternIdentifiers.Pattern",
+                                       "TextPatternIdentifiers.Pattern",
+                                       "ScrollItemPatternIdentifiers.Pattern"
+                                   ]
+                  },
+        "native":  {
+                       "Size":  72,
+                       "Flags":  0,
+                       "Active":  199416,
+                       "Focus":  1051082,
+                       "Capture":  0,
+                       "MenuOwner":  0,
+                       "MoveSize":  0,
+                       "Caret":  0,
+                       "CaretRect":  {
+                                         "Left":  0,
+                                         "Top":  0,
+                                         "Right":  0,
+                                         "Bottom":  0
+                                     }
+                   }
+    },
+    {
+        "key":  "Tab",
+        "focus":  {
+                      "index":  "-1",
+                      "runtimeId":  "42,7212050,4,5,1,703",
+                      "name":  "取消",
+                      "type":  "ControlType.Button",
+                      "automationId":  "",
+                      "enabled":  true,
+                      "offscreen":  false,
+                      "focused":  true,
+                      "password":  false,
+                      "value":  null,
+                      "rect":  [
+                                   2114,
+                                   1337,
+                                   43,
+                                   27
+                               ],
+                      "patterns":  [
+                                       "InvokePatternIdentifiers.Pattern",
+                                       "ScrollItemPatternIdentifiers.Pattern"
+                                   ]
+                  },
+        "native":  {
+                       "Size":  72,
+                       "Flags":  0,
+                       "Active":  199416,
+                       "Focus":  1051082,
+                       "Capture":  0,
+                       "MenuOwner":  0,
+                       "MoveSize":  0,
+                       "Caret":  0,
+                       "CaretRect":  {
+                                         "Left":  0,
+                                         "Top":  0,
+                                         "Right":  0,
+                                         "Bottom":  0
+                                     }
+                   }
+    },
+    {
+        "key":  "Tab",
+        "focus":  {
+                      "index":  "-1",
+                      "runtimeId":  "42,7212050,4,5,1,704",
+                      "name":  "保存",
+                      "type":  "ControlType.Button",
+                      "automationId":  "",
+                      "enabled":  true,
+                      "offscreen":  false,
+                      "focused":  true,
+                      "password":  false,
+                      "value":  null,
+                      "rect":  [
+                                   2163,
+                                   1337,
+                                   43,
+                                   27
+                               ],
+                      "patterns":  [
+                                       "InvokePatternIdentifiers.Pattern",
+                                       "ScrollItemPatternIdentifiers.Pattern"
+                                   ]
+                  },
+        "native":  {
+                       "Size":  72,
+                       "Flags":  0,
+                       "Active":  199416,
+                       "Focus":  1051082,
+                       "Capture":  0,
+                       "MenuOwner":  0,
+                       "MoveSize":  0,
+                       "Caret":  0,
+                       "CaretRect":  {
+                                         "Left":  0,
+                                         "Top":  0,
+                                         "Right":  0,
+                                         "Bottom":  0
+                                     }
+                   }
+    },
+    {
+        "key":  "Shift+Tab",
+        "focus":  {
+                      "index":  "-1",
+                      "runtimeId":  "42,7212050,4,5,1,703",
+                      "name":  "取消",
+                      "type":  "ControlType.Button",
+                      "automationId":  "",
+                      "enabled":  true,
+                      "offscreen":  false,
+                      "focused":  true,
+                      "password":  false,
+                      "value":  null,
+                      "rect":  [
+                                   2114,
+                                   1337,
+                                   43,
+                                   27
+                               ],
+                      "patterns":  [
+                                       "InvokePatternIdentifiers.Pattern",
+                                       "ScrollItemPatternIdentifiers.Pattern"
+                                   ]
+                  },
+        "native":  {
+                       "Size":  72,
+                       "Flags":  0,
+                       "Active":  199416,
+                       "Focus":  1051082,
+                       "Capture":  0,
+                       "MenuOwner":  0,
+                       "MoveSize":  0,
+                       "Caret":  0,
+                       "CaretRect":  {
+                                         "Left":  0,
+                                         "Top":  0,
+                                         "Right":  0,
+                                         "Bottom":  0
+                                     }
+                   }
+    },
+    {
+        "key":  "Shift+Tab",
+        "focus":  {
+                      "index":  "-1",
+                      "runtimeId":  "42,7212050,4,5,1,702",
+                      "name":  "总预算 (毫秒)",
+                      "type":  "ControlType.Edit",
+                      "automationId":  "_r_3_-total_ms",
+                      "enabled":  true,
+                      "offscreen":  false,
+                      "focused":  true,
+                      "password":  false,
+                      "value":  "120000",
+                      "rect":  [
+                                   1771,
+                                   1214,
+                                   435,
+                                   30
+                               ],
+                      "patterns":  [
+                                       "ValuePatternIdentifiers.Pattern",
+                                       "TextPatternIdentifiers.Pattern",
+                                       "ScrollItemPatternIdentifiers.Pattern"
+                                   ]
+                  },
+        "native":  {
+                       "Size":  72,
+                       "Flags":  0,
+                       "Active":  199416,
+                       "Focus":  1051082,
+                       "Capture":  0,
+                       "MenuOwner":  0,
+                       "MoveSize":  0,
+                       "Caret":  0,
+                       "CaretRect":  {
+                                         "Left":  0,
+                                         "Top":  0,
+                                         "Right":  0,
+                                         "Bottom":  0
+                                     }
+                   }
+    },
+    {
+        "key":  "Shift+Tab",
+        "focus":  {
+                      "index":  "-1",
+                      "runtimeId":  "42,7212050,4,5,1,700",
+                      "name":  "响应体空闲（含首段） (毫秒)",
+                      "type":  "ControlType.Edit",
+                      "automationId":  "_r_3_-idle_ms",
+                      "enabled":  true,
+                      "offscreen":  false,
+                      "focused":  true,
+                      "password":  false,
+                      "value":  "30000",
+                      "rect":  [
+                                   1771,
+                                   1171,
+                                   435,
+                                   30
+                               ],
+                      "patterns":  [
+                                       "ValuePatternIdentifiers.Pattern",
+                                       "TextPatternIdentifiers.Pattern",
+                                       "ScrollItemPatternIdentifiers.Pattern"
+                                   ]
+                  },
+        "native":  {
+                       "Size":  72,
+                       "Flags":  0,
+                       "Active":  199416,
+                       "Focus":  1051082,
+                       "Capture":  0,
+                       "MenuOwner":  0,
+                       "MoveSize":  0,
+                       "Caret":  0,
+                       "CaretRect":  {
+                                         "Left":  0,
+                                         "Top":  0,
+                                         "Right":  0,
+                                         "Bottom":  0
+                                     }
+                   }
+    },
+    {
+        "key":  "Shift+Tab",
+        "focus":  {
+                      "index":  "-1",
+                      "runtimeId":  "42,7212050,4,5,1,698",
+                      "name":  "首个 HTTP 响应头 (毫秒)",
+                      "type":  "ControlType.Edit",
+                      "automationId":  "_r_3_-first_response_ms",
+                      "enabled":  true,
+                      "offscreen":  false,
+                      "focused":  true,
+                      "password":  false,
+                      "value":  "30000",
+                      "rect":  [
+                                   1771,
+                                   1128,
+                                   435,
+                                   31
+                               ],
+                      "patterns":  [
+                                       "ValuePatternIdentifiers.Pattern",
+                                       "TextPatternIdentifiers.Pattern",
+                                       "ScrollItemPatternIdentifiers.Pattern"
+                                   ]
+                  },
+        "native":  {
+                       "Size":  72,
+                       "Flags":  0,
+                       "Active":  199416,
+                       "Focus":  1051082,
+                       "Capture":  0,
+                       "MenuOwner":  0,
+                       "MoveSize":  0,
+                       "Caret":  0,
+                       "CaretRect":  {
+                                         "Left":  0,
+                                         "Top":  0,
+                                         "Right":  0,
+                                         "Bottom":  0
+                                     }
+                   }
+    },
+    {
+        "key":  "Shift+Tab",
+        "focus":  {
+                      "index":  "-1",
+                      "runtimeId":  "42,7212050,4,5,1,696",
+                      "name":  "连接与 TLS 握手 (毫秒)",
+                      "type":  "ControlType.Edit",
+                      "automationId":  "_r_3_-connect_ms",
+                      "enabled":  true,
+                      "offscreen":  false,
+                      "focused":  true,
+                      "password":  false,
+                      "value":  "10000 ",
+                      "rect":  [
+                                   1771,
+                                   1085,
+                                   435,
+                                   31
+                               ],
+                      "patterns":  [
+                                       "ValuePatternIdentifiers.Pattern",
+                                       "TextPatternIdentifiers.Pattern",
+                                       "ScrollItemPatternIdentifiers.Pattern"
+                                   ]
+                  },
+        "native":  {
+                       "Size":  72,
+                       "Flags":  0,
+                       "Active":  199416,
+                       "Focus":  1051082,
+                       "Capture":  0,
+                       "MenuOwner":  0,
+                       "MoveSize":  0,
+                       "Caret":  0,
+                       "CaretRect":  {
+                                         "Left":  0,
+                                         "Top":  0,
+                                         "Right":  0,
+                                         "Bottom":  0
+                                     }
+                   }
+    },
+    {
+        "key":  "Escape",
+        "focus":  {
+                      "index":  "-1",
+                      "runtimeId":  "42,7212050,4,5,1,511",
+                      "name":  "超时设置: P0 Native Beta",
+                      "type":  "ControlType.Button",
+                      "automationId":  "",
+                      "enabled":  true,
+                      "offscreen":  false,
+                      "focused":  true,
+                      "password":  false,
+                      "value":  null,
+                      "rect":  [
+                                   2141,
+                                   1088,
+                                   67,
+                                   26
+                               ],
+                      "patterns":  [
+                                       "InvokePatternIdentifiers.Pattern",
+                                       "ScrollItemPatternIdentifiers.Pattern"
+                                   ]
+                  },
+        "native":  {
+                       "Size":  72,
+                       "Flags":  0,
+                       "Active":  199416,
+                       "Focus":  1051082,
+                       "Capture":  0,
+                       "MenuOwner":  0,
+                       "MoveSize":  0,
+                       "Caret":  0,
+                       "CaretRect":  {
+                                         "Left":  0,
+                                         "Top":  0,
+                                         "Right":  0,
+                                         "Bottom":  0
+                                     }
+                   }
+    }
+]

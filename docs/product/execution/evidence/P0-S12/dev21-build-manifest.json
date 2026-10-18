@@ -1,0 +1,36 @@
+{
+  "version": "0.2.0-dev.21",
+  "sourceHead": "8c49bec9feef22025d106d20d078bfa0d89de7fb",
+  "preBuildHead": "8c49bec9feef22025d106d20d078bfa0d89de7fb",
+  "dirty": true,
+  "sourceFileCount": 306,
+  "sourceVerification": "All 306 frozen inputs verified unchanged after the respective build; source commit has the verified product bytes plus inherited dirty inputs. dev20 commit was created during build after initial commit lacked identity.",
+  "platform": "windows-x64",
+  "profile": "debug-unsigned-internal",
+  "installer": {
+    "sha256": "732c2d314f62243ce4c0640f37de4bcc19579fa7d2a4f2bb8d9de54e1f6518b8",
+    "bytes": 6619582,
+    "path": "D:\\demo1\\tagmaai-deliveries\\0.2.0-dev.21\\Tagma_0.2.0-dev.21_x64-setup.exe"
+  },
+  "desktop": {
+    "sha256": "a67c6065ab9fee8d2598c347e6d77d6829dff0c7ffe85ebdf0a543ec52c34cb5",
+    "bytes": 20220416,
+    "path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\candidate-dev21\\tagma-desktop.exe"
+  },
+  "gateway": {
+    "sha256": "9bb7513ef27c1d08072bed0b07d1fe9bdd3c0f44d8f37865fbee16bf771e5f5a",
+    "bytes": 10101248,
+    "path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\candidate-dev21\\tagma-gateway.exe"
+  },
+  "retainedSourceOverlay": {
+    "sha256": "50d3b6755488b6546ed9601dc848def2de101241fc533b5d34c370ad39af34a3",
+    "bytes": 1823959,
+    "path": "D:\\demo1\\tagmaai-deliveries\\0.2.0-dev.18\\source-overlay.json.gz"
+  },
+  "sourceRecovery": "Use sourceHead plus unchanged inherited dirty files from retained dev18 overlay; do not restore overlay paths changedFromDev18; verify all input hashes.",
+  "nativeAcceptance": "P0-S12: visible rejected-save error focus; successful and stopped saves, reorder, host restart10/10, physical drag and cancellation verified. Earlier dev20 unchanged keyboard paths retained separately. Overall P0 incomplete.",
+  "installation": "not run",
+  "schema": 10,
+  "usageSchema": 2,
+  "protocol": 1
+}

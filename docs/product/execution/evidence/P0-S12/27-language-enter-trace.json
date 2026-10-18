@@ -1,0 +1,129 @@
+﻿[
+    {
+        "key":  "initial",
+        "focus":  {
+                      "index":  "-1",
+                      "runtimeId":  "42,7212050,4,5,1,889",
+                      "name":  "简体中文",
+                      "type":  "ControlType.RadioButton",
+                      "automationId":  "",
+                      "enabled":  true,
+                      "offscreen":  false,
+                      "focused":  true,
+                      "password":  false,
+                      "value":  "",
+                      "rect":  [
+                                   1949,
+                                   970,
+                                   262,
+                                   31
+                               ],
+                      "patterns":  [
+                                       "InvokePatternIdentifiers.Pattern",
+                                       "ValuePatternIdentifiers.Pattern",
+                                       "SelectionItemPatternIdentifiers.Pattern",
+                                       "ScrollItemPatternIdentifiers.Pattern"
+                                   ]
+                  },
+        "native":  {
+                       "Size":  72,
+                       "Flags":  0,
+                       "Active":  199416,
+                       "Focus":  1051082,
+                       "Capture":  0,
+                       "MenuOwner":  0,
+                       "MoveSize":  0,
+                       "Caret":  0,
+                       "CaretRect":  {
+                                         "Left":  0,
+                                         "Top":  0,
+                                         "Right":  0,
+                                         "Bottom":  0
+                                     }
+                   }
+    },
+    {
+        "key":  "ArrowDown",
+        "focus":  {
+                      "index":  "-1",
+                      "runtimeId":  "42,7212050,4,5,1,890",
+                      "name":  "English",
+                      "type":  "ControlType.RadioButton",
+                      "automationId":  "",
+                      "enabled":  true,
+                      "offscreen":  false,
+                      "focused":  true,
+                      "password":  false,
+                      "value":  "",
+                      "rect":  [
+                                   1935,
+                                   1010,
+                                   278,
+                                   32
+                               ],
+                      "patterns":  [
+                                       "InvokePatternIdentifiers.Pattern",
+                                       "ValuePatternIdentifiers.Pattern",
+                                       "SelectionItemPatternIdentifiers.Pattern",
+                                       "ScrollItemPatternIdentifiers.Pattern"
+                                   ]
+                  },
+        "native":  {
+                       "Size":  72,
+                       "Flags":  0,
+                       "Active":  199416,
+                       "Focus":  1051082,
+                       "Capture":  0,
+                       "MenuOwner":  0,
+                       "MoveSize":  0,
+                       "Caret":  0,
+                       "CaretRect":  {
+                                         "Left":  0,
+                                         "Top":  0,
+                                         "Right":  0,
+                                         "Bottom":  0
+                                     }
+                   }
+    },
+    {
+        "key":  "Return",
+        "focus":  {
+                      "index":  "-1",
+                      "runtimeId":  "42,7212050,4,5,1,799",
+                      "name":  "Language",
+                      "type":  "ControlType.Button",
+                      "automationId":  "",
+                      "enabled":  true,
+                      "offscreen":  false,
+                      "focused":  true,
+                      "password":  false,
+                      "value":  null,
+                      "rect":  [
+                                   2140,
+                                   934,
+                                   79,
+                                   33
+                               ],
+                      "patterns":  [
+                                       "ExpandCollapsePatternIdentifiers.Pattern",
+                                       "ScrollItemPatternIdentifiers.Pattern"
+                                   ]
+                  },
+        "native":  {
+                       "Size":  72,
+                       "Flags":  0,
+                       "Active":  199416,
+                       "Focus":  1051082,
+                       "Capture":  0,
+                       "MenuOwner":  0,
+                       "MoveSize":  0,
+                       "Caret":  0,
+                       "CaretRect":  {
+                                         "Left":  0,
+                                         "Top":  0,
+                                         "Right":  0,
+                                         "Bottom":  0
+                                     }
+                   }
+    }
+]
