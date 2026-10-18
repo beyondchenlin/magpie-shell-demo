@@ -1,0 +1,110 @@
+{
+  "recordedAtUtc": "2026-10-17T23:59:13.367Z",
+  "sourceBase": "c364904",
+  "candidateVersion": "0.2.0-dev.16",
+  "configSchema": 10,
+  "usageSchema": 2,
+  "source": [
+    {
+      "path": "D:\\demo1\\tagmaai\\Cargo.lock",
+      "bytes": 144469,
+      "sha256": "6a0cfb3fd6881ed73edffe1cf7a0fa8ac0236377ee967a0bf183f4364bb17e11"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-core\\Cargo.toml",
+      "bytes": 1320,
+      "sha256": "6b46a312760a8418a3c4e58b75be9295c903625e1840e40f0c66a7c75c62fb1f"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-core\\src\\packs.rs",
+      "bytes": 2418,
+      "sha256": "e1d761c648fd28f3de18e1460bead15cf83c444032490408e011e172875a98ab"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-core\\src\\packs\\archive.rs",
+      "bytes": 13953,
+      "sha256": "d2143a28a0334416968a37fa72f882bd464054558c22f68634d55c533a1d1f86"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-core\\src\\packs\\archive_tests.rs",
+      "bytes": 15627,
+      "sha256": "261b66586860c02316986f4e7f952df7a9e030fb27155d8bc5338e5b4cb59aa2"
+    }
+  ],
+  "documents": [
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\EXECUTION-STATUS.md",
+      "bytes": 38503,
+      "sha256": "523edc71cd434fcf6284216e1c7cca00f46cd7c46266dbdad44ee8fcebca35ed"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\P2-S02-PRIVATE-ZIP-STAGING.md",
+      "bytes": 6748,
+      "sha256": "42bdced27d7d1fb332337bd63f6d0f9de991c1a9495700fdfb49cb4136fac6dc"
+    }
+  ],
+  "prd": {
+    "path": "D:\\demo1\\tagmaai\\docs\\product\\TAGMA-PRD-v0.3.md",
+    "bytes": 50957,
+    "sha256": "6e6503391f70e3f2e53347890de6e7c9f7fd93cc393c68f7bba494ac4d67a6d6"
+  },
+  "evidence": [
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P2-S02-archive-first.txt",
+      "bytes": 4617,
+      "sha256": "18659599f45821c9a9e19acbd53229caa5ac58a25abb3906ef736b8b3375a9c5"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P2-S02-clippy.txt",
+      "bytes": 1329,
+      "sha256": "356b3b647f7fdd2b6359e21f98d3fda0dddd91777c869f8b57472dad76bccad2"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P2-S02-core-final.txt",
+      "bytes": 20756,
+      "sha256": "58c89fcc181028c88edaeacfd3e3730f1d43712b37e0b4b06a30d1543ffaa6d3"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P2-S02-dependencies.json",
+      "bytes": 3815,
+      "sha256": "1360ea8f29b867facb360542c8eea33b31d333731efc5e86656fd888d464b173"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P2-S02-dependency-check.txt",
+      "bytes": 2443,
+      "sha256": "282c942a4cfdcdc367b6893884029994b0abbe24875b3dee1eb76cc5b34ddddd"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P2-S02-source-check.txt",
+      "bytes": 733,
+      "sha256": "fbf3cfe82094a8d0d2e93dfa018735f58808bc9fcfa617827e587288b0e6c856"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P2-S02-source-control-check.txt",
+      "bytes": 733,
+      "sha256": "b52d386433c882d52ca20d6230b91b3a63117c54cb5af900d129f99b6c6a145e"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P2-S02-space-after.json",
+      "bytes": 621,
+      "sha256": "49770861119f398c9df6dfcb6896d459d1f9661da47c28df5d6fc7d0a50aa6f2"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P2-S02-space-plan.json",
+      "bytes": 756,
+      "sha256": "fdbd6e574cf0e113caae374a5d3b00e12eae5df20f7a72303161da5fa8d811c1"
+    }
+  ],
+  "results": {
+    "newActualZipTests": 6,
+    "coreLibPassed": 74,
+    "coreLibIgnored": 5,
+    "packAdmissionTests": 8,
+    "totalDistinctThisBatch": 82,
+    "clippy": "core all targets -D warnings passed;new observer Drop/sync deadline reviewed"
+  },
+  "scope": "Offline bytes/private disposable ZIP32 Stored/Deflate extraction only;exact raw checksum first;bounded metadata parser with earlier footer hidden;actual output/CRC/links/path/count/size/cancellation;fresh capability root;RAII cleanup",
+  "unverified": "Network download/preflight integration/persistent installation/atomic activation/exit recovery/runner/health/official release root/ReachFlow/native/other platforms/same-user malicious FS races;A17-20/P0/P1 not complete",
+  "preserved": "Desktop prohibited,dev.9/user data/webview retained;drag unaccepted;no real key/service/pack execution/install/new worktree/env/manual deletion",
+  "spaceReview": "D drive difference0.28GiB exceeds initial0.20,includes cache/concurrent writes;C+0.53 not this task cleanup;no further compilation before owned-rebuildable artifact audit"
+}

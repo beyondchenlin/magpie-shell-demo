@@ -1,0 +1,19 @@
+{
+  "RecordedAtUtc": "2026-10-17T23:59:13.3118005Z",
+  "Disks": [
+    {
+      "Name": "C",
+      "FreeGiB": 42.75
+    },
+    {
+      "Name": "D",
+      "FreeGiB": 9.24
+    }
+  ],
+  "OwnedFixtureLeftovers": [],
+  "NewWorktrees": 0,
+  "NewEnvironments": 0,
+  "Cleanup": "Own fresh archive/stage/fixture RAII after handles/observer joined;no manual deletion",
+  "Kept": "Cargo cache/target/node_modules/dist;old evidence and denied files;installed dev.9 and preview data/webview",
+  "Caveat": "Drive difference includes caches/concurrent writes,not task peak/net release;>1GiB operations remain paused"
+}

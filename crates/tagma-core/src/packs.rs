@@ -1,9 +1,13 @@
-//! Pack admission primitives, without downloads, extraction, process execution,
-//! configuration writes, or a claim that permission declarations are a sandbox.
+//! Pack admission and disposable extraction. No network downloader, activation,
+//! process execution, config writes, or claim that declarations are a sandbox.
+mod archive;
+#[cfg(test)]
+mod archive_tests;
 mod manifest;
 mod paths;
 mod space;
 mod trust;
+pub use archive::*;
 pub use manifest::*;
 pub use paths::*;
 pub use space::*;
@@ -30,6 +34,11 @@ pub enum PackError {
     ArithmeticOverflow,
     InvalidSpaceObservation,
     ReadFailed,
+    WriteFailed,
+    Cancelled,
+    InvalidArchive,
+    UnsupportedArchive,
+    TimedOut,
 }
 impl std::fmt::Display for PackError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -47,6 +56,11 @@ impl std::fmt::Display for PackError {
             Self::ArithmeticOverflow => "PACK_ARITHMETIC_OVERFLOW",
             Self::InvalidSpaceObservation => "PACK_INVALID_SPACE_OBSERVATION",
             Self::ReadFailed => "PACK_READ_FAILED",
+            Self::WriteFailed => "PACK_WRITE_FAILED",
+            Self::Cancelled => "PACK_CANCELLED",
+            Self::InvalidArchive => "PACK_INVALID_ARCHIVE",
+            Self::UnsupportedArchive => "PACK_UNSUPPORTED_ARCHIVE",
+            Self::TimedOut => "PACK_STAGE_TIMEOUT",
         })
     }
 }

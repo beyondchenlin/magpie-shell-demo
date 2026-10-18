@@ -1,0 +1,73 @@
+    Updating crates.io index
+     Locking 12 packages to latest compatible versions
+      Adding ambient-authority v0.0.2
+      Adding cap-primitives v4.0.3
+      Adding cap-std v4.0.3
+      Adding fs-set-times v0.20.3
+      Adding io-extras v0.19.0
+      Adding io-lifetimes v2.0.4
+      Adding io-lifetimes v3.0.1
+      Adding maybe-owned v0.3.4
+      Adding rustix-linux-procfs v0.1.1
+      Adding typed-path v0.12.3
+      Adding winx v0.36.4
+      Adding zip v8.6.0 (available: v9.0.5)
+ Downloading crates ...
+  Downloaded io-lifetimes v2.0.4
+  Downloaded io-extras v0.19.0
+  Downloaded io-lifetimes v3.0.1
+  Downloaded winx v0.36.4
+  Downloaded typed-path v0.12.3
+  Downloaded ambient-authority v0.0.2
+  Downloaded maybe-owned v0.3.4
+  Downloaded zip v8.6.0
+  Downloaded cap-primitives v4.0.3
+  Downloaded fs-set-times v0.20.3
+  Downloaded cap-std v4.0.3
+  Downloaded windows-sys v0.59.0
+   Compiling windows_x86_64_msvc v0.52.6
+   Compiling io-lifetimes v3.0.1
+   Compiling io-lifetimes v2.0.4
+    Checking windows-sys v0.60.2
+   Compiling io-extras v0.19.0
+    Checking windows-targets v0.52.6
+    Checking windows-sys v0.61.2
+    Checking windows-sys v0.59.0
+    Checking adler2 v2.0.1
+    Checking simd-adler32 v0.3.10
+   Compiling cap-primitives v4.0.3
+    Checking miniz_oxide v0.9.1
+    Checking crc32fast v1.5.2
+    Checking fs-set-times v0.20.3
+    Checking winx v0.36.4
+    Checking maybe-owned v0.3.4
+   Compiling cap-std v4.0.3
+    Checking ambient-authority v0.0.2
+    Checking flate2 v1.1.10
+    Checking typed-path v0.12.3
+    Checking keyring v3.6.3
+    Checking serde_json v1.0.154
+    Checking tempfile v3.27.0
+    Checking zip v8.6.0
+    Checking tagma-core v0.2.0-dev.16 (D:\demo1\tagmaai\crates\tagma-core)
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+    Finished `dev` profile [unoptimized] target(s) in 12.23s

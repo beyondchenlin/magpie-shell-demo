@@ -1,0 +1,13 @@
+{
+  "RecordedAtUtc": "2026-10-17T23:34:34.9307931Z",
+  "Target": "D:/demo1/tagmaai/target",
+  "DependencyCache": "C:/Users/ai/.cargo/registry",
+  "TemporaryRoot": "C:\\Users\\ai\\AppData\\Local\\Temp",
+  "EstimatedAdditionalPeakGiB": 0.2,
+  "CFreeBeforeGiB": 42.22,
+  "DFreeBeforeGiB": 9.52,
+  "Scope": "Small ZIP/capability filesystem dependencies;actual tiny bounded ZIP stage fixtures/core target only",
+  "Reuse": "Existing workspace/Cargo cache and flate2/tempfile lock;no app/pack install/real service",
+  "Constraint": "D<10GiB pauses >1GiB operations;review if dependency graph unexpectedly broad;no full bundle",
+  "Cleanup": "Own bounded TempDir/staged files only,RAII after handles close;no prior/user evidence or denied cleanup"
+}

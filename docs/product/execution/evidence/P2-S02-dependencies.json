@@ -1,0 +1,93 @@
+{
+  "recordedAtUtc": "2026-10-17T23:59:13.367Z",
+  "addedLockedPackages": 12,
+  "existingVersionUpdates": 0,
+  "inventory": [
+    {
+      "name": "io-lifetimes",
+      "version": "2.0.4",
+      "path": "C:\\Users\\ai\\.cargo\\registry\\cache\\index.crates.io-1949cf8c6b5b557f\\io-lifetimes-2.0.4.crate",
+      "bytes": 28501,
+      "sha256": "06432fb54d3be7964ecd3649233cddf80db2832f47fec34c01f65b3d9d774983"
+    },
+    {
+      "name": "io-extras",
+      "version": "0.19.0",
+      "path": "C:\\Users\\ai\\.cargo\\registry\\cache\\index.crates.io-1949cf8c6b5b557f\\io-extras-0.19.0.crate",
+      "bytes": 34951,
+      "sha256": "20fd6de4ccfcc187e38bc21cfa543cb5a302cb86a8b114eb7f0bf0dc9f8ac00f"
+    },
+    {
+      "name": "io-lifetimes",
+      "version": "3.0.1",
+      "path": "C:\\Users\\ai\\.cargo\\registry\\cache\\index.crates.io-1949cf8c6b5b557f\\io-lifetimes-3.0.1.crate",
+      "bytes": 28589,
+      "sha256": "2f0fb0570afe1fed943c5c3d4102d5358592d8625fda6a0007fdbe65a92fba96"
+    },
+    {
+      "name": "winx",
+      "version": "0.36.4",
+      "path": "C:\\Users\\ai\\.cargo\\registry\\cache\\index.crates.io-1949cf8c6b5b557f\\winx-0.36.4.crate",
+      "bytes": 13838,
+      "sha256": "3f3fd376f71958b862e7afb20cfe5a22830e1963462f3a17f49d82a6c1d1f42d"
+    },
+    {
+      "name": "typed-path",
+      "version": "0.12.3",
+      "path": "C:\\Users\\ai\\.cargo\\registry\\cache\\index.crates.io-1949cf8c6b5b557f\\typed-path-0.12.3.crate",
+      "bytes": 112964,
+      "sha256": "8e28f89b80c87b8fb0cf04ab448d5dd0dd0ade2f8891bae878de66a75a28600e"
+    },
+    {
+      "name": "ambient-authority",
+      "version": "0.0.2",
+      "path": "C:\\Users\\ai\\.cargo\\registry\\cache\\index.crates.io-1949cf8c6b5b557f\\ambient-authority-0.0.2.crate",
+      "bytes": 14867,
+      "sha256": "e9d4ee0d472d1cd2e28c97dfa124b3d8d992e10eb0a035f33f5d12e3a177ba3b"
+    },
+    {
+      "name": "maybe-owned",
+      "version": "0.3.4",
+      "path": "C:\\Users\\ai\\.cargo\\registry\\cache\\index.crates.io-1949cf8c6b5b557f\\maybe-owned-0.3.4.crate",
+      "bytes": 14308,
+      "sha256": "4facc753ae494aeb6e3c22f839b158aebd4f9270f55cd3c79906c45476c47ab4"
+    },
+    {
+      "name": "zip",
+      "version": "8.6.0",
+      "path": "C:\\Users\\ai\\.cargo\\registry\\cache\\index.crates.io-1949cf8c6b5b557f\\zip-8.6.0.crate",
+      "bytes": 149622,
+      "sha256": "2d04a6b5381502aa6087c94c669499eb1602eb9c5e8198e534de571f7154809b"
+    },
+    {
+      "name": "cap-primitives",
+      "version": "4.0.3",
+      "path": "C:\\Users\\ai\\.cargo\\registry\\cache\\index.crates.io-1949cf8c6b5b557f\\cap-primitives-4.0.3.crate",
+      "bytes": 93618,
+      "sha256": "8b5f74729fd2f44701d1a8eb47e906cdb3ccd9ec0f02baad85a744b791940b18"
+    },
+    {
+      "name": "fs-set-times",
+      "version": "0.20.3",
+      "path": "C:\\Users\\ai\\.cargo\\registry\\cache\\index.crates.io-1949cf8c6b5b557f\\fs-set-times-0.20.3.crate",
+      "bytes": 15964,
+      "sha256": "94e7099f6313ecacbe1256e8ff9d617b75d1bcb16a6fddef94866d225a01a14a"
+    },
+    {
+      "name": "cap-std",
+      "version": "4.0.3",
+      "path": "C:\\Users\\ai\\.cargo\\registry\\cache\\index.crates.io-1949cf8c6b5b557f\\cap-std-4.0.3.crate",
+      "bytes": 36964,
+      "sha256": "c1ec78e242cfa2cfe276807ac2ecc00315a6c97786977414bcd1c3963b6c91b8"
+    },
+    {
+      "name": "windows-sys",
+      "version": "0.59.0",
+      "path": "C:\\Users\\ai\\.cargo\\registry\\cache\\index.crates.io-1949cf8c6b5b557f\\windows-sys-0.59.0.crate",
+      "bytes": 2387323,
+      "sha256": "1e38bc4d79ed67fd075bcc251a1c39b32a1776bbe92e5bef1f0bf1f8c531853b"
+    }
+  ],
+  "logicalCompressedBytes": 2931509,
+  "note": "Current files from download log,logical compressed lengths only,not physical/net growth;existing official Cargo cache/flate2/tempfile reused;zip8.6.0 deflate-flate2,cap-std4.0.3 exact"
+}

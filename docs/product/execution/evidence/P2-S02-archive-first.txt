@@ -1,0 +1,68 @@
+   Compiling windows_x86_64_msvc v0.52.6
+   Compiling windows-sys v0.60.2
+   Compiling io-lifetimes v3.0.1
+   Compiling io-lifetimes v2.0.4
+   Compiling windows-targets v0.52.6
+   Compiling windows-sys v0.59.0
+   Compiling windows-sys v0.61.2
+   Compiling simd-adler32 v0.3.10
+   Compiling miniz_oxide v0.9.1
+   Compiling ambient-authority v0.0.2
+   Compiling maybe-owned v0.3.4
+   Compiling io-extras v0.19.0
+   Compiling flate2 v1.1.10
+   Compiling fs-set-times v0.20.3
+   Compiling winx v0.36.4
+   Compiling typed-path v0.12.3
+   Compiling keyring v3.6.3
+   Compiling cap-primitives v4.0.3
+   Compiling tempfile v3.27.0
+   Compiling serde_json v1.0.154
+   Compiling cap-std v4.0.3
+   Compiling zip v8.6.0
+   Compiling tagma-core v0.2.0-dev.16 (D:\demo1\tagmaai\crates\tagma-core)
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+    Finished `test` profile [unoptimized] target(s) in 8.78s
+     Running unittests src\lib.rs (target\debug\deps\tagma_core-0348fd4cdb7f1e31.exe)
+
+running 6 tests
+Owned ZIP fixture:C:\Users\ai\AppData\Local\Temp\tagma-pack-verify-Tv3mmn;new private child files only,<=4MiB expanded,handles close then RAII cleanup;sentinel active/output never targeted
+Owned ZIP fixture:C:\Users\ai\AppData\Local\Temp\tagma-pack-verify-9sIXZ3;new private child files only,<=4MiB expanded,handles close then RAII cleanup;sentinel active/output never targeted
+Owned ZIP fixture:C:\Users\ai\AppData\Local\Temp\tagma-pack-verify-OqG5IT;new private child files only,<=4MiB expanded,handles close then RAII cleanup;sentinel active/output never targeted
+Owned ZIP fixture:C:\Users\ai\AppData\Local\Temp\tagma-pack-verify-da8tRx;new private child files only,<=4MiB expanded,handles close then RAII cleanup;sentinel active/output never targeted
+Owned ZIP fixture:C:\Users\ai\AppData\Local\Temp\tagma-pack-verify-ooCWam;new private child files only,<=4MiB expanded,handles close then RAII cleanup;sentinel active/output never targeted
+Owned ZIP fixture:C:\Users\ai\AppData\Local\Temp\tagma-pack-verify-HZEdvX;new private child files only,<=4MiB expanded,handles close then RAII cleanup;sentinel active/output never targeted
+Actual ZIP Stored+Deflate:exact signed bytes hashed before parsing,real files/UTF8 in fresh private capability root;drop closes handles and removes only new files,active/output sentinels unchanged;no activation/execution
+test packs::archive_tests::actual_stored_and_deflated_zip_extract_to_fresh_capability_root_and_cleanup ... ok
+Actual staged bytes:truncated/changed SHA refused before ZIP;publisher-signed bad CRC refused during real read,partial stage removed;no installed/callable state exists
+test packs::archive_tests::hash_length_and_crc_failures_never_leave_a_callable_version ... ok
+Actual ZIP expansion/count rejected before stage;lying central size cannot permit extra actual output;new stage cleaned on failure
+test packs::archive_tests::actual_entry_count_declared_expansion_and_understated_size_are_bounded ... ok
+ZIP32 profile:EOCD count/4MiB central cap before library allocation;metadata-only reads hide earlier fake footer in payload,normal data still extracts exactly;bad central cannot fall back to fake huge-count archive;secondary metadata footers refused
+test packs::archive_tests::metadata_preallocation_profile_and_earlier_fake_footers_fail_closed ... ok
+Actual cancellation:partial byte download poisoned/cleaned;expired total deadline rejects;observer saw a real nonempty staged file then cancelled extraction,all handles/stage/archive removed,old active/user output retained;no running pack
+test packs::archive_tests::cancellation_and_deadline_cleanup_download_and_actual_partial_extraction ... ok
+Actual ZIP names:relative traversal/absolute/Windows drive/backslash/ADS/device,case alias,and internal/external symlink entries rejected;0activation/outside writes
+test packs::archive_tests::actual_zip_traversal_aliases_and_symlinks_are_rejected_before_writes ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 73 filtered out; finished in 0.22s
+
