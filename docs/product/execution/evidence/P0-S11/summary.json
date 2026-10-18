@@ -1,0 +1,86 @@
+{
+  "recordedAtUtc": "2026-10-18T08:09:14.7095129Z",
+  "channelAuthorization": "User: 允许切换本机原生通道; scope existing isolated dev18",
+  "candidate": "dev18",
+  "fixture": "C:/Users/ai/AppData/Local/Temp/tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88",
+  "nativeWindowDiscovery": {
+    "mainWindowWasBlankHelper": true,
+    "pid": 45604,
+    "repair": "Enumerate only exact PID-owned windows, select exact fixture title, ShowWindow restore, PrintWindow2, UIA and guarded SendInput",
+    "actualTitledHwnd": 593796,
+    "legacySkyRootCause": "not established or repaired",
+    "processMainWindowHandle": 462728,
+    "initialVisible": false
+  },
+  "passed": [
+    "create two providers through native forms using only synthetic credentials",
+    "native order Alpha/Beta changed to Beta/Alpha revision3",
+    "native stop: sidecar absent and port49697 listener absent",
+    "native edit/save while stopped: Alpha Offline + p0-alpha-offline; desired4 effectiveunknown",
+    "native Quit Tagma: old host45604 gone then launcher start host45804 gateway36548; persisted order/name/model/credential-presence; revisions4/4",
+    "topbar physical drag +100,+60",
+    "sidebar top physical drag -100,-60",
+    "provider navigation button drag did not move window",
+    "physical header doubleclick maximize and restore",
+    "native language menu English by Return and focus restored to language button",
+    "native dark/light and secondary Usage navigation",
+    "native dev18 create disposable revision5 and confirm delete revision6, two retained providers unchanged"
+  ],
+  "drag": {
+    "maximized": [
+      -8,
+      -8,
+      3848,
+      2128
+    ],
+    "buttonAfter": [
+      1682,
+      804,
+      2358,
+      1443
+    ],
+    "topAfter": [
+      1682,
+      804,
+      2358,
+      1443
+    ],
+    "restored": [
+      1582,
+      744,
+      2258,
+      1383
+    ],
+    "sideAfter": [
+      1582,
+      744,
+      2258,
+      1383
+    ],
+    "before": [
+      1582,
+      744,
+      2258,
+      1383
+    ]
+  },
+  "failures": [
+    "dev18 nested editor collapsed into inherited 72px grid column",
+    "dev18 sidebar150% settings options clipped",
+    "after inline provider cancel UIA focus was document, not initiating button; native keyboard traversal not completed",
+    "foreground guard rejected later text/Return/Tab attempts before input: Could not foreground target / Wrong foreground window; not retried repeatedly",
+    "an observation became stale after window/layout/empty-editor state changed without this harness action; reobserved and cancelled empty form; cause not inferred",
+    "InvokePattern unsupported for theme toggle; inspected advertised TogglePattern and used it"
+  ],
+  "p0": "not passed",
+  "nativeDev19": "same isolated data/webview restored revision6/6; native zh sidebar150 settings and form/footer, en sidebar150 settings and top110 form confirmed; full P0 not passed",
+  "paidCalls": 0,
+  "realCredentialsRead": 0,
+  "backendUsedAsNativeEvidence": false,
+  "automation": "tagma-prd, magpie-cis, RUN-BINDING remain PAUSED",
+  "newWorktrees": 0,
+  "dev19Host": 30236,
+  "dev19Title": "Tagma 隔离测试 dev19 P0-S11 128d7053",
+  "dev19LaunchNote": "First PowerShell5 launcher decoded a BOM-less Chinese literal incorrectly, title guard rejected Tagma. Confirmed owned executable/config/webview/49697, exited through native UI, added UTF8 BOM, relaunched with correct title. No default data used.",
+  "userSteering": "User objected to redundant scope confirmation and directed no further questions. Continued routine reversible P0 candidate checks within original project scope."
+}

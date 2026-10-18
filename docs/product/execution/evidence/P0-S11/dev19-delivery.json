@@ -1,0 +1,36 @@
+{
+  "version": "0.2.0-dev.19",
+  "sourceHead": "cd2bc9fb9580d62c35f63fcf3c423a1544e10383",
+  "dirty": true,
+  "sourceFileCount": 306,
+  "sourceVerification": "All 306 input hashes collected before build and verified unchanged after build",
+  "platform": "windows-x64",
+  "profile": "debug-unsigned-internal",
+  "builtAtUtc": "2026-10-18T08:08:27.9773598Z",
+  "installer": {
+    "path": "D:\\demo1\\tagmaai-deliveries\\0.2.0-dev.19\\Tagma_0.2.0-dev.19_x64-setup.exe",
+    "bytes": 6621505,
+    "sha256": "53ec8ff5e13df83ec34c0b9ecfc2a0a5e910422e5cdaa1786f21255bfc49403f"
+  },
+  "desktop": {
+    "path": "D:\\demo1\\tagmaai\\target\\debug\\tagma-desktop.exe",
+    "bytes": 20249088,
+    "sha256": "674fff04c6ea66339eb37265b4e7c26c09352791e1f390877261271ea84ff54c"
+  },
+  "gateway": {
+    "path": "D:\\demo1\\tagmaai\\target\\debug\\tagma-gateway.exe",
+    "bytes": 10101248,
+    "sha256": "87a79371d7a5258507ddfed930eb067038200b9fe0f2aced96de3028cb95ce11"
+  },
+  "retainedSourceOverlay": {
+    "path": "D:\\demo1\\tagmaai-deliveries\\0.2.0-dev.18\\source-overlay.json.gz",
+    "bytes": 1823959,
+    "sha256": "50d3b6755488b6546ed9601dc848def2de101241fc533b5d34c370ad39af34a3"
+  },
+  "sourceRecovery": "Use this commit, then restore unchanged inherited dirty inputs from retained dev18 source-overlay only where paths are not changedFromDev18. Verify every source hash.",
+  "nativeAcceptance": "P0-S11 targeted native layout fixes and same fixture recovery6/6 passed; overall P0 incomplete. dev18 five-flow evidence remains explicitly separate.",
+  "installation": "not run",
+  "schema": 10,
+  "usageSchema": 2,
+  "protocol": 1
+}

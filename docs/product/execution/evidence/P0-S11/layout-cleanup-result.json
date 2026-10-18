@@ -1,0 +1,9 @@
+{
+  "utc": "2026-10-18T08:07:38.2751344Z",
+  "action": "Remove-Item exact task layout-browser-profile",
+  "outcome": "rejected before execution",
+  "reason": "blocked by policy",
+  "deletedFiles": 0,
+  "retry": "none",
+  "retainedPath": "D:/demo1/tagmaai/.cache/p0-s11-native-control/layout-browser-profile"
+}

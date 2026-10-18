@@ -1,0 +1,34 @@
+{
+  "utc": "2026-10-18T08:05:29.0047438Z",
+  "disks": [
+    {
+      "Name": "C",
+      "freeBytes": 38770094080
+    },
+    {
+      "Name": "D",
+      "freeBytes": 34424963072
+    }
+  ],
+  "targets": [
+    {
+      "path": "D:/demo1/tagmaai/target",
+      "maxAdditionalGiB": 2,
+      "reuse": "existing Cargo cache"
+    },
+    {
+      "maxAdditionalGiB": 0.1,
+      "path": "D:/demo1/tagmaai/dist-tagma and src-tauri/binaries"
+    },
+    {
+      "maxAdditionalGiB": 0.03,
+      "path": "D:/demo1/tagmaai-deliveries/0.2.0-dev.19"
+    },
+    {
+      "maxAdditionalGiB": 1,
+      "path": "C:/Users/ai/AppData/Local/Temp"
+    }
+  ],
+  "worktrees": 1,
+  "cleanup": "Close and remove only owned headless layout profile after lock/process checks. Retain existing target, versioned delivery, dev18 fixture and evidence."
+}

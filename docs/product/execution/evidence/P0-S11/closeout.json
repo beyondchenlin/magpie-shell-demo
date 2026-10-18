@@ -1,0 +1,71 @@
+{
+  "utc": "2026-10-18T08:23:55.2721809Z",
+  "space": [
+    {
+      "Name": "C",
+      "freeGiB": 35.963
+    },
+    {
+      "Name": "D",
+      "freeGiB": 31.318
+    }
+  ],
+  "sizes": [
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P0-S11",
+      "files": 55,
+      "uniqueFileIds": 55,
+      "logicalBytes": 5780997,
+      "deduplicatedAllocatedBytes": 5895592
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\.cache\\p0-s11-native-control",
+      "files": 151,
+      "uniqueFileIds": 151,
+      "logicalBytes": 10558351,
+      "deduplicatedAllocatedBytes": 10761144
+    },
+    {
+      "path": "D:\\demo1\\tagmaai-deliveries\\0.2.0-dev.19",
+      "files": 3,
+      "uniqueFileIds": 3,
+      "logicalBytes": 6677409,
+      "deduplicatedAllocatedBytes": 6684672
+    },
+    {
+      "path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\candidate-dev19",
+      "files": 2,
+      "uniqueFileIds": 2,
+      "logicalBytes": 30350336,
+      "deduplicatedAllocatedBytes": 30355456
+    }
+  ],
+  "allocationMethod": "GetFileInformationByHandleEx FileStandardInfo allocation; FileIdInfo volume/id dedup within each directory. Current occupancy, not net added/released space.",
+  "newWorktrees": 0,
+  "deletedFiles": 0,
+  "cleanup": "Policy rejection retained layout-browser-profile; no retry",
+  "processes": [
+    {
+      "ProcessId": 30236,
+      "ParentProcessId": 48232,
+      "Name": "tagma-desktop.exe",
+      "ExecutablePath": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\candidate-dev19\\tagma-desktop.exe"
+    },
+    {
+      "ProcessId": 29000,
+      "ParentProcessId": 30236,
+      "Name": "tagma-gateway.exe",
+      "ExecutablePath": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\candidate-dev19\\tagma-gateway.exe"
+    }
+  ],
+  "schedules": [
+    {
+      "id": "magpie-cis",
+      "statusLine": "status = \"PAUSED\""
+    },
+    {
+      "id": "tagma-prd",
+      "statusLine": "status = \"PAUSED\""
+    }
+  ]
+}

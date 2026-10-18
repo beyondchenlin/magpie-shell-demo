@@ -1,0 +1,10 @@
+{
+  "utc": "2026-10-18T08:07:14.0359686Z",
+  "path": "D:\\demo1\\tagmaai\\.cache\\p0-s11-native-control\\layout-browser-profile",
+  "purpose": "Only this batch synthetic headless CSS checks; no Tagma or user data",
+  "logicalBytes": 1757648.0,
+  "fileCount": 54,
+  "guard": "Exact boundary, no reparse points, no owned browser process, no recent writer, every file exclusive-open checked",
+  "physicalAllocation": "not measured; logical bytes are not net disk release",
+  "beforeD": 34327314432
+}
