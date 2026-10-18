@@ -4125,7 +4125,7 @@ dependencies = [
 
 [[package]]
 name = "tagma-core"
-version = "0.2.0-dev.28"
+version = "0.2.0-dev.29"
 dependencies = [
  "cap-std",
  "ed25519-dalek",
@@ -4150,7 +4150,7 @@ dependencies = [
 
 [[package]]
 name = "tagma-desktop"
-version = "0.2.0-dev.28"
+version = "0.2.0-dev.29"
 dependencies = [
  "fs2",
  "reqwest",
@@ -4168,7 +4168,7 @@ dependencies = [
 
 [[package]]
 name = "tagma-gateway"
-version = "0.2.0-dev.28"
+version = "0.2.0-dev.29"
 dependencies = [
  "async-stream",
  "axum",
@@ -4190,7 +4190,7 @@ dependencies = [
 
 [[package]]
 name = "tagma-runtime"
-version = "0.2.0-dev.28"
+version = "0.2.0-dev.29"
 dependencies = [
  "fs2",
  "futures-util",
