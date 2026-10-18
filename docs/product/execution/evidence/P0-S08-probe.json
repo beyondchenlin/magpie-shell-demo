@@ -1,0 +1,8 @@
+{
+  "purpose": "Passive UI target to distinguish native channel failure from Tagma",
+  "createdAtUtc": "2026-10-18T06:02:52.3009474Z",
+  "control": "sky only",
+  "executable": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-channel-5cff696d-f59f-41ae-aaf8-60f595a424c9\\Tagma-Channel-Probe.exe",
+  "maxLogBytes": 20480,
+  "root": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-channel-5cff696d-f59f-41ae-aaf8-60f595a424c9"
+}

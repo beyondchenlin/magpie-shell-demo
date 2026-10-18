@@ -1,0 +1,31 @@
+{
+  "root": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-channel-5cff696d-f59f-41ae-aaf8-60f595a424c9",
+  "newWorktrees": 0,
+  "logicalBytes": 10067,
+  "purpose": "owned passive probe; closed, logs and source preserved",
+  "removed": true,
+  "tagmaFixtureRetained": true,
+  "controllerStopped": false,
+  "entries": [
+    {
+      "path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-channel-5cff696d-f59f-41ae-aaf8-60f595a424c9\\events.txt",
+      "bytes": 2368,
+      "sha256": "972E277C2BEE3B68A43648080A9C2E24E75F94D6BED58E2367D17CEF491C0790",
+      "modifiedUtc": "2026-10-18T06:10:34.6680141Z"
+    },
+    {
+      "path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-channel-5cff696d-f59f-41ae-aaf8-60f595a424c9\\owner.txt",
+      "bytes": 19,
+      "sha256": "25012697A938B9C299FC094E96E417DA0ED5B86EA26EE96DE09E050E647B7FD5",
+      "modifiedUtc": "2026-10-18T06:02:51.8569410Z"
+    },
+    {
+      "path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-channel-5cff696d-f59f-41ae-aaf8-60f595a424c9\\Tagma-Channel-Probe.exe",
+      "bytes": 7680,
+      "sha256": "4405DC8920F42295C2E3A76FEB301D797AE1E26919727EC2171A57E3B5F1FFA9",
+      "modifiedUtc": "2026-10-18T06:06:09.2575300Z"
+    }
+  ],
+  "recordedAtUtc": "2026-10-18T06:12:18.5832693Z",
+  "physicalNetReclaimed": "not measured"
+}

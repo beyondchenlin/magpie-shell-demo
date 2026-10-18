@@ -1,0 +1,52 @@
+{
+  "recordedAtUtc": "2026-10-18T06:11:18.732Z",
+  "controllerRetained": true,
+  "controllerReset": false,
+  "tagmaWindow": {
+    "app": "process:C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-hotfix-s01-d01972fd-b495-478e-8b54-af7eedbbfe47\\tagma-desktop.exe",
+    "id": 69124,
+    "title": "Tagma 隔离测试 dev17 升级恢复 d01972fd"
+  },
+  "probeClosed": true,
+  "probeTextVerified": true,
+  "observations": [
+    {
+      "target": "Tagma",
+      "capture": "FrameArrived timed out: timed out waiting on channel"
+    },
+    {
+      "target": "Tagma after fresh selection and activation",
+      "capture": "window capture timed out: timed out waiting on channel"
+    },
+    {
+      "target": "standard WinForms passive probe",
+      "capture": "window capture timed out: timed out waiting on channel"
+    },
+    {
+      "target": "probe with ongoing 250ms repaint",
+      "capture": "window capture timed out: timed out waiting on channel"
+    }
+  ],
+  "probeClick": {
+    "at": "2026-10-18T06:05:22.112Z",
+    "before": "Clicks: 8; Keys: 0",
+    "error": "Error: coordinate input geometry is unavailable",
+    "after": {
+      "focused_element": "3 按钮 Click probe ID: 199604",
+      "tree": "Window: \"Tagma P0 computer channel probe\", App: Tagma-Channel-Probe.exe.\n\t0 窗口 Tagma P0 computer channel probe Secondary Actions: Raise\n\t\t1 文本 Owned diagnostic window - synthetic input only ID: 199608\n\t\t2 编辑 (settable, string) Probe input ID: 134066\n\t\t3 按钮 Click probe ID: 199604\n\t\t4 文本 Clicks: 8; Keys: 0 ID: 723598\n\t\t5 标题栏 (settable, string) Value: Tagma P0 computer channel probe\n\t\t\t6 菜单栏 系统 ID: MenuBar\n\t\t\t\t7 菜单项目 系统\n\t\t\t8 按钮 最小化\n\t\t\t9 按钮 最大化\n\t\t\t10 按钮 关闭\n\nThe focused UI element is 3 按钮 Click probe ID: 199604."
+    }
+  },
+  "keyboardEvidence": {
+    "returnChangedCounter": "0 -> 1 at 2026-10-18T06:03:29.9274314Z",
+    "text": "tagma-channel-20261018 read back through accessibility",
+    "close": "both passive probe windows closed by Alt+F4; confirmed absent afterward",
+    "otherUnattributedInput": "Additional counter changes were observed without matching assistant calls; excluded from claimed success"
+  },
+  "tagmaKeyboardFocus": "Tab did not produce a verified editable/button focus; one user-input guard triggered, reobserved before next action",
+  "conclusion": "Cross-application capture and coordinate-click failure reproduced; root cause not established; not fixed",
+  "nativeAcceptance": {
+    "save": false,
+    "restart": false,
+    "physicalDrag": false
+  }
+}
