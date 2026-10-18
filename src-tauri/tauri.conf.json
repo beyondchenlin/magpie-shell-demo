@@ -1,7 +1,7 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
   "productName": "Tagma",
-  "version": "0.2.0-dev.20",
+  "version": "0.2.0-dev.21",
   "identifier": "com.tagmaai.desktop",
   "build": {
     "beforeDevCommand": "node scripts/tagma-sidecar.mjs --debug && npm run dev:tagma",

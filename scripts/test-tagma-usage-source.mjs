@@ -409,7 +409,8 @@ test("ProductApp keeps failure state, secondary navigation and editor focus acro
     focused=null;capture(opener);add().props.onClick();tree=draw();
     service.save=async()=>{throw{code:"CONFIG_CONFLICT"}};
     assert.equal(await one(tree,"ProviderForm").props.onSave({}),false);tree=draw();
-    assert.equal(focused,null,"failed save must keep the editor and its focus");one(tree,"ProviderForm");
+    assert.equal(focused,null,"failed save must not restore the editor opener");one(tree,"ProviderForm");
+    assert.equal(one(tree,"div",p=>p.role==="alert").props.tabIndex,-1,"the failure must be a programmatic focus target outside the tab order");
     assert.equal(one(tree,"TextBtn",p=>p.children==="刷新").props.disabled,true);
     service.save=async()=>({desired_revision:2,providers:[],profiles:[],teams:[]});
     assert.equal(await one(tree,"ProviderForm").props.onSave({}),true);tree=draw();assert.equal(focused,opener);

@@ -47,12 +47,16 @@ export default function ProductApp() {
   const c = copy(preferences.language);
   const hasView = view !== null;
   const content = useRef<HTMLElement>(null);
+  const errorAlert = useRef<HTMLDivElement>(null);
   const addProvider = useRef<HTMLButtonElement>(null);
   const editorTrigger = useRef<HTMLButtonElement | null>(null);
   const wasEditing = useRef(false);
   const previousPage = useRef(page);
   const editing = !!editor || !!timeoutEditor || profileEditing || gatewayEditing || teamEditing || securityEditing || budgetEditing;
   const editorOpen = editing || !!deleting;
+  useEffect(() => {
+    if (error != null && !busy) errorAlert.current?.focus();
+  }, [error, busy]);
   useEffect(() => {
     // Restore after React has removed the editor and enabled its launch control.
     if (wasEditing.current && !editorOpen) {
@@ -151,7 +155,7 @@ export default function ProductApp() {
       {configurationError != null && (!view
         ? <ConfigurationFailure error={configurationError} busy={busy} language={preferences.language} onRefresh={()=>void refresh()} onDiagnostics={()=>setPage("settings")} onQuit={()=>void service.quit().catch(setError)} />
         : <div className="tagma-error" role="alert">{errorCopy(configurationError,preferences.language)} <TextBtn disabled={busy||editing} onClick={()=>void refresh()}>{c.refresh}</TextBtn></div>)}
-      {error != null && <div className="tagma-error" role="alert">{typeof error === "object" && "code" in error && error.code === "PREFERENCES_UNSAVED" ? c.preferencesError : typeof error === "object" && "code" in error && error.code === "CLIPBOARD_UNCONFIRMED" ? c.copyFailed : errorCopy(error, preferences.language)} <TextBtn disabled={busy||editing} onClick={() => void refresh()}>{c.refresh}</TextBtn></div>}
+      {error != null && <div ref={errorAlert} tabIndex={-1} className="tagma-error" role="alert">{typeof error === "object" && "code" in error && error.code === "PREFERENCES_UNSAVED" ? c.preferencesError : typeof error === "object" && "code" in error && error.code === "CLIPBOARD_UNCONFIRMED" ? c.copyFailed : errorCopy(error, preferences.language)} <TextBtn disabled={busy||editing} onClick={() => void refresh()}>{c.refresh}</TextBtn></div>}
       {notice && <p role="status" className="tagma-notice">{view?.runtime.state === "running" && view.runtime.effective_revision === view.config.desired_revision ? c.configurationApplied : c.saved}</p>}
       <div hidden={page !== "chat"}><ChatView active={page === "chat"} view={view} busy={busy} configurationError={configurationError} language={preferences.language} onAddProvider={() => { setPage("providers"); setEditor("new"); setNotice(false); }} onProviders={() => setPage("providers")} onGateway={() => setPage("gateway")} onMarket={() => setPage("market")} /></div>
       {page === "providers" && <section><div className="tagma-heading"><h1>{c.providers}</h1><TextBtn ref={addProvider} variant="action" disabled={!view || busy || editing} onClick={() => { setEditor("new"); setNotice(false); }}>{c.add}</TextBtn></div>
