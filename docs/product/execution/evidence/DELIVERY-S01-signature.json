@@ -1,0 +1,5 @@
+{
+  "Status": 2,
+  "StatusMessage": "The file D:\\demo1\\tagmaai-deliveries\\0.2.0-dev.16\\Tagma_0.2.0-dev.16_x64-setup.exe is not digitally signed. You cannot run this script on the current system. For more information about running scripts and setting execution policy, see about_Execution_Policies at https://go.microsoft.com/fwlink/?LinkID=135170",
+  "Path": "D:\\demo1\\tagmaai-deliveries\\0.2.0-dev.16\\Tagma_0.2.0-dev.16_x64-setup.exe"
+}

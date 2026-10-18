@@ -1,0 +1,16 @@
+[
+  {
+    "Path": "D:\\demo1\\tagmaai\\target\\debug\\bundle\\nsis\\Tagma_0.2.0-dev.16_x64-setup.exe",
+    "Bytes": 6614234,
+    "FileVersion": "0.2.0-dev.16",
+    "ProductVersion": "0.2.0-dev.16",
+    "ProductName": "Tagma"
+  },
+  {
+    "Path": "D:\\demo1\\tagmaai\\target\\debug\\tagma-desktop.exe",
+    "Bytes": 20165632,
+    "FileVersion": "0.2.0-dev.16",
+    "ProductVersion": "0.2.0-dev.16",
+    "ProductName": "Tagma"
+  }
+]

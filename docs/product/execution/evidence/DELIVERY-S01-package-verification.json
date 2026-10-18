@@ -1,0 +1,51 @@
+{
+  "recordedAtUtc": "2026-10-18T02:30:14.155Z",
+  "sourceHead": "e876320b8f2bf66540b6838591f662d60cf9f5b5",
+  "sourceAggregateSha256": "956b2ebf8f82f803d5e85f04914119b4327a2cb55531e0af5e09e87a43454d70",
+  "dirtyAtBuild": true,
+  "sourceFilesRechecked": 299,
+  "sourceChangedDuringBuild": [],
+  "installer": {
+    "path": "D:\\demo1\\tagmaai\\target\\debug\\bundle\\nsis\\Tagma_0.2.0-dev.16_x64-setup.exe",
+    "bytes": 6614234,
+    "sha256": "2987fcb829182878f2ce62d6878043c898697c052b3538b5e538981f3ab75c72"
+  },
+  "embeddedExecutables": [
+    {
+      "name": "tagma-desktop.exe",
+      "source": "D:\\demo1\\tagmaai\\target\\debug\\tagma-desktop.exe",
+      "embeddedBytes": 20165632,
+      "embeddedSha256": "1eeaefd4fb684249f2b3454a01666d860387fbf0ee5c9a1b994542f0e2619319",
+      "unbundledSourceSha256": "428f55fe9d7499a13a8269c737e41bac22dc941e8bd1999567e921a107f51a28",
+      "expectedBundledSha256": "1eeaefd4fb684249f2b3454a01666d860387fbf0ee5c9a1b994542f0e2619319",
+      "exactExpectedMatch": true,
+      "machine": "AMD64",
+      "subsystem": "Windows GUI",
+      "bundlePatch": {
+        "offset": 15311376,
+        "from": "__TAURI_BUNDLE_TYPE_VAR_UNK",
+        "to": "__TAURI_BUNDLE_TYPE_VAR_NSS",
+        "reason": "Tauri NSIS bundler patch;original unbundled file restored after packaging"
+      }
+    },
+    {
+      "name": "tagma-gateway.exe",
+      "source": "D:\\demo1\\tagmaai\\src-tauri\\binaries\\tagma-gateway-x86_64-pc-windows-msvc.exe",
+      "embeddedBytes": 10099712,
+      "embeddedSha256": "5fcd62356c55877b2917eaa2ec1513fef966765db625ced1a6cbaa18aa57bb8d",
+      "unbundledSourceSha256": "5fcd62356c55877b2917eaa2ec1513fef966765db625ced1a6cbaa18aa57bb8d",
+      "expectedBundledSha256": "5fcd62356c55877b2917eaa2ec1513fef966765db625ced1a6cbaa18aa57bb8d",
+      "exactExpectedMatch": true,
+      "machine": "AMD64",
+      "subsystem": "Windows GUI",
+      "bundlePatch": null
+    }
+  ],
+  "extractor": {
+    "path": "C:/Program Files/7-Zip/7z.exe",
+    "sha256": "4a41aa37786c7eae7451e81c2c97458d5d1ae5a3a8154637a0d5f77adc05e619"
+  },
+  "verification": "7-Zip stdout extraction into bounded memory only,no EXE execution or extraction directory",
+  "installerExecuted": false,
+  "desktopExecuted": false
+}

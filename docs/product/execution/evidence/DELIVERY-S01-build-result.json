@@ -1,0 +1,6 @@
+{
+  "RecordedAtUtc": "2026-10-18T02:18:26.0315797Z",
+  "ExitCode": 0,
+  "Command": "tauri build --debug --bundles nsis --ci -- --locked --offline",
+  "NoAppOrInstallerLaunched": true
+}

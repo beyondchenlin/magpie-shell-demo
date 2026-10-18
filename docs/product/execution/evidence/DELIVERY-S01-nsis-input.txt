@@ -1,0 +1,42 @@
+
+
+!define WEBVIEW2APPGUID "{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}"
+
+!define MANUFACTURER "tagmaai"
+!define PRODUCTNAME "Tagma"
+!define VERSION "0.2.0-dev.16"
+!define VERSIONWITHBUILD "0.2.0.0"
+!define HOMEPAGE ""
+!define INSTALLMODE "currentUser"
+!define LICENSE ""
+!define INSTALLERICON ""
+!define SIDEBARIMAGE ""
+!define HEADERIMAGE ""
+!define UNINSTALLERICON ""
+!define UNINSTALLERHEADERIMAGE ""
+!define MAINBINARYNAME "tagma-desktop"
+!define MAINBINARYSRCPATH "D:\demo1\tagmaai\target\debug\tagma-desktop.exe"
+!define BUNDLEID "com.tagmaai.desktop"
+!define COPYRIGHT ""
+!define OUTFILE "nsis-output.exe"
+!define ARCH "x64"
+
+  !ifmacrodef NSIS_HOOK_PREINSTALL
+    !insertmacro NSIS_HOOK_PREINSTALL
+  !endif
+
+  !insertmacro CheckIfAppIsRunning "$INSTDIR\${MAINBINARYNAME}.exe" "${PRODUCTNAME}"
+
+  ; Copy main executable
+  File "${MAINBINARYSRCPATH}"
+
+  ; Copy resources
+
+  ; Copy external binaries
+    File /a "/oname=tagma-gateway.exe" "D:\demo1\tagmaai\src-tauri\binaries\tagma-gateway-x86_64-pc-windows-msvc.exe"
+
+  ; Create file associations
+
+  ; Register deep links
+
+  ; Create uninstaller

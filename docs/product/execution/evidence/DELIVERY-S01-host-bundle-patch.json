@@ -1,0 +1,13 @@
+{
+  "recordedAtUtc": "2026-10-18T02:29:41.162Z",
+  "sourceBytes": 20165632,
+  "embeddedBytes": 20165632,
+  "differingRanges": [
+    {
+      "offset": 15311400,
+      "bytes": 3,
+      "unbundled": "554e4b",
+      "bundled": "4e5353"
+    }
+  ]
+}

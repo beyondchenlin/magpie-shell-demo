@@ -1,0 +1,135 @@
+{
+  "recordedAtUtc": "2026-10-18T02:31:16.408Z",
+  "candidateVersion": "0.2.0-dev.16",
+  "sourceHead": "e876320b8f2bf66540b6838591f662d60cf9f5b5",
+  "dirtyAtBuild": true,
+  "configSchema": 10,
+  "usageSchema": 2,
+  "delivery": {
+    "path": "D:\\demo1\\tagmaai-deliveries\\0.2.0-dev.16\\Tagma_0.2.0-dev.16_x64-setup.exe",
+    "bytes": 6614234,
+    "sha256": "2987fcb829182878f2ce62d6878043c898697c052b3538b5e538981f3ab75c72"
+  },
+  "documents": [
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\EXECUTION-STATUS.md",
+      "bytes": 44370,
+      "sha256": "3ba0773ec2bee3c04c02f3b88ecd59285eeedd2b207ba95a2f05c2bcfa0471b9"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\DELIVERY-S01-DEV16-INSTALLER.md",
+      "bytes": 3875,
+      "sha256": "299fe67507ea376d3527f9094e19ccc562cb4dc074409d591b55153ca3ab3d14"
+    }
+  ],
+  "prd": {
+    "path": "D:\\demo1\\tagmaai\\docs\\product\\TAGMA-PRD-v0.3.md",
+    "bytes": 50957,
+    "sha256": "6e6503391f70e3f2e53347890de6e7c9f7fd93cc393c68f7bba494ac4d67a6d6"
+  },
+  "evidence": [
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\DELIVERY-S01-build-help.txt",
+      "bytes": 3690,
+      "sha256": "78f33458437ffc4aa81cc33be03a39cf447ad5f87d4f7f7393c32765ce14e2d4"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\DELIVERY-S01-build-result.json",
+      "bytes": 191,
+      "sha256": "d151e38b5e9288b230759830a08b211c717b563b5184402653f9669e6e8f181b"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\DELIVERY-S01-build.txt",
+      "bytes": 4758,
+      "sha256": "768d486711933fe1ec9dca258ba9474edf1ec014ea98bf4d4be73f27dbca3988"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\DELIVERY-S01-chrome-guard.txt",
+      "bytes": 684,
+      "sha256": "82bd8000994abb3b84abc224896de3f42266c14e663a6548d9c9499276d5dcab"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\DELIVERY-S01-cis-guard.txt",
+      "bytes": 319,
+      "sha256": "dc7d2807ea1910f39c47cf866c2ddae915169166f9f8ec4e1ef171bb371758b7"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\DELIVERY-S01-delivery.json",
+      "bytes": 194,
+      "sha256": "7a7ae66a846c7073f829050db581e29e5827ac2bef9c7621bbdd6b5196fe0532"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\DELIVERY-S01-extract-initial.json",
+      "bytes": 695,
+      "sha256": "8057427d2cee75ccd76d7046e24bdd12cb2ff1c8a9c52e91f68085e898528962"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\DELIVERY-S01-host-bundle-patch.json",
+      "bytes": 245,
+      "sha256": "bcd99d8660cd7ffa416c2d7099f1799b1d5ee5d22c6790045825f7fd1837931a"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\DELIVERY-S01-package-list.txt",
+      "bytes": 1646,
+      "sha256": "cd7949f436f19609a631707efe4b6a5ea20560f0c05180ea6884d3d52ce11e6d"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\DELIVERY-S01-package-verification.json",
+      "bytes": 2238,
+      "sha256": "26bcd3ab789244dc0498121ca47aa365780f10ea86d0f4bf464966a047c68725"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\DELIVERY-S01-pe-versions.json",
+      "bytes": 447,
+      "sha256": "ea0c6690a74a071f8d649e7b9499a0a79f6370cf4d3b69d6a1bf934d478067ab"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\DELIVERY-S01-rejected-files-retained.json",
+      "bytes": 241,
+      "sha256": "95e968efb80dbdb492d04b90f54775f922f17b0228d2fd122ddf3b3341ab6b12"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\DELIVERY-S01-shortcuts.json",
+      "bytes": 656,
+      "sha256": "59832628bd355813a0be44859b615a9ffa68c962b306f9f490d4c8ba6b58914a"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\DELIVERY-S01-signature.json",
+      "bytes": 450,
+      "sha256": "f2979242d20b7961eb9123dfef55c19c72abf8061a8178daa54f9d81b935cad1"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\DELIVERY-S01-source-before.json",
+      "bytes": 52408,
+      "sha256": "3ff2ab76ce1e23814f1833622ced4873a56d9fb6399f1022feb75c11b8e3168a"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\DELIVERY-S01-source-checks.json",
+      "bytes": 164,
+      "sha256": "7a03023ed81187db51dd81dc40618cacc4a992273a271272e68e6ef19a43f060"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\DELIVERY-S01-space-after.json",
+      "bytes": 514,
+      "sha256": "f7cde30d4eeec252e0c6bfedbc80ae33e7f4f0d6091f252b2fa6a2bcd0f3cef8"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\DELIVERY-S01-space-plan.json",
+      "bytes": 1150,
+      "sha256": "4b3ec16598c0bef9323ee6f6ef4864afad0647f013b689f5584be2eac5b63de0"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\DELIVERY-S01-ui-source.txt",
+      "bytes": 2718,
+      "sha256": "6ecde3fcbc9737108368d904eb6951de112260158b263a1391290c966d06ae7d"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\DELIVERY-S01-nsis-input.txt",
+      "bytes": 1139,
+      "sha256": "13642399ff54c99b02589ee71d1890a1b15b1f5b60384d3f70e1c0f357748efe"
+    }
+  ],
+  "nativeUiAccepted": false,
+  "dragAccepted": false,
+  "installedByExecutor": false
+}

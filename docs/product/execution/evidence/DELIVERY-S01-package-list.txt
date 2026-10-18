@@ -1,0 +1,91 @@
+
+7-Zip 26.00 (x64) : Copyright (c) 1999-2026 Igor Pavlov : 2026-02-12
+
+Scanning the drive for archives:
+1 file, 6614234 bytes (6460 KiB)
+
+Listing archive: target\debug\bundle\nsis\Tagma_0.2.0-dev.16_x64-setup.exe
+
+--
+Path = target\debug\bundle\nsis\Tagma_0.2.0-dev.16_x64-setup.exe
+Type = Nsis
+Physical Size = 6614234
+Method = LZMA:23
+Solid = +
+Headers Size = 73328
+Embedded Stub Size = 52736
+SubType = NSIS-3 Unicode BadCmd=13
+
+----------
+Path = $PLUGINSDIR\System.dll
+Size = 12288
+Packed Size = 6561494
+Modified = 
+Attributes = 
+Method = LZMA:23
+Solid = +
+Offset = 0
+
+Path = $PLUGINSDIR\modern-wizard.bmp
+Size = 26494
+Packed Size = 
+Modified = 2026-10-17 14:04:28.0000000
+Attributes = 
+Method = LZMA:23
+Solid = +
+Offset = 12292
+
+Path = $PLUGINSDIR\nsDialogs.dll
+Size = 9728
+Packed Size = 
+Modified = 
+Attributes = 
+Method = LZMA:23
+Solid = +
+Offset = 38790
+
+Path = $PLUGINSDIR\nsis_tauri_utils.dll
+Size = 34304
+Packed Size = 
+Modified = 
+Attributes = 
+Method = LZMA:23
+Solid = +
+Offset = 48522
+
+Path = $PLUGINSDIR\StartMenu.dll
+Size = 13316
+Packed Size = 
+Modified = 
+Attributes = 
+Method = LZMA:23
+Solid = +
+Offset = 82830
+
+Path = $PLUGINSDIR\NSISdl.dll
+Size = 15360
+Packed Size = 
+Modified = 
+Attributes = 
+Method = LZMA:23
+Solid = +
+Offset = 96150
+
+Path = tagma-desktop.exe
+Size = 20165632
+Packed Size = 
+Modified = 2026-10-18 10:18:12.0000000
+Attributes = 
+Method = LZMA:23
+Solid = +
+Offset = 111514
+
+Path = tagma-gateway.exe
+Size = 
+Packed Size = 
+Modified = 2026-10-18 10:17:36.0000000
+Attributes = A
+Method = LZMA:23
+Solid = +
+Offset = 20277150
+

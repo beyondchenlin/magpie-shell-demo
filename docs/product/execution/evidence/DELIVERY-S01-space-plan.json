@@ -1,0 +1,23 @@
+{
+  "RecordedAtUtc": "2026-10-18T02:16:46.4180953Z",
+  "Request": "User wants latest NSIS EXE for self-install and removal of exactly three old desktop shortcuts",
+  "Version": "0.2.0-dev.16",
+  "ConfigSchema": 10,
+  "UsageSchema": 2,
+  "SourceHead": "e876320b8f2bf66540b6838591f662d60cf9f5b5",
+  "Targets": [
+    "D:/demo1/tagmaai/target/debug",
+    "D:/demo1/tagmaai/src-tauri/binaries",
+    "D:/demo1/tagmaai/dist-tagma",
+    "D:/demo1/tagmaai-deliveries/0.2.0-dev.16"
+  ],
+  "TempRoot": "C:\\Users\\ai\\AppData\\Local\\Temp",
+  "CFreeGiB": 46.82,
+  "DFreeGiB": 37.68,
+  "EstimatedAdditionalPeakGiB": 2.0,
+  "EstimatedTempPeakGiB": 0.3,
+  "MarginGiB": 10,
+  "Reuse": "Existing single working tree,locked offline Cargo cache,node_modules,debug/test profiles and NSIS cache;no clone/worktree/environment/install",
+  "Retention": "Keep new installer and minimal hash/manifest;existing target remains reusable;no task-owned old/rejected artifacts removed",
+  "Restrictions": "No UI control,no installer/app launch or stop,no user data access/modification,no unfinished P2 activation;shortcut deletion only after verified EXE"
+}

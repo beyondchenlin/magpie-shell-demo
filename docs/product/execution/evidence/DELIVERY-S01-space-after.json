@@ -1,0 +1,12 @@
+{
+  "RecordedAtUtc": "2026-10-18T02:30:41.4975525Z",
+  "CFreeGiB": 46.77,
+  "DFreeGiB": 36.2,
+  "TempRoot": "C:\\Users\\ai\\AppData\\Local\\Temp",
+  "NewWorktrees": 0,
+  "NewEnvironments": 0,
+  "PackageExtractionDirectoriesCreated": 0,
+  "Cleanup": "No build cache/old rejected file deletion;7z output hashed in bounded memory",
+  "RetainedDelivery": "D:/demo1/tagmaai-deliveries/0.2.0-dev.16",
+  "Caveat": "Drive deltas include concurrent external writes and are not measured task peak/net-release"
+}

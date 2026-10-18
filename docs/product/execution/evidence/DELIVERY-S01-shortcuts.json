@@ -1,0 +1,21 @@
+{
+  "RecordedAtUtc": "2026-10-18T02:30:41.4424993Z",
+  "ExecutedBy": "Supervisor thread under the direct user request",
+  "Evidence": "SUPERVISION-LOG.md entry 2026-10-18T02:23:35.3252418Z",
+  "CurrentReadOnlyAbsenceChecks": [
+    {
+      "Path": "C:\\Users\\ai\\Desktop\\Tagma dev.5 预览.lnk",
+      "Exists": false
+    },
+    {
+      "Path": "C:\\Users\\ai\\Desktop\\Tagma 最新预览.lnk",
+      "Exists": false
+    },
+    {
+      "Path": "C:\\Users\\ai\\Desktop\\Tagma.lnk",
+      "Exists": false
+    }
+  ],
+  "ExecutorDeletionRetried": false,
+  "Scope": "Only three desktop .lnk files;no application/data/credential removal"
+}

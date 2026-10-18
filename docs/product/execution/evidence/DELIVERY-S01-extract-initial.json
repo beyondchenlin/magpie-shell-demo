@@ -1,0 +1,22 @@
+[
+  {
+    "name": "tagma-desktop.exe",
+    "code": 0,
+    "actualBytes": 20165632,
+    "sourceBytes": 20165632,
+    "actualSha256": "1eeaefd4fb684249f2b3454a01666d860387fbf0ee5c9a1b994542f0e2619319",
+    "sourceSha256": "428f55fe9d7499a13a8269c737e41bac22dc941e8bd1999567e921a107f51a28",
+    "firstBytes": "4d5a900003000000",
+    "stderr": ""
+  },
+  {
+    "name": "tagma-gateway.exe",
+    "code": 0,
+    "actualBytes": 10099712,
+    "sourceBytes": 10099712,
+    "actualSha256": "5fcd62356c55877b2917eaa2ec1513fef966765db625ced1a6cbaa18aa57bb8d",
+    "sourceSha256": "5fcd62356c55877b2917eaa2ec1513fef966765db625ced1a6cbaa18aa57bb8d",
+    "firstBytes": "4d5a900003000000",
+    "stderr": ""
+  }
+]
