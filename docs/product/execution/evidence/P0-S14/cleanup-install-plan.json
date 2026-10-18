@@ -1,0 +1,10 @@
+{
+  "path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\install-p0s14\\uninstall.exe",
+  "directory": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\install-p0s14",
+  "purpose": "Task-only isolated NSIS uninstaller residue after native uninstall",
+  "bytes": 79338,
+  "sha256": "ECDBFAB7227C759C24E31FC5AC890F8EFE4FD8FA484F9781D7D8D2C7B01B2D5B",
+  "utc": "2026-10-18T12:14:15.4150589Z",
+  "safeBasis": "Exact owner/boundary; no reparse; only residual file; no process reference or exclusive-open lock; preserved installer payload and UI evidence",
+  "retention": "Keep historical installer source/payload and screenshots; remove this task-owned uninstall residue only"
+}

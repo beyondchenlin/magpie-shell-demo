@@ -1,0 +1,7 @@
+{
+  "utc": "2026-10-18T12:15:08.3926013Z",
+  "action": "Remove task-owned install-p0s14/uninstall.exe and then empty directory",
+  "result": "automatic approval review rejected: blocked by policy",
+  "deleted": false,
+  "retry": "none; residue retained"
+}

@@ -1,0 +1,26 @@
+{
+  "utc": "2026-10-18T12:41:15.9057976Z",
+  "productCommit": "5a7ea764f724aa14e40f99442a0eb5f74f2f0c5c",
+  "sourceInputsUnchanged": 310,
+  "normalInstalledPidsPreserved": [
+    22064,
+    28752
+  ],
+  "retainedMain": [
+    35140,
+    29816
+  ],
+  "schedules": [
+    {
+      "status": "PAUSED",
+      "name": "tagma-prd"
+    },
+    {
+      "status": "PAUSED",
+      "name": "magpie-cis"
+    }
+  ],
+  "prdAddendum": "CHAT-03-05/A29 written, accepted pending implementation; inherited untracked PRD/review remain preserved",
+  "cleanupDenied": "79,338 byte uninstaller retained after automatic approval review blocked by policy; no workaround attempted",
+  "noNewWorktrees": true
+}

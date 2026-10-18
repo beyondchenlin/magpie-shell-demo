@@ -1,0 +1,8 @@
+{
+  "pid": 54992,
+  "started": "2026-10-18T11:21:46.8569157Z",
+  "path": "D:\\demo1\\tagmaai\\.cache\\p0-s14-closure\\installers\\isolated-dev23-setup.exe",
+  "sha256": "D622E81B5170411922BE53E73DBA6ABD9F0A13AAAC0531C3FFAF782F8152CA22",
+  "destination": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\install-p0s14",
+  "purpose": "Isolated NSIS acceptance, product identity distinct from installed Tagma"
+}

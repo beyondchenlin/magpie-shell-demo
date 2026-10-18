@@ -1,0 +1,20 @@
+{
+  "before": "2026-10-18T12:32:25.7869648Z",
+  "after": "2026-10-18T12:32:25.7982545Z",
+  "launchSpanMs": 11.2897,
+  "processes": [
+    {
+      "pid": 35140,
+      "path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\candidate-dev27\\tagma-desktop.exe",
+      "started": "2026-10-18T12:32:25.7889634Z",
+      "title": "Tagma 隔离测试 dev27 P0-S14 128d7053"
+    },
+    {
+      "pid": 45784,
+      "path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\candidate-dev27\\tagma-desktop.exe",
+      "started": "2026-10-18T12:32:25.7965430Z",
+      "title": "Tagma 隔离测试 dev27 P0-S14 second 128d7053"
+    }
+  ],
+  "secondProfile": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\webview-second-p0s14"
+}

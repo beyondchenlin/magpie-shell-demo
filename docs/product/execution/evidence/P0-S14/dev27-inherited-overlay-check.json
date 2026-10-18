@@ -1,0 +1,26 @@
+[
+  {
+    "path": "src/data/de.json",
+    "match": true
+  },
+  {
+    "path": "src/data/ja.json",
+    "match": true
+  },
+  {
+    "path": "src/data/zh-TW.json",
+    "match": true
+  },
+  {
+    "path": "src/data/zh.json",
+    "match": true
+  },
+  {
+    "path": "src/pages/RoutingView.tsx",
+    "match": true
+  },
+  {
+    "path": "src/pages/SimpleViews.tsx",
+    "match": true
+  }
+]

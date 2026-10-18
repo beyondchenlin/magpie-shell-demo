@@ -1,0 +1,7 @@
+{
+  "kind": "exclusive read handle; no file writes",
+  "pid": 3772,
+  "utc": "2026-10-18T10:34:54.9388382Z",
+  "file": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\data\\config.sqlite3",
+  "before": "F82945FF1AE987A08496C370349280EAD5DD2468B9C3E6062BBB5F95C1C76D93"
+}

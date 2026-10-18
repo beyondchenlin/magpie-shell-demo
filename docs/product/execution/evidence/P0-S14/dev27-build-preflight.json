@@ -1,0 +1,9 @@
+{
+  "target": "D:/demo1/tagmaai/target (reuse), .cache/p0-s14-closure, existing fixture/candidate-dev27",
+  "estimatedAdditionalPeakGiB": 2,
+  "systemTempPeakGiB": 1,
+  "reuse": "existing node_modules, Cargo target debug/release, package caches",
+  "cleanup": "keep candidate and bounded evidence; no full source/workspace copy",
+  "CFreeGiB": 34.78786087036133,
+  "DFreeGiB": 27.19457244873047
+}

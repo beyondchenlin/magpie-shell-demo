@@ -1,0 +1,152 @@
+﻿{
+    "utc":  "2026-10-18T11:21:48.1212550Z",
+    "pid":  54992,
+    "window":  18222928,
+    "title":  "Tagma P0 S14 Acceptance Setup",
+    "elements":  [
+                     {
+                         "index":  0,
+                         "name":  "Next \u003e",
+                         "type":  "ControlType.Pane",
+                         "id":  "42,723766",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  null,
+                         "rect":  [
+                                      1995,
+                                      1218,
+                                      75,
+                                      23
+                                  ]
+                     },
+                     {
+                         "index":  1,
+                         "name":  "Cancel",
+                         "type":  "ControlType.Pane",
+                         "id":  "42,13896634",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  null,
+                         "rect":  [
+                                      2081,
+                                      1218,
+                                      75,
+                                      23
+                                  ]
+                     },
+                     {
+                         "index":  2,
+                         "name":  "",
+                         "type":  "ControlType.Pane",
+                         "id":  "42,9505426",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  null,
+                         "rect":  [
+                                      1671,
+                                      948,
+                                      508,
+                                      2
+                                  ]
+                     },
+                     {
+                         "index":  3,
+                         "name":  "",
+                         "type":  "ControlType.Pane",
+                         "id":  "42,262710",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  null,
+                         "rect":  [
+                                      1671,
+                                      1205,
+                                      508,
+                                      2
+                                  ]
+                     },
+                     {
+                         "index":  4,
+                         "name":  "",
+                         "type":  "ControlType.Pane",
+                         "id":  "42,328026",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  null,
+                         "rect":  [
+                                      1671,
+                                      891,
+                                      498,
+                                      57
+                                  ]
+                     },
+                     {
+                         "index":  5,
+                         "name":  "",
+                         "type":  "ControlType.Pane",
+                         "id":  "42,2362146",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  null,
+                         "rect":  [
+                                      1671,
+                                      891,
+                                      497,
+                                      314
+                                  ]
+                     },
+                     {
+                         "index":  6,
+                         "name":  "",
+                         "type":  "ControlType.Pane",
+                         "id":  "42,12062188",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  null,
+                         "rect":  [
+                                      1671,
+                                      891,
+                                      164,
+                                      314
+                                  ]
+                     },
+                     {
+                         "index":  7,
+                         "name":  "Welcome to Tagma P0 S14 Acceptance Setup",
+                         "type":  "ControlType.Pane",
+                         "id":  "42,262690",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  null,
+                         "rect":  [
+                                      1851,
+                                      907,
+                                      293,
+                                      46
+                                  ]
+                     },
+                     {
+                         "index":  8,
+                         "name":  "Setup will guide you through the installation of Tagma P0 S14 Acceptance.\r\n\r\nIt is recommended that you close all other applications before starting Setup. This will make it possible to update relevant system files without having to reboot your computer.\r\n\r\nClick Next to continue.",
+                         "type":  "ControlType.Pane",
+                         "id":  "42,524914",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  null,
+                         "rect":  [
+                                      1851,
+                                      964,
+                                      293,
+                                      211
+                                  ]
+                     }
+                 ]
+}

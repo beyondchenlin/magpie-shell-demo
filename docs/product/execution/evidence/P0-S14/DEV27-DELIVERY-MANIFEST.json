@@ -1,0 +1,39 @@
+{
+  "version": "0.2.0-dev.27",
+  "sourceHeadAtBuild": "3d7b5e8bb0d88784421291f3b57d20a86995b401",
+  "productChangesCommit": "5a7ea764f724aa14e40f99442a0eb5f74f2f0c5c",
+  "dirty": true,
+  "sourceFileCount": 310,
+  "sourceVerification": "Frozen 310 input hashes verified after build; inherited changes remain",
+  "platform": "windows-x64",
+  "profile": "debug-unsigned-internal",
+  "installer": {
+    "bytes": 6634272,
+    "path": "D:\\demo1\\tagmaai-deliveries\\0.2.0-dev.27\\Tagma_0.2.0-dev.27_x64-setup.exe",
+    "sha256": "15D2B52898593D796350974F76A2A9C009EBEB6245EE793EBE2D245ACD032960"
+  },
+  "binaries": [
+    {
+      "path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\candidate-dev27\\tagma-desktop.exe",
+      "bytes": 20271104,
+      "sha256": "F158AFE0BF60791EA03CDD76B4085455ACC09476A79CBCB2CBB59B4A6A82A08A"
+    },
+    {
+      "path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\candidate-dev27\\tagma-gateway.exe",
+      "bytes": 10109440,
+      "sha256": "F2243F674167E896014F934559E9E652A36D587D60F8C44F962841F73EB3E887"
+    }
+  ],
+  "retainedSourceOverlay": {
+    "path": "D:\\demo1\\tagmaai-deliveries\\0.2.0-dev.18\\source-overlay.json.gz",
+    "bytes": 1823959,
+    "sha256": "50d3b6755488b6546ed9601dc848def2de101241fc533b5d34c370ad39af34a3"
+  },
+  "sourceRecovery": "Checkout productChangesCommit; restore only inherited dirty input paths listed by INHERITED-INPUTS.json from retained dev18 overlay; verify all SOURCE-INPUTS hashes. The original build occurred before the product commit.",
+  "installation": "This exact normal-identity installer not run. Isolated-identity dev23-to-dev25 installation/upgrade/uninstall was tested natively; newer changes are request admission/security concurrency.",
+  "nativeAcceptance": "P0-S14 dev27: real tray repeat quit remains draining until deadline; independent gateway survives native desktop quit; two hosts launched within11.29ms yield one gateway; final original isolated data12/12 Beta -> Alpha Offline visible. Other results remain version/profile-scoped in P0-S14 report; overall P0 incomplete.",
+  "performance": "Optimized release gateway only: 1000 pairs at concurrency10, all successful, extra first-body p95 24.9865ms. Debug desktop is a different binary/profile.",
+  "schema": 10,
+  "usageSchema": 2,
+  "protocol": 1
+}

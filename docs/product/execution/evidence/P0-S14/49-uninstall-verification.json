@@ -1,0 +1,16 @@
+{
+  "utc": "2026-10-18T11:35:02.6983111Z",
+  "configUnchanged": true,
+  "testUninstallRegistrationRemoved": true,
+  "installedHostRemoved": true,
+  "installedGatewayRemoved": true,
+  "normalRegistryUnchanged": true,
+  "protectedHostAlive": true,
+  "protectedGatewayAlive": true,
+  "installerFolderRemaining": [
+    {
+      "Name": "uninstall.exe",
+      "Length": 79338
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "samples": 121,
+  "durationSeconds": 1800.2659893,
+  "failure": null,
+  "metrics": [
+    {
+      "metric": "hostPrivateBytes",
+      "firstMiB": 6.85546875,
+      "lastMiB": 6.8359375,
+      "maxMiB": 6.9453125,
+      "last10MinMinMiB": 6.8046875,
+      "last10MinMaxMiB": 6.8359375
+    },
+    {
+      "metric": "gatewayPrivateBytes",
+      "firstMiB": 4.34765625,
+      "lastMiB": 5,
+      "maxMiB": 5.2421875,
+      "last10MinMinMiB": 4.80078125,
+      "last10MinMaxMiB": 5.2421875
+    },
+    {
+      "metric": "gatewayWorkingSetBytes",
+      "firstMiB": 17.609375,
+      "lastMiB": 18.359375,
+      "maxMiB": 18.5625,
+      "last10MinMinMiB": 18.19921875,
+      "last10MinMaxMiB": 18.5625
+    },
+    {
+      "metric": "webviewPrivateBytes",
+      "firstMiB": 171.265625,
+      "lastMiB": 182.0625,
+      "maxMiB": 194.37890625,
+      "last10MinMinMiB": 181.15234375,
+      "last10MinMaxMiB": 183.578125
+    }
+  ]
+}

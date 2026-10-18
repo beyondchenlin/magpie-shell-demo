@@ -1,0 +1,20 @@
+[
+  {
+    "name": "future",
+    "dir": "C:/Users/ai/AppData/Local/Temp/tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88/p0s14-faults/future",
+    "bytes": 8192,
+    "sha256": "e96eeb4d02a664b93f33d2bd7cb4cd786a133dbacce5da5d47262140014f80f2"
+  },
+  {
+    "name": "unknown",
+    "dir": "C:/Users/ai/AppData/Local/Temp/tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88/p0s14-faults/unknown",
+    "bytes": 71,
+    "sha256": "b6265a088eeee5413ba785f8590fb017e3261cf10208acf4dd59b64feebaa71b"
+  },
+  {
+    "name": "empty",
+    "dir": "C:/Users/ai/AppData/Local/Temp/tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88/p0s14-faults/empty",
+    "bytes": 0,
+    "sha256": null
+  }
+]

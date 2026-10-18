@@ -1,0 +1,19 @@
+{
+  "utc": "2026-10-18T11:52:35.9092978Z",
+  "target": "D:\\demo1\\tagmaai\\target\\release",
+  "estimatedTargetPeakGiB": 6,
+  "estimatedTempPeakGiB": 1,
+  "reserveGiB": 10,
+  "reuse": "Same workspace/Cargo registry and Rust toolchain; no extra worktree or dependency environment",
+  "cleanup": "Retain bounded release cache for release verification; no previous release cache existed; keep executable/report separately",
+  "volumes": [
+    {
+      "DriveLetter": "C",
+      "SizeRemaining": 37351383040
+    },
+    {
+      "DriveLetter": "D",
+      "SizeRemaining": 29849714688
+    }
+  ]
+}

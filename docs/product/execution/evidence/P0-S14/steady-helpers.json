@@ -1,0 +1,10 @@
+{
+  "utc": "2026-10-18T11:50:19.4729399Z",
+  "loadPid": 53368,
+  "loadStarted": "2026-10-18T11:50:19.3422179Z",
+  "watchPid": 29980,
+  "watchStarted": "2026-10-18T11:50:19.4666083Z",
+  "durationMinutes": 30,
+  "rate": 1,
+  "maxRequests": 1800
+}

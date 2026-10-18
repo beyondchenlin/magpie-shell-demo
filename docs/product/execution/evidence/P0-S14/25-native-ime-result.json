@@ -1,0 +1,59 @@
+﻿{
+    "afterSecond":  {
+                        "index":  "-1",
+                        "runtimeId":  "42,1052676,4,5,1,150",
+                        "name":  "添加供应商",
+                        "type":  "ControlType.Button",
+                        "automationId":  "",
+                        "enabled":  true,
+                        "offscreen":  false,
+                        "focused":  true,
+                        "password":  false,
+                        "value":  null,
+                        "rect":  [
+                                     2372,
+                                     699,
+                                     91,
+                                     31
+                                 ],
+                        "patterns":  [
+                                         "InvokePatternIdentifiers.Pattern",
+                                         "ScrollItemPatternIdentifiers.Pattern"
+                                     ]
+                    },
+    "native":  {
+                   "KeyboardLayout":  134481924,
+                   "ImeContext":  0,
+                   "ImeOpen":  false,
+                   "CompositionBytes":  -2,
+                   "ShiftDown":  false,
+                   "ControlDown":  false,
+                   "AltDown":  false,
+                   "Focus":  396020
+               },
+    "afterFirst":  {
+                       "index":  "-1",
+                       "runtimeId":  "42,1052676,4,5,1,405",
+                       "name":  "名称",
+                       "type":  "ControlType.Edit",
+                       "automationId":  "_r_4_-name",
+                       "enabled":  true,
+                       "offscreen":  false,
+                       "focused":  true,
+                       "password":  false,
+                       "value":  "",
+                       "rect":  [
+                                    1997,
+                                    967,
+                                    450,
+                                    31
+                                ],
+                       "patterns":  [
+                                        "ValuePatternIdentifiers.Pattern",
+                                        "TextPatternIdentifiers.Pattern",
+                                        "ScrollItemPatternIdentifiers.Pattern"
+                                    ]
+                   },
+    "typed":  "ni",
+    "kind":  "physical N,I then Escape"
+}

@@ -1,0 +1,248 @@
+﻿[
+    {
+        "key":  "initial",
+        "focus":  {
+                      "index":  "-1",
+                      "runtimeId":  "42,7540554,4,5,1,21",
+                      "name":  "继续使用",
+                      "type":  "ControlType.Button",
+                      "automationId":  "",
+                      "enabled":  true,
+                      "offscreen":  false,
+                      "focused":  true,
+                      "password":  false,
+                      "value":  null,
+                      "rect":  [
+                                   1969,
+                                   1129,
+                                   69,
+                                   26
+                               ],
+                      "patterns":  [
+                                       "InvokePatternIdentifiers.Pattern",
+                                       "ScrollItemPatternIdentifiers.Pattern"
+                                   ]
+                  },
+        "native":  {
+                       "Size":  72,
+                       "Flags":  0,
+                       "Active":  3409132,
+                       "Focus":  393758,
+                       "Capture":  0,
+                       "MenuOwner":  0,
+                       "MoveSize":  0,
+                       "Caret":  0,
+                       "CaretRect":  {
+                                         "Left":  0,
+                                         "Top":  0,
+                                         "Right":  0,
+                                         "Bottom":  0
+                                     }
+                   }
+    },
+    {
+        "key":  "Tab",
+        "focus":  {
+                      "index":  "-1",
+                      "runtimeId":  "42,7540554,4,5,1,22",
+                      "name":  "等待后退出",
+                      "type":  "ControlType.Button",
+                      "automationId":  "",
+                      "enabled":  true,
+                      "offscreen":  false,
+                      "focused":  true,
+                      "password":  false,
+                      "value":  null,
+                      "rect":  [
+                                   2044,
+                                   1129,
+                                   82,
+                                   26
+                               ],
+                      "patterns":  [
+                                       "InvokePatternIdentifiers.Pattern",
+                                       "ScrollItemPatternIdentifiers.Pattern"
+                                   ]
+                  },
+        "native":  {
+                       "Size":  72,
+                       "Flags":  0,
+                       "Active":  3409132,
+                       "Focus":  393758,
+                       "Capture":  0,
+                       "MenuOwner":  0,
+                       "MoveSize":  0,
+                       "Caret":  0,
+                       "CaretRect":  {
+                                         "Left":  0,
+                                         "Top":  0,
+                                         "Right":  0,
+                                         "Bottom":  0
+                                     }
+                   }
+    },
+    {
+        "key":  "Tab",
+        "focus":  {
+                      "index":  "-1",
+                      "runtimeId":  "42,7540554,4,5,1,21",
+                      "name":  "继续使用",
+                      "type":  "ControlType.Button",
+                      "automationId":  "",
+                      "enabled":  true,
+                      "offscreen":  false,
+                      "focused":  true,
+                      "password":  false,
+                      "value":  null,
+                      "rect":  [
+                                   1969,
+                                   1129,
+                                   69,
+                                   26
+                               ],
+                      "patterns":  [
+                                       "InvokePatternIdentifiers.Pattern",
+                                       "ScrollItemPatternIdentifiers.Pattern"
+                                   ]
+                  },
+        "native":  {
+                       "Size":  72,
+                       "Flags":  0,
+                       "Active":  3409132,
+                       "Focus":  393758,
+                       "Capture":  0,
+                       "MenuOwner":  0,
+                       "MoveSize":  0,
+                       "Caret":  0,
+                       "CaretRect":  {
+                                         "Left":  0,
+                                         "Top":  0,
+                                         "Right":  0,
+                                         "Bottom":  0
+                                     }
+                   }
+    },
+    {
+        "key":  "Shift+Tab",
+        "focus":  {
+                      "index":  "-1",
+                      "runtimeId":  "42,7540554,4,5,1,22",
+                      "name":  "等待后退出",
+                      "type":  "ControlType.Button",
+                      "automationId":  "",
+                      "enabled":  true,
+                      "offscreen":  false,
+                      "focused":  true,
+                      "password":  false,
+                      "value":  null,
+                      "rect":  [
+                                   2044,
+                                   1129,
+                                   82,
+                                   26
+                               ],
+                      "patterns":  [
+                                       "InvokePatternIdentifiers.Pattern",
+                                       "ScrollItemPatternIdentifiers.Pattern"
+                                   ]
+                  },
+        "native":  {
+                       "Size":  72,
+                       "Flags":  0,
+                       "Active":  3409132,
+                       "Focus":  393758,
+                       "Capture":  0,
+                       "MenuOwner":  0,
+                       "MoveSize":  0,
+                       "Caret":  0,
+                       "CaretRect":  {
+                                         "Left":  0,
+                                         "Top":  0,
+                                         "Right":  0,
+                                         "Bottom":  0
+                                     }
+                   }
+    },
+    {
+        "key":  "Shift+Tab",
+        "focus":  {
+                      "index":  "-1",
+                      "runtimeId":  "42,7540554,4,5,1,21",
+                      "name":  "继续使用",
+                      "type":  "ControlType.Button",
+                      "automationId":  "",
+                      "enabled":  true,
+                      "offscreen":  false,
+                      "focused":  true,
+                      "password":  false,
+                      "value":  null,
+                      "rect":  [
+                                   1969,
+                                   1129,
+                                   69,
+                                   26
+                               ],
+                      "patterns":  [
+                                       "InvokePatternIdentifiers.Pattern",
+                                       "ScrollItemPatternIdentifiers.Pattern"
+                                   ]
+                  },
+        "native":  {
+                       "Size":  72,
+                       "Flags":  0,
+                       "Active":  3409132,
+                       "Focus":  393758,
+                       "Capture":  0,
+                       "MenuOwner":  0,
+                       "MoveSize":  0,
+                       "Caret":  0,
+                       "CaretRect":  {
+                                         "Left":  0,
+                                         "Top":  0,
+                                         "Right":  0,
+                                         "Bottom":  0
+                                     }
+                   }
+    },
+    {
+        "key":  "Escape",
+        "focus":  {
+                      "index":  "-1",
+                      "runtimeId":  "42,7540554,4,5,1,235",
+                      "name":  "退出 Tagma",
+                      "type":  "ControlType.Button",
+                      "automationId":  "",
+                      "enabled":  true,
+                      "offscreen":  false,
+                      "focused":  true,
+                      "password":  false,
+                      "value":  null,
+                      "rect":  [
+                                   1607,
+                                   1279,
+                                   84,
+                                   26
+                               ],
+                      "patterns":  [
+                                       "InvokePatternIdentifiers.Pattern",
+                                       "ScrollItemPatternIdentifiers.Pattern"
+                                   ]
+                  },
+        "native":  {
+                       "Size":  72,
+                       "Flags":  0,
+                       "Active":  3409132,
+                       "Focus":  393758,
+                       "Capture":  0,
+                       "MenuOwner":  0,
+                       "MoveSize":  0,
+                       "Caret":  0,
+                       "CaretRect":  {
+                                         "Left":  0,
+                                         "Top":  0,
+                                         "Right":  0,
+                                         "Bottom":  0
+                                     }
+                   }
+    }
+]

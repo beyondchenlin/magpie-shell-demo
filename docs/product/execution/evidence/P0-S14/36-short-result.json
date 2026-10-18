@@ -1,0 +1,13 @@
+{
+  "label": "36-short",
+  "started": "2026-10-18T11:11:58.344Z",
+  "pid": 55588,
+  "status": 200,
+  "firstChunk": "2026-10-18T11:11:58.391Z",
+  "sawDone": true,
+  "transportEnded": true,
+  "ended": "2026-10-18T11:12:04.403Z",
+  "bytes": 1146,
+  "prefix": "data: {\"id\":\"p0-synthetic-2\",\"object\":\"chat.completion.chunk\",\"model\":\"p0-exit-model\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"P0 synthetic stream. \"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"p0-synthetic-2\",\"object\":\"chat.completion.chunk\",\"model\":\"p0-exit-model\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\". \"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"p0-synthetic-2\",\"object\":\"chat.completion.chunk\",\"model\":\"p0-exit-model\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\". \"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"p0-synthetic-2\",\"object\":\"chat.completion.chunk\",\"model\":\"p0-exit-model\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\". \"},\"finish_reason\":null}]}\n\n",
+  "tail": "data: {\"id\":\"p0-synthetic-2\",\"object\":\"chat.completion.chunk\",\"model\":\"p0-exit-model\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"P0 synthetic stream. \"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"p0-synthetic-2\",\"object\":\"chat.completion.chunk\",\"model\":\"p0-exit-model\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\". \"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"p0-synthetic-2\",\"object\":\"chat.completion.chunk\",\"model\":\"p0-exit-model\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\". \"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"p0-synthetic-2\",\"object\":\"chat.completion.chunk\",\"model\":\"p0-exit-model\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\". \"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"p0-synthetic-2\",\"object\":\"chat.completion.chunk\",\"model\":\"p0-exit-model\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\". \"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"p0-synthetic-2\",\"object\":\"chat.completion.chunk\",\"model\":\"p0-exit-model\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\". \"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"p0-synthetic-2\",\"object\":\"chat.completion.chunk\",\"model\":\"p0-exit-model\",\"choices\":[{\"index\":0,\"delta\":{},\"finish_reason\":\"stop\"}]}\n\ndata: [DONE]\n\n"
+}

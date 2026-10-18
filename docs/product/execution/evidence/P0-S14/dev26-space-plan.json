@@ -1,0 +1,19 @@
+{
+  "utc": "2026-10-18T11:47:15.0551538Z",
+  "target": "D:\\demo1\\tagmaai\\target",
+  "incrementalPeakGiB": 2,
+  "tempPeakGiB": 1,
+  "candidateGiB": 0.04,
+  "reuse": "Existing target/node_modules/profile",
+  "reserveGiB": 10,
+  "volumes": [
+    {
+      "DriveLetter": "C",
+      "SizeRemaining": 37344153600
+    },
+    {
+      "DriveLetter": "D",
+      "SizeRemaining": 29925871616
+    }
+  ]
+}

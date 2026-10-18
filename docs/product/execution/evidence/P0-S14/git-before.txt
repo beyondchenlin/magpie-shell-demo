@@ -1,0 +1,28 @@
+ M docs/REPLICA-ACCEPTANCE.md
+ M docs/cis/EXECUTION-STATUS.md
+ M docs/cis/PR-DESCRIPTION.md
+ M docs/cis/RETENTION-2026-10-17.md
+ M docs/product/execution/NEXT-STEP-PROMPT-2026-10-18.md
+ M docs/product/execution/PROGRESS-AUDIT-2026-10-18.md
+ M interactions/cis-release-1ebfb66/NOTES.md
+ M src/data/de.json
+ M src/data/ja.json
+ M src/data/zh-TW.json
+ M src/data/zh.json
+ M src/pages/RoutingView.tsx
+ M src/pages/SimpleViews.tsx
+ M src/styles/context.css
+?? docs/product/README.md
+?? docs/product/TAGMA-PRD-v0.3-REVIEW.md
+?? docs/product/TAGMA-PRD-v0.3.md
+?? docs/product/execution/EXECUTION-BASELINE.md
+?? docs/product/execution/EXECUTOR-PROMPT.md
+?? docs/product/execution/LOCAL-WORK-RULES.md
+?? docs/product/execution/SUPERVISION-LOG.md
+?? docs/product/execution/SUPERVISION-STATE.json
+?? docs/product/execution/SUPERVISOR-PROMPT.md
+?? docs/product/execution/evidence/PROGRESS-AUDIT-2026-10-18-1452.json
+?? docs/product/reference/
+?? interactions/web-cis-0.1.195/
+?? src-tauri/icons/android/
+?? src-tauri/icons/ios/

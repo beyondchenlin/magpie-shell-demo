@@ -1,0 +1,214 @@
+{
+    "utc":  "2026-10-18T11:19:54.2315246Z",
+    "pid":  31696,
+    "started":  "2026-10-18T11:18:10.6569849Z",
+    "action":  "overflow",
+    "windows":  [
+                    {
+                        "handle":  3409132,
+                        "title":  "Tagma 隔离测试 dev25 P0-S14 128d7053",
+                        "visible":  true,
+                        "class":  "Tauri Window"
+                    },
+                    {
+                        "handle":  4001860,
+                        "title":  "",
+                        "visible":  false,
+                        "class":  "tray_icon_app"
+                    },
+                    {
+                        "handle":  3736106,
+                        "title":  "",
+                        "visible":  true,
+                        "class":  "Tao Thread Event Target"
+                    },
+                    {
+                        "handle":  1378868,
+                        "title":  "MSCTFIME UI",
+                        "visible":  false,
+                        "class":  "MSCTFIME UI"
+                    },
+                    {
+                        "handle":  328236,
+                        "title":  "Default IME",
+                        "visible":  false,
+                        "class":  "IME"
+                    }
+                ],
+    "icon":  {
+                 "Left":  3596,
+                 "Top":  2120,
+                 "Right":  3628,
+                 "Bottom":  2160
+             },
+    "iconHResult":  1,
+    "systemClientAnimations":  true,
+    "taskbar":  {
+                    "handle":  65908,
+                    "name":  "",
+                    "count":  18,
+                    "children":  [
+                                     {
+                                         "class":  "Start",
+                                         "name":  "开始",
+                                         "id":  "",
+                                         "type":  "ControlType.Pane"
+                                     },
+                                     {
+                                         "class":  "TrayDummySearchControl",
+                                         "name":  "",
+                                         "id":  "4100",
+                                         "type":  "ControlType.Pane"
+                                     },
+                                     {
+                                         "class":  "TrayButton",
+                                         "name":  "任务视图",
+                                         "id":  "4113",
+                                         "type":  "ControlType.Pane"
+                                     },
+                                     {
+                                         "class":  "ReBarWindow32",
+                                         "name":  "",
+                                         "id":  "40965",
+                                         "type":  "ControlType.Pane"
+                                     },
+                                     {
+                                         "class":  "DynamicContent2",
+                                         "name":  "2 个新通知, 19°C晴朗",
+                                         "id":  "4105",
+                                         "type":  "ControlType.Pane"
+                                     },
+                                     {
+                                         "class":  "TrayNotifyWnd",
+                                         "name":  "",
+                                         "id":  "303",
+                                         "type":  "ControlType.Pane"
+                                     }
+                                 ]
+                },
+    "notifyChildren":  [
+                           {
+                               "id":  "1502",
+                               "name":  "",
+                               "patterns":  [
+
+                                            ],
+                               "class":  "Button",
+                               "type":  "ControlType.Pane",
+                               "rect":  [
+                                            3596,
+                                            2120,
+                                            32,
+                                            40
+                                        ]
+                           },
+                           {
+                               "id":  "",
+                               "name":  "",
+                               "patterns":  [
+
+                                            ],
+                               "class":  "SysPager",
+                               "type":  "ControlType.Pane",
+                               "rect":  [
+                                            3628,
+                                            2120,
+                                            64,
+                                            40
+                                        ]
+                           },
+                           {
+                               "id":  "1504",
+                               "name":  "用户提示通知区域",
+                               "patterns":  [
+
+                                            ],
+                               "class":  "ToolbarWindow32",
+                               "type":  "ControlType.Pane",
+                               "rect":  [
+                                            3628,
+                                            2120,
+                                            64,
+                                            40
+                                        ]
+                           },
+                           {
+                               "id":  "308",
+                               "name":  "任务栏输入指示",
+                               "patterns":  [
+
+                                            ],
+                               "class":  "TrayInputIndicatorWClass",
+                               "type":  "ControlType.Pane",
+                               "rect":  [
+                                            3692,
+                                            2120,
+                                            22,
+                                            40
+                                        ]
+                           },
+                           {
+                               "id":  "",
+                               "name":  "",
+                               "patterns":  [
+
+                                            ],
+                               "class":  "IMEModeButton",
+                               "type":  "ControlType.Pane",
+                               "rect":  [
+                                            3692,
+                                            2120,
+                                            22,
+                                            40
+                                        ]
+                           },
+                           {
+                               "id":  "",
+                               "name":  "系统时钟, 19:19, ‎2026/‎10/‎18",
+                               "patterns":  [
+
+                                            ],
+                               "class":  "TrayClockWClass",
+                               "type":  "ControlType.Pane",
+                               "rect":  [
+                                            3714,
+                                            2120,
+                                            73,
+                                            40
+                                        ]
+                           },
+                           {
+                               "id":  "",
+                               "name":  "操作中心，49 个新通知",
+                               "patterns":  [
+
+                                            ],
+                               "class":  "TrayButton",
+                               "type":  "ControlType.Pane",
+                               "rect":  [
+                                            3787,
+                                            2120,
+                                            48,
+                                            40
+                                        ]
+                           },
+                           {
+                               "id":  "307",
+                               "name":  "",
+                               "patterns":  [
+
+                                            ],
+                               "class":  "TrayShowDesktopButtonWClass",
+                               "type":  "ControlType.Pane",
+                               "rect":  [
+                                            3835,
+                                            2120,
+                                            5,
+                                            40
+                                        ]
+                           }
+                       ],
+    "shellButtons":  [
+
+                     ]
+}

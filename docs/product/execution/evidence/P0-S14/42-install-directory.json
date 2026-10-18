@@ -1,0 +1,314 @@
+﻿{
+    "utc":  "2026-10-18T11:23:44.2536810Z",
+    "pid":  54992,
+    "window":  18222928,
+    "title":  "Tagma P0 S14 Acceptance Setup",
+    "elements":  [
+                     {
+                         "index":  0,
+                         "name":  "\u003c Back",
+                         "type":  "ControlType.Pane",
+                         "class":  "Button",
+                         "id":  "42,590382",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  0,
+                         "rect":  [
+                                      1920,
+                                      1218,
+                                      75,
+                                      23
+                                  ]
+                     },
+                     {
+                         "index":  1,
+                         "name":  "Next \u003e",
+                         "type":  "ControlType.Pane",
+                         "class":  "Button",
+                         "id":  "42,723766",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  0,
+                         "rect":  [
+                                      1995,
+                                      1218,
+                                      75,
+                                      23
+                                  ]
+                     },
+                     {
+                         "index":  2,
+                         "name":  "Cancel",
+                         "type":  "ControlType.Pane",
+                         "class":  "Button",
+                         "id":  "42,13896634",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  0,
+                         "rect":  [
+                                      2081,
+                                      1218,
+                                      75,
+                                      23
+                                  ]
+                     },
+                     {
+                         "index":  3,
+                         "name":  "",
+                         "type":  "ControlType.Pane",
+                         "class":  "Static",
+                         "id":  "42,10488616",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  null,
+                         "rect":  [
+                                      1679,
+                                      1205,
+                                      480,
+                                      2
+                                  ]
+                     },
+                     {
+                         "index":  4,
+                         "name":  "",
+                         "type":  "ControlType.Pane",
+                         "class":  "Static",
+                         "id":  "42,9505426",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  null,
+                         "rect":  [
+                                      1671,
+                                      948,
+                                      508,
+                                      2
+                                  ]
+                     },
+                     {
+                         "index":  5,
+                         "name":  "Nullsoft Install System v3.13 ",
+                         "type":  "ControlType.Pane",
+                         "class":  "Static",
+                         "id":  "42,262706",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  null,
+                         "rect":  [
+                                      1679,
+                                      1197,
+                                      483,
+                                      13
+                                  ]
+                     },
+                     {
+                         "index":  6,
+                         "name":  "Nullsoft Install System v3.13",
+                         "type":  "ControlType.Pane",
+                         "class":  "Static",
+                         "id":  "42,262708",
+                         "enabled":  false,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  null,
+                         "rect":  [
+                                      1679,
+                                      1197,
+                                      483,
+                                      13
+                                  ]
+                     },
+                     {
+                         "index":  7,
+                         "name":  "",
+                         "type":  "ControlType.Pane",
+                         "class":  "Static",
+                         "id":  "42,328026",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  null,
+                         "rect":  [
+                                      1671,
+                                      891,
+                                      498,
+                                      57
+                                  ]
+                     },
+                     {
+                         "index":  8,
+                         "name":  "Choose Install Location",
+                         "type":  "ControlType.Pane",
+                         "class":  "Static",
+                         "id":  "42,1310772",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  null,
+                         "rect":  [
+                                      1686,
+                                      899,
+                                      420,
+                                      16
+                                  ]
+                     },
+                     {
+                         "index":  9,
+                         "name":  "Choose the folder in which to install Tagma P0 S14 Acceptance.",
+                         "type":  "ControlType.Pane",
+                         "class":  "Static",
+                         "id":  "42,262694",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  null,
+                         "rect":  [
+                                      1694,
+                                      917,
+                                      413,
+                                      26
+                                  ]
+                     },
+                     {
+                         "index":  10,
+                         "name":  "",
+                         "type":  "ControlType.Pane",
+                         "class":  "Static",
+                         "id":  "42,5115696",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  null,
+                         "rect":  [
+                                      2121,
+                                      904,
+                                      32,
+                                      32
+                                  ]
+                     },
+                     {
+                         "index":  11,
+                         "name":  "",
+                         "type":  "ControlType.Pane",
+                         "class":  "#32770",
+                         "id":  "42,2427682",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  null,
+                         "rect":  [
+                                      1694,
+                                      964,
+                                      450,
+                                      228
+                                  ]
+                     },
+                     {
+                         "index":  12,
+                         "name":  "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\install-p0s14",
+                         "type":  "ControlType.Pane",
+                         "class":  "Edit",
+                         "id":  "42,590450",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  null,
+                         "rect":  [
+                                      1709,
+                                      1102,
+                                      315,
+                                      20
+                                  ]
+                     },
+                     {
+                         "index":  13,
+                         "name":  "Browse...",
+                         "type":  "ControlType.Pane",
+                         "class":  "Button",
+                         "id":  "42,328226",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  0,
+                         "rect":  [
+                                      2036,
+                                      1099,
+                                      90,
+                                      24
+                                  ]
+                     },
+                     {
+                         "index":  14,
+                         "name":  "Space available: 34.9 GB",
+                         "type":  "ControlType.Pane",
+                         "class":  "Static",
+                         "id":  "42,12127724",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  null,
+                         "rect":  [
+                                      1694,
+                                      1167,
+                                      225,
+                                      13
+                                  ]
+                     },
+                     {
+                         "index":  15,
+                         "name":  "Space required: 28.9 MB",
+                         "type":  "ControlType.Pane",
+                         "class":  "Static",
+                         "id":  "42,2624264",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  null,
+                         "rect":  [
+                                      1694,
+                                      1151,
+                                      225,
+                                      13
+                                  ]
+                     },
+                     {
+                         "index":  16,
+                         "name":  "Setup will install Tagma P0 S14 Acceptance in the following folder. To install in a different folder, click Browse and select another folder. Click Next to continue.",
+                         "type":  "ControlType.Pane",
+                         "class":  "Static",
+                         "id":  "42,4000306",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  null,
+                         "rect":  [
+                                      1694,
+                                      964,
+                                      450,
+                                      98
+                                  ]
+                     },
+                     {
+                         "index":  17,
+                         "name":  "Destination Folder",
+                         "type":  "ControlType.Pane",
+                         "class":  "Button",
+                         "id":  "42,6162874",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  0,
+                         "rect":  [
+                                      1694,
+                                      1078,
+                                      450,
+                                      57
+                                  ]
+                     }
+                 ]
+}

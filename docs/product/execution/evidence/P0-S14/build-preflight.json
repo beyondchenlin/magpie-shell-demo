@@ -1,0 +1,27 @@
+{
+  "evidenceLimitMiB": 30,
+  "space": [
+    {
+      "Name": "C",
+      "Free": 37734166528
+    },
+    {
+      "Name": "D",
+      "Free": 30761406464
+    }
+  ],
+  "reuse": [
+    "node_modules",
+    "target",
+    "current fixture WebView"
+  ],
+  "worktree": "D:/demo1/tagmaai",
+  "utc": "2026-10-18T11:00:22.5237534Z",
+  "plannedPeakGiB": {
+    "temp": 1,
+    "candidateAndInstaller": 0.08,
+    "frontendAndSidecar": 0.1,
+    "target": 2
+  },
+  "cleanup": "only owned temporary test outputs after processes exit; preserve prior evidence and candidates"
+}

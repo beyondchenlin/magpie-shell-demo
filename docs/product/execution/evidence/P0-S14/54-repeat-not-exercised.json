@@ -1,0 +1,6 @@
+{
+  "case": "repeat quit first attempt",
+  "result": "not exercised",
+  "reason": "30 second synthetic request completed before confirmation was dispatched; host quit normally. Do not count as duplicate-during-drain pass",
+  "evidence": "repeat-quit-result.json"
+}

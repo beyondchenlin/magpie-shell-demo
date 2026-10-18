@@ -1,0 +1,11 @@
+{
+  "label": "30-dev23-active-exit",
+  "started": "2026-10-18T10:56:20.597Z",
+  "pid": 38140,
+  "status": 200,
+  "firstChunk": "2026-10-18T10:56:20.645Z",
+  "transportEnded": true,
+  "ended": "2026-10-18T10:56:32.444Z",
+  "bytes": 2008,
+  "prefix": "data: {\"id\":\"p0-synthetic-1\",\"object\":\"chat.completion.chunk\",\"model\":\"p0-exit-model\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"P0 synthetic stream. \"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"p0-synthetic-1\",\"object\":\"chat.completion.chunk\",\"model\":\"p0-exit-model\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\". \"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"p0-synthetic-1\",\"object\":\"chat.completion.chunk\",\"model\":\"p0-exit-model\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\". \"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"p0-synthetic-1\",\"object\":\"chat.completion.chunk\",\"model\":\"p0-exit-model\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\". \"},\"finish_reason\":null}]}\n\n"
+}

@@ -1,0 +1,89 @@
+{
+    "utc":  "2026-10-18T12:24:38.0578594Z",
+    "pid":  53828,
+    "started":  "2026-10-18T12:23:41.9076410Z",
+    "action":  "choose",
+    "windows":  [
+                    {
+                        "handle":  24383226,
+                        "title":  "",
+                        "visible":  true,
+                        "class":  "#32768"
+                    },
+                    {
+                        "handle":  34016710,
+                        "title":  "",
+                        "visible":  true,
+                        "class":  "SysShadow"
+                    },
+                    {
+                        "handle":  15666676,
+                        "title":  "",
+                        "visible":  false,
+                        "class":  "tray_icon_app"
+                    },
+                    {
+                        "handle":  17239844,
+                        "title":  "Tagma 隔离测试 dev27 P0-S14 128d7053",
+                        "visible":  true,
+                        "class":  "Tauri Window"
+                    },
+                    {
+                        "handle":  9308396,
+                        "title":  "",
+                        "visible":  true,
+                        "class":  "Tao Thread Event Target"
+                    },
+                    {
+                        "handle":  7995590,
+                        "title":  "MSCTFIME UI",
+                        "visible":  false,
+                        "class":  "MSCTFIME UI"
+                    },
+                    {
+                        "handle":  47318992,
+                        "title":  "Default IME",
+                        "visible":  false,
+                        "class":  "IME"
+                    }
+                ],
+    "icon":  {
+                 "Left":  3572,
+                 "Top":  2080,
+                 "Right":  3612,
+                 "Bottom":  2120
+             },
+    "iconHResult":  0,
+    "systemClientAnimations":  true,
+    "iconElement":  {
+                        "type":  "ControlType.Pane",
+                        "name":  "溢出通知区域",
+                        "class":  "ToolbarWindow32",
+                        "runtimeId":  "42,66002"
+                    },
+    "menu":  [
+                 {
+                     "name":  "Tagma",
+                     "enabled":  true,
+                     "rect":  [
+                                  3595,
+                                  2053,
+                                  189,
+                                  22
+                              ],
+                     "runtimeId":  "24383226,17500647,0"
+                 },
+                 {
+                     "name":  "退出 Tagma / Quit",
+                     "enabled":  true,
+                     "rect":  [
+                                  3595,
+                                  2075,
+                                  189,
+                                  22
+                              ],
+                     "runtimeId":  "24383226,17500647,1"
+                 }
+             ],
+    "chosen":  "退出 Tagma / Quit"
+}

@@ -1,0 +1,12 @@
+[
+  {
+    "path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\candidate-dev24\\tagma-desktop.exe",
+    "bytes": 20271104,
+    "sha256": "546A515BE8016C2D386280A77E500433C26CCE1ADC964A1C718F2B58C8F2DB4C"
+  },
+  {
+    "path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\candidate-dev24\\tagma-gateway.exe",
+    "bytes": 10106368,
+    "sha256": "4801DA00F6C49C5DBAD821FF9D6DDAF496F7E2FA56E608DCB6F6E16D8004C806"
+  }
+]

@@ -1,0 +1,5 @@
+{
+  "cause": "CIM creation time truncates final 100ns digit; Get-Process retains it",
+  "fix": "Use the same Get-Process StartTime API for both stored identity and recheck, retaining exact PID/path/start equality",
+  "productChange": false
+}

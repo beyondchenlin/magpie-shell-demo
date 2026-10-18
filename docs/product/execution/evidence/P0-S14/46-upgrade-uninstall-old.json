@@ -1,0 +1,263 @@
+﻿{
+    "utc":  "2026-10-18T11:29:48.5031312Z",
+    "pid":  41660,
+    "window":  2232100,
+    "title":  "Tagma P0 S14 Acceptance Uninstall ",
+    "elements":  [
+                     {
+                         "index":  0,
+                         "name":  "Uninstall",
+                         "type":  "ControlType.Pane",
+                         "class":  "Button",
+                         "id":  "42,4525184",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  0,
+                         "rect":  [
+                                      1995,
+                                      1218,
+                                      75,
+                                      23
+                                  ]
+                     },
+                     {
+                         "index":  1,
+                         "name":  "Cancel",
+                         "type":  "ControlType.Pane",
+                         "class":  "Button",
+                         "id":  "42,9112764",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  0,
+                         "rect":  [
+                                      2081,
+                                      1218,
+                                      75,
+                                      23
+                                  ]
+                     },
+                     {
+                         "index":  2,
+                         "name":  "",
+                         "type":  "ControlType.Pane",
+                         "class":  "Static",
+                         "id":  "42,2098940",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  null,
+                         "rect":  [
+                                      1679,
+                                      1205,
+                                      480,
+                                      2
+                                  ]
+                     },
+                     {
+                         "index":  3,
+                         "name":  "",
+                         "type":  "ControlType.Pane",
+                         "class":  "Static",
+                         "id":  "42,2953086",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  null,
+                         "rect":  [
+                                      1671,
+                                      948,
+                                      508,
+                                      2
+                                  ]
+                     },
+                     {
+                         "index":  4,
+                         "name":  "Nullsoft Install System v3.13 ",
+                         "type":  "ControlType.Pane",
+                         "class":  "Static",
+                         "id":  "42,3081814",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  null,
+                         "rect":  [
+                                      1679,
+                                      1197,
+                                      483,
+                                      13
+                                  ]
+                     },
+                     {
+                         "index":  5,
+                         "name":  "Nullsoft Install System v3.13",
+                         "type":  "ControlType.Pane",
+                         "class":  "Static",
+                         "id":  "42,1312526",
+                         "enabled":  false,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  null,
+                         "rect":  [
+                                      1679,
+                                      1197,
+                                      483,
+                                      13
+                                  ]
+                     },
+                     {
+                         "index":  6,
+                         "name":  "",
+                         "type":  "ControlType.Pane",
+                         "class":  "Static",
+                         "id":  "42,2690940",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  null,
+                         "rect":  [
+                                      1671,
+                                      891,
+                                      498,
+                                      57
+                                  ]
+                     },
+                     {
+                         "index":  7,
+                         "name":  "Uninstall Tagma P0 S14 Acceptance",
+                         "type":  "ControlType.Pane",
+                         "class":  "Static",
+                         "id":  "42,3475986",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  null,
+                         "rect":  [
+                                      1686,
+                                      899,
+                                      420,
+                                      16
+                                  ]
+                     },
+                     {
+                         "index":  8,
+                         "name":  "Remove Tagma P0 S14 Acceptance from your computer.",
+                         "type":  "ControlType.Pane",
+                         "class":  "Static",
+                         "id":  "42,7801100",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  null,
+                         "rect":  [
+                                      1694,
+                                      917,
+                                      413,
+                                      26
+                                  ]
+                     },
+                     {
+                         "index":  9,
+                         "name":  "",
+                         "type":  "ControlType.Pane",
+                         "class":  "Static",
+                         "id":  "42,2295140",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  null,
+                         "rect":  [
+                                      2121,
+                                      904,
+                                      32,
+                                      32
+                                  ]
+                     },
+                     {
+                         "index":  10,
+                         "name":  "",
+                         "type":  "ControlType.Pane",
+                         "class":  "#32770",
+                         "id":  "42,659340",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  null,
+                         "rect":  [
+                                      1694,
+                                      964,
+                                      450,
+                                      228
+                                  ]
+                     },
+                     {
+                         "index":  11,
+                         "name":  "Uninstalling from:",
+                         "type":  "ControlType.Pane",
+                         "class":  "Static",
+                         "id":  "42,3738138",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  null,
+                         "rect":  [
+                                      1694,
+                                      1032,
+                                      90,
+                                      13
+                                  ]
+                     },
+                     {
+                         "index":  12,
+                         "name":  "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\install-p0s14",
+                         "type":  "ControlType.Pane",
+                         "class":  "Edit",
+                         "id":  "42,724882",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  null,
+                         "rect":  [
+                                      1792,
+                                      1029,
+                                      351,
+                                      20
+                                  ]
+                     },
+                     {
+                         "index":  13,
+                         "name":  "Tagma P0 S14 Acceptance will be uninstalled from the following folder. Click Uninstall to start the uninstallation.",
+                         "type":  "ControlType.Pane",
+                         "class":  "Static",
+                         "id":  "42,2360602",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  null,
+                         "rect":  [
+                                      1694,
+                                      964,
+                                      450,
+                                      49
+                                  ]
+                     },
+                     {
+                         "index":  14,
+                         "name":  "Delete the application data",
+                         "type":  "ControlType.Pane",
+                         "class":  "Button",
+                         "id":  "42,2622832",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  0,
+                         "rect":  [
+                                      1694,
+                                      1064,
+                                      400,
+                                      25
+                                  ]
+                     }
+                 ]
+}

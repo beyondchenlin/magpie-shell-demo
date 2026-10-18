@@ -1,0 +1,27 @@
+﻿{
+    "focused":  true,
+    "nativeBefore":  {
+                         "KeyboardLayout":  134481924,
+                         "ImeContext":  0,
+                         "ImeOpen":  false,
+                         "CompositionBytes":  -2,
+                         "ShiftDown":  false,
+                         "ControlDown":  false,
+                         "AltDown":  false,
+                         "Focus":  396020
+                     },
+    "minimized":  true,
+    "after":  "P0 interruption draft",
+    "kind":  "physical Unicode input, native minimize/restore",
+    "before":  "P0 interruption draft",
+    "nativeAfter":  {
+                        "KeyboardLayout":  134481924,
+                        "ImeContext":  0,
+                        "ImeOpen":  false,
+                        "CompositionBytes":  -2,
+                        "ShiftDown":  false,
+                        "ControlDown":  false,
+                        "AltDown":  false,
+                        "Focus":  396020
+                    }
+}

@@ -1,0 +1,212 @@
+﻿{
+    "utc":  "2026-10-18T11:24:33.3647293Z",
+    "pid":  54992,
+    "window":  18222928,
+    "title":  "Tagma P0 S14 Acceptance Setup ",
+    "elements":  [
+                     {
+                         "index":  0,
+                         "name":  "\u003c Back",
+                         "type":  "ControlType.Pane",
+                         "class":  "Button",
+                         "id":  "42,590382",
+                         "enabled":  false,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  0,
+                         "rect":  [
+                                      1920,
+                                      1218,
+                                      75,
+                                      23
+                                  ]
+                     },
+                     {
+                         "index":  1,
+                         "name":  "Finish",
+                         "type":  "ControlType.Pane",
+                         "class":  "Button",
+                         "id":  "42,723766",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  0,
+                         "rect":  [
+                                      1995,
+                                      1218,
+                                      75,
+                                      23
+                                  ]
+                     },
+                     {
+                         "index":  2,
+                         "name":  "Cancel",
+                         "type":  "ControlType.Pane",
+                         "class":  "Button",
+                         "id":  "42,13896634",
+                         "enabled":  false,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  0,
+                         "rect":  [
+                                      2081,
+                                      1218,
+                                      75,
+                                      23
+                                  ]
+                     },
+                     {
+                         "index":  3,
+                         "name":  "",
+                         "type":  "ControlType.Pane",
+                         "class":  "Static",
+                         "id":  "42,9505426",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  null,
+                         "rect":  [
+                                      1671,
+                                      948,
+                                      508,
+                                      2
+                                  ]
+                     },
+                     {
+                         "index":  4,
+                         "name":  "",
+                         "type":  "ControlType.Pane",
+                         "class":  "Static",
+                         "id":  "42,262710",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  null,
+                         "rect":  [
+                                      1671,
+                                      1205,
+                                      508,
+                                      2
+                                  ]
+                     },
+                     {
+                         "index":  5,
+                         "name":  "",
+                         "type":  "ControlType.Pane",
+                         "class":  "Static",
+                         "id":  "42,328026",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  null,
+                         "rect":  [
+                                      1671,
+                                      891,
+                                      498,
+                                      57
+                                  ]
+                     },
+                     {
+                         "index":  6,
+                         "name":  "",
+                         "type":  "ControlType.Pane",
+                         "class":  "#32770",
+                         "id":  "42,7802700",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  null,
+                         "rect":  [
+                                      1671,
+                                      891,
+                                      497,
+                                      314
+                                  ]
+                     },
+                     {
+                         "index":  7,
+                         "name":  "",
+                         "type":  "ControlType.Pane",
+                         "class":  "Static",
+                         "id":  "42,721522",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  null,
+                         "rect":  [
+                                      1671,
+                                      891,
+                                      164,
+                                      314
+                                  ]
+                     },
+                     {
+                         "index":  8,
+                         "name":  "Completing Tagma P0 S14 Acceptance Setup",
+                         "type":  "ControlType.Pane",
+                         "class":  "Static",
+                         "id":  "42,3148330",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  null,
+                         "rect":  [
+                                      1851,
+                                      907,
+                                      293,
+                                      46
+                                  ]
+                     },
+                     {
+                         "index":  9,
+                         "name":  "Tagma P0 S14 Acceptance has been installed on your computer.\r\n\r\nClick Finish to close Setup.",
+                         "type":  "ControlType.Pane",
+                         "class":  "Static",
+                         "id":  "42,4589502",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  null,
+                         "rect":  [
+                                      1851,
+                                      964,
+                                      293,
+                                      65
+                                  ]
+                     },
+                     {
+                         "index":  10,
+                         "name":  "Run Tagma P0 S14 Acceptance",
+                         "type":  "ControlType.Pane",
+                         "class":  "Button",
+                         "id":  "42,9310026",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  1,
+                         "rect":  [
+                                      1851,
+                                      1037,
+                                      293,
+                                      16
+                                  ]
+                     },
+                     {
+                         "index":  11,
+                         "name":  "Create desktop shortcut",
+                         "type":  "ControlType.Pane",
+                         "class":  "Button",
+                         "id":  "42,5443660",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  1,
+                         "rect":  [
+                                      1851,
+                                      1070,
+                                      293,
+                                      16
+                                  ]
+                     }
+                 ]
+}

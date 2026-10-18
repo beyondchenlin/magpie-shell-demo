@@ -1,0 +1,8 @@
+{"utc":"2026-10-18T10:56:20.640Z","event":"accepted","id":1,"durationMs":45000}
+{"utc":"2026-10-18T10:56:32.441Z","event":"closed","id":1,"elapsedMs":11801,"finished":false}
+{"utc":"2026-10-18T11:11:58.385Z","event":"accepted","id":2,"durationMs":6000}
+{"utc":"2026-10-18T11:12:04.394Z","event":"closed","id":2,"elapsedMs":6009,"finished":true}
+{"utc":"2026-10-18T11:15:02.386Z","event":"accepted","id":3,"durationMs":30000}
+{"utc":"2026-10-18T11:15:13.302Z","event":"closed","id":3,"elapsedMs":10916,"finished":false}
+{"utc":"2026-10-18T11:19:31.059Z","event":"accepted","id":4,"durationMs":30000}
+{"utc":"2026-10-18T11:20:01.067Z","event":"closed","id":4,"elapsedMs":30008,"finished":true}

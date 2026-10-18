@@ -1,0 +1,4 @@
+{"utc":"2026-10-18T12:21:46.202Z","event":"accepted","id":1,"durationMs":30000}
+{"utc":"2026-10-18T12:22:16.217Z","event":"closed","id":1,"elapsedMs":30015,"finished":true}
+{"utc":"2026-10-18T12:24:33.500Z","event":"accepted","id":2,"durationMs":60000}
+{"utc":"2026-10-18T12:24:45.728Z","event":"closed","id":2,"elapsedMs":12228,"finished":false}

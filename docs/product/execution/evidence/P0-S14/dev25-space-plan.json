@@ -1,0 +1,18 @@
+{
+  "utc": "2026-10-18T11:21:02.4420814Z",
+  "target": "D:\\demo1\\tagmaai\\target",
+  "incrementalPeakGiB": 2,
+  "tempPeakGiB": 1,
+  "reuse": "Existing target, node_modules, WebView. Two isolated NSIS outputs <20 MiB",
+  "reserveGiB": 10,
+  "volumes": [
+    {
+      "DriveLetter": "C",
+      "SizeRemaining": 37471911936
+    },
+    {
+      "DriveLetter": "D",
+      "SizeRemaining": 30140178432
+    }
+  ]
+}

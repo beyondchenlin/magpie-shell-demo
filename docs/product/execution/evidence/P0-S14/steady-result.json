@@ -1,0 +1,191 @@
+{
+  "started": "2026-10-18T11:50:19.395Z",
+  "ended": "2026-10-18T12:20:19.407Z",
+  "elapsedMs": 1800011.2391000001,
+  "total": 1800,
+  "failed": 0,
+  "firstError": null,
+  "windows": [
+    {
+      "minute": 1,
+      "utc": "2026-10-18T11:51:18.423Z",
+      "total": 60,
+      "failed": 0
+    },
+    {
+      "minute": 2,
+      "utc": "2026-10-18T11:52:18.413Z",
+      "total": 120,
+      "failed": 0
+    },
+    {
+      "minute": 3,
+      "utc": "2026-10-18T11:53:18.409Z",
+      "total": 180,
+      "failed": 0
+    },
+    {
+      "minute": 4,
+      "utc": "2026-10-18T11:54:18.414Z",
+      "total": 240,
+      "failed": 0
+    },
+    {
+      "minute": 5,
+      "utc": "2026-10-18T11:55:18.412Z",
+      "total": 300,
+      "failed": 0
+    },
+    {
+      "minute": 6,
+      "utc": "2026-10-18T11:56:18.417Z",
+      "total": 360,
+      "failed": 0
+    },
+    {
+      "minute": 7,
+      "utc": "2026-10-18T11:57:18.415Z",
+      "total": 420,
+      "failed": 0
+    },
+    {
+      "minute": 8,
+      "utc": "2026-10-18T11:58:18.413Z",
+      "total": 480,
+      "failed": 0
+    },
+    {
+      "minute": 9,
+      "utc": "2026-10-18T11:59:18.415Z",
+      "total": 540,
+      "failed": 0
+    },
+    {
+      "minute": 10,
+      "utc": "2026-10-18T12:00:18.413Z",
+      "total": 600,
+      "failed": 0
+    },
+    {
+      "minute": 11,
+      "utc": "2026-10-18T12:01:18.413Z",
+      "total": 660,
+      "failed": 0
+    },
+    {
+      "minute": 12,
+      "utc": "2026-10-18T12:02:18.412Z",
+      "total": 720,
+      "failed": 0
+    },
+    {
+      "minute": 13,
+      "utc": "2026-10-18T12:03:18.416Z",
+      "total": 780,
+      "failed": 0
+    },
+    {
+      "minute": 14,
+      "utc": "2026-10-18T12:04:18.416Z",
+      "total": 840,
+      "failed": 0
+    },
+    {
+      "minute": 15,
+      "utc": "2026-10-18T12:05:18.407Z",
+      "total": 900,
+      "failed": 0
+    },
+    {
+      "minute": 16,
+      "utc": "2026-10-18T12:06:18.407Z",
+      "total": 960,
+      "failed": 0
+    },
+    {
+      "minute": 17,
+      "utc": "2026-10-18T12:07:18.408Z",
+      "total": 1020,
+      "failed": 0
+    },
+    {
+      "minute": 18,
+      "utc": "2026-10-18T12:08:18.410Z",
+      "total": 1080,
+      "failed": 0
+    },
+    {
+      "minute": 19,
+      "utc": "2026-10-18T12:09:18.408Z",
+      "total": 1140,
+      "failed": 0
+    },
+    {
+      "minute": 20,
+      "utc": "2026-10-18T12:10:18.411Z",
+      "total": 1200,
+      "failed": 0
+    },
+    {
+      "minute": 21,
+      "utc": "2026-10-18T12:11:18.418Z",
+      "total": 1260,
+      "failed": 0
+    },
+    {
+      "minute": 22,
+      "utc": "2026-10-18T12:12:18.412Z",
+      "total": 1320,
+      "failed": 0
+    },
+    {
+      "minute": 23,
+      "utc": "2026-10-18T12:13:18.418Z",
+      "total": 1380,
+      "failed": 0
+    },
+    {
+      "minute": 24,
+      "utc": "2026-10-18T12:14:18.411Z",
+      "total": 1440,
+      "failed": 0
+    },
+    {
+      "minute": 25,
+      "utc": "2026-10-18T12:15:18.418Z",
+      "total": 1500,
+      "failed": 0
+    },
+    {
+      "minute": 26,
+      "utc": "2026-10-18T12:16:18.423Z",
+      "total": 1560,
+      "failed": 0
+    },
+    {
+      "minute": 27,
+      "utc": "2026-10-18T12:17:18.416Z",
+      "total": 1620,
+      "failed": 0
+    },
+    {
+      "minute": 28,
+      "utc": "2026-10-18T12:18:18.425Z",
+      "total": 1680,
+      "failed": 0
+    },
+    {
+      "minute": 29,
+      "utc": "2026-10-18T12:19:18.408Z",
+      "total": 1740,
+      "failed": 0
+    },
+    {
+      "minute": 30,
+      "utc": "2026-10-18T12:20:18.424Z",
+      "total": 1800,
+      "failed": 0
+    }
+  ],
+  "layer": "Synthetic loopback steady HTTP load, not native UI or real supplier"
+}
