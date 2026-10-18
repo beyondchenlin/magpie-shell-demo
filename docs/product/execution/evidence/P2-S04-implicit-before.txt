@@ -1,0 +1,41 @@
+   Compiling tagma-core v0.2.0-dev.16 (D:\demo1\tagmaai\crates\tagma-core)
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+    Finished `test` profile [unoptimized] target(s) in 7.88s
+     Running unittests src\lib.rs (target\debug\deps\tagma_core-0348fd4cdb7f1e31.exe)
+
+running 1 test
+Owned ZIP fixture:C:\Users\ai\AppData\Local\Temp\tagma-pack-verify-W4Zf6j;new private child files only,<=4MiB expanded,handles close then RAII cleanup;sentinel active/output never targeted
+Implicit-directory before guard:ZIP raw entries=2,actual root has additional bin and a/b/c/d parents,accepted with signed maximum2
+
+thread 'packs::archive_tests::actual_implicit_directories_count_against_the_signed_entry_budget' (9664) panicked at crates\tagma-core\src\packs\archive_tests.rs:104:18:
+expected rejection
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test packs::archive_tests::actual_implicit_directories_count_against_the_signed_entry_budget ... FAILED
+
+failures:
+
+failures:
+    packs::archive_tests::actual_implicit_directories_count_against_the_signed_entry_budget
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 83 filtered out; finished in 0.03s
+
+error: test failed, to rerun pass `-p tagma-core --lib`

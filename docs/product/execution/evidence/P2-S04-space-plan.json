@@ -1,0 +1,12 @@
+{
+  "RecordedAtUtc": "2026-10-18T00:25:27.6467270Z",
+  "Target": "D:/demo1/tagmaai/target",
+  "TempRoot": "C:\\Users\\ai\\AppData\\Local\\Temp",
+  "EstimatedAdditionalPeakGiB": 0.03,
+  "CFreeBeforeGiB": 42.75,
+  "DFreeBeforeGiB": 9.21,
+  "Scope": "Tiny actual ZIP implicit-directory budget reproduction and core pack-only cached checks;no new dependency/schema/install",
+  "Reuse": "Current core artifact hash/cache;rejected250 old files retained,no cleanup retry",
+  "Fixture": "Two small files/few directories in own C TempDir;not large ZIP/deep flood",
+  "Constraint": "D<10GiB;>1GiB growth paused;bounded small checks only"
+}

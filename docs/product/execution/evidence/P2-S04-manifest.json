@@ -1,0 +1,113 @@
+{
+  "recordedAtUtc": "2026-10-18T00:31:50.335Z",
+  "sourceBase": "e8901e9",
+  "candidateVersion": "0.2.0-dev.16",
+  "configSchema": 10,
+  "usageSchema": 2,
+  "source": [
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-core\\src\\packs\\paths.rs",
+      "bytes": 5010,
+      "sha256": "df05c18f0d7ad60c42733c86d172affcc50be632f32ec9cc9be830031b7e429b"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-core\\src\\packs\\manifest.rs",
+      "bytes": 8420,
+      "sha256": "ba05f7c6f33aeb1586d139d587a22c43eed69cb58d0478f11708f6591d4868f7"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-core\\src\\packs\\archive.rs",
+      "bytes": 13979,
+      "sha256": "6b47c54bd0847598f1a23a7cf277c08d32afcfdb772f9de4dce04ca88c6280bc"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-core\\src\\packs\\archive_tests.rs",
+      "bytes": 18032,
+      "sha256": "e147a7d3232c2c79031f5409953c38493f9849072aa02845894563ff7c5a7f9d"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-core\\tests\\packs.rs",
+      "bytes": 19898,
+      "sha256": "c8a49ae2cefffe374fb8640404e7c1a1628622e5a7c5c893672a2af6eaa60eff"
+    }
+  ],
+  "documents": [
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\EXECUTION-STATUS.md",
+      "bytes": 41015,
+      "sha256": "4e501bb2d1a4a4b1c25e05a758c090ede65b44f0e4f1780a98d0a6a786ba4f69"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\P2-S04-IMPLICIT-DIRECTORY-BOUND.md",
+      "bytes": 4139,
+      "sha256": "b01c0f1f25e6981d73d02bdf4474112f1f6f86f0f03442208d9e9307b6f0bf54"
+    }
+  ],
+  "prd": {
+    "path": "D:\\demo1\\tagmaai\\docs\\product\\TAGMA-PRD-v0.3.md",
+    "bytes": 50957,
+    "sha256": "6e6503391f70e3f2e53347890de6e7c9f7fd93cc393c68f7bba494ac4d67a6d6"
+  },
+  "evidence": [
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P2-S04-archive-final.txt",
+      "bytes": 4361,
+      "sha256": "1cbbb21e960e9c5724402b9c1e1dc90bc82077d7e54b169dfac86870e6a03f7d"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P2-S04-clippy.txt",
+      "bytes": 1329,
+      "sha256": "dff6d088b8e4cd9c5e6ee7963a80d0eb0fbf74d427d09a10f3cef87edbe78238"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P2-S04-current-artifacts.json",
+      "bytes": 7422,
+      "sha256": "82d836baa6cf1560cf77332033d62ffa45a7c9d8856fab4b34a15086315cc6a5"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P2-S04-denied-files-retained.json",
+      "bytes": 273,
+      "sha256": "d191728ecd446bbd62c90b2a7934937b5fa74b7323ceedae26fd9895ee787cb4"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P2-S04-implicit-after.txt",
+      "bytes": 5151,
+      "sha256": "adb9fa859ff6e75da673498077aaea32fe73d2d5b24723dafdbb28e33ad15251"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P2-S04-implicit-before.txt",
+      "bytes": 1817,
+      "sha256": "c4e99657c6bfea40059f30264f8f663de6f8c2ab2f4ec306a1db34279cc514db"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P2-S04-pack-final.txt",
+      "bytes": 2479,
+      "sha256": "5b44aed13ace9d4f91b9fa9e3562487cae5e4640317e70fa24e76a70d1432bae"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P2-S04-space-after.json",
+      "bytes": 772,
+      "sha256": "1ea1ccac6ef20f91dad6eedfbe3fce79388b56075af80f2fc539de5fe42a03ee"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P2-S04-space-plan.json",
+      "bytes": 642,
+      "sha256": "f40f58f9a3019bc0b9fde98b3bc30f8eecf1a5cf304e7ef2225a55521d9b1cdd"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P2-S04-space-review.json",
+      "bytes": 404,
+      "sha256": "610a8ba43bd25d0d793e627bf03a7c033282ef6f5bec60053de5e55c4f82762b"
+    }
+  ],
+  "results": {
+    "actualZipTests": 7,
+    "packContractTests": 8,
+    "totalDistinct": 15,
+    "clippy": "core all targets -D warnings passed",
+    "before": "2 ZIP files with max2 wrongly accepted and created7 filesystem entries"
+  },
+  "scope": "Unique files/explicit+implicit directories within signed entry budget;consistent ASCII casing for every parent;actual exact7 success and2refusal before writes;control checked before output root",
+  "space": "0.14GiB D change exceeds initial0.03/reviewed0.08;includes parallel/cache/intermediate unknowns,not measured task peak;no more closeout compilation;250 denied artifacts unchanged",
+  "preserved": "No GUI/install/activation/real key/service/new env/worktree/old cleanup;dev.9/data/webview/old evidence retained;drag unaccepted"
+}

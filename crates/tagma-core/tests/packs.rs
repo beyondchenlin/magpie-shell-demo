@@ -306,6 +306,51 @@ fn archive_index_rejects_all_links_aliases_prefix_collisions_and_expansion_limit
     let valid = proof.validate_archive_index(TARGET, index()).unwrap();
     assert_eq!(valid.total_bytes(), 128);
     assert_eq!(valid.entries().len(), 2);
+    assert_eq!(valid.filesystem_entries(), 2);
+    let shared = proof
+        .validate_archive_index(
+            TARGET,
+            vec![
+                entry("bin/reachflow.exe", ArchiveEntryKind::File, 1),
+                entry("assets/a", ArchiveEntryKind::File, 1),
+                entry("assets/b", ArchiveEntryKind::File, 1),
+            ],
+        )
+        .unwrap();
+    assert_eq!(
+        shared.filesystem_entries(),
+        5,
+        "shared implicit parents count once"
+    );
+    let with_directory = proof
+        .validate_archive_index(
+            TARGET,
+            vec![
+                entry("bin/reachflow.exe", ArchiveEntryKind::File, 1),
+                entry("assets", ArchiveEntryKind::Directory, 0),
+                entry("assets/a", ArchiveEntryKind::File, 1),
+                entry("assets/b", ArchiveEntryKind::File, 1),
+            ],
+        )
+        .unwrap();
+    assert_eq!(
+        with_directory.filesystem_entries(),
+        5,
+        "explicit parent is not double charged"
+    );
+    assert_eq!(
+        proof
+            .validate_archive_index(
+                TARGET,
+                vec![
+                    entry("bin/reachflow.exe", ArchiveEntryKind::File, 1),
+                    entry("Assets/a", ArchiveEntryKind::File, 1),
+                    entry("assets/b", ArchiveEntryKind::File, 1)
+                ]
+            )
+            .unwrap_err(),
+        PackError::InvalidArchiveIndex
+    );
     for kind in [
         ArchiveEntryKind::Symlink,
         ArchiveEntryKind::Hardlink,

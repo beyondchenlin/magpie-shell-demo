@@ -81,6 +81,7 @@ pub enum PackEntryProtocol {
 #[serde(deny_unknown_fields)]
 pub struct PackResources {
     pub max_unpacked_bytes: u64,
+    /// Also bounds unique filesystem entries, including implicit parents.
     pub max_archive_entries: u32,
     pub memory_mib: u32,
     pub max_concurrency: u8,

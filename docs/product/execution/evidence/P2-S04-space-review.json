@@ -1,0 +1,8 @@
+{
+  "RecordedAtUtc": "2026-10-18T00:26:41.2096679Z",
+  "RevisedEstimatedAdditionalPeakGiB": 0.08,
+  "Reason": "Windows cached core link/test intermediate files may exceed initial0.03;includes same current profile only,no new dependency/full workspace",
+  "CFreeGiB": 42.75,
+  "DFreeGiB": 9.11,
+  "Constraint": "Only scoped small core checks;>1GiB operations paused;rejected250 files untouched"
+}

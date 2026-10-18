@@ -46,6 +46,7 @@ pub struct ArchiveEntry {
 pub struct ValidatedArchiveIndex {
     entries: Vec<ArchiveEntry>,
     total_bytes: u64,
+    filesystem_entries: u32,
 }
 impl ValidatedArchiveIndex {
     pub fn entries(&self) -> &[ArchiveEntry] {
@@ -53,6 +54,10 @@ impl ValidatedArchiveIndex {
     }
     pub fn total_bytes(&self) -> u64 {
         self.total_bytes
+    }
+    /// Files, explicit directories, and unique implicit parent directories.
+    pub fn filesystem_entries(&self) -> u32 {
+        self.filesystem_entries
     }
 }
 impl VerifiedManifest {
@@ -68,6 +73,7 @@ impl VerifiedManifest {
             return Err(PackError::ArchiveLimit);
         }
         let mut paths = HashMap::new();
+        let mut filesystem_paths = HashMap::new();
         let mut total = 0u64;
         let mut executable = false;
         for entry in &entries {
@@ -84,6 +90,26 @@ impl VerifiedManifest {
                 .is_some()
             {
                 return Err(PackError::InvalidArchiveIndex);
+            }
+            // A single ZIP file may create many parents. Count every actual
+            // path before writes, and use one spelling per case-folded parent
+            // so Windows and case-sensitive filesystems share the same bound.
+            for end in entry
+                .path
+                .match_indices('/')
+                .map(|(i, _)| i)
+                .chain(std::iter::once(entry.path.len()))
+            {
+                let prefix = &entry.path[..end];
+                let previous = filesystem_paths
+                    .entry(prefix.to_ascii_lowercase())
+                    .or_insert(prefix);
+                if *previous != prefix {
+                    return Err(PackError::InvalidArchiveIndex);
+                }
+                if filesystem_paths.len() > artifact.resources.max_archive_entries as usize {
+                    return Err(PackError::ArchiveLimit);
+                }
             }
             total = total
                 .checked_add(entry.unpacked_bytes)
@@ -105,9 +131,11 @@ impl VerifiedManifest {
         if !executable {
             return Err(PackError::InvalidArchiveIndex);
         }
+        let filesystem_entries = filesystem_paths.len() as u32;
         Ok(ValidatedArchiveIndex {
             entries,
             total_bytes: total,
+            filesystem_entries,
         })
     }
 }

@@ -1,0 +1,8 @@
+{
+  "recordedAtUtc": "2026-10-18T00:30:47.418Z",
+  "listed": 250,
+  "present": 250,
+  "unchangedIdentitySizeMtime": 250,
+  "differences": [],
+  "note": "Read-only confirmation rejected cleanup was not retried;no old file deletion or replacement by scoped current builds"
+}

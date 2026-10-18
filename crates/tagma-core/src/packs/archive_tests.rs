@@ -162,6 +162,19 @@ fn central_positions(bytes: &[u8]) -> Vec<usize> {
         .filter_map(|(i, s)| (s == b"PK\x01\x02").then_some(i))
         .collect()
 }
+fn filesystem_entries(path: &std::path::Path) -> usize {
+    fs::read_dir(path)
+        .unwrap()
+        .map(|e| {
+            let e = e.unwrap();
+            1 + if e.file_type().unwrap().is_dir() {
+                filesystem_entries(&e.path())
+            } else {
+                0
+            }
+        })
+        .sum()
+}
 
 #[test]
 fn actual_stored_and_deflated_zip_extract_to_fresh_capability_root_and_cleanup() {
@@ -271,6 +284,54 @@ fn actual_entry_count_declared_expansion_and_understated_size_are_bounded() {
     f.clean();
     println!(
         "Actual ZIP expansion/count rejected before stage;lying central size cannot permit extra actual output;new stage cleaned on failure"
+    );
+}
+#[test]
+fn actual_implicit_directories_count_against_the_signed_entry_budget() {
+    let f = Fixture::new();
+    let mut writer = ZipWriter::new(Cursor::new(Vec::new()));
+    let options = SimpleFileOptions::default().compression_method(CompressionMethod::Stored);
+    writer.start_file("bin/runner.exe", options).unwrap();
+    writer.write_all(b"owned fake binary").unwrap();
+    writer.start_file("a/b/c/d/payload.txt", options).unwrap();
+    writer.write_all(b"owned small payload").unwrap();
+    let bytes = writer.finish().unwrap().into_inner();
+    let c = control();
+    let result = f.archive(&bytes, 4096, 2, &c).extract(&f.stage, &c);
+    if let Ok(extracted) = &result {
+        println!(
+            "Implicit-directory before guard:ZIP raw entries={},actual root has additional bin and a/b/c/d parents,accepted with signed maximum2",
+            extracted.index().entries().len()
+        );
+    }
+    assert_eq!(error(result), PackError::ArchiveLimit);
+    f.clean();
+    let extracted = f
+        .archive(&bytes, 4096, 7, &c)
+        .extract(&f.stage, &c)
+        .unwrap();
+    assert_eq!(extracted.index().entries().len(), 2);
+    assert_eq!(extracted.index().filesystem_entries(), 7);
+    assert_eq!(filesystem_entries(extracted.root_path()), 7);
+    assert_eq!(
+        fs::read(extracted.root_path().join("a/b/c/d/payload.txt")).unwrap(),
+        b"owned small payload"
+    );
+    drop(extracted);
+    f.clean();
+    let mut writer = ZipWriter::new(Cursor::new(Vec::new()));
+    for name in ["bin/runner.exe", "Assets/a", "assets/b"] {
+        writer.start_file(name, options).unwrap();
+        writer.write_all(b"owned").unwrap();
+    }
+    let mixed = writer.finish().unwrap().into_inner();
+    assert_eq!(
+        error(f.archive(&mixed, 4096, 16, &c).extract(&f.stage, &c)),
+        PackError::InvalidArchiveIndex
+    );
+    f.clean();
+    println!(
+        "Actual ZIP2 files require7 filesystem entries with implicit parents;limit2 rejects before stage,exact7 succeeds/cleans;resource allocation allowance now covers the same entry budget"
     );
 }
 #[test]

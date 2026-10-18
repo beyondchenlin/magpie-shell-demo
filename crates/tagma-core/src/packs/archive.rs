@@ -315,6 +315,7 @@ impl StagedPackArchive {
             });
         }
         let index = self.proof.validate_archive_index(self.target, entries)?;
+        control.check()?;
         let root = tempfile::Builder::new()
             .prefix("tagma-pack-stage-")
             .tempdir_in(parent)

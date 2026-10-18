@@ -1,0 +1,20 @@
+{
+  "RecordedAtUtc": "2026-10-18T00:31:50.2784367Z",
+  "Disks": [
+    {
+      "Name": "C",
+      "FreeGiB": 44.99
+    },
+    {
+      "Name": "D",
+      "FreeGiB": 12.73
+    }
+  ],
+  "OwnedFixtureLeftovers": [],
+  "NewWorktrees": 0,
+  "NewEnvironments": 0,
+  "Cleanup": "New fixture RAII only;rejected250 present/unchanged;no manual deletion",
+  "Constraint": "D<10GiB;>1GiB paused;no further closeout compilation;drive delta0.14 exceeds0.03 initial/0.08 reviewed and includes concurrent/cache/intermediate changes",
+  "CurrentArtifacts": "Current modified deps logical53.53MiB/deduplicated allocated53.55MiB,not net growth or all drive usage",
+  "Kept": "Current cache/dependencies/old evidence/denied files/installed dev.9/preview data and webview"
+}

@@ -1,0 +1,210 @@
+{
+  "recordedAtUtc": "2026-10-18T00:29:01.918Z",
+  "root": "D:\\demo1\\tagmaai\\target\\debug\\deps",
+  "sinceUtc": "2026-10-18T00:12:00Z",
+  "files": [
+    {
+      "path": "D:\\demo1\\tagmaai\\target\\debug\\deps\\catalog-eebb1ded32977c81.d",
+      "logicalBytes": "371",
+      "allocatedBytes": "0",
+      "identity": "891487062:8444249304657315",
+      "links": "1",
+      "modifiedUtc": "2026-10-18T00:28:01.932Z"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\target\\debug\\deps\\config_service-fb957f00a321e53e.d",
+      "logicalBytes": "406",
+      "allocatedBytes": "0",
+      "identity": "891487062:8162774327946667",
+      "links": "1",
+      "modifiedUtc": "2026-10-18T00:28:01.788Z"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\target\\debug\\deps\\first_cloud-011998f658708668.d",
+      "logicalBytes": "391",
+      "allocatedBytes": "0",
+      "identity": "891487062:8444249304657297",
+      "links": "1",
+      "modifiedUtc": "2026-10-18T00:28:01.696Z"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\target\\debug\\deps\\libcatalog-eebb1ded32977c81.rmeta",
+      "logicalBytes": "0",
+      "allocatedBytes": "0",
+      "identity": "891487062:9007199258078645",
+      "links": "1",
+      "modifiedUtc": "2026-10-18T00:28:01.887Z"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\target\\debug\\deps\\libconfig_service-fb957f00a321e53e.rmeta",
+      "logicalBytes": "0",
+      "allocatedBytes": "0",
+      "identity": "891487062:8725724281367988",
+      "links": "1",
+      "modifiedUtc": "2026-10-18T00:28:01.732Z"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\target\\debug\\deps\\libfirst_cloud-011998f658708668.rmeta",
+      "logicalBytes": "0",
+      "allocatedBytes": "0",
+      "identity": "891487062:9851624188210700",
+      "links": "1",
+      "modifiedUtc": "2026-10-18T00:28:01.647Z"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\target\\debug\\deps\\libpacks-09c0acd4a5724d01.rmeta",
+      "logicalBytes": "0",
+      "allocatedBytes": "0",
+      "identity": "891487062:8725724281367974",
+      "links": "1",
+      "modifiedUtc": "2026-10-18T00:28:01.866Z"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\target\\debug\\deps\\libsecurity-a6c00e48b795b85b.rmeta",
+      "logicalBytes": "0",
+      "allocatedBytes": "0",
+      "identity": "891487062:20266198326505020",
+      "links": "1",
+      "modifiedUtc": "2026-10-18T00:28:01.744Z"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\target\\debug\\deps\\libtagma_core-4cc75e1fc4ac435d.rmeta",
+      "logicalBytes": "0",
+      "allocatedBytes": "0",
+      "identity": "891487062:9570149211499950",
+      "links": "1",
+      "modifiedUtc": "2026-10-18T00:27:58.072Z"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\target\\debug\\deps\\libtagma_core-9d155eec5ba3784d.rmeta",
+      "logicalBytes": "2523969",
+      "allocatedBytes": "2527232",
+      "identity": "891487062:9851624188210751",
+      "links": "1",
+      "modifiedUtc": "2026-10-18T00:27:58.072Z"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\target\\debug\\deps\\libtagma_core-fb023db5a64a1ba4.rlib",
+      "logicalBytes": "22248784",
+      "allocatedBytes": "22249472",
+      "identity": "891487062:8162774327946849",
+      "links": "1",
+      "modifiedUtc": "2026-10-18T00:27:56.225Z"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\target\\debug\\deps\\libtagma_core-fb023db5a64a1ba4.rmeta",
+      "logicalBytes": "5378129",
+      "allocatedBytes": "5382144",
+      "identity": "891487062:9570149211500093",
+      "links": "1",
+      "modifiedUtc": "2026-10-18T00:27:55.396Z"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\target\\debug\\deps\\libteams-5a717fd0142a8c19.rmeta",
+      "logicalBytes": "0",
+      "allocatedBytes": "0",
+      "identity": "891487062:10133099164921408",
+      "links": "1",
+      "modifiedUtc": "2026-10-18T00:28:01.758Z"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\target\\debug\\deps\\packs-09c0acd4a5724d01.d",
+      "logicalBytes": "361",
+      "allocatedBytes": "0",
+      "identity": "891487062:8444249304657316",
+      "links": "1",
+      "modifiedUtc": "2026-10-18T00:28:01.920Z"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\target\\debug\\deps\\packs-f4f2b7b363cd1ef3.d",
+      "logicalBytes": "226",
+      "allocatedBytes": "0",
+      "identity": "891487062:8725724281367887",
+      "links": "1",
+      "modifiedUtc": "2026-10-18T00:27:56.348Z"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\target\\debug\\deps\\packs-f4f2b7b363cd1ef3.exe",
+      "logicalBytes": "4212224",
+      "allocatedBytes": "4214784",
+      "identity": "891487062:8444249304657261",
+      "links": "1",
+      "modifiedUtc": "2026-10-18T00:27:56.828Z"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\target\\debug\\deps\\packs-f4f2b7b363cd1ef3.pdb",
+      "logicalBytes": "4558848",
+      "allocatedBytes": "4558848",
+      "identity": "891487062:8444249304657267",
+      "links": "1",
+      "modifiedUtc": "2026-10-18T00:27:56.838Z"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\target\\debug\\deps\\security-a6c00e48b795b85b.d",
+      "logicalBytes": "376",
+      "allocatedBytes": "0",
+      "identity": "891487062:8162774327946668",
+      "links": "1",
+      "modifiedUtc": "2026-10-18T00:28:01.797Z"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\target\\debug\\deps\\tagma_core-0348fd4cdb7f1e31.d",
+      "logicalBytes": "3564",
+      "allocatedBytes": "4096",
+      "identity": "891487062:8444249304657206",
+      "links": "1",
+      "modifiedUtc": "2026-10-18T00:27:44.728Z"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\target\\debug\\deps\\tagma_core-0348fd4cdb7f1e31.exe",
+      "logicalBytes": "9061888",
+      "allocatedBytes": "9064448",
+      "identity": "891487062:8162774327946579",
+      "links": "1",
+      "modifiedUtc": "2026-10-18T00:27:50.920Z"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\target\\debug\\deps\\tagma_core-0348fd4cdb7f1e31.pdb",
+      "logicalBytes": "8130560",
+      "allocatedBytes": "8130560",
+      "identity": "891487062:8162774327946580",
+      "links": "1",
+      "modifiedUtc": "2026-10-18T00:27:50.953Z"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\target\\debug\\deps\\tagma_core-4cc75e1fc4ac435d.d",
+      "logicalBytes": "3698",
+      "allocatedBytes": "4096",
+      "identity": "891487062:8725724281367934",
+      "links": "1",
+      "modifiedUtc": "2026-10-18T00:27:58.595Z"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\target\\debug\\deps\\tagma_core-9d155eec5ba3784d.d",
+      "logicalBytes": "3228",
+      "allocatedBytes": "4096",
+      "identity": "891487062:8444249304657277",
+      "links": "1",
+      "modifiedUtc": "2026-10-18T00:27:58.563Z"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\target\\debug\\deps\\tagma_core-fb023db5a64a1ba4.d",
+      "logicalBytes": "4135",
+      "allocatedBytes": "8192",
+      "identity": "891487062:8725724281367878",
+      "links": "1",
+      "modifiedUtc": "2026-10-18T00:27:52.336Z"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\target\\debug\\deps\\teams-5a717fd0142a8c19.d",
+      "logicalBytes": "361",
+      "allocatedBytes": "0",
+      "identity": "891487062:8444249304657287",
+      "links": "1",
+      "modifiedUtc": "2026-10-18T00:28:01.812Z"
+    }
+  ],
+  "logicalBytes": "56131519",
+  "deduplicatedAllocatedBytes": "56147968",
+  "caveat": "Current files modified during window,not a before-after growth measure;deleted/replaced intermediate allocation and concurrent disk writes not captured;no deletion/cleanup attempted"
+}
