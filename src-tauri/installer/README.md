@@ -16,6 +16,9 @@ Tagma changes:
   closed. Busy exits with 1618; check failures with 1603.
 - Reject binary downgrades in interactive, passive and silent modes (1638).
   Schema recovery remains an explicit application operation.
+- Abort on payload/directory/uninstaller write failures (1603), including when
+  Ignore was selected in NSIS's file error dialog. Do not update DisplayVersion
+  after an incomplete payload write. A complete reinstall is the recovery path.
 
 The user quits the desktop through its existing request-draining flow. A separate
 gateway must be stopped by its owner. This guard does **not** establish an atomic

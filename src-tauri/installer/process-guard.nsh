@@ -48,3 +48,14 @@ Var TagmaGuardMessage
     Abort
   ${EndIf}
 !macroend
+
+; NSIS permits Ignore on an extraction error. It sets the error flag but would
+; otherwise continue and record a newer DisplayVersion without installing it.
+; Keep the existing registration until every payload and the uninstaller exist.
+!macro TagmaRequireFileWrite
+  ${If} ${Errors}
+    DetailPrint "Tagma installation is incomplete because a program file could not be written. Quit all Tagma instances and separately started gateways, then run this complete installer again. User configuration was not removed."
+    SetErrorLevel 1603
+    Abort
+  ${EndIf}
+!macroend

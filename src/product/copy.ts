@@ -75,7 +75,7 @@ const errors: Record<ErrorCode, [string, string]> = {
   CONFIG_CONFLICT: ["配置已由其他入口修改，本次修改未写入，草稿仍保留。若正在编辑，请先记下需要保留的非敏感修改，取消编辑后刷新，再核对最新配置并重新编辑。", "Configuration changed elsewhere; this change was not saved and the draft is retained. If editing, note any non-sensitive changes you want to keep, cancel editing, then refresh and review the latest configuration before editing again."],
   STORAGE_UNAVAILABLE: ["本机配置存储不可用，未确认保存成功。请检查磁盘空间与权限。", "Local configuration storage is unavailable. Check disk space and permissions; save is not confirmed."],
   CREDENTIAL_STORE_UNAVAILABLE: ["凭据缺失或系统凭据库不可用。请检查密钥及系统凭据设施后重试，不会改用明文保存。", "The credential is missing or the system credential store is unavailable. Check the configured key and system credential store, then retry. No plaintext fallback is used."],
-  INCOMPATIBLE_VERSION: ["程序、协议或配置结构版本不兼容。请使用兼容版本，不要强制降级写入。", "Incompatible application, protocol or schema version. Use a compatible version; do not force a downgrade."],
+  INCOMPATIBLE_VERSION: ["程序、协议或配置结构版本不兼容。更新中断时，请退出所有 Tagma 入口，重新安装同一完整版本；较新配置需使用支持它的版本，勿强制降级。", "Incompatible application, protocol or schema version. After an interrupted update, quit all Tagma instances and reinstall the same complete version. Newer configuration requires a compatible version; do not force a downgrade."],
   MAINTENANCE_IN_PROGRESS: ["配置正在维护或迁移，请完成维护后重试。", "Configuration maintenance is in progress. Complete it before retrying."],
   DESKTOP_REQUIRED: [zh.previewHint, en.previewHint],
   INTERNAL_ERROR: ["本机操作失败，请刷新并检查诊断。", "The local operation failed. Refresh and check diagnostics."],

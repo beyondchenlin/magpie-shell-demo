@@ -463,19 +463,27 @@ Section Install
   !insertmacro TagmaCheckInstallProcesses "$INSTDIR"
 
   ; Copy main executable
+  ClearErrors
   File "${MAINBINARYSRCPATH}"
+  !insertmacro TagmaRequireFileWrite
 
   ; Copy resources
   {{#each resources_dirs}}
+    ClearErrors
     CreateDirectory "$INSTDIR\\{{this}}"
+    !insertmacro TagmaRequireFileWrite
   {{/each}}
   {{#each resources}}
+    ClearErrors
     File /a "/oname={{this.[1]}}" "{{no-escape @key}}"
+    !insertmacro TagmaRequireFileWrite
   {{/each}}
 
   ; Copy external binaries
   {{#each binaries}}
+    ClearErrors
     File /a "/oname={{this}}" "{{no-escape @key}}"
+    !insertmacro TagmaRequireFileWrite
   {{/each}}
 
   ; Create file associations
@@ -494,7 +502,9 @@ Section Install
   {{/each}}
 
   ; Create uninstaller
+  ClearErrors
   WriteUninstaller "$INSTDIR\uninstall.exe"
+  !insertmacro TagmaRequireFileWrite
 
   ; Save $INSTDIR in registry for future installations
   WriteRegStr SHCTX "${MANUPRODUCTKEY}" "" $INSTDIR
