@@ -2,7 +2,13 @@
 
 唯一执行进度入口；依据 PRD v0.3 + EXECUTION-BASELINE.md。执行者独占代码与构建；监督文件由原聊天维护。
 
-## 当前入口：P0-S09 三页导航与明确启动恢复
+## 当前入口：P0-S10 控制通道仍阻塞
+
+2026-10-18继续复用dev.18隔离实例，宿主PID45604/网关PID7332仍运行，重新枚举窗口593796。截图先报FrameArrived超时；最新树“添加供应商”的索引点击报coordinate input geometry is unavailable；公开Raise动作后截图仍超时。Tab/延迟观察/Shift+Tab均未确认页面控件焦点。无控制器重连/重置、无用户代点、无后台验收替代。供应商保存/排序、停网关保存、宿主退出重启恢复、自由拖动新增通过数0。
+
+只读核对会话/设备/事件及已安装JS适配层：会话、DWM与CaptureService存在，虚拟显示设备当前问题码0，历史驱动警告不能当作根因；公开接口没有取帧/几何重建或焦点修复能力。底层根因尚未证实，通道尚未修好，不修改Tagma源码掩盖控制故障。下一动作是受支持的原生控制端修复后先验证截图→打开编辑器→字段聚焦读回，再执行五项验收。见 [P0-S10诊断](P0-S10-CONTROL-CHANNEL.md) 和 [原始证据](evidence/P0-S10-native-channel.json)。两项automation与RUN-BINDING保持PAUSED，未唤醒旧聊天；无新增工作树/环境/构建/数据清理。
+
+## P0-S09 三页导航与明确启动恢复
 
 2026-10-18 接手基线 codex/tagma-p0 @ e597753；保持 tagma-prd、magpie-cis、RUN-BINDING PAUSED，不唤醒旧聊天，不创建子代理。已完整读取14:52交接/审计及要求的PRD/CIS/执行记录；继承未提交修改保留。
 
