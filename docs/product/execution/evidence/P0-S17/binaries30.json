@@ -1,0 +1,12 @@
+[
+  {
+    "sha256": "4085A2D5DC1E1B261F9DE5FC1529CB29DAB57472A33E7C513BF6BA855A6211E6",
+    "bytes": 20270080,
+    "path": "D:\\demo1\\tagmaai\\target\\debug\\tagma-desktop.exe"
+  },
+  {
+    "sha256": "C0118FE37C6918041156AF7C8846C681F456EBAB80EAB5176F28C6C7417F9A04",
+    "bytes": 10109440,
+    "path": "D:\\demo1\\tagmaai\\target\\debug\\tagma-gateway.exe"
+  }
+]

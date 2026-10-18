@@ -1,0 +1,7 @@
+{
+  "case": "dev30 late startup race; Ignore at failed desktop write",
+  "registeredVersion": "0.2.0-dev.28",
+  "desktopHash": "C606B179F3D60915507049AC3D077869C2FBC205B05AE322A839B59008D0A629",
+  "gatewayHash": "115C39E4320CAF2FD2B5D38FE9FC1DD5CA655AA40B921630DF705CA93B2AFA02",
+  "runningHostAlive": true
+}

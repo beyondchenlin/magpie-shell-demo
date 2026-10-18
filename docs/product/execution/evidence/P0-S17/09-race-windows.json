@@ -1,0 +1,37 @@
+[
+  {
+    "Handle": 5050602,
+    "Title": "Tagma P0 S16 Acceptance Setup",
+    "Visible": true
+  },
+  {
+    "Handle": 9243926,
+    "Title": "Tagma P0 S16 Acceptance Setup ",
+    "Visible": true
+  },
+  {
+    "Handle": 7669540,
+    "Title": "",
+    "Visible": false
+  },
+  {
+    "Handle": 3608450,
+    "Title": "MSCTFIME UI",
+    "Visible": false
+  },
+  {
+    "Handle": 3081784,
+    "Title": "Default IME",
+    "Visible": false
+  },
+  {
+    "Handle": 21695436,
+    "Title": "MSCTFIME UI",
+    "Visible": false
+  },
+  {
+    "Handle": 7538032,
+    "Title": "Default IME",
+    "Visible": false
+  }
+]

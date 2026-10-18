@@ -1,0 +1,7 @@
+{
+  "case": "Late standalone gateway locks second payload, Ignore aborts",
+  "registeredVersion": "0.2.0-dev.28",
+  "desktopHash": "4085A2D5DC1E1B261F9DE5FC1529CB29DAB57472A33E7C513BF6BA855A6211E6",
+  "gatewayHash": "115C39E4320CAF2FD2B5D38FE9FC1DD5CA655AA40B921630DF705CA93B2AFA02",
+  "gatewayAlive": true
+}

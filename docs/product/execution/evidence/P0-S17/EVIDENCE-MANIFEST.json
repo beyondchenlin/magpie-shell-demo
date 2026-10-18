@@ -1,0 +1,511 @@
+{
+  "batch": "P0-S17",
+  "version": "dev.30",
+  "productCommit": "2821a6b",
+  "fileCount": 100,
+  "logicalBytes": 2505386,
+  "hardlinkDeduplication": false,
+  "cleanup": "No historic evidence removed; retain bounded failure fixtures and the active installation. No scheduled cleanup.",
+  "files": [
+    {
+      "path": "03-mixed-startup.json",
+      "bytes": 45302,
+      "sha256": "53ac11dc3311440be731e519186a21d61b65c58b2de68c03af37ba756bb88cc0"
+    },
+    {
+      "path": "04-mixed-error.json",
+      "bytes": 63443,
+      "sha256": "0347b169df1a66a1c02c2059caa52d56fce7ef0b70ff8eb7c44c9a9f227c9927"
+    },
+    {
+      "path": "04-mixed-error.png",
+      "bytes": 25963,
+      "sha256": "938c3dd3916b66c05dc8e8285b546f939b1f98b2a4aaf1a83bac70ee97e75294"
+    },
+    {
+      "path": "05-mixed-quit-17.json",
+      "bytes": 48272,
+      "sha256": "a8afe7ca3d214494e8c322b299e405d0452b814073fbb206d78263c49793bb25"
+    },
+    {
+      "path": "05-mixed-quit-40.json",
+      "bytes": 14858,
+      "sha256": "8b34fb18275dac766e8232d24f0c81f9d9da7b1dc4c845f4590c1cf5a18d0dee"
+    },
+    {
+      "path": "06-repaired-native.json",
+      "bytes": 42351,
+      "sha256": "bf4f619edead40d5672e4f9a1d0ae7a52f6dfea9e4d9ede836056ef6e1a5a98d"
+    },
+    {
+      "path": "07-race-prepare-quit-16.json",
+      "bytes": 48264,
+      "sha256": "71f07509c87aa6ede7fef715246ee882b9fe8d7f38ae20971e046a4f338002ab"
+    },
+    {
+      "path": "07-race-prepare-quit-40.json",
+      "bytes": 14857,
+      "sha256": "06581de5c033998346d0c570b81337a880511d8ca89476bf9d0b5bec15ada07f"
+    },
+    {
+      "path": "08-late-started28.json",
+      "bytes": 42351,
+      "sha256": "a328c01f11fd029dfba4067810005e464603ffa7a90c8a6225db0bb29353e18c"
+    },
+    {
+      "path": "09-race-windows.json",
+      "bytes": 632,
+      "sha256": "959f0cbb3dae2b6f6d34c7b3838264971a3ac7bb0b6494dbca90acfe269a807d"
+    },
+    {
+      "path": "10-write-failure.json",
+      "bytes": 4391,
+      "sha256": "ad41717f8d345bc7da5cfbd91e0b60f9362557fa9c490a3064364627a7776883"
+    },
+    {
+      "path": "10-write-failure.png",
+      "bytes": 10554,
+      "sha256": "3ba35dc3657629da3416003393175bcb9287a0481e417a4f0fecc35872da6374"
+    },
+    {
+      "path": "11-ignored-host-failure.json",
+      "bytes": 189,
+      "sha256": "c44c7c4502b0e847ddcd6a844d0e31c4ea457a1b0da3ef4dd0dfdbc6a257324f"
+    },
+    {
+      "path": "12-gateway-write-failure.json",
+      "bytes": 4391,
+      "sha256": "8eba331ecb0582aef6ad84aeffd03336229b4208c44aa940ede30495eb24e1d2"
+    },
+    {
+      "path": "13-ignored-gateway-failure.json",
+      "bytes": 189,
+      "sha256": "1d2b81666436743b9b14a95e68fa09ef78aec596f15d456f89715ca654f37146"
+    },
+    {
+      "path": "15-before-fixed-race.json",
+      "bytes": 43346,
+      "sha256": "ed5d348e49cf76b487e2ccc8cf846cadf4d5e30e68dfbdcc8ba28aaf4c2d158a"
+    },
+    {
+      "path": "16-fixed-race-quit-17.json",
+      "bytes": 48264,
+      "sha256": "7818d519dbf780902286b1df157d7cbfb2ed0a08f39d5a3f6613ecf30bcda0a5"
+    },
+    {
+      "path": "16-fixed-race-quit-40.json",
+      "bytes": 14857,
+      "sha256": "96f55a0c58c5d0adc15dc702015b0c0748ae89385a7dec896bd5fd59c2723e47"
+    },
+    {
+      "path": "17-fixed-late-started28.json",
+      "bytes": 42325,
+      "sha256": "ddafe9e352cfdc5fa7c72ce2ed36830db267376e3073cc6f28bc07d846195ea7"
+    },
+    {
+      "path": "18-fixed-write-failure.json",
+      "bytes": 4391,
+      "sha256": "220fb61fc8b928f5dfb348c9c2d1b9f202b2012297b6d134e8c962bed7da4f44"
+    },
+    {
+      "path": "18-fixed-write-failure.png",
+      "bytes": 10554,
+      "sha256": "3ba35dc3657629da3416003393175bcb9287a0481e417a4f0fecc35872da6374"
+    },
+    {
+      "path": "19-fixed-ignore.json",
+      "bytes": 189,
+      "sha256": "56939caa3686472542dbf3da9c6acded1a270a268b6f4cd58222ccf08afa5919"
+    },
+    {
+      "path": "20-fixed-aborted.json",
+      "bytes": 12130,
+      "sha256": "9c0fd1cd453ba2a89a92ca44296b26e93749834dbeff8e552706a30bb47bf65f"
+    },
+    {
+      "path": "21-fixed-abort-details.json",
+      "bytes": 12129,
+      "sha256": "279958173eb9c2550687b624260eef5be6f792323ce08af7e5de9f9e4961c807"
+    },
+    {
+      "path": "21-fixed-abort-details.png",
+      "bytes": 18628,
+      "sha256": "3997f6b8da22cb4b43aae9966c2602b8b74c1d176b1b6858506bd2bcc876e78d"
+    },
+    {
+      "path": "23-before-sidecar-fault.json",
+      "bytes": 43319,
+      "sha256": "52a893e235e23ab7c6aa1b9af60cb08a3fc9adaa1113cda5c03c9abb2b68cc86"
+    },
+    {
+      "path": "24-sidecar-quit-17.json",
+      "bytes": 48232,
+      "sha256": "1315058e7d34b1e8fcf510a60f6601c30026c60a4ced2d2b194ef1249ae5b5d5"
+    },
+    {
+      "path": "24-sidecar-quit-40.json",
+      "bytes": 14859,
+      "sha256": "99da99f256bcf5bf529891c17974cb9ec834d8cd5206db948926eaa9b8ad875a"
+    },
+    {
+      "path": "25-sidecar-write-failure.json",
+      "bytes": 4397,
+      "sha256": "e177746f7bd9ab451ba798145406bceaa33e73165fc309a7280f08320b422ce4"
+    },
+    {
+      "path": "25-sidecar-write-failure.png",
+      "bytes": 10539,
+      "sha256": "c2a78c775b59ce8234c542a9432c820a78138d5635e550dccbb0053e8eab3193"
+    },
+    {
+      "path": "26-sidecar-ignore.json",
+      "bytes": 189,
+      "sha256": "2898a4709ecae4731c08bc5282550272fccc13cf69c0499b079b99cfc96b4e16"
+    },
+    {
+      "path": "27-sidecar-aborted.json",
+      "bytes": 12134,
+      "sha256": "c4e683e0779a48516f20cf121f4bfc8b7ff5dcb9f316ea44b0ce7051a314efe7"
+    },
+    {
+      "path": "29-mixed30-start.json",
+      "bytes": 45266,
+      "sha256": "20fda501a2518027a318082c3d59b107db3f59d853a2ef194bfc69fba57527f2"
+    },
+    {
+      "path": "30-recovery-copy-16.json",
+      "bytes": 48233,
+      "sha256": "e6f7705a109c5e8e14fa162a492c8aec86013f90c0802617b3d777f7ab3c113b"
+    },
+    {
+      "path": "31-recovery-font150.json",
+      "bytes": 48314,
+      "sha256": "b6f89d772d91170201b3ec7addbc525ed757340489f6449706ee4078de3432ef"
+    },
+    {
+      "path": "32-recovery-zh150.json",
+      "bytes": 63480,
+      "sha256": "58f18f05c299f8e527f23d335cd8be5bde489318fed8b0c9e0200c7caa019fc1"
+    },
+    {
+      "path": "32-recovery-zh150.png",
+      "bytes": 30853,
+      "sha256": "96e6d80ca0677555c893e35964ebbea13179affbe98dd0de4ab56e086d2104e6"
+    },
+    {
+      "path": "33-language-prepare.json",
+      "bytes": 48314,
+      "sha256": "ad7627d5d4f85170c44371bef9dfb8966b13e0cdfb651742a0bd53112093d721"
+    },
+    {
+      "path": "34-language-menu.json",
+      "bytes": 55209,
+      "sha256": "2f0e34366de2f18a96c5a3f057ac3c4bb4f759bec737e106da833e51ca036aa1"
+    },
+    {
+      "path": "35-en150-32.json",
+      "bytes": 63622,
+      "sha256": "f600ecf2547e9534567361125e0c27f3b6e4be6c46dd6c631748a7e6a6e5ccf1"
+    },
+    {
+      "path": "35-en150-50.json",
+      "bytes": 48331,
+      "sha256": "58a1ed70e79a995e05eb543dfc0534ee118cc277328793f70ce24f4050538e73"
+    },
+    {
+      "path": "35-en150-recovery-copy.png",
+      "bytes": 43511,
+      "sha256": "c16a74ceb1e651950abbc8f8cec2978d0cb448f10bdbc73d474d87cdce8caa1b"
+    },
+    {
+      "path": "36-restore-settings.json",
+      "bytes": 48331,
+      "sha256": "1d906eaf5d9ee3a9ed2a80464c008e5930aef1792ad0b6a5f36ae207cdd00b0d"
+    },
+    {
+      "path": "37-restore-25.json",
+      "bytes": 55140,
+      "sha256": "d93c8a593d3fdc905ecde6b3851faa5876ce3c630d4c2001570839155a01fc45"
+    },
+    {
+      "path": "37-restore-27.json",
+      "bytes": 48246,
+      "sha256": "22daff203ee86f8ef418c66ed364aec0182db1e4c0663caf701414dc5a6ae82d"
+    },
+    {
+      "path": "37-restore-49.json",
+      "bytes": 48233,
+      "sha256": "68864e51a5e42c7b380a750690b6e2d3499c596a5eb17ca2a551095ac15f20c2"
+    },
+    {
+      "path": "38-mixed30-exit-40.json",
+      "bytes": 14853,
+      "sha256": "d750e223664e72d8a205c846793924b131c2bbb921c681d86a4beaae878fd06e"
+    },
+    {
+      "path": "39-repaired30-native.json",
+      "bytes": 42386,
+      "sha256": "3f6eb5913a37100f6098a3359115d02a42a9cd07c290cf85e3d49e8bd700207d"
+    },
+    {
+      "path": "40-final-provider-order.json",
+      "bytes": 103354,
+      "sha256": "3e294c625fbc79c42f96ed64b8e94cd3f39581059960cea9dc78ec43825be03c"
+    },
+    {
+      "path": "40-final-provider-order.png",
+      "bytes": 37706,
+      "sha256": "91be50efb23703e3df4f0288f19d17426f57b65348486cfe434b0d8a575341c9"
+    },
+    {
+      "path": "actions.jsonl",
+      "bytes": 420272,
+      "sha256": "c5c71e5858050cd01cfb0f3383037f7a523d8e5ed4c352167bf925296444b1e9"
+    },
+    {
+      "path": "binaries30.json",
+      "bytes": 377,
+      "sha256": "9f5d5f88b09bc481a933860f3321d9ffd7fda2d07013c941c6daa4802fef7d31"
+    },
+    {
+      "path": "build-preflight.json",
+      "bytes": 646,
+      "sha256": "493f4d7ee91314747852b1a770c320b45385caa3f1203bd6f298b8dba31e64da"
+    },
+    {
+      "path": "build30.log",
+      "bytes": 3003,
+      "sha256": "20b41b7b12ffc26e506ab4844119dfc841e2eec8e243db146467d066d7b11ffb"
+    },
+    {
+      "path": "Control-mixed29.ps1",
+      "bytes": 27848,
+      "sha256": "ef0a04fb7a9b152f3e6677a6e65ad16526c5fa38afa5fda19063d529ae03d10c"
+    },
+    {
+      "path": "Control-race28.ps1",
+      "bytes": 27848,
+      "sha256": "873c873b471bee4b69290bd3f668267b0af9768e3daeb37d5c5cd579e26c7f71"
+    },
+    {
+      "path": "Control.ps1",
+      "bytes": 27848,
+      "sha256": "319639f22a6194cdded4d13345b82a4628551f4a9eb72dd3e8e8276dcc6c7351"
+    },
+    {
+      "path": "current29/01-before-fault.json",
+      "bytes": 43343,
+      "sha256": "c283eacc26e433b1e310a5c45fac6ef27469c6a234f5171fac963cf15e806b9c"
+    },
+    {
+      "path": "current29/02-quit-17.json",
+      "bytes": 48263,
+      "sha256": "1a0647eeedb8cee9d5c03b90cb2ec3e25774ec25c2ba507e0775af03d25b340b"
+    },
+    {
+      "path": "current29/02-quit-40.json",
+      "bytes": 14856,
+      "sha256": "b17c2d543ff5f6a62afefa58705ba06a5311fededc9a3da3396270ca11aa27a3"
+    },
+    {
+      "path": "current29/actions.jsonl",
+      "bytes": 33063,
+      "sha256": "aadbc4973c2b4f109912b60b28fd6725c07fe245c48132f02ca2e6a1287d4f35"
+    },
+    {
+      "path": "current29/Control.ps1",
+      "bytes": 27860,
+      "sha256": "b95d8945425224300040c2983284aa1b430af2d463f3d21a33b568793105e005"
+    },
+    {
+      "path": "current29/Run.ps1",
+      "bytes": 2071,
+      "sha256": "21382b8f91e96de2a5c6188bb2c3a4d4c6fd429f52265bc6afe0efcb07ea435c"
+    },
+    {
+      "path": "delivery-manifest.json",
+      "bytes": 2342,
+      "sha256": "ab782a346459f4fd57e6a5dd69fa5f76bdfc78c2eeb7c49477be1230acfd608f"
+    },
+    {
+      "path": "fault-build.log",
+      "bytes": 501,
+      "sha256": "2b63e889b649bb953714ff8fb5ef6d2882a3c7a3b3eef515ec2cbad9ba695e08"
+    },
+    {
+      "path": "FileAssociation.nsh",
+      "bytes": 5517,
+      "sha256": "e933990b06dceac358fc1a4e71cb55c7dc9783ad4df8fc2c6248118a7ad4d348"
+    },
+    {
+      "path": "final-processes.json",
+      "bytes": 831,
+      "sha256": "e13774de2d1e7d6c0f7fe60500d0d53864aaafc155b466f44c3c35b7245fd484"
+    },
+    {
+      "path": "fixed-race-result.json",
+      "bytes": 316,
+      "sha256": "b886e643dac4ef43f6713b6d4ac3cbfd3dcbefbd96273deb27752ae10df0e204"
+    },
+    {
+      "path": "fixed30-installer-exit.json",
+      "bytes": 123,
+      "sha256": "55b9944036e77d5ceb10207280cfb420f2066fdab112721b5da5073d6185e99b"
+    },
+    {
+      "path": "ignored-failure-false-success.json",
+      "bytes": 374,
+      "sha256": "e819ceb04967f6036836ce300edba5185c7bb72c5622eca7e1d0d92c4765c597"
+    },
+    {
+      "path": "installer-actions.jsonl",
+      "bytes": 14815,
+      "sha256": "7c683df9a14ed99a7699baaa908e04b0f90cb0de303cacd1c65ff7b056e7d8d8"
+    },
+    {
+      "path": "installer-identity.json",
+      "bytes": 239,
+      "sha256": "8a3b846a86fc2c5c4b9a1be7543940af7d8f7b52cc83beef3f19f19197b7c293"
+    },
+    {
+      "path": "InstallerControl.ps1",
+      "bytes": 8073,
+      "sha256": "79661a470f8c072077198e81ac82d56e4b40ff68195d4037bb38159df36cf14e"
+    },
+    {
+      "path": "interrupted-after-host.nsi",
+      "bytes": 24306,
+      "sha256": "25b2606c8531daeb61a859a101330b86fbfe3559cb8bca01a8aafa6774499b72"
+    },
+    {
+      "path": "interrupted-result.json",
+      "bytes": 746,
+      "sha256": "8dc83bfecbfa35030a6ad10b223fc364cee4744299dae3577e21fb3f31d1f1df"
+    },
+    {
+      "path": "InterruptInstaller.ps1",
+      "bytes": 2819,
+      "sha256": "ac7ef3e52601cb71ce03837cdca1f7a69cce2213d801cbdc526e7e0bbccb4f07"
+    },
+    {
+      "path": "isolated-dev30.nsi",
+      "bytes": 24245,
+      "sha256": "805ab9e1a7ace63575b3f0236e565745b0fceb86cf473b0832ab94241894bc90"
+    },
+    {
+      "path": "isolated30-build.log",
+      "bytes": 501,
+      "sha256": "2b63e889b649bb953714ff8fb5ef6d2882a3c7a3b3eef515ec2cbad9ba695e08"
+    },
+    {
+      "path": "late-fixed-build.log",
+      "bytes": 501,
+      "sha256": "2b63e889b649bb953714ff8fb5ef6d2882a3c7a3b3eef515ec2cbad9ba695e08"
+    },
+    {
+      "path": "late-gateway-exit.json",
+      "bytes": 96,
+      "sha256": "231bd8cb49b9b64588c7e50a9b220584c789f792eae52b811dbacc0cfeaed688"
+    },
+    {
+      "path": "late-gateway-fixed30.exe.exit.json",
+      "bytes": 125,
+      "sha256": "5782e9514d0fb95a973fcf3ce8a0e6489c4afbbf436d6dec605cd6265bba28d2"
+    },
+    {
+      "path": "late-gateway-fixed30.nsi",
+      "bytes": 24434,
+      "sha256": "a05230223c5da68a6f347a48f31e0548b7e4cd045728148a1fd7a0a828114034"
+    },
+    {
+      "path": "late-gateway-identity.json",
+      "bytes": 310,
+      "sha256": "595a6b8dd40e01404df70c6ae05457d8bff02f08a5d0820b88db723cb98e6943"
+    },
+    {
+      "path": "late-start-build.log",
+      "bytes": 501,
+      "sha256": "2b63e889b649bb953714ff8fb5ef6d2882a3c7a3b3eef515ec2cbad9ba695e08"
+    },
+    {
+      "path": "late-start-fixed30.nsi",
+      "bytes": 24427,
+      "sha256": "126a01757e244c3bfb22943c504771eca7f28fa09f3da7bf815ba92dc2b4dd16"
+    },
+    {
+      "path": "late-start-race.nsi",
+      "bytes": 24259,
+      "sha256": "fee03ab54817e642ca8fe877538d9c9439bcd77bce65b2170a3c0a55fb61b3e1"
+    },
+    {
+      "path": "LaunchObservedInstaller.ps1",
+      "bytes": 803,
+      "sha256": "02241fb8a7eee2a720792fc97cfad8cf7f5e4e7a9f1458416ade0aae4fc38f29"
+    },
+    {
+      "path": "lint30.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "owner.txt",
+      "bytes": 30,
+      "sha256": "e08380b3497fbb24aebcdb629a2aba029fbb5aad88e71ec2e86d3f04d4cb88ac"
+    },
+    {
+      "path": "repair-result.json",
+      "bytes": 302,
+      "sha256": "bff1c3ec3a06fdc2bbf9d69b30fe72b0f19ff87d47d8b5c040abd87ac8cf57de"
+    },
+    {
+      "path": "repair30-result.json",
+      "bytes": 566,
+      "sha256": "7b92fcc187d797a2eb84c219bb6ed9144fd086baf6f7487b2bced8c0072b728e"
+    },
+    {
+      "path": "Run.ps1",
+      "bytes": 2061,
+      "sha256": "60f5962bf6183cd906d5944abe41ba3c3fafba3c4ac71d043b9ed51cd152da1c"
+    },
+    {
+      "path": "RunLateGateway.ps1",
+      "bytes": 2426,
+      "sha256": "7bb4e4103dd35923a2a8b8a0964755619d144dc11d367add25563ead26b0848f"
+    },
+    {
+      "path": "sidecar-fault-build.log",
+      "bytes": 501,
+      "sha256": "2b63e889b649bb953714ff8fb5ef6d2882a3c7a3b3eef515ec2cbad9ba695e08"
+    },
+    {
+      "path": "sidecar-race-result.json",
+      "bytes": 316,
+      "sha256": "16deead217aacf68c26e1a37a6c2ef3ec990cd8839edd930feac10376fbc3c91"
+    },
+    {
+      "path": "source-frozen30.json",
+      "bytes": 53513,
+      "sha256": "f817f72a718bf96df7dda076b15ae45edf3ccbe38e2f6c83ffe015918a8705d4"
+    },
+    {
+      "path": "space-after.json",
+      "bytes": 145,
+      "sha256": "09c25eaec41cc0469d2b9cd78d85a9f570641dba1fc4faaf1e53a6ae25f6b986"
+    },
+    {
+      "path": "stop-late-gateway.txt",
+      "bytes": 28,
+      "sha256": "bd4e964a247a29dd0e8707ad1c531b3549a70b018be29117b7647df74db889eb"
+    },
+    {
+      "path": "uninstaller-write-fault.json",
+      "bytes": 372,
+      "sha256": "2e2bf4fb9a3be934b3fe1a8f49fb5af47dcba6a3e66de549c6a8f466534bbf3e"
+    },
+    {
+      "path": "utils.nsh",
+      "bytes": 6753,
+      "sha256": "72cae7532ea22bd39b5433dfd8ac47975844defa916fc113880479dedfee54f6"
+    }
+  ]
+}

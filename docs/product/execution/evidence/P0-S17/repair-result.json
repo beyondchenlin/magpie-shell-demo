@@ -1,0 +1,7 @@
+{
+  "case": "Full same-version package repair after interrupted first-payload replacement",
+  "exit": 0,
+  "host": "09C359FAF08E83883977230F08213636786542F5992B213AB36186D65CA6601A",
+  "gateway": "9B30CB830D902D57A6EB340D5437B39E49C41FE6D1593481989019D2D697A8A9",
+  "registry": "0.2.0-dev.29"
+}

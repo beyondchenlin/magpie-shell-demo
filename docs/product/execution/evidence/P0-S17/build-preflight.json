@@ -1,0 +1,30 @@
+{
+  "utc": "2026-10-18T15:29:52.2772692Z",
+  "space": [
+    {
+      "DriveLetter": "C",
+      "SizeRemaining": 36495249408
+    },
+    {
+      "DriveLetter": "D",
+      "SizeRemaining": 27877982208
+    }
+  ],
+  "targets": [
+    "D:/demo1/tagmaai/target",
+    "D:/demo1/tagmaai-deliveries/0.2.0-dev.30"
+  ],
+  "peakGiB": {
+    "target": 2,
+    "temp": 1,
+    "delivery": 0.08
+  },
+  "reuse": [
+    "current target",
+    "node_modules",
+    "Cargo/NSIS cache",
+    "existing isolated data/webview"
+  ],
+  "evidenceLimitMiB": 8,
+  "cleanup": "Retain minimum evidence and candidate; no old cleanup or worktree changes"
+}

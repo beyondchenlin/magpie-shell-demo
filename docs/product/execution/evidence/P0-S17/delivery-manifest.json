@@ -1,0 +1,35 @@
+{
+  "version": "0.2.0-dev.30",
+  "sourceHeadAtBuild": "31b74004cafa5ef10bc0383b4d298b2559980116",
+  "productChangesCommit": "2821a6be02247384406e1152aab385a604d66aec",
+  "profile": "Windows x64 debug unsigned internal",
+  "sourceInputs": 314,
+  "sourceVerification": "314 source inputs frozen before build and verified after native checks and product commit; six inherited inputs retained",
+  "installer": {
+    "path": "D:/demo1/tagmaai-deliveries/0.2.0-dev.30/Tagma_0.2.0-dev.30_x64-setup.exe",
+    "bytes": 6611673,
+    "sha256": "b1a1f7a71170f9ca9bb353709619c145b862a95b6e2d6a8e9e5b8354f243afb8"
+  },
+  "binaries": [
+    {
+      "path": "C:/Users/ai/AppData/Local/Temp/tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88/install-p0s16/tagma-desktop.exe",
+      "bytes": 20270080,
+      "sha256": "4085a2d5dc1e1b261f9de5fc1529cb29dab57472a33e7c513bf6ba855a6211e6"
+    },
+    {
+      "path": "C:/Users/ai/AppData/Local/Temp/tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88/install-p0s16/tagma-gateway.exe",
+      "bytes": 10109440,
+      "sha256": "c0118fe37c6918041156af7c8846c681f456ebab80eab5176f28c6c7417f9a04"
+    }
+  ],
+  "sourceRecovery": "Checkout productChangesCommit, restore six INHERITED-INPUTS from retained dev18 source-overlay.json.gz, verify SOURCE-INPUTS.",
+  "nativeAcceptance": "P0-S17: real paused-installer interruption and native incompatible-version rejection/reinstall recovery; actual native NSIS late desktop and gateway write failures with Ignore abort; separate uninstaller write-lock failure; original config restored12/12; zh/en150% recovery instructions visible.",
+  "installation": "Isolated S16 identity used; exact normal-identity package not run. Native installer control uses observed Win32 Button notifications, not physical keyboard. Some scenarios are silent real installer process checks.",
+  "remaining": "Overall P0 not released: full signed/clean-platform release and rollback/migration matrix, actual OS credential-facility and animation settings, macOS conditions. Pair replacement is not atomic; known mixed-version state is rejected with complete-package recovery, not rollback.",
+  "retention": {
+    "owner": "Current Tagma P0 task",
+    "purpose": "Current validated candidate and minimum reproducible installers/evidence",
+    "reviewDate": "2026-10-25",
+    "scheduledCleanup": false
+  }
+}

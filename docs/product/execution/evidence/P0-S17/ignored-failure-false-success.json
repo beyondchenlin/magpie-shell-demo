@@ -1,0 +1,8 @@
+{
+  "case": "Late start after process check, ignore both payload write failures",
+  "installerStillRunning": false,
+  "registeredVersion": "0.2.0-dev.29",
+  "actualDesktopHash": "C606B179F3D60915507049AC3D077869C2FBC205B05AE322A839B59008D0A629",
+  "actualGatewayHash": "115C39E4320CAF2FD2B5D38FE9FC1DD5CA655AA40B921630DF705CA93B2AFA02",
+  "runningHostAlive": true
+}

@@ -1,0 +1,13 @@
+{
+  "case": "Controlled termination of actual isolated NSIS after desktop extraction and before gateway extraction",
+  "injection": "Test-only 30s pause and marker; remaining generated installer unchanged",
+  "terminatedPid": 20512,
+  "installerPath": "D:\\demo1\\tagmaai\\.cache\\p0-s17-install-faults\\interrupted-after-host.exe",
+  "installerSha256": "915DA4CD2C3E61F98058FB65E68D86F925D25467FA70E27DCF75BAF8BC401AC6",
+  "started": "2026-10-18T15:24:55.1869079Z",
+  "desktopVersion": "dev29",
+  "desktopHash": "09C359FAF08E83883977230F08213636786542F5992B213AB36186D65CA6601A",
+  "gatewayVersion": "dev28",
+  "gatewayHash": "115C39E4320CAF2FD2B5D38FE9FC1DD5CA655AA40B921630DF705CA93B2AFA02",
+  "registryVersion": "0.2.0-dev.28"
+}

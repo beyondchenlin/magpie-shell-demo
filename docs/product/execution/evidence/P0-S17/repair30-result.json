@@ -1,0 +1,19 @@
+{
+  "case": "Repair with exact complete dev30 package after releasing owned file lock",
+  "exit": 0,
+  "registeredVersion": "0.2.0-dev.30",
+  "files": [
+    {
+      "name": "tagma-desktop.exe",
+      "sha256": "4085A2D5DC1E1B261F9DE5FC1529CB29DAB57472A33E7C513BF6BA855A6211E6"
+    },
+    {
+      "name": "tagma-gateway.exe",
+      "sha256": "C0118FE37C6918041156AF7C8846C681F456EBAB80EAB5176F28C6C7417F9A04"
+    },
+    {
+      "name": "uninstall.exe",
+      "sha256": "8841460E59ECCB5929132CB7F00ADE5D400A7EF790B38E326016CB24A65891C7"
+    }
+  ]
+}
