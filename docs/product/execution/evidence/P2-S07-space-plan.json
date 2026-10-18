@@ -1,0 +1,11 @@
+{
+  "RecordedAtUtc": "2026-10-18T01:09:09.2579457Z",
+  "Target": "D:/demo1/tagmaai/target",
+  "TempRoot": "C:\\Users\\ai\\AppData\\Local\\Temp",
+  "CFreeBeforeGiB": 46.3,
+  "DFreeBeforeGiB": 31.49,
+  "EstimatedAdditionalPeakGiB": 0.08,
+  "Scope": "Read-only bounded preparation inventory and real-crash discovery;small reused fixtures,no network/UI/install/new dependencies",
+  "Reuse": "Existing target/current tree/offline dependencies",
+  "Cleanup": "New RAII fixtures only;unknown persistent entries never deleted;denied cleanup not retried"
+}

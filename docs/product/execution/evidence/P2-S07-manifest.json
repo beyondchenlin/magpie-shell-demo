@@ -1,0 +1,80 @@
+{
+  "recordedAtUtc": "2026-10-18T02:13:41.068Z",
+  "sourceBase": "eb02bae",
+  "candidateVersion": "0.2.0-dev.16",
+  "configSchema": 10,
+  "usageSchema": 2,
+  "source": [
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-core\\src\\packs\\prepared.rs",
+      "bytes": 19927,
+      "sha256": "654002e80ddfa287c412df9a858e23ffb8c292faf7032d8c781fbdf40408a8ae"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-core\\src\\packs\\archive_tests.rs",
+      "bytes": 37537,
+      "sha256": "ae45a8ad5715412640a0b673d24deb3f1882c344e99f030ea1393c88b9d4eed9"
+    }
+  ],
+  "documents": [
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\EXECUTION-STATUS.md",
+      "bytes": 43480,
+      "sha256": "8de0653ab71b34a73cb58cb3abc7856705f4333722cded70a062646b681bdc85"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\P2-S07-PREPARATION-INVENTORY.md",
+      "bytes": 3065,
+      "sha256": "61969f458f9fe9f04cc6b5c48c184320ee5f095d488af0ff560836a309c4998f"
+    }
+  ],
+  "prd": {
+    "path": "D:\\demo1\\tagmaai\\docs\\product\\TAGMA-PRD-v0.3.md",
+    "bytes": 50957,
+    "sha256": "6e6503391f70e3f2e53347890de6e7c9f7fd93cc393c68f7bba494ac4d67a6d6"
+  },
+  "evidence": [
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P2-S07-clippy-final.txt",
+      "bytes": 1329,
+      "sha256": "a9c3320bdf2f3bd01f9a388695e127004e1bea0cefd1ae885b50af20708e473b"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P2-S07-clippy.txt",
+      "bytes": 2535,
+      "sha256": "28e824b7b0df80f6fbf70f36cdacda98fac9b3cd7ffc548dd5aa4cefbb71878a"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P2-S07-inventory-final-2.txt",
+      "bytes": 7620,
+      "sha256": "620ee6353a9e84cce59c28b72860d02136c4ced9527591e00cde9f79e02999a0"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P2-S07-inventory-final.txt",
+      "bytes": 7620,
+      "sha256": "9f3dcac52f59b34092128d5a2befe5cf62abb702607cb68fdd826c65008bacce"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P2-S07-inventory.txt",
+      "bytes": 8122,
+      "sha256": "7a8366f296d9c66f4ad5074841a9a416bafcadb7d9ff433352b0413186c717e1"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P2-S07-retention.json",
+      "bytes": 197,
+      "sha256": "aa6f75c35acd4371fe56a051fff94d3d89cdec3cda3bbbdfbcedbd876fdb908d"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P2-S07-space-after.json",
+      "bytes": 270,
+      "sha256": "676bfbf25157b586b0810598cca731e638a71e9b8218e8a748aa7abc502b6234"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P2-S07-space-plan.json",
+      "bytes": 559,
+      "sha256": "62aa6e99e5c6c9cf8cea5a6654166658193120b1ab5dad5ba75918fdcfed6aae"
+    }
+  ],
+  "distinctPassingTests": 14,
+  "ignoredNotCounted": 2
+}

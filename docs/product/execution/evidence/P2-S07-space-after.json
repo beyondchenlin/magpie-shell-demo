@@ -1,0 +1,7 @@
+{
+  "RecordedAtUtc": "2026-10-18T02:13:40.7034050Z",
+  "CFreeGiB": 46.84,
+  "DFreeGiB": 37.86,
+  "Observation": "Capacity increased externally,source unknown;not task net-release",
+  "Scope": "S07 cached checks finished,no repeated full suite or cleanup retry"
+}

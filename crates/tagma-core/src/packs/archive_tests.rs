@@ -370,12 +370,16 @@ fn prepared_real_process_exit_before_and_after_publication() {
             .collect();
         assert_eq!(paths.len(), 1);
         let path = &paths[0];
+        let canonical_path = fs::canonicalize(path).unwrap();
         assert!(path.join("prepared.json").exists());
         assert_eq!(
             fs::read(path.join("payload/bin/runner.exe")).unwrap(),
             b"owned fake binary"
         );
         let result = PreparedPack::reopen(path, config, &preparation_trust(), 10000, &control());
+        let inventory =
+            inspect_preparations(&stage, config, &preparation_trust(), 10000, &control()).unwrap();
+        assert_eq!(inventory.len(), 1);
         if point == "ready" {
             assert!(
                 path.file_name()
@@ -386,8 +390,14 @@ fn prepared_real_process_exit_before_and_after_publication() {
             );
             assert_eq!(error(result), PackError::InvalidPreparedPack);
             assert!(path.join("prepared.json").exists()); // unknown/incomplete preserved
+            assert!(
+                matches!(&inventory[0], PreparationEntry::Unpublished { path: p } if p == &canonical_path)
+            );
         } else {
             assert!(result.is_ok());
+            assert!(
+                matches!(&inventory[0], PreparationEntry::Prepared(p) if p.root_path() == canonical_path)
+            );
         }
         assert_eq!(
             fs::read_dir(child_root.join("download")).unwrap().count(),
@@ -396,6 +406,152 @@ fn prepared_real_process_exit_before_and_after_publication() {
     }
     println!(
         "Real child exit91 after receipt sync/before rename leaves only uncallable private preparation,preserved on reopen;exit92 after atomic publication reopens complete prepared files;no unwind simulated as crash,no UI"
+    );
+}
+#[test]
+fn preparation_inventory_revalidates_complete_entries_and_preserves_unknowns() {
+    let f = Fixture::new();
+    let bytes = zip(None, CompressionMethod::Stored, None);
+    let config = uuid::Uuid::new_v4();
+    let c = control();
+    let publish = |config| {
+        f.archive(&bytes, 4096, 16, &c)
+            .extract(&f.stage, &c)
+            .unwrap()
+            .publish_prepared(&f.stage, config, &c)
+            .unwrap()
+    };
+    let good = publish(config);
+    let foreign = publish(uuid::Uuid::new_v4());
+    let corrupt = publish(config);
+    fs::write(corrupt.root_path().join("prepared.json"), b"{").unwrap();
+    let partial = f.stage.join("tagma-pack-preparing-unknown");
+    fs::create_dir(&partial).unwrap();
+    let canonical_partial = fs::canonicalize(&partial).unwrap();
+    fs::write(partial.join("preserve"), b"not proven owned").unwrap();
+    let unknown = f.stage.join("user-directory");
+    fs::create_dir(&unknown).unwrap();
+    fs::write(unknown.join("preserve"), b"user content").unwrap();
+    let invalid = f.stage.join("prepared-invalid-uuid");
+    fs::write(&invalid, b"preserve invalid name").unwrap();
+    let inventory =
+        inspect_preparations(&f.stage, config, &preparation_trust(), 10000, &c).unwrap();
+    assert_eq!(inventory.len(), 6);
+    assert_eq!(
+        inventory
+            .iter()
+            .filter(|e| matches!(e, PreparationEntry::Prepared(_)))
+            .count(),
+        1
+    );
+    assert!(
+        inventory.iter().any(
+            |e| matches!(e, PreparationEntry::Prepared(p) if p.root_path() == good.root_path())
+        )
+    );
+    assert!(inventory.iter().any(
+        |e| matches!(e, PreparationEntry::Unavailable{path,..} if path == foreign.root_path())
+    ));
+    assert!(inventory.iter().any(
+        |e| matches!(e, PreparationEntry::Unavailable{path,..} if path == corrupt.root_path())
+    ));
+    assert!(
+        inventory.iter().any(
+            |e| matches!(e, PreparationEntry::Unpublished{path} if path == &canonical_partial)
+        )
+    );
+    assert_eq!(
+        inventory
+            .iter()
+            .filter(|e| matches!(e, PreparationEntry::Unknown { .. }))
+            .count(),
+        2
+    );
+    let expired = inspect_preparations(&f.stage, config, &preparation_trust(), 95000, &c).unwrap();
+    assert!(
+        !expired
+            .iter()
+            .any(|e| matches!(e, PreparationEntry::Prepared(_)))
+    );
+    assert!(expired.iter().any(|e| matches!(e, PreparationEntry::Unavailable{path,error:PackError::ExpiredManifest} if path == good.root_path())));
+    assert_eq!(
+        fs::read(corrupt.root_path().join("prepared.json")).unwrap(),
+        b"{"
+    );
+    assert_eq!(
+        fs::read(partial.join("preserve")).unwrap(),
+        b"not proven owned"
+    );
+    assert_eq!(fs::read(unknown.join("preserve")).unwrap(), b"user content");
+    assert_eq!(fs::read(invalid).unwrap(), b"preserve invalid name");
+    println!(
+        "Startup inventory actual six entries:1prepared/2unavailable/1unpublished/2unknown;current-time expiry removes availability,corrupt/foreign/unknown content byte-preserved,no activation/deletion"
+    );
+}
+#[test]
+fn preparation_inventory_has_total_count_and_operation_bounds() {
+    let root = tempfile::Builder::new()
+        .prefix("tagma-prepared-inventory-")
+        .tempdir()
+        .unwrap();
+    let config = uuid::Uuid::new_v4();
+    for i in 0..MAX_PREPARATION_INVENTORY_ENTRIES {
+        fs::write(
+            root.path().join(format!("unknown-{i:03}")),
+            b"owned tiny sentinel",
+        )
+        .unwrap();
+    }
+    let c = control();
+    let inventory =
+        inspect_preparations(root.path(), config, &PackTrustStore::default(), 10000, &c).unwrap();
+    assert_eq!(inventory.len(), 128);
+    assert!(
+        inventory
+            .iter()
+            .all(|e| matches!(e, PreparationEntry::Unknown { .. }))
+    );
+    fs::write(root.path().join("unknown-overflow"), b"still preserve").unwrap();
+    assert_eq!(
+        error(inspect_preparations(
+            root.path(),
+            config,
+            &PackTrustStore::default(),
+            10000,
+            &c
+        )),
+        PackError::ArchiveLimit
+    );
+    assert_eq!(fs::read_dir(root.path()).unwrap().count(), 129);
+    assert_eq!(
+        fs::read(root.path().join("unknown-overflow")).unwrap(),
+        b"still preserve"
+    );
+    c.cancel();
+    assert_eq!(
+        error(inspect_preparations(
+            root.path(),
+            config,
+            &PackTrustStore::default(),
+            10000,
+            &c
+        )),
+        PackError::Cancelled
+    );
+    let expired = PackStageControl::new(Duration::from_nanos(1)).unwrap();
+    std::thread::sleep(Duration::from_millis(1));
+    assert_eq!(
+        error(inspect_preparations(
+            root.path(),
+            config,
+            &PackTrustStore::default(),
+            10000,
+            &expired
+        )),
+        PackError::TimedOut
+    );
+    println!(
+        "Inventory total128 accepts unknown entries,129 refuses whole result before receipt work;cancel/deadline reject,129 tiny fixture files preserved until own TempDir drop"
     );
 }
 #[test]

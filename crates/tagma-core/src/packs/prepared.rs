@@ -14,6 +14,65 @@ use std::{
 const OWNER: &str = "TagmaPackPreparedV1";
 const MAX_RECEIPT_BYTES: u64 = 8 * 1024 * 1024;
 const RECEIPT: &str = "prepared.json";
+pub const MAX_PREPARATION_INVENTORY_ENTRIES: usize = 128;
+
+/// Read-only startup discovery. Unpublished/unknown names are diagnostic only,
+/// never evidence of ownership that would authorize deleting their contents.
+pub enum PreparationEntry {
+    Prepared(Box<PreparedPack>),
+    Unpublished { path: PathBuf },
+    Unavailable { path: PathBuf, error: PackError },
+    Unknown { path: PathBuf },
+}
+/// Bound the whole inventory before opening any receipt; a crowded or hostile
+/// parent cannot induce unbounded scanning or a partial success list. The same
+/// operation deadline/cancellation covers every subsequent tree read.
+pub fn inspect_preparations(
+    parent: &Path,
+    config_uuid: uuid::Uuid,
+    trust: &PackTrustStore,
+    now_ms: u64,
+    control: &PackStageControl,
+) -> PackResult<Vec<PreparationEntry>> {
+    control.check()?;
+    if config_uuid.is_nil() {
+        return Err(PackError::InvalidPreparedPack);
+    }
+    regular_directory(parent)?;
+    let parent = std::fs::canonicalize(parent).map_err(|_| PackError::ReadFailed)?;
+    let mut paths = Vec::new();
+    for entry in std::fs::read_dir(&parent).map_err(|_| PackError::ReadFailed)? {
+        control.check()?;
+        if paths.len() == MAX_PREPARATION_INVENTORY_ENTRIES {
+            return Err(PackError::ArchiveLimit);
+        }
+        paths.push(entry.map_err(|_| PackError::ReadFailed)?.path());
+    }
+    paths.sort();
+    let mut result = Vec::with_capacity(paths.len());
+    for path in paths {
+        control.check()?;
+        let name = path.file_name().and_then(|n| n.to_str()).unwrap_or("");
+        if name.starts_with("tagma-pack-preparing-") {
+            result.push(PreparationEntry::Unpublished { path });
+        } else if name
+            .strip_prefix("prepared-")
+            .and_then(|s| uuid::Uuid::parse_str(s).ok())
+            .is_some_and(|id| !id.is_nil() && name == format!("prepared-{id}"))
+        {
+            match PreparedPack::reopen(&path, config_uuid, trust, now_ms, control) {
+                Ok(prepared) => result.push(PreparationEntry::Prepared(Box::new(prepared))),
+                Err(PackError::Cancelled) => return Err(PackError::Cancelled),
+                Err(PackError::TimedOut) => return Err(PackError::TimedOut),
+                Err(error) => result.push(PreparationEntry::Unavailable { path, error }),
+            }
+        } else {
+            result.push(PreparationEntry::Unknown { path });
+        }
+    }
+    control.check()?;
+    Ok(result)
+}
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 #[serde(deny_unknown_fields)]
 struct TreeEntry {
