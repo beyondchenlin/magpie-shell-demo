@@ -1,0 +1,62 @@
+   Compiling tagma-core v0.2.0-dev.26 (D:\demo1\tagmaai\crates\tagma-core)
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+   Compiling tagma-runtime v0.2.0-dev.26 (D:\demo1\tagmaai\crates\tagma-runtime)
+   Compiling tagma-gateway v0.2.0-dev.26 (D:\demo1\tagmaai\crates\tagma-gateway)
+    Finished `test` profile [unoptimized] target(s) in 8.20s
+     Running tests\backpressure.rs (target\debug\deps\backpressure-5943f8bfa837f4a5.exe)
+
+running 2 tests
+16 real stalled TCP readers:extra request429;private revoke(true) acknowledged,all upstreams closed and logical/attempt rows ACCESS_REVOKED;slots still429 until downstream sockets dropped,then200
+test stalled_readers_retain_all_slots_but_cannot_suspend_confirmed_revocation ... ok
+Slow reader after1500ms for total700ms:upstream_closed=1,produced_bytes=4370912,record_state=Failed,error=Some("REQUEST_BUDGET_EXCEEDED")
+Same stalled socket resumed:bounded partial body then exactly one budget error,noDONE;settlement already visible before resume
+test stalled_downstream_cannot_suspend_upstream_budget_and_settlement ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.94s
+
+     Running tests\graceful_shutdown.rs (target\debug\deps\graceful_shutdown-a65ba6f019bf60cb.exe)
+
+running 1 test
+test stop_drains_admitted_streams_then_cancels_at_the_deadline ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 12.35s
+
+     Running tests\inference.rs (target\debug\deps\inference-6eb8bc7cd5824231.exe)
+
+running 1 test
+test real_gateway_text_contract_streaming_snapshot_pin_and_client_cancel ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.12s
+
+     Running tests\request_body.rs (target\debug\deps\request_body-6095823432a594a4.exe)
+
+running 3 tests
+16 partial bodies:peer disconnect frees1slot;replacement saturates;private owned stop completed in5ms,upstream0
+test partial_disconnect_releases_slot_and_private_stop_interrupts_body_reads ... ok
+16 incomplete raw TCP bodies(half content-length/half chunked,one drips each200ms):after11s models_status=200,upstream_calls=0
+All16 bodies:408 REQUEST_BODY_TIMEOUT/Connection close/EOF,0upstream and0usage registrations;drips=49 do not extend deadline,slots released before idle readers consume errors
+test incomplete_and_drip_bodies_expire_without_dispatch_and_release_slots ... ok
+Actual JSON400/media415/content-length and chunked128KiB+1=>413 with0dispatch;valid body starts SSE immediately and completes after11s withDONE,body10s deadline never wraps inference/response
+test bounded_json_read_keeps_media_size_errors_and_does_not_timeout_long_sse ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 11.18s
+

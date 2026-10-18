@@ -1,0 +1,51 @@
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+   Compiling tagma-gateway v0.2.0-dev.26 (D:\demo1\tagmaai\crates\tagma-gateway)
+    Finished `test` profile [unoptimized] target(s) in 1.23s
+     Running tests\backpressure.rs (target\debug\deps\backpressure-5943f8bfa837f4a5.exe)
+
+running 1 test
+
+thread 'stalled_readers_retain_all_slots_but_cannot_suspend_confirmed_revocation' (37392) panicked at crates\tagma-gateway\tests\backpressure.rs:155:13:
+HTTP/1.1 503 Service Unavailable
+content-type: application/json
+x-tagma-request-id: a35cb723-2ada-4c0e-92eb-d52853bf977a
+x-tagma-config-revision: 3
+connection: close
+transfer-encoding: chunked
+date: Sun, 18 Oct 2026 11:44:18 GMT
+
+71
+{"error":{"code":"USAGE_STORAGE_UNAVAILABLE","message":"USAGE_STORAGE_UNAVAILABLE","type":"tagma_gateway_error"}}
+0
+
+
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test stalled_readers_retain_all_slots_but_cannot_suspend_confirmed_revocation ... FAILED
+
+failures:
+
+failures:
+    stalled_readers_retain_all_slots_but_cannot_suspend_confirmed_revocation
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.16s
+
+error: test failed, to rerun pass `-p tagma-gateway --test backpressure`

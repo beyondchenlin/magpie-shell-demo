@@ -1,0 +1,52 @@
+   Compiling tagma-core v0.2.0-dev.26 (D:\demo1\tagmaai\crates\tagma-core)
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+   Compiling tagma-runtime v0.2.0-dev.26 (D:\demo1\tagmaai\crates\tagma-runtime)
+   Compiling tagma-gateway v0.2.0-dev.26 (D:\demo1\tagmaai\crates\tagma-gateway)
+    Finished `test` profile [unoptimized] target(s) in 8.23s
+     Running tests\backpressure.rs (target\debug\deps\backpressure-5943f8bfa837f4a5.exe)
+
+running 2 tests
+
+thread 'stalled_readers_retain_all_slots_but_cannot_suspend_confirmed_revocation' (55084) panicked at crates\tagma-gateway\tests\backpressure.rs:152:9:
+HTTP/1.1 503 Service Unavailable
+content-type: application/json
+x-tagma-request-id: 0693af97-6681-4ec3-88cb-fc7b12602199
+x-tagma-config-revision: 3
+connection: close
+transfer-encoding: chunked
+date: Sun, 18 Oct 2026 11:42:23 GMT
+
+
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test stalled_readers_retain_all_slots_but_cannot_suspend_confirmed_revocation ... FAILED
+Slow reader after1500ms for total700ms:upstream_closed=1,produced_bytes=6375616,record_state=Failed,error=Some("REQUEST_BUDGET_EXCEEDED")
+Same stalled socket resumed:bounded partial body then exactly one budget error,noDONE;settlement already visible before resume
+test stalled_downstream_cannot_suspend_upstream_budget_and_settlement ... ok
+
+failures:
+
+failures:
+    stalled_readers_retain_all_slots_but_cannot_suspend_confirmed_revocation
+
+test result: FAILED. 1 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.93s
+
+error: test failed, to rerun pass `-p tagma-gateway --test backpressure`

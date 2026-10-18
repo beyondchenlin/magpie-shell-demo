@@ -1,0 +1,116 @@
+   Compiling tagma-core v0.2.0-dev.26 (D:\demo1\tagmaai\crates\tagma-core)
+warning: failed to parse serde attribute
+warning: failed to parse serde attribute
+  | 
+  | 
+  | deny_unknown_fields 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+    Finished `test` profile [unoptimized] target(s) in 8.26s
+     Running unittests src\lib.rs (target\debug\deps\tagma_core-09384c88845c1e58.exe)
+
+running 8 tests
+test usage::tests::usage_crash_worker ... ignored, child-process crash worker, invoked only by the owned recovery test
+
+running 1 test
+Usage real SQLITE_FULL: no committed start record, admission degraded; test data below1MiB, no actual disk exhaustion
+test usage::tests::actual_sqlite_full_at_start_refuses_registration_and_degrades ... ok
+Usage bounds:one writer,8active maximum,sequential ordinals and timestamps;arbitrary error text rejected before queue/write
+Usage ledger: logical=1, attempts=2, input=NULL/unknown1, output=10, duplicate completion counts unchanged; separate DB
+test usage::tests::admission_identity_timing_and_metadata_privacy_are_checked ... ok
+test usage::tests::logical_requests_and_attempts_keep_unknown_tokens_and_aggregate_once ... ok
+
+running 1 test
+
+running 1 test
+Usage retention:30day details prune only after durable daily aggregate;12calendar months summary retention;unknown database bytes preserved
+test usage::tests::retention_keeps_summaries_and_preserves_unknown_unowned_databases ... ok
+Usage failed finishes: 16 requests/attempts ->32 bounded pending results, new begins refused, explicit recovery exactly once
+test usage::tests::failed_results_are_bounded_retryable_and_never_allow_new_registration ... ok
+Usage exit90: pre-DDL and committed-DDL intent recovery;registered request+attempt become interrupted with NULL tokens after real child process death
+test usage::tests::real_process_exit_recovers_owned_initialization_and_unfinished_attempts ... ok
+test usage::tests::full_admission_capacity_recovers_unfinished_results_without_inventing_usage ... ok
+
+test result: ok. 7 passed; 0 failed; 1 ignored; 0 measured; 89 filtered out; finished in 0.09s
+
+     Running tests\catalog.rs (target\debug\deps\catalog-1ee3d20494c112ef.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests\config_service.rs (target\debug\deps\config_service-d2355787364d169b.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 13 filtered out; finished in 0.00s
+
+     Running tests\first_cloud.rs (target\debug\deps\first_cloud-c6e2503881dd8b8b.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests\packs.rs (target\debug\deps\packs-56faec684b769c20.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 11 filtered out; finished in 0.00s
+
+     Running tests\save_restart.rs (target\debug\deps\save_restart-0ff59510a5570c62.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 3 filtered out; finished in 0.00s
+
+     Running tests\security.rs (target\debug\deps\security-2061b61572d42287.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 4 filtered out; finished in 0.00s
+
+     Running tests\startup_upgrade.rs (target\debug\deps\startup_upgrade-5397ec8e283199e6.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 3 filtered out; finished in 0.00s
+
+     Running tests\teams.rs (target\debug\deps\teams-abe0865028a5b27f.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 7 filtered out; finished in 0.00s
+

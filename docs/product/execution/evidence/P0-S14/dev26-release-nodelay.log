@@ -1,0 +1,40 @@
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+   Compiling tagma-gateway v0.2.0-dev.26 (D:\demo1\tagmaai\crates\tagma-gateway)
+    Finished `release` profile [optimized] target(s) in 23.16s
+     Running tests\performance.rs (target\release\deps\performance-d23c69505bf264fc.exe)
+
+running 1 test
+NFR03 optimized=true successPairs=1000 overhead p95=Some(70.1194)ms
+
+thread 'thousand_requests_at_ten_concurrency_against_loopback' (44960) panicked at crates\tagma-gateway\tests\performance.rs:83:5:
+PRD NFR-03 overhead budget exceeded
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test thousand_requests_at_ten_concurrency_against_loopback ... FAILED
+
+failures:
+
+failures:
+    thousand_requests_at_ten_concurrency_against_loopback
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 6.27s
+
+error: test failed, to rerun pass `-p tagma-gateway --test performance`

@@ -1,0 +1,8 @@
+Get-FileHash : 无法将“Get-FileHash”项识别为 cmdlet、函数、脚本文件或可运行程序的名称。请检查名称的拼写，如果包括路径
+，请确保路径正确，然后再试一次。
+所在位置 D:\demo1\tagmaai\.cache\p0-s14-closure\StorageHold.ps1:7 字符: 10
++ $before=(Get-FileHash -LiteralPath $file).Hash
++          ~~~~~~~~~~~~
+    + CategoryInfo          : ObjectNotFound: (Get-FileHash:String) [], ParentContainsErrorRecordException
+    + FullyQualifiedErrorId : CommandNotFoundException
+ 
