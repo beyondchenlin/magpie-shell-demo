@@ -22,12 +22,18 @@ export function ProviderForm({ provider, revision, busy, language, onSave, onCan
   const [enabled, setEnabled] = useState(provider?.enabled ?? true);
   async function submit(event: FormEvent) {
     event.preventDefault();
+    if (busy) return;
     const saved = await onSave({ protocol_version: protocolVersion, expected_revision: baseRevision, id: provider?.id ?? null,
       name, protocol: "openai_chat_completions", base_url: url, models: models.split(/\r?\n/).map(x => x.trim()).filter(Boolean), enabled,
       credential: secret || null });
     if (saved) setSecret("");
   }
-  return <form className="editor tagma-editor" onSubmit={submit} aria-label={provider ? c.edit : c.add}>
+  function cancel() { setSecret(""); onCancel(); }
+  return <form className="editor tagma-editor" onSubmit={submit} aria-label={provider ? c.edit : c.add} onKeyDown={event => {
+    if (event.key === "Escape" && !event.nativeEvent.isComposing && !busy) {
+      event.preventDefault(); event.stopPropagation(); cancel();
+    }
+  }}>
     <fieldset disabled={busy}>
       <label htmlFor={`${id}-name`}>{c.name}</label><WordsField id={`${id}-name`} autoFocus required maxLength={120} value={name} onChange={e => setName(e.target.value)} />
       <span>{c.protocol}</span><span>{c.protocolName}</span>
@@ -37,6 +43,6 @@ export function ProviderForm({ provider, revision, busy, language, onSave, onCan
       <span /><Tick checked={enabled} onChange={e => setEnabled(e.target.checked)}>{c.enabled}</Tick>
     </fieldset>
     <p className="sub">{c.cancelHint}</p>
-    <div className="tagma-actions"><TextBtn disabled={busy} onClick={() => { setSecret(""); onCancel(); }}>{c.cancel}</TextBtn><TextBtn variant="primary" type="submit" busy={busy}>{busy ? c.saving : c.save}</TextBtn></div>
+    <div className="tagma-actions"><TextBtn disabled={busy} onClick={cancel}>{c.cancel}</TextBtn><TextBtn variant="primary" type="submit" busy={busy}>{busy ? c.saving : c.save}</TextBtn></div>
   </form>;
 }

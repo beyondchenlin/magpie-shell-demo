@@ -27,7 +27,9 @@ export function ProviderTimeoutForm({provider,revision,busy,language,onSave,onCa
   const disabled=busy||state.busy;
   const invalid=state.error&&typeof state.error==="object"&&"code"in state.error&&state.error.code==="INVALID_INPUT";
   function change(key:keyof TimeoutDraft,value:string){setDraft(old=>({...old,[key]:value}));setState(old=>({...old,error:null}));}
-  return <form className="editor tagma-editor" aria-label={zh?"编辑供应商超时":"Edit provider timeouts"} onSubmit={event=>{event.preventDefault();if(!disabled)void saver.current?.submit(draft);}}>
+  return <form className="editor tagma-editor" aria-label={zh?"编辑供应商超时":"Edit provider timeouts"} onSubmit={event=>{event.preventDefault();if(!disabled)void saver.current?.submit(draft);}} onKeyDown={event=>{
+    if(event.key==="Escape"&&!event.nativeEvent.isComposing&&!disabled){event.preventDefault();event.stopPropagation();onCancel();}
+  }}>
     <h2>{provider.name} · {zh?"推理超时":"Inference timeouts"}</h2>
     <p className="sub">{zh?"所有值均为毫秒。连接 100–60,000，其他 100–120,000；连接 ≤ 响应头 ≤ 总预算，空闲 ≤ 总预算。":"All values are milliseconds. Connection: 100–60,000; others: 100–120,000. Connection ≤ headers ≤ total; idle ≤ total."}</p>
     <fieldset disabled={disabled}>{fields.map(([key,chinese,english])=><Fragment key={key}><label htmlFor={`${id}-${key}`}>{zh?chinese:english}</label><WordsField id={`${id}-${key}`} autoFocus={key==="connect_ms"} aria-label={`${zh?chinese:english} (${zh?"毫秒":"ms"})`} inputMode="numeric" pattern="[1-9][0-9]{2,5}" required maxLength={6} value={draft[key]} onChange={event=>change(key,event.target.value)}/></Fragment>)}</fieldset>

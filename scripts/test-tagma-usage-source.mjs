@@ -352,7 +352,7 @@ test("startup recovery retains the cause and distinguishes refresh from a full q
   assert.equal((en.match(/disabled=""/g)??[]).length,3);
 });
 
-test("ProductApp failure survives refresh and quit rejection; confirmed read enables polling and secondary usage navigation",async()=>{
+test("ProductApp keeps failure state, secondary navigation and editor focus across cancel, failed and successful saves",async()=>{
   // Headless hook harness around the real component. No DOM, native host or input injection.
   const states=[],refs=[],effects=[];let si=0,ri=0,ei=0,intervals=0,reads=0;
   const same=(a,b)=>a&&a.length===b.length&&a.every((v,i)=>Object.is(v,b[i]));
@@ -396,5 +396,26 @@ test("ProductApp failure survives refresh and quit rejection; confirmed read ena
     one(tree,"UsagePanel");
     one(tree,"TextBtn",p=>Array.isArray(p.children)&&p.children.join("")==="返回 · 设置").props.onClick();tree=draw();
     one(tree,"PrefRow",p=>p.name==="用量");
+    one(tree,"ProductChrome").props.onPage("providers");tree=draw();
+    let focused=null;
+    const opener={isConnected:true,disabled:false,getClientRects:()=>[{}],focus(){focused=this;}};
+    const fallback={disabled:false,focus(){focused=this;}};
+    const add=()=>one(tree,"TextBtn",p=>p.children==="添加供应商");
+    const capture=target=>one(tree,"main").props.onClickCapture({target:{closest:()=>target}});
+    add().props.ref.current=fallback;
+    capture(opener);add().props.onClick();tree=draw();
+    assert.equal(focused,null,"opening must leave auto-focus to the form");
+    one(tree,"ProviderForm").props.onCancel();tree=draw();assert.equal(focused,opener);
+    focused=null;capture(opener);add().props.onClick();tree=draw();
+    service.save=async()=>{throw{code:"CONFIG_CONFLICT"}};
+    assert.equal(await one(tree,"ProviderForm").props.onSave({}),false);tree=draw();
+    assert.equal(focused,null,"failed save must keep the editor and its focus");one(tree,"ProviderForm");
+    assert.equal(one(tree,"TextBtn",p=>p.children==="刷新").props.disabled,true);
+    service.save=async()=>({desired_revision:2,providers:[],profiles:[],teams:[]});
+    assert.equal(await one(tree,"ProviderForm").props.onSave({}),true);tree=draw();assert.equal(focused,opener);
+    focused=null;capture(opener);add().props.onClick();tree=draw();
+    opener.isConnected=false;one(tree,"ProviderForm").props.onCancel();tree=draw();assert.equal(focused,fallback,"removed launch control falls back to Add");
+    focused=null;opener.isConnected=true;opener.getClientRects=()=>[];
+    capture(opener);add().props.onClick();tree=draw();one(tree,"ProviderForm").props.onCancel();tree=draw();assert.equal(focused,fallback,"hidden cross-page opener must not receive focus");
   } finally {for(const effect of effects)effect.cleanup?.();}
 });
