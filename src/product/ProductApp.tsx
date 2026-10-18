@@ -16,6 +16,7 @@ import { GatewaySettings } from "./GatewaySettings";
 import { ChatView } from "./ChatView";
 import { TeamsPanel } from "./TeamsPanel";
 import { ProductChrome, type ProductPage } from "./ProductChrome";
+import { ConfigurationFailure } from "./ConfigurationFailure";
 import { copy, errorCopy } from "./copy";
 import { applyPreferences, readPreferences, savePreferences, type Preferences, type ProductTheme } from "./preferences";
 import { desktop, protocolVersion, service } from "./service";
@@ -31,6 +32,7 @@ export default function ProductApp() {
   const [view, setView] = useState<ApplicationView | null>(null);
   const [busy, setBusy] = useState(desktop);
   const [error, setError] = useState<unknown>(null);
+  const [configurationError, setConfigurationError] = useState<unknown>(null);
   const [notice, setNotice] = useState(false);
   const [editor, setEditor] = useState<Provider | "new" | null>(null);
   const [timeoutEditor,setTimeoutEditor]=useState<Provider|null>(null);
@@ -43,34 +45,42 @@ export default function ProductApp() {
   const mounted = useRef(true);
   const deleteDialog = useRef<HTMLDialogElement>(null);
   const c = copy(preferences.language);
+  const hasView = view !== null;
+  const content = useRef<HTMLElement>(null);
+  const previousPage = useRef(page);
   const editing = !!editor || !!timeoutEditor || profileEditing || gatewayEditing || teamEditing || securityEditing || budgetEditing;
+  useEffect(() => {
+    if (previousPage.current !== page && !editing) content.current?.focus();
+    previousPage.current = page;
+  }, [page, editing]);
   const providerReferences = deleting ? view?.config.profiles.filter(profile => !profile.is_global && profile.provider_ids.includes(deleting.id)) ?? [] : [];
   const teamReferences = deleting ? view?.config.teams.filter(({team})=>teamUsesProvider(team.draft,deleting.id)||team.versions.some(version=>teamUsesProvider(version.recipe,deleting.id)))??[]:[];
   const refresh = useCallback(async () => {
     if (!desktop) return;
     setBusy(true); setError(null);
-    try { const current = await service.view(); if (mounted.current) setView(current); }
-    catch (err) { if (mounted.current) {setError(err);setView(unconfirmSecurity);} }
+    try { const current = await service.view(); if (mounted.current) { setView(current); setConfigurationError(null); } }
+    catch (err) { if (mounted.current) {setConfigurationError(err);setView(unconfirmSecurity);} }
     finally { if (mounted.current) setBusy(false); }
   }, []);
   useEffect(() => {
     mounted.current = true;
     let live = true;
-    if (desktop) void service.view().then(current => { if (live) setView(current); }, err => { if (live) {setError(err);setView(unconfirmSecurity);} })
+    if (desktop) void service.view().then(current => { if (live) {setView(current);setConfigurationError(null);} }, err => { if (live) {setConfigurationError(err);setView(unconfirmSecurity);} })
       .finally(() => { if (live) setBusy(false); });
     return () => { live = false; mounted.current = false; };
   }, []);
   useEffect(() => { applyPreferences(preferences); if (desktop) void getCurrentWindow().setTheme(preferences.theme === "system" ? null : preferences.theme).catch(() => setError({code:"NATIVE_THEME_UNCONFIRMED"})); }, [preferences]);
   useEffect(() => {
-    if (!desktop || busy) return;
+    if (!desktop || busy || !hasView) return;
     let live=true;
     const timer=setInterval(() => {
       void service.view().then(current => {
         if (live) setView(previous => previous && previous.config.desired_revision > current.config.desired_revision ? previous : current);
-      }, err => { if (live) {setError(err);setView(unconfirmSecurity);} });
+        if (live) setConfigurationError(null);
+      }, err => { if (live) {setConfigurationError(err);setView(unconfirmSecurity);} });
     },2000);
     return () => { live=false; clearInterval(timer); };
-  },[busy]);
+  },[busy,hasView]);
   useEffect(() => {
     if (!deleting) return;
     const previous = document.activeElement as HTMLElement | null;
@@ -116,16 +126,19 @@ export default function ProductApp() {
   }
 
   return <>
-    <ProductChrome page={page} onPage={setPage} onRefresh={()=>void refresh()} disabled={busy||editing} view={view} language={preferences.language}/>
+    <ProductChrome page={page} onPage={setPage} onRefresh={()=>void refresh()} refreshLabel={!view&&configurationError!=null?c.refreshStatus:undefined} disabled={busy||editing} view={view} language={preferences.language}/>
     {!desktop && <aside className="tagma-banner" role="status">{c.preview}</aside>}
     {!["zh", "en"].includes(preferences.language) && <aside className="tagma-banner">{c.coverage}</aside>}
-    <main className="view tagma-main" aria-busy={busy}>
+    <main ref={content} tabIndex={-1} className="view tagma-main" aria-label={c[page]} aria-busy={busy}>
+      {configurationError != null && (!view
+        ? <ConfigurationFailure error={configurationError} busy={busy} language={preferences.language} onRefresh={()=>void refresh()} onDiagnostics={()=>setPage("settings")} onQuit={()=>void service.quit().catch(setError)} />
+        : <div className="tagma-error" role="alert">{errorCopy(configurationError,preferences.language)} <TextBtn disabled={busy||editing} onClick={()=>void refresh()}>{c.refresh}</TextBtn></div>)}
       {error != null && <div className="tagma-error" role="alert">{typeof error === "object" && "code" in error && error.code === "PREFERENCES_UNSAVED" ? c.preferencesError : typeof error === "object" && "code" in error && error.code === "CLIPBOARD_UNCONFIRMED" ? c.copyFailed : errorCopy(error, preferences.language)} <TextBtn disabled={busy} onClick={() => void refresh()}>{c.refresh}</TextBtn></div>}
       {notice && <p role="status" className="tagma-notice">{view?.runtime.state === "running" && view.runtime.effective_revision === view.config.desired_revision ? c.configurationApplied : c.saved}</p>}
-      <div hidden={page !== "chat"}><ChatView active={page === "chat"} view={view} busy={busy} configurationError={error} language={preferences.language} onAddProvider={() => { setPage("providers"); setEditor("new"); setNotice(false); }} onProviders={() => setPage("providers")} onGateway={() => setPage("gateway")} onMarket={() => setPage("market")} /></div>
+      <div hidden={page !== "chat"}><ChatView active={page === "chat"} view={view} busy={busy} configurationError={configurationError} language={preferences.language} onAddProvider={() => { setPage("providers"); setEditor("new"); setNotice(false); }} onProviders={() => setPage("providers")} onGateway={() => setPage("gateway")} onMarket={() => setPage("market")} /></div>
       {page === "providers" && <section><div className="tagma-heading"><h1>{c.providers}</h1><TextBtn variant="action" disabled={!view || busy || editing} onClick={() => { setEditor("new"); setNotice(false); }}>{c.add}</TextBtn></div>
         {!desktop && <p>{c.previewHint}</p>}
-        {desktop && !view && !error && <p role="status">{c.loading}</p>}
+        {desktop && !view && !configurationError && busy && <p role="status">{c.loading}</p>}
         {view && !view.config.providers.length && !editor && <div className="tagma-empty"><h2>{c.empty}</h2><p>{c.emptyHint}</p></div>}
         {!!view?.config.pending_credential_cleanup && <p className="tagma-error">{c.cleanup}</p>}
         <div className="list">{view?.config.providers.map((provider, index) => <div className="row provider tagma-provider" key={provider.id}>
@@ -146,7 +159,7 @@ export default function ProductApp() {
         <TextBtn disabled={busy || editing} onClick={() => setPage("gateway")}>{c.gateway}</TextBtn>
       </section>}
       {page === "market" && <section><h1>{c.market}</h1><div className="list prefs"><PrefRow name={c.reachflow} sub={c.reachflowHint}><span>{c.notInstalled}</span></PrefRow></div>{view&&<TeamsPanel config={view.config} busy={busy} language={preferences.language} onMutate={mutate} onEditingChange={setTeamEditing}/>}</section>}
-      {page === "usage" && <UsagePanel providers={view?.config.providers ?? []} config={view?.config} busy={busy} budgetEditing={budgetEditing} onBudgetEditing={setBudgetEditing} onMutate={mutate} language={preferences.language} />}
+      {page === "usage" && <><TextBtn disabled={busy||editing} onClick={()=>setPage("settings")}>{c.back} · {c.settings}</TextBtn><UsagePanel providers={view?.config.providers ?? []} config={view?.config} busy={busy} budgetEditing={budgetEditing} onBudgetEditing={setBudgetEditing} onMutate={mutate} language={preferences.language} /></>}
       {page === "gateway" && <section><h1>{c.gateway}</h1><div className="list prefs"><PrefRow name={c.gateway} sub={c.runtimeHint}><span>{view ? c[view.runtime.state] : c.unknown}</span></PrefRow><PrefRow name={c.desired}><span>{view?.config.desired_revision ?? c.unknown}</span></PrefRow><PrefRow name={c.effective}><span>{view?.runtime.effective_revision ?? c.unknown}</span></PrefRow>
         {view?.runtime.address && <PrefRow name="URL"><span>{view.runtime.address}</span></PrefRow>}
         {view?.runtime.instance_id && <PrefRow name={view.runtime.owned ? c.owned : c.external}><span className="tagma-instance">{view.runtime.instance_id}</span></PrefRow>}
@@ -160,6 +173,7 @@ export default function ProductApp() {
         <PrefRow name={c.language} wrapVal={false}><LanguagePick label={c.language} value={preferences.language} onChange={language=>changePreferences({...preferences,language})} /></PrefRow>
         <PrefRow name={c.size}><Segs value={preferences.textSize} items={[100, 110, 125, 150].map(n => ({ id: n, label: `${n}%` }))} onChange={id => changePreferences({ ...preferences, textSize: id as Preferences["textSize"] })} /></PrefRow>
         <PrefRow name={c.gateway}><TextBtn onClick={() => setPage("gateway")}>{c.gateway}</TextBtn></PrefRow>
+        <PrefRow name={c.usage}><TextBtn onClick={() => setPage("usage")}>{c.usage}</TextBtn></PrefRow>
         <PrefRow name={c.version}><span>{view?.product_version ?? c.unknown}</span></PrefRow>
         <PrefRow name={c.schema}><span>{view?.config.schema_version ?? c.unknown}</span></PrefRow>
       </div><DiagnosticsPanel language={preferences.language} /><TextBtn disabled={!desktop || busy} onClick={() => void service.quit().catch(setError)}>{c.quit}</TextBtn></section>}

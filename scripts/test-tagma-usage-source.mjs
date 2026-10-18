@@ -315,3 +315,86 @@ test("desktop command rejection remains a failure and clears its waiting timer",
   await assert.rejects(module.exports.service.view(),err=>err===rejection);
   assert.equal(calls,1);assert.equal(scheduled,1);assert.equal(cleared,1);
 });
+
+test("CIS top and side navigation have exactly the three PRD pages; usage belongs to Settings",()=>{
+  const {ProductChrome}=load("src/product/ProductChrome.tsx");
+  const previousStorage=globalThis.localStorage;
+  const previousMedia=globalThis.matchMedia;
+  try {
+    for (const layout of ["top","side"]) for (const language of ["zh","en"]) {
+      globalThis.localStorage={getItem:()=>layout};
+      globalThis.matchMedia=()=>({matches:false});
+      const html=render(ProductChrome,{page:"usage",onPage(){},onRefresh(){},disabled:false,view:null,language});
+      const nav=html.match(/<nav\b[^>]*>(.*?)<\/nav>/s)?.[1];
+      assert.ok(nav);
+      assert.deepEqual([...nav.matchAll(/data-view="([^"]+)"/g)].map(m=>m[1]),["chat","providers","market"]);
+      assert.match(html,/<button[^>]+id="prefs"[^>]+class="icon on"[^>]+aria-current="location"/);
+      assert.match(html,/data-tauri-drag-region="deep"/);
+      assert.equal(html.includes('class="sidebar"'),layout==="side");
+    }
+  } finally {
+    if(previousStorage===undefined) delete globalThis.localStorage; else globalThis.localStorage=previousStorage;
+    if(previousMedia===undefined) delete globalThis.matchMedia; else globalThis.matchMedia=previousMedia;
+  }
+});
+
+test("startup recovery retains the cause and distinguishes refresh from a full quit",()=>{
+  const {ConfigurationFailure}=load("src/product/ConfigurationFailure.tsx");
+  const props={error:{code:"INCOMPATIBLE_VERSION"},busy:false,onRefresh(){},onDiagnostics(){},onQuit(){}};
+  const zh=render(ConfigurationFailure,{...props,language:"zh"});
+  assert.match(zh,/程序、协议或配置结构版本不兼容/);
+  assert.match(zh,/刷新只读取该失败状态，不会重新打开配置库/);
+  assert.match(zh,/退出 Tagma/);assert.match(zh,/关闭窗口可能仅隐藏到托盘/);
+  assert.match(zh,/重启不能修复不兼容或损坏的数据库/);
+  assert.doesNotMatch(zh,/刷新重试/);
+  const en=render(ConfigurationFailure,{...props,busy:true,language:"en"});
+  assert.match(en,/Resolve the cause above/);assert.match(en,/reopen the app/);
+  assert.equal((en.match(/disabled=""/g)??[]).length,3);
+});
+
+test("ProductApp failure survives refresh and quit rejection; confirmed read enables polling and secondary usage navigation",async()=>{
+  // Headless hook harness around the real component. No DOM, native host or input injection.
+  const states=[],refs=[],effects=[];let si=0,ri=0,ei=0,intervals=0,reads=0;
+  const same=(a,b)=>a&&a.length===b.length&&a.every((v,i)=>Object.is(v,b[i]));
+  const hooks={
+    useState(initial){const i=si++;if(!(i in states))states[i]=typeof initial==="function"?initial():initial;return[states[i],v=>{states[i]=typeof v==="function"?v(states[i]):v}];},
+    useRef(initial){const i=ri++;return refs[i]??(refs[i]={current:initial});},
+    useCallback(fn){return fn;},
+    useEffect(fn,deps){const i=ei++;if(!same(effects[i]?.deps,deps)){effects[i]?.cleanup?.();effects[i]={deps,run:fn};}},
+  };
+  let pending=deferred();
+  const service={view(){reads++;return pending.promise;},quit:async()=>{throw{code:"INTERNAL_ERROR"};}};
+  const module={exports:{}};
+  const source=ts.transpileModule(readFileSync("src/product/ProductApp.tsx","utf8"),{compilerOptions:{target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.CommonJS,jsx:ts.JsxEmit.ReactJSX}}).outputText;
+  const fakeRequire=name=>{
+    if(name==="react")return hooks;
+    if(name==="react/jsx-runtime")return require(name);
+    if(name==="./copy")return load("src/product/copy.ts");
+    if(name==="./service")return{desktop:true,protocolVersion:1,service};
+    if(name==="./preferences")return{readPreferences:()=>({language:"zh",theme:"light",textSize:110}),applyPreferences(){},savePreferences:()=>true};
+    if(name==="@tauri-apps/api/window")return{getCurrentWindow:()=>({setTheme:async()=>{}})};
+    return new Proxy({}, {get:(_,key)=>key});
+  };
+  vm.runInThisContext('(function(require,module,exports,setInterval,clearInterval){'+source+'\n})')(fakeRequire,module,module.exports,()=>{intervals++;return 1},()=>{});
+  const draw=()=>{si=ri=ei=0;const tree=module.exports.default();for(const effect of effects){if(effect.run){const run=effect.run;delete effect.run;effect.cleanup=run();}}return tree;};
+  const nodes=tree=>Array.isArray(tree)?tree.flatMap(nodes):tree&&typeof tree==="object"&&tree.props?[tree,...nodes(tree.props.children)]:[];
+  const one=(tree,type,predicate=()=>true)=>{const result=nodes(tree).filter(n=>n.type===type&&predicate(n.props));assert.equal(result.length,1,type);return result[0];};
+  const settle=()=>new Promise(resolve=>setImmediate(resolve));
+  try {
+    draw();assert.equal(reads,1);assert.equal(intervals,0);
+    const failure={code:"CREDENTIAL_STORE_UNAVAILABLE"};pending.reject(failure);await settle();
+    let tree=draw();assert.equal(one(tree,"ConfigurationFailure").props.error,failure);assert.equal(intervals,0);
+    pending=deferred();one(tree,"ConfigurationFailure").props.onRefresh();tree=draw();
+    assert.equal(one(tree,"ConfigurationFailure").props.error,failure);assert.equal(one(tree,"ConfigurationFailure").props.busy,true);
+    pending.reject(failure);await settle();tree=draw();one(tree,"ConfigurationFailure").props.onQuit();await settle();tree=draw();
+    assert.equal(one(tree,"ConfigurationFailure").props.error,failure,"quit failure must not replace the startup cause");
+    pending=deferred();one(tree,"ConfigurationFailure").props.onRefresh();draw();
+    pending.resolve({product_version:"test",config:{desired_revision:1,providers:[],profiles:[],teams:[]},runtime:{state:"stopped",effective_revision:null}});await settle();tree=draw();
+    assert.equal(nodes(tree).filter(n=>n.type==="ConfigurationFailure").length,0);assert.equal(intervals,1);
+    one(tree,"ProductChrome").props.onPage("settings");tree=draw();
+    one(tree,"PrefRow",p=>p.name==="用量").props.children.props.onClick();tree=draw();
+    one(tree,"UsagePanel");
+    one(tree,"TextBtn",p=>Array.isArray(p.children)&&p.children.join("")==="返回 · 设置").props.onClick();tree=draw();
+    one(tree,"PrefRow",p=>p.name==="用量");
+  } finally {for(const effect of effects)effect.cleanup?.();}
+});

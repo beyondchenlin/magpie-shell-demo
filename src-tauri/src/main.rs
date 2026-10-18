@@ -9,6 +9,7 @@ use tagma_core::{credentials::SystemCredentials, *};
 use tagma_runtime::GatewayManager;
 use tauri::{Manager, State, WebviewWindow};
 mod chat;
+mod startup;
 
 struct Application {
     config: AppResult<ConfigService>,
@@ -620,22 +621,12 @@ fn main() {
             }
             let config = directory
                 .map_err(|_| AppError::new(ErrorCode::StorageUnavailable))
-                .and_then(|directory| ConfigService::open(&directory, Arc::new(SystemCredentials)))
-                .and_then(|config| {
+                .and_then(|directory| {
                     // Synthetic debug fixtures explicitly initialize/clean credentials in their tests.
-                    if !(cfg!(debug_assertions)
+                    let initialize_token = !(cfg!(debug_assertions)
                         && std::env::var_os("TAGMA_TEST_CONFIG_DIR").is_some()
-                        && std::env::var("TAGMA_TEST_INITIALIZE_TOKEN").as_deref() != Ok("1"))
-                    {
-                        let view = config.view()?;
-                        if view.gateway.auth_enabled && !view.gateway.has_access_token {
-                            config.initialize_gateway_token(RevisionInput {
-                                protocol_version: PROTOCOL_VERSION,
-                                expected_revision: view.desired_revision,
-                            })?;
-                        }
-                    }
-                    Ok(config)
+                        && std::env::var("TAGMA_TEST_INITIALIZE_TOKEN").as_deref() != Ok("1"));
+                    startup::open(&directory, Arc::new(SystemCredentials), initialize_token)
                 });
             // Configuration failures remain visible in the native window; never fake an empty success.
             let tray = tray(app);
