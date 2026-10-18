@@ -1,0 +1,28 @@
+{
+  "allInstalledFilesUnchanged": true,
+  "processes": [
+    {
+      "ProcessId": 22064,
+      "ExecutablePath": "C:\\Users\\ai\\AppData\\Local\\Tagma\\tagma-desktop.exe",
+      "CreationDate": "2026-10-18T18:20:20.727519+08:00"
+    },
+    {
+      "ProcessId": 28752,
+      "ExecutablePath": "C:\\Users\\ai\\AppData\\Local\\Tagma\\tagma-gateway.exe",
+      "CreationDate": "2026-10-18T18:20:21.708809+08:00"
+    },
+    {
+      "ProcessId": 48736,
+      "ExecutablePath": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\install-p0s16\\tagma-desktop.exe",
+      "CreationDate": "2026-10-18T23:03:49.384513+08:00"
+    },
+    {
+      "ProcessId": 42652,
+      "ExecutablePath": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\install-p0s16\\tagma-gateway.exe",
+      "CreationDate": "2026-10-18T23:03:50.343512+08:00"
+    }
+  ],
+  "registry": {
+    "DisplayVersion": "0.2.0-dev.28"
+  }
+}

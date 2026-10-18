@@ -1,0 +1,20 @@
+{
+  "layer": "Actual Windows installer and sidecar processes, no desktop UI; synthetic local data; no model requests",
+  "gatewayPath": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\install-p0s16\\tagma-gateway.exe",
+  "started": "2026-10-18T15:13:50.2725731Z",
+  "filesUnchanged": true,
+  "checks": [
+    {
+      "mode": "upgrade",
+      "pid": 55780,
+      "exit": 1618,
+      "gatewayAlive": true
+    },
+    {
+      "mode": "uninstall",
+      "pid": 55780,
+      "exit": 1618,
+      "gatewayAlive": true
+    }
+  ]
+}

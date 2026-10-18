@@ -1,0 +1,39 @@
+{
+  "correction": "uninstall-complete.json checked config.db, which is not the application database filename; that false field is not a failed deletion or a pass. Actual config.sqlite3 is retained and native restart reads revision12/12.",
+  "configPath": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\data\\config.sqlite3",
+  "configurationRetained": true,
+  "nativeEvidence": "32-after-uninstall-restored.json",
+  "residual": [],
+  "space": [
+    {
+      "DriveLetter": "C",
+      "SizeRemaining": 36596756480
+    },
+    {
+      "DriveLetter": "D",
+      "SizeRemaining": 28183166976
+    }
+  ],
+  "processes": [
+    {
+      "ProcessId": 22064,
+      "ExecutablePath": "C:\\Users\\ai\\AppData\\Local\\Tagma\\tagma-desktop.exe",
+      "CreationDate": "2026-10-18T18:20:20.727519+08:00"
+    },
+    {
+      "ProcessId": 28752,
+      "ExecutablePath": "C:\\Users\\ai\\AppData\\Local\\Tagma\\tagma-gateway.exe",
+      "CreationDate": "2026-10-18T18:20:21.708809+08:00"
+    },
+    {
+      "ProcessId": 32520,
+      "ExecutablePath": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\candidate-dev29\\tagma-desktop.exe",
+      "CreationDate": "2026-10-18T23:17:13.049077+08:00"
+    },
+    {
+      "ProcessId": 54688,
+      "ExecutablePath": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\candidate-dev29\\tagma-gateway.exe",
+      "CreationDate": "2026-10-18T23:17:13.742728+08:00"
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+[
+  {
+    "case": "none",
+    "installerExit": 0,
+    "fixtureAlive": false,
+    "expectedExit": 0
+  },
+  {
+    "case": "tagma-gateway",
+    "installerExit": 1618,
+    "fixtureAlive": true,
+    "expectedExit": 1618
+  },
+  {
+    "case": "tagma-desktop",
+    "installerExit": 1618,
+    "fixtureAlive": true,
+    "expectedExit": 1618
+  }
+]

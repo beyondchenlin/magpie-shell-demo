@@ -1,0 +1,480 @@
+{
+  "batch": "P0-S16",
+  "version": "dev.29",
+  "productCommit": "d9094de",
+  "logicalBytes": 1355217,
+  "fileCount": 94,
+  "physicalSize": "No new hardlinks; ordinary copies. No historical evidence removed; net volume changes include unrelated concurrent work.",
+  "files": [
+    {
+      "path": "05-installed28-start.json",
+      "bytes": 42350,
+      "sha256": "2121302ab77582fef1b4bd6bd1cce35efd1cd4a156301a0909ca523011ee6b36"
+    },
+    {
+      "path": "06-installer-window-inventory.json",
+      "bytes": 283,
+      "sha256": "a569923307d87ab0b005e42e95c2d68aa7d5fdea8474275c2d0975a487720238"
+    },
+    {
+      "path": "06-upgrade-welcome.json",
+      "bytes": 7599,
+      "sha256": "6cb805edccd032a3f0eb1a11b6e44066d03ca4c5653179f9b571b293a4332729"
+    },
+    {
+      "path": "07-upgrade-maintenance.json",
+      "bytes": 10776,
+      "sha256": "13525c2c2fe085ce73827029446fd1dc790e514d52599a7c00269f84001a76cc"
+    },
+    {
+      "path": "07-upgrade-maintenance.png",
+      "bytes": 14768,
+      "sha256": "62e23e25d33e6eeeb3a62ddb4c3e84a13324baf9fa9c8382cb7b8efed259a353"
+    },
+    {
+      "path": "08-upgrade-directory.json",
+      "bytes": 14831,
+      "sha256": "5d3b64edf40884d915537ac9145de84fc07301de8b3517a5825c2c5718ec910a"
+    },
+    {
+      "path": "09-upgrade-busy.json",
+      "bytes": 16037,
+      "sha256": "3d8a45aae86d041a2da6d6a7a23ae577cf44ff43c7ff4cf03326ec774fe7f2b1"
+    },
+    {
+      "path": "10-busy-dialog.json",
+      "bytes": 2816,
+      "sha256": "040089a8a586a8d992c38ae370c17168f459dd9edb84727a61baf92786f4304f"
+    },
+    {
+      "path": "10-busy-dialog.png",
+      "bytes": 8694,
+      "sha256": "d7c64b3172979971c9cd09da709aa0b179392a509ca01dfd00c74fed416a7fb7"
+    },
+    {
+      "path": "11-aborted-install.json",
+      "bytes": 189,
+      "sha256": "f9b9857ffe146f2c70d22a99d09ffc4cfc777c9d8db9d94012200750536f8a2c"
+    },
+    {
+      "path": "12-aborted-visible.json",
+      "bytes": 12132,
+      "sha256": "6ed807a6402858fe60a6df0417a9c3d450b09b9b0d9726d08ca81a442e8aa1fe"
+    },
+    {
+      "path": "14-installed28-after-block.json",
+      "bytes": 43345,
+      "sha256": "da9ad039baf52f8d031195e8ac979abf853b8e23e6a655bd957593903164a7c3"
+    },
+    {
+      "path": "15-upgrade-exit-settings.json",
+      "bytes": 48265,
+      "sha256": "91860b3ec955a6098a0a866d63c7315959dd726791063d925d2f2d6947d95704"
+    },
+    {
+      "path": "16-upgrade-exit-dialog.json",
+      "bytes": 14858,
+      "sha256": "844d70074a32466037992c39f9ea3c2c5222e72c530e71312e178c6e2a554379"
+    },
+    {
+      "path": "18-closed-upgrade-welcome.json",
+      "bytes": 7601,
+      "sha256": "84820db79e64baaeff6af77e22419c753ae5c998586c021333c7f89c9d4f84f2"
+    },
+    {
+      "path": "19-closed-upgrade-maintenance.json",
+      "bytes": 10781,
+      "sha256": "8b36130f2686b2d3b77db777a97a2b853ec00bacc060e55c7b2630e07adb99ce"
+    },
+    {
+      "path": "20-closed-upgrade-directory.json",
+      "bytes": 14837,
+      "sha256": "c0d5b65893e8ba43075cd78ada61cc895ff0238a1e522978d1e519678cbc68b7"
+    },
+    {
+      "path": "21-upgrade-writing.json",
+      "bytes": 12178,
+      "sha256": "0b7e24d9ff66da2cbba58d0cc91e5118c0720dd9082a75c0de5533c182179495"
+    },
+    {
+      "path": "22-upgrade-completed.json",
+      "bytes": 12143,
+      "sha256": "5238593fcc272a3d0045eb8650aac51c4fb8475f44499043db1985e77cedb7c0"
+    },
+    {
+      "path": "23-upgrade-finish.json",
+      "bytes": 9819,
+      "sha256": "49f1053a2dac5a4cbe8e83653ea91f132a238741c2c4f7da7b88f08964655e08"
+    },
+    {
+      "path": "24-disable-default-launch.json",
+      "bytes": 9819,
+      "sha256": "d44270d067f3fb1930acf2a022807068644af2c6f616ad7ce7904415f05c7a90"
+    },
+    {
+      "path": "25-disable-shortcut.json",
+      "bytes": 9819,
+      "sha256": "7aa7c7aa5e7cadd7c43df40e0690c53266cf5a33b2bf59c5d1e12d24a577a8dc"
+    },
+    {
+      "path": "25-upgrade-finished.png",
+      "bytes": 14305,
+      "sha256": "16201d64a57d473cbac3f68b47d73a141f27591f6c9c2fc405042f3d731a15e6"
+    },
+    {
+      "path": "26-upgrade-closed.json",
+      "bytes": 9819,
+      "sha256": "4bf34ffcdd1baaef246599c0d531a60b3feb234f59fb49110e00e45b1f938fc6"
+    },
+    {
+      "path": "27-installed29-restored.json",
+      "bytes": 42360,
+      "sha256": "c7360ab23c0979322eb48987b324fe69d5eee2c852309ed8bcdb81b4e11120cb"
+    },
+    {
+      "path": "28-upgraded-providers.json",
+      "bytes": 103268,
+      "sha256": "5b83d6abb06066bca85d82f2aafc239385b621fec611a21075e783eadfdec1d9"
+    },
+    {
+      "path": "28-upgraded-providers.png",
+      "bytes": 37752,
+      "sha256": "19c593357a39c13f74d41ed4eed7ad39a5bb52049fa18cc330720da4eb8c3580"
+    },
+    {
+      "path": "29-dev29-settings.json",
+      "bytes": 48273,
+      "sha256": "828db88469a973310434ff177b69433f441955decc3513f8d41882e0fe3a0eca"
+    },
+    {
+      "path": "30-independent-prepare-exit.json",
+      "bytes": 14866,
+      "sha256": "3957d002228d8fed19b0618e9e9ecd4a106d3f5dbb04d76fe475222330b1556b"
+    },
+    {
+      "path": "32-after-uninstall-restored.json",
+      "bytes": 42348,
+      "sha256": "cb27eaf56eabb738002029798ff6d3caba7aeffd8727cf95db079f5d07f6bb3f"
+    },
+    {
+      "path": "actions.jsonl",
+      "bytes": 124348,
+      "sha256": "83b051ec617b4b0a5f848adf0c85f12853c01f7178d9c0ed914831a860930df2"
+    },
+    {
+      "path": "baseline-install.json",
+      "bytes": 839,
+      "sha256": "99524cd10fbca68c28734c7b2138723c6db9f0ab5aea049d0aa3b9d00f4d2407"
+    },
+    {
+      "path": "build-preflight.json",
+      "bytes": 709,
+      "sha256": "0b7ef814e6eb72620f5f9f644ff743f81b5c5c44e0c33dcfae4f18195d1d528c"
+    },
+    {
+      "path": "build-schema-rejected.log",
+      "bytes": 325,
+      "sha256": "46c39b74dff89318e3af893ac7d648df846832b1de77bc7ed0e9effe152be362"
+    },
+    {
+      "path": "build.log",
+      "bytes": 3003,
+      "sha256": "ec52f1d97bfa648f130febc10946cfa7f938fdff0b849249d8d73d2e282fab71"
+    },
+    {
+      "path": "busy-native-result.json",
+      "bytes": 994,
+      "sha256": "4530b40ba66dd39d7d8a1bed1f4d94132a344e1f15d07be65d73b582ae3c73e4"
+    },
+    {
+      "path": "candidate.json",
+      "bytes": 517,
+      "sha256": "3c8c0a7ed960b75e5f7303303dd52d38c476973986b276da114a30ff5d22fa22"
+    },
+    {
+      "path": "Control-dev28.ps1",
+      "bytes": 27843,
+      "sha256": "005b68cf1eab663d6cc52608845187587481430915a11e48c00803d9807b87f5"
+    },
+    {
+      "path": "Control-installed29.ps1",
+      "bytes": 27843,
+      "sha256": "455648d92f9056ef6ba4cecec39da0e08ebd41b491f8a7b210b6c18ff041002b"
+    },
+    {
+      "path": "Control.ps1",
+      "bytes": 27845,
+      "sha256": "97347fc10f930601dec2606a9dbeb9563c891122e6db97860e4681ded2040dc1"
+    },
+    {
+      "path": "delivery-manifest.json",
+      "bytes": 1647,
+      "sha256": "e0588e63c5c1ad019e17d68cef7ac3b88bccf38346100bb09cb1746b80d927dc"
+    },
+    {
+      "path": "downgrade-build.log",
+      "bytes": 501,
+      "sha256": "2b63e889b649bb953714ff8fb5ef6d2882a3c7a3b3eef515ec2cbad9ba695e08"
+    },
+    {
+      "path": "downgrade-result.json",
+      "bytes": 128,
+      "sha256": "21f8de040e9ca89cf207d7a45426e879543f01ae965506d3ec2abf69846e286d"
+    },
+    {
+      "path": "English.nsh",
+      "bytes": 2930,
+      "sha256": "79c5775a167222dd72eda103861d55581cddc58735d65f535a3dead9320c537c"
+    },
+    {
+      "path": "fail-closed-results.json",
+      "bytes": 380,
+      "sha256": "5e6de14b2aefe7a907833af6b03b904a7b20d10fc6ccbdcfd306c0bcc2d777f7"
+    },
+    {
+      "path": "fault-query-build-final.log",
+      "bytes": 233,
+      "sha256": "a0709fb85f578c506fbdb4c25c90d0781d55e4f28d9b1211b0b09e0acdd6adbc"
+    },
+    {
+      "path": "fault-query.nsh",
+      "bytes": 1730,
+      "sha256": "2ceaa7dd7b26d35c6c851a860a550e006015bdcd069a080d00764b1227d39d76"
+    },
+    {
+      "path": "fault-query.nsi",
+      "bytes": 462,
+      "sha256": "2936c36d878c8ea1f5466b634101f058985fdf86686f5770b9fa456c31b67c2c"
+    },
+    {
+      "path": "fault-register-build-final.log",
+      "bytes": 233,
+      "sha256": "a0709fb85f578c506fbdb4c25c90d0781d55e4f28d9b1211b0b09e0acdd6adbc"
+    },
+    {
+      "path": "fault-register-build.log",
+      "bytes": 392,
+      "sha256": "3498c44f59e598431f754197d75af050790114d5cec45e3e69aeb5b2b428e5b7"
+    },
+    {
+      "path": "fault-register.nsh",
+      "bytes": 1657,
+      "sha256": "149e36b963798dcf38964336d330d31e6a970b79ffed1b2ea7b7b440e634110b"
+    },
+    {
+      "path": "fault-register.nsi",
+      "bytes": 468,
+      "sha256": "82c7a041ccb0b95de62544fa88e9063523ebcd0f047dda9ee260015ceedb167b"
+    },
+    {
+      "path": "fault-start-build-final.log",
+      "bytes": 233,
+      "sha256": "a0709fb85f578c506fbdb4c25c90d0781d55e4f28d9b1211b0b09e0acdd6adbc"
+    },
+    {
+      "path": "fault-start-build.log",
+      "bytes": 233,
+      "sha256": "a0709fb85f578c506fbdb4c25c90d0781d55e4f28d9b1211b0b09e0acdd6adbc"
+    },
+    {
+      "path": "fault-start.nsh",
+      "bytes": 1762,
+      "sha256": "1c002ac9dc796e416c851270f97884fb93b9532024438abe516240b91ceddbb8"
+    },
+    {
+      "path": "fault-start.nsi",
+      "bytes": 462,
+      "sha256": "ec632abb88b1740f9f7ea4f57accfa47d251bf07e3e04e7319655137ec7171c1"
+    },
+    {
+      "path": "FileAssociation.nsh",
+      "bytes": 5517,
+      "sha256": "e933990b06dceac358fc1a4e71cb55c7dc9783ad4df8fc2c6248118a7ad4d348"
+    },
+    {
+      "path": "final-check.json",
+      "bytes": 1550,
+      "sha256": "ae4f67c1ab8386f8cef6252def36e15971dc5cc86f295fec7533b1c6aa2ba065"
+    },
+    {
+      "path": "fixed-build.log",
+      "bytes": 233,
+      "sha256": "a0709fb85f578c506fbdb4c25c90d0781d55e4f28d9b1211b0b09e0acdd6adbc"
+    },
+    {
+      "path": "fixed-downgrade-dev28.nsi",
+      "bytes": 24200,
+      "sha256": "14673fa67b9b827c6b0c90e3e543cbc3d7667e1ba0de49cf90479ea762f879ce"
+    },
+    {
+      "path": "fixed-guard.nsi",
+      "bytes": 460,
+      "sha256": "feaa6db1144220e3360a8de2c2f533f17dd2afa3db1d680bb282593b3782ea2a"
+    },
+    {
+      "path": "fixed-results.json",
+      "bytes": 357,
+      "sha256": "d1c1ae031abe36dd32807ec9f41c9638d1568f0917e42d3b82870a8d8a2e9f0f"
+    },
+    {
+      "path": "Fixture.cs",
+      "bytes": 101,
+      "sha256": "dba795cca3b16163d3efabfd7f6fb2fc8881fd5d021abf980460bbe559eb718d"
+    },
+    {
+      "path": "installer-actions.jsonl",
+      "bytes": 42502,
+      "sha256": "b6e9a12a8d136ad74c8e4ac0708454264fe0b556a0cf7b8b2693ec9f3fea8517"
+    },
+    {
+      "path": "installer-identity.json",
+      "bytes": 234,
+      "sha256": "993b3717b4719893d5959f21fe29f2eff58f5c2a3dcce8eb6695cf830bf3f958"
+    },
+    {
+      "path": "InstallerControl.ps1",
+      "bytes": 8063,
+      "sha256": "fad883a2e4bfed5472feea958d0e444401fb643a7dadc607d0b352f18a21a319"
+    },
+    {
+      "path": "isolated-dev28-build.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "isolated-dev28.nsi",
+      "bytes": 31793,
+      "sha256": "cd805c5d3f1d5e8036b9211d719e23c79671d6389c0f86d3b07e836f1f7960a3"
+    },
+    {
+      "path": "isolated-dev29-build.log",
+      "bytes": 501,
+      "sha256": "2b63e889b649bb953714ff8fb5ef6d2882a3c7a3b3eef515ec2cbad9ba695e08"
+    },
+    {
+      "path": "isolated-dev29.nsi",
+      "bytes": 24088,
+      "sha256": "3ba21d99d68d83b7a9e8ef3b22585a159d55d90996d1a5ad7c172f7fdd33da11"
+    },
+    {
+      "path": "legacy-build.log",
+      "bytes": 233,
+      "sha256": "a0709fb85f578c506fbdb4c25c90d0781d55e4f28d9b1211b0b09e0acdd6adbc"
+    },
+    {
+      "path": "legacy-guard.nsi",
+      "bytes": 713,
+      "sha256": "76d116d3caeac7ef4a192a4289815e279c81f1da2da4b664edc91ba97f71d180"
+    },
+    {
+      "path": "legacy-passed.txt",
+      "bytes": 23,
+      "sha256": "3fff003bbe1f76a2b531d6257de9e5838658fd92ab62588bd23a015d8cdfdb48"
+    },
+    {
+      "path": "legacy-result.json",
+      "bytes": 301,
+      "sha256": "60673c25e745849aa3dd98e874e9a69a965070c06b5a6b4e941e8d78783e9047"
+    },
+    {
+      "path": "old-running/01-original-before-install.json",
+      "bytes": 103261,
+      "sha256": "1d4f873629fec5bf92177440910dafab939ec03c3bc61330d3ccf0036440fad8"
+    },
+    {
+      "path": "old-running/02-quit-settings.json",
+      "bytes": 48264,
+      "sha256": "e01eb662ca5e7c7ab704019ae7566b8ced1870323a0c26a86e33d16a15525aa1"
+    },
+    {
+      "path": "old-running/03-quit-dialog.json",
+      "bytes": 14858,
+      "sha256": "589070d072b251edda955a8c5159f8977ea5e19961362459596189726ce5a002"
+    },
+    {
+      "path": "old-running/actions.jsonl",
+      "bytes": 51984,
+      "sha256": "aa6b86b9dae2347d9667b317388953ca38c7b1d1a4e5bdc5045f3b40fa7d908f"
+    },
+    {
+      "path": "old-running/Control.ps1",
+      "bytes": 27857,
+      "sha256": "2eac158f70a915f8cf891eb9e932a8f2658288605a10e3e6bedf4bdb719df95c"
+    },
+    {
+      "path": "old-running/Run.ps1",
+      "bytes": 2068,
+      "sha256": "560f7e49624b0c5cce50f4be3dfac271a3f60c3dbd6b2ffd131d812afd68d194"
+    },
+    {
+      "path": "owner.txt",
+      "bytes": 25,
+      "sha256": "35efb543c9013fcc2aa940bc77d6349f39b5d881004359424e39de561abeed89"
+    },
+    {
+      "path": "protected-registry-after.json",
+      "bytes": 189,
+      "sha256": "7c029f0b4b036a49b45e2f05eddd499471524774bf774dbb94004abd2c9683cf"
+    },
+    {
+      "path": "protected-registry-before.json",
+      "bytes": 189,
+      "sha256": "7c029f0b4b036a49b45e2f05eddd499471524774bf774dbb94004abd2c9683cf"
+    },
+    {
+      "path": "Run.ps1",
+      "bytes": 2056,
+      "sha256": "809250e4e2b063f08576c94bb5b6444aa727b2c7c92db4926b9fe36918b67eda"
+    },
+    {
+      "path": "silent-busy-result.json",
+      "bytes": 135,
+      "sha256": "39560f4553e8a83da723434a53ac0595884d108ba076d1c19e9a6122b34bb43a"
+    },
+    {
+      "path": "source-inputs.json",
+      "bytes": 53778,
+      "sha256": "16ae319cf9e0f53f82a7aa393f06acc75d62fc58b5e5a61f3a99c7ff4b9abe79"
+    },
+    {
+      "path": "standalone-cleanup.json",
+      "bytes": 108,
+      "sha256": "59a5e5751f6f163fecc168256e00a8bf439c3e564a20b9bb34f61fa627391464"
+    },
+    {
+      "path": "standalone-results.json",
+      "bytes": 582,
+      "sha256": "837b9c2bb5c572d03fceb0bd52393a32f0f8dd0e6ed4fcfe1a3ef2f673372ade"
+    },
+    {
+      "path": "StandaloneGuard.ps1",
+      "bytes": 3269,
+      "sha256": "4de84d11e35e29fabb04a4b9b9f0d856f06bc5f669843aad01836d28f38459a8"
+    },
+    {
+      "path": "uninstall-busy-result.json",
+      "bytes": 540,
+      "sha256": "54dea975637933b455137ba4b3ac6ecfed86caf40d446e4e8c285593dba39952"
+    },
+    {
+      "path": "uninstall-complete.json",
+      "bytes": 288,
+      "sha256": "81c13439bdf9061ed6da5da4502cdad7b7f65785ddbcf80063f28347d8e82f5a"
+    },
+    {
+      "path": "upgraded-install.json",
+      "bytes": 709,
+      "sha256": "cc7d937fa3f922171ec1748201002e313df29c4e8e6342654ae8b574004a6ec3"
+    },
+    {
+      "path": "upstream-installer.nsi",
+      "bytes": 32787,
+      "sha256": "8ae02c66f8adb4a0d15d97f984fbacd2b44262d8a4d03fefaf6177f67f7008e5"
+    },
+    {
+      "path": "utils.nsh",
+      "bytes": 6753,
+      "sha256": "72cae7532ea22bd39b5433dfd8ac47975844defa916fc113880479dedfee54f6"
+    }
+  ]
+}

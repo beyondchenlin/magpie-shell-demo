@@ -1,0 +1,17 @@
+[
+  {
+    "layer": "Controlled API-result substitution, not real OS failure",
+    "exit": 1603,
+    "case": "start"
+  },
+  {
+    "layer": "Controlled API-result substitution, not real OS failure",
+    "exit": 1603,
+    "case": "register"
+  },
+  {
+    "layer": "Controlled API-result substitution, not real OS failure",
+    "exit": 1603,
+    "case": "query"
+  }
+]

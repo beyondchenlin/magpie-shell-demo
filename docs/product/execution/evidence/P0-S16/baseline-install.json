@@ -1,0 +1,25 @@
+{
+  "exit": 0,
+  "path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\install-p0s16",
+  "files": [
+    {
+      "sha256": "C606B179F3D60915507049AC3D077869C2FBC205B05AE322A839B59008D0A629",
+      "name": "tagma-desktop.exe",
+      "bytes": 20270080
+    },
+    {
+      "sha256": "115C39E4320CAF2FD2B5D38FE9FC1DD5CA655AA40B921630DF705CA93B2AFA02",
+      "name": "tagma-gateway.exe",
+      "bytes": 10109952
+    },
+    {
+      "sha256": "113D104D621A29974BB911596E859573ED4AC027F8BE3360E843BE3B6E896455",
+      "name": "uninstall.exe",
+      "bytes": 79335
+    }
+  ],
+  "registry": {
+    "DisplayVersion": "0.2.0-dev.28",
+    "UninstallString": "\"C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\install-p0s16\\uninstall.exe\""
+  }
+}

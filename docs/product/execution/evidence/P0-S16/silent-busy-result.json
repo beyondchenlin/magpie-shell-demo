@@ -1,0 +1,6 @@
+{
+  "case": "full-silent-upgrade-with-host-and-gateway",
+  "exit": 1618,
+  "hostStillAlive": true,
+  "gatewayStillAlive": true
+}

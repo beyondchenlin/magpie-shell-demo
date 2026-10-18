@@ -1,0 +1,68 @@
+﻿{
+    "utc":  "2026-10-18T15:06:07.7694538Z",
+    "pid":  39888,
+    "window":  5375574,
+    "title":  "Tagma P0 S16 Acceptance Setup",
+    "elements":  [
+                     {
+                         "index":  0,
+                         "name":  "确定",
+                         "type":  "ControlType.Pane",
+                         "patterns":  [
+
+                                      ],
+                         "class":  "Button",
+                         "id":  "42,6751044",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  0,
+                         "rect":  [
+                                      2056,
+                                      1144,
+                                      88,
+                                      28
+                                  ]
+                     },
+                     {
+                         "index":  1,
+                         "name":  "",
+                         "type":  "ControlType.Pane",
+                         "patterns":  [
+
+                                      ],
+                         "class":  "Static",
+                         "id":  "42,11209916",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  null,
+                         "rect":  [
+                                      1708,
+                                      1040,
+                                      32,
+                                      32
+                                  ]
+                     },
+                     {
+                         "index":  2,
+                         "name":  "Tagma or its gateway is still running from this installation. Use Tagma \u003e Settings \u003e Quit and wait for active requests to finish. If a separate gateway is running, stop it through its owner, then retry. No process was stopped and no program files were changed.",
+                         "type":  "ControlType.Pane",
+                         "patterns":  [
+
+                                      ],
+                         "class":  "Static",
+                         "id":  "42,2884976",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  null,
+                         "rect":  [
+                                      1748,
+                                      1040,
+                                      378,
+                                      66
+                                  ]
+                     }
+                 ]
+}

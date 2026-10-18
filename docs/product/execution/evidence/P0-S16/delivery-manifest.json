@@ -1,0 +1,27 @@
+{
+  "version": "0.2.0-dev.29",
+  "productChangesCommit": "d9094ded52c7f391fb1fd680bb082de7540e27f7",
+  "sourceHeadAtBuild": "1e11beb8ebf1bdb820435fcfa31da6d9b9a9a267",
+  "profile": "Windows x64 debug unsigned internal",
+  "sourceInputs": 314,
+  "installer": {
+    "path": "D:/demo1/tagmaai-deliveries/0.2.0-dev.29/Tagma_0.2.0-dev.29_x64-setup.exe",
+    "bytes": 6618287,
+    "sha256": "3a2700d383c164f5addb63356229561126fddd848e65bffca772d36c66e04875"
+  },
+  "candidate": [
+    {
+      "path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\candidate-dev29\\tagma-desktop.exe",
+      "bytes": 20270592,
+      "sha256": "09C359FAF08E83883977230F08213636786542F5992B213AB36186D65CA6601A"
+    },
+    {
+      "path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\candidate-dev29\\tagma-gateway.exe",
+      "bytes": 10110976,
+      "sha256": "9B30CB830D902D57A6EB340D5437B39E49C41FE6D1593481989019D2D697A8A9"
+    }
+  ],
+  "nativeAcceptance": "P0-S16 isolated identity actual installer refuses active desktop; actual interactive dev28 to dev29 update; native config recovery 12/12. Silent standalone gateway install/uninstall 1618. Silent downgrade 1638. Original normal identity installer not run.",
+  "sourceRecovery": "Checkout productChangesCommit; restore the six inherited inputs listed in INHERITED-INPUTS from retained dev18 source-overlay.json.gz; verify SOURCE-INPUTS.",
+  "remaining": "Interrupted replacement/startup race matrix remains; no atomic pair update claim. Prior signature/clean environment/macOS/OS animation/credential facility gates remain."
+}

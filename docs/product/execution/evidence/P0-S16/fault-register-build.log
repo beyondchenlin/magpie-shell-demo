@@ -1,0 +1,5 @@
+warning: !warning: MUI_LANGUAGE[EX] should be inserted after the MUI_[UN]PAGE_* macros (macro:MUI_LANGUAGEEX:6)
+StrCpy expects 2-4 parameters, got 5.
+Usage: StrCpy $(user_var: output) str [maxlen] [startoffset]
+Error in macro TagmaCheckInstallProcesses on macroline 10
+Error in script "D:\demo1\tagmaai\.cache\p0-s16-installer\fault-register.nsi" on line 15 -- aborting creation process

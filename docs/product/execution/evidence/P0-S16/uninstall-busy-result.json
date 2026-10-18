@@ -1,0 +1,20 @@
+{
+  "case": "full-silent-uninstall-with-host",
+  "exit": 1618,
+  "hostAlive": true,
+  "version": "0.2.0-dev.29",
+  "files": [
+    {
+      "sha256": "09C359FAF08E83883977230F08213636786542F5992B213AB36186D65CA6601A",
+      "name": "tagma-desktop.exe"
+    },
+    {
+      "sha256": "9B30CB830D902D57A6EB340D5437B39E49C41FE6D1593481989019D2D697A8A9",
+      "name": "tagma-gateway.exe"
+    },
+    {
+      "sha256": "226B279E347A5B2B8C9D4839E9A885E8682AD3EF9337F697646620F1C9E0DD35",
+      "name": "uninstall.exe"
+    }
+  ]
+}

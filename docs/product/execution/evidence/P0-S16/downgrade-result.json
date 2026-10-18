@@ -1,0 +1,5 @@
+{
+  "case": "fixed-template-dev28-package-against-installed-dev29",
+  "exit": 1638,
+  "installedVersion": "0.2.0-dev.29"
+}

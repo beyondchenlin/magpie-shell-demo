@@ -1,0 +1,12 @@
+warning 6010: install function "StrCase" not referenced - zeroing code (0-159) out
+
+warning 6010: install function "StrLoc" not referenced - zeroing code (159-203) out
+
+warning 6001: Variable "WixMode" not referenced or never set, wasting memory!
+
+3 warnings:
+  6010: install function "StrCase" not referenced - zeroing code (0-159) out
+
+  6010: install function "StrLoc" not referenced - zeroing code (159-203) out
+
+  6001: Variable "WixMode" not referenced or never set, wasting memory!

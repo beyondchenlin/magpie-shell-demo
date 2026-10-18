@@ -1,0 +1,10 @@
+{
+  "case": "actual-new-uninstaller-no-active-process",
+  "parentExit": 0,
+  "ownedRegistryRemoved": true,
+  "installedProgramRemoved": true,
+  "configurationRetained": false,
+  "installationResidualExists": true,
+  "protectedHostAlive": true,
+  "protectedGatewayAlive": true
+}

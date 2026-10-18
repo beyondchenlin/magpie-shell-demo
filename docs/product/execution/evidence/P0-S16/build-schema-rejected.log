@@ -1,0 +1,5 @@
+
+> magpie-shell-demo@0.1.208 tauri
+> tauri build --debug --bundles nsis
+
+       Error `"tauri.conf.json"` error on `bundle > windows > nsis`: {"template":"installer/installer.nsi","installerHooks":"installer/process-guard.nsh","allowDowngrades":false} is not valid under any of the schemas listed in the 'anyOf' keyword
