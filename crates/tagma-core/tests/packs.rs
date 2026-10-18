@@ -81,6 +81,126 @@ fn signed_manifest_binds_exact_bytes_identity_contract_and_platform() {
     );
 }
 #[test]
+fn signed_record_actual_disk_roundtrip_preserves_original_utf8_and_spacing() {
+    use std::io::Write;
+    let raw = serde_json::to_vec_pretty(&manifest()).unwrap();
+    let proof = trust()
+        .verify("test-root", &raw, &signature(&raw), NOW)
+        .unwrap();
+    let record = proof.signed_record();
+    assert_eq!(record.manifest_utf8.as_bytes(), raw);
+    let temp = tempfile::Builder::new()
+        .prefix("tagma-pack-replay-")
+        .tempdir()
+        .unwrap();
+    let path = temp.path().join("signed-record.json");
+    let mut file = std::fs::File::create(&path).unwrap();
+    file.write_all(&serde_json::to_vec(&record).unwrap())
+        .unwrap();
+    file.sync_all().unwrap();
+    drop(file);
+    let loaded = SignedManifestRecord::read_from(std::fs::File::open(path).unwrap()).unwrap();
+    assert_eq!(loaded, record);
+    let replay = trust().verify_record(&loaded, NOW).unwrap();
+    assert_eq!(replay.sha256(), proof.sha256());
+    assert_eq!(replay.signed_record(), record);
+    let mut reserialized = loaded;
+    reserialized.manifest_utf8 = serde_json::to_string(proof.manifest()).unwrap();
+    assert_ne!(reserialized.manifest_utf8.as_bytes(), raw);
+    assert_eq!(
+        trust().verify_record(&reserialized, NOW).unwrap_err(),
+        PackError::InvalidSignature
+    );
+    println!(
+        "Signed manifest actual disk roundtrip:original pretty UTF8/signature preserved,raw SHA unchanged after current-root reverify;reserialized JSON refused;record is public verification material,not an IPC frame/installed state"
+    );
+}
+#[test]
+fn signed_record_requires_current_trust_time_and_a_closed_schema() {
+    let record = verified().signed_record();
+    assert_eq!(
+        PackTrustStore::default()
+            .verify_record(&record, NOW)
+            .unwrap_err(),
+        PackError::UntrustedPublisher
+    );
+    assert_eq!(
+        trust().verify_record(&record, 90_000).unwrap_err(),
+        PackError::ExpiredManifest
+    );
+    let mut changed_root = root("test-root", "tagma-test");
+    changed_root.public_key = SigningKey::from_bytes(&[18; 32]).verifying_key().to_bytes();
+    assert_eq!(
+        PackTrustStore::new(vec![changed_root])
+            .unwrap()
+            .verify_record(&record, NOW)
+            .unwrap_err(),
+        PackError::InvalidSignature
+    );
+    let mut altered = record.clone();
+    let byte = if altered.signature_hex.starts_with("00") {
+        "01"
+    } else {
+        "00"
+    };
+    altered.signature_hex.replace_range(0..2, byte);
+    let parsed = SignedManifestRecord::parse(&serde_json::to_vec(&altered).unwrap()).unwrap();
+    assert_eq!(
+        trust().verify_record(&parsed, NOW).unwrap_err(),
+        PackError::InvalidSignature,
+        "parsing public record never grants verification"
+    );
+    let mut extra = serde_json::to_value(record).unwrap();
+    extra["public_key"] = json!("attacker-key");
+    assert_eq!(
+        SignedManifestRecord::parse(&serde_json::to_vec(&extra).unwrap()),
+        Err(PackError::InvalidManifest)
+    );
+}
+#[test]
+fn signed_record_encoding_and_reader_are_bounded_before_large_allocation() {
+    let record = verified().signed_record();
+    let mut input = std::io::Cursor::new(vec![b' '; MAX_SIGNED_MANIFEST_RECORD_BYTES + 256]);
+    assert_eq!(
+        SignedManifestRecord::read_from(&mut input),
+        Err(PackError::InvalidManifest)
+    );
+    assert_eq!(
+        input.position(),
+        MAX_SIGNED_MANIFEST_RECORD_BYTES as u64 + 1
+    );
+    let mut oversized = record.clone();
+    oversized.manifest_utf8 = " ".repeat(MAX_MANIFEST_BYTES + 1);
+    assert_eq!(
+        SignedManifestRecord::parse(&serde_json::to_vec(&oversized).unwrap()),
+        Err(PackError::InvalidManifest)
+    );
+    let mut bad = record.clone();
+    bad.signature_hex = "AA".repeat(64);
+    assert_eq!(
+        trust().verify_record(&bad, NOW).unwrap_err(),
+        PackError::InvalidSignature
+    );
+    let mut bad = record.clone();
+    bad.signature_hex.truncate(126);
+    assert_eq!(
+        trust().verify_record(&bad, NOW).unwrap_err(),
+        PackError::InvalidSignature
+    );
+    let mut bad = record.clone();
+    bad.record_version = 2;
+    assert_eq!(
+        trust().verify_record(&bad, NOW).unwrap_err(),
+        PackError::UnsupportedContract
+    );
+    let mut bad = record;
+    bad.key_id = "../issuer".into();
+    assert_eq!(
+        trust().verify_record(&bad, NOW).unwrap_err(),
+        PackError::InvalidManifest
+    );
+}
+#[test]
 fn signature_root_publisher_and_domain_cannot_be_supplied_or_rebound_by_pack() {
     let bytes = serde_json::to_vec(&manifest()).unwrap();
     let sig = signature(&bytes);

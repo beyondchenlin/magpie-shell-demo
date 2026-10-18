@@ -1,0 +1,89 @@
+{
+  "recordedAtUtc": "2026-10-18T01:00:37.383Z",
+  "sourceBase": "cc8e33863cb2da67cd9dc791101d5b3a3f0a65b0",
+  "candidateVersion": "0.2.0-dev.16",
+  "configSchema": 10,
+  "usageSchema": 2,
+  "source": [
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-core\\src\\packs\\trust.rs",
+      "bytes": 9291,
+      "sha256": "92ff69188f797540decfd5008ba12811691f876944762c977766e52bc8cea6b1"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-core\\tests\\packs.rs",
+      "bytes": 24352,
+      "sha256": "a4ab047551acb8cd7df44529d3c7663dd1897ef15baefe9c0f8f18e11afdfdc1"
+    }
+  ],
+  "documents": [
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\EXECUTION-STATUS.md",
+      "bytes": 42080,
+      "sha256": "f07c390804916aa573765447a767c54d86b207e693ba69e9fa69255f17913a15"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\P2-S05-SIGNED-MANIFEST-RECORD.md",
+      "bytes": 2548,
+      "sha256": "1d5b3ef61a1f0b7fa9a5d9f5d5b134eb037cbcafb4649091ab4387c25256a4da"
+    }
+  ],
+  "prd": {
+    "path": "D:\\demo1\\tagmaai\\docs\\product\\TAGMA-PRD-v0.3.md",
+    "bytes": 50957,
+    "sha256": "6e6503391f70e3f2e53347890de6e7c9f7fd93cc393c68f7bba494ac4d67a6d6"
+  },
+  "evidence": [
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P2-S05-archive-regression.txt",
+      "bytes": 4361,
+      "sha256": "d6c024c883c5c582f8008c74d654e9751a2891e6db3f00007062884861916d02"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P2-S05-clippy-final.txt",
+      "bytes": 1329,
+      "sha256": "1fa992eb3bff94b7f2081ce6e609bd3aaf9bf527a814fb24c5d2965dbe4b585d"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P2-S05-clippy.txt",
+      "bytes": 2124,
+      "sha256": "37a54262b5ce9a8110bb92cfb5c7c1732993362ac5445a1d07990622a57f0d38"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P2-S05-record-final.txt",
+      "bytes": 1395,
+      "sha256": "4b6789c39e5544a947826383eba3f0076bb2e3994531a053f3d92bd51333c351"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P2-S05-record-first.txt",
+      "bytes": 2949,
+      "sha256": "d6dc914d3aee91e344e4e8356902f26c93bd9cb056d13ab70c0abcbed16eb8d0"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P2-S05-retention.json",
+      "bytes": 231,
+      "sha256": "6aa4021f78f4f36c4e7e43b111e06d73e66f69e7fb998185a39346d37d65ccaf"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P2-S05-space-after.json",
+      "bytes": 224,
+      "sha256": "d4178329f89fb9eb1a8314ab877dad7577cb51c9355751b0b9c831789788864b"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P2-S05-space-plan.json",
+      "bytes": 676,
+      "sha256": "48acff53baff5c2e211bd6f52096116f6b1137bf65dca2cdb7cc28d3515b1909"
+    }
+  ],
+  "distinctPassingTests": 18,
+  "notAccepted": [
+    "native drag",
+    "atomic installation",
+    "recovery",
+    "activation",
+    "A17",
+    "A18",
+    "A19",
+    "A20"
+  ]
+}

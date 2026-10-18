@@ -1,0 +1,12 @@
+{
+  "RecordedAtUtc": "2026-10-18T00:38:15.9720313Z",
+  "Target": "D:/demo1/tagmaai/target",
+  "TempRoot": "C:\\Users\\ai\\AppData\\Local\\Temp",
+  "EstimatedAdditionalPeakGiB": 0.1,
+  "CFreeBeforeGiB": 45.46,
+  "DFreeBeforeGiB": 18.31,
+  "Scope": "Replayable signed manifest record,exact-byte persistence tests,existing core targets only;no new dependency/schema/UI",
+  "Reuse": "Current P2 dependencies/profiles;no clone/environment/full bundle",
+  "Observation": "Capacity increased externally;no attribution to task cleanup,250 rejected files untouched",
+  "Constraint": "D still<20GiB;reuse/small checks;>1GiB work remains paused without separate peak plan"
+}

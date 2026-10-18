@@ -1,9 +1,74 @@
 use super::*;
 use ed25519_dalek::{Signature, VerifyingKey};
+use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 use std::collections::HashMap;
 
 pub const MANIFEST_SIGNATURE_DOMAIN: &[u8] = b"Tagma pack manifest v1\0";
+pub const MAX_SIGNED_MANIFEST_RECORD_BYTES: usize = MAX_MANIFEST_BYTES * 6 + 2048;
+
+/// On-disk public signature material, not a trust policy or an IPC frame. Read
+/// it with the byte bound and reverify against current trusted roots/time.
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[serde(deny_unknown_fields)]
+pub struct SignedManifestRecord {
+    pub record_version: u32,
+    pub key_id: String,
+    pub manifest_utf8: String,
+    pub signature_hex: String,
+}
+impl SignedManifestRecord {
+    pub fn read_from(input: impl std::io::Read) -> PackResult<Self> {
+        use std::io::Read;
+        let mut bytes = Vec::new();
+        input
+            .take(MAX_SIGNED_MANIFEST_RECORD_BYTES as u64 + 1)
+            .read_to_end(&mut bytes)
+            .map_err(|_| PackError::ReadFailed)?;
+        Self::parse(&bytes)
+    }
+    pub fn parse(bytes: &[u8]) -> PackResult<Self> {
+        if bytes.is_empty() || bytes.len() > MAX_SIGNED_MANIFEST_RECORD_BYTES {
+            return Err(PackError::InvalidManifest);
+        }
+        let record: Self = serde_json::from_slice(bytes).map_err(|_| PackError::InvalidManifest)?;
+        record.signature_bytes()?;
+        Ok(record)
+    }
+    fn signature_bytes(&self) -> PackResult<[u8; 64]> {
+        if self.record_version != 1 {
+            return Err(PackError::UnsupportedContract);
+        }
+        if !manifest::identifier(&self.key_id)
+            || self.manifest_utf8.is_empty()
+            || self.manifest_utf8.len() > MAX_MANIFEST_BYTES
+        {
+            return Err(PackError::InvalidManifest);
+        }
+        if self.signature_hex.len() != 128 {
+            return Err(PackError::InvalidSignature);
+        }
+        let nibble = |b: u8| -> PackResult<u8> {
+            match b {
+                b'0'..=b'9' => Ok(b - b'0'),
+                b'a'..=b'f' => Ok(b - b'a' + 10),
+                _ => Err(PackError::InvalidSignature),
+            }
+        };
+        let mut signature = [0; 64];
+        for (i, pair) in self
+            .signature_hex
+            .as_bytes()
+            .as_chunks::<2>()
+            .0
+            .iter()
+            .enumerate()
+        {
+            signature[i] = (nibble(pair[0])? << 4) | nibble(pair[1])?;
+        }
+        Ok(signature)
+    }
+}
 
 /// Supplied by a trusted application/release policy, never by a downloaded pack.
 /// No production keys are installed by this module; the default denies all.
@@ -30,6 +95,8 @@ pub struct VerifiedManifest {
     sha256: String,
     key_id: String,
     verified_ms: u64,
+    raw: Box<[u8]>,
+    signature: [u8; 64],
 }
 impl VerifiedManifest {
     pub fn manifest(&self) -> &PackManifest {
@@ -43,6 +110,16 @@ impl VerifiedManifest {
     }
     pub fn verified_ms(&self) -> u64 {
         self.verified_ms
+    }
+    pub fn signed_record(&self) -> SignedManifestRecord {
+        SignedManifestRecord {
+            record_version: 1,
+            key_id: self.key_id.clone(),
+            manifest_utf8: std::str::from_utf8(&self.raw)
+                .expect("verified JSON is UTF8")
+                .into(),
+            signature_hex: self.signature.iter().map(|b| format!("{b:02x}")).collect(),
+        }
     }
     pub fn artifact(&self, target: PackTarget) -> PackResult<&PackArtifact> {
         self.manifest
@@ -64,6 +141,19 @@ impl VerifiedManifest {
     }
 }
 impl PackTrustStore {
+    pub fn verify_record(
+        &self,
+        record: &SignedManifestRecord,
+        now_ms: u64,
+    ) -> PackResult<VerifiedManifest> {
+        let signature = record.signature_bytes()?;
+        self.verify(
+            &record.key_id,
+            record.manifest_utf8.as_bytes(),
+            &signature,
+            now_ms,
+        )
+    }
     pub fn new(roots: Vec<PackTrustRoot>) -> PackResult<Self> {
         if roots.len() > 16 {
             return Err(PackError::UntrustedPublisher);
@@ -130,6 +220,8 @@ impl PackTrustStore {
             sha256: format!("{:x}", Sha256::digest(bytes)),
             key_id: key_id.into(),
             verified_ms: now_ms,
+            raw: bytes.to_vec().into_boxed_slice(),
+            signature: signature.to_bytes(),
         })
     }
 }

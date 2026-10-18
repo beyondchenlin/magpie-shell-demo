@@ -14,7 +14,7 @@
   "NewWorktrees": 0,
   "NewEnvironments": 0,
   "Cleanup": "New fixture RAII only;rejected250 present/unchanged;no manual deletion",
-  "Constraint": "D<10GiB;>1GiB paused;no further closeout compilation;drive delta0.14 exceeds0.03 initial/0.08 reviewed and includes concurrent/cache/intermediate changes",
+  "Constraint": "During tests D<10GiB;late recorded snapshot recovered externally to12.73GiB.No task cleanup;no further closeout compilation.Original/reviewed disk delta estimates were exceeded and are not measured task peak.",
   "CurrentArtifacts": "Current modified deps logical53.53MiB/deduplicated allocated53.55MiB,not net growth or all drive usage",
   "Kept": "Current cache/dependencies/old evidence/denied files/installed dev.9/preview data and webview"
 }

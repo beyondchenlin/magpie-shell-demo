@@ -34,13 +34,13 @@
   "documents": [
     {
       "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\EXECUTION-STATUS.md",
-      "bytes": 41015,
-      "sha256": "4e501bb2d1a4a4b1c25e05a758c090ede65b44f0e4f1780a98d0a6a786ba4f69"
+      "bytes": 42080,
+      "sha256": "f07c390804916aa573765447a767c54d86b207e693ba69e9fa69255f17913a15"
     },
     {
       "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\P2-S04-IMPLICIT-DIRECTORY-BOUND.md",
-      "bytes": 4139,
-      "sha256": "b01c0f1f25e6981d73d02bdf4474112f1f6f86f0f03442208d9e9307b6f0bf54"
+      "bytes": 4557,
+      "sha256": "acf4f5c4ee04cc0fb8e4cf6c2b95c332de567b2293a1a30bca4f6e66ab875108"
     }
   ],
   "prd": {
@@ -86,8 +86,8 @@
     },
     {
       "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P2-S04-space-after.json",
-      "bytes": 772,
-      "sha256": "1ea1ccac6ef20f91dad6eedfbe3fce79388b56075af80f2fc539de5fe42a03ee"
+      "bytes": 807,
+      "sha256": "67a170c0dfec34fc9222b428029bead4927e7f6b0e0d5d27b33bb6be79d1e790"
     },
     {
       "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P2-S04-space-plan.json",
@@ -109,5 +109,6 @@
   },
   "scope": "Unique files/explicit+implicit directories within signed entry budget;consistent ASCII casing for every parent;actual exact7 success and2refusal before writes;control checked before output root",
   "space": "0.14GiB D change exceeds initial0.03/reviewed0.08;includes parallel/cache/intermediate unknowns,not measured task peak;no more closeout compilation;250 denied artifacts unchanged",
-  "preserved": "No GUI/install/activation/real key/service/new env/worktree/old cleanup;dev.9/data/webview/old evidence retained;drag unaccepted"
+  "preserved": "No GUI/install/activation/real key/service/new env/worktree/old cleanup;dev.9/data/webview/old evidence retained;drag unaccepted",
+  "capacityAddendum": "Late snapshot12.73GiB then13.47GiB outside task deletion;250 denied files unchanged;historical9.10GiB test observation retained,no net release claim."
 }

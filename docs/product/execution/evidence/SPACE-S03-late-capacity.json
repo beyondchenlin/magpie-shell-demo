@@ -1,0 +1,16 @@
+{
+  "RecordedAtUtc": "2026-10-18T00:32:43.5738152Z",
+  "Disks": [
+    {
+      "Name": "C",
+      "FreeGiB": 45.02
+    },
+    {
+      "Name": "D",
+      "FreeGiB": 13.47
+    }
+  ],
+  "NoTaskCleanup": "All250 rejected artifacts still present/unchanged;no same action retry",
+  "Observation": "Free capacity increased outside this task action;cause not established,do not attribute as task net release",
+  "Constraint": "Below20GiB still warn/reuse;>1GiB operations remain paused pending separate peak review;small cached source checks only"
+}

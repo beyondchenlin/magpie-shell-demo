@@ -1,0 +1,32 @@
+   Compiling tagma-core v0.2.0-dev.16 (D:\demo1\tagmaai\crates\tagma-core)
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+    Finished `test` profile [unoptimized] target(s) in 9.09s
+     Running tests\packs.rs (target\debug\deps\packs-f4f2b7b363cd1ef3.exe)
+
+running 3 tests
+test signed_record_encoding_and_reader_are_bounded_before_large_allocation ... ok
+Signed manifest actual disk roundtrip:original pretty UTF8/signature preserved,raw SHA unchanged after current-root reverify;reserialized JSON refused;record is public verification material,not an IPC frame/installed state
+test signed_record_actual_disk_roundtrip_preserves_original_utf8_and_spacing ... ok
+test signed_record_requires_current_trust_time_and_a_closed_schema ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 8 filtered out; finished in 0.06s
+
