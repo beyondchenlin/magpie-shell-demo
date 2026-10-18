@@ -24,11 +24,23 @@ Tagma changes:
   an interrupted removal. Release the file lock and retry uninstall, or restore
   the complete installation with the same installer. No success is reported for
   partially removed payloads; user-data removal is never reached on this failure.
+- Hold an exclusive byte-range lease on `.tagma-install.lock` while mutating the
+  installation. New Windows desktop/gateway processes take a shared lease before
+  configuration/IPC/bootstrap and retain it for their lifetime. Contention exits
+  the installer with1618; unknown acquisition failures with1603. Desktop refusal
+  stays visible and requires quit/reopen; standalone gateway refuses with16.
+  Concurrent installers cannot write the same installation. Success releases the
+  lease before launch; process exit also releases it on failure/interruption.
+  The zero-byte lock file is retained, including after uninstall, to preserve its
+  identity. Developer/unpacked binaries without the file retain their old flow.
 
 The user quits the desktop through its existing request-draining flow. A separate
 gateway must be stopped by its owner. This guard does **not** establish an atomic
-two-executable update transaction or prevent a new process starting after the
-check. Interrupted replacement and startup races remain release acceptance gates.
+two-executable update transaction or stop the OS from loading an EXE before its
+application-level lease check. Legacy processes do not honor this new barrier;
+Restart Manager and checked file operations remain necessary. The per-config
+migration lease remains separate; this is an installation-directory barrier.
+Interrupted replacement and cross-version startup races remain acceptance gates.
 No configuration database or credentials are touched by this guard.
 
 When upgrading Tauri, compare the pinned upstream template with the new one and

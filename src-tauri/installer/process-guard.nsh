@@ -5,6 +5,69 @@
 
 Var TagmaGuardError
 Var TagmaGuardMessage
+Var TagmaInstallationLease
+
+; Serialize mutating installers and cooperate with desktop/gateway shared leases.
+; The zero-byte marker is intentionally retained: unlinking a lock can let a
+; second participant lock a different file under the same name.
+!macro TagmaAcquireInstallationLease
+  Push $0
+  Push $1
+  Push $2
+  StrCpy $TagmaGuardError 1603
+  StrCpy $TagmaGuardMessage "Cannot acquire the Tagma update lock. No program files were changed. Check access to the installation folder and retry."
+  ClearErrors
+  CreateDirectory "$INSTDIR"
+  ${IfNot} ${Errors}
+    ; OPEN_ALWAYS, read/write, share read/write but never delete the lock identity.
+    System::Call 'kernel32::CreateFileW(w "$INSTDIR\.tagma-install.lock", i 0xC0000000, i 3, p 0, i 4, i 0x80, p 0) p .r0'
+    ${If} $0 != -1
+      ; A zeroed native OVERLAPPED, kept until this synchronous call completes.
+      System::Call '*(p 0, p 0, i 0, i 0, p 0) p .r1'
+      ${If} $1 != 0
+        ; LOCKFILE_EXCLUSIVE_LOCK | LOCKFILE_FAIL_IMMEDIATELY, full byte range.
+        System::Call 'kernel32::LockFileEx(p r0, i 3, i 0, i -1, i -1, p r1) i .r2 ?e'
+        Pop $TagmaGuardError
+        System::Free $1
+        ${If} $2 != 0
+          StrCpy $TagmaInstallationLease $0
+          StrCpy $TagmaGuardError 0
+        ${Else}
+          System::Call 'kernel32::CloseHandle(p r0)'
+          ${If} $TagmaGuardError = 33
+            StrCpy $TagmaGuardError 1618
+            StrCpy $TagmaGuardMessage "Tagma, its gateway, or another installer is using this installation. Quit Tagma through Settings, wait for the other operation to finish, then retry. No process was stopped."
+          ${Else}
+            StrCpy $TagmaGuardError 1603
+          ${EndIf}
+        ${EndIf}
+      ${Else}
+        System::Call 'kernel32::CloseHandle(p r0)'
+      ${EndIf}
+    ${EndIf}
+  ${EndIf}
+  Pop $2
+  Pop $1
+  Pop $0
+  ${If} $TagmaGuardError != 0
+    DetailPrint "$TagmaGuardMessage"
+    ${IfNot} ${Silent}
+    ${AndIf} $PassiveMode != 1
+      MessageBox MB_OK|MB_ICONEXCLAMATION "$TagmaGuardMessage"
+    ${EndIf}
+    SetErrorLevel $TagmaGuardError
+    Abort
+  ${EndIf}
+!macroend
+
+!macro TagmaReleaseInstallationLease
+  ${If} $TagmaInstallationLease != ""
+    ; Closing the non-inherited handle releases its byte-range lock, including
+    ; on error exits. The OS also releases it after an interrupted process.
+    System::Call 'kernel32::CloseHandle(p $TagmaInstallationLease)'
+    StrCpy $TagmaInstallationLease ""
+  ${EndIf}
+!macroend
 
 !macro TagmaCheckInstallProcesses directory
   Push $0

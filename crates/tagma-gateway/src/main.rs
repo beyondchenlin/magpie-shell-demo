@@ -59,6 +59,16 @@ struct Runtime {
 }
 
 fn main() {
+    // Hold the installed payload lease for the whole process, including stdin
+    // bootstrap. Independent gateways must obey the same update barrier.
+    let _installation = match tagma_runtime::installation::InstallationLease::current() {
+        Ok(lease) => lease,
+        Err(error) => std::process::exit(if error.code == ErrorCode::MaintenanceInProgress {
+            16
+        } else {
+            15
+        }),
+    };
     let args: Vec<_> = std::env::args_os().skip(1).collect();
     let managed = args.iter().any(|a| a == "--managed");
     let test_port_override =

@@ -12,6 +12,7 @@ mod chat;
 mod startup;
 
 struct Application {
+    installation: AppResult<tagma_runtime::installation::InstallationLease>,
     config: AppResult<ConfigService>,
     runtime: Option<Arc<GatewayManager>>,
     quitting: AtomicBool,
@@ -402,9 +403,13 @@ async fn diagnostics_view(
         max_log_files: tagma_core::diagnostics::MAX_LOG_FILES as u32,
         telemetry_enabled: false,
         recent_events: recent.unwrap_or_default(),
-        initialization_recovery: tagma_core::recovery::initialization_plan(directory)
-            .ok()
-            .flatten(),
+        initialization_recovery: if app.installation.is_ok() {
+            tagma_core::recovery::initialization_plan(directory)
+                .ok()
+                .flatten()
+        } else {
+            None
+        },
     })
 }
 #[tauri::command]
@@ -532,6 +537,7 @@ async fn recover_initialization(
     input: RecoverInitialization,
 ) -> AppResult<RecoveryOutcome> {
     local(&window)?;
+    app.installation.as_ref().map_err(Clone::clone)?;
     let directory = app
         .directory
         .as_ref()
@@ -584,6 +590,7 @@ fn tray(app: &tauri::App) -> bool {
 fn main() {
     tauri::Builder::default()
         .setup(|app| {
+            let installation = tagma_runtime::installation::InstallationLease::current();
             let directory = if cfg!(debug_assertions) {
                 std::env::var_os("TAGMA_TEST_CONFIG_DIR")
                     .map(std::path::PathBuf::from)
@@ -593,6 +600,7 @@ fn main() {
                 app.path().app_config_dir()
             };
             let runtime = directory.as_ref().ok().and_then(|directory| {
+                installation.as_ref().ok()?;
                 let executable = std::env::current_exe().ok()?;
                 let name = if cfg!(windows) {
                     "tagma-gateway.exe"
@@ -625,7 +633,9 @@ fn main() {
             {
                 window.set_title(&title)?;
             }
-            if let Some(directory) = &local_directory {
+            if installation.is_ok()
+                && let Some(directory) = &local_directory
+            {
                 let _ = tagma_core::diagnostics::record(
                     directory,
                     tagma_core::diagnostics::Component::Desktop,
@@ -637,6 +647,7 @@ fn main() {
             let config = directory
                 .map_err(|_| AppError::new(ErrorCode::StorageUnavailable))
                 .and_then(|directory| {
+                    installation.as_ref().map_err(Clone::clone)?;
                     // Synthetic debug fixtures explicitly initialize/clean credentials in their tests.
                     let initialize_token = !(cfg!(debug_assertions)
                         && std::env::var_os("TAGMA_TEST_CONFIG_DIR").is_some()
@@ -645,7 +656,9 @@ fn main() {
                 });
             // Configuration failures remain visible in the native window; never fake an empty success.
             let tray = tray(app);
-            if let (Some(directory), Err(error)) = (&local_directory, &config) {
+            if installation.is_ok()
+                && let (Some(directory), Err(error)) = (&local_directory, &config)
+            {
                 let _ = tagma_core::diagnostics::record(
                     directory,
                     tagma_core::diagnostics::Component::Desktop,
@@ -673,6 +686,7 @@ fn main() {
                 });
             }
             app.manage(Application {
+                installation,
                 config,
                 runtime,
                 quitting: AtomicBool::new(false),

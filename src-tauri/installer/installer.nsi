@@ -359,6 +359,7 @@ FunctionEnd
 ; Run before prerequisites as well as immediately before program writes.
 Section -TagmaProcessPreflight
   !insertmacro TagmaCheckInstallProcesses "$INSTDIR"
+  !insertmacro TagmaAcquireInstallationLease
 SectionEnd
 
 Section WebView2
@@ -562,6 +563,10 @@ Section Install
     !insertmacro NSIS_HOOK_POSTINSTALL
   !endif
 
+  ; .onInstSuccess runs when the wizard exits, after its Run checkbox. Release
+  ; once writes are complete so that the completion page cannot block startup.
+  !insertmacro TagmaReleaseInstallationLease
+
   ; Auto close this page for passive mode
   ${If} $PassiveMode = 1
     SetAutoClose true
@@ -569,6 +574,7 @@ Section Install
 SectionEnd
 
 Function .onInstSuccess
+  !insertmacro TagmaReleaseInstallationLease
   ; Check for `/R` flag only in silent and passive installers because
   ; GUI installer has a toggle for the user to (re)start the app
   ${If} $PassiveMode = 1
@@ -608,6 +614,7 @@ Section Uninstall
   !endif
 
   !insertmacro TagmaCheckInstallProcesses "$INSTDIR"
+  !insertmacro TagmaAcquireInstallationLease
 
   ; Keep the registration and recovery uninstaller until all payloads are gone.
   !insertmacro TagmaDeleteProgramFile "$INSTDIR\${MAINBINARYNAME}.exe"
@@ -714,12 +721,26 @@ Section Uninstall
     !insertmacro NSIS_HOOK_POSTUNINSTALL
   !endif
 
+  !insertmacro TagmaReleaseInstallationLease
+
   ; Auto close if passive mode or updating
   ${If} $PassiveMode = 1
   ${OrIf} $UpdateMode = 1
     SetAutoClose true
   ${EndIf}
 SectionEnd
+
+Function un.onUninstSuccess
+  !insertmacro TagmaReleaseInstallationLease
+FunctionEnd
+
+Function .onGUIEnd
+  !insertmacro TagmaReleaseInstallationLease
+FunctionEnd
+
+Function un.onGUIEnd
+  !insertmacro TagmaReleaseInstallationLease
+FunctionEnd
 
 Function RestorePreviousInstallLocation
   ReadRegStr $4 SHCTX "${MANUPRODUCTKEY}" ""

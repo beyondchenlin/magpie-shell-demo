@@ -76,7 +76,7 @@ const errors: Record<ErrorCode, [string, string]> = {
   STORAGE_UNAVAILABLE: ["本机配置存储不可用，未确认保存成功。请检查磁盘空间与权限。", "Local configuration storage is unavailable. Check disk space and permissions; save is not confirmed."],
   CREDENTIAL_STORE_UNAVAILABLE: ["凭据缺失或系统凭据库不可用。请检查密钥及系统凭据设施后重试，不会改用明文保存。", "The credential is missing or the system credential store is unavailable. Check the configured key and system credential store, then retry. No plaintext fallback is used."],
   INCOMPATIBLE_VERSION: ["程序、协议或配置结构版本不兼容。更新中断时，请退出所有 Tagma 入口，重新安装同一完整版本；较新配置需使用支持它的版本，勿强制降级。", "Incompatible application, protocol or schema version. After an interrupted update, quit all Tagma instances and reinstall the same complete version. Newer configuration requires a compatible version; do not force a downgrade."],
-  MAINTENANCE_IN_PROGRESS: ["配置正在维护或迁移，请完成维护后重试。", "Configuration maintenance is in progress. Complete it before retrying."],
+  MAINTENANCE_IN_PROGRESS: ["程序正在更新或配置正在维护。请退出此窗口，等待操作完成后重新打开 Tagma。", "An update or configuration maintenance is in progress. Quit this window, wait for it to finish, then reopen Tagma."],
   DESKTOP_REQUIRED: [zh.previewHint, en.previewHint],
   INTERNAL_ERROR: ["本机操作失败，请刷新并检查诊断。", "The local operation failed. Refresh and check diagnostics."],
   PORT_IN_USE: ["配置端口已被占用。请处理已知程序或显式修改端口；不会终止占用程序或自动换端口。", "The configured port is in use. Resolve the known owner or explicitly change the port."],
