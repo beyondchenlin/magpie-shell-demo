@@ -1,0 +1,30 @@
+   Compiling tagma-core v0.2.0-dev.17 (D:\demo1\tagmaai\crates\tagma-core)
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+    Finished `test` profile [unoptimized] target(s) in 5.61s
+     Running unittests src\lib.rs (target\debug\deps\tagma_core-7f427fb55b4240e5.exe)
+
+running 1 test
+Nine foreign/damaged format negatives refused before journal/backup/identity writes;all original SQLite bytes unchanged,no key operations
+test migrations::legacy_schema1::tests::foreign_or_damaged_owner_zero_stores_are_never_claimed ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 95 filtered out; finished in 0.10s
+

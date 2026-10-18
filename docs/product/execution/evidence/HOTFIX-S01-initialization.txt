@@ -1,0 +1,53 @@
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+    Finished `test` profile [unoptimized] target(s) in 0.30s
+     Running unittests src\lib.rs (target\debug\deps\tagma_core-7f427fb55b4240e5.exe)
+
+running 7 tests
+test initialization::tests::intent_crash_worker ... ignored, Child only: intent publication interruption
+
+thread 'initialization::tests::owned_staging_with_unexpected_tables_is_preserved' (56604) panicked at crates\tagma-core\src\initialization.rs:401:36:
+test interruption
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+running 1 test
+test initialization::tests::atomic_publication_never_replaces_a_newly_appeared_target ... ok
+
+running 1 test
+
+running 1 test
+
+running 1 test
+test initialization::tests::owned_staging_with_unexpected_tables_is_preserved ... ok
+test initialization::tests::crash_after_intent_file_creation_recovers ... ok
+test initialization::tests::crash_after_intent_sync_before_publication_recovers ... ok
+test initialization::tests::crash_after_partial_intent_write_recovers ... ok
+
+running 1 test
+
+running 1 test
+
+running 1 test
+Initialization recovery: committed owned schema7/8/9 staging publish after interruption; unknown staging protection remains enabled
+test initialization::tests::committed_owned_staging_for_catalog_and_security_schemas_can_finish_publication ... ok
+
+test result: ok. 6 passed; 0 failed; 1 ignored; 0 measured; 89 filtered out; finished in 0.09s
+

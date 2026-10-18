@@ -1,0 +1,41 @@
+   Compiling tagma-core v0.2.0-dev.16 (D:\demo1\tagmaai\crates\tagma-core)
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+    Finished `test` profile [unoptimized] target(s) in 8.31s
+     Running tests\startup_upgrade.rs (target\debug\deps\startup_upgrade-857cd0d6a4b7b488.exe)
+
+running 2 tests
+
+thread 'original_pre_identity_schema1_opens_through_real_config_service' (51672) panicked at crates\tagma-core\tests\startup_upgrade.rs:44:63:
+historical entrypoint must migrate without resetting data: AppError { code: IncompatibleVersion, retryable: false }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test original_pre_identity_schema1_opens_through_real_config_service ... FAILED
+Historical dev9/schema3 -> schema10 with original identity/raw JSON preserved;fresh actual initialize+view+token init also ready,no desktop/UI/system key access
+test dev9_schema3_and_fresh_directory_use_the_actual_startup_services ... ok
+
+failures:
+
+failures:
+    original_pre_identity_schema1_opens_through_real_config_service
+
+test result: FAILED. 1 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.16s
+
+error: test failed, to rerun pass `-p tagma-core --test startup_upgrade`

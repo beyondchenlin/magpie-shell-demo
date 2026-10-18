@@ -1,0 +1,7 @@
+{
+  "RecordedAtUtc": "2026-10-18T03:08:23.3972621Z",
+  "Version": "0.2.0-dev.17",
+  "ExitCode": 0,
+  "NoInstallerRun": true,
+  "Scope": "Build only;native validation will use isolated copy and synthetic data"
+}

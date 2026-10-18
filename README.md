@@ -1,4 +1,28 @@
-# Magpie Shell Demo
+# TagmaAI
+
+正式产品使用 React/CIS + Tauri 2 + Rust 独立网关。当前内部候选为 **0.2.0-dev.17**；P0 的原生保存、重启和自由拖动仍需完成实际验收，不能把构建成功当成可用性通过。进度以 [执行状态](docs/product/execution/EXECUTION-STATUS.md) 为准。
+
+## Tagma 开发与内部 Windows 构建
+
+复用项目 Node/npm、Rust（最低 1.98）、MSVC 和 WebView2 环境，保持 package-lock.json/Cargo.lock。安装依赖或全量构建前按本机磁盘规则检查空间。
+
+```powershell
+# 已有依赖可复用；仅首次或锁文件变化时 npm ci
+npm run tauri -- dev
+
+# 内部未签名 debug 候选，自动构建正式前端和独立 Rust sidecar
+npm run tauri -- build --debug --bundles nsis
+
+# 保存与进程恢复的受控检查，不替代原生 UI 验收
+cargo test --offline --locked -p tagma-core --test startup_upgrade --test save_restart
+cargo test --offline --locked -p tagma-gateway --test process_lifecycle save_while_stopped_is_durable_and_applied_only_after_restart -- --exact
+```
+
+安装包输出在 `target/debug/bundle/nsis/`。默认桌面启动使用应用配置目录；验收必须使用独占数据/WebView/端口的隔离实例，不拿用户资料做测试。`npm run dev:tagma` 只提供 Web 预览，不能代替原生配置保存。
+
+[Tagma Windows 工作流](.github/workflows/build-tagma-windows.yml) 仅手动运行，上传短期内部构建产物，不发布 GitHub Release；当前尚未在 CI 执行。项目定时任务保持暂停。旧 `dist:win` 和旧 Windows 工作流构建的是下面的 Electron 外观演示。
+
+## 历史 Magpie Shell Demo
 
 Magpie **桌面壳视觉复刻进行中**（假数据）。用于 PackGate 外观对标，**不是**官方 Magpie，也未接真实网关。
 
@@ -50,7 +74,7 @@ chmod +x Magpie-Shell-Demo-0.1.1.AppImage
 
 ### Tauri
 
-目标栈仍是 Tauri 2；构建环境缺 `libwebkit2gtk` 时用 Electron 包替代。
+这里的 Electron 包仅用于历史外观对标。正式 Tagma 构建使用上面的 Tauri 入口，缺少平台依赖时不能用 Electron 包代替交付。
 
 ## 技术
 

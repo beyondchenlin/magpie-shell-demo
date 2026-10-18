@@ -1,0 +1,21 @@
+{
+  "recordedAtUtc": "2026-10-18T04:37:32.392Z",
+  "request": "停止 TagmaAI 项目所有定时任务，恢复正式项目开发",
+  "project": "D:/demo1/tagmaai",
+  "automations": [
+    {
+      "id": "tagma-prd",
+      "status": "PAUSED",
+      "action": "automation_update confirmed PAUSED"
+    },
+    {
+      "id": "magpie-cis",
+      "status": "PAUSED",
+      "action": "already paused; kept unchanged"
+    }
+  ],
+  "windowsScheduledTaskMatches": 0,
+  "windowsMatchScope": "TaskName tagma/magpie; action execute/arguments/working directory tagmaai/tagma-prd/magpie-cis",
+  "unrelatedAutomationsChanged": false,
+  "runBindingNote": "RUN-BINDING.json is supervisor-owned and contains stale ACTIVE; actual automation status takes precedence"
+}

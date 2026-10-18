@@ -1,0 +1,68 @@
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+   Compiling tagma-gateway v0.2.0-dev.17 (D:\demo1\tagmaai\crates\tagma-gateway)
+error[E0369]: binary operation `==` cannot be applied to type `tagma_core::RuntimeState`
+   --> crates\tagma-gateway\tests\process_lifecycle.rs:552:9
+    |
+552 |         assert_eq!(stopped.state, RuntimeState::Stopped);
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |         |
+    |         tagma_core::RuntimeState
+    |         tagma_core::RuntimeState
+    |
+note: `tagma_core::RuntimeState` does not implement `PartialEq`
+   --> crates\tagma-core\src\contract.rs:210:1
+    |
+210 | pub enum RuntimeState {
+    | ^^^^^^^^^^^^^^^^^^^^^ `tagma_core::RuntimeState` is defined in another crate
+
+error[E0369]: binary operation `==` cannot be applied to type `tagma_core::RuntimeState`
+   --> crates\tagma-gateway\tests\process_lifecycle.rs:570:9
+    |
+570 |         assert_eq!(still_stopped.state, RuntimeState::Stopped);
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |         |
+    |         tagma_core::RuntimeState
+    |         tagma_core::RuntimeState
+    |
+note: `tagma_core::RuntimeState` does not implement `PartialEq`
+   --> crates\tagma-core\src\contract.rs:210:1
+    |
+210 | pub enum RuntimeState {
+    | ^^^^^^^^^^^^^^^^^^^^^ `tagma_core::RuntimeState` is defined in another crate
+
+error[E0369]: binary operation `==` cannot be applied to type `tagma_core::RuntimeState`
+   --> crates\tagma-gateway\tests\process_lifecycle.rs:573:9
+    |
+573 |         assert_eq!(second.state, RuntimeState::Running);
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |         |
+    |         tagma_core::RuntimeState
+    |         tagma_core::RuntimeState
+    |
+note: `tagma_core::RuntimeState` does not implement `PartialEq`
+   --> crates\tagma-core\src\contract.rs:210:1
+    |
+210 | pub enum RuntimeState {
+    | ^^^^^^^^^^^^^^^^^^^^^ `tagma_core::RuntimeState` is defined in another crate
+
+For more information about this error, try `rustc --explain E0369`.
+error: could not compile `tagma-gateway` (test "process_lifecycle") due to 3 previous errors

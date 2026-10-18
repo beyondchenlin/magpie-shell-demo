@@ -1,0 +1,32 @@
+   Compiling tagma-core v0.2.0-dev.16 (D:\demo1\tagmaai\crates\tagma-core)
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+    Finished `test` profile [unoptimized] target(s) in 7.19s
+     Running tests\startup_upgrade.rs (target\debug\deps\startup_upgrade-857cd0d6a4b7b488.exe)
+
+running 2 tests
+Exact7f5c5fb schema1/appID0 -> real ConfigService open/view/token init/reopen;original backups/snapshot0+1/provider/credential reference preserved,memory keys only
+test original_pre_identity_schema1_opens_through_real_config_service ... ok
+Historical dev9/schema3 -> schema10 with original identity/raw JSON preserved;fresh actual initialize+view+token init also ready,no desktop/UI/system key access
+test dev9_schema3_and_fresh_directory_use_the_actual_startup_services ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.46s
+

@@ -1,0 +1,20 @@
+{
+  "recordedAtUtc": "2026-10-18T05:58:05.629Z",
+  "frozenChanged": [
+    "crates/tagma-gateway/tests/process_lifecycle.rs"
+  ],
+  "runtimeSourceUnchanged": true,
+  "all304OriginalFilesReconstructFromBaseAndOverlay": true,
+  "packageSha256": "155c0f26ff3d5617867ca6ddcc6c1d1fcbf316ab33a241184c597dbcf022cc0c",
+  "independentNewTestsPassed": 3,
+  "ignoredWorkerNotCounted": true,
+  "clippyExit": 0,
+  "workflow": {
+    "yamlParsed": true,
+    "manualOnly": true,
+    "contents": "read",
+    "remoteRun": false
+  },
+  "nativeAcceptance": "blocked: capture timeout and unavailable input geometry",
+  "controllerRetained": true
+}

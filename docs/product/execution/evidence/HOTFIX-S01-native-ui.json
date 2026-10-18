@@ -1,0 +1,102 @@
+{
+  "recordedAtUtc": "2026-10-18T03:11:48.546Z",
+  "fixture": {
+    "recordedAtUtc": "2026-10-18T03:08:01.783Z",
+    "root": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-hotfix-s01-d01972fd-b495-478e-8b54-af7eedbbfe47",
+    "owner": "tagma-hotfix-s01/native/v1",
+    "port": 57772,
+    "launcher": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-hotfix-s01-d01972fd-b495-478e-8b54-af7eedbbfe47\\Tagma-Isolated-Launcher.exe",
+    "executable": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-hotfix-s01-d01972fd-b495-478e-8b54-af7eedbbfe47\\tagma-desktop.exe",
+    "data": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-hotfix-s01-d01972fd-b495-478e-8b54-af7eedbbfe47\\data",
+    "webview": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-hotfix-s01-d01972fd-b495-478e-8b54-af7eedbbfe47\\webview",
+    "errorData": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-hotfix-s01-d01972fd-b495-478e-8b54-af7eedbbfe47\\error-data",
+    "errorWebview": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-hotfix-s01-d01972fd-b495-478e-8b54-af7eedbbfe47\\error-webview",
+    "userInstalledPathExcluded": "C:/Users/ai/AppData/Local/Tagma",
+    "userPidExcluded": 53168,
+    "uiAuthorization": "Human explicitly allows only isolated test Tagma;no installed app/installer/user data interaction",
+    "keys": "No synthetic UI key creation;debug fixture skips token initialization;no API calls",
+    "cleanup": "Audit exact newly owned fixture paths/locks/reparse/process state before removal;preserve evidence;do not target user or250deniedfiles"
+  },
+  "events": [
+    {
+      "at": "2026-10-18T03:09:12.469Z",
+      "step": "initial schema1 migration",
+      "window": {
+        "app": "process:C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-hotfix-s01-d01972fd-b495-478e-8b54-af7eedbbfe47\\tagma-desktop.exe",
+        "id": 658154,
+        "title": "Tagma 隔离测试 dev17 升级恢复 d01972fd"
+      },
+      "accessibility": {
+        "document_text": "切换导航布局\n对话\n供应商\n队员市场\n用量\n刷新\n设置\n开始接入\n0 / 3\n连接一个供应商\n填写服务地址与凭据，安全保存在这台设备上。\n添加供应商\n配置模型 ID\n在供应商设置中，填写你希望使用的模型 ID。\n打开模型配置\n确认配置已经生效\n网关正在使用已保存的配置。\n查看网关\n网关\nhttp://127.0.0.1:57772/v1\n运行中\nApp 配置档案\nApp 档案共用已存凭据，也可设置独立的供应商顺序。队员在市场单独管理。\n详情\n队员市场\n研究队员。此 P0 切片尚不支持安装和执行。\n队员市场\n你的模型清单\n0\n还没有配置模型\n先连接第一个供应商，再添加它提供的模型 ID。\n这里列出已保存的配置，尚未检测上游可用性。\n已保存版本: 0 · 运行中版本: 0",
+        "focused_element": "14 文档 Tagma Value: http://tauri.localhost/tagma.html ID: RootWebArea",
+        "tree": "Window: \"Tagma 隔离测试 dev17 升级恢复 d01972fd\", App: tagma-desktop.exe.\n\t0 窗口 Tagma 隔离测试 dev17 升级恢复 d01972fd Secondary Actions: Raise\n\t\t1 窗格\n\t\t\t2 窗格 Tagma\n\t\t\t\t3 窗格 (disabled)\n\t\t\t\t4 区域 Tagma - Web 内容\n\t\t\t\t\t5 区域\n\t\t\t\t\t\t6 区域\n\t\t\t\t\t\t\t7 区域\n\t\t\t\t\t\t\t\t8 区域\n\t\t\t\t\t\t\t\t9 区域\n\t\t\t\t\t\t\t\t\t10 区域\n\t\t\t\t\t\t\t\t\t\t11 区域\n\t\t\t\t\t\t\t\t\t\t\t12 区域\n\t\t\t\t\t\t\t\t\t\t\t\t13 区域\n\t\t\t\t\t\t\t\t\t\t\t\t14 文档 Tagma Value: http://tauri.localhost/tagma.html ID: RootWebArea\n\t\t\t\t\t\t\t\t\t\t\t\t\t15 组 ID: root\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t16 标题\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t17 切换按钮 切换导航布局 ID: sideToggle\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t18 导航 Tagma ID: nav\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t19 按钮 对话\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t20 按钮 供应商\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t21 按钮 队员市场\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t22 按钮 用量\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t23 按钮 刷新 Description: 刷新 ID: sync\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t24 按钮 设置 Description: 设置 ID: prefs\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t25 主要\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t26 区域 开始接入\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t27 文本 开始接入\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t28 文本 0\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t29 文本 / 3\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t30 列表\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t31 列表项目 连接一个供应商填写服务地址与凭据，安全保存在这台设备上。添加供应商\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t32 文本 连接一个供应商\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t33 按钮 添加供应商\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t34 列表项目 配置模型 ID在供应商设置中，填写你希望使用的模型 ID。打开模型配置\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t35 文本 配置模型 ID\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t36 按钮 (disabled) 打开模型配置\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t37 列表项目 确认配置已经生效网关正在使用已保存的配置。查看网关\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t38 文本 确认配置已经生效\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t39 按钮 查看网关\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t40 文本 网关\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t41 文本 http://127.0.0.1:57772/v1\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t42 按钮 运行中\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t43 文本 App 配置档案\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t44 文本 App 档案共用已存凭据，也可设置独立的供应商顺序。队员在市场单独管理。\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t45 按钮 详情\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t46 文本 队员市场\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t47 文本 研究队员。此 P0 切片尚不支持安装和执行。\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t48 按钮 队员市场\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t49 文本 你的模型清单\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t50 文本 0\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t51 文本 还没有配置模型\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t52 文本 先连接第一个供应商，再添加它提供的模型 ID。\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t53 文本 这里列出已保存的配置，尚未检测上游可用性。\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t54 文本 已保存版本\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t55 文本 :\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t56 文本 0\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t57 文本 ·\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t58 文本 运行中版本\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t59 文本 :\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t60 文本 0\n\t\t\t\t\t\t\t\t61 区域\n\t\t\t\t\t\t62 区域\n\t\t\t\t\t\t63 区域\n\t\t64 标题栏 (settable, string) Value: Tagma 隔离测试 dev17 升级恢复 d01972fd\n\t\t\t65 菜单栏 系统 ID: MenuBar\n\t\t\t\t66 菜单项目 系统\n\t\t\t67 按钮 最小化\n\t\t\t68 按钮 最大化\n\t\t\t69 按钮 关闭\n\nDocument text: ```\n切换导航布局\n对话\n供应商\n队员市场\n用量\n刷新\n设置\n开始接入\n0 / 3\n连接一个供应商\n填写服务地址与凭据，安全保存在这台设备上。\n添加供应商\n配置模型 ID\n在供应商设置中，填写你希望使用的模型 ID。\n打开模型配置\n确认配置已经生效\n网关正在使用已保存的配置。\n查看网关\n网关\nhttp://127.0.0.1:57772/v1\n运行中\nApp 配置档案\nApp 档案共用已存凭据，也可设置独立的供应商顺序。队员在市场单独管理。\n详情\n队员市场\n研究队员。此 P0 切片尚不支持安装和执行。\n队员市场\n你的模型清单\n0\n还没有配置模型\n先连接第一个供应商，再添加它提供的模型 ID。\n这里列出已保存的配置，尚未检测上游可用性。\n已保存版本: 0 · 运行中版本: 0\n```"
+      }
+    },
+    {
+      "at": "2026-10-18T03:09:46.844Z",
+      "step": "screenshot recovery failed;fresh accessible state",
+      "screenshotErrors": [
+        "FrameArrived timed out: timed out waiting on channel",
+        "window capture timed out: timed out waiting on channel"
+      ],
+      "window": {
+        "app": "process:C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-hotfix-s01-d01972fd-b495-478e-8b54-af7eedbbfe47\\tagma-desktop.exe",
+        "id": 658154,
+        "title": "Tagma 隔离测试 dev17 升级恢复 d01972fd"
+      },
+      "accessibility": {
+        "document_text": "切换导航布局\n对话\n供应商\n队员市场\n用量\n刷新\n设置\n开始接入\n0 / 3\n连接一个供应商\n填写服务地址与凭据，安全保存在这台设备上。\n添加供应商\n配置模型 ID\n在供应商设置中，填写你希望使用的模型 ID。\n打开模型配置\n确认配置已经生效\n网关正在使用已保存的配置。\n查看网关\n网关\nhttp://127.0.0.1:57772/v1\n运行中\nApp 配置档案\nApp 档案共用已存凭据，也可设置独立的供应商顺序。队员在市场单独管理。\n详情\n队员市场\n研究队员。此 P0 切片尚不支持安装和执行。\n队员市场\n你的模型清单\n0\n还没有配置模型\n先连接第一个供应商，再添加它提供的模型 ID。\n这里列出已保存的配置，尚未检测上游可用性。\n已保存版本: 0 · 运行中版本: 0",
+        "focused_element": "14 文档 Tagma Value: http://tauri.localhost/tagma.html ID: RootWebArea",
+        "tree": "Window: \"Tagma 隔离测试 dev17 升级恢复 d01972fd\", App: tagma-desktop.exe.\n\t0 窗口 Tagma 隔离测试 dev17 升级恢复 d01972fd Secondary Actions: Raise\n\t\t1 窗格\n\t\t\t2 窗格 Tagma\n\t\t\t\t3 窗格 (disabled)\n\t\t\t\t4 区域 Tagma - Web 内容\n\t\t\t\t\t5 区域\n\t\t\t\t\t\t6 区域\n\t\t\t\t\t\t\t7 区域\n\t\t\t\t\t\t\t\t8 区域\n\t\t\t\t\t\t\t\t9 区域\n\t\t\t\t\t\t\t\t\t10 区域\n\t\t\t\t\t\t\t\t\t\t11 区域\n\t\t\t\t\t\t\t\t\t\t\t12 区域\n\t\t\t\t\t\t\t\t\t\t\t\t13 区域\n\t\t\t\t\t\t\t\t\t\t\t\t14 文档 Tagma Value: http://tauri.localhost/tagma.html ID: RootWebArea\n\t\t\t\t\t\t\t\t\t\t\t\t\t15 组 ID: root\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t16 标题\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t17 切换按钮 切换导航布局 ID: sideToggle\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t18 导航 Tagma ID: nav\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t19 按钮 对话\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t20 按钮 供应商\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t21 按钮 队员市场\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t22 按钮 用量\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t23 按钮 刷新 Description: 刷新 ID: sync\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t24 按钮 设置 Description: 设置 ID: prefs\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t25 主要\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t26 区域 开始接入\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t27 文本 开始接入\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t28 文本 0\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t29 文本 / 3\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t30 列表\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t31 列表项目 连接一个供应商填写服务地址与凭据，安全保存在这台设备上。添加供应商\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t32 文本 连接一个供应商\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t33 按钮 添加供应商\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t34 列表项目 配置模型 ID在供应商设置中，填写你希望使用的模型 ID。打开模型配置\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t35 文本 配置模型 ID\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t36 按钮 (disabled) 打开模型配置\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t37 列表项目 确认配置已经生效网关正在使用已保存的配置。查看网关\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t38 文本 确认配置已经生效\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t39 按钮 查看网关\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t40 文本 网关\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t41 文本 http://127.0.0.1:57772/v1\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t42 按钮 运行中\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t43 文本 App 配置档案\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t44 文本 App 档案共用已存凭据，也可设置独立的供应商顺序。队员在市场单独管理。\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t45 按钮 详情\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t46 文本 队员市场\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t47 文本 研究队员。此 P0 切片尚不支持安装和执行。\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t48 按钮 队员市场\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t49 文本 你的模型清单\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t50 文本 0\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t51 文本 还没有配置模型\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t52 文本 先连接第一个供应商，再添加它提供的模型 ID。\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t53 文本 这里列出已保存的配置，尚未检测上游可用性。\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t54 文本 已保存版本\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t55 文本 :\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t56 文本 0\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t57 文本 ·\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t58 文本 运行中版本\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t59 文本 :\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t60 文本 0\n\t\t\t\t\t\t\t\t61 区域\n\t\t\t\t\t\t62 区域\n\t\t\t\t\t\t63 区域\n\t\t64 标题栏 (settable, string) Value: Tagma 隔离测试 dev17 升级恢复 d01972fd\n\t\t\t65 菜单栏 系统 ID: MenuBar\n\t\t\t\t66 菜单项目 系统\n\t\t\t67 按钮 最小化\n\t\t\t68 按钮 最大化\n\t\t\t69 按钮 关闭\n\nDocument text: ```\n切换导航布局\n对话\n供应商\n队员市场\n用量\n刷新\n设置\n开始接入\n0 / 3\n连接一个供应商\n填写服务地址与凭据，安全保存在这台设备上。\n添加供应商\n配置模型 ID\n在供应商设置中，填写你希望使用的模型 ID。\n打开模型配置\n确认配置已经生效\n网关正在使用已保存的配置。\n查看网关\n网关\nhttp://127.0.0.1:57772/v1\n运行中\nApp 配置档案\nApp 档案共用已存凭据，也可设置独立的供应商顺序。队员在市场单独管理。\n详情\n队员市场\n研究队员。此 P0 切片尚不支持安装和执行。\n队员市场\n你的模型清单\n0\n还没有配置模型\n先连接第一个供应商，再添加它提供的模型 ID。\n这里列出已保存的配置，尚未检测上游可用性。\n已保存版本: 0 · 运行中版本: 0\n```"
+      }
+    },
+    {
+      "at": "2026-10-18T03:10:44.468Z",
+      "step": "keyboard focus recovery",
+      "window": {
+        "app": "process:C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-hotfix-s01-d01972fd-b495-478e-8b54-af7eedbbfe47\\tagma-desktop.exe",
+        "id": 658154,
+        "title": "Tagma 隔离测试 dev17 升级恢复 d01972fd"
+      },
+      "focused": "2 窗格 Tagma"
+    },
+    {
+      "at": "2026-10-18T03:10:50.782Z",
+      "step": "fresh selected-window add-provider click retry",
+      "error": "Error: coordinate input geometry is unavailable"
+    },
+    {
+      "at": "2026-10-18T03:11:25.646Z",
+      "step": "supported window Raise recovery",
+      "window": {
+        "app": "process:C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-hotfix-s01-d01972fd-b495-478e-8b54-af7eedbbfe47\\tagma-desktop.exe",
+        "id": 658154,
+        "title": "Tagma 隔离测试 dev17 升级恢复 d01972fd"
+      },
+      "focused": "2 窗格 Tagma"
+    },
+    {
+      "at": "2026-10-18T03:11:48.546Z",
+      "step": "bounded input diagnosis",
+      "window": {
+        "app": "process:C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-hotfix-s01-d01972fd-b495-478e-8b54-af7eedbbfe47\\tagma-desktop.exe",
+        "id": 658154,
+        "title": "Tagma 隔离测试 dev17 升级恢复 d01972fd"
+      },
+      "mouseInput": "two fresh element clicks returned coordinate input geometry is unavailable",
+      "keyboardInput": "Tab/Tab/F6 returned but no observed form/navigation/focus progress",
+      "accepted": [
+        "actual schema1 startup displayed ready home",
+        "no INCOMPATIBLE_VERSION/loading in observed document",
+        "isolated gateway57772 revision0"
+      ],
+      "notAccepted": [
+        "screenshots",
+        "provider add/edit/save",
+        "page navigation",
+        "GUI quit/reopen",
+        "physical drag"
+      ]
+    }
+  ]
+}

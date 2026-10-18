@@ -535,6 +535,65 @@ fn super_manager(path: &Path) -> GatewayManager {
 }
 
 #[tokio::test]
+async fn save_while_stopped_is_durable_and_applied_only_after_restart() {
+    let temp = tempfile::Builder::new()
+        .prefix("tagma-p0-stopped-save-")
+        .tempdir()
+        .unwrap();
+    let config = initialize(temp.path());
+    let manager = Arc::new(manager(temp.path()));
+    let worker_manager = Arc::clone(&manager);
+    let mut worker = tokio::spawn(async move {
+        let port = free_port();
+        let first = worker_manager.start(port).await.unwrap();
+        assert_eq!(first.effective_revision, Some(0));
+        worker_manager.stop().await.unwrap();
+        let stopped = worker_manager.status().await;
+        assert!(matches!(stopped.state, RuntimeState::Stopped));
+        assert_eq!(stopped.effective_revision, None);
+
+        let saved = config
+            .save_provider(SaveProvider {
+                protocol_version: PROTOCOL_VERSION,
+                expected_revision: 0,
+                id: None,
+                name: "saved while stopped".into(),
+                protocol: ProviderProtocol::OpenaiChatCompletions,
+                base_url: "https://stopped-save.invalid/v1".into(),
+                enabled: true,
+                models: vec!["offline-model".into()],
+                credential: None,
+            })
+            .unwrap();
+        assert_eq!(saved.desired_revision, 1);
+        let still_stopped = worker_manager.status().await;
+        assert!(matches!(still_stopped.state, RuntimeState::Stopped));
+        assert_eq!(still_stopped.effective_revision, None);
+        let second = worker_manager.start(port).await.unwrap();
+        assert!(matches!(second.state, RuntimeState::Running));
+        assert_eq!(second.effective_revision, Some(1));
+        assert_ne!(first.instance_id, second.instance_id);
+        assert_eq!(
+            config.view().unwrap().providers[0].name,
+            "saved while stopped"
+        );
+    });
+    // Always stop our own sidecar, including assertion failures and deadline expiry.
+    let outcome = tokio::time::timeout(Duration::from_secs(30), &mut worker).await;
+    if outcome.is_err() {
+        worker.abort();
+        let _ = worker.await;
+    }
+    let cleanup = manager.stop().await;
+    drop(manager);
+    cleanup.unwrap();
+    assert!(!temp.path().join("runtime.json").exists());
+    temp.close()
+        .expect("owned test files released after sidecar stop");
+    outcome.unwrap().unwrap();
+}
+
+#[tokio::test]
 async fn port_conflict_never_changes_port_or_kills_existing_listener() {
     let temp = tempfile::tempdir().unwrap();
     let _config = initialize(temp.path());

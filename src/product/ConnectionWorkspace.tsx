@@ -4,12 +4,13 @@ import type { ApplicationView } from "./contract";
 import type { ProductLanguage } from "./preferences";
 import { copy, errorCopy } from "./copy";
 
-export function ConnectionWorkspace({ view, busy, language, onAddProvider, onProviders, onGateway, onMarket }: {
+export function ConnectionWorkspace({ view, busy, language, configurationError, onAddProvider, onProviders, onGateway, onMarket }: {
   view: ApplicationView | null; busy: boolean; language: ProductLanguage;
+  configurationError?: unknown;
   onAddProvider: () => void; onProviders: () => void; onGateway: () => void; onMarket: () => void;
 }) {
   const c = copy(language);
-  if (!view) return <section><p role="status">{c.loading}</p></section>;
+  if (!view) return <section aria-label={c.setupTitle}><p role="status">{busy ? c.loading : configurationError != null ? c.configurationUnavailable : c.previewHint}</p></section>;
   const providers=view.config.providers;
   const enabled=providers.filter(provider=>provider.enabled);
   const models=enabled.flatMap(provider=>provider.models.map(model=>({id:`${provider.id}/${model}`,name:model,provider:provider.name})));

@@ -1,0 +1,44 @@
+{
+  "recordedAtUtc": "2026-10-18T03:24:08Z",
+  "status": "not_fixed",
+  "scope": "isolated Tagma test instances only; no installed app or real user data actions",
+  "observations": {
+    "windowsSession": {"id": 1, "state": "Active", "type": "console", "dwmSameSession": true},
+    "display": {"gpu": "NVIDIA GeForce RTX 4090", "status": "OK", "resolution": "3840x2160", "additionalAdapter": "GameViewer Virtual Display Adapter", "adapterCausality": "not established"},
+    "priorWindowIds": [658154, 790362],
+    "priorWindowIdsReturnedNow": false,
+    "freshOwnedLauncher": "C:/Users/ai/AppData/Local/Temp/tagma-hotfix-s01-d01972fd-b495-478e-8b54-af7eedbbfe47/Tagma-Isolated-Launcher.exe",
+    "freshWindow": {"id": 135204, "title": "Tagma 隔离测试 dev17 升级恢复 d01972fd"},
+    "freshWindowScreenshotError": "FrameArrived timed out: timed out waiting on channel",
+    "rebindRetry": "window id 135204 was not found",
+    "freshProcess": {"pid": 62452, "responding": true, "windowTitleLater": ""},
+    "priorClickError": "coordinate input geometry is unavailable",
+    "ownedAppLog": "desktop attached revision 0; no startup error in the bounded log inspected",
+    "codeFinding": "Tagma can hide its window and keep running when CloseRequested occurs with tray enabled; no evidence establishes that this event caused the observed disappearance"
+  },
+  "launcherAudit": {
+    "scope": "read-only owned source, retained build evidence, PE headers and owned test logs; no UI input or relaunch",
+    "source": "scripts/fixtures/isolated-tagma-launcher.rs",
+    "sourceBehavior": "GUI subsystem; validate owned root; spawn adjacent tagma-desktop.exe with isolated paths and title; return immediately",
+    "creationFlag": "0x08000000 CREATE_NO_WINDOW",
+    "explicitShowWindowHide": false,
+    "launcherTimeoutOrChildKill": false,
+    "actualPeSubsystem": {"Tagma-Isolated-Launcher.exe": 2, "tagma-desktop.exe": 2},
+    "flagSemantics": "Microsoft documents CREATE_NO_WINDOW as ignored for non-console applications; the measured child is a GUI application",
+    "reference": "https://learn.microsoft.com/en-us/windows/win32/procthread/process-creation-flags",
+    "windowConfig": "main window centered, 660x600; no explicit visible=false",
+    "closeBehavior": "main.rs hides the window on CloseRequested only if tray creation succeeded; the launcher itself contains no hide operation",
+    "closeEventEvidence": "retained structured logs do not record window-close/hide events; absence cannot establish whether CloseRequested occurred",
+    "conclusion": "CREATE_NO_WINDOW directly hiding the GUI is not supported by source, measured PE headers or documented flag semantics; actual capture-timeout cause remains undetermined"
+  },
+  "successCriteria": {"screenshot": false, "verifiedMouseInput": false, "uiAcceptance": false},
+  "recovery": {
+    "alreadyAttemptedEarlier": ["fresh returned-window binding", "activation", "node kernel reset and documented Sky initialization"],
+    "thisAttempt": ["read-only session and display diagnostics", "launch existing owned fixture once", "fresh screenshot request", "fresh selection/rebind attempt"],
+    "stoppedReason": "bounded documented recovery exhausted; selected window no longer targetable",
+    "noActions": ["no helper executable search or launch", "no custom control protocol", "no driver/service/session restart", "no security or privacy changes", "no real user Tagma interaction"],
+    "rootCause": "undetermined beyond capture failure and later target-window disappearance",
+    "nextCondition": "visible isolated test window in active session; if capture failure persists, manual Codex host restart is a diagnostic step, not a verified fix"
+  },
+  "retained": "existing owned fixture root, its data and all prior evidence; no cleanup performed"
+}

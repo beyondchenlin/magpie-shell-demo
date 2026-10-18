@@ -3,7 +3,7 @@ members = ["crates/tagma-core", "crates/tagma-runtime", "crates/tagma-gateway", 
 resolver = "2"
 
 [workspace.package]
-version = "0.2.0-dev.16"
+version = "0.2.0-dev.17"
 edition = "2024"
 rust-version = "1.98"
 license = "MIT"

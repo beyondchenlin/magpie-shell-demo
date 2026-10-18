@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "project_path": "D:/demo1/tagmaai",
+  "project_id": "9f7aec42-d97b-4f97-9f93-63c416725391",
+  "executor_thread_id": "01a1485d-4155-7a70-a9cc-f7246d9f1531",
+  "executor_title": "Tagma PRD 实施：Tauri 与 Rust sidecar",
+  "supervisor_thread_id": "01a14801-7a26-7240-a7e0-bf6905dacff1",
+  "host_id": "local",
+  "automation_id": "tagma-prd",
+  "automation_status": "PAUSED",
+  "automation_status_verified_at": "2026-10-18",
+  "automation_status_note": "Human requested all project schedules remain paused; tagma-prd and magpie-cis both verified PAUSED. Executor and supervisor idle before this metadata correction; neither was messaged or resumed.",
+  "interval_minutes": 30,
+  "prd_sha256": "6e6503391f70e3f2e53347890de6e7c9f7fd93cc393c68f7bba494ac4d67a6d6",
+  "scope": "P0-P3 and applicable real-chat slice; full Pi/P4 deferred",
+  "created_at": "2026-10-17T05:40:08.112Z"
+}

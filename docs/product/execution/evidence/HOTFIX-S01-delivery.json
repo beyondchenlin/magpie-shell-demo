@@ -1,0 +1,52 @@
+{
+  "recordedAtUtc": "2026-10-18T04:36:53.099Z",
+  "version": "0.2.0-dev.17",
+  "sourceHead": "7485c244e1b59a14531fadab3c0ca5564d482822",
+  "dirty": true,
+  "sourceFreezePhase": "Frozen during build,before any native test;not a claim of pre-command snapshot",
+  "sourceFreezeAggregate": "d9791a60f6fd051584a9bc548f8a0d7595810b152ba0bbaf537b8a459edafb30",
+  "sourceFilesRechecked": 304,
+  "sourceMismatches": [],
+  "installer": {
+    "path": "D:\\demo1\\tagmaai\\target\\debug\\bundle\\nsis\\Tagma_0.2.0-dev.17_x64-setup.exe",
+    "machine": 332,
+    "subsystem": 2,
+    "sha256": "155c0f26ff3d5617867ca6ddcc6c1d1fcbf316ab33a241184c597dbcf022cc0c",
+    "bytes": 6629799,
+    "authenticode": "NotSigned"
+  },
+  "host": {
+    "machine": 34404,
+    "subsystem": 2,
+    "sha256": "73dd93f2ec85df0473c9b8c251b79e233c04a675d5a69083722ab200caa5320e",
+    "bytes": 20247552,
+    "sourceSha256": "f4697cf462e705c258b60c9bf1a3269a0f960be5559e2e4d2d21bf22f9464a21",
+    "bundleMarkerOffset": 15372680,
+    "changedByteOffsets": [
+      15372704,
+      15372705,
+      15372706
+    ],
+    "expectedMarkerPatchFullFileMatch": true
+  },
+  "gateway": {
+    "machine": 34404,
+    "subsystem": 2,
+    "sha256": "e8d0ab53e4a5c92e33fa98fc9e0648a94cfcdb577b80a9dd77f76f0919e0e67a",
+    "bytes": 10101760,
+    "sourceSha256": "e8d0ab53e4a5c92e33fa98fc9e0648a94cfcdb577b80a9dd77f76f0919e0e67a",
+    "fullFileMatch": true
+  },
+  "nativeAcceptance": {
+    "initialIsolatedReadyObserved": true,
+    "savePageRestartVerified": 0,
+    "fullAcceptance": false
+  },
+  "noExecutablesRun": true,
+  "noUnpackDirectoryCreated": true,
+  "delivery": {
+    "path": "D:\\demo1\\tagmaai-deliveries\\0.2.0-dev.17\\Tagma_0.2.0-dev.17_x64-setup.exe",
+    "sha256": "155c0f26ff3d5617867ca6ddcc6c1d1fcbf316ab33a241184c597dbcf022cc0c",
+    "bytes": 6629799
+  }
+}

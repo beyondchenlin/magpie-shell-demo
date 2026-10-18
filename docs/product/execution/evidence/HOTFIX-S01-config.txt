@@ -1,0 +1,41 @@
+   Compiling tagma-core v0.2.0-dev.17 (D:\demo1\tagmaai\crates\tagma-core)
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+    Finished `test` profile [unoptimized] target(s) in 5.47s
+     Running tests\config_service.rs (target\debug\deps\config_service-7c55c5929a5134c9.exe)
+
+running 13 tests
+test credential_crash_worker ... ignored, Child fixture only: invoked by process_crash_after_system_credential_set_recovers
+test process_crash_after_system_credential_set_recovers ... ignored, Explicit real-process + OS credential-store integration; synthetic secret with exact journal-owned cleanup
+test system_credential_store_round_trip ... ignored, Explicit local OS credential-store integration; synthetic secret only, exact owned reference cleaned by Drop
+test stale_invalid_and_global_profile_edits_never_create_revisions ... ok
+test invalid_urls_duplicate_models_protocol_and_secret_are_rejected_without_writes ... ok
+test stale_editor_cannot_overwrite_other_entrypoint_or_create_a_secret ... ok
+test app_profiles_reference_credentials_and_keep_global_and_override_orders_independent ... ok
+test future_schema_is_not_modified_and_maintenance_lock_blocks_entrypoints ... ok
+test credential_lock_and_sqlite_failure_do_not_report_success_or_leave_plaintext ... ok
+test recovery_only_deletes_journal_owned_unreferenced_secrets_and_retries_cleanup ... ok
+test crud_reopen_and_reorder_share_one_transactional_service ... ok
+test unavailable_token_store_does_not_commit_gateway_or_leave_plaintext ... ok
+test gateway_settings_and_token_are_transactional_redacted_and_not_recreated_on_reopen ... ok
+
+test result: ok. 10 passed; 0 failed; 3 ignored; 0 measured; 0 filtered out; finished in 0.06s
+

@@ -1,0 +1,17 @@
+{
+  "RecordedAtUtc": "2026-10-18T02:40:44.3071185Z",
+  "Request": "Fix observed dev16 startup INCOMPATIBLE_VERSION,keep user data,deliver dev17;P2 expansion paused",
+  "Targets": [
+    "D:/demo1/tagmaai/target",
+    "C:/Users/ai/AppData/Local/Temp/tagma-startup-upgrade-*",
+    "D:/demo1/tagmaai-deliveries/0.2.0-dev.17"
+  ],
+  "CFreeBeforeGiB": 46.77,
+  "DFreeBeforeGiB": 36.17,
+  "EstimatedAdditionalPeakGiB": 2.0,
+  "EstimatedTempPeakGiB": 0.1,
+  "MinimumMarginGiB": 10,
+  "Reuse": "Existing target/debug,node_modules,Cargo/NSIS cache and one working tree",
+  "Preservation": "User databases read-only metadata,never copy/reset/migrate via agent;fixture credentials memory-only;no installer/window use;250 denied files untouched",
+  "KnownCause": "Installed host/sidecar match dev16;Roaming default original schema1 appID0 is rejected,preview separate schema3"
+}

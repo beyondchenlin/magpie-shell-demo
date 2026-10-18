@@ -1,0 +1,33 @@
+{
+  "recordedAt": "2026-10-18T05:55:53.332Z",
+  "window": {
+    "app": "process:C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-hotfix-s01-d01972fd-b495-478e-8b54-af7eedbbfe47\\tagma-desktop.exe",
+    "id": 69124,
+    "title": "Tagma 隔离测试 dev17 升级恢复 d01972fd"
+  },
+  "controllerRetained": true,
+  "sessionReset": false,
+  "windowClosed": false,
+  "addProvider": {
+    "at": "2026-10-18T05:55:11.235Z",
+    "window": {
+      "app": "process:C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-hotfix-s01-d01972fd-b495-478e-8b54-af7eedbbfe47\\tagma-desktop.exe",
+      "id": 69124,
+      "title": "Tagma 隔离测试 dev17 升级恢复 d01972fd"
+    },
+    "element_index": 66,
+    "label": "添加供应商",
+    "error": "Error: coordinate input geometry is unavailable",
+    "after": {
+      "document_text": "切换导航布局\n对话\n供应商\n队员市场\n用量\n刷新\n设置\n供应商\n添加供应商\n尚未配置供应商\n添加自己的供应商。配置保存在本机，API Key 使用系统凭据库。\n检测与模型目录\n只手动请求 GET /models，不生成内容。目录与推理事实分开；没有合适端点时，需要按预算手动试调用。\n安全撤销\n安全修订与运行确认\n尚无撤销记录。\n0 / 0\nApp 配置档案\n添加 App 档案\n档案引用供应商并共用已存凭据。独立排序不会修改全局顺序。\n自动选脑顺序来源\n默认使用全局供应商及模型顺序。明确不使用全局序时，在此选择一个默认 App；没有近期可用模型时直接拒绝调用。\n选择自动选脑顺序来源\n全局默认顺序\n跟随全局顺序\n未选择供应商\nOpenAI Chat Completions · 文本对话 · OpenAI 兼容子集\n网关\n已保存版本: 0 · 运行中版本: 0",
+      "focused_element": "8 窗格 Tagma",
+      "tree": "Window: \"Tagma 隔离测试 dev17 升级恢复 d01972fd\", App: tagma-desktop.exe.\n\t0 窗口 Tagma 隔离测试 dev17 升级恢复 d01972fd Secondary Actions: Raise\n\t\t1 窗格\n\t\t\t8 窗格 Tagma\n\t\t\t\t15 窗格 (disabled)\n\t\t\t\t9 区域 Tagma - Web 内容\n\t\t\t\t\t10 区域\n\t\t\t\t\t\t11 区域\n\t\t\t\t\t\t12 区域\n\t\t\t\t\t\t\t13 区域\n\t\t\t\t\t\t\t\t16 文档 Tagma Value: http://tauri.localhost/tagma.html ID: RootWebArea\n\t\t\t\t\t\t\t\t\t17 组 ID: root\n\t\t\t\t\t\t\t\t\t\t18 标题\n\t\t\t\t\t\t\t\t\t\t\t19 切换按钮 切换导航布局 ID: sideToggle\n\t\t\t\t\t\t\t\t\t\t\t20 导航 Tagma ID: nav\n\t\t\t\t\t\t\t\t\t\t\t\t21 按钮 对话\n\t\t\t\t\t\t\t\t\t\t\t\t22 按钮 供应商\n\t\t\t\t\t\t\t\t\t\t\t\t23 按钮 队员市场\n\t\t\t\t\t\t\t\t\t\t\t\t24 按钮 用量\n\t\t\t\t\t\t\t\t\t\t\t25 按钮 刷新 Description: 刷新 ID: sync\n\t\t\t\t\t\t\t\t\t\t\t26 按钮 设置 Description: 设置 ID: prefs\n\t\t\t\t\t\t\t\t\t\t27 主要\n\t\t\t\t\t\t\t\t\t\t\t65 标题 供应商\n\t\t\t\t\t\t\t\t\t\t\t66 按钮 添加供应商\n\t\t\t\t\t\t\t\t\t\t\t67 标题 尚未配置供应商\n\t\t\t\t\t\t\t\t\t\t\t68 文本 添加自己的供应商。配置保存在本机，API Key 使用系统凭据库。\n\t\t\t\t\t\t\t\t\t\t\t69 区域 检测与模型目录\n\t\t\t\t\t\t\t\t\t\t\t\t70 标题 检测与模型目录\n\t\t\t\t\t\t\t\t\t\t\t\t71 文本 只手动请求 GET /models，不生成内容。目录与推理事实分开；没有合适端点时，需要按预算手动试调用。\n\t\t\t\t\t\t\t\t\t\t\t72 区域 安全撤销\n\t\t\t\t\t\t\t\t\t\t\t\t73 标题 安全撤销\n\t\t\t\t\t\t\t\t\t\t\t\t74 文本 安全修订与运行确认\n\t\t\t\t\t\t\t\t\t\t\t\t75 文本 尚无撤销记录。\n\t\t\t\t\t\t\t\t\t\t\t\t76 文本 0\n\t\t\t\t\t\t\t\t\t\t\t\t77 文本 /\n\t\t\t\t\t\t\t\t\t\t\t\t78 文本 0\n\t\t\t\t\t\t\t\t\t\t\t79 组 App 配置档案\n\t\t\t\t\t\t\t\t\t\t\t\t80 标题 App 配置档案\n\t\t\t\t\t\t\t\t\t\t\t\t81 按钮 添加 App 档案\n\t\t\t\t\t\t\t\t\t\t\t\t82 文本 档案引用供应商并共用已存凭据。独立排序不会修改全局顺序。\n\t\t\t\t\t\t\t\t\t\t\t\t83 文本 自动选脑顺序来源\n\t\t\t\t\t\t\t\t\t\t\t\t84 文本 默认使用全局供应商及模型顺序。明确不使用全局序时，在此选择一个默认 App；没有近期可用模型时直接拒绝调用。\n\t\t\t\t\t\t\t\t\t\t\t\t85 按钮 选择自动选脑顺序来源\n\t\t\t\t\t\t\t\t\t\t\t\t86 文本 全局默认顺序\n\t\t\t\t\t\t\t\t\t\t\t\t87 文本 跟随全局顺序\n\t\t\t\t\t\t\t\t\t\t\t\t88 文本 未选择供应商\n\t\t\t\t\t\t\t\t\t\t\t89 文本 OpenAI Chat Completions\n\t\t\t\t\t\t\t\t\t\t\t90 文本 ·\n\t\t\t\t\t\t\t\t\t\t\t91 文本 文本对话 · OpenAI 兼容子集\n\t\t\t\t\t\t\t\t\t\t\t92 按钮 网关\n\t\t\t\t\t\t\t\t\t\t\t31 文本 已保存版本\n\t\t\t\t\t\t\t\t\t\t\t32 文本 :\n\t\t\t\t\t\t\t\t\t\t\t33 文本 0\n\t\t\t\t\t\t\t\t\t\t\t34 文本 ·\n\t\t\t\t\t\t\t\t\t\t\t35 文本 运行中版本\n\t\t\t\t\t\t\t\t\t\t\t36 文本 :\n\t\t\t\t\t\t\t\t\t\t\t37 文本 0\n\t\t\t\t\t\t\t\t14 区域\n\t\t2 标题栏 (settable, string) Value: Tagma 隔离测试 dev17 升级恢复 d01972fd\n\t\t\t3 菜单栏 系统 ID: MenuBar\n\t\t\t\t103 菜单项目 系统\n\t\t\t5 按钮 最小化\n\t\t\t6 按钮 最大化\n\t\t\t7 按钮 关闭\n\nDocument text: ```\n切换导航布局\n对话\n供应商\n队员市场\n用量\n刷新\n设置\n供应商\n添加供应商\n尚未配置供应商\n添加自己的供应商。配置保存在本机，API Key 使用系统凭据库。\n检测与模型目录\n只手动请求 GET /models，不生成内容。目录与推理事实分开；没有合适端点时，需要按预算手动试调用。\n安全撤销\n安全修订与运行确认\n尚无撤销记录。\n0 / 0\nApp 配置档案\n添加 App 档案\n档案引用供应商并共用已存凭据。独立排序不会修改全局顺序。\n自动选脑顺序来源\n默认使用全局供应商及模型顺序。明确不使用全局序时，在此选择一个默认 App；没有近期可用模型时直接拒绝调用。\n选择自动选脑顺序来源\n全局默认顺序\n跟随全局顺序\n未选择供应商\nOpenAI Chat Completions · 文本对话 · OpenAI 兼容子集\n网关\n已保存版本: 0 · 运行中版本: 0\n```"
+    }
+  },
+  "screenshotError": "window capture timed out: timed out waiting on channel",
+  "secondaryRaise": "returned; focus remained pane Tagma",
+  "systemMenuShortcut": "Alt_L+space returned; immediate accessibility null, later same provider list",
+  "nativeSavePassed": false,
+  "nativeRestartPassed": false,
+  "physicalDragPassed": false
+}

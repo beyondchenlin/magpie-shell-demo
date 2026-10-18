@@ -1,0 +1,64 @@
+   Compiling tagma-core v0.2.0-dev.17 (D:\demo1\tagmaai\crates\tagma-core)
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+    Finished `test` profile [unoptimized] target(s) in 5.65s
+     Running unittests src\lib.rs (target\debug\deps\tagma_core-7f427fb55b4240e5.exe)
+
+running 15 tests
+test migrations::legacy_schema1::tests::crash_worker ... ignored, only explicit parent-owned crash fixture
+test migrations::tests::migration_crash_worker ... ignored, Child only: real migration interruption
+
+running 1 test
+
+running 1 test
+A11 schema7->8: recoverable source7 backup, unchanged business snapshot/revision, empty security head and indexed revocation ledger verified
+test migrations::tests::schema_seven_security_upgrade_keeps_snapshot_bytes_and_starts_with_empty_ledger ... ok
+
+thread 'migrations::legacy_schema1::tests::foreign_or_damaged_owner_zero_stores_are_never_claimed' (47756) panicked at crates\tagma-core\src\migrations\legacy_schema1.rs:177:26:
+called `Result::unwrap()` on an `Err` value: SqliteFailure(Error { code: ConstraintViolation, extended_code: 787 }, Some("FOREIGN KEY constraint failed"))
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test migrations::legacy_schema1::tests::foreign_or_damaged_owner_zero_stores_are_never_claimed ... FAILED
+Soft budget schema8->9:consistent source8 backup and original revision0 bytes preserved;default empty;only new revision1 contains a soft rule
+test migrations::tests::schema_eight_upgrade_preserves_historical_json_and_adds_soft_rules_only_in_new_revisions ... ok
+A08 schema6->7: catalog table created, source6 backup and config revision preserved
+test migrations::tests::schema_three_team_upgrade_preserves_bytes_and_retains_schema_three_backup ... ok
+test migrations::tests::schema_six_catalog_upgrade_retains_a_recoverable_backup_and_revision ... ok
+A14 schema5->10: backup includes health, original snapshot bytes and config revision preserved
+test migrations::tests::schema_two_profiles_and_config_identity_survive_gateway_contract_upgrade ... ok
+test migrations::tests::backup_includes_committed_wal_and_historical_snapshot_bytes_are_unchanged ... ok
+test migrations::tests::schema_five_upgrade_backs_up_health_and_preserves_original_snapshot_bytes ... ok
+
+running 1 test
+test migrations::tests::failure_after_backup_keeps_original_schema_and_retry_uses_the_owned_backup ... ok
+test migrations::tests::runtime_reader_never_migrates_and_writer_requires_all_live_readers_to_exit ... ok
+test migrations::tests::real_process_exit_after_backup_recovers_without_losing_original_revision ... ok
+test migrations::tests::legacy_pending_one_to_two_journal_resumes_before_following_transition ... ok
+Real exit93 after verified original-owner0 backup and exit94 after atomic identity/schema2 commit both resume through ConfigService to10;original backup/JSON retained,new identity stable,no repeated migration
+test migrations::legacy_schema1::tests::original_identity_upgrade_survives_real_exit_before_and_after_commit ... ok
+
+failures:
+
+failures:
+    migrations::legacy_schema1::tests::foreign_or_damaged_owner_zero_stores_are_never_claimed
+
+test result: FAILED. 12 passed; 1 failed; 2 ignored; 0 measured; 81 filtered out; finished in 0.44s
+
+error: test failed, to rerun pass `-p tagma-core --lib`

@@ -1,0 +1,24 @@
+{
+  "manualDeletionPerformed": false,
+  "recordedAtUtc": "2026-10-18T05:58:23.5241507Z",
+  "existingNativeFixtureRetained": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-hotfix-s01-d01972fd-b495-478e-8b54-af7eedbbfe47",
+  "newWorktrees": 0,
+  "sourceOverlayBytes": 1938697,
+  "space": [
+    {
+      "freeBytes": 44666351616,
+      "drive": "C",
+      "freeGiB": 41.6
+    },
+    {
+      "freeBytes": 35971842048,
+      "drive": "D",
+      "freeGiB": 33.5
+    }
+  ],
+  "newTestDirectoriesRemaining": [],
+  "evidenceLogicalBytes": 14906.0,
+  "archiveOwner": "Tagma P0 execution",
+  "archiveReviewDate": "2026-10-25",
+  "physicalNetReclaimed": "not measured; no claim based on drive delta"
+}

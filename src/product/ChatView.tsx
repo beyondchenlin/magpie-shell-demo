@@ -39,7 +39,7 @@ function failure(code: string, language: ProductLanguage) {
   return errorCopy({ code }, language);
 }
 
-export function ChatView(props: { view: ApplicationView | null; busy: boolean; language: ProductLanguage; active: boolean; onAddProvider: () => void; onProviders: () => void; onGateway: () => void; onMarket: () => void }) {
+export function ChatView(props: { view: ApplicationView | null; busy: boolean; language: ProductLanguage; active: boolean; configurationError?: unknown; onAddProvider: () => void; onProviders: () => void; onGateway: () => void; onMarket: () => void }) {
   const { view, language, busy, active } = props;
   const zh = language === "zh";
   const [selected, setSelected] = useState("");

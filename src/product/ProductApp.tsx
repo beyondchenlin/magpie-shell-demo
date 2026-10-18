@@ -122,7 +122,7 @@ export default function ProductApp() {
     <main className="view tagma-main" aria-busy={busy}>
       {error != null && <div className="tagma-error" role="alert">{typeof error === "object" && "code" in error && error.code === "PREFERENCES_UNSAVED" ? c.preferencesError : typeof error === "object" && "code" in error && error.code === "CLIPBOARD_UNCONFIRMED" ? c.copyFailed : errorCopy(error, preferences.language)} <TextBtn disabled={busy} onClick={() => void refresh()}>{c.refresh}</TextBtn></div>}
       {notice && <p role="status" className="tagma-notice">{view?.runtime.state === "running" && view.runtime.effective_revision === view.config.desired_revision ? c.configurationApplied : c.saved}</p>}
-      <div hidden={page !== "chat"}><ChatView active={page === "chat"} view={view} busy={busy} language={preferences.language} onAddProvider={() => { setPage("providers"); setEditor("new"); setNotice(false); }} onProviders={() => setPage("providers")} onGateway={() => setPage("gateway")} onMarket={() => setPage("market")} /></div>
+      <div hidden={page !== "chat"}><ChatView active={page === "chat"} view={view} busy={busy} configurationError={error} language={preferences.language} onAddProvider={() => { setPage("providers"); setEditor("new"); setNotice(false); }} onProviders={() => setPage("providers")} onGateway={() => setPage("gateway")} onMarket={() => setPage("market")} /></div>
       {page === "providers" && <section><div className="tagma-heading"><h1>{c.providers}</h1><TextBtn variant="action" disabled={!view || busy || editing} onClick={() => { setEditor("new"); setNotice(false); }}>{c.add}</TextBtn></div>
         {!desktop && <p>{c.previewHint}</p>}
         {desktop && !view && !error && <p role="status">{c.loading}</p>}

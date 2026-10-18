@@ -1,0 +1,17 @@
+{
+  "recordedAtUtc": "2026-10-18T03:08:01.783Z",
+  "root": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-hotfix-s01-d01972fd-b495-478e-8b54-af7eedbbfe47",
+  "owner": "tagma-hotfix-s01/native/v1",
+  "port": 57772,
+  "launcher": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-hotfix-s01-d01972fd-b495-478e-8b54-af7eedbbfe47\\Tagma-Isolated-Launcher.exe",
+  "executable": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-hotfix-s01-d01972fd-b495-478e-8b54-af7eedbbfe47\\tagma-desktop.exe",
+  "data": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-hotfix-s01-d01972fd-b495-478e-8b54-af7eedbbfe47\\data",
+  "webview": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-hotfix-s01-d01972fd-b495-478e-8b54-af7eedbbfe47\\webview",
+  "errorData": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-hotfix-s01-d01972fd-b495-478e-8b54-af7eedbbfe47\\error-data",
+  "errorWebview": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-hotfix-s01-d01972fd-b495-478e-8b54-af7eedbbfe47\\error-webview",
+  "userInstalledPathExcluded": "C:/Users/ai/AppData/Local/Tagma",
+  "userPidExcluded": 53168,
+  "uiAuthorization": "Human explicitly allows only isolated test Tagma;no installed app/installer/user data interaction",
+  "keys": "No synthetic UI key creation;debug fixture skips token initialization;no API calls",
+  "cleanup": "Audit exact newly owned fixture paths/locks/reparse/process state before removal;preserve evidence;do not target user or250deniedfiles"
+}

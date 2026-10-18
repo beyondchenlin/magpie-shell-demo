@@ -15,6 +15,7 @@ use std::{
 };
 
 const JOURNAL: &str = "config-migration.json";
+mod legacy_schema1;
 const OWNER: &str = "com.tagmaai.desktop/migration/v1";
 const LEGACY_OWNER: &str = "com.tagmaai.desktop/migration-1-2/v1";
 fn first_schema() -> u32 {
@@ -125,6 +126,13 @@ pub(crate) fn prepare(directory: &Path) -> AppResult<()> {
     Err(incompatible())
 }
 fn prepare_inner(directory: &Path, after_backup: impl FnOnce() -> AppResult<()>) -> AppResult<()> {
+    prepare_step(directory, after_backup, || Ok(()))
+}
+fn prepare_step(
+    directory: &Path,
+    after_backup: impl FnOnce() -> AppResult<()>,
+    after_commit: impl FnOnce() -> AppResult<()>,
+) -> AppResult<()> {
     let mut db = Connection::open_with_flags(
         directory.join("config.sqlite3"),
         OpenFlags::SQLITE_OPEN_READ_WRITE,
@@ -189,7 +197,10 @@ fn prepare_inner(directory: &Path, after_backup: impl FnOnce() -> AppResult<()>)
             "security_revocations_revision",
         ]
     };
-    if application != 0x5441474d || names != expected {
+    // The first builder predated application_id. Recognize only its exact
+    // schema and closed snapshots, never arbitrary owner-zero databases.
+    let original_schema1 = version == 1 && application == 0 && legacy_schema1::recognize(&db)?;
+    if (application != 0x5441474d && !original_schema1) || names != expected {
         return Err(incompatible());
     }
     if version >= 2 {
@@ -314,6 +325,16 @@ fn prepare_inner(directory: &Path, after_backup: impl FnOnce() -> AppResult<()>)
         {
             return Err(incompatible());
         }
+        let backup_owner: u32 = verify
+            .pragma_query_value(None, "application_id", |r| r.get(0))
+            .map_err(|_| error())?;
+        if backup_owner != 0x5441474d
+            && !(journal.from_schema == 1
+                && backup_owner == 0
+                && legacy_schema1::recognize(&verify)?)
+        {
+            return Err(incompatible());
+        }
         drop(verify);
         journal.backup_sha256 = Some(digest(&backup_path)?);
         write_journal(directory, &journal, true)?;
@@ -331,6 +352,10 @@ fn prepare_inner(directory: &Path, after_backup: impl FnOnce() -> AppResult<()>)
             .transaction_with_behavior(TransactionBehavior::Immediate)
             .map_err(|_| error())?;
         if journal.from_schema == 1 {
+            // The original owner-zero bytes already have a verified backup.
+            // Identity and schema2 commit atomically and resume together.
+            tx.pragma_update(None, "application_id", 0x5441474du32)
+                .map_err(|_| error())?;
             tx.execute_batch("CREATE TABLE config_metadata(singleton INTEGER PRIMARY KEY CHECK(singleton=1),config_uuid TEXT NOT NULL);").map_err(|_|error())?;
             tx.execute(
                 "INSERT INTO config_metadata VALUES(1,?1)",
@@ -359,6 +384,7 @@ fn prepare_inner(directory: &Path, after_backup: impl FnOnce() -> AppResult<()>)
         tx.pragma_update(None, "user_version", journal.to_schema)
             .map_err(|_| error())?;
         tx.commit().map_err(|_| error())?;
+        after_commit()?;
     }
     let archived = backups.join(format!("migration-{}.json", journal.operation_id));
     crate::initialization::publish_new(&directory.join(JOURNAL), &archived).map_err(|_| error())?;

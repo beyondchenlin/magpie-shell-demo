@@ -1,0 +1,59 @@
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+   Compiling tagma-core v0.2.0-dev.17 (D:\demo1\tagmaai\crates\tagma-core)
+    Finished `test` profile [unoptimized] target(s) in 5.97s
+     Running tests\save_restart.rs (target\debug\deps\save_restart-ab628d5529687c70.exe)
+
+running 3 tests
+test persistence_worker ... ignored, child process entrypoint; parent tests supply an owned temporary directory
+
+running 1 test
+
+running 1 test
+
+running 1 test
+test persistence_worker ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 2 filtered out; finished in 0.01s
+
+
+running 1 test
+test persistence_worker ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 2 filtered out; finished in 0.00s
+
+test fresh_save_survives_process_exit_and_second_restart ... ok
+
+running 1 test
+test persistence_worker ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 2 filtered out; finished in 0.01s
+
+
+running 1 test
+test persistence_worker ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 2 filtered out; finished in 0.01s
+
+test legacy_upgrade_save_survives_process_exit_and_second_restart ... ok
+
+test result: ok. 2 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 0.26s
+

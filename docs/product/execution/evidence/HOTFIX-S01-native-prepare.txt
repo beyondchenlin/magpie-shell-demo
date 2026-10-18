@@ -1,0 +1,24 @@
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+   Compiling tagma-core v0.2.0-dev.17 (D:\demo1\tagmaai\crates\tagma-core)
+    Finished `dev` profile [unoptimized] target(s) in 1.16s
+     Running `target\debug\examples\prepare_startup_fixture.exe C:\Users\ai\AppData\Local\Temp\tagma-hotfix-s01-d01972fd-b495-478e-8b54-af7eedbbfe47 create`
+owned fixture prepared;no system keys/user data/UI accessed

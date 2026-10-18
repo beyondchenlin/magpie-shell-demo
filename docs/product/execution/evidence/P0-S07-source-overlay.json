@@ -1,0 +1,19 @@
+{
+  "recordedAtUtc": "2026-10-18T05:51:39.441Z",
+  "baseCommit": "7485c244e1b59a14531fadab3c0ca5564d482822",
+  "archive": "D:/demo1/tagmaai-deliveries/0.2.0-dev.17/source-overlay.json.gz",
+  "sha256": "56bd917d9328944f56daf3ec6f7314822dbd89f3c393526722e5e1e43d1d53ef",
+  "compressedBytes": 1938697,
+  "overlayLogicalBytes": 4728356,
+  "overlayFiles": 145,
+  "unchangedGitBlobs": 159,
+  "frozenFiles": 304,
+  "allFrozenFilesMatch": true,
+  "categories": {
+    "candidate-source": 16,
+    "line-ending-only": 68,
+    "generated-mobile-resource": 35,
+    "inherited-cis": 26
+  },
+  "sourceIndexAndHeadUnchanged": true
+}

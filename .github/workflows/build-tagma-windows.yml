@@ -1,0 +1,61 @@
+name: Build Tagma Windows candidate
+
+# Manual only. Project schedules remain paused; this workflow publishes no release.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  windows-candidate:
+    runs-on: windows-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - name: Install project Rust toolchain
+        run: |
+          rustup toolchain install 1.98.1 --profile minimal
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          rustup override set 1.98.1
+      - name: Install locked frontend dependencies
+        run: npm ci
+      - name: Check startup and persistence
+        run: |
+          cargo test --locked -p tagma-core --test startup_upgrade --test save_restart
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          cargo test --locked -p tagma-gateway --test process_lifecycle save_while_stopped_is_durable_and_applied_only_after_restart -- --exact
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          node --test scripts/test-tagma-usage-source.mjs
+      - name: Build unsigned internal Tauri candidate
+        run: npm run tauri -- build --debug --bundles nsis
+      - name: Record candidate hashes and scope
+        shell: pwsh
+        run: |
+          $config = Get-Content -LiteralPath 'src-tauri/tauri.conf.json' -Raw | ConvertFrom-Json
+          $installers = @(Get-ChildItem -LiteralPath 'target/debug/bundle/nsis' -Filter '*.exe' -File)
+          if ($installers.Count -ne 1) { throw 'Expected one Tagma NSIS installer' }
+          $installer = $installers[0]
+          if ($installer.Name -notlike "Tagma_$($config.version)_x64-setup.exe") { throw 'Unexpected candidate identity' }
+          @{
+            sourceCommit = $env:GITHUB_SHA
+            version = $config.version
+            platform = 'windows-x64'
+            profile = 'debug-unsigned-internal'
+            file = $installer.Name
+            bytes = $installer.Length
+            sha256 = (Get-FileHash -LiteralPath $installer.FullName -Algorithm SHA256).Hash.ToLowerInvariant()
+            nativeAcceptance = 'not-run; saving/restart/physical-drag require separate evidence'
+          } | ConvertTo-Json | Set-Content -LiteralPath 'target/debug/bundle/nsis/candidate.json' -Encoding utf8
+      - uses: actions/upload-artifact@v4
+        with:
+          name: tagma-windows-internal-candidate
+          path: |
+            target/debug/bundle/nsis/*.exe
+            target/debug/bundle/nsis/candidate.json
+          if-no-files-found: error
+          retention-days: 7

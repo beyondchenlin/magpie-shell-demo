@@ -295,3 +295,23 @@ test("timeout source form keeps CIS controls, named ms fields, explicit apply an
   assert.match(html,/class="editor tagma-editor"/);assert.equal((html.match(/class="words"/g)??[]).length,4);assert.match(html,/首个 HTTP 响应头/);assert.match(html,/连接 ≤ 响应头 ≤ 总预算/);assert.match(html,/在途请求保留原值/);assert.match(html,/保存后需要在网关应用配置/);assert.match(html,/不会自动重试/);assert.match(html,/取消/);assert.match(html,/&lt;owned provider&gt;/);assert.doesNotMatch(html,/type="number"|<owned provider>/);
   const disabled=render(ProviderTimeoutForm,{provider,revision:7,busy:true,language:"en",onSave:async()=>false,onCancel(){}});assert.match(disabled,/<fieldset disabled=""/);assert.match(disabled,/Catalog checks have a separate policy/);
 });
+
+const {ConnectionWorkspace}=load("src/product/ConnectionWorkspace.tsx");
+test("startup failure ends loading;preview and pending states stay distinct",()=>{
+  const props={view:null,busy:false,language:"zh",onAddProvider(){},onProviders(){},onGateway(){},onMarket(){}};
+  const failed=renderToStaticMarkup(React.createElement(ConnectionWorkspace,{...props,configurationError:{code:"INCOMPATIBLE_VERSION"}}));
+  assert.ok(failed.includes("本机配置读取失败"));assert.ok(failed.includes("设置中查看诊断"));assert.ok(!failed.includes("正在读取本机配置"));
+  const pending=renderToStaticMarkup(React.createElement(ConnectionWorkspace,{...props,busy:true}));assert.ok(pending.includes("正在读取本机配置"));assert.ok(!pending.includes("读取失败"));
+  const preview=renderToStaticMarkup(React.createElement(ConnectionWorkspace,props));assert.ok(!preview.includes("正在读取本机配置"));assert.ok(!preview.includes("读取失败"));
+});
+
+test("desktop command rejection remains a failure and clears its waiting timer",async()=>{
+  const source=ts.transpileModule(readFileSync(servicePath,"utf8"),{compilerOptions:{target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.CommonJS}}).outputText;
+  const rejection={code:"INCOMPATIBLE_VERSION",retryable:false};let calls=0,scheduled=0,cleared=0;
+  const module={exports:{}};
+  const invoke=(name,args)=>{assert.equal(name,"application_view");assert.equal(args.protocolVersion,1);calls++;return Promise.reject(rejection)};
+  const execute=vm.runInThisContext('(function(require,module,exports,setTimeout,clearTimeout){'+source+'\n})',{filename:servicePath});
+  execute(name=>{assert.equal(name,"@tauri-apps/api/core");return{isTauri:()=>true,invoke,Channel:class{}}},module,module.exports,()=>{scheduled++;return 123},id=>{assert.equal(id,123);cleared++});
+  await assert.rejects(module.exports.service.view(),err=>err===rejection);
+  assert.equal(calls,1);assert.equal(scheduled,1);assert.equal(cleared,1);
+});

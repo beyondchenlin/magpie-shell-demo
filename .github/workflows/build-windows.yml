@@ -1,4 +1,4 @@
-name: Build Windows
+name: Build legacy Magpie Electron demo
 
 on:
   push:

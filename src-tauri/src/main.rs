@@ -597,6 +597,18 @@ fn main() {
                 Some(Arc::new(manager))
             });
             let local_directory = directory.as_ref().ok().cloned();
+            // Explicitly owned debug fixtures can identify their window without
+            // changing the user's installed window or the normal product title.
+            #[cfg(debug_assertions)]
+            if std::env::var_os("TAGMA_TEST_CONFIG_DIR").is_some()
+                && let Ok(title) = std::env::var("TAGMA_TEST_WINDOW_TITLE")
+                && title.starts_with("Tagma 隔离测试 ")
+                && title.len() <= 180
+                && !title.chars().any(char::is_control)
+                && let Some(window) = app.get_webview_window("main")
+            {
+                window.set_title(&title)?;
+            }
             if let Some(directory) = &local_directory {
                 let _ = tagma_core::diagnostics::record(
                     directory,
