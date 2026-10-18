@@ -1,0 +1,82 @@
+{
+  "recordedAtUtc": "2026-10-18T00:12:01.319Z",
+  "sourceBase": "175fef7",
+  "candidateVersion": "0.2.0-dev.16",
+  "configSchema": 10,
+  "usageSchema": 2,
+  "source": [
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-core\\src\\packs.rs",
+      "bytes": 2465,
+      "sha256": "b45ac380c06c26dd0b0f265d6055d61d8d81b9fe535d9c9551c4c99b9aecdc99"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-core\\src\\packs\\observed_space.rs",
+      "bytes": 9942,
+      "sha256": "513cee7779dc0a5526af25286ac82b9d42437e234a5997438be778b7b6e156fa"
+    }
+  ],
+  "documents": [
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\EXECUTION-STATUS.md",
+      "bytes": 40068,
+      "sha256": "9b7e33226480bc2144bbd54d656936457d5dff0a9f60aee6f6ce828b0b0aba58"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\P2-S03-HOST-SPACE-OBSERVATION.md",
+      "bytes": 3678,
+      "sha256": "d5bd3b7934c76ceeb8fc46deac1d97560af6fbe81479b2feeacddf7e08e22a17"
+    }
+  ],
+  "prd": {
+    "path": "D:\\demo1\\tagmaai\\docs\\product\\TAGMA-PRD-v0.3.md",
+    "bytes": 50957,
+    "sha256": "6e6503391f70e3f2e53347890de6e7c9f7fd93cc393c68f7bba494ac4d67a6d6"
+  },
+  "evidence": [
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P2-S03-clippy.txt",
+      "bytes": 1329,
+      "sha256": "d70ae568ad6769c7172824d2ee7e812bdfc6df8c931da6d6dbac694779455d76"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P2-S03-observe-cross-final.txt",
+      "bytes": 1170,
+      "sha256": "3659b80e12be5f8375ace38542c471e23d1be9304209ef248f76d1773c40fb71"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P2-S03-observe-cross.txt",
+      "bytes": 1170,
+      "sha256": "a05657f6ebee7f7b0123cf868e7939490bcaba98afc907bb392916f0a01e15d3"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P2-S03-observe-final.txt",
+      "bytes": 1622,
+      "sha256": "a96ee73edf021e26dba2e8cd833e4e1e7422e682393cfa68cb0285dd2a32d118"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P2-S03-observe-first.txt",
+      "bytes": 1519,
+      "sha256": "0de3f5a428deccd3aa693d1eb97828a09b915f4c08bcf4a8e4a4d019b51defcc"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P2-S03-space-after.json",
+      "bytes": 622,
+      "sha256": "2418a05e2fe16917bfafb02f417258680d59c3c0c725f2180bc5833a654d7a90"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\docs\\product\\execution\\evidence\\P2-S03-space-plan.json",
+      "bytes": 640,
+      "sha256": "129b21fde025bb182059c5e10d89e5a7d14605a290591d1b9695a9f251773281"
+    }
+  ],
+  "results": {
+    "ordinaryTestsPassed": 3,
+    "explicitWindowsCDPassed": 1,
+    "totalDistinct": 4,
+    "clippy": "core all targets -D warnings passed"
+  },
+  "scope": "Existing canonical directories;actual Windows local volume GUID/free/allocation unit;stale>2s observations refused from query-start age;no filesystem mutation by observer",
+  "unverified": "Other platforms/mount aliases/races/network/ReFS;actual install preflight integration/download/registry/activation/health/real ReachFlow;A17/P2 not complete",
+  "preserved": "No GUI/install/key/service/new env/worktree/denied cleanup retry;dev.9/data/webview/250rejected files/old evidence retained;drag unaccepted"
+}

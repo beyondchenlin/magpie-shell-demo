@@ -1,0 +1,32 @@
+   Compiling tagma-core v0.2.0-dev.16 (D:\demo1\tagmaai\crates\tagma-core)
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+    Finished `test` profile [unoptimized] target(s) in 5.50s
+     Running unittests src\lib.rs (target\debug\deps\tagma_core-0348fd4cdb7f1e31.exe)
+
+running 3 tests
+test packs::observed_space::tests::actual_windows_c_and_workspace_d_are_distinct_volumes ... ignored, Explicit Windows C:/D: volume-bound fixture;not a portable assumption about drive aliases
+Actual same-volume observation:target/temp siblings,unit4096bytes,available target45918871552 temp45918871552,canonical directories;no install/quota/cleanup action
+test packs::observed_space::tests::actual_same_volume_directories_have_real_allocation_and_available_space ... ok
+test packs::observed_space::tests::missing_or_non_directory_input_is_not_created_or_reinterpreted ... ok
+
+test result: ok. 2 passed; 0 failed; 1 ignored; 0 measured; 79 filtered out; finished in 0.01s
+

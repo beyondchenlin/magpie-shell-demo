@@ -1,0 +1,12 @@
+{
+  "RecordedAtUtc": "2026-10-18T00:07:52.4352356Z",
+  "Target": "D:/demo1/tagmaai/target",
+  "TempRoot": "C:\\Users\\ai\\AppData\\Local\\Temp",
+  "EstimatedAdditionalPeakGiB": 0.03,
+  "CFreeBeforeGiB": 42.76,
+  "DFreeBeforeGiB": 9.24,
+  "Scope": "OS volume/free/allocation observations;cached core-only test/check,no new dependency/schema/bundle",
+  "Reuse": "Current P2 Cargo artifacts;previous rejected250 files retained,no same cleanup retry",
+  "Fixture": "Only new recognisable empty temp dirs onC andtargetD;RAII,no user data",
+  "Constraint": "D<10GiB;>1GiB remains paused;readonly+strictly bounded small checks only"
+}

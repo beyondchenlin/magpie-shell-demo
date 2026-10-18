@@ -1,0 +1,19 @@
+{
+  "RecordedAtUtc": "2026-10-18T00:12:01.2594152Z",
+  "Disks": [
+    {
+      "Name": "C",
+      "FreeGiB": 42.76
+    },
+    {
+      "Name": "D",
+      "FreeGiB": 9.24
+    }
+  ],
+  "OwnedFixtureLeftovers": [],
+  "NewWorktrees": 0,
+  "NewEnvironments": 0,
+  "Cleanup": "Only new tiny fixture RAII;no manual/old-artifact deletion;SPACE-S03 rejected250 retained,no workaround",
+  "Kept": "Current cache/source/dependencies/old evidence/main bundles/installed dev.9/preview data and webview",
+  "Caveat": "Drive differences include concurrent writes/cache;not measured task peak/net release;>1GiB paused"
+}

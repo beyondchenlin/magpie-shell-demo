@@ -4,11 +4,13 @@ mod archive;
 #[cfg(test)]
 mod archive_tests;
 mod manifest;
+mod observed_space;
 mod paths;
 mod space;
 mod trust;
 pub use archive::*;
 pub use manifest::*;
+pub use observed_space::*;
 pub use paths::*;
 pub use space::*;
 pub use trust::*;
