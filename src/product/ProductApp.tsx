@@ -168,7 +168,7 @@ export default function ProductApp() {
         {view&&<SecurityControls view={view} mode="gateway" busy={busy||!!editor||profileEditing||gatewayEditing||teamEditing} language={preferences.language} onMutate={mutate} onEditingChange={setSecurityEditing}/>}
         {view && <GatewaySettings config={view.config} busy={busy||securityEditing} language={preferences.language} onMutate={mutate} onEditingChange={setGatewayEditing} onError={setError} />}
         <TextBtn disabled={busy || gatewayEditing} onClick={() => setPage("providers")}>{c.back}</TextBtn></section>}
-      {page === "settings" && <section><h1>{c.settings}</h1><div className="list prefs">
+      {page === "settings" && <section className="tagma-settings"><h1>{c.settings}</h1><div className="list prefs">
         <PrefRow name={c.theme}><Segs value={preferences.theme} items={[{ id: "system", label: c.system }, { id: "light", label: c.light }, { id: "dark", label: c.dark }]} onChange={id => changePreferences({ ...preferences, theme: id as ProductTheme })} /></PrefRow>
         <PrefRow name={c.language} wrapVal={false}><LanguagePick label={c.language} value={preferences.language} onChange={language=>changePreferences({...preferences,language})} /></PrefRow>
         <PrefRow name={c.size}><Segs value={preferences.textSize} items={[100, 110, 125, 150].map(n => ({ id: n, label: `${n}%` }))} onChange={id => changePreferences({ ...preferences, textSize: id as Preferences["textSize"] })} /></PrefRow>

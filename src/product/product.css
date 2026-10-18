@@ -28,14 +28,23 @@ body.tagma #root { display:flex; flex-direction:column; width:100%; height:100%;
 .tagma-profile-selection { display:flex; flex-direction:column; align-items:flex-start; gap:8px; }
 .tagma-profile-order { padding-left:22px; }
 .tagma-profile-order li { padding:6px 0; overflow-wrap:anywhere; }
-.tagma-editor { margin:12px 0; padding:14px; border:1px solid var(--line); border-radius:12px; background:var(--card); }
-.tagma-editor fieldset { border:0; display:grid; grid-template-columns:minmax(90px,auto) minmax(0,1fr); align-items:start; gap:12px 14px; margin-bottom:14px; }
+/* The CIS .editor grid is for direct label/control children; product forms nest that grid in a fieldset. */
+.tagma-editor { display:block; min-width:0; container-type:inline-size; margin:12px 0; padding:14px; border:1px solid var(--line); border-radius:12px; background:var(--card); }
+.tagma-editor fieldset { min-inline-size:0; border:0; display:grid; grid-template-columns:minmax(90px,auto) minmax(0,1fr); align-items:start; gap:12px 14px; margin-bottom:14px; }
 .tagma-editor label { padding-top:4px; }
 .tagma-editor .words { width:100%; max-width:100%; }
 .tagma-editor textarea.words, .tagma-composer textarea.words { display:block; width:100%; min-width:0; min-height:72px; padding:7px 9px; border:1px solid var(--line); border-radius:7px; background:var(--card); color:var(--fg); font:12.5px/1.5 var(--code); resize:vertical; outline:none; transition:border-color .12s, box-shadow .12s; }
 .tagma-editor textarea.words:focus, .tagma-composer textarea.words:focus { border-color:var(--accent); box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 22%,transparent); }
 .tagma-editor .sub { margin-top:5px; white-space:normal; }
 .tagma-editor .tagma-actions { margin-top:12px; }
+@container (max-width:360px) {
+  .tagma-editor fieldset { grid-template-columns:1fr; gap:6px; }
+  .tagma-editor fieldset > span:empty { display:none; }
+  .tagma-editor label { text-align:left; }
+}
+.tagma-settings .row.pref { flex-wrap:wrap; }
+.tagma-settings .prefs .val { max-width:100%; }
+.tagma-settings .segs { max-width:100%; flex-wrap:wrap; }
 .tagma-revision-line { display:flex; justify-content:flex-end; flex:none; padding:12px 2px 4px; font-size:11px; color:var(--muted); }
 .tagma-banner { padding:8px 14px; background:var(--amber-soft); color:var(--amber); }
 .tagma-error { margin:8px 0 12px; padding:9px 12px; border-radius:7px; background:var(--red-soft); color:var(--red); overflow-wrap:anywhere; }
