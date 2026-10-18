@@ -1,0 +1,2 @@
+src/product/ProductApp.tsx:76:11: warning react-hooks(exhaustive-deps): React Hook useEffect has a complex expression in the dependency array. help: Extract the expression to a separate variable so it can be statically checked.
+src/product/ProductApp.tsx:67:30: warning react-hooks(exhaustive-deps): React Hook useEffect has a missing dependency: 'view' help: Either include it or remove the dependency array.

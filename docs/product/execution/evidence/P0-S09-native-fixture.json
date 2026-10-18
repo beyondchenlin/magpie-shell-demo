@@ -1,0 +1,18 @@
+{
+  "path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88",
+  "state": "running-initial-ready-observed-native-interaction-blocked",
+  "owner": "tagma-p0-s09/native/v1",
+  "port": 49697,
+  "config": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\data",
+  "schema": "tagma-p0-s09-fixture/v1",
+  "webview": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\webview",
+  "version": "0.2.0-dev.18",
+  "observedHostPid": 45604,
+  "observedGatewayPid": 7332,
+  "observedWindowId": 593796,
+  "observedTitle": "Tagma 隔离测试 dev18 P0-S09 128d7053",
+  "processIdsAreHistoricalObservations": true,
+  "reselectBeforeInput": true,
+  "hostSha256": "2233c33385bf37a16316e8ab66047d3631ea1493fe21dce2cded26758d29d7bf",
+  "gatewaySha256": "46e476c5b0f4429610e0a3dc75b8102b920fa9dbfad6cbb434918ecc7c232161"
+}

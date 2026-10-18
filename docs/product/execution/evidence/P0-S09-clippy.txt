@@ -1,0 +1,58 @@
+    Checking windows-sys v0.61.2
+    Checking winx v0.36.4
+    Checking curve25519-dalek v4.1.3
+   Compiling tagma-desktop v0.2.0-dev.17 (D:\demo1\tagmaai\src-tauri)
+    Checking ed25519-dalek v2.2.0
+    Checking mio v1.2.4
+    Checking socket2 v0.6.5
+    Checking winapi-util v0.1.11
+    Checking schannel v0.1.30
+    Checking same-file v1.0.6
+    Checking walkdir v2.5.0
+    Checking cap-primitives v4.0.3
+    Checking native-tls v0.2.18
+    Checking tauri-utils v2.10.2
+    Checking muda v0.20.0
+    Checking tokio v1.53.3
+    Checking cap-std v4.0.3
+    Checking softbuffer v0.4.8
+    Checking tempfile v3.27.0
+    Checking dirs-sys v0.5.0
+    Checking dirs v7.0.0
+    Checking tray-icon v0.25.1
+    Checking tagma-core v0.2.0-dev.17 (D:\demo1\tagmaai\crates\tagma-core)
+    Checking window-vibrancy v0.8.1
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+    Checking tauri-runtime v2.12.2
+    Checking tauri-runtime-wry v2.12.2
+    Checking hyper v1.12.0
+    Checking tower v0.5.3
+    Checking tokio-native-tls v0.3.1
+    Checking tokio-util v0.7.20
+    Checking tower-http v0.6.11
+    Checking hyper-util v0.1.21
+    Checking interprocess v2.4.6
+    Checking tauri v2.12.4
+    Checking hyper-tls v0.6.0
+    Checking reqwest v0.13.5
+    Checking tagma-runtime v0.2.0-dev.17 (D:\demo1\tagmaai\crates\tagma-runtime)
+    Finished `dev` profile [unoptimized] target(s) in 21.42s

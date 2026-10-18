@@ -1,0 +1,33 @@
+{
+  "recordedAtUtc": "2026-10-18T07:16:41.383Z",
+  "installerSha256": "6943d9244a39ae75971559ce0ac51a2a198babb49745ca3b757cbf8a9fdc0885",
+  "authenticode": "NotSigned",
+  "files": [
+    {
+      "name": "tagma-desktop.exe",
+      "machine": 34404,
+      "subsystem": 2,
+      "bytes": 20248576,
+      "sha256": "da0d42527f57ffdde6b5233d660adcd7a5e97cb50423ddb93aab1b597bef3128",
+      "sourceSha256": "2233c33385bf37a16316e8ab66047d3631ea1493fe21dce2cded26758d29d7bf",
+      "changedOffsets": [
+        15373840,
+        15373841,
+        15373842
+      ],
+      "fullFileMatchAfterExpectedBundleMarker": true
+    },
+    {
+      "name": "tagma-gateway.exe",
+      "machine": 34404,
+      "subsystem": 2,
+      "bytes": 10101760,
+      "sha256": "46e476c5b0f4429610e0a3dc75b8102b920fa9dbfad6cbb434918ecc7c232161",
+      "sourceSha256": "46e476c5b0f4429610e0a3dc75b8102b920fa9dbfad6cbb434918ecc7c232161",
+      "changedOffsets": [],
+      "fullFileMatchAfterExpectedBundleMarker": true
+    }
+  ],
+  "method": "7-Zip streams members to memory; no installer executed or extraction directory",
+  "nativeAcceptance": "startup/navigation accessibility only; save/restart/drag unverified"
+}

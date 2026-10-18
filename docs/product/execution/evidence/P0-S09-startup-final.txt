@@ -1,0 +1,51 @@
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+   Compiling tagma-desktop v0.2.0-dev.17 (D:\demo1\tagmaai\src-tauri)
+    Finished `test` profile [unoptimized] target(s) in 3.11s
+     Running unittests src\main.rs (target\debug\deps\tagma_desktop-423dced43f2b9f84.exe)
+
+running 4 tests
+test startup::tests::recovery_worker ... ignored, owned synthetic child process; invoked by parent test only
+test startup::tests::reopening_unknown_database_keeps_failure_and_original_bytes ... ok
+
+running 1 test
+test startup::tests::recovery_worker ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 3 filtered out; finished in 0.00s
+
+
+running 1 test
+cached failure survives unlock; reopening actual host initializer preserves provider/credential, creates one token, and never replays the save
+test startup::tests::cached_startup_failure_needs_reopen_and_preserves_saved_data ... ok
+test startup::tests::recovery_worker ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 3 filtered out; finished in 0.00s
+
+
+running 1 test
+test startup::tests::recovery_worker ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 3 filtered out; finished in 0.00s
+
+test startup::tests::new_process_reopens_after_maintenance_without_replaying_saved_provider ... ok
+
+test result: ok. 3 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 0.09s
+

@@ -1,0 +1,32 @@
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+   Compiling tauri v2.12.4
+   Compiling tagma-desktop v0.2.0-dev.17 (D:\demo1\tagmaai\src-tauri)
+    Finished `test` profile [unoptimized] target(s) in 23.12s
+     Running unittests src\main.rs (target\debug\deps\tagma_desktop-14d1bf48ece7d11b.exe)
+
+running 2 tests
+test startup::tests::reopening_unknown_database_keeps_failure_and_original_bytes ... ok
+cached failure survives unlock; reopening actual host initializer preserves provider/credential, creates one token, and never replays the save
+test startup::tests::cached_startup_failure_needs_reopen_and_preserves_saved_data ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s
+

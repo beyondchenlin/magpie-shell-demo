@@ -1,0 +1,36 @@
+{
+  "version": "0.2.0-dev.18",
+  "sourceHead": "8b6f0d65f90f956a674099b409d076be72f95534",
+  "dirty": true,
+  "sourceAggregate": "58b8a0d2657763e8fb4a0114a9044fa1a5b7dcd89a29b9f349841473c2d8fff8",
+  "sourceFileCount": 306,
+  "sourceVerification": "Collection started before build command; completed during its early phase; all source bytes verified unchanged after build",
+  "platform": "windows-x64",
+  "profile": "debug-unsigned-internal",
+  "schema": 10,
+  "protocol": 1,
+  "usageSchema": 2,
+  "installer": {
+    "path": "D:/demo1/tagmaai-deliveries/0.2.0-dev.18/Tagma_0.2.0-dev.18_x64-setup.exe",
+    "bytes": 6627330,
+    "sha256": "6943d9244a39ae75971559ce0ac51a2a198babb49745ca3b757cbf8a9fdc0885"
+  },
+  "desktop": {
+    "path": "target/debug/tagma-desktop.exe",
+    "bytes": 20248576,
+    "sha256": "2233c33385bf37a16316e8ab66047d3631ea1493fe21dce2cded26758d29d7bf"
+  },
+  "gateway": {
+    "path": "target/debug/tagma-gateway.exe",
+    "bytes": 10101760,
+    "sha256": "46e476c5b0f4429610e0a3dc75b8102b920fa9dbfad6cbb434918ecc7c232161"
+  },
+  "sourceOverlay": {
+    "path": "D:/demo1/tagmaai-deliveries/0.2.0-dev.18/source-overlay.json.gz",
+    "bytes": 1823959,
+    "sha256": "50d3b6755488b6546ed9601dc848def2de101241fc533b5d34c370ad39af34a3"
+  },
+  "nativeAcceptance": "not-passed",
+  "installation": "not-run",
+  "builtAtUtc": "2026-10-18T07:14:38.855Z"
+}
