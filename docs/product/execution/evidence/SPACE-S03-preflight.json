@@ -1,0 +1,14 @@
+{
+  "RecordedAtUtc": "2026-10-18T00:04:50.5219149Z",
+  "Root": "D:\\demo1\\tagmaai\\target\\debug\\deps",
+  "PlannedFiles": 250,
+  "LogicalBytes": "1036742470",
+  "HardlinkDeduplicatedAllocatedBytes": "1037139968",
+  "ReparseAncestorCount": 0,
+  "TargetOrBuildProcesses": 0,
+  "ChangedOrLockedFiles": [],
+  "NoDeletionYet": true,
+  "Purpose": "Task-owned preS31 stale core test and library compiler artifacts only;fingerprint/source .d ownership;current caches/dependencies/source/preview/old evidence retained",
+  "CFreeBeforeGiB": 42.77,
+  "DFreeBeforeGiB": 9.24
+}

@@ -1,0 +1,13 @@
+{
+  "RecordedAtUtc": "2026-10-18T00:06:19.9169924Z",
+  "Status": "RejectedBeforeExecution",
+  "Action": "Delete exact250 audited obsolete task core compiler artifacts under D:/demo1/tagmaai/target/debug/deps",
+  "Reason": "Automatic approval review rejected:blocked by policy",
+  "DeletedCount": 0,
+  "FilesRetained": 250,
+  "NoRetry": "Do not retry via cargo clean or another deletion method",
+  "Scope": "Read-only dry-run/candidate ownership,size,NTFS allocation,process,reparse,lock checks completed;no cleanup mutation executed",
+  "DFreeGiB": 9.24,
+  "CFreeGiB": 42.76,
+  "Next": "Keep >1GiB operations paused;continue source and strictly bounded small cached checks only"
+}
