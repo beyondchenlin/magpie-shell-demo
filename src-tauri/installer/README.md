@@ -8,6 +8,16 @@ The upstream MIT license is retained in `LICENSE-MIT`.
 
 Tagma changes:
 
+- Check native Windows architecture before prerequisites or writes (1633 on
+  mismatch). Emulated architecture pairs are not advertised as release targets.
+- Check quota-aware free space at the actual installation and temporary paths in
+  every mode, before prerequisites and again before payload writes. Use 64-bit
+  comparisons and require twice the uncompressed payload plus32MiB at each path
+  so co-located volumes cannot double-count free space. Insufficient space exits
+  with112; failed queries with1603. This is a conservative package budget, not a
+  guarantee against concurrent disk consumption or all WebView2 download sizes;
+  prerequisite failures and payload write checks remain necessary.
+
 - Update in place; do not run an old uninstaller before installing. Older
   uninstallers can force-close the desktop without coordinating with its gateway.
 - Check both exact installed executable paths through Restart Manager before

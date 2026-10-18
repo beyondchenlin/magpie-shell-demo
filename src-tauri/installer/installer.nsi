@@ -358,8 +358,11 @@ FunctionEnd
 
 ; Run before prerequisites as well as immediately before program writes.
 Section -TagmaProcessPreflight
+  !insertmacro TagmaCheckArchitecture
   !insertmacro TagmaCheckInstallProcesses "$INSTDIR"
   !insertmacro TagmaAcquireInstallationLease
+  !insertmacro TagmaCheckAvailableSpace "$INSTDIR" ${ESTIMATEDSIZE}
+  !insertmacro TagmaCheckAvailableSpace "$TEMP" ${ESTIMATEDSIZE}
 SectionEnd
 
 Section WebView2
@@ -462,6 +465,8 @@ Section Install
   !endif
 
   !insertmacro TagmaCheckInstallProcesses "$INSTDIR"
+  !insertmacro TagmaCheckAvailableSpace "$INSTDIR" ${ESTIMATEDSIZE}
+  !insertmacro TagmaCheckAvailableSpace "$TEMP" ${ESTIMATEDSIZE}
 
   ; Copy main executable
   ClearErrors

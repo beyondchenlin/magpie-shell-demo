@@ -2,6 +2,7 @@
 ; must finish requests and quit before an install, update or uninstall.
 !include LogicLib.nsh
 !include "Win\RestartManager.nsh"
+!include "${__FILEDIR__}\preflight.nsh"
 
 Var TagmaGuardError
 Var TagmaGuardMessage
