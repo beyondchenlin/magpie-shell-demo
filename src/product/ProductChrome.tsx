@@ -7,13 +7,13 @@ import type { ApplicationView } from "./contract";
 import type { ProductLanguage } from "./preferences";
 import { copy } from "./copy";
 
-export type ProductPage = "chat" | "providers" | "market" | "usage" | "gateway" | "settings";
+export type ProductPage = "chat" | "providers" | "market" | "usage" | "gateway" | "settings" | "results";
 export function ProductChrome({page,onPage,onRefresh,disabled,view,language,refreshLabel}: {
   page:ProductPage;onPage:(page:ProductPage)=>void;onRefresh:()=>void;disabled:boolean;view:ApplicationView|null;language:ProductLanguage;refreshLabel?:string;
 }) {
   const c=copy(language);
   const refreshText=refreshLabel??c.refresh;
-  const inSettings=page==="settings"||page==="usage";
+  const inSettings=page==="settings"||page==="usage"||page==="results";
   const [layout,setLayout]=useState<"auto"|"side"|"top">(()=>{try {const saved=localStorage.getItem("tagma.nav.v1");return saved==="side"||saved==="top"?saved:"auto";}catch{return "auto";}});
   const [wide,setWide]=useState(()=>matchMedia("(min-width:1024px)").matches);
   const side=layout==="side"||(layout==="auto"&&wide);

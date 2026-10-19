@@ -24,6 +24,8 @@ async function command<T>(name: string, args: Record<string, unknown>): Promise<
 }
 
 export const service = {
+  listPackResults:(directory:string)=>command<import("./contract").SavedPackResult[]>("list_pack_results",{protocolVersion,directory}),
+  readPackResult:(directory:string,name:string)=>command<string>("read_pack_result",{protocolVersion,directory,name}),
   savePackResult:(directory:string,raw:string)=>command<string>("save_pack_result",{protocolVersion,directory,raw}),
   packMarket:()=>command<PackMarketView>("pack_market",{protocolVersion}),
   reviewPack:(record:string)=>command<PackReviewView>("review_pack",{protocolVersion,record}),

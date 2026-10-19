@@ -1,0 +1,37 @@
+
+> magpie-shell-demo@0.1.208 build:tagma
+> tsc -b && vite build --config vite.tagma.config.ts
+
+src/product/ProductApp.tsx(156,79): error TS7053: Element implicitly has an 'any' type because expression of type 'ProductPage' can't be used to index type '{ workspaceTitle: string; localWorkspace: string; workspaceIntro: string; setupTitle: string; connectProvider: string; connectProviderHint: string; providerCount: string; manageProviders: string; ... 136 more ...; copyFailed: string; }'.
+  Property 'results' does not exist on type '{ workspaceTitle: string; localWorkspace: string; workspaceIntro: string; setupTitle: string; connectProvider: string; connectProviderHint: string; providerCount: string; manageProviders: string; ... 136 more ...; copyFailed: string; }'.
+src/product/ProductChrome.tsx(29,96): error TS7053: Element implicitly has an 'any' type because expression of type 'ProductPage' can't be used to index type '{ workspaceTitle: string; localWorkspace: string; workspaceIntro: string; setupTitle: string; connectProvider: string; connectProviderHint: string; providerCount: string; manageProviders: string; ... 136 more ...; copyFailed: string; }'.
+  Property 'results' does not exist on type '{ workspaceTitle: string; localWorkspace: string; workspaceIntro: string; setupTitle: string; connectProvider: string; connectProviderHint: string; providerCount: string; manageProviders: string; ... 136 more ...; copyFailed: string; }'.
+
+> magpie-shell-demo@0.1.208 build:tagma
+> tsc -b && vite build --config vite.tagma.config.ts
+
+vite v8.3.4 building client environment for production...
+transforming...
+✓ 79 modules transformed.
+rendering chunks...
+computing gzip size...
+dist-tagma/tagma.html                   0.38 kB │ gzip:   0.26 kB
+dist-tagma/assets/tagma-Bp0WzTAJ.css  398.70 kB │ gzip:  73.92 kB
+dist-tagma/assets/tagma-BpqQO961.js   423.80 kB │ gzip: 131.99 kB
+
+✓ built in 774ms
+src/product/ReachFlowForm.tsx:11:32: warning react(set-state-in-effect): Calling setState synchronously within an effect can trigger cascading renders help: Effects should synchronize React with external systems. Calling setState synchronously inside an effect starts another render and is usually unnecessary. Derive the value during render, initialize state directly, or update it from the event that caused the change. Use an effect only when synchronizing with an external system.
+
+> magpie-shell-demo@0.1.208 build:tagma
+> tsc -b && vite build --config vite.tagma.config.ts
+
+vite v8.3.4 building client environment for production...
+transforming...
+✓ 79 modules transformed.
+rendering chunks...
+computing gzip size...
+dist-tagma/tagma.html                   0.38 kB │ gzip:   0.26 kB
+dist-tagma/assets/tagma-Bp0WzTAJ.css  398.70 kB │ gzip:  73.92 kB
+dist-tagma/assets/tagma-DtuiaK6I.js   423.84 kB │ gzip: 132.01 kB
+
+✓ built in 308ms

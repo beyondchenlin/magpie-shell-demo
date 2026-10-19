@@ -59,6 +59,47 @@ fn pack_protocol(version: u32) -> Result<(), tagma_core::packs::PackUiError> {
     })
 }
 #[tauri::command]
+async fn list_pack_results(
+    window: WebviewWindow,
+    app: State<'_, Application>,
+    protocol_version: u32,
+    directory: String,
+) -> Result<Vec<tagma_core::packs::SavedPackResult>, tagma_core::packs::PackUiError> {
+    pack_protocol(protocol_version)?;
+    config(&window, &app).map_err(|_| tagma_core::packs::PackUiError {
+        code: "RESULT_READ_FAILED".into(),
+    })?;
+    tauri::async_runtime::spawn_blocking(move || {
+        tagma_runtime::pack_result::list(std::path::Path::new(&directory))
+    })
+    .await
+    .map_err(|_| tagma_core::packs::PackUiError {
+        code: "RESULT_READ_FAILED".into(),
+    })?
+    .map_err(|code| tagma_core::packs::PackUiError { code: code.into() })
+}
+#[tauri::command]
+async fn read_pack_result(
+    window: WebviewWindow,
+    app: State<'_, Application>,
+    protocol_version: u32,
+    directory: String,
+    name: String,
+) -> Result<String, tagma_core::packs::PackUiError> {
+    pack_protocol(protocol_version)?;
+    config(&window, &app).map_err(|_| tagma_core::packs::PackUiError {
+        code: "RESULT_READ_FAILED".into(),
+    })?;
+    tauri::async_runtime::spawn_blocking(move || {
+        tagma_runtime::pack_result::read(std::path::Path::new(&directory), &name)
+    })
+    .await
+    .map_err(|_| tagma_core::packs::PackUiError {
+        code: "RESULT_READ_FAILED".into(),
+    })?
+    .map_err(|code| tagma_core::packs::PackUiError { code: code.into() })
+}
+#[tauri::command]
 async fn save_pack_result(
     window: WebviewWindow,
     app: State<'_, Application>,
@@ -859,6 +900,8 @@ fn main() {
         })
         .invoke_handler(tauri::generate_handler![
             save_pack_result,
+            list_pack_results,
+            read_pack_result,
             pack_market,
             review_pack,
             install_pack,

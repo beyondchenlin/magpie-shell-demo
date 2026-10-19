@@ -108,6 +108,7 @@ fn main() {
         InitializationRecoveryPlan::decl(&cfg),
         RecoverInitialization::decl(&cfg),
         RecoveryOutcome::decl(&cfg),
+        packs::SavedPackResult::decl(&cfg),
         chat::ChatMessage::decl(&cfg),
         chat::StartChat::decl(&cfg),
         chat::ChatEvent::decl(&cfg),

@@ -20,6 +20,10 @@ pub struct StartChat {
     pub expected_revision: u32,
     pub model: String,
     pub messages: Vec<ChatMessage>,
+    /// Explicit one-call service operation, kept outside conversation messages.
+    #[serde(default)]
+    #[ts(optional)]
+    pub reachflow: Option<crate::packs::ReachFlowRequest>,
 }
 
 #[derive(Clone, Serialize, TS)]

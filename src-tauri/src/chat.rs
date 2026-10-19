@@ -120,7 +120,7 @@ impl ChatBridge {
             .post(format!("{address}/chat/completions"))
             .header("x-tagma-expected-revision", input.expected_revision)
             .json(
-                &serde_json::json!({"model":input.model,"messages":input.messages,"stream":true}),
+                &serde_json::json!({"model":input.model,"messages":input.messages,"stream":true,"tagma_reachflow":input.reachflow}),
             );
         if let Some(secret) = access_token {
             request = request.bearer_auth(secret.as_str());

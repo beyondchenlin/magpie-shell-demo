@@ -1,10 +1,10 @@
+import {ReachFlowForm} from "./ReachFlowForm";
 import {PackResult} from "./PackResult";
 import {useEffect,useRef,useState} from "react";
 import {PrefRow} from "../components/PrefRow";
 import {TextBtn} from "../components/TextBtn";
-import {WordsField} from "../components/WordsField";
 import {desktop,protocolVersion,service} from "./service";
-import type {ConfigView,PackReviewView,PackTaskEvent,PackUserOperation,ReachFlowAction} from "./contract";
+import type {ConfigView,PackReviewView,PackTaskEvent,PackUserOperation} from "./contract";
 import type {ProductLanguage} from "./preferences";
 
 function packError(value:unknown,zh:boolean){
@@ -36,10 +36,7 @@ export function PackMarketPanel({config,busy,active,language,onRefresh,onEditing
   const [task,setTask]=useState<PackTaskEvent|null>(null);
   const [working,setWorking]=useState(false);
   const [error,setError]=useState<unknown>(null);
-  const [connection,setConnection]=useState({service_url:"",workspace_id:"",access_token:""});
-  const [action,setAction]=useState<"task_status"|"task_report"|"start_collection"|"cancel_task">("task_status");
   const [taskId,setTaskId]=useState("");
-  const [plan,setPlan]=useState({draft_id:"",confirmation_id:"",plan_digest:"",engine_selection_revision:"1",idempotency_key:""});
   const internalButton=useRef<HTMLButtonElement>(null);
   const file=useRef<HTMLInputElement>(null),alert=useRef<HTMLParagraphElement>(null),sample=useRef<HTMLButtonElement>(null);
   const mounted=useRef(true),runningId=useRef<string|null>(null),returnTo=useRef<HTMLElement|null>(null);
@@ -57,7 +54,6 @@ export function PackMarketPanel({config,busy,active,language,onRefresh,onEditing
   async function reviewInternal(){if(!internalManifest||locked)return;setWorking(true);setError(null);try{setReview(await service.reviewPack(internalManifest));}catch(failure){setError(failure);}finally{setWorking(false);}}
   async function install(){if(!review||locked)return;const selected=review;setWorking(true);setError(null);const id=crypto.randomUUID();runningId.current=id;setTask({task_id:id,phase:"starting",state:"running",text:null,error:null});try{await service.installPack({protocol_version:protocolVersion,task_id:id,review_id:selected.review_id,manifest_sha256:selected.manifest_sha256},receive);}catch(failure){if(mounted.current)setError(failure);}finally{runningId.current=null;if(mounted.current){returnTo.current=selected.publisher==="tagma-internal"?sample.current:file.current;setWorking(false);setReview(null);await onRefresh();}}}
   async function call(operation:PackUserOperation){if(locked||!installed)return;setWorking(true);setError(null);const id=crypto.randomUUID();runningId.current=id;setTask({task_id:id,phase:"calling",state:"running",text:null,error:null});try{await service.invokePack({protocol_version:protocolVersion,task_id:id,pack_id:"reachflow",operation},receive);}catch(failure){if(mounted.current)setError(failure);}finally{runningId.current=null;if(mounted.current){returnTo.current=sample.current;setWorking(false);}}}
-  function submitService(){let requestAction:ReachFlowAction;if(action==="start_collection")requestAction={kind:action,...plan,engine_selection_revision:Number(plan.engine_selection_revision)};else requestAction={kind:action,task_id:taskId};void call({kind:"reach_flow",request:{...connection,action:requestAction}});}
   const phase:Record<string,string>=zh?{starting:"准备中",download:"下载中",verify:"校验与准备",health:"健康检查",activated:"已登记版本",calling:"调用中",finished:"已结束"}:{};
   const state:Record<string,string>=zh?{running:"进行中",succeeded:"完成",failed:"失败",cancelled:"已取消",interrupted:"已中断"}:{};
   return <section aria-label={zh?"队员安装与调用":"Pack installation and calls"}>
@@ -77,14 +73,6 @@ export function PackMarketPanel({config,busy,active,language,onRefresh,onEditing
     </div><p className="tagma-footnote">{zh?"权限与内存为发行声明，当前不提供操作系统沙箱保证。安装将启动发行者提供的程序进行健康检查。":"Permissions and memory are publisher declarations, not an OS sandbox. Installation runs the publisher executable for its health check."}</p><div className="tagma-actions"><TextBtn disabled={locked} onClick={()=>{returnTo.current=review.publisher==="tagma-internal"?internalButton.current:file.current;setReview(null);}}>{zh?"取消":"Cancel"}</TextBtn><TextBtn variant="action" disabled={locked||!review.fits} onClick={()=>void install()}>{zh?"同意权限并安装":"Approve permissions and install"}</TextBtn></div></section>}
     <div className="tagma-actions"><TextBtn ref={sample} disabled={!desktop||locked||!!review||!installed} onClick={()=>void call({kind:"local_sample"})}>{zh?"运行本地固定素材试跑":"Run local fixed sample"}</TextBtn></div>
     {task&&<section className="tagma-editor" aria-label={zh?"队员任务":"Pack task"}><p role="status">{phase[task.phase]??task.phase} · {state[task.state]??task.state}</p><p className="tagma-footnote">{task.task_id}</p>{task.error&&<p className="tagma-error">{packError({code:task.error},zh)}</p>}{task.text&&<PackResult raw={task.text} zh={zh}/>}{working&&task.state==="running"&&<TextBtn onClick={()=>void service.cancelPack(runningId.current!).catch(setError)}>{zh?"停止本机操作 / 等待":"Stop local operation / waiting"}</TextBtn>}<p className="tagma-footnote">{zh?"停止本机等待不会取消已提交的服务任务。取消服务任务请使用下方明确操作，并查询最终状态。":"Stopping local waiting does not cancel a submitted service task. Use the explicit service cancellation below and check its final state."}</p></section>}
-    <details className="tagma-chat-setup"><summary>{zh?"连接 ReachFlow 服务并调用":"Connect to ReachFlow and call"}</summary><p className="tagma-footnote">{zh?"真实采集需要已在 ReachFlow 确认的计划、预算与授权；这里不会代为确认。连接和令牌仅保留在当前窗口内存，不写入配置。":"Real collection requires a plan, budget and authorization already confirmed in ReachFlow. Connection credentials remain in this window's memory."}</p>
-      {internalOnly&&<p role="status" className="tagma-footnote">{zh?"当前内部包仅允许本地试跑，未授予网络访问。连接真实服务需要安装声明对应服务域名的受信任队员包。":"The internal package permits local samples only. Install a trusted package declaring the service domain before connecting."}</p>}
-      <form className="tagma-editor tagma-pack-service" onSubmit={event=>{event.preventDefault();submitService();}}><fieldset disabled={locked||!installed||internalOnly||!!review}>
-      {([["service_url",zh?"服务地址（HTTPS）":"Service URL (HTTPS)"],["workspace_id",zh?"工作区":"Workspace"],["access_token",zh?"访问令牌":"Access token"]] as const).map(([key,label])=><label key={key}>{label}<WordsField required aria-label={label} type={key==="access_token"?"password":"text"} autoComplete="off" value={connection[key]} maxLength={key==="access_token"?8192:2048} onChange={e=>setConnection({...connection,[key]:e.target.value})}/></label>)}
-      <label>{zh?"服务操作":"Service action"}<select className="words" value={action} onChange={e=>setAction(e.target.value as typeof action)}><option value="task_status">{zh?"查询任务":"Query task"}</option><option value="task_report">{zh?"查看任务报告":"View task report"}</option><option value="start_collection">{zh?"启动已确认的采集计划":"Start confirmed collection"}</option><option value="cancel_task">{zh?"请求取消服务任务":"Request service cancellation"}</option></select></label>
-      {action==="start_collection"?([["draft_id",zh?"已确认计划 ID":"Confirmed draft ID"],["confirmation_id",zh?"确认记录 ID":"Confirmation ID"],["plan_digest",zh?"计划摘要":"Plan digest"],["engine_selection_revision",zh?"引擎选择版本":"Engine selection revision"],["idempotency_key",zh?"本次调用唯一标识":"Idempotency key"]] as const).map(([key,label])=><label key={key}>{label}<WordsField required aria-label={label} value={plan[key]} maxLength={160} onChange={e=>setPlan({...plan,[key]:e.target.value})}/></label>):<label>{zh?"服务任务 ID":"Service task ID"}<WordsField required value={taskId} maxLength={128} onChange={e=>setTaskId(e.target.value)}/></label>}
-      <TextBtn type="submit" variant={action==="cancel_task"?"danger":"action"}>{action==="start_collection"?(zh?"明确启动采集":"Start collection"):action==="cancel_task"?(zh?"请求取消此服务任务":"Request cancellation"):action==="task_report"?(zh?"查看任务报告":"View task report"):(zh?"查询服务任务":"Query service task")}</TextBtn>
-      </fieldset><TextBtn disabled={locked} onClick={()=>setConnection({service_url:"",workspace_id:"",access_token:""})}>{zh?"清除连接与令牌":"Clear connection and token"}</TextBtn></form>
-    </details>
+    <ReachFlowForm zh={zh} locked={locked||!!review} taskIdHint={taskId} unavailable={!installed?(zh?"请先安装 ReachFlow 队员。":"Install ReachFlow first."):internalOnly?(zh?"当前内部包没有网络权限。请安装允许服务域名的受信任队员包。":"This internal package has no network permissions. Install a trusted package permitting the service domain."):undefined} onSubmit={request=>void call({kind:"reach_flow",request})}/>
   </section>;
 }

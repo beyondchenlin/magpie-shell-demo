@@ -16,6 +16,7 @@ import { GatewaySettings } from "./GatewaySettings";
 import { ChatView } from "./ChatView";
 import { TeamsPanel } from "./TeamsPanel";
 import { PackMarketPanel } from "./PackMarketPanel";
+import {ResultBrowser} from "./ResultBrowser";
 import { ProductChrome, type ProductPage } from "./ProductChrome";
 import { ConfigurationFailure } from "./ConfigurationFailure";
 import { QuitDialog } from "./QuitDialog";
@@ -196,12 +197,14 @@ export default function ProductApp() {
         {view&&<SecurityControls view={view} mode="gateway" busy={busy||!!editor||profileEditing||gatewayEditing||teamEditing} language={preferences.language} onMutate={mutate} onEditingChange={setSecurityEditing}/>}
         {view && <GatewaySettings config={view.config} busy={busy||securityEditing} language={preferences.language} onMutate={mutate} onEditingChange={setGatewayEditing} onError={setError} />}
         <TextBtn disabled={busy || gatewayEditing} onClick={() => setPage("providers")}>{c.back}</TextBtn></section>}
+      {page==="results"&&<><ResultBrowser zh={preferences.language==="zh"}/><TextBtn onClick={()=>setPage("settings")}>{c.back}</TextBtn></>}
       {page === "settings" && <section className="tagma-settings"><h1>{c.settings}</h1><div className="list prefs">
         <PrefRow name={c.theme}><Segs value={preferences.theme} items={[{ id: "system", label: c.system }, { id: "light", label: c.light }, { id: "dark", label: c.dark }]} onChange={id => changePreferences({ ...preferences, theme: id as ProductTheme })} /></PrefRow>
         <PrefRow name={c.language} wrapVal={false}><LanguagePick label={c.language} value={preferences.language} onChange={language=>changePreferences({...preferences,language})} /></PrefRow>
         <PrefRow name={c.size}><Segs value={preferences.textSize} items={[100, 110, 125, 150].map(n => ({ id: n, label: `${n}%` }))} onChange={id => changePreferences({ ...preferences, textSize: id as Preferences["textSize"] })} /></PrefRow>
         <PrefRow name={c.gateway}><TextBtn onClick={() => setPage("gateway")}>{c.gateway}</TextBtn></PrefRow>
         <PrefRow name={c.usage}><TextBtn onClick={() => setPage("usage")}>{c.usage}</TextBtn></PrefRow>
+        <PrefRow name={preferences.language==="zh"?"成果":"Results"}><TextBtn onClick={()=>setPage("results")}>{preferences.language==="zh"?"已保存成果":"Saved results"}</TextBtn></PrefRow>
         <PrefRow name={c.version}><span>{view?.product_version ?? c.unknown}</span></PrefRow>
         <PrefRow name={c.schema}><span>{view?.config.schema_version ?? c.unknown}</span></PrefRow>
       </div><DiagnosticsPanel language={preferences.language} /><TextBtn disabled={!desktop || busy} onClick={() => void service.quit().catch(setError)}>{c.quit}</TextBtn></section>}

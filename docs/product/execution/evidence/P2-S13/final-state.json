@@ -1,0 +1,48 @@
+{
+  "version": "dev44",
+  "utc": "2026-10-19T07:38:29.4557614Z",
+  "processes": [
+    {
+      "ProcessId": 53832,
+      "ExecutablePath": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\install-p0s16\\tagma-desktop.exe",
+      "CreationDate": "2026-10-19T15:29:52.19971+08:00"
+    },
+    {
+      "ProcessId": 30164,
+      "ExecutablePath": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\install-p0s16\\tagma-gateway.exe",
+      "CreationDate": "2026-10-19T15:29:52.659134+08:00"
+    }
+  ],
+  "automations": [
+    {
+      "id": "tagma-prd",
+      "status": "status = \"PAUSED\""
+    },
+    {
+      "id": "magpie-cis",
+      "status": "status = \"PAUSED\""
+    }
+  ],
+  "disks": [
+    {
+      "Name": "C",
+      "freeGiB": 31.63
+    },
+    {
+      "Name": "D",
+      "freeGiB": 11.28
+    }
+  ],
+  "preservedOutputSha256": "C0915B398748FB06F10DBDBA8A90E4777F37C3EDD4299F8174B61AED841DF6B9",
+  "publicBundle": [
+    {
+      "Path": "D:\\demo1\\tagmaai\\.cache\\p2-s11-native-install\\bundle\\internal-pack.json",
+      "Hash": "7B462378A5AB48416F18017B9E8876AB7AF752595D61A6280813DD269E602332"
+    },
+    {
+      "Path": "D:\\demo1\\tagmaai\\.cache\\p2-s11-native-install\\bundle\\internal-pack.zip",
+      "Hash": "7D0A1F43255A00F157B22CF78B0B5997728E15BE08627C639BCE940D7381392B"
+    }
+  ],
+  "worktreesAdded": 0
+}

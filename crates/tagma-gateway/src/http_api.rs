@@ -111,6 +111,7 @@ struct Invocation {
     ordinal: u32,
 }
 struct Execution {
+    reachflow: Option<tagma_core::packs::ReachFlowRequest>,
     plan: PinnedPlan,
     run: Arc<super::security::Run>,
     request: Arc<super::usage::TrackedRequest>,
@@ -690,6 +691,18 @@ fn intermediate_text(value: &Value) -> Result<&str, &'static str> {
         .ok_or("TEAM_INTERMEDIATE_EMPTY")
 }
 
+fn take_reachflow(input:&mut Value)->Result<Option<tagma_core::packs::ReachFlowRequest>,&'static str>{
+    let Some(raw)=input.as_object_mut().and_then(|object|object.remove("tagma_reachflow")) else{return Ok(None)};
+    if raw.is_null(){return Ok(None)}
+    let request:tagma_core::packs::ReachFlowRequest=serde_json::from_value(raw).map_err(|_|"PACK_INVALID_INPUT")?;
+    request.validate().map_err(|_|"PACK_INVALID_INPUT")?;
+    Ok(Some(request))
+}
+fn service_plan_allowed(plan:&PinnedPlan)->bool{
+    matches!(plan.steps.first(),Some(PinnedStep::Pack{input:TeamStepInput::OriginalMessages,..}))
+        && plan.steps.iter().filter(|step|matches!(step,PinnedStep::Pack{..})).count()==1
+}
+
 async fn completion(
     State(state): State<Arc<Runtime>>,
     headers: HeaderMap,
@@ -720,7 +733,7 @@ async fn completion(
         _ = tokio::time::sleep_until(deadline) => return unread_body_error(StatusCode::REQUEST_TIMEOUT, "REQUEST_BODY_TIMEOUT"),
         body = Json::<Value>::from_request(request, &state) => body,
     };
-    let Json(input) = match body {
+    let Json(mut input) = match body {
         Ok(input) => input,
         Err(rejection) => {
             return unread_body_error(
@@ -732,6 +745,11 @@ async fn completion(
                 },
             );
         }
+    };
+    // Consume privileged fields before any request is cloned for a model.
+    let reachflow = match take_reachflow(&mut input) {
+        Ok(value) => value,
+        Err(code) => return error(StatusCode::BAD_REQUEST, code),
     };
     let request_started = tokio::time::Instant::now();
     let (model, streaming) = match validate(&input) {
@@ -812,6 +830,9 @@ async fn completion(
             Err(PlanError(status, code)) => return error(status, code),
         }
     };
+    if reachflow.is_some() && !service_plan_allowed(&plan) {
+        return error(StatusCode::BAD_REQUEST, "PACK_INVALID_INPUT");
+    }
     if plan.public_model.is_some() && super::function_tools::uses_tools(&input) {
         return error(StatusCode::BAD_REQUEST, "UNSUPPORTED_TEAM_TOOLS");
     }
@@ -882,6 +903,7 @@ async fn completion(
         &state,
         &input,
         Execution {
+            reachflow,
             plan,
             run,
             request: request.clone(),
@@ -933,6 +955,7 @@ fn request_metadata(
 
 async fn execute_plan(state: &Arc<Runtime>, input: &Value, execution: Execution) -> Response {
     let Execution {
+        mut reachflow,
         plan,
         run,
         request,
@@ -996,6 +1019,7 @@ async fn execute_plan(state: &Arc<Runtime>, input: &Value, execution: Execution)
                         ordinal: index as u32 + 1,
                     },
                     version.clone(),
+                    reachflow.take(),
                     &payload,
                     final_step && streaming,
                     deadline,
@@ -1070,6 +1094,7 @@ async fn forward_pack(
     state: &Arc<Runtime>,
     invocation: Invocation,
     version: tagma_core::packs::InstalledPackVersion,
+    reachflow: Option<tagma_core::packs::ReachFlowRequest>,
     payload: &Value,
     streaming: bool,
     deadline: tokio::time::Instant,
@@ -1084,9 +1109,13 @@ async fn forward_pack(
     else {
         return error(StatusCode::BAD_REQUEST, "PACK_INVALID_INPUT");
     };
-    if !matches!(text.trim(), "本地试跑" | "local sample") {
+    if reachflow.is_none() && !matches!(text.trim(), "本地试跑" | "local sample") {
         return error(StatusCode::BAD_REQUEST, "PACK_SAMPLE_COMMAND_REQUIRED");
     }
+    let operation=match reachflow {
+        Some(request)=>tagma_runtime::packs::PackOperation::ReachFlow{request},
+        None=>tagma_runtime::packs::PackOperation::LocalSample{text:tagma_runtime::reachflow::LOCAL_SAMPLE.into()},
+    };
     let mut attempt = match invocation
         .request
         .attempt(
@@ -1103,11 +1132,10 @@ async fn forward_pack(
     let _cancel_on_drop = cancel.clone().drop_guard();
     let worker_cancel = cancel.clone();
     let directory = state.directory.clone();
-    let text = text.to_owned();
     // A disconnected HTTP client cancels, while the worker retains the process
     // and cross-host lease until cleanup has completed.
     let mut worker = tokio::spawn(async move {
-        tagma_runtime::pack_route::sample(&directory, version, &text, worker_cancel).await
+        tagma_runtime::pack_route::execute(&directory, version, operation, worker_cancel).await
     });
     let mut stopped = None;
     let joined = tokio::select! {
@@ -1535,6 +1563,19 @@ async fn forward_response(
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn service_context_is_consumed_before_model_payload_and_never_inferred(){
+        let mut input=json!({"model":"tagma/reachflow","messages":[{"role":"user","content":"query"}],"tagma_reachflow":{"service_url":"https://service.example.com/","workspace_id":"work-1","access_token":"synthetic-not-a-real-secret","action":{"kind":"task_status","task_id":"task-1"}}});
+        let request=take_reachflow(&mut input).unwrap().unwrap();
+        assert_eq!(request.workspace_id,"work-1");
+        assert!(!input.to_string().contains("synthetic-not-a-real-secret"));
+        assert!(input.get("tagma_reachflow").is_none());
+        assert!(validate(&input).is_ok());
+        assert!(take_reachflow(&mut input).unwrap().is_none());
+        input["tagma_reachflow"]=json!({"service_url":"http://localhost/","workspace_id":"work-1","access_token":"synthetic","action":{"kind":"task_status","task_id":"task-1"}});
+        assert!(take_reachflow(&mut input).is_err());
+        assert!(input.get("tagma_reachflow").is_none());
+    }
     #[tokio::test]
     async fn pack_route_pins_version_without_cloud_or_credentials() {
         let state=crate::apply_tests::state();
@@ -1542,7 +1583,11 @@ mod tests {
         assert!(pin_plan(&loaded,tagma_runtime::pack_route::MODEL,None,&Default::default()).is_err());
         let v=tagma_core::packs::InstalledPackVersion {version:"1.0.0".into(),preparation_id:uuid::Uuid::new_v4().to_string(),manifest_sha256:"a".repeat(64),display_name:"ReachFlow".into(),installed_ms:"1".into()};
         loaded.1.installed_packs.push(tagma_core::packs::InstalledPack{id:"reachflow".into(),active_version:Some(v.version.clone()),versions:vec![v.clone()]});
-        let plan=pin_plan(&loaded,tagma_runtime::pack_route::MODEL,None,&Default::default()).ok().unwrap();
+        let mut plan=pin_plan(&loaded,tagma_runtime::pack_route::MODEL,None,&Default::default()).ok().unwrap();
+        assert!(service_plan_allowed(&plan));
+        plan.steps.push(pin_pack(&loaded.1,None,TeamStepInput::OriginalMessages,Duration::from_secs(10)).ok().unwrap());
+        assert!(!service_plan_allowed(&plan));
+        plan.steps.pop();
         loaded.1.installed_packs[0].active_version=None;
         assert!(pin_plan(&loaded,tagma_runtime::pack_route::MODEL,None,&Default::default()).is_err());
         match &plan.steps[0] {PinnedStep::Pack{version,..}=>assert_eq!(version,&v),_=>panic!("pack route")}

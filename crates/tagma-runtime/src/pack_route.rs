@@ -1,5 +1,5 @@
 //! Gateway routing uses the same signed prepared executable as the desktop.
-//! This entry only accepts an explicit local sample command, never service credentials.
+//! Service credentials are one-call input, never conversation text or stored recipes.
 use crate::packs::{PackExecutor, PackOperation, PackReplyBody, PackRunError};
 use std::{
     path::{Path, PathBuf},
@@ -57,15 +57,12 @@ pub fn trust(directory: &Path) -> Result<Arc<PackTrustStore>, PackRunError> {
     .map(Arc::new)
     .map_err(|_| PackRunError::Unavailable)
 }
-pub async fn sample(
+pub async fn execute(
     directory: &Path,
     version: InstalledPackVersion,
-    text: &str,
+    operation: PackOperation,
     cancel: CancellationToken,
 ) -> Result<String, PackRunError> {
-    if !matches!(text.trim(), "本地试跑" | "local sample") {
-        return Err(PackRunError::InvalidInput);
-    }
     let directory = directory.to_path_buf();
     let executor = tokio::task::spawn_blocking(move || {
         let identity = tagma_core::ConfigService::read_runtime_identity(&directory)
@@ -83,9 +80,7 @@ pub async fn sample(
             uuid::Uuid::parse_str(&version.preparation_id)
                 .map_err(|_| PackRunError::Unavailable)?,
             &version.manifest_sha256,
-            PackOperation::LocalSample {
-                text: crate::reachflow::LOCAL_SAMPLE.into(),
-            },
+            operation,
             cancel,
         )
         .await?;

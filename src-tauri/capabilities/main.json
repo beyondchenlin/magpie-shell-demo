@@ -7,6 +7,8 @@
   ],
   "permissions": [
     "allow-save-pack-result",
+    "allow-list-pack-results",
+    "allow-read-pack-result",
     "allow-pack-market",
     "allow-review-pack",
     "allow-install-pack",

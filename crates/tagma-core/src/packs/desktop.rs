@@ -7,6 +7,11 @@ pub struct PackUiError {
     pub code: String,
 }
 #[derive(Debug, Clone, Serialize, TS)]
+pub struct SavedPackResult {
+    pub name: String,
+    pub bytes: String,
+}
+#[derive(Debug, Clone, Serialize, TS)]
 pub struct PackReviewView {
     pub review_id: String,
     pub manifest_sha256: String,

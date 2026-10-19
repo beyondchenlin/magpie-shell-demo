@@ -1,8 +1,81 @@
 //! Explicit user export to an existing work directory, outside installation/configuration.
 use std::{
-    io::Write,
+    io::{Read, Write},
     path::{Component, Path},
 };
+
+fn result_name(name: &str) -> bool {
+    name.strip_prefix("tagma-result-")
+        .and_then(|n| n.strip_suffix(".json"))
+        .is_some_and(|id| uuid::Uuid::parse_str(id).is_ok() && id.len() == 36)
+}
+fn ordinary_result(path: &Path) -> Result<std::fs::Metadata, &'static str> {
+    let metadata = std::fs::symlink_metadata(path).map_err(|_| "RESULT_READ_FAILED")?;
+    if !metadata.is_file() || metadata.file_type().is_symlink() || metadata.len() > 128 * 1024 {
+        return Err("RESULT_INVALID");
+    }
+    #[cfg(windows)]
+    {
+        use std::os::windows::fs::MetadataExt;
+        if metadata.file_attributes() & 0x400 != 0 {
+            return Err("RESULT_INVALID");
+        }
+    }
+    Ok(metadata)
+}
+/// Explicit directory only; no recursive scan or remembered access to user files.
+pub fn list(directory: &Path) -> Result<Vec<tagma_core::packs::SavedPackResult>, &'static str> {
+    let directory = plain_directory(directory)?;
+    let mut found = Vec::new();
+    for entry in std::fs::read_dir(directory)
+        .map_err(|_| "RESULT_READ_FAILED")?
+        .take(1000)
+    {
+        let entry = entry.map_err(|_| "RESULT_READ_FAILED")?;
+        let name = entry.file_name().to_string_lossy().into_owned();
+        if !result_name(&name) {
+            continue;
+        }
+        if let Ok(metadata) = ordinary_result(&entry.path()) {
+            found.push(tagma_core::packs::SavedPackResult {
+                name,
+                bytes: metadata.len().to_string(),
+            });
+            if found.len() == 100 {
+                break;
+            }
+        }
+    }
+    found.sort_by(|a, b| a.name.cmp(&b.name));
+    Ok(found)
+}
+pub fn read(directory: &Path, name: &str) -> Result<String, &'static str> {
+    if !result_name(name) {
+        return Err("RESULT_INVALID");
+    }
+    let directory = plain_directory(directory)?;
+    let path = directory.join(name);
+    ordinary_result(&path)?;
+    let mut raw = String::new();
+    std::fs::File::open(&path)
+        .map_err(|_| "RESULT_READ_FAILED")?
+        .take(128 * 1024 + 1)
+        .read_to_string(&mut raw)
+        .map_err(|_| "RESULT_READ_FAILED")?;
+    if raw.len() > 128 * 1024 {
+        return Err("RESULT_LIMIT");
+    }
+    let value: serde_json::Value = serde_json::from_str(&raw).map_err(|_| "RESULT_INVALID")?;
+    if value["format"] != "tagma.pack-result.v1"
+        || !matches!(
+            value["result"]["mode"].as_str(),
+            Some("local_fixed_sample" | "reachflow_service" | "reachflow_report")
+        )
+    {
+        return Err("RESULT_INVALID");
+    }
+    serde_json::to_string(&value["result"]).map_err(|_| "RESULT_INVALID")
+}
 
 fn plain_directory(path: &Path) -> Result<std::path::PathBuf, &'static str> {
     if !path.is_absolute() || path.components().any(|p| matches!(p, Component::ParentDir)) {
@@ -93,6 +166,30 @@ pub fn save(
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn saved_results_reopen_without_process_state_and_reject_other_files() {
+        let temp = tempfile::tempdir().unwrap();
+        let path=save(temp.path(),r#"{"mode":"reachflow_report","document_preview":"<script>text only</script>","preview_truncated":true}"#,&[]).unwrap();
+        std::fs::write(temp.path().join("unrelated.json"), "private").unwrap();
+        let entries = list(temp.path()).unwrap();
+        assert_eq!(entries.len(), 1);
+        assert_eq!(
+            Path::new(&path).file_name().unwrap().to_str().unwrap(),
+            entries[0].name
+        );
+        let value: serde_json::Value =
+            serde_json::from_str(&read(temp.path(), &entries[0].name).unwrap()).unwrap();
+        assert_eq!(value["document_preview"], "<script>text only</script>");
+        assert_eq!(value["preview_truncated"], true);
+        assert!(read(temp.path(), "../unrelated.json").is_err());
+        assert!(read(temp.path(), "unrelated.json").is_err());
+        std::fs::write(&path, "{invalid}").unwrap();
+        assert!(read(temp.path(), &entries[0].name).is_err());
+        assert_eq!(
+            std::fs::read(temp.path().join("unrelated.json")).unwrap(),
+            b"private"
+        );
+    }
     #[test]
     fn explicit_result_export_is_durable_separate_and_never_overwrites() {
         let temp = tempfile::tempdir().unwrap();

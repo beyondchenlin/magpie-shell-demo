@@ -85,6 +85,7 @@ async fn team_execution_pins_recipe_and_targets_and_stops_after_failure_timeout_
         let calls=calls.clone();let cancelled=cancelled.clone();let entered=entered.clone();let release=release.clone();async move{
             let secondary=request.uri().path().starts_with("/second/");
             let bytes=axum::body::to_bytes(request.into_body(),128*1024).await.unwrap();let input:Value=serde_json::from_slice(&bytes).unwrap();
+            assert!(input.get("tagma_reachflow").is_none(),"service credentials must never enter cloud payloads");
             let model=input["model"].as_str().unwrap().to_owned();let prompt=input["messages"][0]["content"].as_str().unwrap().to_owned();let streaming=input["stream"].as_bool().unwrap_or(false);
             calls.lock().unwrap().push((model.clone(),prompt.clone(),streaming,secondary));
             if model=="review-model"{
@@ -178,6 +179,9 @@ async fn team_execution_pins_recipe_and_targets_and_stops_after_failure_timeout_
         .unwrap();
     let base = format!("http://127.0.0.1:{gateway_port}/v1");
     let endpoint = format!("{base}/chat/completions");
+    let rejected=client.post(&endpoint).json(&json!({"model":"final-model","messages":[{"role":"user","content":"query"}],"tagma_reachflow":{"service_url":"https://service.example.com/","workspace_id":"work-1","access_token":"synthetic-test-only","action":{"kind":"task_status","task_id":"task-1"}}})).send().await.unwrap();
+    assert_eq!(rejected.status(),StatusCode::BAD_REQUEST);
+    assert!(calls.lock().unwrap().is_empty(),"invalid service route must not dispatch a cloud request");
     let input = |prompt: &str, stream: bool, model: &str| {
         let mut value =
             json!({"model":model,"messages":[{"role":"user","content":prompt}],"stream":stream});

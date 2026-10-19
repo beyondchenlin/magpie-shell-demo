@@ -1,0 +1,152 @@
+{
+  "owner": "tagma-p2-s13/service-results/v1",
+  "hashScope": "Original collected bytes; Git text line endings may normalize; originals retained in .cache/p2-s13-service-results",
+  "files": [
+    {
+      "name": "04-exit-state.json",
+      "bytes": 14920,
+      "sha256": "5DD08E49C8CEC4F85D9542473B160913050192AA7FD64683F3D823D035629E35"
+    },
+    {
+      "name": "06-dev44.json",
+      "bytes": 43345,
+      "sha256": "63DF044363DB7A6E263BE1AED7C3CE864003C159777893F4A7370A5D5E1490E0"
+    },
+    {
+      "name": "07-settings-results.json",
+      "bytes": 50256,
+      "sha256": "8A0BA384F7223902EC88B4C8F49DDAD91032EC7F57CC4C379D96688BE5714F1F"
+    },
+    {
+      "name": "10-directory-loaded.json",
+      "bytes": 36467,
+      "sha256": "C0DD3A47E644CC19B96D45B86876EA5237AF67D9E965D7BCF788B8C87C216880"
+    },
+    {
+      "name": "12-restored-content.json",
+      "bytes": 53282,
+      "sha256": "A729981043DB49FCD30BF7F32823813AC923BF7A71983666AAE78877B9686D64"
+    },
+    {
+      "name": "16-direct-service-permissions.json",
+      "bytes": 64082,
+      "sha256": "96082AEEA57BDB3F0B08D40935D8C93FE337797BFB4465F76726BF943F26B9FA"
+    },
+    {
+      "name": "19-team-service-permissions.json",
+      "bytes": 63195,
+      "sha256": "4B9214F19E1BCF062484626F8FC6624B23E95B640DF99EBF2D7B0C5B8E68F49F"
+    },
+    {
+      "name": "24-restarted.json",
+      "bytes": 43347,
+      "sha256": "EC4EDB824E080121194B5257BAE05E5B30034FA48FBCE1C5FF4A6D75D866D1DE"
+    },
+    {
+      "name": "26-directory-restored.json",
+      "bytes": 34467,
+      "sha256": "B6990FC2E547353196044A0716422E6C91419DE3F1A001D281EA6E1410B690AA"
+    },
+    {
+      "name": "29-restored-after-restart.json",
+      "bytes": 53282,
+      "sha256": "B0CF90DBB744AC44150F91BE26F8253C3ED8B08BE31501A96A3CB8BCD64F08CE"
+    },
+    {
+      "name": "35-sample-regression-passed.json",
+      "bytes": 65335,
+      "sha256": "A22FEFF20F777E9CCD6EAD77D6E688CB2D03DFBFA7A2A02F07D7770E1013A4DC"
+    },
+    {
+      "name": "binaries.json",
+      "bytes": 461,
+      "sha256": "694EDF81F3F2B3C6BFDBCF68A62FCAB7A3B8CE5D6509372ABE8FAF044CBF0621"
+    },
+    {
+      "name": "BUDGET.txt",
+      "bytes": 237,
+      "sha256": "35877378688B1B339829EF988CE7D27B031ED29CDBD089907C96106E04BA3317"
+    },
+    {
+      "name": "build.log",
+      "bytes": 1267,
+      "sha256": "556E22A9F6C3317FFC4C3CCADD51BD6521CD6BF7C33D3C2F56CC4178EDA8DC2A"
+    },
+    {
+      "name": "check.log",
+      "bytes": 2357,
+      "sha256": "337A30D9D7883184876A47CFB2DC5323EDC467A1E81E6B021BE0950E32AB87F7"
+    },
+    {
+      "name": "clippy.log",
+      "bytes": 2514,
+      "sha256": "3F9911A247FAAD3F6D2A23C115A47C1E645BBB2E2F2563874DDD04B736DB6CF0"
+    },
+    {
+      "name": "Control.ps1",
+      "bytes": 30181,
+      "sha256": "EDD1E71505C34A721A7CC75F8ACF09D494A084A2E1D4B281E63ACFFCE9D09000"
+    },
+    {
+      "name": "final-state.json",
+      "bytes": 1444,
+      "sha256": "C019646AEE059AE3B3CF8119F19392E27C87E92866F919C5A1E1F71DC9FBD116"
+    },
+    {
+      "name": "frontend.log",
+      "bytes": 2903,
+      "sha256": "AA3BEACB23DF9D0D4451034EB8F18C1FE442A8A21F783063E5C923ACD320CF5B"
+    },
+    {
+      "name": "Launch.ps1",
+      "bytes": 436,
+      "sha256": "9C57AE4A727116051012EF778930FC91806B059C7F48114F62BADB5F3B2A54B5"
+    },
+    {
+      "name": "native-chat-service-permissions.png",
+      "bytes": 29499,
+      "sha256": "70C775E5F9CEDCE44EE5688D9A050A5ABD992F54326AB7A1833618A4D4074448"
+    },
+    {
+      "name": "native-regression-sample.png",
+      "bytes": 28930,
+      "sha256": "14E2BB1D9FEADB95EAE5C9BAE3E57DA3EC34F65BEB025FA8B4D1FA1BCBD5829F"
+    },
+    {
+      "name": "native-results-after-restart.png",
+      "bytes": 35885,
+      "sha256": "1D651F67AF13E91922A4E5C079AC6A61AE699991725A6EDBCF997DA63D357CE7"
+    },
+    {
+      "name": "native-saved-result.png",
+      "bytes": 35885,
+      "sha256": "1D651F67AF13E91922A4E5C079AC6A61AE699991725A6EDBCF997DA63D357CE7"
+    },
+    {
+      "name": "native-team-service-permissions.png",
+      "bytes": 26129,
+      "sha256": "C633A47BADAC8BE4D144299B32D72641C8B833E82DE673C3CE3762395DC00617"
+    },
+    {
+      "name": "Run.ps1",
+      "bytes": 2062,
+      "sha256": "104ED757589978C3245E425791E0A5891436B120093CBE2AA2FA0840E8B0F1AB"
+    },
+    {
+      "name": "source-check.json",
+      "bytes": 106,
+      "sha256": "E95073011B4E7273AF054DB5695741193EAE78FB0DFE017AA12B6703357EC5BB"
+    },
+    {
+      "name": "source-frozen44.json",
+      "bytes": 59171,
+      "sha256": "F9FBB928DE9307033C2620EAC60AB06901F13302D96A4FFC5504553590B5CB79"
+    },
+    {
+      "name": "tests.log",
+      "bytes": 4666,
+      "sha256": "A1DF57508D8FE9264E4D279B95049377DD244A11B17712E473A7CDBF7C07C049"
+    }
+  ],
+  "logicalBytes": 786111.0
+}

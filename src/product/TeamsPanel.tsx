@@ -58,7 +58,7 @@ function TeamEditor({config,team,busy,zh,onSave,onCancel}:{config:ConfigView;tea
     </section>)}
     <p className="tagma-footnote">{zh?"中间步骤只产生文字，只有最后一步对外回答。ReachFlow 步骤仅接受“本地试跑”命令，输出固定素材，不发起真实采集；后续云模型可能收费。":"Intermediate steps produce text; only the last step answers. ReachFlow accepts “local sample” only and produces fixed material without collection. Subsequent cloud models may incur charges."}</p>
     {!available&&<p className="tagma-footnote">{zh?"先配置一个已启用的供应商模型；当前仍可保存空草稿。":"Configure an enabled provider model first. An incomplete draft can still be saved."}</p>}
-    <div className="tagma-actions"><TextBtn disabled={busy||!reachflow||(!available&&!automatic)||recipe.steps.length>=8} onClick={addReachflow}>{zh?"添加 ReachFlow 试跑步骤":"Add ReachFlow sample step"}</TextBtn><TextBtn disabled={busy||(!available&&!automatic)||recipe.steps.length>=8||(recipe.routing==="manual"&&recipe.steps.length>0)} onClick={addStep}>{zh?"添加步骤":"Add step"}</TextBtn><TextBtn disabled={busy} onClick={onCancel}>{zh?"取消":"Cancel"}</TextBtn><TextBtn variant="action" type="submit" busy={busy}>{zh?"保存草稿":"Save draft"}</TextBtn></div>
+    <div className="tagma-actions"><TextBtn disabled={busy||!reachflow||(!available&&!automatic)||recipe.steps.length>=8} onClick={addReachflow}>{zh?"添加 ReachFlow 步骤":"Add ReachFlow step"}</TextBtn><TextBtn disabled={busy||(!available&&!automatic)||recipe.steps.length>=8||(recipe.routing==="manual"&&recipe.steps.length>0)} onClick={addStep}>{zh?"添加步骤":"Add step"}</TextBtn><TextBtn disabled={busy} onClick={onCancel}>{zh?"取消":"Cancel"}</TextBtn><TextBtn variant="action" type="submit" busy={busy}>{zh?"保存草稿":"Save draft"}</TextBtn></div>
   </form>;
 }
 
