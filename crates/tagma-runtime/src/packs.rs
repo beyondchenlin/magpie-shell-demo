@@ -37,6 +37,9 @@ pub enum PackRunError {
     OutputLimit,
     InvalidInput,
     ConfigurationConflict,
+    ServiceAuthRequired,
+    ServiceConfirmationRequired,
+    ServiceUnconfirmed,
 }
 impl std::fmt::Display for PackRunError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -53,6 +56,9 @@ impl std::fmt::Display for PackRunError {
             Self::OutputLimit => "PACK_OUTPUT_LIMIT",
             Self::InvalidInput => "PACK_INVALID_INPUT",
             Self::ConfigurationConflict => "CONFIG_CONFLICT",
+            Self::ServiceAuthRequired => "REACHFLOW_AUTH_REQUIRED",
+            Self::ServiceConfirmationRequired => "REACHFLOW_CONFIRMATION_REQUIRED",
+            Self::ServiceUnconfirmed => "REACHFLOW_RESULT_UNCONFIRMED",
         })
     }
 }
@@ -63,7 +69,12 @@ type Result<T> = std::result::Result<T, PackRunError>;
 #[serde(tag = "kind", rename_all = "snake_case", deny_unknown_fields)]
 pub enum PackOperation {
     Ping,
-    LocalSample { text: String },
+    LocalSample {
+        text: String,
+    },
+    ReachFlow {
+        request: tagma_core::packs::ReachFlowRequest,
+    },
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -313,6 +324,18 @@ impl PackExecutor {
             .join("payload")
             .join(&artifact.entry.executable);
         let manifest = prepared.manifest().manifest();
+        if let PackOperation::ReachFlow { request } = &operation {
+            let endpoint = request.validate().map_err(|_| PackRunError::InvalidInput)?;
+            if manifest.id != "reachflow"
+                || !artifact
+                    .permissions
+                    .network_hosts
+                    .iter()
+                    .any(|h| Some(h.as_str()) == endpoint.host_str())
+            {
+                return Err(PackRunError::InvalidInput);
+            }
+        }
         let ping = matches!(operation, PackOperation::Ping);
         let timeout_ms = if ping {
             artifact.health.timeout_ms
@@ -373,7 +396,8 @@ async fn invoke(
     limit: Duration,
     cancel: CancellationToken,
 ) -> Result<PackReply> {
-    let mut bytes = serde_json::to_vec(input).map_err(|_| PackRunError::InvalidInput)?;
+    let mut bytes =
+        zeroize::Zeroizing::new(serde_json::to_vec(input).map_err(|_| PackRunError::InvalidInput)?);
     bytes.push(b'\n');
     let mut command = Command::new(executable);
     command
@@ -450,8 +474,16 @@ async fn invoke(
         match (&input.operation, &reply.body) {
             (PackOperation::Ping, PackReplyBody::Ready) => {}
             (PackOperation::LocalSample { .. }, PackReplyBody::Result { text })
+            | (PackOperation::ReachFlow { .. }, PackReplyBody::Result { text })
                 if !text.trim().is_empty() && text.len() <= 64 * 1024 => {}
-            (_, PackReplyBody::Failed { .. }) => return Err(PackRunError::ProcessFailed),
+            (_, PackReplyBody::Failed { code }) => {
+                return Err(match code.as_str() {
+                    "REACHFLOW_AUTH_REQUIRED" => PackRunError::ServiceAuthRequired,
+                    "REACHFLOW_CONFIRMATION_REQUIRED" => PackRunError::ServiceConfirmationRequired,
+                    "REACHFLOW_RESULT_UNCONFIRMED" => PackRunError::ServiceUnconfirmed,
+                    _ => PackRunError::ProcessFailed,
+                });
+            }
             _ => return Err(PackRunError::ProtocolError),
         }
         Ok(reply)

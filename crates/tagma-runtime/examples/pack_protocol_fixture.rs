@@ -34,6 +34,9 @@ fn main() {
         PackOperation::LocalSample { text } => PackReplyBody::Result {
             text: format!("本机测试队员已处理：{text}"),
         },
+        PackOperation::ReachFlow { .. } => PackReplyBody::Failed {
+            code: "SERVICE_UNAVAILABLE".into(),
+        },
     };
     let reply = PackReply {
         protocol_version: 1,

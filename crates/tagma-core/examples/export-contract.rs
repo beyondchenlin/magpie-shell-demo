@@ -11,6 +11,15 @@ use ts_rs::TS;
 fn main() {
     let cfg = ts_rs::Config::default();
     let declarations = [
+        packs::PackUiError::decl(&cfg),
+        packs::PackReviewView::decl(&cfg),
+        packs::PackTaskEvent::decl(&cfg),
+        packs::PackMarketView::decl(&cfg),
+        packs::ConfirmPackInstall::decl(&cfg),
+        packs::InvokePack::decl(&cfg),
+        packs::PackUserOperation::decl(&cfg),
+        packs::ReachFlowRequest::decl(&cfg),
+        packs::ReachFlowAction::decl(&cfg),
         packs::InstalledPackVersion::decl(&cfg),
         packs::InstalledPack::decl(&cfg),
         ErrorCode::decl(&cfg),

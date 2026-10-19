@@ -9,6 +9,7 @@ use tagma_core::{credentials::SystemCredentials, *};
 use tagma_runtime::GatewayManager;
 use tauri::{Emitter, Manager, State, WebviewWindow};
 mod chat;
+mod packs;
 mod startup;
 
 struct Application {
@@ -22,6 +23,119 @@ struct Application {
     directory: Option<std::path::PathBuf>,
     chat: chat::ChatBridge,
     usage_reader: tagma_runtime::usage::UsageReader,
+    packs: std::sync::Mutex<Option<Arc<packs::PackBridge>>>,
+}
+
+fn pack_bridge(
+    window: &WebviewWindow,
+    app: &Application,
+) -> Result<Arc<packs::PackBridge>, tagma_core::packs::PackUiError> {
+    let service = config(window, app).map_err(|_| tagma_core::packs::PackUiError {
+        code: "PACK_UNAVAILABLE".into(),
+    })?;
+    let mut state = app
+        .packs
+        .lock()
+        .map_err(|_| tagma_core::packs::PackUiError {
+            code: "PACK_UNAVAILABLE".into(),
+        })?;
+    if let Some(bridge) = state.as_ref() {
+        return Ok(bridge.clone());
+    }
+    let bridge = Arc::new(packs::PackBridge::new(
+        app.directory
+            .as_deref()
+            .ok_or(tagma_core::packs::PackUiError {
+                code: "PACK_UNAVAILABLE".into(),
+            })?,
+        service,
+    )?);
+    *state = Some(bridge.clone());
+    Ok(bridge)
+}
+fn pack_protocol(version: u32) -> Result<(), tagma_core::packs::PackUiError> {
+    check_protocol(version).map_err(|_| tagma_core::packs::PackUiError {
+        code: "INCOMPATIBLE_VERSION".into(),
+    })
+}
+#[tauri::command]
+fn pack_market(
+    window: WebviewWindow,
+    app: State<'_, Application>,
+    protocol_version: u32,
+) -> Result<tagma_core::packs::PackMarketView, tagma_core::packs::PackUiError> {
+    pack_protocol(protocol_version)?;
+    pack_bridge(&window, &app)?.view()
+}
+#[tauri::command]
+async fn review_pack(
+    window: WebviewWindow,
+    app: State<'_, Application>,
+    protocol_version: u32,
+    record: String,
+) -> Result<tagma_core::packs::PackReviewView, tagma_core::packs::PackUiError> {
+    pack_protocol(protocol_version)?;
+    let bridge = pack_bridge(&window, &app)?;
+    bridge.review(
+        app.config
+            .as_ref()
+            .map_err(|_| tagma_core::packs::PackUiError {
+                code: "PACK_UNAVAILABLE".into(),
+            })?,
+        &record,
+    )
+}
+#[tauri::command]
+async fn install_pack(
+    window: WebviewWindow,
+    app: State<'_, Application>,
+    input: tagma_core::packs::ConfirmPackInstall,
+    on_event: tauri::ipc::Channel<tagma_core::packs::PackTaskEvent>,
+) -> Result<ConfigView, tagma_core::packs::PackUiError> {
+    pack_protocol(input.protocol_version)?;
+    let bridge = pack_bridge(&window, &app)?;
+    bridge
+        .install(
+            app.config
+                .as_ref()
+                .map_err(|_| tagma_core::packs::PackUiError {
+                    code: "PACK_UNAVAILABLE".into(),
+                })?,
+            input,
+            on_event,
+        )
+        .await
+}
+#[tauri::command]
+async fn invoke_pack(
+    window: WebviewWindow,
+    app: State<'_, Application>,
+    input: tagma_core::packs::InvokePack,
+    on_event: tauri::ipc::Channel<tagma_core::packs::PackTaskEvent>,
+) -> Result<(), tagma_core::packs::PackUiError> {
+    pack_protocol(input.protocol_version)?;
+    let bridge = pack_bridge(&window, &app)?;
+    bridge
+        .call(
+            app.config
+                .as_ref()
+                .map_err(|_| tagma_core::packs::PackUiError {
+                    code: "PACK_UNAVAILABLE".into(),
+                })?,
+            input,
+            on_event,
+        )
+        .await
+}
+#[tauri::command]
+fn cancel_pack(
+    window: WebviewWindow,
+    app: State<'_, Application>,
+    protocol_version: u32,
+    task_id: String,
+) -> Result<(), tagma_core::packs::PackUiError> {
+    pack_protocol(protocol_version)?;
+    pack_bridge(&window, &app)?.cancel(&task_id)
 }
 
 fn local(window: &WebviewWindow) -> AppResult<()> {
@@ -713,10 +827,16 @@ fn main() {
                 directory: local_directory,
                 chat: chat::ChatBridge::new()?,
                 usage_reader: Default::default(),
+                packs: Default::default(),
             });
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
+            pack_market,
+            review_pack,
+            install_pack,
+            invoke_pack,
+            cancel_pack,
             send_chat,
             cancel_chat,
             save_profile,
@@ -789,10 +909,32 @@ fn main() {
                     let runtime = state.runtime.clone();
                     let handle = app.clone();
                     tauri::async_runtime::spawn(async move {
+                        let packs = handle
+                            .state::<Application>()
+                            .packs
+                            .lock()
+                            .ok()
+                            .and_then(|state| state.clone());
+                        if let Some(packs) = packs
+                            && packs.shutdown().await.is_err()
+                        {
+                            handle
+                                .state::<Application>()
+                                .quitting
+                                .store(false, Ordering::SeqCst);
+                            let _ = handle
+                                .emit("tagma-quit-failed", AppError::new(ErrorCode::InternalError));
+                            return;
+                        }
                         if let Some(runtime) = runtime
                             && let Err(error) = runtime.stop().await
                             && error.code != ErrorCode::OwnershipRequired
                         {
+                            if let Ok(state) = handle.state::<Application>().packs.lock()
+                                && let Some(packs) = state.as_ref()
+                            {
+                                packs.resume_after_failed_quit();
+                            }
                             handle
                                 .state::<Application>()
                                 .quitting

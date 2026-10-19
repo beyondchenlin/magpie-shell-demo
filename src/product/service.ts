@@ -1,4 +1,5 @@
 import { invoke, isTauri, Channel } from "@tauri-apps/api/core";
+import type {PackMarketView,PackReviewView,PackTaskEvent,ConfirmPackInstall,InvokePack} from "./contract";
 import type { StartChat, ChatEvent } from "./contract";
 import type {UsageReadInfo,UsageClearPlan,UsageClearReceipt,UsageRange} from "./contract";
 import type {SaveBudget,BudgetObservations} from "./contract";
@@ -23,6 +24,11 @@ async function command<T>(name: string, args: Record<string, unknown>): Promise<
 }
 
 export const service = {
+  packMarket:()=>command<PackMarketView>("pack_market",{protocolVersion}),
+  reviewPack:(record:string)=>command<PackReviewView>("review_pack",{protocolVersion,record}),
+  installPack:(input:ConfirmPackInstall,onEvent:(event:PackTaskEvent)=>void)=>{const channel=new Channel<PackTaskEvent>();channel.onmessage=onEvent;return invoke<ConfigView>("install_pack",{input,onEvent:channel});},
+  invokePack:(input:InvokePack,onEvent:(event:PackTaskEvent)=>void)=>{const channel=new Channel<PackTaskEvent>();channel.onmessage=onEvent;return invoke<void>("invoke_pack",{input,onEvent:channel});},
+  cancelPack:(taskId:string)=>command<void>("cancel_pack",{protocolVersion,taskId}),
   saveProviderTimeouts:(input:SaveProviderTimeouts)=>command<ConfigView>("save_provider_timeouts",{input}),
   saveBudget:(input:SaveBudget)=>command<ConfigView>("save_budget",{input}),
   deleteBudget:(input:RevisionCommand)=>command<ConfigView>("delete_budget",{input}),

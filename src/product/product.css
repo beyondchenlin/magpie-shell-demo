@@ -74,5 +74,9 @@ body.tagma #root { display:flex; flex-direction:column; width:100%; height:100%;
 .tagma-composer-footer { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:7px; }
 .tagma-composer-footer > span { color:var(--muted); font-size:11px; line-height:1.4; }
 .tagma-chat-setup { margin-top:16px; }
+.tagma-pack-result { white-space:pre-wrap; overflow-wrap:anywhere; font:inherit; max-height:320px; overflow:auto; }
+.tagma-pack-service fieldset { grid-template-columns:minmax(0,1fr); }
+.tagma-pack-service label { display:grid; gap:6px; min-inline-size:0; }
+.tagma-compose-label input[type="file"] { display:block; max-width:100%; margin-top:6px; }
 .tagma-chat-setup > summary { color:var(--muted); cursor:pointer; font-size:12px; margin:8px 2px; }
 @media(max-width:520px) { .tagma-editor fieldset { grid-template-columns:1fr; gap:6px; } .tagma-editor fieldset > span:empty { display:none; } .tagma-provider .tagma-actions { width:100%; } .tagma-composer-footer { flex-wrap:wrap; } }

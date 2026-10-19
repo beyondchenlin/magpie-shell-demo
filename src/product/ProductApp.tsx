@@ -15,6 +15,7 @@ import { AppProfiles } from "./AppProfiles";
 import { GatewaySettings } from "./GatewaySettings";
 import { ChatView } from "./ChatView";
 import { TeamsPanel } from "./TeamsPanel";
+import { PackMarketPanel } from "./PackMarketPanel";
 import { ProductChrome, type ProductPage } from "./ProductChrome";
 import { ConfigurationFailure } from "./ConfigurationFailure";
 import { QuitDialog } from "./QuitDialog";
@@ -42,6 +43,7 @@ export default function ProductApp() {
   const [gatewayEditing, setGatewayEditing] = useState(false);
   const [securityEditing,setSecurityEditing]=useState(false);
   const [teamEditing, setTeamEditing] = useState(false);
+  const [packEditing,setPackEditing]=useState(false);
   const [budgetEditing,setBudgetEditing]=useState(false);
   const [deleting, setDeleting] = useState<Provider | null>(null);
   const mounted = useRef(true);
@@ -54,7 +56,7 @@ export default function ProductApp() {
   const editorTrigger = useRef<HTMLButtonElement | null>(null);
   const wasEditing = useRef(false);
   const previousPage = useRef(page);
-  const editing = !!editor || !!timeoutEditor || profileEditing || gatewayEditing || teamEditing || securityEditing || budgetEditing;
+  const editing = !!editor || !!timeoutEditor || profileEditing || gatewayEditing || teamEditing || securityEditing || budgetEditing || packEditing;
   const editorOpen = editing || !!deleting;
   useEffect(() => {
     if (error != null && !busy) errorAlert.current?.focus();
@@ -183,7 +185,8 @@ export default function ProductApp() {
         <p className="tagma-footnote">{c.protocolName} · {c.noInference}</p>
         <TextBtn disabled={busy || editing} onClick={() => setPage("gateway")}>{c.gateway}</TextBtn>
       </section>}
-      {page === "market" && <section><h1>{c.market}</h1><div className="list prefs"><PrefRow name={c.reachflow} sub={c.reachflowHint}><span>{c.notInstalled}</span></PrefRow></div>{view&&<TeamsPanel config={view.config} busy={busy} language={preferences.language} onMutate={mutate} onEditingChange={setTeamEditing}/>}</section>}
+      <div hidden={page!=="market"}><h1>{c.market}</h1>{view&&<PackMarketPanel active={page==="market"} config={view.config} busy={busy||teamEditing} language={preferences.language} onRefresh={refresh} onEditingChange={setPackEditing}/>}</div>
+      {page==="market"&&view&&<TeamsPanel config={view.config} busy={busy||packEditing} language={preferences.language} onMutate={mutate} onEditingChange={setTeamEditing}/>}
       {page === "usage" && <><TextBtn disabled={busy||editing} onClick={()=>setPage("settings")}>{c.back} · {c.settings}</TextBtn><UsagePanel providers={view?.config.providers ?? []} config={view?.config} busy={busy} budgetEditing={budgetEditing} onBudgetEditing={setBudgetEditing} onMutate={mutate} language={preferences.language} /></>}
       {page === "gateway" && <section><h1>{c.gateway}</h1><div className="list prefs"><PrefRow name={c.gateway} sub={c.runtimeHint}><span>{view ? c[view.runtime.state] : c.unknown}</span></PrefRow><PrefRow name={c.desired}><span>{view?.config.desired_revision ?? c.unknown}</span></PrefRow><PrefRow name={c.effective}><span>{view?.runtime.effective_revision ?? c.unknown}</span></PrefRow>
         {view?.runtime.address && <PrefRow name="URL"><span>{view.runtime.address}</span></PrefRow>}

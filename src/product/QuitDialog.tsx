@@ -61,8 +61,8 @@ export function QuitDialog({ language }: { language: ProductLanguage }) {
   }}>
     <h2 id="tagma-quit-title">{zh ? "退出 Tagma" : "Quit Tagma"}</h2>
     <p id="tagma-quit-description">{zh
-      ? "退出将停止本桌面拥有的网关：先停止接收新请求，等待活动请求完成，最多 10 秒；超时后取消剩余请求并退出。独立启动的网关会继续运行。尚未保存的编辑将丢失。"
-      : "Quitting stops the gateway owned by this desktop: new requests are refused, and active requests may finish for up to 10 seconds. Remaining requests are then cancelled. Independently started gateways keep running. Unsaved edits will be lost."}</p>
+      ? "退出将取消本机队员安装和调用，等待回收完成；已提交的 ReachFlow 服务任务不会因此取消。然后停止本桌面拥有的网关：活动请求最多等待 10 秒，超时取消。独立网关继续运行，尚未保存的编辑将丢失。"
+      : "Quitting cancels local pack operations and waits for cleanup. Submitted ReachFlow service tasks keep running. The owned gateway then waits up to 10 seconds for requests before cancelling them. Independent gateways keep running. Unsaved edits will be lost."}</p>
     {error != null && <p ref={alert} role="alert" tabIndex={-1} className="tagma-error">{errorCopy(error, language)}</p>}
     {quitting && <p ref={waiting} role="status" tabIndex={-1}>{zh ? "正在等待活动请求并退出…" : "Waiting for active requests and quitting…"}</p>}
     <div className="tagma-actions">

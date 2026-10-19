@@ -6,6 +6,11 @@
     "main"
   ],
   "permissions": [
+    "allow-pack-market",
+    "allow-review-pack",
+    "allow-install-pack",
+    "allow-invoke-pack",
+    "allow-cancel-pack",
     "allow-send-chat",
     "allow-cancel-chat",
     "allow-application-view",

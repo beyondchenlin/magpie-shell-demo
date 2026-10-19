@@ -4,6 +4,7 @@ pub mod ipc;
 pub mod manager;
 pub mod pack_install;
 pub mod packs;
+pub mod reachflow;
 pub mod update;
 pub mod usage;
 pub use manager::GatewayManager;

@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-invoke-pack"
+description = "Enables the invoke_pack command without any pre-configured scope."
+commands.allow = ["invoke_pack"]
+
+[[permission]]
+identifier = "deny-invoke-pack"
+description = "Denies the invoke_pack command without any pre-configured scope."
+commands.deny = ["invoke_pack"]

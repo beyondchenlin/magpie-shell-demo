@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-review-pack"
+description = "Enables the review_pack command without any pre-configured scope."
+commands.allow = ["review_pack"]
+
+[[permission]]
+identifier = "deny-review-pack"
+description = "Denies the review_pack command without any pre-configured scope."
+commands.deny = ["review_pack"]

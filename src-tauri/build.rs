@@ -1,6 +1,11 @@
 fn main() {
     tauri_build::try_build(tauri_build::Attributes::new().app_manifest(
         tauri_build::AppManifest::new().commands(&[
+            "pack_market",
+            "review_pack",
+            "install_pack",
+            "invoke_pack",
+            "cancel_pack",
             "send_chat",
             "cancel_chat",
             "application_view",
