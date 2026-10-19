@@ -1,0 +1,18 @@
+[
+  {
+    "oldPath": "D:\\demo1\\tagmaai-deliveries",
+    "actualPath": "D:\\demo1\\tagmaai\\.local-retained\\deliveries",
+    "files": 91,
+    "logicalBytes": 130745322,
+    "allHashesAndFileIdentitiesUnchanged": true,
+    "linkType": "Junction"
+  },
+  {
+    "oldPath": "D:\\demo1\\tagmaai-preview",
+    "actualPath": "D:\\demo1\\tagmaai\\.local-retained\\preview",
+    "files": 320,
+    "logicalBytes": 142457085,
+    "allHashesAndFileIdentitiesUnchanged": true,
+    "linkType": "Junction"
+  }
+]

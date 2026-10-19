@@ -1,0 +1,18 @@
+{
+  "logicalBytes": 4308600008,
+  "uniqueAllocatedBytes": 2045071872,
+  "observedOperationFreeDeltaBytes": 2047029248,
+  "logicalGiB": 4.012696452438831,
+  "allocatedGiB": 1.9046216011047363,
+  "observedDeltaGiB": 1.9064445495605469,
+  "disk": [
+    {
+      "Name": "C",
+      "Free": 30101618688
+    },
+    {
+      "Name": "D",
+      "Free": 13555085312
+    }
+  ]
+}

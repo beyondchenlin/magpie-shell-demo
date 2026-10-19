@@ -1,0 +1,54 @@
+[
+  {
+    "target": "D:\\demo1\\tagmaai\\release\\v0.1.207\\win-unpacked",
+    "files": 76,
+    "logicalBytes": 397619802,
+    "completed": true,
+    "diskBefore": [
+      {
+        "Name": "C",
+        "Free": 30083833856
+      },
+      {
+        "Name": "D",
+        "Free": 12759486464
+      }
+    ],
+    "diskAfter": [
+      {
+        "Name": "C",
+        "Free": 30083833856
+      },
+      {
+        "Name": "D",
+        "Free": 13157285888
+      }
+    ]
+  },
+  {
+    "target": "D:\\demo1\\tagmaai\\release\\v0.1.208\\win-unpacked",
+    "files": 76,
+    "logicalBytes": 397620758,
+    "completed": true,
+    "diskBefore": [
+      {
+        "Name": "C",
+        "Free": 30084296704
+      },
+      {
+        "Name": "D",
+        "Free": 13157285888
+      }
+    ],
+    "diskAfter": [
+      {
+        "Name": "C",
+        "Free": 30084358144
+      },
+      {
+        "Name": "D",
+        "Free": 13555085312
+      }
+    ]
+  }
+]

@@ -1,0 +1,35 @@
+{
+  "target": "D:\\demo1\\tagmaai\\target\\debug\\build",
+  "purpose": "Rebuildable Cargo build-script outputs only; deps and previous denied paths excluded",
+  "files": 10260,
+  "logicalBytes": 3513359448,
+  "allocation": {
+    "method": "Node libuv bigint stat blocks*512, deduplicated by dev:ino",
+    "unique": 9986,
+    "allocatedBytes": "1249501696"
+  },
+  "startedUtc": "2026-10-19T09:32:03.4374700Z",
+  "diskBefore": [
+    {
+      "Name": "C",
+      "Free": 30111383552
+    },
+    {
+      "Name": "D",
+      "Free": 11557195776
+    }
+  ],
+  "completed": true,
+  "protectedFilesUnchanged": true,
+  "finishedUtc": "2026-10-19T09:32:05.0891661Z",
+  "diskAfter": [
+    {
+      "Name": "C",
+      "Free": 30111383552
+    },
+    {
+      "Name": "D",
+      "Free": 12808626176
+    }
+  ]
+}
