@@ -1,0 +1,10 @@
+{
+  "cleanup": "22-byte sentinel replaced only by complete installer repair; three owned marker files219bytes copied to evidence and removed; historical paths and lock retained.",
+  "utc": "2026-10-19T02:33:56.8259299Z",
+  "items": [
+    "Initial quit stopped at confirmation dialog; process guard refused installer. Observed and invoked Wait then quit before continuing.",
+    "First native37 observation was already at aborted page; normal confirmation and error MessageBox were not observed and are not counted.",
+    "Native37 detail recovery line was clipped; corrected in38 and verified both passive native error paths.",
+    "One finished compiler session handle expired; no retry build; retained output/log verified."
+  ]
+}

@@ -1,0 +1,78 @@
+{
+  "utc": "2026-10-19T02:31:08.9668615Z",
+  "before": {
+    "registered": true,
+    "files": [
+      {
+        "name": "tagma-desktop.exe",
+        "exists": true,
+        "sha256": "7F8785BE2A8A50A60090CBA38478CCF899D9F0CCCE0E46AC012320C1CD2DD16B"
+      },
+      {
+        "name": "tagma-gateway.exe",
+        "exists": true,
+        "sha256": "3D694C2696DCA9846330A69279A96428A1BACA651E81E83D44AF97EFB660A32F"
+      },
+      {
+        "name": "uninstall.exe",
+        "exists": true,
+        "sha256": "2D8529492656A25D0508AED272F401CC6E3484B648D6D7356985220464B735F5"
+      }
+    ],
+    "data": [
+      {
+        "Path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\data\\config.sqlite3",
+        "Hash": "F82945FF1AE987A08496C370349280EAD5DD2468B9C3E6062BBB5F95C1C76D93"
+      },
+      {
+        "Path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\data\\config.sqlite3-wal",
+        "Hash": "634B9FFACDAEC6F7C4636C70FC5A9B36903EBA0190E83B9CA197269619B9F45B"
+      }
+    ],
+    "version": "0.2.0-dev.38"
+  },
+  "passive": true,
+  "arguments": [
+    "/P",
+    "_?=C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\install-p0s16"
+  ],
+  "native": true,
+  "dataUnchanged": true,
+  "version": 38,
+  "blockRestore": true,
+  "variant": "denied",
+  "after": {
+    "registered": true,
+    "files": [
+      {
+        "name": "tagma-desktop.exe",
+        "exists": false,
+        "sha256": null
+      },
+      {
+        "name": "tagma-gateway.exe",
+        "exists": false,
+        "sha256": null
+      },
+      {
+        "name": "uninstall.exe",
+        "exists": true,
+        "sha256": "5C598D622F10B913882523A5CB569BFC29C824BE4AB88607048375212C95F78E"
+      }
+    ],
+    "data": [
+      {
+        "Path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\data\\config.sqlite3",
+        "Hash": "F82945FF1AE987A08496C370349280EAD5DD2468B9C3E6062BBB5F95C1C76D93"
+      },
+      {
+        "Path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\data\\config.sqlite3-wal",
+        "Hash": "634B9FFACDAEC6F7C4636C70FC5A9B36903EBA0190E83B9CA197269619B9F45B"
+      }
+    ],
+    "version": "0.2.0-dev.38"
+  },
+  "case": "native-block38",
+  "runnerHash": "2D8529492656A25D0508AED272F401CC6E3484B648D6D7356985220464B735F5",
+  "exitCode": 1603
+}

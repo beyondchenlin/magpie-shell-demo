@@ -1,0 +1,72 @@
+{
+  "variant": "query-failure",
+  "after": {
+    "registered": true,
+    "version": "0.2.0-dev.37",
+    "data": [
+      {
+        "Path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\data\\config.sqlite3",
+        "Hash": "F82945FF1AE987A08496C370349280EAD5DD2468B9C3E6062BBB5F95C1C76D93"
+      },
+      {
+        "Path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\data\\config.sqlite3-wal",
+        "Hash": "634B9FFACDAEC6F7C4636C70FC5A9B36903EBA0190E83B9CA197269619B9F45B"
+      }
+    ],
+    "files": [
+      {
+        "name": "tagma-desktop.exe",
+        "exists": false,
+        "sha256": null
+      },
+      {
+        "name": "tagma-gateway.exe",
+        "exists": false,
+        "sha256": null
+      },
+      {
+        "name": "uninstall.exe",
+        "exists": true,
+        "sha256": "CE51A256A6AF5733C2BB32A69F9E6780F8DA99F7C55C87B7B163F933DFFE02E2"
+      }
+    ]
+  },
+  "native": false,
+  "before": {
+    "registered": true,
+    "version": "0.2.0-dev.37",
+    "data": [
+      {
+        "Path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\data\\config.sqlite3",
+        "Hash": "F82945FF1AE987A08496C370349280EAD5DD2468B9C3E6062BBB5F95C1C76D93"
+      },
+      {
+        "Path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\data\\config.sqlite3-wal",
+        "Hash": "634B9FFACDAEC6F7C4636C70FC5A9B36903EBA0190E83B9CA197269619B9F45B"
+      }
+    ],
+    "files": [
+      {
+        "name": "tagma-desktop.exe",
+        "exists": true,
+        "sha256": "EE06E8BD4D1071099D6FD274A91004598ADB1091C157E12DA37D0B3644A27B83"
+      },
+      {
+        "name": "tagma-gateway.exe",
+        "exists": true,
+        "sha256": "50DA2CA0D7DBB3BA8FB497EB9CA5DE105CCB5088EFC2E66EA3425D642E7D9CDD"
+      },
+      {
+        "name": "uninstall.exe",
+        "exists": true,
+        "sha256": "CE51A256A6AF5733C2BB32A69F9E6780F8DA99F7C55C87B7B163F933DFFE02E2"
+      }
+    ]
+  },
+  "case": "query-failure",
+  "exitCode": 1603,
+  "runnerHash": "CE51A256A6AF5733C2BB32A69F9E6780F8DA99F7C55C87B7B163F933DFFE02E2",
+  "dataUnchanged": true,
+  "utc": "2026-10-19T02:24:33.2770818Z",
+  "blockRestore": false
+}

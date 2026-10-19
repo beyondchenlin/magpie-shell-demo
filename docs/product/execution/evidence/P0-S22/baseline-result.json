@@ -1,0 +1,29 @@
+{
+  "scope": "Actual query-only handle deletion failure substituted at one DeleteRegKey instruction; not an OS ACL outage",
+  "uninstallerExists": false,
+  "registrationStillExists": true,
+  "utc": "2026-10-19T02:10:20.0713140Z",
+  "exitCode": 0,
+  "realApiCode": "5",
+  "dataUnchanged": true,
+  "afterData": [
+    {
+      "Path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\data\\config.sqlite3",
+      "Hash": "F82945FF1AE987A08496C370349280EAD5DD2468B9C3E6062BBB5F95C1C76D93"
+    },
+    {
+      "Path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\data\\config.sqlite3-wal",
+      "Hash": "634B9FFACDAEC6F7C4636C70FC5A9B36903EBA0190E83B9CA197269619B9F45B"
+    }
+  ],
+  "beforeData": [
+    {
+      "Path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\data\\config.sqlite3",
+      "Hash": "F82945FF1AE987A08496C370349280EAD5DD2468B9C3E6062BBB5F95C1C76D93"
+    },
+    {
+      "Path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\data\\config.sqlite3-wal",
+      "Hash": "634B9FFACDAEC6F7C4636C70FC5A9B36903EBA0190E83B9CA197269619B9F45B"
+    }
+  ]
+}

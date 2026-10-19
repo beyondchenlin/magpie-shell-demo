@@ -1,0 +1,15 @@
+{
+  "utc": "2026-10-19T02:07:58.8053544Z",
+  "purpose": "Uninstall registration failure; real read-only registry handle produces access denial, injected at deletion instruction; preserve data, then check copied uninstaller recovery",
+  "budget": "D build peak <=2GiB; C <=0.2GiB; evidence <=10MiB; no new worktree/runtime",
+  "disks": [
+    {
+      "Name": "C",
+      "freeGiB": 34.38
+    },
+    {
+      "Name": "D",
+      "freeGiB": 22.26
+    }
+  ]
+}

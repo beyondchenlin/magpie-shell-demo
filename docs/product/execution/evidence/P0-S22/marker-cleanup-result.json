@@ -1,0 +1,26 @@
+{
+  "physicalNetRelease": "Not claimed; copied minimal evidence remains",
+  "files": [
+    {
+      "path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\install-p0s16\\p0-s22-delete-code.txt",
+      "removed": true,
+      "retainedCopy": "D:\\demo1\\tagmaai\\.cache\\p0-s22-uninstall-registration\\install-p0-s22-delete-code.txt",
+      "bytes": 1
+    },
+    {
+      "path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\install-p0s16\\p0-s22-mode-native-short38-uninstall.exe.txt",
+      "removed": true,
+      "retainedCopy": "D:\\demo1\\tagmaai\\.cache\\p0-s22-uninstall-registration\\install-p0-s22-mode-native-short38-uninstall.exe.txt",
+      "bytes": 109
+    },
+    {
+      "path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\install-p0s16\\p0-s22-mode-native-block38-uninstall.exe.txt",
+      "removed": true,
+      "retainedCopy": "D:\\demo1\\tagmaai\\.cache\\p0-s22-uninstall-registration\\install-p0-s22-mode-native-block38-uninstall.exe.txt",
+      "bytes": 109
+    }
+  ],
+  "historicalEvidenceUntouched": true,
+  "logicalBytes": 219.0,
+  "utc": "2026-10-19T02:33:20.8352551Z"
+}

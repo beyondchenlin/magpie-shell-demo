@@ -1,0 +1,14 @@
+[
+  {
+    "sha256": "7F8785BE2A8A50A60090CBA38478CCF899D9F0CCCE0E46AC012320C1CD2DD16B",
+    "path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\install-p0s16\\tagma-desktop.exe",
+    "started": "2026-10-19T02:31:49.8893124Z",
+    "pid": 54388
+  },
+  {
+    "sha256": "3D694C2696DCA9846330A69279A96428A1BACA651E81E83D44AF97EFB660A32F",
+    "path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\install-p0s16\\tagma-gateway.exe",
+    "started": "2026-10-19T02:31:50.8125569Z",
+    "pid": 48164
+  }
+]

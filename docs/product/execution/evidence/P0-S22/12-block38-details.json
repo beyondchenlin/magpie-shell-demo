@@ -1,0 +1,308 @@
+﻿{
+    "utc":  "2026-10-19T02:30:53.0905157Z",
+    "pid":  40336,
+    "window":  4065864,
+    "title":  "Tagma P0 S16 Acceptance Uninstall ",
+    "elements":  [
+                     {
+                         "index":  0,
+                         "name":  "\u003c Back",
+                         "type":  "ControlType.Pane",
+                         "patterns":  [
+
+                                      ],
+                         "class":  "Button",
+                         "id":  "42,4458988",
+                         "enabled":  false,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  0,
+                         "rect":  [
+                                      1920,
+                                      1218,
+                                      75,
+                                      23
+                                  ]
+                     },
+                     {
+                         "index":  1,
+                         "name":  "Close",
+                         "type":  "ControlType.Pane",
+                         "patterns":  [
+
+                                      ],
+                         "class":  "Button",
+                         "id":  "42,3605824",
+                         "enabled":  false,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  0,
+                         "rect":  [
+                                      1995,
+                                      1218,
+                                      75,
+                                      23
+                                  ]
+                     },
+                     {
+                         "index":  2,
+                         "name":  "Cancel",
+                         "type":  "ControlType.Pane",
+                         "patterns":  [
+
+                                      ],
+                         "class":  "Button",
+                         "id":  "42,17304182",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  0,
+                         "rect":  [
+                                      2081,
+                                      1218,
+                                      75,
+                                      23
+                                  ]
+                     },
+                     {
+                         "index":  3,
+                         "name":  "",
+                         "type":  "ControlType.Pane",
+                         "patterns":  [
+
+                                      ],
+                         "class":  "Static",
+                         "id":  "42,7343740",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  null,
+                         "rect":  [
+                                      1679,
+                                      1205,
+                                      480,
+                                      2
+                                  ]
+                     },
+                     {
+                         "index":  4,
+                         "name":  "",
+                         "type":  "ControlType.Pane",
+                         "patterns":  [
+
+                                      ],
+                         "class":  "Static",
+                         "id":  "42,14421744",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  null,
+                         "rect":  [
+                                      1671,
+                                      948,
+                                      508,
+                                      2
+                                  ]
+                     },
+                     {
+                         "index":  5,
+                         "name":  "Nullsoft Install System v3.13 ",
+                         "type":  "ControlType.Pane",
+                         "patterns":  [
+
+                                      ],
+                         "class":  "Static",
+                         "id":  "42,13896722",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  null,
+                         "rect":  [
+                                      1679,
+                                      1197,
+                                      483,
+                                      13
+                                  ]
+                     },
+                     {
+                         "index":  6,
+                         "name":  "Nullsoft Install System v3.13",
+                         "type":  "ControlType.Pane",
+                         "patterns":  [
+
+                                      ],
+                         "class":  "Static",
+                         "id":  "42,7867634",
+                         "enabled":  false,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  null,
+                         "rect":  [
+                                      1679,
+                                      1197,
+                                      483,
+                                      13
+                                  ]
+                     },
+                     {
+                         "index":  7,
+                         "name":  "",
+                         "type":  "ControlType.Pane",
+                         "patterns":  [
+
+                                      ],
+                         "class":  "Static",
+                         "id":  "42,4129158",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  null,
+                         "rect":  [
+                                      1671,
+                                      891,
+                                      498,
+                                      57
+                                  ]
+                     },
+                     {
+                         "index":  8,
+                         "name":  "Uninstallation Aborted",
+                         "type":  "ControlType.Pane",
+                         "patterns":  [
+
+                                      ],
+                         "class":  "Static",
+                         "id":  "42,21957444",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  null,
+                         "rect":  [
+                                      1686,
+                                      899,
+                                      420,
+                                      16
+                                  ]
+                     },
+                     {
+                         "index":  9,
+                         "name":  "Uninstall was not completed successfully.",
+                         "type":  "ControlType.Pane",
+                         "patterns":  [
+
+                                      ],
+                         "class":  "Static",
+                         "id":  "42,6162996",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  null,
+                         "rect":  [
+                                      1694,
+                                      917,
+                                      413,
+                                      26
+                                  ]
+                     },
+                     {
+                         "index":  10,
+                         "name":  "",
+                         "type":  "ControlType.Pane",
+                         "patterns":  [
+
+                                      ],
+                         "class":  "Static",
+                         "id":  "42,4065002",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  null,
+                         "rect":  [
+                                      2121,
+                                      904,
+                                      32,
+                                      32
+                                  ]
+                     },
+                     {
+                         "index":  11,
+                         "name":  "",
+                         "type":  "ControlType.Pane",
+                         "patterns":  [
+
+                                      ],
+                         "class":  "#32770",
+                         "id":  "42,2821958",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  null,
+                         "rect":  [
+                                      1694,
+                                      964,
+                                      450,
+                                      228
+                                  ]
+                     },
+                     {
+                         "index":  12,
+                         "name":  "",
+                         "type":  "ControlType.Pane",
+                         "patterns":  [
+
+                                      ],
+                         "class":  "msctls_progress32",
+                         "id":  "42,7736276",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  null,
+                         "rect":  [
+                                      1694,
+                                      980,
+                                      450,
+                                      18
+                                  ]
+                     },
+                     {
+                         "index":  13,
+                         "name":  "",
+                         "type":  "ControlType.Pane",
+                         "patterns":  [
+
+                                      ],
+                         "class":  "Static",
+                         "id":  "42,2362404",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  null,
+                         "rect":  [
+                                      1694,
+                                      964,
+                                      450,
+                                      16
+                                  ]
+                     },
+                     {
+                         "index":  14,
+                         "name":  "",
+                         "type":  "ControlType.Pane",
+                         "patterns":  [
+
+                                      ],
+                         "class":  "SysListView32",
+                         "id":  "42,18876990",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  null,
+                         "rect":  [
+                                      1694,
+                                      1005,
+                                      450,
+                                      179
+                                  ]
+                     }
+                 ]
+}

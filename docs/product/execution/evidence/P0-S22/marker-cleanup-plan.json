@@ -1,0 +1,26 @@
+[
+  {
+    "safety": "Explicit task-created names; host does not use these markers; no historical files or lock marker included",
+    "sha256": "EF2D127DE37B942BAAD06145E54B0C619A1F22327B2EBBCFBEC78F5564AFE39D",
+    "lastWrite": "2026-10-19T02:30:01.1239995Z",
+    "bytes": 1,
+    "purpose": "S22-only synthetic deletion/mode evidence, copied to cache before removing test marker",
+    "path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\install-p0s16\\p0-s22-delete-code.txt"
+  },
+  {
+    "safety": "Explicit task-created names; host does not use these markers; no historical files or lock marker included",
+    "sha256": "90B8EA2863BBAC945D5027A8BF8EEAFE4D2530BB4392746086FC016073A66067",
+    "lastWrite": "2026-10-19T02:28:49.9153839Z",
+    "bytes": 109,
+    "purpose": "S22-only synthetic deletion/mode evidence, copied to cache before removing test marker",
+    "path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\install-p0s16\\p0-s22-mode-native-short38-uninstall.exe.txt"
+  },
+  {
+    "safety": "Explicit task-created names; host does not use these markers; no historical files or lock marker included",
+    "sha256": "AB64BD2182687BF3989BAFB8A333DEE5DC10A55C4EA75CFC1A4F3A8A3DA5DC6D",
+    "lastWrite": "2026-10-19T02:30:01.0178931Z",
+    "bytes": 109,
+    "purpose": "S22-only synthetic deletion/mode evidence, copied to cache before removing test marker",
+    "path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\install-p0s16\\p0-s22-mode-native-block38-uninstall.exe.txt"
+  }
+]

@@ -1,0 +1,20 @@
+{
+  "sentinel": "Verified22-byte task-only file preserved by failed CopyFile; complete installer replaces it with actual uninstaller",
+  "utc": "2026-10-19T02:31:48.1363615Z",
+  "binaryHashes": [
+    {
+      "Path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\install-p0s16\\tagma-desktop.exe",
+      "Hash": "7F8785BE2A8A50A60090CBA38478CCF899D9F0CCCE0E46AC012320C1CD2DD16B"
+    },
+    {
+      "Path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\install-p0s16\\tagma-gateway.exe",
+      "Hash": "3D694C2696DCA9846330A69279A96428A1BACA651E81E83D44AF97EFB660A32F"
+    },
+    {
+      "Path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\install-p0s16\\uninstall.exe",
+      "Hash": "197AA4020166D844C711FFD596D6ABC8CF369072D5AD0EB766602F7DBC8414AC"
+    }
+  ],
+  "exitCode": 0,
+  "registeredVersion": "0.2.0-dev.38"
+}

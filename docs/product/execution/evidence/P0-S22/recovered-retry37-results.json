@@ -1,0 +1,16 @@
+[
+  {
+    "uninstallerExists": false,
+    "exitCode": 0,
+    "dataUnchanged": true,
+    "case": "restored-uninstaller-retry",
+    "registrationExists": false
+  },
+  {
+    "uninstallerExists": false,
+    "exitCode": 0,
+    "dataUnchanged": true,
+    "case": "already-missing-registration",
+    "registrationExists": false
+  }
+]

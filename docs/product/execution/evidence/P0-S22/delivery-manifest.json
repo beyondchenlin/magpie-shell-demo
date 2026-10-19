@@ -1,0 +1,35 @@
+{
+  "version": "0.2.0-dev.38",
+  "sourceHeadAtBuild": "2ec8de60da0e04ace61f8cbcec6ecafef0bf677d",
+  "productChangesCommit": "666c1cf2d2453d9b0d78de6a28bf2f64a81756e2",
+  "profile": "Windows x64 debug unsigned internal",
+  "sourceInputs": 317,
+  "sourceVerification": "317 frozen before build; checked after build, native acceptance and product commit",
+  "installer": {
+    "path": "D:/demo1/tagmaai-deliveries/0.2.0-dev.38/Tagma_0.2.0-dev.38_x64-setup.exe",
+    "bytes": 6627369,
+    "sha256": "442aa614a561974b68f0cf2982acb8312d256e8265dc3c498dc9ecc8e6ca68ee"
+  },
+  "binaries": [
+    {
+      "path": "C:/Users/ai/AppData/Local/Temp/tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88/install-p0s16/tagma-desktop.exe",
+      "bytes": 20251136,
+      "sha256": "7f8785be2a8a50a60090cba38478ccf899d9f0ccce0e46ac012320c1cd2dd16b"
+    },
+    {
+      "path": "C:/Users/ai/AppData/Local/Temp/tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88/install-p0s16/tagma-gateway.exe",
+      "bytes": 10115072,
+      "sha256": "3d694c2696dca9846330a69279a96428a1baca651e81e83d44af97efb660a32f"
+    }
+  ],
+  "sourceRecovery": "Checkout productChangesCommit; restore the six INHERITED-INPUTS from retained dev18 source-overlay.json.gz; verify SOURCE-INPUTS.",
+  "nativeAcceptance": "S22: query-only registry-handle deletion denial substituted at deletion instruction; old36 returned0 with registration left and uninstaller missing. Fixed37 returns1603, restores matching uninstaller; restored and missing-registration retries0, data unchanged. Query failure1603. Native38 passive details show complete short recovery instructions for both restored and blocked-copy paths; sentinel not overwritten. Full38 installer repairs, native12/12 and provider order restored. UIA/Win32 notifications/PrintWindow. Not actual RegDeleteKey ACL outage, normal confirmation-popup or keyboard acceptance.",
+  "installation": "Isolated S16 identity only; normal identity package never run.",
+  "remaining": "P0 not fully released. Complete REL03 package/configuration preflight and coordination still need source/requirement audit. Deletion probe is controlled API-failure propagation, not an OS registry outage. Actual credential facility/OS animation, clean Windows, signing and macOS unavailable.",
+  "retention": {
+    "owner": "Current Tagma P0 task",
+    "purpose": "Validated uninstall registration recovery candidate and minimal evidence",
+    "reviewDate": "2026-10-25",
+    "scheduledCleanup": false
+  }
+}

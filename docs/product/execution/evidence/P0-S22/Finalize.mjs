@@ -1,0 +1,34 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import {createHash} from 'node:crypto';
+import {execFileSync} from 'node:child_process';
+const root='D:/demo1/tagmaai';
+const task=root+'/.cache/p0-s22-uninstall-registration';
+const delivery='D:/demo1/tagmaai-deliveries/0.2.0-dev.38';
+const evidence=root+'/docs/product/execution/evidence/P0-S22';
+const hash=p=>createHash('sha256').update(fs.readFileSync(p)).digest('hex');
+const info=p=>({path:p,bytes:fs.statSync(p).size,sha256:hash(p)});
+const source=JSON.parse(fs.readFileSync(task+'/source-frozen38.json','utf8').replace(/^\uFEFF/,''));
+for(const f of source.files) if(hash(root+'/'+f.path)!==f.sha256) throw Error('Source drift '+f.path);
+const inherited=JSON.parse(fs.readFileSync('D:/demo1/tagmaai-deliveries/0.2.0-dev.30/INHERITED-INPUTS.json','utf8'));
+for(const f of inherited) if(hash(root+'/'+f.path)!==f.sha256) throw Error('Inherited drift '+f.path);
+if(fs.existsSync(delivery)||fs.existsSync(evidence)) throw Error('Archive already exists');
+fs.mkdirSync(delivery);fs.mkdirSync(evidence);
+const pkg='Tagma_0.2.0-dev.38_x64-setup.exe';
+fs.copyFileSync(root+'/target/debug/bundle/nsis/'+pkg,delivery+'/'+pkg);
+fs.copyFileSync(task+'/source-frozen38.json',delivery+'/SOURCE-INPUTS.json');
+fs.writeFileSync(delivery+'/INHERITED-INPUTS.json',JSON.stringify(inherited,null,2)+'\n');
+const install='C:/Users/ai/AppData/Local/Temp/tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88/install-p0s16';
+const manifest={version:'0.2.0-dev.38',sourceHeadAtBuild:'2ec8de60da0e04ace61f8cbcec6ecafef0bf677d',productChangesCommit:execFileSync('git',['rev-parse','HEAD'],{cwd:root,encoding:'utf8'}).trim(),profile:'Windows x64 debug unsigned internal',sourceInputs:source.files.length,sourceVerification:'317 frozen before build; checked after build, native acceptance and product commit',installer:info(delivery+'/'+pkg),binaries:['tagma-desktop.exe','tagma-gateway.exe'].map(n=>info(install+'/'+n)),sourceRecovery:'Checkout productChangesCommit; restore the six INHERITED-INPUTS from retained dev18 source-overlay.json.gz; verify SOURCE-INPUTS.',nativeAcceptance:'S22: query-only registry-handle deletion denial substituted at deletion instruction; old36 returned0 with registration left and uninstaller missing. Fixed37 returns1603, restores matching uninstaller; restored and missing-registration retries0, data unchanged. Query failure1603. Native38 passive details show complete short recovery instructions for both restored and blocked-copy paths; sentinel not overwritten. Full38 installer repairs, native12/12 and provider order restored. UIA/Win32 notifications/PrintWindow. Not actual RegDeleteKey ACL outage, normal confirmation-popup or keyboard acceptance.',installation:'Isolated S16 identity only; normal identity package never run.',remaining:'P0 not fully released. Complete REL03 package/configuration preflight and coordination still need source/requirement audit. Deletion probe is controlled API-failure propagation, not an OS registry outage. Actual credential facility/OS animation, clean Windows, signing and macOS unavailable.',retention:{owner:'Current Tagma P0 task',purpose:'Validated uninstall registration recovery candidate and minimal evidence',reviewDate:'2026-10-25',scheduledCleanup:false}};
+fs.writeFileSync(delivery+'/BUILD-MANIFEST.json',JSON.stringify(manifest,null,2)+'\n');
+fs.writeFileSync(task+'/delivery-manifest.json',JSON.stringify(manifest,null,2)+'\n');
+const files=[];
+for(const name of fs.readdirSync(task).sort()) {
+ if(!/\.(json|jsonl|png|ps1|nsi|nsh|log|mjs|txt)$/.test(name)||/^(latest-|request\.json$|installer-observation\.json$)/.test(name))continue;
+ const p=path.join(task,name);if(!fs.statSync(p).isFile())continue;
+ fs.copyFileSync(p,path.join(evidence,name));files.push({...info(p),path:name});
+}
+const bytes=files.reduce((n,f)=>n+f.bytes,0);if(bytes>10*1024*1024)throw Error('Evidence budget exceeded');
+fs.writeFileSync(evidence+'/.gitattributes','* -text\n');
+fs.writeFileSync(evidence+'/EVIDENCE-MANIFEST.json',JSON.stringify({batch:'P0-S22',utc:new Date().toISOString(),bytes,files},null,2)+'\n');
+console.log(JSON.stringify({delivery,installer:manifest.installer,evidence,files:files.length,bytes}));

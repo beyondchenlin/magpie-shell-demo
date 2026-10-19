@@ -1,0 +1,39 @@
+{
+  "normalProcesses": [
+    {
+      "path": "C:\\Users\\ai\\AppData\\Local\\Tagma\\tagma-desktop.exe",
+      "started": "2026-10-18T20:30:31.9440158Z",
+      "pid": 4888
+    }
+  ],
+  "normalInstallation": {
+    "DisplayVersion": "0.2.0-dev.23",
+    "InstallLocation": "\"C:\\Users\\ai\\AppData\\Local\\Tagma\""
+  },
+  "runBinding": "PAUSED",
+  "disks": [
+    {
+      "Name": "C",
+      "freeGiB": 34.27
+    },
+    {
+      "Name": "D",
+      "freeGiB": 22.44
+    }
+  ],
+  "schedulers": [
+    {
+      "id": "tagma-prd",
+      "status": [
+        "status = \"PAUSED\""
+      ]
+    },
+    {
+      "id": "magpie-cis",
+      "status": [
+        "status = \"PAUSED\""
+      ]
+    }
+  ],
+  "utc": "2026-10-19T02:33:56.6784643Z"
+}
