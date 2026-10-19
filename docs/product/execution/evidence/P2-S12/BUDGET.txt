@@ -1,0 +1,1 @@
+Reuse target/node_modules/dev42 data+webview. Start C31.50/D14.63GiB. Expected peak additional <=2GiB, retain >=10GiB. No installer or worktree. Retain dev42 binary, original bundle and bounded evidence; tests use TempDir.

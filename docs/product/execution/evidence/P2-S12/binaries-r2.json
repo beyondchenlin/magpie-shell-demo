@@ -1,0 +1,7 @@
+{
+  "version": "dev43r2",
+  "desktop": "F53D24E36373B15A5DCE674834F24D9AD43A240E2D44B66506883C64B2B7A56E",
+  "gateway": "B05185E38920FD6B44D45FC1CABC6FD755A2E9E7DF4D0290B1B9FB003326F47B",
+  "features": "desktop/custom-protocol",
+  "bundle": "dev42 retained unchanged"
+}

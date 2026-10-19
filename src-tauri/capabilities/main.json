@@ -6,6 +6,7 @@
     "main"
   ],
   "permissions": [
+    "allow-save-pack-result",
     "allow-pack-market",
     "allow-review-pack",
     "allow-install-pack",

@@ -1,0 +1,15 @@
+{
+  "note": "After r3 build: removed only trailing blank line in gateway http_api.rs; improved core test fixture to include valid active version. No production behavior changes; targeted test and contract check rerun.",
+  "changes": [
+    {
+      "path": "crates/tagma-core/tests/teams.rs",
+      "built": "13AA90E6BC7FB985CB3AFF46AFE5FD08B1384457BC7662F5662F2447026D4740",
+      "current": "FC4296F2E88920045992A5E2823D2BC567934CADB406F1241E28867DAC8408EF"
+    },
+    {
+      "path": "crates/tagma-gateway/src/http_api.rs",
+      "built": "3A167BE788273E2B4915B47A5D9526E5A39E2543024D723E7019F8E3F3FC35B1",
+      "current": "86EC205A4BE00F83234A8648FE44BA8C3591769A023FD4AC006FD8066F57D6A3"
+    }
+  ]
+}

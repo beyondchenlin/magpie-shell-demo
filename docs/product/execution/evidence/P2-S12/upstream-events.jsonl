@@ -1,0 +1,8 @@
+{"utc":"2026-10-19T06:25:53.373Z","event":"request","id":1,"mode":"normal","model":"p1-s33-local-model","messages":1,"stream":true,"previousText":true}
+{"utc":"2026-10-19T06:25:54.452Z","event":"completed","id":1}
+{"utc":"2026-10-19T06:25:54.453Z","event":"closed","id":1,"mode":"normal","finished":true}
+{"utc":"2026-10-19T06:31:08.603Z","event":"request","id":2,"mode":"slow","model":"p1-s33-local-model","messages":1,"stream":true,"previousText":true}
+{"utc":"2026-10-19T06:31:10.223Z","event":"closed","id":2,"mode":"slow","finished":false}
+{"utc":"2026-10-19T06:31:23.892Z","event":"request","id":3,"mode":"normal","model":"p1-s33-local-model","messages":1,"stream":true,"previousText":true}
+{"utc":"2026-10-19T06:31:24.967Z","event":"completed","id":3}
+{"utc":"2026-10-19T06:31:24.968Z","event":"closed","id":3,"mode":"normal","finished":true}

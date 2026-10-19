@@ -1,0 +1,59 @@
+SOURCE: frontend.log
+
+> magpie-shell-demo@0.1.208 build:tagma
+> tsc -b && vite build --config vite.tagma.config.ts
+
+vite v8.3.4 building client environment for production...
+transforming...
+✓ 77 modules transformed.
+rendering chunks...
+computing gzip size...
+dist-tagma/tagma.html                   0.38 kB │ gzip:   0.27 kB
+dist-tagma/assets/tagma-Bp0WzTAJ.css  398.70 kB │ gzip:  73.92 kB
+dist-tagma/assets/tagma-D_65pcgb.js   415.50 kB │ gzip: 129.63 kB
+
+✓ built in 962ms
+
+> magpie-shell-demo@0.1.208 build:tagma
+> tsc -b && vite build --config vite.tagma.config.ts
+
+vite v8.3.4 building client environment for production...
+transforming...
+✓ 77 modules transformed.
+rendering chunks...
+computing gzip size...
+dist-tagma/tagma.html                   0.38 kB │ gzip:   0.26 kB
+dist-tagma/assets/tagma-Bp0WzTAJ.css  398.70 kB │ gzip:  73.92 kB
+dist-tagma/assets/tagma-13o3TFST.js   415.58 kB │ gzip: 129.70 kB
+
+✓ built in 380ms
+
+> magpie-shell-demo@0.1.208 build:tagma
+> tsc -b && vite build --config vite.tagma.config.ts
+
+vite v8.3.4 building client environment for production...
+transforming...
+✓ 77 modules transformed.
+rendering chunks...
+computing gzip size...
+dist-tagma/tagma.html                   0.38 kB │ gzip:   0.26 kB
+dist-tagma/assets/tagma-Bp0WzTAJ.css  398.70 kB │ gzip:  73.92 kB
+dist-tagma/assets/tagma-Dz1de4Yi.js   415.86 kB │ gzip: 129.78 kB
+
+✓ built in 548ms
+
+SOURCE: frontend-export.tmp
+
+> magpie-shell-demo@0.1.208 build:tagma
+> tsc -b && vite build --config vite.tagma.config.ts
+
+vite v8.3.4 building client environment for production...
+transforming...
+✓ 77 modules transformed.
+rendering chunks...
+computing gzip size...
+dist-tagma/tagma.html                   0.38 kB │ gzip:   0.26 kB
+dist-tagma/assets/tagma-Bp0WzTAJ.css  398.70 kB │ gzip:  73.92 kB
+dist-tagma/assets/tagma-jgVgNWda.js   418.11 kB │ gzip: 130.49 kB
+
+✓ built in 2.10s

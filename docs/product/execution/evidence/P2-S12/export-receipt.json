@@ -1,0 +1,29 @@
+{
+  "name": "tagma-result-0c9f3fab-a539-43c9-a2f4-941bf2cd2cbd.json",
+  "bytes": 564,
+  "sha256": "C0915B398748FB06F10DBDBA8A90E4777F37C3EDD4299F8174B61AED841DF6B9",
+  "document": {
+    "format": "tagma.pack-result.v1",
+    "result": {
+      "mode": "local_fixed_sample",
+      "network_used": false,
+      "note": "本地固定素材及协议试跑通过；未调用研究服务或模型，未产生真实研究成果。",
+      "sources": [
+        {
+          "id": "fixture-1",
+          "title": "书店"
+        },
+        {
+          "id": "fixture-2",
+          "title": "咖啡店"
+        },
+        {
+          "id": "fixture-3",
+          "title": "修理店"
+        }
+      ]
+    },
+    "saved_ms": 1792393246013,
+    "scope": "received_result_only_not_full_remote_report"
+  }
+}

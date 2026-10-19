@@ -24,6 +24,7 @@ async function command<T>(name: string, args: Record<string, unknown>): Promise<
 }
 
 export const service = {
+  savePackResult:(directory:string,raw:string)=>command<string>("save_pack_result",{protocolVersion,directory,raw}),
   packMarket:()=>command<PackMarketView>("pack_market",{protocolVersion}),
   reviewPack:(record:string)=>command<PackReviewView>("review_pack",{protocolVersion,record}),
   installPack:(input:ConfirmPackInstall,onEvent:(event:PackTaskEvent)=>void)=>{const channel=new Channel<PackTaskEvent>();channel.onmessage=onEvent;return invoke<ConfigView>("install_pack",{input,onEvent:channel});},

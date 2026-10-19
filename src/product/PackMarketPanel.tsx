@@ -1,3 +1,4 @@
+import {PackResult} from "./PackResult";
 import {useEffect,useRef,useState} from "react";
 import {PrefRow} from "../components/PrefRow";
 import {TextBtn} from "../components/TextBtn";
@@ -26,16 +27,6 @@ function packError(value:unknown,zh:boolean){
     REACHFLOW_REPORT_UNAVAILABLE:["该任务尚无可查看的报告。请先查询任务状态，或在 ReachFlow 检查成果。","This task has no available report yet. Check its status or view results in ReachFlow."],
   };
   return `${labels[code]?.[zh?0:1]??(zh?"操作未完成，请检查安装状态与服务条件。":"Operation did not complete. Check installation and service requirements.")} (${code})`;
-}
-function resultView(raw:string,zh:boolean){
-  let result:Record<string,unknown>;
-  try{const value:unknown=JSON.parse(raw);if(!value||typeof value!=="object"||Array.isArray(value))throw Error();result=value as Record<string,unknown>;}catch{return <pre className="tagma-pack-result">{raw}</pre>;}
-  const field=(key:string)=>typeof result[key]==="string"?String(result[key]):"";
-  const count=(key:string)=>typeof result[key]==="number"&&Number.isSafeInteger(result[key])?String(result[key]):"—";
-  if(result.mode==="local_fixed_sample")return <div className="tagma-pack-result"><strong>{zh?"本地试跑完成":"Local sample complete"}</strong><p>{zh?"仅检验队员协议；没有联网或生成研究成果。":"Pack protocol checked locally. No research service or model was called."}</p><p>{zh?"固定素材：书店、咖啡店、修理店":"Fixed sample: bookshop, café, repair shop"}</p></div>;
-  if(result.mode==="reachflow_service")return <div className="tagma-pack-result"><strong>{zh?"ReachFlow 任务状态":"ReachFlow task status"}: {field("state")}</strong><p>{zh?"任务":"Task"} {field("task_id")}</p><p>{zh?"位置":"Location"}: {field("location")}</p><p>{zh?"候选 / 最终 / 失败":"Candidates / final / failed"}: {count("candidate_count")} / {count("final_count")} / {count("failed_count")}</p>{result.cancellation_requested===true&&<p>{zh?"已请求取消；请再次查询确认最终状态。":"Cancellation requested. Query again to confirm the final state."}</p>}</div>;
-  if(result.mode==="reachflow_report")return <div className="tagma-pack-result"><strong>{zh?"ReachFlow 报告":"ReachFlow report"}</strong><p>{zh?"位置":"Location"}: {field("location")}</p><p>{zh?"报告 ID":"Report ID"}: {field("report_id")}</p><pre>{field("document_preview")}</pre>{result.preview_truncated===true&&<p>{zh?"仅显示前 8 KiB；完整报告请在 ReachFlow 查看。":"Preview limited to 8 KiB. Open ReachFlow for the full report."}</p>}</div>;
-  return <pre className="tagma-pack-result">{raw}</pre>;
 }
 export function PackMarketPanel({config,busy,active,language,onRefresh,onEditingChange}:{config:ConfigView,busy:boolean,active:boolean,language:ProductLanguage,onRefresh:()=>Promise<void>,onEditingChange:(value:boolean)=>void}){
   const zh=language==="zh";
@@ -85,7 +76,7 @@ export function PackMarketPanel({config,busy,active,language,onRefresh,onEditing
       <PrefRow name={zh?"声明内存 / 调用超时":"Declared memory / call timeout"}><span>{review.memory_mib} MiB / {review.timeout_ms/1000}s</span></PrefRow>
     </div><p className="tagma-footnote">{zh?"权限与内存为发行声明，当前不提供操作系统沙箱保证。安装将启动发行者提供的程序进行健康检查。":"Permissions and memory are publisher declarations, not an OS sandbox. Installation runs the publisher executable for its health check."}</p><div className="tagma-actions"><TextBtn disabled={locked} onClick={()=>{returnTo.current=review.publisher==="tagma-internal"?internalButton.current:file.current;setReview(null);}}>{zh?"取消":"Cancel"}</TextBtn><TextBtn variant="action" disabled={locked||!review.fits} onClick={()=>void install()}>{zh?"同意权限并安装":"Approve permissions and install"}</TextBtn></div></section>}
     <div className="tagma-actions"><TextBtn ref={sample} disabled={!desktop||locked||!!review||!installed} onClick={()=>void call({kind:"local_sample"})}>{zh?"运行本地固定素材试跑":"Run local fixed sample"}</TextBtn></div>
-    {task&&<section className="tagma-editor" aria-label={zh?"队员任务":"Pack task"}><p role="status">{phase[task.phase]??task.phase} · {state[task.state]??task.state}</p><p className="tagma-footnote">{task.task_id}</p>{task.error&&<p className="tagma-error">{packError({code:task.error},zh)}</p>}{task.text&&resultView(task.text,zh)}{working&&task.state==="running"&&<TextBtn onClick={()=>void service.cancelPack(runningId.current!).catch(setError)}>{zh?"停止本机操作 / 等待":"Stop local operation / waiting"}</TextBtn>}<p className="tagma-footnote">{zh?"停止本机等待不会取消已提交的服务任务。取消服务任务请使用下方明确操作，并查询最终状态。":"Stopping local waiting does not cancel a submitted service task. Use the explicit service cancellation below and check its final state."}</p></section>}
+    {task&&<section className="tagma-editor" aria-label={zh?"队员任务":"Pack task"}><p role="status">{phase[task.phase]??task.phase} · {state[task.state]??task.state}</p><p className="tagma-footnote">{task.task_id}</p>{task.error&&<p className="tagma-error">{packError({code:task.error},zh)}</p>}{task.text&&<PackResult raw={task.text} zh={zh}/>}{working&&task.state==="running"&&<TextBtn onClick={()=>void service.cancelPack(runningId.current!).catch(setError)}>{zh?"停止本机操作 / 等待":"Stop local operation / waiting"}</TextBtn>}<p className="tagma-footnote">{zh?"停止本机等待不会取消已提交的服务任务。取消服务任务请使用下方明确操作，并查询最终状态。":"Stopping local waiting does not cancel a submitted service task. Use the explicit service cancellation below and check its final state."}</p></section>}
     <details className="tagma-chat-setup"><summary>{zh?"连接 ReachFlow 服务并调用":"Connect to ReachFlow and call"}</summary><p className="tagma-footnote">{zh?"真实采集需要已在 ReachFlow 确认的计划、预算与授权；这里不会代为确认。连接和令牌仅保留在当前窗口内存，不写入配置。":"Real collection requires a plan, budget and authorization already confirmed in ReachFlow. Connection credentials remain in this window's memory."}</p>
       {internalOnly&&<p role="status" className="tagma-footnote">{zh?"当前内部包仅允许本地试跑，未授予网络访问。连接真实服务需要安装声明对应服务域名的受信任队员包。":"The internal package permits local samples only. Install a trusted package declaring the service domain before connecting."}</p>}
       <form className="tagma-editor tagma-pack-service" onSubmit={event=>{event.preventDefault();submitService();}}><fieldset disabled={locked||!installed||internalOnly||!!review}>

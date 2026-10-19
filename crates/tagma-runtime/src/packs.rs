@@ -283,6 +283,16 @@ impl PackExecutor {
         if cancel.is_cancelled() {
             return Err(PackRunError::Cancelled);
         }
+        // Coordinate desktop and gateway execution of the same installation.
+        // This lease lives through validation, process completion and cancellation cleanup.
+        let lease = std::fs::OpenOptions::new()
+            .create(true)
+            .truncate(false)
+            .read(true)
+            .write(true)
+            .open(self.preparations.join("call.lock"))
+            .map_err(|_| PackRunError::Unavailable)?;
+        fs2::FileExt::try_lock_exclusive(&lease).map_err(|_| PackRunError::Busy)?;
         let slot = self
             .admission
             .clone()

@@ -61,6 +61,23 @@ async fn offline_archive_keeps_signature_checksum_health_and_cancellation_gates(
         view.installed_packs[0].active_version.as_deref(),
         Some("1.0.0")
     );
+    let installed=&view.installed_packs[0].versions[0];
+    let lease=std::fs::OpenOptions::new().read(true).write(true)
+        .open(f.root.path().join("preparations/call.lock")).unwrap();
+    fs2::FileExt::try_lock_exclusive(&lease).unwrap();
+    assert!(matches!(f.installer.executor().call(
+        uuid::Uuid::parse_str(&installed.preparation_id).unwrap(),
+        &installed.manifest_sha256,
+        crate::packs::PackOperation::Ping,
+        CancellationToken::new(),
+    ).await,Err(crate::packs::PackRunError::Busy)));
+    drop(lease);
+    assert!(f.installer.executor().call(
+        uuid::Uuid::parse_str(&installed.preparation_id).unwrap(),
+        &installed.manifest_sha256,
+        crate::packs::PackOperation::Ping,
+        CancellationToken::new(),
+    ).await.is_ok());
 }
 impl CredentialStore for NoCredentials {
     fn set(&self, _: &str, _: &str) -> AppResult<()> {

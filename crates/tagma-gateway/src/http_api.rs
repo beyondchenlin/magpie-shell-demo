@@ -16,7 +16,7 @@ use tagma_core::{
     teams::{CloudTarget, TeamBrain, TeamStepInput, TeamStepTarget, valid_team_slug},
 };
 
-struct PinnedStep {
+struct PinnedCloud {
     client: reqwest::Client,
     provider: Provider,
     model: String,
@@ -24,6 +24,70 @@ struct PinnedStep {
     input: TeamStepInput,
     timeout: Duration,
     fingerprint: String,
+}
+enum PinnedStep {
+    Cloud(PinnedCloud),
+    Pack {
+        version: tagma_core::packs::InstalledPackVersion,
+        input: TeamStepInput,
+        timeout: Duration,
+    },
+}
+impl PinnedStep {
+    fn provider_id(&self) -> String {
+        match self {
+            Self::Cloud(s) => s.provider.id.clone(),
+            Self::Pack { .. } => tagma_runtime::pack_route::USAGE_ID.into(),
+        }
+    }
+    fn security_target(&self) -> Option<String> {
+        match self {
+            Self::Cloud(s) => Some(tagma_core::security::provider_target(&s.fingerprint)),
+            Self::Pack { .. } => None,
+        }
+    }
+    fn input(&self) -> &TeamStepInput {
+        match self {
+            Self::Cloud(s) => &s.input,
+            Self::Pack { input, .. } => input,
+        }
+    }
+    fn timeout(&self) -> Duration {
+        match self {
+            Self::Cloud(s) => s.timeout,
+            Self::Pack { timeout, .. } => *timeout,
+        }
+    }
+}
+fn pin_pack(
+    snapshot: &tagma_core::service::ConfigSnapshot,
+    version: Option<&str>,
+    input: TeamStepInput,
+    timeout: Duration,
+) -> Result<PinnedStep, PlanError> {
+    let pack = snapshot
+        .installed_packs
+        .iter()
+        .find(|p| p.id == "reachflow" && p.active_version.is_some())
+        .ok_or(PlanError(
+            StatusCode::SERVICE_UNAVAILABLE,
+            "PACK_UNAVAILABLE",
+        ))?;
+    let wanted = version.or(pack.active_version.as_deref());
+    let version = pack
+        .versions
+        .iter()
+        .find(|v| Some(v.version.as_str()) == wanted)
+        .cloned()
+        .ok_or(PlanError(
+            StatusCode::SERVICE_UNAVAILABLE,
+            "PACK_UNAVAILABLE",
+        ))?;
+    Ok(PinnedStep::Pack {
+        version,
+        input,
+        timeout,
+    })
 }
 #[derive(Clone)]
 struct HealthContext {
@@ -129,7 +193,7 @@ fn pin_plan(
                input,
                timeout: Duration|
      -> Result<PinnedStep, PlanError> {
-        Ok(PinnedStep {
+        Ok(PinnedStep::Cloud(PinnedCloud {
             client: loaded.4.get(&record.provider.id).cloned().ok_or(PlanError(
                 StatusCode::SERVICE_UNAVAILABLE,
                 "CONFIG_NOT_APPLIED",
@@ -142,8 +206,23 @@ fn pin_plan(
             timeout: timeout.min(Duration::from_millis(
                 record.provider.timeouts.total_ms.into(),
             )),
-        })
+        }))
     };
+    if model == tagma_runtime::pack_route::MODEL {
+        return Ok(PinnedPlan {
+            revision: loaded.0,
+            steps: vec![pin_pack(
+                &loaded.1,
+                None,
+                TeamStepInput::OriginalMessages,
+                Duration::from_secs(30),
+            )?],
+            timeout: Duration::from_secs(30),
+            public_model: Some(model.into()),
+            team_revision: None,
+            automatic_brain: false,
+        });
+    }
     if !model.starts_with("tagma/") {
         let record =
             loaded
@@ -216,6 +295,21 @@ fn pin_plan(
     }
     let mut steps = Vec::new();
     for step in &version.recipe.steps {
+        if let TeamStepTarget::Pack { pack_id, version } = &step.target {
+            if pack_id != "reachflow" {
+                return Err(PlanError(
+                    StatusCode::SERVICE_UNAVAILABLE,
+                    "PACK_UNAVAILABLE",
+                ));
+            }
+            steps.push(pin_pack(
+                &loaded.1,
+                Some(version),
+                step.input.clone(),
+                Duration::from_millis(step.timeout_ms.into()),
+            )?);
+            continue;
+        }
         let TeamStepTarget::CloudModel { target } = &step.target else {
             return Err(PlanError(
                 StatusCode::SERVICE_UNAVAILABLE,
@@ -382,6 +476,16 @@ async fn models(State(state): State<Arc<Runtime>>) -> Response {
             }
         }
     }
+    if pin_pack(
+        &loaded.1,
+        None,
+        TeamStepInput::OriginalMessages,
+        Duration::from_secs(30),
+    )
+    .is_ok()
+    {
+        data.push(json!({"id":tagma_runtime::pack_route::MODEL,"object":"model","created":0,"owned_by":"tagma-local-pack"}));
+    }
     for team in &loaded.1.teams {
         for version in &team.versions {
             if pin_plan(
@@ -392,9 +496,8 @@ async fn models(State(state): State<Arc<Runtime>>) -> Response {
             )
             .is_ok_and(|plan| {
                 plan.steps.iter().all(|step| {
-                    !policy
-                        .revoked
-                        .contains_key(&tagma_core::security::provider_target(&step.fingerprint))
+                    step.security_target()
+                        .is_none_or(|target| !policy.revoked.contains_key(&target))
                 }) && (!plan.automatic_brain
                     || health.as_ref().is_some_and(|(epoch, _)| {
                         *epoch == state.health.epoch() && state.health.confirmed()
@@ -717,7 +820,7 @@ async fn completion(
         grant.target,
         plan.steps
             .iter()
-            .map(|step| tagma_core::security::provider_target(&step.fingerprint))
+            .filter_map(PinnedStep::security_target)
             .collect(),
         None,
     ) {
@@ -744,7 +847,7 @@ async fn completion(
         );
     }
     let deadline = request_started + plan.timeout;
-    let Some(final_provider) = plan.steps.last().map(|step| step.provider.id.clone()) else {
+    let Some(final_provider) = plan.steps.last().map(PinnedStep::provider_id) else {
         return error(
             StatusCode::SERVICE_UNAVAILABLE,
             "TEAM_DEPENDENCY_UNAVAILABLE",
@@ -840,10 +943,7 @@ async fn execute_plan(state: &Arc<Runtime>, input: &Value, execution: Execution)
     let count = plan.steps.len();
     let mut previous = None;
     for (index, step) in plan.steps.into_iter().enumerate() {
-        if let Err(failure) = run
-            .check(&tagma_core::security::provider_target(&step.fingerprint))
-            .await
-        {
+        if let Err(failure) = run.check_all().await {
             return error(
                 if failure.code == tagma_core::ErrorCode::AccessRevoked {
                     StatusCode::FORBIDDEN
@@ -865,7 +965,10 @@ async fn execute_plan(state: &Arc<Runtime>, input: &Value, execution: Execution)
         }
         let final_step = index + 1 == count;
         let mut payload = (*input).clone();
-        payload["model"] = json!(step.model);
+        payload["model"] = json!(match &step {
+            PinnedStep::Cloud(cloud) => cloud.model.as_str(),
+            PinnedStep::Pack { .. } => tagma_runtime::pack_route::MODEL,
+        });
         payload["stream"] = json!(final_step && streaming);
         if !final_step {
             payload
@@ -873,7 +976,7 @@ async fn execute_plan(state: &Arc<Runtime>, input: &Value, execution: Execution)
                 .expect("validated request")
                 .remove("stream_options");
         }
-        if step.input == TeamStepInput::PreviousText {
+        if *step.input() == TeamStepInput::PreviousText {
             let Some(text) = previous.take() else {
                 return error(StatusCode::BAD_GATEWAY, "TEAM_INTERMEDIATE_EMPTY");
             };
@@ -882,25 +985,44 @@ async fn execute_plan(state: &Arc<Runtime>, input: &Value, execution: Execution)
         if serde_json::to_vec(&payload).map_or(true, |bytes| bytes.len() > 128 * 1024) {
             return error(StatusCode::PAYLOAD_TOO_LARGE, "TEAM_INTERMEDIATE_LIMIT");
         }
-        let deadline = total_deadline.min(tokio::time::Instant::now() + step.timeout);
-        let mut response = forward(
-            state,
-            Invocation {
-                run: run.clone(),
-                request: request.clone(),
-                ordinal: index as u32 + 1,
-            },
-            &step,
-            &payload,
-            final_step && streaming,
-            deadline,
-            if final_step {
-                plan.public_model.clone()
-            } else {
-                None
-            },
-        )
-        .await;
+        let deadline = total_deadline.min(tokio::time::Instant::now() + step.timeout());
+        let mut response = match &step {
+            PinnedStep::Pack { version, .. } => {
+                forward_pack(
+                    state,
+                    Invocation {
+                        run: run.clone(),
+                        request: request.clone(),
+                        ordinal: index as u32 + 1,
+                    },
+                    version.clone(),
+                    &payload,
+                    final_step && streaming,
+                    deadline,
+                )
+                .await
+            }
+            PinnedStep::Cloud(cloud) => {
+                forward(
+                    state,
+                    Invocation {
+                        run: run.clone(),
+                        request: request.clone(),
+                        ordinal: index as u32 + 1,
+                    },
+                    cloud,
+                    &payload,
+                    final_step && streaming,
+                    deadline,
+                    if final_step {
+                        plan.public_model.clone()
+                    } else {
+                        None
+                    },
+                )
+                .await
+            }
+        };
         response.headers_mut().insert(
             "x-tagma-request-id",
             HeaderValue::from_str(&request_id).expect("UUID header"),
@@ -944,10 +1066,96 @@ async fn execute_plan(state: &Arc<Runtime>, input: &Value, execution: Execution)
     )
 }
 
+async fn forward_pack(
+    state: &Arc<Runtime>,
+    invocation: Invocation,
+    version: tagma_core::packs::InstalledPackVersion,
+    payload: &Value,
+    streaming: bool,
+    deadline: tokio::time::Instant,
+) -> Response {
+    // Only the last user command selects a local fixed sample. Earlier messages,
+    // tools and arbitrary natural language never become service operations.
+    let Some(text) = payload["messages"]
+        .as_array()
+        .and_then(|messages| messages.last())
+        .filter(|message| message["role"] == "user")
+        .and_then(|message| message["content"].as_str())
+    else {
+        return error(StatusCode::BAD_REQUEST, "PACK_INVALID_INPUT");
+    };
+    if !matches!(text.trim(), "本地试跑" | "local sample") {
+        return error(StatusCode::BAD_REQUEST, "PACK_SAMPLE_COMMAND_REQUIRED");
+    }
+    let mut attempt = match invocation
+        .request
+        .attempt(
+            invocation.ordinal,
+            tagma_runtime::pack_route::USAGE_ID,
+            tagma_runtime::pack_route::MODEL,
+        )
+        .await
+    {
+        Ok(attempt) => attempt,
+        Err(_) => return error(StatusCode::SERVICE_UNAVAILABLE, super::usage::FAILURE),
+    };
+    let cancel = invocation.run.cancel.child_token();
+    let _cancel_on_drop = cancel.clone().drop_guard();
+    let worker_cancel = cancel.clone();
+    let directory = state.directory.clone();
+    let text = text.to_owned();
+    // A disconnected HTTP client cancels, while the worker retains the process
+    // and cross-host lease until cleanup has completed.
+    let mut worker = tokio::spawn(async move {
+        tagma_runtime::pack_route::sample(&directory, version, &text, worker_cancel).await
+    });
+    let mut stopped = None;
+    let joined = tokio::select! {
+        biased;
+        _=invocation.run.cancel.cancelled()=>{stopped=Some("ACCESS_REVOKED");cancel.cancel();worker.await},
+        _=state.shutdown.cancelled()=>{stopped=Some("GATEWAY_STOPPING");cancel.cancel();worker.await},
+        _=tokio::time::sleep_until(deadline)=>{stopped=Some("REQUEST_BUDGET_EXCEEDED");cancel.cancel();worker.await},
+        result=&mut worker=>result,
+    };
+    let result = joined.unwrap_or(Err(tagma_runtime::packs::PackRunError::ProcessFailed));
+    let code = stopped
+        .map(str::to_owned)
+        .or_else(|| result.as_ref().err().map(ToString::to_string));
+    if attempt
+        .finish(
+            code.as_deref(),
+            tagma_core::usage::Tokens {
+                input: Some(0),
+                output: Some(0),
+            },
+        )
+        .await
+        .is_err()
+    {
+        return error(StatusCode::SERVICE_UNAVAILABLE, super::usage::FAILURE);
+    }
+    if let Some(code) = code {
+        return error(StatusCode::BAD_GATEWAY, &code);
+    }
+    let text = result.expect("successful pack reply");
+    let id = format!("chatcmpl-{}", invocation.request.id);
+    if streaming {
+        let chunk = json!({"id":id,"object":"chat.completion.chunk","created":0,"model":tagma_runtime::pack_route::MODEL,"choices":[{"index":0,"delta":{"role":"assistant","content":text},"finish_reason":null}]});
+        let end = json!({"id":id,"object":"chat.completion.chunk","created":0,"model":tagma_runtime::pack_route::MODEL,"choices":[{"index":0,"delta":{},"finish_reason":"stop"}],"usage":{"prompt_tokens":0,"completion_tokens":0,"total_tokens":0}});
+        (
+            [(axum::http::header::CONTENT_TYPE, "text/event-stream")],
+            format!("data: {chunk}\n\ndata: {end}\n\ndata: [DONE]\n\n"),
+        )
+            .into_response()
+    } else {
+        Json(json!({"id":id,"object":"chat.completion","created":0,"model":tagma_runtime::pack_route::MODEL,"choices":[{"index":0,"message":{"role":"assistant","content":text},"finish_reason":"stop"}],"usage":{"prompt_tokens":0,"completion_tokens":0,"total_tokens":0}})).into_response()
+    }
+}
+
 async fn forward(
     state: &Arc<Runtime>,
     invocation: Invocation,
-    step: &PinnedStep,
+    step: &PinnedCloud,
     input: &Value,
     streaming: bool,
     total_deadline: tokio::time::Instant,
@@ -1050,7 +1258,7 @@ fn unconfirmed_response(mut response: Response) -> Response {
 
 async fn forward_response(
     state: &Arc<Runtime>,
-    step: &PinnedStep,
+    step: &PinnedCloud,
     input: &Value,
     streaming: bool,
     total_deadline: tokio::time::Instant,
@@ -1327,6 +1535,20 @@ async fn forward_response(
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[tokio::test]
+    async fn pack_route_pins_version_without_cloud_or_credentials() {
+        let state=crate::apply_tests::state();
+        let mut loaded=state.snapshot.write().await;
+        assert!(pin_plan(&loaded,tagma_runtime::pack_route::MODEL,None,&Default::default()).is_err());
+        let v=tagma_core::packs::InstalledPackVersion {version:"1.0.0".into(),preparation_id:uuid::Uuid::new_v4().to_string(),manifest_sha256:"a".repeat(64),display_name:"ReachFlow".into(),installed_ms:"1".into()};
+        loaded.1.installed_packs.push(tagma_core::packs::InstalledPack{id:"reachflow".into(),active_version:Some(v.version.clone()),versions:vec![v.clone()]});
+        let plan=pin_plan(&loaded,tagma_runtime::pack_route::MODEL,None,&Default::default()).ok().unwrap();
+        loaded.1.installed_packs[0].active_version=None;
+        assert!(pin_plan(&loaded,tagma_runtime::pack_route::MODEL,None,&Default::default()).is_err());
+        match &plan.steps[0] {PinnedStep::Pack{version,..}=>assert_eq!(version,&v),_=>panic!("pack route")}
+        assert_eq!(plan.steps[0].provider_id(),tagma_runtime::pack_route::USAGE_ID);
+        assert!(plan.steps[0].security_target().is_none());
+    }
     #[test]
     fn refuses_unimplemented_fields_before_dispatch() {
         assert!(validate(&json!({"model":"test","messages":[{"role":"user","content":"hello"}],"stream":true})).is_ok());

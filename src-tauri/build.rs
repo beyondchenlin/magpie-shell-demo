@@ -2,6 +2,7 @@ fn main() {
     internal_pack();
     tauri_build::try_build(tauri_build::Attributes::new().app_manifest(
         tauri_build::AppManifest::new().commands(&[
+            "save_pack_result",
             "pack_market",
             "review_pack",
             "install_pack",

@@ -148,9 +148,13 @@ fn verify_identity(db: &Connection) -> AppResult<()> {
 impl ConfigService {
     pub fn configuration_id(&self) -> AppResult<Uuid> {
         let db = self.db.lock().map_err(storage)?;
-        let id: String = db.query_row(
-            "SELECT config_uuid FROM config_metadata WHERE singleton=1", [], |row| row.get(0)
-        ).map_err(storage)?;
+        let id: String = db
+            .query_row(
+                "SELECT config_uuid FROM config_metadata WHERE singleton=1",
+                [],
+                |row| row.get(0),
+            )
+            .map_err(storage)?;
         let parsed = Uuid::parse_str(&id).map_err(storage)?;
         if parsed.is_nil() {
             return Err(AppError::new(ErrorCode::IncompatibleVersion));
@@ -169,6 +173,12 @@ impl ConfigService {
     }
     /// Runtime readers never initialize/migrate the business store or recover credentials.
     pub fn read_runtime_snapshot(directory: &Path) -> AppResult<(u32, ConfigSnapshot)> {
+        Self::read_runtime_identified(directory).map(|(_, revision, snapshot)| (revision, snapshot))
+    }
+    pub fn read_runtime_identity(directory: &Path) -> AppResult<Uuid> {
+        Self::read_runtime_identified(directory).map(|(identity, _, _)| identity)
+    }
+    fn read_runtime_identified(directory: &Path) -> AppResult<(Uuid, u32, ConfigSnapshot)> {
         let maintenance = lock_file(&directory.join("maintenance.lock"))?;
         FileExt::try_lock_shared(&maintenance)
             .map_err(|_| AppError::new(ErrorCode::MaintenanceInProgress))?;
@@ -187,7 +197,16 @@ impl ConfigService {
             return Err(AppError::new(ErrorCode::IncompatibleVersion));
         }
         verify_identity(&db)?;
-        Self::read_db(&db)
+        let id: String = db
+            .query_row(
+                "SELECT config_uuid FROM config_metadata WHERE singleton=1",
+                [],
+                |row| row.get(0),
+            )
+            .map_err(storage)?;
+        let identity = Uuid::parse_str(&id).map_err(storage)?;
+        let (revision, snapshot) = Self::read_db(&db)?;
+        Ok((identity, revision, snapshot))
     }
 
     pub fn open(directory: &Path, credentials: Arc<dyn CredentialStore>) -> AppResult<Self> {

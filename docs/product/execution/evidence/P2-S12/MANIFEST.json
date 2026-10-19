@@ -1,0 +1,294 @@
+{
+  "owner": "tagma-p2-s12/routing/v1",
+  "purpose": "Selected real native evidence; tests remain separately labeled",
+  "utc": "2026-10-19T07:04:24.1337595Z",
+  "files": [
+    {
+      "file": "05-dev43.json",
+      "bytes": 20477,
+      "sha256": "CBD0B1CBEC5DFE8B14E408EFC5043BD7A2EFE9E5DD90AA7E237E520AB08CAB6C"
+    },
+    {
+      "file": "11-chat-results.json",
+      "bytes": 60233,
+      "sha256": "539AEFDAB132B45D47BAB6A16AAB21EDDA190F94DB5C7E1E6845291106CC77F0"
+    },
+    {
+      "file": "21-pack-step.json",
+      "bytes": 122094,
+      "sha256": "62226FA87396E78A0A45999472D20A304B7B00C5A70D1B94C4CE333B0EDD22D4"
+    },
+    {
+      "file": "25-team-saved.json",
+      "bytes": 75148,
+      "sha256": "50655D28691EE08F251FA3792F2168D162F311C083C0833DB0004FBD84BBB462"
+    },
+    {
+      "file": "30-team-published.json",
+      "bytes": 77271,
+      "sha256": "2CA3DE6A607FA6FA0852CFF28B266B038F74F3131E6684923E6580BF3F46BCBA"
+    },
+    {
+      "file": "36-team-complete.json",
+      "bytes": 65048,
+      "sha256": "5803C05A4ACBD8A00F758B507C64D80DACD7FE3478EA6591ACEFD6BE24E42627"
+    },
+    {
+      "file": "38-invalid-refused.json",
+      "bytes": 71914,
+      "sha256": "703125EF68B1D966E8B2B4394A0EDC145D02AF85A3576CA8F78E299CB56D8A75"
+    },
+    {
+      "file": "42-gateway-state.json",
+      "bytes": 70414,
+      "sha256": "C8FCDAD814291EFE1C5DF54A4DF2D07AD6BC7F9B3BFDF2D650E55E5A937A6331"
+    },
+    {
+      "file": "47-repaired.json",
+      "bytes": 43313,
+      "sha256": "ADF6548FA2FC5B2304BAC3F94311A4D92A39BAAADB7D8A554B4BBA7424C3015A"
+    },
+    {
+      "file": "51-refusal-readable.json",
+      "bytes": 48196,
+      "sha256": "D0B892FF499BDBE53DF623CF4E4F65804A8577658DC9BEFEA01572DB20EB98C6"
+    },
+    {
+      "file": "53-team-slow.json",
+      "bytes": 54279,
+      "sha256": "6CEEE8090AE19BD094FC8AFCE414FBDAAD20C1539EAB51C70B27C20C153C7E46"
+    },
+    {
+      "file": "54-team-cancelled.json",
+      "bytes": 55309,
+      "sha256": "6732E28EF4038ABBA0DBFC726CAFA25270BAFEDB6F04B5DCED41C2B7D0FDFC85"
+    },
+    {
+      "file": "57-retry-complete.json",
+      "bytes": 60313,
+      "sha256": "E319B8205C15B3988756AC8835E7FEF103DFFB917B1C3A7190ECF64010CAB7B1"
+    },
+    {
+      "file": "65-usage-visible.json",
+      "bytes": 290275,
+      "sha256": "F399E69857C788BEA58C108A452EC778A0ED087428C031060AA40883630773D9"
+    },
+    {
+      "file": "69-market-results.json",
+      "bytes": 88060,
+      "sha256": "5F8B10ED5461CA41B31AAF633C3EDB65CE9F4A076D892766B9E519C9288AB497"
+    },
+    {
+      "file": "73-r4-open.json",
+      "bytes": 43314,
+      "sha256": "C1A3E4947EB7DCD0B29E869F197521CEDC12173592ECB400DE2E1B0B4804FFBF"
+    },
+    {
+      "file": "75-r4-sample.json",
+      "bytes": 78237,
+      "sha256": "2899C7B4388849693315F30BD7FFA52AD9F3E04335D7F2B1B29391B1F23D7B41"
+    },
+    {
+      "file": "77-protected-directory.json",
+      "bytes": 90270,
+      "sha256": "D1281D0CB1CA1142CB5520C2F0543E0CE768773F33B5A593566828686FC3B755"
+    },
+    {
+      "file": "78-directory-reobserve.json",
+      "bytes": 90269,
+      "sha256": "B68FEE86C5DC0CF4EBA7CB43277DDFE6BCC39F2038E603681418F5ADAB8D8A91"
+    },
+    {
+      "file": "79-protected-refused.json",
+      "bytes": 95207,
+      "sha256": "41BBAB3CC144F6D551C08DB2B80F0B5577EC011C784DACCB08233E8C800AF1D5"
+    },
+    {
+      "file": "80-output-directory.json",
+      "bytes": 90219,
+      "sha256": "EFE85E07DCA51E2B876CF482E595C363F10A00155CB325CD82CC76CB38737064"
+    },
+    {
+      "file": "81-directory-confirmed.json",
+      "bytes": 90221,
+      "sha256": "B4844CDA1DFAC8F9F7C8728E5DE5022E1FD080BF16D55D84A5AF18D25A64910D"
+    },
+    {
+      "file": "82-export-field-click.json",
+      "bytes": 90219,
+      "sha256": "4C5106BC8C2EB0C2B6AE12297AF1266A1C8549CA2DE8ABC1043CC26ECF4C7B85"
+    },
+    {
+      "file": "83-export-select.json",
+      "bytes": 90219,
+      "sha256": "66EADEF6CAAE448C63E8E26ABC8A4D9876714EBDB0BBEDB22666D8F2A3A7ABE0"
+    },
+    {
+      "file": "84-export-physical-input.json",
+      "bytes": 90220,
+      "sha256": "BFAE7E9D2668C5EF352DE826E3BDEDFA2D17D9AED92DFD4178C8BE5410FBCF54"
+    },
+    {
+      "file": "85-export-saved.json",
+      "bytes": 93236,
+      "sha256": "BBE5DCDC9B9AEC897299C54284F9906397AC478A03D1E09A2F8DF217AD934E91"
+    },
+    {
+      "file": "86-export-receipt-visible.json",
+      "bytes": 93229,
+      "sha256": "CC28937AD1C2F64B8DBABF0511805A2E747DFFB44C714DF1EC4E4BB79BE6455B"
+    },
+    {
+      "file": "binaries-r2.json",
+      "bytes": 277,
+      "sha256": "4F6F56E50F23C52933BFF9D50B368E81AE3D65FB34809EA22E46CD890A80258A"
+    },
+    {
+      "file": "binaries-r3.json",
+      "bytes": 194,
+      "sha256": "3791813A2E7F39F7636E7DEF56F758D3B811D19CA8DE57DC0DE577BC433F2653"
+    },
+    {
+      "file": "binaries.json",
+      "bytes": 192,
+      "sha256": "FA9B24BA298A6BF25FBEA05B067735ED275A21BD84704535E85B5A34CB2B623D"
+    },
+    {
+      "file": "BUDGET.txt",
+      "bytes": 224,
+      "sha256": "7D4D47EF65C4EA85BBF6FF35D33A74A8AA01163D6815B4776DA8247DA5657B17"
+    },
+    {
+      "file": "build.log",
+      "bytes": 6088,
+      "sha256": "50369A5386B9BD951A1481331939D43A8B039FAF61716BC90313D307EEE77095"
+    },
+    {
+      "file": "check.log",
+      "bytes": 5407,
+      "sha256": "7FFB37D01527388C32B2EF17C0CCA30D7275C44F1FA86B8845656CE2D3010CDA"
+    },
+    {
+      "file": "clippy.log",
+      "bytes": 8741,
+      "sha256": "743909DF2DFF87172DAD6D054627F8D6EBC97E0637E43859F6E1F78DD5521641"
+    },
+    {
+      "file": "Control-r3.ps1",
+      "bytes": 30179,
+      "sha256": "3F9969D52A2197831838A796E457F4B782BA6020369A25684DCC3B412C9D28C6"
+    },
+    {
+      "file": "Control.ps1",
+      "bytes": 30179,
+      "sha256": "D45547DCBF7031853E6192B44B34C6851A88206F711B86531A9A2EC6C5DEDCAD"
+    },
+    {
+      "file": "export-receipt.json",
+      "bytes": 822,
+      "sha256": "757234A9EFDF6F9C612A299C678571A3F8666D3BF249210DD4EA9DE137F3DE20"
+    },
+    {
+      "file": "final-identity.json",
+      "bytes": 1588,
+      "sha256": "1DA1461907F3B6F889BBBDD2DCF2ACC42D2EC693A0A8204264ACD0D9874D58A9"
+    },
+    {
+      "file": "frontend.log",
+      "bytes": 1962,
+      "sha256": "6B47D8D295FB65A9344793248D644815A7B773075F039A0994F29AE5C7D2E2E6"
+    },
+    {
+      "file": "generated-permission.json",
+      "bytes": 420,
+      "sha256": "90AE998FBA9528FE4B1E8D165CD313FFBE8D2E78B63A66542C2B4A23AE75293C"
+    },
+    {
+      "file": "Launch.ps1",
+      "bytes": 420,
+      "sha256": "36275055F6411D0EAEF755A2B32BDEBB9FC06B9FB9CB67D3CD842C6210378A36"
+    },
+    {
+      "file": "native-chat-result.png",
+      "bytes": 32630,
+      "sha256": "2AB37B9DADE0A17FF627A3F6EE682DB4B88B450097AEC4D60D343691CC8AA128"
+    },
+    {
+      "file": "native-export-before-input.png",
+      "bytes": 39389,
+      "sha256": "B92C6C6171A1AB1FDC368E041D1A69638B59B4E13510B00FEA2FA89B3CA99329"
+    },
+    {
+      "file": "native-market-result.png",
+      "bytes": 36545,
+      "sha256": "75F879D0A5B214AE99BD7C331899CCEC2546CD25565A2C076B8C7226F53D4305"
+    },
+    {
+      "file": "native-result-export.png",
+      "bytes": 41752,
+      "sha256": "190431FBA980F70630D015387A1F1815F3FE887A5C95AF61B05DED32755DCF14"
+    },
+    {
+      "file": "native-retry-r3.png",
+      "bytes": 29851,
+      "sha256": "B5CE1D8449048794D8581822D14B6D26C53F8282C8359A09D03766DD1261341D"
+    },
+    {
+      "file": "native-team-result.png",
+      "bytes": 30482,
+      "sha256": "09A2E61C654A9FB1B39C166DD0AD549C52C2A4E759CBC68324E4787833730D1E"
+    },
+    {
+      "file": "native-team-usage.png",
+      "bytes": 33497,
+      "sha256": "A08755E1C70C2D98B4F8C5C31765EBA22322D544D6D7B94DDC7BBD41EF9F4B51"
+    },
+    {
+      "file": "post-build-note.json",
+      "bytes": 719,
+      "sha256": "332405FCB0162E0B3D98F025F38A3502F52B15438FD321708B92C8F2E982FB29"
+    },
+    {
+      "file": "Run.ps1",
+      "bytes": 2054,
+      "sha256": "81B0DE2BB618622E225B89E77D1B7D62121DB9A3CECFF0534104006BCE943B4A"
+    },
+    {
+      "file": "source-frozen43-r3.json",
+      "bytes": 58067,
+      "sha256": "096AD962642175A75078134E2B72136C6EE552FE2B64030A50DD22864FD0AEF9"
+    },
+    {
+      "file": "source-frozen43-r4.json",
+      "bytes": 58246,
+      "sha256": "CEF648BED16F82BBFE851318E18854123A255F383E665516D77F90D05F200641"
+    },
+    {
+      "file": "source-r4-check.json",
+      "bytes": 108,
+      "sha256": "FEF4AB7EDF03CEA127AE1E161B1F40E3D928E24B713394563C2FC19FD763502F"
+    },
+    {
+      "file": "tests.log",
+      "bytes": 15319,
+      "sha256": "3E1FC0CA609B053E07A1335B193D2028FD6CD2CCB023E04F2F7DE657132E6945"
+    },
+    {
+      "file": "upstream-events.jsonl",
+      "bytes": 850,
+      "sha256": "56BADD55F63AF0A739424F9F869812270E0A4F8F9E96F7342CC8D052CDE2860F"
+    },
+    {
+      "file": "upstream-identity.json",
+      "bytes": 97,
+      "sha256": "F796BDD895D0C9C53B2DA2D888E16794C7855E5C344A4B7B5280F86E77BDA962"
+    },
+    {
+      "file": "Upstream.mjs",
+      "bytes": 3560,
+      "sha256": "945269BD5A271EDC79ECCAC1AEC12B1576FA0ADB3DC88BC96400C197E17EA905"
+    }
+  ],
+  "logicalBytes": 2707063.0,
+  "hashScope": "SHA256 of original collected bytes in .cache/p2-s12-routing; Git may normalize text line endings. Screenshots are byte-preserved."
+}

@@ -224,6 +224,24 @@ impl Completion {
                     | "TEAM_INTERMEDIATE_REFUSED"
                     | "TEAM_INTERMEDIATE_TRUNCATED"
                     | "TEAM_INTERMEDIATE_UNHANDLED_CALL"
+                    | "PACK_SAMPLE_COMMAND_REQUIRED"
+                    | "PACK_UNAVAILABLE"
+                    | "PACK_APPROVAL_CHANGED"
+                    | "PACK_UNSUPPORTED_PLATFORM"
+                    | "PACK_BUSY"
+                    | "PACK_CANCELLED"
+                    | "PACK_TIMED_OUT"
+                    | "PACK_START_FAILED"
+                    | "PACK_PROCESS_FAILED"
+                    | "PACK_PROTOCOL_ERROR"
+                    | "PACK_OUTPUT_LIMIT"
+                    | "PACK_INVALID_INPUT"
+                    | "CONFIG_CONFLICT"
+                    | "REACHFLOW_AUTH_REQUIRED"
+                    | "REACHFLOW_CONFIRMATION_REQUIRED"
+                    | "REACHFLOW_RESULT_UNCONFIRMED"
+                    | "REACHFLOW_REPORT_UNAVAILABLE"
+                    | "PACK_NETWORK_NOT_ALLOWED"
             )
         }) {
             return Err(invalid());
@@ -853,6 +871,19 @@ mod tests {
             error_code: None,
             tokens,
         }
+    }
+    #[test]
+    fn pack_refusals_are_recorded_without_degrading_accounting() {
+      let temp=tempfile::tempdir().unwrap();
+      let mut store=UsageStore::open(temp.path(),DAY).unwrap();
+      for code in ["PACK_SAMPLE_COMMAND_REQUIRED","PACK_UNAVAILABLE","PACK_APPROVAL_CHANGED","PACK_UNSUPPORTED_PLATFORM","PACK_BUSY","PACK_CANCELLED","PACK_TIMED_OUT","PACK_START_FAILED","PACK_PROCESS_FAILED","PACK_PROTOCOL_ERROR","PACK_OUTPUT_LIMIT","PACK_INVALID_INPUT","CONFIG_CONFLICT","REACHFLOW_AUTH_REQUIRED","REACHFLOW_CONFIRMATION_REQUIRED","REACHFLOW_RESULT_UNCONFIRMED","REACHFLOW_REPORT_UNAVAILABLE","PACK_NETWORK_NOT_ALLOWED"] {
+        let req=request(DAY);
+        store.begin_request(&req).unwrap();
+        let mut done=end(&req,None,Tokens::default());
+        done.outcome=Outcome::Failed;done.error_code=Some(code.into());
+        store.finish(done).unwrap();
+        assert!(!store.state().unwrap().degraded);
+      }
     }
     #[test]
     fn logical_requests_and_attempts_keep_unknown_tokens_and_aggregate_once() {

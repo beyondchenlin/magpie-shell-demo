@@ -128,6 +128,7 @@ pub struct TeamRecipe {
 #[serde(rename_all = "snake_case")]
 pub enum TeamPermission {
     OutboundModelRequest,
+    PackOperation,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, TS, PartialEq, Eq)]
@@ -353,7 +354,20 @@ impl TeamRecipe {
                         issues.push(InvalidSideEffect);
                     }
                 }
-                TeamStepTarget::Pack { .. } => issues.push(PackNotAvailable),
+                TeamStepTarget::Pack { pack_id, version } => {
+                    if pack_id != "reachflow"
+                        || !snapshot.installed_packs.iter().any(|p| {
+                            p.id == *pack_id
+                                && p.active_version.is_some()
+                                && p.versions.iter().any(|v| v.version == *version)
+                        })
+                    {
+                        issues.push(PackNotAvailable);
+                    }
+                    if step.side_effect != TeamSideEffect::PackOperation {
+                        issues.push(InvalidSideEffect);
+                    }
+                }
             }
             if (index == 0 && step.input == TeamStepInput::PreviousText)
                 || (index + 1 == self.steps.len()) != (step.output == TeamStepOutput::FinalAnswer)
@@ -467,7 +481,19 @@ impl ConfigService {
             public_id,
             revision: next,
             recipe: team.draft.clone(),
-            permissions: vec![TeamPermission::OutboundModelRequest],
+            permissions: if team
+                .draft
+                .steps
+                .iter()
+                .any(|s| matches!(s.target, TeamStepTarget::Pack { .. }))
+            {
+                vec![
+                    TeamPermission::OutboundModelRequest,
+                    TeamPermission::PackOperation,
+                ]
+            } else {
+                vec![TeamPermission::OutboundModelRequest]
+            },
         });
         team.enabled_revisions.push(next);
         self.commit(revision, &snapshot, None)?;

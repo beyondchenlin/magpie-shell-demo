@@ -18,6 +18,7 @@ function stateText(state: UsageRecordState, zh: boolean) {
 const utc = usageUtc;
 function dayText(value: number) { const date = new Date(value); return Number.isNaN(date.getTime()) ? `${value} ms UTC` : date.toISOString().slice(0, 10); }
 function providerText(id: string, providers: Provider[]) {
+  if(id==="24eb3f13-893a-4fbd-972a-93ea2ac777b1")return "ReachFlow · local pack";
   const name = providers.find(provider => provider.id === id)?.name;
   return name ? `${name} · ${id}` : id;
 }

@@ -1,0 +1,176 @@
+SOURCE: build.log
+   Compiling windows-core v0.62.2
+   Compiling hyper v1.12.0
+   Compiling tower v0.5.3
+   Compiling winx v0.36.4
+   Compiling cap-primitives v4.0.3
+   Compiling curve25519-dalek v4.1.3
+   Compiling windows-future v0.3.2
+   Compiling windows-numerics v0.3.1
+   Compiling windows-collections v0.3.2
+   Compiling hyper-util v0.1.21
+   Compiling phf v0.13.1
+   Compiling rusqlite v0.40.2
+   Compiling tauri-utils v2.10.2
+   Compiling windows v0.62.2
+   Compiling hyper-tls v0.6.0
+   Compiling ts-rs v12.0.1
+   Compiling cap-std v4.0.3
+   Compiling ed25519-dalek v2.2.0
+   Compiling tower-http v0.6.11
+   Compiling muda v0.20.0
+   Compiling reqwest v0.13.5
+   Compiling tagma-core v0.2.0-dev.43 (D:\demo1\tagmaai\crates\tagma-core)
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+   Compiling softbuffer v0.4.8
+   Compiling serialize-to-javascript v0.1.2
+   Compiling tray-icon v0.25.1
+   Compiling axum v0.8.9
+   Compiling async-stream v0.3.6
+   Compiling tagma-runtime v0.2.0-dev.43 (D:\demo1\tagmaai\crates\tagma-runtime)
+   Compiling tagma-gateway v0.2.0-dev.43 (D:\demo1\tagmaai\crates\tagma-gateway)
+   Compiling webview2-com-sys v0.39.1
+   Compiling tao v0.37.1
+   Compiling webview2-com v0.39.1
+   Compiling wry v0.57.0
+   Compiling tauri-runtime v2.12.2
+   Compiling tauri-runtime-wry v2.12.2
+   Compiling tauri v2.12.4
+   Compiling tagma-desktop v0.2.0-dev.43 (D:\demo1\tagmaai\src-tauri)
+    Finished `dev` profile [unoptimized] target(s) in 40.05s
+   Compiling tagma-core v0.2.0-dev.43 (D:\demo1\tagmaai\crates\tagma-core)
+   Compiling tagma-desktop v0.2.0-dev.43 (D:\demo1\tagmaai\src-tauri)
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+   Compiling tagma-runtime v0.2.0-dev.43 (D:\demo1\tagmaai\crates\tagma-runtime)
+    Finished `dev` profile [unoptimized] target(s) in 21.82s
+   Compiling tauri v2.12.4
+   Compiling tagma-core v0.2.0-dev.43 (D:\demo1\tagmaai\crates\tagma-core)
+   Compiling tauri-macros v2.7.3
+   Compiling tagma-desktop v0.2.0-dev.43 (D:\demo1\tagmaai\src-tauri)
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+   Compiling tagma-runtime v0.2.0-dev.43 (D:\demo1\tagmaai\crates\tagma-runtime)
+   Compiling tagma-gateway v0.2.0-dev.43 (D:\demo1\tagmaai\crates\tagma-gateway)
+    Finished `dev` profile [unoptimized] target(s) in 18.70s
+
+SOURCE: build-export.tmp
+   Compiling tagma-runtime v0.2.0-dev.43 (D:\demo1\tagmaai\crates\tagma-runtime)
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+   Compiling tagma-desktop v0.2.0-dev.43 (D:\demo1\tagmaai\src-tauri)
+   Compiling tagma-gateway v0.2.0-dev.43 (D:\demo1\tagmaai\crates\tagma-gateway)
+    Finished `dev` profile [unoptimized] target(s) in 15.48s

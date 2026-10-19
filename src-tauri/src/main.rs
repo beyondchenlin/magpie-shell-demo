@@ -59,6 +59,32 @@ fn pack_protocol(version: u32) -> Result<(), tagma_core::packs::PackUiError> {
     })
 }
 #[tauri::command]
+async fn save_pack_result(
+    window: WebviewWindow,
+    app: State<'_, Application>,
+    protocol_version: u32,
+    directory: String,
+    raw: String,
+) -> Result<String, tagma_core::packs::PackUiError> {
+    let fail = |code: &str| tagma_core::packs::PackUiError { code: code.into() };
+    pack_protocol(protocol_version)?;
+    config(&window, &app).map_err(|_| fail("RESULT_SAVE_FAILED"))?;
+    let config = app
+        .directory
+        .clone()
+        .ok_or_else(|| fail("RESULT_SAVE_FAILED"))?;
+    let install = std::env::current_exe()
+        .ok()
+        .and_then(|p| p.parent().map(std::path::Path::to_path_buf))
+        .ok_or_else(|| fail("RESULT_SAVE_FAILED"))?;
+    tauri::async_runtime::spawn_blocking(move || {
+        tagma_runtime::pack_result::save(std::path::Path::new(&directory), &raw, &[config, install])
+    })
+    .await
+    .map_err(|_| fail("RESULT_SAVE_FAILED"))?
+    .map_err(fail)
+}
+#[tauri::command]
 fn pack_market(
     window: WebviewWindow,
     app: State<'_, Application>,
@@ -832,6 +858,7 @@ fn main() {
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
+            save_pack_result,
             pack_market,
             review_pack,
             install_pack,

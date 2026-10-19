@@ -55,7 +55,7 @@ export type TeamRecipe = { display_name: string,
  * The final answering model. Sequential intermediate models are explicit step targets.
  */
 brain: TeamBrain, routing: TeamRouting, steps: Array<TeamStep>, total_timeout_ms: number, };
-export type TeamPermission = "outbound_model_request";
+export type TeamPermission = "outbound_model_request" | "pack_operation";
 export type PublishedTeam = { team_id: string, public_id: string, revision: number, recipe: TeamRecipe, permissions: Array<TeamPermission>, };
 export type TeamRecord = { id: string, slug: string, draft: TeamRecipe, versions: Array<PublishedTeam>,
 /**

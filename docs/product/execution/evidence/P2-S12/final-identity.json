@@ -1,0 +1,51 @@
+{
+  "utc": "2026-10-19T07:02:44.1809087Z",
+  "version": "dev43r4",
+  "owner": "tagma-p0-s09/native/v1",
+  "processes": [
+    {
+      "ProcessId": 34384,
+      "ExecutablePath": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\install-p0s16\\tagma-desktop.exe",
+      "CreationDate": "2026-10-19T14:57:07.376464+08:00"
+    },
+    {
+      "ProcessId": 29816,
+      "ExecutablePath": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\install-p0s16\\tagma-gateway.exe",
+      "CreationDate": "2026-10-19T14:57:08.336734+08:00"
+    }
+  ],
+  "binaries": [
+    {
+      "Path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\install-p0s16\\tagma-desktop.exe",
+      "Hash": "BB53A2455CCA15586DF31DB2A7B17FA6A5DFD5F34CFA129FFFE9C0CAE5DF2060"
+    },
+    {
+      "Path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\install-p0s16\\tagma-gateway.exe",
+      "Hash": "205502E06A28636693EF04C6F232A0276D94401B3635A46C6692C53BBEB513A2"
+    }
+  ],
+  "upstreamProcessAbsent": true,
+  "upstreamListenerCount": 0,
+  "automations": [
+    {
+      "id": "tagma-prd",
+      "status": "status = \"PAUSED\""
+    },
+    {
+      "id": "magpie-cis",
+      "status": "status = \"PAUSED\""
+    }
+  ],
+  "disks": [
+    {
+      "Name": "C",
+      "freeGiB": 31.05
+    },
+    {
+      "Name": "D",
+      "freeGiB": 13.64
+    }
+  ],
+  "newWorktrees": 0,
+  "nativeResult": "86-export-receipt-visible.json"
+}

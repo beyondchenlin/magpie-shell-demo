@@ -56,6 +56,29 @@ fn command(revision: u32, id: &str) -> RevisionCommand {
 }
 
 #[test]
+fn reachflow_steps_require_installed_fixed_version_and_explicit_side_effect() {
+    let temp=tempfile::tempdir().unwrap();
+    let config=ConfigService::open(temp.path(),Arc::new(SystemCredentials)).unwrap();
+    let id=config.save_provider(provider(0)).unwrap().providers[0].id.clone();
+    let mut snapshot=config.read_snapshot().unwrap().1;
+    let mut recipe=manual(&id);
+    recipe.routing=TeamRouting::Sequential;
+    recipe.total_timeout_ms=60_000;
+    recipe.steps[0].input=TeamStepInput::PreviousText;
+    recipe.steps.insert(0,TeamStep{target:TeamStepTarget::Pack{pack_id:"reachflow".into(),version:"1.0.0".into()},input:TeamStepInput::OriginalMessages,output:TeamStepOutput::IntermediateText,timeout_ms:10_000,failure:TeamFailurePolicy::Abort,side_effect:TeamSideEffect::PackOperation});
+    assert!(recipe.publish_issues(&snapshot).contains(&TeamPublishIssue::PackNotAvailable));
+    snapshot.installed_packs.push(tagma_core::packs::InstalledPack{id:"reachflow".into(),active_version:Some("2.0.0".into()),versions:vec![tagma_core::packs::InstalledPackVersion{version:"1.0.0".into(),preparation_id:uuid::Uuid::new_v4().to_string(),manifest_sha256:"a".repeat(64),display_name:"ReachFlow".into(),installed_ms:"1".into()}]});
+    let mut active=snapshot.installed_packs[0].versions[0].clone();active.version="2.0.0".into();active.preparation_id=uuid::Uuid::new_v4().to_string();snapshot.installed_packs[0].versions.push(active);
+    tagma_core::packs::validate_installations(&snapshot.installed_packs).unwrap();
+    assert!(recipe.publish_issues(&snapshot).is_empty(),"fixed retained version, not active alias");
+    recipe.steps[0].side_effect=TeamSideEffect::OutboundModelRequest;
+    assert!(recipe.publish_issues(&snapshot).contains(&TeamPublishIssue::InvalidSideEffect));
+    recipe.steps[0].side_effect=TeamSideEffect::PackOperation;
+    snapshot.installed_packs[0].active_version=None;
+    assert!(recipe.publish_issues(&snapshot).contains(&TeamPublishIssue::PackNotAvailable));
+}
+
+#[test]
 fn published_ids_pin_recipes_while_drafts_and_availability_change() {
     let temp = tempfile::tempdir().unwrap();
     let service = ConfigService::open(temp.path(), Arc::new(SystemCredentials)).unwrap();
