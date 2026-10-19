@@ -1,4 +1,5 @@
 fn main() {
+    internal_pack();
     tauri_build::try_build(tauri_build::Attributes::new().app_manifest(
         tauri_build::AppManifest::new().commands(&[
             "pack_market",
@@ -47,4 +48,31 @@ fn main() {
         ]),
     ))
     .expect("Tauri build configuration failed");
+}
+
+fn internal_pack() {
+    use std::{env, fs, path::PathBuf};
+    println!("cargo:rerun-if-env-changed=TAGMA_INTERNAL_PACK_DIR");
+    let out = PathBuf::from(env::var_os("OUT_DIR").expect("OUT_DIR"));
+    if let Some(dir) = env::var_os("TAGMA_INTERNAL_PACK_DIR") {
+        assert_eq!(
+            env::var("PROFILE").as_deref(),
+            Ok("debug"),
+            "internal packs are debug-only"
+        );
+        let dir = PathBuf::from(dir);
+        for (name, limit) in [
+            ("internal-pack.json", 400_000),
+            ("internal-pack.zip", 32 * 1024 * 1024),
+        ] {
+            let path = dir.join(name);
+            println!("cargo:rerun-if-changed={}", path.display());
+            let bytes = fs::read(path).expect("read internal package");
+            assert!(bytes.len() <= limit, "internal package bound");
+            fs::write(out.join(name), bytes).expect("embed internal package");
+        }
+    } else {
+        fs::write(out.join("internal-pack.json"), b"null").expect("empty internal catalogue");
+        fs::write(out.join("internal-pack.zip"), b"").expect("empty internal archive");
+    }
 }

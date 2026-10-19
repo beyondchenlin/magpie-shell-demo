@@ -38,6 +38,7 @@ pub struct PackTaskEvent {
 #[derive(Debug, Clone, Serialize, TS)]
 pub struct PackMarketView {
     pub release_ready: bool,
+    pub internal_manifest: Option<String>,
     pub task: Option<PackTaskEvent>,
 }
 #[derive(Deserialize, TS)]
@@ -95,6 +96,9 @@ pub enum ReachFlowAction {
     TaskStatus {
         task_id: String,
     },
+    TaskReport {
+        task_id: String,
+    },
     CancelTask {
         task_id: String,
     },
@@ -145,7 +149,9 @@ impl ReachFlowRequest {
                     return Err(invalid());
                 }
             }
-            ReachFlowAction::TaskStatus { task_id } | ReachFlowAction::CancelTask { task_id } => {
+            ReachFlowAction::TaskStatus { task_id }
+            | ReachFlowAction::TaskReport { task_id }
+            | ReachFlowAction::CancelTask { task_id } => {
                 if !identifier(task_id) {
                     return Err(invalid());
                 }

@@ -5,6 +5,63 @@ use std::io::{Cursor, Read, Write};
 use tagma_core::{AppResult, credentials::CredentialStore};
 
 struct NoCredentials;
+
+#[tokio::test]
+#[ignore = "requires owned protocol helper; actual offline archive and child process"]
+async fn offline_archive_keeps_signature_checksum_health_and_cancellation_gates() {
+    let f = Fixture::new();
+    let review = f.installer.review(&f.config, f.record.clone()).unwrap();
+    let mut corrupt = f.archive.clone();
+    corrupt[0] ^= 1;
+    assert!(
+        f.installer
+            .install_archive(
+                &f.config,
+                review.review_id,
+                &review.manifest_sha256,
+                CancellationToken::new(),
+                |_| {},
+                Arc::from(corrupt)
+            )
+            .await
+            .is_err()
+    );
+    assert!(f.config.view().unwrap().installed_packs.is_empty());
+    let review = f.installer.review(&f.config, f.record.clone()).unwrap();
+    let cancelled = CancellationToken::new();
+    cancelled.cancel();
+    assert!(matches!(
+        f.installer
+            .install_archive(
+                &f.config,
+                review.review_id,
+                &review.manifest_sha256,
+                cancelled,
+                |_| {},
+                Arc::from(f.archive.clone())
+            )
+            .await,
+        Err(InstallError::Cancelled)
+    ));
+    assert!(f.config.view().unwrap().installed_packs.is_empty());
+    let review = f.installer.review(&f.config, f.record.clone()).unwrap();
+    let view = f
+        .installer
+        .install_archive(
+            &f.config,
+            review.review_id,
+            &review.manifest_sha256,
+            CancellationToken::new(),
+            |_| {},
+            Arc::from(f.archive.clone()),
+        )
+        .await
+        .unwrap();
+    assert_eq!(
+        view.installed_packs[0].active_version.as_deref(),
+        Some("1.0.0")
+    );
+}
 impl CredentialStore for NoCredentials {
     fn set(&self, _: &str, _: &str) -> AppResult<()> {
         panic!("no credentials in install test")

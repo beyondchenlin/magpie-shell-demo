@@ -2,12 +2,12 @@
 export type PackUiError = { code: string, };
 export type PackReviewView = { review_id: string, manifest_sha256: string, pack_id: string, version: string, publisher: string, platform: string, network_hosts: Array<string>, workspace: string, browser: boolean, subprocess: boolean, memory_mib: number, timeout_ms: number, download_bytes: string, unpack_bytes: string, peak_bytes: string, target_shortfall_bytes: string, temp_shortfall_bytes: string, fits: boolean, };
 export type PackTaskEvent = { task_id: string, phase: string, state: string, text: string | null, error: string | null, };
-export type PackMarketView = { release_ready: boolean, task: PackTaskEvent | null, };
+export type PackMarketView = { release_ready: boolean, internal_manifest: string | null, task: PackTaskEvent | null, };
 export type ConfirmPackInstall = { protocol_version: number, task_id: string, review_id: string, manifest_sha256: string, };
 export type InvokePack = { protocol_version: number, task_id: string, pack_id: string, operation: PackUserOperation, };
 export type PackUserOperation = { "kind": "local_sample" } | { "kind": "reach_flow", request: ReachFlowRequest, };
 export type ReachFlowRequest = { service_url: string, workspace_id: string, access_token: string, action: ReachFlowAction, };
-export type ReachFlowAction = { "kind": "start_collection", draft_id: string, confirmation_id: string, plan_digest: string, engine_selection_revision: number, idempotency_key: string, } | { "kind": "task_status", task_id: string, } | { "kind": "cancel_task", task_id: string, };
+export type ReachFlowAction = { "kind": "start_collection", draft_id: string, confirmation_id: string, plan_digest: string, engine_selection_revision: number, idempotency_key: string, } | { "kind": "task_status", task_id: string, } | { "kind": "task_report", task_id: string, } | { "kind": "cancel_task", task_id: string, };
 export type InstalledPackVersion = { version: string, preparation_id: string, manifest_sha256: string, display_name: string, installed_ms: string, };
 export type InstalledPack = { id: string, active_version: string | null, versions: Array<InstalledPackVersion>, };
 export type ErrorCode = "INVALID_INPUT" | "CONFIG_CONFLICT" | "STORAGE_UNAVAILABLE" | "CREDENTIAL_STORE_UNAVAILABLE" | "INCOMPATIBLE_VERSION" | "MAINTENANCE_IN_PROGRESS" | "DESKTOP_REQUIRED" | "INTERNAL_ERROR" | "PORT_IN_USE" | "ALREADY_RUNNING" | "GATEWAY_UNAVAILABLE" | "CONFIG_APPLY_FAILED" | "OWNERSHIP_REQUIRED" | "STARTUP_TIMEOUT" | "INITIALIZATION_RECOVERY_REQUIRED" | "PROVIDER_REFERENCED" | "PROFILE_REFERENCED" | "PROBE_BACKOFF" | "PROBE_BUSY" | "ACCESS_REVOKED" | "SECURITY_STATE_UNCONFIRMED" | "USAGE_STORAGE_UNAVAILABLE" | "USAGE_QUERY_UNAVAILABLE" | "USAGE_QUERY_CANCELLED" | "USAGE_CLEAR_BUSY" | "USAGE_CLEAR_CHANGED" | "USAGE_CLEAR_UNCONFIRMED" | "RESTART_REQUIRED" | "TEAM_SLUG_CONFLICT" | "TEAM_PUBLISHED" | "TEAM_RECIPE_UNAVAILABLE" | "NO_AVAILABLE_BRAIN";

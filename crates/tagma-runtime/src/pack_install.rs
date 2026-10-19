@@ -176,6 +176,42 @@ impl PackInstaller {
         cancel: CancellationToken,
         on_phase: impl Fn(InstallPhase),
     ) -> Result<ConfigView> {
+        self.install_source(config, review_id, approved_manifest, cancel, on_phase, None)
+            .await
+    }
+
+    /// A publisher-supplied offline archive uses exactly the same signature,
+    /// checksum, space, extraction and health gates as a network download.
+    /// The host owns these bytes; callers cannot select an arbitrary disk path.
+    pub async fn install_archive(
+        &self,
+        config: &ConfigService,
+        review_id: Uuid,
+        approved_manifest: &str,
+        cancel: CancellationToken,
+        on_phase: impl Fn(InstallPhase),
+        archive: Arc<[u8]>,
+    ) -> Result<ConfigView> {
+        self.install_source(
+            config,
+            review_id,
+            approved_manifest,
+            cancel,
+            on_phase,
+            Some(archive),
+        )
+        .await
+    }
+
+    async fn install_source(
+        &self,
+        config: &ConfigService,
+        review_id: Uuid,
+        approved_manifest: &str,
+        cancel: CancellationToken,
+        on_phase: impl Fn(InstallPhase),
+        archive: Option<Arc<[u8]>>,
+    ) -> Result<ConfigView> {
         self.identity(config)?;
         if cancel.is_cancelled() {
             return Err(InstallError::Cancelled);
@@ -218,9 +254,24 @@ impl PackInstaller {
         // The download owns the admission permit as well as the staging file.
         // If this future is dropped during a blocking write, the worker keeps
         // the permit until it has released both resources.
-        let (staged, slot) = self
-            .download(staged, slot, &download, &control, &cancel)
-            .await?;
+        let (staged, slot) = if let Some(archive) = archive {
+            let check = control.clone();
+            let mut worker = tokio::task::spawn_blocking(move || {
+                let mut staged = staged;
+                for chunk in archive.chunks(64 * 1024) {
+                    staged.push(chunk, &check)?;
+                }
+                Ok::<_, PackError>((staged, slot))
+            });
+            tokio::select! {
+                biased;
+                _ = cancel.cancelled() => { control.cancel(); let _ = worker.await; return Err(InstallError::Cancelled); },
+                result = &mut worker => result.map_err(|_| InstallError::Unavailable)??,
+            }
+        } else {
+            self.download(staged, slot, &download, &control, &cancel)
+                .await?
+        };
         let fresh_proof = self.trust.verify_record(&review.record, now_ms()?)?;
         let space = self.space(&fresh_proof)?;
         if !space.fits() {

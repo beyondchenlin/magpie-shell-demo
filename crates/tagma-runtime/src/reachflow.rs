@@ -37,6 +37,7 @@ async fn execute_with(
             client.post(format!("{root}/collection-drafts/{draft_id}/start")).header("Idempotency-Key",idempotency_key)
                 .json(&json!({"confirmation_id":confirmation_id,"plan_digest":plan_digest,"engine_selection_revision":engine_selection_revision})),true,None),
         ReachFlowAction::TaskStatus{task_id}=>(client.get(format!("{root}/tasks/{task_id}")),false,Some(task_id)),
+        ReachFlowAction::TaskReport{task_id}=>(client.get(format!("{root}/tasks/{task_id}/report")),false,Some(task_id)),
         ReachFlowAction::CancelTask{task_id}=>(client.post(format!("{root}/tasks/{task_id}/cancel")).json(&json!({"reason":"User requested cancellation in Tagma"})),true,Some(task_id)),
     };
     let unknown = if mutation {
@@ -53,6 +54,9 @@ async fn execute_with(
         return Err(match response.status().as_u16() {
             401 | 403 => "REACHFLOW_AUTH_REQUIRED",
             409 | 422 => "REACHFLOW_CONFIRMATION_REQUIRED",
+            404 if matches!(input.action, ReachFlowAction::TaskReport { .. }) => {
+                "REACHFLOW_REPORT_UNAVAILABLE"
+            }
             _ => unknown,
         });
     }
@@ -66,6 +70,24 @@ async fn execute_with(
         data.extend_from_slice(&chunk);
     }
     let value: Value = serde_json::from_slice(&data).map_err(|_| unknown)?;
+    if let ReachFlowAction::TaskReport { task_id } = &input.action {
+        let report = value.get("report").ok_or(unknown)?;
+        let report_id = report
+            .get("report_id")
+            .and_then(Value::as_str)
+            .filter(|s| !s.is_empty() && s.len() <= 128)
+            .ok_or(unknown)?;
+        let document = report.get("document").ok_or(unknown)?.to_string();
+        let mut end = document.len().min(8192);
+        while !document.is_char_boundary(end) {
+            end -= 1;
+        }
+        return Ok(json!({"mode":"reachflow_report","task_id":task_id,"workspace_id":input.workspace_id,
+            "report_id":report_id,"result_id":report.get("result_id").and_then(Value::as_str).unwrap_or(""),
+            "document_preview":&document[..end],"preview_truncated":end<document.len(),
+            "location":format!("ReachFlow / workspace {} / task {} / report",input.workspace_id,task_id)
+        }).to_string());
+    }
     let task = value.get("task").ok_or(unknown)?;
     let id = task
         .get("task_id")
@@ -85,9 +107,13 @@ async fn execute_with(
         return Err(unknown);
     }
     // Whitelist metadata; never relay service credentials, prompts or raw errors.
+    let gallery = task.get("gallery_preview");
+    let count = |key: &str| gallery.and_then(|g| g.get(key)).and_then(Value::as_u64);
     Ok(json!({"mode":"reachflow_service","task_id":id,"workspace_id":workspace,"state":state,
+        "candidate_count":count("candidate_count"),"final_count":count("final_count"),"failed_count":count("failed_count"),
+        "location":format!("ReachFlow / workspace {workspace} / task {id}"),
         "cancellation_requested":matches!(input.action,ReachFlowAction::CancelTask{..}),
-        "note":"服务返回的任务状态；收到取消响应不等于任务已取消。成果位置须由服务提供，本适配器不推测路径。"}).to_string())
+        "note":"服务返回的任务状态；收到取消响应不等于任务已取消。可单独查看任务报告；没有本地成果路径声明。"}).to_string())
 }
 
 #[cfg(test)]
@@ -171,10 +197,14 @@ mod tests {
     }
     #[tokio::test]
     async fn confirmed_start_status_and_remote_cancel_preserve_service_contract() {
-        let task = |state| json!({"task":{"task_id":"owned-task","workspace_id":"owned-workspace","state":state,"private_field":"not-forwarded"}});
+        let task = |state| json!({"task":{"task_id":"owned-task","workspace_id":"owned-workspace","state":state,"gallery_preview":{"candidate_count":4,"final_count":2,"failed_count":1},"private_field":"not-forwarded"}});
         let (base, received, thread) = server(vec![
             (201, task("running")),
             (200, task("running")),
+            (
+                200,
+                json!({"report":{"report_id":"report-1","result_id":"result-1","document":{"summary":"example result"},"private_field":"not-forwarded"}}),
+            ),
             (202, task("cancelling")),
         ]);
         let client = reqwest::Client::builder()
@@ -196,12 +226,16 @@ mod tests {
         let status = request(ReachFlowAction::TaskStatus {
             task_id: "owned-task".into(),
         });
-        assert!(
-            execute_with(&client, &base, &status)
-                .await
-                .unwrap()
-                .contains("running")
-        );
+        let status_result = execute_with(&client, &base, &status).await.unwrap();
+        assert!(status_result.contains("running"));
+        assert!(status_result.contains("\"final_count\":2"));
+        let report = request(ReachFlowAction::TaskReport {
+            task_id: "owned-task".into(),
+        });
+        let report_result = execute_with(&client, &base, &report).await.unwrap();
+        assert!(report_result.contains("report-1"));
+        assert!(report_result.contains("example result"));
+        assert!(!report_result.contains("private_field"));
         let cancel = request(ReachFlowAction::CancelTask {
             task_id: "owned-task".into(),
         });
@@ -210,7 +244,7 @@ mod tests {
         assert!(!result.contains("\"state\":\"cancelled\""));
         thread.join().unwrap();
         let calls = received.lock().unwrap();
-        assert_eq!(calls.len(), 3);
+        assert_eq!(calls.len(), 4);
         assert!(calls[0].starts_with(
             "POST /v1/workspaces/owned-workspace/collection-drafts/owned-draft/start "
         ));
@@ -226,7 +260,10 @@ mod tests {
         );
         assert!(calls[1].starts_with("GET /v1/workspaces/owned-workspace/tasks/owned-task "));
         assert!(
-            calls[2].starts_with("POST /v1/workspaces/owned-workspace/tasks/owned-task/cancel ")
+            calls[2].starts_with("GET /v1/workspaces/owned-workspace/tasks/owned-task/report ")
+        );
+        assert!(
+            calls[3].starts_with("POST /v1/workspaces/owned-workspace/tasks/owned-task/cancel ")
         );
     }
     #[tokio::test]
@@ -237,6 +274,7 @@ mod tests {
                 200,
                 json!({"task":{"task_id":"other-task","workspace_id":"other","state":"done"}}),
             ),
+            (404, json!({"error":"no report"})),
         ]);
         let client = reqwest::Client::builder()
             .no_proxy()
@@ -253,6 +291,13 @@ mod tests {
         assert_eq!(
             execute_with(&client, &base, &input).await.unwrap_err(),
             "REACHFLOW_UNAVAILABLE"
+        );
+        let report = request(ReachFlowAction::TaskReport {
+            task_id: "owned-task".into(),
+        });
+        assert_eq!(
+            execute_with(&client, &base, &report).await.unwrap_err(),
+            "REACHFLOW_REPORT_UNAVAILABLE"
         );
         thread.join().unwrap();
     }

@@ -1,0 +1,177 @@
+[
+  {
+    "name": "03-review.json",
+    "bytes": 96947,
+    "sha256": "CE090333B74FD9885F46CB541ECB9A9E0F91CC9C5512E52551379282BC872A28"
+  },
+  {
+    "name": "05-cancel-review.json",
+    "bytes": 65954,
+    "sha256": "454329E9F4C69D864C554E8EBBBCB1FCE50C6D3445515EF7700A477BB7630B3C"
+  },
+  {
+    "name": "06-review-again.json",
+    "bytes": 96947,
+    "sha256": "BACB30F23CFC6DEFE8212FAD6733E628F76DFE7E92F53D3C4207169CCAD6CD49"
+  },
+  {
+    "name": "09-installed.json",
+    "bytes": 72939,
+    "sha256": "F4C90DF6F434D88FA78537A9CD8B6D49C344B1E16C8544F4731C2C2DE1C19EA6"
+  },
+  {
+    "name": "10-native-sample.json",
+    "bytes": 76020,
+    "sha256": "B1C6A7D2598A015BFAF984F10DFCDB8359F03F291EA2B7DFBF9DC9AF6DBAC563"
+  },
+  {
+    "name": "14-restart.json",
+    "bytes": 51199,
+    "sha256": "20CA509D7AB94D0855EB474693CEC21F0848A0AB53E4CB0BEF17A3ECCF63A78E"
+  },
+  {
+    "name": "15-restored-market.json",
+    "bytes": 72873,
+    "sha256": "451B5D8A56FED07348E21E9E9FA4BB846FD6E8796E20D7AB1581884829A5EFD0"
+  },
+  {
+    "name": "16-restored-call.json",
+    "bytes": 75953,
+    "sha256": "A8991FB4AEA06CFF0B7F3FFC6C2C8EF37949F56944B2175165F83294E21D69D0"
+  },
+  {
+    "name": "18-service-boundary.json",
+    "bytes": 91577,
+    "sha256": "2032BE81A8FAC16551F68A14EAE63229B17BFD2F89CC05BC1582020571C86C0D"
+  },
+  {
+    "name": "20-call-cancel.json",
+    "bytes": 91462,
+    "sha256": "0659E5C94BC92E52FCF42F5A3F4E257C4E0AFD45CD2C56F861DDDCC39535FECE"
+  },
+  {
+    "name": "21-retry-after-cancel.json",
+    "bytes": 91575,
+    "sha256": "733DCA67EAAFB54BC3BAAC3C441EFA43B71A067E31605A0514BCCEEFD53208D2"
+  },
+  {
+    "name": "22-launcher-open.json",
+    "bytes": 91575,
+    "sha256": "35E24D8BE275AB06552B417EDE19FFA5F1FA47E6412FFFCD07C3D145DA33D582"
+  },
+  {
+    "name": "binaries-r2.json",
+    "bytes": 296,
+    "sha256": "3355DF657EBBC271F4305666B41886006556BEA9FF48C01C6EE638DCA8785B80"
+  },
+  {
+    "name": "binaries.json",
+    "bytes": 342,
+    "sha256": "490C4012DCCB3087B5C2F8D1E7098226116CF74491684D213CF99619CC99A6F1"
+  },
+  {
+    "name": "BUDGET.txt",
+    "bytes": 488,
+    "sha256": "C9B8D27F216A4A7D3C8C41DFB30FFCDFE055C900ABFD12E77DBD86C5B266E5ED"
+  },
+  {
+    "name": "build.log",
+    "bytes": 5698,
+    "sha256": "448EC5659641F4D8019FF5972746CC773EF268843F2A9F6D6CC14F3FACDD58C4"
+  },
+  {
+    "name": "check.log",
+    "bytes": 3296,
+    "sha256": "A1814B54900F7FB97899513FA75C1D778226ACCE1A48A423D4C4E4C367E97690"
+  },
+  {
+    "name": "clippy.log",
+    "bytes": 2002,
+    "sha256": "9EA8DF8E8168247D935CC7BD5DBE73DF9B3997BC4F2B0A19AAD598D593887850"
+  },
+  {
+    "name": "Control-r1.ps1",
+    "bytes": 28585,
+    "sha256": "D06BC3C8E09E1DD39B14270E8D29E136DF5EB8576D572FB44C89CD0B2B82B975"
+  },
+  {
+    "name": "Control.ps1",
+    "bytes": 30186,
+    "sha256": "73D09967B086A5E679696CB55A2F39C3E4C6F8D7F12E0507F756CF0C221D9E25"
+  },
+  {
+    "name": "final-identity.json",
+    "bytes": 1216,
+    "sha256": "CA11CA7E64FC07227C09626326A0032510058222F7E4F4D6DFF6AF9A82F74169"
+  },
+  {
+    "name": "frontend.log",
+    "bytes": 478,
+    "sha256": "11D2057A2568A8B5937D48A512BC2D4BD7337D6DE3CE4B776084B905F4A07758"
+  },
+  {
+    "name": "inherited-report-changes.patch",
+    "bytes": 21816,
+    "sha256": "D9048B5E6D0C39B17CA3742C22620A86974EC35C2569A9F0E9EE022EF38125F1"
+  },
+  {
+    "name": "internal-pack-public.json",
+    "bytes": 1742,
+    "sha256": "7B462378A5AB48416F18017B9E8876AB7AF752595D61A6280813DD269E602332"
+  },
+  {
+    "name": "Launch.ps1",
+    "bytes": 434,
+    "sha256": "B5D338943BF508EC4F729A0B84DC9855432F96BB4740D234B9588EDF42F08113"
+  },
+  {
+    "name": "native-cancel-attempt.json",
+    "bytes": 1519,
+    "sha256": "280BF265BB2812F426F227DB2F1615472F3A95BE298F7AC2E6EB5EDD97270304"
+  },
+  {
+    "name": "native-cancelled.png",
+    "bytes": 36275,
+    "sha256": "C10564BA38D53055A08C317AA2E2CF74FCB825A2A8135DCC64C7CA9D25CB4ED5"
+  },
+  {
+    "name": "native-restored-sample.png",
+    "bytes": 44739,
+    "sha256": "701FDC6D9C5D5CCABC087013A84E1241539AB6983C5A7D803A11899CF88F4A9F"
+  },
+  {
+    "name": "native-review.png",
+    "bytes": 38088,
+    "sha256": "CA914F91619B2E5FEB6D8687ACC0F74240F790AB6678ACC8F788497EC23275CF"
+  },
+  {
+    "name": "native-sample.png",
+    "bytes": 44577,
+    "sha256": "73BC1DDECC09144D37228FB6F48926CC1F50EDADA5287FAEC6A6B23D56F6A9B2"
+  },
+  {
+    "name": "native-service-boundary.png",
+    "bytes": 37373,
+    "sha256": "74EC2ABAF9DB392B5FFF5DE26C5271FD71980DA32A758077D9C3DE379F172F27"
+  },
+  {
+    "name": "Run.ps1",
+    "bytes": 2061,
+    "sha256": "63D52E277B2CDCC9B06237D7D987933C92E1B10D0624A8300217E8384F9123F3"
+  },
+  {
+    "name": "source-frozen42-r1.json",
+    "bytes": 57907,
+    "sha256": "4B82CA24B7816AE3C9310B546363403E22B4B2D5F73444DBC5D086038A989287"
+  },
+  {
+    "name": "source-frozen42.json",
+    "bytes": 57907,
+    "sha256": "A9EAA2D11ED2A225AC66501BFBE82B387B2DCA93A54E236957470A982FEFC612"
+  },
+  {
+    "name": "tests.log",
+    "bytes": 8004,
+    "sha256": "AE1F8FF39EFCCA87943C33F17812EDD34E30D2D13575DCDB38F8DA2D65BFE7E1"
+  }
+]

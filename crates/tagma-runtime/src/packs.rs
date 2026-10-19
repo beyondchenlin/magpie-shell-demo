@@ -40,6 +40,8 @@ pub enum PackRunError {
     ServiceAuthRequired,
     ServiceConfirmationRequired,
     ServiceUnconfirmed,
+    ServiceReportUnavailable,
+    NetworkNotAllowed,
 }
 impl std::fmt::Display for PackRunError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -59,6 +61,8 @@ impl std::fmt::Display for PackRunError {
             Self::ServiceAuthRequired => "REACHFLOW_AUTH_REQUIRED",
             Self::ServiceConfirmationRequired => "REACHFLOW_CONFIRMATION_REQUIRED",
             Self::ServiceUnconfirmed => "REACHFLOW_RESULT_UNCONFIRMED",
+            Self::ServiceReportUnavailable => "REACHFLOW_REPORT_UNAVAILABLE",
+            Self::NetworkNotAllowed => "PACK_NETWORK_NOT_ALLOWED",
         })
     }
 }
@@ -333,7 +337,7 @@ impl PackExecutor {
                     .iter()
                     .any(|h| Some(h.as_str()) == endpoint.host_str())
             {
-                return Err(PackRunError::InvalidInput);
+                return Err(PackRunError::NetworkNotAllowed);
             }
         }
         let ping = matches!(operation, PackOperation::Ping);
@@ -481,6 +485,7 @@ async fn invoke(
                     "REACHFLOW_AUTH_REQUIRED" => PackRunError::ServiceAuthRequired,
                     "REACHFLOW_CONFIRMATION_REQUIRED" => PackRunError::ServiceConfirmationRequired,
                     "REACHFLOW_RESULT_UNCONFIRMED" => PackRunError::ServiceUnconfirmed,
+                    "REACHFLOW_REPORT_UNAVAILABLE" => PackRunError::ServiceReportUnavailable,
                     _ => PackRunError::ProcessFailed,
                 });
             }

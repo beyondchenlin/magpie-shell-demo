@@ -1,0 +1,48 @@
+{
+  "record": {
+    "key_id": "tagma-internal-local",
+    "manifest_utf8": "{\"artifacts\":[{\"download\":{\"format\":\"zip\",\"sha256\":\"7d0a1f43255a00f157b22cf78b0b5997728e15be08627c639bce940d7381392b\",\"size_bytes\":2090336,\"url\":\"https://internal.invalid/reachflow.zip\"},\"entry\":{\"arguments\":[],\"executable\":\"tagma-reachflow.exe\",\"protocol\":\"stdio_jsonl_v1\"},\"health\":{\"protocol\":\"stdio_ping_v1\",\"timeout_ms\":5000},\"models\":[{\"display_name\":\"ReachFlow 内部本地试跑\",\"id\":\"tagma/reachflow\"}],\"permissions\":{\"browser\":false,\"network_hosts\":[],\"subprocess\":false,\"workspace\":\"none\"},\"resources\":{\"max_archive_entries\":4,\"max_concurrency\":1,\"max_unpacked_bytes\":5960704,\"memory_mib\":128,\"task_timeout_ms\":30000},\"target\":{\"arch\":\"x86_64\",\"os\":\"windows\"}}],\"contract_version\":1,\"expires_ms\":1792993691120,\"id\":\"reachflow\",\"issued_ms\":1792388890120,\"source\":{\"kind\":\"official\",\"publisher\":\"tagma-internal\"},\"version\":\"0.2.0-dev.42\"}",
+    "record_version": 1,
+    "signature_hex": "5f8e037bbb2f6d4a82dfe8f6e5bd2dfd37075c9900ce89d868dadaf1e12eebfa8b108fa8602b72d7bac96284c8eb6c83cbe291390dcf4bc045af69d7f0714e0a"
+  },
+  "root": {
+    "key_id": "tagma-internal-local",
+    "public_key": [
+      143,
+      197,
+      66,
+      8,
+      252,
+      111,
+      20,
+      38,
+      209,
+      89,
+      109,
+      76,
+      197,
+      114,
+      100,
+      117,
+      32,
+      214,
+      208,
+      23,
+      32,
+      112,
+      200,
+      90,
+      166,
+      12,
+      235,
+      72,
+      136,
+      148,
+      118,
+      129
+    ],
+    "publisher": "tagma-internal",
+    "valid_from_ms": 1792388889120,
+    "valid_until_ms": 1792993691120
+  }
+}

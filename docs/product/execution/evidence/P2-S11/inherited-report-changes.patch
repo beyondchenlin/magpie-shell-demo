@@ -1,0 +1,233 @@
+diff --git a/crates/tagma-core/src/packs/desktop.rs b/crates/tagma-core/src/packs/desktop.rs
+index 76396e3..5cd013a 100644
+--- a/crates/tagma-core/src/packs/desktop.rs
++++ b/crates/tagma-core/src/packs/desktop.rs
+@@ -95,6 +95,9 @@ pub enum ReachFlowAction {
+     TaskStatus {
+         task_id: String,
+     },
++    TaskReport {
++        task_id: String,
++    },
+     CancelTask {
+         task_id: String,
+     },
+@@ -145,7 +148,9 @@ impl ReachFlowRequest {
+                     return Err(invalid());
+                 }
+             }
+-            ReachFlowAction::TaskStatus { task_id } | ReachFlowAction::CancelTask { task_id } => {
++            ReachFlowAction::TaskStatus { task_id }
++            | ReachFlowAction::TaskReport { task_id }
++            | ReachFlowAction::CancelTask { task_id } => {
+                 if !identifier(task_id) {
+                     return Err(invalid());
+                 }
+diff --git a/crates/tagma-runtime/src/reachflow.rs b/crates/tagma-runtime/src/reachflow.rs
+index 5f48901..b3305b7 100644
+--- a/crates/tagma-runtime/src/reachflow.rs
++++ b/crates/tagma-runtime/src/reachflow.rs
+@@ -37,6 +37,7 @@ async fn execute_with(
+             client.post(format!("{root}/collection-drafts/{draft_id}/start")).header("Idempotency-Key",idempotency_key)
+                 .json(&json!({"confirmation_id":confirmation_id,"plan_digest":plan_digest,"engine_selection_revision":engine_selection_revision})),true,None),
+         ReachFlowAction::TaskStatus{task_id}=>(client.get(format!("{root}/tasks/{task_id}")),false,Some(task_id)),
++        ReachFlowAction::TaskReport{task_id}=>(client.get(format!("{root}/tasks/{task_id}/report")),false,Some(task_id)),
+         ReachFlowAction::CancelTask{task_id}=>(client.post(format!("{root}/tasks/{task_id}/cancel")).json(&json!({"reason":"User requested cancellation in Tagma"})),true,Some(task_id)),
+     };
+     let unknown = if mutation {
+@@ -53,6 +54,9 @@ async fn execute_with(
+         return Err(match response.status().as_u16() {
+             401 | 403 => "REACHFLOW_AUTH_REQUIRED",
+             409 | 422 => "REACHFLOW_CONFIRMATION_REQUIRED",
++            404 if matches!(input.action, ReachFlowAction::TaskReport { .. }) => {
++                "REACHFLOW_REPORT_UNAVAILABLE"
++            }
+             _ => unknown,
+         });
+     }
+@@ -66,6 +70,24 @@ async fn execute_with(
+         data.extend_from_slice(&chunk);
+     }
+     let value: Value = serde_json::from_slice(&data).map_err(|_| unknown)?;
++    if let ReachFlowAction::TaskReport { task_id } = &input.action {
++        let report = value.get("report").ok_or(unknown)?;
++        let report_id = report
++            .get("report_id")
++            .and_then(Value::as_str)
++            .filter(|s| !s.is_empty() && s.len() <= 128)
++            .ok_or(unknown)?;
++        let document = report.get("document").ok_or(unknown)?.to_string();
++        let mut end = document.len().min(8192);
++        while !document.is_char_boundary(end) {
++            end -= 1;
++        }
++        return Ok(json!({"mode":"reachflow_report","task_id":task_id,"workspace_id":input.workspace_id,
++            "report_id":report_id,"result_id":report.get("result_id").and_then(Value::as_str).unwrap_or(""),
++            "document_preview":&document[..end],"preview_truncated":end<document.len(),
++            "location":format!("ReachFlow / workspace {} / task {} / report",input.workspace_id,task_id)
++        }).to_string());
++    }
+     let task = value.get("task").ok_or(unknown)?;
+     let id = task
+         .get("task_id")
+@@ -85,9 +107,13 @@ async fn execute_with(
+         return Err(unknown);
+     }
+     // Whitelist metadata; never relay service credentials, prompts or raw errors.
++    let gallery = task.get("gallery_preview");
++    let count = |key: &str| gallery.and_then(|g| g.get(key)).and_then(Value::as_u64);
+     Ok(json!({"mode":"reachflow_service","task_id":id,"workspace_id":workspace,"state":state,
++        "candidate_count":count("candidate_count"),"final_count":count("final_count"),"failed_count":count("failed_count"),
++        "location":format!("ReachFlow / workspace {workspace} / task {id}"),
+         "cancellation_requested":matches!(input.action,ReachFlowAction::CancelTask{..}),
+-        "note":"服务返回的任务状态；收到取消响应不等于任务已取消。成果位置须由服务提供，本适配器不推测路径。"}).to_string())
++        "note":"服务返回的任务状态；收到取消响应不等于任务已取消。可单独查看任务报告；没有本地成果路径声明。"}).to_string())
+ }
+ 
+ #[cfg(test)]
+@@ -171,10 +197,14 @@ mod tests {
+     }
+     #[tokio::test]
+     async fn confirmed_start_status_and_remote_cancel_preserve_service_contract() {
+-        let task = |state| json!({"task":{"task_id":"owned-task","workspace_id":"owned-workspace","state":state,"private_field":"not-forwarded"}});
++        let task = |state| json!({"task":{"task_id":"owned-task","workspace_id":"owned-workspace","state":state,"gallery_preview":{"candidate_count":4,"final_count":2,"failed_count":1},"private_field":"not-forwarded"}});
+         let (base, received, thread) = server(vec![
+             (201, task("running")),
+             (200, task("running")),
++            (
++                200,
++                json!({"report":{"report_id":"report-1","result_id":"result-1","document":{"summary":"example result"},"private_field":"not-forwarded"}}),
++            ),
+             (202, task("cancelling")),
+         ]);
+         let client = reqwest::Client::builder()
+@@ -196,12 +226,16 @@ mod tests {
+         let status = request(ReachFlowAction::TaskStatus {
+             task_id: "owned-task".into(),
+         });
+-        assert!(
+-            execute_with(&client, &base, &status)
+-                .await
+-                .unwrap()
+-                .contains("running")
+-        );
++        let status_result = execute_with(&client, &base, &status).await.unwrap();
++        assert!(status_result.contains("running"));
++        assert!(status_result.contains("\"final_count\":2"));
++        let report = request(ReachFlowAction::TaskReport {
++            task_id: "owned-task".into(),
++        });
++        let report_result = execute_with(&client, &base, &report).await.unwrap();
++        assert!(report_result.contains("report-1"));
++        assert!(report_result.contains("example result"));
++        assert!(!report_result.contains("private_field"));
+         let cancel = request(ReachFlowAction::CancelTask {
+             task_id: "owned-task".into(),
+         });
+@@ -210,7 +244,7 @@ mod tests {
+         assert!(!result.contains("\"state\":\"cancelled\""));
+         thread.join().unwrap();
+         let calls = received.lock().unwrap();
+-        assert_eq!(calls.len(), 3);
++        assert_eq!(calls.len(), 4);
+         assert!(calls[0].starts_with(
+             "POST /v1/workspaces/owned-workspace/collection-drafts/owned-draft/start "
+         ));
+@@ -226,7 +260,10 @@ mod tests {
+         );
+         assert!(calls[1].starts_with("GET /v1/workspaces/owned-workspace/tasks/owned-task "));
+         assert!(
+-            calls[2].starts_with("POST /v1/workspaces/owned-workspace/tasks/owned-task/cancel ")
++            calls[2].starts_with("GET /v1/workspaces/owned-workspace/tasks/owned-task/report ")
++        );
++        assert!(
++            calls[3].starts_with("POST /v1/workspaces/owned-workspace/tasks/owned-task/cancel ")
+         );
+     }
+     #[tokio::test]
+@@ -237,6 +274,7 @@ mod tests {
+                 200,
+                 json!({"task":{"task_id":"other-task","workspace_id":"other","state":"done"}}),
+             ),
++            (404, json!({"error":"no report"})),
+         ]);
+         let client = reqwest::Client::builder()
+             .no_proxy()
+@@ -254,6 +292,13 @@ mod tests {
+             execute_with(&client, &base, &input).await.unwrap_err(),
+             "REACHFLOW_UNAVAILABLE"
+         );
++        let report = request(ReachFlowAction::TaskReport {
++            task_id: "owned-task".into(),
++        });
++        assert_eq!(
++            execute_with(&client, &base, &report).await.unwrap_err(),
++            "REACHFLOW_REPORT_UNAVAILABLE"
++        );
+         thread.join().unwrap();
+     }
+     #[test]
+diff --git a/src/product/PackMarketPanel.tsx b/src/product/PackMarketPanel.tsx
+index 870d19c..b5d8380 100644
+--- a/src/product/PackMarketPanel.tsx
++++ b/src/product/PackMarketPanel.tsx
+@@ -21,9 +21,20 @@ function packError(value:unknown,zh:boolean){
+     REACHFLOW_AUTH_REQUIRED:["服务拒绝授权，请检查工作区和访问令牌。","The service rejected authorization. Check the workspace and access token."],
+     REACHFLOW_CONFIRMATION_REQUIRED:["服务要求重新核对计划、预算或授权，请先在 ReachFlow 完成确认。","Review the plan, budget and authorization in ReachFlow first."],
+     REACHFLOW_RESULT_UNCONFIRMED:["服务操作结果未确认，可能已经提交。请查询原任务或在服务端按幂等标识核对，不要直接重复启动。","The service outcome is unconfirmed and may have been submitted. Check the task or original idempotency key before starting again."],
++    REACHFLOW_REPORT_UNAVAILABLE:["该任务尚无可查看的报告。请先查询任务状态，或在 ReachFlow 检查成果。","This task has no available report yet. Check its status or view results in ReachFlow."],
+   };
+   return `${labels[code]?.[zh?0:1]??(zh?"操作未完成，请检查安装状态与服务条件。":"Operation did not complete. Check installation and service requirements.")} (${code})`;
+ }
++function resultView(raw:string,zh:boolean){
++  let result:Record<string,unknown>;
++  try{const value:unknown=JSON.parse(raw);if(!value||typeof value!=="object"||Array.isArray(value))throw Error();result=value as Record<string,unknown>;}catch{return <pre className="tagma-pack-result">{raw}</pre>;}
++  const field=(key:string)=>typeof result[key]==="string"?String(result[key]):"";
++  const count=(key:string)=>typeof result[key]==="number"&&Number.isSafeInteger(result[key])?String(result[key]):"—";
++  if(result.mode==="local_fixed_sample")return <div className="tagma-pack-result"><strong>{zh?"本地试跑完成":"Local sample complete"}</strong><p>{zh?"仅检验队员协议；没有联网或生成研究成果。":"Pack protocol checked locally. No research service or model was called."}</p><p>{zh?"固定素材：书店、咖啡店、修理店":"Fixed sample: bookshop, café, repair shop"}</p></div>;
++  if(result.mode==="reachflow_service")return <div className="tagma-pack-result"><strong>{zh?"ReachFlow 任务状态":"ReachFlow task status"}: {field("state")}</strong><p>{zh?"任务":"Task"} {field("task_id")}</p><p>{zh?"位置":"Location"}: {field("location")}</p><p>{zh?"候选 / 最终 / 失败":"Candidates / final / failed"}: {count("candidate_count")} / {count("final_count")} / {count("failed_count")}</p>{result.cancellation_requested===true&&<p>{zh?"已请求取消；请再次查询确认最终状态。":"Cancellation requested. Query again to confirm the final state."}</p>}</div>;
++  if(result.mode==="reachflow_report")return <div className="tagma-pack-result"><strong>{zh?"ReachFlow 报告":"ReachFlow report"}</strong><p>{zh?"位置":"Location"}: {field("location")}</p><p>{zh?"报告 ID":"Report ID"}: {field("report_id")}</p><pre>{field("document_preview")}</pre>{result.preview_truncated===true&&<p>{zh?"仅显示前 8 KiB；完整报告请在 ReachFlow 查看。":"Preview limited to 8 KiB. Open ReachFlow for the full report."}</p>}</div>;
++  return <pre className="tagma-pack-result">{raw}</pre>;
++}
+ export function PackMarketPanel({config,busy,active,language,onRefresh,onEditingChange}:{config:ConfigView,busy:boolean,active:boolean,language:ProductLanguage,onRefresh:()=>Promise<void>,onEditingChange:(value:boolean)=>void}){
+   const zh=language==="zh";
+   const [releaseReady,setReleaseReady]=useState<boolean|null>(null);
+@@ -32,7 +43,7 @@ export function PackMarketPanel({config,busy,active,language,onRefresh,onEditing
+   const [working,setWorking]=useState(false);
+   const [error,setError]=useState<unknown>(null);
+   const [connection,setConnection]=useState({service_url:"",workspace_id:"",access_token:""});
+-  const [action,setAction]=useState<"task_status"|"start_collection"|"cancel_task">("task_status");
++  const [action,setAction]=useState<"task_status"|"task_report"|"start_collection"|"cancel_task">("task_status");
+   const [taskId,setTaskId]=useState("");
+   const [plan,setPlan]=useState({draft_id:"",confirmation_id:"",plan_digest:"",engine_selection_revision:"1",idempotency_key:""});
+   const file=useRef<HTMLInputElement>(null),alert=useRef<HTMLParagraphElement>(null),sample=useRef<HTMLButtonElement>(null);
+@@ -66,13 +77,13 @@ export function PackMarketPanel({config,busy,active,language,onRefresh,onEditing
+       <PrefRow name={zh?"声明内存 / 调用超时":"Declared memory / call timeout"}><span>{review.memory_mib} MiB / {review.timeout_ms/1000}s</span></PrefRow>
+     </div><p className="tagma-footnote">{zh?"权限与内存为发行声明，当前不提供操作系统沙箱保证。安装将启动发行者提供的程序进行健康检查。":"Permissions and memory are publisher declarations, not an OS sandbox. Installation runs the publisher executable for its health check."}</p><div className="tagma-actions"><TextBtn disabled={locked} onClick={()=>{returnTo.current=file.current;setReview(null);}}>{zh?"取消":"Cancel"}</TextBtn><TextBtn variant="action" disabled={locked||!review.fits} onClick={()=>void install()}>{zh?"同意权限并安装":"Approve permissions and install"}</TextBtn></div></section>}
+     <div className="tagma-actions"><TextBtn ref={sample} disabled={!desktop||locked||!!review||!installed} onClick={()=>void call({kind:"local_sample"})}>{zh?"运行本地固定素材试跑":"Run local fixed sample"}</TextBtn></div>
+-    {task&&<section className="tagma-editor" aria-label={zh?"队员任务":"Pack task"}><p role="status">{phase[task.phase]??task.phase} · {state[task.state]??task.state}</p><p className="tagma-footnote">{task.task_id}</p>{task.error&&<p className="tagma-error">{packError({code:task.error},zh)}</p>}{task.text&&<pre className="tagma-pack-result">{task.text}</pre>}{working&&task.state==="running"&&<TextBtn onClick={()=>void service.cancelPack(runningId.current!).catch(setError)}>{zh?"停止本机操作 / 等待":"Stop local operation / waiting"}</TextBtn>}<p className="tagma-footnote">{zh?"停止本机等待不会取消已提交的服务任务。取消服务任务请使用下方明确操作，并查询最终状态。":"Stopping local waiting does not cancel a submitted service task. Use the explicit service cancellation below and check its final state."}</p></section>}
++    {task&&<section className="tagma-editor" aria-label={zh?"队员任务":"Pack task"}><p role="status">{phase[task.phase]??task.phase} · {state[task.state]??task.state}</p><p className="tagma-footnote">{task.task_id}</p>{task.error&&<p className="tagma-error">{packError({code:task.error},zh)}</p>}{task.text&&resultView(task.text,zh)}{working&&task.state==="running"&&<TextBtn onClick={()=>void service.cancelPack(runningId.current!).catch(setError)}>{zh?"停止本机操作 / 等待":"Stop local operation / waiting"}</TextBtn>}<p className="tagma-footnote">{zh?"停止本机等待不会取消已提交的服务任务。取消服务任务请使用下方明确操作，并查询最终状态。":"Stopping local waiting does not cancel a submitted service task. Use the explicit service cancellation below and check its final state."}</p></section>}
+     <details className="tagma-chat-setup"><summary>{zh?"连接 ReachFlow 服务并调用":"Connect to ReachFlow and call"}</summary><p className="tagma-footnote">{zh?"真实采集需要已在 ReachFlow 确认的计划、预算与授权；这里不会代为确认。连接和令牌仅保留在当前窗口内存，不写入配置。":"Real collection requires a plan, budget and authorization already confirmed in ReachFlow. Connection credentials remain in this window's memory."}</p>
+       <form className="tagma-editor tagma-pack-service" onSubmit={event=>{event.preventDefault();submitService();}}><fieldset disabled={locked||!installed||!!review}>
+       {([["service_url",zh?"服务地址（HTTPS）":"Service URL (HTTPS)"],["workspace_id",zh?"工作区":"Workspace"],["access_token",zh?"访问令牌":"Access token"]] as const).map(([key,label])=><label key={key}>{label}<WordsField required aria-label={label} type={key==="access_token"?"password":"text"} autoComplete="off" value={connection[key]} maxLength={key==="access_token"?8192:2048} onChange={e=>setConnection({...connection,[key]:e.target.value})}/></label>)}
+-      <label>{zh?"服务操作":"Service action"}<select className="words" value={action} onChange={e=>setAction(e.target.value as typeof action)}><option value="task_status">{zh?"查询任务":"Query task"}</option><option value="start_collection">{zh?"启动已确认的采集计划":"Start confirmed collection"}</option><option value="cancel_task">{zh?"请求取消服务任务":"Request service cancellation"}</option></select></label>
++      <label>{zh?"服务操作":"Service action"}<select className="words" value={action} onChange={e=>setAction(e.target.value as typeof action)}><option value="task_status">{zh?"查询任务":"Query task"}</option><option value="task_report">{zh?"查看任务报告":"View task report"}</option><option value="start_collection">{zh?"启动已确认的采集计划":"Start confirmed collection"}</option><option value="cancel_task">{zh?"请求取消服务任务":"Request service cancellation"}</option></select></label>
+       {action==="start_collection"?([["draft_id",zh?"已确认计划 ID":"Confirmed draft ID"],["confirmation_id",zh?"确认记录 ID":"Confirmation ID"],["plan_digest",zh?"计划摘要":"Plan digest"],["engine_selection_revision",zh?"引擎选择版本":"Engine selection revision"],["idempotency_key",zh?"本次调用唯一标识":"Idempotency key"]] as const).map(([key,label])=><label key={key}>{label}<WordsField required aria-label={label} value={plan[key]} maxLength={160} onChange={e=>setPlan({...plan,[key]:e.target.value})}/></label>):<label>{zh?"服务任务 ID":"Service task ID"}<WordsField required value={taskId} maxLength={128} onChange={e=>setTaskId(e.target.value)}/></label>}
+-      <TextBtn type="submit" variant={action==="cancel_task"?"danger":"action"}>{action==="start_collection"?(zh?"明确启动采集":"Start collection"):action==="cancel_task"?(zh?"请求取消此服务任务":"Request cancellation"):(zh?"查询服务任务":"Query service task")}</TextBtn>
++      <TextBtn type="submit" variant={action==="cancel_task"?"danger":"action"}>{action==="start_collection"?(zh?"明确启动采集":"Start collection"):action==="cancel_task"?(zh?"请求取消此服务任务":"Request cancellation"):action==="task_report"?(zh?"查看任务报告":"View task report"):(zh?"查询服务任务":"Query service task")}</TextBtn>
+       </fieldset><TextBtn disabled={locked} onClick={()=>setConnection({service_url:"",workspace_id:"",access_token:""})}>{zh?"清除连接与令牌":"Clear connection and token"}</TextBtn></form>
+     </details>
+   </section>;
+diff --git a/src/product/contract.ts b/src/product/contract.ts
+index 681481d..d15974e 100644
+--- a/src/product/contract.ts
++++ b/src/product/contract.ts
+@@ -7,7 +7,7 @@ export type ConfirmPackInstall = { protocol_version: number, task_id: string, re
+ export type InvokePack = { protocol_version: number, task_id: string, pack_id: string, operation: PackUserOperation, };
+ export type PackUserOperation = { "kind": "local_sample" } | { "kind": "reach_flow", request: ReachFlowRequest, };
+ export type ReachFlowRequest = { service_url: string, workspace_id: string, access_token: string, action: ReachFlowAction, };
+-export type ReachFlowAction = { "kind": "start_collection", draft_id: string, confirmation_id: string, plan_digest: string, engine_selection_revision: number, idempotency_key: string, } | { "kind": "task_status", task_id: string, } | { "kind": "cancel_task", task_id: string, };
++export type ReachFlowAction = { "kind": "start_collection", draft_id: string, confirmation_id: string, plan_digest: string, engine_selection_revision: number, idempotency_key: string, } | { "kind": "task_status", task_id: string, } | { "kind": "task_report", task_id: string, } | { "kind": "cancel_task", task_id: string, };
+ export type InstalledPackVersion = { version: string, preparation_id: string, manifest_sha256: string, display_name: string, installed_ms: string, };
+ export type InstalledPack = { id: string, active_version: string | null, versions: Array<InstalledPackVersion>, };
+ export type ErrorCode = "INVALID_INPUT" | "CONFIG_CONFLICT" | "STORAGE_UNAVAILABLE" | "CREDENTIAL_STORE_UNAVAILABLE" | "INCOMPATIBLE_VERSION" | "MAINTENANCE_IN_PROGRESS" | "DESKTOP_REQUIRED" | "INTERNAL_ERROR" | "PORT_IN_USE" | "ALREADY_RUNNING" | "GATEWAY_UNAVAILABLE" | "CONFIG_APPLY_FAILED" | "OWNERSHIP_REQUIRED" | "STARTUP_TIMEOUT" | "INITIALIZATION_RECOVERY_REQUIRED" | "PROVIDER_REFERENCED" | "PROFILE_REFERENCED" | "PROBE_BACKOFF" | "PROBE_BUSY" | "ACCESS_REVOKED" | "SECURITY_STATE_UNCONFIRMED" | "USAGE_STORAGE_UNAVAILABLE" | "USAGE_QUERY_UNAVAILABLE" | "USAGE_QUERY_CANCELLED" | "USAGE_CLEAR_BUSY" | "USAGE_CLEAR_CHANGED" | "USAGE_CLEAR_UNCONFIRMED" | "RESTART_REQUIRED" | "TEAM_SLUG_CONFLICT" | "TEAM_PUBLISHED" | "TEAM_RECIPE_UNAVAILABLE" | "NO_AVAILABLE_BRAIN";

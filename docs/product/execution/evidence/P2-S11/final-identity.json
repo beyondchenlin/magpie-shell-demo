@@ -1,0 +1,27 @@
+{
+  "utc": "2026-10-19T05:59:17.2617934Z",
+  "installed_payloads": [
+    {
+      "bytes": 5956608,
+      "path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\data\\packs\\versions\\prepared-8c0c9ebf-eb5a-4b02-8791-a67b101e1c9f\\payload\\tagma-reachflow.exe",
+      "sha256": "AE922DB0B00C5818D0E89A3C1D63D48C6FACF49DEE3133B3750E0DB4B9DE8DF7"
+    }
+  ],
+  "signing_key_persisted": false,
+  "expected_payload_sha256": "AE922DB0B00C5818D0E89A3C1D63D48C6FACF49DEE3133B3750E0DB4B9DE8DF7",
+  "processes": [
+    {
+      "ProcessId": 44484,
+      "ParentProcessId": 32952,
+      "ExecutablePath": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\install-p0s16\\tagma-desktop.exe",
+      "CreationDate": "2026-10-19T13:55:04.967891+08:00"
+    },
+    {
+      "ProcessId": 23976,
+      "ParentProcessId": 44484,
+      "ExecutablePath": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\install-p0s16\\tagma-gateway.exe",
+      "CreationDate": "2026-10-19T13:55:05.501868+08:00"
+    }
+  ],
+  "launcher": "D:\\demo1\\tagmaai-deliveries\\0.2.0-dev.42\\Tagma-dev42-isolated.lnk"
+}

@@ -1,0 +1,29 @@
+﻿{
+    "note":  "Only subsequent UI task state establishes cancellation; an absent/late button is not a pass.",
+    "attempt":  {
+                    "result":  "native-invoke-returned-only",
+                    "target":  {
+                                   "index":  0,
+                                   "runtimeId":  "42,6358668,4,5,1,428",
+                                   "name":  "停止本机操作 / 等待",
+                                   "type":  "ControlType.Button",
+                                   "automationId":  "",
+                                   "enabled":  true,
+                                   "offscreen":  false,
+                                   "focused":  false,
+                                   "password":  false,
+                                   "value":  null,
+                                   "rect":  [
+                                                1805,
+                                                951,
+                                                122,
+                                                24
+                                            ],
+                                   "patterns":  [
+                                                    "InvokePatternIdentifiers.Pattern",
+                                                    "ScrollItemPatternIdentifiers.Pattern"
+                                                ]
+                               },
+                    "elapsed_ms":  168
+                }
+}

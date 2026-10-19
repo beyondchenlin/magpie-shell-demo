@@ -1,0 +1,2 @@
+2026-10-19 P2-S11. Reuse existing workspace/node_modules/target/isolated data+webview.
+C31.84/D16.49 GiB; D<20GiB reuse only. Expected additional peak <=2GiB including optional internal signed ZIP embedded in debug candidate, Cargo outputs and retained old EXEs. Leave >=10GiB. No installer, model or dependency copies. Ephemeral signing seed remains in memory only, public material/evidence retained. TempDir tests clean up. Retain dev41 and bounded S11 evidence; no historic deletion.

@@ -30,6 +30,12 @@ struct ReleaseRoot {
     valid_from_ms: u64,
     valid_until_ms: u64,
 }
+#[derive(serde::Deserialize)]
+#[serde(deny_unknown_fields)]
+struct InternalPack {
+    root: ReleaseRoot,
+    record: SignedManifestRecord,
+}
 #[derive(serde::Serialize, serde::Deserialize)]
 #[serde(deny_unknown_fields)]
 struct Journal {
@@ -43,6 +49,8 @@ pub struct PackBridge {
     closing: AtomicBool,
     journal: PathBuf,
     release_ready: bool,
+    internal_record: Option<SignedManifestRecord>,
+    internal_hash: Option<String>,
     _lease: std::fs::File,
 }
 impl PackBridge {
@@ -79,9 +87,29 @@ impl PackBridge {
             .open(lock_path)
             .map_err(|_| error("PACK_STORAGE_UNAVAILABLE"))?;
         lease.try_lock_exclusive().map_err(|_| error("PACK_BUSY"))?;
-        let roots: Vec<ReleaseRoot> = serde_json::from_str(include_str!("../pack-roots.json"))
+        let mut roots: Vec<ReleaseRoot> = serde_json::from_str(include_str!("../pack-roots.json"))
             .map_err(|_| error("PACK_RELEASE_POLICY_INVALID"))?;
         let release_ready = !roots.is_empty();
+        // A compile-time signed development bundle is available only in the
+        // explicitly isolated debug instance. No runtime key import/bypass.
+        let internal: Option<InternalPack> = if cfg!(debug_assertions)
+            && std::env::var_os("TAGMA_TEST_CONFIG_DIR")
+                .map(PathBuf::from)
+                .as_deref()
+                == Some(directory)
+        {
+            serde_json::from_str(include_str!(concat!(
+                env!("OUT_DIR"),
+                "/internal-pack.json"
+            )))
+            .map_err(|_| error("PACK_RELEASE_POLICY_INVALID"))?
+        } else {
+            None
+        };
+        let internal_record = internal.map(|bundle| {
+            roots.push(bundle.root);
+            bundle.record
+        });
         let trust = PackTrustStore::new(
             roots
                 .into_iter()
@@ -95,6 +123,19 @@ impl PackBridge {
                 .collect(),
         )
         .map_err(error)?;
+        let internal_hash = internal_record
+            .as_ref()
+            .map(|record| {
+                let now = std::time::SystemTime::now()
+                    .duration_since(std::time::UNIX_EPOCH)
+                    .map_err(|_| error("PACK_RELEASE_POLICY_INVALID"))?
+                    .as_millis() as u64;
+                trust
+                    .verify_record(record, now)
+                    .map(|proof| proof.sha256().to_owned())
+                    .map_err(error)
+            })
+            .transpose()?;
         let os = match std::env::consts::OS {
             "windows" => PackOs::Windows,
             "macos" => PackOs::Macos,
@@ -155,12 +196,20 @@ impl PackBridge {
             closing: AtomicBool::new(false),
             journal,
             release_ready,
+            internal_record,
+            internal_hash,
             _lease: lease,
         })
     }
     pub fn view(&self) -> Result<PackMarketView> {
         Ok(PackMarketView {
             release_ready: self.release_ready,
+            internal_manifest: self
+                .internal_record
+                .as_ref()
+                .map(serde_json::to_string)
+                .transpose()
+                .map_err(|_| error("PACK_RELEASE_POLICY_INVALID"))?,
             task: self
                 .last
                 .lock()
@@ -282,34 +331,50 @@ impl PackBridge {
             &channel,
             event(&input.task_id, "starting", "running", None, None),
         )?;
-        let result = self
-            .installer
-            .install(
-                config,
-                uuid::Uuid::parse_str(&input.review_id)
-                    .map_err(|_| error("PACK_REVIEW_EXPIRED"))?,
-                &input.manifest_sha256,
-                cancel.clone(),
-                |phase| {
-                    let phase = match phase {
-                        InstallPhase::Download => "download",
-                        InstallPhase::VerifyAndPrepare => "verify",
-                        InstallPhase::HealthCheck => "health",
-                        InstallPhase::Activated => "activated",
-                    };
-                    if self
-                        .event(
-                            &channel,
-                            event(&input.task_id, phase, "running", None, None),
-                        )
-                        .is_err()
-                    {
-                        cancel.cancel();
-                    }
-                },
-            )
-            .await
-            .map_err(error);
+        let review_id =
+            uuid::Uuid::parse_str(&input.review_id).map_err(|_| error("PACK_REVIEW_EXPIRED"))?;
+        let phases = |phase| {
+            let phase = match phase {
+                InstallPhase::Download => "download",
+                InstallPhase::VerifyAndPrepare => "verify",
+                InstallPhase::HealthCheck => "health",
+                InstallPhase::Activated => "activated",
+            };
+            if self
+                .event(
+                    &channel,
+                    event(&input.task_id, phase, "running", None, None),
+                )
+                .is_err()
+            {
+                cancel.cancel();
+            }
+        };
+        let result = if self.internal_hash.as_deref() == Some(&input.manifest_sha256) {
+            self.installer
+                .install_archive(
+                    config,
+                    review_id,
+                    &input.manifest_sha256,
+                    cancel.clone(),
+                    phases,
+                    std::sync::Arc::from(
+                        &include_bytes!(concat!(env!("OUT_DIR"), "/internal-pack.zip"))[..],
+                    ),
+                )
+                .await
+        } else {
+            self.installer
+                .install(
+                    config,
+                    review_id,
+                    &input.manifest_sha256,
+                    cancel.clone(),
+                    phases,
+                )
+                .await
+        }
+        .map_err(error);
         self.finish(
             &channel,
             &input.task_id,
@@ -474,6 +539,7 @@ mod tests {
         let config = ConfigService::open(root.path(), std::sync::Arc::new(NoCredentials)).unwrap();
         let bridge = PackBridge::new(root.path(), &config).unwrap();
         assert!(!bridge.view().unwrap().release_ready);
+        assert!(bridge.view().unwrap().internal_manifest.is_none());
         assert!(PackBridge::new(root.path(), &config).is_err());
         let untrusted = serde_json::json!({
             "record_version": 1,
@@ -482,7 +548,10 @@ mod tests {
             "signature_hex": "0".repeat(128),
         });
         assert_eq!(
-            bridge.review(&config, &untrusted.to_string()).unwrap_err().code,
+            bridge
+                .review(&config, &untrusted.to_string())
+                .unwrap_err()
+                .code,
             "PACK_UNTRUSTED_PUBLISHER"
         );
         let id = uuid::Uuid::new_v4().to_string();
