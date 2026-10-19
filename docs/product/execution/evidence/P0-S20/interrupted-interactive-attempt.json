@@ -1,0 +1,5 @@
+{
+  "utc": "2026-10-18T23:49:49.2765999Z",
+  "result": "Previous interactive attempt absent on resume; last saved UIA showed insufficient-space dialog, but no final exit or screenshot. Not counted as completed native acceptance.",
+  "priorPid": 44200
+}

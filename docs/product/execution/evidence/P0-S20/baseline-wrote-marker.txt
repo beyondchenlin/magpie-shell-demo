@@ -1,0 +1,1 @@
+NSIS silent section executed despite 100 GiB AddSize

@@ -1,0 +1,17 @@
+{
+  "space": [
+    {
+      "Name": "C",
+      "Free": 36104749056
+    },
+    {
+      "Name": "D",
+      "Free": 25031409664
+    }
+  ],
+  "head": "9b9762edb49d484eb91f85e2ed569d08206a3aae",
+  "scope": "NSIS silent space behavior; install target and temporary space checks; architecture metadata gate. Synthetic declared budgets/mismatch are not actual low-disk or other-platform certification.",
+  "utc": "2026-10-18T21:44:53.8029013Z",
+  "reuse": "existing target/node_modules/NSIS, original data/webview/install-p0s16",
+  "budget": "Peak D<=2 GiB C<=0.2 GiB; evidence <=8 MiB. No large allocation/disk filling/VM/system settings"
+}

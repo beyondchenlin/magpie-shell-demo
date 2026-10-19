@@ -1,0 +1,14 @@
+[
+  {
+    "id": "tagma-prd",
+    "status": [
+      "status = \"PAUSED\""
+    ]
+  },
+  {
+    "id": "magpie-cis",
+    "status": [
+      "status = \"PAUSED\""
+    ]
+  }
+]

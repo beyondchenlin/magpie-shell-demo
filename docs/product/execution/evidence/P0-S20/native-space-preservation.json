@@ -1,0 +1,40 @@
+{
+  "state": {
+    "files": [
+      {
+        "path": "install-p0s16/tagma-desktop.exe",
+        "exists": true,
+        "sha256": "76C94597EAD23BE6CC969048EA9E2AEB90726038F744BC04105337F9B1EC8EFD"
+      },
+      {
+        "path": "install-p0s16/tagma-gateway.exe",
+        "exists": true,
+        "sha256": "7DC0C416E266D65DCA4BE48D1ED6C13F0D015B8DC6384AD2B363F0FF217DFB23"
+      },
+      {
+        "path": "install-p0s16/uninstall.exe",
+        "exists": true,
+        "sha256": "2FF19363B7B94B6C47D2C9DF89C99A492D9A153AF3B155318975DE2E6726C9F1"
+      },
+      {
+        "path": "data/config.sqlite3",
+        "exists": true,
+        "sha256": "F82945FF1AE987A08496C370349280EAD5DD2468B9C3E6062BBB5F95C1C76D93"
+      },
+      {
+        "path": "data/config.sqlite3-wal",
+        "exists": true,
+        "sha256": "634B9FFACDAEC6F7C4636C70FC5A9B36903EBA0190E83B9CA197269619B9F45B"
+      },
+      {
+        "path": "data/runtime.json",
+        "exists": false,
+        "sha256": null
+      }
+    ],
+    "registeredVersion": "0.2.0-dev.34",
+    "installLocation": "\"C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\install-p0s16\""
+  },
+  "unchanged": true,
+  "utc": "2026-10-18T23:51:45.8069228Z"
+}

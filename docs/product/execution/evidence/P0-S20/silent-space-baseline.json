@@ -1,0 +1,9 @@
+{
+  "scope": "Actual cached NSIS3.13 silent runtime behavior with declared AddSize; not the full product nor real disk exhaustion",
+  "actualOutputBytes": 52,
+  "markerExists": true,
+  "utc": "2026-10-18T21:44:54.1136192Z",
+  "exitCode": 0,
+  "declaredKiB": 104857600,
+  "availableBytes": 25031364608
+}

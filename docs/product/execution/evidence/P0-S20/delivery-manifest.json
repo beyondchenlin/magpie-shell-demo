@@ -1,0 +1,35 @@
+{
+  "version": "0.2.0-dev.35",
+  "sourceHeadAtBuild": "9b9762edb49d484eb91f85e2ed569d08206a3aae",
+  "productChangesCommit": "558f73a5102548f35fb18464aca15ff729e573e9",
+  "profile": "Windows x64 debug unsigned internal",
+  "sourceInputs": 316,
+  "sourceVerification": "316 frozen before build; checked after build, native acceptance and product commit",
+  "installer": {
+    "path": "D:/demo1/tagmaai-deliveries/0.2.0-dev.35/Tagma_0.2.0-dev.35_x64-setup.exe",
+    "bytes": 6625422,
+    "sha256": "67f32c6ce64a3326a6b52c898c751037eeb280ad0b109c44c22442b06c0f09fd"
+  },
+  "binaries": [
+    {
+      "path": "C:/Users/ai/AppData/Local/Temp/tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88/install-p0s16/tagma-desktop.exe",
+      "bytes": 20276736,
+      "sha256": "88e44b14644b658b1564d23b829d8edfa2fe9e383cdae0f4b37e16934d8eab95"
+    },
+    {
+      "path": "C:/Users/ai/AppData/Local/Temp/tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88/install-p0s16/tagma-gateway.exe",
+      "bytes": 10115072,
+      "sha256": "56a73586b55463063c291ba083a74516aa17b355c45e758bbadc6e356cb56b95"
+    }
+  ],
+  "sourceRecovery": "Checkout productChangesCommit; restore the six INHERITED-INPUTS from retained dev18 source-overlay.json.gz; verify SOURCE-INPUTS.",
+  "nativeAcceptance": "S20: actual isolated NSIS native dialog and aborted page with synthetic declared100GiB payload budget; real free-space API; exit112 and unchanged binaries, DB and registration. Full silent process negative cases target112/temp112/query1603/declared-arch1633 unchanged. Normal isolated upgrade35 exit0, native host+gateway12/12 and provider order restored. UIA/Win32 notifications/PrintWindow; not physical keyboard, actual disk exhaustion or ARM64 acceptance.",
+  "installation": "Isolated S16 identity only; normal identity package never run.",
+  "remaining": "P0 not fully released. Registry failure handling and full release matrix remain. Synthetic capacity and declared-arch errors do not prove actual disk exhaustion, WebView missing or cross-platform behavior. Actual credential facility/OS animation change, clean Windows, signing and macOS unavailable.",
+  "retention": {
+    "owner": "Current Tagma P0 task",
+    "purpose": "Validated architecture/space preflight candidate and minimal evidence",
+    "reviewDate": "2026-10-25",
+    "scheduledCleanup": false
+  }
+}

@@ -1,0 +1,214 @@
+{
+  "utc": "2026-10-18T21:48:41.5999474Z",
+  "results": [
+    {
+      "exitCode": 112,
+      "expected": 112,
+      "installerSha256": "125A83F4E88804247BF7934ABC8B54B0CEC27C1A34D8363770ADEFC364E664FF",
+      "case": "target-space",
+      "after": {
+        "files": [
+          {
+            "path": "install-p0s16/tagma-desktop.exe",
+            "exists": true,
+            "sha256": "76C94597EAD23BE6CC969048EA9E2AEB90726038F744BC04105337F9B1EC8EFD"
+          },
+          {
+            "path": "install-p0s16/tagma-gateway.exe",
+            "exists": true,
+            "sha256": "7DC0C416E266D65DCA4BE48D1ED6C13F0D015B8DC6384AD2B363F0FF217DFB23"
+          },
+          {
+            "path": "install-p0s16/uninstall.exe",
+            "exists": true,
+            "sha256": "2FF19363B7B94B6C47D2C9DF89C99A492D9A153AF3B155318975DE2E6726C9F1"
+          },
+          {
+            "path": "data/config.sqlite3",
+            "exists": true,
+            "sha256": "F82945FF1AE987A08496C370349280EAD5DD2468B9C3E6062BBB5F95C1C76D93"
+          },
+          {
+            "path": "data/config.sqlite3-wal",
+            "exists": true,
+            "sha256": "634B9FFACDAEC6F7C4636C70FC5A9B36903EBA0190E83B9CA197269619B9F45B"
+          },
+          {
+            "path": "data/runtime.json",
+            "exists": false,
+            "sha256": null
+          }
+        ],
+        "registeredVersion": "0.2.0-dev.34",
+        "installLocation": "\"C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\install-p0s16\""
+      },
+      "unchanged": true
+    },
+    {
+      "exitCode": 112,
+      "expected": 112,
+      "installerSha256": "536E1E3E3AB77EE17E0E77EDDB69B114C6796A0D2C98CC62CE16BF1E01CF9A4D",
+      "case": "temp-space",
+      "after": {
+        "files": [
+          {
+            "path": "install-p0s16/tagma-desktop.exe",
+            "exists": true,
+            "sha256": "76C94597EAD23BE6CC969048EA9E2AEB90726038F744BC04105337F9B1EC8EFD"
+          },
+          {
+            "path": "install-p0s16/tagma-gateway.exe",
+            "exists": true,
+            "sha256": "7DC0C416E266D65DCA4BE48D1ED6C13F0D015B8DC6384AD2B363F0FF217DFB23"
+          },
+          {
+            "path": "install-p0s16/uninstall.exe",
+            "exists": true,
+            "sha256": "2FF19363B7B94B6C47D2C9DF89C99A492D9A153AF3B155318975DE2E6726C9F1"
+          },
+          {
+            "path": "data/config.sqlite3",
+            "exists": true,
+            "sha256": "F82945FF1AE987A08496C370349280EAD5DD2468B9C3E6062BBB5F95C1C76D93"
+          },
+          {
+            "path": "data/config.sqlite3-wal",
+            "exists": true,
+            "sha256": "634B9FFACDAEC6F7C4636C70FC5A9B36903EBA0190E83B9CA197269619B9F45B"
+          },
+          {
+            "path": "data/runtime.json",
+            "exists": false,
+            "sha256": null
+          }
+        ],
+        "registeredVersion": "0.2.0-dev.34",
+        "installLocation": "\"C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\install-p0s16\""
+      },
+      "unchanged": true
+    },
+    {
+      "exitCode": 1603,
+      "expected": 1603,
+      "installerSha256": "A3F23FF025A684D2C9418C614E3258AD7B7801D1F4E9CDC338E46737A56D5CE5",
+      "case": "query-failure",
+      "after": {
+        "files": [
+          {
+            "path": "install-p0s16/tagma-desktop.exe",
+            "exists": true,
+            "sha256": "76C94597EAD23BE6CC969048EA9E2AEB90726038F744BC04105337F9B1EC8EFD"
+          },
+          {
+            "path": "install-p0s16/tagma-gateway.exe",
+            "exists": true,
+            "sha256": "7DC0C416E266D65DCA4BE48D1ED6C13F0D015B8DC6384AD2B363F0FF217DFB23"
+          },
+          {
+            "path": "install-p0s16/uninstall.exe",
+            "exists": true,
+            "sha256": "2FF19363B7B94B6C47D2C9DF89C99A492D9A153AF3B155318975DE2E6726C9F1"
+          },
+          {
+            "path": "data/config.sqlite3",
+            "exists": true,
+            "sha256": "F82945FF1AE987A08496C370349280EAD5DD2468B9C3E6062BBB5F95C1C76D93"
+          },
+          {
+            "path": "data/config.sqlite3-wal",
+            "exists": true,
+            "sha256": "634B9FFACDAEC6F7C4636C70FC5A9B36903EBA0190E83B9CA197269619B9F45B"
+          },
+          {
+            "path": "data/runtime.json",
+            "exists": false,
+            "sha256": null
+          }
+        ],
+        "registeredVersion": "0.2.0-dev.34",
+        "installLocation": "\"C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\install-p0s16\""
+      },
+      "unchanged": true
+    },
+    {
+      "exitCode": 1633,
+      "expected": 1633,
+      "installerSha256": "7073E68D6CD4A175CE99B029E5DFA02E99F59947709AB7C8E492FF843EF1BEEF",
+      "case": "wrong-arch",
+      "after": {
+        "files": [
+          {
+            "path": "install-p0s16/tagma-desktop.exe",
+            "exists": true,
+            "sha256": "76C94597EAD23BE6CC969048EA9E2AEB90726038F744BC04105337F9B1EC8EFD"
+          },
+          {
+            "path": "install-p0s16/tagma-gateway.exe",
+            "exists": true,
+            "sha256": "7DC0C416E266D65DCA4BE48D1ED6C13F0D015B8DC6384AD2B363F0FF217DFB23"
+          },
+          {
+            "path": "install-p0s16/uninstall.exe",
+            "exists": true,
+            "sha256": "2FF19363B7B94B6C47D2C9DF89C99A492D9A153AF3B155318975DE2E6726C9F1"
+          },
+          {
+            "path": "data/config.sqlite3",
+            "exists": true,
+            "sha256": "F82945FF1AE987A08496C370349280EAD5DD2468B9C3E6062BBB5F95C1C76D93"
+          },
+          {
+            "path": "data/config.sqlite3-wal",
+            "exists": true,
+            "sha256": "634B9FFACDAEC6F7C4636C70FC5A9B36903EBA0190E83B9CA197269619B9F45B"
+          },
+          {
+            "path": "data/runtime.json",
+            "exists": false,
+            "sha256": null
+          }
+        ],
+        "registeredVersion": "0.2.0-dev.34",
+        "installLocation": "\"C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\install-p0s16\""
+      },
+      "unchanged": true
+    }
+  ],
+  "scope": "Real full NSIS process; synthetic declared100GiB payload budgets, nonexistent query path, or mismatched declared architecture. Real Windows API responses, not actual disk exhaustion or another OS.",
+  "before": {
+    "files": [
+      {
+        "path": "install-p0s16/tagma-desktop.exe",
+        "exists": true,
+        "sha256": "76C94597EAD23BE6CC969048EA9E2AEB90726038F744BC04105337F9B1EC8EFD"
+      },
+      {
+        "path": "install-p0s16/tagma-gateway.exe",
+        "exists": true,
+        "sha256": "7DC0C416E266D65DCA4BE48D1ED6C13F0D015B8DC6384AD2B363F0FF217DFB23"
+      },
+      {
+        "path": "install-p0s16/uninstall.exe",
+        "exists": true,
+        "sha256": "2FF19363B7B94B6C47D2C9DF89C99A492D9A153AF3B155318975DE2E6726C9F1"
+      },
+      {
+        "path": "data/config.sqlite3",
+        "exists": true,
+        "sha256": "F82945FF1AE987A08496C370349280EAD5DD2468B9C3E6062BBB5F95C1C76D93"
+      },
+      {
+        "path": "data/config.sqlite3-wal",
+        "exists": true,
+        "sha256": "634B9FFACDAEC6F7C4636C70FC5A9B36903EBA0190E83B9CA197269619B9F45B"
+      },
+      {
+        "path": "data/runtime.json",
+        "exists": false,
+        "sha256": null
+      }
+    ],
+    "registeredVersion": "0.2.0-dev.34",
+    "installLocation": "\"C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\install-p0s16\""
+  }
+}

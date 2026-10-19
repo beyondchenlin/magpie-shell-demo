@@ -1,0 +1,312 @@
+{
+  "batch": "P0-S20",
+  "utc": "2026-10-18T23:53:13.267Z",
+  "bytes": 1019571,
+  "files": [
+    {
+      "path": "00-before-quit.json",
+      "bytes": 111178,
+      "sha256": "3d834ed27538bf860e056ea4fa53af50f0fabe3c2a007958b8cfb79ba9518c0a"
+    },
+    {
+      "path": "01-quit-18.json",
+      "bytes": 56173,
+      "sha256": "3c9818daaf5e6c82710a018b453becc849405e0843bc75b7231fc5dd9d7980ef"
+    },
+    {
+      "path": "01-quit-48.json",
+      "bytes": 14871,
+      "sha256": "59cac99270bf20d8ff220db9df2de73cea720febdf285173a641fe495255ac5b"
+    },
+    {
+      "path": "02-Choose-Install-Location.json",
+      "bytes": 14834,
+      "sha256": "3719f4caf309cf28f4dc0df0077e73a53199c571b203e86dabdcaa328c245f94"
+    },
+    {
+      "path": "02-Update-Tagma.json",
+      "bytes": 10774,
+      "sha256": "9c14831fcba0e71fbdd187bbfecdd0331de4d6c9f746e7aa9231d5891e4bf38a"
+    },
+    {
+      "path": "02-Welcome-to-Tagma-P--S---Acceptance-Setup.json",
+      "bytes": 7597,
+      "sha256": "592c09b00b0edaf3762d351623e4580d0ef64da9ef4c947318a990e325865ae4"
+    },
+    {
+      "path": "03-after-Choose-Install-Location.json",
+      "bytes": 16116,
+      "sha256": "850ae31ac1d020c1dadd564e9fe4869753aa3b6dc7166c7ae6fa726e17a4d968"
+    },
+    {
+      "path": "03-after-Update-Tagma.json",
+      "bytes": 14833,
+      "sha256": "fd132e702420b27cf868dce0c003f1719fe23346cd711ecd89437f06f76826b0"
+    },
+    {
+      "path": "03-after-Welcome-to-Tagma-P--S---Acceptance-Setup.json",
+      "bytes": 10774,
+      "sha256": "ed6e65807546b1b51b94cb8f368b115744916dd421557e57a354b6469cb03ab3"
+    },
+    {
+      "path": "05-restart-native.json",
+      "bytes": 7595,
+      "sha256": "f66d1c6e85e88fede92a6511fb3afb7ab3c07f2c960fb2da5be49d31ad727e21"
+    },
+    {
+      "path": "06-update-page.json",
+      "bytes": 10776,
+      "sha256": "c8cbac409fdd8cd96ad17db0f44722b6de5379cba91f71f0aa1a0f14cda17183"
+    },
+    {
+      "path": "07-directory-page.json",
+      "bytes": 14836,
+      "sha256": "2ea466f97a99dd4493ee1b7966799794e8306cba87138ca883588b72f7aae0a3"
+    },
+    {
+      "path": "08-space-dialog.json",
+      "bytes": 16118,
+      "sha256": "8ee8ea9455dff410826e9c3005edf2e92afb5de1f764379f1d9d6181139b1d21"
+    },
+    {
+      "path": "08-space-dialog.png",
+      "bytes": 10469,
+      "sha256": "7d652c545e4f4fa056cd8cf06ebdb1929a2726e49b3548339c3b348c66e14c98"
+    },
+    {
+      "path": "09-space-aborted.json",
+      "bytes": 190,
+      "sha256": "7557335f4638a6a176bb226fe6c6c4edabf93b624032d887feabcb4629cd7a1b"
+    },
+    {
+      "path": "09-space-aborted.png",
+      "bytes": 11013,
+      "sha256": "20e92247469aa8080f2d558b46129a8093c74f78181691173687b59df7d37efe"
+    },
+    {
+      "path": "10-space-aborted-live.json",
+      "bytes": 12133,
+      "sha256": "87ecb20707e6adc37ad9143cccb747dcf276f31a0a3546443862fde3325e036b"
+    },
+    {
+      "path": "12-dev35-started.json",
+      "bytes": 53199,
+      "sha256": "824d5464037e5be82064d044e9984d674e00f0efb7f73c84aa6cb04fc04b02a1"
+    },
+    {
+      "path": "13-dev35-ready.json",
+      "bytes": 51252,
+      "sha256": "8c19b015d7956a4880e43f396c31ffdd09bd66f8c8c5994270c132940ae2f942"
+    },
+    {
+      "path": "14-dev35-providers.json",
+      "bytes": 111173,
+      "sha256": "1a82bf7478d14bb2b5ec86c24e5b173242761fd96649abbf3db7e5f284e801a4"
+    },
+    {
+      "path": "14-dev35-providers.png",
+      "bytes": 41758,
+      "sha256": "8c8eac7d8bc15724ea55a4fd6535edf76ee14d16d433cdbef8d214a3474a2611"
+    },
+    {
+      "path": "CheckSilentPreflight.ps1",
+      "bytes": 2451,
+      "sha256": "265a7498f333fbd8683b71d2a909cea9accdc5a87f7ddf486668a75f5a0b78a9"
+    },
+    {
+      "path": "Control.ps1",
+      "bytes": 27997,
+      "sha256": "352b035f82df82f581c39f512169d72c21dbebe357f3d04b368af10bb658302b"
+    },
+    {
+      "path": "FileAssociation.nsh",
+      "bytes": 5517,
+      "sha256": "e933990b06dceac358fc1a4e71cb55c7dc9783ad4df8fc2c6248118a7ad4d348"
+    },
+    {
+      "path": "Finalize.mjs",
+      "bytes": 4080,
+      "sha256": "d6f23e8bff4fbd7cde13e1dcb394650bcd3e8a2c9758fb71a6ba28eb28917552"
+    },
+    {
+      "path": "InstallerControl.ps1",
+      "bytes": 8083,
+      "sha256": "5e05dd454dd0bfd02485a05435eafaf6e2bfd42c3d75d68c84ea891161691bcc"
+    },
+    {
+      "path": "Launch.ps1",
+      "bytes": 444,
+      "sha256": "1b0a557dfe690cfd7c921813e64c002737bf18ae361287cb599e4f3dc09caf3c"
+    },
+    {
+      "path": "Run.ps1",
+      "bytes": 2066,
+      "sha256": "8c10872bcd55ba8df19a41265c278d57e88152b43ea278c7f0b05627401761ce"
+    },
+    {
+      "path": "actions.jsonl",
+      "bytes": 123489,
+      "sha256": "3e13184136734bcd1a47c420570baa5a65b560b183bacf5ceec5cae6ce3dbaa3"
+    },
+    {
+      "path": "baseline-build.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "baseline-wrote-marker.txt",
+      "bytes": 52,
+      "sha256": "685c3cd4dcdf0051fd93ca0c1233cc0b2b95a311ec0e785524be6e17b5178874"
+    },
+    {
+      "path": "build35.log",
+      "bytes": 3003,
+      "sha256": "fc039bbd26ae3dd301c0aa0f9f1a6003cef515aaba044ef8f7486d0f6dcdcae0"
+    },
+    {
+      "path": "delivery-manifest.json",
+      "bytes": 2340,
+      "sha256": "570ca4af059463fc2e538506ecbb1b3fdfcebf8bdd0937b685fcf006f97c53dd"
+    },
+    {
+      "path": "final-processes.json",
+      "bytes": 599,
+      "sha256": "5c6862e34de3684c057f15d865b56c76bae1906927f06b2522b2eb86b14ad7fd"
+    },
+    {
+      "path": "installer-actions.jsonl",
+      "bytes": 36745,
+      "sha256": "c26900356dc8700a2c260a8ea65a883eff9c49432961e1b856ef773f2bd03916"
+    },
+    {
+      "path": "installer-identity.json",
+      "bytes": 248,
+      "sha256": "d16b8a22cd9f56220352d018d24415060e3c04f83b8eaa1cd66a9c3d52cf9f53"
+    },
+    {
+      "path": "interactive-space-exit.json",
+      "bytes": 67,
+      "sha256": "9f92d799e43f634bf012fecbb7fe4f97a9f508e8d5b71425b06ff05f0033b7b5"
+    },
+    {
+      "path": "interrupted-installer-identity.json",
+      "bytes": 248,
+      "sha256": "ec112eeb3cf2ea168c40069d213a3483caa4bee589cbedf3395ecbe4c8809949"
+    },
+    {
+      "path": "interrupted-interactive-attempt.json",
+      "bytes": 258,
+      "sha256": "75a7614447327f7523d92e58256a56c9360b513c9ae5cb9871a2bcd2840d466d"
+    },
+    {
+      "path": "isolated-dev35-build.log",
+      "bytes": 501,
+      "sha256": "2b63e889b649bb953714ff8fb5ef6d2882a3c7a3b3eef515ec2cbad9ba695e08"
+    },
+    {
+      "path": "isolated-dev35.nsi",
+      "bytes": 25260,
+      "sha256": "261ae2af449c0f041cebdd3ccb5e69f279db7dca194c6ca65b72cc06388ea00f"
+    },
+    {
+      "path": "launch35.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "launch35.stdout.log",
+      "bytes": 85,
+      "sha256": "fa2df89820df2555474a6093dd9b73df32d9381383da660cd58f84c55cc8aa8b"
+    },
+    {
+      "path": "native-space-preservation.json",
+      "bytes": 1279,
+      "sha256": "5233ec9aa975c96b1c49ac8dd9d5fdcbe493b9fb8eb7beae80f80e91efc94631"
+    },
+    {
+      "path": "owner.txt",
+      "bytes": 35,
+      "sha256": "cd98b0ac87d55dede7aea4c227ce7a702a5f788c1b02fb1cd53d2b6b7f6f6f1c"
+    },
+    {
+      "path": "positive-install.json",
+      "bytes": 2576,
+      "sha256": "86c19e5d196ec9a29022d29e69c7a9c98643a3873de94b55160dc2903ae63299"
+    },
+    {
+      "path": "preflight.json",
+      "bytes": 650,
+      "sha256": "4f32d7cae6a79f6b23bbe5cb707c7366b388772a01f733112396987fef2c55d2"
+    },
+    {
+      "path": "query-failure-dev35-build.log",
+      "bytes": 501,
+      "sha256": "2b63e889b649bb953714ff8fb5ef6d2882a3c7a3b3eef515ec2cbad9ba695e08"
+    },
+    {
+      "path": "query-failure-dev35.nsi",
+      "bytes": 25343,
+      "sha256": "33bcf68cccc674066f38837f20aa2a1911dcb1db919e515d93f219e6c74d7ce2"
+    },
+    {
+      "path": "schedulers-readonly.json",
+      "bytes": 182,
+      "sha256": "4bfececb57e220b711e651634d9a547fa16253f46c125dee10022b52ac3e8518"
+    },
+    {
+      "path": "silent-preflight-results.json",
+      "bytes": 7760,
+      "sha256": "1780cb2633fa8298cf2a4241b2e0f3fa315df49d7834f3bdcbc4ea5947ff9d67"
+    },
+    {
+      "path": "silent-space-baseline.json",
+      "bytes": 312,
+      "sha256": "8eeb75b422a5c97554a4bd4502c6d6039f43ad2ec4da2c50eca0010db39c61c5"
+    },
+    {
+      "path": "silent-space-baseline.nsi",
+      "bytes": 272,
+      "sha256": "759b1fc3ad6e6e1de6aba35747a84c2927d2729051765bd1e02d915b0dd3e08d"
+    },
+    {
+      "path": "source-frozen35.json",
+      "bytes": 55448,
+      "sha256": "d5c79f502334838059d3fe9153739d746e7472a8005c7fe0c0dc4a3608c93fde"
+    },
+    {
+      "path": "target-space-dev35-build.log",
+      "bytes": 501,
+      "sha256": "2b63e889b649bb953714ff8fb5ef6d2882a3c7a3b3eef515ec2cbad9ba695e08"
+    },
+    {
+      "path": "target-space-dev35.nsi",
+      "bytes": 25250,
+      "sha256": "2f851f7d24cdc3eee39d0276c8e630b6415e202aaccd1ce24c7134f80bebf6da"
+    },
+    {
+      "path": "temp-space-dev35-build.log",
+      "bytes": 501,
+      "sha256": "2b63e889b649bb953714ff8fb5ef6d2882a3c7a3b3eef515ec2cbad9ba695e08"
+    },
+    {
+      "path": "temp-space-dev35.nsi",
+      "bytes": 25248,
+      "sha256": "3b12aee84335a57833dfe33050e2ac7a15d6a27ae5f1fe81aab18c49def74e58"
+    },
+    {
+      "path": "utils.nsh",
+      "bytes": 6753,
+      "sha256": "72cae7532ea22bd39b5433dfd8ac47975844defa916fc113880479dedfee54f6"
+    },
+    {
+      "path": "wrong-arch-dev35-build.log",
+      "bytes": 501,
+      "sha256": "2b63e889b649bb953714ff8fb5ef6d2882a3c7a3b3eef515ec2cbad9ba695e08"
+    },
+    {
+      "path": "wrong-arch-dev35.nsi",
+      "bytes": 25264,
+      "sha256": "68a5e169dc2bbbb87692a5529c1b76750a808c3b2ef705ee25cf31830d63573b"
+    }
+  ]
+}

@@ -1,0 +1,368 @@
+﻿{
+    "utc":  "2026-10-18T21:49:21.7923881Z",
+    "pid":  44200,
+    "window":  2624122,
+    "title":  "Tagma P0 S16 Acceptance Setup",
+    "elements":  [
+                     {
+                         "index":  0,
+                         "name":  "\u003c Back",
+                         "type":  "ControlType.Pane",
+                         "patterns":  [
+
+                                      ],
+                         "class":  "Button",
+                         "id":  "42,22810098",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  0,
+                         "rect":  [
+                                      1920,
+                                      1218,
+                                      75,
+                                      23
+                                  ]
+                     },
+                     {
+                         "index":  1,
+                         "name":  "Next \u003e",
+                         "type":  "ControlType.Pane",
+                         "patterns":  [
+
+                                      ],
+                         "class":  "Button",
+                         "id":  "42,17174348",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  0,
+                         "rect":  [
+                                      1995,
+                                      1218,
+                                      75,
+                                      23
+                                  ]
+                     },
+                     {
+                         "index":  2,
+                         "name":  "Cancel",
+                         "type":  "ControlType.Pane",
+                         "patterns":  [
+
+                                      ],
+                         "class":  "Button",
+                         "id":  "42,2361950",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  0,
+                         "rect":  [
+                                      2081,
+                                      1218,
+                                      75,
+                                      23
+                                  ]
+                     },
+                     {
+                         "index":  3,
+                         "name":  "",
+                         "type":  "ControlType.Pane",
+                         "patterns":  [
+
+                                      ],
+                         "class":  "Static",
+                         "id":  "42,4787836",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  null,
+                         "rect":  [
+                                      1679,
+                                      1205,
+                                      480,
+                                      2
+                                  ]
+                     },
+                     {
+                         "index":  4,
+                         "name":  "",
+                         "type":  "ControlType.Pane",
+                         "patterns":  [
+
+                                      ],
+                         "class":  "Static",
+                         "id":  "42,12521240",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  null,
+                         "rect":  [
+                                      1671,
+                                      948,
+                                      508,
+                                      2
+                                  ]
+                     },
+                     {
+                         "index":  5,
+                         "name":  "Nullsoft Install System v3.13 ",
+                         "type":  "ControlType.Pane",
+                         "patterns":  [
+
+                                      ],
+                         "class":  "Static",
+                         "id":  "42,787072",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  null,
+                         "rect":  [
+                                      1679,
+                                      1197,
+                                      483,
+                                      13
+                                  ]
+                     },
+                     {
+                         "index":  6,
+                         "name":  "Nullsoft Install System v3.13",
+                         "type":  "ControlType.Pane",
+                         "patterns":  [
+
+                                      ],
+                         "class":  "Static",
+                         "id":  "42,14026688",
+                         "enabled":  false,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  null,
+                         "rect":  [
+                                      1679,
+                                      1197,
+                                      483,
+                                      13
+                                  ]
+                     },
+                     {
+                         "index":  7,
+                         "name":  "",
+                         "type":  "ControlType.Pane",
+                         "patterns":  [
+
+                                      ],
+                         "class":  "Static",
+                         "id":  "42,1903362",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  null,
+                         "rect":  [
+                                      1671,
+                                      891,
+                                      498,
+                                      57
+                                  ]
+                     },
+                     {
+                         "index":  8,
+                         "name":  "Choose Install Location",
+                         "type":  "ControlType.Pane",
+                         "patterns":  [
+
+                                      ],
+                         "class":  "Static",
+                         "id":  "42,6818772",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  null,
+                         "rect":  [
+                                      1686,
+                                      899,
+                                      420,
+                                      16
+                                  ]
+                     },
+                     {
+                         "index":  9,
+                         "name":  "Choose the folder in which to install Tagma P0 S16 Acceptance.",
+                         "type":  "ControlType.Pane",
+                         "patterns":  [
+
+                                      ],
+                         "class":  "Static",
+                         "id":  "42,10095634",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  null,
+                         "rect":  [
+                                      1694,
+                                      917,
+                                      413,
+                                      26
+                                  ]
+                     },
+                     {
+                         "index":  10,
+                         "name":  "",
+                         "type":  "ControlType.Pane",
+                         "patterns":  [
+
+                                      ],
+                         "class":  "Static",
+                         "id":  "42,9703500",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  null,
+                         "rect":  [
+                                      2121,
+                                      904,
+                                      32,
+                                      32
+                                  ]
+                     },
+                     {
+                         "index":  11,
+                         "name":  "",
+                         "type":  "ControlType.Pane",
+                         "patterns":  [
+
+                                      ],
+                         "class":  "#32770",
+                         "id":  "42,1837620",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  null,
+                         "rect":  [
+                                      1694,
+                                      964,
+                                      450,
+                                      228
+                                  ]
+                     },
+                     {
+                         "index":  12,
+                         "name":  "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\install-p0s16",
+                         "type":  "ControlType.Pane",
+                         "patterns":  [
+
+                                      ],
+                         "class":  "Edit",
+                         "id":  "42,3867884",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  null,
+                         "rect":  [
+                                      1709,
+                                      1102,
+                                      315,
+                                      20
+                                  ]
+                     },
+                     {
+                         "index":  13,
+                         "name":  "Browse...",
+                         "type":  "ControlType.Pane",
+                         "patterns":  [
+
+                                      ],
+                         "class":  "Button",
+                         "id":  "42,12258072",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  0,
+                         "rect":  [
+                                      2036,
+                                      1099,
+                                      90,
+                                      24
+                                  ]
+                     },
+                     {
+                         "index":  14,
+                         "name":  "Space available: 33.6 GB",
+                         "type":  "ControlType.Pane",
+                         "patterns":  [
+
+                                      ],
+                         "class":  "Static",
+                         "id":  "42,16583230",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  null,
+                         "rect":  [
+                                      1694,
+                                      1167,
+                                      225,
+                                      13
+                                  ]
+                     },
+                     {
+                         "index":  15,
+                         "name":  "Space required: 29.0 MB",
+                         "type":  "ControlType.Pane",
+                         "patterns":  [
+
+                                      ],
+                         "class":  "Static",
+                         "id":  "42,16713468",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  null,
+                         "rect":  [
+                                      1694,
+                                      1151,
+                                      225,
+                                      13
+                                  ]
+                     },
+                     {
+                         "index":  16,
+                         "name":  "Setup will install Tagma P0 S16 Acceptance in the following folder. To install in a different folder, click Browse and select another folder. Click Next to continue.",
+                         "type":  "ControlType.Pane",
+                         "patterns":  [
+
+                                      ],
+                         "class":  "Static",
+                         "id":  "42,16844582",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  null,
+                         "rect":  [
+                                      1694,
+                                      964,
+                                      450,
+                                      98
+                                  ]
+                     },
+                     {
+                         "index":  17,
+                         "name":  "Destination Folder",
+                         "type":  "ControlType.Pane",
+                         "patterns":  [
+
+                                      ],
+                         "class":  "Button",
+                         "id":  "42,7801818",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  0,
+                         "rect":  [
+                                      1694,
+                                      1078,
+                                      450,
+                                      57
+                                  ]
+                     }
+                 ]
+}
