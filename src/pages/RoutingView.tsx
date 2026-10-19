@@ -91,15 +91,15 @@ function loadMetrics(): string[] {
 const GROUP_TEMPLATES: { title: string; desc: string }[] = [
   {
     title: "Hard to strong, easy to cheap",
-    desc: "A hard task goes to the strongest model, an easy one and compaction to a cheap one.",
+    desc: "A hard task goes to the strongest model, an easy one and compaction to a cheap one",
   },
   {
     title: "Cheap first",
-    desc: "A cheap model first; the strongest for high reasoning, or when the cheap ones fail.",
+    desc: "A cheap model first; the strongest for high reasoning, or when the cheap ones fail",
   },
   {
     title: "Never stuck",
-    desc: "The strongest model of each provider, each behind the other: one down doesn't stop the agent.",
+    desc: "The strongest model of each provider, each behind the other: one down doesn't stop the agent",
   },
 ];
 
@@ -2261,7 +2261,7 @@ export function RoutingView({ onStatus }: { onStatus?: (msg: string, kind?: stri
                         ? t("On: agents may pick {name}. Click to switch it off.", {
                             name: g.name || g.slug,
                           })
-                        : t("Off: agents aren't offered {name} and a request to it is turned away. Click to switch it on.", {
+                        : t("Off: agents aren't offered {name} and a request to it is turned away. Click to switch it on", {
                             name: g.name || g.slug,
                           })
                     }

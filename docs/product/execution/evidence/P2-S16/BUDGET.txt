@@ -1,0 +1,1 @@
+P2-S16 existing target/dependencies/isolate reused. Paired build peak <=0.8GiB; evidence <=5MiB; package <=10MiB; no new environment/worktree. Retain old runtime pairs and original signed public bundle.

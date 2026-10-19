@@ -1902,7 +1902,7 @@ const BUILTINS_DEFAULT: Builtin[] = [
   {
     id: "routing-strategies",
     name: "Routing strategies",
-    sub: "The routings besides Smart: In order, In turn, Least used first, Weekly pace, By weight, and Manual",
+    sub: "The routings besides Smart: In order, In turn, Least used first, Weekly pace and By weight",
     on: true,
   },
   {
@@ -2562,7 +2562,7 @@ export function PluginsView({
                               setPluginDetail(c);
                             }
                           }}>
-                          <PluginLogo kind={"kind" in c ? String(c.kind) : undefined} icon={"icon" in c ? String(c.icon) : undefined} />
+                          <PluginLogo kind={"kind" in c ? String(c.kind) : undefined} icon={"icon" in c && typeof c.icon === "string" ? c.icon : undefined} />
                           <div className="pm-words">
                             <div className="pm-name">
                               <b>{c.name}</b>
@@ -2623,7 +2623,7 @@ export function PluginsView({
                     const has = installed.some((x) => x.pkg === c.pkg);
                     return (
                       <div className={`pm-card${busy === c.pkg ? " installing" : ""}${has ? " has" : ""}`} key={c.pkg} tabIndex={0} role="button">
-                        <PluginLogo kind={"kind" in c ? String(c.kind) : undefined} icon={"icon" in c ? String(c.icon) : undefined} />
+                        <PluginLogo kind={"kind" in c ? String(c.kind) : undefined} icon={"icon" in c && typeof c.icon === "string" ? c.icon : undefined} />
                         <div className="pm-words">
                           <b>{c.name}</b>
                           {c.builtin ? <span className="pm-chip">{t("Also built in")}</span> : null}
@@ -2686,7 +2686,7 @@ export function PluginsView({
                         const has = installed.some((x) => x.pkg === c.pkg);
                         return (
                           <div className={`pm-card${busy === c.pkg ? " installing" : ""}${has ? " has" : ""}`} key={c.pkg} tabIndex={0} role="button">
-                            <PluginLogo kind={"kind" in c ? String(c.kind) : undefined} icon={"icon" in c ? String(c.icon) : undefined} />
+                            <PluginLogo kind={"kind" in c ? String(c.kind) : undefined} icon={"icon" in c && typeof c.icon === "string" ? c.icon : undefined} />
                             <div className="pm-words">
                               <b>{c.name}</b>
                               <p>{c.summary}</p>
@@ -2861,7 +2861,7 @@ export function PluginsView({
                     className={`row pm-row${e.off ? " off" : ""}`}
                     key={e.pkg}
                     title={`${e.name}${e.ver || ""}${e.kind || ""}`}>
-                    <PluginLogo kind={"kind" in e ? String(e.kind) : undefined} icon={"icon" in e ? String(e.icon) : undefined} />
+                    <PluginLogo kind={"kind" in e ? String(e.kind) : undefined} icon={"icon" in e && typeof e.icon === "string" ? e.icon : undefined} />
                     <div className="who">
                       <div className="name pm-name">
                         <span>{e.name}</span>
@@ -3294,7 +3294,7 @@ export function PluginsView({
           <div className="backdrop" onClick={() => setPluginDetail(null)} />
           <div className="dialog editor pm-detail">
             <div className="ehead pm-dhead">
-              <PluginLogo big kind={"kind" in pluginDetail ? String(pluginDetail.kind) : undefined} icon={"icon" in pluginDetail ? String(pluginDetail.icon) : undefined} />
+              <PluginLogo big kind={"kind" in pluginDetail ? String(pluginDetail.kind) : undefined} icon={"icon" in pluginDetail && typeof pluginDetail.icon === "string" ? pluginDetail.icon : undefined} />
               <div className="pm-who">
                 <div className="pm-name"><b>{pluginDetail.name}</b></div>
                 <div className="pm-by">

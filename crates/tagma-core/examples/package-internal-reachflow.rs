@@ -6,14 +6,33 @@ use std::{
     io::{Cursor, Write},
     path::PathBuf,
 };
-use tagma_core::packs::{MANIFEST_SIGNATURE_DOMAIN, PackManifest, SignedManifestRecord};
+use tagma_core::packs::{
+    MANIFEST_SIGNATURE_DOMAIN, PackManifest, PackTrustRoot, PackTrustStore, SignedManifestRecord,
+};
+
+#[derive(serde::Serialize, serde::Deserialize)]
+#[serde(deny_unknown_fields)]
+struct Root {
+    key_id: String,
+    publisher: String,
+    public_key: [u8; 32],
+    valid_from_ms: u64,
+    valid_until_ms: u64,
+}
+#[derive(serde::Deserialize)]
+#[serde(deny_unknown_fields)]
+struct Previous {
+    root: Root,
+    #[serde(default)]
+    previous_roots: Vec<Root>,
+    record: SignedManifestRecord,
+}
 
 fn main() {
     let args: Vec<_> = std::env::args_os().skip(1).collect();
-    assert_eq!(
-        args.len(),
-        2,
-        "binary path and new output directory required"
+    assert!(
+        (2..=3).contains(&args.len()),
+        "binary path, new output directory, optional trusted previous public catalogue"
     );
     let binary = std::fs::read(&args[0]).expect("read adapter");
     assert!(binary.len() < 24 * 1024 * 1024 && binary.starts_with(b"MZ"));
@@ -32,9 +51,53 @@ fn main() {
         .duration_since(std::time::UNIX_EPOCH)
         .unwrap()
         .as_millis() as u64;
+    // Explicit developer input only; these public roots become compile-time
+    // isolated-debug policy, never runtime-imported release trust.
+    let previous_roots = if let Some(path) = args.get(2) {
+        use std::io::Read;
+        let mut bytes = Vec::new();
+        std::fs::File::open(path)
+            .unwrap()
+            .take(400_001)
+            .read_to_end(&mut bytes)
+            .unwrap();
+        assert!(bytes.len() <= 400_000);
+        let previous: Previous = serde_json::from_slice(&bytes).unwrap();
+        let mut roots = previous.previous_roots;
+        roots.push(previous.root);
+        assert!(roots.len() <= 7);
+        let trust = PackTrustStore::new(
+            roots
+                .iter()
+                .map(|r| PackTrustRoot {
+                    key_id: r.key_id.clone(),
+                    publisher: r.publisher.clone(),
+                    public_key: r.public_key,
+                    valid_from_ms: r.valid_from_ms,
+                    valid_until_ms: r.valid_until_ms,
+                })
+                .collect(),
+        )
+        .unwrap();
+        let proof = trust
+            .verify_record(&previous.record, now)
+            .expect("previous public catalogue verifies");
+        assert_ne!(
+            proof.manifest().version,
+            env!("CARGO_PKG_VERSION"),
+            "never re-sign the same version"
+        );
+        roots
+    } else {
+        Vec::new()
+    };
     let mut seed = zeroize::Zeroizing::new([0u8; 32]);
     getrandom::fill(seed.as_mut()).expect("OS randomness");
     let key = SigningKey::from_bytes(&seed);
+    let key_id = format!(
+        "tagma-internal-{}",
+        &format!("{:x}", Sha256::digest(key.verifying_key().to_bytes()))[..16]
+    );
     let manifest = serde_json::json!({"contract_version":1,"id":"reachflow","version":env!("CARGO_PKG_VERSION"),
         "source":{"kind":"official","publisher":"tagma-internal"},"issued_ms":now-1000,"expires_ms":now+7*86400000u64,
         "artifacts":[{"target":{"os":"windows","arch":"x86_64"},"download":{"url":"https://internal.invalid/reachflow.zip","sha256":format!("{:x}",Sha256::digest(&archive)),"size_bytes":archive.len(),"format":"zip"},
@@ -48,7 +111,7 @@ fn main() {
     message.extend_from_slice(&raw);
     let record = SignedManifestRecord {
         record_version: 1,
-        key_id: "tagma-internal-local".into(),
+        key_id: key_id.clone(),
         manifest_utf8: String::from_utf8(raw).unwrap(),
         signature_hex: key
             .sign(&message)
@@ -57,8 +120,8 @@ fn main() {
             .map(|v| format!("{v:02x}"))
             .collect(),
     };
-    let catalogue = serde_json::json!({"root":{"key_id":"tagma-internal-local","publisher":"tagma-internal",
-        "public_key":key.verifying_key().to_bytes(),"valid_from_ms":now-2000,"valid_until_ms":now+7*86400000u64},"record":record});
+    let catalogue = serde_json::json!({"root":{"key_id":key_id,"publisher":"tagma-internal",
+        "public_key":key.verifying_key().to_bytes(),"valid_from_ms":now-2000,"valid_until_ms":now+7*86400000u64},"previous_roots":previous_roots,"record":record});
     std::fs::write(
         out.join("internal-pack.json"),
         serde_json::to_vec_pretty(&catalogue).unwrap(),

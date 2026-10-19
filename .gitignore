@@ -34,3 +34,6 @@ acceptance-shots/
 /dist-tagma/
 /src-tauri/gen/
 /src-tauri/binaries/
+
+# Local retained deliveries, preview data and closeout recovery material
+/.local-retained/

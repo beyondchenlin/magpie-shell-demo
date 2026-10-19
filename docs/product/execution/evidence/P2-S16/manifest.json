@@ -1,0 +1,112 @@
+{
+  "hashScope": "Original cache bytes; Git text normalization may change archived text bytes",
+  "candidate": "dev44r7",
+  "status": "STOPPED; partial native acceptance only; see HANDOFF-STOP-2026-10-19-P2-S16.md",
+  "files": [
+    {
+      "name": "BUDGET.txt",
+      "bytes": 204,
+      "sha256": "BA1BD76F2056A603017C0169082B9414303B4D534E5886EBCD106B4B83230256"
+    },
+    {
+      "name": "Control.ps1",
+      "bytes": 30178,
+      "sha256": "92871BE07F800B15EA48B7FC8813D20B7D297A754CEC0682BA8E231CB1CB4C99"
+    },
+    {
+      "name": "Run.ps1",
+      "bytes": 2053,
+      "sha256": "EE768FD2D1E5B5A4BC8934D9A0623FCE1058639FF11D7C8B3C636113B8A8DD6E"
+    },
+    {
+      "name": "Launch.ps1",
+      "bytes": 418,
+      "sha256": "4EE629DA7F8C5A99B9BCDE7D6DEF5AF7EAC81BB0B7F526784D73104A5BAF5E1F"
+    },
+    {
+      "name": "source-frozen.json",
+      "bytes": 60307,
+      "sha256": "CC376179E1DACFC7D845B8DBF0A7E6E61298D951BE9B23077AB92B0D64EBAB60"
+    },
+    {
+      "name": "source-check.json",
+      "bytes": 83,
+      "sha256": "6041D0F74E7D0660AD8E2A6C3632235870D4A9EE6136585EAA4078EB951C6A6E"
+    },
+    {
+      "name": "binaries-built.json",
+      "bytes": 251,
+      "sha256": "E8C87B12C075F3DC901A25BA853109576E6B81544A394F314BF26C97B4F288AB"
+    },
+    {
+      "name": "03-update-review.json",
+      "bytes": 114234,
+      "sha256": "A909D8C0263E1D5A3CCA9B56079C8E3CB8FCC8559B6D5075382C029F63BE777D"
+    },
+    {
+      "name": "05-cancel-update.json",
+      "bytes": 81216,
+      "sha256": "9E5EC7FAE819E49FC60C7B18F3B0B90F48CBD96A30D7870C35E0F2C1F7DDFD4B"
+    },
+    {
+      "name": "09-updated-ready.json",
+      "bytes": 81193,
+      "sha256": "A858C333E7A92E1B37DD48BA109A9BDF08E4E161CC35CF855222FFFACF171C82"
+    },
+    {
+      "name": "11-both-versions.json",
+      "bytes": 92238,
+      "sha256": "5C67B8D56E85BB95B76859010097AFD922151FFD98873272E2B6DAD3DEC3EF32"
+    },
+    {
+      "name": "12-reactivate-pinned-old.json",
+      "bytes": 92238,
+      "sha256": "84D2FFAEF608ADC45B63F1E1D4BF9A3638BDD70C4241D78858BCF501F79E66A2"
+    },
+    {
+      "name": "17-old-result-content.json",
+      "bytes": 107114,
+      "sha256": "18DF12AA36BCA5264913E3292BEF9567CD4D1F9E57308DA0BF5D013E9E9F7307"
+    },
+    {
+      "name": "19-restore-new-active.json",
+      "bytes": 92235,
+      "sha256": "552B26382D2B9D3A0E3B6D659A43ED32B1AD0770B17777382225EC780756569E"
+    },
+    {
+      "name": "20-chat.json",
+      "bytes": 43325,
+      "sha256": "BDC63131C8AAD27147A1F694F49CC3B9F1A6AEBC8E718A09318F0215F0522C6C"
+    },
+    {
+      "name": "21-models.json",
+      "bytes": 92280,
+      "sha256": "8FD9110CA00052C40CECE8BF55ECC60EFF637721C0540AB187B38D2564AE74BE"
+    },
+    {
+      "name": "native-both-versions.png",
+      "bytes": 47638,
+      "sha256": "117E80302792FA59733D582C35D3910E71CB549708954A6D413A870A6AB450B6"
+    },
+    {
+      "name": "frontend.log",
+      "bytes": 478,
+      "sha256": "5DC4E06BC77DC905465A619756E4E19DA5AD83A90118CBEAFDF74B1E19B89A90"
+    },
+    {
+      "name": "build.log",
+      "bytes": 1191,
+      "sha256": "5B08E92B00143F4977A648D6CB177FE9999D459D8312E7B1090B4187660FDC3A"
+    },
+    {
+      "name": "clippy.log",
+      "bytes": 1108,
+      "sha256": "849B15788FAA54388B8182DF48D276BE843E419D246E739F30EED44516A73659"
+    },
+    {
+      "name": "package.log",
+      "bytes": 1305,
+      "sha256": "B4F75FD6551A0D0BB6B6932947AB69A5B10279D64D269F0C83B27F42D78318DD"
+    }
+  ]
+}

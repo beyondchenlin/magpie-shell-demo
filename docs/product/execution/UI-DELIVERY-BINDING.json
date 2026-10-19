@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "project_path": "D:/demo1/tagmaai",
+  "project_id": "9f7aec42-d97b-4f97-9f93-63c416725391",
+  "supervisor_thread_id": "01a1528f-44bf-7793-9e2c-da9bb8bb10b3",
+  "executor_thread_id": "01a14dd1-e3e8-7ab0-ba3a-0185e09788c1",
+  "executor_title": "修复 TagmaAI P0 问题",
+  "previous_executor_thread_id": "01a152a3-e869-7132-8aff-eb7d2da0cee6",
+  "host_id": "local",
+  "automation_id": "tagma-prd",
+  "automation_status": "PAUSED",
+  "interval_minutes": 30,
+  "verified_at": "2026-10-19T17:22:34.4740093+08:00",
+  "handoff_status": "development_stopped_user_requested_git_closeout",
+  "plan": "UI-DELIVERY-PLAN-2026-10-19.md",
+  "legacy_binding": "RUN-BINDING.json remains historical PAUSED; this binding governs the reconfigured tagma-prd automation",
+  "authorization": "Latest user: stop all project schedules and code development; consolidate, commit, push and clean project into one workspace with compatibility links.",
+  "observed_current_executor_thread_id": "01a14dd1-e3e8-7ab0-ba3a-0185e09788c1"
+}

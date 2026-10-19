@@ -1,0 +1,416 @@
+{
+  "schema_version": 1,
+  "last_checked_at": "2026-10-18T03:56:29.8386767Z",
+  "executor_status": "idle;documented capture recovery exhausted;pending one human full-host restart diagnostic",
+  "stage": "P0 frontend native acceptanceblocked;dev17 startup compatibility fix retained",
+  "head": "7485c244e1b59a14531fadab3c0ca5564d482822",
+  "branch": "codex/tagma-p0",
+  "cursor": "4b6429f1-9180-4676-97ee-fb70ee90f0aa:2",
+  "progress": "Read latest diagnostic launcherAudit and original launcher source:GUI PE2,CREATE_NO_WINDOW only,no hide/timeout/kill;not evidence launcher hides GUI. Window disappears after capture timeout while processresponds;exact cause remainsunknown. No further screenshot/input/reconnect attempted.",
+  "verified": [
+    "Independent source audit: historical7f5c5fb exact3 table definitions match fixture and strict legacy recognizer. Only schema1/application_id0 exact closed JSON/schema accepted;backup verified before transactional identity/schema change;unknown/damaged paths still fail. No user database migration executed by agents.",
+    "Saved before:historical schema1 fail INCOMPATIBLE while schema3/fresh pass. After startup3pass,negative9variants byte-preserved1pass,real process exit93/94 resumes schema10/raw snapshots/identity preserved;config10pass/initialization6pass and savedClippy Finish. Original failed negative retained then corrected dedicated test passes.",
+    "Read HOTFIX-S01-native-ui original accessibility evidence from unique isolated temp path/title/window658154:ready workspace/gateway57772 Running/config saved0/effective0,no incompatible or loading. This is executor-collected real native evidence,not supervisor independent UI act. CRUD/navigation/restart/drag/screenshots NOT accepted.",
+    "Readonly installer check:dev17,6629799bytes,SHA256155C0F26FF3D5617867CA6DDCC6C1D1FCBF316AB33A241184C597DBCF022CC0C,build Exit0,NSIS exacthost+sidecar inputs. Unsigned debug;no installer executed."
+  ],
+  "acceptance_passed": [],
+  "blocked_dependencies": [
+    "ComputerUse capture/input failure root cause not established;frontend acceptanceblocked. Independent dev17 artifact/status and launcher diagnostic closure remain possible,so not overallblocked/autopause."
+  ],
+  "consecutive_no_progress": 1,
+  "consecutive_same_external_block": 2,
+  "messages": [
+    {
+      "at": "2026-10-17T05:40:08.118Z",
+      "topic": "Registry TLS error: use one diagnostic or trustworthy alternate version source, no repetitive searches/TLS bypass",
+      "status": "sent",
+      "response": "closed: sparse TLS connectivity and actual Cargo build succeeded; search API root cause only partially localized",
+      "repeat_count": 1
+    },
+    {
+      "at": "2026-10-17T06:10:01.7647184Z",
+      "response": "closed within original test scopes, SUP-004 follow-up distinct",
+      "topic": "P0 review: concurrent apply rollback/stopping race and initial database crash recovery",
+      "status": "sent",
+      "repeat_count": 1
+    },
+    {
+      "status": "sent",
+      "response": "closed Windows debug: GUI subsystem, native console=false, launcher only Tagma",
+      "topic": "User requirement: no console window on desktop launch or sidecar startup/restart; debug installer host subsystem suspected",
+      "repeat_count": 1,
+      "at": "2026-10-17T06:16:43.4518885Z"
+    },
+    {
+      "status": "sent",
+      "at": "2026-10-17T06:39:51.1528708Z",
+      "repeat_count": 1,
+      "topic": "Accept scoped S02 fixes; request SUP-004 atomic intent publication and reconcile stale status",
+      "response": "closed: SUP-004 atomic publication + native guarded recovery; stale status claims corrected"
+    },
+    {
+      "at": "2026-10-17T07:33:10.8643014Z",
+      "topic": "User wants latest visible preview after test uninstall removed app entry; executor to create retained runnable preview and open it",
+      "status": "sent",
+      "response": "completed: visible Tagma preview, persistent isolated data, stable desktop shortcut; do not remove or terminate for tests",
+      "repeat_count": 1
+    },
+    {
+      "response": "acknowledged: real native chat delivered; execution active with newest CIS correction",
+      "topic": "Sync direct user priorities and correct premature stop after preview; continue actual chat slice with honest P1 pending scope",
+      "repeat_count": 1,
+      "status": "sent",
+      "at": "2026-10-17T08:10:25.604316Z"
+    },
+    {
+      "repeat_count": 1,
+      "at": "2026-10-17T08:41:45.3195124Z",
+      "message_id": "tool returned threadId only",
+      "status": "sent",
+      "response": "addressed for sampled scope: source-reference screenshots, two concrete visual self-reviews and final CIS14 evidence; retained-preview dev8 delivery still in progress",
+      "topic": "User CIS fidelity correction: baseline screenshot comparison, two visual self-reviews, preserve real functionality and live user preview"
+    },
+    {
+      "at": "2026-10-17T09:47:08.9604586Z",
+      "status": "sent",
+      "response": "Executor recent state read completed; supervisor independently reconnected window12914176 and read accessibility successfully",
+      "repeat_count": 1,
+      "topic": "User explicitly asks to reopen Computer Use; re-enumerate installed Tagma and rebind, verify available channels"
+    },
+    {
+      "status": "sent",
+      "at": "2026-10-17T10:02:05.3111317Z",
+      "repeat_count": 1,
+      "topic": "User revoked computer control; immediate stop requested to executor, preserve current application state",
+      "response": "acknowledged in EXECUTION-STATUS.md and commit92fed3a; continued only non-UI core work observed"
+    },
+    {
+      "status": "sent",
+      "at": "2026-10-17T10:39:43.6286561Z",
+      "message_id": "tool returned threadId only",
+      "repeat_count": 1,
+      "response": "SUP-005 reproduced and fixed; scoped closure verified; D-space warning acknowledged with bounded less-than0.3GiB reuse plan",
+      "topic": "SUP-005 intermediate truncation/termination validation + D below20GiB warning"
+    },
+    {
+      "topic": "SUP-006 capture event time before queueing; deterministic TTL expiry and ordering tests",
+      "status": "sent",
+      "repeat_count": 1,
+      "response": "addressed: raw deterministic failure and fix evidence verified, time/ordering/independent scope merging implemented",
+      "at": "2026-10-17T11:41:45.1727456Z"
+    },
+    {
+      "at": "2026-10-17T12:42:13.830129Z",
+      "repeat_count": 1,
+      "response": "acknowledged and active: actual first_cloud HTTP test, core tests and gateway regression now pass; no duplicate continuation needed",
+      "status": "sent",
+      "topic": "Resume first_cloud non-UI integration after drag-status answer ended executor turn",
+      "message_id": "tool returned threadId only"
+    },
+    {
+      "repeat_count": 1,
+      "topic": "Continue PROV-02/04 detection/catalog and bounded non-billable recheck after S08 delivery",
+      "status": "sent",
+      "at": "2026-10-17T13:40:03.7153335Z",
+      "response": "acknowledged; active S09 implementation and initial real local HTTP evidence observed, no duplicate needed",
+      "message_id": "tool returned threadId only"
+    },
+    {
+      "repeat_count": 1,
+      "topic": "SUP007 deterministically pause after check/before send, revoke(false)+ack then release; assert0 upstream, preserve already-dispatched behavior",
+      "message_id": "tool returned threadId only",
+      "response": "addressed: deterministic reproduction and shared barrier fix; scoped supervisor verification completed",
+      "at": "2026-10-17T16:09:58.2842065Z",
+      "status": "sent"
+    },
+    {
+      "message_id": "tool returned threadId only",
+      "topic": "Resume S11 actual gateway usage integration after drag-status turn ended; durable admission/failure-zero-dispatch and bounded result recovery",
+      "repeat_count": 1,
+      "response": "acknowledged and active S12; real HTTP evidence and ACK race self-review observed, no repeat continuation",
+      "status": "sent",
+      "at": "2026-10-17T17:41:36.5696588Z"
+    },
+    {
+      "response": "addressed: SUP008 reproduced and fixed in69c615f; subsequentfd39e96 preserves recovery matrix and extends same boundary to security confirmation; no repeat needed",
+      "repeat_count": 1,
+      "topic": "SUP008 recovery status must not ignore operation error or missing/nonzero pending; deterministic response and optional timeout race test",
+      "message_id": "tool returned threadId only",
+      "at": "2026-10-17T18:40:58.8754462Z",
+      "status": "sent"
+    },
+    {
+      "status": "sent",
+      "at": "2026-10-17T21:40:09.3277291Z",
+      "message_id": "tool returned threadId only",
+      "repeat_count": 1,
+      "response": "acknowledged in S26 space-review and S27/S28 status: D below10GiB, >1GiB work paused, reused bounded target; S28 disk delta0.09GiB exceeds0.06 estimate disclosed, no further broad compilation",
+      "topic": "D disk first below10GiB at9.93:refresh plan,pause >1GiB growth,keep bounded work and never retry denied cleanup"
+    },
+    {
+      "at": "2026-10-17T23:10:14.8871917Z",
+      "status": "sent",
+      "topic": "Resume GW05/06 A10 incomplete/drip request-body deadline and slot release verification after S31; preserve computer prohibition",
+      "response": "acknowledged and implemented S32 with raw before/final TCP evidence; executor active on independent P2 core work, no repeat continuation needed",
+      "message_id": "tool returned threadId only",
+      "repeat_count": 1
+    },
+    {
+      "repeat_count": 1,
+      "response": "pending; do not resend without checking",
+      "topic": "Resume interrupted S07 using existing14pass/Clippy results; close evidence/status then next PACK04 health/activation lifecycle slice",
+      "message_id": "tool returned threadId only",
+      "at": "2026-10-18T02:13:38.2127712Z",
+      "status": "sent"
+    },
+    {
+      "status": "sent",
+      "at": "2026-10-18T02:14:20.1440214Z",
+      "topic": "Direct user request: build latest Windows NSIS exe for self-install; delete exactly3 identified desktop shortcuts after package verification",
+      "response": "pending executor build/packaging and three-shortcut deletion; no duplicate instruction",
+      "repeat_count": 1,
+      "message_id": "tool returned threadId only"
+    },
+    {
+      "message_id": "tool returned threadId only",
+      "response": "pending",
+      "topic": "SUP009 user screenshot startup compatibility failure; priority isolated upgrade/startup diagnosis and repair before P2 expansion",
+      "repeat_count": 1,
+      "status": "sent",
+      "at": "2026-10-18T02:36:37.0229513Z"
+    },
+    {
+      "status": "sent",
+      "response": "active;historical schema1/appID0 fixture created,installed dev16 attribution claimed;supervisor will independently review raw evidence",
+      "message_id": "tool returned threadId only",
+      "repeat_count": 1,
+      "at": "2026-10-18T02:42:12.2471632Z",
+      "topic": "User explicit renewed SUP009 repair/data retention/replacement installer and sequential PRD frontend acceptance"
+    },
+    {
+      "topic": "Resume interrupted HOTFIX with explicit limited isolated Tagma Computer Use authorization",
+      "status": "sent",
+      "at": "2026-10-18T03:05:00.906164Z",
+      "message_id": "tool returned threadId only",
+      "repeat_count": 1,
+      "response": "pending"
+    },
+    {
+      "response": "active;do not duplicate window input",
+      "message_id": "tool returned threadId only",
+      "topic": "Human resumes bounded CUA repair/frontend acceptance;shared readonly display/session diagnostics",
+      "repeat_count": 1,
+      "status": "sent",
+      "at": "2026-10-18T03:22:02.6142906Z"
+    },
+    {
+      "at": "2026-10-18T03:50:11.7848289Z",
+      "response": "pending",
+      "message_id": "tool returned threadId only",
+      "topic": "Resume only concrete non-UI dev17 delivery/status closure and readonly launcher hidden-window hypothesis;no repeated UI recovery",
+      "status": "sent",
+      "repeat_count": 1
+    }
+  ],
+  "next_check": [
+    "Await user已重开;do not auto resume unchanged input failure",
+    "After actual host restart,one fresh isolated-window capture to separate client-session from Tagma cause",
+    "If recovered,actual add/save/page/restart UI acceptance;all P0/P1/P2/P3 exits remainunpassed until evidence"
+  ],
+  "disk_snapshot_gib": {
+    "source": "Readonly actual snapshot; free-space rebound source unknown, no task cleanup credit",
+    "C": 46.85,
+    "D": 37.86
+  },
+  "limitations": "No new frontend accepted. Launcher-hide hypothesis ruled unsupported;root causeundetermined. User manual host restart is the next bounded diagnostic,not a guarantee. No product files/dependencies/Git/user data modified by supervisor.",
+  "findings": [
+    {
+      "evidence": "gateway apply loads before status lock and unconditionally replaces revision; periodic and command paths concurrent",
+      "id": "SUP-001",
+      "requirement": "DATA-02/A02",
+      "status": "closed for reported path: static apply serialization/stop guards plus raw four-test pass evidence"
+    },
+    {
+      "evidence": "ConfigService open rejects existing schema=0 after first-create interruption",
+      "id": "SUP-002",
+      "requirement": "DATA-03/04 A03",
+      "status": "closed for original database-create crash; intent publication edge tracked separately SUP-004"
+    },
+    {
+      "status": "verified Windows debug scope: PE GUI independent read plus installed native/launcher evidence; no full OS flash recording or other-platform claim",
+      "id": "SUP-003",
+      "requirement": "User request 2026-10-17: default background gateway / no black console",
+      "evidence": "Desktop windows_subsystem only enabled outside debug_assertions; current installer debug. Managed gateway already CREATE_NO_WINDOW. Actual visible process attribution not yet verified."
+    },
+    {
+      "status": "closed scoped: unique temporary + sync + no-replace publish; three real child-exit points and guarded corrupt-record recovery verified by code and executor raw output",
+      "evidence": "Final intent JSON file is create_new then write_all/sync_all; interruption can leave canonical marker empty or partial, then next ensure rejects JSON",
+      "id": "SUP-004",
+      "requirement": "DATA-03/04 initialization recovery"
+    },
+    {
+      "evidence": "http_api forward validates string content and no tool_calls; intermediate consumer accepts any nonempty text regardless of finish_reason",
+      "status": "closed for reported path: independent source and saved before/final raw evidence checked;17 cases block downstream; no supervisor rerun",
+      "requirement": "TEAM-05 failure/unknown outcome must not become success",
+      "id": "SUP-005"
+    },
+    {
+      "requirement": "TEAM-03 actual health freshness five-minute expiry",
+      "status": "closed scoped: independent static chain and saved failing/passing deterministic delayed-drain evidence verified; automatic brain integration not accepted",
+      "id": "SUP-006",
+      "evidence": "Tracker.pending stores only HealthObservation; drain calls record_runtime_health which timestamps now_ms during write"
+    },
+    {
+      "id": "SUP-007",
+      "status": "closed scoped: independent source and raw deterministic before/final-barrier plus inflight regression reviewed; A27 pending",
+      "requirement": "DATA-06/A27 revoke confirmation forbids new dispatch",
+      "evidence": "Shared dispatch mutex spans policy admission and initial HTTP-send poll; confirm uses same mutex. Before first/next each1/status200; final each0/status403; admitted request finishes and next403."
+    },
+    {
+      "evidence": "Old contradictory response accepted; explicit typed operation result now required, failures preserved across later healthy snapshots; current-instance pending0 health and operation validation; S14 recovery regression retained",
+      "id": "SUP-008",
+      "status": "closed scoped: before failure and final privateIPC matrix, bounded late-writer race plus source operation/result chain independently checked",
+      "requirement": "OBS-06/A28 explicit usage recovery confirmation"
+    },
+    {
+      "status": "scoped fix verified in historical/fresh/real-crash fixtures and saved native initial startup evidence;dev17 ready,actual user upgrade and complete frontend interactions pending",
+      "evidence": "Root cause confirmed installed dev16 matches package but default originalschema1/application_id0 rejected;strict historical recognizer+backup-backed migration now passes. Native isolated ready state recorded;no agent writes to user DB.",
+      "requirement": "A01/A02/A23 DATA04 REL03 latest user installer startup compatibility",
+      "id": "SUP-009"
+    }
+  ],
+  "source_fingerprints": [
+    {
+      "Path": "D:\\demo1\\tagmaai\\crates\\tagma-core\\src\\packs\\trust.rs",
+      "Hash": "92FF69188F797540DECFD5008BA12811691F876944762C977766E52BC8CEA6B1"
+    },
+    {
+      "Path": "D:\\demo1\\tagmaai\\crates\\tagma-core\\src\\packs\\prepared.rs",
+      "Hash": "654002E80DDFA287C412DF9A858E23FFB8C292FAF7032D8C781FBDF40408A8AE"
+    },
+    {
+      "Path": "D:\\demo1\\tagmaai\\crates\\tagma-core\\src\\packs\\archive_tests.rs",
+      "Hash": "AE45A8AD5715412640A0B673D24DEB3F1882C344E99F030EA1393C88B9D4EED9"
+    }
+  ],
+  "user_preview": {
+    "old_uninstall": "P0-S02 explicit test uninstall, default user config preserved",
+    "status": "Do not inspect or manipulate user app; preserve installed dev.9 and user data",
+    "old_installer_issue": "Retracted: mixed formatted output misread; direct FileInfo confirms intact ~4.6MB packages and dev.3 recorded hash matches. No repair required.",
+    "retention": "Preserve user-facing preview binaries/config/entry; do not remove with test fixture cleanup or stop for build locks",
+    "requested": true,
+    "path": "D:/demo1/tagmaai-preview",
+    "entry": "D:/demo1/tagmaai-preview/打开Tagma预览.lnk",
+    "version": "dev.9 installed per historical S06 evidence; no live window or process observation this wake"
+  },
+  "user_steering": {
+    "source": "Direct user messages read from executor thread, turns 01a1485d-45fa-7852-a7ba-cf57b054ba71 and 01a148e0-55de-75b2-8133-8b19607e2c24",
+    "gates": "Preserve unresolved P0/P1 acceptance, no fake upstream or unsupported protocol claims",
+    "priority": "Continue authorized implementation and non-UI verification; computer control prohibited until explicit renewed authorization",
+    "appearance": {
+      "source": "direct executor user message 01a148f5-7697-7161-b65a-4c040856e127",
+      "status": "sampled layout correction verified; no full-page pixel-equivalence or complete A06 acceptance",
+      "priority": "Restore prior one-to-one CIS layout before progressing next feature; CSS guards alone insufficient"
+    },
+    "latest": {
+      "authorization": "Explicit reinstall supersedes prior no-close old-preview constraint for this requested update; preserve data",
+      "source": "direct user messages 01a14927-ee14-70d3-ac44-e643420a476d and 01a14930-d233-7232-8ec2-fbcab49a4390",
+      "priority": "Remove previous installed version, reinstall latest and show effect; fix inability to freely drag window"
+    },
+    "current_delivery": {
+      "scope": "Executor builds/packages and deletes only3 exact .lnk after newEXE verification; no app uninstall/user-data deletion/desktop control",
+      "status": "dev17 startup hotfix available;do not recommend previous dev16. Isolated old-format migration ready;user actual data kept separate/unmodified by agent.",
+      "shortcuts": [
+        "C:/Users/ai/Desktop/Tagma dev.5 预览.lnk",
+        "C:/Users/ai/Desktop/Tagma 最新预览.lnk",
+        "C:/Users/ai/Desktop/Tagma.lnk"
+      ],
+      "requested_at": "2026-10-18T02:14:20.1440214Z",
+      "request": "Generate latest installable EXE for user installation; remove screenshot3 old Tagma desktop shortcuts",
+      "shortcut_removal": {
+        "at": "2026-10-18T02:23:35.3252418Z",
+        "files": [
+          {
+            "path": "C:\\Users\\ai\\Desktop\\Tagma dev.5 预览.lnk",
+            "sha256": "9DA8D113634FCCA16269357D1334CEC5178F81ACA885A9C7B153D9AD2AE4C6D9",
+            "removed": true,
+            "bytes": 1357
+          },
+          {
+            "path": "C:\\Users\\ai\\Desktop\\Tagma 最新预览.lnk",
+            "sha256": "50D08CF3925F6AC0B966D540545D71A3822E99FA4F94C9F298131D77873F70E9",
+            "removed": true,
+            "bytes": 2015
+          },
+          {
+            "path": "C:\\Users\\ai\\Desktop\\Tagma.lnk",
+            "sha256": "6B09CB62E71678F9FC02F92DEFB20729742B1C8B858FFAD3754BF9AA1D130CD2",
+            "removed": true,
+            "bytes": 2100
+          }
+        ],
+        "authorization": "Direct user requested deletion of exactly3 old Tagma desktop icons from attached image",
+        "scope": "Only3 regular .lnk files,nonrecursive; no application binaries/data/credentials removed"
+      },
+      "installer": {
+        "version": "0.2.0-dev.16",
+        "sha256": "2987FCB829182878F2CE62D6878043C898697C052B3538B5E538981F3AB75C72",
+        "bytes": 6614234,
+        "path": "D:\\demo1\\tagmaai\\target\\debug\\bundle\\nsis\\Tagma_0.2.0-dev.16_x64-setup.exe",
+        "build_exit": 0,
+        "kind": "Windows x64 NSIS debug unsigned preview",
+        "validation": "Supervisor read actual build log/result,nsi exact File inputs,7z package listing;two source sidecar hashes identical; no UI/installer executed"
+      },
+      "corrected_installer": {
+        "sha256": "155C0F26FF3D5617867CA6DDCC6C1D1FCBF316AB33A241184C597DBCF022CC0C",
+        "path": "D:/demo1/tagmaai/target/debug/bundle/nsis/Tagma_0.2.0-dev.17_x64-setup.exe",
+        "version": "0.2.0-dev.17",
+        "bytes": 6629799,
+        "status": "Built/read-only verified;user self-install. Native initial readiness proven in isolated fixture;full UI not yet accepted."
+      }
+    },
+    "current_priority": {
+      "request": "Fix version incompatibility first,preserve all user data,deliver usable corrected installer;then PRD phase gates sequentially including actual usable frontend",
+      "instruction": "No P2 expansion until P0 exits;frontend source/backend unit passes do not replace actual interaction;previous computer-control prohibition persists",
+      "automation": "tagma-prd ACTIVE prompt amended through automation_update preserving latest fields/30min schedule",
+      "at": "2026-10-18T02:42:12.2471632Z"
+    }
+  },
+  "previous_check": {
+    "at": "2026-10-18T03:15:11.6238459Z",
+    "head": "7485c244e1b59a14531fadab3c0ca5564d482822",
+    "progress": "Historical owner0/schema1 exact format now recognized before backup-backed migration;source/raw fail-pass and true crash recovery audited. dev17 installer built;isolated native startup evidence shows gateway57772/config rev0 without incompatible/loading. Input/screenshot infrastructure failed; user then directed executor to keep connection only."
+  },
+  "failure_signatures": [
+    {
+      "signature": "ComputerUse FrameArrived/capturetimeout;two elementclicks coordinate input geometry unavailable;keyboard no observed page/focus progression",
+      "status": "Bounded reconnect attempted;no UI success invented;user then requests connection only",
+      "repeat_count": 2
+    }
+  ],
+  "computer_control": {
+    "scope": "Click/type/screenshot/restart only dedicated Tagma test windows with isolated data/WebView/port. User actual windows/data/installers not authorized.",
+    "status": "AUTHORIZED_ONLY_ISOLATED_TAGMA_TEST",
+    "coordination": "Executor prepares/runs tests then hands off unique window; supervisor independent check sequentially",
+    "authorization": "User answered async question:允许，仅操作隔离测试版 Tagma;then继续",
+    "current_hold": {
+      "scope": "No repeated reconnect,launch,capture,input until user reports host restarted. Do not auto-wake executor while awaiting this response.",
+      "status": "WAITING_FOR_HOST_RESTART_DIAGNOSTIC"
+    }
+  },
+  "dirty_fingerprint": "DF6C2F14761DFD43BDF0C1362CABF2E6730D4F1DBC746DCC8C31510331656F3D",
+  "observation_gaps": "Last persisted check00:42:55Z. Partial reads around01:08Z were not completed/persisted; later heartbeat arrivals are not counted as separate successful checks. Current check uses actual02:09Z+ observations; no inferred offline-period verification.",
+  "dirty_summary": "Inherited CIS dirty retained; P2-S07 prepared.rs/archive_tests.rs +215 lines and new bounded evidence files, not yet committed at snapshot. Fingerprint tracks diff HEAD, excludes untracked.",
+  "retained_test_fixture": {
+    "cleanup": "Do not remove while active/held;executor owns eventual safe cleanup. No newworktree/environment.",
+    "root": "C:/Users/ai/AppData/Local/Temp/tagma-hotfix-s01-d01972fd-b495-478e-8b54-af7eedbbfe47",
+    "purpose": "Isolated dev17 native startup data/WebView/executables,active test window,user wants connection retained"
+  },
+  "awaiting_user": {
+    "action": "Fully quit and reopen Codex desktop host once,return to this same supervisor chat and reply已重开",
+    "on_resume": "One fresh returned-window screenshot check on isolated Tagma,then input only if capture/binding valid. If fails,do not loop;collect distinct result and next isolated experiment.",
+    "reason": "Need distinguish stale host capture session from Tagma window lifecycle;no supported host restart tool. This is a diagnostic,not a verified cure.",
+    "requested_at": "2026-10-18T03:56:29.8386767Z",
+    "preserve": "Do not uninstall/reinstall/reset Tagma or touch user data. Existing dev17 EXE,source,evidence and owned fixture retained."
+  }
+}

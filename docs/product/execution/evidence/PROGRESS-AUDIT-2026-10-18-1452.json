@@ -1,0 +1,58 @@
+{
+  "recordedAt": "2026-10-18T14:52:21+08:00",
+  "sourceHead": "e5977537a5d2c26d74e5da03b21714f4cd9ee1b8",
+  "scope": "Progress inspection; existing selective checks; no native UI or real user database access",
+  "automationIds": [
+    {
+      "id": "tagma-prd",
+      "status": "PAUSED"
+    },
+    {
+      "id": "magpie-cis",
+      "status": "PAUSED"
+    }
+  ],
+  "windowsTaskMatches": 0,
+  "sourceUiAndGuards": {
+    "status": "fulfilled",
+    "value": {
+      "chunk_id": "580bab",
+      "wall_time_seconds": 1.3433564,
+      "exit_code": 0,
+      "original_token_count": 960,
+      "output": "✔ UTC inclusive dates, leap dates, max span and strict filters (1.1063ms)\n✔ decimal precision, known zero, unknown and out-of-Date-range timestamps (0.1807ms)\n✔ sequential single-reader calls; duplicate clicks ignored; cursor pins applied selection (0.7576ms)\n✔ query failure clears prior result, and errors never silently broaden summary (0.2941ms)\n✔ disposed query and detail cannot repopulate cache or launch next stage (0.1706ms)\n✔ clear generations cannot mix cached totals/requests; fresh detail invalidates older list (0.1935ms)\n✔ source rendering uses CIS rows; precise unknown/zero, absent store and detail identity (12.6327ms)\n✔ clear intent is saved before native call; own-clear invalidation drops late query and raises durable floor (0.9442ms)\n✔ failed intent persistence sends no clear; malformed state is preserved and refuses mutation (0.613ms)\n✔ saved pending clear survives unmount and retries the exact plan after receipt persistence fails (0.4464ms)\n✔ late disposed clear reply cannot erase a newer pending operation or lower its floor (0.4116ms)\n✔ explicit leave/recovery sends no new clear and keeps the unknown outcome visible (0.2402ms)\n✔ invalid clear receipts cannot confirm or release pending state (0.3003ms)\n✔ context namespaces and exact large-generation floors reject foreign/old reads without fake zero (0.2286ms)\n✔ clear source rendering exposes exact range/counts and explicit uncertainty, with CIS controls (4.7993ms)\n✔ budget drafts preserve exact integer targets and historical scopes without numeric coercion (0.7523ms)\n✔ budget read pins config and scope with one call; failure clears old data and duplicate clicks cannot queue (0.3422ms)\n✔ pending clear and large generation floor block budget reports before or after actual read (0.2073ms)\n✔ clear session invalidation disposes old budget report; late reply cannot repopulate after clear (0.242ms)\n✔ budget source report uses CIS facts and exact counts; unknown tokens have no fake progress (3.2089ms)\n✔ budget source editor has named text integer controls, explicit cancellation and no automatic balance (2.3951ms)\n✔ timeout editor validates exact integer ranges and cross-field budgets before any save (0.2822ms)\n✔ timeout saves pin provider and base revision; duplicate submits cannot queue or auto-apply (0.2448ms)\n✔ failed timeout save remains unsaved; disposed late success never closes another editor (0.1561ms)\n✔ timeout source form keeps CIS controls, named ms fields, explicit apply and in-flight semantics (1.5321ms)\n✔ startup failure ends loading;preview and pending states stay distinct (0.4942ms)\n✔ desktop command rejection remains a failure and clears its waiting timer (4.9299ms)\nℹ tests 27\nℹ suites 0\nℹ pass 27\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 988.9941\ncis-guard OK: src/styles/app.css\ncis-guard OK: src/styles/routing.css\ncis-guard OK: src/styles/library.css\ncis-guard OK: src/styles/plugins.css\ncis-guard OK: src/styles/sessions.css\ncis-guard OK: src/styles/context.css\ncis-guard: six native stylesheets match the pinned source; browser checks are still required\nchrome-guard OK: SIDE_AT = 1024\nchrome-guard OK: no WEB_SIDE_AT\nchrome-guard OK: wantSide uses SIDE_AT\nchrome-guard OK: sidebar aside present\nchrome-guard OK: side-nav .on graphite in app.css\nchrome-guard OK: web #root 752 frame\nchrome-guard OK: web #root zoom-aware width\nchrome-guard OK: preview sizing independent of navigation; wide frame gated at 1024\nchrome-guard OK: WinCaption.tsx present\nchrome-guard OK: html.win forced\nchrome-guard OK: data-sim-platform=win\nchrome-guard OK: App renders WinCaption\nchrome-guard OK: Win brand-hide in shell-patch\nchrome-guard OK: win-caption styles\nchrome-guard OK: :root.win fonts in app.css\nchrome-guard: all checks passed\n"
+    }
+  },
+  "coreStartupAndPersistence": {
+    "status": "fulfilled",
+    "value": {
+      "chunk_id": "431e4c",
+      "wall_time_seconds": 7.6659588,
+      "exit_code": 0,
+      "original_token_count": 533,
+      "output": "warning: failed to parse serde attribute\n  | \n  | deny_unknown_fields \n  | \n  = note: ts-rs failed to parse this attribute. It will be ignored.\nwarning: failed to parse serde attribute\n  | \n  | deny_unknown_fields \n  | \n  = note: ts-rs failed to parse this attribute. It will be ignored.\nwarning: failed to parse serde attribute\n  | \n  | deny_unknown_fields \n  | \n  = note: ts-rs failed to parse this attribute. It will be ignored.\nwarning: failed to parse serde attribute\n  | \n  | deny_unknown_fields \n  | \n  = note: ts-rs failed to parse this attribute. It will be ignored.\n    Finished `test` profile [unoptimized] target(s) in 6.03s\n     Running tests\\save_restart.rs (target\\debug\\deps\\save_restart-ab628d5529687c70.exe)\n\nrunning 3 tests\ntest persistence_worker ... ignored, child process entrypoint; parent tests supply an owned temporary directory\n\nrunning 1 test\n\nrunning 1 test\n\nrunning 1 test\ntest persistence_worker ... ok\n\ntest result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 2 filtered out; finished in 0.01s\n\n\nrunning 1 test\ntest persistence_worker ... ok\n\ntest result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 2 filtered out; finished in 0.00s\n\ntest fresh_save_survives_process_exit_and_second_restart ... ok\n\nrunning 1 test\ntest persistence_worker ... ok\n\ntest result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 2 filtered out; finished in 0.02s\n\n\nrunning 1 test\ntest persistence_worker ... ok\n\ntest result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 2 filtered out; finished in 0.01s\n\ntest legacy_upgrade_save_survives_process_exit_and_second_restart ... ok\n\ntest result: ok. 2 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 0.27s\n\n     Running tests\\startup_upgrade.rs (target\\debug\\deps\\startup_upgrade-2d9c00ca22025201.exe)\n\nrunning 3 tests\ntest dev9_schema3_and_fresh_directory_use_the_actual_startup_services ... ok\ntest original_pre_identity_schema1_opens_through_real_config_service ... ok\ntest dev9_published_initialization_and_pending_migration_records_resume ... ok\n\ntest result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.38s\n\n"
+    }
+  },
+  "sidecarStoppedSave": {
+    "status": "fulfilled",
+    "value": {
+      "chunk_id": "c446af",
+      "wall_time_seconds": 3.2259972,
+      "exit_code": 0,
+      "original_token_count": 231,
+      "output": "warning: failed to parse serde attribute\n  | \n  | deny_unknown_fields \n  | \n  = note: ts-rs failed to parse this attribute. It will be ignored.\nwarning: failed to parse serde attribute\n  | \n  | deny_unknown_fields \n  | \n  = note: ts-rs failed to parse this attribute. It will be ignored.\nwarning: failed to parse serde attribute\n  | \n  | deny_unknown_fields \n  | \n  = note: ts-rs failed to parse this attribute. It will be ignored.\nwarning: failed to parse serde attribute\n  | \n  | deny_unknown_fields \n  | \n  = note: ts-rs failed to parse this attribute. It will be ignored.\n    Finished `test` profile [unoptimized] target(s) in 2.23s\n     Running tests\\process_lifecycle.rs (target\\debug\\deps\\process_lifecycle-3da40848b38f9cde.exe)\n\nrunning 1 test\ntest save_while_stopped_is_durable_and_applied_only_after_restart ... ok\n\ntest result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 14 filtered out; finished in 0.54s\n\n"
+    }
+  },
+  "installerCheck": [
+    "{\"Algorithm\":\"SHA256\",\"Hash\":\"155C0F26FF3D5617867CA6DDCC6C1D1FCBF316AB33A241184C597DBCF022CC0C\",\"Path\":\"D:\\\\demo1\\\\tagmaai-deliveries\\\\0.2.0-dev.17\\\\Tagma_0.2.0-dev.17_x64-setup.exe\"}",
+    "{\"FullName\":\"D:\\\\demo1\\\\tagmaai-deliveries\\\\0.2.0-dev.17\\\\Tagma_0.2.0-dev.17_x64-setup.exe\",\"Length\":6629799}",
+    "[{\"Name\":\"安装说明.txt\",\"Length\":952},{\"Name\":\"BUILD-MANIFEST.json\",\"Length\":1818},{\"Name\":\"source-overlay.json.gz\",\"Length\":1938697},{\"Name\":\"Tagma_0.2.0-dev.17_x64-setup.exe\",\"Length\":6629799}]",
+    "[{\"Path\":\"C:\\\\Users\\\\ai\\\\.codex\\\\automations\\\\magpie-cis\\\\automation.toml\",\"Id\":\"magpie-cis\",\"Status\":\"PAUSED\"},{\"Path\":\"C:\\\\Users\\\\ai\\\\.codex\\\\automations\\\\tagma-prd\\\\automation.toml\",\"Id\":\"tagma-prd\",\"Status\":\"PAUSED\"}]"
+  ],
+  "counts": {
+    "uiSourcePass": 27,
+    "rustIndependentPass": 6,
+    "helperIgnored": 1
+  },
+  "nativeUiPassThisAudit": 0
+}

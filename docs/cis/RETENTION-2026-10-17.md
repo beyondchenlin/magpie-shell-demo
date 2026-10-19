@@ -1,5 +1,7 @@
 # 本轮保全与收尾
 
+10:27新增用户明确要求的v0.1.206 Windows安装包：`D:/demo1/tagmaai/release/v0.1.206/Magpie-Shell-Demo-Setup-0.1.206.exe`（112737895bytes）及同目录身份/哈希/安装说明保留交付。`.cache/cis-exe-20261017`保留有限打包/下载/验证记录。自动审批审核以“blocked by policy”拒绝本次收尾删除，因此`D:/demo1/tagmaai/.cache/cis-exe-20261017/stage`（3936647逻辑bytes）和`D:/demo1/tagmaai/release/v0.1.206/win-unpacked`（397241184逻辑bytes）暂存均未删除、未绕过；无重解析点/锁/进程引用的预检保留在cleanup-plan.json。官方Electron及builder工具缓存复用保留，压缩下载合计166012693bytes、已校验SHA256，不打包为回滚备份。计划与末次C/D可用空间在EXECUTION-STATUS记录，受并发变化影响，不声称逻辑大小等于物理分配或净释放。未安装软件、未新建worktree/复制环境或改动继承脏稿。
+
 负责人：本任务执行者与项目负责人；复查日期：2026-10-23。保留理由是N3独立动态复核、D2远端同步及D4用户验收尚未结束；不是长期保留整套环境的备份。
 
 唯一工作树仍为 `D:/demo1/tagmaai`，没有新增clone/worktree、安装依赖、复制node_modules/虚拟环境或下载模型。immutable Git archive只是有界源码/构建快照，复用已有工具链。未提交构建输出、node_modules或`.cache`；`interactions/cis-*`中的PNG/WebP/JSON是有意交付的有限验收证据。

@@ -22,6 +22,8 @@ struct Root {
 #[derive(serde::Deserialize)]
 struct Internal {
     root: Root,
+    #[serde(default)]
+    previous_roots: Vec<Root>,
 }
 pub fn trust(directory: &Path) -> Result<Arc<PackTrustStore>, PackRunError> {
     let mut roots: Vec<Root> =
@@ -39,6 +41,7 @@ pub fn trust(directory: &Path) -> Result<Arc<PackTrustStore>, PackRunError> {
         )))
         .map_err(|_| PackRunError::Unavailable)?;
         if let Some(internal) = internal {
+            roots.extend(internal.previous_roots);
             roots.push(internal.root);
         }
     }

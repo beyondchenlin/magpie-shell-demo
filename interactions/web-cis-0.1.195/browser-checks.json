@@ -1,0 +1,509 @@
+{
+  "version": "0.1.195-working-draft",
+  "reference": "yetone/magpie@63be47717a9ca91fc89102078a1f1fff3e03e0ce",
+  "observations": [
+    {
+      "case": "provider-filter",
+      "rows": [
+        "gpt-5在用",
+        "gpt-5-mini",
+        "o4-mini"
+      ]
+    },
+    {
+      "case": "search-across-providers",
+      "rows": []
+    },
+    {
+      "case": "shown-keeps-just-hidden",
+      "states": [
+        {
+          "checked": "true",
+          "locked": "true",
+          "text": "gpt-5在用"
+        },
+        {
+          "checked": "false",
+          "locked": null,
+          "text": "gpt-5-mini"
+        }
+      ]
+    },
+    {
+      "case": "shown-view-reset",
+      "rows": [
+        "gpt-5在用"
+      ]
+    },
+    {
+      "case": "batch-first-click-only-arms",
+      "hidden": 3,
+      "armed": "1"
+    },
+    {
+      "case": "batch-second-click-keeps-current",
+      "states": [
+        {
+          "on": "false",
+          "text": "magpie/fast"
+        },
+        {
+          "on": "false",
+          "text": "claude-opus-4"
+        },
+        {
+          "on": "false",
+          "text": "claude-sonnet-4-5"
+        },
+        {
+          "on": "false",
+          "text": "claude-haiku-4"
+        },
+        {
+          "on": "false",
+          "text": "claude-3-5-haiku"
+        },
+        {
+          "on": "true",
+          "text": "gpt-5在用"
+        },
+        {
+          "on": "false",
+          "text": "gpt-5-mini"
+        },
+        {
+          "on": "false",
+          "text": "o4-mini"
+        },
+        {
+          "on": "false",
+          "text": "gemini-2.5-pro"
+        }
+      ]
+    },
+    {
+      "case": "order-only-shown",
+      "rows": [
+        "claude-opus-4",
+        "claude-sonnet-4-5",
+        "claude-haiku-4",
+        "claude-3-5-haiku",
+        "gpt-5",
+        "gpt-5-mini",
+        "o4-mini",
+        "gemini-2.5-pro",
+        "magpie/fast"
+      ]
+    },
+    {
+      "case": "keyboard-move-preserves-focus",
+      "rows": [
+        "claude-sonnet-4-5",
+        "claude-opus-4",
+        "claude-haiku-4",
+        "claude-3-5-haiku",
+        "gpt-5",
+        "gpt-5-mini",
+        "o4-mini",
+        "gemini-2.5-pro",
+        "magpie/fast"
+      ],
+      "focus": "2claude-opus-4Anthropic"
+    },
+    {
+      "case": "restore-order",
+      "rows": [
+        "claude-opus-4",
+        "claude-sonnet-4-5",
+        "claude-haiku-4",
+        "claude-3-5-haiku",
+        "gpt-5",
+        "gpt-5-mini",
+        "o4-mini",
+        "gemini-2.5-pro",
+        "magpie/fast"
+      ],
+      "resetEnabled": false
+    },
+    {
+      "case": "escape-focus",
+      "focus": "挑选"
+    },
+    {
+      "case": "preference-survives-reopen",
+      "only": "true"
+    },
+    {
+      "case": "search-across-providers-repeat",
+      "query": "claude",
+      "rows": [
+        "claude-opus-4",
+        "claude-sonnet-4-5",
+        "claude-haiku-4",
+        "claude-3-5-haiku"
+      ]
+    },
+    {
+      "case": "group-fold",
+      "folds": [
+        {
+          "class": "am-g routes",
+          "name": "路由组",
+          "rows": 1
+        },
+        {
+          "class": "am-g shut",
+          "name": "Anthropic",
+          "rows": 0
+        },
+        {
+          "class": "am-g",
+          "name": "OpenAI",
+          "rows": 3
+        },
+        {
+          "class": "am-g",
+          "name": "Google",
+          "rows": 1
+        }
+      ]
+    },
+    {
+      "case": "confirm-frame-center",
+      "geometry": {
+        "active": "取消",
+        "backdrop": {
+          "left": "21.816px",
+          "top": "21.816px"
+        },
+        "dialog": {
+          "bottom": 499.0234375,
+          "height": 158.140625,
+          "left": 292.9375,
+          "right": 754.9375,
+          "top": 340.8828125,
+          "width": 462,
+          "x": 292.9375,
+          "y": 340.8828125
+        },
+        "frame": {
+          "bottom": 816,
+          "height": 792,
+          "left": 24,
+          "right": 1024,
+          "top": 24,
+          "width": 1000,
+          "x": 24,
+          "y": 24
+        }
+      }
+    },
+    {
+      "case": "confirm-drag-outside-does-not-close",
+      "open": 1
+    },
+    {
+      "case": "confirm-shift-tab",
+      "focus": "放弃"
+    },
+    {
+      "case": "confirm-tab-wrap",
+      "focus": "取消"
+    },
+    {
+      "case": "confirm-backdrop-closes-only-confirm",
+      "dialogs": 0,
+      "draft": "cis-195-discard-probe",
+      "focus": "取消"
+    },
+    {
+      "case": "confirm-escape-focus",
+      "focus": "取消",
+      "draft": "cis-195-discard-probe"
+    },
+    {
+      "case": "phone-confirm",
+      "geometry": {
+        "dialog": {
+          "bottom": 516.5859375,
+          "height": 189.171875,
+          "left": 17,
+          "right": 373,
+          "top": 327.4140625,
+          "width": 356,
+          "x": 17,
+          "y": 327.4140625
+        },
+        "frame": {
+          "bottom": 844,
+          "height": 844,
+          "left": 0,
+          "right": 390,
+          "top": 0,
+          "width": 390,
+          "x": 0,
+          "y": 0
+        },
+        "overflow": false
+      }
+    },
+    {
+      "case": "phone-agent-models-dark",
+      "geometry": {
+        "box": {
+          "bottom": 450.95648193359375,
+          "height": 442.7685546875,
+          "left": 8.041900634765625,
+          "right": 381.9124450683594,
+          "top": 8.18792724609375,
+          "width": 373.87054443359375,
+          "x": 8.041900634765625,
+          "y": 8.18792724609375
+        },
+        "footer": {
+          "bottom": 442.9592590332031,
+          "height": 33.082275390625,
+          "left": 22.03705596923828,
+          "right": 367.9173049926758,
+          "top": 409.8769836425781,
+          "width": 345.8802490234375,
+          "x": 22.03705596923828,
+          "y": 409.8769836425781
+        },
+        "frame": {
+          "bottom": 844,
+          "height": 844,
+          "left": 0,
+          "right": 390,
+          "top": 0,
+          "width": 390,
+          "x": 0,
+          "y": 0
+        },
+        "horizontalOverflow": false,
+        "railed": false
+      }
+    },
+    {
+      "case": "pointer-drag-order",
+      "before": [
+        "claude-opus-4",
+        "claude-sonnet-4-5",
+        "claude-haiku-4"
+      ],
+      "after": [
+        "claude-sonnet-4-5",
+        "claude-haiku-4",
+        "claude-opus-4",
+        "gpt-5",
+        "gpt-5-mini",
+        "gemini-2.5-pro",
+        "magpie/fast"
+      ]
+    },
+    {
+      "case": "row-menu-initial-focus",
+      "focus": "下移Alt+↓"
+    },
+    {
+      "case": "row-arrow-down-skips-disabled",
+      "focus": "隐藏"
+    },
+    {
+      "case": "row-arrow-wrap",
+      "focus": "下移Alt+↓"
+    },
+    {
+      "case": "row-escape-anchor",
+      "menus": 0,
+      "focus": "调整 Cursor"
+    },
+    {
+      "case": "row-tab-closes",
+      "menus": 0
+    },
+    {
+      "case": "usage-refresh-portal",
+      "geometry": {
+        "anchor": {
+          "bottom": 149.25,
+          "height": 26.390625,
+          "left": 1052.265625,
+          "right": 1114.734375,
+          "top": 122.859375,
+          "width": 62.46875,
+          "x": 1052.265625,
+          "y": 122.859375
+        },
+        "menu": {
+          "bottom": 349.19189453125,
+          "height": 194.63427734375,
+          "left": 903.1361083984376,
+          "right": 1276.8538818359375,
+          "top": 154.5576171875,
+          "width": 373.7177734375,
+          "x": 903.1361083984376,
+          "y": 154.5576171875
+        },
+        "parent": "root"
+      }
+    },
+    {
+      "case": "refresh-menu-arrow",
+      "focus": "5 秒"
+    },
+    {
+      "case": "range-calendar-portal",
+      "geometry": {
+        "anchor": {
+          "bottom": 148.140625,
+          "height": 24.1875,
+          "left": 515.796875,
+          "right": 596.09375,
+          "top": 123.953125,
+          "width": 80.296875,
+          "x": 515.796875,
+          "y": 123.953125
+        },
+        "menu": {
+          "bottom": 453.4102478027344,
+          "height": 299.903076171875,
+          "left": 515.6962890625,
+          "right": 792.8231201171875,
+          "top": 153.50717163085938,
+          "width": 277.1268310546875,
+          "x": 515.6962890625,
+          "y": 153.50717163085938
+        },
+        "parent": "root"
+      }
+    },
+    {
+      "case": "custom-date-selection",
+      "open": 0,
+      "label": "10月5日 – 10月10日"
+    },
+    {
+      "case": "plugin-calls-menu-portal",
+      "geometry": {
+        "menu": {
+          "bottom": 488.62457275390625,
+          "height": 162.82205200195312,
+          "left": 903.1685180664062,
+          "right": 1276.9752197265625,
+          "top": 325.8025207519531,
+          "width": 373.80670166015625,
+          "x": 903.1685180664062,
+          "y": 325.8025207519531
+        },
+        "parent": "root"
+      },
+      "options": [
+        "10",
+        "20",
+        "50",
+        "100"
+      ]
+    },
+    {
+      "case": "plugin-calls-pick-closes",
+      "menus": 0,
+      "value": "50"
+    },
+    {
+      "case": "navigation-toggle-0",
+      "geometry": {
+        "frame": {
+          "h": 792,
+          "w": 1210
+        },
+        "heading": "网关",
+        "side": true
+      }
+    },
+    {
+      "case": "navigation-toggle-1",
+      "geometry": {
+        "frame": {
+          "h": 792,
+          "w": 1210
+        },
+        "heading": "网关",
+        "side": false
+      }
+    },
+    {
+      "case": "navigation-toggle-2",
+      "geometry": {
+        "frame": {
+          "h": 792,
+          "w": 1210
+        },
+        "heading": "网关",
+        "side": true
+      }
+    },
+    {
+      "case": "navigation-toggle-3",
+      "geometry": {
+        "frame": {
+          "h": 792,
+          "w": 1210
+        },
+        "heading": "网关",
+        "side": false
+      }
+    },
+    {
+      "case": "navigation-selection-0",
+      "geometry": {
+        "button": {
+          "bottom": 268.859375,
+          "height": 33,
+          "left": 89,
+          "right": 299.1875,
+          "top": 235.859375,
+          "width": 210.1875,
+          "x": 89,
+          "y": 235.859375
+        },
+        "heading": "网关",
+        "selected": "网关",
+        "side": true
+      }
+    },
+    {
+      "case": "navigation-selection-1",
+      "geometry": {
+        "button": {
+          "bottom": 98.6796875,
+          "height": 26.390625,
+          "left": 693.4296875,
+          "right": 747.3046875,
+          "top": 72.2890625,
+          "width": 53.875,
+          "x": 693.4296875,
+          "y": 72.2890625
+        },
+        "heading": "网关",
+        "selected": "网关",
+        "side": false,
+        "thumb": {
+          "bottom": 98.6796875,
+          "height": 26.390625,
+          "left": 693.7578125,
+          "right": 747.6484375,
+          "top": 72.2890625,
+          "width": 53.890625,
+          "x": 693.7578125,
+          "y": 72.2890625
+        }
+      }
+    }
+  ],
+  "notes": [
+    "Existing observations must be reassessed against docs/REPLICA-ACCEPTANCE.md; they are not final acceptance.",
+    "First search batch inconclusive (query later read yi); the independent claude repeat returned four models.",
+    "No animation frame metrics or native OS certification have been collected."
+  ]
+}

@@ -34,6 +34,8 @@ struct ReleaseRoot {
 #[serde(deny_unknown_fields)]
 struct InternalPack {
     root: ReleaseRoot,
+    #[serde(default)]
+    previous_roots: Vec<ReleaseRoot>,
     record: SignedManifestRecord,
 }
 #[derive(serde::Serialize, serde::Deserialize)]
@@ -108,6 +110,7 @@ impl PackBridge {
             None
         };
         let internal_record = internal.map(|bundle| {
+            roots.extend(bundle.previous_roots);
             roots.push(bundle.root);
             bundle.record
         });
