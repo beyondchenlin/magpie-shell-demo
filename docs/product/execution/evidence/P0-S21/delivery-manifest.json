@@ -1,0 +1,35 @@
+{
+  "version": "0.2.0-dev.36",
+  "sourceHeadAtBuild": "ac9f68eaca7d49e11161ff7cc21fa131779b4f90",
+  "productChangesCommit": "1f96af813c4d27d42a0642c788921b6819b8ea67",
+  "profile": "Windows x64 debug unsigned internal",
+  "sourceInputs": 317,
+  "sourceVerification": "317 frozen before build; checked after build, native acceptance and product commit",
+  "installer": {
+    "path": "D:/demo1/tagmaai-deliveries/0.2.0-dev.36/Tagma_0.2.0-dev.36_x64-setup.exe",
+    "bytes": 6631139,
+    "sha256": "81a9298cd3182f1a780f4eefc1b1cda85e73a8c2b839fa316b894c203c741301"
+  },
+  "binaries": [
+    {
+      "path": "C:/Users/ai/AppData/Local/Temp/tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88/install-p0s16/tagma-desktop.exe",
+      "bytes": 20276736,
+      "sha256": "d89a6d3a9cf8c62a644b905eef805c7faa7cc3675c5ab3ae9fba156c74001987"
+    },
+    {
+      "path": "C:/Users/ai/AppData/Local/Temp/tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88/install-p0s16/tagma-gateway.exe",
+      "bytes": 10115584,
+      "sha256": "512a2eba41e53bf6801a83a06a5003b87a1d7bf185a34e6bd6d0ecd914e289ee"
+    }
+  ],
+  "sourceRecovery": "Checkout productChangesCommit; restore the six INHERITED-INPUTS from retained dev18 source-overlay.json.gz; verify SOURCE-INPUTS.",
+  "nativeAcceptance": "S21: old35 full isolated installer returned0 despite denied test-only HKLM Publisher write. Fixed36 full silent DWORD and final version write failures return1603, retain35 registration and DB. Native fixed36 Publisher error dialog, aborted page, exit1603 and recovery uninstaller retained. Complete36 repair exit0, native12/12 and Beta to Alpha Offline restored. UIA/Win32 notifications/PrintWindow, not new keyboard acceptance. Actual access denial with test-only destination, not a spontaneous registry-facility outage.",
+  "installation": "Isolated S16 identity only; normal identity package never run.",
+  "remaining": "P0 not fully released. Uninstall registration deletion recovery and complete REL03 matrix remain. Metadata and program files are not atomic. Actual credential facility/OS animation change, clean Windows, signing and macOS unavailable.",
+  "retention": {
+    "owner": "Current Tagma P0 task",
+    "purpose": "Validated registration write failure recovery candidate and minimal evidence",
+    "reviewDate": "2026-10-25",
+    "scheduledCleanup": false
+  }
+}

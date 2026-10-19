@@ -1,0 +1,68 @@
+﻿{
+    "utc":  "2026-10-19T01:56:27.6546565Z",
+    "pid":  11752,
+    "window":  5704966,
+    "title":  "Tagma P0 S16 Acceptance Setup",
+    "elements":  [
+                     {
+                         "index":  0,
+                         "name":  "确定",
+                         "type":  "ControlType.Pane",
+                         "patterns":  [
+
+                                      ],
+                         "class":  "Button",
+                         "id":  "42,2951802",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  0,
+                         "rect":  [
+                                      2022,
+                                      1144,
+                                      88,
+                                      28
+                                  ]
+                     },
+                     {
+                         "index":  1,
+                         "name":  "",
+                         "type":  "ControlType.Pane",
+                         "patterns":  [
+
+                                      ],
+                         "class":  "Static",
+                         "id":  "42,18809390",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  null,
+                         "rect":  [
+                                      1741,
+                                      1040,
+                                      32,
+                                      32
+                                  ]
+                     },
+                     {
+                         "index":  2,
+                         "name":  "Windows could not save Tagma installation information.\r\nProgram files may already be updated.\r\nResolve write access, then run this complete installer again.\r\nUser configuration was not removed.",
+                         "type":  "ControlType.Pane",
+                         "patterns":  [
+
+                                      ],
+                         "class":  "Static",
+                         "id":  "42,23203314",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "value":  null,
+                         "toggle":  null,
+                         "rect":  [
+                                      1781,
+                                      1040,
+                                      312,
+                                      66
+                                  ]
+                     }
+                 ]
+}

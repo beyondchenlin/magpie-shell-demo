@@ -1,0 +1,12 @@
+{
+  "utc": "2026-10-19T02:03:57.1824782Z",
+  "path": "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Tagma P0 S16 Acceptance\\xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+  "boundary": "Task-only S16 key, creation disposition1, nonrecursive native delete; .NET rejected long-name inspection before mutation",
+  "deleteCode": 0,
+  "filesystemDeleted": false,
+  "before": {
+    "subkeys": 0,
+    "values": 0
+  },
+  "purpose": "Newly created empty long-child test fixture"
+}

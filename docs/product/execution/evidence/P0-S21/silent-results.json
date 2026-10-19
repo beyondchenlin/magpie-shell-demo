@@ -1,0 +1,60 @@
+{
+  "utc": "2026-10-19T01:55:58.3613782Z",
+  "results": [
+    {
+      "dataUnchanged": true,
+      "exitCode": 1603,
+      "state": {
+        "version": "0.2.0-dev.35",
+        "uninstaller": true,
+        "data": [
+          {
+            "sha256": "F82945FF1AE987A08496C370349280EAD5DD2468B9C3E6062BBB5F95C1C76D93",
+            "path": "config.sqlite3"
+          },
+          {
+            "sha256": "634B9FFACDAEC6F7C4636C70FC5A9B36903EBA0190E83B9CA197269619B9F45B",
+            "path": "config.sqlite3-wal"
+          }
+        ]
+      },
+      "case": "dword-failure",
+      "installerSha256": "AD63C12399A2FFA2966308BBAAE2D7257EC0CB1E6F59C157BEC35B972FBE77DC"
+    },
+    {
+      "dataUnchanged": true,
+      "exitCode": 1603,
+      "state": {
+        "version": "0.2.0-dev.35",
+        "uninstaller": true,
+        "data": [
+          {
+            "sha256": "F82945FF1AE987A08496C370349280EAD5DD2468B9C3E6062BBB5F95C1C76D93",
+            "path": "config.sqlite3"
+          },
+          {
+            "sha256": "634B9FFACDAEC6F7C4636C70FC5A9B36903EBA0190E83B9CA197269619B9F45B",
+            "path": "config.sqlite3-wal"
+          }
+        ]
+      },
+      "case": "version-failure",
+      "installerSha256": "053FF3BCD363CBCFDABC4AA559C91799697B4118C8BF4182E732A05A2356BC57"
+    }
+  ],
+  "before": {
+    "version": "0.2.0-dev.35",
+    "uninstaller": true,
+    "data": [
+      {
+        "sha256": "F82945FF1AE987A08496C370349280EAD5DD2468B9C3E6062BBB5F95C1C76D93",
+        "path": "config.sqlite3"
+      },
+      {
+        "sha256": "634B9FFACDAEC6F7C4636C70FC5A9B36903EBA0190E83B9CA197269619B9F45B",
+        "path": "config.sqlite3-wal"
+      }
+    ]
+  },
+  "scope": "Actual NSIS registry writes to task-only HKLM destination denied to non-elevated current-user installer; test-only destination change, no ACL change"
+}

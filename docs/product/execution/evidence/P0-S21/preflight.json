@@ -1,0 +1,16 @@
+{
+  "utc": "2026-10-19T00:06:24.2862545Z",
+  "reuse": "existing target, NSIS, S09 data, S16 install",
+  "budget": "D build peak <=2 GiB, C <=0.2 GiB; evidence <=10 MiB",
+  "purpose": "Actual Windows registry failure: replace one Publisher destination with a 256-character subkey under task-only S16 registration; no ACL or system setting changes",
+  "disks": [
+    {
+      "Name": "C",
+      "freeGiB": 34.59
+    },
+    {
+      "Name": "D",
+      "freeGiB": 22.86
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "scope": "HKLM Software task-only key; non-elevated token; 32-bit view matching NSIS",
+  "api": "RegCreateKeyExW",
+  "disposition": 2,
+  "elevated": false,
+  "utc": "2026-10-19T00:08:08.1364296Z",
+  "code": 5
+}

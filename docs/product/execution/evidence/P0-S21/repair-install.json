@@ -1,0 +1,16 @@
+{
+  "registeredVersion": "0.2.0-dev.36",
+  "utc": "2026-10-19T01:56:55.7801516Z",
+  "publisher": "tagmaai-p0-s16",
+  "exitCode": 0,
+  "binaryHashes": [
+    {
+      "Path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\install-p0s16\\tagma-desktop.exe",
+      "Hash": "D89A6D3A9CF8C62A644B905EEF805C7FAA7CC3675C5AB3AE9FBA156C74001987"
+    },
+    {
+      "Path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\install-p0s16\\tagma-gateway.exe",
+      "Hash": "512A2EBA41E53BF6801A83A06A5003B87A1D7BF185A34E6BD6D0ECD914E289EE"
+    }
+  ]
+}

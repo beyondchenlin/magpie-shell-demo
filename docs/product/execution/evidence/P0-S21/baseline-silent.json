@@ -1,0 +1,11 @@
+{
+  "setupHash": "B436B1E9F8C31BE372D12A0BF6EEF24B8EA9A0AB486C451F1F8CBE88BB53A168",
+  "registered": {
+    "DisplayVersion": "0.2.0-dev.35",
+    "Publisher": "tagmaai-p0-s16",
+    "InstallLocation": "\"C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\install-p0s16\""
+  },
+  "utc": "2026-10-19T01:46:51.2846678Z",
+  "exitCode": 0,
+  "failure": "Real denied HKLM write at test-only Publisher destination; API probe5, no token elevation or ACL changes"
+}

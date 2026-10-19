@@ -1,0 +1,7 @@
+{
+  "code": 0,
+  "scope": "Only malformed child of task-owned S16 uninstall key",
+  "utc": "2026-10-19T00:07:33.1131800Z",
+  "api": "RegCreateKeyExW",
+  "disposition": 1
+}

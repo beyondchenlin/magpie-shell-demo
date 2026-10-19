@@ -1,0 +1,302 @@
+{
+  "batch": "P0-S21",
+  "utc": "2026-10-19T02:04:35.007Z",
+  "bytes": 935355,
+  "files": [
+    {
+      "path": "00-before-quit.json",
+      "bytes": 111173,
+      "sha256": "2757fb2178886277dfccc1176a0ecff5a1d642b41ce238b914523fcc69a30fe9"
+    },
+    {
+      "path": "01-settings.json",
+      "bytes": 56168,
+      "sha256": "d001393f11e3a8fe5768edc80e90eeac20e34b0789540b9529cb707b13a8f99d"
+    },
+    {
+      "path": "04-welcome.json",
+      "bytes": 7597,
+      "sha256": "4fc2a3c5893d8668135eb6a058ec3fe984835b3469a2d2a3e64995f20538d62a"
+    },
+    {
+      "path": "05-Choose-Install-Location.json",
+      "bytes": 14838,
+      "sha256": "449e5af85ac814e5c82f655df14dcfb956f2b7754a5221dfb75a7e0ff5d53d91"
+    },
+    {
+      "path": "05-Update-Tagma.json",
+      "bytes": 10778,
+      "sha256": "6337c8d931aeab3baec26c217c341d2ce12f7070825a75c5af262a372a3809ba"
+    },
+    {
+      "path": "05-Welcome-to-Tagma-P-S-Acceptance-Setup.json",
+      "bytes": 7597,
+      "sha256": "87b0c92f702557cae8e8f558d3b2982a7cd03f666557a93f2ce60d16030656b2"
+    },
+    {
+      "path": "06-after-Choose-Install-Location.json",
+      "bytes": 12176,
+      "sha256": "afde03d244bef68a9460eead81783730167240855a09d02bab4a1f97eccb7fd4"
+    },
+    {
+      "path": "06-after-Update-Tagma.json",
+      "bytes": 14837,
+      "sha256": "d8c080553b954122ee518bce06b06b64f5ba82dcb3230a36fd73778bf6104bf2"
+    },
+    {
+      "path": "06-after-Welcome-to-Tagma-P-S-Acceptance-Setup.json",
+      "bytes": 10778,
+      "sha256": "040c1e72b66dbad14008ecfa3f99e78019a68266d265ff1dd04a9316afae91c6"
+    },
+    {
+      "path": "07-registration-error.json",
+      "bytes": 2746,
+      "sha256": "20cebdb4a8a0e27ef42848a81f0860ca0df7cde216a510a947c88810c3cb5672"
+    },
+    {
+      "path": "07-registration-error.png",
+      "bytes": 7772,
+      "sha256": "06d39054790c6231ae0a9e3a1a516dfacd26c66df94b0abd7ad2a4f63fa3fcdd"
+    },
+    {
+      "path": "08-error-dismissed.json",
+      "bytes": 189,
+      "sha256": "5886b7db7bc9e3d773482ddaaf72a613f6b96d7a6fa177a1fa282a317210b822"
+    },
+    {
+      "path": "09-aborted.json",
+      "bytes": 12135,
+      "sha256": "35585f9bdab8666bd9a28de035f23346049b8246d2664be01a0dfbab6d11a31f"
+    },
+    {
+      "path": "09-aborted.png",
+      "bytes": 11129,
+      "sha256": "86ad7cb240c25c67c8a19ad29db55554a5671396b90b56f0211492b61d8e13d7"
+    },
+    {
+      "path": "11-starting.json",
+      "bytes": 53147,
+      "sha256": "2962078b403ac8a6938b9680e5fdb5c2d9620ba51e1992b8664575446ee81bd2"
+    },
+    {
+      "path": "12-ready.json",
+      "bytes": 51202,
+      "sha256": "2f941d68dabc364c7a89ccb37d67ac22fb75b5ad15a047f83147d4a43b2eb84a"
+    },
+    {
+      "path": "13-providers.json",
+      "bytes": 111062,
+      "sha256": "d8698fc1c014250f4938d311ecbe191641a2a9456ec942501ea424780a97ad0c"
+    },
+    {
+      "path": "13-providers.png",
+      "bytes": 41787,
+      "sha256": "5f74ebe32e4479b11bc229e2bfed50725028de666483ca1056d1cccbb7a2ff30"
+    },
+    {
+      "path": "CheckSilent.ps1",
+      "bytes": 2213,
+      "sha256": "ca39ef2c59626f3bac6654949c86859de7e53252793a8fcf7141ce9d736337d8"
+    },
+    {
+      "path": "Control.ps1",
+      "bytes": 27990,
+      "sha256": "8c1f5515273e96b44b415669a6587fc0d6616913dc7227c0f02b1bdbb4915c3a"
+    },
+    {
+      "path": "FileAssociation.nsh",
+      "bytes": 5517,
+      "sha256": "e933990b06dceac358fc1a4e71cb55c7dc9783ad4df8fc2c6248118a7ad4d348"
+    },
+    {
+      "path": "Finalize.mjs",
+      "bytes": 4077,
+      "sha256": "c535953968714e1e9913b2e8e81a13cfee0da41b202ad836b82ba2d0d2c3d7d5"
+    },
+    {
+      "path": "InstallerControl.ps1",
+      "bytes": 8069,
+      "sha256": "08f37ba016a1839da3d5308ddbf2ee56c9a9ad4547b17bdf8daf859cf93c6ad7"
+    },
+    {
+      "path": "Launch.ps1",
+      "bytes": 430,
+      "sha256": "46b97d1302b83010afdd2d3da14662f4b55e5b50e17513cfb16c29d09b7a04b3"
+    },
+    {
+      "path": "Run.ps1",
+      "bytes": 2059,
+      "sha256": "1a3b4023851c1a801c1b98b206ef7a5588105e2b3fa4bb4caf5d28545b6ee0a3"
+    },
+    {
+      "path": "actions.jsonl",
+      "bytes": 118292,
+      "sha256": "2917eee9198a0e1052384ea90df29f318526e336f9ce6f87f416d7092923cfd0"
+    },
+    {
+      "path": "attempts-not-counted.json",
+      "bytes": 671,
+      "sha256": "a83a6c026550031715eb760c00eda6425b7f02d9034cf837aeb603941b656ef5"
+    },
+    {
+      "path": "baseline-build.log",
+      "bytes": 501,
+      "sha256": "2b63e889b649bb953714ff8fb5ef6d2882a3c7a3b3eef515ec2cbad9ba695e08"
+    },
+    {
+      "path": "baseline-denied-build.log",
+      "bytes": 501,
+      "sha256": "2b63e889b649bb953714ff8fb5ef6d2882a3c7a3b3eef515ec2cbad9ba695e08"
+    },
+    {
+      "path": "baseline-silent.json",
+      "bytes": 503,
+      "sha256": "94a0dab134cffc57c1bba5d2015dc65bd30809e5d3e4f1780fa3f5e7f885cdb9"
+    },
+    {
+      "path": "build36.log",
+      "bytes": 3004,
+      "sha256": "6786af7e5a49604fe040ca0310349b8cd69eb8a14497d007c633a9f379a7549f"
+    },
+    {
+      "path": "delivery-manifest.json",
+      "bytes": 2344,
+      "sha256": "f0899a441fae7e4cca22977781897e33bb7abc565ffca2955a31ae19c6c1cec6"
+    },
+    {
+      "path": "dword-failure-build.log",
+      "bytes": 501,
+      "sha256": "2b63e889b649bb953714ff8fb5ef6d2882a3c7a3b3eef515ec2cbad9ba695e08"
+    },
+    {
+      "path": "dword-failure-dev36.nsi",
+      "bytes": 25631,
+      "sha256": "ce6587cd55a195468b9fbdfa62e49e3f4e78dd40d9afe0746ac5f543108b3210"
+    },
+    {
+      "path": "empty-probe-key-cleanup.json",
+      "bytes": 715,
+      "sha256": "d6930ad3e3c2c2a48c39621b5ba51c5f04fc22bdf22165137ecf6df9bf5b8d3b"
+    },
+    {
+      "path": "environment-after.json",
+      "bytes": 1079,
+      "sha256": "7254a08f9dd98e880891ca0f7f5340b5bc2aa2c17fced149c9f1f0ba027ecd82"
+    },
+    {
+      "path": "final-processes.json",
+      "bytes": 599,
+      "sha256": "61d94db0331d0d44fa61207c58058a454cf56b739eb25cec8cf7d11f3d64f773"
+    },
+    {
+      "path": "harness-output-name-correction.json",
+      "bytes": 221,
+      "sha256": "75f63a552db5306acd7c2c79c22b63db95c42b9c1d7ec1f370d7a4ccbc8f3463"
+    },
+    {
+      "path": "installer-actions.jsonl",
+      "bytes": 24893,
+      "sha256": "3d6cfa39813533203c7ff87cb7d73f1be00bed102e9259b13f1209fc278dbf90"
+    },
+    {
+      "path": "installer-identity.json",
+      "bytes": 249,
+      "sha256": "a0c8a533b3f1df1ca218e3b485945cbaa4d595413ad5d5301a1f7bfc4eb11577"
+    },
+    {
+      "path": "isolated-build.log",
+      "bytes": 501,
+      "sha256": "2b63e889b649bb953714ff8fb5ef6d2882a3c7a3b3eef515ec2cbad9ba695e08"
+    },
+    {
+      "path": "isolated-dev36.nsi",
+      "bytes": 25607,
+      "sha256": "d5c80df18fd821ad801d271eda35945db48ea72b068cd041041ca6807006b808"
+    },
+    {
+      "path": "launch36.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "launch36.stdout.log",
+      "bytes": 85,
+      "sha256": "9fd83b4b32c82988ef97cfa92be1b995515df6e50bcec291f10347e2a842aef7"
+    },
+    {
+      "path": "native-failure-exit.json",
+      "bytes": 68,
+      "sha256": "99b4c81b3ec34cf2b45d979ee6936021e5036e88a0a7654d7aa8a1afd8da4b2e"
+    },
+    {
+      "path": "native-preservation.json",
+      "bytes": 133,
+      "sha256": "ade498c90235d282bd22c97bb37af1da4c4aca2f8e1ab1daa8d11547d9b0dd31"
+    },
+    {
+      "path": "owner.txt",
+      "bytes": 28,
+      "sha256": "2cb7ed911e41688594f81ead2e34934f295e6ff5dd19163ac27ac6b53ded451c"
+    },
+    {
+      "path": "preflight.json",
+      "bytes": 492,
+      "sha256": "4afc2521f41cc3fe3e2a2c3f12a0cf29674021b307d7d7d6967913dac9a5b3f6"
+    },
+    {
+      "path": "registration-failure-build.log",
+      "bytes": 501,
+      "sha256": "2b63e889b649bb953714ff8fb5ef6d2882a3c7a3b3eef515ec2cbad9ba695e08"
+    },
+    {
+      "path": "registration-failure-dev35.nsi",
+      "bytes": 25291,
+      "sha256": "45673c3fc00af812f74b0c8d53bc342d05055ebb17c7b6c9bfb02ee08b7a301c"
+    },
+    {
+      "path": "registration-failure-dev36.nsi",
+      "bytes": 25638,
+      "sha256": "7c311f89b63893178798760b8ec0505e5fe5e6abcd09b88ff25d4caf52525a6e"
+    },
+    {
+      "path": "registry-access-denied-probe.json",
+      "bytes": 223,
+      "sha256": "7a7ec14e0dc42d2ffa4357e8cf29156d2228cfab45abe7cdb92a4b82210c8fdc"
+    },
+    {
+      "path": "registry-failure-probe.json",
+      "bytes": 179,
+      "sha256": "12c1bb7d80eab35285b1bd99bed42c2c7976db46eaee9a319cf0d2331fdd8415"
+    },
+    {
+      "path": "repair-install.json",
+      "bytes": 637,
+      "sha256": "03ae9064a5e69eb3e500c370c728aec05526c9cd2d60efa0f4ed867094e61fa4"
+    },
+    {
+      "path": "silent-results.json",
+      "bytes": 1886,
+      "sha256": "d4fa4123c1d1311f42c3b5ae6dbb1c5464ae8e75f98f45a6864c62cd967b708c"
+    },
+    {
+      "path": "source-frozen36.json",
+      "bytes": 54029,
+      "sha256": "a7a5b4fb87d88242d289466b576eacad17a7c7ef4aea05ed6b7ee983b162b6bd"
+    },
+    {
+      "path": "utils.nsh",
+      "bytes": 6753,
+      "sha256": "72cae7532ea22bd39b5433dfd8ac47975844defa916fc113880479dedfee54f6"
+    },
+    {
+      "path": "version-failure-build.log",
+      "bytes": 501,
+      "sha256": "2b63e889b649bb953714ff8fb5ef6d2882a3c7a3b3eef515ec2cbad9ba695e08"
+    },
+    {
+      "path": "version-failure-dev36.nsi",
+      "bytes": 25633,
+      "sha256": "4292cbc32968b77fb11749bcb53f09ddcdcd92cff276d69c3de9baf893b22f2e"
+    }
+  ]
+}

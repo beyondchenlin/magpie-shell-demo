@@ -1,0 +1,17 @@
+{
+  "utc": "2026-10-19T01:52:06.9569165Z",
+  "notCounted": [
+    {
+      "result": "RegCreateKeyExW accepted 256-character child. Does not constitute failure. One empty child retained under task-owned S16 key.",
+      "case": "Long registry subkey"
+    },
+    {
+      "result": "Installer guard initially observed an owned process still present; stopped before installer launch. Later live enumeration confirmed all task host/gateway processes exited. No process killed.",
+      "case": "Quit guard"
+    },
+    {
+      "result": "Exact role title no longer present, observation refused. No input sent.",
+      "case": "Controller after quit"
+    }
+  ]
+}
