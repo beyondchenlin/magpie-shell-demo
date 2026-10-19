@@ -1,0 +1,50 @@
+{
+  "results": [
+    {
+      "input_class": "fixed",
+      "operation": "ping",
+      "exit": 0,
+      "reply": {
+        "protocol_version": 1,
+        "request_id": "2ec8dcdd-3176-461d-ab62-7ca281433bf9",
+        "pack_id": "reachflow",
+        "version": "0.2.0-dev.41",
+        "body": {
+          "kind": "ready"
+        }
+      }
+    },
+    {
+      "input_class": "fixed",
+      "operation": "local_sample",
+      "exit": 0,
+      "reply": {
+        "protocol_version": 1,
+        "request_id": "2a64bca5-987b-4972-a169-1bc51ccb6c58",
+        "pack_id": "reachflow",
+        "version": "0.2.0-dev.41",
+        "body": {
+          "kind": "result",
+          "text": "{\"mode\":\"local_fixed_sample\",\"network_used\":false,\"note\":\"本地固定素材及协议试跑通过；未调用研究服务或模型，未产生真实研究成果。\",\"sources\":[{\"id\":\"fixture-1\",\"title\":\"书店\"},{\"id\":\"fixture-2\",\"title\":\"咖啡店\"},{\"id\":\"fixture-3\",\"title\":\"修理店\"}]}"
+        }
+      }
+    },
+    {
+      "input_class": "invalid",
+      "operation": "local_sample",
+      "exit": 0,
+      "reply": {
+        "protocol_version": 1,
+        "request_id": "86354585-04fb-45a6-afe8-b769e1d9a1ff",
+        "pack_id": "reachflow",
+        "version": "0.2.0-dev.41",
+        "body": {
+          "kind": "failed",
+          "code": "REACHFLOW_SAMPLE_INVALID"
+        }
+      }
+    }
+  ],
+  "sha256": "0CE556A81D42961B85B33F4F9A93CA982FBD1CE373A1B92D45453F85F4DED1B7",
+  "layer": "actual adapter process; no UI or real service"
+}

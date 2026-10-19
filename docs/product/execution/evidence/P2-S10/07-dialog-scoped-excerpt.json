@@ -1,0 +1,117 @@
+{
+  "utc": "2026-10-19T05:21:21.5752633Z",
+  "pid": 57292,
+  "started": "2026-10-19T05:20:47.4918319Z",
+  "window": 4656684,
+  "title": "Tagma 隔离测试 dev41r2 P2-S10 128d7053",
+  "rect": [
+    1582,
+    744,
+    2258,
+    1383
+  ],
+  "elements": [
+    {
+      "index": 0,
+      "runtimeId": "42,4983492",
+      "name": "打开",
+      "type": "ControlType.Window",
+      "automationId": "",
+      "enabled": true,
+      "offscreen": false,
+      "focused": true,
+      "password": false,
+      "value": null,
+      "rect": [
+        1590,
+        775,
+        1200,
+        900
+      ],
+      "patterns": [
+        "WindowPatternIdentifiers.Pattern",
+        "TransformPatternIdentifiers.Pattern"
+      ]
+    },
+    {
+      "index": 218,
+      "runtimeId": "42,4197676",
+      "name": "文件名(N):",
+      "type": "ControlType.Pane",
+      "automationId": "1090",
+      "enabled": true,
+      "offscreen": false,
+      "focused": false,
+      "password": false,
+      "value": null,
+      "rect": [
+        1728,
+        1602,
+        57,
+        17
+      ],
+      "patterns": []
+    },
+    {
+      "index": 223,
+      "runtimeId": "42,27592648",
+      "name": "打开(O)",
+      "type": "ControlType.Pane",
+      "automationId": "1",
+      "enabled": true,
+      "offscreen": false,
+      "focused": false,
+      "password": false,
+      "value": null,
+      "rect": [
+        2577,
+        1629,
+        88,
+        26
+      ],
+      "patterns": []
+    },
+    {
+      "index": 224,
+      "runtimeId": "42,8587686",
+      "name": "取消",
+      "type": "ControlType.Pane",
+      "automationId": "2",
+      "enabled": true,
+      "offscreen": false,
+      "focused": false,
+      "password": false,
+      "value": null,
+      "rect": [
+        2677,
+        1629,
+        88,
+        26
+      ],
+      "patterns": []
+    },
+    {
+      "index": 279,
+      "runtimeId": "42,3342964,4,5,1,47",
+      "name": "选择队员发行清单: 未选择文件",
+      "type": "ControlType.Button",
+      "automationId": "",
+      "enabled": true,
+      "offscreen": false,
+      "focused": true,
+      "password": false,
+      "value": "未选择文件",
+      "rect": [
+        1792,
+        985,
+        211,
+        23
+      ],
+      "patterns": [
+        "InvokePatternIdentifiers.Pattern",
+        "ValuePatternIdentifiers.Pattern",
+        "ScrollItemPatternIdentifiers.Pattern"
+      ]
+    }
+  ]
+}

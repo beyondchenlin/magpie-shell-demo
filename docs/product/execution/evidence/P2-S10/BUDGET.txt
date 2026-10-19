@@ -1,0 +1,5 @@
+2026-10-19: reuse D:/demo1/tagmaai/target and node_modules; one existing worktree.
+Before C32.17GiB / D17.08GiB. D below20: reuse only.
+Candidate dev41: estimated additional peak <=2GiB including Cargo outputs, bounded evidence and desktop/gateway/adapter delivery copies; retain >=10GiB.
+No NSIS build, installer suite, cloned environment or models. Native candidate reuses existing isolated data/webview, old dev40 binaries/evidence preserved.
+Task tests use TempDir and close child resources. Retain source, minimal logs and candidate identity; existing shared target kept for reuse. No historic evidence cleanup.

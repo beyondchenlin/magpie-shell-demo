@@ -1,0 +1,10 @@
+{
+  "explanation": "After r2 build: cfg(test) untrusted-review assertion added and tested; trailing blank lines removed from src-tauri/Cargo.toml and src/product/PackMarketPanel.tsx. No production semantic changes.",
+  "post_build_changes": [
+    {
+      "path": "src-tauri/src/packs.rs",
+      "sha256": "7FE0A2D239C6C0CB1BD8ABDD48DA1BA116C21A626852A58CA9475BABFBBCCDF9"
+    }
+  ],
+  "candidate": "dev.41 r2"
+}

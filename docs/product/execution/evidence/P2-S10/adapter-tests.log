@@ -1,0 +1,72 @@
+   Compiling tagma-core v0.2.0-dev.41 (D:\demo1\tagmaai\crates\tagma-core)
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+   Compiling tagma-runtime v0.2.0-dev.41 (D:\demo1\tagmaai\crates\tagma-runtime)
+    Finished `test` profile [unoptimized] target(s) in 12.13s
+     Running unittests src\lib.rs (target\debug\deps\tagma_runtime-88af1c060ba20c33.exe)
+
+running 3 tests
+test reachflow::tests::offline_sample_and_validation_do_not_imply_real_collection ... ok
+test reachflow::tests::denied_or_mismatched_response_is_not_a_successful_task ... ok
+test reachflow::tests::confirmed_start_status_and_remote_cancel_preserve_service_contract ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 8 filtered out; finished in 0.02s
+
+     Running unittests src\bin\tagma-reachflow.rs (target\debug\deps\tagma_reachflow-23ca0079fb74bf94.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\pack_execution.rs (target\debug\deps\pack_execution-87342963fda177ce.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 6 filtered out; finished in 0.00s
+
+     Running tests\recovery_ack.rs (target\debug\deps\recovery_ack-0732cadf4b28e6d8.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests\security_ack.rs (target\debug\deps\security_ack-5f5d0374f737c0f1.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+     Running tests\usage_clear_ack.rs (target\debug\deps\usage_clear_ack-a663c43fa6756ac2.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 2 filtered out; finished in 0.00s
+

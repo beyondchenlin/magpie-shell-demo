@@ -1,0 +1,35 @@
+{
+  "processes": [
+    {
+      "ProcessId": 57292,
+      "ParentProcessId": 52072,
+      "ExecutablePath": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\install-p0s16\\tagma-desktop.exe",
+      "CreationDate": "2026-10-19T13:20:47.491831+08:00"
+    },
+    {
+      "ProcessId": 7876,
+      "ParentProcessId": 57292,
+      "ExecutablePath": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\install-p0s16\\tagma-gateway.exe",
+      "CreationDate": "2026-10-19T13:20:47.850911+08:00"
+    }
+  ],
+  "tests_running": false,
+  "utc": "2026-10-19T05:29:45.0176324Z",
+  "worktree_count": 1,
+  "retained_rollback": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\retained-dev40-p2s10",
+  "schedules": {
+    "magpie_cis": "PAUSED",
+    "tagma_prd": "PAUSED",
+    "run_binding": "PAUSED"
+  },
+  "disks": [
+    {
+      "Name": "C",
+      "free_bytes": 34249363456
+    },
+    {
+      "Name": "D",
+      "free_bytes": 17518489600
+    }
+  ]
+}

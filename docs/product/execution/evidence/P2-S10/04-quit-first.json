@@ -1,0 +1,338 @@
+{
+    "utc":  "2026-10-19T05:20:06.8647050Z",
+    "pid":  56872,
+    "started":  "2026-10-19T05:18:09.6292247Z",
+    "window":  10751734,
+    "title":  "Tagma 隔离测试 dev41 P2-S10 128d7053",
+    "rect":  [
+                 1582,
+                 744,
+                 2258,
+                 1383
+             ],
+    "elements":  [
+                     {
+                         "index":  0,
+                         "runtimeId":  "42,2099966",
+                         "name":  "",
+                         "type":  "ControlType.Pane",
+                         "automationId":  "",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "focused":  true,
+                         "password":  false,
+                         "value":  null,
+                         "rect":  [
+                                      1590,
+                                      775,
+                                      660,
+                                      600
+                                  ],
+                         "patterns":  [
+
+                                      ]
+                     },
+                     {
+                         "index":  1,
+                         "runtimeId":  "42,5571974",
+                         "name":  "Tagma",
+                         "type":  "ControlType.Pane",
+                         "automationId":  "",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "focused":  true,
+                         "password":  false,
+                         "value":  null,
+                         "rect":  [
+                                      1590,
+                                      775,
+                                      660,
+                                      600
+                                  ],
+                         "patterns":  [
+                                          "ScrollItemPatternIdentifiers.Pattern",
+                                          "ItemContainerPatternIdentifiers.Pattern"
+                                      ]
+                     },
+                     {
+                         "index":  2,
+                         "runtimeId":  "42,3277428",
+                         "name":  "",
+                         "type":  "ControlType.Pane",
+                         "automationId":  "",
+                         "enabled":  false,
+                         "offscreen":  false,
+                         "focused":  false,
+                         "password":  false,
+                         "value":  null,
+                         "rect":  [
+                                      1590,
+                                      775,
+                                      660,
+                                      600
+                                  ],
+                         "patterns":  [
+
+                                      ]
+                     },
+                     {
+                         "index":  3,
+                         "runtimeId":  "42,5571974,4,0,0,5",
+                         "name":  "Tagma - Web 内容",
+                         "type":  "ControlType.Pane",
+                         "automationId":  "",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "focused":  false,
+                         "password":  false,
+                         "value":  null,
+                         "rect":  [
+                                      1590,
+                                      775,
+                                      660,
+                                      600
+                                  ],
+                         "patterns":  [
+                                          "ScrollItemPatternIdentifiers.Pattern"
+                                      ]
+                     },
+                     {
+                         "index":  4,
+                         "runtimeId":  "42,5571974,4,0,0,7",
+                         "name":  "",
+                         "type":  "ControlType.Pane",
+                         "automationId":  "",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "focused":  false,
+                         "password":  false,
+                         "value":  null,
+                         "rect":  [
+                                      1590,
+                                      775,
+                                      660,
+                                      600
+                                  ],
+                         "patterns":  [
+                                          "ScrollItemPatternIdentifiers.Pattern"
+                                      ]
+                     },
+                     {
+                         "index":  5,
+                         "runtimeId":  "42,5571974,4,0,0,9",
+                         "name":  "",
+                         "type":  "ControlType.Pane",
+                         "automationId":  "",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "focused":  false,
+                         "password":  false,
+                         "value":  null,
+                         "rect":  [
+                                      Infinity,
+                                      Infinity,
+                                      -Infinity,
+                                      -Infinity
+                                  ],
+                         "patterns":  [
+                                          "ScrollItemPatternIdentifiers.Pattern"
+                                      ]
+                     },
+                     {
+                         "index":  6,
+                         "runtimeId":  "42,5571974,4,0,0,8",
+                         "name":  "",
+                         "type":  "ControlType.Pane",
+                         "automationId":  "",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "focused":  false,
+                         "password":  false,
+                         "value":  null,
+                         "rect":  [
+                                      1590,
+                                      775,
+                                      660,
+                                      600
+                                  ],
+                         "patterns":  [
+                                          "ScrollItemPatternIdentifiers.Pattern"
+                                      ]
+                     },
+                     {
+                         "index":  7,
+                         "runtimeId":  "42,5571974,4,0,0,1",
+                         "name":  "",
+                         "type":  "ControlType.Pane",
+                         "automationId":  "",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "focused":  false,
+                         "password":  false,
+                         "value":  null,
+                         "rect":  [
+                                      1590,
+                                      775,
+                                      660,
+                                      600
+                                  ],
+                         "patterns":  [
+                                          "ScrollItemPatternIdentifiers.Pattern"
+                                      ]
+                     },
+                     {
+                         "index":  8,
+                         "runtimeId":  "42,8456776,4,5,1,23",
+                         "name":  "Tagma",
+                         "type":  "ControlType.Document",
+                         "automationId":  "RootWebArea",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "focused":  false,
+                         "password":  false,
+                         "value":  "http://tauri.localhost/tagma.html",
+                         "rect":  [
+                                      1590,
+                                      775,
+                                      660,
+                                      600
+                                  ],
+                         "patterns":  [
+                                          "ValuePatternIdentifiers.Pattern",
+                                          "ScrollPatternIdentifiers.Pattern",
+                                          "TextPatternIdentifiers.Pattern",
+                                          "ScrollItemPatternIdentifiers.Pattern"
+                                      ]
+                     },
+                     {
+                         "index":  9,
+                         "runtimeId":  "42,8456776,4,5,1,33",
+                         "name":  "退出 Tagma",
+                         "type":  "ControlType.Window",
+                         "automationId":  "",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "focused":  false,
+                         "password":  false,
+                         "value":  null,
+                         "rect":  [
+                                      1710,
+                                      969,
+                                      420,
+                                      212
+                                  ],
+                         "patterns":  [
+                                          "WindowPatternIdentifiers.Pattern",
+                                          "ScrollItemPatternIdentifiers.Pattern"
+                                      ]
+                     },
+                     {
+                         "index":  10,
+                         "runtimeId":  "42,8456776,4,5,1,34",
+                         "name":  "退出 Tagma",
+                         "type":  "ControlType.Text",
+                         "automationId":  "tagma-quit-title",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "focused":  false,
+                         "password":  false,
+                         "value":  null,
+                         "rect":  [
+                                      1733,
+                                      992,
+                                      374,
+                                      28
+                                  ],
+                         "patterns":  [
+                                          "ScrollItemPatternIdentifiers.Pattern"
+                                      ]
+                     },
+                     {
+                         "index":  11,
+                         "runtimeId":  "42,8456776,4,5,1,105",
+                         "name":  "退出将取消本机队员安装和调用，等待回收完成；已提交的 ReachFlow 服务任务不会因此取消。然后停止本桌面拥有的网关：活动请求最多等待 10 秒，超时取消。独立网关继续运行，尚未保存的编辑将丢失。",
+                         "type":  "ControlType.Text",
+                         "automationId":  "",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "focused":  false,
+                         "password":  false,
+                         "value":  null,
+                         "rect":  [
+                                      1733,
+                                      1032,
+                                      373,
+                                      81
+                                  ],
+                         "patterns":  [
+                                          "TextPatternIdentifiers.Pattern",
+                                          "ScrollItemPatternIdentifiers.Pattern"
+                                      ]
+                     },
+                     {
+                         "index":  12,
+                         "runtimeId":  "42,8456776,4,5,1,37",
+                         "name":  "继续使用",
+                         "type":  "ControlType.Button",
+                         "automationId":  "",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "focused":  true,
+                         "password":  false,
+                         "value":  null,
+                         "rect":  [
+                                      1965,
+                                      1134,
+                                      62,
+                                      24
+                                  ],
+                         "patterns":  [
+                                          "InvokePatternIdentifiers.Pattern",
+                                          "ScrollItemPatternIdentifiers.Pattern"
+                                      ]
+                     },
+                     {
+                         "index":  13,
+                         "runtimeId":  "42,8456776,4,5,1,38",
+                         "name":  "等待后退出",
+                         "type":  "ControlType.Button",
+                         "automationId":  "",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "focused":  false,
+                         "password":  false,
+                         "value":  null,
+                         "rect":  [
+                                      2033,
+                                      1134,
+                                      74,
+                                      24
+                                  ],
+                         "patterns":  [
+                                          "InvokePatternIdentifiers.Pattern",
+                                          "ScrollItemPatternIdentifiers.Pattern"
+                                      ]
+                     },
+                     {
+                         "index":  14,
+                         "runtimeId":  "42,5571974,4,0,0,4",
+                         "name":  "",
+                         "type":  "ControlType.Pane",
+                         "automationId":  "",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "focused":  false,
+                         "password":  false,
+                         "value":  null,
+                         "rect":  [
+                                      Infinity,
+                                      Infinity,
+                                      -Infinity,
+                                      -Infinity
+                                  ],
+                         "patterns":  [
+                                          "ScrollItemPatternIdentifiers.Pattern"
+                                      ]
+                     }
+                 ]
+}
