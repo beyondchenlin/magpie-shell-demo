@@ -1,0 +1,69 @@
+{
+  "utc": "2026-10-19T04:49:26.8238231Z",
+  "kind": "record of observed tool results, not a raw test transcript",
+  "baseline": "b2d3efe",
+  "test_command": "cargo test -p tagma-runtime --lib pack_install::tests --locked --offline -- --ignored --nocapture",
+  "first": {
+    "reason": "Windows accepted socket inherited nonblocking mode in owned HTTP fixture",
+    "failed": 2,
+    "passed": 1
+  },
+  "final": {
+    "exit_code": 0,
+    "ignored": 0,
+    "seconds": 4.51,
+    "failed": 0,
+    "passed": 3
+  },
+  "clippy": {
+    "exit_code": 0,
+    "command": "cargo clippy -p tagma-runtime --all-targets --locked --offline -- -D warnings"
+  },
+  "boundaries": [
+    "owned HTTP transport only, no TLS release validation",
+    "actual owned protocol child, not ReachFlow",
+    "no desktop candidate or native P2 acceptance"
+  ],
+  "files": [
+    {
+      "path": "crates/tagma-runtime/src/pack_install.rs",
+      "bytes": 14035,
+      "sha256": "C4334BD72434A9A7C699F24FD270F627FE4476F6C256D16E3FFF13D7CCB476DA"
+    },
+    {
+      "path": "crates/tagma-runtime/src/pack_install_tests.rs",
+      "bytes": 12054,
+      "sha256": "5EC43F9D2408E7C2D029183145BC01DA49FABAE970B52A02A4BA1B35878FB306"
+    },
+    {
+      "path": "crates/tagma-runtime/src/lib.rs",
+      "bytes": 170,
+      "sha256": "0A51372C52C2A87A0D205A4C71DAE7F6B0BFAEC4085A26FD14F6F81C631361DA"
+    },
+    {
+      "path": "Cargo.lock",
+      "bytes": 144516,
+      "sha256": "E880BE918DC8223533A1584946E65BB9EC6DD58B91ABEB9E878E0F0A2351F7F0"
+    },
+    {
+      "path": "target/debug/examples/pack_protocol_fixture.exe",
+      "bytes": 2288128,
+      "sha256": "06B46AF632AD0A1C2E654F10A068C0031101F1A29003F1FDA5D024F5DEFAB830"
+    }
+  ],
+  "cleanup": {
+    "owned_protocol_helpers_running": 0,
+    "worktrees": 1,
+    "owned_temp_prefixes_remaining": 0
+  },
+  "disk_free_GiB": {
+    "D": 17.26,
+    "C": 32.26
+  },
+  "disk_note": "Observed D free changed from 19.26 to17.26 during S08/S09; not a measured task-only physical allocation. Initial <=0.5GiB estimate was insufficient to explain observed disk delta; no full build or new environment. Existing target retained, remaining free above10GiB.",
+  "automations": {
+    "run_binding": "PAUSED",
+    "tagma_prd": "PAUSED",
+    "magpie_cis": "PAUSED"
+  }
+}
