@@ -71,6 +71,29 @@ pub fn validate_installations(packs: &[InstalledPack]) -> PackResult<()> {
 }
 
 impl ConfigService {
+    /// Unregister only the exact inactive versions reviewed by the host. Published
+    /// team recipes remain immutable and become unavailable until reinstallation.
+    /// Host holds gateway/executor leases and persists a removal intent first.
+    pub fn unregister_inactive_pack(
+        &self,
+        expected_revision: u32,
+        expected: &InstalledPack,
+    ) -> AppResult<ConfigView> {
+        let _operation = self.operation_lock()?;
+        let (revision, mut snapshot) = self.read_snapshot()?;
+        if revision != expected_revision {
+            return Err(AppError::new(ErrorCode::ConfigConflict));
+        }
+        let actual = snapshot.installed_packs.iter().find(|p| p.id == expected.id);
+        if expected.active_version.is_some() || actual.is_some_and(|p| p != expected) {
+            return Err(AppError::new(ErrorCode::InvalidInput));
+        }
+        if actual.is_some() {
+            snapshot.installed_packs.retain(|p| p.id != expected.id);
+            self.commit(revision, &snapshot, None)?;
+        }
+        self.view()
+    }
     /// Internal host API, deliberately not a deserializable desktop/HTTP command.
     /// Caller must verify the preparation for this configuration and complete its
     /// health protocol before invoking. `proof` has already passed trusted roots.

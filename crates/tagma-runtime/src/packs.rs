@@ -18,6 +18,8 @@ use tokio::{
 };
 use tokio_util::sync::CancellationToken;
 use uuid::Uuid;
+mod removal;
+pub use removal::RemovalStatus;
 
 const MAX_TEXT: usize = 16 * 1024;
 const MAX_RESPONSE: u64 = 128 * 1024;
@@ -42,6 +44,7 @@ pub enum PackRunError {
     ServiceUnconfirmed,
     ServiceReportUnavailable,
     NetworkNotAllowed,
+    CleanupPending,
 }
 impl std::fmt::Display for PackRunError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -63,6 +66,7 @@ impl std::fmt::Display for PackRunError {
             Self::ServiceUnconfirmed => "REACHFLOW_RESULT_UNCONFIRMED",
             Self::ServiceReportUnavailable => "REACHFLOW_REPORT_UNAVAILABLE",
             Self::NetworkNotAllowed => "PACK_NETWORK_NOT_ALLOWED",
+            Self::CleanupPending => "PACK_CLEANUP_PENDING",
         })
     }
 }

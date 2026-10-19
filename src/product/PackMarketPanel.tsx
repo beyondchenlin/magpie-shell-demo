@@ -4,7 +4,7 @@ import {useEffect,useRef,useState} from "react";
 import {PrefRow} from "../components/PrefRow";
 import {TextBtn} from "../components/TextBtn";
 import {desktop,protocolVersion,service} from "./service";
-import type {ConfigView,PackReviewView,PackTaskEvent,PackUserOperation} from "./contract";
+import type {ConfigView,PackMarketView,PackReviewView,PackTaskEvent,PackUserOperation} from "./contract";
 import type {ProductLanguage} from "./preferences";
 
 function packError(value:unknown,zh:boolean){
@@ -16,6 +16,9 @@ function packError(value:unknown,zh:boolean){
     PACK_REVIEW_EXPIRED:["安装确认已过期或已使用，请重新选择清单核验。","Review expired or was consumed. Select the manifest again."],
     CONFIG_CONFLICT:["配置已变化，请刷新后重新核验清单。","Configuration changed. Refresh and review again."],
     PACK_CANCELLED:["本机操作已取消。","Local operation cancelled."],
+    PACK_BUSY:["网关或队员仍在运行，请先停止网关并等待本机任务结束，再刷新状态。","The gateway or a pack is running. Stop the gateway, wait for local calls, then refresh status."],
+    PACK_REMOVAL_PENDING:["上次卸载尚未完成，请在运行与卸载区域继续清理。成果不会删除。","An uninstall is pending. Continue cleanup below; saved results are retained."],
+    PACK_CLEANUP_PENDING:["队员已从可调用配置移除，但运行文件清理失败。请解除文件占用或检查权限，再点继续清理；成果保留。","The pack is unregistered but runtime cleanup failed. Release file locks or check permissions, then continue cleanup. Results are retained."],
     PACK_NETWORK_NOT_ALLOWED:["队员清单未允许该服务域名，未发送网络请求。","The package does not permit this service domain. No network request was sent."],
     PACK_INVALID_INPUT:["请核对服务地址、工作区和调用参数。","Check the service URL, workspace and request fields."],
     PACK_INTERRUPTED:["上次本机操作被中断，尚未确认完成；不会自动重试。请核对安装状态或服务任务。","The previous operation was interrupted. Check installation or service state; it will not replay automatically."],
@@ -28,7 +31,7 @@ function packError(value:unknown,zh:boolean){
   };
   return `${labels[code]?.[zh?0:1]??(zh?"操作未完成，请检查安装状态与服务条件。":"Operation did not complete. Check installation and service requirements.")} (${code})`;
 }
-export function PackMarketPanel({config,busy,active,language,onRefresh,onEditingChange}:{config:ConfigView,busy:boolean,active:boolean,language:ProductLanguage,onRefresh:()=>Promise<void>,onEditingChange:(value:boolean)=>void}){
+export function PackMarketPanel({config,busy,active,language,runtimeOwned,onRefresh,onEditingChange}:{config:ConfigView,busy:boolean,active:boolean,language:ProductLanguage,runtimeOwned:boolean,onRefresh:()=>Promise<void>,onEditingChange:(value:boolean)=>void}){
   const zh=language==="zh";
   const [releaseReady,setReleaseReady]=useState<boolean|null>(null);
   const [internalManifest,setInternalManifest]=useState<string|null>(null);
@@ -37,6 +40,9 @@ export function PackMarketPanel({config,busy,active,language,onRefresh,onEditing
   const [working,setWorking]=useState(false);
   const [error,setError]=useState<unknown>(null);
   const [taskId,setTaskId]=useState("");
+  const [maintenance,setMaintenance]=useState<PackMarketView|null>(null);
+  const [removeReview,setRemoveReview]=useState(false);
+  const removeDialog=useRef<HTMLDialogElement>(null),removeButton=useRef<HTMLButtonElement>(null);
   const internalButton=useRef<HTMLButtonElement>(null);
   const file=useRef<HTMLInputElement>(null),alert=useRef<HTMLParagraphElement>(null),sample=useRef<HTMLButtonElement>(null);
   const mounted=useRef(true),runningId=useRef<string|null>(null),returnTo=useRef<HTMLElement|null>(null);
@@ -49,10 +55,22 @@ export function PackMarketPanel({config,busy,active,language,onRefresh,onEditing
     return [...(uses(team.draft)?[`${team.draft.display_name} · ${zh?"草稿":"draft"}`]:[]),...team.versions.filter(version=>uses(version.recipe)).map(version=>`${version.recipe.display_name} · ${version.public_id}`)];
   });
   useEffect(()=>{mounted.current=true;return()=>{mounted.current=false;};},[]);
-  useEffect(()=>{let live=true;if(active&&desktop)void service.packMarket().then(value=>{if(live){setReleaseReady(value.release_ready);setInternalManifest(value.internal_manifest);setTask(previous=>previous?.text?previous:value.task);}},failure=>{if(live)setError(failure);});return()=>{live=false;};},[active]);
-  useEffect(()=>{onEditingChange(working||!!review);return()=>onEditingChange(false);},[working,review,onEditingChange]);
+  useEffect(()=>{let live=true;if(active&&desktop)void service.packMarket().then(value=>{if(live){setMaintenance(value);setReleaseReady(value.release_ready);setInternalManifest(value.internal_manifest);setTask(previous=>previous?.text?previous:value.task);}},failure=>{if(live)setError(failure);});return()=>{live=false;};},[active,config.desired_revision]);
+  useEffect(()=>{onEditingChange(working||!!review||removeReview);return()=>onEditingChange(false);},[working,review,removeReview,onEditingChange]);
+  useEffect(()=>{if(removeReview)removeDialog.current?.showModal();else if(removeDialog.current?.open){removeDialog.current.close();removeButton.current?.focus();}},[removeReview]);
   useEffect(()=>{if(error)alert.current?.focus();},[error]);
-  const locked=busy||working;
+  const locked=busy||working||!!maintenance?.pending_removal;
+  const cannotRemove=busy||working||!!review||installed||!maintenance||maintenance.gateway_running||maintenance.pack_call_running;
+  async function refreshMaintenance(){try{const value=await service.packMarket();if(mounted.current)setMaintenance(value);}catch(failure){if(mounted.current){setMaintenance(null);setError(failure);}}}
+  async function stopForRemoval(){if(busy||working||!runtimeOwned)return;setWorking(true);setError(null);try{await service.stopGateway();}catch(failure){setError(failure);}finally{setWorking(false);await onRefresh();await refreshMaintenance();}}
+  async function uninstall(){
+    if(cannotRemove||runningId.current)return;
+    setRemoveReview(false);setWorking(true);setError(null);
+    const id=crypto.randomUUID();runningId.current=id;
+    try{await service.uninstallPack({protocol_version:protocolVersion,task_id:id,expected_revision:config.desired_revision,pack_id:"reachflow"},receive);}
+    catch(failure){if(mounted.current)setError(failure);}
+    finally{runningId.current=null;if(mounted.current){setWorking(false);await onRefresh();await refreshMaintenance();}}
+  }
   useEffect(()=>{if(!locked&&!review&&returnTo.current){if(returnTo.current instanceof HTMLButtonElement&&returnTo.current.disabled)return;if(!error&&returnTo.current.isConnected)returnTo.current.focus();returnTo.current=null;}},[locked,review,error,installed]);
   function receive(event:PackTaskEvent){if(!mounted.current||event.task_id!==runningId.current)return;setTask(event);if(event.text){try{const value=JSON.parse(event.text);if(value.mode==="reachflow_service"&&typeof value.task_id==="string")setTaskId(value.task_id);}catch{/* Result remains plain escaped text. */}}}
   async function choose(selected:File|undefined){if(!selected||locked)return;setWorking(true);setReview(null);setError(null);try{if(selected.size>395264)throw {code:"PACK_INVALID_MANIFEST"};const next=await service.reviewPack(await selected.text());if(mounted.current)setReview(next);}catch(failure){if(mounted.current)setError(failure);}finally{if(mounted.current)setWorking(false);if(file.current)file.current.value="";}}
@@ -66,10 +84,10 @@ export function PackMarketPanel({config,busy,active,language,onRefresh,onEditing
     catch(failure){if(mounted.current)setError(failure);}
     finally{runningId.current=null;if(mounted.current){setWorking(false);await onRefresh();}}
   }
-  const phase:Record<string,string>=zh?{starting:"准备中",download:"下载中",verify:"校验与准备",health:"健康检查",deactivating:"保存停用",activated:"已登记版本",calling:"调用中",finished:"已结束"}:{};
+  const phase:Record<string,string>=zh?{starting:"准备中",download:"下载中",verify:"校验与准备",health:"健康检查",deactivating:"保存停用",removing:"卸载运行文件",activated:"已登记版本",calling:"调用中",finished:"已结束"}:{};
   const state:Record<string,string>=zh?{running:"进行中",succeeded:"完成",failed:"失败",cancelled:"已取消",interrupted:"已中断"}:{};
   return <section aria-label={zh?"队员安装与调用":"Pack installation and calls"}>
-    <div className="list prefs"><PrefRow name="ReachFlow" sub={zh?"本地固定素材试跑，以及已授权服务任务的调用与取消。":"Local fixed sample, authorized service calls and task cancellation."}><span>{installed?`${zh?"已登记版本":"Registered version"} ${reachflow.active_version}`:reachflow?(zh?"已停用 · 保留版本":"Inactive · versions retained"):zh?"未安装":"Not installed"}</span></PrefRow></div>
+    <div className="list prefs"><PrefRow name="ReachFlow" sub={zh?"本地固定素材试跑，以及已授权服务任务的调用与取消。":"Local fixed sample, authorized service calls and task cancellation."}><span>{maintenance?.pending_removal?(zh?"卸载未完成 · 待清理":"Uninstall incomplete · cleanup pending"):installed?`${zh?"已登记版本":"Registered version"} ${reachflow.active_version}`:reachflow?(zh?"已停用 · 保留版本":"Inactive · versions retained"):zh?"未安装":"Not installed"}</span></PrefRow></div>
     {releaseReady===false&&<p role="status" className="tagma-footnote">{zh?"当前发行版尚未配置正式队员发行公钥。可核验清单，但未受信任的发行包不能安装；本地试跑需要先安装有效队员。":"This release has no official pack signing roots. Untrusted manifests cannot be installed; a valid installed pack is required for the local sample."}</p>}
     {internalManifest&&<div className="tagma-editor"><p>{zh?"隔离开发候选提供已签名的内部测试包，仅用于本地固定素材试跑，不代表正式发行或真实采集服务。离线安装仍校验签名、内容和健康状态。":"This isolated development build includes a signed internal package for local samples only. It is not a production release or a research service. Offline installation verifies signature, content and health."}</p><TextBtn ref={internalButton} disabled={locked||!!review||internalPresent} onClick={()=>void reviewInternal()}>{internalPresent?(zh?"内部测试包已安装":"Internal package installed"):(zh?"安装 ReachFlow 内部测试包":"Install internal ReachFlow package")}</TextBtn></div>}
     {reachflow&&<details className="tagma-chat-setup"><summary>{zh?"已安装版本与小队引用":"Installed versions and team references"}</summary><p className="tagma-footnote">{zh?"停用保留运行文件和成果；网关应用新配置后不再接收该队员的新调用，已在途任务继续使用固定版本。这不是紧急撤销或卸载。重新启用会核验签名、文件及健康状态，失败不切换版本。":"Deactivation retains files and results. Once the gateway applies the revision, new calls are unavailable; in-flight tasks keep their pinned version. This is not emergency revocation or uninstall. Activation rechecks signature, files and health before switching."}</p>
@@ -77,6 +95,14 @@ export function PackMarketPanel({config,busy,active,language,onRefresh,onEditing
       {references.length>0?<><p>{zh?"以下小队依赖此队员；停用后将暂时不可调用：":"These teams depend on this pack and become unavailable while it is inactive:"}</p><ul>{references.map((name,index)=><li key={index}>{name}</li>)}</ul></>:<p>{zh?"当前没有小队引用。":"No team references."}</p>}
       <TextBtn variant="danger" disabled={locked||!!review||!installed} onClick={()=>void manage(null)}>{zh?"停用 ReachFlow（保留文件）":"Deactivate ReachFlow (retain files)"}</TextBtn>
     </details>}
+    {(reachflow||maintenance?.pending_removal)&&<details className="tagma-chat-setup" open={!!maintenance?.pending_removal}><summary>{zh?"运行状态与卸载":"Runtime status and uninstall"}</summary>
+      <p role="status">{!maintenance?(zh?"运行状态未确认，暂不能卸载。":"Runtime state unconfirmed; uninstall unavailable."):maintenance.gateway_running?(zh?"网关正在运行，可能仍有在途小队任务。卸载前请停止网关。":"The gateway is running and may have in-flight team tasks. Stop it before uninstalling."):maintenance.pack_call_running?(zh?"本机队员调用或健康检查进行中，请等待结束。":"A local pack call or health check is in progress. Wait for completion."):(zh?"网关已停止，当前未发现执行中的队员调用。卸载时会再次检查并阻止新调用。":"Gateway stopped; no pack call is currently executing. Uninstall rechecks and excludes new calls.")}</p>
+      <p>{zh?"先停用队员，再停止本机网关。停止会中止本机活动请求，不会取消已提交的远端服务任务。卸载只移除队员运行文件，保留小队配方、用量和保存到成果目录的文件。依赖小队将不可调用，重新安装相同固定版本后恢复。":"Deactivate the pack, then stop the local gateway. Stopping interrupts local requests, not submitted remote tasks. Uninstall removes runtime files only; team recipes, usage and saved results remain. Dependent teams resume after reinstalling their pinned version."}</p>
+      {references.length>0&&<ul>{references.map((name,index)=><li key={index}>{name}</li>)}</ul>}
+      {maintenance?.pending_removal&&<p role="alert">{zh?"上次卸载未完成。已移除的运行文件不会伪报为已安装；请继续清理。":"The previous uninstall is incomplete. Removed runtime files are not reported as installed. Continue cleanup."}</p>}
+      <div className="tagma-actions"><TextBtn disabled={busy||working} onClick={()=>void refreshMaintenance()}>{zh?"刷新运行状态":"Refresh runtime status"}</TextBtn><TextBtn disabled={busy||working||!runtimeOwned} onClick={()=>void stopForRemoval()}>{zh?"停止本机网关以维护队员":"Stop local gateway for maintenance"}</TextBtn><TextBtn ref={removeButton} variant="danger" disabled={cannotRemove} onClick={()=>setRemoveReview(true)}>{maintenance?.pending_removal?(zh?"继续清理运行文件":"Continue runtime cleanup"):(zh?"卸载 ReachFlow":"Uninstall ReachFlow")}</TextBtn></div>
+    </details>}
+    <dialog ref={removeDialog} className="tagma-confirm" onKeyDown={event=>{if(event.key!=="Tab")return;event.preventDefault();const buttons=Array.from(event.currentTarget.querySelectorAll<HTMLButtonElement>("button:not(:disabled)"));if(!buttons.length)return;const index=buttons.findIndex(button=>button===document.activeElement);buttons[index<0?(event.shiftKey?buttons.length-1:0):(index+(event.shiftKey?-1:1)+buttons.length)%buttons.length].focus();}} aria-labelledby="tagma-pack-remove-title" onCancel={event=>{event.preventDefault();setRemoveReview(false);}}><h2 id="tagma-pack-remove-title">{zh?"卸载 ReachFlow？":"Uninstall ReachFlow?"}</h2><p>{zh?"将移除已登记版本的运行文件。小队配方和用户成果保留；依赖小队会暂时不可用。":"Remove registered runtime files. Team recipes and user results remain; dependent teams will be unavailable."}</p><p>{zh?`保留的小队引用：${references.length}`:`Retained team references: ${references.length}`}</p><div className="tagma-actions"><TextBtn autoFocus onClick={()=>setRemoveReview(false)}>{zh?"取消":"Cancel"}</TextBtn><TextBtn variant="danger" disabled={cannotRemove} onClick={()=>void uninstall()}>{zh?"确认卸载，保留成果":"Uninstall and retain results"}</TextBtn></div></dialog>
     <label className="tagma-compose-label">{zh?"选择队员发行清单":"Choose a pack release manifest"}<input ref={file} type="file" accept=".json,application/json" disabled={!desktop||locked||!!review} onChange={event=>void choose(event.target.files?.[0])}/></label>
     {error!=null&&<p ref={alert} role="alert" tabIndex={-1} className="tagma-error">{packError(error,zh)}</p>}
     {review&&<section className="tagma-editor" aria-label={zh?"安装确认":"Installation review"}><h2>{review.pack_id} · {review.version}</h2><div className="list prefs">

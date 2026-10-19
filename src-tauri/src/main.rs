@@ -195,6 +195,22 @@ async fn manage_pack(
         .await
 }
 #[tauri::command]
+async fn uninstall_pack(
+    window: WebviewWindow,
+    app: State<'_, Application>,
+    input: tagma_core::packs::UninstallPack,
+    on_event: tauri::ipc::Channel<tagma_core::packs::PackTaskEvent>,
+) -> Result<ConfigView, tagma_core::packs::PackUiError> {
+    pack_protocol(input.protocol_version)?;
+    let bridge=pack_bridge(&window,&app)?;
+    let handle=window.app_handle().clone();
+    tauri::async_runtime::spawn_blocking(move || {
+        let app=handle.state::<Application>();
+        let config=app.config.as_ref().map_err(|_|tagma_core::packs::PackUiError{code:"PACK_UNAVAILABLE".into()})?;
+        bridge.uninstall(config,input,on_event)
+    }).await.map_err(|_|tagma_core::packs::PackUiError{code:"PACK_UNAVAILABLE".into()})?
+}
+#[tauri::command]
 async fn invoke_pack(
     window: WebviewWindow,
     app: State<'_, Application>,
@@ -928,6 +944,7 @@ fn main() {
             install_pack,
             invoke_pack,
             manage_pack,
+            uninstall_pack,
             cancel_pack,
             send_chat,
             cancel_chat,

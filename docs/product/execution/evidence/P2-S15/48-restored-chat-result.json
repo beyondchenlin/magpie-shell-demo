@@ -1,0 +1,1450 @@
+{
+    "utc":  "2026-10-19T09:00:47.4878927Z",
+    "pid":  39856,
+    "started":  "2026-10-19T08:56:42.4752902Z",
+    "window":  5639156,
+    "title":  "Tagma 隔离测试 dev44r6 P2-S15 128d7053",
+    "rect":  [
+                 1582,
+                 744,
+                 2258,
+                 1383
+             ],
+    "elements":  [
+                     {
+                         "index":  0,
+                         "runtimeId":  "42,7079334",
+                         "name":  "",
+                         "type":  "ControlType.Pane",
+                         "automationId":  "",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "focused":  true,
+                         "password":  false,
+                         "value":  null,
+                         "rect":  [
+                                      1590,
+                                      775,
+                                      660,
+                                      600
+                                  ],
+                         "patterns":  [
+
+                                      ]
+                     },
+                     {
+                         "index":  1,
+                         "runtimeId":  "42,330638",
+                         "name":  "Tagma",
+                         "type":  "ControlType.Pane",
+                         "automationId":  "",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "focused":  true,
+                         "password":  false,
+                         "value":  null,
+                         "rect":  [
+                                      1590,
+                                      775,
+                                      660,
+                                      600
+                                  ],
+                         "patterns":  [
+                                          "ScrollItemPatternIdentifiers.Pattern",
+                                          "ItemContainerPatternIdentifiers.Pattern"
+                                      ]
+                     },
+                     {
+                         "index":  2,
+                         "runtimeId":  "42,6556526",
+                         "name":  "",
+                         "type":  "ControlType.Pane",
+                         "automationId":  "",
+                         "enabled":  false,
+                         "offscreen":  false,
+                         "focused":  false,
+                         "password":  false,
+                         "value":  null,
+                         "rect":  [
+                                      1590,
+                                      775,
+                                      660,
+                                      600
+                                  ],
+                         "patterns":  [
+
+                                      ]
+                     },
+                     {
+                         "index":  3,
+                         "runtimeId":  "42,330638,4,0,0,5",
+                         "name":  "Tagma - Web 内容",
+                         "type":  "ControlType.Pane",
+                         "automationId":  "",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "focused":  false,
+                         "password":  false,
+                         "value":  null,
+                         "rect":  [
+                                      1590,
+                                      775,
+                                      660,
+                                      600
+                                  ],
+                         "patterns":  [
+                                          "ScrollItemPatternIdentifiers.Pattern"
+                                      ]
+                     },
+                     {
+                         "index":  4,
+                         "runtimeId":  "42,330638,4,0,0,7",
+                         "name":  "",
+                         "type":  "ControlType.Pane",
+                         "automationId":  "",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "focused":  false,
+                         "password":  false,
+                         "value":  null,
+                         "rect":  [
+                                      1590,
+                                      775,
+                                      660,
+                                      600
+                                  ],
+                         "patterns":  [
+                                          "ScrollItemPatternIdentifiers.Pattern"
+                                      ]
+                     },
+                     {
+                         "index":  5,
+                         "runtimeId":  "42,330638,4,0,0,9",
+                         "name":  "",
+                         "type":  "ControlType.Pane",
+                         "automationId":  "",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "focused":  false,
+                         "password":  false,
+                         "value":  null,
+                         "rect":  [
+                                      Infinity,
+                                      Infinity,
+                                      -Infinity,
+                                      -Infinity
+                                  ],
+                         "patterns":  [
+                                          "ScrollItemPatternIdentifiers.Pattern"
+                                      ]
+                     },
+                     {
+                         "index":  6,
+                         "runtimeId":  "42,330638,4,0,0,8",
+                         "name":  "",
+                         "type":  "ControlType.Pane",
+                         "automationId":  "",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "focused":  false,
+                         "password":  false,
+                         "value":  null,
+                         "rect":  [
+                                      1590,
+                                      775,
+                                      660,
+                                      600
+                                  ],
+                         "patterns":  [
+                                          "ScrollItemPatternIdentifiers.Pattern"
+                                      ]
+                     },
+                     {
+                         "index":  7,
+                         "runtimeId":  "42,330638,4,0,0,1",
+                         "name":  "",
+                         "type":  "ControlType.Pane",
+                         "automationId":  "",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "focused":  false,
+                         "password":  false,
+                         "value":  null,
+                         "rect":  [
+                                      1590,
+                                      775,
+                                      660,
+                                      600
+                                  ],
+                         "patterns":  [
+                                          "ScrollItemPatternIdentifiers.Pattern"
+                                      ]
+                     },
+                     {
+                         "index":  8,
+                         "runtimeId":  "42,5311642,4,5,1,1",
+                         "name":  "Tagma",
+                         "type":  "ControlType.Document",
+                         "automationId":  "RootWebArea",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "focused":  false,
+                         "password":  false,
+                         "value":  "http://tauri.localhost/tagma.html",
+                         "rect":  [
+                                      1590,
+                                      775,
+                                      660,
+                                      600
+                                  ],
+                         "patterns":  [
+                                          "ValuePatternIdentifiers.Pattern",
+                                          "ScrollPatternIdentifiers.Pattern",
+                                          "TextPatternIdentifiers.Pattern",
+                                          "ScrollItemPatternIdentifiers.Pattern"
+                                      ]
+                     },
+                     {
+                         "index":  9,
+                         "runtimeId":  "42,5311642,4,5,1,30",
+                         "name":  "",
+                         "type":  "ControlType.Group",
+                         "automationId":  "root",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "focused":  false,
+                         "password":  false,
+                         "value":  null,
+                         "rect":  [
+                                      1590,
+                                      775,
+                                      660,
+                                      600
+                                  ],
+                         "patterns":  [
+                                          "InvokePatternIdentifiers.Pattern",
+                                          "ScrollItemPatternIdentifiers.Pattern"
+                                      ]
+                     },
+                     {
+                         "index":  10,
+                         "runtimeId":  "42,5311642,4,5,1,37",
+                         "name":  "",
+                         "type":  "ControlType.Group",
+                         "automationId":  "",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "focused":  false,
+                         "password":  false,
+                         "value":  null,
+                         "rect":  [
+                                      1590,
+                                      775,
+                                      660,
+                                      46
+                                  ],
+                         "patterns":  [
+                                          "ScrollItemPatternIdentifiers.Pattern"
+                                      ]
+                     },
+                     {
+                         "index":  11,
+                         "runtimeId":  "42,5311642,4,5,1,39",
+                         "name":  "切换导航布局",
+                         "type":  "ControlType.Button",
+                         "automationId":  "sideToggle",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "focused":  false,
+                         "password":  false,
+                         "value":  null,
+                         "rect":  [
+                                      1604,
+                                      785,
+                                      26,
+                                      26
+                                  ],
+                         "patterns":  [
+                                          "TogglePatternIdentifiers.Pattern",
+                                          "ScrollItemPatternIdentifiers.Pattern"
+                                      ]
+                     },
+                     {
+                         "index":  12,
+                         "runtimeId":  "42,5311642,4,5,1,45",
+                         "name":  "Tagma",
+                         "type":  "ControlType.Group",
+                         "automationId":  "nav",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "focused":  false,
+                         "password":  false,
+                         "value":  null,
+                         "rect":  [
+                                      1825,
+                                      784,
+                                      190,
+                                      28
+                                  ],
+                         "patterns":  [
+                                          "ScrollItemPatternIdentifiers.Pattern"
+                                      ]
+                     },
+                     {
+                         "index":  13,
+                         "runtimeId":  "42,5311642,4,5,1,47",
+                         "name":  "对话",
+                         "type":  "ControlType.Button",
+                         "automationId":  "",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "focused":  false,
+                         "password":  false,
+                         "value":  null,
+                         "rect":  [
+                                      1827,
+                                      786,
+                                      50,
+                                      24
+                                  ],
+                         "patterns":  [
+                                          "InvokePatternIdentifiers.Pattern",
+                                          "ScrollItemPatternIdentifiers.Pattern"
+                                      ]
+                     },
+                     {
+                         "index":  14,
+                         "runtimeId":  "42,5311642,4,5,1,49",
+                         "name":  "供应商",
+                         "type":  "ControlType.Button",
+                         "automationId":  "",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "focused":  false,
+                         "password":  false,
+                         "value":  null,
+                         "rect":  [
+                                      1876,
+                                      786,
+                                      63,
+                                      24
+                                  ],
+                         "patterns":  [
+                                          "InvokePatternIdentifiers.Pattern",
+                                          "ScrollItemPatternIdentifiers.Pattern"
+                                      ]
+                     },
+                     {
+                         "index":  15,
+                         "runtimeId":  "42,5311642,4,5,1,51",
+                         "name":  "队员市场",
+                         "type":  "ControlType.Button",
+                         "automationId":  "",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "focused":  false,
+                         "password":  false,
+                         "value":  null,
+                         "rect":  [
+                                      1938,
+                                      786,
+                                      75,
+                                      24
+                                  ],
+                         "patterns":  [
+                                          "InvokePatternIdentifiers.Pattern",
+                                          "ScrollItemPatternIdentifiers.Pattern"
+                                      ]
+                     },
+                     {
+                         "index":  16,
+                         "runtimeId":  "42,5311642,4,5,1,54",
+                         "name":  "刷新",
+                         "type":  "ControlType.Button",
+                         "automationId":  "sync",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "focused":  false,
+                         "password":  false,
+                         "value":  null,
+                         "rect":  [
+                                      2186,
+                                      785,
+                                      26,
+                                      26
+                                  ],
+                         "patterns":  [
+                                          "InvokePatternIdentifiers.Pattern",
+                                          "ScrollItemPatternIdentifiers.Pattern"
+                                      ]
+                     },
+                     {
+                         "index":  17,
+                         "runtimeId":  "42,5311642,4,5,1,58",
+                         "name":  "设置",
+                         "type":  "ControlType.Button",
+                         "automationId":  "prefs",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "focused":  false,
+                         "password":  false,
+                         "value":  null,
+                         "rect":  [
+                                      2214,
+                                      785,
+                                      26,
+                                      26
+                                  ],
+                         "patterns":  [
+                                          "InvokePatternIdentifiers.Pattern",
+                                          "ScrollItemPatternIdentifiers.Pattern"
+                                      ]
+                     },
+                     {
+                         "index":  18,
+                         "runtimeId":  "42,5311642,4,5,1,21",
+                         "name":  "对话",
+                         "type":  "ControlType.Group",
+                         "automationId":  "",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "focused":  false,
+                         "password":  false,
+                         "value":  null,
+                         "rect":  [
+                                      1590,
+                                      821,
+                                      660,
+                                      554
+                                  ],
+                         "patterns":  [
+                                          "ScrollPatternIdentifiers.Pattern",
+                                          "ScrollItemPatternIdentifiers.Pattern"
+                                      ]
+                     },
+                     {
+                         "index":  19,
+                         "runtimeId":  "42,5311642,4,5,1,65",
+                         "name":  "模型对话",
+                         "type":  "ControlType.Group",
+                         "automationId":  "",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "focused":  false,
+                         "password":  false,
+                         "value":  null,
+                         "rect":  [
+                                      1606,
+                                      823,
+                                      618,
+                                      617
+                                  ],
+                         "patterns":  [
+                                          "ScrollItemPatternIdentifiers.Pattern"
+                                      ]
+                     },
+                     {
+                         "index":  20,
+                         "runtimeId":  "42,5311642,4,5,1,67",
+                         "name":  "对话",
+                         "type":  "ControlType.Text",
+                         "automationId":  "",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "focused":  false,
+                         "password":  false,
+                         "value":  null,
+                         "rect":  [
+                                      1606,
+                                      831,
+                                      26,
+                                      19
+                                  ],
+                         "patterns":  [
+                                          "ScrollItemPatternIdentifiers.Pattern"
+                                      ]
+                     },
+                     {
+                         "index":  21,
+                         "runtimeId":  "42,5311642,4,5,1,69",
+                         "name":  "管理模型",
+                         "type":  "ControlType.Button",
+                         "automationId":  "",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "focused":  false,
+                         "password":  false,
+                         "value":  null,
+                         "rect":  [
+                                      2106,
+                                      830,
+                                      62,
+                                      24
+                                  ],
+                         "patterns":  [
+                                          "InvokePatternIdentifiers.Pattern",
+                                          "ScrollItemPatternIdentifiers.Pattern"
+                                      ]
+                     },
+                     {
+                         "index":  22,
+                         "runtimeId":  "42,5311642,4,5,1,70",
+                         "name":  "新对话",
+                         "type":  "ControlType.Button",
+                         "automationId":  "",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "focused":  false,
+                         "password":  false,
+                         "value":  null,
+                         "rect":  [
+                                      2174,
+                                      830,
+                                      50,
+                                      24
+                                  ],
+                         "patterns":  [
+                                          "InvokePatternIdentifiers.Pattern",
+                                          "ScrollItemPatternIdentifiers.Pattern"
+                                      ]
+                     },
+                     {
+                         "index":  23,
+                         "runtimeId":  "42,5311642,4,5,1,235",
+                         "name":  "模型",
+                         "type":  "ControlType.Text",
+                         "automationId":  "",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "focused":  false,
+                         "password":  false,
+                         "value":  null,
+                         "rect":  [
+                                      1621,
+                                      877,
+                                      26,
+                                      18
+                                  ],
+                         "patterns":  [
+                                          "TextPatternIdentifiers.Pattern",
+                                          "ScrollItemPatternIdentifiers.Pattern"
+                                      ]
+                     },
+                     {
+                         "index":  24,
+                         "runtimeId":  "42,5311642,4,5,1,236",
+                         "name":  "ReachFlow · 队员",
+                         "type":  "ControlType.Text",
+                         "automationId":  "",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "focused":  false,
+                         "password":  false,
+                         "value":  null,
+                         "rect":  [
+                                      1621,
+                                      897,
+                                      86,
+                                      16
+                                  ],
+                         "patterns":  [
+                                          "TextPatternIdentifiers.Pattern",
+                                          "ScrollItemPatternIdentifiers.Pattern"
+                                      ]
+                     },
+                     {
+                         "index":  25,
+                         "runtimeId":  "42,5311642,4,5,1,77",
+                         "name":  "选择模型",
+                         "type":  "ControlType.Button",
+                         "automationId":  "",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "focused":  false,
+                         "password":  false,
+                         "value":  null,
+                         "rect":  [
+                                      2092,
+                                      883,
+                                      119,
+                                      25
+                                  ],
+                         "patterns":  [
+                                          "ExpandCollapsePatternIdentifiers.Pattern",
+                                          "ScrollItemPatternIdentifiers.Pattern"
+                                      ]
+                     },
+                     {
+                         "index":  26,
+                         "runtimeId":  "42,5311642,4,5,1,1231",
+                         "name":  "本地固定素材入口：输入“本地试跑”，或使用下方按钮。不联网，不产生真实研究成果。",
+                         "type":  "ControlType.Text",
+                         "automationId":  "",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "focused":  false,
+                         "password":  false,
+                         "value":  null,
+                         "rect":  [
+                                      1608,
+                                      935,
+                                      446,
+                                      16
+                                  ],
+                         "patterns":  [
+                                          "TextPatternIdentifiers.Pattern",
+                                          "ScrollItemPatternIdentifiers.Pattern"
+                                      ]
+                     },
+                     {
+                         "index":  27,
+                         "runtimeId":  "42,5311642,4,5,1,1180",
+                         "name":  "填入本地试跑命令",
+                         "type":  "ControlType.Button",
+                         "automationId":  "",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "focused":  false,
+                         "password":  false,
+                         "value":  null,
+                         "rect":  [
+                                      2056,
+                                      931,
+                                      111,
+                                      24
+                                  ],
+                         "patterns":  [
+                                          "InvokePatternIdentifiers.Pattern",
+                                          "ScrollItemPatternIdentifiers.Pattern"
+                                      ]
+                     },
+                     {
+                         "index":  28,
+                         "runtimeId":  "42,5311642,4,5,1,1225",
+                         "name":  "",
+                         "type":  "ControlType.Group",
+                         "automationId":  "",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "focused":  false,
+                         "password":  false,
+                         "value":  null,
+                         "rect":  [
+                                      1606,
+                                      970,
+                                      618,
+                                      26
+                                  ],
+                         "patterns":  [
+                                          "ScrollItemPatternIdentifiers.Pattern"
+                                      ]
+                     },
+                     {
+                         "index":  29,
+                         "runtimeId":  "42,5311642,4,5,1,1220",
+                         "name":  "连接 ReachFlow 服务并调用",
+                         "type":  "ControlType.Button",
+                         "automationId":  "",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "focused":  false,
+                         "password":  false,
+                         "value":  null,
+                         "rect":  [
+                                      1608,
+                                      970,
+                                      614,
+                                      18
+                                  ],
+                         "patterns":  [
+                                          "ExpandCollapsePatternIdentifiers.Pattern",
+                                          "ScrollItemPatternIdentifiers.Pattern"
+                                      ]
+                     },
+                     {
+                         "index":  30,
+                         "runtimeId":  "42,5311642,4,5,1,1233",
+                         "name":  "连接 ReachFlow 服务并调用",
+                         "type":  "ControlType.Text",
+                         "automationId":  "",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "focused":  false,
+                         "password":  false,
+                         "value":  null,
+                         "rect":  [
+                                      1620,
+                                      970,
+                                      148,
+                                      17
+                                  ],
+                         "patterns":  [
+                                          "TextPatternIdentifiers.Pattern",
+                                          "ScrollItemPatternIdentifiers.Pattern"
+                                      ]
+                     },
+                     {
+                         "index":  31,
+                         "runtimeId":  "42,5311642,4,5,1,17",
+                         "name":  "对话记录",
+                         "type":  "ControlType.Group",
+                         "automationId":  "",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "focused":  false,
+                         "password":  false,
+                         "value":  null,
+                         "rect":  [
+                                      1606,
+                                      1007,
+                                      618,
+                                      253
+                                  ],
+                         "patterns":  [
+                                          "ScrollPatternIdentifiers.Pattern",
+                                          "ScrollItemPatternIdentifiers.Pattern"
+                                      ]
+                     },
+                     {
+                         "index":  32,
+                         "runtimeId":  "42,5311642,4,5,1,1253",
+                         "name":  "",
+                         "type":  "ControlType.Group",
+                         "automationId":  "",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "focused":  false,
+                         "password":  false,
+                         "value":  null,
+                         "rect":  [
+                                      1607,
+                                      1008,
+                                      606,
+                                      337
+                                  ],
+                         "patterns":  [
+                                          "ScrollItemPatternIdentifiers.Pattern"
+                                      ]
+                     },
+                     {
+                         "index":  33,
+                         "runtimeId":  "42,5311642,4,5,1,1256",
+                         "name":  "你",
+                         "type":  "ControlType.Text",
+                         "automationId":  "",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "focused":  false,
+                         "password":  false,
+                         "value":  null,
+                         "rect":  [
+                                      1621,
+                                      1020,
+                                      12,
+                                      16
+                                  ],
+                         "patterns":  [
+                                          "TextPatternIdentifiers.Pattern",
+                                          "ScrollItemPatternIdentifiers.Pattern"
+                                      ]
+                     },
+                     {
+                         "index":  34,
+                         "runtimeId":  "42,5311642,4,5,1,1257",
+                         "name":  "本地试跑",
+                         "type":  "ControlType.Text",
+                         "automationId":  "",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "focused":  false,
+                         "password":  false,
+                         "value":  null,
+                         "rect":  [
+                                      1621,
+                                      1042,
+                                      52,
+                                      18
+                                  ],
+                         "patterns":  [
+                                          "TextPatternIdentifiers.Pattern",
+                                          "ScrollItemPatternIdentifiers.Pattern"
+                                      ]
+                     },
+                     {
+                         "index":  35,
+                         "runtimeId":  "42,5311642,4,5,1,1258",
+                         "name":  "tagma/reachflow",
+                         "type":  "ControlType.Text",
+                         "automationId":  "",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "focused":  false,
+                         "password":  false,
+                         "value":  null,
+                         "rect":  [
+                                      1621,
+                                      1089,
+                                      89,
+                                      16
+                                  ],
+                         "patterns":  [
+                                          "TextPatternIdentifiers.Pattern",
+                                          "ScrollItemPatternIdentifiers.Pattern"
+                                      ]
+                     },
+                     {
+                         "index":  36,
+                         "runtimeId":  "42,5311642,4,5,1,1284",
+                         "name":  "",
+                         "type":  "ControlType.Group",
+                         "automationId":  "",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "focused":  false,
+                         "password":  false,
+                         "value":  null,
+                         "rect":  [
+                                      1621,
+                                      1121,
+                                      578,
+                                      214
+                                  ],
+                         "patterns":  [
+                                          "ScrollItemPatternIdentifiers.Pattern"
+                                      ]
+                     },
+                     {
+                         "index":  37,
+                         "runtimeId":  "42,5311642,4,5,1,1280",
+                         "name":  "查看成果 / 试跑结果",
+                         "type":  "ControlType.Button",
+                         "automationId":  "",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "focused":  true,
+                         "password":  false,
+                         "value":  null,
+                         "rect":  [
+                                      1623,
+                                      1121,
+                                      574,
+                                      18
+                                  ],
+                         "patterns":  [
+                                          "ExpandCollapsePatternIdentifiers.Pattern",
+                                          "ScrollItemPatternIdentifiers.Pattern"
+                                      ]
+                     },
+                     {
+                         "index":  38,
+                         "runtimeId":  "42,5311642,4,5,1,1288",
+                         "name":  "查看成果 / 试跑结果",
+                         "type":  "ControlType.Text",
+                         "automationId":  "",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "focused":  false,
+                         "password":  false,
+                         "value":  null,
+                         "rect":  [
+                                      1635,
+                                      1121,
+                                      108,
+                                      17
+                                  ],
+                         "patterns":  [
+                                          "TextPatternIdentifiers.Pattern",
+                                          "ScrollItemPatternIdentifiers.Pattern"
+                                      ]
+                     },
+                     {
+                         "index":  39,
+                         "runtimeId":  "42,5311642,4,5,1,1293",
+                         "name":  "本地试跑完成",
+                         "type":  "ControlType.Text",
+                         "automationId":  "",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "focused":  false,
+                         "password":  false,
+                         "value":  null,
+                         "rect":  [
+                                      1621,
+                                      1148,
+                                      69,
+                                      16
+                                  ],
+                         "patterns":  [
+                                          "TextPatternIdentifiers.Pattern",
+                                          "ScrollItemPatternIdentifiers.Pattern"
+                                      ]
+                     },
+                     {
+                         "index":  40,
+                         "runtimeId":  "42,5311642,4,5,1,1294",
+                         "name":  "仅检验队员协议；没有联网或生成研究成果。",
+                         "type":  "ControlType.Text",
+                         "automationId":  "",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "focused":  false,
+                         "password":  false,
+                         "value":  null,
+                         "rect":  [
+                                      1621,
+                                      1164,
+                                      260,
+                                      18
+                                  ],
+                         "patterns":  [
+                                          "TextPatternIdentifiers.Pattern",
+                                          "ScrollItemPatternIdentifiers.Pattern"
+                                      ]
+                     },
+                     {
+                         "index":  41,
+                         "runtimeId":  "42,5311642,4,5,1,1266",
+                         "name":  "",
+                         "type":  "ControlType.List",
+                         "automationId":  "",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "focused":  false,
+                         "password":  false,
+                         "value":  null,
+                         "rect":  [
+                                      1621,
+                                      1182,
+                                      578,
+                                      55
+                                  ],
+                         "patterns":  [
+                                          "ScrollItemPatternIdentifiers.Pattern"
+                                      ]
+                     },
+                     {
+                         "index":  42,
+                         "runtimeId":  "42,5311642,4,5,1,1261",
+                         "name":  "书店 · fixture-1",
+                         "type":  "ControlType.ListItem",
+                         "automationId":  "",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "focused":  false,
+                         "password":  false,
+                         "value":  null,
+                         "rect":  [
+                                      1621,
+                                      1182,
+                                      578,
+                                      19
+                                  ],
+                         "patterns":  [
+                                          "ScrollItemPatternIdentifiers.Pattern"
+                                      ]
+                     },
+                     {
+                         "index":  43,
+                         "runtimeId":  "42,5311642,4,5,1,1262",
+                         "name":  "咖啡店 · fixture-2",
+                         "type":  "ControlType.ListItem",
+                         "automationId":  "",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "focused":  false,
+                         "password":  false,
+                         "value":  null,
+                         "rect":  [
+                                      1621,
+                                      1200,
+                                      578,
+                                      19
+                                  ],
+                         "patterns":  [
+                                          "ScrollItemPatternIdentifiers.Pattern"
+                                      ]
+                     },
+                     {
+                         "index":  44,
+                         "runtimeId":  "42,5311642,4,5,1,1263",
+                         "name":  "修理店 · fixture-3",
+                         "type":  "ControlType.ListItem",
+                         "automationId":  "",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "focused":  false,
+                         "password":  false,
+                         "value":  null,
+                         "rect":  [
+                                      1621,
+                                      1218,
+                                      578,
+                                      19
+                                  ],
+                         "patterns":  [
+                                          "ScrollItemPatternIdentifiers.Pattern"
+                                      ]
+                     },
+                     {
+                         "index":  45,
+                         "runtimeId":  "42,5311642,4,5,1,1267",
+                         "name":  "成果目录（已有绝对路径）",
+                         "type":  "ControlType.Edit",
+                         "automationId":  "",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "focused":  false,
+                         "password":  false,
+                         "value":  "",
+                         "rect":  [
+                                      1621,
+                                      1252,
+                                      240,
+                                      28
+                                  ],
+                         "patterns":  [
+                                          "ValuePatternIdentifiers.Pattern",
+                                          "TextPatternIdentifiers.Pattern",
+                                          "ScrollItemPatternIdentifiers.Pattern"
+                                      ]
+                     },
+                     {
+                         "index":  46,
+                         "runtimeId":  "42,5311642,4,5,1,1268",
+                         "name":  "保存到成果目录",
+                         "type":  "ControlType.Button",
+                         "automationId":  "",
+                         "enabled":  false,
+                         "offscreen":  false,
+                         "focused":  false,
+                         "password":  false,
+                         "value":  null,
+                         "rect":  [
+                                      1861,
+                                      1253,
+                                      106,
+                                      28
+                                  ],
+                         "patterns":  [
+                                          "InvokePatternIdentifiers.Pattern",
+                                          "ScrollItemPatternIdentifiers.Pattern"
+                                      ]
+                     },
+                     {
+                         "index":  47,
+                         "runtimeId":  "42,5311642,4,5,1,1306",
+                         "name":  "保存本次返回内容为新 JSON 文件，不覆盖已有文件。报告预览仍为预览，完整报告请在 ReachFlow 查看。",
+                         "type":  "ControlType.Text",
+                         "automationId":  "",
+                         "enabled":  true,
+                         "offscreen":  true,
+                         "focused":  false,
+                         "password":  false,
+                         "value":  null,
+                         "rect":  [
+                                      1623,
+                                      1290,
+                                      543,
+                                      16
+                                  ],
+                         "patterns":  [
+                                          "TextPatternIdentifiers.Pattern",
+                                          "ScrollItemPatternIdentifiers.Pattern"
+                                      ]
+                     },
+                     {
+                         "index":  48,
+                         "runtimeId":  "42,5311642,4,5,1,1283",
+                         "name":  "",
+                         "type":  "ControlType.Group",
+                         "automationId":  "",
+                         "enabled":  true,
+                         "offscreen":  true,
+                         "focused":  false,
+                         "password":  false,
+                         "value":  null,
+                         "rect":  [
+                                      1621,
+                                      1316,
+                                      578,
+                                      19
+                                  ],
+                         "patterns":  [
+                                          "ScrollItemPatternIdentifiers.Pattern"
+                                      ]
+                     },
+                     {
+                         "index":  49,
+                         "runtimeId":  "42,5311642,4,5,1,1274",
+                         "name":  "原始返回内容",
+                         "type":  "ControlType.Button",
+                         "automationId":  "",
+                         "enabled":  true,
+                         "offscreen":  true,
+                         "focused":  false,
+                         "password":  false,
+                         "value":  null,
+                         "rect":  [
+                                      1621,
+                                      1316,
+                                      578,
+                                      19
+                                  ],
+                         "patterns":  [
+                                          "ExpandCollapsePatternIdentifiers.Pattern",
+                                          "ScrollItemPatternIdentifiers.Pattern"
+                                      ]
+                     },
+                     {
+                         "index":  50,
+                         "runtimeId":  "42,5311642,4,5,1,1307",
+                         "name":  "原始返回内容",
+                         "type":  "ControlType.Text",
+                         "automationId":  "",
+                         "enabled":  true,
+                         "offscreen":  true,
+                         "focused":  false,
+                         "password":  false,
+                         "value":  null,
+                         "rect":  [
+                                      1634,
+                                      1316,
+                                      79,
+                                      18
+                                  ],
+                         "patterns":  [
+                                          "TextPatternIdentifiers.Pattern",
+                                          "ScrollItemPatternIdentifiers.Pattern"
+                                      ]
+                     },
+                     {
+                         "index":  51,
+                         "runtimeId":  "42,5311642,4,5,1,240",
+                         "name":  "消息",
+                         "type":  "ControlType.Text",
+                         "automationId":  "",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "focused":  false,
+                         "password":  false,
+                         "value":  null,
+                         "rect":  [
+                                      1608,
+                                      1271,
+                                      23,
+                                      16
+                                  ],
+                         "patterns":  [
+                                          "TextPatternIdentifiers.Pattern",
+                                          "ScrollItemPatternIdentifiers.Pattern"
+                                      ]
+                     },
+                     {
+                         "index":  52,
+                         "runtimeId":  "42,5311642,4,5,1,8",
+                         "name":  "消息",
+                         "type":  "ControlType.Edit",
+                         "automationId":  "tagma-message",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "focused":  false,
+                         "password":  false,
+                         "value":  "",
+                         "rect":  [
+                                      1606,
+                                      1293,
+                                      618,
+                                      73
+                                  ],
+                         "patterns":  [
+                                          "ValuePatternIdentifiers.Pattern",
+                                          "TextPatternIdentifiers.Pattern",
+                                          "ScrollItemPatternIdentifiers.Pattern"
+                                      ]
+                     },
+                     {
+                         "index":  53,
+                         "runtimeId":  "42,5311642,4,5,1,241",
+                         "name":  "仅保留在此窗口内；离开对话页会停止本窗口请求。",
+                         "type":  "ControlType.Text",
+                         "automationId":  "",
+                         "enabled":  true,
+                         "offscreen":  true,
+                         "focused":  false,
+                         "password":  false,
+                         "value":  null,
+                         "rect":  [
+                                      1606,
+                                      1377,
+                                      253,
+                                      16
+                                  ],
+                         "patterns":  [
+                                          "TextPatternIdentifiers.Pattern",
+                                          "ScrollItemPatternIdentifiers.Pattern"
+                                      ]
+                     },
+                     {
+                         "index":  54,
+                         "runtimeId":  "42,5311642,4,5,1,11",
+                         "name":  "发送",
+                         "type":  "ControlType.Button",
+                         "automationId":  "",
+                         "enabled":  false,
+                         "offscreen":  false,
+                         "focused":  false,
+                         "password":  false,
+                         "value":  null,
+                         "rect":  [
+                                      2178,
+                                      1372,
+                                      46,
+                                      28
+                                  ],
+                         "patterns":  [
+                                          "InvokePatternIdentifiers.Pattern",
+                                          "ScrollItemPatternIdentifiers.Pattern"
+                                      ]
+                     },
+                     {
+                         "index":  55,
+                         "runtimeId":  "42,5311642,4,5,1,18",
+                         "name":  "",
+                         "type":  "ControlType.Group",
+                         "automationId":  "",
+                         "enabled":  true,
+                         "offscreen":  true,
+                         "focused":  false,
+                         "password":  false,
+                         "value":  null,
+                         "rect":  [
+                                      1606,
+                                      1415,
+                                      618,
+                                      25
+                                  ],
+                         "patterns":  [
+                                          "ScrollItemPatternIdentifiers.Pattern"
+                                      ]
+                     },
+                     {
+                         "index":  56,
+                         "runtimeId":  "42,5311642,4,5,1,16",
+                         "name":  "接入工作台与运行状态",
+                         "type":  "ControlType.Button",
+                         "automationId":  "",
+                         "enabled":  true,
+                         "offscreen":  true,
+                         "focused":  false,
+                         "password":  false,
+                         "value":  null,
+                         "rect":  [
+                                      1608,
+                                      1415,
+                                      614,
+                                      17
+                                  ],
+                         "patterns":  [
+                                          "ExpandCollapsePatternIdentifiers.Pattern",
+                                          "ScrollItemPatternIdentifiers.Pattern"
+                                      ]
+                     },
+                     {
+                         "index":  57,
+                         "runtimeId":  "42,5311642,4,5,1,244",
+                         "name":  "接入工作台与运行状态",
+                         "type":  "ControlType.Text",
+                         "automationId":  "",
+                         "enabled":  true,
+                         "offscreen":  true,
+                         "focused":  false,
+                         "password":  false,
+                         "value":  null,
+                         "rect":  [
+                                      1620,
+                                      1415,
+                                      121,
+                                      17
+                                  ],
+                         "patterns":  [
+                                          "TextPatternIdentifiers.Pattern",
+                                          "ScrollItemPatternIdentifiers.Pattern"
+                                      ]
+                     },
+                     {
+                         "index":  58,
+                         "runtimeId":  "42,5311642,4,5,1,266",
+                         "name":  "已保存版本",
+                         "type":  "ControlType.Text",
+                         "automationId":  "",
+                         "enabled":  true,
+                         "offscreen":  true,
+                         "focused":  false,
+                         "password":  false,
+                         "value":  null,
+                         "rect":  [
+                                      2069,
+                                      1451,
+                                      56,
+                                      16
+                                  ],
+                         "patterns":  [
+                                          "TextPatternIdentifiers.Pattern",
+                                          "ScrollItemPatternIdentifiers.Pattern"
+                                      ]
+                     },
+                     {
+                         "index":  59,
+                         "runtimeId":  "42,5311642,4,5,1,267",
+                         "name":  ": ",
+                         "type":  "ControlType.Text",
+                         "automationId":  "",
+                         "enabled":  true,
+                         "offscreen":  true,
+                         "focused":  false,
+                         "password":  false,
+                         "value":  null,
+                         "rect":  [
+                                      2124,
+                                      1451,
+                                      6,
+                                      16
+                                  ],
+                         "patterns":  [
+                                          "TextPatternIdentifiers.Pattern",
+                                          "ScrollItemPatternIdentifiers.Pattern"
+                                      ]
+                     },
+                     {
+                         "index":  60,
+                         "runtimeId":  "42,5311642,4,5,1,268",
+                         "name":  "29",
+                         "type":  "ControlType.Text",
+                         "automationId":  "",
+                         "enabled":  true,
+                         "offscreen":  true,
+                         "focused":  false,
+                         "password":  false,
+                         "value":  null,
+                         "rect":  [
+                                      2129,
+                                      1451,
+                                      13,
+                                      16
+                                  ],
+                         "patterns":  [
+                                          "TextPatternIdentifiers.Pattern",
+                                          "ScrollItemPatternIdentifiers.Pattern"
+                                      ]
+                     },
+                     {
+                         "index":  61,
+                         "runtimeId":  "42,5311642,4,5,1,269",
+                         "name":  " · ",
+                         "type":  "ControlType.Text",
+                         "automationId":  "",
+                         "enabled":  true,
+                         "offscreen":  true,
+                         "focused":  false,
+                         "password":  false,
+                         "value":  null,
+                         "rect":  [
+                                      2141,
+                                      1451,
+                                      9,
+                                      16
+                                  ],
+                         "patterns":  [
+                                          "TextPatternIdentifiers.Pattern",
+                                          "ScrollItemPatternIdentifiers.Pattern"
+                                      ]
+                     },
+                     {
+                         "index":  62,
+                         "runtimeId":  "42,5311642,4,5,1,270",
+                         "name":  "运行中版本",
+                         "type":  "ControlType.Text",
+                         "automationId":  "",
+                         "enabled":  true,
+                         "offscreen":  true,
+                         "focused":  false,
+                         "password":  false,
+                         "value":  null,
+                         "rect":  [
+                                      2149,
+                                      1451,
+                                      56,
+                                      16
+                                  ],
+                         "patterns":  [
+                                          "TextPatternIdentifiers.Pattern",
+                                          "ScrollItemPatternIdentifiers.Pattern"
+                                      ]
+                     },
+                     {
+                         "index":  63,
+                         "runtimeId":  "42,5311642,4,5,1,271",
+                         "name":  ": ",
+                         "type":  "ControlType.Text",
+                         "automationId":  "",
+                         "enabled":  true,
+                         "offscreen":  true,
+                         "focused":  false,
+                         "password":  false,
+                         "value":  null,
+                         "rect":  [
+                                      2204,
+                                      1451,
+                                      7,
+                                      16
+                                  ],
+                         "patterns":  [
+                                          "TextPatternIdentifiers.Pattern",
+                                          "ScrollItemPatternIdentifiers.Pattern"
+                                      ]
+                     },
+                     {
+                         "index":  64,
+                         "runtimeId":  "42,5311642,4,5,1,272",
+                         "name":  "29",
+                         "type":  "ControlType.Text",
+                         "automationId":  "",
+                         "enabled":  true,
+                         "offscreen":  true,
+                         "focused":  false,
+                         "password":  false,
+                         "value":  null,
+                         "rect":  [
+                                      2210,
+                                      1451,
+                                      12,
+                                      16
+                                  ],
+                         "patterns":  [
+                                          "TextPatternIdentifiers.Pattern",
+                                          "ScrollItemPatternIdentifiers.Pattern"
+                                      ]
+                     },
+                     {
+                         "index":  65,
+                         "runtimeId":  "42,330638,4,0,0,4",
+                         "name":  "",
+                         "type":  "ControlType.Pane",
+                         "automationId":  "",
+                         "enabled":  true,
+                         "offscreen":  false,
+                         "focused":  false,
+                         "password":  false,
+                         "value":  null,
+                         "rect":  [
+                                      Infinity,
+                                      Infinity,
+                                      -Infinity,
+                                      -Infinity
+                                  ],
+                         "patterns":  [
+                                          "ScrollItemPatternIdentifiers.Pattern"
+                                      ]
+                     }
+                 ]
+}

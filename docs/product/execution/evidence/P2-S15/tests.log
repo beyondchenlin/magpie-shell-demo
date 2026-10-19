@@ -1,0 +1,79 @@
+   Compiling tagma-core v0.2.0-dev.44 (D:\demo1\tagmaai\crates\tagma-core)
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+    Finished `test` profile [unoptimized] target(s) in 6.87s
+     Running unittests src\lib.rs (target\debug\deps\tagma_core-c4fcc26a3a7ca580.exe)
+
+running 1 test
+test packs::archive_tests::explicit_removal_retries_partial_tree_and_preserves_unknown_files ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 99 filtered out; finished in 0.09s
+
+   Compiling tagma-core v0.2.0-dev.44 (D:\demo1\tagmaai\crates\tagma-core)
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+   Compiling tagma-runtime v0.2.0-dev.44 (D:\demo1\tagmaai\crates\tagma-runtime)
+    Finished `test` profile [unoptimized] target(s) in 9.47s
+     Running tests\pack_execution.rs (target\debug\deps\pack_execution-0429894bb0adaebe.exe)
+
+running 1 test
+test uninstall_excludes_runtime_and_retries_interrupted_cleanup_preserving_results ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 6 filtered out; finished in 0.78s
+

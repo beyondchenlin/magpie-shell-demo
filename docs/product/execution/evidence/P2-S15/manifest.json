@@ -1,0 +1,167 @@
+{
+  "hashScope": "Original cache bytes; Git text normalization may change archived text bytes",
+  "files": [
+    {
+      "name": "Control.ps1",
+      "bytes": 30181,
+      "sha256": "73CB4F54057875D1EE8E4F8D53A951FDEF77D48AE39D77E6715A1E9F8408BA64"
+    },
+    {
+      "name": "Run.ps1",
+      "bytes": 2056,
+      "sha256": "38E0F0DD16346575427A8222501BF6B56B3749DF3C3BE92CD080EE56E02AE769"
+    },
+    {
+      "name": "Launch.ps1",
+      "bytes": 424,
+      "sha256": "01DC3961C030C92BB0C57F4079247312ADAB0ADA8BBA68B0A30215C285B53FB8"
+    },
+    {
+      "name": "Hold-Delete.ps1",
+      "bytes": 1347,
+      "sha256": "EDC9F6DACD2879BCAC9F30D77A8584642975D8084DB02A1E89F7AAD16A8A1A3B"
+    },
+    {
+      "name": "BUDGET.txt",
+      "bytes": 178,
+      "sha256": "55381E74393963F14C0AD61B102E198CAE00C6EB44707845F1930A0653C8A072"
+    },
+    {
+      "name": "05-runtime-guard.json",
+      "bytes": 90212,
+      "sha256": "C566EEB02F7E14C5CBE3625DC5B665F734D38B5C7C4E3D34A9C40275A9429118"
+    },
+    {
+      "name": "14-uninstall-delete-denied.json",
+      "bytes": 81137,
+      "sha256": "020FC875BD59B73EB2FDA8EACA366B4E7A4E6D503F66ED350B8B087C0B25AAC0"
+    },
+    {
+      "name": "21-recovered-pending.json",
+      "bytes": 90411,
+      "sha256": "DA65DE8E05351F6945DBAE68B2ADE5B7675FDCB8F09EB8D715A0F0DEE5677D2F"
+    },
+    {
+      "name": "24-native-keyboard-cancel.json",
+      "bytes": 90442,
+      "sha256": "8D8D26D9D2BC56E666A7B5B30358D983FC45DE30BDE33EF2C5F608E9168E1225"
+    },
+    {
+      "name": "26-cleanup-completed.json",
+      "bytes": 75256,
+      "sha256": "FEEC0F4F84C840281B2659579FAE0916F447F523E1073C8900F01B3B53CED5AE"
+    },
+    {
+      "name": "31-preserved-result-content.json",
+      "bytes": 53247,
+      "sha256": "8DB9E9325606380630F666877240BD40DB9D41A5254BA8EF16CBA8D747CB6119"
+    },
+    {
+      "name": "36-reinstall-complete.json",
+      "bytes": 81192,
+      "sha256": "5CAD4FA4A9544F71033ADFA3493B85D3128D3351862BB84597BF490A2CDFB845"
+    },
+    {
+      "name": "42-gateway-restored.json",
+      "bytes": 66432,
+      "sha256": "39E0F1FAE575A31A702A297B3F2B420AEF0A81AA868CE4EA6EB981563C27EC45"
+    },
+    {
+      "name": "48-restored-chat-result.json",
+      "bytes": 65298,
+      "sha256": "3BE497F607B14DC58ECA6AB96BE1CD39777951F59BA54708E0A8CD556B577FFD"
+    },
+    {
+      "name": "keyboard-uninstall-dialog.json",
+      "bytes": 9996,
+      "sha256": "93FB565B596809B96C9AE3E88FA67494BA7E949814CC34B3A987751477F397EA"
+    },
+    {
+      "name": "failure-state.json",
+      "bytes": 190,
+      "sha256": "B53C13A813C655314873BEA01289E565D2E080D968E6ABA5D19B533CB14BE4EA"
+    },
+    {
+      "name": "removal-completed.json",
+      "bytes": 550,
+      "sha256": "DAD91A9E6508B8C78B723CA75C26090841BC145FA25BE2A299385FCBBB466336"
+    },
+    {
+      "name": "final-state.json",
+      "bytes": 1368,
+      "sha256": "D35F4732BB3C60549346E3FBB1B82967F15917DED3916D2A781321449DC88746"
+    },
+    {
+      "name": "binaries-built-r6.json",
+      "bytes": 381,
+      "sha256": "3877A8C6FDA5174502DC6B849186F49F86D4AE6A111915E94CA42AF5B0436C7B"
+    },
+    {
+      "name": "source-check-r6.json",
+      "bytes": 83,
+      "sha256": "FC5841FF351DCADA6DFC8E34E0F5426E36B31EB04E3AEEBCA31EE8415F020D89"
+    },
+    {
+      "name": "source-frozen-r6.json",
+      "bytes": 59933,
+      "sha256": "9E3E8368798F6786506B2655510C803B1E6B833084487685306F5DDE77D96EE7"
+    },
+    {
+      "name": "native-runtime-guard.png",
+      "bytes": 48222,
+      "sha256": "E2ECD597386770FB2AA1A22FB76530311A1FB2DF8E3E7827910A019537968132"
+    },
+    {
+      "name": "native-uninstall-review.png",
+      "bytes": 48552,
+      "sha256": "FDC2D651EB5CA9DB2D67D50E63F9844DFDAB0404D4FBAAED95CF6C40E3E82E2F"
+    },
+    {
+      "name": "native-pending-after-restart.png",
+      "bytes": 51225,
+      "sha256": "F851BCCE84761729C381300D6A3531A30877E3D2B61387FC6BC7BAA0037CA7B9"
+    },
+    {
+      "name": "native-r6-review.png",
+      "bytes": 140294,
+      "sha256": "6DD070FAA082033BBDC3B25AA00339EE365248A7FB5E62BA3542A41463B9C5A7"
+    },
+    {
+      "name": "native-results-after-uninstall.png",
+      "bytes": 36127,
+      "sha256": "BC229631DE83A4D69B310F2CA06847B354A372682F9D53BDED52E9ABE6C6C307"
+    },
+    {
+      "name": "native-restored-chat.png",
+      "bytes": 29064,
+      "sha256": "EB3E89746B933A38E96F54F736140562FFE7A83133D34D797F4E10F715B3CEE2"
+    },
+    {
+      "name": "tests.log",
+      "bytes": 2754,
+      "sha256": "BCD609F5B453E51A5869FA9030B93D507188D8BCC3A695AFD25E09D6A24F7803"
+    },
+    {
+      "name": "test-r6.log",
+      "bytes": 1340,
+      "sha256": "AE2F19233D559275903585EE2C0422CD4F4C65EC88DE1AF42394EC43741D6FE2"
+    },
+    {
+      "name": "frontend-r6.log",
+      "bytes": 478,
+      "sha256": "C24B4570C8C50B355CE5498EFF00E3C343D9800515CEACB832FDC061D81AE04E"
+    },
+    {
+      "name": "clippy-r6.log",
+      "bytes": 1109,
+      "sha256": "0AF6B5056E06D8204B9827B8ED2D5CAE3BB07CB0793D81CACC3D1123624F5DEF"
+    },
+    {
+      "name": "build-r6.log",
+      "bytes": 1191,
+      "sha256": "CF856834BF314D60FC7991D20ECF36E3F5BFC44E3D138B99C68F82CED6C813C8"
+    }
+  ],
+  "source": "D:\\demo1\\tagmaai\\.cache\\p2-s15-uninstall",
+  "candidate": "dev44r6"
+}

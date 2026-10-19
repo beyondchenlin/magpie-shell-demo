@@ -14,6 +14,7 @@
     "allow-install-pack",
     "allow-invoke-pack",
     "allow-manage-pack",
+    "allow-uninstall-pack",
     "allow-cancel-pack",
     "allow-send-chat",
     "allow-cancel-chat",

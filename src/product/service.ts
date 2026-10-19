@@ -24,6 +24,7 @@ async function command<T>(name: string, args: Record<string, unknown>): Promise<
 }
 
 export const service = {
+  uninstallPack:(input:import("./contract").UninstallPack,onEvent:(event:PackTaskEvent)=>void)=>{const channel=new Channel<PackTaskEvent>();channel.onmessage=onEvent;return invoke<ConfigView>("uninstall_pack",{input,onEvent:channel});},
   managePack:(input:import("./contract").ManagePack,onEvent:(event:PackTaskEvent)=>void)=>{const channel=new Channel<PackTaskEvent>();channel.onmessage=onEvent;return invoke<ConfigView>("manage_pack",{input,onEvent:channel});},
   listPackResults:(directory:string)=>command<import("./contract").SavedPackResult[]>("list_pack_results",{protocolVersion,directory}),
   readPackResult:(directory:string,name:string)=>command<string>("read_pack_result",{protocolVersion,directory,name}),

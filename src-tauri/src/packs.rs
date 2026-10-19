@@ -52,6 +52,7 @@ pub struct PackBridge {
     internal_record: Option<SignedManifestRecord>,
     internal_hash: Option<String>,
     _lease: std::fs::File,
+    directory: PathBuf,
 }
 impl PackBridge {
     pub fn new(directory: &Path, config: &ConfigService) -> Result<Self> {
@@ -199,10 +200,15 @@ impl PackBridge {
             internal_record,
             internal_hash,
             _lease: lease,
+            directory: directory.to_owned(),
         })
     }
     pub fn view(&self) -> Result<PackMarketView> {
+        let status = self.installer.executor().removal_status(&self.directory).map_err(error)?;
         Ok(PackMarketView {
+            gateway_running: status.gateway_running,
+            pack_call_running: status.pack_call_running,
+            pending_removal: status.pending_pack,
             release_ready: self.release_ready,
             internal_manifest: self
                 .internal_record
@@ -218,6 +224,7 @@ impl PackBridge {
         })
     }
     pub fn review(&self, config: &ConfigService, record: &str) -> Result<PackReviewView> {
+        self.no_pending_removal()?;
         let record = SignedManifestRecord::parse(record.as_bytes()).map_err(error)?;
         let review = self.installer.review(config, record).map_err(error)?;
         let a = review
@@ -325,6 +332,7 @@ impl PackBridge {
         input: ConfirmPackInstall,
         channel: Channel<PackTaskEvent>,
     ) -> Result<ConfigView> {
+        self.no_pending_removal()?;
         let cancel = self.begin(&input.task_id)?;
         let _guard = Guard { bridge: self };
         self.event(
@@ -388,6 +396,7 @@ impl PackBridge {
         input: ManagePack,
         channel: Channel<PackTaskEvent>,
     ) -> Result<ConfigView> {
+        self.no_pending_removal()?;
         let cancel = self.begin(&input.task_id)?;
         let _guard = Guard { bridge: self };
         self.event(
@@ -464,6 +473,7 @@ impl PackBridge {
         input: InvokePack,
         channel: Channel<PackTaskEvent>,
     ) -> Result<()> {
+        self.no_pending_removal()?;
         let cancel = self.begin(&input.task_id)?;
         let _guard = Guard { bridge: self };
         self.event(
@@ -488,6 +498,20 @@ impl PackBridge {
             });
         self.finish(&channel, &input.task_id, &result)?;
         result.map(|_| ()).map_err(error)
+    }
+    fn no_pending_removal(&self) -> Result<()> {
+        if self.installer.executor().removal_pending().map_err(error)? {
+            return Err(error("PACK_REMOVAL_PENDING"));
+        }
+        Ok(())
+    }
+    pub fn uninstall(&self, config: &ConfigService, input: UninstallPack, channel: Channel<PackTaskEvent>) -> Result<ConfigView> {
+        let cancel = self.begin(&input.task_id)?;
+        let _guard = Guard { bridge: self };
+        self.event(&channel, event(&input.task_id, "removing", "running", None, None))?;
+        let result=self.installer.executor().uninstall(&self.directory,config,input.expected_revision,&input.pack_id,cancel).map_err(error);
+        self.finish(&channel,&input.task_id,&result.as_ref().map(|_|None).map_err(|e|e.code.clone()))?;
+        result
     }
     fn finish(
         &self,

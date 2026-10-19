@@ -198,6 +198,32 @@ fn prepared_actual_directory_publication_reopen_and_current_trust() {
         "Prepared actual same-volume outer-directory publication:raw signed receipt+complete payload persist across close/reopen;current roots/time/config required;no installed/active pointer or process execution"
     );
 }
+
+#[test]
+fn explicit_removal_retries_partial_tree_and_preserves_unknown_files() {
+    let f=Fixture::new();
+    let bytes=zip(Some(("assets/readme.txt",b"owned asset")),CompressionMethod::Deflated,None);
+    let config=uuid::Uuid::new_v4();let c=control();let trust=preparation_trust();
+    let prepared=f.archive(&bytes,4096,16,&c).extract(&f.stage,&c).unwrap().publish_prepared(&f.stage,config,&c).unwrap();
+    let root=prepared.root_path().to_owned();
+    let pack=InstalledPack{id:prepared.manifest().manifest().id.clone(),active_version:None,versions:vec![InstalledPackVersion{
+        version:prepared.manifest().manifest().version.clone(),preparation_id:prepared.operation_id().to_string(),
+        manifest_sha256:prepared.manifest().sha256().into(),display_name:"fixture".into(),installed_ms:"10000".into()}]};
+    let plan=PreparedRemoval::prepare(&root,config,&trust,10000,&c).unwrap();
+    // Simulate a crash after one owned file was removed; durable receipt remains.
+    fs::remove_file(root.join("payload/assets/readme.txt")).unwrap();
+    fs::write(root.join("payload/unexpected.txt"),b"must preserve").unwrap();
+    assert!(plan.check(&f.stage,config,&pack,&trust,10000,&c).is_err());
+    assert_eq!(fs::read(root.join("payload/unexpected.txt")).unwrap(),b"must preserve");
+    fs::remove_file(root.join("payload/unexpected.txt")).unwrap(); // only this test's sentinel
+    let plan:PreparedRemoval=serde_json::from_slice(&serde_json::to_vec(&plan).unwrap()).unwrap();
+    plan.check(&f.stage,config,&pack,&trust,10000,&c).unwrap();
+    let outside=f.root.path().join("saved-result.json");fs::write(&outside,b"keep results").unwrap();
+    plan.remove_checked(&f.stage,&c).unwrap();
+    assert!(!root.exists());assert_eq!(fs::read(outside).unwrap(),b"keep results");
+    plan.check(&f.stage,config,&pack,&trust,10000,&c).unwrap();
+    plan.remove_checked(&f.stage,&c).unwrap();
+}
 #[test]
 fn prepared_mutated_payload_or_receipt_is_rejected_and_preserved() {
     let f = Fixture::new();

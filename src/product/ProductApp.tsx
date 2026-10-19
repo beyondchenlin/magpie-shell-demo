@@ -186,7 +186,7 @@ export default function ProductApp() {
         <p className="tagma-footnote">{c.protocolName} · {c.noInference}</p>
         <TextBtn disabled={busy || editing} onClick={() => setPage("gateway")}>{c.gateway}</TextBtn>
       </section>}
-      <div hidden={page!=="market"}><h1>{c.market}</h1>{view&&<PackMarketPanel active={page==="market"} config={view.config} busy={busy||teamEditing} language={preferences.language} onRefresh={refresh} onEditingChange={setPackEditing}/>}</div>
+      <div hidden={page!=="market"}><h1>{c.market}</h1>{view&&<PackMarketPanel active={page==="market"} config={view.config} busy={busy||teamEditing} language={preferences.language} runtimeOwned={view.runtime.owned} onRefresh={refresh} onEditingChange={setPackEditing}/>}</div>
       {page==="market"&&view&&<TeamsPanel config={view.config} busy={busy||packEditing} language={preferences.language} onMutate={mutate} onEditingChange={setTeamEditing}/>}
       {page === "usage" && <><TextBtn disabled={busy||editing} onClick={()=>setPage("settings")}>{c.back} · {c.settings}</TextBtn><UsagePanel providers={view?.config.providers ?? []} config={view?.config} busy={busy} budgetEditing={budgetEditing} onBudgetEditing={setBudgetEditing} onMutate={mutate} language={preferences.language} /></>}
       {page === "gateway" && <section><h1>{c.gateway}</h1><div className="list prefs"><PrefRow name={c.gateway} sub={c.runtimeHint}><span>{view ? c[view.runtime.state] : c.unknown}</span></PrefRow><PrefRow name={c.desired}><span>{view?.config.desired_revision ?? c.unknown}</span></PrefRow><PrefRow name={c.effective}><span>{view?.runtime.effective_revision ?? c.unknown}</span></PrefRow>

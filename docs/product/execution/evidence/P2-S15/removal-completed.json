@@ -1,0 +1,9 @@
+{
+  "utc": "2026-10-19T08:58:02.7974950Z",
+  "removedPath": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\data\\packs\\versions\\prepared-8c0c9ebf-eb5a-4b02-8791-a67b101e1c9f",
+  "runtimeDirectoryExists": false,
+  "pendingIntentExists": false,
+  "originalRuntimeLogicalBytes": 5956608.0,
+  "resultHash": "C0915B398748FB06F10DBDBA8A90E4777F37C3EDD4299F8174B61AED841DF6B9",
+  "cleanup": "Only explicit product uninstall; no shell deletion; no historical evidence deletion; no net-free-space claim"
+}

@@ -204,6 +204,44 @@ async fn health_before_activation_persisted_version_and_deactivation() {
 
 #[tokio::test]
 #[ignore = "owned native helper; see P2 execution protocol runbook"]
+async fn uninstall_excludes_runtime_and_retries_interrupted_cleanup_preserving_results() {
+    use fs2::FileExt;
+    let f=Fixture::new("normal");
+    f.executor.activate(&f.config,0,f.operation,&f.sha,CancellationToken::new()).await.unwrap();
+    let config_dir=f.root.path().join("config");
+    let saved=f.root.path().join("user-result.json");
+    std::fs::write(&saved,b"user output is not runtime").unwrap();
+    assert_eq!(f.executor.uninstall(&config_dir,&f.config,1,"acceptance-worker",CancellationToken::new()).unwrap_err(),PackRunError::InvalidInput);
+    f.config.deactivate_pack(1,"acceptance-worker").unwrap();
+    let gateway=std::fs::OpenOptions::new().read(true).write(true).open(config_dir.join("gateway.lock")).unwrap();
+    gateway.try_lock_exclusive().unwrap();
+    assert!(f.executor.removal_status(&config_dir).unwrap().gateway_running);
+    assert_eq!(f.executor.uninstall(&config_dir,&f.config,2,"acceptance-worker",CancellationToken::new()).unwrap_err(),PackRunError::Busy);
+    drop(gateway);
+    assert_eq!(f.executor.uninstall(&config_dir,&f.config,1,"acceptance-worker",CancellationToken::new()).unwrap_err(),PackRunError::ConfigurationConflict);
+    // Actual Windows deny-delete handle, while reads remain permitted. This
+    // fails after the config transaction, proving intent-based retry is needed.
+    #[cfg(windows)] let deny_delete={
+        use std::os::windows::fs::OpenOptionsExt;
+        std::fs::OpenOptions::new().read(true).share_mode(3).open(f.path.join("payload/worker.exe")).unwrap()
+    };
+    #[cfg(windows)] {
+        assert_eq!(f.executor.uninstall(&config_dir,&f.config,2,"acceptance-worker",CancellationToken::new()).unwrap_err(),PackRunError::CleanupPending);
+        assert!(f.config.view().unwrap().installed_packs.is_empty());
+        assert_eq!(f.executor.removal_status(&config_dir).unwrap().pending_pack.as_deref(),Some("acceptance-worker"));
+        assert!(f.path.exists());
+        drop(deny_delete);
+    }
+    let revision=f.config.view().unwrap().desired_revision;
+    f.executor.uninstall(&config_dir,&f.config,revision,"acceptance-worker",CancellationToken::new()).unwrap();
+    assert!(!f.path.exists());
+    assert!(!f.executor.removal_pending().unwrap());
+    assert!(f.config.view().unwrap().installed_packs.is_empty());
+    assert_eq!(std::fs::read(saved).unwrap(),b"user output is not runtime");
+}
+
+#[tokio::test]
+#[ignore = "owned native helper; see P2 execution protocol runbook"]
 async fn failed_health_never_publishes_installation() {
     let f = Fixture::new("wrong-id");
     assert_eq!(

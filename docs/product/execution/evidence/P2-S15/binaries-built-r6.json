@@ -1,0 +1,12 @@
+[
+  {
+    "Algorithm": "SHA256",
+    "Hash": "B8EB25B822BCE4A3484C75641E1F1F93DC9FF36120100EDE5EB550AD099F6C3F",
+    "Path": "D:\\demo1\\tagmaai\\target\\debug\\tagma-desktop.exe"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "145948BED1F0D92ABF246CDD23E905A5E7BEB011F70B26EF84749F38981E9581",
+    "Path": "D:\\demo1\\tagmaai\\target\\debug\\tagma-gateway.exe"
+  }
+]

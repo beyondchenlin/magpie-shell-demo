@@ -2,6 +2,8 @@
 //! automatic cleanup. Caller supplies an app-owned private parent and config
 //! UUID; this low-level layer does not replace host preflight/config binding.
 use super::*;
+mod removal;
+pub use removal::PreparedRemoval;
 use cap_std::fs::Dir;
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};

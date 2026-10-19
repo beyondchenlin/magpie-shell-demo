@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-uninstall-pack"
+description = "Enables the uninstall_pack command without any pre-configured scope."
+commands.allow = ["uninstall_pack"]
+
+[[permission]]
+identifier = "deny-uninstall-pack"
+description = "Denies the uninstall_pack command without any pre-configured scope."
+commands.deny = ["uninstall_pack"]

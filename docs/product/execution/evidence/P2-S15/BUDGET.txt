@@ -1,0 +1,1 @@
+Tagma P2-S15 owned bounded logs/evidence. Existing target/dependencies reused, incremental peak budget <=0.8GiB; no copied environment; retain minimum10GiB D free before build.

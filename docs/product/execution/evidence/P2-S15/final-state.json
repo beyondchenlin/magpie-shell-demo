@@ -1,0 +1,39 @@
+{
+  "utc": "2026-10-19T09:01:28.8337170Z",
+  "candidate": "dev44r6",
+  "desired": 29,
+  "effective": 29,
+  "desktop": "B8EB25B822BCE4A3484C75641E1F1F93DC9FF36120100EDE5EB550AD099F6C3F",
+  "gateway": "145948BED1F0D92ABF246CDD23E905A5E7BEB011F70B26EF84749F38981E9581",
+  "newPrepared": [
+    "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\data\\packs\\versions\\prepared-7e0a0aba-affb-4a38-873d-f490ce8ffc73"
+  ],
+  "adapterHashes": [
+    "AE922DB0B00C5818D0E89A3C1D63D48C6FACF49DEE3133B3750E0DB4B9DE8DF7"
+  ],
+  "resultHash": "C0915B398748FB06F10DBDBA8A90E4777F37C3EDD4299F8174B61AED841DF6B9",
+  "processes": [
+    {
+      "ProcessId": 39856,
+      "ExecutablePath": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\install-p0s16\\tagma-desktop.exe",
+      "CreationDate": "2026-10-19T16:56:42.47529+08:00"
+    },
+    {
+      "ProcessId": 44568,
+      "ExecutablePath": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\install-p0s16\\tagma-gateway.exe",
+      "CreationDate": "2026-10-19T17:00:03.050074+08:00"
+    }
+  ],
+  "helperReleased": true,
+  "pendingRemoval": false,
+  "disk": [
+    {
+      "Name": "C",
+      "Free": 30878724096
+    },
+    {
+      "Name": "D",
+      "Free": 11668733952
+    }
+  ]
+}

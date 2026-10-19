@@ -10,6 +10,7 @@ fn main() {
             "install_pack",
             "invoke_pack",
             "manage_pack",
+            "uninstall_pack",
             "cancel_pack",
             "send_chat",
             "cancel_chat",

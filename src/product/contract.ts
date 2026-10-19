@@ -2,7 +2,7 @@
 export type PackUiError = { code: string, };
 export type PackReviewView = { review_id: string, manifest_sha256: string, pack_id: string, version: string, publisher: string, platform: string, network_hosts: Array<string>, workspace: string, browser: boolean, subprocess: boolean, memory_mib: number, timeout_ms: number, download_bytes: string, unpack_bytes: string, peak_bytes: string, target_shortfall_bytes: string, temp_shortfall_bytes: string, fits: boolean, };
 export type PackTaskEvent = { task_id: string, phase: string, state: string, text: string | null, error: string | null, };
-export type PackMarketView = { release_ready: boolean, internal_manifest: string | null, task: PackTaskEvent | null, };
+export type PackMarketView = { release_ready: boolean, internal_manifest: string | null, task: PackTaskEvent | null, gateway_running: boolean, pack_call_running: boolean, pending_removal: string | null, };
 export type ConfirmPackInstall = { protocol_version: number, task_id: string, review_id: string, manifest_sha256: string, };
 export type InvokePack = { protocol_version: number, task_id: string, pack_id: string, operation: PackUserOperation, };
 export type ManagePack = { protocol_version: number, task_id: string, expected_revision: number, pack_id: string,
@@ -10,6 +10,7 @@ export type ManagePack = { protocol_version: number, task_id: string, expected_r
  * None deactivates; Some rechecks and activates a retained installed version.
  */
 version: string | null, };
+export type UninstallPack = { protocol_version: number, task_id: string, expected_revision: number, pack_id: string, };
 export type PackUserOperation = { "kind": "local_sample" } | { "kind": "reach_flow", request: ReachFlowRequest, };
 export type ReachFlowRequest = { service_url: string, workspace_id: string, access_token: string, action: ReachFlowAction, };
 export type ReachFlowAction = { "kind": "start_collection", draft_id: string, confirmation_id: string, plan_digest: string, engine_selection_revision: number, idempotency_key: string, } | { "kind": "task_status", task_id: string, } | { "kind": "task_report", task_id: string, } | { "kind": "cancel_task", task_id: string, };

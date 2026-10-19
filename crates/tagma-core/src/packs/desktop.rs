@@ -45,6 +45,17 @@ pub struct PackMarketView {
     pub release_ready: bool,
     pub internal_manifest: Option<String>,
     pub task: Option<PackTaskEvent>,
+    pub gateway_running: bool,
+    pub pack_call_running: bool,
+    pub pending_removal: Option<String>,
+}
+#[derive(Deserialize, TS)]
+#[serde(deny_unknown_fields)]
+pub struct UninstallPack {
+    pub protocol_version: u32,
+    pub task_id: String,
+    pub expected_revision: u32,
+    pub pack_id: String,
 }
 #[derive(Deserialize, TS)]
 #[serde(deny_unknown_fields)]

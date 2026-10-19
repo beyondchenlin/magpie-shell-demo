@@ -18,6 +18,7 @@ fn main() {
         packs::ConfirmPackInstall::decl(&cfg),
         packs::InvokePack::decl(&cfg),
         packs::ManagePack::decl(&cfg),
+        packs::UninstallPack::decl(&cfg),
         packs::PackUserOperation::decl(&cfg),
         packs::ReachFlowRequest::decl(&cfg),
         packs::ReachFlowAction::decl(&cfg),
