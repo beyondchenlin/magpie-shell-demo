@@ -20,6 +20,26 @@ use std::{
 };
 
 const OWNER: u32 = 0x54414755; // TAGU, not the configuration database.
+
+/// Called with the configuration maintenance barrier held by the installer.
+pub(crate) fn check_update(directory: &Path) -> AppResult<()> {
+    if migration::pending(directory)? {
+        return Err(AppError::new(ErrorCode::MaintenanceInProgress));
+    }
+    let path = directory.join("usage.sqlite3");
+    match fs::symlink_metadata(&path) {
+        Err(e) if e.kind() == std::io::ErrorKind::NotFound => return Ok(()),
+        Err(e) => return Err(storage(e)),
+        Ok(_) => regular(&path, false)?,
+    }
+    let db =
+        Connection::open_with_flags(path, OpenFlags::SQLITE_OPEN_READ_ONLY).map_err(storage)?;
+    db.busy_timeout(Duration::from_secs(2)).map_err(storage)?;
+    let version = db
+        .pragma_query_value(None, "user_version", |r| r.get(0))
+        .map_err(storage)?;
+    validate_schema_version(&db, version)
+}
 const MAX_BYTES: u64 = 256 * 1024 * 1024;
 const MAX_WAL_BYTES: u64 = 16 * 1024 * 1024;
 const MAX_PENDING: usize = DEFAULT_HTTP_CONCURRENCY * 2;
@@ -730,7 +750,9 @@ impl UsageStore {
             .prepare("SELECT id,started_ms FROM usage_requests WHERE outcome='running' LIMIT ?1")
             .map_err(storage)?;
         let requests = query
-            .query_map([(DEFAULT_HTTP_CONCURRENCY + 1) as i64], |r| Ok((r.get::<_, String>(0)?, unsigned(r, 1)?)))
+            .query_map([(DEFAULT_HTTP_CONCURRENCY + 1) as i64], |r| {
+                Ok((r.get::<_, String>(0)?, unsigned(r, 1)?))
+            })
             .map_err(storage)?
             .collect::<Result<Vec<_>, _>>()
             .map_err(storage)?;
@@ -971,7 +993,13 @@ mod tests {
         assert!(!store.state().unwrap().degraded);
         assert_eq!(store.state().unwrap().pending_results, 0);
         let counts:(i64,i64)=store.db.query_row("SELECT (SELECT sum(count) FROM usage_daily WHERE kind='request'),(SELECT sum(count) FROM usage_daily WHERE kind='attempt')",[],|r|Ok((r.get(0)?,r.get(1)?))).unwrap();
-        assert_eq!(counts, (DEFAULT_HTTP_CONCURRENCY as i64, DEFAULT_HTTP_CONCURRENCY as i64));
+        assert_eq!(
+            counts,
+            (
+                DEFAULT_HTTP_CONCURRENCY as i64,
+                DEFAULT_HTTP_CONCURRENCY as i64
+            )
+        );
         store.retry_pending().unwrap();
         let count: i64 = store
             .db
@@ -979,7 +1007,8 @@ mod tests {
             .unwrap();
         assert_eq!(count, MAX_PENDING as i64);
         println!(
-            "Usage failed finishes: {} requests/attempts ->{} bounded pending results, new begins refused, explicit recovery exactly once", DEFAULT_HTTP_CONCURRENCY, MAX_PENDING
+            "Usage failed finishes: {} requests/attempts ->{} bounded pending results, new begins refused, explicit recovery exactly once",
+            DEFAULT_HTTP_CONCURRENCY, MAX_PENDING
         );
     }
     #[test]
@@ -997,11 +1026,21 @@ mod tests {
             let count: i64 = recovered.db.query_row(&format!("SELECT count(*) FROM {table} WHERE outcome='interrupted' AND error_code='PROCESS_INTERRUPTED' AND input_tokens IS NULL AND output_tokens IS NULL"), [], |row| row.get(0)).unwrap();
             assert_eq!(count, DEFAULT_HTTP_CONCURRENCY as i64);
         }
-        let running: i64 = recovered.db.query_row("SELECT count(*) FROM usage_requests WHERE outcome='running'", [], |row| row.get(0)).unwrap();
+        let running: i64 = recovered
+            .db
+            .query_row(
+                "SELECT count(*) FROM usage_requests WHERE outcome='running'",
+                [],
+                |row| row.get(0),
+            )
+            .unwrap();
         assert_eq!(running, 0);
         drop(recovered);
         let repeated = UsageStore::open(temp.path(), DAY + 2000).unwrap();
-        let total: i64 = repeated.db.query_row("SELECT sum(count) FROM usage_daily", [], |row| row.get(0)).unwrap();
+        let total: i64 = repeated
+            .db
+            .query_row("SELECT sum(count) FROM usage_daily", [], |row| row.get(0))
+            .unwrap();
         assert_eq!(total, (DEFAULT_HTTP_CONCURRENCY * 2) as i64);
     }
     #[test]

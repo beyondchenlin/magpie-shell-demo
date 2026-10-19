@@ -61,7 +61,23 @@ application-level lease check. Legacy processes do not honor this new barrier;
 Restart Manager and checked file operations remain necessary. The per-config
 migration lease remains separate; this is an installation-directory barrier.
 Interrupted replacement and cross-version startup races remain acceptance gates.
-No configuration database or credentials are touched by this guard.
+The update preflight additionally holds the target configuration directory's
+`maintenance.lock` exclusively, from before prerequisites through program writes.
+The target is the current user's Windows app-config directory (`APPDATA/BUNDLEID`);
+isolated acceptance packages override it at compile time only. A process from
+another installation sharing that directory is therefore also a blocker.
+Custom standalone configurations retain their startup migration barrier; their
+databases are not migrated by installation. No instance is forcibly stopped.
+
+The package stages its own desktop executable privately and invokes
+`--check-update-config` before replacement. That mode does not initialize Tauri,
+credentials, IPC or migrations. It reads configuration/usage schema identities
+and any bounded residual runtime protocol record, reusing the migration format
+recognizer (including exact original schema 1). Unsupported/unknown configuration
+is refused; pending recovery asks the user to finish recovery in the existing
+version. Database access failure also stops replacement. Configuration and
+credentials are never reset. Installer success releases both barriers before
+the finish page can launch the application; process exit releases failed leases.
 
 When upgrading Tauri, compare the pinned upstream template with the new one and
 retest full interactive/silent install, update, uninstall and downgrade paths.

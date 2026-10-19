@@ -60,6 +60,13 @@ fn fixture(path: &Path, schema: u32) -> String {
     config_id
 }
 fn open_and_check(path: &Path, original: &str, id: Option<&str>) {
+    if !path.join("config-initialization.json").exists()
+        && !path.join("config-migration.json").exists()
+    {
+        let before = std::fs::read(path.join("config.sqlite3")).unwrap();
+        tagma_core::update::check_configuration(path).unwrap();
+        assert_eq!(before, std::fs::read(path.join("config.sqlite3")).unwrap());
+    }
     let credentials = Arc::new(MemoryCredentials::default());
     credentials
         .set("owned-fixture-reference", "owned fake credential")

@@ -363,6 +363,7 @@ Section -TagmaProcessPreflight
   !insertmacro TagmaAcquireInstallationLease
   !insertmacro TagmaCheckAvailableSpace "$INSTDIR" ${ESTIMATEDSIZE}
   !insertmacro TagmaCheckAvailableSpace "$TEMP" ${ESTIMATEDSIZE}
+  !insertmacro TagmaCheckConfiguration
 SectionEnd
 
 Section WebView2
@@ -572,6 +573,7 @@ Section Install
 
   ; .onInstSuccess runs when the wizard exits, after its Run checkbox. Release
   ; once writes are complete so that the completion page cannot block startup.
+  !insertmacro TagmaReleaseConfigurationLease
   !insertmacro TagmaReleaseInstallationLease
 
   ; Auto close this page for passive mode
@@ -581,6 +583,7 @@ Section Install
 SectionEnd
 
 Function .onInstSuccess
+  !insertmacro TagmaReleaseConfigurationLease
   !insertmacro TagmaReleaseInstallationLease
   ; Check for `/R` flag only in silent and passive installers because
   ; GUI installer has a toggle for the user to (re)start the app
@@ -736,6 +739,7 @@ Function un.onUninstSuccess
 FunctionEnd
 
 Function .onGUIEnd
+  !insertmacro TagmaReleaseConfigurationLease
   !insertmacro TagmaReleaseInstallationLease
 FunctionEnd
 

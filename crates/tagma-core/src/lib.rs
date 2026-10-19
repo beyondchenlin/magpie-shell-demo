@@ -13,6 +13,7 @@ pub mod security;
 pub mod service;
 pub mod teams;
 pub mod timeouts;
+pub mod update;
 pub mod usage;
 
 pub use contract::*;

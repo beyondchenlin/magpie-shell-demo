@@ -588,6 +588,23 @@ fn tray(app: &tauri::App) -> bool {
 }
 
 fn main() {
+    // The package runs its own candidate executable from NSIS private staging,
+    // while NSIS holds the target configuration's exclusive maintenance lock.
+    // This mode never initializes Tauri, opens credentials, migrates or starts IPC.
+    let args: Vec<_> = std::env::args_os().skip(1).collect();
+    if args.first().is_some_and(|a| a == "--check-update-config") {
+        let code = if args.len() != 2 {
+            12
+        } else {
+            match tagma_runtime::update::check_configuration(std::path::Path::new(&args[1])) {
+                Ok(()) => 0,
+                Err(e) if e.code == ErrorCode::IncompatibleVersion => 13,
+                Err(e) if e.code == ErrorCode::MaintenanceInProgress => 16,
+                Err(_) => 15,
+            }
+        };
+        std::process::exit(code);
+    }
     tauri::Builder::default()
         .setup(|app| {
             let installation = tagma_runtime::installation::InstallationLease::current();
@@ -776,11 +793,17 @@ fn main() {
                             && let Err(error) = runtime.stop().await
                             && error.code != ErrorCode::OwnershipRequired
                         {
-                            handle.state::<Application>().quitting.store(false, Ordering::SeqCst);
+                            handle
+                                .state::<Application>()
+                                .quitting
+                                .store(false, Ordering::SeqCst);
                             let _ = handle.emit("tagma-quit-failed", error);
                             return;
                         }
-                        handle.state::<Application>().exit_ready.store(true, Ordering::SeqCst);
+                        handle
+                            .state::<Application>()
+                            .exit_ready
+                            .store(true, Ordering::SeqCst);
                         handle.exit(0);
                     });
                 }

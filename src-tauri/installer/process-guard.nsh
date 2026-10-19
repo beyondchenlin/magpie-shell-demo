@@ -4,6 +4,7 @@
 !include "Win\RestartManager.nsh"
 !include "${__FILEDIR__}\preflight.nsh"
 !include "${__FILEDIR__}\registration.nsh"
+!include "${__FILEDIR__}\configuration.nsh"
 
 Var TagmaGuardError
 Var TagmaGuardMessage

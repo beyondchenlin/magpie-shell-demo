@@ -147,73 +147,7 @@ fn prepare_step(
     if version == SCHEMA_VERSION && !pending(directory) {
         return Ok(());
     }
-    let application: u32 = db
-        .pragma_query_value(None, "application_id", |r| r.get(0))
-        .map_err(|_| error())?;
-    let mut statement = db
-        .prepare("SELECT name FROM sqlite_schema WHERE name NOT LIKE 'sqlite_%' ORDER BY name")
-        .map_err(|_| error())?;
-    let names = statement
-        .query_map([], |r| r.get::<_, String>(0))
-        .map_err(|_| error())?
-        .collect::<Result<Vec<_>, _>>()
-        .map_err(|_| error())?;
-    let expected = if version == 1 {
-        vec!["config_head", "credential_journal", "revisions"]
-    } else if version < 5 {
-        vec![
-            "config_head",
-            "config_metadata",
-            "credential_journal",
-            "revisions",
-        ]
-    } else if version < 7 {
-        vec![
-            "config_head",
-            "config_metadata",
-            "credential_journal",
-            "model_health",
-            "revisions",
-        ]
-    } else if version < 8 {
-        vec![
-            "config_head",
-            "config_metadata",
-            "credential_journal",
-            "model_health",
-            "provider_catalog",
-            "revisions",
-        ]
-    } else {
-        vec![
-            "config_head",
-            "config_metadata",
-            "credential_journal",
-            "model_health",
-            "provider_catalog",
-            "revisions",
-            "security_head",
-            "security_revocations",
-            "security_revocations_revision",
-        ]
-    };
-    // The first builder predated application_id. Recognize only its exact
-    // schema and closed snapshots, never arbitrary owner-zero databases.
-    let original_schema1 = version == 1 && application == 0 && legacy_schema1::recognize(&db)?;
-    if (application != 0x5441474d && !original_schema1) || names != expected {
-        return Err(incompatible());
-    }
-    if version >= 2 {
-        let id: String = db
-            .query_row(
-                "SELECT config_uuid FROM config_metadata WHERE singleton=1",
-                [],
-                |r| r.get(0),
-            )
-            .map_err(|_| incompatible())?;
-        uuid::Uuid::parse_str(&id).map_err(|_| incompatible())?;
-    }
-    drop(statement);
+    validate_update_schema(&db, version)?;
     let mut journal: Journal = if pending(directory) {
         let path = directory.join(JOURNAL);
         ordinary(&path, false)?;
@@ -388,6 +322,81 @@ fn prepare_step(
     }
     let archived = backups.join(format!("migration-{}.json", journal.operation_id));
     crate::initialization::publish_new(&directory.join(JOURNAL), &archived).map_err(|_| error())?;
+    Ok(())
+}
+
+/// Read-only identity check shared by migration and the installer preflight.
+pub(crate) fn validate_update_schema(db: &Connection, version: u32) -> AppResult<()> {
+    if !(1..=SCHEMA_VERSION).contains(&version) {
+        return Err(incompatible());
+    }
+    let application: u32 = db
+        .pragma_query_value(None, "application_id", |r| r.get(0))
+        .map_err(|_| error())?;
+    let mut statement = db
+        .prepare("SELECT name FROM sqlite_schema WHERE name NOT LIKE 'sqlite_%' ORDER BY name")
+        .map_err(|_| error())?;
+    let names = statement
+        .query_map([], |r| r.get::<_, String>(0))
+        .map_err(|_| error())?
+        .collect::<Result<Vec<_>, _>>()
+        .map_err(|_| error())?;
+    let expected = if version == 1 {
+        vec!["config_head", "credential_journal", "revisions"]
+    } else if version < 5 {
+        vec![
+            "config_head",
+            "config_metadata",
+            "credential_journal",
+            "revisions",
+        ]
+    } else if version < 7 {
+        vec![
+            "config_head",
+            "config_metadata",
+            "credential_journal",
+            "model_health",
+            "revisions",
+        ]
+    } else if version < 8 {
+        vec![
+            "config_head",
+            "config_metadata",
+            "credential_journal",
+            "model_health",
+            "provider_catalog",
+            "revisions",
+        ]
+    } else {
+        vec![
+            "config_head",
+            "config_metadata",
+            "credential_journal",
+            "model_health",
+            "provider_catalog",
+            "revisions",
+            "security_head",
+            "security_revocations",
+            "security_revocations_revision",
+        ]
+    };
+    // The first builder predated application_id. Recognize only its exact
+    // schema and closed snapshots, never arbitrary owner-zero databases.
+    let original_schema1 = version == 1 && application == 0 && legacy_schema1::recognize(db)?;
+    if (application != 0x5441474d && !original_schema1) || names != expected {
+        return Err(incompatible());
+    }
+    if version >= 2 {
+        let id: String = db
+            .query_row(
+                "SELECT config_uuid FROM config_metadata WHERE singleton=1",
+                [],
+                |r| r.get(0),
+            )
+            .map_err(|_| incompatible())?;
+        uuid::Uuid::parse_str(&id).map_err(|_| incompatible())?;
+    }
+    drop(statement);
     Ok(())
 }
 
