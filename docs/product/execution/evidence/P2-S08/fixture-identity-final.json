@@ -1,0 +1,36 @@
+{
+  "utc": "2026-10-19T04:42:58.2174594Z",
+  "kind": "owned protocol test helper, not ReachFlow",
+  "files": [
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-runtime\\src\\packs.rs",
+      "bytes": 16127,
+      "sha256": "ED9E86624E51B8F158871A4042B1DD0AA226CE84793B1DE8D23774E1DB508F24"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-runtime\\examples\\pack_protocol_fixture.rs",
+      "bytes": 1649,
+      "sha256": "AB392F2D61B31400713B44A1F97A6618B09F39AE7EF0D5CBEBFFA92E4A205091"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-runtime\\tests\\pack_execution.rs",
+      "bytes": 11328,
+      "sha256": "C73CBA7FF64ECA0EF40187F7C5057BE31A6920E9403E0A5C780EB7E554DAEE78"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\crates\\tagma-core\\src\\packs\\installed.rs",
+      "bytes": 5944,
+      "sha256": "C6411CAA8DBEAD8DB9EE08269CF4A391EC54613ACCC6155AB246AEDB2B6AE13B"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\Cargo.lock",
+      "bytes": 144516,
+      "sha256": "E880BE918DC8223533A1584946E65BB9EC6DD58B91ABEB9E878E0F0A2351F7F0"
+    },
+    {
+      "path": "D:\\demo1\\tagmaai\\target\\debug\\examples\\pack_protocol_fixture.exe",
+      "bytes": 2288128,
+      "sha256": "06B46AF632AD0A1C2E654F10A068C0031101F1A29003F1FDA5D024F5DEFAB830"
+    }
+  ]
+}

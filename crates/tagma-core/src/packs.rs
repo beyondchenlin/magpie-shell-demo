@@ -1,9 +1,11 @@
-//! Pack admission and disposable extraction. No network downloader, activation,
-//! process execution, config writes, or claim that declarations are a sandbox.
+//! Pack admission, disposable extraction and installed version metadata.
+//! Runtime health must succeed before activation. Permission declarations are
+//! not an OS sandbox; process execution belongs to tagma-runtime.
 mod archive;
 #[cfg(test)]
 mod archive_tests;
 mod manifest;
+mod installed;
 mod observed_space;
 mod paths;
 mod prepared;
@@ -11,6 +13,7 @@ mod space;
 mod trust;
 pub use archive::*;
 pub use manifest::*;
+pub use installed::*;
 pub use observed_space::*;
 pub use paths::*;
 pub use prepared::*;

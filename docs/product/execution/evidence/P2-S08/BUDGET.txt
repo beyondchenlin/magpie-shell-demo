@@ -1,0 +1,4 @@
+D:/demo1/tagmaai/target: reuse existing Cargo cache, estimated additional peak <=0.5 GiB
+C: owned RAII fixtures <=0.1 GiB; no downloads or copied environments
+retain source, bounded logs and identity; TempDir cleanup closes child first
+before C32.36/D19.26GiB; D below20, reuse only

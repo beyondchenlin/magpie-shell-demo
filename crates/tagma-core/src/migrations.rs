@@ -177,7 +177,7 @@ fn prepare_step(
         && !(journal.owner == LEGACY_OWNER && journal.from_schema == 1 && journal.to_schema == 2))
         || !matches!(
             (journal.from_schema, journal.to_schema),
-            (1, 2) | (2, 3) | (3, 4) | (4, 5) | (5, 6) | (6, 7) | (7, 8) | (8, 9) | (9, 10)
+            (1, 2) | (2, 3) | (3, 4) | (4, 5) | (5, 6) | (6, 7) | (7, 8) | (8, 9) | (9, 10) | (10, 11)
         )
         || (version != journal.from_schema && version != journal.to_schema)
         || uuid::Uuid::parse_str(&journal.operation_id).is_err()
@@ -313,7 +313,8 @@ fn prepare_step(
         // publications from being silently dropped by older writers. V6 protects
         // the automatic-brain order source and dynamic step targets. V9 protects
         // soft-budget snapshot fields from being dropped by older writers. V10
-        // protects provider timeout settings from older snapshot writers.
+        // protects provider timeout settings from older snapshot writers. V11
+        // protects installed pack versions and the active-version pointer.
         // Historical snapshot bytes stay immutable; current readers supply defaults.
         tx.pragma_update(None, "user_version", journal.to_schema)
             .map_err(|_| error())?;

@@ -213,3 +213,74 @@ fn dev9_published_initialization_and_pending_migration_records_resume() {
         "Historical dev9/schema3 published initialization marker,pending3->4 journal,and both together resume real entrypoint;raw snapshots/UUID preserved,no user paths"
     );
 }
+
+#[test]
+fn schema10_pack_metadata_migration_preserves_existing_configuration() {
+    let root = tempfile::Builder::new()
+        .prefix("tagma-pack-schema-")
+        .tempdir()
+        .unwrap();
+    let credentials = Arc::new(MemoryCredentials::default());
+    let service = ConfigService::open(root.path(), credentials.clone()).unwrap();
+    let id = service.configuration_id().unwrap();
+    service
+        .save_provider(SaveProvider {
+            protocol_version: PROTOCOL_VERSION,
+            expected_revision: 0,
+            id: None,
+            name: "schema10 provider".into(),
+            protocol: ProviderProtocol::OpenaiChatCompletions,
+            base_url: "https://fixture.example.invalid/v1".into(),
+            models: vec!["owned-model".into()],
+            enabled: true,
+            credential: None,
+        })
+        .unwrap();
+    drop(service);
+    let db = Connection::open(root.path().join("config.sqlite3")).unwrap();
+    let raw: String = db
+        .query_row("SELECT snapshot FROM revisions WHERE revision=1", [], |r| {
+            r.get(0)
+        })
+        .unwrap();
+    let mut legacy: serde_json::Value = serde_json::from_str(&raw).unwrap();
+    legacy.as_object_mut().unwrap().remove("installed_packs");
+    let raw = serde_json::to_string_pretty(&legacy).unwrap();
+    db.execute("UPDATE revisions SET snapshot=?1 WHERE revision=1", [&raw])
+        .unwrap();
+    db.pragma_update(None, "user_version", 10).unwrap();
+    drop(db);
+    let reopened = ConfigService::open(root.path(), credentials).unwrap();
+    let view = reopened.view().unwrap();
+    assert_eq!(view.schema_version, 11);
+    assert_eq!(view.desired_revision, 1);
+    assert_eq!(view.providers[0].name, "schema10 provider");
+    assert!(view.installed_packs.is_empty());
+    assert_eq!(reopened.configuration_id().unwrap(), id);
+    drop(reopened);
+    let db = Connection::open(root.path().join("config.sqlite3")).unwrap();
+    assert_eq!(
+        db.query_row::<String, _, _>("SELECT snapshot FROM revisions WHERE revision=1", [], |r| r
+            .get(0))
+            .unwrap(),
+        raw
+    );
+    assert!(!root.path().join("config-migration.json").exists());
+    let backup = std::fs::read_dir(root.path().join("backups"))
+        .unwrap()
+        .filter_map(Result::ok)
+        .find(|e| e.file_name().to_string_lossy().starts_with("schema-10-"))
+        .unwrap();
+    let old = Connection::open(backup.path()).unwrap();
+    assert_eq!(
+        old.pragma_query_value::<u32, _>(None, "user_version", |r| r.get(0))
+            .unwrap(),
+        10
+    );
+    assert_eq!(
+        old.query_row::<String, _, _>("SELECT snapshot FROM revisions WHERE revision=1", [], |r| r
+            .get(0))
+            .unwrap(),
+        raw
+    );
+}

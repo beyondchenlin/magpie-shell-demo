@@ -4192,6 +4192,7 @@ dependencies = [
 name = "tagma-runtime"
 version = "0.2.0-dev.40"
 dependencies = [
+ "ed25519-dalek",
  "fs2",
  "futures-util",
  "interprocess",
@@ -4208,6 +4209,7 @@ dependencies = [
  "widestring",
  "windows-sys 0.61.2",
  "zeroize",
+ "zip",
 ]
 
 [[package]]

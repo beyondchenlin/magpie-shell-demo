@@ -11,6 +11,8 @@ use ts_rs::TS;
 fn main() {
     let cfg = ts_rs::Config::default();
     let declarations = [
+        packs::InstalledPackVersion::decl(&cfg),
+        packs::InstalledPack::decl(&cfg),
         ErrorCode::decl(&cfg),
         AppError::decl(&cfg),
         BudgetScope::decl(&cfg),

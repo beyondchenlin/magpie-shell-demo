@@ -1,4 +1,6 @@
 // Generated from tagma-core. Run npm run contract:generate; do not edit.
+export type InstalledPackVersion = { version: string, preparation_id: string, manifest_sha256: string, display_name: string, installed_ms: string, };
+export type InstalledPack = { id: string, active_version: string | null, versions: Array<InstalledPackVersion>, };
 export type ErrorCode = "INVALID_INPUT" | "CONFIG_CONFLICT" | "STORAGE_UNAVAILABLE" | "CREDENTIAL_STORE_UNAVAILABLE" | "INCOMPATIBLE_VERSION" | "MAINTENANCE_IN_PROGRESS" | "DESKTOP_REQUIRED" | "INTERNAL_ERROR" | "PORT_IN_USE" | "ALREADY_RUNNING" | "GATEWAY_UNAVAILABLE" | "CONFIG_APPLY_FAILED" | "OWNERSHIP_REQUIRED" | "STARTUP_TIMEOUT" | "INITIALIZATION_RECOVERY_REQUIRED" | "PROVIDER_REFERENCED" | "PROFILE_REFERENCED" | "PROBE_BACKOFF" | "PROBE_BUSY" | "ACCESS_REVOKED" | "SECURITY_STATE_UNCONFIRMED" | "USAGE_STORAGE_UNAVAILABLE" | "USAGE_QUERY_UNAVAILABLE" | "USAGE_QUERY_CANCELLED" | "USAGE_CLEAR_BUSY" | "USAGE_CLEAR_CHANGED" | "USAGE_CLEAR_UNCONFIRMED" | "RESTART_REQUIRED" | "TEAM_SLUG_CONFLICT" | "TEAM_PUBLISHED" | "TEAM_RECIPE_UNAVAILABLE" | "NO_AVAILABLE_BRAIN";
 export type AppError = { code: ErrorCode, retryable: boolean, };
 export type BudgetScope = { "kind": "all_attempts" } | { "kind": "provider", provider_id: string, } | { "kind": "model", provider_id: string, model_id: string, } | { "kind": "team", public_id: string, };
@@ -95,7 +97,7 @@ attempts: string, summary_buckets: string, };
 export type UsageClearReceipt = { plan: UsageClearPlan, generation: string, committed_ms: number, };
 export type SaveTeam = { protocol_version: number, expected_revision: number, id: string | null, slug: string, recipe: TeamRecipe, };
 export type SetTeamEnabled = { protocol_version: number, expected_revision: number, id: string, team_revision: number, enabled: boolean, };
-export type ConfigView = { budgets: Array<BudgetRule>, security: SecurityView, protocol_version: number, schema_version: number, desired_revision: number, providers: Array<Provider>, profiles: Array<AppProfile>, first_cloud_order: FirstCloudOrder, gateway: GatewayView, teams: Array<TeamView>, model_health: Array<ModelHealthView>, provider_catalog: Array<CatalogView>, pending_credential_cleanup: number, };
+export type ConfigView = { installed_packs: Array<InstalledPack>, budgets: Array<BudgetRule>, security: SecurityView, protocol_version: number, schema_version: number, desired_revision: number, providers: Array<Provider>, profiles: Array<AppProfile>, first_cloud_order: FirstCloudOrder, gateway: GatewayView, teams: Array<TeamView>, model_health: Array<ModelHealthView>, provider_catalog: Array<CatalogView>, pending_credential_cleanup: number, };
 export type RuntimeState = "stopped" | "starting" | "running" | "degraded" | "stopping" | "failed";
 export type RuntimeStatus = { usage_degraded: boolean | null, usage_pending_results: number | null, security_revision: number | null, state: RuntimeState, instance_id: string | null, effective_revision: number | null, address: string | null, owned: boolean, error: AppError | null, };
 export type ApplicationView = { product_version: string, config: ConfigView, runtime: RuntimeStatus, };

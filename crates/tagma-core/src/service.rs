@@ -19,6 +19,8 @@ pub struct ProviderRecord {
 
 #[derive(Clone, Default, Serialize, Deserialize)]
 pub struct ConfigSnapshot {
+    #[serde(default)]
+    pub installed_packs: Vec<crate::packs::InstalledPack>,
     pub providers: Vec<ProviderRecord>,
     #[serde(default)]
     pub profiles: Vec<AppProfile>,
@@ -144,6 +146,17 @@ fn verify_identity(db: &Connection) -> AppResult<()> {
 }
 
 impl ConfigService {
+    pub fn configuration_id(&self) -> AppResult<Uuid> {
+        let db = self.db.lock().map_err(storage)?;
+        let id: String = db.query_row(
+            "SELECT config_uuid FROM config_metadata WHERE singleton=1", [], |row| row.get(0)
+        ).map_err(storage)?;
+        let parsed = Uuid::parse_str(&id).map_err(storage)?;
+        if parsed.is_nil() {
+            return Err(AppError::new(ErrorCode::IncompatibleVersion));
+        }
+        Ok(parsed)
+    }
     pub(crate) fn directory(&self) -> &Path {
         &self.directory
     }
@@ -280,6 +293,8 @@ impl ConfigService {
             "SELECT r.revision,r.snapshot FROM revisions r JOIN config_head h ON h.revision=r.revision WHERE h.singleton=1", [],
             |row| Ok((row.get(0)?, row.get(1)?))).map_err(storage)?;
         let snapshot: ConfigSnapshot = serde_json::from_str(&json).map_err(storage)?;
+        crate::packs::validate_installations(&snapshot.installed_packs)
+            .map_err(|_| storage("invalid installed packs"))?;
         crate::budgets::validate_rules(&snapshot.budgets)
             .map_err(|_| storage("invalid budget snapshot"))?;
         crate::timeouts::validate(&snapshot).map_err(|_| storage("invalid provider timeouts"))?;
@@ -298,6 +313,7 @@ impl ConfigService {
         let first_cloud =
             crate::health::select_first_cloud(&snapshot, &health_records, observed_now);
         Ok(ConfigView {
+            installed_packs: snapshot.installed_packs.clone(),
             budgets: snapshot.budgets.clone(),
             security: security.clone(),
             protocol_version: PROTOCOL_VERSION,

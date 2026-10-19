@@ -1,0 +1,6 @@
+{
+  "utc": "2026-10-19T04:24:34.1065818Z",
+  "pid": 37372,
+  "runningAfter": false,
+  "note": "bounded owned fixture stopped or already timed out; isolated providers and evidence retained"
+}

@@ -1,0 +1,47 @@
+    Checking uuid v1.28.0
+    Checking tagma-core v0.2.0-dev.40 (D:\demo1\tagmaai\crates\tagma-core)
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+    Checking tagma-runtime v0.2.0-dev.40 (D:\demo1\tagmaai\crates\tagma-runtime)
+error: this `if` statement can be collapsed
+   --> crates\tagma-runtime\src\packs.rs:145:9
+    |
+145 | /         if let PackOperation::LocalSample { text } = &operation {
+146 | |             if text.trim().is_empty() || text.len() > MAX_TEXT || text.contains('\0') {
+147 | |                 return Err(PackRunError::InvalidInput);
+148 | |             }
+149 | |         }
+    | |_________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.98.0/index.html#collapsible_if
+    = note: `-D clippy::collapsible-if` implied by `-D warnings`
+    = help: to override `-D warnings` add `#[allow(clippy::collapsible_if)]`
+help: collapse nested if block
+    |
+145 ~         if let PackOperation::LocalSample { text } = &operation
+146 ~             && (text.trim().is_empty() || text.len() > MAX_TEXT || text.contains('\0')) {
+147 |                 return Err(PackRunError::InvalidInput);
+148 ~             }
+    |
+
+error: could not compile `tagma-runtime` (lib) due to 1 previous error
+warning: build failed, waiting for other jobs to finish...
+error: could not compile `tagma-runtime` (lib test) due to 1 previous error

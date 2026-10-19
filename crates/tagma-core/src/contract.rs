@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 use ts_rs::TS;
 
 pub const PROTOCOL_VERSION: u32 = 1;
-pub const SCHEMA_VERSION: u32 = 10;
+pub const SCHEMA_VERSION: u32 = 11;
 pub const PRODUCT_VERSION: &str = env!("CARGO_PKG_VERSION");
 
 #[derive(Debug, Clone, Serialize, Deserialize, TS, PartialEq, Eq)]
@@ -190,6 +190,7 @@ pub struct RevisionInput {
 
 #[derive(Debug, Clone, Serialize, Deserialize, TS)]
 pub struct ConfigView {
+    pub installed_packs: Vec<crate::packs::InstalledPack>,
     pub budgets: Vec<crate::budgets::BudgetRule>,
     pub security: crate::security::SecurityView,
     pub protocol_version: u32,

@@ -1,0 +1,51 @@
+{
+  "utc": "2026-10-19T04:43:21.1248959Z",
+  "kind": "core and owned native child protocol, no desktop or ReachFlow acceptance",
+  "files": [
+    {
+      "path": ".gitattributes",
+      "bytes": 9,
+      "sha256": "8B9C3028D6467FF3BE7C793141927841D70F47F52D0590677438F488CA154992"
+    },
+    {
+      "path": "activation-final.log",
+      "bytes": 1367,
+      "sha256": "1E0F47304A83D705FED2FB2290155490F797D040587CC9F4A330855AF6001E13"
+    },
+    {
+      "path": "BUDGET.txt",
+      "bytes": 287,
+      "sha256": "F86C60A32D4785C8510E7395507FB2792CE0FF6C36538768EAA841CBD23AB1B2"
+    },
+    {
+      "path": "build-first.log",
+      "bytes": 11606,
+      "sha256": "A212BA7C9F12EFF1F33A2242B22275E59DA53C8E5B6E4AC8C145EA3988089E01"
+    },
+    {
+      "path": "clippy-current.log",
+      "bytes": 1411,
+      "sha256": "E80E70E7A8F507176C08FFC8986062CF92C6AE28A2234B0E8B28B1F2EF971EB1"
+    },
+    {
+      "path": "clippy-first.log",
+      "bytes": 1960,
+      "sha256": "73DBAC7A06129BA355E9F3737B32C53B361ED03C8CDA8FFCC0746FAA5C8B1C87"
+    },
+    {
+      "path": "fixture-identity-final.json",
+      "bytes": 1333,
+      "sha256": "E284EBF06B8E89945F40B9C901F6B95BBED9055C35979339444BADD9F75EC6C9"
+    },
+    {
+      "path": "helper-current.log",
+      "bytes": 815,
+      "sha256": "DBA198DB55DAC607B3E6F9745EC2980070D51DAC7CB8208FEB59FA9425EB5468"
+    },
+    {
+      "path": "p1-s33-upstream-cleanup.json",
+      "bytes": 197,
+      "sha256": "DF6C7D46892DE18FA43EB0E656124E25A662047BF8888BA2614DC6CEF5F73822"
+    }
+  ]
+}
