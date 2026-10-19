@@ -37,3 +37,7 @@ acceptance-shots/
 
 # Local retained deliveries, preview data and closeout recovery material
 /.local-retained/
+
+# Local tip diagnostic previews (not part of ship)
+tip-*-preview/
+tip-*-diag/
