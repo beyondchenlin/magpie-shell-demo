@@ -690,13 +690,7 @@ Section Uninstall
   ${EndIf}
 
   ; Remove registry information for add/remove programs
-  !if "${INSTALLMODE}" == "both"
-    DeleteRegKey SHCTX "${UNINSTKEY}"
-  !else if "${INSTALLMODE}" == "perMachine"
-    DeleteRegKey HKLM "${UNINSTKEY}"
-  !else
-    DeleteRegKey HKCU "${UNINSTKEY}"
-  !endif
+  !insertmacro TagmaDeleteUninstallRegistration
 
   ; Removes the Autostart entry for ${PRODUCTNAME} from the HKCU Run key if it exists.
   ; This ensures the program does not launch automatically after uninstallation if it exists.

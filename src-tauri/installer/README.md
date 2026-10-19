@@ -8,6 +8,12 @@ The upstream MIT license is retained in `LICENSE-MIT`.
 
 Tagma changes:
 
+- Check uninstall registration existence in the same registry view, accepting
+  only missing-key results as an interrupted-uninstall retry. A query/deletion
+  failure returns1603 and restores the executing uninstaller to its original
+  path without overwriting another file. If restoration fails, show the full
+  installer recovery path explicitly. Program-file deletion checks still run
+  first; no failed uninstall reports success or deletes user data afterward.
 - Check each explicit installation registry write and abort with1603 on failure,
   with a visible partial-installation recovery message. Publish DisplayVersion
   only after the other required registration fields succeed. Program files may
