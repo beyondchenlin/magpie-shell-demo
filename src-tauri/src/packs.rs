@@ -382,6 +382,82 @@ impl PackBridge {
         )?;
         result
     }
+    pub async fn manage(
+        &self,
+        config: &ConfigService,
+        input: ManagePack,
+        channel: Channel<PackTaskEvent>,
+    ) -> Result<ConfigView> {
+        let cancel = self.begin(&input.task_id)?;
+        let _guard = Guard { bridge: self };
+        self.event(
+            &channel,
+            event(
+                &input.task_id,
+                if input.version.is_some() {
+                    "health"
+                } else {
+                    "deactivating"
+                },
+                "running",
+                None,
+                None,
+            ),
+        )?;
+        let result = async {
+            let (revision, snapshot) = config
+                .read_snapshot()
+                .map_err(|_| error("PACK_UNAVAILABLE"))?;
+            if revision != input.expected_revision {
+                return Err(error("CONFIG_CONFLICT"));
+            }
+            let pack = snapshot
+                .installed_packs
+                .iter()
+                .find(|pack| pack.id == input.pack_id)
+                .ok_or_else(|| error("PACK_UNAVAILABLE"))?;
+            match input.version.as_deref() {
+                Some(version) => {
+                    let version = pack
+                        .versions
+                        .iter()
+                        .find(|item| item.version == version)
+                        .ok_or_else(|| error("PACK_UNAVAILABLE"))?;
+                    self.installer
+                        .executor()
+                        .activate(
+                            config,
+                            revision,
+                            uuid::Uuid::parse_str(&version.preparation_id)
+                                .map_err(|_| error("PACK_UNAVAILABLE"))?,
+                            &version.manifest_sha256,
+                            cancel,
+                        )
+                        .await
+                        .map_err(error)
+                }
+                None => config
+                    .deactivate_pack(revision, &input.pack_id)
+                    .map_err(|err| {
+                        error(if err.code == tagma_core::ErrorCode::ConfigConflict {
+                            "CONFIG_CONFLICT"
+                        } else {
+                            "PACK_UNAVAILABLE"
+                        })
+                    }),
+            }
+        }
+        .await;
+        self.finish(
+            &channel,
+            &input.task_id,
+            &result
+                .as_ref()
+                .map(|_| None)
+                .map_err(|err| err.code.clone()),
+        )?;
+        result
+    }
     pub async fn call(
         &self,
         config: &ConfigService,

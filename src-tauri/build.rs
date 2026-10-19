@@ -9,6 +9,7 @@ fn main() {
             "review_pack",
             "install_pack",
             "invoke_pack",
+            "manage_pack",
             "cancel_pack",
             "send_chat",
             "cancel_chat",

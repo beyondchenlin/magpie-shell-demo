@@ -1,0 +1,5 @@
+{
+  "failure": "UTF8 without BOM read as system ANSI by Windows PowerShell 5; isolation title prefix rejected, native identity guard stopped actions",
+  "recovery": "Bound exact owned PID 36960/start/hash/path/title for observe and normal quit only; wrote UTF8 BOM harness; relaunched same data",
+  "utc": "2026-10-19T07:58:33.0080039Z"
+}

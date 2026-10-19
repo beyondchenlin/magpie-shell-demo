@@ -43,6 +43,11 @@ export function PackMarketPanel({config,busy,active,language,onRefresh,onEditing
   const reachflow=config.installed_packs.find(pack=>pack.id==="reachflow");
   const installed=!!reachflow?.active_version;
   const internalOnly=reachflow?.versions.find(v=>v.version===reachflow.active_version)?.display_name==="ReachFlow 内部本地试跑";
+  const internalPresent=reachflow?.versions.some(v=>v.display_name==="ReachFlow 内部本地试跑");
+  const references=config.teams.flatMap(({team})=>{
+    const uses=(recipe:typeof team.draft)=>recipe.steps.some(step=>step.target.kind==="pack"&&step.target.pack_id==="reachflow")||(recipe.brain.kind==="local_brain_pack"&&recipe.brain.pack_id==="reachflow");
+    return [...(uses(team.draft)?[`${team.draft.display_name} · ${zh?"草稿":"draft"}`]:[]),...team.versions.filter(version=>uses(version.recipe)).map(version=>`${version.recipe.display_name} · ${version.public_id}`)];
+  });
   useEffect(()=>{mounted.current=true;return()=>{mounted.current=false;};},[]);
   useEffect(()=>{let live=true;if(active&&desktop)void service.packMarket().then(value=>{if(live){setReleaseReady(value.release_ready);setInternalManifest(value.internal_manifest);setTask(previous=>previous?.text?previous:value.task);}},failure=>{if(live)setError(failure);});return()=>{live=false;};},[active]);
   useEffect(()=>{onEditingChange(working||!!review);return()=>onEditingChange(false);},[working,review,onEditingChange]);
@@ -54,12 +59,24 @@ export function PackMarketPanel({config,busy,active,language,onRefresh,onEditing
   async function reviewInternal(){if(!internalManifest||locked)return;setWorking(true);setError(null);try{setReview(await service.reviewPack(internalManifest));}catch(failure){setError(failure);}finally{setWorking(false);}}
   async function install(){if(!review||locked)return;const selected=review;setWorking(true);setError(null);const id=crypto.randomUUID();runningId.current=id;setTask({task_id:id,phase:"starting",state:"running",text:null,error:null});try{await service.installPack({protocol_version:protocolVersion,task_id:id,review_id:selected.review_id,manifest_sha256:selected.manifest_sha256},receive);}catch(failure){if(mounted.current)setError(failure);}finally{runningId.current=null;if(mounted.current){returnTo.current=selected.publisher==="tagma-internal"?sample.current:file.current;setWorking(false);setReview(null);await onRefresh();}}}
   async function call(operation:PackUserOperation){if(locked||!installed)return;setWorking(true);setError(null);const id=crypto.randomUUID();runningId.current=id;setTask({task_id:id,phase:"calling",state:"running",text:null,error:null});try{await service.invokePack({protocol_version:protocolVersion,task_id:id,pack_id:"reachflow",operation},receive);}catch(failure){if(mounted.current)setError(failure);}finally{runningId.current=null;if(mounted.current){returnTo.current=sample.current;setWorking(false);}}}
-  const phase:Record<string,string>=zh?{starting:"准备中",download:"下载中",verify:"校验与准备",health:"健康检查",activated:"已登记版本",calling:"调用中",finished:"已结束"}:{};
+  async function manage(version:string|null){
+    if(locked||runningId.current||!reachflow)return;
+    const id=crypto.randomUUID();runningId.current=id;setWorking(true);setError(null);
+    try{await service.managePack({protocol_version:protocolVersion,task_id:id,expected_revision:config.desired_revision,pack_id:reachflow.id,version},receive);}
+    catch(failure){if(mounted.current)setError(failure);}
+    finally{runningId.current=null;if(mounted.current){setWorking(false);await onRefresh();}}
+  }
+  const phase:Record<string,string>=zh?{starting:"准备中",download:"下载中",verify:"校验与准备",health:"健康检查",deactivating:"保存停用",activated:"已登记版本",calling:"调用中",finished:"已结束"}:{};
   const state:Record<string,string>=zh?{running:"进行中",succeeded:"完成",failed:"失败",cancelled:"已取消",interrupted:"已中断"}:{};
   return <section aria-label={zh?"队员安装与调用":"Pack installation and calls"}>
-    <div className="list prefs"><PrefRow name="ReachFlow" sub={zh?"本地固定素材试跑，以及已授权服务任务的调用与取消。":"Local fixed sample, authorized service calls and task cancellation."}><span>{installed?`${zh?"已登记版本":"Registered version"} ${reachflow.active_version}`:zh?"未安装":"Not installed"}</span></PrefRow></div>
+    <div className="list prefs"><PrefRow name="ReachFlow" sub={zh?"本地固定素材试跑，以及已授权服务任务的调用与取消。":"Local fixed sample, authorized service calls and task cancellation."}><span>{installed?`${zh?"已登记版本":"Registered version"} ${reachflow.active_version}`:reachflow?(zh?"已停用 · 保留版本":"Inactive · versions retained"):zh?"未安装":"Not installed"}</span></PrefRow></div>
     {releaseReady===false&&<p role="status" className="tagma-footnote">{zh?"当前发行版尚未配置正式队员发行公钥。可核验清单，但未受信任的发行包不能安装；本地试跑需要先安装有效队员。":"This release has no official pack signing roots. Untrusted manifests cannot be installed; a valid installed pack is required for the local sample."}</p>}
-    {internalManifest&&<div className="tagma-editor"><p>{zh?"隔离开发候选提供已签名的内部测试包，仅用于本地固定素材试跑，不代表正式发行或真实采集服务。离线安装仍校验签名、内容和健康状态。":"This isolated development build includes a signed internal package for local samples only. It is not a production release or a research service. Offline installation verifies signature, content and health."}</p><TextBtn ref={internalButton} disabled={locked||!!review||internalOnly} onClick={()=>void reviewInternal()}>{internalOnly?(zh?"内部测试包已安装":"Internal package installed"):(zh?"安装 ReachFlow 内部测试包":"Install internal ReachFlow package")}</TextBtn></div>}
+    {internalManifest&&<div className="tagma-editor"><p>{zh?"隔离开发候选提供已签名的内部测试包，仅用于本地固定素材试跑，不代表正式发行或真实采集服务。离线安装仍校验签名、内容和健康状态。":"This isolated development build includes a signed internal package for local samples only. It is not a production release or a research service. Offline installation verifies signature, content and health."}</p><TextBtn ref={internalButton} disabled={locked||!!review||internalPresent} onClick={()=>void reviewInternal()}>{internalPresent?(zh?"内部测试包已安装":"Internal package installed"):(zh?"安装 ReachFlow 内部测试包":"Install internal ReachFlow package")}</TextBtn></div>}
+    {reachflow&&<details className="tagma-chat-setup"><summary>{zh?"已安装版本与小队引用":"Installed versions and team references"}</summary><p className="tagma-footnote">{zh?"停用保留运行文件和成果；网关应用新配置后不再接收该队员的新调用，已在途任务继续使用固定版本。这不是紧急撤销或卸载。重新启用会核验签名、文件及健康状态，失败不切换版本。":"Deactivation retains files and results. Once the gateway applies the revision, new calls are unavailable; in-flight tasks keep their pinned version. This is not emergency revocation or uninstall. Activation rechecks signature, files and health before switching."}</p>
+      <ul>{reachflow.versions.map(version=><li key={version.version}><span>{version.version} · {version.display_name} </span><TextBtn disabled={locked||!!review||reachflow.active_version===version.version} onClick={()=>void manage(version.version)}>{reachflow.active_version===version.version?(zh?"当前活动版本":"Current active version"):(zh?"检查并启用 ":"Check and activate ")+version.version}</TextBtn></li>)}</ul>
+      {references.length>0?<><p>{zh?"以下小队依赖此队员；停用后将暂时不可调用：":"These teams depend on this pack and become unavailable while it is inactive:"}</p><ul>{references.map((name,index)=><li key={index}>{name}</li>)}</ul></>:<p>{zh?"当前没有小队引用。":"No team references."}</p>}
+      <TextBtn variant="danger" disabled={locked||!!review||!installed} onClick={()=>void manage(null)}>{zh?"停用 ReachFlow（保留文件）":"Deactivate ReachFlow (retain files)"}</TextBtn>
+    </details>}
     <label className="tagma-compose-label">{zh?"选择队员发行清单":"Choose a pack release manifest"}<input ref={file} type="file" accept=".json,application/json" disabled={!desktop||locked||!!review} onChange={event=>void choose(event.target.files?.[0])}/></label>
     {error!=null&&<p ref={alert} role="alert" tabIndex={-1} className="tagma-error">{packError(error,zh)}</p>}
     {review&&<section className="tagma-editor" aria-label={zh?"安装确认":"Installation review"}><h2>{review.pack_id} · {review.version}</h2><div className="list prefs">

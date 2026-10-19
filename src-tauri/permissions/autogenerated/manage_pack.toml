@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-manage-pack"
+description = "Enables the manage_pack command without any pre-configured scope."
+commands.allow = ["manage_pack"]
+
+[[permission]]
+identifier = "deny-manage-pack"
+description = "Denies the manage_pack command without any pre-configured scope."
+commands.deny = ["manage_pack"]

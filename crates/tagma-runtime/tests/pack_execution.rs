@@ -191,6 +191,15 @@ async fn health_before_activation_persisted_version_and_deactivation() {
             .unwrap_err(),
         PackRunError::Unavailable
     );
+    assert_eq!(f.executor.activate(&f.config,1,f.operation,&f.sha,CancellationToken::new()).await.unwrap_err(),PackRunError::ConfigurationConflict);
+    assert_eq!(f.config.view().unwrap().desired_revision,2);
+    let cancelled=CancellationToken::new();cancelled.cancel();
+    assert_eq!(f.executor.activate(&f.config,2,f.operation,&f.sha,cancelled).await.unwrap_err(),PackRunError::Cancelled);
+    assert!(f.config.view().unwrap().installed_packs[0].active_version.is_none());
+    let restored=f.executor.activate(&f.config,2,f.operation,&f.sha,CancellationToken::new()).await.unwrap();
+    assert_eq!(restored.desired_revision,3);
+    assert_eq!(restored.installed_packs[0].active_version.as_deref(),Some("1.0.0"));
+    assert_eq!(restored.installed_packs[0].versions,view.installed_packs[0].versions);
 }
 
 #[tokio::test]

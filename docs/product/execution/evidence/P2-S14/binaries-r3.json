@@ -1,0 +1,12 @@
+[
+  {
+    "Algorithm": "SHA256",
+    "Hash": "A0D935E2173DEC9AEA01F23EEA84F859517F3BA7E32AEE26B830635CB28EA45D",
+    "Path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\install-p0s16\\tagma-desktop.exe"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "46BCC43D79683D2728EE0532ACE4BDDD1C568C82D80D449148FCF97D73BDBFED",
+    "Path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\install-p0s16\\tagma-gateway.exe"
+  }
+]

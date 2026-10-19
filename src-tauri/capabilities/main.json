@@ -13,6 +13,7 @@
     "allow-review-pack",
     "allow-install-pack",
     "allow-invoke-pack",
+    "allow-manage-pack",
     "allow-cancel-pack",
     "allow-send-chat",
     "allow-cancel-chat",

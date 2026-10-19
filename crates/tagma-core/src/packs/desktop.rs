@@ -63,6 +63,16 @@ pub struct InvokePack {
     pub operation: PackUserOperation,
 }
 #[derive(Deserialize, TS)]
+#[serde(deny_unknown_fields)]
+pub struct ManagePack {
+    pub protocol_version: u32,
+    pub task_id: String,
+    pub expected_revision: u32,
+    pub pack_id: String,
+    /// None deactivates; Some rechecks and activates a retained installed version.
+    pub version: Option<String>,
+}
+#[derive(Deserialize, TS)]
 #[serde(tag = "kind", rename_all = "snake_case", deny_unknown_fields)]
 pub enum PackUserOperation {
     LocalSample,

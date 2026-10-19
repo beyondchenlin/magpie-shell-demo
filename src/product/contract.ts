@@ -5,6 +5,11 @@ export type PackTaskEvent = { task_id: string, phase: string, state: string, tex
 export type PackMarketView = { release_ready: boolean, internal_manifest: string | null, task: PackTaskEvent | null, };
 export type ConfirmPackInstall = { protocol_version: number, task_id: string, review_id: string, manifest_sha256: string, };
 export type InvokePack = { protocol_version: number, task_id: string, pack_id: string, operation: PackUserOperation, };
+export type ManagePack = { protocol_version: number, task_id: string, expected_revision: number, pack_id: string,
+/**
+ * None deactivates; Some rechecks and activates a retained installed version.
+ */
+version: string | null, };
 export type PackUserOperation = { "kind": "local_sample" } | { "kind": "reach_flow", request: ReachFlowRequest, };
 export type ReachFlowRequest = { service_url: string, workspace_id: string, access_token: string, action: ReachFlowAction, };
 export type ReachFlowAction = { "kind": "start_collection", draft_id: string, confirmation_id: string, plan_digest: string, engine_selection_revision: number, idempotency_key: string, } | { "kind": "task_status", task_id: string, } | { "kind": "task_report", task_id: string, } | { "kind": "cancel_task", task_id: string, };

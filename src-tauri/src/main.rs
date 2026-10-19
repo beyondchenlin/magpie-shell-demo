@@ -174,6 +174,27 @@ async fn install_pack(
         .await
 }
 #[tauri::command]
+async fn manage_pack(
+    window: WebviewWindow,
+    app: State<'_, Application>,
+    input: tagma_core::packs::ManagePack,
+    on_event: tauri::ipc::Channel<tagma_core::packs::PackTaskEvent>,
+) -> Result<ConfigView, tagma_core::packs::PackUiError> {
+    pack_protocol(input.protocol_version)?;
+    let bridge = pack_bridge(&window, &app)?;
+    bridge
+        .manage(
+            app.config
+                .as_ref()
+                .map_err(|_| tagma_core::packs::PackUiError {
+                    code: "PACK_UNAVAILABLE".into(),
+                })?,
+            input,
+            on_event,
+        )
+        .await
+}
+#[tauri::command]
 async fn invoke_pack(
     window: WebviewWindow,
     app: State<'_, Application>,
@@ -906,6 +927,7 @@ fn main() {
             review_pack,
             install_pack,
             invoke_pack,
+            manage_pack,
             cancel_pack,
             send_chat,
             cancel_chat,

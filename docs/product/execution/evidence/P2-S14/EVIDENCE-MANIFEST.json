@@ -1,0 +1,205 @@
+{
+  "utc": "2026-10-19T08:40:59.7608180Z",
+  "candidate": "dev44r4",
+  "configDesired": 26,
+  "configEffective": 26,
+  "rawCache": "D:\\demo1\\tagmaai\\.cache\\p2-s14-pack-versions",
+  "hashScope": "raw files before Git text normalization; originals retained",
+  "files": [
+    {
+      "file": "09-version-references.json",
+      "bytes": 87368,
+      "sha256": "91749E4CDB8488E2C5C67067BBC7ED59451D582E0832E68F61FCE607555A9E11"
+    },
+    {
+      "file": "11-deactivation-applied.json",
+      "bytes": 87343,
+      "sha256": "5AA8BDD0786439397097DEF5A2EFC8CFD5627E53B043E3F1C74CBB659752ACFD"
+    },
+    {
+      "file": "13-inactive-models.json",
+      "bytes": 50350,
+      "sha256": "D9A4F5703E8EED226B15C800821785BD576146EE8644BCCBF2EB1713B5DF3A18"
+    },
+    {
+      "file": "17-reactivation-applied.json",
+      "bytes": 87370,
+      "sha256": "A887B6FA1B9894C487DF662A2BB8BE434B7A7ED235E5351BCD45E768D270DB4A"
+    },
+    {
+      "file": "20-sample-content.json",
+      "bytes": 102264,
+      "sha256": "C656C9127A2864141E9E84DD1A8721765F17737C62854F6BE6EE63C88DF38D54"
+    },
+    {
+      "file": "33-r3-corrected-message.json",
+      "bytes": 87347,
+      "sha256": "9D22778B869815F1031FE0BE1C80030444062A90852B094FB222E65BEACB6E51"
+    },
+    {
+      "file": "37-r3-gateway.json",
+      "bytes": 64426,
+      "sha256": "BA3D8A511E53892FB2E2239641BAD84643EAF7E73A77E65A2296FC3A7564CBDF"
+    },
+    {
+      "file": "42-r4-ready.json",
+      "bytes": 43356,
+      "sha256": "47ECFBFBC06ACFB054B6D8F0D1EDB9D69AA079957F175C4DCD6EDC02FF0BA4FD"
+    },
+    {
+      "file": "44-r4-installed.json",
+      "bytes": 87368,
+      "sha256": "FFC0878E3351486A104B65F7C112602E0B722EC5F98923AE9E9532EE5231BAB3"
+    },
+    {
+      "file": "native-version-references.png",
+      "bytes": 47971,
+      "sha256": "646B222B347FC9AC286B2FEFB64767A9525284A11919E568E28B13655162D93A"
+    },
+    {
+      "file": "native-deactivated.png",
+      "bytes": 47805,
+      "sha256": "65443292EFC5B0886113797E15D98CE9BD936EE56ABB2571C39CBA07B5E6845F"
+    },
+    {
+      "file": "native-reactivated.png",
+      "bytes": 47768,
+      "sha256": "3922D481F32BBB7E80037A893014EE87BB5915C6E8AC5A5064DA486EDDBD521B"
+    },
+    {
+      "file": "native-restored-sample.png",
+      "bytes": 38190,
+      "sha256": "9F372E5AC07163D41900F0CB8ABFCA4EE6683E85BE497BDFC9664AF48675E338"
+    },
+    {
+      "file": "native-r3-inactive-message.png",
+      "bytes": 43207,
+      "sha256": "DF3E3E249FEEA722115C1D58D1759BC657544DA84B5EE4C37AA811F4C962CDCA"
+    },
+    {
+      "file": "native-r4-installed.png",
+      "bytes": 47940,
+      "sha256": "88BC3553A1441B145A6A7A469B0266B23E1C3BCAA4B0EE4900A686D25B13D41B"
+    },
+    {
+      "file": "Control.ps1",
+      "bytes": 30185,
+      "sha256": "C7FE26FD9CA3126A94BF7D269D6C57D91F1A3BDFED18155A4C8BCCAA8FBED805"
+    },
+    {
+      "file": "Run.ps1",
+      "bytes": 2060,
+      "sha256": "F323A5A9B6E510D7F15FA59D4640D5F39913FC46F01288FFF5ECD939D45F48CC"
+    },
+    {
+      "file": "Launch.ps1",
+      "bytes": 432,
+      "sha256": "7BF93534F0CC243C4719086D3EBC074A82784BEE52CFC85668FFC6B2F4B5521E"
+    },
+    {
+      "file": "source-frozen44r2.json",
+      "bytes": 59364,
+      "sha256": "B336379BA4B4835AC4654702B9E6F1F653D5DF72041ABBD7FA2FA2FDF966C224"
+    },
+    {
+      "file": "source-frozen44r3.json",
+      "bytes": 59364,
+      "sha256": "EE8377272E73B2C74FE4A954B7A62BA6D8E26D1222E79223F47CA203FAC88DC8"
+    },
+    {
+      "file": "source-check.json",
+      "bytes": 108,
+      "sha256": "5D5F850034D14410E43BA496E661B56DC4DE4631D0422505F50C277B561E6438"
+    },
+    {
+      "file": "source-check-r3.json",
+      "bytes": 108,
+      "sha256": "25D96C9B766D13F50BDFB42BE836B7CFF5BDA627ADF7970EA5DB1C328B2FF833"
+    },
+    {
+      "file": "binaries.json",
+      "bytes": 461,
+      "sha256": "057BD6BBD06405E2810CAC6D8D25A41C4C0D4B80DA28671D4CA2C1F09B7FF0D3"
+    },
+    {
+      "file": "binaries-r3.json",
+      "bytes": 517,
+      "sha256": "609695AC1574329EFE1AAF0B2A9E0E120DACAC66307E72CAF3821ECAAD0AC95D"
+    },
+    {
+      "file": "binaries-r4.json",
+      "bytes": 517,
+      "sha256": "946942F6E0F3FDA3957595892A8646099AB1D5B3EE5B5338B22582730C570978"
+    },
+    {
+      "file": "harness-encoding.json",
+      "bytes": 344,
+      "sha256": "97A4D1B504A526C2D3DEE1A8E61DACA44AA2511468EB338964A9A9D9AFD5905F"
+    },
+    {
+      "file": "BUDGET.txt",
+      "bytes": 254,
+      "sha256": "07283E7075FFFA9C1B100C1C5DC49BA5518E0FE2D8705DDB398B653C12291C58"
+    },
+    {
+      "file": "tests.log",
+      "bytes": 1398,
+      "sha256": "A10DBCE5E9543381DA76365DEF88AAE5F9D1FED33949C950218F8A1601F85652"
+    },
+    {
+      "file": "clippy.log",
+      "bytes": 1185,
+      "sha256": "9EC3CA4F76827422C4C8B8B7F44CA412812BF9CF90DE1D874C9B3BD9FD158CBC"
+    },
+    {
+      "file": "frontend-r3.log",
+      "bytes": 478,
+      "sha256": "14F73793DB24A1C957A1E497220CB7FE6EA0C8FA11651DBFFE77248407847205"
+    },
+    {
+      "file": "build-pair-r3.log",
+      "bytes": 1026,
+      "sha256": "04731083D395F6F5A6BCE1CEA735C07FBB10CEBAD1BFDDD1E6AE7DABCE60A30A"
+    },
+    {
+      "file": "check.log",
+      "bytes": 1089,
+      "sha256": "823BAE4F70A57ED4155093FA0D9C6174FABD26BF9AF532610C474101E77A5C09"
+    }
+  ],
+  "selectedBytes": 1128963.0,
+  "retained": [
+    {
+      "path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\retained-dev44-p2s14",
+      "logicalBytes": 36762225.0,
+      "hardlinksCreated": false,
+      "physicalBytes": "not measured"
+    },
+    {
+      "path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\retained-dev44r2-p2s14",
+      "logicalBytes": 36802159.0,
+      "hardlinksCreated": false,
+      "physicalBytes": "not measured"
+    },
+    {
+      "path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\retained-dev44r3-p2s14",
+      "logicalBytes": 35274353.0,
+      "hardlinksCreated": false,
+      "physicalBytes": "not measured"
+    }
+  ],
+  "ownedProcesses": [],
+  "disk": [
+    {
+      "Name": "C",
+      "Free": 31678881792
+    },
+    {
+      "Name": "D",
+      "Free": 11745992704
+    }
+  ],
+  "newWorktrees": 0,
+  "deletionsPerformed": 0,
+  "notes": "r3 mixed-pair failure retained; r4 paired-target build recovered. No real service success claim."
+}

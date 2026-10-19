@@ -1,0 +1,1 @@
+Reuse workspace, dependencies, target and original isolated data. C31.68/D11.28GiB. Incremental peak <=0.8GiB; preserve >=10GiB. No reinstall/resigning internal adapter, no new worktree/timer. Retain only current dev44 binary pair for rollback history.
