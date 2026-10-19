@@ -1,0 +1,15 @@
+{
+  "sameConfig": true,
+  "files": [
+    {
+      "Path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\install-p0s16\\tagma-desktop.exe",
+      "Hash": "2648122644CE2D3F5F08E51A76EE60375231284F6218596E5C98F6CB0025759D"
+    },
+    {
+      "Path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\install-p0s16\\tagma-gateway.exe",
+      "Hash": "B112CD14657F8BE3123D803A7B6E7D96F6708DB74255E7D2EE32F1DDF5BD1E47"
+    }
+  ],
+  "version": "0.2.0-dev.40",
+  "exitCode": 0
+}

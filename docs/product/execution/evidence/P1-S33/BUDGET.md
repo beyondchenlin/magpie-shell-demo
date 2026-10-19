@@ -1,0 +1,1 @@
+Reuse existing target/node_modules and isolated data/webview. Before C33.16/D20.70GiB. Estimated incremental D<=2GiB, C<=0.2GiB, retain10GiB. Evidence<=10MiB, logs<=20MiB each. Only affected P1 model handoff/retry and complete UI flow; no repeat installer failure matrix. Keep candidates and evidence; no new worktree.
