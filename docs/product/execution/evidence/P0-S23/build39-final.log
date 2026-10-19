@@ -1,0 +1,76 @@
+
+> magpie-shell-demo@0.1.208 tauri
+> tauri build --debug --bundles nsis
+
+        Info Looking up installed tauri packages to check mismatched versions...
+     Running beforeBuildCommand `npm run build:tagma && node scripts/tagma-sidecar.mjs`
+
+> magpie-shell-demo@0.1.208 build:tagma
+> tsc -b && vite build --config vite.tagma.config.ts
+
+vite v8.3.4 building client environment for production...
+transforming...
+✓ 75 modules transformed.
+rendering chunks...
+computing gzip size...
+dist-tagma/tagma.html                   0.38 kB │ gzip:   0.26 kB
+dist-tagma/assets/tagma-gSft3Aqy.css  398.38 kB │ gzip:  73.86 kB
+dist-tagma/assets/tagma-BaaAgHsW.js   394.56 kB │ gzip: 122.52 kB
+
+✓ built in 879ms
+   Compiling tagma-core v0.2.0-dev.39 (D:\demo1\tagmaai\crates\tagma-core)
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+   Compiling tagma-runtime v0.2.0-dev.39 (D:\demo1\tagmaai\crates\tagma-runtime)
+   Compiling tagma-gateway v0.2.0-dev.39 (D:\demo1\tagmaai\crates\tagma-gateway)
+    Finished `dev` profile [unoptimized] target(s) in 10.89s
+Prepared x86_64-pc-windows-msvc sidecar (debug).
+   Compiling tagma-core v0.2.0-dev.39 (D:\demo1\tagmaai\crates\tagma-core)
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+   Compiling tagma-desktop v0.2.0-dev.39 (D:\demo1\tagmaai\src-tauri)
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+   Compiling tagma-runtime v0.2.0-dev.39 (D:\demo1\tagmaai\crates\tagma-runtime)
+    Finished `dev` profile [unoptimized] target(s) in 21.25s
+       Built application at: D:\demo1\tagmaai\target\debug\tagma-desktop.exe
+        Info Patching D:\demo1\tagmaai\target\debug\tagma-desktop.exe with bundle type information: nsis
+        Info Target: x64
+     Running makensis to produce D:\demo1\tagmaai\target\debug\bundle\nsis\Tagma_0.2.0-dev.39_x64-setup.exe
+    Finished 1 bundle at:
+        D:\demo1\tagmaai\target\debug\bundle\nsis\Tagma_0.2.0-dev.39_x64-setup.exe (6.32 MiB)
+

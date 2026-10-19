@@ -1,0 +1,14 @@
+[
+  {
+    "path": "crates/tagma-core/src/migrations.rs",
+    "builtSha256": "3ff3e63f00456fb81b93269fb097c4e496df541930fb6a9e8197c0f11015d21b",
+    "finalSha256": "bd2504ed08a379189b3875959825f1605ef11c5a98d6caae89f383c4693f46bc",
+    "reason": "Removed extra trailing blank line after build; exact built bytes retained as migrations-built.rs"
+  },
+  {
+    "path": "src-tauri/installer/README.md",
+    "builtSha256": "01467645fb93fd0c982ecb12a8c1578aa5d1eebb4034e5b960b8a65b5ab56523",
+    "finalSha256": "ed98d01635f0d49ffe29c38255bf82e2ce7d30c28a3b4798db00d323354d509d",
+    "reason": "Documentation only after build; built bytes from HEAD 5280910"
+  }
+]

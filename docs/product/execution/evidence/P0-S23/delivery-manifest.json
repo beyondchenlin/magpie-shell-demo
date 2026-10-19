@@ -1,0 +1,20 @@
+{
+  "version": "0.2.0-dev.39",
+  "productCommit": "b99eb2c8ef6994ad92f91b450dae98ea79e2f140",
+  "profile": "Windows x64 debug unsigned internal",
+  "installer": {
+    "path": "D:/demo1/tagmaai-deliveries/0.2.0-dev.39/Tagma_0.2.0-dev.39_x64-setup.exe",
+    "bytes": 6629550,
+    "sha256": "405b1fe073b7956a1b90c2eca133fda049f2f805d0c3e070dfadffa92afe7dd1"
+  },
+  "sourceInputs": 320,
+  "sourceRecovery": "Checkout productCommit, restore six inherited inputs using dev18 overlay, apply the two POSTBUILD-NONFUNCTIONAL built-byte restorations; migrations-built.rs provided, README from 5280910. Verify SOURCE-INPUTS.",
+  "acceptance": "Native independent gateway blocks update1618 without termination or database/payload change. Native synthetic future schema blocks1638. Final isolated package native normal upgrade0; config DB/WAL unchanged, native dev39 restored12/12. Failure checks used pre-lint-reorder candidate, unchanged logic; final candidate normal path checked. Not production upstream, signed release, clean-machine or cross-platform approval.",
+  "remaining": "Real credential-facility lock, actual OS animation setting, clean Windows/WebView, signed release and other platforms remain environment-unverified; continue P1 functional work.",
+  "retention": {
+    "owner": "Tagma task",
+    "reviewDate": "2026-10-25",
+    "purpose": "P0 compatibility and maintenance preflight evidence",
+    "scheduledCleanup": false
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "gatewayAlive": true,
+  "unchanged": true,
+  "gatewayPid": 37356,
+  "after": [
+    {
+      "path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\install-p0s16\\tagma-desktop.exe",
+      "sha256": "7F8785BE2A8A50A60090CBA38478CCF899D9F0CCCE0E46AC012320C1CD2DD16B"
+    },
+    {
+      "path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\install-p0s16\\tagma-gateway.exe",
+      "sha256": "3D694C2696DCA9846330A69279A96428A1BACA651E81E83D44AF97EFB660A32F"
+    },
+    {
+      "path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\data\\config.sqlite3",
+      "sha256": "F82945FF1AE987A08496C370349280EAD5DD2468B9C3E6062BBB5F95C1C76D93"
+    },
+    {
+      "path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\data\\config.sqlite3-wal",
+      "sha256": "634B9FFACDAEC6F7C4636C70FC5A9B36903EBA0190E83B9CA197269619B9F45B"
+    }
+  ],
+  "before": [
+    {
+      "path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\install-p0s16\\tagma-desktop.exe",
+      "sha256": "7F8785BE2A8A50A60090CBA38478CCF899D9F0CCCE0E46AC012320C1CD2DD16B"
+    },
+    {
+      "path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\install-p0s16\\tagma-gateway.exe",
+      "sha256": "3D694C2696DCA9846330A69279A96428A1BACA651E81E83D44AF97EFB660A32F"
+    },
+    {
+      "path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\data\\config.sqlite3",
+      "sha256": "F82945FF1AE987A08496C370349280EAD5DD2468B9C3E6062BBB5F95C1C76D93"
+    },
+    {
+      "path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\data\\config.sqlite3-wal",
+      "sha256": "634B9FFACDAEC6F7C4636C70FC5A9B36903EBA0190E83B9CA197269619B9F45B"
+    }
+  ],
+  "gatewayHash": "3D694C2696DCA9846330A69279A96428A1BACA651E81E83D44AF97EFB660A32F",
+  "exitCode": 1618,
+  "gatewayPath": "D:\\demo1\\tagmaai\\.cache\\p0-s23-config-preflight\\independent-dev38-gateway.exe"
+}

@@ -1,0 +1,31 @@
+   Compiling tagma-core v0.2.0-dev.39 (D:\demo1\tagmaai\crates\tagma-core)
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+warning: failed to parse serde attribute
+  | 
+  | deny_unknown_fields 
+  | 
+  = note: ts-rs failed to parse this attribute. It will be ignored.
+    Finished `test` profile [unoptimized] target(s) in 5.80s
+     Running tests\startup_upgrade.rs (target\debug\deps\startup_upgrade-1c59e2fb9bfc6a22.exe)
+
+running 3 tests
+test dev9_schema3_and_fresh_directory_use_the_actual_startup_services ... ok
+test original_pre_identity_schema1_opens_through_real_config_service ... ok
+test dev9_published_initialization_and_pending_migration_records_resume ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.52s
+

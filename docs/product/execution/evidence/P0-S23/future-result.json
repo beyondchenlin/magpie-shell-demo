@@ -1,0 +1,33 @@
+{
+  "note": "Synthetic schema999 database only; original data not edited",
+  "before": [
+    {
+      "Path": "D:\\demo1\\tagmaai\\.cache\\p0-s23-config-preflight\\future-data\\config.sqlite3",
+      "Hash": "67E1319BA020EE094C7D662AE169E9AFAB9BB9CB462C999D147A779CC1188CD3"
+    },
+    {
+      "Path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\install-p0s16\\tagma-desktop.exe",
+      "Hash": "7F8785BE2A8A50A60090CBA38478CCF899D9F0CCCE0E46AC012320C1CD2DD16B"
+    },
+    {
+      "Path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\install-p0s16\\tagma-gateway.exe",
+      "Hash": "3D694C2696DCA9846330A69279A96428A1BACA651E81E83D44AF97EFB660A32F"
+    }
+  ],
+  "after": [
+    {
+      "Path": "D:\\demo1\\tagmaai\\.cache\\p0-s23-config-preflight\\future-data\\config.sqlite3",
+      "Hash": "67E1319BA020EE094C7D662AE169E9AFAB9BB9CB462C999D147A779CC1188CD3"
+    },
+    {
+      "Path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\install-p0s16\\tagma-desktop.exe",
+      "Hash": "7F8785BE2A8A50A60090CBA38478CCF899D9F0CCCE0E46AC012320C1CD2DD16B"
+    },
+    {
+      "Path": "C:\\Users\\ai\\AppData\\Local\\Temp\\tagma-p0-s09-128d7053-66d3-424a-8ec2-90640d06bf88\\install-p0s16\\tagma-gateway.exe",
+      "Hash": "3D694C2696DCA9846330A69279A96428A1BACA651E81E83D44AF97EFB660A32F"
+    }
+  ],
+  "unchanged": true,
+  "exitCode": 1638
+}
