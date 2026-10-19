@@ -29,6 +29,7 @@ function teamUsesProvider(recipe:TeamRecipe,id:string){return (recipe.brain.kind
 
 export default function ProductApp() {
   const [page, setPage] = useState<Page>("chat");
+  const [chatModel, setChatModel] = useState("");
   const [preferences, setPreferences] = useState(readPreferences);
   const [view, setView] = useState<ApplicationView | null>(null);
   const [busy, setBusy] = useState(desktop);
@@ -159,7 +160,7 @@ export default function ProductApp() {
         : <div className="tagma-error" role="alert">{errorCopy(configurationError,preferences.language)} <TextBtn disabled={busy||editing} onClick={()=>void refresh()}>{c.refresh}</TextBtn></div>)}
       {error != null && <div ref={errorAlert} tabIndex={-1} className="tagma-error" role="alert">{typeof error === "object" && "code" in error && error.code === "PREFERENCES_UNSAVED" ? c.preferencesError : typeof error === "object" && "code" in error && error.code === "CLIPBOARD_UNCONFIRMED" ? c.copyFailed : errorCopy(error, preferences.language)} <TextBtn disabled={busy||editing} onClick={() => void refresh()}>{c.refresh}</TextBtn></div>}
       {notice && <p role="status" className="tagma-notice">{view?.runtime.state === "running" && view.runtime.effective_revision === view.config.desired_revision ? c.configurationApplied : c.saved}</p>}
-      <div hidden={page !== "chat"}><ChatView active={page === "chat"} view={view} busy={busy} configurationError={configurationError} language={preferences.language} onAddProvider={() => { setPage("providers"); setEditor("new"); setNotice(false); }} onProviders={() => setPage("providers")} onGateway={() => setPage("gateway")} onMarket={() => setPage("market")} /></div>
+      <div hidden={page !== "chat"}><ChatView selectedModel={chatModel} onModelChange={setChatModel} active={page === "chat"} view={view} busy={busy} configurationError={configurationError} language={preferences.language} onAddProvider={() => { setPage("providers"); setEditor("new"); setNotice(false); }} onProviders={() => setPage("providers")} onGateway={() => setPage("gateway")} onMarket={() => setPage("market")} /></div>
       {page === "providers" && <section><div className="tagma-heading"><h1>{c.providers}</h1><TextBtn ref={addProvider} variant="action" disabled={!view || busy || editing} onClick={() => { setEditor("new"); setNotice(false); }}>{c.add}</TextBtn></div>
         {!desktop && <p>{c.previewHint}</p>}
         {desktop && !view && !configurationError && busy && <p role="status">{c.loading}</p>}
@@ -174,7 +175,7 @@ export default function ProductApp() {
             <TextBtn variant="danger" disabled={busy || editing} onClick={() => setDeleting(provider)}>{c.remove}</TextBtn>
           </div>
         </div>)}</div>
-        {view && <ProviderCatalog view={view} busy={busy||editing} language={preferences.language} onMutate={mutate} onEdit={provider=>{setEditor(provider);setNotice(false);}} onTimeoutEdit={provider=>{setTimeoutEditor(provider);setNotice(false);}} onChat={()=>setPage("chat")} />}
+        {view && <ProviderCatalog view={view} busy={busy||editing} language={preferences.language} onMutate={mutate} onEdit={provider=>{setEditor(provider);setNotice(false);}} onTimeoutEdit={provider=>{setTimeoutEditor(provider);setNotice(false);}} onChat={model=>{setChatModel(model);setPage("chat");}} />}
         {view&&<SecurityControls view={view} mode="providers" busy={busy||!!editor||!!timeoutEditor||profileEditing||gatewayEditing||teamEditing} language={preferences.language} onMutate={mutate} onEditingChange={setSecurityEditing}/>}
         {editor && view && <ProviderForm key={editor === "new" ? "new" : editor.id} provider={editor === "new" ? undefined : editor} revision={view.config.desired_revision} busy={busy} language={preferences.language} onSave={save} onCancel={() => setEditor(null)} />}
         {timeoutEditor&&view&&<ProviderTimeoutForm key={timeoutEditor.id} provider={timeoutEditor} revision={view.config.desired_revision} busy={busy} language={preferences.language} onSave={input=>mutate(()=>service.saveProviderTimeouts(input))} onCancel={()=>setTimeoutEditor(null)}/>}

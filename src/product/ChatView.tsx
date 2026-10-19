@@ -39,10 +39,12 @@ function failure(code: string, language: ProductLanguage) {
   return errorCopy({ code }, language);
 }
 
-export function ChatView(props: { view: ApplicationView | null; busy: boolean; language: ProductLanguage; active: boolean; configurationError?: unknown; onAddProvider: () => void; onProviders: () => void; onGateway: () => void; onMarket: () => void }) {
+export function ChatView(props: { selectedModel: string; onModelChange: (model:string)=>void; view: ApplicationView | null; busy: boolean; language: ProductLanguage; active: boolean; configurationError?: unknown; onAddProvider: () => void; onProviders: () => void; onGateway: () => void; onMarket: () => void }) {
   const { view, language, busy, active } = props;
   const zh = language === "zh";
-  const [selected, setSelected] = useState("");
+  const selected = props.selectedModel;
+  const setSelected = props.onModelChange;
+  const composer = useRef<HTMLTextAreaElement>(null);
   const [prompt, setPrompt] = useState("");
   const [turns, setTurns] = useState<Turn[]>([]);
   const [sending, setSending] = useState(false);
@@ -84,6 +86,13 @@ export function ChatView(props: { view: ApplicationView | null; busy: boolean; l
     } catch (err) { update(turn => ({ ...turn, status: "failed", error: errorCopy(err, language) })); }
     finally { if (inFlight.current?.id === id) { inFlight.current = null; if (mounted.current) { setSending(false); setStopping(false); } } }
   }
+  function editAgain(turn: Turn) {
+    if (sending || busy || prompt.trim()) return;
+    setPrompt(turn.prompt);
+    if (modelSources.has(turn.model)) { setSelected(turn.model); setError(null); }
+    else setError(zh ? "原模型已不可用，请选择当前可用模型后再发送。" : "The original model is unavailable. Select an available model before sending.");
+    composer.current?.focus();
+  }
   async function stop() {
     const request = inFlight.current; if (!request) return;
     request.cancel = true; setStopping(true);
@@ -97,10 +106,10 @@ export function ChatView(props: { view: ApplicationView | null; busy: boolean; l
     {!applied && <p className="tagma-error" role="status">{zh ? "等待配置生效后可发送。" : "Apply configuration before sending."} <TextBtn onClick={props.onGateway}>{zh ? "查看网关" : "Open gateway"}</TextBtn></p>}
     <div ref={conversation} className="list tagma-conversation" role="log" aria-label={zh ? "对话记录" : "Conversation"} aria-live="polite" aria-relevant="additions text">
       {!turns.length && <div className="empty-state"><b>{zh ? "发送第一条消息" : "Send your first message"}</b><p>{zh ? "内容经本机网关发送至所选供应商，可能产生其 API 费用。" : "Messages go through your local gateway to the selected provider and may incur its API charges."}</p></div>}
-      {turns.map(turn => <article key={turn.id} className="tagma-chat-turn"><div className="tagma-chat-user"><strong>{zh ? "你" : "You"}</strong><pre>{turn.prompt}</pre></div><div className="tagma-chat-assistant"><strong>{turn.model}</strong><pre>{turn.reply || (turn.status === "streaming" ? (zh ? "等待首段回复…" : "Waiting for response…") : "")}</pre>{turn.status === "streaming" && <span className="tagma-stream-status">{zh ? "正在回复…" : "Replying…"}</span>}{turn.status === "cancelled" && <p className="sub">{zh ? "已停止 · 保留收到的内容" : "Stopped · Received text retained"}</p>}{turn.finishReason === "length" && <p className="sub">{zh ? "达到模型输出长度上限" : "Model output length limit reached"}</p>}{turn.finishReason === "content_filter" && <p className="sub">{zh ? "回复被供应商内容过滤器限制" : "Response limited by the provider content filter"}</p>}{turn.error && <p role="alert" className="tagma-error">{turn.error}</p>}</div></article>)}
+      {turns.map(turn => <article key={turn.id} className="tagma-chat-turn"><div className="tagma-chat-user"><strong>{zh ? "你" : "You"}</strong><pre>{turn.prompt}</pre></div><div className="tagma-chat-assistant"><strong>{turn.model}</strong><pre>{turn.reply || (turn.status === "streaming" ? (zh ? "等待首段回复…" : "Waiting for response…") : "")}</pre>{turn.status === "streaming" && <span className="tagma-stream-status">{zh ? "正在回复…" : "Replying…"}</span>}{turn.status === "cancelled" && <p className="sub">{zh ? "已停止 · 保留收到的内容" : "Stopped · Received text retained"}</p>}{turn.finishReason === "length" && <p className="sub">{zh ? "达到模型输出长度上限" : "Model output length limit reached"}</p>}{turn.finishReason === "content_filter" && <p className="sub">{zh ? "回复被供应商内容过滤器限制" : "Response limited by the provider content filter"}</p>}{turn.error && <p role="alert" className="tagma-error">{turn.error}</p>}{(turn.status === "failed" || turn.status === "cancelled") && <TextBtn disabled={sending || busy || !!prompt.trim()} title={prompt.trim() ? (zh ? "先处理当前输入框中的草稿" : "Finish your current draft first") : undefined} onClick={() => editAgain(turn)}>{zh ? "编辑后重试" : "Edit and retry"}</TextBtn>}</div></article>)}
     </div>
     {error && <p className="tagma-error" role="alert">{error}</p>}
-    <form className="tagma-composer" onSubmit={event => { event.preventDefault(); void send(); }}><label className="tagma-compose-label" htmlFor="tagma-message">{zh ? "消息" : "Message"}</label><textarea id="tagma-message" className="words" value={prompt} maxLength={12000} disabled={sending} placeholder={zh ? "输入消息，Enter 发送，Shift + Enter 换行" : "Message · Enter to send, Shift + Enter for newline"} onChange={event => setPrompt(event.target.value)} onKeyDown={event => { if (event.key === "Enter" && !event.shiftKey && !event.nativeEvent.isComposing) { event.preventDefault(); if (!sending) void send(); } }} /><div className="tagma-composer-footer"><span>{zh ? "仅保留在此窗口内；离开对话页会停止本窗口请求。" : "Kept in this window only. Leaving chat stops this window’s request."}</span>{sending ? <TextBtn disabled={stopping} onClick={() => void stop()}>{stopping ? (zh ? "正在停止…" : "Stopping…") : (zh ? "停止回复" : "Stop reply")}</TextBtn> : <TextBtn variant="action" type="submit" disabled={busy || !applied || !prompt.trim()}>{zh ? "发送" : "Send"}</TextBtn>}</div></form>
+    <form className="tagma-composer" onSubmit={event => { event.preventDefault(); void send(); }}><label className="tagma-compose-label" htmlFor="tagma-message">{zh ? "消息" : "Message"}</label><textarea ref={composer} id="tagma-message" className="words" value={prompt} maxLength={12000} disabled={sending} placeholder={zh ? "输入消息，Enter 发送，Shift + Enter 换行" : "Message · Enter to send, Shift + Enter for newline"} onChange={event => setPrompt(event.target.value)} onKeyDown={event => { if (event.key === "Enter" && !event.shiftKey && !event.nativeEvent.isComposing) { event.preventDefault(); if (!sending) void send(); } }} /><div className="tagma-composer-footer"><span>{zh ? "仅保留在此窗口内；离开对话页会停止本窗口请求。" : "Kept in this window only. Leaving chat stops this window’s request."}</span>{sending ? <TextBtn disabled={stopping} onClick={() => void stop()}>{stopping ? (zh ? "正在停止…" : "Stopping…") : (zh ? "停止回复" : "Stop reply")}</TextBtn> : <TextBtn variant="action" type="submit" disabled={busy || !applied || !prompt.trim()}>{zh ? "发送" : "Send"}</TextBtn>}</div></form>
     <details className="tagma-chat-setup"><summary>{zh ? "接入工作台与运行状态" : "Setup and runtime status"}</summary><ConnectionWorkspace {...props} /></details>
   </section>;
 }

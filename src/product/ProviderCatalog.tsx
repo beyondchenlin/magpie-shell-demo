@@ -6,7 +6,7 @@ import { service, protocolVersion } from "./service";
 import type { ProductLanguage } from "./preferences";
 
 const labels:Record<CatalogOutcome,[string,string]>={pending:["检测中","Checking"],available:["目录端点请求成功（仅此端点）","Catalog request succeeded (this endpoint only)"],authentication:["鉴权失败（401/403），请检查凭据","Authentication rejected (401/403)"],rate_limited:["供应商限流，请等待退避","Provider rate limit; observe backoff"],unsupported:["不支持非生成目录检测，需要手动试调用","Catalog detection unsupported; manual inference required"],network:["DNS/网络失败，请检查地址与网络","DNS/network failure; check URL and network"],tls:["TLS 失败，请检查证书与地址","TLS failed; check certificate and URL"],timeout:["检测超时，请检查网络后重试","Detection timed out; check network"],upstream:["供应商服务错误，请稍后重试","Provider service error; retry later"],protocol:["目录协议错误或超出上限","Invalid or oversized catalog response"],cancelled:["检测已取消","Detection cancelled"]};
-export function ProviderCatalog({view,busy,language,onMutate,onEdit,onTimeoutEdit,onChat}:{view:ApplicationView;busy:boolean;language:ProductLanguage;onMutate:(operation:()=>Promise<ConfigView>)=>Promise<boolean>;onEdit:(provider:Provider)=>void;onTimeoutEdit:(provider:Provider)=>void;onChat:()=>void}){
+export function ProviderCatalog({view,busy,language,onMutate,onEdit,onTimeoutEdit,onChat}:{view:ApplicationView;busy:boolean;language:ProductLanguage;onMutate:(operation:()=>Promise<ConfigView>)=>Promise<boolean>;onEdit:(provider:Provider)=>void;onTimeoutEdit:(provider:Provider)=>void;onChat:(model:string)=>void}){
   const zh=language==="zh";const config=view.config;
   const [now,setNow]=useState(()=>Date.now());
   useEffect(()=>{const timer=setInterval(()=>setNow(Date.now()),1000);return()=>clearInterval(timer);},[]);
@@ -15,6 +15,7 @@ export function ProviderCatalog({view,busy,language,onMutate,onEdit,onTimeoutEdi
   return <section aria-label={zh?"检测与模型目录":"Detection and model catalogs"}>
     <div className="tagma-heading"><h2>{zh?"检测与模型目录":"Detection and model catalogs"}</h2></div>
     <p className="tagma-footnote">{zh?"只手动请求 GET /models，不生成内容。目录与推理事实分开；没有合适端点时，需要按预算手动试调用。":"Manual GET /models only; no generation. Catalog and inference facts are separate. Unsupported endpoints require manual inference within your budget."}</p>
+    <p className="tagma-footnote">{zh?"试调用会选择该卡片的首个已配置模型，由你输入并发送；同名模型按全局供应商顺序路由。":"A test call selects this card’s first configured model for you to compose and send. Duplicate model IDs follow global provider order."}</p>
     {!applied&&<p className="tagma-footnote">{zh?"先启动网关并应用已保存配置，才能检测该配置。":"Start the gateway and apply saved configuration before checking it."}</p>}
     <div className="list prefs">{config.providers.map(provider=>{
       const check=config.provider_catalog.find(record=>record.provider_id===provider.id);
@@ -27,7 +28,7 @@ export function ProviderCatalog({view,busy,language,onMutate,onEdit,onTimeoutEdi
         <PrefRow name={zh?"显式配置的模型":"Explicitly configured models"} subClassName="wraps" sub={provider.models.join(" · ")||"—"}/>
         <PrefRow name={zh?"已保存的推理超时（毫秒）":"Saved inference timeouts (ms)"} subClassName="wraps" sub={`${zh?"连接":"Connect"} ${provider.timeouts.connect_ms.toLocaleString()} · ${zh?"响应头":"Headers"} ${provider.timeouts.first_response_ms.toLocaleString()} · ${zh?"空闲":"Idle"} ${provider.timeouts.idle_ms.toLocaleString()} · ${zh?"总计":"Total"} ${provider.timeouts.total_ms.toLocaleString()}`}><TextBtn disabled={busy} aria-label={`${zh?"超时设置":"Timeout settings"}: ${provider.name}`} onClick={()=>onTimeoutEdit(provider)}>{zh?"超时设置":"Timeout settings"}</TextBtn></PrefRow>
         {check?.catalog_ms!==null&&check?.catalog_ms!==undefined&&<PrefRow name={check.stale?(zh?"发现目录（缓存过期/需复检）":"Discovered catalog (stale; recheck required)"):(zh?"发现目录":"Discovered catalog")} subClassName="wraps" sub={<details><summary>{date(check.catalog_ms)} · {check.models.length} {zh?"个上游 ID":"upstream IDs"}</summary><p className="sub wraps">{check.models.join(" · ")||"—"}</p></details>}><TextBtn disabled={busy||!check.models.length} onClick={()=>onEdit({...provider,models:[...check.models]})}>{zh?"用目录编辑":"Edit from catalog"}</TextBtn></PrefRow>}
-        <PrefRow name={zh?"真实推理记录":"Actual inference"} subClassName="wraps" sub={ready.length?`${zh?"五分钟内成功":"Success within five minutes"}: ${ready.join(" · ")}`:(zh?"没有近期推理成功；目录成功不计入。":"No recent inference success; catalog success does not count.")}><TextBtn disabled={busy} onClick={onChat}>{zh?"手动试调用":"Manual test call"}</TextBtn></PrefRow>
+        <PrefRow name={zh?"真实推理记录":"Actual inference"} subClassName="wraps" sub={ready.length?`${zh?"五分钟内成功":"Success within five minutes"}: ${ready.join(" · ")}`:(zh?"没有近期推理成功；目录成功不计入。":"No recent inference success; catalog success does not count.")}><TextBtn disabled={busy||!provider.enabled||!provider.models.length||config.security.revoked_provider_ids.includes(provider.id)} aria-label={`${zh?"手动试调用":"Manual test call"}: ${provider.name}`} onClick={()=>onChat(provider.models[0])}>{zh?"手动试调用":"Manual test call"}</TextBtn></PrefRow>
       </Fragment>;
     })}</div>
   </section>;
