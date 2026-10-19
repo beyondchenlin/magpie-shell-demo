@@ -501,10 +501,10 @@ Section Install
 
   ; Register deep links
   {{#each deep_link_protocols as |protocol| ~}}
-    WriteRegStr SHCTX "Software\Classes\\{{protocol}}" "URL Protocol" ""
-    WriteRegStr SHCTX "Software\Classes\\{{protocol}}" "" "URL:${BUNDLEID} protocol"
-    WriteRegStr SHCTX "Software\Classes\\{{protocol}}\DefaultIcon" "" "$\"$INSTDIR\${MAINBINARYNAME}.exe$\",0"
-    WriteRegStr SHCTX "Software\Classes\\{{protocol}}\shell\open\command" "" "$\"$INSTDIR\${MAINBINARYNAME}.exe$\" $\"%1$\""
+    !insertmacro TagmaWriteRegStr SHCTX "Software\Classes\\{{protocol}}" "URL Protocol" ""
+    !insertmacro TagmaWriteRegStr SHCTX "Software\Classes\\{{protocol}}" "" "URL:${BUNDLEID} protocol"
+    !insertmacro TagmaWriteRegStr SHCTX "Software\Classes\\{{protocol}}\DefaultIcon" "" "$\"$INSTDIR\${MAINBINARYNAME}.exe$\",0"
+    !insertmacro TagmaWriteRegStr SHCTX "Software\Classes\\{{protocol}}\shell\open\command" "" "$\"$INSTDIR\${MAINBINARYNAME}.exe$\" $\"%1$\""
   {{/each}}
 
   ; Create uninstaller
@@ -513,12 +513,12 @@ Section Install
   !insertmacro TagmaRequireFileWrite
 
   ; Save $INSTDIR in registry for future installations
-  WriteRegStr SHCTX "${MANUPRODUCTKEY}" "" $INSTDIR
+  !insertmacro TagmaWriteRegStr SHCTX "${MANUPRODUCTKEY}" "" $INSTDIR
 
   !if "${INSTALLMODE}" == "both"
     ; Save install mode to be selected by default for the next installation such as updating
     ; or when uninstalling
-    WriteRegStr SHCTX "${UNINSTKEY}" $MultiUser.InstallMode 1
+    !insertmacro TagmaWriteRegStr SHCTX "${UNINSTKEY}" $MultiUser.InstallMode 1
   !endif
 
   ; Remove old main binary if it doesn't match new main binary name
@@ -529,28 +529,30 @@ Section Install
   ${EndIf}
 
   ; Save current MAINBINARYNAME for future updates
-  WriteRegStr SHCTX "${UNINSTKEY}" "MainBinaryName" "${MAINBINARYNAME}.exe"
+  !insertmacro TagmaWriteRegStr SHCTX "${UNINSTKEY}" "MainBinaryName" "${MAINBINARYNAME}.exe"
 
   ; Registry information for add/remove programs
-  WriteRegStr SHCTX "${UNINSTKEY}" "DisplayName" "${PRODUCTNAME}"
-  WriteRegStr SHCTX "${UNINSTKEY}" "DisplayIcon" "$\"$INSTDIR\${MAINBINARYNAME}.exe$\""
-  WriteRegStr SHCTX "${UNINSTKEY}" "DisplayVersion" "${VERSION}"
-  WriteRegStr SHCTX "${UNINSTKEY}" "Publisher" "${MANUFACTURER}"
-  WriteRegStr SHCTX "${UNINSTKEY}" "InstallLocation" "$\"$INSTDIR$\""
-  WriteRegStr SHCTX "${UNINSTKEY}" "UninstallString" "$\"$INSTDIR\uninstall.exe$\""
-  WriteRegDWORD SHCTX "${UNINSTKEY}" "NoModify" "1"
-  WriteRegDWORD SHCTX "${UNINSTKEY}" "NoRepair" "1"
+  !insertmacro TagmaWriteRegStr SHCTX "${UNINSTKEY}" "DisplayName" "${PRODUCTNAME}"
+  !insertmacro TagmaWriteRegStr SHCTX "${UNINSTKEY}" "DisplayIcon" "$\"$INSTDIR\${MAINBINARYNAME}.exe$\""
+  !insertmacro TagmaWriteRegStr SHCTX "${UNINSTKEY}" "Publisher" "${MANUFACTURER}"
+  !insertmacro TagmaWriteRegStr SHCTX "${UNINSTKEY}" "InstallLocation" "$\"$INSTDIR$\""
+  !insertmacro TagmaWriteRegStr SHCTX "${UNINSTKEY}" "UninstallString" "$\"$INSTDIR\uninstall.exe$\""
+  !insertmacro TagmaWriteRegDWORD SHCTX "${UNINSTKEY}" "NoModify" "1"
+  !insertmacro TagmaWriteRegDWORD SHCTX "${UNINSTKEY}" "NoRepair" "1"
 
   ${GetSize} "$INSTDIR" "/M=uninstall.exe /S=0K /G=0" $0 $1 $2
   IntOp $0 $0 + ${ESTIMATEDSIZE}
   IntFmt $0 "0x%08X" $0
-  WriteRegDWORD SHCTX "${UNINSTKEY}" "EstimatedSize" "$0"
+  !insertmacro TagmaWriteRegDWORD SHCTX "${UNINSTKEY}" "EstimatedSize" "$0"
 
   !if "${HOMEPAGE}" != ""
-    WriteRegStr SHCTX "${UNINSTKEY}" "URLInfoAbout" "${HOMEPAGE}"
-    WriteRegStr SHCTX "${UNINSTKEY}" "URLUpdateInfo" "${HOMEPAGE}"
-    WriteRegStr SHCTX "${UNINSTKEY}" "HelpLink" "${HOMEPAGE}"
+    !insertmacro TagmaWriteRegStr SHCTX "${UNINSTKEY}" "URLInfoAbout" "${HOMEPAGE}"
+    !insertmacro TagmaWriteRegStr SHCTX "${UNINSTKEY}" "URLUpdateInfo" "${HOMEPAGE}"
+    !insertmacro TagmaWriteRegStr SHCTX "${UNINSTKEY}" "HelpLink" "${HOMEPAGE}"
   !endif
+
+  ; Publish the recorded version only after the required fields were saved.
+  !insertmacro TagmaWriteRegStr SHCTX "${UNINSTKEY}" "DisplayVersion" "${VERSION}"
 
   ; Create start menu shortcut
   !insertmacro MUI_STARTMENU_WRITE_BEGIN Application

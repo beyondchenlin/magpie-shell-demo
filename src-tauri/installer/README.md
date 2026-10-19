@@ -8,6 +8,10 @@ The upstream MIT license is retained in `LICENSE-MIT`.
 
 Tagma changes:
 
+- Check each explicit installation registry write and abort with1603 on failure,
+  with a visible partial-installation recovery message. Publish DisplayVersion
+  only after the other required registration fields succeed. Program files may
+  already be updated; this does not claim registry or payload atomicity.
 - Check native Windows architecture before prerequisites or writes (1633 on
   mismatch). Emulated architecture pairs are not advertised as release targets.
 - Check quota-aware free space at the actual installation and temporary paths in

@@ -3,6 +3,7 @@
 !include LogicLib.nsh
 !include "Win\RestartManager.nsh"
 !include "${__FILEDIR__}\preflight.nsh"
+!include "${__FILEDIR__}\registration.nsh"
 
 Var TagmaGuardError
 Var TagmaGuardMessage
