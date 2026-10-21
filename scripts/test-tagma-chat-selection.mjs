@@ -53,7 +53,7 @@ async function choose(id:string){pick().click();await tick();const button=[...do
  active=true;render();await tick();check(!document.querySelector('[role="menu"]'),'returning does not resurrect portal');
  pick().click();await tick();busy=true;render();await tick();check(!document.querySelector('[role="menu"]'),'busy transition removes menu');
  busy=false;render();await tick();check(!document.querySelector('[role="menu"]'),'unlocking does not resurrect menu');
- pick().click();await tick();draft().focus();await tick();check(!document.querySelector('[role="menu"]'),'focus leaving menu closes it without stealing focus');
+ pick().click();await tick();const beforeFocus=document.activeElement?.outerHTML;draft().focus();await tick();check(!document.querySelector('[role="menu"]'),'focus leaving menu closes it without stealing focus: '+JSON.stringify({before:beforeFocus,after:document.activeElement?.outerHTML,documentFocused:document.hasFocus()}));
  check(document.activeElement===draft(),'outside focus is preserved');
  (service as any).failNext=true;type('retry original target');await tick();submit();await tick();
  await choose('cloud-b');view.config.providers[0].models=['cloud-b'];render();await tick();
