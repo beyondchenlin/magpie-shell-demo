@@ -67,7 +67,10 @@ export function ChatView(props: { selectedModel: string; onModelChange: (model:s
   for (const provider of view?.config.providers ?? []) if (provider.enabled&&!view?.config.security.revoked_provider_ids.includes(provider.id)) for (const model of provider.models) if (!model.startsWith("tagma/") && !modelSources.has(model)) modelSources.set(model, provider.name);
   for (const team of view?.config.teams ?? []) for (const version of team.published) if (version.enabled&&version.configured_ready) modelSources.set(version.public_id,version.display_name);
   for(const pack of view?.config.installed_packs??[])if(pack.id==="reachflow"&&pack.active_version)modelSources.set("tagma/reachflow",zh?"ReachFlow · 队员":"ReachFlow · teammate");
-  const model = modelSources.has(selected) ? selected : modelSources.keys().next().value ?? "";
+  // Never replace an explicit or previously used target with another provider.
+  // A disabled/deleted selection stays visible until the user chooses again.
+  const model = selected || modelSources.keys().next().value || "";
+  const modelAvailable = modelSources.has(model);
   const applied = view?.runtime.state === "running" && view.runtime.effective_revision === view.config.desired_revision;
   useEffect(() => { mounted.current = true; return () => { mounted.current = false; const request = inFlight.current; if (request) { request.cancel = true; void service.cancelChat(request.id).catch(() => {}); } }; }, []);
   useEffect(() => { if (!active && inFlight.current) { inFlight.current.cancel = true; void service.cancelChat(inFlight.current.id).catch(() => {}); } }, [active]);
@@ -75,10 +78,10 @@ export function ChatView(props: { selectedModel: string; onModelChange: (model:s
 
   const teamRecipe=view?.config.teams.flatMap(item=>item.team.versions).find(version=>version.public_id===model)?.recipe;
   const packSteps=teamRecipe?.steps.filter(step=>step.target.kind==="pack")??[];
-  const routedPack=model==="tagma/reachflow"?view?.config.installed_packs.find(pack=>pack.id==="reachflow")?.active_version:packSteps.length===1&&teamRecipe?.steps[0].target.kind==="pack"?teamRecipe.steps[0].target.version:undefined;
+  const routedPack=modelAvailable?(model==="tagma/reachflow"?view?.config.installed_packs.find(pack=>pack.id==="reachflow")?.active_version:packSteps.length===1&&teamRecipe?.steps[0].target.kind==="pack"?teamRecipe.steps[0].target.version:undefined):undefined;
   const localOnly=view?.config.installed_packs.find(pack=>pack.id==="reachflow")?.versions.find(version=>version.version===routedPack)?.display_name==="ReachFlow 内部本地试跑";
   async function send(reachflow?:ReachFlowRequest) {
-    if (!active || busy || !view || !model || !applied || inFlight.current || (!reachflow&&!prompt.trim())) return;
+    if (!active || busy || !view || !modelAvailable || !applied || inFlight.current || (!reachflow&&!prompt.trim())) return;
     const operationLabel=reachflow?({task_status:zh?"查询任务":"Query task",task_report:zh?"查看报告":"View report",start_collection:zh?"启动已确认计划":"Start confirmed collection",cancel_task:zh?"请求取消任务":"Request task cancellation"}[reachflow.action.kind]):"";
     const content=reachflow?`ReachFlow · ${operationLabel}`:prompt.trim();
     const history: ChatMessage[] = turns.filter(turn => turn.status === "complete").flatMap(turn => [{ role: "user", content: turn.prompt }, { role: "assistant", content: turn.reply }]);
@@ -87,6 +90,7 @@ export function ChatView(props: { selectedModel: string; onModelChange: (model:s
     const id = crypto.randomUUID();
     const request = { id, cancel: false };
     inFlight.current = request;
+    setSelected(model);
     setSending(true); setStopping(false); setError(null);
     setTurns(previous => [...previous, { id, model, prompt: content, serviceOperation:!!reachflow, reply: "", status: "streaming" }]); if(!reachflow)setPrompt("");
     function update(updateTurn: (turn: Turn) => Turn) { if (mounted.current && inFlight.current?.id === id) setTurns(previous => previous.map(turn => turn.id === id ? updateTurn(turn) : turn)); }
@@ -106,7 +110,8 @@ export function ChatView(props: { selectedModel: string; onModelChange: (model:s
   function editAgain(turn: Turn) {
     if (sending || busy || prompt.trim()) return;
     setPrompt(turn.prompt);
-    if (modelSources.has(turn.model)) { setSelected(turn.model); setError(null); }
+    setSelected(turn.model);
+    if (modelSources.has(turn.model)) setError(null);
     else setError(zh ? "原模型已不可用，请选择当前可用模型后再发送。" : "The original model is unavailable. Select an available model before sending.");
     composer.current?.focus();
   }
@@ -116,10 +121,11 @@ export function ChatView(props: { selectedModel: string; onModelChange: (model:s
     try { await service.cancelChat(request.id); }
     catch { if (mounted.current) { setStopping(false); setError(zh ? "尚未确认停止，请重试。" : "Stop is not confirmed. Retry."); } }
   }
-  if (!view || !modelSources.size) return <ConnectionWorkspace {...props} />;
+  if (!view || (!modelSources.size && !selected)) return <ConnectionWorkspace {...props} />;
   return <section className="tagma-chat" aria-label={zh ? "模型对话" : "Model chat"}>
     <div className="tagma-heading"><h1>{zh ? "对话" : "Chat"}</h1><div className="tagma-actions"><TextBtn disabled={busy} onClick={props.onProviders}>{zh ? "管理模型" : "Manage models"}</TextBtn><TextBtn disabled={sending} onClick={() => { setTurns([]); setError(null); }}>{zh ? "新对话" : "New chat"}</TextBtn></div></div>
-    <div className="list prefs"><PrefRow name={zh ? "模型" : "Model"} sub={modelSources.get(model)}><ModelPick value={model} models={modelSources} disabled={sending||busy} label={zh?"选择模型":"Select model"} onChange={setSelected}/></PrefRow></div>
+    <div className="list prefs"><PrefRow name={zh ? "模型" : "Model"} sub={modelSources.get(model)??(zh?"当前不可用":"Currently unavailable")}><ModelPick value={model} models={modelSources} active={active} disabled={sending||busy} label={zh?"选择模型":"Select model"} onChange={setSelected}/></PrefRow></div>
+    {!modelAvailable&&<p className="tagma-error" role="status">{zh?"所选模型当前不可用，已保留原选择和草稿。请重新启用它，或明确选择其他模型；不会自动切换供应商。":"The selected model is unavailable. Your selection and draft are retained. Re-enable it or explicitly select another model; the provider will not be switched automatically."}</p>}
     {model==="tagma/reachflow"&&<p className="tagma-footnote">{zh?"本地固定素材入口：输入“本地试跑”，或使用下方按钮。不联网，不产生真实研究成果。":"Local fixed sample: enter “local sample” or use the button. No network or real research output."} <TextBtn disabled={sending||busy} onClick={()=>{setPrompt(zh?"本地试跑":"local sample");composer.current?.focus();}}>{zh?"填入本地试跑命令":"Use local sample command"}</TextBtn></p>}
     {!!routedPack&&<ReachFlowForm key={model} zh={zh} locked={sending||busy||!applied} unavailable={localOnly?(zh?"当前内部包没有网络权限。请安装允许服务域名的受信任队员包。":"This internal package has no network permissions. Install a trusted package permitting the service domain."):undefined} onSubmit={request=>void send(request)}/>}
     {!!routedPack&&model!=="tagma/reachflow"&&<p className="tagma-footnote">{zh?"服务操作只用于本次首个 ReachFlow 步骤；返回结果会交给小队后续模型，访问令牌不会转发。停止回复仅停止本机等待；取消远端任务需明确请求并查询最终状态。":"The explicit service operation applies only to the first ReachFlow step. Its result goes to subsequent models; the token does not. Stopping a reply only stops local waiting; request remote cancellation explicitly and check its final state."}</p>}
@@ -129,7 +135,7 @@ export function ChatView(props: { selectedModel: string; onModelChange: (model:s
       {turns.map(turn => <article key={turn.id} className="tagma-chat-turn"><div className="tagma-chat-user"><strong>{zh ? "你" : "You"}</strong><pre>{turn.prompt}</pre></div><div className="tagma-chat-assistant"><strong>{turn.model}</strong>{turn.model==="tagma/reachflow"&&turn.status==="complete"?<PackResult raw={turn.reply} zh={zh}/>:<pre>{turn.reply || (turn.status === "streaming" ? (zh ? "等待首段回复…" : "Waiting for response…") : "")}</pre>}{turn.status === "streaming" && <span className="tagma-stream-status">{zh ? "正在回复…" : "Replying…"}</span>}{turn.status === "cancelled" && <p className="sub">{zh ? "已停止 · 保留收到的内容" : "Stopped · Received text retained"}</p>}{turn.finishReason === "length" && <p className="sub">{zh ? "达到模型输出长度上限" : "Model output length limit reached"}</p>}{turn.finishReason === "content_filter" && <p className="sub">{zh ? "回复被供应商内容过滤器限制" : "Response limited by the provider content filter"}</p>}{turn.error && <p role="alert" className="tagma-error">{turn.error}</p>}{!turn.serviceOperation&&(turn.status === "failed" || turn.status === "cancelled") && <TextBtn disabled={sending || busy || !!prompt.trim()} title={prompt.trim() ? (zh ? "先处理当前输入框中的草稿" : "Finish your current draft first") : undefined} onClick={() => editAgain(turn)}>{zh ? "编辑后重试" : "Edit and retry"}</TextBtn>}</div></article>)}
     </div>
     {error && <p className="tagma-error" role="alert">{error}</p>}
-    <form className="tagma-composer" onSubmit={event => { event.preventDefault(); void send(); }}><label className="tagma-compose-label" htmlFor="tagma-message">{zh ? "消息" : "Message"}</label><textarea ref={composer} id="tagma-message" className="words" value={prompt} maxLength={12000} disabled={sending} placeholder={zh ? "输入消息，Enter 发送，Shift + Enter 换行" : "Message · Enter to send, Shift + Enter for newline"} onChange={event => setPrompt(event.target.value)} onKeyDown={event => { if (event.key === "Enter" && !event.shiftKey && !event.nativeEvent.isComposing) { event.preventDefault(); if (!sending) void send(); } }} /><div className="tagma-composer-footer"><span>{zh ? "仅保留在此窗口内；离开对话页会停止本窗口请求。" : "Kept in this window only. Leaving chat stops this window’s request."}</span>{sending ? <TextBtn disabled={stopping} onClick={() => void stop()}>{stopping ? (zh ? "正在停止…" : "Stopping…") : (zh ? "停止回复" : "Stop reply")}</TextBtn> : <TextBtn variant="action" type="submit" disabled={busy || !applied || !prompt.trim()}>{zh ? "发送" : "Send"}</TextBtn>}</div></form>
+    <form className="tagma-composer" onSubmit={event => { event.preventDefault(); void send(); }}><label className="tagma-compose-label" htmlFor="tagma-message">{zh ? "消息" : "Message"}</label><textarea ref={composer} id="tagma-message" className="words" value={prompt} maxLength={12000} disabled={sending} placeholder={zh ? "输入消息，Enter 发送，Shift + Enter 换行" : "Message · Enter to send, Shift + Enter for newline"} onChange={event => setPrompt(event.target.value)} onKeyDown={event => { if (event.key === "Enter" && !event.shiftKey && !event.nativeEvent.isComposing) { event.preventDefault(); if (!sending) void send(); } }} /><div className="tagma-composer-footer"><span>{zh ? "仅保留在此窗口内；离开对话页会停止本窗口请求。" : "Kept in this window only. Leaving chat stops this window’s request."}</span>{sending ? <TextBtn disabled={stopping} onClick={() => void stop()}>{stopping ? (zh ? "正在停止…" : "Stopping…") : (zh ? "停止回复" : "Stop reply")}</TextBtn> : <TextBtn variant="action" type="submit" disabled={busy || !applied || !modelAvailable || !prompt.trim()}>{zh ? "发送" : "Send"}</TextBtn>}</div></form>
     <details className="tagma-chat-setup"><summary>{zh ? "接入工作台与运行状态" : "Setup and runtime status"}</summary><ConnectionWorkspace {...props} /></details>
   </section>;
 }
