@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url';
 import { spawn } from 'node:child_process';
 import http from 'node:http';
 import { build } from 'vite';
+import react from '@vitejs/plugin-react';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const electron=path.join(root,'node_modules/electron/dist',process.platform==='win32'?'electron.exe':process.platform==='darwin'?'Electron.app/Contents/MacOS/Electron':'electron');
@@ -63,7 +64,7 @@ async function choose(id:string){pick().click();await tick();const button=[...do
 })().catch(error=>({error:String(error),passed}));
 `,'utf8');
   const mock=`export const desktop=true,protocolVersion=1;export const service={calls:[],failNext:false,async sendChat(input,receive){this.calls.push(input);if(this.failNext){this.failNext=false;receive({kind:'failed',code:'UPSTREAM_CONNECTION_FAILED'});}else{receive({kind:'delta',text:'controlled response'});receive({kind:'finished',reason:'stop'});}},async cancelChat(){}};`;
-  const result=await build({root,configFile:false,logLevel:'warn',plugins:[{name:'synthetic-chat-service',enforce:'pre',resolveId(source,importer){if(importer&&source.endsWith('/service')&&importer.replaceAll('\\','/').includes('/src/product/'))return '\0chat-service';if(importer===entry&&source.endsWith('/service'))return '\0chat-service';},load(id){if(id==='\0chat-service')return mock;}}],build:{write:false,minify:false,lib:{entry,formats:['iife'],name:'TagmaChatRegression'},rollupOptions:{output:{inlineDynamicImports:true}}}});
+  const result=await build({root,configFile:false,logLevel:'warn',plugins:[react(),{name:'synthetic-chat-service',enforce:'pre',resolveId(source,importer){if(importer&&source.endsWith('/service')&&importer.replaceAll('\\','/').includes('/src/product/'))return '\0chat-service';if(importer.replaceAll('\\','/')===entry.replaceAll('\\','/')&&source.endsWith('/service'))return '\0chat-service';},load(id){if(id==='\0chat-service')return mock;}}],build:{write:false,minify:false,lib:{entry,formats:['iife'],name:'TagmaChatRegression'}}});
   const output=(Array.isArray(result)?result[0]:result).output;
   const bundle=output.filter(item=>item.type==='chunk').map(item=>item.code).join('\n');
   server=http.createServer((req,res)=>{res.setHeader('Content-Type',req.url==='/bundle.js'?'text/javascript':'text/html');res.end(req.url==='/bundle.js'?bundle:'<!doctype html><meta charset="utf-8"><style>[hidden]{display:none!important}</style><div id="root"></div><script src="/bundle.js"></script>');});
@@ -71,7 +72,7 @@ async function choose(id:string){pick().click();await tick();const button=[...do
   const url=`http://127.0.0.1:${server.address().port}`;
   const report=path.join(temporary,'report.json');
   const main=path.join(temporary,'main.cjs');
-  await fs.writeFile(main,`const {app,BrowserWindow,session}=require('electron');const fs=require('node:fs');app.setPath('userData',${JSON.stringify(path.join(temporary,'profile'))});app.whenReady().then(async()=>{session.defaultSession.webRequest.onBeforeRequest((details,callback)=>callback({cancel:!details.url.startsWith(${JSON.stringify(url+'/')})}));const window=new BrowserWindow({show:false,webPreferences:{contextIsolation:true,nodeIntegration:false,sandbox:true}});try{await window.loadURL(${JSON.stringify(url)});const result=await window.webContents.executeJavaScript('window.__tagmaRegression');fs.writeFileSync(${JSON.stringify(report)},JSON.stringify(result));app.exit(result?.error||!result?.passed?.length?1:0);}catch(error){fs.writeFileSync(${JSON.stringify(report)},JSON.stringify({error:String(error)}));app.exit(1);}});`);
+  await fs.writeFile(main,`const {app,BrowserWindow,session}=require('electron');const fs=require('node:fs');app.setPath('userData',${JSON.stringify(path.join(temporary,'profile'))});app.whenReady().then(async()=>{session.defaultSession.webRequest.onBeforeRequest((details,callback)=>callback({cancel:!details.url.startsWith(${JSON.stringify(url+'/')})}));const window=new BrowserWindow({show:false,webPreferences:{contextIsolation:true,nodeIntegration:false,sandbox:true}});try{await window.loadURL(${JSON.stringify(url)});const result=await window.webContents.executeJavaScript('window.__tagmaRegression');if(!result)throw Error('Component fixture did not initialize; inspect renderer errors');fs.writeFileSync(${JSON.stringify(report)},JSON.stringify(result));app.exit(result?.error||!result?.passed?.length?1:0);}catch(error){fs.writeFileSync(${JSON.stringify(report)},JSON.stringify({error:String(error)}));app.exit(1);}});`);
   const environment={...process.env};delete environment.ELECTRON_RUN_AS_NODE;
   child=spawn(electron,[main],{cwd:root,env:environment,stdio:'ignore',windowsHide:true});
   const code=await new Promise((resolve,reject)=>{child.once('error',reject);child.once('exit',resolve);timer=setTimeout(()=>{child.kill();reject(Error('Component regression timed out'));},45000);});
