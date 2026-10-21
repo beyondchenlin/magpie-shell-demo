@@ -28,9 +28,9 @@ import '../../src/styles/shell-patch.css';
 import '../../src/product/product.css';
 document.body.classList.add('window','tagma');
 const root=createRoot(document.getElementById('root')!);
-let selected='tagma/reachflow',active=true,busy=false;
+let selected='',active=true,busy=false;
 let view:any={product_version:'component-test',config:{desired_revision:1,providers:[{id:'synthetic-cloud',name:'Controlled cloud',enabled:true,models:['cloud-a','cloud-b']}],security:{revoked_provider_ids:[]},teams:[],profiles:[],installed_packs:[{id:'reachflow',active_version:'1.0.0',versions:[{version:'1.0.0',display_name:'ReachFlow 内部本地试跑'}]}]},runtime:{state:'running',effective_revision:1,address:'http://127.0.0.1:1',error:null}};
-function render(){flushSync(()=>root.render(<div hidden={!active}><ChatView view={view} busy={busy} language="zh" active={active} selectedModel={selected} onModelChange={value=>{selected=value;render();}} onAddProvider={()=>{throw Error('unexpected navigation')}} onProviders={()=>{throw Error('unexpected navigation')}} onGateway={()=>{throw Error('unexpected navigation')}} onMarket={()=>{throw Error('unexpected navigation')}}/></div>));}
+function render(){flushSync(()=>root.render(<div hidden={!active}><ChatView view={view} busy={busy} language="zh" active={active} selectedModel={selected} onModelChange={value=>{selected=value;queueMicrotask(render);}} onAddProvider={()=>{throw Error('unexpected navigation')}} onProviders={()=>{throw Error('unexpected navigation')}} onGateway={()=>{throw Error('unexpected navigation')}} onMarket={()=>{throw Error('unexpected navigation')}}/></div>));}
 const tick=()=>new Promise(resolve=>setTimeout(resolve,30));
 const check=(condition:any,name:string)=>{if(!condition)throw Error(name);passed.push(name);};
 const passed:string[]=[];
@@ -42,7 +42,12 @@ function type(text:string){Object.getOwnPropertyDescriptor(HTMLTextAreaElement.p
 function submit(){document.querySelector<HTMLFormElement>('.tagma-composer')!.requestSubmit();}
 async function choose(id:string){pick().click();await tick();const button=[...document.querySelectorAll<HTMLButtonElement>('[role="menuitemradio"]')].find(item=>item.querySelector('.pm-name')?.textContent===id);if(!button)throw Error('missing choice '+id);button.click();await tick();}
 (window as any).__tagmaRegression=(async()=>{
- render();await ready();type('retained private draft');await tick();
+ render();await ready();
+ check(selected==='cloud-a','first displayed default is pinned before typing');
+ type('private draft before first send');await tick();view.config.providers[0].models=['cloud-b'];render();await tick();
+ check(selected==='cloud-a'&&draft().value==='private draft before first send'&&document.querySelector<HTMLButtonElement>('button[type="submit"]')?.disabled,'default removal before first send retains target and draft');
+ view.config.providers[0].models=['cloud-a','cloud-b'];render();await tick();await choose('tagma/reachflow');
+ type('retained private draft');await tick();
  view.config.installed_packs[0].active_version=null;render();await tick();
  check(pick().textContent?.includes('tagma/reachflow'),'removed pack selection stays visible');
  check(draft().value==='retained private draft','removal retains the draft');

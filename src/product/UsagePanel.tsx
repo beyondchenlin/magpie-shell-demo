@@ -43,7 +43,8 @@ export function UsageDetail({ detail, providers, zh }: { detail: UsageDetailsVie
   return <section aria-label={zh ? "请求详情" : "Request details"}>
     <h2>{zh ? "请求详情" : "Request details"}</h2>
     {!detail.record ? <p role="status">{zh ? "没有保留此请求的明细；请检查 ID 和保留起点。" : "No retained details for this request. Check its ID and the retention start."}</p> : <RequestFacts record={detail.record} providers={providers} zh={zh} />}
-    {detail.attempts.length > 0 && <><h3>{zh ? "上游尝试" : "Upstream attempts"}</h3><div className="list">{detail.attempts.map(attempt => <div className="row tagma-usage-record" key={attempt.ordinal}><div className="who">
+    {detail.attempts.some(attempt=>attempt.provider_id==="24eb3f13-893a-4fbd-972a-93ea2ac777b1")&&<p className="tagma-footnote">{zh?"队员步骤的 @ 后缀记录本次固定运行版本，不是新的公开调用入口。旧记录没有版本后缀时，版本未知，不按当前活动版本补填。":"A pack step's @ suffix records its pinned execution version, not a new public route. Older unversioned records remain unknown; the current active version is not substituted."}</p>}
+    {detail.attempts.length > 0 && <><h3>{zh ? "执行步骤 / 上游尝试" : "Execution steps / upstream attempts"}</h3><div className="list">{detail.attempts.map(attempt => <div className="row tagma-usage-record" key={attempt.ordinal}><div className="who">
       <div className="name">{attempt.ordinal}. {attempt.model} · {stateText(attempt.state, zh)}</div>
       <div className="sub">{providerText(attempt.provider_id, providers)}</div>
       <div className="sub">{utc(attempt.started_ms)} → {attempt.finished_ms === null ? unknown : utc(attempt.finished_ms)}</div>

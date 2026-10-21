@@ -1121,7 +1121,7 @@ async fn forward_pack(
         .attempt(
             invocation.ordinal,
             tagma_runtime::pack_route::USAGE_ID,
-            tagma_runtime::pack_route::MODEL,
+            &tagma_runtime::pack_route::usage_model(&version),
         )
         .await
     {
@@ -1588,6 +1588,12 @@ mod tests {
         plan.steps.push(pin_pack(&loaded.1,None,TeamStepInput::OriginalMessages,Duration::from_secs(10)).ok().unwrap());
         assert!(!service_plan_allowed(&plan));
         plan.steps.pop();
+        let mut updated=v.clone();updated.version="2.0.0".into();updated.preparation_id=uuid::Uuid::new_v4().to_string();updated.manifest_sha256="b".repeat(64);
+        loaded.1.installed_packs[0].versions.push(updated.clone());
+        loaded.1.installed_packs[0].active_version=Some(updated.version.clone());
+        let next=pin_plan(&loaded,tagma_runtime::pack_route::MODEL,None,&Default::default()).ok().unwrap();
+        match &next.steps[0] {PinnedStep::Pack{version,..}=>assert_eq!(version,&updated),_=>panic!("new pack route")}
+        match &plan.steps[0] {PinnedStep::Pack{version,..}=>assert_eq!(tagma_runtime::pack_route::usage_model(version),"tagma/reachflow@1.0.0"),_=>panic!("old pack route")}
         loaded.1.installed_packs[0].active_version=None;
         assert!(pin_plan(&loaded,tagma_runtime::pack_route::MODEL,None,&Default::default()).is_err());
         match &plan.steps[0] {PinnedStep::Pack{version,..}=>assert_eq!(version,&v),_=>panic!("pack route")}

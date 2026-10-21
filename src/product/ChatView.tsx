@@ -72,6 +72,7 @@ export function ChatView(props: { selectedModel: string; onModelChange: (model:s
   const model = selected || modelSources.keys().next().value || "";
   const modelAvailable = modelSources.has(model);
   const applied = view?.runtime.state === "running" && view.runtime.effective_revision === view.config.desired_revision;
+  useEffect(() => { if (active && !selected && model) setSelected(model); }, [active, selected, model, setSelected]);
   useEffect(() => { mounted.current = true; return () => { mounted.current = false; const request = inFlight.current; if (request) { request.cancel = true; void service.cancelChat(request.id).catch(() => {}); } }; }, []);
   useEffect(() => { if (!active && inFlight.current) { inFlight.current.cancel = true; void service.cancelChat(inFlight.current.id).catch(() => {}); } }, [active]);
   useEffect(() => { const node = conversation.current; if (active && node) node.scrollTop = node.scrollHeight; }, [turns, active]);
