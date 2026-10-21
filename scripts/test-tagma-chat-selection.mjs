@@ -34,13 +34,15 @@ function render(){flushSync(()=>root.render(<div hidden={!active}><ChatView view
 const tick=()=>new Promise(resolve=>setTimeout(resolve,30));
 const check=(condition:any,name:string)=>{if(!condition)throw Error(name);passed.push(name);};
 const passed:string[]=[];
+let resizedAt=performance.now();window.addEventListener('resize',()=>{resizedAt=performance.now();});
+async function ready(){const deadline=performance.now()+7000;while(document.readyState!=='complete'||!document.hasFocus()||performance.now()-resizedAt<300){if(performance.now()>deadline)throw Error('Owned component window did not settle with focus');await tick();}}
 const pick=()=>document.querySelector<HTMLButtonElement>('[aria-label="选择模型"]')!;
 const draft=()=>document.querySelector<HTMLTextAreaElement>('#tagma-message')!;
 function type(text:string){Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype,'value')!.set!.call(draft(),text);draft().dispatchEvent(new Event('input',{bubbles:true}));}
 function submit(){document.querySelector<HTMLFormElement>('.tagma-composer')!.requestSubmit();}
 async function choose(id:string){pick().click();await tick();const button=[...document.querySelectorAll<HTMLButtonElement>('[role="menuitemradio"]')].find(item=>item.querySelector('.pm-name')?.textContent===id);if(!button)throw Error('missing choice '+id);button.click();await tick();}
 (window as any).__tagmaRegression=(async()=>{
- render();await tick();type('retained private draft');await tick();
+ render();await ready();type('retained private draft');await tick();
  view.config.installed_packs[0].active_version=null;render();await tick();
  check(pick().textContent?.includes('tagma/reachflow'),'removed pack selection stays visible');
  check(draft().value==='retained private draft','removal retains the draft');
