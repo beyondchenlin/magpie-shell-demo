@@ -804,6 +804,13 @@ mod tests {
         bridge.persist(&pinned).unwrap();
         let raw = std::fs::read_to_string(&bridge.journal).unwrap();
         assert!(!raw.contains("synthetic content"));
+        let compatible: serde_json::Value = serde_json::from_str(&raw).unwrap();
+        assert_eq!(compatible["owner"], "TagmaPackTaskV1");
+        assert_eq!(compatible["task"].as_object().unwrap().len(), 5);
+        assert!(!raw.contains("pack_version"));
+        let sidecar = std::fs::read_to_string(&bridge.pin_journal).unwrap();
+        assert!(sidecar.contains("0.2.0-dev.44"));
+        assert!(!sidecar.contains("synthetic content"));
         drop(bridge);
         let reopened = PackBridge::new(root.path(), &config).unwrap();
         let task = reopened.view().unwrap().task.unwrap();
