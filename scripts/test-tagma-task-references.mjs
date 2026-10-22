@@ -21,11 +21,12 @@ assert.deepEqual(referencedPackVersions(recipe, "reachflow"), ["0.2.0-dev.42", "
 assert.deepEqual(referencedPackVersions(recipe, "another-pack"), []);
 assert.deepEqual(referencedPackVersions({ brain: { kind: "first_cloud" }, steps: [] }, "reachflow"), []);
 const attempts = [
-  { model: "tagma/reachflow@0.2.0-dev.42", state: "succeeded" },
-  { model: "controlled-cloud-model", state: "running" },
-  { model: "tagma/reachflow", state: "running" },
-  { model: "tagma/reachflow@0.2.0-dev.42", state: "failed" },
-  { model: "tagma/reachflow@0.2.0-dev.44", state: "cancelled" },
+  { provider_id: "24eb3f13-893a-4fbd-972a-93ea2ac777b1", model: "tagma/reachflow@0.2.0-dev.42", state: "succeeded" },
+  { provider_id: "cloud-provider", model: "controlled-cloud-model", state: "running" },
+  { provider_id: "cloud-provider", model: "tagma/reachflow@2.0.0", state: "succeeded" },
+  { provider_id: "24eb3f13-893a-4fbd-972a-93ea2ac777b1", model: "tagma/reachflow", state: "running" },
+  { provider_id: "24eb3f13-893a-4fbd-972a-93ea2ac777b1", model: "tagma/reachflow@0.2.0-dev.42", state: "failed" },
+  { provider_id: "24eb3f13-893a-4fbd-972a-93ea2ac777b1", model: "tagma/reachflow@0.2.0-dev.44", state: "cancelled" },
 ];
 assert.deepEqual(executedPackVersions(attempts), [
   "tagma/reachflow@0.2.0-dev.42",
