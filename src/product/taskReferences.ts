@@ -16,7 +16,7 @@ export function referencedPackVersions(recipe: TeamRecipe, packId: string): stri
 export function executedPackVersions(attempts: readonly UsageAttemptView[]): string[] {
   return [...new Set(
     attempts
-      .filter(attempt => attempt.model.startsWith("tagma/") && attempt.model.includes("@"))
+      .filter(attempt => attempt.provider_id === "24eb3f13-893a-4fbd-972a-93ea2ac777b1" && attempt.model.startsWith("tagma/reachflow@"))
       .map(attempt => attempt.model)
   )];
 }
