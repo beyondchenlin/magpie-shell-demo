@@ -161,6 +161,9 @@ async fn health_before_activation_persisted_version_and_deactivation() {
             text: "本机测试队员已处理：实际激活后调用".into()
         }
     );
+    let pinned = f.executor.pin_active(&f.config, "acceptance-worker").unwrap();
+    assert_eq!(pinned.version, "1.0.0");
+    assert_eq!(pinned.preparation_id, f.operation.to_string());
     assert_eq!(
         f.executor
             .activate(&f.config, 0, f.operation, &f.sha, CancellationToken::new())
@@ -179,6 +182,21 @@ async fn health_before_activation_persisted_version_and_deactivation() {
     assert_eq!(disabled.desired_revision, 2);
     assert!(disabled.installed_packs[0].active_version.is_none());
     assert!(f.path.join("payload/worker.exe").exists());
+    // A request admitted before deactivation continues to use the old
+    // signed preparation. New active requests remain blocked.
+    assert_eq!(
+        f.executor
+            .call_pinned(
+                "acceptance-worker",
+                &pinned,
+                PackOperation::LocalSample { text: "已固定旧版本".into() },
+                CancellationToken::new(),
+            )
+            .await
+            .unwrap()
+            .body,
+        PackReplyBody::Result { text: "本机测试队员已处理：已固定旧版本".into() }
+    );
     assert_eq!(
         f.executor
             .call_active(
