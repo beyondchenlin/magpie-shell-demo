@@ -44,12 +44,22 @@ struct Journal {
     owner: String,
     task: PackTaskEvent,
 }
+#[derive(serde::Serialize, serde::Deserialize)]
+#[serde(deny_unknown_fields)]
+struct PinJournal {
+    owner: String,
+    task_id: String,
+    pack_id: String,
+    pack_version: String,
+    preparation_id: String,
+}
 pub struct PackBridge {
     installer: PackInstaller,
     active: Mutex<Option<(String, CancellationToken)>>,
     last: Mutex<Option<PackTaskEvent>>,
     closing: AtomicBool,
     journal: PathBuf,
+    pin_journal: PathBuf,
     release_ready: bool,
     internal_record: Option<SignedManifestRecord>,
     internal_hash: Option<String>,
@@ -152,6 +162,7 @@ impl PackBridge {
             _ => return Err(error("PACK_UNSUPPORTED_PLATFORM")),
         };
         let journal = parent.join("last-task.json");
+        let pin_journal = parent.join("last-task-pin.json");
         let last = if journal.exists() {
             ordinary_file(&journal)?;
             let mut bytes = Vec::new();
@@ -185,6 +196,39 @@ impl PackBridge {
         } else {
             None
         };
+        let mut last = last;
+        if let Some(task) = last.as_mut() {
+            if pin_journal.exists() {
+                ordinary_file(&pin_journal)?;
+                let mut bytes = Vec::new();
+                std::fs::File::open(&pin_journal)
+                    .map_err(|_| error("PACK_STORAGE_UNAVAILABLE"))?
+                    .take(1025)
+                    .read_to_end(&mut bytes)
+                    .map_err(|_| error("PACK_STORAGE_UNAVAILABLE"))?;
+                if bytes.len() > 1024 {
+                    return Err(error("PACK_STORAGE_UNAVAILABLE"));
+                }
+                let pin: PinJournal =
+                    serde_json::from_slice(&bytes).map_err(|_| error("PACK_STORAGE_UNAVAILABLE"))?;
+                if pin.owner != "TagmaPackTaskPinV1"
+                    || !uuid::Uuid::parse_str(&pin.task_id)
+                        .is_ok_and(|value| !value.is_nil() && value.to_string() == pin.task_id)
+                {
+                    return Err(error("PACK_STORAGE_UNAVAILABLE"));
+                }
+                // A new task may have pinned its version just before a crash,
+                // before replacing the old compatible task journal.
+                if pin.task_id == task.task_id {
+                    task.pack_id = Some(pin.pack_id);
+                    task.pack_version = Some(pin.pack_version);
+                    task.preparation_id = Some(pin.preparation_id);
+                    if !valid_task_pin(task) {
+                        return Err(error("PACK_STORAGE_UNAVAILABLE"));
+                    }
+                }
+            }
+        }
         Ok(Self {
             installer: PackInstaller::new(
                 config
@@ -200,6 +244,7 @@ impl PackBridge {
             last: Mutex::new(last),
             closing: AtomicBool::new(false),
             journal,
+            pin_journal,
             release_ready,
             internal_record,
             internal_hash,
@@ -299,33 +344,49 @@ impl PackBridge {
         Ok(())
     }
     fn persist(&self, task: &PackTaskEvent) -> Result<()> {
-        if self.journal.exists() {
-            ordinary_file(&self.journal)?;
+        if !valid_task_pin(task) {
+            return Err(error("PACK_STORAGE_UNAVAILABLE"));
+        }
+        if let (Some(pack_id), Some(pack_version), Some(preparation_id)) = (
+            task.pack_id.as_ref(),
+            task.pack_version.as_ref(),
+            task.preparation_id.as_ref(),
+        ) {
+            // This is written before the V1 journal. Older installed candidates
+            // ignore the sidecar and can still reopen the exact V1 journal.
+            let bytes = serde_json::to_vec(&PinJournal {
+                owner: "TagmaPackTaskPinV1".into(),
+                task_id: task.task_id.clone(),
+                pack_id: pack_id.clone(),
+                pack_version: pack_version.clone(),
+                preparation_id: preparation_id.clone(),
+            })
+            .map_err(|_| error("PACK_STORAGE_UNAVAILABLE"))?;
+            if bytes.len() > 1024 {
+                return Err(error("PACK_STORAGE_UNAVAILABLE"));
+            }
+            write_owned_journal(&self.pin_journal, ".pack-pin-", &bytes)?;
         }
         let mut task = task.clone();
         task.text = None;
-        let bytes = serde_json::to_vec(&Journal {
+        let mut record = serde_json::to_value(&Journal {
             owner: "TagmaPackTaskV1".into(),
             task,
         })
         .map_err(|_| error("PACK_STORAGE_UNAVAILABLE"))?;
+        let fields = record
+            .get_mut("task")
+            .and_then(serde_json::Value::as_object_mut)
+            .ok_or_else(|| error("PACK_STORAGE_UNAVAILABLE"))?;
+        // The original journal schema is unchanged for rollback to R9.
+        for key in ["pack_id", "pack_version", "preparation_id"] {
+            fields.remove(key);
+        }
+        let bytes = serde_json::to_vec(&record).map_err(|_| error("PACK_STORAGE_UNAVAILABLE"))?;
         if bytes.len() > 4096 {
             return Err(error("PACK_STORAGE_UNAVAILABLE"));
         }
-        let mut file = tempfile::Builder::new()
-            .prefix(".pack-task-")
-            .tempfile_in(
-                self.journal
-                    .parent()
-                    .ok_or_else(|| error("PACK_STORAGE_UNAVAILABLE"))?,
-            )
-            .map_err(|_| error("PACK_STORAGE_UNAVAILABLE"))?;
-        file.write_all(&bytes)
-            .and_then(|_| file.as_file().sync_all())
-            .map_err(|_| error("PACK_STORAGE_UNAVAILABLE"))?;
-        file.persist(&self.journal)
-            .map_err(|_| error("PACK_STORAGE_UNAVAILABLE"))?;
-        Ok(())
+        write_owned_journal(&self.journal, ".pack-task-", &bytes)
     }
     pub fn resume_after_failed_quit(&self) {
         self.closing.store(false, Ordering::SeqCst);
@@ -631,6 +692,23 @@ impl Drop for Guard<'_> {
             *active = None;
         }
     }
+}
+fn write_owned_journal(path: &Path, prefix: &str, bytes: &[u8]) -> Result<()> {
+    if path.exists() {
+        ordinary_file(path)?;
+    }
+    let mut file = tempfile::Builder::new()
+        .prefix(prefix)
+        .tempfile_in(
+            path.parent()
+                .ok_or_else(|| error("PACK_STORAGE_UNAVAILABLE"))?,
+        )
+        .map_err(|_| error("PACK_STORAGE_UNAVAILABLE"))?;
+    file.write_all(bytes)
+        .and_then(|_| file.as_file().sync_all())
+        .map_err(|_| error("PACK_STORAGE_UNAVAILABLE"))?;
+    file.persist(path).map_err(|_| error("PACK_STORAGE_UNAVAILABLE"))?;
+    Ok(())
 }
 fn valid_task_pin(task: &PackTaskEvent) -> bool {
     match (
