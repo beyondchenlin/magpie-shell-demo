@@ -709,15 +709,21 @@ mod tests {
             "PACK_UNTRUSTED_PUBLISHER"
         );
         let id = uuid::Uuid::new_v4().to_string();
-        bridge
-            .persist(&event(
+        let preparation = uuid::Uuid::new_v4().to_string();
+        let pinned = PackTaskEvent {
+            pack_id: Some("reachflow".into()),
+            pack_version: Some("0.2.0-dev.44".into()),
+            preparation_id: Some(preparation.clone()),
+            ..event(
                 &id,
                 "calling",
                 "running",
                 Some("do not persist synthetic content".into()),
                 None,
-            ))
-            .unwrap();
+            )
+        };
+        assert!(valid_task_pin(&pinned));
+        bridge.persist(&pinned).unwrap();
         let raw = std::fs::read_to_string(&bridge.journal).unwrap();
         assert!(!raw.contains("synthetic content"));
         drop(bridge);
@@ -727,6 +733,18 @@ mod tests {
         assert_eq!(task.state, "interrupted");
         assert_eq!(task.error.as_deref(), Some("PACK_INTERRUPTED"));
         assert!(task.text.is_none());
+        assert_eq!(task.pack_id.as_deref(), Some("reachflow"));
+        assert_eq!(task.pack_version.as_deref(), Some("0.2.0-dev.44"));
+        assert_eq!(task.preparation_id.as_deref(), Some(preparation.as_str()));
+        // Existing journals without version fields continue to load without
+        // pretending they contain a pinned version.
+        let legacy: PackTaskEvent = serde_json::from_str(&format!(
+            r#"{{"task_id":"{id}","phase":"calling","state":"running","text":null,"error":null}}"#
+        )).unwrap();
+        assert!(valid_task_pin(&legacy));
+        assert!(legacy.pack_version.is_none());
+        let invalid = PackTaskEvent { preparation_id: None, ..pinned };
+        assert!(!valid_task_pin(&invalid));
         assert_eq!(config.view().unwrap().desired_revision, 0);
         assert!(config.view().unwrap().installed_packs.is_empty());
     }
