@@ -3,11 +3,11 @@ import assert from "node:assert/strict";
 import fs from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { transform } from "esbuild";
+import ts from "typescript";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const source = await fs.readFile(path.join(root, "src/product/taskReferences.ts"), "utf8");
-const { code } = await transform(source, { loader: "ts", format: "esm" });
+const code = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.ESNext } }).outputText;
 const { referencedPackVersions, executedPackVersions } = await import(
   `data:text/javascript;base64,${Buffer.from(code).toString("base64")}`
 );
