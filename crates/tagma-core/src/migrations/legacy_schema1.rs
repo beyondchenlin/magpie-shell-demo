@@ -275,7 +275,11 @@ mod tests {
                 .filter_map(Result::ok)
                 .filter(|e| e.path().extension().is_some_and(|s| s == "sqlite3"))
                 .collect();
-            assert_eq!(files.len(), (SCHEMA_VERSION - 1) as usize, "one preserved backup per historical schema transition");
+            assert_eq!(
+                files.len(),
+                (SCHEMA_VERSION - 1) as usize,
+                "one preserved backup per historical schema transition"
+            );
             let first = files
                 .iter()
                 .find(|e| e.file_name().to_string_lossy().starts_with("schema-1-"))
