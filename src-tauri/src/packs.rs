@@ -44,12 +44,22 @@ struct Journal {
     owner: String,
     task: PackTaskEvent,
 }
+#[derive(serde::Serialize, serde::Deserialize)]
+#[serde(deny_unknown_fields)]
+struct PinJournal {
+    owner: String,
+    task_id: String,
+    pack_id: String,
+    pack_version: String,
+    preparation_id: String,
+}
 pub struct PackBridge {
     installer: PackInstaller,
     active: Mutex<Option<(String, CancellationToken)>>,
     last: Mutex<Option<PackTaskEvent>>,
     closing: AtomicBool,
     journal: PathBuf,
+    pin_journal: PathBuf,
     release_ready: bool,
     internal_record: Option<SignedManifestRecord>,
     internal_hash: Option<String>,
@@ -152,6 +162,7 @@ impl PackBridge {
             _ => return Err(error("PACK_UNSUPPORTED_PLATFORM")),
         };
         let journal = parent.join("last-task.json");
+        let pin_journal = parent.join("last-task-pin.json");
         let last = if journal.exists() {
             ordinary_file(&journal)?;
             let mut bytes = Vec::new();
@@ -171,6 +182,7 @@ impl PackBridge {
                     record.task.state.as_str(),
                     "running" | "cancelling" | "interrupted" | "succeeded" | "failed" | "cancelled"
                 )
+                || !valid_task_pin(&record.task)
             {
                 return Err(error("PACK_STORAGE_UNAVAILABLE"));
             }
@@ -184,6 +196,39 @@ impl PackBridge {
         } else {
             None
         };
+        let mut last = last;
+        if let Some(task) = last.as_mut() {
+            if pin_journal.exists() {
+                ordinary_file(&pin_journal)?;
+                let mut bytes = Vec::new();
+                std::fs::File::open(&pin_journal)
+                    .map_err(|_| error("PACK_STORAGE_UNAVAILABLE"))?
+                    .take(1025)
+                    .read_to_end(&mut bytes)
+                    .map_err(|_| error("PACK_STORAGE_UNAVAILABLE"))?;
+                if bytes.len() > 1024 {
+                    return Err(error("PACK_STORAGE_UNAVAILABLE"));
+                }
+                let pin: PinJournal =
+                    serde_json::from_slice(&bytes).map_err(|_| error("PACK_STORAGE_UNAVAILABLE"))?;
+                if pin.owner != "TagmaPackTaskPinV1"
+                    || !uuid::Uuid::parse_str(&pin.task_id)
+                        .is_ok_and(|value| !value.is_nil() && value.to_string() == pin.task_id)
+                {
+                    return Err(error("PACK_STORAGE_UNAVAILABLE"));
+                }
+                // A new task may have pinned its version just before a crash,
+                // before replacing the old compatible task journal.
+                if pin.task_id == task.task_id {
+                    task.pack_id = Some(pin.pack_id);
+                    task.pack_version = Some(pin.pack_version);
+                    task.preparation_id = Some(pin.preparation_id);
+                    if !valid_task_pin(task) {
+                        return Err(error("PACK_STORAGE_UNAVAILABLE"));
+                    }
+                }
+            }
+        }
         Ok(Self {
             installer: PackInstaller::new(
                 config
@@ -199,6 +244,7 @@ impl PackBridge {
             last: Mutex::new(last),
             closing: AtomicBool::new(false),
             journal,
+            pin_journal,
             release_ready,
             internal_record,
             internal_hash,
@@ -298,33 +344,49 @@ impl PackBridge {
         Ok(())
     }
     fn persist(&self, task: &PackTaskEvent) -> Result<()> {
-        if self.journal.exists() {
-            ordinary_file(&self.journal)?;
+        if !valid_task_pin(task) {
+            return Err(error("PACK_STORAGE_UNAVAILABLE"));
+        }
+        if let (Some(pack_id), Some(pack_version), Some(preparation_id)) = (
+            task.pack_id.as_ref(),
+            task.pack_version.as_ref(),
+            task.preparation_id.as_ref(),
+        ) {
+            // This is written before the V1 journal. Older installed candidates
+            // ignore the sidecar and can still reopen the exact V1 journal.
+            let bytes = serde_json::to_vec(&PinJournal {
+                owner: "TagmaPackTaskPinV1".into(),
+                task_id: task.task_id.clone(),
+                pack_id: pack_id.clone(),
+                pack_version: pack_version.clone(),
+                preparation_id: preparation_id.clone(),
+            })
+            .map_err(|_| error("PACK_STORAGE_UNAVAILABLE"))?;
+            if bytes.len() > 1024 {
+                return Err(error("PACK_STORAGE_UNAVAILABLE"));
+            }
+            write_owned_journal(&self.pin_journal, ".pack-pin-", &bytes)?;
         }
         let mut task = task.clone();
         task.text = None;
-        let bytes = serde_json::to_vec(&Journal {
+        let mut record = serde_json::to_value(&Journal {
             owner: "TagmaPackTaskV1".into(),
             task,
         })
         .map_err(|_| error("PACK_STORAGE_UNAVAILABLE"))?;
+        let fields = record
+            .get_mut("task")
+            .and_then(serde_json::Value::as_object_mut)
+            .ok_or_else(|| error("PACK_STORAGE_UNAVAILABLE"))?;
+        // The original journal schema is unchanged for rollback to R9.
+        for key in ["pack_id", "pack_version", "preparation_id"] {
+            fields.remove(key);
+        }
+        let bytes = serde_json::to_vec(&record).map_err(|_| error("PACK_STORAGE_UNAVAILABLE"))?;
         if bytes.len() > 4096 {
             return Err(error("PACK_STORAGE_UNAVAILABLE"));
         }
-        let mut file = tempfile::Builder::new()
-            .prefix(".pack-task-")
-            .tempfile_in(
-                self.journal
-                    .parent()
-                    .ok_or_else(|| error("PACK_STORAGE_UNAVAILABLE"))?,
-            )
-            .map_err(|_| error("PACK_STORAGE_UNAVAILABLE"))?;
-        file.write_all(&bytes)
-            .and_then(|_| file.as_file().sync_all())
-            .map_err(|_| error("PACK_STORAGE_UNAVAILABLE"))?;
-        file.persist(&self.journal)
-            .map_err(|_| error("PACK_STORAGE_UNAVAILABLE"))?;
-        Ok(())
+        write_owned_journal(&self.journal, ".pack-task-", &bytes)
     }
     pub fn resume_after_failed_quit(&self) {
         self.closing.store(false, Ordering::SeqCst);
@@ -481,7 +543,26 @@ impl PackBridge {
         let _guard = Guard { bridge: self };
         self.event(
             &channel,
-            event(&input.task_id, "calling", "running", None, None),
+            event(&input.task_id, "starting", "running", None, None),
+        )?;
+        // The version is pinned before the invocation is announced as running.
+        // This survives an active-version switch and is journaled across restart.
+        let pinned = match self.installer.executor().pin_active(config, &input.pack_id) {
+            Ok(version) => version,
+            Err(failure) => {
+                let code = failure.to_string();
+                self.finish(&channel, &input.task_id, &Err(code.clone()))?;
+                return Err(error(code));
+            }
+        };
+        self.event(
+            &channel,
+            PackTaskEvent {
+                pack_id: Some(input.pack_id.clone()),
+                pack_version: Some(pinned.version.clone()),
+                preparation_id: Some(pinned.preparation_id.clone()),
+                ..event(&input.task_id, "calling", "running", None, None)
+            },
         )?;
         let operation = match input.operation {
             PackUserOperation::LocalSample => PackOperation::LocalSample {
@@ -492,7 +573,7 @@ impl PackBridge {
         let result = self
             .installer
             .executor()
-            .call_active(config, &input.pack_id, operation, cancel)
+            .call_pinned(&input.pack_id, &pinned, operation, cancel)
             .await
             .map_err(|e| e.to_string())
             .and_then(|reply| match reply.body {
@@ -522,26 +603,32 @@ impl PackBridge {
         id: &str,
         result: &std::result::Result<Option<String>, String>,
     ) -> Result<()> {
-        match result {
-            Ok(text) => self.event(
-                channel,
-                event(id, "finished", "succeeded", text.clone(), None),
+        let mut terminal = match result {
+            Ok(text) => event(id, "finished", "succeeded", text.clone(), None),
+            Err(code) => event(
+                id,
+                "finished",
+                if code == "PACK_CANCELLED" {
+                    "cancelled"
+                } else {
+                    "failed"
+                },
+                None,
+                Some(code.clone()),
             ),
-            Err(code) => self.event(
-                channel,
-                event(
-                    id,
-                    "finished",
-                    if code == "PACK_CANCELLED" {
-                        "cancelled"
-                    } else {
-                        "failed"
-                    },
-                    None,
-                    Some(code.clone()),
-                ),
-            ),
+        };
+        if let Some(pinned) = self
+            .last
+            .lock()
+            .map_err(|_| error("PACK_UNAVAILABLE"))?
+            .as_ref()
+            .filter(|task| task.task_id == id)
+        {
+            terminal.pack_id.clone_from(&pinned.pack_id);
+            terminal.pack_version.clone_from(&pinned.pack_version);
+            terminal.preparation_id.clone_from(&pinned.preparation_id);
         }
+        self.event(channel, terminal)
     }
     pub async fn shutdown(&self) -> Result<()> {
         self.closing.store(true, Ordering::SeqCst);
@@ -583,6 +670,9 @@ fn event(
         state: state.into(),
         text,
         error,
+        pack_id: None,
+        pack_version: None,
+        preparation_id: None,
     }
 }
 struct Guard<'a> {
@@ -601,6 +691,45 @@ impl Drop for Guard<'_> {
         if let Ok(mut active) = self.bridge.active.lock() {
             *active = None;
         }
+    }
+}
+fn write_owned_journal(path: &Path, prefix: &str, bytes: &[u8]) -> Result<()> {
+    if path.exists() {
+        ordinary_file(path)?;
+    }
+    let mut file = tempfile::Builder::new()
+        .prefix(prefix)
+        .tempfile_in(
+            path.parent()
+                .ok_or_else(|| error("PACK_STORAGE_UNAVAILABLE"))?,
+        )
+        .map_err(|_| error("PACK_STORAGE_UNAVAILABLE"))?;
+    file.write_all(bytes)
+        .and_then(|_| file.as_file().sync_all())
+        .map_err(|_| error("PACK_STORAGE_UNAVAILABLE"))?;
+    file.persist(path).map_err(|_| error("PACK_STORAGE_UNAVAILABLE"))?;
+    Ok(())
+}
+fn valid_task_pin(task: &PackTaskEvent) -> bool {
+    match (
+        task.pack_id.as_deref(),
+        task.pack_version.as_deref(),
+        task.preparation_id.as_deref(),
+    ) {
+        (None, None, None) => true,
+        (Some(id), Some(version), Some(preparation)) => {
+            !id.is_empty()
+                && id.len() <= 128
+                && id.bytes().all(|byte| byte.is_ascii_alphanumeric() || byte == b'-')
+                && !version.is_empty()
+                && version.len() <= 80
+                && version
+                    .bytes()
+                    .all(|byte| byte.is_ascii_alphanumeric() || b".+-".contains(&byte))
+                && uuid::Uuid::parse_str(preparation)
+                    .is_ok_and(|value| !value.is_nil() && value.to_string() == preparation)
+        }
+        _ => false,
     }
 }
 fn ordinary_file(path: &Path) -> Result<()> {
@@ -658,17 +787,30 @@ mod tests {
             "PACK_UNTRUSTED_PUBLISHER"
         );
         let id = uuid::Uuid::new_v4().to_string();
-        bridge
-            .persist(&event(
+        let preparation = uuid::Uuid::new_v4().to_string();
+        let pinned = PackTaskEvent {
+            pack_id: Some("reachflow".into()),
+            pack_version: Some("0.2.0-dev.44".into()),
+            preparation_id: Some(preparation.clone()),
+            ..event(
                 &id,
                 "calling",
                 "running",
                 Some("do not persist synthetic content".into()),
                 None,
-            ))
-            .unwrap();
+            )
+        };
+        assert!(valid_task_pin(&pinned));
+        bridge.persist(&pinned).unwrap();
         let raw = std::fs::read_to_string(&bridge.journal).unwrap();
         assert!(!raw.contains("synthetic content"));
+        let compatible: serde_json::Value = serde_json::from_str(&raw).unwrap();
+        assert_eq!(compatible["owner"], "TagmaPackTaskV1");
+        assert_eq!(compatible["task"].as_object().unwrap().len(), 5);
+        assert!(!raw.contains("pack_version"));
+        let sidecar = std::fs::read_to_string(&bridge.pin_journal).unwrap();
+        assert!(sidecar.contains("0.2.0-dev.44"));
+        assert!(!sidecar.contains("synthetic content"));
         drop(bridge);
         let reopened = PackBridge::new(root.path(), &config).unwrap();
         let task = reopened.view().unwrap().task.unwrap();
@@ -676,6 +818,18 @@ mod tests {
         assert_eq!(task.state, "interrupted");
         assert_eq!(task.error.as_deref(), Some("PACK_INTERRUPTED"));
         assert!(task.text.is_none());
+        assert_eq!(task.pack_id.as_deref(), Some("reachflow"));
+        assert_eq!(task.pack_version.as_deref(), Some("0.2.0-dev.44"));
+        assert_eq!(task.preparation_id.as_deref(), Some(preparation.as_str()));
+        // Existing journals without version fields continue to load without
+        // pretending they contain a pinned version.
+        let legacy: PackTaskEvent = serde_json::from_str(&format!(
+            r#"{{"task_id":"{id}","phase":"calling","state":"running","text":null,"error":null}}"#
+        )).unwrap();
+        assert!(valid_task_pin(&legacy));
+        assert!(legacy.pack_version.is_none());
+        let invalid = PackTaskEvent { preparation_id: None, ..pinned };
+        assert!(!valid_task_pin(&invalid));
         assert_eq!(config.view().unwrap().desired_revision, 0);
         assert!(config.view().unwrap().installed_packs.is_empty());
     }

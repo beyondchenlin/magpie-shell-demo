@@ -198,14 +198,13 @@ impl PackExecutor {
             })
     }
 
-    /// Resolves once, so updates cannot change the version of an in-flight call.
-    pub async fn call_active(
+    /// Capture the exact installed artifact before reporting a task as running.
+    /// A later active-version switch cannot change this immutable value.
+    pub fn pin_active(
         &self,
         config: &tagma_core::ConfigService,
         id: &str,
-        operation: PackOperation,
-        cancel: CancellationToken,
-    ) -> Result<PackReply> {
+    ) -> Result<tagma_core::packs::InstalledPackVersion> {
         if config
             .configuration_id()
             .map_err(|_| PackRunError::Unavailable)?
@@ -221,11 +220,22 @@ impl PackExecutor {
             .iter()
             .find(|p| p.id == id)
             .ok_or(PackRunError::Unavailable)?;
-        let version = pack
-            .versions
+        pack.versions
             .iter()
             .find(|v| Some(&v.version) == pack.active_version.as_ref())
-            .ok_or(PackRunError::Unavailable)?;
+            .cloned()
+            .ok_or(PackRunError::Unavailable)
+    }
+
+    /// Execute the exact signed preparation recorded in the task journal.
+    /// The shared call lease prevents concurrent uninstall from deleting it.
+    pub async fn call_pinned(
+        &self,
+        id: &str,
+        version: &tagma_core::packs::InstalledPackVersion,
+        operation: PackOperation,
+        cancel: CancellationToken,
+    ) -> Result<PackReply> {
         let reply = self
             .call(
                 Uuid::parse_str(&version.preparation_id).map_err(|_| PackRunError::Unavailable)?,
@@ -238,6 +248,18 @@ impl PackExecutor {
             return Err(PackRunError::ProtocolError);
         }
         Ok(reply)
+    }
+
+    /// Existing clients can still resolve and execute the active version once.
+    pub async fn call_active(
+        &self,
+        config: &tagma_core::ConfigService,
+        id: &str,
+        operation: PackOperation,
+        cancel: CancellationToken,
+    ) -> Result<PackReply> {
+        let version = self.pin_active(config, id)?;
+        self.call_pinned(id, &version, operation, cancel).await
     }
     pub fn new(config_uuid: Uuid, preparations: &Path, trust: Arc<PackTrustStore>) -> Result<Self> {
         if config_uuid.is_nil() {

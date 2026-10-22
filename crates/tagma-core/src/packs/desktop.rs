@@ -39,6 +39,13 @@ pub struct PackTaskEvent {
     pub state: String,
     pub text: Option<String>,
     pub error: Option<String>,
+    /// Identity pinned before an invocation; older task journals omit these fields.
+    #[serde(default)]
+    pub pack_id: Option<String>,
+    #[serde(default)]
+    pub pack_version: Option<String>,
+    #[serde(default)]
+    pub preparation_id: Option<String>,
 }
 #[derive(Debug, Clone, Serialize, TS)]
 pub struct PackMarketView {
