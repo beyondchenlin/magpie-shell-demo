@@ -171,6 +171,7 @@ impl PackBridge {
                     record.task.state.as_str(),
                     "running" | "cancelling" | "interrupted" | "succeeded" | "failed" | "cancelled"
                 )
+                || !valid_task_pin(&record.task)
             {
                 return Err(error("PACK_STORAGE_UNAVAILABLE"));
             }
@@ -481,7 +482,26 @@ impl PackBridge {
         let _guard = Guard { bridge: self };
         self.event(
             &channel,
-            event(&input.task_id, "calling", "running", None, None),
+            event(&input.task_id, "starting", "running", None, None),
+        )?;
+        // The version is pinned before the invocation is announced as running.
+        // This survives an active-version switch and is journaled across restart.
+        let pinned = match self.installer.executor().pin_active(config, &input.pack_id) {
+            Ok(version) => version,
+            Err(failure) => {
+                let code = failure.to_string();
+                self.finish(&channel, &input.task_id, &Err(code.clone()))?;
+                return Err(error(code));
+            }
+        };
+        self.event(
+            &channel,
+            PackTaskEvent {
+                pack_id: Some(input.pack_id.clone()),
+                pack_version: Some(pinned.version.clone()),
+                preparation_id: Some(pinned.preparation_id.clone()),
+                ..event(&input.task_id, "calling", "running", None, None)
+            },
         )?;
         let operation = match input.operation {
             PackUserOperation::LocalSample => PackOperation::LocalSample {
@@ -492,7 +512,7 @@ impl PackBridge {
         let result = self
             .installer
             .executor()
-            .call_active(config, &input.pack_id, operation, cancel)
+            .call_pinned(&input.pack_id, &pinned, operation, cancel)
             .await
             .map_err(|e| e.to_string())
             .and_then(|reply| match reply.body {
@@ -522,26 +542,32 @@ impl PackBridge {
         id: &str,
         result: &std::result::Result<Option<String>, String>,
     ) -> Result<()> {
-        match result {
-            Ok(text) => self.event(
-                channel,
-                event(id, "finished", "succeeded", text.clone(), None),
+        let mut terminal = match result {
+            Ok(text) => event(id, "finished", "succeeded", text.clone(), None),
+            Err(code) => event(
+                id,
+                "finished",
+                if code == "PACK_CANCELLED" {
+                    "cancelled"
+                } else {
+                    "failed"
+                },
+                None,
+                Some(code.clone()),
             ),
-            Err(code) => self.event(
-                channel,
-                event(
-                    id,
-                    "finished",
-                    if code == "PACK_CANCELLED" {
-                        "cancelled"
-                    } else {
-                        "failed"
-                    },
-                    None,
-                    Some(code.clone()),
-                ),
-            ),
+        };
+        if let Some(pinned) = self
+            .last
+            .lock()
+            .map_err(|_| error("PACK_UNAVAILABLE"))?
+            .as_ref()
+            .filter(|task| task.task_id == id)
+        {
+            terminal.pack_id.clone_from(&pinned.pack_id);
+            terminal.pack_version.clone_from(&pinned.pack_version);
+            terminal.preparation_id.clone_from(&pinned.preparation_id);
         }
+        self.event(channel, terminal)
     }
     pub async fn shutdown(&self) -> Result<()> {
         self.closing.store(true, Ordering::SeqCst);
@@ -583,6 +609,9 @@ fn event(
         state: state.into(),
         text,
         error,
+        pack_id: None,
+        pack_version: None,
+        preparation_id: None,
     }
 }
 struct Guard<'a> {
@@ -601,6 +630,28 @@ impl Drop for Guard<'_> {
         if let Ok(mut active) = self.bridge.active.lock() {
             *active = None;
         }
+    }
+}
+fn valid_task_pin(task: &PackTaskEvent) -> bool {
+    match (
+        task.pack_id.as_deref(),
+        task.pack_version.as_deref(),
+        task.preparation_id.as_deref(),
+    ) {
+        (None, None, None) => true,
+        (Some(id), Some(version), Some(preparation)) => {
+            !id.is_empty()
+                && id.len() <= 128
+                && id.bytes().all(|byte| byte.is_ascii_alphanumeric() || byte == b'-')
+                && !version.is_empty()
+                && version.len() <= 80
+                && version
+                    .bytes()
+                    .all(|byte| byte.is_ascii_alphanumeric() || b".+-".contains(&byte))
+                && uuid::Uuid::parse_str(preparation)
+                    .is_ok_and(|value| !value.is_nil() && value.to_string() == preparation)
+        }
+        _ => false,
     }
 }
 fn ordinary_file(path: &Path) -> Result<()> {
