@@ -1,7 +1,7 @@
 // Generated from tagma-core. Run npm run contract:generate; do not edit.
 export type PackUiError = { code: string, };
 export type PackReviewView = { review_id: string, manifest_sha256: string, pack_id: string, version: string, publisher: string, platform: string, network_hosts: Array<string>, workspace: string, browser: boolean, subprocess: boolean, memory_mib: number, timeout_ms: number, download_bytes: string, unpack_bytes: string, peak_bytes: string, target_shortfall_bytes: string, temp_shortfall_bytes: string, fits: boolean, };
-export type PackTaskEvent = { task_id: string, phase: string, state: string, text: string | null, error: string | null, };
+export type PackTaskEvent = { task_id: string, phase: string, state: string, text: string | null, error: string | null, pack_id: string | null, pack_version: string | null, preparation_id: string | null, };
 export type PackMarketView = { release_ready: boolean, internal_manifest: string | null, task: PackTaskEvent | null, gateway_running: boolean, pack_call_running: boolean, pending_removal: string | null, };
 export type ConfirmPackInstall = { protocol_version: number, task_id: string, review_id: string, manifest_sha256: string, };
 export type InvokePack = { protocol_version: number, task_id: string, pack_id: string, operation: PackUserOperation, };
