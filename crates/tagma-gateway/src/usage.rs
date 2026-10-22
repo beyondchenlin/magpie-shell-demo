@@ -595,6 +595,35 @@ pub fn tokens(value: &serde_json::Value) -> Tokens {
 mod tests {
     use super::*;
     #[tokio::test]
+    async fn pack_versions_remain_attributed_after_success_cancel_and_reopen() {
+        let temp=tempfile::Builder::new().prefix("tagma-pack-attribution-").tempdir().unwrap();
+        let ledger=Ledger::open(temp.path()).unwrap();
+        let mut expected=Vec::new();
+        for (version,team,code,outcome) in [
+            ("1.0.0",Some(7),None,"succeeded"),
+            ("2.0.0",None,Some("CLIENT_CANCELLED"),"cancelled"),
+            ("2.0.0",None,Some("PACK_TIMED_OUT"),"failed"),
+        ] {
+            let pinned=tagma_core::packs::InstalledPackVersion{version:version.into(),preparation_id:uuid::Uuid::new_v4().to_string(),manifest_sha256:"a".repeat(64),display_name:"owned pack".into(),installed_ms:"1".into()};
+            let id=uuid::Uuid::new_v4().to_string();
+            let public=if team.is_some(){"tagma/fixed-team@7"}else{tagma_runtime::pack_route::MODEL};
+            let request=ledger.begin(RequestStart{id:id.clone(),provider_id:tagma_runtime::pack_route::USAGE_ID.into(),model:public.into(),config_revision:13,team_revision:team,started_ms:tagma_core::health::now_ms().unwrap()},tokio::time::Instant::now()+Duration::from_secs(10)).await.unwrap();
+            let actual=tagma_runtime::pack_route::usage_model(&pinned);
+            let mut attempt=request.attempt(1,tagma_runtime::pack_route::USAGE_ID,&actual).await.unwrap();
+            attempt.finish(code,Tokens::default()).await.unwrap();request.finish(code).await.unwrap();
+            expected.push((id,public.to_owned(),actual,team,outcome.to_owned()));
+        }
+        drop(ledger);
+        let reopened=Ledger::open(temp.path()).unwrap();
+        let db=rusqlite::Connection::open_with_flags(temp.path().join("usage.sqlite3"),rusqlite::OpenFlags::SQLITE_OPEN_READ_ONLY).unwrap();
+        for (id,public,actual,team,outcome) in expected {
+            let row:(String,String,Option<u32>,String,u32)=db.query_row("SELECT r.model,a.model,r.team_revision,a.outcome,r.config_revision FROM usage_requests r JOIN usage_attempts a ON a.request_id=r.id WHERE r.id=?1",[id],|row|Ok((row.get(0)?,row.get(1)?,row.get(2)?,row.get(3)?,row.get(4)?))).unwrap();
+            assert_eq!(row,(public,actual,team,outcome,13));
+        }
+        drop(db);drop(reopened);
+    }
+
+    #[tokio::test]
     async fn idle_writer_expires_owned_details_without_any_new_dispatch() {
         let temp = tempfile::Builder::new()
             .prefix("tagma-idle-retention-")

@@ -11,6 +11,12 @@ use tokio_util::sync::CancellationToken;
 pub const MODEL: &str = "tagma/reachflow";
 /// Stable local executor identity for usage attribution; not a cloud provider.
 pub const USAGE_ID: &str = "24eb3f13-893a-4fbd-972a-93ea2ac777b1";
+/// Attribution only, not an additional public model or routing alias.
+/// Use the admitted immutable version, never the current active installation.
+pub fn usage_model(version: &InstalledPackVersion) -> String {
+    format!("{MODEL}@{}", version.version)
+}
+
 #[derive(serde::Deserialize)]
 struct Root {
     key_id: String,

@@ -193,7 +193,9 @@ impl Fixture {
             .as_u16()
     }
     async fn wait_status(&self, status: u16) {
-        tokio::time::timeout(Duration::from_secs(2), async {
+        // Allow loopback connections to settle under busy Windows test runs;
+        // this observation budget does not relax the gateway's 10s body deadline.
+        tokio::time::timeout(Duration::from_secs(5), async {
             loop {
                 if self.status().await == status {
                     break;

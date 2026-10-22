@@ -330,7 +330,7 @@ mod tests {
         db.pragma_update(None, "user_version", 9).unwrap();
         drop(db);
         let service = ConfigService::open(temp.path(), secrets.clone()).unwrap();
-        assert_eq!(service.view().unwrap().schema_version, 10);
+        assert_eq!(service.view().unwrap().schema_version, SCHEMA_VERSION);
         assert_eq!(service.view().unwrap().desired_revision, 1);
         assert_eq!(
             service.view().unwrap().providers[0].timeouts,
@@ -404,7 +404,7 @@ mod tests {
         );
         assert_eq!(secrets.0.load(Ordering::SeqCst), 0);
         println!(
-            "Timeout schema9->10:known consistent schema9 backup preserves original provider JSON byte-for-byte,implicit defaults do not rewrite revision1,new settings only revision2,secrets0"
+            "Timeout schema9->current:known consistent schema9 backup preserves original provider JSON byte-for-byte,implicit defaults do not rewrite revision1,new settings only revision2,secrets0"
         );
     }
 }
