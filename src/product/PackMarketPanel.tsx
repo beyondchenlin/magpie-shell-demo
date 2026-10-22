@@ -60,7 +60,7 @@ export function PackMarketPanel({config,busy,active,language,runtimeOwned,onRefr
   const references=config.teams.flatMap(({team})=>{
     const describe=(recipe:typeof team.draft,suffix:string)=>{
       const pins=referencedPackVersions(recipe,"reachflow");
-      return pins.length?[...`${recipe.display_name} · ${suffix} · ${pins.join(" / ")}`]:[];
+      return pins.length?[`${recipe.display_name} · ${suffix} · ${pins.join(" / ")}`]:[];
     };
     return [...describe(team.draft,zh?"草稿":"draft"),...team.versions.flatMap(version=>describe(version.recipe,version.public_id))];
   });
