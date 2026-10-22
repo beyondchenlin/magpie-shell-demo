@@ -4,7 +4,8 @@ import {useEffect,useRef,useState} from "react";
 import {PrefRow} from "../components/PrefRow";
 import {TextBtn} from "../components/TextBtn";
 import {desktop,protocolVersion,service} from "./service";
-import type {ConfigView,PackMarketView,PackReviewView,PackTaskEvent,PackUserOperation} from "./contract";
+import type {ConfigView,PackMarketView,PackReviewView,PackTaskEvent,PackUserOperation,UsageRequestView,UsageAttemptView} from "./contract";
+import {referencedPackVersions,executedPackVersions} from "./taskReferences";
 import type {ProductLanguage} from "./preferences";
 
 function packError(value:unknown,zh:boolean){
@@ -41,6 +42,9 @@ export function PackMarketPanel({config,busy,active,language,runtimeOwned,onRefr
   const [error,setError]=useState<unknown>(null);
   const [taskId,setTaskId]=useState("");
   const [maintenance,setMaintenance]=useState<PackMarketView|null>(null);
+  const [inFlight,setInFlight]=useState<Array<{request:UsageRequestView,attempts:UsageAttemptView[]}>|null>(null);
+  const [inFlightMore,setInFlightMore]=useState(false);
+  const [inFlightError,setInFlightError]=useState(false);
   const [removeReview,setRemoveReview]=useState(false);
   const removeDialog=useRef<HTMLDialogElement>(null),removeButton=useRef<HTMLButtonElement>(null);
   const internalButton=useRef<HTMLButtonElement>(null);
@@ -54,11 +58,41 @@ export function PackMarketPanel({config,busy,active,language,runtimeOwned,onRefr
   if(internalManifest){try{const record=JSON.parse(internalManifest);const manifest=JSON.parse(record.manifest_utf8);if(typeof manifest.version==="string")internalVersion=manifest.version;}catch{/* Invalid catalogue remains subject to host verification. */}}
   const internalPresent=!!internalVersion&&reachflow?.versions.some(v=>v.version===internalVersion);
   const references=config.teams.flatMap(({team})=>{
-    const uses=(recipe:typeof team.draft)=>recipe.steps.some(step=>step.target.kind==="pack"&&step.target.pack_id==="reachflow")||(recipe.brain.kind==="local_brain_pack"&&recipe.brain.pack_id==="reachflow");
-    return [...(uses(team.draft)?[`${team.draft.display_name} · ${zh?"草稿":"draft"}`]:[]),...team.versions.filter(version=>uses(version.recipe)).map(version=>`${version.recipe.display_name} · ${version.public_id}`)];
+    const describe=(recipe:typeof team.draft,suffix:string)=>{
+      const pins=referencedPackVersions(recipe,"reachflow");
+      return pins.length?[...`${recipe.display_name} · ${suffix} · ${pins.join(" / ")}`]:[];
+    };
+    return [...describe(team.draft,zh?"草稿":"draft"),...team.versions.flatMap(version=>describe(version.recipe,version.public_id))];
   });
   useEffect(()=>{mounted.current=true;return()=>{mounted.current=false;};},[]);
   useEffect(()=>{let live=true;if(active&&desktop)void service.packMarket().then(value=>{if(live){setMaintenance(value);setReleaseReady(value.release_ready);setInternalManifest(value.internal_manifest);setTask(previous=>previous?.text?previous:value.task);}},failure=>{if(live)setError(failure);});return()=>{live=false;};},[active,config.desired_revision]);
+  useEffect(()=>{
+    if(!active||!desktop){setInFlight(null);setInFlightError(false);return;}
+    let live=true,querying=false;
+    const refresh=async()=>{
+      if(querying)return;
+      querying=true;
+      try{
+        const end=Date.now()+1000;
+        const found=await service.usageRequests({
+          protocol_version:protocolVersion,
+          range:{start_ms:Math.max(0,end-365*86400000),end_ms:end},
+          filter:{provider_id:null,model:null,config_revision:null,team_revision:null,state:"running",error_code:null},
+          cursor:null,limit:16,
+        });
+        const detailed=await Promise.all(found.records.map(async request=>{
+          const value=await service.usageDetails({protocol_version:protocolVersion,request_id:request.request_id});
+          return {request,attempts:value.attempts};
+        }));
+        if(live){setInFlight(detailed);setInFlightMore(found.next_cursor!==null);setInFlightError(false);}
+      }catch{
+        if(live){setInFlight(null);setInFlightError(true);}
+      }finally{querying=false;}
+    };
+    void refresh();
+    const timer=setInterval(()=>void refresh(),5000);
+    return()=>{live=false;clearInterval(timer);};
+  },[active,config.desired_revision]);
   useEffect(()=>{onEditingChange(working||!!review||removeReview);return()=>onEditingChange(false);},[working,review,removeReview,onEditingChange]);
   useEffect(()=>{if(removeReview)removeDialog.current?.showModal();else if(removeDialog.current?.open){removeDialog.current.close();removeButton.current?.focus();}},[removeReview]);
   useEffect(()=>{if(error)alert.current?.focus();},[error]);
@@ -78,8 +112,8 @@ export function PackMarketPanel({config,busy,active,language,runtimeOwned,onRefr
   function receive(event:PackTaskEvent){if(!mounted.current||event.task_id!==runningId.current)return;setTask(event);if(event.text){try{const value=JSON.parse(event.text);if(value.mode==="reachflow_service"&&typeof value.task_id==="string")setTaskId(value.task_id);}catch{/* Result remains plain escaped text. */}}}
   async function choose(selected:File|undefined){if(!selected||locked)return;setWorking(true);setReview(null);setError(null);try{if(selected.size>395264)throw {code:"PACK_INVALID_MANIFEST"};const next=await service.reviewPack(await selected.text());if(mounted.current)setReview(next);}catch(failure){if(mounted.current)setError(failure);}finally{if(mounted.current)setWorking(false);if(file.current)file.current.value="";}}
   async function reviewInternal(){if(!internalManifest||locked)return;setWorking(true);setError(null);try{setReview(await service.reviewPack(internalManifest));}catch(failure){setError(failure);}finally{setWorking(false);}}
-  async function install(){if(!review||locked)return;const selected=review;setWorking(true);setError(null);const id=crypto.randomUUID();runningId.current=id;setTask({task_id:id,phase:"starting",state:"running",text:null,error:null});try{await service.installPack({protocol_version:protocolVersion,task_id:id,review_id:selected.review_id,manifest_sha256:selected.manifest_sha256},receive);}catch(failure){if(mounted.current)setError(failure);}finally{runningId.current=null;if(mounted.current){returnTo.current=selected.publisher==="tagma-internal"?sample.current:file.current;setWorking(false);setReview(null);await onRefresh();}}}
-  async function call(operation:PackUserOperation){if(locked||!installed)return;setWorking(true);setError(null);const id=crypto.randomUUID();runningId.current=id;setTask({task_id:id,phase:"calling",state:"running",text:null,error:null});try{await service.invokePack({protocol_version:protocolVersion,task_id:id,pack_id:"reachflow",operation},receive);}catch(failure){if(mounted.current)setError(failure);}finally{runningId.current=null;if(mounted.current){returnTo.current=sample.current;setWorking(false);}}}
+  async function install(){if(!review||locked)return;const selected=review;setWorking(true);setError(null);const id=crypto.randomUUID();runningId.current=id;setTask({task_id:id,phase:"starting",state:"running",text:null,error:null,pack_id:null,pack_version:null,preparation_id:null});try{await service.installPack({protocol_version:protocolVersion,task_id:id,review_id:selected.review_id,manifest_sha256:selected.manifest_sha256},receive);}catch(failure){if(mounted.current)setError(failure);}finally{runningId.current=null;if(mounted.current){returnTo.current=selected.publisher==="tagma-internal"?sample.current:file.current;setWorking(false);setReview(null);await onRefresh();}}}
+  async function call(operation:PackUserOperation){if(locked||!installed)return;setWorking(true);setError(null);const id=crypto.randomUUID();runningId.current=id;setTask({task_id:id,phase:"calling",state:"running",text:null,error:null,pack_id:null,pack_version:null,preparation_id:null});try{await service.invokePack({protocol_version:protocolVersion,task_id:id,pack_id:"reachflow",operation},receive);}catch(failure){if(mounted.current)setError(failure);}finally{runningId.current=null;if(mounted.current){returnTo.current=sample.current;setWorking(false);}}}
   async function manage(version:string|null){
     if(locked||runningId.current||!reachflow)return;
     const id=crypto.randomUUID();runningId.current=id;setWorking(true);setError(null);
@@ -99,6 +133,18 @@ export function PackMarketPanel({config,busy,active,language,runtimeOwned,onRefr
       <TextBtn variant="danger" disabled={locked||!!review||!installed} onClick={()=>void manage(null)}>{zh?"停用 ReachFlow（保留文件）":"Deactivate ReachFlow (retain files)"}</TextBtn>
     </details>}
     {(reachflow||maintenance?.pending_removal)&&<details className="tagma-chat-setup" open={!!maintenance?.pending_removal}><summary>{zh?"运行状态与卸载":"Runtime status and uninstall"}</summary>
+      <section aria-label={zh?"运行中的网关请求与版本引用":"Running gateway requests and version references"}>
+        {inFlightError?<p role="alert">{zh?"用量账本读取失败，无法列出在途请求；卸载仍由网关和调用锁阻止。":"Usage ledger unavailable; task list is unverified, and process leases still block removal."}</p>:inFlight===null?<p>{zh?"正在核对在途任务……":"Checking in-flight tasks…"}</p>:inFlight.length===0?<p>{zh?"当前账本没有运行中请求。只要网关仍在运行，仍会阻止卸载以防新请求并发进入。":"No running requests in the ledger. A running gateway still blocks removal to prevent new admissions."}</p>:<>
+          <p role="status">{zh?`当前记录 ${inFlight.length} 个运行中请求`:`${inFlight.length} running requests recorded`}{inFlightMore?(zh?"（还有更多，请到用量页查看）":" (more in Usage)"):null}</p>
+          <ul>{inFlight.map(({request,attempts})=>{
+            const versions=executedPackVersions(attempts);
+            return <li key={request.request_id}><span>{zh?"请求":"Request"} {request.request_id}</span> · <span>{request.model}</span>
+              {request.team_revision!==null&&<span> · {zh?"固定小队版本":"Pinned team revision"} {request.team_revision}</span>}
+              <span> · {versions.length?(`${zh?"实际队员尝试":"Actual pack attempts"}: ${versions.join(", ")}`):(zh?"尚无已登记的队员执行版本":"No pack execution version registered yet")}</span>
+            </li>;
+          })}</ul>
+        </>}
+      </section>
       <p role="status">{!maintenance?(zh?"运行状态未确认，暂不能卸载。":"Runtime state unconfirmed; uninstall unavailable."):maintenance.gateway_running?(zh?"网关正在运行，可能仍有在途小队任务。卸载前请停止网关。":"The gateway is running and may have in-flight team tasks. Stop it before uninstalling."):maintenance.pack_call_running?(zh?"本机队员调用或健康检查进行中，请等待结束。":"A local pack call or health check is in progress. Wait for completion."):(zh?"网关已停止，当前未发现执行中的队员调用。卸载时会再次检查并阻止新调用。":"Gateway stopped; no pack call is currently executing. Uninstall rechecks and excludes new calls.")}</p>
       <p>{zh?"先停用队员，再停止本机网关。停止会中止本机活动请求，不会取消已提交的远端服务任务。卸载只移除队员运行文件，保留小队配方、用量和保存到成果目录的文件。依赖小队将不可调用，重新安装相同固定版本后恢复。":"Deactivate the pack, then stop the local gateway. Stopping interrupts local requests, not submitted remote tasks. Uninstall removes runtime files only; team recipes, usage and saved results remain. Dependent teams resume after reinstalling their pinned version."}</p>
       {references.length>0&&<ul>{references.map((name,index)=><li key={index}>{name}</li>)}</ul>}
@@ -118,7 +164,7 @@ export function PackMarketPanel({config,busy,active,language,runtimeOwned,onRefr
       <PrefRow name={zh?"声明内存 / 调用超时":"Declared memory / call timeout"}><span>{review.memory_mib} MiB / {review.timeout_ms/1000}s</span></PrefRow>
     </div><p className="tagma-footnote">{zh?"权限与内存为发行声明，当前不提供操作系统沙箱保证。安装将启动发行者提供的程序进行健康检查。":"Permissions and memory are publisher declarations, not an OS sandbox. Installation runs the publisher executable for its health check."}</p><div className="tagma-actions"><TextBtn disabled={locked} onClick={()=>{returnTo.current=review.publisher==="tagma-internal"?internalButton.current:file.current;setReview(null);}}>{zh?"取消":"Cancel"}</TextBtn><TextBtn variant="action" disabled={locked||!review.fits} onClick={()=>void install()}>{zh?"同意权限并安装":"Approve permissions and install"}</TextBtn></div></section>}
     <div className="tagma-actions"><TextBtn ref={sample} disabled={!desktop||locked||!!review||!installed} onClick={()=>void call({kind:"local_sample"})}>{zh?"运行本地固定素材试跑":"Run local fixed sample"}</TextBtn></div>
-    {task&&<section className="tagma-editor" aria-label={zh?"队员任务":"Pack task"}><p role="status">{phase[task.phase]??task.phase} · {state[task.state]??task.state}</p><p className="tagma-footnote">{task.task_id}</p>{task.error&&<p className="tagma-error">{packError({code:task.error},zh)}</p>}{task.text&&<PackResult raw={task.text} zh={zh}/>}{working&&task.state==="running"&&<TextBtn onClick={()=>void service.cancelPack(runningId.current!).catch(setError)}>{zh?"停止本机操作 / 等待":"Stop local operation / waiting"}</TextBtn>}<p className="tagma-footnote">{zh?"停止本机等待不会取消已提交的服务任务。取消服务任务请使用下方明确操作，并查询最终状态。":"Stopping local waiting does not cancel a submitted service task. Use the explicit service cancellation below and check its final state."}</p></section>}
+    {task&&<section className="tagma-editor" aria-label={zh?"队员任务":"Pack task"}><p role="status">{phase[task.phase]??task.phase} · {state[task.state]??task.state}</p><p className="tagma-footnote">{task.task_id}</p>{task.pack_id&&task.pack_version&&<p role="status">{zh?"本次调用固定队员版本":"Pinned pack version"}: {task.pack_id}@{task.pack_version} · {zh?"安装准备标识":"Preparation"} {task.preparation_id}</p>}{task.error&&<p className="tagma-error">{packError({code:task.error},zh)}</p>}{task.text&&<PackResult raw={task.text} zh={zh}/>}{working&&task.state==="running"&&<TextBtn onClick={()=>void service.cancelPack(runningId.current!).catch(setError)}>{zh?"停止本机操作 / 等待":"Stop local operation / waiting"}</TextBtn>}<p className="tagma-footnote">{zh?"停止本机等待不会取消已提交的服务任务。取消服务任务请使用下方明确操作，并查询最终状态。":"Stopping local waiting does not cancel a submitted service task. Use the explicit service cancellation below and check its final state."}</p></section>}
     <ReachFlowForm zh={zh} locked={locked||!!review} taskIdHint={taskId} unavailable={!installed?(zh?"请先安装 ReachFlow 队员。":"Install ReachFlow first."):internalOnly?(zh?"当前内部包没有网络权限。请安装允许服务域名的受信任队员包。":"This internal package has no network permissions. Install a trusted package permitting the service domain."):undefined} onSubmit={request=>void call({kind:"reach_flow",request})}/>
   </section>;
 }
